@@ -1,0 +1,26 @@
+name: pvparena
+main: craftyn.pvparena.PVPArena
+version: v0.1.0.3
+author: slipcor (Carbon131)
+commands:
+    pvparena:
+        description: Base command for Fight plugin. Administrators need to read the help file on Bukkit forums
+        usage: |
+           /pvparena - Join the fight
+           /pvparena Watch - Watch the fight
+           /pvparena Leave - Leave the fight
+    pa:
+        description: Just a shorter version instead of /Fight.
+        usage: /pa
+permissions:
+    fight.*:
+        description: Gives access to all commands
+        children:
+            fight.admin: true
+            fight.user: true
+    fight.admin:
+        description: Allows you to administrate the arena
+        default: op
+    fight.user:
+        description: Allows you to use the arena
+        default: true
