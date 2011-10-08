@@ -42,10 +42,11 @@ import org.bukkit.util.config.Configuration;
  * author: craftyn
  * editor: slipcor
  * 
- * version: v0.1.0 - release version
+ * version: v0.1.2 - class permission requirement
  * 
  * history:
  *
+ *    v0.1.0 - release version
  *    v0.0.6 - /pa leave game end check
  *    v0.0.5 - reset signs on arena start
  *    v0.0.4 - iconomy subtracting fix
@@ -59,7 +60,6 @@ Additions
 
     Add support for multiple arenas!
     Lives
-    Make the ready block configurable.
     commands to show who is playing and on what team
     bet on a match.
     ability to not allow matches to start with uneven teams.
@@ -72,7 +72,6 @@ Additions
     custom class -> get items back -
     multilanguage support
     configurable: after match/spectate return to old position
-    class permissions (optional)
 
 
 
@@ -646,10 +645,16 @@ public class PVPArena extends JavaPlugin {
 		return Permissions.has(player, "fight.admin");
 	}
 
-	private boolean hasPerms(Player player) {
+	public static boolean hasPerms(Player player) {
 		if (Permissions == null)
 			return true;
-		return Permissions.has(player, "fight.user");
+		return Permissions.has(player, "fight.user")?true:player.hasPermission("fight.user");
+	}
+
+	public static boolean hasPerms(Player player, String perms) {
+		if (Permissions == null)
+			return true;
+		return Permissions.has(player, perms)?true:player.hasPermission(perms);
 	}
 
 	public static void arenaReset() {

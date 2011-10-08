@@ -1,7 +1,10 @@
 package craftyn.pvparena;
 
+import java.io.File;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -12,6 +15,7 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.util.config.Configuration;
 
 /*
  * PlayerListener class
@@ -19,9 +23,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
  * author: craftyn
  * editor: slipcor
  * 
- * version: v0.0.0a - code tweaks
+ * version: v0.1.2 - class permission requirement
  * 
  * history:
+ * 		v0.1.1 - ready block configurable
+ * 		v0.0.0a - code tweaks
  * 		v0.0.0 - copypaste
  */
 
@@ -93,6 +99,7 @@ public class PAPlayerListener extends PlayerListener {
 						&& (player.getItemInHand().getTypeId() == PVPArena.wand)))) && (PVPArena.regionmodify)) {
 			PVPArena.pos1 = event.getClickedBlock().getLocation();
 			PVPArena.tellPlayer(player, "First position set.");
+			return;
 		}
 
 		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK)
@@ -101,6 +108,7 @@ public class PAPlayerListener extends PlayerListener {
 						&& (player.getItemInHand().getTypeId() == PVPArena.wand)))) && (PVPArena.regionmodify)) {
 			PVPArena.pos2 = event.getClickedBlock().getLocation();
 			PVPArena.tellPlayer(player, "Second position set.");
+			return;
 		}
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -111,6 +119,29 @@ public class PAPlayerListener extends PlayerListener {
 				if ((PVPArena.fightClasses.containsKey(sign.getLine(0)))
 						&& (PVPArena.fightUsersTeam.containsKey(player
 								.getName()))) {
+					
+					Configuration config = new Configuration(new File("plugins/pvparena",
+							"config.yml"));
+					config.load();
+					boolean classperms = false;
+					if (config.getProperty("general.classperms") != null) {
+						try {
+							classperms = (Boolean) config.getProperty("general.classperms");
+						} catch (Exception e) {
+							System.out.print("[PVP Arena] unrecognized general.classperms");
+						}
+					}
+					
+					if (classperms) {
+						if (!PVPArena.hasPerms(player, "fight.group." + sign.getLine(0))) {
+							player.sendMessage(ChatColor.YELLOW
+									+ "[PVP Arena] "
+									+ ChatColor.WHITE
+									+ "You don't have permission for that class.");
+							return;
+						}
+					}
+					
 					PVPArena.fightSigns.put(player.getName(), sign);
 
 					if (PVPArena.fightUsersClass.containsKey(player.getName())) {
@@ -157,13 +188,31 @@ public class PAPlayerListener extends PlayerListener {
 								+ "There are too many of this class, pick another class.");
 					}
 				}
+				return;
 			}
 		}
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
+			
 
-			if ((block.getTypeId() == 42)
+			Configuration config = new Configuration(new File("plugins/pvparena","config.yml"));
+			config.load();
+			Material mMat = Material.IRON_BLOCK;
+			if (config.getProperty("general.readyblock") != null) {
+				try {
+					mMat = Material.getMaterial((Integer) config.getProperty("general.readyblock"));
+				} catch (Exception e) {
+					String sMat = config.getString("general.readyblock");
+					try {
+						mMat = Material.getMaterial(sMat);
+					} catch (Exception e2) {
+						System.out.print("[PVP Arena] unrecognized Material:" + sMat);
+					}
+				}
+			}
+
+			if ((block.getTypeId() == mMat.getId())
 					&& (PVPArena.fightUsersTeam.containsKey(player.getName()))
 					&& (PVPArena.teamReady((String) PVPArena.fightUsersTeam
 							.get(player.getName())))) {
@@ -196,7 +245,7 @@ public class PAPlayerListener extends PlayerListener {
 
 				}
 
-			} else if ((block.getTypeId() == 42)
+			} else if ((block.getTypeId() == mMat.getId())
 					&& (PVPArena.fightUsersTeam.containsKey(player.getName()))) {
 				player.sendMessage(ChatColor.YELLOW + "[PVP Arena] "
 						+ ChatColor.WHITE
