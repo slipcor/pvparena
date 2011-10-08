@@ -293,10 +293,10 @@ public class PVPArena extends JavaPlugin {
 					&& (isSetup().booleanValue())
 					&& (!(fightInProgress))
 					&& (randomlyselectteams) && (!savedmisc.containsKey(player))
-					&& (((Permissions == null) || (Permissions.has(player, "fight.user"))))) {
+					&& (hasPerms(player))) {
 				
 
-				if (!com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
+				if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
 					tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
 					return true;
 				}
@@ -368,9 +368,9 @@ public class PVPArena extends JavaPlugin {
 				if ((fightCmd[0].equalsIgnoreCase("red"))
 						&& (isSetup().booleanValue())
 						&& (manuallyselectteams) && (!savedmisc.containsKey(player))
-						&& (((Permissions == null) || (Permissions.has(player, "fight.user"))))) {
+						&& (hasPerms(player))) {
 					
-					if (!com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
+					if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
 						tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
 						return true;
 					}
@@ -413,10 +413,9 @@ public class PVPArena extends JavaPlugin {
 				} else if ((fightCmd[0].equalsIgnoreCase("blue"))
 						&& (isSetup().booleanValue())
 						&& (manuallyselectteams)
-						&& (((Permissions == null) || ((Permissions != null) && (Permissions
-								.has(player, "fight.user")))))) {
+						&& (hasPerms(player))) {
 					
-					if (!com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
+					if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
 						tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
 						return true;
 					}
@@ -457,38 +456,31 @@ public class PVPArena extends JavaPlugin {
 					}
 
 				} else if ((fightCmd[0].equalsIgnoreCase("redlounge"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "redlounge");
 					tellPlayer(player, "Red lounge set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("redspawn"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "redspawn");
 					tellPlayer(player, "Red spawn set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("bluelounge"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "bluelounge");
 					tellPlayer(player, "Blue lounge set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("bluespawn"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "bluespawn");
 					tellPlayer(player, "Blue spawn set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("spectator"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "spectator");
 					tellPlayer(player, "Spectator area set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("exit"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					setCoords(player, "exit");
 					tellPlayer(player, "Exit area set.");
 				} else if ((fightCmd[0].equalsIgnoreCase("forcestop"))
-						&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-								.has(player, "fight.admin")))))) {
+						&& (hasAdminPerms(player))) {
 					if (fightInProgress) {
 						tellPlayer(player, "You have forced the fight to stop.");
 						Set<String> set = fightUsersTeam.keySet();
@@ -509,8 +501,7 @@ public class PVPArena extends JavaPlugin {
 
 				} else if ((fightCmd[0].equalsIgnoreCase("watch"))
 						&& (isSetup().booleanValue())
-						&& (((Permissions == null) || ((Permissions != null) && (Permissions
-								.has(player, "fight.user")))))) {
+						&& (hasPerms(player))) {
 					goToWaypoint(player, "spectator");
 					tellPlayer(player, "Welcome to the spectator's area!");
 					if (fightUsersTeam.containsKey(player.getName())) {
@@ -536,8 +527,7 @@ public class PVPArena extends JavaPlugin {
 					}
 
 				} else if ((fightCmd[0].equalsIgnoreCase("leave"))
-						&& (((Permissions == null) || ((Permissions != null) && (Permissions
-								.has(player, "fight.user")))))) {
+						&& (hasPerms(player))) {
 					if (fightUsersTeam.containsKey(player.getName())) {
 						if (fightUsersTeam.get(player.getName()) == "red") {
 							redTeam -= 1;
@@ -582,8 +572,7 @@ public class PVPArena extends JavaPlugin {
 
 			if ((args.length == 2)
 					&& (fightCmd[0].equalsIgnoreCase("region"))
-					&& ((((Permissions == null) && (player.isOp())) || ((Permissions != null) && (Permissions
-							.has(player, "fight.admin")))))) {
+					&& (hasAdminPerms(player))) {
 				if (fightCmd[1].equalsIgnoreCase("set")) {
 					Configuration config = new Configuration(new File(
 							"plugins/pvparena", "config.yml"));
@@ -649,6 +638,18 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 		return false;
+	}
+
+	private boolean hasAdminPerms(Player player) {
+		if (Permissions == null)
+			return player.isOp();
+		return Permissions.has(player, "fight.admin");
+	}
+
+	private boolean hasPerms(Player player) {
+		if (Permissions == null)
+			return true;
+		return Permissions.has(player, "fight.user");
 	}
 
 	public static void arenaReset() {
