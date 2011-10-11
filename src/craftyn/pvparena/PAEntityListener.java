@@ -16,13 +16,15 @@ import org.bukkit.util.config.Configuration;
 /*
  * EntityListener class
  * 
- * author: craftyn
- * editor: slipcor
+ * author: slipcor
  * 
- * version: v0.0.0a - code tweaks
+ * version: v0.1.8 - lives!
  * 
  * history:
- * 		v0.0.0 - copypaste
+ *
+ *    v0.1.5 - class choosing not toggling
+ *    v0.1.2 - class permission requirement
+ *
  */
 
 public class PAEntityListener extends EntityListener {
@@ -50,12 +52,10 @@ public class PAEntityListener extends EntityListener {
 					PVPArena.blueTeam -= 1;
 				}
 				PVPArena.fightUsersTeam.remove(player.getName());
-				PVPArena.fightUsersClass.remove(player.getName());				
-				PVPArena.fightUsersRespawn.put(player.getName(), "true");
+				PVPArena.fightUsersRespawn.put(player.getName(), PVPArena.fightUsersClass.get(player.getName()));
 				if (PVPArena.checkEnd())
 					return;
 				PVPArena.removePlayer(player);
-				
 			}
 		}
 	}
@@ -63,19 +63,56 @@ public class PAEntityListener extends EntityListener {
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
-		if ((PVPArena.teamkilling) || (!(PVPArena.fightInProgress))
-				|| (p1 == null) || (!(p1 instanceof Player)) || (p2 == null)
-				|| (!(p2 instanceof Player)))
+		
+		if ((!(PVPArena.fightInProgress))
+			|| (p1 == null) || (!(p1 instanceof Player)) || (p2 == null)
+			|| (!(p2 instanceof Player)))
 			return;
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 		if ((PVPArena.fightUsersTeam.get(attacker.getName()) == null)
-				|| (PVPArena.fightUsersTeam.get(defender.getName()) == null)
-				|| (!(((String) PVPArena.fightUsersTeam.get(attacker.getName()))
-						.equals(PVPArena.fightUsersTeam.get(defender.getName())))))
+			|| (PVPArena.fightUsersTeam.get(defender.getName()) == null))
 			return;
-		event.setCancelled(true);
-		return;
+		
+		if ((!PVPArena.teamkilling) && ((String) PVPArena.fightUsersTeam.get(attacker.getName()))
+				.equals(PVPArena.fightUsersTeam.get(defender.getName()))) {
+			// no team fights!
+			event.setCancelled(true);
+			return;
+		}
+			
+		// here it comes, process the damage!
+		if (event.getDamage() > defender.getHealth()) {
+			byte lives = 3;
+			
+			lives = PVPArena.fightUsersLives.get(defender.getName());
+			if (lives < 1) {
+				return; // player died spectating wherever
+			} else if (lives > 0) {
+
+				defender.setHealth(20);
+				defender.setFireTicks(0);
+				defender.setFoodLevel(20);
+				defender.setSaturation(20);
+				defender.setExhaustion(0);
+
+				if (PVPArena.fightUsersTeam.get(defender.getName()) == "red") {
+					PVPArena.tellEveryone(ChatColor.RED + defender.getName()
+							+ ChatColor.WHITE + " has lost a life! "+ String.valueOf(lives) + " remaining.");
+					PVPArena.goToWaypoint(defender, "redspawn");
+					
+				} else {
+					PVPArena.tellEveryone(ChatColor.BLUE + defender.getName()
+							+ ChatColor.WHITE + " has lost a life! "+ String.valueOf(lives) + " remaining.");
+					PVPArena.goToWaypoint(defender, "bluespawn");
+					
+				}
+				PVPArena.fightUsersLives.put(defender.getName(), --lives);
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
 	}
 
 	public void onEntityDamage(EntityDamageEvent event) {

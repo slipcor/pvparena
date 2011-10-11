@@ -45,9 +45,10 @@ public class PAPlayerListener extends PlayerListener {
 			return;
 		Location l = PVPArena.getCoords("spectator");
 		event.setRespawnLocation(l);
-		PVPArena.fightUsersRespawn.remove(player.getName());
-		PVPArena.setInventory(player);
 		PVPArena.loadPlayer(player, "spectator");
+		PVPArena.fightUsersRespawn.remove(player.getName());
+		PVPArena.fightUsersTeam.remove(player.getName());
+		PVPArena.fightUsersClass.remove(player.getName());	
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
@@ -142,51 +143,42 @@ public class PAPlayerListener extends PlayerListener {
 						}
 					}
 					
-					PVPArena.fightSigns.put(player.getName(), sign);
-
+					int i=0;
+					
 					if (PVPArena.fightUsersClass.containsKey(player.getName())) {
-						if (PVPArena.fightUsersClass.get(player.getName()) == sign
-								.getLine(0)) {
-							PVPArena.fightUsersClass.remove(player.getName());
-							if (sign.getLine(2) == player.getName()) {
-								sign.setLine(2, "");
-								sign.update();
+						// already selected class, remove it!
+						Sign sSign = PVPArena.fightSigns.get(player.getName());
+						
+						for (i=2;i<4;i++) {
+							if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
+								sSign.setLine(i, "");
+								sSign.update();
 								PVPArena.clearInventory(player);
-							} else if (sign.getLine(3) == player.getName()) {
-								sign.setLine(3, "");
-								sign.update();
-								PVPArena.clearInventory(player);
-							} else {
-								player.sendMessage(ChatColor.YELLOW
-										+ "[PVP Arena] "
-										+ ChatColor.WHITE
-										+ "Please tell developer about this bug (#5017).");
+								break;
 							}
-						} else {
-							player.sendMessage(ChatColor.YELLOW
-									+ "[PVP Arena] "
-									+ ChatColor.WHITE
-									+ "You must first remove yourself from the other class!");
 						}
-
-					} else if (sign.getLine(2).trim().equals("")) {
-						PVPArena.fightUsersClass.put(player.getName(),
-								sign.getLine(0));
-						sign.setLine(2, player.getName());
-						sign.update();
-						PVPArena.giveItems(player);
-					} else if (sign.getLine(3).trim().equals("")) {
-						PVPArena.fightUsersClass.put(player.getName(),
-								sign.getLine(0));
-						sign.setLine(3, player.getName());
-						sign.update();
-						PVPArena.giveItems(player);
-					} else {
-						player.sendMessage(ChatColor.YELLOW
-								+ "[PVP Arena] "
-								+ ChatColor.WHITE
-								+ "There are too many of this class, pick another class.");
 					}
+
+					for (i=2;i<4;i++) {
+						if (sign.getLine(i).equals("")) {
+							PVPArena.fightSigns.put(player.getName(), sign);
+							PVPArena.fightUsersClass.put(player.getName(),sign.getLine(0));
+							sign.setLine(i, player.getName());
+							sign.update();
+							if (sign.getLine(0).equalsIgnoreCase("custom")) {
+								PVPArena.setInventory(player);
+							} else {
+								PVPArena.giveItems(player);
+							}
+							return;
+						}
+					}
+					
+					player.sendMessage(ChatColor.YELLOW
+							+ "[PVP Arena] "
+							+ ChatColor.WHITE
+							+ "There are too many of this class, pick another class.");
+					
 				}
 				return;
 			}

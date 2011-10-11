@@ -39,13 +39,18 @@ import org.bukkit.util.config.Configuration;
 /*
  * main class
  * 
- * author: craftyn
- * editor: slipcor
+ * author: slipcor
  * 
- * version: v0.1.2 - class permission requirement
+ * version: v0.1.8 - lives!
  * 
  * history:
  *
+ *    v0.1.7 - commands to show who is playing and on what team
+ *    v0.1.6 - custom class: fight with own items
+ *    v0.1.5 - class choosing not toggling
+ *    v0.1.4 - arena disable via command * disable / * enable
+ *    v0.1.3 - ingame config reload
+ *    v0.1.2 - class permission requirement
  *    v0.1.0 - release version
  *    v0.0.6 - /pa leave game end check
  *    v0.0.5 - reset signs on arena start
@@ -57,27 +62,19 @@ import org.bukkit.util.config.Configuration;
  * todo:
 
 Additions
-
-    Add support for multiple arenas!
-    Lives
-    commands to show who is playing and on what team
-    bet on a match.
-    ability to not allow matches to start with uneven teams.
-    stats > wins/losses per team/person...
-    A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
-    Remove "Please click to remove yourself from class": Replace with clicking another class sign will put you in that class
-    alternative "death" respawn point? (death ; victory ; exit)
-    reload to reload the config file
-    disable to disable the arena from being used
-    custom class -> get items back -
-    multilanguage support
-    configurable: after match/spectate return to old position
-
-
-
- *     
- *     
- *     
+	(P)riority: 0 - no => 5 - critical
+	(E)ffort: 0 - np => 5 - omg
+	
+	(P/E)
+    (3/2) ability to not allow matches to start with uneven teams.
+    (3/2) alternative "death" respawn point? (death ; victory ; exit)
+    (4/3) A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
+    (2/2) configurable: after match/spectate return to old position
+	(3/3) stats > wins/losses per team/person...
+    (2/3) bet on a match.
+    (2/4) multilanguage support
+    (2/5) Add support for multiple arenas!
+    
  *     CTF
  *     
  * 
@@ -101,6 +98,7 @@ public class PVPArena extends JavaPlugin {
 	public static final Map<String, Sign> fightSigns = new HashMap<String, Sign>();
 	public static final Map<String, String> fightUsersRespawn = new HashMap<String, String>();
 	public static final Map<String, String> fightTelePass = new HashMap<String, String>();
+	public static final Map<String, Byte> fightUsersLives = new HashMap<String, Byte>();
 
 	public static final HashMap<Player, ItemStack[]> savedinventories = new HashMap<Player, ItemStack[]>();
 	public static final HashMap<Player, ItemStack[]> savedarmories = new HashMap<Player, ItemStack[]>();
@@ -124,9 +122,11 @@ public class PVPArena extends JavaPlugin {
 	static boolean redTeamIronClicked = false;
 	static boolean blueTeamIronClicked = false;
 	static boolean fightInProgress = false;
+	static boolean enabled = true;
 	static int wand;
 	static int entryFee;
 	static int rewardAmount;
+	static int maxlives;
 	static String rewardItems;
 	public static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
 	public static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
@@ -187,6 +187,10 @@ public class PVPArena extends JavaPlugin {
 
 		log.info("[PVP Arena] enabled. (version " + pdfFile.getVersion() + ")");
 
+		load_config();
+	}
+	
+	private void load_config() {
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/config.yml");
 		if (!(configFile.exists()))
@@ -247,7 +251,7 @@ public class PVPArena extends JavaPlugin {
 			config.save();
 		}
 		List<?> classes = config.getKeys("classes");
-
+		fightClasses.clear();
 		for (int i = 0; i < classes.size(); ++i) {
 			String className = (String) classes.get(i);
 			fightClasses.put(className,
@@ -270,216 +274,364 @@ public class PVPArena extends JavaPlugin {
 		disablelavafirespread = config.getBoolean("protection.fire.disable-lava-fire-spread", true);
 		blocktnt = config.getBoolean("protection.ignition.block-tnt", true);
 		blocklighter = config.getBoolean("protection.ignition.block-lighter",true);
+		
+		maxlives = config.getInt("general.lives", 3);
 	}
 
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = getDescription();
 
 		log.info("[PVP Arena] disabled. (version " + pdfFile.getVersion() + ")");
-
+	
 		arenaReset();
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if ((!commandLabel.equalsIgnoreCase("pvparena")) && (!commandLabel.equalsIgnoreCase("pa"))) {
+			return true; // none of our business
+		}
+				
 		String[] fightCmd = args;
+		Player player = null;
+		try {
+			player = (Player) sender;
+		} catch (Exception e) {
+			sender.sendMessage("Only players may access this command!");
+			return true;
+		}
 
-		if ((commandLabel.equalsIgnoreCase("pvparena"))
-				|| (commandLabel.equalsIgnoreCase("pa"))) {
-			Player player = (Player) sender;
+		if (!enabled && !hasAdminPerms(player)) {
+			sender.sendMessage("Arena disabled please try again later!");
+			return true;
+		}
+		
+		if (args.length < 1) {
+			// just /pa or /pvparena
+			if (!(isSetup().booleanValue())) {
+				tellPlayer(player, "All waypoints must be set up first.");
+				return true;
+			}
+			if (!hasPerms(player)) {
+				tellPlayer(player, "You don't have permission to join the arena!");
+				return true;
+			}
+			if (!(randomlyselectteams)) {
+				tellPlayer(player, "You must select a team to join!");
+				return true;
+			}
+			if (savedmisc.containsKey(player)) {
+				tellPlayer(player, "You already joined!");
+				return true;
+			}
+			if (fightInProgress) {
+				tellPlayer(player, "A fight is already in progress!");
+				return true;
+			}
 
-			if ((args.length < 1)
-					&& (isSetup().booleanValue())
-					&& (!(fightInProgress))
-					&& (randomlyselectteams) && (!savedmisc.containsKey(player))
-					&& (hasPerms(player))) {
+			if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
+				tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
+				return true;
+			}
+			cleanSigns();
+			saveInventory(player);
+			clearInventory(player);
+			saveMisc(player); // save player health, fire tick, hunger etc
+			player.setHealth(20);
+			player.setFireTicks(0);
+			player.setFoodLevel(20);
+			player.setSaturation(20);
+			player.setExhaustion(0);
+			player.setGameMode(GameMode.getByValue(0));
+			PVPArena.fightUsersLives.put(player.getName(), (byte) maxlives);
+			
+			
+			if (emptyInventory(player)) {
+				if ((iConomy != null) && (entryFee > 0)) {
+					Holdings balance = com.iConomy.iConomy.getAccount(player.getName()).getHoldings();
+
+					balance.subtract(entryFee);
+				}
+
+				if (!(fightUsersTeam.containsKey(player.getName()))) {
+					if (blueTeam > redTeam) {
+						goToWaypoint(player, "redlounge");
+						fightUsersTeam.put(player.getName(), "red");
+						tellPlayer(player, "Welcome! You are on team "
+								+ ChatColor.RED + "<Red>");
+						tellEveryoneExcept(player, player.getName()
+								+ " has joined team " + ChatColor.RED
+								+ "<Red>");
+						redTeam += 1;
+					} else {
+						goToWaypoint(player, "bluelounge");
+						fightUsersTeam.put(player.getName(), "blue");
+						blueTeam += 1;
+						tellPlayer(player, "Welcome! You are on team "
+								+ ChatColor.BLUE + "<Blue>");
+						tellEveryoneExcept(player, player.getName()
+								+ " has joined team " + ChatColor.BLUE
+								+ "<Blue>");
+					}
+
+				} else {
+					tellPlayer(player, "You have already joined a team!");
+				}
+
+			} else if (fightUsersTeam.containsKey(player.getName())) {
+				tellPlayer(player, "You have already joined a team!");
+			} else {
+				tellPlayer(player,"You cannot join, you already did.");
+			}
+			return true;
+		}
+
+		if (args.length == 1) {
+
+			if (fightCmd[0].equalsIgnoreCase("enable")) {
+				if (!hasAdminPerms(player)) {
+					tellPlayer(player, "You don't have permission to enable!");
+					return true;
+				}
+				enabled = true;
+				tellPlayer(player, "Enabled!");
+				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("disable")) {
+				if (!hasAdminPerms(player)) {
+					tellPlayer(player, "You don't have permission to disable!");
+					return true;
+				}
+				enabled = false;
+				tellPlayer(player, "Disabled!");
+				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("reload")) {
+				if (!hasAdminPerms(player)) {
+					tellPlayer(player, "You don't have permission to reload!");
+					return true;
+				}
+				load_config();
+				tellPlayer(player, "Config reloaded!");
+				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("list")) {
+				if ((PVPArena.fightUsersTeam == null) || (PVPArena.fightUsersTeam.size() < 1)) {
+					tellPlayer(player, "No player in the PVP Arena!");
+					return true;
+				}
+				String plrs = "";
+				for (String sPlayer : PVPArena.fightUsersTeam.keySet()) {
+					if (!plrs.equals(""))
+						plrs +=", ";
+					plrs += (PVPArena.fightUsersTeam.get(sPlayer).equals("red")?ChatColor.RED:ChatColor.BLUE) + sPlayer + ChatColor.WHITE;
+				}
+				tellPlayer(player, "Players: " + plrs);
+				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("red")) {
 				
 
+				// /pa red or /pvparena red
+				if (!(isSetup().booleanValue())) {
+					tellPlayer(player, "All waypoints must be set up first.");
+					return true;
+				}
+				if (!hasPerms(player)) {
+					tellPlayer(player, "You don't have permission to join the arena!");
+					return true;
+				}
+				if (!(manuallyselectteams)) {
+					tellPlayer(player, "You must select a team to join!");
+					return true;
+				}
+				if (fightUsersTeam.containsKey(player.getName())) {
+					tellPlayer(player, "You have already joined a team!");
+					return true;
+				}
+				
+				if (savedmisc.containsKey(player)) {
+					tellPlayer(player, "You already joined!");
+					return true;
+				}
+				if (fightInProgress) {
+					tellPlayer(player, "A fight is already in progress!");
+					return true;
+				}
+				
 				if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
 					tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
 					return true;
 				}
+
 				cleanSigns();
 				saveInventory(player);
 				clearInventory(player);
 				saveMisc(player); // save player health, fire tick, hunger etc
 				player.setHealth(20);
 				player.setFireTicks(0);
-				player.setFoodLevel(20);
-				player.setSaturation(20);
-				player.setExhaustion(0);
-				player.setGameMode(GameMode.getByValue(0));
 				
-				
-
 				if (emptyInventory(player)) {
 					if ((iConomy != null) && (entryFee > 0)) {
-						Holdings balance = com.iConomy.iConomy.getAccount(player.getName()).getHoldings();
-
+						Holdings balance = com.iConomy.iConomy.getAccount(
+								player.getName()).getHoldings();
 						balance.subtract(entryFee);
 					}
 
 					if (!(fightUsersTeam.containsKey(player.getName()))) {
-						if (blueTeam > redTeam) {
-							goToWaypoint(player, "redlounge");
-							fightUsersTeam.put(player.getName(), "red");
-							tellPlayer(player, "Welcome! You are on team "
-									+ ChatColor.RED + "<Red>");
-							tellEveryoneExcept(player, player.getName()
-									+ " has joined team " + ChatColor.RED
-									+ "<Red>");
-							redTeam += 1;
-						} else {
-							goToWaypoint(player, "bluelounge");
-							fightUsersTeam.put(player.getName(), "blue");
-							blueTeam += 1;
-							tellPlayer(player, "Welcome! You are on team "
-									+ ChatColor.BLUE + "<Blue>");
-							tellEveryoneExcept(player, player.getName()
-									+ " has joined team " + ChatColor.BLUE
-									+ "<Blue>");
-						}
-
+						goToWaypoint(player, "redlounge");
+						fightUsersTeam.put(player.getName(), "red");
+						tellPlayer(player, "Welcome! You are on team "
+								+ ChatColor.RED + "<Red>");
+						tellEveryoneExcept(player, player.getName()
+								+ " has joined team " + ChatColor.RED
+								+ "<Red>");
+						redTeam += 1;
 					} else {
-						tellPlayer(player, "You have already joined a team!");
+						tellPlayer(player,
+								"You have already joined a team!");
 					}
 
-				} else if (fightUsersTeam.containsKey(player.getName())) {
-					tellPlayer(player, "You have already joined a team!");
-				} else {
-					tellPlayer(player,"You cannot join, you already did.");
 				}
 
-			} else if (args.length < 1) {
+			} else if (fightCmd[0].equalsIgnoreCase("blue")) {
+				
+				// /pa blue or /pvparena blue
 				if (!(isSetup().booleanValue())) {
 					tellPlayer(player, "All waypoints must be set up first.");
+					return true;
 				}
+				if (!hasPerms(player)) {
+					tellPlayer(player, "You don't have permission to join the arena!");
+					return true;
+				}
+				if (!(manuallyselectteams)) {
+					tellPlayer(player, "You must select a team to join!");
+					return true;
+				}
+				if (fightUsersTeam.containsKey(player.getName())) {
+					tellPlayer(player, "You have already joined a team!");
+					return true;
+				}
+				
+				if (savedmisc.containsKey(player)) {
+					tellPlayer(player, "You already joined!");
+					return true;
+				}
+
 				if (fightInProgress) {
 					tellPlayer(player, "A fight is already in progress!");
+					return true;
 				}
-				if (!(randomlyselectteams)) {
-					tellPlayer(player, "You must select a team to join!");
+				
+				if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
+					tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
+					return true;
 				}
 
-			}
+				cleanSigns();
+				saveInventory(player);
+				clearInventory(player);
+				saveMisc(player); // save player health, fire tick, hunger etc
+				player.setHealth(20);
+				player.setFireTicks(0);
 
-			if (args.length == 1) {
-				if ((fightCmd[0].equalsIgnoreCase("red"))
-						&& (isSetup().booleanValue())
-						&& (manuallyselectteams) && (!savedmisc.containsKey(player))
-						&& (hasPerms(player))) {
-					
-					if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
-						tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
-						return true;
+				if (emptyInventory(player)) {
+					if ((iConomy != null) && (entryFee > 0)) {
+						Holdings balance = com.iConomy.iConomy.getAccount(
+								player.getName()).getHoldings();
+						balance.subtract(entryFee);
 					}
 
-					cleanSigns();
-					saveInventory(player);
+					if (!(fightUsersTeam.containsKey(player.getName()))) {
+						goToWaypoint(player, "bluelounge");
+						fightUsersTeam.put(player.getName(), "blue");
+						blueTeam += 1;
+						tellPlayer(player, "Welcome! You are on team "
+								+ ChatColor.BLUE + "<Blue>");
+						tellEveryoneExcept(player, player.getName()
+								+ " has joined team " + ChatColor.BLUE
+								+ "<Blue>");
+					}
+
+				}
+				return true;
+			
+			} else if (fightCmd[0].equalsIgnoreCase("watch")) {
+
+				if (!(isSetup().booleanValue())) {
+					tellPlayer(player, "All waypoints must be set up first.");
+					return true;
+				}
+				
+				goToWaypoint(player, "spectator");
+				tellPlayer(player, "Welcome to the spectator's area!");
+				if (fightUsersTeam.containsKey(player.getName())) {
+					if (fightUsersTeam.get(player.getName()) == "red") {
+						redTeam -= 1;
+						tellEveryoneExcept(player,
+								ChatColor.RED + player.getName()
+										+ ChatColor.WHITE
+										+ " has left the fight!");
+					}
+					if (fightUsersTeam.get(player.getName()) == "blue") {
+						blueTeam -= 1;
+						tellEveryoneExcept(player,
+								ChatColor.BLUE + player.getName()
+										+ ChatColor.WHITE
+										+ " has left the fight!");
+					}
+					fightUsersTeam.remove(player.getName());
+					fightUsersClass.remove(player.getName());
+					cleanSigns(player.getName());
 					clearInventory(player);
-					saveMisc(player); // save player health, fire tick, hunger etc
-					player.setHealth(20);
-					player.setFireTicks(0);
-					
-					if (emptyInventory(player)) {
-						if ((iConomy != null) && (entryFee > 0)) {
-							Holdings balance = com.iConomy.iConomy.getAccount(
-									player.getName()).getHoldings();
-							balance.subtract(entryFee);
-						}
-
-						if (!(fightUsersTeam.containsKey(player.getName()))) {
-							goToWaypoint(player, "redlounge");
-							fightUsersTeam.put(player.getName(), "red");
-							tellPlayer(player, "Welcome! You are on team "
-									+ ChatColor.RED + "<Red>");
-							tellEveryoneExcept(player, player.getName()
-									+ " has joined team " + ChatColor.RED
-									+ "<Red>");
-							redTeam += 1;
-						} else {
-							tellPlayer(player,
-									"You have already joined a team!");
-						}
-
-					} else if (fightUsersTeam.containsKey(player.getName())) {
-						tellPlayer(player, "You have already joined a team!");
-					} else {
-						tellPlayer(player,
-								"You cannot join, you already did.");
+					setInventory(player);
+				}
+				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("leave")) {
+				if (fightUsersTeam.containsKey(player.getName())) {
+					if (fightUsersTeam.get(player.getName()) == "red") {
+						redTeam -= 1;
+						tellEveryoneExcept(player,
+								ChatColor.RED + player.getName()
+										+ ChatColor.WHITE
+										+ " has left the fight!");
 					}
+					if (fightUsersTeam.get(player.getName()) == "blue") {
+						blueTeam -= 1;
+						tellEveryoneExcept(player,
+								ChatColor.BLUE + player.getName()
+										+ ChatColor.WHITE
+										+ " has left the fight!");
+					}
+					tellPlayer(player, "You have left the fight!");
 
-				} else if ((fightCmd[0].equalsIgnoreCase("blue"))
-						&& (isSetup().booleanValue())
-						&& (manuallyselectteams)
-						&& (hasPerms(player))) {
-					
-					if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
-						tellPlayer(player, "[PVP Arena] You don't have " + com.iConomy.iConomy.format(entryFee) + ".");
+					if (PVPArena.checkEnd())
 						return true;
-					}
-
-					cleanSigns();
-					saveInventory(player);
-					clearInventory(player);
-					saveMisc(player); // save player health, fire tick, hunger etc
-					player.setHealth(20);
-					player.setFireTicks(0);
-
-					if (emptyInventory(player)) {
-						if ((iConomy != null) && (entryFee > 0)) {
-							Holdings balance = com.iConomy.iConomy.getAccount(
-									player.getName()).getHoldings();
-							balance.subtract(entryFee);
-						}
-
-						if (!(fightUsersTeam.containsKey(player.getName()))) {
-							goToWaypoint(player, "bluelounge");
-							fightUsersTeam.put(player.getName(), "blue");
-							blueTeam += 1;
-							tellPlayer(player, "Welcome! You are on team "
-									+ ChatColor.BLUE + "<Blue>");
-							tellEveryoneExcept(player, player.getName()
-									+ " has joined team " + ChatColor.BLUE
-									+ "<Blue>");
-						} else {
-							tellPlayer(player,
-									"You have already joined a team!");
-						}
-
-					} else if (fightUsersTeam.containsKey(player.getName())) {
-						tellPlayer(player, "You have already joined a team!");
-					} else {
-						tellPlayer(player,
-								"You cannot join, you already did.");
-					}
-
-				} else if ((fightCmd[0].equalsIgnoreCase("redlounge"))
-						&& (hasAdminPerms(player))) {
+					PVPArena.removePlayer(player);
+					
+					
+				} else {
+					//tellPlayer(player, "You are not in a team.");
+					goToWaypoint(player, "exit");
+					tellPlayer(player, "You have left the arena.");
+				}
+				return true;
+			} else if (hasAdminPerms(player)) {
+				if (fightCmd[0].equalsIgnoreCase("redlounge")) {
 					setCoords(player, "redlounge");
 					tellPlayer(player, "Red lounge set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("redspawn"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("redspawn")) {
 					setCoords(player, "redspawn");
 					tellPlayer(player, "Red spawn set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("bluelounge"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("bluelounge")) {
 					setCoords(player, "bluelounge");
 					tellPlayer(player, "Blue lounge set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("bluespawn"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("bluespawn")) {
 					setCoords(player, "bluespawn");
 					tellPlayer(player, "Blue spawn set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("spectator"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("spectator")) {
 					setCoords(player, "spectator");
 					tellPlayer(player, "Spectator area set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("exit"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("exit")) {
 					setCoords(player, "exit");
 					tellPlayer(player, "Exit area set.");
-				} else if ((fightCmd[0].equalsIgnoreCase("forcestop"))
-						&& (hasAdminPerms(player))) {
+				} else if (fightCmd[0].equalsIgnoreCase("forcestop")) {
 					if (fightInProgress) {
 						tellPlayer(player, "You have forced the fight to stop.");
 						Set<String> set = fightUsersTeam.keySet();
@@ -497,146 +649,82 @@ public class PVPArena extends JavaPlugin {
 					} else {
 						tellPlayer(player, "There is no fight in progress.");
 					}
-
-				} else if ((fightCmd[0].equalsIgnoreCase("watch"))
-						&& (isSetup().booleanValue())
-						&& (hasPerms(player))) {
-					goToWaypoint(player, "spectator");
-					tellPlayer(player, "Welcome to the spectator's area!");
-					if (fightUsersTeam.containsKey(player.getName())) {
-						if (fightUsersTeam.get(player.getName()) == "red") {
-							redTeam -= 1;
-							tellEveryoneExcept(player,
-									ChatColor.RED + player.getName()
-											+ ChatColor.WHITE
-											+ " has left the fight!");
-						}
-						if (fightUsersTeam.get(player.getName()) == "blue") {
-							blueTeam -= 1;
-							tellEveryoneExcept(player,
-									ChatColor.BLUE + player.getName()
-											+ ChatColor.WHITE
-											+ " has left the fight!");
-						}
-						fightUsersTeam.remove(player.getName());
-						fightUsersClass.remove(player.getName());
-						cleanSigns(player.getName());
-						clearInventory(player);
-						setInventory(player);
-					}
-
-				} else if ((fightCmd[0].equalsIgnoreCase("leave"))
-						&& (hasPerms(player))) {
-					if (fightUsersTeam.containsKey(player.getName())) {
-						if (fightUsersTeam.get(player.getName()) == "red") {
-							redTeam -= 1;
-							tellEveryoneExcept(player,
-									ChatColor.RED + player.getName()
-											+ ChatColor.WHITE
-											+ " has left the fight!");
-						}
-						if (fightUsersTeam.get(player.getName()) == "blue") {
-							blueTeam -= 1;
-							tellEveryoneExcept(player,
-									ChatColor.BLUE + player.getName()
-											+ ChatColor.WHITE
-											+ " has left the fight!");
-						}
-						tellPlayer(player, "You have left the fight!");
-
-						if (PVPArena.checkEnd())
-							return true;
-						PVPArena.removePlayer(player);
-						
-						
-					} else {
-						//tellPlayer(player, "You are not in a team.");
-						goToWaypoint(player, "exit");
-						tellPlayer(player, "You have left the arena.");
-					}
-
-				} else if ((!(isSetup().booleanValue())) || (fightInProgress)) {
-					if (!(isSetup().booleanValue())) {
-						tellPlayer(player,
-								"All waypoints must be set up first.");
-					}
-					if (fightInProgress) {
-						tellPlayer(player, "A fight is already in progress!");
-					}
-
 				} else {
-					tellPlayer(player, "Invalid Command. (503)");
+					tellPlayer(player, "Invalid Command. (502)");
+					return false;
 				}
-			}
+				return true;
 
-			if ((args.length == 2)
-					&& (fightCmd[0].equalsIgnoreCase("region"))
-					&& (hasAdminPerms(player))) {
-				if (fightCmd[1].equalsIgnoreCase("set")) {
-					Configuration config = new Configuration(new File(
-							"plugins/pvparena", "config.yml"));
-					config.load();
-					if (config.getKeys("protection.region") == null) {
-						regionmodify = true;
-						tellPlayer(player, "Setting region enabled.");
-					} else {
-						tellPlayer(player, "A region has already been created.");
-					}
-				} else if ((fightCmd[1].equalsIgnoreCase("modify"))
-						|| (fightCmd[1].equalsIgnoreCase("edit"))) {
-					Configuration config = new Configuration(new File(
-							"plugins/pvparena", "config.yml"));
-					config.load();
-					if (config.getKeys("protection.region") != null) {
-						regionmodify = true;
-						tellPlayer(player, "Modifying region enabled.");
-					} else {
-						tellPlayer(player, "You must setup a region first.");
-					}
-				} else if (fightCmd[1].equalsIgnoreCase("save")) {
-					if ((pos1 == null) || (pos2 == null)) {
-						tellPlayer(player, "You must set two points first.");
-					} else {
-						Configuration config = new Configuration(new File(
-								"plugins/pvparena", "config.yml"));
-						config.load();
-						config.setProperty("protection.region.min",
-								getMinimumPoint().getX() + ", "
-										+ getMinimumPoint().getY() + ", "
-										+ getMinimumPoint().getZ());
-						config.setProperty("protection.region.max",
-								getMaximumPoint().getX() + ", "
-										+ getMaximumPoint().getY() + ", "
-										+ getMaximumPoint().getZ());
-						config.setProperty("protection.region.world", player
-								.getWorld().getName());
-						config.save();
-						regionmodify = false;
-						tellPlayer(player, "Region saved.");
-					}
-				} else if (fightCmd[1].equalsIgnoreCase("remove")) {
-					Configuration config = new Configuration(new File(
-							"plugins/pvparena", "config.yml"));
-					config.load();
-					if (config.getKeys("protection.region") != null) {
-						config.removeProperty("protection.region");
-						config.save();
-						regionmodify = false;
-						tellPlayer(player, "Region removed.");
-					} else {
-						tellPlayer(player, "There is no region setup.");
-					}
-
-				}
-
-			}
-
-			if (args.length > 2) {
-				tellPlayer(player, "Invalid Command. (504)");
+			} else {
+				tellPlayer(player, "Invalid Command. (503)");
+				return false;
 			}
 			return true;
 		}
-		return false;
+
+		if (!hasAdminPerms(player)) {
+			tellPlayer(player, "Invalid Command. (504)");
+			return false;
+		}
+		
+		if ((args.length != 2) || (!fightCmd[0].equalsIgnoreCase("region"))) {
+			tellPlayer(player, "Invalid Command. (505)");
+			return false;
+		}
+
+		Configuration config = new Configuration(new File(
+				"plugins/pvparena", "config.yml"));
+		config.load();
+		
+		if (fightCmd[1].equalsIgnoreCase("set")) {
+			if (config.getKeys("protection.region") == null) {
+				regionmodify = true;
+				tellPlayer(player, "Setting region enabled.");
+			} else {
+				tellPlayer(player, "A region has already been created.");
+			}
+		} else if ((fightCmd[1].equalsIgnoreCase("modify"))
+				|| (fightCmd[1].equalsIgnoreCase("edit"))) {
+			if (config.getKeys("protection.region") != null) {
+				regionmodify = true;
+				tellPlayer(player, "Modifying region enabled.");
+			} else {
+				tellPlayer(player, "You must setup a region first.");
+			}
+		} else if (fightCmd[1].equalsIgnoreCase("save")) {
+			if ((pos1 == null) || (pos2 == null)) {
+				tellPlayer(player, "You must set two points first.");
+			} else {
+				config.setProperty("protection.region.min",
+						getMinimumPoint().getX() + ", "
+								+ getMinimumPoint().getY() + ", "
+								+ getMinimumPoint().getZ());
+				config.setProperty("protection.region.max",
+						getMaximumPoint().getX() + ", "
+								+ getMaximumPoint().getY() + ", "
+								+ getMaximumPoint().getZ());
+				config.setProperty("protection.region.world", player
+						.getWorld().getName());
+				config.save();
+				regionmodify = false;
+				tellPlayer(player, "Region saved.");
+			}
+		} else if (fightCmd[1].equalsIgnoreCase("remove")) {
+			if (config.getKeys("protection.region") != null) {
+				config.removeProperty("protection.region");
+				config.save();
+				regionmodify = false;
+				tellPlayer(player, "Region removed.");
+			} else {
+				tellPlayer(player, "There is no region setup.");
+			}
+
+		} else {
+			tellPlayer(player, "Invalid Command. (506)");
+			return false;
+		}
+		
+		return true;
 	}
 
 	private boolean hasAdminPerms(Player player) {
@@ -1044,6 +1132,7 @@ public class PVPArena extends JavaPlugin {
 			bluemember =(((String) fightUsersTeam.get(o.toString())).equals("blue"));
 			
 			Player z = Bukkit.getServer().getPlayer(o.toString());
+			System.out.print("Iterator: " + o.toString());
 			loadPlayer(z);
 			if (bluewon == bluemember) {
 				try {
@@ -1066,17 +1155,17 @@ public class PVPArena extends JavaPlugin {
 			try {
 				player.setExhaustion(Float.parseFloat(tSM.get("EXHAUSTION")));
 			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
+				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid EXHAUSTION entry!");
 			}
 			try {
 				player.setFireTicks(Integer.parseInt(tSM.get("FIRETICKS")));
 			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
+				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid FIRETICKS entry!");
 			}
 			try {
 				player.setFoodLevel(Integer.parseInt(tSM.get("FOODLEVEL")));
 			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
+				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid FOODLEVEL entry!");
 			}
 			try {
 				player.setHealth(Integer.parseInt(tSM.get("HEALTH")));
@@ -1086,7 +1175,7 @@ public class PVPArena extends JavaPlugin {
 			try {
 				player.setSaturation(Float.parseFloat(tSM.get("SATURATION")));
 			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
+				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid SATURATION entry!");
 			}
 
 			fightTelePass.put(player.getName(), "yes");
@@ -1108,17 +1197,17 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static void removePlayer(Player player) {
+		loadPlayer(player);		
 		PVPArena.fightUsersTeam.remove(player.getName());
 		PVPArena.fightUsersClass.remove(player.getName());
 		PVPArena.cleanSigns(player.getName());
-		loadPlayer(player);		
 	}
 
 	@SuppressWarnings("unchecked")
 	public static void loadPlayer(Player player, String string) {
 
 		HashMap<String, String> tSM = (HashMap<String, String>) savedmisc.get(player);
-		
+		System.out.print("loadPlayer " + player.getName());
 		if (tSM != null) {
 			try {
 				player.setExhaustion(Float.parseFloat(tSM.get("EXHAUSTION")));
@@ -1154,7 +1243,9 @@ public class PVPArena extends JavaPlugin {
 		} else {
 			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
 		}
-		PVPArena.clearInventory(player);
-		PVPArena.setInventory(player);
+		if (!PVPArena.fightUsersRespawn.get(player.getName()).equalsIgnoreCase("custom")) {
+			PVPArena.clearInventory(player);
+			PVPArena.setInventory(player);
+		}
 	}
 }
