@@ -284,10 +284,10 @@ public class PVPArena extends JavaPlugin {
 		
 		maxlives = config.getInt("general.lives", 3);
 		
-		sTPwin   = config.getString("general.tp.win","old"); // old || exit || spectate
-		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectate
-		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectate
-		sTPdeath = config.getString("general.tp.death","spectate"); // old || exit || spectate
+		sTPwin   = config.getString("general.tp.win","old"); // old || exit || spectator
+		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectator
+		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectator
+		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		
 		config.save();
 	}
