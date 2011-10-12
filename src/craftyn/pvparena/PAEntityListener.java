@@ -55,7 +55,7 @@ public class PAEntityListener extends EntityListener {
 				PVPArena.fightUsersRespawn.put(player.getName(), PVPArena.fightUsersClass.get(player.getName()));
 				if (PVPArena.checkEnd())
 					return;
-				PVPArena.removePlayer(player);
+				PVPArena.removePlayer(player, PVPArena.sTPexit);
 			}
 		}
 	}

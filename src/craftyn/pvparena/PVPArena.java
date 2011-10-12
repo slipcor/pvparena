@@ -41,10 +41,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.1.8 - lives!
+ * version: v0.1.9 - teleport location configuration
  * 
  * history:
  *
+ *    v0.1.8 - lives!
  *    v0.1.7 - commands to show who is playing and on what team
  *    v0.1.6 - custom class: fight with own items
  *    v0.1.5 - class choosing not toggling
@@ -67,7 +68,6 @@ Additions
 	
 	(P/E)
     (3/2) ability to not allow matches to start with uneven teams.
-    (3/2) alternative "death" respawn point? (death ; victory ; exit)
     (4/3) A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
     (2/2) configurable: after match/spectate return to old position
 	(3/3) stats > wins/losses per team/person...
@@ -128,6 +128,10 @@ public class PVPArena extends JavaPlugin {
 	static int rewardAmount;
 	static int maxlives;
 	static String rewardItems;
+	static String sTPwin;
+	static String sTPlose;
+	static String sTPexit;
+	static String sTPdeath;
 	public static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
 	public static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
 	public static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
@@ -215,7 +219,10 @@ public class PVPArena extends JavaPlugin {
 			config.setProperty("general.lives",Integer.valueOf(3));
 			config.setProperty("general.woolhead",Boolean.valueOf(false)); // enforce a wool head in case we dont have Spout installed
 			config.setProperty("general.language","en");
-			config.setProperty("general.return","old"); // old || exit || spectate
+			config.setProperty("general.tp.win","old"); // old || exit || spectator
+			config.setProperty("general.tp.lose","old"); // old || exit || spectator
+			config.setProperty("general.tp.exit","exit"); // old || exit || spectator
+			config.setProperty("general.tp.death","spectator"); // old || exit || spectator
 			config.setProperty("general.classperms",Boolean.valueOf(false)); // require permissions for a class
 			config.save();
 		}
@@ -276,13 +283,18 @@ public class PVPArena extends JavaPlugin {
 		blocklighter = config.getBoolean("protection.ignition.block-lighter",true);
 		
 		maxlives = config.getInt("general.lives", 3);
+		
+		sTPwin   = config.getString("general.tp.win","old"); // old || exit || spectate
+		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectate
+		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectate
+		sTPdeath = config.getString("general.tp.death","spectate"); // old || exit || spectate
+		
+		config.save();
 	}
 
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = getDescription();
-
 		log.info("[PVP Arena] disabled. (version " + pdfFile.getVersion() + ")");
-	
 		arenaReset();
 	}
 
@@ -603,7 +615,7 @@ public class PVPArena extends JavaPlugin {
 
 					if (PVPArena.checkEnd())
 						return true;
-					PVPArena.removePlayer(player);
+					PVPArena.removePlayer(player, sTPexit);
 					
 					
 				} else {
@@ -1132,25 +1144,32 @@ public class PVPArena extends JavaPlugin {
 			bluemember =(((String) fightUsersTeam.get(o.toString())).equals("blue"));
 			
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			System.out.print("Iterator: " + o.toString());
-			loadPlayer(z);
 			if (bluewon == bluemember) {
+				loadPlayer(z, sTPwin);
 				try {
 					giveRewards(Bukkit.getPlayer(o.toString())); // if we are the winning team, give reward!
 				} catch (Exception e) {
 					// offline => error => no goodies :p
 				}
+			} else {
+				loadPlayer(z, sTPlose);
 			}
 		}
 		arenaReset();
 		return true;
 	}
 	
+	public static void removePlayer(Player player, String tploc) {
+		loadPlayer(player, tploc);		
+		PVPArena.fightUsersTeam.remove(player.getName());
+		PVPArena.fightUsersClass.remove(player.getName());
+		PVPArena.cleanSigns(player.getName());
+	}
+
 	@SuppressWarnings("unchecked")
-	static void loadPlayer(Player player) {
-		
+	public static void loadPlayer(Player player, String string) {
+
 		HashMap<String, String> tSM = (HashMap<String, String>) savedmisc.get(player);
-		
 		if (tSM != null) {
 			try {
 				player.setExhaustion(Float.parseFloat(tSM.get("EXHAUSTION")));
@@ -1179,71 +1198,31 @@ public class PVPArena extends JavaPlugin {
 			}
 
 			fightTelePass.put(player.getName(), "yes");
-			try {
-				String sLoc = tSM.get("LOCATION");
-				String[] aLoc = sLoc.split("/");
-				Location lLoc = new Location(Bukkit.getWorld(aLoc[0]), Double.parseDouble(aLoc[1]), Double.parseDouble(aLoc[2]), Double.parseDouble(aLoc[3]));
-				player.teleport(lLoc);
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
+			if (string.equalsIgnoreCase("old")) {
+				try {
+					String sLoc = tSM.get("LOCATION");
+					String[] aLoc = sLoc.split("/");
+					Location lLoc = new Location(Bukkit.getWorld(aLoc[0]), Double.parseDouble(aLoc[1]), Double.parseDouble(aLoc[2]), Double.parseDouble(aLoc[3]));
+					player.teleport(lLoc);
+				} catch (Exception e) {
+					System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid LOCATION entry!");
+				}
+			} else {
+				Location l = PVPArena.getCoords(string);
+				player.teleport(l);
 			}
-			fightTelePass.remove(player.getName());
-			savedmisc.remove(player);
-		} else {
-			System.out.println("[PVP Arena] player '' had no savedmisc entries!");
-		}
-		PVPArena.clearInventory(player);
-		PVPArena.setInventory(player);
-	}
-
-	public static void removePlayer(Player player) {
-		loadPlayer(player);		
-		PVPArena.fightUsersTeam.remove(player.getName());
-		PVPArena.fightUsersClass.remove(player.getName());
-		PVPArena.cleanSigns(player.getName());
-	}
-
-	@SuppressWarnings("unchecked")
-	public static void loadPlayer(Player player, String string) {
-
-		HashMap<String, String> tSM = (HashMap<String, String>) savedmisc.get(player);
-		System.out.print("loadPlayer " + player.getName());
-		if (tSM != null) {
-			try {
-				player.setExhaustion(Float.parseFloat(tSM.get("EXHAUSTION")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
-			}
-			try {
-				player.setFireTicks(Integer.parseInt(tSM.get("FIRETICKS")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
-			}
-			try {
-				player.setFoodLevel(Integer.parseInt(tSM.get("FOODLEVEL")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
-			}
-			try {
-				player.setHealth(Integer.parseInt(tSM.get("HEALTH")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
-			}
-			try {
-				player.setSaturation(Float.parseFloat(tSM.get("SATURATION")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid HEALTH entry!");
-			}
-
-			fightTelePass.put(player.getName(), "yes");
-			Location l = PVPArena.getCoords(string);
-			player.teleport(l);
 			fightTelePass.remove(player.getName());
 			savedmisc.remove(player);
 		} else {
 			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
 		}
-		if (!PVPArena.fightUsersRespawn.get(player.getName()).equalsIgnoreCase("custom")) {
+		String sClass = "exit";
+		if (PVPArena.fightUsersRespawn.get(player.getName()) != null) {
+			sClass = PVPArena.fightUsersRespawn.get(player.getName());
+		} else if (PVPArena.fightUsersClass.get(player.getName()) != null) {
+			PVPArena.fightUsersClass.get(player.getName());
+		}
+		if (!sClass.equalsIgnoreCase("custom")) {
 			PVPArena.clearInventory(player);
 			PVPArena.setInventory(player);
 		}

@@ -20,14 +20,13 @@ import org.bukkit.util.config.Configuration;
 /*
  * PlayerListener class
  * 
- * author: craftyn
- * editor: slipcor
+ * author: slipcor
  * 
- * version: v0.1.2 - class permission requirement
+ * version: v0.1.9 - configure teleport locations
  * 
  * history:
+ * 		v0.1.2 - class permission requirement
  * 		v0.1.1 - ready block configurable
- * 		v0.0.0a - code tweaks
  * 		v0.0.0 - copypaste
  */
 
@@ -45,7 +44,7 @@ public class PAPlayerListener extends PlayerListener {
 			return;
 		Location l = PVPArena.getCoords("spectator");
 		event.setRespawnLocation(l);
-		PVPArena.loadPlayer(player, "spectator");
+		PVPArena.loadPlayer(player, PVPArena.sTPdeath);
 		PVPArena.fightUsersRespawn.remove(player.getName());
 		PVPArena.fightUsersTeam.remove(player.getName());
 		PVPArena.fightUsersClass.remove(player.getName());	
@@ -67,7 +66,7 @@ public class PAPlayerListener extends PlayerListener {
 			}
 			if (PVPArena.checkEnd())
 				return;
-			PVPArena.removePlayer(player);
+			PVPArena.removePlayer(player, PVPArena.sTPexit);
 		}
 	}
 
