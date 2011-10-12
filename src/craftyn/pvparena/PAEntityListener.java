@@ -95,7 +95,7 @@ public class PAEntityListener extends EntityListener {
 				defender.setFoodLevel(20);
 				defender.setSaturation(20);
 				defender.setExhaustion(0);
-
+				lives--;
 				if (PVPArena.fightUsersTeam.get(defender.getName()) == "red") {
 					PVPArena.tellEveryone(ChatColor.RED + defender.getName()
 							+ ChatColor.WHITE + " has lost a life! "+ String.valueOf(lives) + " remaining.");
@@ -107,7 +107,7 @@ public class PAEntityListener extends EntityListener {
 					PVPArena.goToWaypoint(defender, "bluespawn");
 					
 				}
-				PVPArena.fightUsersLives.put(defender.getName(), --lives);
+				PVPArena.fightUsersLives.put(defender.getName(), lives);
 				event.setCancelled(true);
 				return;
 			}

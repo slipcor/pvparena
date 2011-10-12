@@ -116,6 +116,9 @@ public class PAPlayerListener extends PlayerListener {
 			if (block.getState() instanceof Sign) {
 				Sign sign = (Sign) block.getState();
 
+				if (PVPArena.fightInProgress)
+					return;
+				
 				if ((PVPArena.fightClasses.containsKey(sign.getLine(0)))
 						&& (PVPArena.fightUsersTeam.containsKey(player
 								.getName()))) {
@@ -210,6 +213,9 @@ public class PAPlayerListener extends PlayerListener {
 				String color = (String) PVPArena.fightUsersTeam.get(player
 						.getName());
 
+				if (PVPArena.fightInProgress)
+					return;
+				
 				if (color == "red") {
 					PVPArena.redTeamIronClicked = true;
 					PVPArena.tellEveryone(ChatColor.RED + "Red "

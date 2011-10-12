@@ -69,17 +69,13 @@ Additions
 	(P/E)
     (3/2) ability to not allow matches to start with uneven teams.
     (4/3) A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
-    (2/2) configurable: after match/spectate return to old position
-	(3/3) stats > wins/losses per team/person...
+    (3/3) stats > wins/losses per team/person...
     (2/3) bet on a match.
     (2/4) multilanguage support
     (2/5) Add support for multiple arenas!
     
  *     CTF
- *     
  * 
- * history:
- * 		0.6.0 - copypaste
  */
 
 public class PVPArena extends JavaPlugin {
@@ -115,6 +111,7 @@ public class PVPArena extends JavaPlugin {
 	static boolean disablelavafirespread;
 	static boolean blocktnt;
 	static boolean blocklighter;
+	static boolean forceeven;
 	static boolean protection;
 	static boolean teamkilling;
 	static boolean randomlyselectteams;
@@ -224,6 +221,7 @@ public class PVPArena extends JavaPlugin {
 			config.setProperty("general.tp.exit","exit"); // old || exit || spectator
 			config.setProperty("general.tp.death","spectator"); // old || exit || spectator
 			config.setProperty("general.classperms",Boolean.valueOf(false)); // require permissions for a class
+			config.setProperty("general.forceeven",Boolean.valueOf(false)); // require even teams
 			config.save();
 		}
 		if (config.getKeys("rewards") == null) {
@@ -288,6 +286,7 @@ public class PVPArena extends JavaPlugin {
 		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectator
 		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectator
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
+		forceeven = config.getBoolean("general.forceeven", false);
 		
 		config.save();
 	}
@@ -1039,10 +1038,7 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static void giveRewards(Player player) {
-		if (rewardAmount <= 0) {
-			return;
-		}
-		if (iConomy != null) {
+		if ((rewardAmount > 0) && (iConomy != null)) {
 			Holdings balance = com.iConomy.iConomy.getAccount(player.getName())
 					.getHoldings();
 			balance.add(rewardAmount);
@@ -1061,11 +1057,25 @@ public class PVPArena extends JavaPlugin {
 				int x = Integer.parseInt(itemDetail[0]);
 				int y = Integer.parseInt(itemDetail[1]);
 				ItemStack stack = new ItemStack(x, y);
-				player.getInventory().setItem(i, stack);
+				try {
+					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
+				} catch (Exception e) {
+					tellPlayer(
+							player,
+							"Your inventory was full. You did not receive all rewards!");
+					return;
+				}
 			} else {
 				int x = Integer.parseInt(itemDetail[0]);
 				ItemStack stack = new ItemStack(x, 1);
-				player.getInventory().setItem(i, stack);
+				try {
+					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
+				} catch (Exception e) {
+					tellPlayer(
+							player,
+							"Your inventory was full. You did not receive all rewards!");
+					return;
+				}
 			}
 		}
 	}
@@ -1146,11 +1156,7 @@ public class PVPArena extends JavaPlugin {
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 			if (bluewon == bluemember) {
 				loadPlayer(z, sTPwin);
-				try {
-					giveRewards(Bukkit.getPlayer(o.toString())); // if we are the winning team, give reward!
-				} catch (Exception e) {
-					// offline => error => no goodies :p
-				}
+				giveRewards(z); // if we are the winning team, give reward!
 			} else {
 				loadPlayer(z, sTPlose);
 			}

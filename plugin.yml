@@ -1,6 +1,6 @@
 name: pvparena
 main: craftyn.pvparena.PVPArena
-version: v0.1.9.3
+version: v0.1.9.6
 author: slipcor (Carbon131)
 commands:
     pvparena:
