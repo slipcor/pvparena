@@ -22,9 +22,10 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.1.9 - configure teleport locations
+ * version: v0.1.10 - config: only start with even teams
  * 
  * history:
+ * 		v0.1.9 - configure teleport locations
  * 		v0.1.2 - class permission requirement
  * 		v0.1.1 - ready block configurable
  * 		v0.0.0 - copypaste
@@ -206,15 +207,33 @@ public class PAPlayerListener extends PlayerListener {
 				}
 			}
 
-			if ((block.getTypeId() == mMat.getId())
-					&& (PVPArena.fightUsersTeam.containsKey(player.getName()))
-					&& (PVPArena.teamReady((String) PVPArena.fightUsersTeam
-							.get(player.getName())))) {
-				String color = (String) PVPArena.fightUsersTeam.get(player
-						.getName());
+			if (block.getTypeId() == mMat.getId()) {
+
+				
+				if (!PVPArena.fightUsersTeam.containsKey(player.getName()))
+					return;
 
 				if (PVPArena.fightInProgress)
 					return;
+				
+				String color = (String) PVPArena.fightUsersTeam.get(player.getName());
+
+				if (!PVPArena.teamReady(color)) {
+					player.sendMessage(ChatColor.YELLOW + "[PVP Arena] "
+							+ ChatColor.WHITE
+							+ "Not all of your team has picked a class!");
+					return;
+				}
+				
+				if (PVPArena.forceeven) {
+					if (PVPArena.redTeam != PVPArena.blueTeam) {
+
+						player.sendMessage(ChatColor.YELLOW + "[PVP Arena] "
+								+ ChatColor.WHITE
+								+ "Waiting for the teams to have equal player number!");
+						return;
+					}
+				}
 				
 				if (color == "red") {
 					PVPArena.redTeamIronClicked = true;
@@ -242,11 +261,6 @@ public class PAPlayerListener extends PlayerListener {
 
 				}
 
-			} else if ((block.getTypeId() == mMat.getId())
-					&& (PVPArena.fightUsersTeam.containsKey(player.getName()))) {
-				player.sendMessage(ChatColor.YELLOW + "[PVP Arena] "
-						+ ChatColor.WHITE
-						+ "Not all of your team has picked a class!");
 			}
 		}
 	}

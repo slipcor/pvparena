@@ -41,10 +41,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.1.9 - teleport location configuration
+ * version: v0.1.10 - config: only start with even teams
  * 
  * history:
  *
+ *    v0.1.9 - teleport location configuration
  *    v0.1.8 - lives!
  *    v0.1.7 - commands to show who is playing and on what team
  *    v0.1.6 - custom class: fight with own items
@@ -67,7 +68,6 @@ Additions
 	(E)ffort: 0 - np => 5 - omg
 	
 	(P/E)
-    (3/2) ability to not allow matches to start with uneven teams.
     (4/3) A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
     (3/3) stats > wins/losses per team/person...
     (2/3) bet on a match.
@@ -611,8 +611,8 @@ public class PVPArena extends JavaPlugin {
 										+ " has left the fight!");
 					}
 					tellPlayer(player, "You have left the fight!");
-
-					if (PVPArena.checkEnd())
+					
+					if (PVPArena.fightInProgress && PVPArena.checkEnd())
 						return true;
 					PVPArena.removePlayer(player, sTPexit);
 					
@@ -1049,6 +1049,7 @@ public class PVPArena extends JavaPlugin {
 		}
 		if (rewardItems.equals("none"))
 			return;
+		System.out.print("[arena] deploying in 3");
 		String[] items = rewardItems.split(",");
 		for (int i = 0; i < items.length; ++i) {
 			String item = items[i];
@@ -1057,7 +1058,9 @@ public class PVPArena extends JavaPlugin {
 				int x = Integer.parseInt(itemDetail[0]);
 				int y = Integer.parseInt(itemDetail[1]);
 				ItemStack stack = new ItemStack(x, y);
+				System.out.print("[arena] 2a");
 				try {
+					System.out.print("[arena] 1a");
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
 					tellPlayer(
@@ -1068,7 +1071,9 @@ public class PVPArena extends JavaPlugin {
 			} else {
 				int x = Integer.parseInt(itemDetail[0]);
 				ItemStack stack = new ItemStack(x, 1);
+				System.out.print("[arena] 2b");
 				try {
+					System.out.print("[arena] 1b");
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
 					tellPlayer(
@@ -1078,6 +1083,7 @@ public class PVPArena extends JavaPlugin {
 				}
 			}
 		}
+		System.out.print("[arena] 0");
 	}
 
 	public static void clearArena() {
