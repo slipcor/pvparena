@@ -44,10 +44,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.1.12 - display stats with /pa users | /pa teams
+ * version: v0.1.13 - place bets on a match
  * 
  * history:
  *
+ *    v0.1.12 - display stats with /pa users | /pa teams
  *    v0.1.11 - config: woolhead: put colored wool on heads!
  *    v0.1.10 - config: only start with even teams
  *    v0.1.9 - teleport location configuration
@@ -59,12 +60,6 @@ import org.getspout.spoutapi.SpoutManager;
  *    v0.1.3 - ingame config reload
  *    v0.1.2 - class permission requirement
  *    v0.1.0 - release version
- *    v0.0.6 - /pa leave game end check
- *    v0.0.5 - reset signs on arena start
- *    v0.0.4 - iconomy subtracting fix
- *    v0.0.3 - save OLD HP and HUNGER
- *    v0.0.2 - /pa possibility fix
- *    v0.0.1 - everyone not on team saying /pa leave tps to exit
  * 
  * todo:
 
@@ -104,6 +99,7 @@ public class PVPArena extends JavaPlugin {
 	public static final HashMap<Player, ItemStack[]> savedinventories = new HashMap<Player, ItemStack[]>();
 	public static final HashMap<Player, ItemStack[]> savedarmories = new HashMap<Player, ItemStack[]>();
 	public static final HashMap<Player, Object> savedmisc = new HashMap<Player, Object>();
+	public static final HashMap<String, Double> bets = new HashMap<String, Double>();
 
 	static int redTeam = 0;
 	static int blueTeam = 0;
@@ -294,6 +290,12 @@ public class PVPArena extends JavaPlugin {
 		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectator
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		forceeven = config.getBoolean("general.forceeven", false);
+		
+		try {
+			spoutHandler = org.getspout.spout.Spout.getInstance().toString();
+		} catch (Exception e) {
+			log.info("[PVP Arena] Spout not found, you are missing some features ;)");
+		}
 		
 		config.save();
 	}
@@ -578,7 +580,7 @@ public class PVPArena extends JavaPlugin {
 				}
 				
 				goToWaypoint(player, "spectator");
-				tellPlayer(player, "Welcome to the spectator's area!");
+				tellPlayer(player, "Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
 				if (fightUsersTeam.containsKey(player.getName())) {
 					if (fightUsersTeam.get(player.getName()) == "red") {
 						redTeam -= 1;
@@ -723,8 +725,44 @@ public class PVPArena extends JavaPlugin {
 				return false;
 			}
 			return true;
+		} else if (args.length == 3) {
+			// /pa bet [name] [amount]
+			if (!fightCmd[0].equalsIgnoreCase("bet")) {
+				tellPlayer(player, "Invalid Command. (503a)");
+				return false;
+			}
+			if (!fightUsersTeam.containsKey(player.getName())) {
+				tellPlayer(player, "Cannot place bets on your own match!");
+				return true;
+			}
+			
+			if (iConomy == null)
+				return true;
+			
+			if (!fightCmd[1].equalsIgnoreCase("red") && !fightCmd[1].equalsIgnoreCase("blue") && !fightUsersTeam.containsKey(fightCmd[1])) {
+				tellPlayer(player, "You can only bet on 'blue', 'red' or arena player!");
+				return true;
+			}
+			
+			double amount = 0;
+			
+			try {
+				amount = Double.parseDouble(fightCmd[2]);
+			} catch (Exception e) {
+				tellPlayer(player, "Invalid amount: " + fightCmd[2]);
+				return true;
+			}
+			
+			if (!com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(amount)) {
+				tellPlayer(player, "You don't have " + com.iConomy.iConomy.format(amount));
+				return true;
+			}
+			com.iConomy.iConomy.getAccount(player.getName()).getHoldings().subtract(amount);
+			tellPlayer(player, "Your bet on " + fightCmd[1] + " has been placed.");
+			bets.put(player.getName() + ":" + fightCmd[1], amount);
+			return true;
 		}
-
+		
 		if (!hasAdminPerms(player)) {
 			tellPlayer(player, "Invalid Command. (504)");
 			return false;
@@ -816,6 +854,7 @@ public class PVPArena extends JavaPlugin {
 		blueTeamIronClicked = false;
 		fightUsersTeam.clear();
 		fightUsersClass.clear();
+		bets.clear();
 		redTeam = 0;
 		blueTeam = 0;
 		fightSigns.clear();
@@ -989,7 +1028,7 @@ public class PVPArena extends JavaPlugin {
 		return false;
 	}
 
-	public static void tellEveryone(String msg) {
+	public static void tellEveryone(String msg) {		
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
@@ -997,6 +1036,10 @@ public class PVPArena extends JavaPlugin {
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 			z.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 		}
+	}
+
+	public static void tellPublic(String msg) {
+		Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 	}
 
 	public void tellEveryoneExcept(Player player, String msg) {
@@ -1097,6 +1140,23 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static void giveRewards(Player player) {
+		if (iConomy != null) {
+			for (String nKey : bets.keySet()) {
+				String[] nSplit = nKey.split(":");
+				
+				if (nSplit[1].equalsIgnoreCase(player.getName())) {
+					double amount = bets.get(nKey)*4;
+					
+					com.iConomy.iConomy.getAccount(nSplit[0]).getHoldings().add(amount);
+					try {
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), "You won " + com.iConomy.iConomy.format(amount));
+					} catch (Exception e) {
+						// nothing
+					}
+				}				
+			}			
+		}	
+		
 		if ((rewardAmount > 0) && (iConomy != null)) {
 			Holdings balance = com.iConomy.iConomy.getAccount(player.getName())
 					.getHoldings();
@@ -1108,7 +1168,6 @@ public class PVPArena extends JavaPlugin {
 		}
 		if (rewardItems.equals("none"))
 			return;
-		System.out.print("[arena] deploying in 3");
 		String[] items = rewardItems.split(",");
 		for (int i = 0; i < items.length; ++i) {
 			String item = items[i];
@@ -1117,9 +1176,7 @@ public class PVPArena extends JavaPlugin {
 				int x = Integer.parseInt(itemDetail[0]);
 				int y = Integer.parseInt(itemDetail[1]);
 				ItemStack stack = new ItemStack(x, y);
-				System.out.print("[arena] 2a");
 				try {
-					System.out.print("[arena] 1a");
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
 					tellPlayer(
@@ -1130,9 +1187,7 @@ public class PVPArena extends JavaPlugin {
 			} else {
 				int x = Integer.parseInt(itemDetail[0]);
 				ItemStack stack = new ItemStack(x, 1);
-				System.out.print("[arena] 2b");
 				try {
-					System.out.print("[arena] 1b");
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
 					tellPlayer(
@@ -1142,7 +1197,6 @@ public class PVPArena extends JavaPlugin {
 				}
 			}
 		}
-		System.out.print("[arena] 0");
 	}
 
 	public static void clearArena() {
@@ -1262,6 +1316,26 @@ public class PVPArena extends JavaPlugin {
 				loadPlayer(z, sTPlose);
 			}
 		}
+
+		if (iConomy != null) {
+			for (String nKey : bets.keySet()) {
+				String[] nSplit = nKey.split(":");
+				
+				if (!nSplit[1].equalsIgnoreCase("red") && !nSplit[1].equalsIgnoreCase("blue"))
+					continue;
+				
+				if (nSplit[1].equalsIgnoreCase("red") != bluewon) {
+					double amount = bets.get(nKey)*2;
+					
+					com.iConomy.iConomy.getAccount(nSplit[0]).getHoldings().add(amount);
+					try {
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), "You won " + com.iConomy.iConomy.format(amount));
+					} catch (Exception e) {
+						// nothing
+					}
+				}				
+			}			
+		}	
 		arenaReset();
 		return true;
 	}
