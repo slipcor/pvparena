@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -23,6 +24,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -35,16 +37,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.bukkit.util.config.Configuration;
+import org.getspout.spoutapi.SpoutManager;
 
 /*
  * main class
  * 
  * author: slipcor
  * 
- * version: v0.1.10 - config: only start with even teams
+ * version: v0.1.12 - display stats with /pa users | /pa teams
  * 
  * history:
  *
+ *    v0.1.11 - config: woolhead: put colored wool on heads!
+ *    v0.1.10 - config: only start with even teams
  *    v0.1.9 - teleport location configuration
  *    v0.1.8 - lives!
  *    v0.1.7 - commands to show who is playing and on what team
@@ -68,8 +73,7 @@ Additions
 	(E)ffort: 0 - np => 5 - omg
 	
 	(P/E)
-    (4/3) A way to tell teams apart somehow -> (nospout: wool; spout: as mentioned above)
-    (3/3) stats > wins/losses per team/person...
+    		
     (2/3) bet on a match.
     (2/4) multilanguage support
     (2/5) Add support for multiple arenas!
@@ -81,6 +85,7 @@ Additions
 public class PVPArena extends JavaPlugin {
 	public static final Logger log = Logger.getLogger("Minecraft");
 	public static PermissionHandler permissionHandler;
+	public static String spoutHandler = null; //TODO will be added later
 	public static iConomy iConomy = null;
 	public static PermissionHandler Permissions;
 	private final PAServerListener serverListener = new PAServerListener(this);
@@ -112,6 +117,7 @@ public class PVPArena extends JavaPlugin {
 	static boolean blocktnt;
 	static boolean blocklighter;
 	static boolean forceeven;
+	static boolean woolhead;
 	static boolean protection;
 	static boolean teamkilling;
 	static boolean randomlyselectteams;
@@ -281,6 +287,7 @@ public class PVPArena extends JavaPlugin {
 		blocklighter = config.getBoolean("protection.ignition.block-lighter",true);
 		
 		maxlives = config.getInt("general.lives", 3);
+		woolhead = config.getBoolean("general.woolhead", false);
 		
 		sTPwin   = config.getString("general.tp.win","old"); // old || exit || spectator
 		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectator
@@ -594,6 +601,51 @@ public class PVPArena extends JavaPlugin {
 					setInventory(player);
 				}
 				return true;
+			} else if (fightCmd[0].equalsIgnoreCase("teams")) {
+				String team[] = PAStatsManager.getTeamStats().split(";");
+				sender.sendMessage("[PVP Arena] " + ChatColor.BLUE + "Blue: " + team[0] + " wins, " + team[1] + " losses");
+				sender.sendMessage("[PVP Arena] " + ChatColor.RED + "Red: " + team[2] + " wins, " + team[3] + " losses");
+			} else if (fightCmd[0].equalsIgnoreCase("users")) {
+				// wins are suffixed with "_"
+				Map<String, Integer> players = PAStatsManager.getPlayerStats();
+				
+				int wcount = 0;
+
+				for (String name : players.keySet())
+					if (name.endsWith("_"))
+						wcount++;
+				
+				String[][] wins = new String[wcount][2];
+				String[][] losses = new String[players.size()-wcount][2];
+				int iw = 0;
+				int il = 0;
+			
+				for (String name : players.keySet()) {
+					if (name.endsWith("_")) {
+						// playername_ => win
+						wins[iw][0] = name.substring(0, name.length()-1);
+						wins[iw++][1] = String.valueOf(players.get(name));
+					} else {
+						// playername => lose
+						losses[il][0] = name;
+						losses[il++][1] = String.valueOf(players.get(name));
+					}
+				}
+				wins = sort(wins);
+				losses = sort(losses);
+				tellPlayer((Player) sender, "Top 5 winners");
+				
+				for (int w=0; w<wins.length && w < 5 ; w++) {
+					tellPlayer((Player) sender, wins[w][0] + ": " + wins[w][1] + " wins");
+				}
+				
+
+				tellPlayer((Player) sender, "------------");
+				tellPlayer((Player) sender, "Top 5 losers");
+				
+				for (int l=0; l<losses.length && l < 5 ; l++) {
+					tellPlayer((Player) sender, losses[l][0] + ": " + losses[l][1] + " losses");
+				}
 			} else if (fightCmd[0].equalsIgnoreCase("leave")) {
 				if (fightUsersTeam.containsKey(player.getName())) {
 					if (fightUsersTeam.get(player.getName()) == "red") {
@@ -863,6 +915,13 @@ public class PVPArena extends JavaPlugin {
 				}
 			}
 		}
+		if (woolhead || (spoutHandler == null)) {
+			short col = 14;
+			if (fightUsersTeam.get(player.getName()).equals("blue")) 
+				col = 11;
+			
+			player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, col));
+		}
 	}
 
 	private void setupPermissions() {
@@ -1103,9 +1162,43 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static void goToWaypoint(Player player, String place) {
+		String color = "";
+		if (place.equals("redlounge")) {
+			color = "&c";
+		} else if (place.equals("bluelounge")) {
+			color = "&9";
+		}
+		
+		if (!color.equals(""))
+			colorizePlayer(player, color);
+		
 		fightTelePass.put(player.getName(), "yes");
 		player.teleport(getCoords(place));
 		fightTelePass.remove(player.getName());
+	}
+
+	private static void colorizePlayer(Player player, String color) {
+		if (color.equals("")) {
+			
+			String rn = player.getName();
+			player.setDisplayName(rn);
+			
+
+			if (spoutHandler != null) {
+				HumanEntity human = player;
+				SpoutManager.getAppearanceManager().setGlobalTitle(human,rn);
+			}
+		    return;
+		}
+		
+		String n = color + player.getName();
+
+		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
+		
+		if (spoutHandler != null) {
+			HumanEntity human = player;
+			SpoutManager.getAppearanceManager().setGlobalTitle(human, n.replaceAll("(&([a-f0-9]))", "§$2"));
+		}
 	}
 
 	public static Vector getMinimumPoint() {
@@ -1161,9 +1254,11 @@ public class PVPArena extends JavaPlugin {
 			
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 			if (bluewon == bluemember) {
+				PAStatsManager.addWinStat(z, fightUsersTeam.get(z.getName()));
 				loadPlayer(z, sTPwin);
 				giveRewards(z); // if we are the winning team, give reward!
 			} else {
+				PAStatsManager.addLoseStat(z, fightUsersTeam.get(z.getName()));
 				loadPlayer(z, sTPlose);
 			}
 		}
@@ -1228,6 +1323,7 @@ public class PVPArena extends JavaPlugin {
 		} else {
 			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
 		}
+		PVPArena.colorizePlayer(player, "");
 		String sClass = "exit";
 		if (PVPArena.fightUsersRespawn.get(player.getName()) != null) {
 			sClass = PVPArena.fightUsersRespawn.get(player.getName());
@@ -1238,5 +1334,28 @@ public class PVPArena extends JavaPlugin {
 			PVPArena.clearInventory(player);
 			PVPArena.setInventory(player);
 		}
+	}
+	
+
+	public static String[][] sort(String[][] x) {
+		boolean undone=true;
+		String temp;
+		String itemp;
+		
+		while (undone){
+			undone = false;
+			for (int i=0; i < x.length-1; i++) 
+				if (Integer.parseInt(x[i][1]) < Integer.parseInt(x[i+1][1])) {                      
+					temp       = x[i][1];
+					x[i][1]       = x[i+1][1];
+					x[i+1][1]     = temp;
+                    
+					itemp       = x[i][0];
+					x[i][0]       = x[i+1][0];
+					x[i+1][0]     = itemp;
+					undone = true;
+				}          
+		} 
+		return x;
 	}
 }

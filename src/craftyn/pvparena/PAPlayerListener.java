@@ -120,9 +120,8 @@ public class PAPlayerListener extends PlayerListener {
 				if (PVPArena.fightInProgress)
 					return;
 				
-				if ((PVPArena.fightClasses.containsKey(sign.getLine(0)))
-						&& (PVPArena.fightUsersTeam.containsKey(player
-								.getName()))) {
+				if ((PVPArena.fightClasses.containsKey(sign.getLine(0)) || (sign.getLine(0).equalsIgnoreCase("custom")))
+						&& (PVPArena.fightUsersTeam.containsKey(player.getName()))) {
 					
 					Configuration config = new Configuration(new File("plugins/pvparena",
 							"config.yml"));
