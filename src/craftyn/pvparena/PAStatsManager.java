@@ -12,7 +12,7 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.1.12 - display stats
+ * version: v0.2.0 - language support
  * 
  * history:
  *
@@ -31,7 +31,7 @@ public class PAStatsManager {
 				configFile.createNewFile();
 				bNew = true;
 			} catch (Exception e) {
-				PVPArena.log.info("[PVP Arena] Error when creating stats file.");
+				PVPArena.lang.log_error("filecreateerror","stats");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -94,7 +94,7 @@ public class PAStatsManager {
 				configFile.createNewFile();
 				bNew = true;
 			} catch (Exception e) {
-				PVPArena.log.info("[PVP Arena] Error when creating stats file.");
+				PVPArena.lang.log_error("filecreateerror","stats");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -142,7 +142,7 @@ public class PAStatsManager {
 				configFile.createNewFile();
 				bNew = true;
 			} catch (Exception e) {
-				PVPArena.log.info("[PVP Arena] Error when creating stats file.");
+				PVPArena.lang.log_error("filecreateerror","stats");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -154,7 +154,7 @@ public class PAStatsManager {
 			config.setProperty("losses.red.slipcor", 0);
 		}
 		if (!color.equals("red") && !color.equals("blue")) {
-			PVPArena.log.warning("[PVP Arena] Unrecognized team: " + color);
+			PVPArena.lang.log_warning("teamnotfound",color);
 			return;
 		}
 		String path = "wins." + color + "." + player.getName();
@@ -175,7 +175,7 @@ public class PAStatsManager {
 				configFile.createNewFile();
 				bNew = true;
 			} catch (Exception e) {
-				PVPArena.log.info("[PVP Arena] Error when creating stats file.");
+				PVPArena.lang.log_error("filecreateerror","stats");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -187,7 +187,7 @@ public class PAStatsManager {
 			config.setProperty("losses.red.slipcor", 0);
 		}
 		if (!color.equals("red") && !color.equals("blue")) {
-			PVPArena.log.warning("[PVP Arena] Unrecognized team: " + color);
+			PVPArena.lang.log_warning("teamnotfound",color);
 			return;
 		}
 		String path = "losses." + color + "." + player.getName();

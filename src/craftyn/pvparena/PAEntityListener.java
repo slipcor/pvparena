@@ -20,10 +20,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.1.12 - display stats
+ * version: v0.2.0 - language support
  * 
  * history:
  *
+ *    v0.1.12 - display stats
  *    v0.1.11 - fix for bows?
  *    v0.1.8 - lives!
  *    v0.1.5 - class choosing not toggling
@@ -47,13 +48,11 @@ public class PAEntityListener extends EntityListener {
 				event.getDrops().clear();
 				String color = "";
 				if (PVPArena.fightUsersTeam.get(player.getName()) == "red") {
-					PVPArena.tellEveryone(ChatColor.RED + player.getName()
-							+ ChatColor.WHITE + " has been killed!");
+					PVPArena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.RED + player.getName() + ChatColor.WHITE));
 					PVPArena.redTeam -= 1;
 					color = "red";
 				} else {
-					PVPArena.tellEveryone(ChatColor.BLUE + player.getName()
-							+ ChatColor.WHITE + " has been killed!");
+					PVPArena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.BLUE + player.getName() + ChatColor.WHITE));
 					PVPArena.blueTeam -= 1;
 					color = "blue";
 				}
@@ -99,7 +98,7 @@ public class PAEntityListener extends EntityListener {
 			
 			lives = PVPArena.fightUsersLives.get(defender.getName());
 			if (lives < 1) {
-				return; // player died spectating wherever
+				return; // player died
 			} else if (lives > 0) {
 
 				defender.setHealth(20);
@@ -109,13 +108,11 @@ public class PAEntityListener extends EntityListener {
 				defender.setExhaustion(0);
 				lives--;
 				if (PVPArena.fightUsersTeam.get(defender.getName()) == "red") {
-					PVPArena.tellEveryone(ChatColor.RED + defender.getName()
-							+ ChatColor.WHITE + " has lost a life! "+ String.valueOf(lives) + " remaining.");
+					PVPArena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.RED + defender.getName() + ChatColor.WHITE, String.valueOf(lives)));
 					PVPArena.goToWaypoint(defender, "redspawn");
 					
 				} else {
-					PVPArena.tellEveryone(ChatColor.BLUE + defender.getName()
-							+ ChatColor.WHITE + " has lost a life! "+ String.valueOf(lives) + " remaining.");
+					PVPArena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.BLUE + defender.getName() + ChatColor.WHITE, String.valueOf(lives)));
 					PVPArena.goToWaypoint(defender, "bluespawn");
 					
 				}
@@ -139,8 +136,7 @@ public class PAEntityListener extends EntityListener {
 	}
 
 	public void onEntityExplode(EntityExplodeEvent event) {
-		if ((!(PVPArena.protection)) || (!(PVPArena.blocktnt))
-				|| (!(event.getEntity() instanceof TNTPrimed)))
+		if ((!(PVPArena.protection)) || (!(PVPArena.blocktnt)) || (!(event.getEntity() instanceof TNTPrimed)))
 			return;
 		Configuration config = new Configuration(new File("plugins/pvparena",
 				"config.yml"));

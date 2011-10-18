@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
  * author: craftyn
  * editor: slipcor
  * 
- * version: v0.0.0 - copypaste
+ * version: v0.2.0 - language support
  * 
  * history:
  * 		v0.0.0 - copypaste
@@ -26,22 +26,19 @@ public class PAServerListener extends ServerListener {
 	}
 
 	public void onPluginDisable(PluginDisableEvent event) {
-		if ((PVPArena.iConomy == null)
-				|| (!(event.getPlugin().getDescription().getName()
-						.equals("iConomy"))))
+		if ((PVPArena.iConomy == null) || (!(event.getPlugin().getDescription().getName().equals("iConomy"))))
 			return;
 		PVPArena.iConomy = null;
-		PVPArena.log.info("[PVP Arena] Un-hooked from iConomy.");
+		PVPArena.lang.log_info("iconomyoff");
 	}
 
 	public void onPluginEnable(PluginEnableEvent event) {
 		if (PVPArena.iConomy == null) {
-			Plugin iConomy = this.plugin.getServer().getPluginManager()
-					.getPlugin("iConomy");
+			Plugin iConomy = this.plugin.getServer().getPluginManager().getPlugin("iConomy");
 			if ((iConomy == null) || (!(iConomy.isEnabled())))
 				return;
 			PVPArena.iConomy = (iConomy) iConomy;
-			PVPArena.log.info("[PVP Arena] hooked into iConomy");
+			PVPArena.lang.log_info("iconomyon");
 		}
 	}
 }
