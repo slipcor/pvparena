@@ -1,4 +1,4 @@
-package craftyn.pvparena;
+package praxis.slipcor.pvparena;
 
 import java.io.File;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,21 +12,17 @@ import org.bukkit.util.config.Configuration;
 /*
  * BlockListener class
  * 
- * author: craftyn
- * editor: slipcor
+ * author: slipcor
  * 
- * version: v0.0.0a - code tweaks
+ * version: v0.2.1 - cleanup, comments
  * 
  * history:
  * 		v0.0.0 - copypaste
  */
 
 public class PABlockListener extends BlockListener {
-	public static PVPArena plugin;
 
-	public PABlockListener(PVPArena instance) {
-		plugin = instance;
-	}
+	public PABlockListener() {}
 
 	public void onBlockBreak(BlockBreakEvent event) {
 		if ((!(PVPArena.protection)) || (!(PVPArena.disableblockdamage)))
@@ -56,7 +52,7 @@ public class PABlockListener extends BlockListener {
 				((PVPArena.disablelavafirespread) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
 			 || ((PVPArena.disableallfirespread) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) 
 			 || ((PVPArena.blocklighter)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL))
-			 ) {
+			 ) { // if an event happend that we would like to block
 
 			Configuration config = new Configuration(new File(
 					"plugins/pvparena", "config.yml"));
@@ -64,19 +60,20 @@ public class PABlockListener extends BlockListener {
 			if ((config.getKeys("protection.region") == null)
 					|| (!(config.getString("protection.region.world")
 							.equals(event.getBlock().getWorld().getName()))))
-				return;
+				return; // wrong world => OUT
 			boolean inside = PVPArena.contains(new Vector(event.getBlock()
 					.getLocation().getX(), event.getBlock().getLocation()
 					.getY(), event.getBlock().getLocation().getZ()));
-			if (!(inside))
+			if (!(inside)) // return (allow) if we are NOT in the arena
 				return;
-			event.setCancelled(true);
+			event.setCancelled(true); // else->cancel!
 		}
 	}
 
 	public void onBlockBurn(BlockBurnEvent event) {
 		if ((!(PVPArena.protection)) || (!(PVPArena.disableallfirespread)))
-			return;
+			return; // if not an event happend that we would like to block => OUT
+		
 		Configuration config = new Configuration(new File("plugins/pvparena",
 				"config.yml"));
 		config.load();
@@ -87,22 +84,22 @@ public class PABlockListener extends BlockListener {
 		boolean inside = PVPArena.contains(new Vector(event.getBlock()
 				.getLocation().getX(), event.getBlock().getLocation().getY(),
 				event.getBlock().getLocation().getZ()));
-		if (!(inside))
+		if (!(inside)) // return (allow) if we are NOT in the arena
 			return;
-		event.setCancelled(true);
+		event.setCancelled(true); // else->cancel!
 		return;
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if ((!(PVPArena.protection)) || (!(PVPArena.disableblockplacement)))
-			return;
+			return; // if not an event happend that we would like to block => OUT
 		Configuration config = new Configuration(new File("plugins/pvparena",
 				"config.yml"));
 		config.load();
 		if ((config.getKeys("protection.region") == null)
 				|| (!(config.getString("protection.region.world").equals(event
 						.getBlock().getWorld().getName()))))
-			return;
+			return; // wrong world => OUT
 		boolean inside = PVPArena.contains(new Vector(event.getBlock()
 				.getLocation().getX(), event.getBlock().getLocation().getY(),
 				event.getBlock().getLocation().getZ()));

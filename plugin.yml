@@ -1,7 +1,7 @@
 name: pvparena
 main: craftyn.pvparena.PVPArena
-version: v0.2.0.3
-author: slipcor (Carbon131)
+version: v0.2.1.1
+author: slipcor
 commands:
     pvparena:
         description: Base command for Fight plugin. Administrators need to read the help file on Bukkit forums

@@ -1,4 +1,4 @@
-package craftyn.pvparena;
+package praxis.slipcor.pvparena;
 
 import java.io.File;
 import java.util.Map;
@@ -7,20 +7,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
 /*
- * BlockListener class
+ * Language class
  * 
  * author: slipcor
  * 
- * version: v0.2.0 - language support
+ * version: v0.2.1 - cleanup, comments
  * 
  * history:
  * 		v0.2.0 - language support
  */
 
 public class PALanguage {
-	static PVPArena plugin = null;
-	Map<String, String> lang = null;
-	Map<String, String> log = null;
+	Map<String, String> lang = null; // game language map
+	Map<String, String> log = null; // log language map
 	@SuppressWarnings("unchecked")
 	public PALanguage() {
 		boolean bNew = false;
@@ -37,7 +36,7 @@ public class PALanguage {
 		Configuration config = new Configuration(configFile);
 		config.load();
 
-		if (bNew) {
+		if (bNew) { // if running for the first time => add all nodes
 			config.setProperty("log.filecreateerror","Error creating %1% file.");
 			config.setProperty("log.teamnotfound","Unrecognized team: %1%");
 			config.setProperty("log.matnotfound","Unrecognized material: %1%");
@@ -118,48 +117,53 @@ public class PALanguage {
 
 			config.save();
 		}
+		// write contents to maps
 		lang = (Map<String, String>) config.getProperty("lang");
 		log = (Map<String, String>) config.getProperty("log");
 		
 	}
 	
 	public String parse(String s) {
-		return lang.get(s);
+		return lang.get(s); // hand over map value
 	}
 
 	public String parse(String s, String arg) {
 		String var = lang.get(s);
-		return var.replace("%1%", arg);
+		return var.replace("%1%", arg); // hand over replaced map value
 	}
 	
 	public String parse(String s, String arg1, String arg2) {
 		String var = lang.get(s).replace("%2%", arg2);
-		return var.replace("%1%", arg1);
+		return var.replace("%1%", arg1); // hand over replaced map value
 	}
 	
 	public String parse(String s, String arg1, String arg2, String arg3) {
 		String var = lang.get(s).replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
-		return var.replace("%1%", arg1);
+		return var.replace("%1%", arg1); // hand over replaced map value
 	}
 	
 	public void log_error(String s, String arg) {
 		String var = log.get(s);
 		PVPArena.log.severe("[PVP Arena] " + var.replace("%1%", arg));
+		// log replaced map value
 	}
 	
 	public void log_warning(String s, String arg) {
 		String var = log.get(s);
 		PVPArena.log.warning("[PVP Arena] " + var.replace("%1%", arg));
-	}
-	
-	public void log_info(String s) {
-		String var = log.get(s);
-		PVPArena.log.info("[PVP Arena] " + var);
+		// log replaced map value
 	}
 	
 	public void log_info(String s, String arg) {
 		String var = log.get(s);
 		PVPArena.log.info("[PVP Arena] " + var.replace("%1%", arg));
+		// log replaced map value
+	}
+	
+	public void log_info(String s) {
+		String var = log.get(s);
+		PVPArena.log.info("[PVP Arena] " + var);
+		// log map value
 	}
 }

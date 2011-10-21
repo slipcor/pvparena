@@ -1,7 +1,5 @@
-package craftyn.pvparena;
+package praxis.slipcor.pvparena;
 
-import com.iConomy.iConomy;
-import com.iConomy.system.Holdings;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 import java.io.File;
@@ -39,15 +37,20 @@ import org.bukkit.util.Vector;
 import org.bukkit.util.config.Configuration;
 import org.getspout.spoutapi.SpoutManager;
 
+import praxis.pvparena.register.payment.Method;
+import praxis.pvparena.register.payment.Method.MethodAccount;
+
+
 /*
  * main class
  * 
  * author: slipcor
  * 
- * version: v0.2.0 - language support
+ * version: v0.2.1 - cleanup, comments, iConomy 6 support
  * 
  * history:
  *
+ *    v0.2.0 - language support
  *    v0.1.13 - place bets on a match
  *    v0.1.12 - display stats with /pa users | /pa teams
  *    v0.1.11 - config: woolhead: put colored wool on heads!
@@ -72,12 +75,12 @@ public class PVPArena extends JavaPlugin {
 	public static final Logger log = Logger.getLogger("Minecraft");
 	public static PermissionHandler permissionHandler;
 	public static String spoutHandler = null;
-	public static iConomy iConomy = null;
+	public static Method method = null; // eConomy access
 	public static PermissionHandler Permissions;
-	private final PAServerListener serverListener = new PAServerListener(this);
-	private final PAEntityListener entityListener = new PAEntityListener(this);
-	private final PAPlayerListener playerListener = new PAPlayerListener(this);
-	private final PABlockListener blockListener = new PABlockListener(this);
+	private final PAServerListener serverListener = new PAServerListener();
+	private final PAEntityListener entityListener = new PAEntityListener();
+	private final PAPlayerListener playerListener = new PAPlayerListener();
+	private final PABlockListener blockListener = new PABlockListener();
 	public static final PALanguage lang = new PALanguage();
 
 	public static final Map<String, String> fightUsersTeam = new HashMap<String, String>();
@@ -340,10 +343,19 @@ public class PVPArena extends JavaPlugin {
 				return true;
 			}
 
-			if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
-				tellPlayer(player, lang.parse("notenough", com.iConomy.iConomy.format(entryFee)));
-				return true;
+			if (method != null) {
+				MethodAccount ma = method.getAccount(player.getName());
+				if (ma == null) {
+					log.severe("Account not found: "+player.getName());
+					return true;
+				}
+				if(!ma.hasEnough(entryFee)){
+					// no money, no entry!
+					tellPlayer(player, lang.parse("notenough", method.format(entryFee)));
+					return true;
+	            }
 			}
+			
 			cleanSigns();
 			saveInventory(player);
 			clearInventory(player);
@@ -358,10 +370,9 @@ public class PVPArena extends JavaPlugin {
 			
 			
 			if (emptyInventory(player)) {
-				if ((iConomy != null) && (entryFee > 0)) {
-					Holdings balance = com.iConomy.iConomy.getAccount(player.getName()).getHoldings();
-
-					balance.subtract(entryFee);
+				if ((method != null) && (entryFee > 0)) {
+					MethodAccount ma = method.getAccount(player.getName());
+					ma.subtract(entryFee);
 				}
 
 				if (!(fightUsersTeam.containsKey(player.getName()))) {
@@ -452,10 +463,17 @@ public class PVPArena extends JavaPlugin {
 					return true;
 				}
 				
-				
-				if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
-					tellPlayer(player, lang.parse("notenough", com.iConomy.iConomy.format(entryFee)));
-					return true;
+				if (method != null) {
+					MethodAccount ma = method.getAccount(player.getName());
+					if (ma == null) {
+						log.severe("Account not found: "+player.getName());
+						return true;
+					}
+					if(!ma.hasEnough(entryFee)){
+						// no money, no entry!
+						tellPlayer(player, lang.parse("notenough", method.format(entryFee)));
+						return true;
+		            }
 				}
 
 				cleanSigns();
@@ -466,10 +484,9 @@ public class PVPArena extends JavaPlugin {
 				player.setFireTicks(0);
 				
 				if (emptyInventory(player)) {
-					if ((iConomy != null) && (entryFee > 0)) {
-						Holdings balance = com.iConomy.iConomy.getAccount(
-								player.getName()).getHoldings();
-						balance.subtract(entryFee);
+					if ((method != null) && (entryFee > 0)) {
+						MethodAccount ma = method.getAccount(player.getName());
+						ma.subtract(entryFee);
 					}
 
 					goToWaypoint(player, "redlounge");
@@ -504,11 +521,17 @@ public class PVPArena extends JavaPlugin {
 					return true;
 				}
 				
-				
-				
-				if ((iConomy != null) && !com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(entryFee)) {
-					tellPlayer(player, lang.parse("notenough", com.iConomy.iConomy.format(entryFee)));
-					return true;
+				if (method != null) {
+					MethodAccount ma = method.getAccount(player.getName());
+					if (ma == null) {
+						log.severe("Account not found: "+player.getName());
+						return true;
+					}
+					if(!ma.hasEnough(entryFee)){
+						// no money, no entry!
+						tellPlayer(player, lang.parse("notenough", method.format(entryFee)));
+						return true;
+		            }
 				}
 
 				cleanSigns();
@@ -519,10 +542,9 @@ public class PVPArena extends JavaPlugin {
 				player.setFireTicks(0);
 
 				if (emptyInventory(player)) {
-					if ((iConomy != null) && (entryFee > 0)) {
-						Holdings balance = com.iConomy.iConomy.getAccount(
-								player.getName()).getHoldings();
-						balance.subtract(entryFee);
+					if ((method != null) && (entryFee > 0)) {
+						MethodAccount ma = method.getAccount(player.getName());
+						ma.subtract(entryFee);
 					}
 
 
@@ -677,7 +699,7 @@ public class PVPArena extends JavaPlugin {
 				return true;
 			}
 			
-			if (iConomy == null)
+			if (method == null)
 				return true;
 			
 			if (!fightCmd[1].equalsIgnoreCase("red") && !fightCmd[1].equalsIgnoreCase("blue") && !fightUsersTeam.containsKey(fightCmd[1])) {
@@ -693,12 +715,17 @@ public class PVPArena extends JavaPlugin {
 				tellPlayer(player, lang.parse("invalidamount",fightCmd[2]));
 				return true;
 			}
-			
-			if (!com.iConomy.iConomy.getAccount(player.getName()).getHoldings().hasEnough(amount)) {
-				tellPlayer(player, lang.parse("notenough",com.iConomy.iConomy.format(amount)));
+			MethodAccount ma = method.getAccount(player.getName());
+			if (ma == null) {
+				log.severe("Account not found: "+player.getName());
 				return true;
 			}
-			com.iConomy.iConomy.getAccount(player.getName()).getHoldings().subtract(amount);
+			if(!ma.hasEnough(entryFee)){
+				// no money, no entry!
+				tellPlayer(player, lang.parse("notenough",method.format(amount)));
+				return true;
+            }
+			ma.subtract(amount);
 			tellPlayer(player, lang.parse("betplaced", fightCmd[1]));
 			bets.put(player.getName() + ":" + fightCmd[1], amount);
 			return true;
@@ -768,7 +795,7 @@ public class PVPArena extends JavaPlugin {
 		return true;
 	}
 
-	private boolean hasAdminPerms(Player player) {
+	public static boolean hasAdminPerms(Player player) {
 		if (Permissions == null)
 			return player.isOp();
 		return Permissions.has(player, "fight.admin");
@@ -982,12 +1009,12 @@ public class PVPArena extends JavaPlugin {
 		Bukkit.getServer().broadcastMessage(lang.parse("msgprefix") + ChatColor.WHITE + msg);
 	}
 
-	public void tellEveryoneExcept(Player player, String msg) {
+	public static void tellEveryoneExcept(Player player, String msg) {
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			Player z = getServer().getPlayer(o.toString());
+			Player z = Bukkit.getServer().getPlayer(o.toString());
 			if (!(player.getName().equals(z.getName())))
 				z.sendMessage(lang.parse("msgprefix") + ChatColor.WHITE + msg);
 		}
@@ -999,7 +1026,7 @@ public class PVPArena extends JavaPlugin {
 		while (iter.hasNext()) {
 			Object o = iter.next();
 			if (((String) fightUsersTeam.get(o.toString())).equals(color)) {
-				Player z = getServer().getPlayer(o.toString());
+				Player z = Bukkit.getServer().getPlayer(o.toString());
 				z.sendMessage(lang.parse("msgprefix") + ChatColor.WHITE + msg);
 			}
 		}
@@ -1009,17 +1036,17 @@ public class PVPArena extends JavaPlugin {
 		player.sendMessage(lang.parse("msgprefix") + ChatColor.WHITE + msg);
 	}
 
-	public void teleportAllToSpawn() {
+	public static void teleportAllToSpawn() {
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
 			if (((String) fightUsersTeam.get(o.toString())).equals("red")) {
-				Player z = getServer().getPlayer(o.toString());
+				Player z = Bukkit.getServer().getPlayer(o.toString());
 				goToWaypoint(z, "redspawn");
 			}
 			if (((String) fightUsersTeam.get(o.toString())).equals("blue")) {
-				Player z = getServer().getPlayer(o.toString());
+				Player z = Bukkit.getServer().getPlayer(o.toString());
 				goToWaypoint(z, "bluespawn");
 			}
 		}
@@ -1078,29 +1105,29 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static void giveRewards(Player player) {
-		if (iConomy != null) {
+		if (method != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
 					double amount = bets.get(nKey)*4;
-					
-					com.iConomy.iConomy.getAccount(nSplit[0]).getHoldings().add(amount);
+
+					MethodAccount ma = method.getAccount(nSplit[0]);
+					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), lang.parse("youwon",com.iConomy.iConomy.format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), lang.parse("youwon",method.format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
 				}				
 			}			
 		}	
-		
-		if ((rewardAmount > 0) && (iConomy != null)) {
-			Holdings balance = com.iConomy.iConomy.getAccount(player.getName())
-					.getHoldings();
-			balance.add(rewardAmount);
-			tellPlayer(player,lang.parse("awarded",com.iConomy.iConomy.format(rewardAmount)));
+		if ((method != null) && (rewardAmount > 0)) {
+			MethodAccount ma = method.getAccount(player.getName());
+			ma.add(rewardAmount);
+			tellPlayer(player,lang.parse("awarded",method.format(rewardAmount)));
 		}
+
 		if (rewardItems.equals("none"))
 			return;
 		String[] items = rewardItems.split(",");
@@ -1246,7 +1273,7 @@ public class PVPArena extends JavaPlugin {
 			}
 		}
 
-		if (iConomy != null) {
+		if (method != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
@@ -1255,10 +1282,15 @@ public class PVPArena extends JavaPlugin {
 				
 				if (nSplit[1].equalsIgnoreCase("red") != bluewon) {
 					double amount = bets.get(nKey)*2;
-					
-					com.iConomy.iConomy.getAccount(nSplit[0]).getHoldings().add(amount);
+
+					MethodAccount ma = method.getAccount(nSplit[0]);
+					if (ma == null) {
+						log.severe("Account not found: "+nSplit[0]);
+						return true;
+					}
+					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), lang.parse("youwon",com.iConomy.iConomy.format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), lang.parse("youwon",method.format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
