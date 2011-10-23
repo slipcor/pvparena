@@ -1,4 +1,4 @@
-package praxis.slipcor.pvparena;
+package praxis.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.HashMap;
@@ -7,25 +7,24 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
+import praxis.slipcor.pvparena.PVPArena;
+
 /*
  * Statistics class
  * 
  * author: slipcor
  * 
- * version: v0.2.1 - cleanup, comments
+ * version: v0.3.0 - Multiple Arenas
  * 
  * history:
  *
+ *    v0.2.1 - cleanup, comments
  *    v0.2.0 - language support
  *    v0.1.12 - display stats
- * 
- * todo:
- *    - prepare for multiarena => hand over arenaname via constructor to paste it into getConfig ;)
- *    - change from static to dynamic => each arena has one statistic
  *
  */
 
-public class PAStatsManager {
+public class StatsManager {
 	
 	/*
 	 * Function that retrieves the config and creates one if it does not exist
@@ -62,8 +61,8 @@ public class PAStatsManager {
 	 * This example means: slipcor lost 2 times and won 3 times
 	 */	
 	@SuppressWarnings("unchecked")
-	public static Map<String,Integer> getPlayerStats() {
-		Configuration config = getConfig("stats");
+	public static Map<String,Integer> getPlayerStats(String sName) {
+		Configuration config = getConfig("stats_"+sName);
 		Map <String, Integer> players = new HashMap<String, Integer>(); // map to sum up the players
 
 		Map<String, Integer> team = (Map<String, Integer>) config.getProperty("wins.blue"); // tempmap => iteration 
@@ -117,8 +116,9 @@ public class PAStatsManager {
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public static String getTeamStats() {
-		Configuration config = getConfig("stats");
+	public static String getTeamStats(String sName) {
+		
+		Configuration config = getConfig("stats_"+sName);
 		
 		String result = "";
 		Map<String, Integer> team = (Map<String, Integer>) config.getProperty("wins.blue");
@@ -166,7 +166,8 @@ public class PAStatsManager {
 	 *  Function that adds a stat to the player and the team
 	 */
 	private static void addStat(Player player, String color, boolean win) {
-		Configuration config = getConfig("stats");
+		String sName = ArenaManager.getArenaNameByPlayer(player);
+		Configuration config = getConfig("stats_"+sName);
 		
 		if (!color.equals("red") && !color.equals("blue")) {
 			PVPArena.lang.log_warning("teamnotfound",color);

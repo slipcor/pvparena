@@ -1,20 +1,23 @@
-package praxis.slipcor.pvparena;
+package praxis.slipcor.pvparena.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
 import praxis.pvparena.register.payment.Methods;
+import praxis.slipcor.pvparena.PVPArena;
 
 /*
  * ServerListener class
  * 
  * author: slipcor
  * 
- * version: v0.2.1 - cleanup, comments
+ * version: v0.3.0 - Multiple Arenas
  * 
  * history:
+ * 		v0.2.1 - cleanup, comments
  * 		v0.2.0 - language support
+ * 
  */
 
 public class PAServerListener extends ServerListener {

@@ -1,4 +1,4 @@
-package praxis.slipcor.pvparena;
+package praxis.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.Map;
@@ -6,22 +6,27 @@ import java.util.Map;
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
+import praxis.slipcor.pvparena.PVPArena;
+
 /*
  * Language class
  * 
  * author: slipcor
  * 
- * version: v0.2.1 - cleanup, comments
+ * version: v0.3.0 - Multiple Arenas
  * 
  * history:
+ * 		v0.2.1 - cleanup, comments
  * 		v0.2.0 - language support
  */
 
-public class PALanguage {
+//TODO maybe add the respective arena name somewhere? 
+
+public class LanguageManager {
 	Map<String, String> lang = null; // game language map
 	Map<String, String> log = null; // log language map
 	@SuppressWarnings("unchecked")
-	public PALanguage() {
+	public LanguageManager() {
 		boolean bNew = false;
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/lang.yml");
@@ -115,7 +120,28 @@ public class PALanguage {
 			config.setProperty("lang.invfull","Your inventory was full. You did not receive all rewards!");
 			config.setProperty("lang.haswon","%1% are the Champions");
 
+			config.setProperty("lang.arenaexists","Arena already exists!");
+			config.setProperty("lang.arenanotexists","Arena does not exist: %1%");
+			config.setProperty("lang.regionalreadybeingset","A region is already being created: %1%");
+			config.setProperty("lang.regionnotbeingset","A region is not being created!");
+			config.setProperty("lang.notinarena","You are not part of an arena!");
+			config.setProperty("lang.arenas","Available arenas: %1%");
+			config.setProperty("lang.setup","setup an arena");
 			config.save();
+		} else if (config.getProperty("lang.arenaexists") == null) {
+			config.setProperty("lang.arenaexists","Arena already exists!");
+			config.setProperty("lang.arenanotexists","Arena does not exist: %1%");
+			config.setProperty("lang.regionalreadybeingset","A region is already being created: %1%");
+			config.setProperty("lang.regionnotbeingset","A region is not being created!");
+			config.setProperty("lang.notinarena","You are not part of an arena!");
+			config.setProperty("lang.arenas","Available arenas: %1%");
+			config.setProperty("lang.setup","setup an arena");
+			config.save();
+		}
+		
+		if (config.getProperty("lang.setredblue") != null) {
+			config.removeProperty("lang.setredblue");
+			config.setProperty("lang.setbluespawn","Blue spawn set.");
 		}
 		// write contents to maps
 		lang = (Map<String, String>) config.getProperty("lang");
