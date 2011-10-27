@@ -81,7 +81,7 @@ public class PAEntityListener extends EntityListener {
 		}
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
-		PAArena arena = ArenaManager.getArenaByPlayer((Player) event.getDamager());
+		PAArena arena = ArenaManager.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 

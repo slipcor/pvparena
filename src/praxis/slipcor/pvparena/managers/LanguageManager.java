@@ -97,7 +97,7 @@ public class LanguageManager {
 			config.setProperty("lang.setredlounge","Red lounge set.");
 			config.setProperty("lang.setbluelounge","Blue lounge set.");
 			config.setProperty("lang.setredspawn","Red spawn set.");
-			config.setProperty("lang.setredblue","Blue spawn set.");
+			config.setProperty("lang.setbluespawn","Blue spawn set.");
 			config.setProperty("lang.setspectator","Spectator spawn set.");
 			config.setProperty("lang.setexit","Exit spawn set.");
 			config.setProperty("lang.forcestop","You have forced the fight to stop.");

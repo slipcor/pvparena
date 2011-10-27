@@ -1,6 +1,6 @@
 name: pvparena
 main: praxis.slipcor.pvparena.PVPArena
-version: v0.3.0.19
+version: v0.3.0.20
 author: slipcor
 commands:
     pvparena:
