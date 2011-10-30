@@ -145,6 +145,55 @@ public class PAEntityListener extends EntityListener {
 			onEntityDamageByEntity((EntityDamageByEntityEvent) event);
 			return; // hand over damage event
 		}
+		
+		Entity p1 = event.getEntity();
+		
+		if ((p1 == null) || (!(p1 instanceof Player)))
+			return; // no player
+		
+		PAArena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		if (arena == null)
+			return;
+
+		if (!arena.fightInProgress) {
+			return;
+		}
+		
+		Player player = (Player) p1;
+		if (arena.fightUsersTeam.get(player.getName()) == null)
+			return;
+
+		// here it comes, process the damage!
+		if (event.getDamage() >= player.getHealth()) {
+			byte lives = 3;
+
+			lives = arena.fightUsersLives.get(player.getName());
+			if (lives < 1) {
+				System.out.print("lives < 1");
+				return; // player died
+			} else if (lives > 0) {
+
+				player.setHealth(20);
+				player.setFireTicks(0);
+				player.setFoodLevel(20);
+				player.setSaturation(20);
+				player.setExhaustion(0);
+				lives--;
+				if (arena.fightUsersTeam.get(player.getName()) == "red") {
+					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.RED + player.getName() + ChatColor.WHITE, String.valueOf(lives)));
+					arena.goToWaypoint(player, "redspawn");
+
+				} else {
+					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.BLUE + player.getName() + ChatColor.WHITE, String.valueOf(lives)));
+					arena.goToWaypoint(player, "bluespawn");
+				}
+				System.out.print("life lost");
+				arena.fightUsersLives.put(player.getName(), lives);
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
 	}
 
 	public void onEntityExplode(EntityExplodeEvent event) {

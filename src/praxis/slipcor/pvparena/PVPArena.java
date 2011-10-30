@@ -140,7 +140,7 @@ public class PVPArena extends JavaPlugin {
 				tellPlayer(player, lang.parse("arenaexists"));
 				return true;
 			}			
-			ArenaManager.loadArena(args[1]);
+			ArenaManager.loadArena(args[0]);
 			return true;
 		} else if (args[0].equalsIgnoreCase("reload")) {
 			if (!hasAdminPerms(player)) {

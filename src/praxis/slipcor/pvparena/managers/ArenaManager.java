@@ -31,7 +31,8 @@ public class ArenaManager {
 	
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (PAArena arena : arenas.values()) {
-			if (arena.fightUsersClass.containsKey(pPlayer.getName()))
+			if (arena.fightUsersClass.containsKey(pPlayer.getName())
+					|| arena.fightUsersTeam.containsKey(pPlayer.getName()))
 				return arena.name;
 		}
 		return null;
