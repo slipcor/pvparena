@@ -127,6 +127,11 @@ public class LanguageManager {
 			config.setProperty("lang.notinarena","You are not part of an arena!");
 			config.setProperty("lang.arenas","Available arenas: %1%");
 			config.setProperty("lang.setup","setup an arena");
+
+			config.setProperty("lang.create","create an arena");
+			config.setProperty("lang.created","arena '%1%' created!");
+			config.setProperty("lang.remove","remove an arena");
+			config.setProperty("lang.removed","arena '%1%' removed!");
 			config.save();
 		} else if (config.getProperty("lang.arenaexists") == null) {
 			config.setProperty("lang.arenaexists","Arena already exists!");
@@ -136,6 +141,17 @@ public class LanguageManager {
 			config.setProperty("lang.notinarena","You are not part of an arena!");
 			config.setProperty("lang.arenas","Available arenas: %1%");
 			config.setProperty("lang.setup","setup an arena");
+
+			config.setProperty("lang.create","create an arena");
+			config.setProperty("lang.created","arena '%1%' created!");
+			config.setProperty("lang.remove","remove an arena");
+			config.setProperty("lang.removed","arena '%1%' removed!");
+			config.save();
+		} else if (config.getProperty("lang.create") == null) {
+			config.setProperty("lang.create","create an arena");
+			config.setProperty("lang.created","arena '%1%' created!");
+			config.setProperty("lang.remove","remove an arena");
+			config.setProperty("lang.removed","arena '%1%' removed!");
 			config.save();
 		}
 		

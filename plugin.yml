@@ -1,6 +1,6 @@
 name: pvparena
 main: praxis.slipcor.pvparena.PVPArena
-version: v0.3.0.23
+version: v0.3.0.24
 author: slipcor
 commands:
     pvparena:
@@ -12,6 +12,7 @@ commands:
            /pvparena leave | Leave the arena you're in
            /pvparena setup | Get help setting up an arena
            /pvparena [arenaname] create | Create an arena
+           /pvparena [arenaname] remove | Remove an arena
            /pvparena [arenaname] | Join the arena if random is active
            /pvparena [arenaname] blue/red | Join the arena if random is inactive
            /pvparena [arenaname] enable/disable | Enable / Disable usage of an arena

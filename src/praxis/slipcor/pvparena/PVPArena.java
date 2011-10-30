@@ -135,12 +135,31 @@ public class PVPArena extends JavaPlugin {
 		
 		if (args.length == 2 && args[1].equals("create")) {
 			// /pa [name] create			
+			if (!hasAdminPerms(player)) {
+				tellPlayer(player, lang.parse("nopermto", lang.parse("create")));
+				return true;
+			}
 			PAArena arena = ArenaManager.getArenaByName(args[0]);			
 			if (arena != null) {
 				tellPlayer(player, lang.parse("arenaexists"));
 				return true;
 			}			
 			ArenaManager.loadArena(args[0]);
+			tellPlayer(player, lang.parse("created",args[0]));
+			return true;
+		} else if (args.length == 2 && args[1].equals("remove")) {
+			// /pa [name] remove			
+			if (!hasAdminPerms(player)) {
+				tellPlayer(player, lang.parse("nopermto", lang.parse("remove")));
+				return true;
+			}
+			PAArena arena = ArenaManager.getArenaByName(args[0]);			
+			if (arena == null) {
+				tellPlayer(player, lang.parse("arenanotexists", args[0]));
+				return true;
+			}			
+			ArenaManager.unload(args[0]);
+			tellPlayer(player, lang.parse("removed",args[0]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("reload")) {
 			if (!hasAdminPerms(player)) {
@@ -467,16 +486,8 @@ public class PVPArena extends JavaPlugin {
 					tellPlayer(player, lang.parse("setexit"));
 				} else if (args[0].equalsIgnoreCase("forcestop")) {
 					if (arena.fightInProgress) {
+						arena.forcestop();
 						tellPlayer(player, lang.parse("forcestop"));
-						Set<String> set = arena.fightUsersTeam.keySet();
-						Iterator<String> iter = set.iterator();
-						while (iter.hasNext()) {
-							Object o = iter.next();
-							Player z = getServer().getPlayer(o.toString());
-							arena.removePlayer(z, "spectator");
-						}
-						arena.reset();
-						arena.fightUsersClass.clear();
 					} else {
 						tellPlayer(player, lang.parse("nofight"));
 					}

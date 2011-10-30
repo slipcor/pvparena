@@ -745,4 +745,16 @@ public class PAArena {
 			setInventory(player);
 		}
 	}
+
+	public void forcestop() {
+		Set<String> set = fightUsersTeam.keySet();
+		Iterator<String> iter = set.iterator();
+		while (iter.hasNext()) {
+			Object o = iter.next();
+			Player z = Bukkit.getServer().getPlayer(o.toString());
+			removePlayer(z, "spectator");
+		}
+		reset();
+		fightUsersClass.clear();
+	}
 }

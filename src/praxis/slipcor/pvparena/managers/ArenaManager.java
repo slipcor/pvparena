@@ -102,4 +102,14 @@ public class ArenaManager {
 			result += (result.equals("")?"":", ") + sName;
 		return result;
 	}
+
+	public static void unload(String string) {
+		PAArena a = arenas.get(string);
+		a.forcestop();
+		arenas.remove(string);
+		File path = new File("plugins/pvparena/config_" + string + ".yml");
+		path.delete();
+		path = new File("plugins/pvparena/stats_" + string + ".yml");
+		path.delete();
+	}
 }
