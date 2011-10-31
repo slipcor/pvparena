@@ -238,7 +238,7 @@ public class PVPArena extends JavaPlugin {
 				tellPlayer(player, lang.parse("permjoin"));
 				return true;
 			}
-			if (!(arena.randomlyselectteams)) {
+			if (arena.manuallyselectteams) {
 				tellPlayer(player, lang.parse("selectteam"));
 				return true;
 			}
@@ -386,10 +386,10 @@ public class PVPArena extends JavaPlugin {
 					}
 
 					arena.goToWaypoint(player, "redlounge");
+					arena.fightUsersTeam.put(player.getName(), "red");
 					tellPlayer(player, lang.parse("youjoined", ChatColor.RED + "<Red>"));
 					arena.tellEveryoneExcept(player, lang.parse("playerjoined", player.getName(), ChatColor.RED + "<Red>"));
 					arena.redTeam += 1;
-
 				}
 
 			} else if (args[0].equalsIgnoreCase("blue")) {
@@ -440,14 +440,12 @@ public class PVPArena extends JavaPlugin {
 						ma.subtract(arena.entryFee);
 					}
 
-
 					arena.goToWaypoint(player, "bluelounge");
 					arena.fightUsersTeam.put(player.getName(), "blue");
 					arena.blueTeam += 1;
 					tellPlayer(player, lang.parse("youjoined", ChatColor.BLUE + "<Blue>"));
 					arena.tellEveryoneExcept(player, lang.parse("playerjoined", player.getName(), ChatColor.BLUE + "<Blue>"));
 					
-
 				}
 				return true;
 			

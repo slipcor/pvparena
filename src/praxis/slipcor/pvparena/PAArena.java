@@ -112,7 +112,6 @@ public class PAArena {
 	boolean woolhead;
 	public boolean protection;
 	public boolean teamkilling;
-	boolean randomlyselectteams;
 	boolean manuallyselectteams;
 	public boolean redTeamIronClicked = false;
 	public boolean blueTeamIronClicked = false;
@@ -187,7 +186,6 @@ public class PAArena {
 		if (config.getKeys("teams") == null) {
 			config.load();
 			config.setProperty("teams.team-killing-enabled",Boolean.valueOf(false));
-			config.setProperty("teams.randomly-select-teams",Boolean.valueOf(true));
 			config.setProperty("teams.manually-select-teams",Boolean.valueOf(false));
 			config.save();
 		}
@@ -209,7 +207,6 @@ public class PAArena {
 		rewardItems = config.getString("rewards.items", "none");
 
 		teamkilling = config.getBoolean("teams.team-killing-enabled", false);
-		randomlyselectteams = config.getBoolean("teams.randomly-select-teams",true);
 		manuallyselectteams = config.getBoolean("teams.manually-select-teams",false);
 
 		protection = config.getBoolean("protection.enabled", true);
