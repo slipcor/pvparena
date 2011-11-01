@@ -523,7 +523,7 @@ public class PAArena {
 			String item = items[i];
 			String[] itemDetail = item.split(":");
 			if (itemDetail.length == 2) {
-				int x = Integer.parseInt(itemDetail[0]);
+				int x = parseMat(itemDetail[0]);
 				int y = Integer.parseInt(itemDetail[1]);
 				ItemStack stack = new ItemStack(x, y);
 				try {
@@ -533,7 +533,7 @@ public class PAArena {
 					return;
 				}
 			} else {
-				int x = Integer.parseInt(itemDetail[0]);
+				int x = parseMat(itemDetail[0]);
 				ItemStack stack = new ItemStack(x, 1);
 				try {
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
@@ -541,6 +541,21 @@ public class PAArena {
 					PVPArena.tellPlayer(player,PVPArena.lang.parse("invfull"));
 					return;
 				}
+			}
+		}
+	}
+
+	private int parseMat(String s) {
+		try {
+			int i = Integer.parseInt(s);
+			return i;
+		} catch (Exception e) {
+			try {
+
+				int j = Material.getMaterial(s).getId();
+				return j;
+			} catch (Exception e2) {
+				return 0;
 			}
 		}
 	}
