@@ -1,4 +1,4 @@
-package praxis.pvparena.register.payment;
+package net.slipcor.pvparena.register.payment;
 
 import org.bukkit.plugin.Plugin;
 

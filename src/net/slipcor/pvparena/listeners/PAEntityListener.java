@@ -1,4 +1,9 @@
-package praxis.slipcor.pvparena.listeners;
+package net.slipcor.pvparena.listeners;
+
+import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.StatsManager;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -12,27 +17,24 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-import praxis.slipcor.pvparena.PAArena;
-import praxis.slipcor.pvparena.PVPArena;
-import praxis.slipcor.pvparena.managers.ArenaManager;
-import praxis.slipcor.pvparena.managers.StatsManager;
 
 /*
  * EntityListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.0 - Multiple Arenas
+ * version: v0.3.1 - New Arena! FreeFight
  * 
  * history:
  *
- *    v0.2.1 - cleanup, comments
- *    v0.2.0 - language support
- *    v0.1.12 - display stats
- *    v0.1.11 - fix for bows?
- *    v0.1.8 - lives!
- *    v0.1.5 - class choosing not toggling
- *    v0.1.2 - class permission requirement
+ *     v0.3.0 - Multiple Arenas
+ *     v0.2.1 - cleanup, comments
+ *     v0.2.0 - language support
+ *     v0.1.12 - display stats
+ *     v0.1.11 - fix for bows?
+ *     v0.1.8 - lives!
+ *     v0.1.5 - class choosing not toggling
+ *     v0.1.2 - class permission requirement
  *
  */
 
@@ -45,7 +47,7 @@ public class PAEntityListener extends EntityListener {
 		if (e instanceof Player) {
 			Player player = (Player) e;
 
-			PAArena arena = ArenaManager.getArenaByPlayer(player);
+			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena == null)
 				return;
 			
@@ -53,21 +55,21 @@ public class PAEntityListener extends EntityListener {
 				event.getDrops().clear();
 				String color = "";
 				if (arena.fightUsersTeam.get(player.getName()) == "red") {
-					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.RED + player.getName() + ChatColor.WHITE));
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.RED + player.getName() + ChatColor.YELLOW));
 					arena.redTeam -= 1;
 					color = "red";
-				} else {
-					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.BLUE + player.getName() + ChatColor.WHITE));
+				} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.BLUE + player.getName() + ChatColor.YELLOW));
 					arena.blueTeam -= 1;
 					color = "blue";
+				} else {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
 				StatsManager.addLoseStat(player, color);
 				arena.fightUsersTeam.remove(player.getName());
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
-				if (arena.checkEnd())
-					return;
-
-				arena.removePlayer(player, arena.sTPexit);
+				arena.removePlayer(player, arena.sTPdeath);
+				arena.checkEnd();
 			}
 		}
 	}
@@ -81,7 +83,7 @@ public class PAEntityListener extends EntityListener {
 		}
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
-		PAArena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
@@ -120,12 +122,14 @@ public class PAEntityListener extends EntityListener {
 				defender.setExhaustion(0);
 				lives--;
 				if (arena.fightUsersTeam.get(defender.getName()) == "red") {
-					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.RED + defender.getName() + ChatColor.WHITE, String.valueOf(lives)));
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "redspawn");
-
-				} else {
-					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.BLUE + defender.getName() + ChatColor.WHITE, String.valueOf(lives)));
+				} else if (arena.fightUsersTeam.get(defender.getName()) == "blue") {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "bluespawn");
+				} else {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
+					arena.goToWaypoint(defender, "spawn");
 				}
 				System.out.print("life lost");
 				arena.fightUsersLives.put(defender.getName(), lives);
@@ -151,7 +155,7 @@ public class PAEntityListener extends EntityListener {
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
 		
-		PAArena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
@@ -180,12 +184,14 @@ public class PAEntityListener extends EntityListener {
 				player.setExhaustion(0);
 				lives--;
 				if (arena.fightUsersTeam.get(player.getName()) == "red") {
-					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.RED + player.getName() + ChatColor.WHITE, String.valueOf(lives)));
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "redspawn");
-
-				} else {
-					arena.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.BLUE + player.getName() + ChatColor.WHITE, String.valueOf(lives)));
+				} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "bluespawn");
+				} else {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
+					arena.goToWaypoint(player, "spawn");
 				}
 				System.out.print("life lost");
 				arena.fightUsersLives.put(player.getName(), lives);
@@ -197,7 +203,7 @@ public class PAEntityListener extends EntityListener {
 	}
 
 	public void onEntityExplode(EntityExplodeEvent event) {
-		PAArena arena = ArenaManager.getArenaByBattlefieldLocation(event.getLocation());
+		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
 		

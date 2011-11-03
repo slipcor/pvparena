@@ -1,26 +1,28 @@
-package praxis.slipcor.pvparena.managers;
+package net.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArenaPlugin;
+
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
-import praxis.slipcor.pvparena.PVPArena;
 
 /*
  * Statistics class
  * 
  * author: slipcor
  * 
- * version: v0.3.0 - Multiple Arenas
+ * version: v0.3.1 - New Arena! FreeFight
  * 
  * history:
  *
- *    v0.2.1 - cleanup, comments
- *    v0.2.0 - language support
- *    v0.1.12 - display stats
+ *     v0.3.0 - Multiple Arenas
+ *     v0.2.1 - cleanup, comments
+ *     v0.2.0 - language support
+ *     v0.1.12 - display stats
  *
  */
 
@@ -38,7 +40,7 @@ public class StatsManager {
 				configFile.createNewFile();
 				bNew = true; // mark as new
 			} catch (Exception e) {
-				PVPArena.lang.log_error("filecreateerror",file);
+				PVPArenaPlugin.lang.log_error("filecreateerror",file);
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -152,14 +154,20 @@ public class StatsManager {
 	 * Function that adds a win stat to the player and the team
 	 */
 	public static void addWinStat(Player player, String color) {
-		addStat(player, color, true);
+		if (color.equals(""))
+			addStat(player, true);
+		else
+			addStat(player, color, true);
 	}
 	
 	/*
 	 * Function that adds a lose stat to the player and the team
 	 */
 	public static void addLoseStat(Player player, String color) {
-		addStat(player, color, false);
+		if (color.equals(""))
+			addStat(player, false);
+		else
+			addStat(player, color, false);
 	}
 	
 	/*
@@ -170,10 +178,26 @@ public class StatsManager {
 		Configuration config = getConfig("stats_"+sName);
 		
 		if (!color.equals("red") && !color.equals("blue")) {
-			PVPArena.lang.log_warning("teamnotfound",color);
+			PVPArenaPlugin.lang.log_warning("teamnotfound",color);
 			return; // invalid team
 		}
 		String path = (win?"wins.":"losses.") + color + "." + player.getName();
+		int sum = 0;
+		if (config.getProperty(path) != null)
+			sum += config.getInt(path, 0); // fetch the sum if available
+		sum++;                             // sum up, add, save
+		config.setProperty(path, Integer.valueOf(sum));
+		config.save();
+	}
+	
+	/*
+	 *  Function that adds a stat to the player and the team
+	 */
+	private static void addStat(Player player, boolean win) {
+		String sName = ArenaManager.getArenaNameByPlayer(player);
+		Configuration config = getConfig("stats_"+sName);
+		
+		String path = (win?"wins.":"losses.") + player.getName();
 		int sum = 0;
 		if (config.getProperty(path) != null)
 			sum += config.getInt(path, 0); // fetch the sum if available

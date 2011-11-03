@@ -1,4 +1,7 @@
-package praxis.slipcor.pvparena.listeners;
+package net.slipcor.pvparena.listeners;
+
+import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -6,18 +9,18 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import praxis.slipcor.pvparena.PAArena;
-import praxis.slipcor.pvparena.managers.ArenaManager;
 
 /*
  * BlockListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.0 - Multiple Arenas
+ * version: v0.3.1 - New Arena! FreeFight
  * 
  * history:
- * 		v0.2.1 - cleanup, comments
+ *
+ *     v0.3.0 - Multiple Arenas
+ * 	   v0.2.1 - cleanup, comments
  */
 
 public class PABlockListener extends BlockListener {
@@ -25,7 +28,7 @@ public class PABlockListener extends BlockListener {
 	public PABlockListener() {}
 
 	public void onBlockBreak(BlockBreakEvent event) {
-		PAArena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 		
@@ -43,7 +46,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		PAArena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 		
@@ -59,7 +62,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockBurn(BlockBurnEvent event) {
-		PAArena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 		
@@ -71,7 +74,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		PAArena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 		

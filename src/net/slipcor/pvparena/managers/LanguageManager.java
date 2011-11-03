@@ -1,23 +1,26 @@
-package praxis.slipcor.pvparena.managers;
+package net.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArenaPlugin;
+
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
-import praxis.slipcor.pvparena.PVPArena;
 
 /*
  * Language class
  * 
  * author: slipcor
  * 
- * version: v0.3.0 - Multiple Arenas
+ * version: v0.3.1 - New Arena! FreeFight
  * 
  * history:
- * 		v0.2.1 - cleanup, comments
- * 		v0.2.0 - language support
+ *
+ *     v0.3.0 - Multiple Arenas
+ * 	   v0.2.1 - cleanup, comments
+ * 	   v0.2.0 - language support
  */
 
 //TODO maybe add the respective arena name somewhere? 
@@ -27,21 +30,19 @@ public class LanguageManager {
 	Map<String, String> log = null; // log language map
 	@SuppressWarnings("unchecked")
 	public LanguageManager() {
-		boolean bNew = false;
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/lang.yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
-				bNew = true;
 			} catch (Exception e) {
-				PVPArena.log.severe("[PVP Arena] Error when creating language file.");
+				PVPArenaPlugin.log.severe("[PVP Arena] Error when creating language file.");
 			}
 
 		Configuration config = new Configuration(configFile);
 		config.load();
 
-		if (bNew) { // if running for the first time => add all nodes
+		if (config.getProperty("log.filecreateerror") == null) { // if running for the first time => add all nodes
 			config.setProperty("log.filecreateerror","Error creating %1% file.");
 			config.setProperty("log.teamnotfound","Unrecognized team: %1%");
 			config.setProperty("log.matnotfound","Unrecognized material: %1%");
@@ -119,46 +120,33 @@ public class LanguageManager {
 			config.setProperty("lang.awarded","You have been awarded %1%");
 			config.setProperty("lang.invfull","Your inventory was full. You did not receive all rewards!");
 			config.setProperty("lang.haswon","%1% are the Champions");
-
-			config.setProperty("lang.arenaexists","Arena already exists!");
-			config.setProperty("lang.arenanotexists","Arena does not exist: %1%");
-			config.setProperty("lang.regionalreadybeingset","A region is already being created: %1%");
-			config.setProperty("lang.regionnotbeingset","A region is not being created!");
-			config.setProperty("lang.notinarena","You are not part of an arena!");
-			config.setProperty("lang.arenas","Available arenas: %1%");
-			config.setProperty("lang.setup","setup an arena");
-
-			config.setProperty("lang.create","create an arena");
-			config.setProperty("lang.created","arena '%1%' created!");
-			config.setProperty("lang.remove","remove an arena");
-			config.setProperty("lang.removed","arena '%1%' removed!");
-			config.save();
-		} else if (config.getProperty("lang.arenaexists") == null) {
-			config.setProperty("lang.arenaexists","Arena already exists!");
-			config.setProperty("lang.arenanotexists","Arena does not exist: %1%");
-			config.setProperty("lang.regionalreadybeingset","A region is already being created: %1%");
-			config.setProperty("lang.regionnotbeingset","A region is not being created!");
-			config.setProperty("lang.notinarena","You are not part of an arena!");
-			config.setProperty("lang.arenas","Available arenas: %1%");
-			config.setProperty("lang.setup","setup an arena");
-
-			config.setProperty("lang.create","create an arena");
-			config.setProperty("lang.created","arena '%1%' created!");
-			config.setProperty("lang.remove","remove an arena");
-			config.setProperty("lang.removed","arena '%1%' removed!");
-			config.save();
-		} else if (config.getProperty("lang.create") == null) {
-			config.setProperty("lang.create","create an arena");
-			config.setProperty("lang.created","arena '%1%' created!");
-			config.setProperty("lang.remove","remove an arena");
-			config.setProperty("lang.removed","arena '%1%' removed!");
-			config.save();
 		}
-		
 		if (config.getProperty("lang.setredblue") != null) {
 			config.removeProperty("lang.setredblue");
 			config.setProperty("lang.setbluespawn","Blue spawn set.");
 		}
+		if (config.getProperty("lang.arenaexists") == null) {
+			config.setProperty("lang.arenaexists","Arena already exists!");
+			config.setProperty("lang.arenanotexists","Arena does not exist: %1%");
+			config.setProperty("lang.regionalreadybeingset","A region is already being created: %1%");
+			config.setProperty("lang.regionnotbeingset","A region is not being created!");
+			config.setProperty("lang.notinarena","You are not part of an arena!");
+			config.setProperty("lang.arenas","Available arenas: %1%");
+			config.setProperty("lang.setup","setup an arena");
+		}
+		if (config.getProperty("lang.create") == null) {
+			config.setProperty("lang.create","create an arena");
+			config.setProperty("lang.created","arena '%1%' created!");
+			config.setProperty("lang.remove","remove an arena");
+			config.setProperty("lang.removed","arena '%1%' removed!");
+		}
+		if (config.getProperty("lang.youjoinedfree") == null) {
+			config.setProperty("lang.youjoinedfree","Welcome to the FreeFight Arena");
+			config.setProperty("lang.playerjoinedfree","%1% has joined the FreeFight Arena");
+			config.setProperty("lang.setspawn","Spawn set: %1%");
+			config.setProperty("lang.setlounge","Lounge set.");
+		}
+		config.save();
 		// write contents to maps
 		lang = (Map<String, String>) config.getProperty("lang");
 		log = (Map<String, String>) config.getProperty("log");
@@ -187,25 +175,25 @@ public class LanguageManager {
 	
 	public void log_error(String s, String arg) {
 		String var = log.get(s);
-		PVPArena.log.severe("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.log.severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_warning(String s, String arg) {
 		String var = log.get(s);
-		PVPArena.log.warning("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.log.warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s, String arg) {
 		String var = log.get(s);
-		PVPArena.log.info("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.log.info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s) {
 		String var = log.get(s);
-		PVPArena.log.info("[PVP Arena] " + var);
+		PVPArenaPlugin.log.info("[PVP Arena] " + var);
 		// log map value
 	}
 }

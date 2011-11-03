@@ -1,44 +1,55 @@
-package praxis.slipcor.pvparena.managers;
+package net.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.arenas.BlueRedArena;
+import net.slipcor.pvparena.arenas.FreeArena;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import praxis.slipcor.pvparena.PAArena;
 
 /*
  * Arena Manager class
  * 
  * author: slipcor
  * 
- * version: v0.3.0 - Multiple Arenas
+ * version: v0.3.1 - New Arena! FreeFight
  * 
  * history:
- * 		v0.3.0 - Multiple Arenas
+ *
+ *     v0.3.0 - Multiple Arenas
  * 
  */
 
 public class ArenaManager {
-	static Map<String, PAArena> arenas = new HashMap<String, PAArena>();
+	static Map<String, Arena> arenas = new HashMap<String, Arena>();
 	
-	public static void loadArena(String configFile) {
-		PAArena arena = new PAArena(configFile);
+	public static void loadArena(String configFile, String type) {
+		Arena arena;
+		
+		if (type.equals("free"))
+			arena = new FreeArena(configFile);
+		else
+			arena = new BlueRedArena(configFile);
+		
 		arenas.put(arena.name, arena);
 	}
 	
 	public static String getArenaNameByPlayer(Player pPlayer) {
-		for (PAArena arena : arenas.values()) {
+		for (Arena arena : arenas.values()) {
 			if (arena.fightUsersClass.containsKey(pPlayer.getName())
 					|| arena.fightUsersTeam.containsKey(pPlayer.getName()))
 				return arena.name;
 		}
 		return null;
 	}
-	public static PAArena getArenaByPlayer(Player pPlayer) {
-		for (PAArena arena : arenas.values()) {
+	public static Arena getArenaByPlayer(Player pPlayer) {
+		for (Arena arena : arenas.values()) {
 			if (arena.fightUsersClass.containsKey(pPlayer.getName())
 					|| arena.fightUsersTeam.containsKey(pPlayer.getName()))
 				return arena;
@@ -46,8 +57,8 @@ public class ArenaManager {
 		return null;
 	}
 	
-	public static PAArena getArenaByBattlefieldLocation(Location location) {
-		for (PAArena arena : arenas.values()) {
+	public static Arena getArenaByBattlefieldLocation(Location location) {
+		for (Arena arena : arenas.values()) {
 			boolean inside = arena.contains(new Vector(location.getX(), location.getY(),location.getZ()));
 			if (inside)
 				return arena;
@@ -55,7 +66,7 @@ public class ArenaManager {
 		return null;
 	}
 	
-	public static PAArena getArenaByName(String sName) {
+	public static Arena getArenaByName(String sName) {
 		return arenas.get(sName);
 	}
 
@@ -69,7 +80,15 @@ public class ArenaManager {
 				if(!f[i].isDirectory() && f[i].getName().contains("config_")) {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
-					loadArena(sName);
+					loadArena(sName,"");
+					done++;
+	            }
+			}
+			for(i=0; i<f.length; i++){
+				if(!f[i].isDirectory() && f[i].getName().contains("config.free_")) {
+					String sName = f[i].getName().replace("config.free_", "");
+					sName = sName.replace(".yml", "");
+					loadArena(sName,"free");
 					done++;
 	            }
 			}
@@ -85,12 +104,12 @@ public class ArenaManager {
 					path.renameTo( new File("plugins/pvparena/stats_default.yml"));
 				}
 			}
-			loadArena("default");
+			loadArena("default","");
 		}
 	}
 
 	public static void reset() {
-		for (PAArena arena : arenas.values()) {
+		for (Arena arena : arenas.values()) {
 			arena.reset();
 			arena.fightUsersClass.clear();
 		}
@@ -104,10 +123,15 @@ public class ArenaManager {
 	}
 
 	public static void unload(String string) {
-		PAArena a = arenas.get(string);
+		Arena a = arenas.get(string);
 		a.forcestop();
 		arenas.remove(string);
-		File path = new File("plugins/pvparena/config_" + string + ".yml");
+		File path;
+		if (a instanceof FreeArena) {
+			path = new File("plugins/pvparena/config.free_" + string + ".yml");
+		} else {
+			path = new File("plugins/pvparena/config_" + string + ".yml");
+		}
 		path.delete();
 		path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();

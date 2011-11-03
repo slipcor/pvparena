@@ -1,4 +1,4 @@
-package praxis.pvparena.register.payment.methods;
+package net.slipcor.pvparena.register.payment.methods;
 
 import com.iCo6.iConomy;
 import com.iCo6.system.Account;
@@ -6,9 +6,10 @@ import com.iCo6.system.Accounts;
 import com.iCo6.system.Holdings;
 
 
+import net.slipcor.pvparena.register.payment.Method;
+
 import org.bukkit.plugin.Plugin;
 
-import praxis.pvparena.register.payment.Method;
 
 /**
  * iConomy 6 Implementation of Method
