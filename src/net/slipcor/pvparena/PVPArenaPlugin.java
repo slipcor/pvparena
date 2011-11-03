@@ -28,10 +28,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.3 - Random spawns possible for every arena
  * 
  * history:
  *
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments, iConomy 6 support
  *     v0.2.0 - language support

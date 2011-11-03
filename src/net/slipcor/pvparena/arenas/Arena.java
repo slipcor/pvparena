@@ -39,10 +39,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.2 - Classes now can store up to 6 players
+ * version: v0.3.3 - Random spawns possible for every arena
  * 
  * history:
  *
+ *     v0.3.2 - Classes now can store up to 6 players
  *     v0.3.1 - New Arena! FreeFight
  * 
  */
@@ -123,6 +124,7 @@ public abstract class Arena {
 	public boolean blueTeamIronClicked = false;
 	public boolean fightInProgress = false;
 	public boolean enabled = true;
+	public boolean randomSpawn = false;
 	
 	public int wand;
 	public int entryFee;
@@ -194,6 +196,9 @@ public abstract class Arena {
 			config.setProperty("protection.ignition.block-tnt",Boolean.valueOf(true));
 			config.setProperty("protection.ignition.block-lighter",Boolean.valueOf(true));
 		}
+		if (config.getProperty("general.randomSpawn") == null) {
+			config.setProperty("general.randomSpawn",Boolean.valueOf(false));
+		}
 		if (!s.equals("free") && config.getKeys("teams") == null) {
 			config.setProperty("teams.team-killing-enabled",Boolean.valueOf(false));
 			config.setProperty("teams.manually-select-teams",Boolean.valueOf(false));
@@ -231,6 +236,7 @@ public abstract class Arena {
 		sTPexit  = config.getString("general.tp.exit","exit"); // old || exit || spectator
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		forceeven = config.getBoolean("general.forceeven", false);
+		randomSpawn = config.getBoolean("general.randomSpawn", false);
 	}
 
 	public void prepare(Player player) {
@@ -298,7 +304,7 @@ public abstract class Arena {
 			
 			place = locs.get(r.nextInt(locs.size()));
 		}
-		
+		System.out.print(place);
 		Double x = Double.valueOf(config.getDouble("coords." + place + ".x",
 				0.0D));
 		Double y = Double.valueOf(config.getDouble("coords." + place + ".y",
@@ -320,12 +326,38 @@ public abstract class Arena {
 			return Boolean.valueOf(false);
 		}
 
-		List<?> list = config.getKeys("coords");
-		if (list.size() == 6) {
-			return Boolean.valueOf(true);
-		}
+		List<String> list = config.getKeys("coords");
+		
+		if (randomSpawn) {
+			// random spawn, check for 
+			if (!list.contains("spectator"))
+				return false;
+			if (!list.contains("redlounge"))
+				return false;
+			if (!list.contains("bluelounge"))
+				return false;
+			if (!list.contains("exit"))
+				return false;
+			Iterator<String> iter = list.iterator();
+			int spawns = 0;
+			while (iter.hasNext()) {
+				String s = iter.next();
+				if (s.startsWith("spawn"))
+					spawns++;
+			}
+			if (spawns > 3) {
+				return Boolean.valueOf(true);
+			}
 
-		return Boolean.valueOf(false);
+			return Boolean.valueOf(false);
+		} else {
+			if (list.size() == 6) {
+				return Boolean.valueOf(true);
+			}
+
+			return Boolean.valueOf(false);
+		}
+		
 	}
 
 	public void giveItems(Player player) {
@@ -385,8 +417,16 @@ public abstract class Arena {
 			Object o = iter.next();
 			Sign sign = (Sign) fightSigns.get(o.toString());
 			sign.setLine(2, "");
-			sign.setLine(3, "");
-			sign.update(true);
+			sign.setLine(3, "");/*
+			if (!sign.update()) {
+				PVPArenaPlugin.log.warning("Sign update failed - a");
+				if (!sign.update(true))
+					PVPArenaPlugin.log.severe("Sign force update failed - a");
+				else
+					PVPArenaPlugin.log.info("Sign force update successful - a");
+			}
+			else
+				PVPArenaPlugin.log.info("Sign update successful - a");*/
 			
 			sign = getNext(sign);
 			
@@ -394,8 +434,16 @@ public abstract class Arena {
 				sign.setLine(0, "");
 				sign.setLine(1, "");
 				sign.setLine(2, "");
-				sign.setLine(3, "");
-				sign.update(true);
+				sign.setLine(3, "");/*
+				if (!sign.update()) {
+					PVPArenaPlugin.log.warning("Sign update failed - b");
+					if (!sign.update(true))
+						PVPArenaPlugin.log.severe("Sign force update failed - b");
+					else
+						PVPArenaPlugin.log.info("Sign force update successful - b");
+				}
+				else
+					PVPArenaPlugin.log.info("Sign update successful - b");*/
 			}
 		}
 	}
@@ -407,12 +455,28 @@ public abstract class Arena {
 			Object o = iter.next();
 			Sign sign = (Sign) fightSigns.get(o.toString());
 			if (sign.getLine(2).equals(player)) {
-				sign.setLine(2, "");
-				sign.update(true);
+				sign.setLine(2, "");/*
+				if (!sign.update()) {
+					PVPArenaPlugin.log.warning("Sign update failed - 0");
+					if (!sign.update(true))
+						PVPArenaPlugin.log.severe("Sign force update failed - 0");
+					else
+						PVPArenaPlugin.log.info("Sign force update successful - 0");
+				}
+				else
+					PVPArenaPlugin.log.info("Sign update successful - 0");*/
 			}
 			if (sign.getLine(3).equals(player)) {
-				sign.setLine(3, "");
-				sign.update(true);
+				sign.setLine(3, "");/*
+				if (!sign.update()) {
+					PVPArenaPlugin.log.warning("Sign update failed - 1");
+					if (!sign.update(true))
+						PVPArenaPlugin.log.severe("Sign force update failed - 1");
+					else
+						PVPArenaPlugin.log.info("Sign force update successful - 1");
+				}
+				else
+					PVPArenaPlugin.log.info("Sign update successful - 1");*/
 			}
 			sign = getNext(sign);
 			
@@ -420,10 +484,17 @@ public abstract class Arena {
 				for (int i = 0; i < 4 ; i ++) {
 					if (sign.getLine(i).equals(player)) {
 						sign.setLine(i, "");
-						sign.update(true);
 					}
+				}/*
+				if (!sign.update()) {
+					PVPArenaPlugin.log.warning("Sign update failed - 2");
+					if (!sign.update(true))
+						PVPArenaPlugin.log.severe("Sign force update failed - 2");
+					else
+						PVPArenaPlugin.log.info("Sign force update successful - 2");
 				}
-				sign.update(true);
+				else
+					PVPArenaPlugin.log.info("Sign update successful - 2");*/
 			}
 		}
 	}
@@ -491,14 +562,12 @@ public abstract class Arena {
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			if (((String) fightUsersTeam.get(o.toString())).equals("red")) {
-				Player z = Bukkit.getServer().getPlayer(o.toString());
+			Player z = Bukkit.getServer().getPlayer(o.toString());
+			if (!randomSpawn && ((String) fightUsersTeam.get(o.toString())).equals("red")) {
 				goToWaypoint(z, "redspawn");
-			} else if (((String) fightUsersTeam.get(o.toString())).equals("blue")) {
-				Player z = Bukkit.getServer().getPlayer(o.toString());
+			} else if (!randomSpawn && ((String) fightUsersTeam.get(o.toString())).equals("blue")) {
 				goToWaypoint(z, "bluespawn");
 			} else {
-				Player z = Bukkit.getServer().getPlayer(o.toString());
 				goToWaypoint(z, "spawn");
 			}
 		}
@@ -1229,20 +1298,7 @@ public abstract class Arena {
 
 	boolean parseAdminCommand(String[] args, Player player) {
 
-		if (args[0].equalsIgnoreCase("redlounge")) {
-			setCoords(player, "redlounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setredlounge"));
-			
-		} else if (args[0].equalsIgnoreCase("redspawn")) {
-			setCoords(player, "redspawn");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setredspawn"));
-		} else if (args[0].equalsIgnoreCase("bluelounge")) {
-			setCoords(player, "bluelounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluelounge"));
-		} else if (args[0].equalsIgnoreCase("bluespawn")) {
-			setCoords(player, "bluespawn");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluespawn"));
-		} else if (args[0].equalsIgnoreCase("spectator")) {
+		if (args[0].equalsIgnoreCase("spectator")) {
 			setCoords(player, "spectator");
 			tellPlayer(player, PVPArenaPlugin.lang.parse("setspectator"));
 		} else if (args[0].equalsIgnoreCase("exit")) {
@@ -1255,11 +1311,51 @@ public abstract class Arena {
 			} else {
 				tellPlayer(player, PVPArenaPlugin.lang.parse("nofight"));
 			}
+		} else if (args[0].equalsIgnoreCase("forcestop")) {
+			if (fightInProgress) {
+				forcestop();
+				tellPlayer(player, PVPArenaPlugin.lang.parse("forcestop"));
+			} else {
+				tellPlayer(player, PVPArenaPlugin.lang.parse("nofight"));
+			}
+		} else if (randomSpawn && (args[0].startsWith("spawn"))) {
+			setCoords(player, args[0]);
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setspawn", args[0]));
 		} else {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","501"));
-			return false;
+			// no random or not trying to set custom spawn
+			if ((!checkLoungeCommand(args,player)) && (!checkSpawnCommand(args, player))) {
+				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","501"));
+				return false;
+			}
+			// else: command lounge or spawn :)
 		}
 		return true;
+	}
+
+	public boolean checkSpawnCommand(String[] args, Player player) {
+		if (args[0].equalsIgnoreCase("redspawn")) {
+			setCoords(player, "redspawn");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setredspawn"));
+			return true;
+		} else if (args[0].equalsIgnoreCase("bluespawn")) {
+			setCoords(player, "bluespawn");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluespawn"));
+			return true;
+		}
+		return false;
+	}
+
+	public boolean checkLoungeCommand(String[] args, Player player) {
+		if (args[0].equalsIgnoreCase("redlounge")) {
+			setCoords(player, "redlounge");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setredlounge"));
+			return true;
+		} else if (args[0].equalsIgnoreCase("bluelounge")) {
+			setCoords(player, "bluelounge");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluelounge"));
+			return true;
+		}
+		return false;
 	}
 
 	public static void tellPublic(String msg) {

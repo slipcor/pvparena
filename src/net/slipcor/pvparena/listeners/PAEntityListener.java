@@ -66,9 +66,11 @@ public class PAEntityListener extends EntityListener {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
 				StatsManager.addLoseStat(player, color);
+				arena.fightUsersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
-				arena.removePlayer(player, arena.sTPdeath);
-				arena.checkEnd();
+				
+				if (arena.checkEnd())
+					return;
 			}
 		}
 	}
@@ -119,10 +121,10 @@ public class PAEntityListener extends EntityListener {
 				defender.setSaturation(20);
 				defender.setExhaustion(0);
 				lives--;
-				if (arena.fightUsersTeam.get(defender.getName()) == "red") {
+				if (!arena.randomSpawn && arena.fightUsersTeam.get(defender.getName()) == "red") {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "redspawn");
-				} else if (arena.fightUsersTeam.get(defender.getName()) == "blue") {
+				} else if (!arena.randomSpawn && arena.fightUsersTeam.get(defender.getName()) == "blue") {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "bluespawn");
 				} else {
@@ -179,10 +181,10 @@ public class PAEntityListener extends EntityListener {
 				player.setSaturation(20);
 				player.setExhaustion(0);
 				lives--;
-				if (arena.fightUsersTeam.get(player.getName()) == "red") {
+				if (!arena.randomSpawn && arena.fightUsersTeam.get(player.getName()) == "red") {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "redspawn");
-				} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
+				} else if (!arena.randomSpawn && arena.fightUsersTeam.get(player.getName()) == "blue") {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "bluespawn");
 				} else {

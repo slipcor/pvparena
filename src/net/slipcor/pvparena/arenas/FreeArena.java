@@ -5,7 +5,7 @@ package net.slipcor.pvparena.arenas;
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.3 - Random spawns possible for every arena
  * 
  * history:
  *
@@ -46,6 +46,7 @@ public class FreeArena extends Arena{
 		this.manuallyselectteams = false;
 		this.woolhead = false;
 		this.forceeven = false;
+		this.randomSpawn = true;
 	}
 	
 	@Override
@@ -110,32 +111,28 @@ public class FreeArena extends Arena{
 			Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
 		}
 	}
-	
+
 	@Override
-	boolean parseAdminCommand(String[] args, Player player) {
+	public boolean checkSpawnCommand(String[] args, Player player) {
 		if (args[0].equalsIgnoreCase("lounge")) {
 			setCoords(player, "lounge");
 			tellPlayer(player, PVPArenaPlugin.lang.parse("setlounge"));
-		} else if (args[0].equalsIgnoreCase("exit")) {
-			setCoords(player, "exit");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setexit"));
-		} else if (args[0].equalsIgnoreCase("spectator")) {
-			setCoords(player, "spectator");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setspectator"));
-		} else if (args[0].equalsIgnoreCase("forcestop")) {
-			if (fightInProgress) {
-				forcestop();
-				tellPlayer(player, PVPArenaPlugin.lang.parse("forcestop"));
-			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("nofight"));
-			}
-		} else if (args[0].startsWith("spawn")) {
-			setCoords(player, args[0]);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setspawn", args[0]));
-		} else {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","501"));
-			return false;
+			return true;
 		}
-		return true;
+		return false;
+	}
+	
+	@Override
+	public boolean checkLoungeCommand(String[] args, Player player) {
+		if (args[0].equalsIgnoreCase("redlounge")) {
+			setCoords(player, "redlounge");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setredlounge"));
+			return true;
+		} else if (args[0].equalsIgnoreCase("redspawn")) {
+			setCoords(player, "redspawn");
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setredspawn"));
+			return true;
+		}
+		return false;
 	}
 }

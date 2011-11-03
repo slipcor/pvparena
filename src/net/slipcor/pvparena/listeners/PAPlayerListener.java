@@ -54,10 +54,10 @@ public class PAPlayerListener extends PlayerListener {
 		if (!(arena.fightUsersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
-		Location l = arena.getCoords("spectator");
+		Location l = arena.getCoords(arena.sTPdeath);
 		event.setRespawnLocation(l);
 		
-		arena.removePlayer(player, arena.sTPexit);
+		arena.removePlayer(player, arena.sTPdeath);
 		arena.fightUsersRespawn.remove(player.getName());		
 	}
 
