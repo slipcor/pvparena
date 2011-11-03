@@ -19,6 +19,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Arrow;
@@ -38,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.2 - Classes now can store up to 6 players
  * 
  * history:
  *
@@ -297,7 +298,7 @@ public abstract class Arena {
 			
 			place = locs.get(r.nextInt(locs.size()));
 		}
-		System.out.print(place);
+		
 		Double x = Double.valueOf(config.getDouble("coords." + place + ".x",
 				0.0D));
 		Double y = Double.valueOf(config.getDouble("coords." + place + ".y",
@@ -386,6 +387,16 @@ public abstract class Arena {
 			sign.setLine(2, "");
 			sign.setLine(3, "");
 			sign.update(true);
+			
+			sign = getNext(sign);
+			
+			if (sign != null) {
+				sign.setLine(0, "");
+				sign.setLine(1, "");
+				sign.setLine(2, "");
+				sign.setLine(3, "");
+				sign.update(true);
+			}
 		}
 	}
 
@@ -397,12 +408,31 @@ public abstract class Arena {
 			Sign sign = (Sign) fightSigns.get(o.toString());
 			if (sign.getLine(2).equals(player)) {
 				sign.setLine(2, "");
-				sign.update();
+				sign.update(true);
 			}
 			if (sign.getLine(3).equals(player)) {
 				sign.setLine(3, "");
-				sign.update();
+				sign.update(true);
 			}
+			sign = getNext(sign);
+			
+			if (sign != null) {
+				for (int i = 0; i < 4 ; i ++) {
+					if (sign.getLine(i).equals(player)) {
+						sign.setLine(i, "");
+						sign.update(true);
+					}
+				}
+				sign.update(true);
+			}
+		}
+	}
+
+	public Sign getNext(Sign sign) {
+		try {
+			return (Sign) sign.getBlock().getRelative(BlockFace.DOWN).getState();
+		} catch (Exception e) {
+			return null;
 		}
 	}
 
@@ -731,7 +761,6 @@ public abstract class Arena {
 			} catch (Exception e) {
 				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid SATURATION entry!");
 			}
-
 			fightTelePass.put(player.getName(), "yes");
 			if (string.equalsIgnoreCase("old")) {
 				try {

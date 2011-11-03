@@ -66,7 +66,6 @@ public class PAEntityListener extends EntityListener {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
 				StatsManager.addLoseStat(player, color);
-				arena.fightUsersTeam.remove(player.getName());
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
 				arena.removePlayer(player, arena.sTPdeath);
 				arena.checkEnd();
@@ -111,7 +110,6 @@ public class PAEntityListener extends EntityListener {
 
 			lives = arena.fightUsersLives.get(defender.getName());
 			if (lives < 1) {
-				System.out.print("lives < 1");
 				return; // player died
 			} else if (lives > 0) {
 
@@ -131,7 +129,6 @@ public class PAEntityListener extends EntityListener {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "spawn");
 				}
-				System.out.print("life lost");
 				arena.fightUsersLives.put(defender.getName(), lives);
 				event.setCancelled(true);
 				return;
@@ -173,7 +170,6 @@ public class PAEntityListener extends EntityListener {
 
 			lives = arena.fightUsersLives.get(player.getName());
 			if (lives < 1) {
-				System.out.print("lives < 1");
 				return; // player died
 			} else if (lives > 0) {
 
@@ -193,7 +189,6 @@ public class PAEntityListener extends EntityListener {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "spawn");
 				}
-				System.out.print("life lost");
 				arena.fightUsersLives.put(player.getName(), lives);
 				event.setCancelled(true);
 				return;

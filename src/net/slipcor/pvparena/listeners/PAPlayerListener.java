@@ -21,16 +21,16 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.config.Configuration;
 
-
 /*
  * PlayerListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.2 - Classes now can store up to 6 players
  * 
  * history:
- *
+ * 
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
  * 	   v0.1.10 - config: only start with even teams
@@ -173,6 +173,19 @@ public class PAPlayerListener extends PlayerListener {
 								break; // remove found player, break!
 							}
 						}
+
+						sSign = arena.getNext(sSign);
+						
+						if (sSign != null) {
+							for (i=0;i<4;i++) {
+								if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
+									sSign.setLine(i, "");
+									sSign.update();
+									Arena.clearInventory(player);
+									break; // remove found player, break!
+								}
+							}
+						}
 					}
 
 					for (i=2;i<4;i++) {
@@ -188,6 +201,26 @@ public class PAPlayerListener extends PlayerListener {
 								arena.giveItems(player);
 							}
 							return;
+						}
+					}
+					
+					Sign nSign = arena.getNext(sign);
+					
+					if (nSign != null) {
+						for (i=0;i<4;i++) {
+							if (nSign.getLine(i).equals("")) {
+								arena.fightSigns.put(player.getName(), sign);
+								arena.fightUsersClass.put(player.getName(),sign.getLine(0));
+								nSign.setLine(i, player.getName());
+								nSign.update();
+								// select class
+								if (sign.getLine(0).equalsIgnoreCase("custom")) {
+									arena.setInventory(player); // if custom, give stuff back
+								} else {
+									arena.giveItems(player);
+								}
+								return;
+							}
 						}
 					}
 					player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("toomanyplayers"));
