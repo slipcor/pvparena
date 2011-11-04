@@ -94,7 +94,7 @@ public abstract class Arena {
 	public final Map<String, String> fightUsersTeam = new HashMap<String, String>();
 	public final Map<String, String> fightUsersClass = new HashMap<String, String>();
 	public final Map<String, String> fightClasses = new HashMap<String, String>();
-	public final Map<String, Sign> fightSigns = new HashMap<String, Sign>();
+	public final Map<String, Location> fightSignLocations = new HashMap<String, Location>();
 	public final Map<String, String> fightUsersRespawn = new HashMap<String, String>();
 	public final Map<String, String> fightTelePass = new HashMap<String, String>();
 	public final Map<String, Byte> fightUsersLives = new HashMap<String, Byte>();
@@ -263,7 +263,7 @@ public abstract class Arena {
 		bets.clear();
 		redTeam = 0;
 		blueTeam = 0;
-		fightSigns.clear();
+		fightSignLocations.clear();
 	}
 
 
@@ -411,13 +411,13 @@ public abstract class Arena {
 	
 
 	public void cleanSigns() {
-		Set<String> set = fightSigns.keySet();
+		Set<String> set = fightSignLocations.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			Sign sign = (Sign) fightSigns.get(o.toString());
+			Sign sign = (Sign) fightSignLocations.get(o.toString()).getBlock().getState();
 			sign.setLine(2, "");
-			sign.setLine(3, "");/*
+			sign.setLine(3, "");
 			if (!sign.update()) {
 				PVPArenaPlugin.log.warning("Sign update failed - a");
 				if (!sign.update(true))
@@ -425,8 +425,6 @@ public abstract class Arena {
 				else
 					PVPArenaPlugin.log.info("Sign force update successful - a");
 			}
-			else
-				PVPArenaPlugin.log.info("Sign update successful - a");*/
 			
 			sign = getNext(sign);
 			
@@ -434,7 +432,7 @@ public abstract class Arena {
 				sign.setLine(0, "");
 				sign.setLine(1, "");
 				sign.setLine(2, "");
-				sign.setLine(3, "");/*
+				sign.setLine(3, "");
 				if (!sign.update()) {
 					PVPArenaPlugin.log.warning("Sign update failed - b");
 					if (!sign.update(true))
@@ -442,59 +440,49 @@ public abstract class Arena {
 					else
 						PVPArenaPlugin.log.info("Sign force update successful - b");
 				}
-				else
-					PVPArenaPlugin.log.info("Sign update successful - b");*/
 			}
 		}
 	}
 
 	public void cleanSigns(String player) {
-		Set<String> set = fightSigns.keySet();
+		Set<String> set = fightSignLocations.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			Sign sign = (Sign) fightSigns.get(o.toString());
+			boolean updated = false;
+			Sign sign = (Sign) fightSignLocations.get(o.toString()).getBlock().getState();
 			if (sign.getLine(2).equals(player)) {
-				sign.setLine(2, "");/*
-				if (!sign.update()) {
-					PVPArenaPlugin.log.warning("Sign update failed - 0");
-					if (!sign.update(true))
-						PVPArenaPlugin.log.severe("Sign force update failed - 0");
-					else
-						PVPArenaPlugin.log.info("Sign force update successful - 0");
-				}
-				else
-					PVPArenaPlugin.log.info("Sign update successful - 0");*/
+				sign.setLine(2, "");
+				updated = true;
 			}
 			if (sign.getLine(3).equals(player)) {
-				sign.setLine(3, "");/*
-				if (!sign.update()) {
-					PVPArenaPlugin.log.warning("Sign update failed - 1");
-					if (!sign.update(true))
-						PVPArenaPlugin.log.severe("Sign force update failed - 1");
-					else
-						PVPArenaPlugin.log.info("Sign force update successful - 1");
-				}
-				else
-					PVPArenaPlugin.log.info("Sign update successful - 1");*/
+				sign.setLine(3, "");
+				updated = true;
 			}
+			if (updated && !sign.update()) {
+				PVPArenaPlugin.log.warning("Sign update failed - 1");
+				if (!sign.update(true))
+					PVPArenaPlugin.log.severe("Sign force update failed - 1");
+				else
+					PVPArenaPlugin.log.info("Sign force update successful - 1");
+			}
+			updated = false;
 			sign = getNext(sign);
 			
 			if (sign != null) {
 				for (int i = 0; i < 4 ; i ++) {
 					if (sign.getLine(i).equals(player)) {
 						sign.setLine(i, "");
+						updated = true;
 					}
-				}/*
-				if (!sign.update()) {
+				}
+				if (updated && !sign.update()) {
 					PVPArenaPlugin.log.warning("Sign update failed - 2");
 					if (!sign.update(true))
 						PVPArenaPlugin.log.severe("Sign force update failed - 2");
 					else
 						PVPArenaPlugin.log.info("Sign force update successful - 2");
 				}
-				else
-					PVPArenaPlugin.log.info("Sign update successful - 2");*/
 			}
 		}
 	}

@@ -26,10 +26,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.2 - Classes now can store up to 6 players
+ * version: v0.3.3 - Random spawns possible for every arena
  * 
  * history:
  * 
+ *     v0.3.2 - New Arena! FreeFight
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
@@ -94,10 +95,11 @@ public class PAPlayerListener extends PlayerListener {
 
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
-
 		Arena arena = ArenaManager.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
+
+		event.setCancelled(false); // fighting player - first recon NOT to cancel!
 		
 		if (arena.fightTelePass.containsKey(player.getName()))
 			return; // if allowed => OUT
@@ -163,43 +165,42 @@ public class PAPlayerListener extends PlayerListener {
 					
 					if (arena.fightUsersClass.containsKey(player.getName())) {
 						// already selected class, remove it!
-						Sign sSign = arena.fightSigns.get(player.getName());
+						Sign sSign = (Sign) arena.fightSignLocations.get(player.getName()).getBlock().getState();
 						
 						for (i=2;i<4;i++) {
 							if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
 								sSign.setLine(i, "");
-								sSign.update();
 								Arena.clearInventory(player);
 								break; // remove found player, break!
 							}
 						}
-
+						sign.update();
 						sSign = arena.getNext(sSign);
 						
 						if (sSign != null) {
 							for (i=0;i<4;i++) {
 								if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
 									sSign.setLine(i, "");
-									sSign.update();
 									Arena.clearInventory(player);
 									break; // remove found player, break!
 								}
 							}
 						}
+						sSign.update();
 					}
 
 					for (i=2;i<4;i++) {
 						if (sign.getLine(i).equals("")) {
-							arena.fightSigns.put(player.getName(), sign);
+							arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
 							arena.fightUsersClass.put(player.getName(),sign.getLine(0));
 							sign.setLine(i, player.getName());
-							sign.update();
 							// select class
 							if (sign.getLine(0).equalsIgnoreCase("custom")) {
 								arena.setInventory(player); // if custom, give stuff back
 							} else {
 								arena.giveItems(player);
 							}
+							sign.update();
 							return;
 						}
 					}
@@ -209,16 +210,16 @@ public class PAPlayerListener extends PlayerListener {
 					if (nSign != null) {
 						for (i=0;i<4;i++) {
 							if (nSign.getLine(i).equals("")) {
-								arena.fightSigns.put(player.getName(), sign);
+								arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
 								arena.fightUsersClass.put(player.getName(),sign.getLine(0));
 								nSign.setLine(i, player.getName());
-								nSign.update();
 								// select class
 								if (sign.getLine(0).equalsIgnoreCase("custom")) {
 									arena.setInventory(player); // if custom, give stuff back
 								} else {
 									arena.giveItems(player);
 								}
+								nSign.update();
 								return;
 							}
 						}

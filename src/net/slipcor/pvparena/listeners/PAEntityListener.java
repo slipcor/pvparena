@@ -17,16 +17,16 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
-
 /*
  * EntityListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.3 - Random spawns possible for every arena
  * 
  * history:
  *
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments
  *     v0.2.0 - language support
