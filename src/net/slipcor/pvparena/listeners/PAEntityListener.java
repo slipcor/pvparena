@@ -53,19 +53,14 @@ public class PAEntityListener extends EntityListener {
 			
 			if (arena.fightUsersTeam.containsKey(player.getName())) {
 				event.getDrops().clear();
-				String color = "";
-				if (arena.fightUsersTeam.get(player.getName()) == "red") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.RED + player.getName() + ChatColor.YELLOW));
-					arena.redTeam -= 1;
-					color = "red";
-				} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.BLUE + player.getName() + ChatColor.YELLOW));
-					arena.blueTeam -= 1;
-					color = "blue";
+				String sTeam = arena.fightUsersTeam.get(player.getName());
+				String color = arena.fightTeams.get(sTeam);
+				if (color != null) {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
-				StatsManager.addLoseStat(player, color);
+				StatsManager.addLoseStat(player, sTeam, arena);
 				arena.fightUsersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
 				
@@ -121,12 +116,10 @@ public class PAEntityListener extends EntityListener {
 				defender.setSaturation(20);
 				defender.setExhaustion(0);
 				lives--;
-				if (!arena.randomSpawn && arena.fightUsersTeam.get(defender.getName()) == "red") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
-					arena.goToWaypoint(defender, "redspawn");
-				} else if (!arena.randomSpawn && arena.fightUsersTeam.get(defender.getName()) == "blue") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
-					arena.goToWaypoint(defender, "bluespawn");
+				String color = arena.fightTeams.get(arena.fightUsersTeam.get(defender.getName()));
+				if (!arena.randomSpawn && color != null) {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.valueOf(color) + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
+					arena.goToWaypoint(defender, color + "spawn");
 				} else {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "spawn");
@@ -181,12 +174,10 @@ public class PAEntityListener extends EntityListener {
 				player.setSaturation(20);
 				player.setExhaustion(0);
 				lives--;
-				if (!arena.randomSpawn && arena.fightUsersTeam.get(player.getName()) == "red") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.RED + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
-					arena.goToWaypoint(player, "redspawn");
-				} else if (!arena.randomSpawn && arena.fightUsersTeam.get(player.getName()) == "blue") {
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.BLUE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
-					arena.goToWaypoint(player, "bluespawn");
+				String color = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
+				if (!arena.randomSpawn && color != null) {
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
+					arena.goToWaypoint(player, color + "spawn");
 				} else {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, "spawn");

@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -10,11 +11,13 @@ import java.util.Random;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,10 +42,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.3 - Random spawns possible for every arena
+ * version: v0.3.4 - Customisable Teams
  * 
  * history:
  *
+ *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.2 - Classes now can store up to 6 players
  *     v0.3.1 - New Arena! FreeFight
  * 
@@ -57,6 +61,8 @@ public abstract class Arena {
 	public static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
 	public static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
 	public static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
+	
+	private static final DebugManager db = new DebugManager();
 	
 	static {
 		HELMETS_TYPE.add(Material.LEATHER_HELMET);
@@ -91,6 +97,7 @@ public abstract class Arena {
 	
 	public String name = "default";
 	
+	public Map<String, String> fightTeams = new HashMap<String, String>();
 	public final Map<String, String> fightUsersTeam = new HashMap<String, String>();
 	public final Map<String, String> fightUsersClass = new HashMap<String, String>();
 	public final Map<String, String> fightClasses = new HashMap<String, String>();
@@ -104,8 +111,6 @@ public abstract class Arena {
 	public final HashMap<Player, Object> savedmisc = new HashMap<Player, Object>();
 	public final HashMap<String, Double> bets = new HashMap<String, Double>();
 
-	public int redTeam = 0;
-	public int blueTeam = 0;
 	public Location pos1;
 	public Location pos2;
 
@@ -120,8 +125,6 @@ public abstract class Arena {
 	public boolean protection;
 	public boolean teamkilling;
 	public boolean manuallyselectteams;
-	public boolean redTeamIronClicked = false;
-	public boolean blueTeamIronClicked = false;
 	public boolean fightInProgress = false;
 	public boolean enabled = true;
 	public boolean randomSpawn = false;
@@ -256,13 +259,9 @@ public abstract class Arena {
 		cleanSigns();
 		clearArena();
 		fightInProgress = false;
-		redTeamIronClicked = false;
-		blueTeamIronClicked = false;
 		fightUsersTeam.clear();
 		fightUsersLives.clear();
 		bets.clear();
-		redTeam = 0;
-		blueTeam = 0;
 		fightSignLocations.clear();
 	}
 
@@ -319,43 +318,55 @@ public abstract class Arena {
 				z.doubleValue(), yaw.floatValue(), pitch.floatValue());
 	}
 
-	public Boolean isSetup() {
+	public String isSetup() {
 		Configuration config = new Configuration(configFile);
 		config.load();
 		if (config.getKeys("coords") == null) {
-			return Boolean.valueOf(false);
+			return "coords";
 		}
 
 		List<String> list = config.getKeys("coords");
-		
 		if (randomSpawn) {
-			// random spawn, check for 
+			// random spawn, we need the 2 that every arena has
 			if (!list.contains("spectator"))
-				return false;
-			if (!list.contains("redlounge"))
-				return false;
-			if (!list.contains("bluelounge"))
-				return false;
+				return "spectator";
 			if (!list.contains("exit"))
-				return false;
+				return "exit";
+			
+			// now we need a spawn and lounge for every team 
+			
 			Iterator<String> iter = list.iterator();
 			int spawns = 0;
+			int lounges = 0;
 			while (iter.hasNext()) {
 				String s = iter.next();
 				if (s.startsWith("spawn"))
 					spawns++;
+				if (s.endsWith("lounge"))
+					lounges++;
 			}
-			if (spawns > 3) {
-				return Boolean.valueOf(true);
+			if (spawns > 3 && lounges >= fightTeams.size()) {
+				return null;
 			}
 
-			return Boolean.valueOf(false);
+			return spawns + "x spawn ; " + lounges + "x lounge";
 		} else {
-			if (list.size() == 6) {
-				return Boolean.valueOf(true);
+			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
+			Iterator<String> iter = list.iterator();
+			int spawns = 0;
+			int lounges = 0;
+			while (iter.hasNext()) {
+				String s = iter.next();
+				if (s.endsWith("spawn") && (!s.equals("spawn")))
+					spawns++;
+				if (s.endsWith("lounge") && (!s.equals("lounge")))
+					lounges++;
+			}
+			if (spawns == fightTeams.size() && lounges == fightTeams.size()) {
+				return null;
 			}
 
-			return Boolean.valueOf(false);
+			return spawns + "x spawn ; " + lounges + "x lounge";
 		}
 		
 	}
@@ -389,14 +400,27 @@ public abstract class Arena {
 			}
 		}
 		if (woolhead) {
-			short col = 14;
-			if (fightUsersTeam.get(player.getName()).equals("blue")) 
-				col = 11;
-			
-			player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, col));
+			String sTeam = fightUsersTeam.get(player.getName());
+			String color = fightTeams.get(sTeam);
+			player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, getColorShortFromColorENUM(color)));
 		}
 	}
 	
+	private short getColorShortFromColorENUM(String color) {
+		
+		/*
+		 *  DyeColor supports:
+		 *  WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK,
+		 *  GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
+		 */
+		for (DyeColor dc : DyeColor.values()) {
+			if (dc.name().equalsIgnoreCase(color))
+				return dc.getData();
+		}
+		
+		return (short) 0;
+	}
+
 	public void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
 		Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type))
@@ -495,32 +519,17 @@ public abstract class Arena {
 		}
 	}
 
-	public boolean teamReady(String color) {
-		int members = 0;
-		int membersReady = 0;
+	public boolean ready() {
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			if (((String) fightUsersTeam.get(o.toString())).equals(color)) {
-				++members;
-				if (fightUsersClass.containsKey(o.toString())) {
-					++membersReady;
-				}
+			if (!fightUsersClass.containsKey(o.toString())) {
+				// a member is NOT ready!
+				return false;
 			}
 		}
-		if ((members == membersReady) && (members > 0)) {
-			if (color == "red") {
-				return true;
-			}
-			if (color == "blue")
-				return true;
-			if (color == "free")
-				return members > 1; // at least 2 ppl need to be in there for a free arena to start
-		} else {
-			return false;
-		}
-		return false;
+		return fightUsersTeam.size() > 1; // at least 2 ppl need to be in there for an arena to start
 	}
 
 	public void tellEveryone(String msg) {		
@@ -551,10 +560,8 @@ public abstract class Arena {
 		while (iter.hasNext()) {
 			Object o = iter.next();
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			if (!randomSpawn && ((String) fightUsersTeam.get(o.toString())).equals("red")) {
-				goToWaypoint(z, "redspawn");
-			} else if (!randomSpawn && ((String) fightUsersTeam.get(o.toString())).equals("blue")) {
-				goToWaypoint(z, "bluespawn");
+			if (!randomSpawn) {
+				goToWaypoint(z, (String) fightUsersTeam.get(o.toString()) + "spawn");
 			} else {
 				goToWaypoint(z, "spawn");
 			}
@@ -672,12 +679,10 @@ public abstract class Arena {
 
 	public void goToWaypoint(Player player, String place) {
 		String color = "";
-		if (place.equals("redlounge")) {
-			color = "&c";
-		} else if (place.equals("bluelounge")) {
-			color = "&9";
+		if (place.endsWith("lounge")) {
+			color = place.replace("lounge", "");
+			color = "&" + Integer.toString(ChatColor.valueOf(fightTeams.get(color)).getCode(), 16).toLowerCase();
 		}
-		
 		if (!color.equals(""))
 			colorizePlayer(player, color);
 		
@@ -724,30 +729,38 @@ public abstract class Arena {
 	}
 
 	public boolean checkEnd() {
-		boolean bluewon = false;
-		boolean bluemember = false;
-		if ((redTeam > 0) && (blueTeam == 0)) {
-			tellEveryone(PVPArenaPlugin.lang.parse("haswon",ChatColor.RED + "Red Team"));
-		} else if ((redTeam == 0) && (blueTeam > 0)) {
-			tellEveryone(PVPArenaPlugin.lang.parse("haswon",ChatColor.BLUE + "Blue Team"));
-			bluewon = true;
-		} else {
+		if (!this.fightInProgress)
 			return false;
+		List<String> activeteams = new ArrayList<String>(0);
+		String team = "";
+		for (String sTeam : fightUsersTeam.keySet()) {
+			if (activeteams.size() < 1) {
+				// fresh map
+				team = fightUsersTeam.get(sTeam);
+				activeteams.add(team);
+				db.i("team set to " + team);
+			} else {
+				// map contains stuff
+				if (!activeteams.contains(fightUsersTeam.get(sTeam))) {
+					// second team active => OUT!
+					return false;
+				}
+			}
 		}
+		tellEveryone(PVPArenaPlugin.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(team)) + "Team " + team));
 		
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
-			bluemember =(((String) fightUsersTeam.get(o.toString())).equals("blue"));
 			
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			if (bluewon == bluemember) {
-				StatsManager.addWinStat(z, fightUsersTeam.get(z.getName()));
+			if (fightUsersClass.get(z.getName()).equals(team)) {
+				StatsManager.addWinStat(z, team, this);
 				loadPlayer(z, sTPwin);
 				giveRewards(z); // if we are the winning team, give reward!
 			} else {
-				StatsManager.addLoseStat(z, fightUsersTeam.get(z.getName()));
+				StatsManager.addLoseStat(z, team, this);
 				loadPlayer(z, sTPlose);
 			}
 			fightUsersClass.remove(z.getName());
@@ -757,10 +770,10 @@ public abstract class Arena {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
-				if (!nSplit[1].equalsIgnoreCase("red") && !nSplit[1].equalsIgnoreCase("blue"))
+				if (fightTeams.get(nSplit[1]) == null)
 					continue;
 				
-				if (nSplit[1].equalsIgnoreCase("red") != bluewon) {
+				if (nSplit[1].equalsIgnoreCase(team)) {
 					double amount = bets.get(nKey)*2;
 
 					MethodAccount ma = PVPArenaPlugin.method.getAccount(nSplit[0]);
@@ -864,25 +877,134 @@ public abstract class Arena {
 
 	public void chooseColor(Player player) {
 		if (!(fightUsersTeam.containsKey(player.getName()))) {
-			if (blueTeam > redTeam) {
-				goToWaypoint(player, "redlounge");
-				fightUsersTeam.put(player.getName(), "red");
-				tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.RED + "<Red>"));
-				tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.RED + "<Red>"));
-				redTeam += 1;
-			} else {
-				goToWaypoint(player, "bluelounge");
-				fightUsersTeam.put(player.getName(), "blue");
-				tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.BLUE + "<Blue>"));
-				tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.BLUE + "<Blue>"));
-				blueTeam += 1;
-			}
-
+			String team = calcFreeTeam();
+			goToWaypoint(player, team + "lounge");
+			fightUsersTeam.put(player.getName(), team);
+			tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(team)) + team));
+			tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(team)) + team));
 		} else {
 			tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
 		}
 	}
 	
+	private String calcFreeTeam() {
+
+		HashMap<String, Integer> counts = new HashMap<String, Integer>();
+		for (String team : fightUsersTeam.values()) {
+			if (!counts.containsKey(team)) {
+				counts.put(team, 1);
+				db.i("team " + team + " found");
+			} else {
+				int i = counts.get(team);
+				counts.put(team, i);
+				db.i("team " + team + " updated to " + i);
+			}
+		}
+		// counts: TEAMNAME, TEAMPLAYERCOUNT
+		db.i("counts now has size " + counts.size());
+		List<String> notmax = new ArrayList<String>(0);
+		
+		int lastInt = -1;
+		String lastStr = "";
+		
+		for (String team : counts.keySet()) {
+			if (lastInt == -1) {
+				lastStr = team;
+				lastInt = counts.get(team);
+				db.i("first team found: " + team);
+				continue;
+			}
+			int thisInt = counts.get(team);
+			db.i("next team found: " + team);
+			if (thisInt < lastInt) {
+				// this team has space!
+				notmax.add(team);
+				db.i("this team has space: " + team);
+			} else if (thisInt > lastInt) {
+				// last team had space
+				notmax.add(lastStr);
+				db.i("last team had space: " + lastStr);
+			}
+			lastStr = team;
+			lastInt = counts.get(team);
+		}
+		// notmax: TEAMNAME
+		if (notmax.size() < 1) {
+			db.i("notmax < 1");
+			if (lastStr.equals("")) {
+				// empty
+				db.i("lastStr empty");
+				for (String xxx : fightTeams.keySet())
+					notmax.add(xxx);
+			} else {
+				notmax.add(lastStr);
+				// notmax empty because first team was the only team
+				db.i("only one team! reverting!");
+				List<String> max = new ArrayList<String>(0);
+				
+
+				for (String xxx : fightTeams.keySet())
+					if (!notmax.contains(xxx)) {
+						max.add(xxx);
+						db.i("adding to max: " + xxx);
+					}
+
+				db.i("revert done, commit! " + max.size());
+				Random r = new Random();
+				
+				int rand = r.nextInt(max.size());
+				
+				Iterator<String> itt = max.iterator();
+				while (itt.hasNext()) {
+					String s = itt.next();
+					if (rand-- == 0) {
+						return s;
+					}
+				}
+				return null;
+			}
+		} else if (notmax.size() == counts.size()) {
+			if (notmax.size() != fightTeams.size()) {
+				db.i("not all teams done, revert!");
+				List<String> max = new ArrayList<String>(0);
+				
+
+				for (String xxx : fightTeams.keySet())
+					if (!notmax.contains(xxx)) {
+						max.add(xxx);
+						db.i("adding to max: " + xxx);
+					}
+				
+
+				db.i("revert done, commit! " + max.size());
+				Random r = new Random();
+				
+				int rand = r.nextInt(max.size());
+				
+				Iterator<String> itt = max.iterator();
+				while (itt.hasNext()) {
+					String s = itt.next();
+					if (rand-- == 0) {
+						return s;
+					}
+				}
+				return null;
+			}
+		}
+		
+		Random r = new Random();
+		
+		int rand = r.nextInt(notmax.size());
+		
+		Iterator<String> itt = notmax.iterator();
+		while (itt.hasNext()) {
+			String s = itt.next();
+			if (rand-- == 0) {
+				return s;
+			}
+		}
+		return null;
+	}
 
 	public boolean parseCommand(Player player, Command cmd, String[] args, String sName) {
 		
@@ -894,8 +1016,9 @@ public abstract class Arena {
 		
 		if (args.length < 1) {
 			// just /pa or /pvparena
-			if (!(isSetup().booleanValue())) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup"));
+			String error = isSetup();
+			if (error != null) {
+				tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
 				return true;
 			}
 			if (!PVPArenaPlugin.hasPerms(player)) {
@@ -980,126 +1103,15 @@ public abstract class Arena {
 				for (String sPlayer : fightUsersTeam.keySet()) {
 					if (!plrs.equals(""))
 						plrs +=", ";
-					plrs += colorize(fightUsersTeam.get(sPlayer)) + sPlayer + ChatColor.WHITE;
+					plrs += fightTeams.get(fightUsersTeam.get(sPlayer)) + sPlayer + ChatColor.WHITE;
 				}
 				tellPlayer(player, PVPArenaPlugin.lang.parse("players") + ": " + plrs);
 				return true;
-			} else if (args[0].equalsIgnoreCase("red")) {
-				
-
-				// /pa red or /pvparena red
-				if (!(isSetup().booleanValue())) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup"));
-					return true;
-				}
-				if (!PVPArenaPlugin.hasPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("permjoin"));
-					return true;
-				}
-				if (!(manuallyselectteams)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("notselectteam"));
-					return true;
-				}
-				if (savedmisc.containsKey(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
-					return true;
-				}
-				if (fightInProgress) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
-					return true;
-				}
-				
-				if (PVPArenaPlugin.method != null) {
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
-					if (ma == null) {
-						PVPArenaPlugin.log.severe("Account not found: "+player.getName());
-						return true;
-					}
-					if(!ma.hasEnough(entryFee)){
-						// no money, no entry!
-						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.method.format(entryFee)));
-						return true;
-		            }
-				}
-
-
-				prepare(player);
-				fightUsersLives.put(player.getName(), (byte) maxlives);
-				
-				if (emptyInventory(player)) {
-					if ((PVPArenaPlugin.method != null) && (entryFee > 0)) {
-						MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
-						ma.subtract(entryFee);
-					}
-
-					goToWaypoint(player, "redlounge");
-					fightUsersTeam.put(player.getName(), "red");
-					tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.RED + "<Red>"));
-					tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.RED + "<Red>"));
-					redTeam += 1;
-				}
-
-			} else if (args[0].equalsIgnoreCase("blue")) {
-				
-				// /pa blue or /pvparena blue
-
-				if (!(isSetup().booleanValue())) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup"));
-					return true;
-				}
-				if (!PVPArenaPlugin.hasPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("permjoin"));
-					return true;
-				}
-				if (!(manuallyselectteams)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("notselectteam"));
-					return true;
-				}
-				if (savedmisc.containsKey(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
-					return true;
-				}
-				if (fightInProgress) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
-					return true;
-				}
-				
-				if (PVPArenaPlugin.method != null) {
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
-					if (ma == null) {
-						PVPArenaPlugin.log.severe("Account not found: "+player.getName());
-						return true;
-					}
-					if(!ma.hasEnough(entryFee)){
-						// no money, no entry!
-						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.method.format(entryFee)));
-						return true;
-		            }
-				}
-
-
-				prepare(player);
-				fightUsersLives.put(player.getName(), (byte) maxlives);
-
-				if (emptyInventory(player)) {
-					if ((PVPArenaPlugin.method != null) && (entryFee > 0)) {
-						MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
-						ma.subtract(entryFee);
-					}
-
-					goToWaypoint(player, "bluelounge");
-					fightUsersTeam.put(player.getName(), "blue");
-					blueTeam += 1;
-					tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.BLUE + "<Blue>"));
-					tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.BLUE + "<Blue>"));
-					
-				}
-				return true;
-			
 			} else if (args[0].equalsIgnoreCase("watch")) {
 
-				if (!(isSetup().booleanValue())) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup"));
+				String error = isSetup();
+				if (error != null) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
 					return true;
 				}
 				if (fightUsersTeam.containsKey(player.getName())) {
@@ -1111,6 +1123,61 @@ public abstract class Arena {
 				return true;
 			} else if (PVPArenaPlugin.hasAdminPerms(player)) {
 				return parseAdminCommand(args, player);
+			} else if (fightTeams.get(args[0]) == null) {
+				
+
+				// /pa [team] or /pvparena [team]
+
+				String error = isSetup();
+				if (error != null) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
+					return true;
+				}
+				if (!PVPArenaPlugin.hasPerms(player)) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("permjoin"));
+					return true;
+				}
+				if (!(manuallyselectteams)) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("notselectteam"));
+					return true;
+				}
+				if (savedmisc.containsKey(player)) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+					return true;
+				}
+				if (fightInProgress) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
+					return true;
+				}
+				
+				if (PVPArenaPlugin.method != null) {
+					MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+					if (ma == null) {
+						PVPArenaPlugin.log.severe("Account not found: "+player.getName());
+						return true;
+					}
+					if(!ma.hasEnough(entryFee)){
+						// no money, no entry!
+						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.method.format(entryFee)));
+						return true;
+		            }
+				}
+
+				prepare(player);
+				fightUsersLives.put(player.getName(), (byte) maxlives);
+				
+				if (emptyInventory(player)) {
+					if ((PVPArenaPlugin.method != null) && (entryFee > 0)) {
+						MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+						ma.subtract(entryFee);
+					}
+
+					goToWaypoint(player, args[0] + "lounge");
+					fightUsersTeam.put(player.getName(), args[0]);
+					tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
+					tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
+					
+				}
 			} else {
 				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","502"));
 				return false;
@@ -1130,7 +1197,7 @@ public abstract class Arena {
 			if (PVPArenaPlugin.method == null)
 				return true;
 			
-			if (!args[1].equalsIgnoreCase("red") && !args[1].equalsIgnoreCase("blue") && !fightUsersTeam.containsKey(args[1])) {
+			if (!(fightTeams.get(args[1]) != null) && !fightUsersTeam.containsKey(args[1])) {
 				tellPlayer(player, PVPArenaPlugin.lang.parse("betoptions"));
 				return true;
 			}
@@ -1160,13 +1227,14 @@ public abstract class Arena {
 		}
 		
 		if (args[0].equalsIgnoreCase("teams")) {
-			String team[] = StatsManager.getTeamStats(args[1]).split(";");
-			player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.BLUE + PVPArenaPlugin.lang.parse("blue"), team[0], team[1]));
-			player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.RED + PVPArenaPlugin.lang.parse("red"), team[2], team[3]));
+			String team[] = StatsManager.getTeamStats(args[1], this).split(";");
+			int i = 0;
+			for (String sTeam : fightTeams.keySet())
+				player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.valueOf(fightTeams.get(sTeam)) + args[0], team[i++], team[i++]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("users")) {
 			// wins are suffixed with "_"
-			Map<String, Integer> players = StatsManager.getPlayerStats(args[1]);
+			Map<String, Integer> players = StatsManager.getPlayerStats(args[1], this);
 			
 			int wcount = 0;
 	
@@ -1321,26 +1389,27 @@ public abstract class Arena {
 	}
 
 	public boolean checkSpawnCommand(String[] args, Player player) {
-		if (args[0].equalsIgnoreCase("redspawn")) {
-			setCoords(player, "redspawn");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setredspawn"));
-			return true;
-		} else if (args[0].equalsIgnoreCase("bluespawn")) {
-			setCoords(player, "bluespawn");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluespawn"));
+		if (args[0].endsWith("spawn")) {
+			String sName = args[0].replace("spawn", "");
+			if (fightTeams.get(sName) == null)
+				return false;
+
+			setCoords(player, args[0]);
+			tellPlayer(player, PVPArenaPlugin.lang.parse("setspawn", sName));
 			return true;
 		}
 		return false;
 	}
 
 	public boolean checkLoungeCommand(String[] args, Player player) {
-		if (args[0].equalsIgnoreCase("redlounge")) {
-			setCoords(player, "redlounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setredlounge"));
-			return true;
-		} else if (args[0].equalsIgnoreCase("bluelounge")) {
-			setCoords(player, "bluelounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setbluelounge"));
+		if (args[0].endsWith("lounge")) {
+			String color = args[0].replace("lounge", "");
+			if (fightTeams.containsKey(color)) {
+				setCoords(player, args[0]);
+				tellPlayer(player, PVPArenaPlugin.lang.parse("setlounge", color));
+				return true;
+			}
+			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","506"));
 			return true;
 		}
 		return false;
@@ -1427,13 +1496,36 @@ public abstract class Arena {
 		} 
 		return x;
 	}
-	
-	private String colorize(String s) {
-		if (s.equals("red"))
-			return ChatColor.RED + "";
-		else if (s.equals("blue"))
-			return ChatColor.BLUE + "";
-		else
-			return "";
+
+	public boolean checkEven() {
+		HashMap<String, Integer> counts = new HashMap<String, Integer>();
+		for (String team : fightUsersTeam.values()) {
+			if (!counts.containsKey(team)) {
+				counts.put(team, 1);
+			} else {
+				int i = counts.get(team);
+				counts.put(team, i);
+			}
+		}
+		
+		if (counts.size() != fightTeams.size()) {
+			// return false;
+			// return false if not all teams are used
+			// later :)
+		}
+		
+		if (counts.size() < 1)
+			return false; // noone there! NOT EVEN xD
+		
+		int temp = -1;
+		for (int i : counts.values()) {
+			if (temp == -1) {
+				temp = i;
+				continue;
+			}
+			if (temp != i)
+				return false; // different count! OUT!
+		}
+		return true; // every team as the same player count!
 	}
 }

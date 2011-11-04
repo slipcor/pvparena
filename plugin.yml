@@ -1,6 +1,6 @@
 name: pvparena
 main: net.slipcor.pvparena.PVPArenaPlugin
-version: v0.3.3.6
+version: v0.3.4.21
 author: slipcor
 commands:
     pvparena:
@@ -14,7 +14,7 @@ commands:
            /pvparena [arenaname] create [type] | Create an arena
            /pvparena [arenaname] remove | Remove an arena
            /pvparena [arenaname] | Join the arena if random is active
-           /pvparena [arenaname] blue/red | Join the arena if random is inactive
+           /pvparena [arenaname] [team] | Join the arena if random is inactive
            /pvparena [arenaname] enable/disable | Enable / Disable usage of an arena
            /pvparena [arenaname] list | List all players in the arena
            /pvparena [arenaname] watch | Watch a fight in the arena

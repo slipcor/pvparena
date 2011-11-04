@@ -69,10 +69,10 @@ public class LanguageManager {
 			config.setProperty("lang.lostlife","%1% has lost a life! %2% remaining.");
 			config.setProperty("lang.onlyplayers","Only players may access this command!");
 			config.setProperty("lang.arenadisabled","Arena disabled, please try again later!");
-			config.setProperty("lang.arenanotsetup","All waypoints must be set up first.");
+			config.setProperty("lang.arenanotsetup","All waypoints must be set up first. %1%");
 			config.setProperty("lang.permjoin","You don't have permission to join the arena!");
-			config.setProperty("lang.selectteam","You must select a team to join! /pa red | /pa blue");
-			config.setProperty("lang.notselectteam","You cannot select a team to join! /pa");
+			config.setProperty("lang.selectteam","You must select a team to join! /pa [arenaname] [team]");
+			config.setProperty("lang.notselectteam","You cannot select a team to join! /pa [arenaname]");
 			config.setProperty("lang.alreadyjoined","You already joined!");
 			config.setProperty("lang.fightinprogress","A fight is already in progress!");
 			config.setProperty("lang.notenough","You don't have %1%.");
@@ -89,23 +89,17 @@ public class LanguageManager {
 			config.setProperty("lang.players","Players");
 			config.setProperty("lang.specwelcome","Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
 			config.setProperty("lang.teamstat","%1% %2% wins, %3% losses");
-			config.setProperty("lang.blue","Blue");
-			config.setProperty("lang.red","Red");
 			config.setProperty("lang.top5win","Top 5 winners");
 			config.setProperty("lang.top5lose","Top 5 losers");
 			config.setProperty("lang.wins","wins");
 			config.setProperty("lang.losses","losses");
-			config.setProperty("lang.setredlounge","Red lounge set.");
-			config.setProperty("lang.setbluelounge","Blue lounge set.");
-			config.setProperty("lang.setredspawn","Red spawn set.");
-			config.setProperty("lang.setbluespawn","Blue spawn set.");
 			config.setProperty("lang.setspectator","Spectator spawn set.");
 			config.setProperty("lang.setexit","Exit spawn set.");
 			config.setProperty("lang.forcestop","You have forced the fight to stop.");
 			config.setProperty("lang.nofight","There is no fight in progress.");
 			config.setProperty("lang.invalidcmd","Invalid command (%1%)");
 			config.setProperty("lang.betnotyours","Cannot place bets on your own match!");
-			config.setProperty("lang.betoptions","You can only bet on 'blue', 'red' or arena player!");
+			config.setProperty("lang.betoptions","You can only bet on team name or arena player!");
 			config.setProperty("lang.invalidamount","Invalid amount: %1%");
 			config.setProperty("lang.beteplaced","Your bet on %1% has been placed.");
 			config.setProperty("lang.regionset","Setting region enabled.");
@@ -120,10 +114,6 @@ public class LanguageManager {
 			config.setProperty("lang.awarded","You have been awarded %1%");
 			config.setProperty("lang.invfull","Your inventory was full. You did not receive all rewards!");
 			config.setProperty("lang.haswon","%1% are the Champions");
-		}
-		if (config.getProperty("lang.setredblue") != null) {
-			config.removeProperty("lang.setredblue");
-			config.setProperty("lang.setbluespawn","Blue spawn set.");
 		}
 		if (config.getProperty("lang.arenaexists") == null) {
 			config.setProperty("lang.arenaexists","Arena already exists!");
@@ -145,6 +135,11 @@ public class LanguageManager {
 			config.setProperty("lang.playerjoinedfree","%1% has joined the FreeFight Arena");
 			config.setProperty("lang.setspawn","Spawn set: %1%");
 			config.setProperty("lang.setlounge","Lounge set.");
+		}
+		if (config.getProperty("version") == null) {
+			config.setProperty("version", "v0.3.4.*");
+			config.setProperty("lang.selectteam","You must select a team to join! /pa [arenaname] [team]");
+			config.setProperty("lang.notselectteam","You cannot select a team to join! /pa [arenaname]");
 		}
 		config.save();
 		// write contents to maps

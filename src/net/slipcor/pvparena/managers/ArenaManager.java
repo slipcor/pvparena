@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.arenas.Arena;
-import net.slipcor.pvparena.arenas.BlueRedArena;
+import net.slipcor.pvparena.arenas.TeamArena;
 import net.slipcor.pvparena.arenas.FreeArena;
 
 import org.bukkit.Location;
@@ -35,7 +35,7 @@ public class ArenaManager {
 		if (type.equals("free"))
 			arena = new FreeArena(configFile);
 		else
-			arena = new BlueRedArena(configFile);
+			arena = new TeamArena(configFile);
 		
 		arenas.put(arena.name, arena);
 	}

@@ -50,10 +50,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  *     v0.1.2 - class permission requirement
  *     v0.1.0 - release version
  * 
- * todo:
- *      lives !!!
- * 		CTF
- * 
  */
 
 public class PVPArenaPlugin extends JavaPlugin {
@@ -167,12 +163,9 @@ public class PVPArenaPlugin extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
-				if (arena.fightUsersTeam.get(player.getName()) == "red") {
-					arena.redTeam -= 1;
-					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.RED + player.getName() + ChatColor.YELLOW));
-				} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
-					arena.blueTeam -= 1;
-					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.BLUE + player.getName() + ChatColor.YELLOW));
+				String sName = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
+				if (sName != null) {
+					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.valueOf(sName) + player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
@@ -189,8 +182,7 @@ public class PVPArenaPlugin extends JavaPlugin {
 				return true;
 			}
 			load_config();
-			Arena.tellPlayer(player, "/pvparena [arenaname] redlounge/bluelounge | Set the lounge spawn of an arena team");
-			Arena.tellPlayer(player, "/pvparena [arenaname] redspawn/bluespawn | Set the fight spawn of an arena team");
+			Arena.tellPlayer(player, "/pvparena [arenaname] [team]lounge/[team]lounge | Set the lounge spawn of an arena team");
 			Arena.tellPlayer(player, "/pvparena [arenaname] spectator/exit | Set the spectator/exit spawn if an arena");
 			Arena.tellPlayer(player, "/pvparena [arenaname] region set | Start setting a region");
 			Arena.tellPlayer(player, "/pvparena [arenaname] region modify/edit | Modify a region");

@@ -67,14 +67,10 @@ public class PAPlayerListener extends PlayerListener {
 		Arena arena = ArenaManager.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		if (arena.fightUsersTeam.get(player.getName()) == "red") {
-			arena.redTeam -= 1;
-			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.RED + player.getName() + ChatColor.YELLOW));
-		} else if (arena.fightUsersTeam.get(player.getName()) == "blue") {
-			arena.blueTeam -= 1;
-			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.BLUE + player.getName() + ChatColor.YELLOW));
-		} // tell that *colored* player left
-		else {
+		String color = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
+		if (color != null) {
+			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
+		} else {
 			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 		}
 		arena.removePlayer(player, arena.sTPexit);
@@ -258,40 +254,29 @@ public class PAPlayerListener extends PlayerListener {
 				
 				String color = (String) arena.fightUsersTeam.get(player.getName());
 
-				if (!arena.teamReady(color)) {
+				if (!arena.ready()) {
 					player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("notready"));
 					return; // team not ready => announce
 				}
 				
 				if (arena.forceeven) {
-					if (arena.redTeam != arena.blueTeam) {
+					if (arena.checkEven()) {
 						player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce
 					}
 				}
 				
-				if (color == "red") {
-					arena.redTeamIronClicked = true;
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("ready", ChatColor.RED + "Red" + ChatColor.WHITE));
+				if (color != "free") {
+					String sName = color;
+					color = arena.fightTeams.get(color);
+					
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("ready", ChatColor.valueOf(color) + sName + ChatColor.WHITE));
 
-					if ((arena.teamReady("blue"))
-							&& (arena.blueTeamIronClicked)) {
+					if (arena.ready()) {
 						arena.teleportAllToSpawn();
 						arena.fightInProgress = true;
 						arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
 					}
-					// check blue, start if ready
-				} else if (color == "blue") {
-					arena.blueTeamIronClicked = true;
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("ready", ChatColor.BLUE + "Blue" + ChatColor.WHITE));
-
-					if ((arena.teamReady("red"))
-							&& (arena.redTeamIronClicked)) {
-						arena.teleportAllToSpawn();
-						arena.fightInProgress = true;
-						arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
-					}
-					// check red, start if ready
 				} else {
 					arena.teleportAllToSpawn();
 					arena.fightInProgress = true;

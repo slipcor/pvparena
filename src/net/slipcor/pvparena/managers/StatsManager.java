@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.arenas.Arena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
@@ -31,7 +32,7 @@ public class StatsManager {
 	/*
 	 * Function that retrieves the config and creates one if it does not exist
 	 */
-	private static Configuration getConfig(String file) {
+	private static Configuration getConfig(String file, Arena arena) {
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/" + file + ".yml");
 		boolean bNew = false;
@@ -46,10 +47,11 @@ public class StatsManager {
 		Configuration config = new Configuration(configFile);
 		config.load();
 		if (bNew) { // if marked as new, create default entries
-			config.setProperty("wins.blue.slipcor", 0);
-			config.setProperty("wins.red.slipcor", 0);
-			config.setProperty("losses.blue.slipcor", 0);
-			config.setProperty("losses.red.slipcor", 0);
+			
+			for (String sTeam : arena.fightTeams.keySet()) {
+				config.setProperty("wins." + sTeam + ".slipcor", 0);
+				config.setProperty("losses." + sTeam + ".slipcor", 0);
+			}
 		}
 		return config;
 	}
@@ -63,46 +65,31 @@ public class StatsManager {
 	 * This example means: slipcor lost 2 times and won 3 times
 	 */	
 	@SuppressWarnings("unchecked")
-	public static Map<String,Integer> getPlayerStats(String sName) {
-		Configuration config = getConfig("stats_"+sName);
+	public static Map<String,Integer> getPlayerStats(String sName, Arena arena) {
+		Configuration config = getConfig("stats_"+sName, arena);
 		Map <String, Integer> players = new HashMap<String, Integer>(); // map to sum up the players
 
-		Map<String, Integer> team = (Map<String, Integer>) config.getProperty("wins.blue"); // tempmap => iteration 
+		Map<String, Integer> team = new HashMap<String, Integer>(); // tempmap => iteration 
 		int sum = 0;
-		for (String bName : team.keySet()) {
-			sum = 0;
-			if (players.get(bName+"_") != null)
-				sum = players.get(bName+"_"); // if exists: read entry
-			
-			sum += team.get(bName);
-			players.put(bName+"_", sum); // put the player into the map, together with the count
-		}
-		team = (Map<String, Integer>) config.getProperty("losses.blue");
-		for (String bName : team.keySet()) {
-			sum = 0;
-			if (players.get(bName) != null)
-				sum = players.get(bName); // if exists: read entry
-			
-			sum += team.get(bName);
-			players.put(bName, sum); // put the player into the map, together with the count
-		}
-		team = (Map<String, Integer>) config.getProperty("wins.red");
-		for (String rName : team.keySet()) {
-			sum = 0;
-			if (players.get(rName+"_") != null)
-				sum = players.get(rName+"_"); // if exists: read entry
-			
-			sum += team.get(rName);
-			players.put(rName+"_", sum); // put the player into the map, together with the count
-		}
-		team = (Map<String, Integer>) config.getProperty("losses.red");
-		for (String rName : team.keySet()) {
-			sum = 0;
-			if (players.get(rName) != null)
-				sum = players.get(rName); // if exists: read entry
-			
-			sum += team.get(rName);
-			players.put(rName, sum); // put the player into the map, together with the count
+		for (String sTeam : arena.fightTeams.keySet()) {
+			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
+			for (String rName : team.keySet()) {
+				sum = 0;
+				if (players.get(rName+"_") != null)
+					sum = players.get(rName+"_"); // if exists: read entry
+				
+				sum += team.get(rName);
+				players.put(rName+"_", sum); // put the player into the map, together with the count
+			}
+			team = (Map<String, Integer>) config.getProperty("losses" + sTeam);
+			for (String rName : team.keySet()) {
+				sum = 0;
+				if (players.get(rName) != null)
+					sum = players.get(rName); // if exists: read entry
+				
+				sum += team.get(rName);
+				players.put(rName, sum); // put the player into the map, together with the count
+			}
 		}
 		return players;
 	}
@@ -118,66 +105,59 @@ public class StatsManager {
 	 */
 	
 	@SuppressWarnings("unchecked")
-	public static String getTeamStats(String sName) {
+	public static String getTeamStats(String sName, Arena arena) {
 		
-		Configuration config = getConfig("stats_"+sName);
+		Configuration config = getConfig("stats_"+sName, arena);
 		
 		String result = "";
-		Map<String, Integer> team = (Map<String, Integer>) config.getProperty("wins.blue");
-		int blue = 0;
-		for (int bVal : team.values()) {
-			blue += bVal; // sum up the values, append the sum
+		Map<String, Integer> team = new HashMap<String, Integer>();
+
+		for (String sTeam : arena.fightTeams.keySet()) {
+			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
+			int count = 0;
+			for (int rVal : team.values()) {
+				count += rVal; // sum up the values, append the sum
+			}
+			result += count + ";";
+			team = (Map<String, Integer>) config.getProperty("losses." + sTeam);
+			count = 0;
+			for (int rVal : team.values()) {
+				count += rVal; // sum up the values, append the sum
+			}
+			result += String.valueOf(count) + ";";
 		}
-		result += blue + ";";
-		team = (Map<String, Integer>) config.getProperty("losses.blue");
-		blue = 0;
-		for (int bVal : team.values()) {
-			blue += bVal; // sum up the values, append the sum
-		}
-		result += blue + ";";
-		team = (Map<String, Integer>) config.getProperty("wins.red");
-		int red = 0;
-		for (int rVal : team.values()) {
-			red += rVal; // sum up the values, append the sum
-		}
-		result += red + ";";
-		team = (Map<String, Integer>) config.getProperty("losses.red");
-		red = 0;
-		for (int rVal : team.values()) {
-			red += rVal; // sum up the values, append the sum
-		}
-		result += String.valueOf(red);
 		return result;		
 	}
 	
 	/*
 	 * Function that adds a win stat to the player and the team
 	 */
-	public static void addWinStat(Player player, String color) {
+	public static void addWinStat(Player player, String color, Arena arena) {
 		if (color.equals(""))
-			addStat(player, true);
+			addStat(player, true, arena);
 		else
-			addStat(player, color, true);
+			addStat(player, color, true, arena);
 	}
 	
 	/*
 	 * Function that adds a lose stat to the player and the team
 	 */
-	public static void addLoseStat(Player player, String color) {
+	public static void addLoseStat(Player player, String color, Arena arena) {
 		if (color.equals(""))
-			addStat(player, false);
+			addStat(player, false, arena);
 		else
-			addStat(player, color, false);
+			addStat(player, color, false, arena);
 	}
 	
 	/*
 	 *  Function that adds a stat to the player and the team
 	 */
-	private static void addStat(Player player, String color, boolean win) {
+	private static void addStat(Player player, String color, boolean win, Arena arena) {
 		String sName = ArenaManager.getArenaNameByPlayer(player);
-		Configuration config = getConfig("stats_"+sName);
+		Configuration config = getConfig("stats_"+sName, arena);
 		
-		if (!color.equals("red") && !color.equals("blue")) {
+		String c = arena.fightTeams.get(color);
+		if (c == null) {
 			PVPArenaPlugin.lang.log_warning("teamnotfound",color);
 			return; // invalid team
 		}
@@ -193,9 +173,9 @@ public class StatsManager {
 	/*
 	 *  Function that adds a stat to the player and the team
 	 */
-	private static void addStat(Player player, boolean win) {
+	private static void addStat(Player player, boolean win, Arena arena) {
 		String sName = ArenaManager.getArenaNameByPlayer(player);
-		Configuration config = getConfig("stats_"+sName);
+		Configuration config = getConfig("stats_"+sName, arena);
 		
 		String path = (win?"wins.":"losses.") + player.getName();
 		int sum = 0;
