@@ -5,10 +5,11 @@ package net.slipcor.pvparena.arenas;
  * 
  * author: slipcor
  * 
- * version: v0.3.4 - Customisable Teams
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.4 - Customisable Teams
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  * 
@@ -28,8 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
 public class FreeArena extends Arena{
-	public FreeArena(String sName) {
-		super();
+	public FreeArena(String sName, PVPArenaPlugin plugin) {
+		super(sName, plugin);
 
 		this.name = sName;
 		this.configFile = new File("plugins/pvparena/config.free_" + name + ".yml");

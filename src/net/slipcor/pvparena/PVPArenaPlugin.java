@@ -16,22 +16,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.getspout.spoutapi.SpoutManager;
 
 /*
  * main class
  * 
  * author: slipcor
  * 
- * version: v0.3.3 - Random spawns possible for every arena
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments, iConomy 6 support
@@ -53,49 +56,59 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 
 public class PVPArenaPlugin extends JavaPlugin {
-	public static final Logger log = Logger.getLogger("Minecraft");
-	public static PermissionHandler permissionHandler;
-	public static String spoutHandler = null;
-	public static Method method = null; // eConomy access
-	public static PermissionHandler Permissions;
-	private final PAServerListener serverListener = new PAServerListener();
-	private final PAEntityListener entityListener = new PAEntityListener();
-	private final PAPlayerListener playerListener = new PAPlayerListener();
 	private final PABlockListener blockListener = new PABlockListener();
+	private final PAPlayerListener playerListener = new PAPlayerListener();
+	private final PAServerListener serverListener = new PAServerListener();
+	
+	private static Method method = null; // eConomy access
+	private static PermissionHandler Permissions;
+	private static String spoutHandler = null;
+	
+	public final Logger log = Logger.getLogger("Minecraft");
+	public static PVPArenaPlugin instance;
+	public static final PAEntityListener entityListener = new PAEntityListener();
 	public static final LanguageManager lang = new LanguageManager();
-
+	
 
 	public void onEnable() {
+		PVPArenaPlugin.instance = this;
 		setupPermissions();
 		PluginDescriptionFile pdfFile = getDescription();
 
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener,	Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener,Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, this.entityListener,Event.Priority.Lowest, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener,Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener,Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener,	Event.Priority.Monitor, this);
+		
+		pm.registerEvent(Event.Type.ENTITY_DAMAGE, PVPArenaPlugin.entityListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, PVPArenaPlugin.entityListener,Event.Priority.Lowest, this);
+		pm.registerEvent(Event.Type.ENTITY_EXPLODE, PVPArenaPlugin.entityListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, PVPArenaPlugin.entityListener,Event.Priority.Highest, this);
+		
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener,Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListener,Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener,Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_VELOCITY, this.playerListener,Event.Priority.Highest, this);
+		
 		pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockListener,Event.Priority.High, this);
+		pm.registerEvent(Event.Type.BLOCK_BURN, this.blockListener,Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockListener,Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener,Event.Priority.High, this);
-		pm.registerEvent(Event.Type.BLOCK_BURN, this.blockListener,Event.Priority.High, this);
-
-		lang.log_info("enabled", pdfFile.getVersion());
 
 		load_config();
+		lang.log_info("enabled", pdfFile.getVersion());
+
 	}
 	
-	public static void load_config() {
+	public void load_config() {
 		if (Bukkit.getPluginManager().getPlugin("Spout") != null)
 			spoutHandler = org.getspout.spout.Spout.getInstance().toString();
 		else
 			lang.log_info("nospout");
-			
+		
 		ArenaManager.load_arenas();
 	}
 
@@ -164,7 +177,7 @@ public class PVPArenaPlugin extends JavaPlugin {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
 				String sName = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
-				if (sName != null) {
+				if (sName.equals("free")) {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.valueOf(sName) + player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
@@ -229,5 +242,44 @@ public class PVPArenaPlugin extends JavaPlugin {
 			Permissions = ((Permissions) test).getHandler();
 		else
 			lang.log_info("noperms");
+	}
+	
+	private Runnable tick = new Runnable(){
+        public void run(){
+        	ArenaManager.powerupTick(); // Autosave method
+        }
+    };
+    
+
+	public static void colorizePlayer(Player player, String color) {
+		if (color.equals("")) {
+			
+			String rn = player.getName();
+			player.setDisplayName(rn);
+			
+
+			if (spoutHandler != null) {
+				HumanEntity human = player;
+				SpoutManager.getAppearanceManager().setGlobalTitle(human,rn);
+			}
+		    return;
+		}
+		
+		String n = color + player.getName();
+
+		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
+		
+		if (spoutHandler != null) {
+			HumanEntity human = player;
+			SpoutManager.getAppearanceManager().setGlobalTitle(human, n.replaceAll("(&([a-f0-9]))", "§$2"));
+		}
+	}
+
+	public static Method getMethod() {
+		return method;
+	}
+
+	public static void setMethod(Method method) {
+		PVPArenaPlugin.method = method;
 	}
 }

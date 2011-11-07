@@ -12,7 +12,9 @@ import java.util.Set;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.managers.PowerupManager;
 import net.slipcor.pvparena.managers.StatsManager;
+import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 
 import org.bukkit.Bukkit;
@@ -42,10 +44,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.4 - Customisable Teams
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.4 - Customisable Teams
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.2 - Classes now can store up to 6 players
  *     v0.3.1 - New Arena! FreeFight
@@ -97,6 +100,10 @@ public abstract class Arena {
 	
 	public String name = "default";
 	
+	public PowerupManager pm;
+	
+	int SPAWN_ID;
+	
 	public Map<String, String> fightTeams = new HashMap<String, String>();
 	public final Map<String, String> fightUsersTeam = new HashMap<String, String>();
 	public final Map<String, String> fightUsersClass = new HashMap<String, String>();
@@ -128,11 +135,16 @@ public abstract class Arena {
 	public boolean fightInProgress = false;
 	public boolean enabled = true;
 	public boolean randomSpawn = false;
+	public boolean usepowerups;
+	public int powerupdiff;
+	public String powerupcause;
+	public int powerupdiffI = 0;
 	
 	public int wand;
 	public int entryFee;
 	int rewardAmount;
 	public int maxlives;
+	public int joinrange;
 	
 	String rewardItems;
 	String sTPwin;
@@ -141,13 +153,13 @@ public abstract class Arena {
 	public String sTPdeath;
 	protected File configFile;
 	
-	public Arena() {
-		
-	}
+	private PVPArenaPlugin plugin;
 	
-	public Arena(String name) {
+	public Arena(String name, PVPArenaPlugin plugin) {
+		this.plugin = plugin;
 		this.name = name;
 
+		PVPArenaPlugin.instance.log.info("creating arena " + name);
 		new File("plugins/pvparena").mkdir();
 		configFile = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!(configFile.exists()))
@@ -202,6 +214,10 @@ public abstract class Arena {
 		if (config.getProperty("general.randomSpawn") == null) {
 			config.setProperty("general.randomSpawn",Boolean.valueOf(false));
 		}
+		if (config.getProperty("general.joinrange") == null) {
+			config.setProperty("general.joinrange", Integer.valueOf(0));
+			config.setProperty("general.powerups", "off"); // off | death:[diff] | time:[diff]
+		}
 		if (!s.equals("free") && config.getKeys("teams") == null) {
 			config.setProperty("teams.team-killing-enabled",Boolean.valueOf(false));
 			config.setProperty("teams.manually-select-teams",Boolean.valueOf(false));
@@ -214,7 +230,14 @@ public abstract class Arena {
 			fightClasses.put(className,
 					config.getString("classes." + className + ".items", null));
 		}
+		
+		HashMap<String, Object> powerups = (HashMap<String, Object>) config.getProperty("powerups");
 
+		if (powerups != null)
+			pm = new PowerupManager(powerups);
+		else
+			PVPArenaPlugin.instance.log.info("no powerups loaded");
+		
 		entryFee = config.getInt("rewards.entry-fee", 0);
 		rewardAmount = config.getInt("rewards.amount", 0);
 		rewardItems = config.getString("rewards.items", "none");
@@ -230,9 +253,23 @@ public abstract class Arena {
 		disablelavafirespread = config.getBoolean("protection.fire.disable-lava-fire-spread", true);
 		blocktnt = config.getBoolean("protection.ignition.block-tnt", true);
 		blocklighter = config.getBoolean("protection.ignition.block-lighter",true);
-		
+
 		maxlives = config.getInt("general.lives", 3);
+		joinrange = config.getInt("general.joinrange", 0);
 		woolhead = config.getBoolean("general.woolhead", false);
+		String pu = config.getString("general.powerups","off");
+
+		usepowerups = true;
+		String[] ss = pu.split(":");
+		if (pu.startsWith("death")) {
+			powerupcause = "death";
+			powerupdiff = Integer.parseInt(ss[1]);
+		} else if (pu.startsWith("time")) {
+			powerupcause = "time";
+			powerupdiff = Integer.parseInt(ss[1]);
+		} else {
+			usepowerups = false;
+		}
 		
 		sTPwin   = config.getString("general.tp.win","old"); // old || exit || spectator
 		sTPlose  = config.getString("general.tp.lose","old"); // old || exit || spectator
@@ -240,6 +277,7 @@ public abstract class Arena {
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		forceeven = config.getBoolean("general.forceeven", false);
 		randomSpawn = config.getBoolean("general.randomSpawn", false);
+		saveregionpos();
 	}
 
 	public void prepare(Player player) {
@@ -443,11 +481,11 @@ public abstract class Arena {
 			sign.setLine(2, "");
 			sign.setLine(3, "");
 			if (!sign.update()) {
-				PVPArenaPlugin.log.warning("Sign update failed - a");
+				db.w("Sign update failed - a");
 				if (!sign.update(true))
-					PVPArenaPlugin.log.severe("Sign force update failed - a");
+					db.s("Sign force update failed - a");
 				else
-					PVPArenaPlugin.log.info("Sign force update successful - a");
+					db.i("Sign force update successful - a");
 			}
 			
 			sign = getNext(sign);
@@ -458,11 +496,11 @@ public abstract class Arena {
 				sign.setLine(2, "");
 				sign.setLine(3, "");
 				if (!sign.update()) {
-					PVPArenaPlugin.log.warning("Sign update failed - b");
+					db.w("Sign update failed - b");
 					if (!sign.update(true))
-						PVPArenaPlugin.log.severe("Sign force update failed - b");
+						db.s("Sign force update failed - b");
 					else
-						PVPArenaPlugin.log.info("Sign force update successful - b");
+						db.i("Sign force update successful - b");
 				}
 			}
 		}
@@ -484,11 +522,11 @@ public abstract class Arena {
 				updated = true;
 			}
 			if (updated && !sign.update()) {
-				PVPArenaPlugin.log.warning("Sign update failed - 1");
+				db.w("Sign update failed - 1");
 				if (!sign.update(true))
-					PVPArenaPlugin.log.severe("Sign force update failed - 1");
+					db.s("Sign force update failed - 1");
 				else
-					PVPArenaPlugin.log.info("Sign force update successful - 1");
+					db.i("Sign force update successful - 1");
 			}
 			updated = false;
 			sign = getNext(sign);
@@ -501,11 +539,11 @@ public abstract class Arena {
 					}
 				}
 				if (updated && !sign.update()) {
-					PVPArenaPlugin.log.warning("Sign update failed - 2");
+					db.w("Sign update failed - 2");
 					if (!sign.update(true))
-						PVPArenaPlugin.log.severe("Sign force update failed - 2");
+						db.s("Sign force update failed - 2");
 					else
-						PVPArenaPlugin.log.info("Sign force update successful - 2");
+						db.i("Sign force update successful - 2");
 				}
 			}
 		}
@@ -566,6 +604,17 @@ public abstract class Arena {
 				goToWaypoint(z, "spawn");
 			}
 		}
+		PVPArenaPlugin.instance.log.info("teleported!");
+		if (usepowerups) {
+			PVPArenaPlugin.instance.log.info("using powerups : " + powerupcause + " : " + powerupdiff);
+			if (powerupcause.equals("time") && powerupdiff > 0){
+				PVPArenaPlugin.instance.log.info("everything ready. go for it!");
+				powerupdiff = powerupdiff*20; // calculate ticks to seconds
+			    // initiate autosave timer
+			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArenaPlugin.instance,new MyRunnable(this),powerupdiff,powerupdiff);
+			}
+		}
+		
 	}
 	
 	public void saveInventory(Player player) {
@@ -594,27 +643,27 @@ public abstract class Arena {
 	}
 
 	public void giveRewards(Player player) {
-		if (PVPArenaPlugin.method != null) {
+		if (PVPArenaPlugin.getMethod() != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
 					double amount = bets.get(nKey)*4;
 
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(nSplit[0]);
+					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.method.format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.getMethod().format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
 				}				
 			}			
 		}	
-		if ((PVPArenaPlugin.method != null) && (rewardAmount > 0)) {
-			MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+		if ((PVPArenaPlugin.getMethod() != null) && (rewardAmount > 0)) {
+			MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 			ma.add(rewardAmount);
-			tellPlayer(player,PVPArenaPlugin.lang.parse("awarded",PVPArenaPlugin.method.format(rewardAmount)));
+			tellPlayer(player,PVPArenaPlugin.lang.parse("awarded",PVPArenaPlugin.getMethod().format(rewardAmount)));
 		}
 
 		if (rewardItems.equals("none"))
@@ -646,7 +695,7 @@ public abstract class Arena {
 		}
 	}
 
-	private int parseMat(String s) {
+	public static int parseMat(String s) {
 		try {
 			int i = Integer.parseInt(s);
 			return i;
@@ -684,7 +733,7 @@ public abstract class Arena {
 			color = "&" + Integer.toString(ChatColor.valueOf(fightTeams.get(color)).getCode(), 16).toLowerCase();
 		}
 		if (!color.equals(""))
-			colorizePlayer(player, color);
+			PVPArenaPlugin.colorizePlayer(player, color);
 		
 		fightTelePass.put(player.getName(), "yes");
 		player.teleport(getCoords(place));
@@ -727,6 +776,28 @@ public abstract class Arena {
 				&& (y >= min.getBlockY()) && (y <= max.getBlockY())
 				&& (z >= min.getBlockZ()) && (z <= max.getBlockZ()));
 	}
+	
+
+	public void saveregionpos() {
+		Configuration config = new Configuration(configFile);
+		config.load();
+		
+		if (config.getString("protection.region.min") == null
+				|| config.getString("protection.region.max") == null)
+			return; // no arena, no container
+		
+		String[] min1 = config.getString("protection.region.min").split(", ");
+		String[] max1 = config.getString("protection.region.max").split(", ");
+		String world = config.getString("protection.region.world");
+		Location min = new Location(Bukkit.getWorld(world), new Double(min1[0]).doubleValue(),
+				new Double(min1[1]).doubleValue(),
+				new Double(min1[2]).doubleValue());
+		Location max = new Location(Bukkit.getWorld(world), new Double(max1[0]).doubleValue(),
+				new Double(max1[1]).doubleValue(),
+				new Double(max1[2]).doubleValue());
+		pos1 = min;
+		pos2 = max;
+	}
 
 	public boolean checkEnd() {
 		if (!this.fightInProgress)
@@ -766,24 +837,24 @@ public abstract class Arena {
 			fightUsersClass.remove(z.getName());
 		}
 
-		if (PVPArenaPlugin.method != null) {
+		if (PVPArenaPlugin.getMethod() != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
-				if (fightTeams.get(nSplit[1]) == null)
+				if (fightTeams.get(nSplit[1]) == null || fightTeams.get(nSplit[1]).equals("free"))
 					continue;
 				
 				if (nSplit[1].equalsIgnoreCase(team)) {
 					double amount = bets.get(nKey)*2;
 
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(nSplit[0]);
+					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(nSplit[0]);
 					if (ma == null) {
-						PVPArenaPlugin.log.severe("Account not found: "+nSplit[0]);
+						db.s("Account not found: "+nSplit[0]);
 						return true;
 					}
 					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.method.format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.getMethod().format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
@@ -850,7 +921,7 @@ public abstract class Arena {
 		} else {
 			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
 		}
-		colorizePlayer(player, "");
+		PVPArenaPlugin.colorizePlayer(player, "");
 		String sClass = "exit";
 		if (fightUsersRespawn.get(player.getName()) != null) {
 			sClass = fightUsersRespawn.get(player.getName());
@@ -1037,16 +1108,19 @@ public abstract class Arena {
 				tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
 				return true;
 			}
-
-			if (PVPArenaPlugin.method != null) {
-				MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+			if (joinrange(player)) {
+				tellPlayer(player, PVPArenaPlugin.lang.parse("joinrange"));
+				return true;
+			}
+			if (PVPArenaPlugin.getMethod() != null) {
+				MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 				if (ma == null) {
-					PVPArenaPlugin.log.severe("Account not found: "+player.getName());
+					db.s("Account not found: "+player.getName());
 					return true;
 				}
 				if(!ma.hasEnough(entryFee)){
 					// no money, no entry!
-					tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.method.format(entryFee)));
+					tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.getMethod().format(entryFee)));
 					return true;
 	            }
 			}
@@ -1056,8 +1130,8 @@ public abstract class Arena {
 			
 			
 			if (emptyInventory(player)) {
-				if ((PVPArenaPlugin.method != null) && (entryFee > 0)) {
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+				if ((PVPArenaPlugin.getMethod() != null) && (entryFee > 0)) {
+					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 					ma.subtract(entryFee);
 				}
 
@@ -1091,7 +1165,7 @@ public abstract class Arena {
 					tellPlayer(player, PVPArenaPlugin.lang.parse("nopermto", PVPArenaPlugin.lang.parse("reload")));
 					return true;
 				}
-				PVPArenaPlugin.load_config();
+				plugin.load_config();
 				tellPlayer(player, PVPArenaPlugin.lang.parse("reloaded"));
 				return true;
 			} else if (args[0].equalsIgnoreCase("list")) {
@@ -1103,7 +1177,7 @@ public abstract class Arena {
 				for (String sPlayer : fightUsersTeam.keySet()) {
 					if (!plrs.equals(""))
 						plrs +=", ";
-					plrs += fightTeams.get(fightUsersTeam.get(sPlayer)) + sPlayer + ChatColor.WHITE;
+					plrs += ChatColor.valueOf(fightTeams.get(fightUsersTeam.get(sPlayer))) + sPlayer + ChatColor.WHITE;
 				}
 				tellPlayer(player, PVPArenaPlugin.lang.parse("players") + ": " + plrs);
 				return true;
@@ -1149,16 +1223,20 @@ public abstract class Arena {
 					tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
 					return true;
 				}
+				if (joinrange(player)) {
+					tellPlayer(player, PVPArenaPlugin.lang.parse("joinrange"));
+					return true;
+				}
 				
-				if (PVPArenaPlugin.method != null) {
-					MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+				if (PVPArenaPlugin.getMethod() != null) {
+					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 					if (ma == null) {
-						PVPArenaPlugin.log.severe("Account not found: "+player.getName());
+						db.s("Account not found: "+player.getName());
 						return true;
 					}
 					if(!ma.hasEnough(entryFee)){
 						// no money, no entry!
-						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.method.format(entryFee)));
+						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.getMethod().format(entryFee)));
 						return true;
 		            }
 				}
@@ -1167,8 +1245,8 @@ public abstract class Arena {
 				fightUsersLives.put(player.getName(), (byte) maxlives);
 				
 				if (emptyInventory(player)) {
-					if ((PVPArenaPlugin.method != null) && (entryFee > 0)) {
-						MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+					if ((PVPArenaPlugin.getMethod() != null) && (entryFee > 0)) {
+						MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 						ma.subtract(entryFee);
 					}
 
@@ -1194,7 +1272,7 @@ public abstract class Arena {
 				return true;
 			}
 			
-			if (PVPArenaPlugin.method == null)
+			if (PVPArenaPlugin.getMethod() == null)
 				return true;
 			
 			if (!(fightTeams.get(args[1]) != null) && !fightUsersTeam.containsKey(args[1])) {
@@ -1210,14 +1288,14 @@ public abstract class Arena {
 				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidamount",args[2]));
 				return true;
 			}
-			MethodAccount ma = PVPArenaPlugin.method.getAccount(player.getName());
+			MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
 			if (ma == null) {
-				PVPArenaPlugin.log.severe("Account not found: "+player.getName());
+				db.s("Account not found: "+player.getName());
 				return true;
 			}
 			if(!ma.hasEnough(entryFee)){
 				// no money, no entry!
-				tellPlayer(player, PVPArenaPlugin.lang.parse("notenough",PVPArenaPlugin.method.format(amount)));
+				tellPlayer(player, PVPArenaPlugin.lang.parse("notenough",PVPArenaPlugin.getMethod().format(amount)));
 				return true;
             }
 			ma.subtract(amount);
@@ -1230,7 +1308,7 @@ public abstract class Arena {
 			String team[] = StatsManager.getTeamStats(args[1], this).split(";");
 			int i = 0;
 			for (String sTeam : fightTeams.keySet())
-				player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.valueOf(fightTeams.get(sTeam)) + args[0], team[i++], team[i++]));
+				player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.valueOf(fightTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("users")) {
 			// wins are suffixed with "_"
@@ -1352,6 +1430,21 @@ public abstract class Arena {
 		return true;
 	}
 
+	private boolean joinrange(Player player) {
+		// "is too far away"
+		if (joinrange < 1)
+			return false;
+		
+		if (!this.pos1.getWorld().equals(player.getWorld()))
+			return true;
+		
+		Vector bvmin = this.pos1.toVector();
+		Vector bvmax = this.pos2.toVector();
+		Vector bvdiff = (BlockVector) bvmin.getMidpoint(bvmax);
+		
+		return (joinrange < bvdiff.distance(player.getLocation().toVector()));
+	}
+
 	boolean parseAdminCommand(String[] args, Player player) {
 
 		if (args[0].equalsIgnoreCase("spectator")) {
@@ -1449,31 +1542,6 @@ public abstract class Arena {
 
 		return ((invNullCounter == invContents.length) && (armNullCounter == armContents.length));
 	}
-	
-
-	public static void colorizePlayer(Player player, String color) {
-		if (color.equals("")) {
-			
-			String rn = player.getName();
-			player.setDisplayName(rn);
-			
-
-			if (PVPArenaPlugin.spoutHandler != null) {
-				HumanEntity human = player;
-				SpoutManager.getAppearanceManager().setGlobalTitle(human,rn);
-			}
-		    return;
-		}
-		
-		String n = color + player.getName();
-
-		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
-		
-		if (PVPArenaPlugin.spoutHandler != null) {
-			HumanEntity human = player;
-			SpoutManager.getAppearanceManager().setGlobalTitle(human, n.replaceAll("(&([a-f0-9]))", "§$2"));
-		}
-	}
 
 	public static String[][] sort(String[][] x) {
 		boolean undone=true;
@@ -1527,5 +1595,60 @@ public abstract class Arena {
 				return false; // different count! OUT!
 		}
 		return true; // every team as the same player count!
+	}
+
+	public void commitSpawn() {
+		PVPArenaPlugin.instance.log.info("committing");
+		if (this.pm != null) {
+			PVPArenaPlugin.instance.log.info("pm is not null");
+			if (this.pm.puTotal.size() > 0) {
+				PVPArenaPlugin.instance.log.info("totals are filled");
+				Random r = new Random();
+				int i = r.nextInt(this.pm.puTotal.size());
+
+				for (Powerup p : this.pm.puTotal) {
+					if (--i == 0) {
+						commitItemSpawn(p.item);
+						Arena.tellPublic(PVPArenaPlugin.lang.parse("serverpowerup",p.name));
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	private void commitItemSpawn(Material item) {
+		PVPArenaPlugin.instance.log.info("dropping item");
+		int diffx = (int) (pos1.getX() - pos2.getX());
+		int diffy = (int) (pos1.getY() - pos2.getY());
+		int diffz = (int) (pos1.getZ() - pos2.getZ());
+		
+		Random r = new Random();
+
+		int posx = diffx==0?pos1.getBlockX():(int) ((diffx / Math.abs(diffx)) * r.nextInt(Math.abs(diffx)) + pos2.getX());
+		int posy = diffy==0?pos1.getBlockY():(int) ((diffx / Math.abs(diffy)) * r.nextInt(Math.abs(diffy)) + pos2.getY());
+		int posz = diffz==0?pos1.getBlockZ():(int) ((diffx / Math.abs(diffz)) * r.nextInt(Math.abs(diffz)) + pos2.getZ());
+		
+		pos1.getWorld().dropItem(new Location(pos1.getWorld(),posx,posy+1,posz), new ItemStack(item,1));
+	}
+
+	@SuppressWarnings("unchecked")
+	public Location readMisc(Player player) {
+		HashMap<String, String> tSM = (HashMap<String, String>) savedmisc.get(player);
+		if (tSM != null) {
+
+			try {
+				String sLoc = tSM.get("LOCATION");
+				String[] aLoc = sLoc.split("/");
+				Location lLoc = new Location(Bukkit.getWorld(aLoc[0]), Double.parseDouble(aLoc[1]), Double.parseDouble(aLoc[2]), Double.parseDouble(aLoc[3]));
+				return lLoc;
+			} catch (Exception e) {
+				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid LOCATION entry!");
+			}
+			
+		} else {
+			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
+		}
+		return null;
 	}
 }

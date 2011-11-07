@@ -4,6 +4,8 @@ import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatsManager;
+import net.slipcor.pvparena.powerups.Powerup;
+import net.slipcor.pvparena.powerups.PowerupEffect;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
@@ -16,16 +18,18 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 /*
  * EntityListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.3 - Random spawns possible for every arena
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments
@@ -55,7 +59,7 @@ public class PAEntityListener extends EntityListener {
 				event.getDrops().clear();
 				String sTeam = arena.fightUsersTeam.get(player.getName());
 				String color = arena.fightTeams.get(sTeam);
-				if (color != null) {
+				if (!color.equals("free")) {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
@@ -63,6 +67,15 @@ public class PAEntityListener extends EntityListener {
 				StatsManager.addLoseStat(player, sTeam, arena);
 				arena.fightUsersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
+				
+				if (arena.usepowerups) {
+					if (arena.powerupcause.equals("death")) {
+						arena.powerupdiffI = ++arena.powerupdiffI % arena.powerupdiff;
+						if (arena.powerupdiffI == 0) {
+							arena.commitSpawn();
+						}
+					}
+				}
 				
 				if (arena.checkEnd())
 					return;
@@ -100,8 +113,27 @@ public class PAEntityListener extends EntityListener {
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		// here it comes, process the damage!
+		
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(attacker);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					p.commit(attacker, defender, event);
+				}
+			}
+			
+			
+			p = arena.pm.puActive.get(defender);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					p.commit(attacker, defender, event);
+				}
+			}
+			
+		}
+		
 		if (event.getDamage() >= defender.getHealth()) {
 			byte lives = 3;
 
@@ -116,10 +148,11 @@ public class PAEntityListener extends EntityListener {
 				defender.setSaturation(20);
 				defender.setExhaustion(0);
 				lives--;
-				String color = arena.fightTeams.get(arena.fightUsersTeam.get(defender.getName()));
-				if (!arena.randomSpawn && color != null) {
+				String sTeam = arena.fightUsersTeam.get(defender.getName());
+				String color = arena.fightTeams.get(sTeam);
+				if (!arena.randomSpawn && color != null && !arena.fightUsersTeam.get(defender.getName()).equals("free")) {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.valueOf(color) + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
-					arena.goToWaypoint(defender, color + "spawn");
+					arena.goToWaypoint(defender, sTeam + "spawn");
 				} else {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.WHITE + defender.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(defender, "spawn");
@@ -175,7 +208,7 @@ public class PAEntityListener extends EntityListener {
 				player.setExhaustion(0);
 				lives--;
 				String color = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
-				if (!arena.randomSpawn && color != null) {
+				if (!arena.randomSpawn && color != null && !arena.fightUsersTeam.get(player.getName()).equals("free")) {
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("lostlife", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 					arena.goToWaypoint(player, color + "spawn");
 				} else {
@@ -188,6 +221,43 @@ public class PAEntityListener extends EntityListener {
 			}
 		}
 		
+	}
+	
+	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+
+		if (event.isCancelled()) {
+			return; // respect other plugins
+		}
+		
+		Entity p1 = event.getEntity();
+		
+		if ((p1 == null) || (!(p1 instanceof Player)))
+			return; // no player
+		
+		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		if (arena == null)
+			return;
+
+		if (!arena.fightInProgress) {
+			return;
+		}
+		
+		Player player = (Player) p1;
+		if (arena.fightUsersTeam.get(player.getName()) == null)
+			return;
+		
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(player);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					if (p.active(PowerupEffect.classes.HEAL)) {
+						event.setCancelled(true);
+						p.commit(event);
+					}
+				}
+			}
+			
+		}
 	}
 
 	public void onEntityExplode(EntityExplodeEvent event) {

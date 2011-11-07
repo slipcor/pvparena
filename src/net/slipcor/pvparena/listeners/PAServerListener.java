@@ -39,7 +39,7 @@ public class PAServerListener extends ServerListener {
             Boolean check = this.methods.checkDisabled(event.getPlugin());
 
             if(check) {
-            	PVPArenaPlugin.method = null;
+            	PVPArenaPlugin.setMethod(null);
         		PVPArenaPlugin.lang.log_info("iconomyoff");
             }
         }
@@ -51,7 +51,7 @@ public class PAServerListener extends ServerListener {
         // Check to see if we need a payment method
         if (!this.methods.hasMethod()) {
             if(this.methods.setMethod(Bukkit.getServer().getPluginManager())) {
-            	PVPArenaPlugin.method = this.methods.getMethod();
+            	PVPArenaPlugin.setMethod(this.methods.getMethod());
                 PVPArenaPlugin.lang.log_info("iconomyon"); 
             } else {
     			PVPArenaPlugin.lang.log_info("iconomyoff");

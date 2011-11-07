@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.TeamArena;
 import net.slipcor.pvparena.arenas.FreeArena;
@@ -18,24 +19,32 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 
  */
 
 public class ArenaManager {
 	static Map<String, Arena> arenas = new HashMap<String, Arena>();
+	private static PVPArenaPlugin plugin;
+	
+	public ArenaManager(PVPArenaPlugin plugin) {
+		ArenaManager.plugin = plugin;
+	}
 	
 	public static void loadArena(String configFile, String type) {
 		Arena arena;
+
+		PVPArenaPlugin.instance.log.info("creating arena type"+type);
 		
 		if (type.equals("free"))
-			arena = new FreeArena(configFile);
+			arena = new FreeArena(configFile, plugin);
 		else
-			arena = new TeamArena(configFile);
+			arena = new TeamArena(configFile, plugin);
 		
 		arenas.put(arena.name, arena);
 	}
@@ -93,6 +102,7 @@ public class ArenaManager {
 	            }
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 		if (done == 0) {
@@ -135,5 +145,14 @@ public class ArenaManager {
 		path.delete();
 		path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
+	}
+
+	public static void powerupTick() {
+		for (Arena arena : arenas.values()) {
+			if (arena.pm == null)
+				continue;
+			
+			arena.pm.tick();
+		}
 	}
 }

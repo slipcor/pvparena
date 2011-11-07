@@ -8,16 +8,17 @@ import net.slipcor.pvparena.PVPArenaPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
-
 /*
  * Language class
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.4 - Rewrite
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
  * 	   v0.2.0 - language support
@@ -36,7 +37,7 @@ public class LanguageManager {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArenaPlugin.log.severe("[PVP Arena] Error when creating language file.");
+				PVPArenaPlugin.instance.log.severe("[PVP Arena] Error when creating language file.");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -137,9 +138,17 @@ public class LanguageManager {
 			config.setProperty("lang.setlounge","Lounge set.");
 		}
 		if (config.getProperty("version") == null) {
-			config.setProperty("version", "v0.3.4.*");
+			config.setProperty("version", "v0.3.5.*");
 			config.setProperty("lang.selectteam","You must select a team to join! /pa [arenaname] [team]");
 			config.setProperty("lang.notselectteam","You cannot select a team to join! /pa [arenaname]");
+			config.setProperty("lang.joinrange","You are too far away to join this arena!");
+			config.setProperty("lang.playerpowerup","Player %1% receives powerup %2%!");
+			config.setProperty("lang.serverpowerup","Powerup %1% deployed!");
+		} else if (config.getProperty("version").equals("v0.3.4.*")) {
+			config.setProperty("version", "v0.3.5.*");
+			config.setProperty("lang.joinrange","You are too far away to join this arena!");
+			config.setProperty("lang.playerpowerup","Player %1% receives powerup %2%!");
+			config.setProperty("lang.serverpowerup","Powerup %1% deployed!");
 		}
 		config.save();
 		// write contents to maps
@@ -170,25 +179,25 @@ public class LanguageManager {
 	
 	public void log_error(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.log.severe("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.instance.log.severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_warning(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.log.warning("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.instance.log.warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.log.info("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArenaPlugin.instance.log.info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s) {
 		String var = log.get(s);
-		PVPArenaPlugin.log.info("[PVP Arena] " + var);
+		PVPArenaPlugin.instance.log.info("[PVP Arena] " + var);
 		// log map value
 	}
 }

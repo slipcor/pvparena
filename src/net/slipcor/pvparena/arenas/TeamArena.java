@@ -3,6 +3,8 @@ package net.slipcor.pvparena.arenas;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArenaPlugin;
+
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
 
@@ -11,18 +13,19 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.4 - Customisable Teams
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  *
+ *     v0.3.4 - Customisable Teams
  *     v0.3.1 - New Arena! FreeFight
  * 
  */
 
 public class TeamArena extends Arena {
 	@SuppressWarnings("unchecked")
-	public TeamArena(String sName) {
-		super(sName);
+	public TeamArena(String sName, PVPArenaPlugin plugin) {
+		super(sName, plugin);
 		
 		Map<String, String> fT = new HashMap<String, String>();
 		fT.put("red",ChatColor.RED.name());

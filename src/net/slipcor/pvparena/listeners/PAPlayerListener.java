@@ -1,10 +1,13 @@
 package net.slipcor.pvparena.listeners;
 
 import java.io.File;
+import java.util.Iterator;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.powerups.Powerup;
+import net.slipcor.pvparena.powerups.PowerupEffect;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -16,9 +19,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.config.Configuration;
 
 /*
@@ -26,11 +32,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.3 - Random spawns possible for every arena
+ * version: v0.3.5 - Powerups!!
  * 
  * history:
  * 
- *     v0.3.2 - New Arena! FreeFight
+ *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
@@ -45,6 +51,35 @@ public class PAPlayerListener extends PlayerListener {
 
 	public PAPlayerListener() {}
 
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+
+		Arena arena = ArenaManager.getArenaByPlayer(player);
+		if (arena == null) {
+			return; // no fighting player => OUT
+		}
+		if (!(arena.fightUsersRespawn.containsKey(player.getName()))){
+			return; // no fighting player => OUT
+		}
+		
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(player);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					if (p.active(PowerupEffect.classes.FREEZE)) {
+						event.setCancelled(true);
+					}
+					if (p.active(PowerupEffect.classes.SPRINT)) {
+						event.getPlayer().setSprinting(true);
+					}
+					if (p.active(PowerupEffect.classes.SLIP)) {
+						//
+					}
+				}
+			}
+		}
+	}
+
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 
@@ -55,7 +90,13 @@ public class PAPlayerListener extends PlayerListener {
 		if (!(arena.fightUsersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
-		Location l = arena.getCoords(arena.sTPdeath);
+		Location l;
+		
+		if (arena.sTPdeath.equals("old")) {
+			l = arena.readMisc(player);
+		} else {
+			l = arena.getCoords(arena.sTPdeath);
+		}
 		event.setRespawnLocation(l);
 		
 		arena.removePlayer(player, arena.sTPdeath);
@@ -88,6 +129,37 @@ public class PAPlayerListener extends PlayerListener {
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
+	
+	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		if (event.isCancelled())
+			return;
+		
+		Player player = event.getPlayer();
+
+		Arena arena = ArenaManager.getArenaByPlayer(player);
+		if ((arena == null) || (arena.pm == null) || (arena.pm.puTotal.size() < 1))
+			return; // no fighting player or no powerups => OUT
+
+		PVPArenaPlugin.instance.log.info("arena player pick up");
+		Iterator<Powerup> pi = arena.pm.puTotal.iterator();
+		while (pi.hasNext()) {
+			Powerup p = pi.next();
+			if (event.getItem().getItemStack().getType().equals(p.item)) {
+				Powerup newP = new Powerup(p);
+				if (arena.pm.puActive.containsKey(player)) {
+					arena.pm.puActive.get(player).deactivate();
+				}
+				arena.pm.puActive.put(player, newP);
+				PVPArenaPlugin.lang.parse("playerpowerup",player.getName(),newP.name);
+				event.setCancelled(true);
+				event.getItem().remove();
+				if (newP.canBeTriggered())
+					newP.activate(player); // activate for the first time
+				
+				return;
+			}	
+		}
+	}
 
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
@@ -102,6 +174,28 @@ public class PAPlayerListener extends PlayerListener {
 		
 		event.setCancelled(true); // cancel and tell
 		Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("usepatoexit"));
+	}
+	
+	public void onPlayerVelocity(PlayerVelocityEvent event) {
+		if (event.isCancelled())
+			return;
+		
+		Player player = event.getPlayer();
+
+		Arena arena = ArenaManager.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player or no powerups => OUT
+		
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(player);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					if (p.active(PowerupEffect.classes.JUMP)) {
+						p.commit(event);
+					}
+				}
+			}
+		}
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
@@ -170,7 +264,7 @@ public class PAPlayerListener extends PlayerListener {
 								break; // remove found player, break!
 							}
 						}
-						sign.update();
+						//sign.update();
 						sSign = arena.getNext(sSign);
 						
 						if (sSign != null) {
@@ -182,7 +276,7 @@ public class PAPlayerListener extends PlayerListener {
 								}
 							}
 						}
-						sSign.update();
+						//sSign.update();
 					}
 
 					for (i=2;i<4;i++) {
@@ -272,11 +366,9 @@ public class PAPlayerListener extends PlayerListener {
 					
 					arena.tellEveryone(PVPArenaPlugin.lang.parse("ready", ChatColor.valueOf(color) + sName + ChatColor.WHITE));
 
-					if (arena.ready()) {
-						arena.teleportAllToSpawn();
-						arena.fightInProgress = true;
-						arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
-					}
+					arena.teleportAllToSpawn();
+					arena.fightInProgress = true;
+					arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
 				} else {
 					arena.teleportAllToSpawn();
 					arena.fightInProgress = true;
@@ -285,4 +377,5 @@ public class PAPlayerListener extends PlayerListener {
 			}
 		}
 	}
+	
 }

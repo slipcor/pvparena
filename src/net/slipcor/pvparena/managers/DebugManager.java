@@ -7,16 +7,16 @@ public class DebugManager {
 	public void i(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.log.info(s);
+		PVPArenaPlugin.instance.log.info(s);
 	}
 	public void w(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.log.warning(s);
+		PVPArenaPlugin.instance.log.warning(s);
 	}
 	public void s(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.log.severe(s);
+		PVPArenaPlugin.instance.log.severe(s);
 	}
 }
