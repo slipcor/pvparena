@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
  * 
  * author: slipcor
  * 
- * version: v0.3.4 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  * 
@@ -24,13 +24,15 @@ import org.bukkit.entity.Player;
 public class PowerupManager {
 	public HashMap<Player, Powerup> puActive = new HashMap<Player, Powerup>();
 	public List<Powerup> puTotal = new ArrayList<Powerup>(); 
+	DebugManager db = new DebugManager();
+	
 	@SuppressWarnings("unchecked")
 	public PowerupManager(HashMap<String, Object> powerUps) {
 		// receives the config map, adds all plugins
-		PVPArenaPlugin.instance.log.info("initialising powerupmanager");
+		db.i("initialising powerupmanager");
 		Powerup p;
 		for (String pName : powerUps.keySet()) {
-			PVPArenaPlugin.instance.log.info("reading powerUps");
+			db.i("reading powerUps");
 			p = new Powerup(pName, (HashMap<String, Object>) powerUps.get(pName));
 			puTotal.add(p);
 		}

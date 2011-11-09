@@ -9,6 +9,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.powerups.PowerupEffect.classes;
 
 /*
@@ -16,7 +17,7 @@ import net.slipcor.pvparena.powerups.PowerupEffect.classes;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  * 
@@ -27,19 +28,20 @@ public class Powerup {
 	public String name;   // PowerUp display name
 	PowerupEffect[] effects; // Effects the Powerup has
 	public Material item; // item that triggers this Powerup
+	DebugManager db = new DebugManager();
 	
 	@SuppressWarnings("unchecked")
 	public Powerup(String pName, HashMap<String, Object> puEffects) {
 		int count = 0;
 		this.name = pName;
-		PVPArenaPlugin.instance.log.info("creating powerup "+pName);
+		db.i("creating powerup "+pName);
 		this.item = Material.valueOf((String) puEffects.get("item"));
-		PVPArenaPlugin.instance.log.info("item added: " + this.item.toString());
+		db.i("item added: " + this.item.toString());
 		for (String eClass : puEffects.keySet()) {
 			PowerupEffect.classes pec = PowerupEffect.parseClass(eClass);
 			if (pec == null) {
 				if (!eClass.equals("item"))
-					PVPArenaPlugin.instance.log.warning("unknown effect class: " + eClass);
+					db.w("unknown effect class: " + eClass);
 				continue;
 			}
 			PowerupEffect pe = new PowerupEffect(eClass, (HashMap<String, Object>) puEffects.get(eClass));
@@ -48,7 +50,7 @@ public class Powerup {
 			}
 			count++;
 		}
-		PVPArenaPlugin.instance.log.info("effects found: " + count);
+		db.i("effects found: " + count);
 		if (count < 1)
 			return;
 		
@@ -91,7 +93,7 @@ public class Powerup {
 	}
 
 	public void activate(Player player) {
-		PVPArenaPlugin.instance.log.info("activating! - " + name);
+		db.i("activating! - " + name);
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration != 0)
 				pe.init(player);
@@ -141,6 +143,8 @@ public class Powerup {
 
 	public void deactivate() {
 		for (PowerupEffect pe : effects) {
+			pe.uses = 0;
+			pe.duration = 0;
 			pe = null;
 		}
 	}

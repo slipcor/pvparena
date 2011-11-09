@@ -13,10 +13,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  *
+ *     v0.3.5 - Powerups!!
  *     v0.3.4 - Rewrite
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
@@ -29,6 +30,8 @@ import org.bukkit.util.config.Configuration;
 public class LanguageManager {
 	Map<String, String> lang = null; // game language map
 	Map<String, String> log = null; // log language map
+	DebugManager db = new DebugManager();
+	
 	@SuppressWarnings("unchecked")
 	public LanguageManager() {
 		new File("plugins/pvparena").mkdir();
@@ -138,17 +141,28 @@ public class LanguageManager {
 			config.setProperty("lang.setlounge","Lounge set.");
 		}
 		if (config.getProperty("version") == null) {
-			config.setProperty("version", "v0.3.5.*");
+			config.setProperty("version", "v0.3.6.*");
 			config.setProperty("lang.selectteam","You must select a team to join! /pa [arenaname] [team]");
 			config.setProperty("lang.notselectteam","You cannot select a team to join! /pa [arenaname]");
 			config.setProperty("lang.joinrange","You are too far away to join this arena!");
 			config.setProperty("lang.playerpowerup","Player %1% receives powerup %2%!");
 			config.setProperty("lang.serverpowerup","Powerup %1% deployed!");
+			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
+			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
+			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
 		} else if (config.getProperty("version").equals("v0.3.4.*")) {
-			config.setProperty("version", "v0.3.5.*");
+			config.setProperty("version", "v0.3.6.*");
 			config.setProperty("lang.joinrange","You are too far away to join this arena!");
 			config.setProperty("lang.playerpowerup","Player %1% receives powerup %2%!");
 			config.setProperty("lang.serverpowerup","Powerup %1% deployed!");
+			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
+			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
+			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
+		} else if (config.getProperty("version").equals("v0.3.5.*")) {
+			config.setProperty("version", "v0.3.6.*");
+			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
+			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
+			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
 		}
 		config.save();
 		// write contents to maps

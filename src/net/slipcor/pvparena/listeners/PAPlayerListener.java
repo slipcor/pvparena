@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.powerups.PowerupEffect;
@@ -14,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -32,10 +34,12 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.7 - Bugfixes
  * 
  * history:
  * 
+ *     v0.3.6 - CTF Arena
+ *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
@@ -140,7 +144,6 @@ public class PAPlayerListener extends PlayerListener {
 		if ((arena == null) || (arena.pm == null) || (arena.pm.puTotal.size() < 1))
 			return; // no fighting player or no powerups => OUT
 
-		PVPArenaPlugin.instance.log.info("arena player pick up");
 		Iterator<Powerup> pi = arena.pm.puTotal.iterator();
 		while (pi.hasNext()) {
 			Powerup p = pi.next();
@@ -150,7 +153,7 @@ public class PAPlayerListener extends PlayerListener {
 					arena.pm.puActive.get(player).deactivate();
 				}
 				arena.pm.puActive.put(player, newP);
-				PVPArenaPlugin.lang.parse("playerpowerup",player.getName(),newP.name);
+				arena.tellEveryone(PVPArenaPlugin.lang.parse("playerpowerup",player.getName(),newP.name));
 				event.setCancelled(true);
 				event.getItem().remove();
 				if (newP.canBeTriggered())
@@ -221,7 +224,32 @@ public class PAPlayerListener extends PlayerListener {
 			}
 		}
 		arena = ArenaManager.getArenaByPlayer(player);
-
+		if (arena == null) {
+			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+				Block block = event.getClickedBlock();
+				if (block.getState() instanceof Sign) {
+					Sign sign = (Sign) block.getState();
+					if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
+						String sName = sign.getLine(1);
+						String[] newArgs = null;
+						
+						Arena a = ArenaManager.getArenaByName(sName);
+						if (a == null) {
+							Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotexists", sName));
+							return;
+						}
+						a.parseCommand(player, newArgs, sName);
+						return;
+					}
+				}
+			}
+		}
+		if (arena != null && arena.fightInProgress && (arena instanceof CTFArena)) {
+			CTFArena ca = (CTFArena) arena;
+			ca.checkInteract(player);
+			return;
+		}
+		
 		if (arena == null || arena.fightInProgress)
 			return; // not fighting or fight already in progress => OUT
 		
@@ -264,7 +292,7 @@ public class PAPlayerListener extends PlayerListener {
 								break; // remove found player, break!
 							}
 						}
-						//sign.update();
+						sSign.update();
 						sSign = arena.getNext(sSign);
 						
 						if (sSign != null) {
@@ -276,7 +304,7 @@ public class PAPlayerListener extends PlayerListener {
 								}
 							}
 						}
-						//sSign.update();
+						sSign.update();
 					}
 
 					for (i=2;i<4;i++) {

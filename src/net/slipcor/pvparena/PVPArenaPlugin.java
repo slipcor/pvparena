@@ -213,7 +213,7 @@ public class PVPArenaPlugin extends JavaPlugin {
 			Arena.tellPlayer(player, lang.parse("arenanotexists", sName));
 			return true;
 		}
-		return arena.parseCommand(player, cmd, newArgs, sName);
+		return arena.parseCommand(player, newArgs, sName);
 	}
 	
 	public static boolean hasAdminPerms(Player player) {

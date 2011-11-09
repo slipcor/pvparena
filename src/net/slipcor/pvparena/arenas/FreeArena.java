@@ -5,10 +5,11 @@ package net.slipcor.pvparena.arenas;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  *
+ *     v0.3.5 - Powerups!!
  *     v0.3.4 - Customisable Teams
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
@@ -16,12 +17,13 @@ package net.slipcor.pvparena.arenas;
  */
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
-import net.slipcor.pvparena.managers.LanguageManager;
 import net.slipcor.pvparena.managers.StatsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +32,7 @@ import org.bukkit.util.config.Configuration;
 
 public class FreeArena extends Arena{
 	public FreeArena(String sName, PVPArenaPlugin plugin) {
-		super(sName, plugin);
+		super();
 
 		this.name = sName;
 		this.configFile = new File("plugins/pvparena/config.free_" + name + ".yml");
@@ -53,7 +55,7 @@ public class FreeArena extends Arena{
 		fightTeams.clear();
 		fightTeams.put("free", ChatColor.WHITE.name());
 	}
-	
+
 	@Override
 	public String isSetup() {
 		Configuration config = new Configuration(configFile);

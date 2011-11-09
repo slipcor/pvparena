@@ -3,7 +3,7 @@ package net.slipcor.pvparena.managers;
 import net.slipcor.pvparena.PVPArenaPlugin;
 
 public class DebugManager {
-	private boolean active = false; 
+	private boolean active = true; 
 	public void i(String s) {
 		if (!active)
 			return;

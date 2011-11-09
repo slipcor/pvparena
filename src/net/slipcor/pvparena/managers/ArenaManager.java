@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.TeamArena;
 import net.slipcor.pvparena.arenas.FreeArena;
 
@@ -19,13 +20,18 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  *
+ *     v0.3.5 - Powerups!!
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 
+ */
+
+/*
+ * 2do: debug!
  */
 
 public class ArenaManager {
@@ -38,11 +44,11 @@ public class ArenaManager {
 	
 	public static void loadArena(String configFile, String type) {
 		Arena arena;
-
-		PVPArenaPlugin.instance.log.info("creating arena type"+type);
 		
 		if (type.equals("free"))
 			arena = new FreeArena(configFile, plugin);
+		else if (type.equals("ctf"))
+			arena = new CTFArena(configFile, plugin);
 		else
 			arena = new TeamArena(configFile, plugin);
 		
@@ -98,6 +104,14 @@ public class ArenaManager {
 					String sName = f[i].getName().replace("config.free_", "");
 					sName = sName.replace(".yml", "");
 					loadArena(sName,"free");
+					done++;
+	            }
+			}
+			for(i=0; i<f.length; i++){
+				if(!f[i].isDirectory() && f[i].getName().contains("config.ctf_")) {
+					String sName = f[i].getName().replace("config.ctf_", "");
+					sName = sName.replace(".yml", "");
+					loadArena(sName,"ctf");
 					done++;
 	            }
 			}

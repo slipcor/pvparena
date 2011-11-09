@@ -44,10 +44,12 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.7 - Bugfixes
  * 
  * history:
  *
+ *     v0.3.6 - CTF Arena
+ *     v0.3.5 - Powerups!!
  *     v0.3.4 - Customisable Teams
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.2 - Classes now can store up to 6 players
@@ -159,7 +161,7 @@ public abstract class Arena {
 		this.plugin = plugin;
 		this.name = name;
 
-		PVPArenaPlugin.instance.log.info("creating arena " + name);
+		db.i("creating arena " + name);
 		new File("plugins/pvparena").mkdir();
 		configFile = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!(configFile.exists()))
@@ -170,6 +172,10 @@ public abstract class Arena {
 			}
 
 		parseConfig("arena");
+	}
+	
+	public Arena() {
+		
 	}
 
 	protected void parseConfig(String s) {
@@ -236,7 +242,7 @@ public abstract class Arena {
 		if (powerups != null)
 			pm = new PowerupManager(powerups);
 		else
-			PVPArenaPlugin.instance.log.info("no powerups loaded");
+			db.i("no powerups loaded");
 		
 		entryFee = config.getInt("rewards.entry-fee", 0);
 		rewardAmount = config.getInt("rewards.amount", 0);
@@ -387,7 +393,7 @@ public abstract class Arena {
 				return null;
 			}
 
-			return spawns + "x spawn ; " + lounges + "x lounge";
+			return spawns + "/" + 4 + "x spawn ; " + lounges + "/" + fightTeams.size() + "x lounge";
 		} else {
 			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
 			Iterator<String> iter = list.iterator();
@@ -404,7 +410,7 @@ public abstract class Arena {
 				return null;
 			}
 
-			return spawns + "x spawn ; " + lounges + "x lounge";
+			return spawns + "/" + fightTeams.size() + "x spawn ; " + lounges + "/" + fightTeams.size() + "x lounge";
 		}
 		
 	}
@@ -604,11 +610,12 @@ public abstract class Arena {
 				goToWaypoint(z, "spawn");
 			}
 		}
-		PVPArenaPlugin.instance.log.info("teleported!");
+		init_arena();
+		db.i("teleported!");
 		if (usepowerups) {
-			PVPArenaPlugin.instance.log.info("using powerups : " + powerupcause + " : " + powerupdiff);
+			db.i("using powerups : " + powerupcause + " : " + powerupdiff);
 			if (powerupcause.equals("time") && powerupdiff > 0){
-				PVPArenaPlugin.instance.log.info("everything ready. go for it!");
+				db.i("everything ready. go for it!");
 				powerupdiff = powerupdiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
 			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArenaPlugin.instance,new MyRunnable(this),powerupdiff,powerupdiff);
@@ -617,6 +624,10 @@ public abstract class Arena {
 		
 	}
 	
+	public void init_arena() {
+		
+	}
+
 	public void saveInventory(Player player) {
 		savedinventories.put(player, player.getInventory().getContents());
 		savedarmories.put(player, player.getInventory().getArmorContents());
@@ -967,7 +978,7 @@ public abstract class Arena {
 				db.i("team " + team + " found");
 			} else {
 				int i = counts.get(team);
-				counts.put(team, i);
+				counts.put(team, ++i);
 				db.i("team " + team + " updated to " + i);
 			}
 		}
@@ -991,61 +1002,38 @@ public abstract class Arena {
 				// this team has space!
 				notmax.add(team);
 				db.i("this team has space: " + team);
+				lastStr = team;
+				lastInt = counts.get(team);
 			} else if (thisInt > lastInt) {
 				// last team had space
 				notmax.add(lastStr);
 				db.i("last team had space: " + lastStr);
+				lastStr = team;
+				lastInt = counts.get(team);
 			}
-			lastStr = team;
-			lastInt = counts.get(team);
 		}
 		// notmax: TEAMNAME
 		if (notmax.size() < 1) {
 			db.i("notmax < 1");
-			if (lastStr.equals("")) {
-				// empty
+			if (counts.size() != 1) {
+				// empty or equal
 				db.i("lastStr empty");
 				for (String xxx : fightTeams.keySet())
 					notmax.add(xxx);
 			} else {
-				notmax.add(lastStr);
 				// notmax empty because first team was the only team
 				db.i("only one team! reverting!");
-				List<String> max = new ArrayList<String>(0);
+				@SuppressWarnings("unchecked")
+				List<String> max = (List<String>) fightTeams.keySet();
 				
-
+				max.remove(lastStr);
+				
+				/*
 				for (String xxx : fightTeams.keySet())
-					if (!notmax.contains(xxx)) {
+					if (!lastStr.equals(xxx)) {
 						max.add(xxx);
 						db.i("adding to max: " + xxx);
-					}
-
-				db.i("revert done, commit! " + max.size());
-				Random r = new Random();
-				
-				int rand = r.nextInt(max.size());
-				
-				Iterator<String> itt = max.iterator();
-				while (itt.hasNext()) {
-					String s = itt.next();
-					if (rand-- == 0) {
-						return s;
-					}
-				}
-				return null;
-			}
-		} else if (notmax.size() == counts.size()) {
-			if (notmax.size() != fightTeams.size()) {
-				db.i("not all teams done, revert!");
-				List<String> max = new ArrayList<String>(0);
-				
-
-				for (String xxx : fightTeams.keySet())
-					if (!notmax.contains(xxx)) {
-						max.add(xxx);
-						db.i("adding to max: " + xxx);
-					}
-				
+					}*/
 
 				db.i("revert done, commit! " + max.size());
 				Random r = new Random();
@@ -1062,7 +1050,8 @@ public abstract class Arena {
 				return null;
 			}
 		}
-		
+
+		db.i("no revert, commit! " + notmax.size());
 		Random r = new Random();
 		
 		int rand = r.nextInt(notmax.size());
@@ -1077,7 +1066,7 @@ public abstract class Arena {
 		return null;
 	}
 
-	public boolean parseCommand(Player player, Command cmd, String[] args, String sName) {
+	public boolean parseCommand(Player player, String[] args, String sName) {
 		
 		
 		if (!enabled && !PVPArenaPlugin.hasAdminPerms(player)) {
@@ -1598,16 +1587,16 @@ public abstract class Arena {
 	}
 
 	public void commitSpawn() {
-		PVPArenaPlugin.instance.log.info("committing");
+		db.i("committing");
 		if (this.pm != null) {
-			PVPArenaPlugin.instance.log.info("pm is not null");
+			db.i("pm is not null");
 			if (this.pm.puTotal.size() > 0) {
-				PVPArenaPlugin.instance.log.info("totals are filled");
+				db.i("totals are filled");
 				Random r = new Random();
 				int i = r.nextInt(this.pm.puTotal.size());
 
 				for (Powerup p : this.pm.puTotal) {
-					if (--i == 0) {
+					if (--i <= 0) {
 						commitItemSpawn(p.item);
 						Arena.tellPublic(PVPArenaPlugin.lang.parse("serverpowerup",p.name));
 						return;
@@ -1618,7 +1607,7 @@ public abstract class Arena {
 	}
 
 	private void commitItemSpawn(Material item) {
-		PVPArenaPlugin.instance.log.info("dropping item");
+		db.i("dropping item");
 		int diffx = (int) (pos1.getX() - pos2.getX());
 		int diffy = (int) (pos1.getY() - pos2.getY());
 		int diffz = (int) (pos1.getZ() - pos2.getZ());

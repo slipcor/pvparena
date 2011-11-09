@@ -5,7 +5,7 @@ package net.slipcor.pvparena.powerups;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  * 
@@ -27,6 +27,7 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
 
 public class PowerupEffect {
@@ -40,6 +41,7 @@ public class PowerupEffect {
 	String effectClass = null;
 	int diff = 0;
 	List<String> items = new ArrayList<String>();
+	DebugManager db = new DebugManager();
 	
 	public static enum classes {
 		DMG_CAUSE, DMG_RECEIVE, DMG_REFLECT, FREEZE, HEAL, HEALTH,
@@ -59,35 +61,35 @@ public class PowerupEffect {
 	}
 	
 	public PowerupEffect(String eClass, HashMap<String, Object> puEffectVals) {
-		PVPArenaPlugin.instance.log.info("adding effect "+eClass);
+		db.i("adding effect "+eClass);
 		this.type = parseClass(eClass);
 
-		PVPArenaPlugin.instance.log.info("effect class is "+type.toString());
+		db.i("effect class is "+type.toString());
 		for (Object evName : puEffectVals.keySet()) {
 			if (evName.equals("uses")) {
 				this.uses = (Integer) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("uses :" +String.valueOf(uses));
+				db.i("uses :" +String.valueOf(uses));
 			} else if (evName.equals("duration")) {
 				this.duration = (Integer) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("duration: "+String.valueOf(duration));
+				db.i("duration: "+String.valueOf(duration));
 			} else if (evName.equals("factor")) {
 				this.factor = (Double) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("factor: "+String.valueOf(factor));
+				db.i("factor: "+String.valueOf(factor));
 			} else if (evName.equals("chance")) {
 				this.chance = (Double) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("chance: "+String.valueOf(chance));
+				db.i("chance: "+String.valueOf(chance));
 			} else if (evName.equals("diff")) {
 				this.diff = (Integer) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("diff: "+String.valueOf(diff));
+				db.i("diff: "+String.valueOf(diff));
 			} else if (evName.equals("items")) {
 				this.items.add((String) puEffectVals.get(evName));
-				PVPArenaPlugin.instance.log.info("items: "+items.toString());
+				db.i("items: "+items.toString());
 			} else if (evName.equals("type")) {
 				// mob type
 				this.mobtype = (String) puEffectVals.get(evName);
-				PVPArenaPlugin.instance.log.info("type: "+type.name());
+				db.i("type: "+type.name());
 			} else {
-				PVPArenaPlugin.instance.log.warning("undefined effect class value: " + evName);
+				db.w("undefined effect class value: " + evName);
 			}
 		}
 	}
@@ -102,7 +104,7 @@ public class PowerupEffect {
 			active = true;
 		}
 		
-		PVPArenaPlugin.instance.log.info("initiating - " + type.name());
+		db.i("initiating - " + type.name());
 		
 		if (duration == 0) {
 			active = false;
@@ -138,7 +140,7 @@ public class PowerupEffect {
 				defender.setFireTicks(20);
 			} // else: chance fail :D
 		} else {
-			PVPArenaPlugin.instance.log.warning("unexpected fight powerup effect: " + this.type.name());
+			db.w("unexpected fight powerup effect: " + this.type.name());
 		}
 	}
 	
@@ -212,7 +214,7 @@ public class PowerupEffect {
 				return true;
 			}
 		}
-		PVPArenaPlugin.instance.log.warning("unexpected " + this.type.name());
+		db.w("unexpected " + this.type.name());
 		return false;
 	}
 
@@ -225,7 +227,7 @@ public class PowerupEffect {
 				((Player)event.getEntity()).setFoodLevel(20);
 			} // else: chance fail :D
 		} else {
-			PVPArenaPlugin.instance.log.warning("unexpected fight heal effect: " + this.type.name());
+			db.w("unexpected fight heal effect: " + this.type.name());
 		}
 	}
 
@@ -236,7 +238,7 @@ public class PowerupEffect {
 				event.setVelocity(event.getVelocity().multiply(factor));
 			} // else: chance fail :D
 		} else {
-			PVPArenaPlugin.instance.log.warning("unexpected jump effect: " + this.type.name());
+			db.w("unexpected jump effect: " + this.type.name());
 		}
 	}
 }

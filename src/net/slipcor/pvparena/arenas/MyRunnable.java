@@ -3,13 +3,14 @@ package net.slipcor.pvparena.arenas;
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.managers.DebugManager;
 
 /*
  * custom runnable class
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  * 
@@ -18,14 +19,15 @@ import net.slipcor.pvparena.PVPArenaPlugin;
 
 public class MyRunnable implements Runnable {
 	private final Arena a;
+	DebugManager db = new DebugManager();
 
 	public MyRunnable(Arena a) {
 		this.a = a;
-		PVPArenaPlugin.instance.log.info("MyRunnable constructor");
+		db.i("MyRunnable constructor");
 	}
 
 	public void run() {
-		PVPArenaPlugin.instance.log.info("MyRunnable commiting spawn");
+		db.i("MyRunnable commiting spawn");
 		if (a.fightInProgress)
 			a.commitSpawn();
 		else {

@@ -2,6 +2,7 @@ package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArenaPlugin;
 import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatsManager;
 import net.slipcor.pvparena.powerups.Powerup;
@@ -25,10 +26,11 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.6 - CTF Arena
  * 
  * history:
  *
+ *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
@@ -67,6 +69,11 @@ public class PAEntityListener extends EntityListener {
 				StatsManager.addLoseStat(player, sTeam, arena);
 				arena.fightUsersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
+				
+				if (arena instanceof CTFArena) {
+					CTFArena ca = (CTFArena) arena;
+					ca.checkEntityDeath(player);
+				}
 				
 				if (arena.usepowerups) {
 					if (arena.powerupcause.equals("death")) {
