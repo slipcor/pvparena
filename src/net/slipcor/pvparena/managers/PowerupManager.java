@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.powerups.Powerup;
 
 import org.bukkit.entity.Player;

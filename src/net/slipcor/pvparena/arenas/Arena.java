@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.PowerupManager;
 import net.slipcor.pvparena.managers.StatsManager;
@@ -155,9 +155,9 @@ public abstract class Arena {
 	public String sTPdeath;
 	protected File configFile;
 	
-	private PVPArenaPlugin plugin;
+	private PVPArena plugin;
 	
-	public Arena(String name, PVPArenaPlugin plugin) {
+	public Arena(String name, PVPArena plugin) {
 		this.plugin = plugin;
 		this.name = name;
 
@@ -168,7 +168,7 @@ public abstract class Arena {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArenaPlugin.lang.log_error("filecreateerror","config_" + name);
+				PVPArena.lang.log_error("filecreateerror","config_" + name);
 			}
 
 		parseConfig("arena");
@@ -582,7 +582,7 @@ public abstract class Arena {
 		while (iter.hasNext()) {
 			Object o = iter.next();
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			z.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+			z.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
 		}
 	}
 	
@@ -594,7 +594,7 @@ public abstract class Arena {
 			Object o = iter.next();
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 			if (!(player.getName().equals(z.getName())))
-				z.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+				z.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
 		}
 	}
 	
@@ -618,7 +618,7 @@ public abstract class Arena {
 				db.i("everything ready. go for it!");
 				powerupdiff = powerupdiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
-			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArenaPlugin.instance,new MyRunnable(this),powerupdiff,powerupdiff);
+			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,new MyRunnable(this),powerupdiff,powerupdiff);
 			}
 		}
 		
@@ -654,27 +654,27 @@ public abstract class Arena {
 	}
 
 	public void giveRewards(Player player) {
-		if (PVPArenaPlugin.getMethod() != null) {
+		if (PVPArena.getMethod() != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
 					double amount = bets.get(nKey)*4;
 
-					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(nSplit[0]);
+					MethodAccount ma = PVPArena.getMethod().getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.getMethod().format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArena.lang.parse("youwon",PVPArena.getMethod().format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
 				}				
 			}			
 		}	
-		if ((PVPArenaPlugin.getMethod() != null) && (rewardAmount > 0)) {
-			MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+		if ((PVPArena.getMethod() != null) && (rewardAmount > 0)) {
+			MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 			ma.add(rewardAmount);
-			tellPlayer(player,PVPArenaPlugin.lang.parse("awarded",PVPArenaPlugin.getMethod().format(rewardAmount)));
+			tellPlayer(player,PVPArena.lang.parse("awarded",PVPArena.getMethod().format(rewardAmount)));
 		}
 
 		if (rewardItems.equals("none"))
@@ -690,7 +690,7 @@ public abstract class Arena {
 				try {
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
-					tellPlayer(player,PVPArenaPlugin.lang.parse("invfull"));
+					tellPlayer(player,PVPArena.lang.parse("invfull"));
 					return;
 				}
 			} else {
@@ -699,7 +699,7 @@ public abstract class Arena {
 				try {
 					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
 				} catch (Exception e) {
-					tellPlayer(player,PVPArenaPlugin.lang.parse("invfull"));
+					tellPlayer(player,PVPArena.lang.parse("invfull"));
 					return;
 				}
 			}
@@ -744,7 +744,7 @@ public abstract class Arena {
 			color = "&" + Integer.toString(ChatColor.valueOf(fightTeams.get(color)).getCode(), 16).toLowerCase();
 		}
 		if (!color.equals(""))
-			PVPArenaPlugin.colorizePlayer(player, color);
+			PVPArena.colorizePlayer(player, color);
 		
 		fightTelePass.put(player.getName(), "yes");
 		player.teleport(getCoords(place));
@@ -829,7 +829,7 @@ public abstract class Arena {
 				}
 			}
 		}
-		tellEveryone(PVPArenaPlugin.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(team)) + "Team " + team));
+		tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(team)) + "Team " + team));
 		
 		Set<String> set = fightUsersTeam.keySet();
 		Iterator<String> iter = set.iterator();
@@ -848,7 +848,7 @@ public abstract class Arena {
 			fightUsersClass.remove(z.getName());
 		}
 
-		if (PVPArenaPlugin.getMethod() != null) {
+		if (PVPArena.getMethod() != null) {
 			for (String nKey : bets.keySet()) {
 				String[] nSplit = nKey.split(":");
 				
@@ -858,14 +858,14 @@ public abstract class Arena {
 				if (nSplit[1].equalsIgnoreCase(team)) {
 					double amount = bets.get(nKey)*2;
 
-					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(nSplit[0]);
+					MethodAccount ma = PVPArena.getMethod().getAccount(nSplit[0]);
 					if (ma == null) {
 						db.s("Account not found: "+nSplit[0]);
 						return true;
 					}
 					ma.add(amount);
 					try {
-						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArenaPlugin.lang.parse("youwon",PVPArenaPlugin.getMethod().format(amount)));
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArena.lang.parse("youwon",PVPArena.getMethod().format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
@@ -932,7 +932,7 @@ public abstract class Arena {
 		} else {
 			System.out.println("[PVP Arena] player '" + player.getName() + "' had no savedmisc entries!");
 		}
-		PVPArenaPlugin.colorizePlayer(player, "");
+		PVPArena.colorizePlayer(player, "");
 		String sClass = "exit";
 		if (fightUsersRespawn.get(player.getName()) != null) {
 			sClass = fightUsersRespawn.get(player.getName());
@@ -962,10 +962,10 @@ public abstract class Arena {
 			String team = calcFreeTeam();
 			goToWaypoint(player, team + "lounge");
 			fightUsersTeam.put(player.getName(), team);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(team)) + team));
-			tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(team)) + team));
+			tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(team)) + team));
+			tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(team)) + team));
 		} else {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+			tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 		}
 	}
 	
@@ -1023,8 +1023,8 @@ public abstract class Arena {
 			} else {
 				// notmax empty because first team was the only team
 				db.i("only one team! reverting!");
-				@SuppressWarnings("unchecked")
-				List<String> max = (List<String>) fightTeams.keySet();
+
+				Set<String> max = fightTeams.keySet();
 				
 				max.remove(lastStr);
 				
@@ -1069,8 +1069,8 @@ public abstract class Arena {
 	public boolean parseCommand(Player player, String[] args, String sName) {
 		
 		
-		if (!enabled && !PVPArenaPlugin.hasAdminPerms(player)) {
-			PVPArenaPlugin.lang.parse("arenadisabled");
+		if (!enabled && !PVPArena.hasAdminPerms(player)) {
+			PVPArena.lang.parse("arenadisabled");
 			return true;
 		}
 		
@@ -1078,38 +1078,38 @@ public abstract class Arena {
 			// just /pa or /pvparena
 			String error = isSetup();
 			if (error != null) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
+				tellPlayer(player, PVPArena.lang.parse("arenanotsetup",error));
 				return true;
 			}
-			if (!PVPArenaPlugin.hasPerms(player)) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("permjoin"));
+			if (!PVPArena.hasPerms(player)) {
+				tellPlayer(player, PVPArena.lang.parse("permjoin"));
 				return true;
 			}
 			if (manuallyselectteams) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("selectteam"));
+				tellPlayer(player, PVPArena.lang.parse("selectteam"));
 				return true;
 			}
 			if (savedmisc.containsKey(player)) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+				tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 				return true;
 			}
 			if (fightInProgress) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
+				tellPlayer(player, PVPArena.lang.parse("fightinprogress"));
 				return true;
 			}
 			if (joinrange(player)) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("joinrange"));
+				tellPlayer(player, PVPArena.lang.parse("joinrange"));
 				return true;
 			}
-			if (PVPArenaPlugin.getMethod() != null) {
-				MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+			if (PVPArena.getMethod() != null) {
+				MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 				if (ma == null) {
 					db.s("Account not found: "+player.getName());
 					return true;
 				}
 				if(!ma.hasEnough(entryFee)){
 					// no money, no entry!
-					tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.getMethod().format(entryFee)));
+					tellPlayer(player, PVPArena.lang.parse("notenough", PVPArena.getMethod().format(entryFee)));
 					return true;
 	            }
 			}
@@ -1119,15 +1119,15 @@ public abstract class Arena {
 			
 			
 			if (emptyInventory(player)) {
-				if ((PVPArenaPlugin.getMethod() != null) && (entryFee > 0)) {
-					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+				if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
+					MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 					ma.subtract(entryFee);
 				}
 
 				chooseColor(player);
 
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+				tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 			}
 			return true;
 		}
@@ -1135,31 +1135,31 @@ public abstract class Arena {
 		if (args.length == 1) {
 
 			if (args[0].equalsIgnoreCase("enable")) {
-				if (!PVPArenaPlugin.hasAdminPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("nopermto", PVPArenaPlugin.lang.parse("enable")));
+				if (!PVPArena.hasAdminPerms(player)) {
+					tellPlayer(player, PVPArena.lang.parse("nopermto", PVPArena.lang.parse("enable")));
 					return true;
 				}
 				enabled = true;
-				tellPlayer(player, PVPArenaPlugin.lang.parse("enabled"));
+				tellPlayer(player, PVPArena.lang.parse("enabled"));
 				return true;
 			} else if (args[0].equalsIgnoreCase("disable")) {
-				if (!PVPArenaPlugin.hasAdminPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("nopermto", PVPArenaPlugin.lang.parse("disable")));
+				if (!PVPArena.hasAdminPerms(player)) {
+					tellPlayer(player, PVPArena.lang.parse("nopermto", PVPArena.lang.parse("disable")));
 					return true;
 				}
 				enabled = false;
-				tellPlayer(player, PVPArenaPlugin.lang.parse("disabled"));
+				tellPlayer(player, PVPArena.lang.parse("disabled"));
 			} else if (args[0].equalsIgnoreCase("reload")) {
-				if (!PVPArenaPlugin.hasAdminPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("nopermto", PVPArenaPlugin.lang.parse("reload")));
+				if (!PVPArena.hasAdminPerms(player)) {
+					tellPlayer(player, PVPArena.lang.parse("nopermto", PVPArena.lang.parse("reload")));
 					return true;
 				}
 				plugin.load_config();
-				tellPlayer(player, PVPArenaPlugin.lang.parse("reloaded"));
+				tellPlayer(player, PVPArena.lang.parse("reloaded"));
 				return true;
 			} else if (args[0].equalsIgnoreCase("list")) {
 				if ((fightUsersTeam == null) || (fightUsersTeam.size() < 1)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("noplayer"));
+					tellPlayer(player, PVPArena.lang.parse("noplayer"));
 					return true;
 				}
 				String plrs = "";
@@ -1168,23 +1168,23 @@ public abstract class Arena {
 						plrs +=", ";
 					plrs += ChatColor.valueOf(fightTeams.get(fightUsersTeam.get(sPlayer))) + sPlayer + ChatColor.WHITE;
 				}
-				tellPlayer(player, PVPArenaPlugin.lang.parse("players") + ": " + plrs);
+				tellPlayer(player, PVPArena.lang.parse("players") + ": " + plrs);
 				return true;
 			} else if (args[0].equalsIgnoreCase("watch")) {
 
 				String error = isSetup();
 				if (error != null) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
+					tellPlayer(player, PVPArena.lang.parse("arenanotsetup",error));
 					return true;
 				}
 				if (fightUsersTeam.containsKey(player.getName())) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+					tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 					return true;
 				}
 				goToWaypoint(player, "spectator");
-				tellPlayer(player, PVPArenaPlugin.lang.parse("specwelcome"));
+				tellPlayer(player, PVPArena.lang.parse("specwelcome"));
 				return true;
-			} else if (PVPArenaPlugin.hasAdminPerms(player)) {
+			} else if (PVPArena.hasAdminPerms(player)) {
 				return parseAdminCommand(args, player);
 			} else if (fightTeams.get(args[0]) == null) {
 				
@@ -1193,39 +1193,39 @@ public abstract class Arena {
 
 				String error = isSetup();
 				if (error != null) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotsetup",error));
+					tellPlayer(player, PVPArena.lang.parse("arenanotsetup",error));
 					return true;
 				}
-				if (!PVPArenaPlugin.hasPerms(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("permjoin"));
+				if (!PVPArena.hasPerms(player)) {
+					tellPlayer(player, PVPArena.lang.parse("permjoin"));
 					return true;
 				}
 				if (!(manuallyselectteams)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("notselectteam"));
+					tellPlayer(player, PVPArena.lang.parse("notselectteam"));
 					return true;
 				}
 				if (savedmisc.containsKey(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+					tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 					return true;
 				}
 				if (fightInProgress) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("fightinprogress"));
+					tellPlayer(player, PVPArena.lang.parse("fightinprogress"));
 					return true;
 				}
 				if (joinrange(player)) {
-					tellPlayer(player, PVPArenaPlugin.lang.parse("joinrange"));
+					tellPlayer(player, PVPArena.lang.parse("joinrange"));
 					return true;
 				}
 				
-				if (PVPArenaPlugin.getMethod() != null) {
-					MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+				if (PVPArena.getMethod() != null) {
+					MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 					if (ma == null) {
 						db.s("Account not found: "+player.getName());
 						return true;
 					}
 					if(!ma.hasEnough(entryFee)){
 						// no money, no entry!
-						tellPlayer(player, PVPArenaPlugin.lang.parse("notenough", PVPArenaPlugin.getMethod().format(entryFee)));
+						tellPlayer(player, PVPArena.lang.parse("notenough", PVPArena.getMethod().format(entryFee)));
 						return true;
 		            }
 				}
@@ -1234,38 +1234,38 @@ public abstract class Arena {
 				fightUsersLives.put(player.getName(), (byte) maxlives);
 				
 				if (emptyInventory(player)) {
-					if ((PVPArenaPlugin.getMethod() != null) && (entryFee > 0)) {
-						MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+					if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
+						MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 						ma.subtract(entryFee);
 					}
 
 					goToWaypoint(player, args[0] + "lounge");
 					fightUsersTeam.put(player.getName(), args[0]);
-					tellPlayer(player, PVPArenaPlugin.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
-					tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
+					tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
+					tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(fightTeams.get(args[0])) + args[0]));
 					
 				}
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","502"));
+				tellPlayer(player, PVPArena.lang.parse("invalidcmd","502"));
 				return false;
 			}
 			return true;
 		} else if (args.length == 3) {
 			// /pa bet [name] [amount]
 			if (!args[0].equalsIgnoreCase("bet")) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","503"));
+				tellPlayer(player, PVPArena.lang.parse("invalidcmd","503"));
 				return false;
 			}
 			if (!fightUsersTeam.containsKey(player.getName())) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("betnotyours"));
+				tellPlayer(player, PVPArena.lang.parse("betnotyours"));
 				return true;
 			}
 			
-			if (PVPArenaPlugin.getMethod() == null)
+			if (PVPArena.getMethod() == null)
 				return true;
 			
 			if (!(fightTeams.get(args[1]) != null) && !fightUsersTeam.containsKey(args[1])) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("betoptions"));
+				tellPlayer(player, PVPArena.lang.parse("betoptions"));
 				return true;
 			}
 			
@@ -1274,21 +1274,21 @@ public abstract class Arena {
 			try {
 				amount = Double.parseDouble(args[2]);
 			} catch (Exception e) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidamount",args[2]));
+				tellPlayer(player, PVPArena.lang.parse("invalidamount",args[2]));
 				return true;
 			}
-			MethodAccount ma = PVPArenaPlugin.getMethod().getAccount(player.getName());
+			MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 			if (ma == null) {
 				db.s("Account not found: "+player.getName());
 				return true;
 			}
 			if(!ma.hasEnough(entryFee)){
 				// no money, no entry!
-				tellPlayer(player, PVPArenaPlugin.lang.parse("notenough",PVPArenaPlugin.getMethod().format(amount)));
+				tellPlayer(player, PVPArena.lang.parse("notenough",PVPArena.getMethod().format(amount)));
 				return true;
             }
 			ma.subtract(amount);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("betplaced", args[1]));
+			tellPlayer(player, PVPArena.lang.parse("betplaced", args[1]));
 			bets.put(player.getName() + ":" + args[1], amount);
 			return true;
 		}
@@ -1297,7 +1297,7 @@ public abstract class Arena {
 			String team[] = StatsManager.getTeamStats(args[1], this).split(";");
 			int i = 0;
 			for (String sTeam : fightTeams.keySet())
-				player.sendMessage(PVPArenaPlugin.lang.parse("teamstat", ChatColor.valueOf(fightTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
+				player.sendMessage(PVPArena.lang.parse("teamstat", ChatColor.valueOf(fightTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("users")) {
 			// wins are suffixed with "_"
@@ -1327,29 +1327,29 @@ public abstract class Arena {
 			}
 			wins = sort(wins);
 			losses = sort(losses);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("top5wins"));
+			tellPlayer(player, PVPArena.lang.parse("top5wins"));
 			
 			for (int w=0; w<wins.length && w < 5 ; w++) {
-				tellPlayer(player, wins[w][0] + ": " + wins[w][1] + " " + PVPArenaPlugin.lang.parse("wins"));
+				tellPlayer(player, wins[w][0] + ": " + wins[w][1] + " " + PVPArena.lang.parse("wins"));
 			}
 			
 	
 			tellPlayer(player, "------------");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("top5lose"));
+			tellPlayer(player, PVPArena.lang.parse("top5lose"));
 			
 			for (int l=0; l<losses.length && l < 5 ; l++) {
-				tellPlayer(player, losses[l][0] + ": " + losses[l][1] + " " + PVPArenaPlugin.lang.parse("losses"));
+				tellPlayer(player, losses[l][0] + ": " + losses[l][1] + " " + PVPArena.lang.parse("losses"));
 			}
 			return true;
 		}
 		
-		if (!PVPArenaPlugin.hasAdminPerms(player)) {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","504"));
+		if (!PVPArena.hasAdminPerms(player)) {
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","504"));
 			return false;
 		}
 		
 		if ((args.length != 2) || (!args[0].equalsIgnoreCase("region"))) {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","505"));
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","505"));
 			return false;
 		}
 
@@ -1358,34 +1358,34 @@ public abstract class Arena {
 		
 		if (args[1].equalsIgnoreCase("set")) {
 			if (!Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionalreadybeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", sName));
 				return true;
 			}
 			if (config.getKeys("protection.region") == null) {
 				Arena.regionmodify = name;
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionset"));
+				tellPlayer(player, PVPArena.lang.parse("regionset"));
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionalreadyset"));
+				tellPlayer(player, PVPArena.lang.parse("regionalreadyset"));
 			}
 		} else if ((args[1].equalsIgnoreCase("modify"))
 				|| (args[1].equalsIgnoreCase("edit"))) {
 			if (!Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionalreadybeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", sName));
 				return true;
 			}
 			if (config.getKeys("protection.region") != null) {
 				Arena.regionmodify = name;
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionmodify"));
+				tellPlayer(player, PVPArena.lang.parse("regionmodify"));
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("noregionset"));
+				tellPlayer(player, PVPArena.lang.parse("noregionset"));
 			}
 		} else if (args[1].equalsIgnoreCase("save")) {
 			if (Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionnotbeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionnotbeingset", sName));
 				return true;
 			}
 			if ((pos1 == null) || (pos2 == null)) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("set2points"));
+				tellPlayer(player, PVPArena.lang.parse("set2points"));
 			} else {
 				config.setProperty("protection.region.min",
 						getMinimumPoint().getX() + ", "
@@ -1399,20 +1399,20 @@ public abstract class Arena {
 						.getWorld().getName());
 				config.save();
 				Arena.regionmodify = "";
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionsaved"));
+				tellPlayer(player, PVPArena.lang.parse("regionsaved"));
 			}
 		} else if (args[1].equalsIgnoreCase("remove")) {
 			if (config.getKeys("protection.region") != null) {
 				config.removeProperty("protection.region");
 				config.save();
 				Arena.regionmodify = "";
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionremoved"));
+				tellPlayer(player, PVPArena.lang.parse("regionremoved"));
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("regionnotremoved"));
+				tellPlayer(player, PVPArena.lang.parse("regionnotremoved"));
 			}
 
 		} else {
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","506"));
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","506"));
 			return false;
 		}
 		
@@ -1438,31 +1438,31 @@ public abstract class Arena {
 
 		if (args[0].equalsIgnoreCase("spectator")) {
 			setCoords(player, "spectator");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setspectator"));
+			tellPlayer(player, PVPArena.lang.parse("setspectator"));
 		} else if (args[0].equalsIgnoreCase("exit")) {
 			setCoords(player, "exit");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setexit"));
+			tellPlayer(player, PVPArena.lang.parse("setexit"));
 		} else if (args[0].equalsIgnoreCase("forcestop")) {
 			if (fightInProgress) {
 				forcestop();
-				tellPlayer(player, PVPArenaPlugin.lang.parse("forcestop"));
+				tellPlayer(player, PVPArena.lang.parse("forcestop"));
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("nofight"));
+				tellPlayer(player, PVPArena.lang.parse("nofight"));
 			}
 		} else if (args[0].equalsIgnoreCase("forcestop")) {
 			if (fightInProgress) {
 				forcestop();
-				tellPlayer(player, PVPArenaPlugin.lang.parse("forcestop"));
+				tellPlayer(player, PVPArena.lang.parse("forcestop"));
 			} else {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("nofight"));
+				tellPlayer(player, PVPArena.lang.parse("nofight"));
 			}
 		} else if (randomSpawn && (args[0].startsWith("spawn"))) {
 			setCoords(player, args[0]);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setspawn", args[0]));
+			tellPlayer(player, PVPArena.lang.parse("setspawn", args[0]));
 		} else {
 			// no random or not trying to set custom spawn
 			if ((!checkLoungeCommand(args,player)) && (!checkSpawnCommand(args, player))) {
-				tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","501"));
+				tellPlayer(player, PVPArena.lang.parse("invalidcmd","501"));
 				return false;
 			}
 			// else: command lounge or spawn :)
@@ -1477,7 +1477,7 @@ public abstract class Arena {
 				return false;
 
 			setCoords(player, args[0]);
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setspawn", sName));
+			tellPlayer(player, PVPArena.lang.parse("setspawn", sName));
 			return true;
 		}
 		return false;
@@ -1488,21 +1488,21 @@ public abstract class Arena {
 			String color = args[0].replace("lounge", "");
 			if (fightTeams.containsKey(color)) {
 				setCoords(player, args[0]);
-				tellPlayer(player, PVPArenaPlugin.lang.parse("setlounge", color));
+				tellPlayer(player, PVPArena.lang.parse("setlounge", color));
 				return true;
 			}
-			tellPlayer(player, PVPArenaPlugin.lang.parse("invalidcmd","506"));
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","506"));
 			return true;
 		}
 		return false;
 	}
 
 	public static void tellPublic(String msg) {
-		Bukkit.getServer().broadcastMessage(PVPArenaPlugin.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+		Bukkit.getServer().broadcastMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
 	}
 
 	public static void tellPlayer(Player player, String msg) {
-		player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+		player.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
 	}
 
 	public static void clearInventory(Player player) {
@@ -1598,7 +1598,7 @@ public abstract class Arena {
 				for (Powerup p : this.pm.puTotal) {
 					if (--i <= 0) {
 						commitItemSpawn(p.item);
-						Arena.tellPublic(PVPArenaPlugin.lang.parse("serverpowerup",p.name));
+						Arena.tellPublic(PVPArena.lang.parse("serverpowerup",p.name));
 						return;
 					}
 				}

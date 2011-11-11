@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.TeamArena;
@@ -36,9 +36,9 @@ import org.bukkit.util.Vector;
 
 public class ArenaManager {
 	static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	private static PVPArenaPlugin plugin;
+	private static PVPArena plugin;
 	
-	public ArenaManager(PVPArenaPlugin plugin) {
+	public ArenaManager(PVPArena plugin) {
 		ArenaManager.plugin = plugin;
 	}
 	

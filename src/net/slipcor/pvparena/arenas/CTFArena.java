@@ -26,7 +26,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.util.Vector;
 import org.bukkit.util.config.Configuration;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.StatsManager;
 
 public class CTFArena extends Arena{
@@ -34,7 +34,7 @@ public class CTFArena extends Arena{
 	private HashMap<String, String> teamFlags = new HashMap<String, String>(); // carried flags
 	
 	@SuppressWarnings("unchecked")
-	public CTFArena(String sName, PVPArenaPlugin plugin) {
+	public CTFArena(String sName, PVPArena plugin) {
 		super();
 
 		this.name = sName;
@@ -45,7 +45,7 @@ public class CTFArena extends Arena{
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArenaPlugin.lang.log_error("filecreateerror","config.ctf_" + name);
+				PVPArena.lang.log_error("filecreateerror","config.ctf_" + name);
 			}
 		this.randomSpawn = false;
 		
@@ -121,7 +121,7 @@ public class CTFArena extends Arena{
 				}
 				
 
-				tellEveryone(PVPArenaPlugin.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(winteam)) + "Team " + winteam));
+				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(winteam)) + "Team " + winteam));
 				
 				teamLives.clear();
 				reset();
@@ -153,7 +153,7 @@ public class CTFArena extends Arena{
 				String scPlayer = ChatColor.valueOf(fightTeams.get(sTeam)) + player.getName() + ChatColor.YELLOW;
 				
 				
-				tellEveryone(PVPArenaPlugin.lang.parse("flaghome",scPlayer, scFlagTeam));
+				tellEveryone(PVPArena.lang.parse("flaghome",scPlayer, scFlagTeam));
 				teamFlags.remove(flagTeam);
 				reduce(flagTeam);
 			}
@@ -170,7 +170,7 @@ public class CTFArena extends Arena{
 					System.out.print("spawn found!");
 					String scTeam = ChatColor.valueOf(fightTeams.get(team)) + team + ChatColor.YELLOW;
 					String scPlayer = ChatColor.valueOf(fightTeams.get(fightUsersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
-					tellEveryone(PVPArenaPlugin.lang.parse("flaggrab",scPlayer, scTeam));
+					tellEveryone(PVPArena.lang.parse("flaggrab",scPlayer, scTeam));
 
 					teamFlags.put(team, player.getName());
 					return;
@@ -192,7 +192,7 @@ public class CTFArena extends Arena{
 		String flagTeam = getHeldFlagTeam(player.getName());
 		String scFlagTeam = ChatColor.valueOf(fightTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
 		String scPlayer = ChatColor.valueOf(fightTeams.get(fightUsersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
-		PVPArenaPlugin.lang.parse("flagsave",scPlayer, scFlagTeam);
+		PVPArena.lang.parse("flagsave",scPlayer, scFlagTeam);
 		teamFlags.remove(flagTeam);
 	}
 }

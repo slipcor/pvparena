@@ -3,7 +3,7 @@ package net.slipcor.pvparena.managers;
 import java.io.File;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
@@ -40,7 +40,7 @@ public class LanguageManager {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArenaPlugin.instance.log.severe("[PVP Arena] Error when creating language file.");
+				PVPArena.instance.log.severe("[PVP Arena] Error when creating language file.");
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -193,25 +193,25 @@ public class LanguageManager {
 	
 	public void log_error(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.instance.log.severe("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArena.instance.log.severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_warning(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.instance.log.warning("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArena.instance.log.warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s, String arg) {
 		String var = log.get(s);
-		PVPArenaPlugin.instance.log.info("[PVP Arena] " + var.replace("%1%", arg));
+		PVPArena.instance.log.info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 	
 	public void log_info(String s) {
 		String var = log.get(s);
-		PVPArenaPlugin.instance.log.info("[PVP Arena] " + var);
+		PVPArena.instance.log.info("[PVP Arena] " + var);
 		// log map value
 	}
 }

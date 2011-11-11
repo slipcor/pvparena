@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public class StatsManager {
 				configFile.createNewFile();
 				bNew = true; // mark as new
 			} catch (Exception e) {
-				PVPArenaPlugin.lang.log_error("filecreateerror",file);
+				PVPArena.lang.log_error("filecreateerror",file);
 			}
 
 		Configuration config = new Configuration(configFile);
@@ -158,7 +158,7 @@ public class StatsManager {
 		
 		String c = arena.fightTeams.get(color);
 		if (c == null) {
-			PVPArenaPlugin.lang.log_warning("teamnotfound",color);
+			PVPArena.lang.log_warning("teamnotfound",color);
 			return; // invalid team
 		}
 		String path = (win?"wins.":"losses.") + color + "." + player.getName();

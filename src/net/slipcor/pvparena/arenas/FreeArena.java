@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.StatsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,7 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
 public class FreeArena extends Arena{
-	public FreeArena(String sName, PVPArenaPlugin plugin) {
+	public FreeArena(String sName, PVPArena plugin) {
 		super();
 
 		this.name = sName;
@@ -42,7 +42,7 @@ public class FreeArena extends Arena{
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArenaPlugin.lang.log_error("filecreateerror","config.free_" + name);
+				PVPArena.lang.log_error("filecreateerror","config.free_" + name);
 			}
 
 		parseConfig("free");
@@ -111,11 +111,11 @@ public class FreeArena extends Arena{
 		if (!(fightUsersTeam.containsKey(player.getName()))) {
 			goToWaypoint(player, "lounge");
 			fightUsersTeam.put(player.getName(), "free");
-			Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("youjoinedfree"));
-			tellEveryoneExcept(player, PVPArenaPlugin.lang.parse("playerjoinedfree", player.getName()));
+			Arena.tellPlayer(player, PVPArena.lang.parse("youjoinedfree"));
+			tellEveryoneExcept(player, PVPArena.lang.parse("playerjoinedfree", player.getName()));
 
 		} else {
-			Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("alreadyjoined"));
+			Arena.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 		}
 	}
 
@@ -123,7 +123,7 @@ public class FreeArena extends Arena{
 	public boolean checkSpawnCommand(String[] args, Player player) {
 		if (args[0].equalsIgnoreCase("lounge")) {
 			setCoords(player, "lounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setlounge"));
+			tellPlayer(player, PVPArena.lang.parse("setlounge"));
 			return true;
 		}
 		return false;
@@ -133,7 +133,7 @@ public class FreeArena extends Arena{
 	public boolean checkLoungeCommand(String[] args, Player player) {
 		if (args[0].equalsIgnoreCase("lounge")) {
 			setCoords(player, "lounge");
-			tellPlayer(player, PVPArenaPlugin.lang.parse("setlounge"));
+			tellPlayer(player, PVPArena.lang.parse("setlounge"));
 			return true;
 		}
 		return false;

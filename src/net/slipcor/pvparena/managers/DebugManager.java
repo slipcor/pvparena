@@ -1,22 +1,22 @@
 package net.slipcor.pvparena.managers;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 
 public class DebugManager {
-	private boolean active = true; 
+	private boolean active = false; 
 	public void i(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.instance.log.info(s);
+		PVPArena.instance.log.info(s);
 	}
 	public void w(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.instance.log.warning(s);
+		PVPArena.instance.log.warning(s);
 	}
 	public void s(String s) {
 		if (!active)
 			return;
-		PVPArenaPlugin.instance.log.severe(s);
+		PVPArena.instance.log.severe(s);
 	}
 }

@@ -3,7 +3,7 @@ package net.slipcor.pvparena.listeners;
 import java.io.File;
 import java.util.Iterator;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -114,9 +114,9 @@ public class PAPlayerListener extends PlayerListener {
 			return; // no fighting player => OUT
 		String color = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
 		if (color != null) {
-			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
+			arena.tellEveryoneExcept(player,PVPArena.lang.parse("playerleave", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 		} else {
-			arena.tellEveryoneExcept(player,PVPArenaPlugin.lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
+			arena.tellEveryoneExcept(player,PVPArena.lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 		}
 		arena.removePlayer(player, arena.sTPexit);
 		arena.checkEnd();
@@ -129,7 +129,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null)
 			return; // no fighting player => OUT
 		
-		Arena.tellPlayer(player,(PVPArenaPlugin.lang.parse("dropitem")));
+		Arena.tellPlayer(player,(PVPArena.lang.parse("dropitem")));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
@@ -153,7 +153,7 @@ public class PAPlayerListener extends PlayerListener {
 					arena.pm.puActive.get(player).deactivate();
 				}
 				arena.pm.puActive.put(player, newP);
-				arena.tellEveryone(PVPArenaPlugin.lang.parse("playerpowerup",player.getName(),newP.name));
+				arena.tellEveryone(PVPArena.lang.parse("playerpowerup",player.getName(),newP.name));
 				event.setCancelled(true);
 				event.getItem().remove();
 				if (newP.canBeTriggered())
@@ -176,7 +176,7 @@ public class PAPlayerListener extends PlayerListener {
 			return; // if allowed => OUT
 		
 		event.setCancelled(true); // cancel and tell
-		Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("usepatoexit"));
+		Arena.tellPlayer(player, PVPArena.lang.parse("usepatoexit"));
 	}
 	
 	public void onPlayerVelocity(PlayerVelocityEvent event) {
@@ -206,20 +206,20 @@ public class PAPlayerListener extends PlayerListener {
 	
 		Arena arena = ArenaManager.getArenaByName(Arena.regionmodify);
 		
-		if (arena != null && PVPArenaPlugin.hasAdminPerms(player) && (player.getItemInHand().getTypeId() == arena.wand)) {
+		if (arena != null && PVPArena.hasAdminPerms(player) && (player.getItemInHand().getTypeId() == arena.wand)) {
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("pos1"));
+				Arena.tellPlayer(player, PVPArena.lang.parse("pos1"));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return; // left click => pos1
 			}
 	
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("pos2"));
+				Arena.tellPlayer(player, PVPArena.lang.parse("pos2"));
 				return; // right click => pos2
 			}
 		}
@@ -235,7 +235,7 @@ public class PAPlayerListener extends PlayerListener {
 						
 						Arena a = ArenaManager.getArenaByName(sName);
 						if (a == null) {
-							Arena.tellPlayer(player, PVPArenaPlugin.lang.parse("arenanotexists", sName));
+							Arena.tellPlayer(player, PVPArena.lang.parse("arenanotexists", sName));
 							return;
 						}
 						a.parseCommand(player, newArgs, sName);
@@ -273,8 +273,8 @@ public class PAPlayerListener extends PlayerListener {
 					}
 					
 					if (classperms) {
-						if (!PVPArenaPlugin.hasPerms(player, "fight.group." + sign.getLine(0))) {
-							player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("classperms"));
+						if (!PVPArena.hasPerms(player, "fight.group." + sign.getLine(0))) {
+							player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("classperms"));
 							return; // class permission desired and failed => announce and OUT
 						}
 					}
@@ -342,7 +342,7 @@ public class PAPlayerListener extends PlayerListener {
 							}
 						}
 					}
-					player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("toomanyplayers"));
+					player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("toomanyplayers"));
 				}
 				return;
 			}
@@ -363,7 +363,7 @@ public class PAPlayerListener extends PlayerListener {
 					try {
 						mMat = Material.getMaterial(sMat);
 					} catch (Exception e2) {
-						PVPArenaPlugin.lang.log_warning("matnotfound", sMat);
+						PVPArena.lang.log_warning("matnotfound", sMat);
 					}
 				}
 			}
@@ -377,13 +377,13 @@ public class PAPlayerListener extends PlayerListener {
 				String color = (String) arena.fightUsersTeam.get(player.getName());
 
 				if (!arena.ready()) {
-					player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("notready"));
+					player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("notready"));
 					return; // team not ready => announce
 				}
 				
 				if (arena.forceeven) {
 					if (arena.checkEven()) {
-						player.sendMessage(PVPArenaPlugin.lang.parse("msgprefix") + PVPArenaPlugin.lang.parse("waitequal"));
+						player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce
 					}
 				}
@@ -392,15 +392,15 @@ public class PAPlayerListener extends PlayerListener {
 					String sName = color;
 					color = arena.fightTeams.get(color);
 					
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("ready", ChatColor.valueOf(color) + sName + ChatColor.WHITE));
+					arena.tellEveryone(PVPArena.lang.parse("ready", ChatColor.valueOf(color) + sName + ChatColor.WHITE));
 
 					arena.teleportAllToSpawn();
 					arena.fightInProgress = true;
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
+					arena.tellEveryone(PVPArena.lang.parse("begin"));
 				} else {
 					arena.teleportAllToSpawn();
 					arena.fightInProgress = true;
-					arena.tellEveryone(PVPArenaPlugin.lang.parse("begin"));
+					arena.tellEveryone(PVPArena.lang.parse("begin"));
 				}
 			}
 		}

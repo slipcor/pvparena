@@ -3,7 +3,7 @@ package net.slipcor.pvparena.arenas;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 
 import org.bukkit.ChatColor;
 import org.bukkit.util.config.Configuration;
@@ -24,7 +24,7 @@ import org.bukkit.util.config.Configuration;
 
 public class TeamArena extends Arena {
 	@SuppressWarnings("unchecked")
-	public TeamArena(String sName, PVPArenaPlugin plugin) {
+	public TeamArena(String sName, PVPArena plugin) {
 		super(sName, plugin);
 		
 		Map<String, String> fT = new HashMap<String, String>();

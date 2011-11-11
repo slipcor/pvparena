@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.listeners;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.register.payment.Methods;
 
 import org.bukkit.Bukkit;
@@ -39,8 +39,8 @@ public class PAServerListener extends ServerListener {
             Boolean check = this.methods.checkDisabled(event.getPlugin());
 
             if(check) {
-            	PVPArenaPlugin.setMethod(null);
-        		PVPArenaPlugin.lang.log_info("iconomyoff");
+            	PVPArena.setMethod(null);
+        		PVPArena.lang.log_info("iconomyoff");
             }
         }
     }
@@ -51,10 +51,10 @@ public class PAServerListener extends ServerListener {
         // Check to see if we need a payment method
         if (!this.methods.hasMethod()) {
             if(this.methods.setMethod(Bukkit.getServer().getPluginManager())) {
-            	PVPArenaPlugin.setMethod(this.methods.getMethod());
-                PVPArenaPlugin.lang.log_info("iconomyon"); 
+            	PVPArena.setMethod(this.methods.getMethod());
+                PVPArena.lang.log_info("iconomyon"); 
             } else {
-    			PVPArenaPlugin.lang.log_info("iconomyoff");
+    			PVPArena.lang.log_info("iconomyoff");
             }
         }
     }

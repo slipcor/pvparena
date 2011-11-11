@@ -2,7 +2,7 @@ package net.slipcor.pvparena.arenas;
 
 import org.bukkit.Bukkit;
 
-import net.slipcor.pvparena.PVPArenaPlugin;
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.DebugManager;
 
 /*
