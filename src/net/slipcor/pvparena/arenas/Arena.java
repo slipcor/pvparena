@@ -26,10 +26,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +35,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 import org.bukkit.util.config.Configuration;
-import org.getspout.spoutapi.SpoutManager;
 
 /*
  * Arena class
@@ -618,14 +615,14 @@ public abstract class Arena {
 				db.i("everything ready. go for it!");
 				powerupdiff = powerupdiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
-			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,new MyRunnable(this),powerupdiff,powerupdiff);
+			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,new MyRunnable(this),powerupdiff,powerupdiff);
 			}
 		}
 		
 	}
 	
 	public void init_arena() {
-		
+		// 
 	}
 
 	public void saveInventory(Player player) {
@@ -1066,7 +1063,7 @@ public abstract class Arena {
 		return null;
 	}
 
-	public boolean parseCommand(Player player, String[] args, String sName) {
+	public boolean parseCommand(Player player, String[] args) {
 		
 		
 		if (!enabled && !PVPArena.hasAdminPerms(player)) {
@@ -1353,12 +1350,12 @@ public abstract class Arena {
 			return false;
 		}
 
-		Configuration config = new Configuration(new File("plugins/pvparena", "config_" + sName + ".yml"));
+		Configuration config = new Configuration(new File("plugins/pvparena", "config_" + name + ".yml"));
 		config.load();
 		
 		if (args[1].equalsIgnoreCase("set")) {
 			if (!Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", Arena.regionmodify));
 				return true;
 			}
 			if (config.getKeys("protection.region") == null) {
@@ -1370,7 +1367,7 @@ public abstract class Arena {
 		} else if ((args[1].equalsIgnoreCase("modify"))
 				|| (args[1].equalsIgnoreCase("edit"))) {
 			if (!Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", Arena.regionmodify));
 				return true;
 			}
 			if (config.getKeys("protection.region") != null) {
@@ -1381,7 +1378,7 @@ public abstract class Arena {
 			}
 		} else if (args[1].equalsIgnoreCase("save")) {
 			if (Arena.regionmodify.equals("")) {
-				tellPlayer(player, PVPArena.lang.parse("regionnotbeingset", sName));
+				tellPlayer(player, PVPArena.lang.parse("regionnotbeingset", name));
 				return true;
 			}
 			if ((pos1 == null) || (pos2 == null)) {

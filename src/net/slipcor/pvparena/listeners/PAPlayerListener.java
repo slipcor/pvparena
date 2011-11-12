@@ -238,7 +238,7 @@ public class PAPlayerListener extends PlayerListener {
 							Arena.tellPlayer(player, PVPArena.lang.parse("arenanotexists", sName));
 							return;
 						}
-						a.parseCommand(player, newArgs, sName);
+						a.parseCommand(player, newArgs);
 						return;
 					}
 				}
@@ -289,10 +289,10 @@ public class PAPlayerListener extends PlayerListener {
 							if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
 								sSign.setLine(i, "");
 								Arena.clearInventory(player);
+								sSign.update();
 								break; // remove found player, break!
 							}
 						}
-						sSign.update();
 						sSign = arena.getNext(sSign);
 						
 						if (sSign != null) {
@@ -303,8 +303,8 @@ public class PAPlayerListener extends PlayerListener {
 									break; // remove found player, break!
 								}
 							}
+							sSign.update();
 						}
-						sSign.update();
 					}
 
 					for (i=2;i<4;i++) {
@@ -312,13 +312,13 @@ public class PAPlayerListener extends PlayerListener {
 							arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
 							arena.fightUsersClass.put(player.getName(),sign.getLine(0));
 							sign.setLine(i, player.getName());
+							sign.update();
 							// select class
 							if (sign.getLine(0).equalsIgnoreCase("custom")) {
 								arena.setInventory(player); // if custom, give stuff back
 							} else {
 								arena.giveItems(player);
 							}
-							sign.update();
 							return;
 						}
 					}
@@ -331,13 +331,13 @@ public class PAPlayerListener extends PlayerListener {
 								arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
 								arena.fightUsersClass.put(player.getName(),sign.getLine(0));
 								nSign.setLine(i, player.getName());
+								nSign.update();
 								// select class
 								if (sign.getLine(0).equalsIgnoreCase("custom")) {
 									arena.setInventory(player); // if custom, give stuff back
 								} else {
 									arena.giveItems(player);
 								}
-								nSign.update();
 								return;
 							}
 						}

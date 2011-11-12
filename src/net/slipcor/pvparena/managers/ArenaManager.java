@@ -169,4 +169,15 @@ public class ArenaManager {
 			arena.pm.tick();
 		}
 	}
+
+	public static int count() {
+		return arenas.size();
+	}
+
+	public static Arena getFirst() {
+		for (Arena arena : arenas.values()) {
+			return arena;
+		}
+		return null;
+	}
 }

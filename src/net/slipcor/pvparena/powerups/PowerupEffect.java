@@ -132,7 +132,7 @@ public class PowerupEffect {
 			Random r = new Random();
 			if (r.nextFloat() <= chance) {
 				EntityDamageByEntityEvent reflectEvent = new EntityDamageByEntityEvent(defender, attacker, event.getCause(), (int) Math.round(event.getDamage() * factor));
-				PVPArena.entityListener.onEntityDamageByEntity(reflectEvent);
+				PVPArena.instance.entityListener.onEntityDamageByEntity(reflectEvent);
 			} // else: chance fail :D
 		} else if (this.type == classes.IGNITE) {
 			Random r = new Random();

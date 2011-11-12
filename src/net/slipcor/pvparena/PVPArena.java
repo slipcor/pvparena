@@ -16,7 +16,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
@@ -30,10 +29,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.5 - Powerups!!
+ * version: v0.3.7 - Bugfixes, Cleanup
  * 
  * history:
  *
+ *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
@@ -64,12 +64,12 @@ public class PVPArena extends JavaPlugin {
 	private static PermissionHandler Permissions;
 	private static String spoutHandler = null;
 	
-	public final Logger log = Logger.getLogger("Minecraft");
-	public static PVPArena instance;
-	public static final PAEntityListener entityListener = new PAEntityListener();
 	public static final LanguageManager lang = new LanguageManager();
+	public static PVPArena instance;
+	public final PAEntityListener entityListener = new PAEntityListener();
+	public final Logger log = Logger.getLogger("Minecraft");
 	
-
+	@Override
 	public void onEnable() {
 		PVPArena.instance = this;
 		setupPermissions();
@@ -79,10 +79,10 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLUGIN_DISABLE, this.serverListener,Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener,	Event.Priority.Monitor, this);
 		
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, PVPArena.entityListener,Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, PVPArena.entityListener,Event.Priority.Lowest, this);
-		pm.registerEvent(Event.Type.ENTITY_EXPLODE, PVPArena.entityListener,Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, PVPArena.entityListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, this.entityListener,Event.Priority.Lowest, this);
+		pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener,Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener,Event.Priority.Highest, this);
 		
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,Event.Priority.Normal, this);
@@ -100,7 +100,6 @@ public class PVPArena extends JavaPlugin {
 
 		load_config();
 		lang.log_info("enabled", pdfFile.getVersion());
-
 	}
 	
 	public void load_config() {
@@ -119,17 +118,15 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if ((!commandLabel.equalsIgnoreCase("pvparena")) && (!commandLabel.equalsIgnoreCase("pa"))) {
+		if ((!commandLabel.equalsIgnoreCase("pvparena")) && (!commandLabel.equalsIgnoreCase("pa")))
 			return true; // none of our business
-		}
 		
-		Player player = null;
-		try {
-			player = (Player) sender;
-		} catch (Exception e) {
+		if (!(sender instanceof Player)) {
 			lang.parse("onlyplayers");
 			return true;
 		}
+		
+		Player player = (Player) sender;
 		
 		if (args == null || args.length < 1)
 			return false;
@@ -210,28 +207,30 @@ public class PVPArena extends JavaPlugin {
 		
 		Arena arena = ArenaManager.getArenaByName(sName);
 		if (arena == null) {
-			Arena.tellPlayer(player, lang.parse("arenanotexists", sName));
-			return true;
+			if (ArenaManager.count() == 1)
+				arena = ArenaManager.getFirst();
+			else if (ArenaManager.getArenaByName("default") != null)
+				arena = ArenaManager.getArenaByName("default");
+			else {
+				Arena.tellPlayer(player, lang.parse("arenanotexists", sName));
+				return true;
+			}
 		}
-		return arena.parseCommand(player, newArgs, sName);
+		return arena.parseCommand(player, newArgs);
 	}
 	
 	public static boolean hasAdminPerms(Player player) {
-		if (Permissions == null)
-			return player.isOp();
-		return Permissions.has(player, "fight.admin");
+		return hasPerms(player, "fight.admin");
 	}
 
 	public static boolean hasPerms(Player player) {
-		if (Permissions == null)
-			return true;
-		return Permissions.has(player, "fight.user")?true:player.hasPermission("fight.user");
+		return hasPerms(player, "fight.user");
 	}
 
 	public static boolean hasPerms(Player player, String perms) {
 		if (Permissions == null)
-			return true;
-		return Permissions.has(player, perms)?true:player.hasPermission(perms);
+			return player.hasPermission(perms);
+		return player.hasPermission(perms)?true:Permissions.has(player, perms);
 	}
 	
 	private void setupPermissions() {
@@ -242,26 +241,15 @@ public class PVPArena extends JavaPlugin {
 			Permissions = ((Permissions) test).getHandler();
 		else
 			lang.log_info("noperms");
-	}
-	
-	private Runnable tick = new Runnable(){
-        public void run(){
-        	ArenaManager.powerupTick(); // Autosave method
-        }
-    };
-    
+	}    
 
 	public static void colorizePlayer(Player player, String color) {
 		if (color.equals("")) {
+			player.setDisplayName(player.getName());
 			
-			String rn = player.getName();
-			player.setDisplayName(rn);
+			if (spoutHandler != null)
+				SpoutManager.getAppearanceManager().setGlobalTitle(player,player.getName());
 			
-
-			if (spoutHandler != null) {
-				HumanEntity human = player;
-				SpoutManager.getAppearanceManager().setGlobalTitle(human,rn);
-			}
 		    return;
 		}
 		
@@ -269,10 +257,8 @@ public class PVPArena extends JavaPlugin {
 
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
 		
-		if (spoutHandler != null) {
-			HumanEntity human = player;
-			SpoutManager.getAppearanceManager().setGlobalTitle(human, n.replaceAll("(&([a-f0-9]))", "§$2"));
-		}
+		if (spoutHandler != null)
+			SpoutManager.getAppearanceManager().setGlobalTitle(player, n.replaceAll("(&([a-f0-9]))", "§$2"));
 	}
 
 	public static Method getMethod() {
