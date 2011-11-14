@@ -737,8 +737,12 @@ public abstract class Arena {
 	public void goToWaypoint(Player player, String place) {
 		String color = "";
 		if (place.endsWith("lounge")) {
-			color = place.replace("lounge", "");
-			color = "&" + Integer.toString(ChatColor.valueOf(fightTeams.get(color)).getCode(), 16).toLowerCase();
+			if (place.equals("lounge"))
+				color = "&f";
+			else {
+				color = place.replace("lounge", "");
+				color = "&" + Integer.toString(ChatColor.valueOf(fightTeams.get(color)).getCode(), 16).toLowerCase();
+			}
 		}
 		if (!color.equals(""))
 			PVPArena.colorizePlayer(player, color);
@@ -1021,16 +1025,16 @@ public abstract class Arena {
 				// notmax empty because first team was the only team
 				db.i("only one team! reverting!");
 
-				Set<String> max = fightTeams.keySet();
+				List<String> max = new ArrayList<String>();
 				
-				max.remove(lastStr);
-				
-				/*
 				for (String xxx : fightTeams.keySet())
 					if (!lastStr.equals(xxx)) {
 						max.add(xxx);
 						db.i("adding to max: " + xxx);
-					}*/
+					}
+				max.remove(lastStr);
+				
+				
 
 				db.i("revert done, commit! " + max.size());
 				Random r = new Random();
