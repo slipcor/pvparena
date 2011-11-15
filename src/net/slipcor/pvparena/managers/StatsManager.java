@@ -10,16 +10,16 @@ import net.slipcor.pvparena.arenas.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
-
 /*
  * Statistics class
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
  *
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments
  *     v0.2.0 - language support
@@ -30,7 +30,7 @@ import org.bukkit.util.config.Configuration;
 public class StatsManager {
 	
 	/*
-	 * Function that retrieves the config and creates one if it does not exist
+	 * retrieve config and create one if it doesn't exist
 	 */
 	private static Configuration getConfig(String file, Arena arena) {
 		new File("plugins/pvparena").mkdir();
@@ -57,12 +57,12 @@ public class StatsManager {
 	}
 		
 	/*
-	 * Function that returns a map of all players in that form:
+	 * returns a map of all players like:
 	 * slipcor: 2
 	 * slipcor_: 3
 	 * ....
 	 * 
-	 * This example means: slipcor lost 2 times and won 3 times
+	 * this example means: slipcor lost 2 times and won 3 times
 	 */	
 	@SuppressWarnings("unchecked")
 	public static Map<String,Integer> getPlayerStats(String sName, Arena arena) {
@@ -95,13 +95,11 @@ public class StatsManager {
 	}
 	
 	/*
-	 * Function that returns a String containing team statistics in that form:
+	 * returns a string containing team statistics like:
 	 * 
 	 * 2;3;4;5
 	 * 
-	 * This example means: blue won 2 times, lost 3 times ; red won 4 times, lost 5 times
-	 * 
-	 * Note that this counts player wins, not "team wins" in general.
+	 * this example means: blue won 2 times, lost 3 times ; red won 4 times, lost 5 times
 	 */
 	
 	@SuppressWarnings("unchecked")
@@ -130,7 +128,7 @@ public class StatsManager {
 	}
 	
 	/*
-	 * Function that adds a win stat to the player and the team
+	 * add a win stat to the player and the team
 	 */
 	public static void addWinStat(Player player, String color, Arena arena) {
 		if (color.equals(""))
@@ -140,7 +138,7 @@ public class StatsManager {
 	}
 	
 	/*
-	 * Function that adds a lose stat to the player and the team
+	 * add a lose stat to the player and the team
 	 */
 	public static void addLoseStat(Player player, String color, Arena arena) {
 		if (color.equals(""))
@@ -150,7 +148,7 @@ public class StatsManager {
 	}
 	
 	/*
-	 *  Function that adds a stat to the player and the team
+	 *  add a stat to the player and the team
 	 */
 	private static void addStat(Player player, String color, boolean win, Arena arena) {
 		String sName = ArenaManager.getArenaNameByPlayer(player);
@@ -171,7 +169,7 @@ public class StatsManager {
 	}
 	
 	/*
-	 *  Function that adds a stat to the player and the team
+	 *  add a stat to the player and the team
 	 */
 	private static void addStat(Player player, boolean win, Arena arena) {
 		String sName = ArenaManager.getArenaNameByPlayer(player);

@@ -8,7 +8,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.powerups.PowerupEffect.classes;
 
@@ -17,10 +16,11 @@ import net.slipcor.pvparena.powerups.PowerupEffect.classes;
  * 
  * author: slipcor
  * 
- * version: v0.3.6 - CTF Arena
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
- * 
+ *
+ *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  */
 
@@ -30,6 +30,11 @@ public class Powerup {
 	public Material item; // item that triggers this Powerup
 	DebugManager db = new DebugManager();
 	
+	/*
+	 * Powerup constructor
+	 * 
+	 * initiate Powerup, load PowerupEffects belonging to it
+	 */
 	@SuppressWarnings("unchecked")
 	public Powerup(String pName, HashMap<String, Object> puEffects) {
 		int count = 0;
@@ -70,12 +75,20 @@ public class Powerup {
 		}
 	}
 	
+	/*
+	 * Powerup constructor II
+	 * 
+	 * simply handing over everything
+	 */
 	public Powerup(Powerup p) {
 		this.name = p.name;
 		this.effects = p.effects;
 		this.item = p.item;
 	}
 	
+	/*
+	 * return "is Powerup active"
+	 */
 	public boolean isActive() {
 		for (PowerupEffect pe : effects) {
 			if (pe.active)
@@ -84,6 +97,9 @@ public class Powerup {
 		return false;
 	}
 	
+	/*
+	 * return "can Powerup still be fired"
+	 */
 	public boolean canBeTriggered() {
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration != 0)
@@ -92,6 +108,9 @@ public class Powerup {
 		return false;
 	}
 
+	/*
+	 * initiate Powerup effects
+	 */
 	public void activate(Player player) {
 		db.i("activating! - " + name);
 		for (PowerupEffect pe : effects) {
@@ -100,6 +119,9 @@ public class Powerup {
 		}
 	}
 
+	/*
+	 * activate Powerup effects
+	 */
 	public void commit(Player attacker, Player defender,
 			EntityDamageByEntityEvent event) {
 
@@ -109,6 +131,9 @@ public class Powerup {
 		}
 	}
 
+	/*
+	 * return "is Powerup active"
+	 */
 	public boolean active(classes peClass) {
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration != 0)
@@ -118,6 +143,9 @@ public class Powerup {
 		return false;
 	}
 
+	/*
+	 * commit all PowerupEffects
+	 */
 	public void commit(EntityRegainHealthEvent event) {
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration != 0)
@@ -126,6 +154,9 @@ public class Powerup {
 		}
 	}
 
+	/*
+	 * commit all PowerupEffects
+	 */
 	public void commit(PlayerVelocityEvent event) {
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration != 0)
@@ -134,6 +165,9 @@ public class Powerup {
 		}
 	}
 
+	/*
+	 * tick...
+	 */
 	public void tick() {
 		for (PowerupEffect pe : effects) {
 			if (pe.uses != 0 && pe.duration > 0)
@@ -141,7 +175,10 @@ public class Powerup {
 		}
 	}
 
-	public void deactivate() {
+	/*
+	 * disable all PowerupEffects
+	 */
+	public void disable() {
 		for (PowerupEffect pe : effects) {
 			pe.uses = 0;
 			pe.duration = 0;
@@ -149,91 +186,3 @@ public class Powerup {
 		}
 	}
 }
-/*
- * example config layout
- * 
- * Shield:
- *     dmg_receive:
- *         factor: 0.6
- * Minions:
- *     spawn_mob:
- *         type: skeleton
- *         health: 2.0
- *     spawn_mob:
- *         type: skeleton
- *         duration: 10s
- * Sprint:
- *     sprint:
- *         duration: 10s
- * QuadDamage:
- *     dmg_cause:
- *         factor: 4
- *         duration: 10s
- * Dodge:
- *     dmg_receive:
- *         chance: 0.2
- *         factor: 0
- *         duration: 5s
- * Reflect:
- *     dmg_reflect:
- *         chance: 0.5
- *         factor: 0.3
- *         uses: 5
- * Ignite:
- *     ignite:
- *         chance: 0.66
- *         duration: 10s
- * IceBlock:
- *     freeze:
- *         duration: 8s
- *     dmg_receive:
- *         factor: 0
- *         duration: 8s
- * Invulnerability:
- *     dmg_receive:
- *         factor:0
- *         duration 5s
- * OneUp:
- *     lives:
- *         diff: 1
- * Death:
- *     lives:
- *         diff: -1
- * Slippery:
- *     slip:
- *         duration: 10s
- * Dizzyness:
- *     dizzy:
- *         duration: 10s
- * Rage:
- *     dmg_cause:
- *         factor: 1.5
- *         chance: 0.8
- *         duration: 5s
- *     dmg_cause:
- *         factor: 0
- *         chance: 0.2
- *         duration: 5s
- * Berserk:
- *     dmg_cause:
- *         factor: 1.5
- *         duration: 5s
- *     dmg_receive:
- *         dactor: 1.5
- *         duration: 5s
- * Healing:
- *     heal:
- *         factor: 1.5
- *         duration: 10s
- * Heal:
- *     health:
- *         diff: 3
- * Repair:
- *     repair:
- *         item: helmet
- *         item: chestplate
- *         item: leggins
- *         item: boots
- *         factor: 0.2
- * 
- */

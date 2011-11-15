@@ -13,10 +13,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.6 - CTF Arena
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
  *
+ *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  *     v0.3.4 - Rewrite
  *     v0.3.1 - New Arena! FreeFight
@@ -65,7 +66,7 @@ public class LanguageManager {
 			config.setProperty("lang.pos2","Second position set.");
 			config.setProperty("lang.classperms","You don't have permission for that class.");
 			config.setProperty("lang.toomanyplayers","There are too many of this class, pick another class.");
-			config.setProperty("lang.notready","Not all of your team has picked a class!");
+			config.setProperty("lang.notready","Not everyone has picked a class!");
 			config.setProperty("lang.waitequal","Waiting for the teams to have equal player number!");
 			config.setProperty("lang.ready","%1% team is ready!");
 			config.setProperty("lang.begin","Let the fight begin!");
@@ -117,7 +118,8 @@ public class LanguageManager {
 			config.setProperty("lang.youwon","You won %1%");
 			config.setProperty("lang.awarded","You have been awarded %1%");
 			config.setProperty("lang.invfull","Your inventory was full. You did not receive all rewards!");
-			config.setProperty("lang.haswon","%1% are the Champions");
+			config.setProperty("lang.teamhaswon","%1% are the Champions!");
+			config.setProperty("lang.playerhaswon","%1% is the Champion!");
 		}
 		if (config.getProperty("lang.arenaexists") == null) {
 			config.setProperty("lang.arenaexists","Arena already exists!");
@@ -150,6 +152,8 @@ public class LanguageManager {
 			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
 			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
 			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
+			config.setProperty("lang.teamhaswon","%1% are the Champions!");
+			config.setProperty("lang.playerhaswon","%1% is the Champion!");
 		} else if (config.getProperty("version").equals("v0.3.4.*")) {
 			config.setProperty("version", "v0.3.6.*");
 			config.setProperty("lang.joinrange","You are too far away to join this arena!");
@@ -158,11 +162,21 @@ public class LanguageManager {
 			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
 			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
 			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
+			config.setProperty("lang.teamhaswon","%1% are the Champions!");
+			config.setProperty("lang.playerhaswon","%1% is the Champion!");
 		} else if (config.getProperty("version").equals("v0.3.5.*")) {
 			config.setProperty("version", "v0.3.6.*");
 			config.setProperty("lang.flaggrab","Player %1% grabbed the flag of team %2%!");
 			config.setProperty("lang.flaghome","Player %1% brought home the flag of team %2%!");
 			config.setProperty("lang.flagsave","Player %1% dropped the flag of team %2%!");
+			config.setProperty("lang.teamhaswon","%1% are the Champions!");
+			config.setProperty("lang.playerhaswon","%1% is the Champion!");
+		} else if (config.getProperty("lang.haswon") != null) {
+			config.removeProperty("lang.haswon");
+			config.setProperty("lang.teamhaswon","%1% are the Champions!");
+			config.setProperty("lang.playerhaswon","%1% is the Champion!");
+			config.setProperty("lang.notready","Not everyone has picked a class!");
+			config.setProperty("version", "v0.3.8");
 		}
 		config.save();
 		// write contents to maps
@@ -170,6 +184,7 @@ public class LanguageManager {
 		log = (Map<String, String>) config.getProperty("log");
 		
 	}
+	
 	
 	public String parse(String s) {
 		return lang.get(s); // hand over map value

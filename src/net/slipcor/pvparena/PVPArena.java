@@ -131,7 +131,7 @@ public class PVPArena extends JavaPlugin {
 		if (args == null || args.length < 1)
 			return false;
 		
-		if (args.length == 3 && args[1].equals("create")) {
+		if ((args.length == 3 || args.length == 2) && args[1].equals("create")) {
 			// /pa [name] create [type]
 			if (!hasAdminPerms(player)) {
 				Arena.tellPlayer(player, lang.parse("nopermto", lang.parse("create")));
@@ -141,8 +141,12 @@ public class PVPArena extends JavaPlugin {
 			if (arena != null) {
 				Arena.tellPlayer(player, lang.parse("arenaexists"));
 				return true;
-			}			
-			ArenaManager.loadArena(args[0], args[2]);
+			}
+			if (args.length == 3) {
+				ArenaManager.loadArena(args[0], args[2]);
+			} else {
+				ArenaManager.loadArena(args[0], "teams");
+			}
 			Arena.tellPlayer(player, lang.parse("created",args[0]));
 			return true;
 		} else if (args.length == 2 && args[1].equals("remove")) {
@@ -173,7 +177,7 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
-				String sName = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
+				String sName = arena.fightTeams.get(arena.fightPlayersTeam.get(player.getName()));
 				if (sName.equals("free")) {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.valueOf(sName) + player.getName() + ChatColor.YELLOW));
 				} else {
@@ -181,7 +185,7 @@ public class PVPArena extends JavaPlugin {
 				}
 				Arena.tellPlayer(player, lang.parse("youleave"));					
 				arena.removePlayer(player, arena.sTPexit);
-				arena.checkEnd();
+				arena.checkEndAndCommit();
 			} else {
 				Arena.tellPlayer(player, lang.parse("notinarena"));
 			}

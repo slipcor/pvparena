@@ -2,7 +2,6 @@ package net.slipcor.pvparena.arenas;
 
 import org.bukkit.Bukkit;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.DebugManager;
 
 /*
@@ -10,10 +9,11 @@ import net.slipcor.pvparena.managers.DebugManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.6 - CTF Arena
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
- * 
+ *
+ *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  */
 
@@ -29,7 +29,7 @@ public class MyRunnable implements Runnable {
 	public void run() {
 		db.i("MyRunnable commiting spawn");
 		if (a.fightInProgress)
-			a.commitSpawn();
+			a.calcPowerupSpawn();
 		else {
 			Bukkit.getServer().getScheduler().cancelTask(a.SPAWN_ID); // deactivate the auto saving task
 		}

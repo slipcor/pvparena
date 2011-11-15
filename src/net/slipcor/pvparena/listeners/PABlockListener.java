@@ -9,16 +9,16 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-
 /*
  * BlockListener class
  * 
  * author: slipcor
  * 
- * version: v0.3.1 - New Arena! FreeFight
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
  *
+ *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
  */
@@ -32,10 +32,10 @@ public class PABlockListener extends BlockListener {
 		if (arena == null)
 			return; // no arena => out
 		
-		if ((!(arena.protection)) || (!(arena.disableblockdamage)))
+		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage)))
 			return; // we don't need protection => OUT!
 
-		if (arena.blocktnt) {
+		if (arena.blockTnt) {
 			event.setCancelled(true);
 			return; // if we block TNT (what is the only restriction possible) => CANCEL AND OUT!
 		}
@@ -51,10 +51,10 @@ public class PABlockListener extends BlockListener {
 			return; // no arena => out
 		
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.protection) && (
-				((arena.disablelavafirespread) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-			 || ((arena.disableallfirespread) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) 
-			 || ((arena.blocklighter)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL))
+		if ((arena.usesProtection) && (
+				((arena.disableLavaFireSpread) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+			 || ((arena.disableAllFireSpread) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) 
+			 || ((arena.blockIgnite)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL))
 			 ) { // if an event happend that we would like to block
 
 			event.setCancelled(true); // ->cancel!
@@ -66,7 +66,7 @@ public class PABlockListener extends BlockListener {
 		if (arena == null)
 			return; // no arena => out
 		
-		if ((!(arena.protection)) || (!(arena.disableallfirespread)))
+		if ((!(arena.usesProtection)) || (!(arena.disableAllFireSpread)))
 			return; // if not an event happend that we would like to block => OUT
 		
 		event.setCancelled(true); // else->cancel!
@@ -78,7 +78,7 @@ public class PABlockListener extends BlockListener {
 		if (arena == null)
 			return; // no arena => out
 		
-		if ((!(arena.protection)) || (!(arena.disableblockplacement)))
+		if ((!(arena.usesProtection)) || (!(arena.disableBlockPlacement)))
 			return; // if not an event happend that we would like to block => OUT
 		
 		event.setCancelled(true);

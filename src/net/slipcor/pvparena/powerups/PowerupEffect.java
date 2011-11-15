@@ -5,10 +5,11 @@ package net.slipcor.pvparena.powerups;
  * 
  * author: slipcor
  * 
- * version: v0.3.6 - CTF Arena
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
- * 
+ *
+ *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  */
 
@@ -43,15 +44,24 @@ public class PowerupEffect {
 	List<String> items = new ArrayList<String>();
 	DebugManager db = new DebugManager();
 	
+	/*
+	 * PowerupEffect classes
+	 */
 	public static enum classes {
 		DMG_CAUSE, DMG_RECEIVE, DMG_REFLECT, FREEZE, HEAL, HEALTH,
 		IGNITE, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT, JUMP;
 	}
 	
+	/*
+	 * PowerupEffect instant classes (effects that activate when collecting)
+	 */
 	public static enum instants {
 		FREEZE, HEALTH, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT;
 	}
 	
+	/*
+	 * get the PowerupEffect class from name
+	 */
 	public static classes parseClass(String s) {
 		for (classes c : classes.values()) {
 			if (c.name().equalsIgnoreCase(s))
@@ -60,6 +70,11 @@ public class PowerupEffect {
 		return null;
 	}
 	
+	/*
+	 * PowerupEffect constructor
+	 * 
+	 * read a powerup effect and add it to the powerup
+	 */
 	public PowerupEffect(String eClass, HashMap<String, Object> puEffectVals) {
 		db.i("adding effect "+eClass);
 		this.type = parseClass(eClass);
@@ -94,6 +109,9 @@ public class PowerupEffect {
 		}
 	}
 
+	/*
+	 * initiate PowerupEffect
+	 */
 	public void init(Player player) {
 		if (uses == 0)
 			return;
@@ -117,6 +135,9 @@ public class PowerupEffect {
 		}
 	}
 	
+	/*
+	 * commit PowerupEffect in combat
+	 */
 	public void commit(Player attacker, Player defender, EntityDamageByEntityEvent event) {
 		if (this.type == classes.DMG_RECEIVE) {
 			Random r = new Random();
@@ -144,6 +165,9 @@ public class PowerupEffect {
 		}
 	}
 	
+	/*
+	 * commit PowerupEffect on player
+	 */
 	public boolean commit(Player player) {
 
 		Random r = new Random();
@@ -156,15 +180,15 @@ public class PowerupEffect {
 					}
 				return true;
 			} else if (this.type == classes.LIVES) {
-				byte lives = ArenaManager.getArenaByPlayer(player).fightUsersLives.get(player.getName());
+				byte lives = ArenaManager.getArenaByPlayer(player).fightPlayersLives.get(player.getName());
 				if (lives > 0)
-					ArenaManager.getArenaByPlayer(player).fightUsersLives.put(player.getName(), (byte) (lives + diff));
+					ArenaManager.getArenaByPlayer(player).fightPlayersLives.put(player.getName(), (byte) (lives + diff));
 				else {
 					Arena arena = ArenaManager.getArenaByPlayer(player);
 					
 					// pasted from onEntityDeath;
 					
-					String sTeam = arena.fightUsersTeam.get(player.getName());
+					String sTeam = arena.fightPlayersTeam.get(player.getName());
 					String color = arena.fightTeams.get(sTeam);
 					if (!color.equals("free")) {
 						arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
@@ -172,10 +196,10 @@ public class PowerupEffect {
 						arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 					}
 					StatsManager.addLoseStat(player, sTeam, arena);
-					arena.fightUsersTeam.remove(player.getName()); // needed so player does not get found when dead
-					arena.fightUsersRespawn.put(player.getName(), arena.fightUsersClass.get(player.getName()));
+					arena.fightPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
+					arena.fightPlayersRespawn.put(player.getName(), arena.fightPlayersClass.get(player.getName()));
 					
-					arena.checkEnd();
+					arena.checkEndAndCommit();
 				}
 				
 				return true;
@@ -218,6 +242,9 @@ public class PowerupEffect {
 		return false;
 	}
 
+	/*
+	 * commit PowerupEffect on health gain
+	 */
 	public void commit(EntityRegainHealthEvent event) {
 		if (this.type == classes.HEAL) {
 			Random r = new Random();
@@ -231,6 +258,9 @@ public class PowerupEffect {
 		}
 	}
 
+	/*
+	 * commit PowerupEffect on velocity event
+	 */
 	public void commit(PlayerVelocityEvent event) {
 		if (this.type == classes.HEAL) {
 			Random r = new Random();

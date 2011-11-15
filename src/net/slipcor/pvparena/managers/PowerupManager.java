@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.powerups.Powerup;
 
 import org.bukkit.entity.Player;
@@ -14,10 +13,11 @@ import org.bukkit.entity.Player;
  * 
  * author: slipcor
  * 
- * version: v0.3.6 - CTF Arena
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
- * 
+ *
+ *     v0.3.6 - CTF Arena
  *     v0.3.4 - Powerups!!
  */
 
@@ -26,6 +26,11 @@ public class PowerupManager {
 	public List<Powerup> puTotal = new ArrayList<Powerup>(); 
 	DebugManager db = new DebugManager();
 	
+	/*
+	 * PowerupManager constructor
+	 * 
+	 * read all powerup settings
+	 */
 	@SuppressWarnings("unchecked")
 	public PowerupManager(HashMap<String, Object> powerUps) {
 		// receives the config map, adds all plugins
@@ -37,6 +42,10 @@ public class PowerupManager {
 			puTotal.add(p);
 		}
 	}
+	
+	/*
+	 * trigger all powerups
+	 */
 	public void tick() {
 		for(Powerup p : puActive.values()) {
 			if (p.canBeTriggered()) {

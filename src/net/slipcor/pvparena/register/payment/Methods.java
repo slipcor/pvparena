@@ -45,8 +45,8 @@ public class Methods {
         addMethod("iConomy", new net.slipcor.pvparena.register.payment.methods.iCo6());
         addMethod("iConomy", new net.slipcor.pvparena.register.payment.methods.iCo5());/*
         addMethod("iConomy", new praxis.classranks.register.payment.methods.iCo4());
-        addMethod("BOSEconomy", new net.slipcor.pvparena.register.payment.methods.BOSE6());
-        addMethod("BOSEconomy", new net.slipcor.pvparena.register.payment.methods.BOSE7());*/
+        addMethod("BOSEconomy", new net.slipcor.pvparena.register.payment.methods.BOSE6());*/
+        addMethod("BOSEconomy", new net.slipcor.pvparena.register.payment.methods.BOSE7());
         addMethod("Essentials", new net.slipcor.pvparena.register.payment.methods.EE17());/*
         addMethod("Currency", new net.slipcor.pvparena.register.payment.methods.MCUR());
         Dependencies.add("MultiCurrency");*/

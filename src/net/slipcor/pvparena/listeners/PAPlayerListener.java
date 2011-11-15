@@ -15,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -34,10 +33,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.7 - Bugfixes
+ * version: v0.3.8 - BOSEconomy, rewrite
  * 
  * history:
- * 
+ *
+ *     v0.3.7 - Bugfixes
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
@@ -62,7 +62,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		if (!(arena.fightUsersRespawn.containsKey(player.getName()))){
+		if (!(arena.fightPlayersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
 		
@@ -91,20 +91,20 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		if (!(arena.fightUsersRespawn.containsKey(player.getName()))){
+		if (!(arena.fightPlayersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
 		Location l;
 		
 		if (arena.sTPdeath.equals("old")) {
-			l = arena.readMisc(player);
+			l = arena.getPlayerOldLocation(player);
 		} else {
 			l = arena.getCoords(arena.sTPdeath);
 		}
 		event.setRespawnLocation(l);
 		
 		arena.removePlayer(player, arena.sTPdeath);
-		arena.fightUsersRespawn.remove(player.getName());		
+		arena.fightPlayersRespawn.remove(player.getName());		
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
@@ -112,14 +112,14 @@ public class PAPlayerListener extends PlayerListener {
 		Arena arena = ArenaManager.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		String color = arena.fightTeams.get(arena.fightUsersTeam.get(player.getName()));
+		String color = arena.fightTeams.get(arena.fightPlayersTeam.get(player.getName()));
 		if (color != null) {
 			arena.tellEveryoneExcept(player,PVPArena.lang.parse("playerleave", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 		} else {
 			arena.tellEveryoneExcept(player,PVPArena.lang.parse("playerleave", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 		}
 		arena.removePlayer(player, arena.sTPexit);
-		arena.checkEnd();
+		arena.checkEndAndCommit();
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
@@ -150,7 +150,7 @@ public class PAPlayerListener extends PlayerListener {
 			if (event.getItem().getItemStack().getType().equals(p.item)) {
 				Powerup newP = new Powerup(p);
 				if (arena.pm.puActive.containsKey(player)) {
-					arena.pm.puActive.get(player).deactivate();
+					arena.pm.puActive.get(player).disable();
 				}
 				arena.pm.puActive.put(player, newP);
 				arena.tellEveryone(PVPArena.lang.parse("playerpowerup",player.getName(),newP.name));
@@ -172,7 +172,7 @@ public class PAPlayerListener extends PlayerListener {
 
 		event.setCancelled(false); // fighting player - first recon NOT to cancel!
 		
-		if (arena.fightTelePass.containsKey(player.getName()))
+		if (arena.fightPlayersTelePass.containsKey(player.getName()))
 			return; // if allowed => OUT
 		
 		event.setCancelled(true); // cancel and tell
@@ -259,7 +259,7 @@ public class PAPlayerListener extends PlayerListener {
 				Sign sign = (Sign) block.getState();
 
 				if ((arena.fightClasses.containsKey(sign.getLine(0)) || (sign.getLine(0).equalsIgnoreCase("custom")))
-						&& (arena.fightUsersTeam.containsKey(player.getName()))) {
+						&& (arena.fightPlayersTeam.containsKey(player.getName()))) {
 					
 					Configuration config = new Configuration(new File("plugins/pvparena","config_" + arena.name + ".yml"));
 					config.load();
@@ -281,14 +281,14 @@ public class PAPlayerListener extends PlayerListener {
 					
 					int i=0;
 					
-					if (arena.fightUsersClass.containsKey(player.getName())) {
+					if (arena.fightPlayersClass.containsKey(player.getName())) {
 						// already selected class, remove it!
-						Sign sSign = (Sign) arena.fightSignLocations.get(player.getName()).getBlock().getState();
+						Sign sSign = (Sign) arena.fightSignsLocation.get(player.getName()).getBlock().getState();
 						
 						for (i=2;i<4;i++) {
 							if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
 								sSign.setLine(i, "");
-								Arena.clearInventory(player);
+								arena.clearInventory(player);
 								sSign.update();
 								break; // remove found player, break!
 							}
@@ -299,7 +299,7 @@ public class PAPlayerListener extends PlayerListener {
 							for (i=0;i<4;i++) {
 								if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
 									sSign.setLine(i, "");
-									Arena.clearInventory(player);
+									arena.clearInventory(player);
 									break; // remove found player, break!
 								}
 							}
@@ -309,15 +309,15 @@ public class PAPlayerListener extends PlayerListener {
 
 					for (i=2;i<4;i++) {
 						if (sign.getLine(i).equals("")) {
-							arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
-							arena.fightUsersClass.put(player.getName(),sign.getLine(0));
+							arena.fightSignsLocation.put(player.getName(), sign.getBlock().getLocation());
+							arena.fightPlayersClass.put(player.getName(),sign.getLine(0));
 							sign.setLine(i, player.getName());
 							sign.update();
 							// select class
 							if (sign.getLine(0).equalsIgnoreCase("custom")) {
-								arena.setInventory(player); // if custom, give stuff back
+								arena.loadInventory(player); // if custom, give stuff back
 							} else {
-								arena.giveItems(player);
+								arena.givePlayerFightItems(player);
 							}
 							return;
 						}
@@ -328,15 +328,15 @@ public class PAPlayerListener extends PlayerListener {
 					if (nSign != null) {
 						for (i=0;i<4;i++) {
 							if (nSign.getLine(i).equals("")) {
-								arena.fightSignLocations.put(player.getName(), sign.getBlock().getLocation());
-								arena.fightUsersClass.put(player.getName(),sign.getLine(0));
+								arena.fightSignsLocation.put(player.getName(), sign.getBlock().getLocation());
+								arena.fightPlayersClass.put(player.getName(),sign.getLine(0));
 								nSign.setLine(i, player.getName());
 								nSign.update();
 								// select class
 								if (sign.getLine(0).equalsIgnoreCase("custom")) {
-									arena.setInventory(player); // if custom, give stuff back
+									arena.loadInventory(player); // if custom, give stuff back
 								} else {
-									arena.giveItems(player);
+									arena.givePlayerFightItems(player);
 								}
 								return;
 							}
@@ -369,19 +369,19 @@ public class PAPlayerListener extends PlayerListener {
 			}
 
 			if (block.getTypeId() == mMat.getId()) {				
-				if (!arena.fightUsersTeam.containsKey(player.getName()))
+				if (!arena.fightPlayersTeam.containsKey(player.getName()))
 					return; // not a fighting player => OUT			
-				if (!arena.fightUsersClass.containsKey(player.getName()))
+				if (!arena.fightPlayersClass.containsKey(player.getName()))
 					return; // not a fighting player => OUT
 				
-				String color = (String) arena.fightUsersTeam.get(player.getName());
+				String color = (String) arena.fightPlayersTeam.get(player.getName());
 
 				if (!arena.ready()) {
 					player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("notready"));
 					return; // team not ready => announce
 				}
 				
-				if (arena.forceeven) {
+				if (arena.forceEven) {
 					if (arena.checkEven()) {
 						player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce

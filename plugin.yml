@@ -1,6 +1,6 @@
 name: pvparena
 main: net.slipcor.pvparena.PVPArena
-version: v0.3.7.5
+version: v0.3.8.0
 commands:
     pvparena:
         description: Base commands for the PVP arena.
