@@ -13,10 +13,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.5 - Powerups!!
  *     v0.3.4 - Customisable Teams
  *     v0.3.1 - New Arena! FreeFight
@@ -45,6 +46,6 @@ public class TeamArena extends Arena {
 			config.setProperty("teams.custom", fT);
 			config.save();
 		}
-		this.fightTeams = (Map<String, String>) config.getProperty("teams.custom");
+		this.paTeams = (Map<String, String>) config.getProperty("teams.custom");
 	}
 }

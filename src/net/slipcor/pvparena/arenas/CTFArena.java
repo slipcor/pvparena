@@ -12,26 +12,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import org.bukkit.util.config.Configuration;
 
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.managers.StatsManager;
+
 /*
  * Capture the Flag Arena class
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  * 
  */
 
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.StatsManager;
 
 public class CTFArena extends Arena{
-	private HashMap<String, Integer> fightTeamLives = new HashMap<String, Integer>(); // flags "lives"
-	private HashMap<String, String> fightTeamFlags = new HashMap<String, String>(); // carried flags
-	
+	private HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags "lives"
+	private HashMap<String, String> paTeamFlags = new HashMap<String, String>(); // carried flags
+	private DebugManager db = new DebugManager();
 	/*
 	 * ctf constructor
 	 * 
@@ -64,7 +67,7 @@ public class CTFArena extends Arena{
 			config.setProperty("teams.custom", fT);
 			config.save();
 		}
-		this.fightTeams = (Map<String, String>) config.getProperty("teams.custom");
+		this.paTeams = (Map<String, String>) config.getProperty("teams.custom");
 		
 		configParse("ctf");
 	}
@@ -84,10 +87,10 @@ public class CTFArena extends Arena{
 	 */
 	@Override
 	public void init_arena() {
-		for (String sTeam : this.fightTeams.keySet()) {
-			if (this.fightPlayersTeam.containsValue(sTeam)) {
+		for (String sTeam : this.paTeams.keySet()) {
+			if (this.paPlayersTeam.containsValue(sTeam)) {
 				// team is active
-				this.fightTeamLives.put(sTeam, this.maxLives);
+				this.paTeamLives.put(sTeam, this.maxLives);
 			}
 		}
 	}
@@ -99,48 +102,48 @@ public class CTFArena extends Arena{
 	 * and run a special checkEndAndCommit
 	 */
 	private void reduceLivesCheckEndAndCommit(String team) {
-		if (fightTeamLives.get(team) != null) {
-			int i = fightTeamLives.get(team)-1;
+		if (paTeamLives.get(team) != null) {
+			int i = paTeamLives.get(team)-1;
 			if (i > 0) {
-				fightTeamLives.put(team, i);
+				paTeamLives.put(team, i);
 			} else {
-				fightTeamLives.remove(team);
-				Set<String> set = fightPlayersTeam.keySet();
+				paTeamLives.remove(team);
+				Set<String> set = paPlayersTeam.keySet();
 				Iterator<String> iter = set.iterator();
 				while (iter.hasNext()) {
 					Object o = iter.next();
-					System.out.print("precessing: "+o.toString());
+					db.i("precessing: "+o.toString());
 					Player z = Bukkit.getServer().getPlayer(o.toString());
-					if (fightPlayersTeam.get(z.getName()).equals(team)) {
+					if (paPlayersTeam.get(z.getName()).equals(team)) {
 						StatsManager.addLoseStat(z, team, this);
 						resetPlayer(z, sTPlose);
-						fightPlayersClass.remove(z.getName());
+						paPlayersClass.remove(z.getName());
 					}
 				}
 				
-				if (fightTeamLives.size() > 1) {
+				if (paTeamLives.size() > 1) {
 					return;
 				}
 				String winteam = "";
-				set = fightPlayersTeam.keySet();
+				set = paPlayersTeam.keySet();
 				iter = set.iterator();
 				while (iter.hasNext()) {
 					Object o = iter.next();
-					System.out.print("praecessing: "+o.toString());
+					db.i("praecessing: "+o.toString());
 					Player z = Bukkit.getServer().getPlayer(o.toString());
 
-					if (fightTeamLives.containsKey(fightPlayersTeam.get(z.getName()))) {
+					if (paTeamLives.containsKey(paPlayersTeam.get(z.getName()))) {
 						StatsManager.addWinStat(z, team, this);
 						resetPlayer(z, sTPwin);
 						giveRewards(z); // if we are the winning team, give reward!
-						fightPlayersClass.remove(z.getName());
-						winteam = fightPlayersTeam.get(z.getName());
+						paPlayersClass.remove(z.getName());
+						winteam = paPlayersTeam.get(z.getName());
 					}
 				}
 				
-				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf(fightTeams.get(winteam)) + "Team " + winteam));
+				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf(paTeams.get(winteam)) + "Team " + winteam));
 				
-				fightTeamLives.clear();
+				paTeamLives.clear();
 				reset();
 			}
 		}
@@ -159,45 +162,45 @@ public class CTFArena extends Arena{
 		String sTeam;
 		Vector vSpawn;
 		
-		if (fightTeamFlags.containsValue(player.getName())) {
-			System.out.print("player " + player.getName() + " has got a flag");
+		if (paTeamFlags.containsValue(player.getName())) {
+			db.i("player " + player.getName() + " has got a flag");
 			vLoc = player.getLocation().toVector();
-			sTeam = fightPlayersTeam.get(player.getName());
+			sTeam = paPlayersTeam.get(player.getName());
 			vSpawn = this.getCoords(sTeam + "spawn").toVector();
 
-			System.out.print("player is in the team "+sTeam);
+			db.i("player is in the team "+sTeam);
 			if (vLoc.distance(vSpawn) < 2) {
 
-				System.out.print("player is at his spawn");
+				db.i("player is at his spawn");
 				String flagTeam = getHeldFlagTeam(player.getName());
 				
 
-				System.out.print("the flag belongs to team " + flagTeam);
+				db.i("the flag belongs to team " + flagTeam);
 				
-				String scFlagTeam = ChatColor.valueOf(fightTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-				String scPlayer = ChatColor.valueOf(fightTeams.get(sTeam)) + player.getName() + ChatColor.YELLOW;
+				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
+				String scPlayer = ChatColor.valueOf(paTeams.get(sTeam)) + player.getName() + ChatColor.YELLOW;
 				
 				
 				tellEveryone(PVPArena.lang.parse("flaghome",scPlayer, scFlagTeam));
-				fightTeamFlags.remove(flagTeam);
+				paTeamFlags.remove(flagTeam);
 				reduceLivesCheckEndAndCommit(flagTeam);
 			}
 		} else {
-			for (String team : fightTeams.keySet()) {
-				if (team.equals(fightPlayersTeam.get(player.getName())))
+			for (String team : paTeams.keySet()) {
+				if (team.equals(paPlayersTeam.get(player.getName())))
 					continue;
-				if (!fightPlayersTeam.containsValue(team))
+				if (!paPlayersTeam.containsValue(team))
 					continue; // dont check for inactive teams
-				System.out.print("checking for spawn of team " + team);
+				db.i("checking for spawn of team " + team);
 				vLoc = player.getLocation().toVector();
 				vSpawn = this.getCoords(team + "spawn").toVector();
 				if (vLoc.distance(vSpawn) < 2) {
-					System.out.print("spawn found!");
-					String scTeam = ChatColor.valueOf(fightTeams.get(team)) + team + ChatColor.YELLOW;
-					String scPlayer = ChatColor.valueOf(fightTeams.get(fightPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
+					db.i("spawn found!");
+					String scTeam = ChatColor.valueOf(paTeams.get(team)) + team + ChatColor.YELLOW;
+					String scPlayer = ChatColor.valueOf(paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
 					tellEveryone(PVPArena.lang.parse("flaggrab",scPlayer, scTeam));
 
-					fightTeamFlags.put(team, player.getName());
+					paTeamFlags.put(team, player.getName());
 					return;
 				}
 			}
@@ -208,8 +211,8 @@ public class CTFArena extends Arena{
 	 * get the team name of the flag a player holds
 	 */
 	private String getHeldFlagTeam(String player) {
-		for (String sTeam : fightTeamFlags.keySet())
-			if (player.equals((String) fightTeamFlags.get(sTeam)))
+		for (String sTeam : paTeamFlags.keySet())
+			if (player.equals((String) paTeamFlags.get(sTeam)))
 				return sTeam;
 				
 		return null;
@@ -220,9 +223,9 @@ public class CTFArena extends Arena{
 	 */
 	public void checkEntityDeath(Player player) {
 		String flagTeam = getHeldFlagTeam(player.getName());
-		String scFlagTeam = ChatColor.valueOf(fightTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-		String scPlayer = ChatColor.valueOf(fightTeams.get(fightPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
+		String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
+		String scPlayer = ChatColor.valueOf(paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
 		PVPArena.lang.parse("flagsave",scPlayer, scFlagTeam);
-		fightTeamFlags.remove(flagTeam);
+		paTeamFlags.remove(flagTeam);
 	}
 }

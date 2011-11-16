@@ -5,10 +5,11 @@ package net.slipcor.pvparena.powerups;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  */
@@ -180,24 +181,24 @@ public class PowerupEffect {
 					}
 				return true;
 			} else if (this.type == classes.LIVES) {
-				byte lives = ArenaManager.getArenaByPlayer(player).fightPlayersLives.get(player.getName());
+				byte lives = ArenaManager.getArenaByPlayer(player).paPlayersLives.get(player.getName());
 				if (lives > 0)
-					ArenaManager.getArenaByPlayer(player).fightPlayersLives.put(player.getName(), (byte) (lives + diff));
+					ArenaManager.getArenaByPlayer(player).paPlayersLives.put(player.getName(), (byte) (lives + diff));
 				else {
 					Arena arena = ArenaManager.getArenaByPlayer(player);
 					
 					// pasted from onEntityDeath;
 					
-					String sTeam = arena.fightPlayersTeam.get(player.getName());
-					String color = arena.fightTeams.get(sTeam);
+					String sTeam = arena.paPlayersTeam.get(player.getName());
+					String color = arena.paTeams.get(sTeam);
 					if (!color.equals("free")) {
 						arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 					} else {
 						arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 					}
 					StatsManager.addLoseStat(player, sTeam, arena);
-					arena.fightPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
-					arena.fightPlayersRespawn.put(player.getName(), arena.fightPlayersClass.get(player.getName()));
+					arena.paPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
+					arena.paPlayersRespawn.put(player.getName(), arena.paPlayersClass.get(player.getName()));
 					
 					arena.checkEndAndCommit();
 				}

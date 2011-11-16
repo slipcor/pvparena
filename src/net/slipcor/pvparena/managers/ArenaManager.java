@@ -19,10 +19,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  *     v0.3.1 - New Arena! FreeFight
@@ -63,8 +64,8 @@ public class ArenaManager {
 	 */
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.fightPlayersClass.containsKey(pPlayer.getName())
-					|| arena.fightPlayersTeam.containsKey(pPlayer.getName()))
+			if (arena.paPlayersClass.containsKey(pPlayer.getName())
+					|| arena.paPlayersTeam.containsKey(pPlayer.getName()))
 				return arena.name;
 		}
 		return null;
@@ -75,8 +76,8 @@ public class ArenaManager {
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.fightPlayersClass.containsKey(pPlayer.getName())
-					|| arena.fightPlayersTeam.containsKey(pPlayer.getName()))
+			if (arena.paPlayersClass.containsKey(pPlayer.getName())
+					|| arena.paPlayersTeam.containsKey(pPlayer.getName()))
 				return arena;
 		}
 		return null;
@@ -87,6 +88,8 @@ public class ArenaManager {
 	 */
 	public static Arena getArenaByBattlefieldLocation(Location location) {
 		for (Arena arena : arenas.values()) {
+			if (arena.pos1.getWorld() != location.getWorld())
+				continue;
 			boolean inside = arena.contains(new Vector(location.getX(), location.getY(),location.getZ()));
 			if (inside)
 				return arena;
@@ -158,7 +161,7 @@ public class ArenaManager {
 		for (Arena arena : arenas.values()) {
 			db.i("resetting arena " + arena.name);
 			arena.reset();
-			arena.fightPlayersClass.clear();
+			arena.paPlayersClass.clear();
 		}
 	}
 	
@@ -219,5 +222,20 @@ public class ArenaManager {
 			return arena;
 		}
 		return null;
+	}
+
+	/*
+	 * returns "is no running arena interfering with given arena"
+	 */
+	public static boolean checkRegions(Arena arena) {
+		for (Arena a : arenas.values()) {
+			if (a.equals(arena))
+				continue;
+			
+			if ((a.fightInProgress) && !a.checkRegion(arena)) {
+				return false;
+			}	
+		}
+		return true;
 	}
 }

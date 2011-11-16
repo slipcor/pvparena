@@ -15,10 +15,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  *     v0.2.1 - cleanup, comments
@@ -48,7 +49,7 @@ public class StatsManager {
 		config.load();
 		if (bNew) { // if marked as new, create default entries
 			
-			for (String sTeam : arena.fightTeams.keySet()) {
+			for (String sTeam : arena.paTeams.keySet()) {
 				config.setProperty("wins." + sTeam + ".slipcor", 0);
 				config.setProperty("losses." + sTeam + ".slipcor", 0);
 			}
@@ -71,7 +72,7 @@ public class StatsManager {
 
 		Map<String, Integer> team = new HashMap<String, Integer>(); // tempmap => iteration 
 		int sum = 0;
-		for (String sTeam : arena.fightTeams.keySet()) {
+		for (String sTeam : arena.paTeams.keySet()) {
 			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
 			for (String rName : team.keySet()) {
 				sum = 0;
@@ -110,7 +111,7 @@ public class StatsManager {
 		String result = "";
 		Map<String, Integer> team = new HashMap<String, Integer>();
 
-		for (String sTeam : arena.fightTeams.keySet()) {
+		for (String sTeam : arena.paTeams.keySet()) {
 			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
 			int count = 0;
 			for (int rVal : team.values()) {
@@ -154,7 +155,7 @@ public class StatsManager {
 		String sName = ArenaManager.getArenaNameByPlayer(player);
 		Configuration config = getConfig("stats_"+sName, arena);
 		
-		String c = arena.fightTeams.get(color);
+		String c = arena.paTeams.get(color);
 		if (c == null) {
 			PVPArena.lang.log_warning("teamnotfound",color);
 			return; // invalid team

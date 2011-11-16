@@ -17,10 +17,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
@@ -59,8 +60,8 @@ public class FreeArena extends Arena{
 		this.forceWoolHead = false;
 		this.forceEven = false;
 		this.randomSpawn = true;
-		fightTeams.clear();
-		fightTeams.put("free", ChatColor.WHITE.name());
+		paTeams.clear();
+		paTeams.put("free", ChatColor.WHITE.name());
 	}
 
 	/*
@@ -111,11 +112,11 @@ public class FreeArena extends Arena{
 	 */
 	@Override
 	public boolean checkEndAndCommit() {
-		if (fightPlayersTeam.size() > 1) {
+		if (paPlayersTeam.size() > 1) {
 			return false;
 		}
 		
-		Set<String> set = fightPlayersTeam.keySet();
+		Set<String> set = paPlayersTeam.keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
@@ -126,7 +127,7 @@ public class FreeArena extends Arena{
 			StatsManager.addWinStat(z, "free", this);
 			resetPlayer(z, sTPwin);
 			giveRewards(z); // if we are the winning team, give reward!
-			fightPlayersClass.remove(z.getName());
+			paPlayersClass.remove(z.getName());
 		}
 		reset();
 		return true;
@@ -137,9 +138,9 @@ public class FreeArena extends Arena{
 	 */
 	@Override
 	public void chooseColor(Player player) {
-		if (!(fightPlayersTeam.containsKey(player.getName()))) {
+		if (!(paPlayersTeam.containsKey(player.getName()))) {
 			tpPlayerToCoordName(player, "lounge");
-			fightPlayersTeam.put(player.getName(), "free");
+			paPlayersTeam.put(player.getName(), "free");
 			Arena.tellPlayer(player, PVPArena.lang.parse("youjoinedfree"));
 			tellEveryoneExcept(player, PVPArena.lang.parse("playerjoinedfree", player.getName()));
 

@@ -13,10 +13,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  *     v0.3.4 - Rewrite
@@ -177,6 +178,8 @@ public class LanguageManager {
 			config.setProperty("lang.playerhaswon","%1% is the Champion!");
 			config.setProperty("lang.notready","Not everyone has picked a class!");
 			config.setProperty("version", "v0.3.8");
+		} else if (config.getProperty("lang.checkregionerror") == null) {
+			config.setProperty("lang.checkregionerror", "Waiting for a running arena to finish!");
 		}
 		config.save();
 		// write contents to maps

@@ -33,10 +33,11 @@ import org.bukkit.util.config.Configuration;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
@@ -62,7 +63,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		if (!(arena.fightPlayersRespawn.containsKey(player.getName()))){
+		if (!(arena.paPlayersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
 		
@@ -91,7 +92,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		if (!(arena.fightPlayersRespawn.containsKey(player.getName()))){
+		if (!(arena.paPlayersRespawn.containsKey(player.getName()))){
 			return; // no fighting player => OUT
 		}
 		Location l;
@@ -104,7 +105,7 @@ public class PAPlayerListener extends PlayerListener {
 		event.setRespawnLocation(l);
 		
 		arena.removePlayer(player, arena.sTPdeath);
-		arena.fightPlayersRespawn.remove(player.getName());		
+		arena.paPlayersRespawn.remove(player.getName());		
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
@@ -112,7 +113,7 @@ public class PAPlayerListener extends PlayerListener {
 		Arena arena = ArenaManager.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		String color = arena.fightTeams.get(arena.fightPlayersTeam.get(player.getName()));
+		String color = arena.paTeams.get(arena.paPlayersTeam.get(player.getName()));
 		if (color != null) {
 			arena.tellEveryoneExcept(player,PVPArena.lang.parse("playerleave", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 		} else {
@@ -172,7 +173,7 @@ public class PAPlayerListener extends PlayerListener {
 
 		event.setCancelled(false); // fighting player - first recon NOT to cancel!
 		
-		if (arena.fightPlayersTelePass.containsKey(player.getName()))
+		if (arena.paPlayersTelePass.containsKey(player.getName()))
 			return; // if allowed => OUT
 		
 		event.setCancelled(true); // cancel and tell
@@ -258,8 +259,8 @@ public class PAPlayerListener extends PlayerListener {
 			if (block.getState() instanceof Sign) {
 				Sign sign = (Sign) block.getState();
 
-				if ((arena.fightClasses.containsKey(sign.getLine(0)) || (sign.getLine(0).equalsIgnoreCase("custom")))
-						&& (arena.fightPlayersTeam.containsKey(player.getName()))) {
+				if ((arena.paClasses.containsKey(sign.getLine(0)) || (sign.getLine(0).equalsIgnoreCase("custom")))
+						&& (arena.paPlayersTeam.containsKey(player.getName()))) {
 					
 					Configuration config = new Configuration(new File("plugins/pvparena","config_" + arena.name + ".yml"));
 					config.load();
@@ -273,7 +274,8 @@ public class PAPlayerListener extends PlayerListener {
 					}
 					
 					if (classperms) {
-						if (!PVPArena.hasPerms(player, "fight.group." + sign.getLine(0))) {
+						//TODO: remove legacy
+						if (!(PVPArena.hasPerms(player, "fight.group." + sign.getLine(0)) || PVPArena.hasPerms(player, "pvparena.class." + sign.getLine(0)))) {
 							player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("classperms"));
 							return; // class permission desired and failed => announce and OUT
 						}
@@ -281,9 +283,9 @@ public class PAPlayerListener extends PlayerListener {
 					
 					int i=0;
 					
-					if (arena.fightPlayersClass.containsKey(player.getName())) {
+					if (arena.paPlayersClass.containsKey(player.getName())) {
 						// already selected class, remove it!
-						Sign sSign = (Sign) arena.fightSignsLocation.get(player.getName()).getBlock().getState();
+						Sign sSign = (Sign) arena.paSignsLocation.get(player.getName()).getBlock().getState();
 						
 						for (i=2;i<4;i++) {
 							if (sSign.getLine(i).equalsIgnoreCase(player.getName())) {
@@ -309,8 +311,8 @@ public class PAPlayerListener extends PlayerListener {
 
 					for (i=2;i<4;i++) {
 						if (sign.getLine(i).equals("")) {
-							arena.fightSignsLocation.put(player.getName(), sign.getBlock().getLocation());
-							arena.fightPlayersClass.put(player.getName(),sign.getLine(0));
+							arena.paSignsLocation.put(player.getName(), sign.getBlock().getLocation());
+							arena.paPlayersClass.put(player.getName(),sign.getLine(0));
 							sign.setLine(i, player.getName());
 							sign.update();
 							// select class
@@ -328,8 +330,8 @@ public class PAPlayerListener extends PlayerListener {
 					if (nSign != null) {
 						for (i=0;i<4;i++) {
 							if (nSign.getLine(i).equals("")) {
-								arena.fightSignsLocation.put(player.getName(), sign.getBlock().getLocation());
-								arena.fightPlayersClass.put(player.getName(),sign.getLine(0));
+								arena.paSignsLocation.put(player.getName(), sign.getBlock().getLocation());
+								arena.paPlayersClass.put(player.getName(),sign.getLine(0));
 								nSign.setLine(i, player.getName());
 								nSign.update();
 								// select class
@@ -369,12 +371,12 @@ public class PAPlayerListener extends PlayerListener {
 			}
 
 			if (block.getTypeId() == mMat.getId()) {				
-				if (!arena.fightPlayersTeam.containsKey(player.getName()))
+				if (!arena.paPlayersTeam.containsKey(player.getName()))
 					return; // not a fighting player => OUT			
-				if (!arena.fightPlayersClass.containsKey(player.getName()))
+				if (!arena.paPlayersClass.containsKey(player.getName()))
 					return; // not a fighting player => OUT
 				
-				String color = (String) arena.fightPlayersTeam.get(player.getName());
+				String color = (String) arena.paPlayersTeam.get(player.getName());
 
 				if (!arena.ready()) {
 					player.sendMessage(PVPArena.lang.parse("msgprefix") + PVPArena.lang.parse("notready"));
@@ -388,9 +390,14 @@ public class PAPlayerListener extends PlayerListener {
 					}
 				}
 				
+				if (!arena.checkRegions()) {
+					Arena.tellPlayer(player, PVPArena.lang.parse("checkregionerror"));
+					return;
+				}
+				
 				if (color != "free") {
 					String sName = color;
-					color = arena.fightTeams.get(color);
+					color = arena.paTeams.get(color);
 					
 					arena.tellEveryone(PVPArena.lang.parse("ready", ChatColor.valueOf(color) + sName + ChatColor.WHITE));
 

@@ -26,10 +26,11 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
@@ -58,18 +59,18 @@ public class PAEntityListener extends EntityListener {
 			if (arena == null)
 				return;
 			
-			if (arena.fightPlayersTeam.containsKey(player.getName())) {
+			if (arena.paPlayersTeam.containsKey(player.getName())) {
 				event.getDrops().clear();
-				String sTeam = arena.fightPlayersTeam.get(player.getName());
-				String color = arena.fightTeams.get(sTeam);
+				String sTeam = arena.paPlayersTeam.get(player.getName());
+				String color = arena.paTeams.get(sTeam);
 				if (!color.equals("free")) {
 					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
 				StatsManager.addLoseStat(player, sTeam, arena);
-				arena.fightPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
-				arena.fightPlayersRespawn.put(player.getName(), arena.fightPlayersClass.get(player.getName()));
+				arena.paPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
+				arena.paPlayersRespawn.put(player.getName(), arena.paPlayersClass.get(player.getName()));
 				
 				if (arena instanceof CTFArena) {
 					CTFArena ca = (CTFArena) arena;
@@ -111,12 +112,12 @@ public class PAEntityListener extends EntityListener {
 		}
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
-		if ((arena.fightPlayersTeam.get(attacker.getName()) == null)
-			|| (arena.fightPlayersTeam.get(defender.getName()) == null))
+		if ((arena.paPlayersTeam.get(attacker.getName()) == null)
+			|| (arena.paPlayersTeam.get(defender.getName()) == null))
 			return;
 
-		if ((!arena.teamKilling) && ((String) arena.fightPlayersTeam.get(attacker.getName()))
-				.equals(arena.fightPlayersTeam.get(defender.getName()))) {
+		if ((!arena.teamKilling) && ((String) arena.paPlayersTeam.get(attacker.getName()))
+				.equals(arena.paPlayersTeam.get(defender.getName()))) {
 			// no team fights!
 			event.setCancelled(true);
 			return;
@@ -138,7 +139,7 @@ public class PAEntityListener extends EntityListener {
 		if (event.getDamage() >= defender.getHealth()) {
 			byte lives = 3;
 
-			lives = arena.fightPlayersLives.get(defender.getName());
+			lives = arena.paPlayersLives.get(defender.getName());
 			if (lives < 1) {
 				return; // player died
 			} else if (lives > 0) {
@@ -176,14 +177,14 @@ public class PAEntityListener extends EntityListener {
 		}
 		
 		Player player = (Player) p1;
-		if (arena.fightPlayersTeam.get(player.getName()) == null)
+		if (arena.paPlayersTeam.get(player.getName()) == null)
 			return;
 
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			byte lives = 3;
 
-			lives = arena.fightPlayersLives.get(player.getName());
+			lives = arena.paPlayersLives.get(player.getName());
 			if (lives < 1) {
 				return; // player died
 			} else if (lives > 0) {
@@ -216,7 +217,7 @@ public class PAEntityListener extends EntityListener {
 		}
 		
 		Player player = (Player) p1;
-		if (arena.fightPlayersTeam.get(player.getName()) == null)
+		if (arena.paPlayersTeam.get(player.getName()) == null)
 			return;
 		
 		if (arena.pm != null) {

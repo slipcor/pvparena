@@ -29,10 +29,12 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.7 - Bugfixes, Cleanup
+ * version: v0.3.9 - Permissions, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
+ *     v0.3.7 - Bugfixes, Cleanup
  *     v0.3.5 - Powerups!!
  *     v0.3.3 - Random spawns possible for every arena
  *     v0.3.1 - New Arena! FreeFight
@@ -177,7 +179,7 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
-				String sName = arena.fightTeams.get(arena.fightPlayersTeam.get(player.getName()));
+				String sName = arena.paTeams.get(arena.paPlayersTeam.get(player.getName()));
 				if (sName.equals("free")) {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.valueOf(sName) + player.getName() + ChatColor.YELLOW));
 				} else {
@@ -224,11 +226,11 @@ public class PVPArena extends JavaPlugin {
 	}
 	
 	public static boolean hasAdminPerms(Player player) {
-		return hasPerms(player, "fight.admin");
+		return hasPerms(player, "pvparena.admin")?true:hasPerms(player, "fight.admin");
 	}
 
 	public static boolean hasPerms(Player player) {
-		return hasPerms(player, "fight.user");
+		return hasPerms(player, "pvparena.user")?true:hasPerms(player, "fight.user");
 	}
 
 	public static boolean hasPerms(Player player, String perms) {
