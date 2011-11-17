@@ -1251,9 +1251,7 @@ public abstract class Arena {
 				tpPlayerToCoordName(player, "spectator");
 				tellPlayer(player, PVPArena.lang.parse("specwelcome"));
 				return true;
-			} else if (PVPArena.hasAdminPerms(player)) {
-				return parseAdminCommand(args, player);
-			} else if (paTeams.get(args[0]) == null) {
+			} else if (paTeams.get(args[0]) != null) {
 				
 
 				// /pa [team] or /pvparena [team]
@@ -1314,6 +1312,8 @@ public abstract class Arena {
 				} else {
 					tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 				}
+			} else if (PVPArena.hasAdminPerms(player)) {
+				return parseAdminCommand(args, player);
 			} else {
 				tellPlayer(player, PVPArena.lang.parse("invalidcmd","502"));
 				return false;
