@@ -355,6 +355,9 @@ public abstract class Arena {
 		if (config.getKeys("coords") == null) {
 			return "coords";
 		}
+		if (pos1 == null || pos2 == null) {
+			return "region";
+		}
 
 		List<String> list = config.getKeys("coords");
 		if (randomSpawn) {
@@ -805,8 +808,8 @@ public abstract class Arena {
 		Configuration config = new Configuration(configFile);
 		config.load();
 		
-		if (config.getString("protection.region.min") == null
-				|| config.getString("protection.region.max") == null)
+		if (pos1 == null
+				|| pos2 == null)
 			return false; // no arena, no container
 		
 		return pt.isInAABB(pos1.toVector(), pos2.toVector());
@@ -1849,7 +1852,7 @@ public abstract class Arena {
 	}
 
 	public boolean checkRegion(Arena arena) {
-		if (arena.pos1.getWorld().equals(this.pos1.getWorld()))
+		if (arena.pos1 != null && arena.pos1.getWorld().equals(this.pos1.getWorld()))
 			return !arena.contains(pos1.toVector().midpoint(pos2.toVector()));
 		
 		return true;

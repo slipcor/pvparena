@@ -88,7 +88,7 @@ public class ArenaManager {
 	 */
 	public static Arena getArenaByBattlefieldLocation(Location location) {
 		for (Arena arena : arenas.values()) {
-			if (arena.pos1.getWorld() != location.getWorld())
+			if ((arena.pos1 == null) || (arena.pos1.getWorld() != location.getWorld()))
 				continue;
 			boolean inside = arena.contains(new Vector(location.getX(), location.getY(),location.getZ()));
 			if (inside)
