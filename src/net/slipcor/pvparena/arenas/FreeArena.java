@@ -1,26 +1,29 @@
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.StatsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 /*
  * Free Fight Arena class
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
  *     v0.3.6 - CTF Arena
@@ -32,7 +35,6 @@ import org.bukkit.util.config.Configuration;
  */
 
 public class FreeArena extends Arena{
-	
 	/*
 	 * freefight constructor
 	 * 
@@ -57,6 +59,7 @@ public class FreeArena extends Arena{
 		
 		this.teamKilling = true;
 		this.manuallySelectTeams = false;
+		this.randomlySelectTeams = true;
 		this.forceWoolHead = false;
 		this.forceEven = false;
 		this.randomSpawn = true;
@@ -74,23 +77,31 @@ public class FreeArena extends Arena{
 	 */
 	@Override
 	public String isSetup() {
-		Configuration config = new Configuration(configFile);
-		config.load();
-		if (config.getKeys("coords") == null) {
-			return "coords";
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		if (config.get("coords") == null) {
+			return "no coords set";
 		}
 
-		List<String> list = config.getKeys("coords");
+		Set<String> list = config.getConfigurationSection("coords").getValues(false).keySet();
 		if (!list.contains("spectator"))
-			return "spectator";
+			return "spectator not set";
 		if (!list.contains("lounge"))
-			return "lounge";
+			return "lounge not set";
 		if (!list.contains("exit"))
-			return "exit";
-		Iterator<String> iter = list.iterator();
+			return "exit not set";
+		Iterator<?> iter = list.iterator();
 		int spawns = 0;
 		while (iter.hasNext()) {
-			String s = iter.next();
+			String s = (String) iter.next();
 			if (s.startsWith("spawn"))
 				spawns++;
 		}
@@ -98,7 +109,7 @@ public class FreeArena extends Arena{
 			return null;
 		}
 
-		return "spawns";
+		return "not enough spawns (" + spawns + ")";
 	}
 	
 	/*

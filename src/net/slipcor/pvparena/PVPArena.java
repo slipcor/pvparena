@@ -2,6 +2,7 @@ package net.slipcor.pvparena;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
+
 import java.util.logging.Logger;
 
 import net.slipcor.pvparena.arenas.Arena;
@@ -10,6 +11,7 @@ import net.slipcor.pvparena.listeners.PAEntityListener;
 import net.slipcor.pvparena.listeners.PAPlayerListener;
 import net.slipcor.pvparena.listeners.PAServerListener;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.LanguageManager;
 import net.slipcor.pvparena.register.payment.Method;
 import org.bukkit.Bukkit;
@@ -29,7 +31,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
@@ -99,7 +101,13 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.BLOCK_BURN, this.blockListener,Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockListener,Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener,Event.Priority.High, this);
-
+		
+		getConfig().addDefault("debug", Boolean.valueOf(false));
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		
+		DebugManager.active = getConfig().getBoolean("debug");
+		
 		load_config();
 		lang.log_info("enabled", pdfFile.getVersion());
 	}
@@ -179,7 +187,7 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
-				String sName = arena.paTeams.get(arena.paPlayersTeam.get(player.getName()));
+				String sName = (String) arena.paTeams.get(arena.paPlayersTeam.get(player.getName()));
 				if (sName.equals("free")) {
 					arena.tellEveryoneExcept(player, lang.parse("playerleave", ChatColor.valueOf(sName) + player.getName() + ChatColor.YELLOW));
 				} else {
@@ -234,9 +242,13 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static boolean hasPerms(Player player, String perms) {
+		if (player.hasPermission(perms))
+			return true;
+		
 		if (Permissions == null)
-			return player.hasPermission(perms);
-		return player.hasPermission(perms)?true:Permissions.has(player, perms);
+			return Permissions.has(player, perms);
+		
+		return false;			
 	}
 	
 	private void setupPermissions() {

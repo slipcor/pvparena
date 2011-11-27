@@ -1,24 +1,28 @@
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 /*
  * Statistics class
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
@@ -29,11 +33,12 @@ import org.bukkit.util.config.Configuration;
  */
 
 public class StatsManager {
+	private static DebugManager db = new DebugManager();
 	
 	/*
 	 * retrieve config and create one if it doesn't exist
 	 */
-	private static Configuration getConfig(String file, Arena arena) {
+	private static YamlConfiguration getConfig(String file, Arena arena) {
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/" + file + ".yml");
 		boolean bNew = false;
@@ -45,13 +50,27 @@ public class StatsManager {
 				PVPArena.lang.log_error("filecreateerror",file);
 			}
 
-		Configuration config = new Configuration(configFile);
-		config.load();
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (InvalidConfigurationException e1) {
+			e1.printStackTrace();
+		}
 		if (bNew) { // if marked as new, create default entries
 			
 			for (String sTeam : arena.paTeams.keySet()) {
-				config.setProperty("wins." + sTeam + ".slipcor", 0);
-				config.setProperty("losses." + sTeam + ".slipcor", 0);
+				config.addDefault("wins." + sTeam + ".slipcor", 0);
+				config.addDefault("losses." + sTeam + ".slipcor", 0);
+			}
+			config.options().copyDefaults(true);
+			try {
+				config.save(configFile);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 		return config;
@@ -65,30 +84,32 @@ public class StatsManager {
 	 * 
 	 * this example means: slipcor lost 2 times and won 3 times
 	 */	
-	@SuppressWarnings("unchecked")
 	public static Map<String,Integer> getPlayerStats(String sName, Arena arena) {
-		Configuration config = getConfig("stats_"+sName, arena);
+		YamlConfiguration config = getConfig("stats_"+sName, arena);
+		db.i("fetching player stats: "+sName+ " for arena "+arena.name);
 		Map <String, Integer> players = new HashMap<String, Integer>(); // map to sum up the players
 
-		Map<String, Integer> team = new HashMap<String, Integer>(); // tempmap => iteration 
+		Map<String, Object> team = new HashMap<String, Object>(); // tempmap => iteration 
 		int sum = 0;
 		for (String sTeam : arena.paTeams.keySet()) {
-			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
+			team = (Map<String, Object>) config.getConfigurationSection("wins." + sTeam).getValues(true);
 			for (String rName : team.keySet()) {
 				sum = 0;
 				if (players.get(rName+"_") != null)
 					sum = players.get(rName+"_"); // if exists: read entry
 				
-				sum += team.get(rName);
+				sum += Integer.parseInt((String) team.get(rName));
+				db.i(rName + "_ => " + sum);
 				players.put(rName+"_", sum); // put the player into the map, together with the count
 			}
-			team = (Map<String, Integer>) config.getProperty("losses" + sTeam);
+			team = (Map<String, Object>) config.getConfigurationSection("losses" + sTeam).getValues(true);
 			for (String rName : team.keySet()) {
 				sum = 0;
 				if (players.get(rName) != null)
 					sum = players.get(rName); // if exists: read entry
-				
-				sum += team.get(rName);
+
+				sum += Integer.parseInt((String) team.get(rName));
+				db.i(rName + " => " + sum);
 				players.put(rName, sum); // put the player into the map, together with the count
 			}
 		}
@@ -103,27 +124,28 @@ public class StatsManager {
 	 * this example means: blue won 2 times, lost 3 times ; red won 4 times, lost 5 times
 	 */
 	
-	@SuppressWarnings("unchecked")
 	public static String getTeamStats(String sName, Arena arena) {
-		
-		Configuration config = getConfig("stats_"+sName, arena);
+
+		db.i("fetching team stats: " + sName + " for arena "+arena.name);
+		YamlConfiguration config = getConfig("stats_"+sName, arena);
 		
 		String result = "";
-		Map<String, Integer> team = new HashMap<String, Integer>();
+		Map<String, Object> team = new HashMap<String, Object>();
 
 		for (String sTeam : arena.paTeams.keySet()) {
-			team = (Map<String, Integer>) config.getProperty("wins." + sTeam);
+			team = (Map<String, Object>) config.getConfigurationSection("wins." + sTeam).getValues(true);
 			int count = 0;
-			for (int rVal : team.values()) {
-				count += rVal; // sum up the values, append the sum
+			for (Object rVal : team.values()) {
+				count += Integer.parseInt((String) rVal); // sum up the values, append the sum
 			}
 			result += count + ";";
-			team = (Map<String, Integer>) config.getProperty("losses." + sTeam);
+			team = (Map<String, Object>) config.getConfigurationSection("losses." + sTeam).getValues(true);
 			count = 0;
-			for (int rVal : team.values()) {
-				count += rVal; // sum up the values, append the sum
+			for (Object rVal : team.values()) {
+				count += Integer.parseInt((String) rVal); // sum up the values, append the sum
 			}
 			result += String.valueOf(count) + ";";
+			db.i(sTeam + ": " + count);
 		}
 		return result;		
 	}
@@ -152,36 +174,46 @@ public class StatsManager {
 	 *  add a stat to the player and the team
 	 */
 	private static void addStat(Player player, String color, boolean win, Arena arena) {
+		db.i("adding stat: player " + player.getName() + "; color: " + color + "; win: " + String.valueOf(win) + "; arena: "+arena.name);
 		String sName = ArenaManager.getArenaNameByPlayer(player);
-		Configuration config = getConfig("stats_"+sName, arena);
+		YamlConfiguration config = getConfig("stats_"+sName, arena);
 		
-		String c = arena.paTeams.get(color);
+		String c = (String) arena.paTeams.get(color);
 		if (c == null) {
 			PVPArena.lang.log_warning("teamnotfound",color);
 			return; // invalid team
 		}
 		String path = (win?"wins.":"losses.") + color + "." + player.getName();
 		int sum = 0;
-		if (config.getProperty(path) != null)
+		if (config.get(path) != null)
 			sum += config.getInt(path, 0); // fetch the sum if available
 		sum++;                             // sum up, add, save
-		config.setProperty(path, Integer.valueOf(sum));
-		config.save();
+		config.set(path, Integer.valueOf(sum));
+		try {
+			config.save(new File("plugins/pvparena/stats_"+sName + ".yml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
 	 *  add a stat to the player and the team
 	 */
 	private static void addStat(Player player, boolean win, Arena arena) {
+		db.i("adding stat: player " + player.getName() + "; win: " + String.valueOf(win) + "; arena: " + arena.name);
 		String sName = ArenaManager.getArenaNameByPlayer(player);
-		Configuration config = getConfig("stats_"+sName, arena);
+		YamlConfiguration config = getConfig("stats_"+sName, arena);
 		
 		String path = (win?"wins.":"losses.") + player.getName();
 		int sum = 0;
-		if (config.getProperty(path) != null)
+		if (config.get(path) != null)
 			sum += config.getInt(path, 0); // fetch the sum if available
 		sum++;                             // sum up, add, save
-		config.setProperty(path, Integer.valueOf(sum));
-		config.save();
+		config.set(path, Integer.valueOf(sum));
+		try {
+			config.save(new File("plugins/pvparena/stats_"+sName + ".yml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

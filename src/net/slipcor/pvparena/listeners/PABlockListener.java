@@ -2,6 +2,7 @@ package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.DebugManager;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -24,14 +25,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
  */
 
 public class PABlockListener extends BlockListener {
-
+	private DebugManager db = new DebugManager();
+	
 	public PABlockListener() {}
 
 	public void onBlockBreak(BlockBreakEvent event) {
 		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
+		db.i("block break inside the arena");
 		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage)))
 			return; // we don't need protection => OUT!
 
@@ -49,7 +52,8 @@ public class PABlockListener extends BlockListener {
 		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
+		db.i("block ignite inside the arena");
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
 		if ((arena.usesProtection) && (
 				((arena.disableLavaFireSpread) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
@@ -65,7 +69,8 @@ public class PABlockListener extends BlockListener {
 		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
+		db.i("block burn inside the arena");
 		if ((!(arena.usesProtection)) || (!(arena.disableAllFireSpread)))
 			return; // if not an event happend that we would like to block => OUT
 		
@@ -77,7 +82,8 @@ public class PABlockListener extends BlockListener {
 		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
+		db.i("block place inside the arena");
 		if ((!(arena.usesProtection)) || (!(arena.disableBlockPlacement)))
 			return; // if not an event happend that we would like to block => OUT
 		

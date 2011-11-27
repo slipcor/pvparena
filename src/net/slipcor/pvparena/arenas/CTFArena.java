@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,12 +10,12 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-import org.bukkit.util.config.Configuration;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
 
 /*
@@ -21,10 +23,11 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  * 
@@ -34,14 +37,12 @@ import net.slipcor.pvparena.managers.StatsManager;
 public class CTFArena extends Arena{
 	private HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags "lives"
 	private HashMap<String, String> paTeamFlags = new HashMap<String, String>(); // carried flags
-	private DebugManager db = new DebugManager();
 	/*
 	 * ctf constructor
 	 * 
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	@SuppressWarnings("unchecked")
 	public CTFArena(String sName, PVPArena plugin) {
 		super();
 
@@ -56,18 +57,25 @@ public class CTFArena extends Arena{
 				PVPArena.lang.log_error("filecreateerror","config.ctf_" + name);
 			}
 		this.randomSpawn = false;
-		
-		Map<String, String> fT = new HashMap<String, String>();
-		fT.put("red",ChatColor.RED.name());
-		fT.put("blue",ChatColor.BLUE.name());
-		
-		Configuration config = new Configuration(configFile);
-		config.load();
-		if (config.getProperty("teams.custom") == null) {
-			config.setProperty("teams.custom", fT);
-			config.save();
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
 		}
-		this.paTeams = (Map<String, String>) config.getProperty("teams.custom");
+		config.addDefault("teams.custom.red",ChatColor.RED.name());
+		config.addDefault("teams.custom.blue",ChatColor.BLUE.name());
+		config.options().copyDefaults(true);
+		try {
+			config.save(configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.paTeams = (Map<String, Object>) config.getConfigurationSection("teams.custom").getValues(true);
 		
 		configParse("ctf");
 	}
@@ -141,7 +149,7 @@ public class CTFArena extends Arena{
 					}
 				}
 				
-				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf(paTeams.get(winteam)) + "Team " + winteam));
+				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf((String) paTeams.get(winteam)) + "Team " + winteam));
 				
 				paTeamLives.clear();
 				reset();
@@ -177,8 +185,8 @@ public class CTFArena extends Arena{
 
 				db.i("the flag belongs to team " + flagTeam);
 				
-				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-				String scPlayer = ChatColor.valueOf(paTeams.get(sTeam)) + player.getName() + ChatColor.YELLOW;
+				String scFlagTeam = ChatColor.valueOf((String) paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
+				String scPlayer = ChatColor.valueOf((String) paTeams.get(sTeam)) + player.getName() + ChatColor.YELLOW;
 				
 				
 				tellEveryone(PVPArena.lang.parse("flaghome",scPlayer, scFlagTeam));
@@ -196,8 +204,8 @@ public class CTFArena extends Arena{
 				vSpawn = this.getCoords(team + "spawn").toVector();
 				if (vLoc.distance(vSpawn) < 2) {
 					db.i("spawn found!");
-					String scTeam = ChatColor.valueOf(paTeams.get(team)) + team + ChatColor.YELLOW;
-					String scPlayer = ChatColor.valueOf(paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
+					String scTeam = ChatColor.valueOf((String) paTeams.get(team)) + team + ChatColor.YELLOW;
+					String scPlayer = ChatColor.valueOf((String) paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
 					tellEveryone(PVPArena.lang.parse("flaggrab",scPlayer, scTeam));
 
 					paTeamFlags.put(team, player.getName());
@@ -223,8 +231,8 @@ public class CTFArena extends Arena{
 	 */
 	public void checkEntityDeath(Player player) {
 		String flagTeam = getHeldFlagTeam(player.getName());
-		String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-		String scPlayer = ChatColor.valueOf(paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
+		String scFlagTeam = ChatColor.valueOf((String) paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
+		String scPlayer = ChatColor.valueOf((String) paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
 		PVPArena.lang.parse("flagsave",scPlayer, scFlagTeam);
 		paTeamFlags.remove(flagTeam);
 	}

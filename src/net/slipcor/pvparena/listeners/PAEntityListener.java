@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
 import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.powerups.PowerupEffect;
@@ -47,6 +48,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  */
 
 public class PAEntityListener extends EntityListener {
+	private DebugManager db = new DebugManager();
 
 	public PAEntityListener() {}
 
@@ -58,11 +60,12 @@ public class PAEntityListener extends EntityListener {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena == null)
 				return;
-			
+
+			db.i("onEntityDeath: fighting player");
 			if (arena.paPlayersTeam.containsKey(player.getName())) {
 				event.getDrops().clear();
 				String sTeam = arena.paPlayersTeam.get(player.getName());
-				String color = arena.paTeams.get(sTeam);
+				String color = (String) arena.paTeams.get(sTeam);
 				if (!color.equals("free")) {
 					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 				} else {
@@ -74,11 +77,13 @@ public class PAEntityListener extends EntityListener {
 				
 				if (arena instanceof CTFArena) {
 					CTFArena ca = (CTFArena) arena;
+					db.i("ctf arena");
 					ca.checkEntityDeath(player);
 				}
 				
 				if (arena.usesPowerups) {
 					if (arena.powerupCause.equals("death")) {
+						db.i("calculating powerup trigger death");
 						arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
 						if (arena.powerupDiffI == 0) {
 							arena.calcPowerupSpawn();
@@ -105,27 +110,33 @@ public class PAEntityListener extends EntityListener {
 		if (arena == null)
 			return;
 
+		db.i("onEntityDamageByEntity: fighting player");
 		if ((!(arena.fightInProgress))
 	        || (p2 == null)
 			|| (!(p2 instanceof Player))) {
 			return;
 		}
+		db.i("fight in progress and both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 		if ((arena.paPlayersTeam.get(attacker.getName()) == null)
 			|| (arena.paPlayersTeam.get(defender.getName()) == null))
 			return;
 
+		db.i("both players part of the arena");
 		if ((!arena.teamKilling) && ((String) arena.paPlayersTeam.get(attacker.getName()))
 				.equals(arena.paPlayersTeam.get(defender.getName()))) {
 			// no team fights!
+			db.i("team hit, cancel!");
 			event.setCancelled(true);
 			return;
 		}
 		
 		// here it comes, process the damage!
-		
+
+		db.i("processing damage!");
 		if (arena.pm != null) {
+			db.i("committing powerup triggers");
 			Powerup p = arena.pm.puActive.get(attacker);
 			if ((p != null) && (p.canBeTriggered()))
 				p.commit(attacker, defender, event);
@@ -135,8 +146,8 @@ public class PAEntityListener extends EntityListener {
 				p.commit(attacker, defender, event);
 			
 		}
-		
 		if (event.getDamage() >= defender.getHealth()) {
+			db.i("damage >= health => death");
 			byte lives = 3;
 
 			lives = arena.paPlayersLives.get(defender.getName());
@@ -172,6 +183,7 @@ public class PAEntityListener extends EntityListener {
 		if (arena == null)
 			return;
 
+		db.i("onEntityDamege: fighting player");
 		if (!arena.fightInProgress) {
 			return;
 		}
@@ -182,6 +194,7 @@ public class PAEntityListener extends EntityListener {
 
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
+			db.i("damage >= health => death");
 			byte lives = 3;
 
 			lives = arena.paPlayersLives.get(player.getName());
@@ -212,6 +225,7 @@ public class PAEntityListener extends EntityListener {
 		if (arena == null)
 			return;
 
+		db.i("onEntityRegainHealth => fighing player");
 		if (!arena.fightInProgress) {
 			return;
 		}
@@ -238,7 +252,8 @@ public class PAEntityListener extends EntityListener {
 		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
+		db.i("explosion inside an arena");
 		if ((!(arena.usesProtection)) || (!(arena.blockTnt)) || (!(event.getEntity() instanceof TNTPrimed)))
 			return;
 		

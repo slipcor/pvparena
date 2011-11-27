@@ -5,10 +5,11 @@ package net.slipcor.pvparena.powerups;
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - rewrite
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
@@ -140,6 +141,7 @@ public class PowerupEffect {
 	 * commit PowerupEffect in combat
 	 */
 	public void commit(Player attacker, Player defender, EntityDamageByEntityEvent event) {
+		db.i("committing entitydamagebyentityevent: " + this.type.name());
 		if (this.type == classes.DMG_RECEIVE) {
 			Random r = new Random();
 			if (r.nextFloat() <= chance) {
@@ -171,6 +173,7 @@ public class PowerupEffect {
 	 */
 	public boolean commit(Player player) {
 
+		db.i("committing " + this.type.name());
 		Random r = new Random();
 		if (r.nextFloat() <= chance) {
 			if (this.type == classes.HEALTH) {
@@ -190,7 +193,7 @@ public class PowerupEffect {
 					// pasted from onEntityDeath;
 					
 					String sTeam = arena.paPlayersTeam.get(player.getName());
-					String color = arena.paTeams.get(sTeam);
+					String color = (String) arena.paTeams.get(sTeam);
 					if (!color.equals("free")) {
 						arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 					} else {
@@ -247,6 +250,7 @@ public class PowerupEffect {
 	 * commit PowerupEffect on health gain
 	 */
 	public void commit(EntityRegainHealthEvent event) {
+		db.i("committing entityregainhealthevent " + this.type.name());
 		if (this.type == classes.HEAL) {
 			Random r = new Random();
 			if (r.nextFloat() <= chance) {
@@ -263,6 +267,7 @@ public class PowerupEffect {
 	 * commit PowerupEffect on velocity event
 	 */
 	public void commit(PlayerVelocityEvent event) {
+		db.i("committing velocityevent " + this.type.name());
 		if (this.type == classes.HEAL) {
 			Random r = new Random();
 			if (r.nextFloat() <= chance) {

@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +29,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -35,17 +39,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
-import org.bukkit.util.config.Configuration;
 
 /*
  * Arena class
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
  *     v0.3.6 - CTF Arena
@@ -78,7 +82,7 @@ public abstract class Arena {
 	public final HashMap<String, String> paPlayersTelePass = new HashMap<String, String>();
 	public final HashMap<String, Byte> paPlayersLives = new HashMap<String, Byte>();
 	
-	public Map<String, String> paTeams = new HashMap<String, String>();
+	public Map<String, Object> paTeams = new HashMap<String, Object>();
 	public PowerupManager pm;
 	public String name = "default";
 	public String powerupCause;
@@ -99,6 +103,7 @@ public abstract class Arena {
 	public boolean forceEven;
 	public boolean teamKilling;
 	public boolean manuallySelectTeams;
+	public boolean randomlySelectTeams;
 	public boolean fightInProgress = false;
 	public boolean enabled = true;
 	public boolean randomSpawn = false;
@@ -126,7 +131,7 @@ public abstract class Arena {
 	private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
 	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
 	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
-	private static final DebugManager db = new DebugManager();
+	protected static final DebugManager db = new DebugManager();
 	
 	/************
 	 * privates *
@@ -185,8 +190,8 @@ public abstract class Arena {
 	public Arena(String name, PVPArena plugin) {
 		this.plugin = plugin;
 		this.name = name;
+		db.i("loading arena "+name);
 
-		db.i("creating arena " + name);
 		new File("plugins/pvparena").mkdir();
 		configFile = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!(configFile.exists()))
@@ -195,7 +200,6 @@ public abstract class Arena {
 			} catch (Exception e) {
 				PVPArena.lang.log_error("filecreateerror","config_" + name);
 			}
-
 		configParse("arena");
 	}
 	
@@ -204,9 +208,7 @@ public abstract class Arena {
 	 * 
 	 * used by the child arena types
 	 */
-	public Arena() {
-		
-	}
+	public Arena() { }
 
 	/*
 	 * parse the arena config
@@ -217,73 +219,99 @@ public abstract class Arena {
 	 * - saveRegionPos()
 	 */
 	protected void configParse(String s) {
-		Configuration config = new Configuration(configFile);
-		config.load();
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 
-		if (config.getKeys("classes") == null) {
-			config.setProperty("classes.Ranger.items","261,262:64,298,299,300,301");
-			config.setProperty("classes.Swordsman.items", "276,306,307,308,309");
-			config.setProperty("classes.Tank.items", "272,310,311,312,313");
-			config.setProperty("classes.Pyro.items", "259,46:2,298,299,300,301");
+		config.addDefault("classes.Ranger.items","261,262:64,298,299,300,301");
+		config.addDefault("classes.Swordsman.items", "276,306,307,308,309");
+		config.addDefault("classes.Tank.items", "272,310,311,312,313");
+		config.addDefault("classes.Pyro.items", "259,46:2,298,299,300,301");
+	
+		config.addDefault("general.readyblock","IRON_BLOCK");
+		config.addDefault("general.lives",Integer.valueOf(3));
+		config.addDefault("general.language","en");
+		config.addDefault("general.tp.win","old"); // old || exit || spectator
+		config.addDefault("general.tp.lose","old"); // old || exit || spectator
+		config.addDefault("general.tp.exit","exit"); // old || exit || spectator
+		config.addDefault("general.tp.death","spectator"); // old || exit || spectator
+		config.addDefault("general.classperms",Boolean.valueOf(false)); // require permissions for a class
+		
+		if (!s.equals("free")) {
+			config.addDefault("general.woolhead",Boolean.valueOf(false)); // enforce a wool head in case we dont have Spout installed
+			config.addDefault("general.forceeven",Boolean.valueOf(false)); // require even teams
 		}
-		if (config.getKeys("general") == null) {
-			config.setProperty("general.readyblock","IRON_BLOCK");
-			config.setProperty("general.lives",Integer.valueOf(3));
-			config.setProperty("general.language","en");
-			config.setProperty("general.tp.win","old"); // old || exit || spectator
-			config.setProperty("general.tp.lose","old"); // old || exit || spectator
-			config.setProperty("general.tp.exit","exit"); // old || exit || spectator
-			config.setProperty("general.tp.death","spectator"); // old || exit || spectator
-			config.setProperty("general.classperms",Boolean.valueOf(false)); // require permissions for a class
-			if (!s.equals("free")) {
-				config.setProperty("general.woolhead",Boolean.valueOf(false)); // enforce a wool head in case we dont have Spout installed
-				config.setProperty("general.forceeven",Boolean.valueOf(false)); // require even teams
-			}
+		
+		config.addDefault("rewards.entry-fee", Integer.valueOf(0));
+		config.addDefault("rewards.amount", Integer.valueOf(0));
+		config.addDefault("rewards.items", "none");
+
+		config.addDefault("protection.enabled", Boolean.valueOf(false));
+		config.addDefault("protection.wand", Integer.valueOf(280));
+		config.addDefault("protection.player.disable-block-placement",Boolean.valueOf(true));
+		config.addDefault("protection.player.disable-block-damage",Boolean.valueOf(true));
+		config.addDefault("protection.fire.disable-all-fire-spread",Boolean.valueOf(true));
+		config.addDefault("protection.fire.disable-lava-fire-spread",Boolean.valueOf(true));
+		config.addDefault("protection.ignition.block-tnt",Boolean.valueOf(true));
+		config.addDefault("protection.ignition.block-lighter",Boolean.valueOf(true));
+
+		config.addDefault("general.randomSpawn",Boolean.valueOf(false));
+
+		config.addDefault("general.joinrange", Integer.valueOf(0));
+		config.addDefault("general.powerups", "off"); // off | death:[diff] | time:[diff]
+		
+		if (!s.equals("free") && config.get("teams") == null) {
+			config.addDefault("teams.team-killing-enabled",Boolean.valueOf(false));
+			config.addDefault("teams.manually-select-teams",Boolean.valueOf(false));
+			config.addDefault("teams.randomly-select-teams",Boolean.valueOf(true));
 		}
-		if (config.getKeys("rewards") == null) {
-			config.setProperty("rewards.entry-fee", Integer.valueOf(0));
-			config.setProperty("rewards.amount", Integer.valueOf(0));
-			config.setProperty("rewards.items", "none");
+		config.addDefault("general.checkRegions",Boolean.valueOf(false));
+		config.options().copyDefaults(true);
+		try {
+			config.save(configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		if (config.getKeys("protection") == null) {
-			config.setProperty("protection.enabled", Boolean.valueOf(false));
-			config.setProperty("protection.wand", Integer.valueOf(280));
-			config.setProperty("protection.player.disable-block-placement",Boolean.valueOf(true));
-			config.setProperty("protection.player.disable-block-damage",Boolean.valueOf(true));
-			config.setProperty("protection.fire.disable-all-fire-spread",Boolean.valueOf(true));
-			config.setProperty("protection.fire.disable-lava-fire-spread",Boolean.valueOf(true));
-			config.setProperty("protection.ignition.block-tnt",Boolean.valueOf(true));
-			config.setProperty("protection.ignition.block-lighter",Boolean.valueOf(true));
-		}
-		if (config.getProperty("general.randomSpawn") == null) {
-			config.setProperty("general.randomSpawn",Boolean.valueOf(false));
-		}
-		if (config.getProperty("general.joinrange") == null) {
-			config.setProperty("general.joinrange", Integer.valueOf(0));
-			config.setProperty("general.powerups", "off"); // off | death:[diff] | time:[diff]
-		}
-		if (!s.equals("free") && config.getKeys("teams") == null) {
-			config.setProperty("teams.team-killing-enabled",Boolean.valueOf(false));
-			config.setProperty("teams.manually-select-teams",Boolean.valueOf(false));
-		}
-		if (config.getProperty("general.checkRegions") == null) {
-			config.setProperty("general.checkRegions",Boolean.valueOf(false));
-		}
-		config.save();
-		List<?> classes = config.getKeys("classes");
+		
+		Map<String, Object> classes = config.getConfigurationSection("classes").getValues(false);
 		paClasses.clear();
-		for (int i = 0; i < classes.size(); ++i) {
-			String className = (String) classes.get(i);
+		for (String className : classes.keySet()) {
 			paClasses.put(className,
 					config.getString("classes." + className + ".items", null));
 		}
 		
-		HashMap<String, Object> powerups = (HashMap<String, Object>) config.getProperty("powerups");
-
-		if (powerups != null)
+		HashMap<String, Object> powerups = new HashMap<String, Object>();
+		if (config.getConfigurationSection("powerups") != null) {
+			HashMap<String, Object> map = (HashMap<String, Object>) config.getConfigurationSection("powerups").getValues(false);
+			HashMap<String, Object> map2 = new HashMap<String, Object>();
+			HashMap<String, Object> map3 = new HashMap<String, Object>();
+			
+			for(String key : map.keySet()) {
+				// key e.g. "OneUp"
+				map2 = (HashMap<String, Object>) config.getConfigurationSection("powerups." + key).getValues(false);
+				HashMap<String, Object> temp_map = new HashMap<String, Object>(); 
+				for (String kkey : map2.keySet()) {
+					// kkey e.g. "dmg_receive"
+					if (kkey.equals("item")) {
+						temp_map.put(kkey, String.valueOf(map2.get(kkey)));
+					} else {
+						map3 = (HashMap<String, Object>) config.getConfigurationSection("powerups." + key + "." + kkey).getValues(false);
+						temp_map.put(kkey, map3);
+					}
+				}
+				powerups.put(key, temp_map);
+			}
+			
+			
 			pm = new PowerupManager(powerups);
-		else
-			db.i("no powerups loaded");
+		}
 		
 		entryFee = config.getInt("rewards.entry-fee", 0);
 		rewardAmount = config.getInt("rewards.amount", 0);
@@ -291,7 +319,8 @@ public abstract class Arena {
 
 		teamKilling = config.getBoolean("teams.team-killing-enabled", false);
 		manuallySelectTeams = config.getBoolean("teams.manually-select-teams",false);
-
+		randomlySelectTeams = config.getBoolean("teams.randomly-select-teams",true);
+		
 		usesProtection = config.getBoolean("protection.enabled", true);
 		wand = config.getInt("protection.wand", 280);
 		disableBlockPlacement = config.getBoolean("protection.player.disable-block-placement", true);
@@ -350,22 +379,30 @@ public abstract class Arena {
 	 * returns string if not
 	 */
 	public String isSetup() {
-		Configuration config = new Configuration(configFile);
-		config.load();
-		if (config.getKeys("coords") == null) {
-			return "coords";
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
 		}
-		if (pos1 == null || pos2 == null) {
-			return "region";
+		if (config.get("coords") == null) {
+			return "no coords set";
 		}
 
-		List<String> list = config.getKeys("coords");
+		Set<String> list =  config.getConfigurationSection("coords").getValues(false).keySet();
+		
+		// we need the 2 that every arena has
+		
+		if (!list.contains("spectator"))
+			return "spectator not set";
+		if (!list.contains("exit"))
+			return "exit not set";
+		
 		if (randomSpawn) {
-			// random spawn, we need the 2 that every arena has
-			if (!list.contains("spectator"))
-				return "spectator";
-			if (!list.contains("exit"))
-				return "exit";
 			
 			// now we need a spawn and lounge for every team 
 			
@@ -414,34 +451,22 @@ public abstract class Arena {
 	public void givePlayerFightItems(Player player) {
 		String playerClass = (String) paPlayersClass.get(player.getName());
 		String rawItems = (String) paClasses.get(playerClass);
-
+		db.i("giving items '"+rawItems+"' to player '"+player.getName()+"', class '"+playerClass+"'");
+		
 		String[] items = rawItems.split(",");
 
 		for (int i = 0; i < items.length; ++i) {
-			String item = items[i];
-			String[] itemDetail = item.split(":");
-			if (itemDetail.length == 2) {
-				int x = Integer.parseInt(itemDetail[0]);
-				int y = Integer.parseInt(itemDetail[1]);
-				ItemStack stack = new ItemStack(x, y);
-				if (ARMORS_TYPE.contains(stack.getType())) {
-					equipArmorPiece(stack, player.getInventory());
-				} else {
-					player.getInventory().addItem(new ItemStack[] { stack });
-				}
+			ItemStack stack = getItemStackFromString(items[i]);
+			if (ARMORS_TYPE.contains(stack.getType())) {
+				equipArmorPiece(stack, player.getInventory());
 			} else {
-				int x = Integer.parseInt(itemDetail[0]);
-				ItemStack stack = new ItemStack(x, 1);
-				if (ARMORS_TYPE.contains(stack.getType())) {
-					equipArmorPiece(stack, player.getInventory());
-				} else {
-					player.getInventory().addItem(new ItemStack[] { stack });
-				}
+				player.getInventory().addItem(new ItemStack[] { stack });
 			}
 		}
 		if (forceWoolHead) {
 			String sTeam = paPlayersTeam.get(player.getName());
-			String color = paTeams.get(sTeam);
+			String color = (String) paTeams.get(sTeam);
+			db.i("forcing woolhead: "+sTeam + "/" + color);
 			player.getInventory().setHelmet(new ItemStack(Material.WOOL, 1, getColorShortFromColorENUM(color)));
 		}
 	}
@@ -582,10 +607,11 @@ public abstract class Arena {
 	/*
 	 * tell every fighting player
 	 */
-	public void tellEveryone(String msg) {	
+	public void tellEveryone(String msg) {
+		db.i("@all: "+msg);
 		for (String p : paPlayersTeam.keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p.toString());
-			z.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+			z.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 		}
 	}
 	
@@ -593,11 +619,12 @@ public abstract class Arena {
 	 * tell every fighting player except given player
 	 */
 	public void tellEveryoneExcept(Player player, String msg) {
+		db.i("@all/"+player.getName()+": "+msg);
 		for (String p : paPlayersTeam.keySet()) {
 			if (p.equals(player.getName()))
 				continue;
 			Player z = Bukkit.getServer().getPlayer(p.toString());
-			z.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+			z.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 		}
 	}
 	
@@ -614,11 +641,11 @@ public abstract class Arena {
 			}
 		}
 		init_arena();
-		db.i("teleported!");
+		db.i("teleported everyone!");
 		if (usesPowerups) {
 			db.i("using powerups : " + powerupCause + " : " + powerupDiff);
 			if (powerupCause.equals("time") && powerupDiff > 0){
-				db.i("everything ready. go for it!");
+				db.i("powerup time trigger!");
 				powerupDiff = powerupDiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
 			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,new MyRunnable(this),powerupDiff,powerupDiff);
@@ -692,7 +719,8 @@ public abstract class Arena {
 					}
 				}				
 			}			
-		}	
+		}
+		
 		if ((PVPArena.getMethod() != null) && (rewardAmount > 0)) {
 			MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
 			ma.add(rewardAmount);
@@ -703,27 +731,12 @@ public abstract class Arena {
 			return;
 		String[] items = rewardItems.split(",");
 		for (int i = 0; i < items.length; ++i) {
-			String item = items[i];
-			String[] itemDetail = item.split(":");
-			if (itemDetail.length == 2) {
-				int x = parseMat(itemDetail[0]);
-				int y = Integer.parseInt(itemDetail[1]);
-				ItemStack stack = new ItemStack(x, y);
-				try {
-					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
-				} catch (Exception e) {
-					tellPlayer(player,PVPArena.lang.parse("invfull"));
-					return;
-				}
-			} else {
-				int x = parseMat(itemDetail[0]);
-				ItemStack stack = new ItemStack(x, 1);
-				try {
-					player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
-				} catch (Exception e) {
-					tellPlayer(player,PVPArena.lang.parse("invfull"));
-					return;
-				}
+			ItemStack stack = getItemStackFromString(items[i]);
+			try {
+				player.getInventory().setItem(player.getInventory().firstEmpty(), stack);
+			} catch (Exception e) {
+				tellPlayer(player,PVPArena.lang.parse("invfull"));
+				return;
 			}
 		}
 	}
@@ -731,34 +744,81 @@ public abstract class Arena {
 	/*
 	 * read a string and return a valid item id
 	 */
-	//TODO: read and return durability!
-	private int parseMat(String s) {
-		try {
-			int i = Integer.parseInt(s);
-			return i;
-		} catch (Exception e) {
-			try {
-
-				int j = Material.getMaterial(s).getId();
-				return j;
-			} catch (Exception e2) {
-				return 0;
-			}
+	private ItemStack getItemStackFromString(String s) {
+		
+		// [itemid/name]~[dmg]~[data]:[amount]
+		
+		short dmg = 0;
+		byte data = 0;
+		int amount = 1;
+		Material mat = null;
+		
+		String[] temp = s.split(":");
+		
+		if (temp.length > 1) {
+			amount = Integer.parseInt(temp[1]);
 		}
+		temp = temp[0].split("~");
+
+		mat = parseMat(temp[0]);
+		if (temp.length == 1) {
+			//[itemid/name]:[amount]
+			return new ItemStack(mat, amount);
+		}
+		dmg = Short.parseShort(temp[1]);
+		if (temp.length == 2) {
+			//[itemid/name]~[dmg]:[amount]
+			return new ItemStack(mat, amount, dmg);
+		}
+		data = Byte.parseByte(temp[2]);
+		if (temp.length == 3) {
+			//[itemid/name]~[dmg]~[data]:[amount]
+			return new ItemStack(mat, amount, dmg, data);
+		}
+		db.w("unrecognized itemstack: " + s);
+		return null;
+	}
+	
+	private Material parseMat(String string) {
+		Material mat;
+		try {
+			mat = Material.getMaterial(Integer.parseInt(string));
+			if (mat == null) {
+				mat = Material.getMaterial(string);
+			}
+		} catch (Exception e) {
+			mat = Material.getMaterial(string);
+		}
+		if (mat == null) {
+			db.w("unrecognized material: "+string);
+		}
+		return mat;
 	}
 
 	/*
 	 * remove all entities from an arena region
 	 */
 	public void clearArena() {
-		Configuration config = new Configuration(configFile);
-		config.load();
-		if (config.getKeys("protection.region") == null)
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		};
+		if (config.get("protection.region") == null) {
+			db.i("Region not set, skipping 1!");
 			return;
+		} else if (pos1 == null) {
+			db.i("Region not set, skipping 2!");
+			return;
+		}
 		World world = pos1.getWorld();
 		for (Entity e : world.getEntities()) {
-			if (((!(e instanceof Item)) && (!(e instanceof Arrow)))
-					|| (!(contains(e.getLocation().toVector()))))
+			if (((!(e instanceof Item)) && (!(e instanceof Arrow))) || (!(contains(e.getLocation().toVector()))))
 				continue;
 			e.remove();
 		}
@@ -774,7 +834,7 @@ public abstract class Arena {
 				color = "&f";
 			else {
 				color = place.replace("lounge", "");
-				color = "&" + Integer.toString(ChatColor.valueOf(paTeams.get(color)).getCode(), 16).toLowerCase();
+				color = "&" + Integer.toString(ChatColor.valueOf((String) paTeams.get(color)).getCode(), 16).toLowerCase();
 			}
 		}
 		if (!color.equals(""))
@@ -786,45 +846,24 @@ public abstract class Arena {
 	}
 	
 	/*
-	 * calculate and return the pos1 vector
-	 */
-	private Vector getMinimumPoint() {
-		return new Vector(Math.min(pos1.getX(), pos2.getX()), Math.min(
-				pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
-	}
-
-	/*
-	 * calculate and return the pos2 vector
-	 */
-	private Vector getMaximumPoint() {
-		return new Vector(Math.max(pos1.getX(), pos2.getX()), Math.max(
-				pos1.getY(), pos2.getY()), Math.max(pos1.getZ(), pos2.getZ()));
-	}
-	
-	/*
 	 * return "vector is inside the arena region"
 	 */
 	public boolean contains(Vector pt) {
-		Configuration config = new Configuration(configFile);
-		config.load();
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		};
 		
-		if (pos1 == null
-				|| pos2 == null)
+		if (pos1 == null || pos2 == null)
 			return false; // no arena, no container
 		
 		return pt.isInAABB(pos1.toVector(), pos2.toVector());
-		
-		/*
-		
-		BlockVector min = (BlockVector) pos1.toVector();
-		BlockVector max = (BlockVector) pos2.toVector();
-		int x = pt.getBlockX();
-		int y = pt.getBlockY();
-		int z = pt.getBlockZ();
-		
-		return ((x >= min.getBlockX()) && (x <= max.getBlockX())
-				&& (y >= min.getBlockY()) && (y <= max.getBlockY())
-				&& (z >= min.getBlockZ()) && (z <= max.getBlockZ()));*/
 	}
 
 	/*
@@ -855,7 +894,7 @@ public abstract class Arena {
 				}
 			}
 		}
-		tellEveryone(PVPArena.lang.parse("teamhaswon",ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
+		tellEveryone(PVPArena.lang.parse("teamhaswon",ChatColor.valueOf((String) paTeams.get(team)) + "Team " + team));
 		
 		Set<String> set = paPlayersTeam.keySet();
 		Iterator<String> iter = set.iterator();
@@ -921,7 +960,7 @@ public abstract class Arena {
 	 */
 	@SuppressWarnings("unchecked")
 	public void resetPlayer(Player player, String string) {
-
+		db.i("resetting player: "+player.getName());
 		HashMap<String, String> tSM = (HashMap<String, String>) savedPlayerVars.get(player);
 		if (tSM != null) {
 			try {
@@ -955,6 +994,7 @@ public abstract class Arena {
 				System.out.println("[PVP Arena] player '" + player.getName() + "' had no valid EXHAUSTION entry!");
 			}
 			paPlayersTelePass.put(player.getName(), "yes");
+			db.i("string = "+ string);
 			if (string.equalsIgnoreCase("old")) {
 				try {
 					String sLoc = tSM.get("LOCATION");
@@ -1020,10 +1060,11 @@ public abstract class Arena {
 	public void chooseColor(Player player) {
 		if (!(paPlayersTeam.containsKey(player.getName()))) {
 			String team = calcFreeTeam();
+			db.i("team found: " + team);
 			tpPlayerToCoordName(player, team + "lounge");
 			paPlayersTeam.put(player.getName(), team);
-			tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf(paTeams.get(team)) + team));
-			tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(paTeams.get(team)) + team));
+			tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf((String) paTeams.get(team)) + team));
+			tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf((String) paTeams.get(team)) + team));
 		} else {
 			tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 		}
@@ -1129,6 +1170,7 @@ public abstract class Arena {
 				return s;
 			}
 		}
+		db.i("error - returning null");
 		return null;
 	}
 
@@ -1146,8 +1188,9 @@ public abstract class Arena {
 			PVPArena.lang.parse("arenadisabled");
 			return true;
 		}
+		db.i("parsing command: " + db.formatStringArray(args));
 		
-		if (args.length < 1) {
+		if (args == null || args.length < 1) {
 			// just /pa or /pvparena
 			String error = isSetup();
 			if (error != null) {
@@ -1158,7 +1201,7 @@ public abstract class Arena {
 				tellPlayer(player, PVPArena.lang.parse("permjoin"));
 				return true;
 			}
-			if (manuallySelectTeams) {
+			if (!randomlySelectTeams) {
 				tellPlayer(player, PVPArena.lang.parse("selectteam"));
 				return true;
 			}
@@ -1236,7 +1279,7 @@ public abstract class Arena {
 				for (String sPlayer : paPlayersTeam.keySet()) {
 					if (!plrs.equals(""))
 						plrs +=", ";
-					plrs += ChatColor.valueOf(paTeams.get(paPlayersTeam.get(sPlayer))) + sPlayer + ChatColor.WHITE;
+					plrs += ChatColor.valueOf((String) paTeams.get(paPlayersTeam.get(sPlayer))) + sPlayer + ChatColor.WHITE;
 				}
 				tellPlayer(player, PVPArena.lang.parse("players") + ": " + plrs);
 				return true;
@@ -1309,8 +1352,8 @@ public abstract class Arena {
 
 					tpPlayerToCoordName(player, args[0] + "lounge");
 					paPlayersTeam.put(player.getName(), args[0]);
-					tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf(paTeams.get(args[0])) + args[0]));
-					tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf(paTeams.get(args[0])) + args[0]));
+					tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
+					tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
 					
 				} else {
 					tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
@@ -1369,7 +1412,7 @@ public abstract class Arena {
 			String team[] = StatsManager.getTeamStats(args[1], this).split(";");
 			int i = 0;
 			for (String sTeam : paTeams.keySet())
-				player.sendMessage(PVPArena.lang.parse("teamstat", ChatColor.valueOf(paTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
+				player.sendMessage(PVPArena.lang.parse("teamstat", ChatColor.valueOf((String) paTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("users")) {
 			// wins are suffixed with "_"
@@ -1425,15 +1468,24 @@ public abstract class Arena {
 			return false;
 		}
 
-		Configuration config = new Configuration(new File("plugins/pvparena", "config_" + name + ".yml"));
-		config.load();
+		File f = new File("plugins/pvparena", "config_" + name + ".yml");
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(f);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		};
 		
 		if (args[1].equalsIgnoreCase("set")) {
 			if (!Arena.regionmodify.equals("")) {
 				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", Arena.regionmodify));
 				return true;
 			}
-			if (config.getKeys("protection.region") == null) {
+			if (config.get("protection.region") == null) {
 				Arena.regionmodify = name;
 				tellPlayer(player, PVPArena.lang.parse("regionset"));
 			} else {
@@ -1445,7 +1497,7 @@ public abstract class Arena {
 				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", Arena.regionmodify));
 				return true;
 			}
-			if (config.getKeys("protection.region") != null) {
+			if (config.get("protection.region") != null) {
 				Arena.regionmodify = name;
 				tellPlayer(player, PVPArena.lang.parse("regionmodify"));
 			} else {
@@ -1459,24 +1511,28 @@ public abstract class Arena {
 			if ((pos1 == null) || (pos2 == null)) {
 				tellPlayer(player, PVPArena.lang.parse("set2points"));
 			} else {
-				config.setProperty("protection.region.min",
-						getMinimumPoint().getX() + ", "
-								+ getMinimumPoint().getY() + ", "
-								+ getMinimumPoint().getZ());
-				config.setProperty("protection.region.max",
-						getMaximumPoint().getX() + ", "
-								+ getMaximumPoint().getY() + ", "
-								+ getMaximumPoint().getZ());
-				config.setProperty("protection.region.world", player
+				Vector v1 = pos1.toVector();
+				Vector v2 = pos2.toVector();
+				config.set("protection.region.min", v1.getX() + ", " + v1.getY() + ", " + v1.getZ());
+				config.set("protection.region.max", v2.getX() + ", " + v2.getY() + ", " + v2.getZ());
+				config.set("protection.region.world", player
 						.getWorld().getName());
-				config.save();
+				try {
+					config.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				Arena.regionmodify = "";
 				tellPlayer(player, PVPArena.lang.parse("regionsaved"));
 			}
 		} else if (args[1].equalsIgnoreCase("remove")) {
-			if (config.getKeys("protection.region") != null) {
-				config.removeProperty("protection.region");
-				config.save();
+			if (config.get("protection.region") != null) {
+				config.set("protection.region", null);
+				try {
+					config.save(f);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				Arena.regionmodify = "";
 				tellPlayer(player, PVPArena.lang.parse("regionremoved"));
 			} else {
@@ -1495,6 +1551,7 @@ public abstract class Arena {
 	 * prepare a player by saving player values and setting every variable to starting values
 	 */
 	public void prepare(Player player) {
+		db.i("preparing player: " + player.getName());
 		saveInventory(player);
 		clearInventory(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
@@ -1513,9 +1570,13 @@ public abstract class Arena {
 		if (joinRange < 1)
 			return false;
 		
+		if (pos1 == null || pos2 == null)
+			return false;
+		
 		if (!this.pos1.getWorld().equals(player.getWorld()))
 			return true;
-		
+
+		db.i("checking join range");
 		Vector bvmin = this.pos1.toVector();
 		Vector bvmax = this.pos2.toVector();
 		Vector bvdiff = (BlockVector) bvmin.getMidpoint(bvmax);
@@ -1531,6 +1592,7 @@ public abstract class Arena {
 	 */
 	boolean parseAdminCommand(String[] args, Player player) {
 
+		db.i("parsing admin command: "+db.formatStringArray(args));
 		if (args[0].equalsIgnoreCase("spectator")) {
 			setCoords(player, "spectator");
 			tellPlayer(player, PVPArena.lang.parse("setspectator"));
@@ -1602,14 +1664,16 @@ public abstract class Arena {
 	 * tell everyone on the server
 	 */
 	public static void tellPublic(String msg) {
-		Bukkit.getServer().broadcastMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+		db.i("broadcast: "+msg);
+		Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 	}
 
 	/*
 	 * tell a specific player
 	 */
 	public static void tellPlayer(Player player, String msg) {
-		player.sendMessage(PVPArena.lang.parse("msgprefix") + ChatColor.WHITE + msg);
+		db.i("@" + player.getName() + ": "+msg);
+		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 	}
 
 	/*
@@ -1730,6 +1794,10 @@ public abstract class Arena {
 	 * commit the Powerup item spawn
 	 */
 	private void commitPowerupItemSpawn(Material item) {
+		db.i("dropping item?");
+		if (pos1 == null || pos2 == null)
+			return;
+		
 		db.i("dropping item");
 		int diffx = (int) (pos1.getX() - pos2.getX());
 		int diffy = (int) (pos1.getY() - pos2.getY());
@@ -1772,36 +1840,50 @@ public abstract class Arena {
 	 */
 	public void setCoords(Player player, String place) {
 		Location location = player.getLocation();
-		Configuration config = new Configuration(configFile);
-		config.load();
-		config.setProperty("coords." + place + ".world", location.getWorld()
-				.getName());
-		config.setProperty("coords." + place + ".x",
-				Double.valueOf(location.getX()));
-		config.setProperty("coords." + place + ".y",
-				Double.valueOf(location.getY()));
-		config.setProperty("coords." + place + ".z",
-				Double.valueOf(location.getZ()));
-		config.setProperty("coords." + place + ".yaw",
-				Float.valueOf(location.getYaw()));
-		config.setProperty("coords." + place + ".pitch",
-				Float.valueOf(location.getPitch()));
-		config.save();
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
+		config.set("coords." + place + ".world", location.getWorld().getName());
+		config.set("coords." + place + ".x",Double.valueOf(location.getX()));
+		config.set("coords." + place + ".y",Double.valueOf(location.getY()));
+		config.set("coords." + place + ".z",Double.valueOf(location.getZ()));
+		config.set("coords." + place + ".yaw",Float.valueOf(location.getYaw()));
+		config.set("coords." + place + ".pitch",Float.valueOf(location.getPitch()));
+		try {
+			config.save(configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/*
 	 * get location from place
 	 */
-	@SuppressWarnings("unchecked")
 	public Location getCoords(String place) {
-		Configuration config = new Configuration(configFile);
-		config.load();
+		
+		YamlConfiguration config = new YamlConfiguration();
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 		
 		if (place.equals("spawn")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
-			HashMap<String, Object> coords = (HashMap<String, Object>) config.getProperty("coords");
+			HashMap<String, Object> coords = (HashMap<String, Object>) config.getConfigurationSection("coords").getValues(false);
 			for (String name : coords.keySet())
 				if (name.startsWith("spawn"))
 					locs.put(i++, name);
@@ -1810,11 +1892,11 @@ public abstract class Arena {
 			
 			place = locs.get(r.nextInt(locs.size()));
 		}
-		Double x = Double.valueOf(config.getDouble("coords." + place + ".x", 0.0D));
-		Double y = Double.valueOf(config.getDouble("coords." + place + ".y", 0.0D));
-		Double z = Double.valueOf(config.getDouble("coords." + place + ".z", 0.0D));
-		Float yaw = new Float(config.getString("coords." + place + ".yaw"));
-		Float pitch = new Float(config.getString("coords." + place + ".pitch"));
+		Double x = config.getDouble("coords." + place + ".x", 0.0D);
+		Double y = config.getDouble("coords." + place + ".y", 0.0D);
+		Double z = config.getDouble("coords." + place + ".z", 0.0D);
+		Float yaw = (float) config.getDouble("coords." + place + ".yaw");
+		Float pitch = (float) config.getDouble("coords." + place + ".pitch");
 		World world = Bukkit.getServer().getWorld(config.getString("coords." + place + ".world"));
 		return new Location(world, x.doubleValue(), y.doubleValue(),z.doubleValue(), yaw.floatValue(), pitch.floatValue());
 	}
@@ -1830,7 +1912,7 @@ public abstract class Arena {
 		player.setSaturation(20);
 		player.setExhaustion(0);
 		String sTeam = paPlayersTeam.get(player.getName());
-		String color = paTeams.get(sTeam);
+		String color = (String) paTeams.get(sTeam);
 		if (!randomSpawn && color != null && !paPlayersTeam.get(player.getName()).equals("free")) {
 			tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW, String.valueOf(lives)));
 			tpPlayerToCoordName(player, sTeam + "spawn");
@@ -1847,12 +1929,13 @@ public abstract class Arena {
 	public boolean checkRegions() {
 		if (!this.checkRegions)
 			return true;
+		db.i("checking regions");
 		
 		return ArenaManager.checkRegions(this);
 	}
 
 	public boolean checkRegion(Arena arena) {
-		if (arena.pos1 != null && arena.pos1.getWorld().equals(this.pos1.getWorld()))
+		if (pos1 != null && arena.pos1 != null && arena.pos1.getWorld().equals(this.pos1.getWorld()))
 			return !arena.contains(pos1.toVector().midpoint(pos2.toVector()));
 		
 		return true;

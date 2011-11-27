@@ -109,6 +109,7 @@ public class ArenaManager {
 	 */
 	public static void load_arenas() {
 		int done = 0;
+		db.i("loading arenas...");
 		try {
 			File path = new File("plugins/pvparena");
 			File[] f = path.listFiles();
@@ -117,6 +118,7 @@ public class ArenaManager {
 				if(!f[i].isDirectory() && f[i].getName().contains("config_")) {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
+					db.i("standard arena: "+sName);
 					loadArena(sName,"");
 					done++;
 	            }
@@ -125,6 +127,7 @@ public class ArenaManager {
 				if(!f[i].isDirectory() && f[i].getName().contains("config.free_")) {
 					String sName = f[i].getName().replace("config.free_", "");
 					sName = sName.replace(".yml", "");
+					db.i("free arena: "+sName);
 					loadArena(sName,"free");
 					done++;
 	            }
@@ -133,6 +136,7 @@ public class ArenaManager {
 				if(!f[i].isDirectory() && f[i].getName().contains("config.ctf_")) {
 					String sName = f[i].getName().replace("config.ctf_", "");
 					sName = sName.replace(".yml", "");
+					db.i("ctf arena: " +sName);
 					loadArena(sName,"ctf");
 					done++;
 	            }

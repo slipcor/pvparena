@@ -7,15 +7,16 @@ import net.slipcor.pvparena.PVPArena;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
  */
 
 public class DebugManager {
-	private boolean active = false;
+	public static boolean active;
 	
 	/*
 	 * info log
@@ -42,5 +43,18 @@ public class DebugManager {
 		if (!active)
 			return;
 		PVPArena.instance.log.severe(s);
+	}
+	
+	/*
+	 * read a string array and return a readable string
+	 */
+	public String formatStringArray(String[] s) {
+		if (s == null)
+			return "NULL";
+		String result = "";
+		for (int i=0; i<s.length; i++) {
+			result = result + (result.equals("")?"":",") + s[i];
+		}
+		return result;
 	}
 }
