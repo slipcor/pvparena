@@ -1232,16 +1232,12 @@ public abstract class Arena {
 			
 			prepare(player);
 			paPlayersLives.put(player.getName(), (byte) maxLives);
-			
-			if (isInventoryEmpty(player)) {
-				if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
-					MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
-					ma.subtract(entryFee);
-				}
-				chooseColor(player);
-			} else {
-				tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
+			if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
+				MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
+				ma.subtract(entryFee);
 			}
+			chooseColor(player);
+			prepareInventory(player);
 			return true;
 		}
 
@@ -1344,20 +1340,16 @@ public abstract class Arena {
 				prepare(player);
 				paPlayersLives.put(player.getName(), (byte) maxLives);
 				
-				if (isInventoryEmpty(player)) {
-					if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
-						MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
-						ma.subtract(entryFee);
-					}
-
-					tpPlayerToCoordName(player, args[0] + "lounge");
-					paPlayersTeam.put(player.getName(), args[0]);
-					tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
-					tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
-					
-				} else {
-					tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
+				if ((PVPArena.getMethod() != null) && (entryFee > 0)) {
+					MethodAccount ma = PVPArena.getMethod().getAccount(player.getName());
+					ma.subtract(entryFee);
 				}
+
+				tpPlayerToCoordName(player, args[0] + "lounge");
+				paPlayersTeam.put(player.getName(), args[0]);
+				tellPlayer(player, PVPArena.lang.parse("youjoined", ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
+				tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined", player.getName(), ChatColor.valueOf((String) paTeams.get(args[0])) + args[0]));
+				
 			} else if (PVPArena.hasAdminPerms(player)) {
 				return parseAdminCommand(args, player);
 			} else {
@@ -1552,8 +1544,6 @@ public abstract class Arena {
 	 */
 	public void prepare(Player player) {
 		db.i("preparing player: " + player.getName());
-		saveInventory(player);
-		clearInventory(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
 		player.setHealth(20);
 		player.setFireTicks(0);
@@ -1561,6 +1551,14 @@ public abstract class Arena {
 		player.setSaturation(20);
 		player.setExhaustion(0);
 		player.setGameMode(GameMode.getByValue(0));
+	}
+	
+	/*
+	 * prepare a player inventory for arena start
+	 */
+	private void prepareInventory(Player player) {
+		saveInventory(player);
+		clearInventory(player);
 	}
 	
 	/*
@@ -1685,27 +1683,6 @@ public abstract class Arena {
 		player.getInventory().setBoots(null);
 		player.getInventory().setChestplate(null);
 		player.getInventory().setLeggings(null);
-	}
-
-    /*
-     * returns "player inventory is empty"
-     */
-	public static boolean isInventoryEmpty(Player player) {
-		ItemStack[] invContents = player.getInventory().getContents();
-		ItemStack[] armContents = player.getInventory().getArmorContents();
-		int invNullCounter = 0;
-		int armNullCounter = 0;
-		for (int i = 0; i < invContents.length; ++i) {
-			if (invContents[i] == null) {
-				++invNullCounter;
-			}
-		}
-		for (int i = 0; i < armContents.length; ++i) {
-			if (armContents[i].getType() == Material.AIR) {
-				++armNullCounter;
-			}
-		}
-		return ((invNullCounter == invContents.length) && (armNullCounter == armContents.length));
 	}
 
 	/*
