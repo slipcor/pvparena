@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.listeners;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
@@ -272,6 +271,9 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null || arena.fightInProgress)
 			return; // not fighting or fight already in progress => OUT
 		
+		// fighting player inside the lobby!
+		event.setCancelled(true); // 
+		
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
 			if (block.getState() instanceof Sign) {
@@ -283,7 +285,7 @@ public class PAPlayerListener extends PlayerListener {
 					
 					YamlConfiguration config = new YamlConfiguration();
 					try {
-						config.load(new File("plugins/pvparena","config_" + arena.name + ".yml"));
+						config.load(arena.configFile);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -385,7 +387,7 @@ public class PAPlayerListener extends PlayerListener {
 			
 			YamlConfiguration config = new YamlConfiguration();
 			try {
-				config.load(new File("plugins/pvparena","config_" + arena.name + ".yml"));
+				config.load(arena.configFile);
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			} catch (IOException e1) {
@@ -398,16 +400,21 @@ public class PAPlayerListener extends PlayerListener {
 				db.i("reading ready block");
 				try {
 					mMat = Material.getMaterial(config.getInt("general.readyblock"));
+					if (mMat == Material.AIR)
+						mMat = Material.getMaterial(config.getString("general.readyblock"));
+					db.i("mMat now is "+mMat.name());
 				} catch (Exception e) {
+					db.i("exception reading ready block");
 					String sMat = config.getString("general.readyblock");
 					try {
 						mMat = Material.getMaterial(sMat);
+						db.i("mMat now is "+mMat.name());
 					} catch (Exception e2) {
 						PVPArena.lang.log_warning("matnotfound", sMat);
 					}
 				}
 			}
-
+			db.i("clicked "+block.getType().name()+", is it "+mMat.name()+"?");
 			if (block.getTypeId() == mMat.getId()) {	
 				db.i("clicked ready block!");			
 				if (!arena.paPlayersTeam.containsKey(player.getName()))

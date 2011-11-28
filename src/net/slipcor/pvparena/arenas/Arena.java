@@ -119,7 +119,7 @@ public abstract class Arena {
 	protected int maxLives;
 	protected String sTPwin;
 	protected String sTPlose;
-	protected File configFile;
+	public File configFile;
 	protected boolean forceWoolHead;
 	
 	/*******************
