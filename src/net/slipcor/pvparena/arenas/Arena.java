@@ -158,8 +158,6 @@ public abstract class Arena {
 	private final HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 	public final HashMap<String, PARegion> regions = new HashMap<String, PARegion>();
 	
-	protected PVPArena plugin;
-	
 	private String rewardItems;
 	private int entryFee;
 	private int rewardAmount;
@@ -204,8 +202,7 @@ public abstract class Arena {
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public Arena(String name, PVPArena plugin) {
-		this.plugin = plugin;
+	public Arena(String name) {
 		this.name = name;
 		
 		db.i("loading Arena "+name);
@@ -226,8 +223,7 @@ public abstract class Arena {
 	 * 
 	 * used by the child arena types
 	 */
-	public Arena(PVPArena plugin) {
-		this.plugin = plugin;
+	public Arena() {
 	}
 
 	/*
@@ -705,7 +701,7 @@ public abstract class Arena {
 		if (timed > 0) {
 			db.i("arena timing!");
 		    // initiate autosave timer
-		    END_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin,new TimedEndRunnable(this),timed*20,timed*20);
+		    END_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,new TimedEndRunnable(this),timed*20,timed*20);
 		}
 		db.i("teleported everyone!");
 		if (usesPowerups) {
@@ -714,7 +710,7 @@ public abstract class Arena {
 				db.i("powerup time trigger!");
 				powerupDiff = powerupDiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
-			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin,new PowerupRunnable(this),powerupDiff,powerupDiff);
+			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,new PowerupRunnable(this),powerupDiff,powerupDiff);
 			}
 		}
 		
@@ -1346,7 +1342,7 @@ public abstract class Arena {
 					tellPlayer(player, PVPArena.lang.parse("nopermto", PVPArena.lang.parse("reload")));
 					return true;
 				}
-				plugin.load_config();
+				PVPArena.instance.load_config();
 				tellPlayer(player, PVPArena.lang.parse("reloaded"));
 				return true;
 			} else if (args[0].equalsIgnoreCase("list")) {

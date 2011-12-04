@@ -73,12 +73,11 @@ public class PAEntityListener extends EntityListener {
 				} else {
 					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 				}
+				
 				StatsManager.addLoseStat(player, sTeam, arena);
 				arena.paPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.paPlayersRespawn.put(player.getName(), arena.paPlayersClass.get(player.getName()));
-				
-				
-					
+
 				if (arena instanceof CTFArena) {
 					CTFArena ca = (CTFArena) arena;
 					db.i("ctf arena");
@@ -201,6 +200,7 @@ public class PAEntityListener extends EntityListener {
 			byte lives = 3;
 
 			lives = arena.paPlayersLives.get(defender.getName());
+			db.i("lives before death: "+lives);
 			if (lives < 1) {
 				return; // player died
 			} else if (lives > 0) {

@@ -46,11 +46,10 @@ public class CTFArena extends Arena{
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public CTFArena(String sName, PVPArena p) {
-		super(p);
+	public CTFArena(String sName) {
+		super();
 
 		this.name = sName;
-		this.plugin = p;
 		this.configFile = new File("plugins/pvparena/config.ctf_" + name + ".yml");
 
 		db.i("loading CTF Arena "+name);
@@ -275,9 +274,11 @@ public class CTFArena extends Arena{
 	 */
 	public void checkEntityDeath(Player player) {
 		String flagTeam = getHeldFlagTeam(player.getName());
-		String scFlagTeam = ChatColor.valueOf((String) paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-		String scPlayer = ChatColor.valueOf((String) paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
-		PVPArena.lang.parse("flagsave",scPlayer, scFlagTeam);
-		paTeamFlags.remove(flagTeam);
+		if (flagTeam != null) {
+			String scFlagTeam = ChatColor.valueOf((String) paTeams.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
+			String scPlayer = ChatColor.valueOf((String) paTeams.get(paPlayersTeam.get(player.getName()))) + player.getName() + ChatColor.YELLOW;
+			PVPArena.lang.parse("flagsave",scPlayer, scFlagTeam);
+			paTeamFlags.remove(flagTeam);
+		}
 	}
 }

@@ -4,8 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArena;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,8 +33,8 @@ public class TeamArena extends Arena {
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public TeamArena(String sName, PVPArena plugin) {
-		super(sName, plugin);
+	public TeamArena(String sName) {
+		super(sName);
 		
 		YamlConfiguration config = new YamlConfiguration();
 		try {

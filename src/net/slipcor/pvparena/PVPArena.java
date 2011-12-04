@@ -31,10 +31,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.11 - set regions for lounges, spectator, exit
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes, Cleanup

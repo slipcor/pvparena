@@ -42,11 +42,10 @@ public class FreeArena extends Arena{
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public FreeArena(String sName, PVPArena p) {
-		super(p);
+	public FreeArena(String sName) {
+		super();
 
 		this.name = sName;
-		this.plugin = p;
 		this.configFile = new File("plugins/pvparena/config.free_" + name + ".yml");
 		
 		new File("plugins/pvparena").mkdir();

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.TeamArena;
@@ -19,10 +18,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.11 - set regions for lounges, spectator, exit
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
@@ -34,15 +34,7 @@ import org.bukkit.util.Vector;
 
 public class ArenaManager {
 	static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	private static PVPArena plugin;
 	private static DebugManager db = new DebugManager();
-	
-	/*
-	 * ArenaManager constructor, hand over plugin
-	 */
-	public ArenaManager(PVPArena plugin) {
-		ArenaManager.plugin = plugin;
-	}
 	
 	/*
 	 * load arena with given name and type
@@ -51,11 +43,11 @@ public class ArenaManager {
 		Arena arena;
 		db.i("loading arena " + configFile + " (" + type + ")");
 		if (type.equals("free"))
-			arena = new FreeArena(configFile, plugin);
+			arena = new FreeArena(configFile);
 		else if (type.equals("ctf"))
-			arena = new CTFArena(configFile, plugin);
+			arena = new CTFArena(configFile);
 		else
-			arena = new TeamArena(configFile, plugin);
+			arena = new TeamArena(configFile);
 		
 		arenas.put(arena.name, arena);
 	}
