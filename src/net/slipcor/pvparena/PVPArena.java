@@ -77,6 +77,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		PVPArena.instance = this;
+		com.arandomappdev.bukkitstats.CallHome.load(this);
 		setupPermissions();
 		PluginDescriptionFile pdfFile = getDescription();
 

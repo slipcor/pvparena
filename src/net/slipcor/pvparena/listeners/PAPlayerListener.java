@@ -261,6 +261,9 @@ public class PAPlayerListener extends PlayerListener {
 				}
 			}
 		}
+		db.i("arena: "+(arena == null?null:arena.name));
+		db.i("fight: "+arena.fightInProgress);
+		db.i("instanceof: "+(arena instanceof CTFArena));
 		if (arena != null && arena.fightInProgress && (arena instanceof CTFArena)) {
 			db.i("onInteract: CTF");
 			CTFArena ca = (CTFArena) arena;

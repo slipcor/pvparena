@@ -23,10 +23,11 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
+ * version: v0.3.12 - set flag positions
  * 
  * history:
  *
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
@@ -37,6 +38,7 @@ import net.slipcor.pvparena.managers.StatsManager;
 public class CTFArena extends Arena{
 	private HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags "lives"
 	private HashMap<String, String> paTeamFlags = new HashMap<String, String>(); // carried flags
+	
 	/*
 	 * ctf constructor
 	 * 
@@ -87,9 +89,61 @@ public class CTFArena extends Arena{
 	 */
 	@Override
 	public boolean checkEndAndCommit() {
+		if (paPlayersTeam.size() < 2) {
+			String team = "$%&/";
+			if (paPlayersTeam.size() != 0)
+				for (String t : paPlayersTeam.values()) {
+					team = t;
+					break;
+				}
+			CommitEnd(team);
+		}
 		return false;
 	}
 	
+	private void CommitEnd(String team) {
+		Set<String> set = paPlayersTeam.keySet();
+		Iterator<String> iter = set.iterator();
+		if (!team.equals("$%&/")) {
+			while (iter.hasNext()) {
+				Object o = iter.next();
+				db.i("precessing: "+o.toString());
+				Player z = Bukkit.getServer().getPlayer(o.toString());
+				if (paPlayersTeam.get(z.getName()).equals(team)) {
+					StatsManager.addLoseStat(z, team, this);
+					resetPlayer(z, sTPlose);
+					paPlayersClass.remove(z.getName());
+				}
+			}
+			
+			if (paTeamLives.size() > 1) {
+				return;
+			}
+		}
+		
+		String winteam = "";
+		set = paPlayersTeam.keySet();
+		iter = set.iterator();
+		while (iter.hasNext()) {
+			Object o = iter.next();
+			db.i("praecessing: "+o.toString());
+			Player z = Bukkit.getServer().getPlayer(o.toString());
+
+			if (paTeamLives.containsKey(paPlayersTeam.get(z.getName()))) {
+				StatsManager.addWinStat(z, team, this);
+				resetPlayer(z, sTPwin);
+				giveRewards(z); // if we are the winning team, give reward!
+				paPlayersClass.remove(z.getName());
+				winteam = paPlayersTeam.get(z.getName());
+			}
+		}
+		
+		tellEveryone(PVPArena.lang.parse("teamhaswon",ChatColor.valueOf((String) paTeams.get(winteam)) + "Team " + winteam));
+		
+		paTeamLives.clear();
+		reset();
+	}
+
 	/*
 	 * for every active team: add lives entry
 	 */
@@ -116,47 +170,24 @@ public class CTFArena extends Arena{
 				paTeamLives.put(team, i);
 			} else {
 				paTeamLives.remove(team);
-				Set<String> set = paPlayersTeam.keySet();
-				Iterator<String> iter = set.iterator();
-				while (iter.hasNext()) {
-					Object o = iter.next();
-					db.i("precessing: "+o.toString());
-					Player z = Bukkit.getServer().getPlayer(o.toString());
-					if (paPlayersTeam.get(z.getName()).equals(team)) {
-						StatsManager.addLoseStat(z, team, this);
-						resetPlayer(z, sTPlose);
-						paPlayersClass.remove(z.getName());
-					}
-				}
-				
-				if (paTeamLives.size() > 1) {
-					return;
-				}
-				String winteam = "";
-				set = paPlayersTeam.keySet();
-				iter = set.iterator();
-				while (iter.hasNext()) {
-					Object o = iter.next();
-					db.i("praecessing: "+o.toString());
-					Player z = Bukkit.getServer().getPlayer(o.toString());
-
-					if (paTeamLives.containsKey(paPlayersTeam.get(z.getName()))) {
-						StatsManager.addWinStat(z, team, this);
-						resetPlayer(z, sTPwin);
-						giveRewards(z); // if we are the winning team, give reward!
-						paPlayersClass.remove(z.getName());
-						winteam = paPlayersTeam.get(z.getName());
-					}
-				}
-				
-				tellEveryone(PVPArena.lang.parse("haswon",ChatColor.valueOf((String) paTeams.get(winteam)) + "Team " + winteam));
-				
-				paTeamLives.clear();
-				reset();
+				CommitEnd(team);
 			}
 		}
 	}
-	
+
+	@Override
+	public boolean isCustomCommand(String[] args, Player player) {
+		if (args[0].endsWith("flag")) {
+			String sName = args[0].replace("flag", "");
+			if (paTeams.get(sName) == null)
+				return false;
+
+			setCoords(player, args[0]);
+			tellPlayer(player, PVPArena.lang.parse("setflag", sName));
+			return true;
+		}
+		return false;
+	}
 	/*
 	 * check the interaction of a player
 	 * 
@@ -169,15 +200,21 @@ public class CTFArena extends Arena{
 		Vector vLoc;
 		String sTeam;
 		Vector vSpawn;
+		Vector vFlag=null;
 		
 		if (paTeamFlags.containsValue(player.getName())) {
 			db.i("player " + player.getName() + " has got a flag");
 			vLoc = player.getLocation().toVector();
 			sTeam = paPlayersTeam.get(player.getName());
 			vSpawn = this.getCoords(sTeam + "spawn").toVector();
+			if (this.getCoords(sTeam + "flag") != null) {
+				vFlag = this.getCoords(sTeam + "flag").toVector();
+			} else {
+				db.i(sTeam+"flag" + " = null");
+			}
 
 			db.i("player is in the team "+sTeam);
-			if (vLoc.distance(vSpawn) < 2) {
+			if ((vLoc.distance(vSpawn) < 2) || (vFlag != null && vLoc.distance(vFlag) < 2)) {
 
 				db.i("player is at his spawn");
 				String flagTeam = getHeldFlagTeam(player.getName());
@@ -202,6 +239,9 @@ public class CTFArena extends Arena{
 				db.i("checking for spawn of team " + team);
 				vLoc = player.getLocation().toVector();
 				vSpawn = this.getCoords(team + "spawn").toVector();
+				if (this.getCoords(team + "flag") != null) {
+					vFlag = this.getCoords(team + "flag").toVector();
+				}
 				if (vLoc.distance(vSpawn) < 2) {
 					db.i("spawn found!");
 					String scTeam = ChatColor.valueOf((String) paTeams.get(team)) + team + ChatColor.YELLOW;

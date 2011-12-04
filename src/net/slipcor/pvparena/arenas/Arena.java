@@ -38,7 +38,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 /*
@@ -46,10 +45,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.11 - set regions for lounges, spectator, exit
+ * version: v0.3.12 - set flag positions
  * 
  * history:
  *
+ *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
@@ -1597,7 +1597,7 @@ public abstract class Arena {
 
 	private boolean checkRegionCommand(String s) {
 		db.i("checking region command: "+s);
-		if (s.equals("exit") || s.equals("spectator")) {
+		if (s.equals("exit") || s.equals("spectator") || s.equals("battlefield")) {
 			return true;
 		}
 		if (this instanceof CTFArena) {
@@ -1652,7 +1652,7 @@ public abstract class Arena {
 		db.i("checking join range");
 		Vector bvmin = regions.get("battlefield").getMin().toVector();
 		Vector bvmax = regions.get("battlefield").getMax().toVector();
-		Vector bvdiff = (BlockVector) bvmin.getMidpoint(bvmax);
+		Vector bvdiff = (Vector) bvmin.getMidpoint(bvmax);
 		
 		return (joinRange < bvdiff.distance(player.getLocation().toVector()));
 	}
@@ -1691,13 +1691,17 @@ public abstract class Arena {
 			tellPlayer(player, PVPArena.lang.parse("setspawn", args[0]));
 		} else {
 			// no random or not trying to set custom spawn
-			if ((!isLoungeCommand(args,player)) && (!isSpawnCommand(args, player))) {
+			if ((!isLoungeCommand(args,player)) && (!isSpawnCommand(args, player)) && (!isCustomCommand(args,player))) {
 				tellPlayer(player, PVPArena.lang.parse("invalidcmd","501"));
 				return false;
 			}
 			// else: command lounge or spawn :)
 		}
 		return true;
+	}
+
+	public boolean isCustomCommand(String[] args, Player player) {
+		return false;
 	}
 
 	/*
@@ -1921,7 +1925,7 @@ public abstract class Arena {
 	 * get location from place
 	 */
 	public Location getCoords(String place) {
-		
+		db.i("get coords: "+place);
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);
@@ -1946,6 +1950,8 @@ public abstract class Arena {
 			
 			place = locs.get(r.nextInt(locs.size()));
 		}
+		if (config.get("coords." + place) == null)
+			return null;
 		Double x = config.getDouble("coords." + place + ".x", 0.0D);
 		Double y = config.getDouble("coords." + place + ".y", 0.0D);
 		Double z = config.getDouble("coords." + place + ".z", 0.0D);

@@ -141,6 +141,7 @@ public class LanguageManager {
 		config.addDefault("lang.youjoinedfree","Welcome to the FreeFight Arena");
 		config.addDefault("lang.playerjoinedfree","%1% has joined the FreeFight Arena");
 		config.addDefault("lang.setspawn","Spawn set: %1%");
+		config.addDefault("lang.setflag","Flag set: %1%");
 		config.addDefault("lang.setlounge","Lounge set.");
 		config.addDefault("lang.selectteam","You must select a team to join! /pa [arenaname] [team]");
 		config.addDefault("lang.notselectteam","You cannot select a team to join! /pa [arenaname]");
