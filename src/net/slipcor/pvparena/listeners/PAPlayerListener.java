@@ -36,10 +36,11 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
+ * version: v0.3.13 - Telepass via Permission
  * 
  * history:
  *
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
@@ -185,7 +186,7 @@ public class PAPlayerListener extends PlayerListener {
 		db.i("onPlayerTeleport: fighting player (uncancel)");
 		event.setCancelled(false); // fighting player - first recon NOT to cancel!
 		
-		if (arena.paPlayersTelePass.containsKey(player.getName()))
+		if (arena.paPlayersTelePass.containsKey(player.getName()) || PVPArena.hasPerms(player, "pvparena.telepass"))
 			return; // if allowed => OUT
 
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
