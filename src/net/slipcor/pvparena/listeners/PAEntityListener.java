@@ -27,10 +27,11 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.11 - set regions for lounges, spectator, exit
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
@@ -76,12 +77,60 @@ public class PAEntityListener extends EntityListener {
 				arena.paPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
 				arena.paPlayersRespawn.put(player.getName(), arena.paPlayersClass.get(player.getName()));
 				
+				
+					
 				if (arena instanceof CTFArena) {
 					CTFArena ca = (CTFArena) arena;
 					db.i("ctf arena");
 					ca.checkEntityDeath(player);
 				}
 				
+				if (arena.timed > 0) {
+					db.i("timed areda!");
+					Player damager = null;
+					
+					if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+						try {
+							EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) event.getEntity().getLastDamageCause();
+							damager = (Player) ee.getDamager();
+							db.i("damager found");
+						} catch (Exception ex) {
+							
+						}
+					}
+					String sKiller = "";
+					String sKilled = "";
+					if (arena instanceof CTFArena) {
+						db.i("timed ctf arena");
+						sKilled = player.getName();
+						if (damager != null) {
+							sKiller = damager.getName();
+							db.i("killer: " + sKiller);
+						}
+					} else {
+						sKilled = arena.paPlayersTeam.get(player.getName());
+						if (damager != null) {
+							sKiller = arena.paPlayersTeam.get(damager.getName());
+						}
+					}
+					if (damager != null) {
+						if (arena.paKills.containsKey(sKiller)) {
+							db.i("killer killed already");
+							arena.paKills.put(sKiller, arena.paKills.get(sKiller));
+						} else {
+							db.i("first kill");
+							arena.paKills.put(sKiller, 1);
+						}
+					}
+					
+					if (arena.paDeaths.containsKey(sKilled)) {
+						db.i("already died");
+						arena.paDeaths.put(sKilled, arena.paDeaths.get(sKilled));
+					} else {
+						db.i("first death");
+						arena.paDeaths.put(sKilled, 1);
+					}
+				}
 				if (arena.usesPowerups) {
 					if (arena.powerupCause.equals("death")) {
 						db.i("calculating powerup trigger death");

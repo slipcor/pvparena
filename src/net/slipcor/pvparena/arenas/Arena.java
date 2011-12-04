@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,10 +46,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.12 - set flag positions
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.12 - set flag positions
  *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
@@ -83,6 +85,8 @@ public abstract class Arena {
 	public final HashMap<String, String> paPlayersRespawn = new HashMap<String, String>();
 	public final HashMap<String, String> paPlayersTelePass = new HashMap<String, String>();
 	public final HashMap<String, Byte> paPlayersLives = new HashMap<String, Byte>();
+	public final HashMap<String, Integer> paKills = new HashMap<String, Integer>();
+	public final HashMap<String, Integer> paDeaths = new HashMap<String, Integer>();
 	
 	public Map<String, Object> paTeams = new HashMap<String, Object>();
 	public PowerupManager pm;
@@ -114,7 +118,10 @@ public abstract class Arena {
 	public boolean checkSpectatorRegion = false;
 	public boolean checkLoungesRegion = false;
 	
-	int SPAWN_ID;
+	public int timed = 0;
+	
+	int SPAWN_ID = -1;
+	int END_ID = -1;
 
 	/*************
 	 * protected *
@@ -138,6 +145,8 @@ public abstract class Arena {
 	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
 	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
 	protected static final DebugManager db = new DebugManager();
+
+
 	
 	/************
 	 * privates *
@@ -149,7 +158,8 @@ public abstract class Arena {
 	private final HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 	public final HashMap<String, PARegion> regions = new HashMap<String, PARegion>();
 	
-	private PVPArena plugin;
+	protected PVPArena plugin;
+	
 	private String rewardItems;
 	private int entryFee;
 	private int rewardAmount;
@@ -197,7 +207,8 @@ public abstract class Arena {
 	public Arena(String name, PVPArena plugin) {
 		this.plugin = plugin;
 		this.name = name;
-		db.i("loading arena "+name);
+		
+		db.i("loading Arena "+name);
 
 		new File("plugins/pvparena").mkdir();
 		configFile = new File("plugins/pvparena/config_" + name + ".yml");
@@ -215,7 +226,9 @@ public abstract class Arena {
 	 * 
 	 * used by the child arena types
 	 */
-	public Arena() { }
+	public Arena(PVPArena plugin) {
+		this.plugin = plugin;
+	}
 
 	/*
 	 * parse the arena config
@@ -273,6 +286,7 @@ public abstract class Arena {
 		config.addDefault("protection.checkLoungesRegion", Boolean.valueOf(false));
 
 		config.addDefault("general.randomSpawn",Boolean.valueOf(false));
+		config.addDefault("general.timed",Integer.valueOf(0));
 
 		config.addDefault("general.joinrange", Integer.valueOf(0));
 		config.addDefault("general.powerups", "off"); // off | death:[diff] | time:[diff]
@@ -368,6 +382,7 @@ public abstract class Arena {
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		forceEven = config.getBoolean("general.forceeven", false);
 		randomSpawn = config.getBoolean("general.randomSpawn", false);
+		timed = config.getInt("general.timed", 0);
 
 		if (config.getConfigurationSection("protection.regions") != null) {
 			Map<String, Object> regs = config.getConfigurationSection("protection.regions").getValues(false);
@@ -686,6 +701,12 @@ public abstract class Arena {
 			}
 		}
 		init_arena();
+		
+		if (timed > 0) {
+			db.i("arena timing!");
+		    // initiate autosave timer
+		    END_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin,new TimedEndRunnable(this),timed*20,timed*20);
+		}
 		db.i("teleported everyone!");
 		if (usesPowerups) {
 			db.i("using powerups : " + powerupCause + " : " + powerupDiff);
@@ -693,7 +714,7 @@ public abstract class Arena {
 				db.i("powerup time trigger!");
 				powerupDiff = powerupDiff*20; // calculate ticks to seconds
 			    // initiate autosave timer
-			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,new MyRunnable(this),powerupDiff,powerupDiff);
+			    SPAWN_ID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin,new PowerupRunnable(this),powerupDiff,powerupDiff);
 			}
 		}
 		
@@ -958,7 +979,7 @@ public abstract class Arena {
 			Object o = iter.next();
 			
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			if (paPlayersClass.get(z.getName()).equals(team)) {
+			if (paPlayersTeam.get(z.getName()).equals(team)) {
 				StatsManager.addWinStat(z, team, this);
 				resetPlayer(z, sTPwin);
 				giveRewards(z); // if we are the winning team, give reward!
@@ -1108,6 +1129,12 @@ public abstract class Arena {
 		paPlayersLives.clear();
 		paPlayersBetAmount.clear();
 		paSignsLocation.clear();
+		if (SPAWN_ID >-1)
+			Bukkit.getScheduler().cancelTask(SPAWN_ID);
+		SPAWN_ID = -1;
+		if (END_ID >-1)
+			Bukkit.getScheduler().cancelTask(END_ID);
+		END_ID = -1;
 	}
 	
 	/*
@@ -2002,5 +2029,83 @@ public abstract class Arena {
 			return !arena.regions.get("battlefield").contains(regions.get("battlefield").getMin().toVector().midpoint(regions.get("battlefield").getMax().toVector()));
 		
 		return true;
+	}
+
+	public void timedEnd() {
+		int iKills;
+		int iDeaths;
+		
+		int max = -1;
+		HashSet<String> result = new HashSet<String>();
+		
+		for (String sTeam : paTeams.keySet()) {
+			iKills = 0;
+			iDeaths = 0;
+			
+			try {
+				iKills = paKills.get(sTeam);
+			} catch (Exception e) {}
+			
+			try {
+				iDeaths = paDeaths.get(sTeam);
+			} catch (Exception e) {}
+			
+			if ((iKills - iDeaths) > max) {
+				result = new HashSet<String>();
+				result.add(sTeam);
+			} else if ((iKills - iDeaths) == max) {
+				result.add(sTeam);
+			}
+		}
+		
+		for (String team : result) {
+			if (result.contains(team))
+				tellEveryone(PVPArena.lang.parse("teamhaswon",ChatColor.valueOf((String) paTeams.get(team)) + "Team " + team));
+			
+		}
+		
+		Set<String> set = paPlayersTeam.keySet();
+		Iterator<String> iter = set.iterator();
+		while (iter.hasNext()) {
+			Object o = iter.next();
+			
+			Player z = Bukkit.getServer().getPlayer(o.toString());
+			if (result.contains(paPlayersTeam.get(z.getName()))) {
+				StatsManager.addWinStat(z, paPlayersTeam.get(z.getName()), this);
+				resetPlayer(z, sTPwin);
+				giveRewards(z); // if we are the winning team, give reward!
+			} else {
+				StatsManager.addLoseStat(z, paPlayersTeam.get(z.getName()), this);
+				resetPlayer(z, sTPlose);
+			}
+			paPlayersClass.remove(z.getName());
+		}
+
+		if (PVPArena.getMethod() != null) {
+			for (String nKey : paPlayersBetAmount.keySet()) {
+				String[] nSplit = nKey.split(":");
+				
+				if (paTeams.get(nSplit[1]) == null || paTeams.get(nSplit[1]).equals("free"))
+					continue;
+				
+				if (result.contains(nSplit[1])) {
+					double amount = paPlayersBetAmount.get(nKey)*2;
+
+					MethodAccount ma = PVPArena.getMethod().getAccount(nSplit[0]);
+					if (ma == null) {
+						db.s("Account not found: "+nSplit[0]);
+						continue;
+					}
+					ma.add(amount);
+					try {
+						tellPlayer(Bukkit.getPlayer(nSplit[0]), PVPArena.lang.parse("youwon",PVPArena.getMethod().format(amount)));
+					} catch (Exception e) {
+						// nothing
+					}
+				}				
+			}			
+		}	
+		reset();
+		
 	}
 }

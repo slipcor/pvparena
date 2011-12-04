@@ -23,10 +23,11 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.12 - set flag positions
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.12 - set flag positions
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
@@ -45,11 +46,14 @@ public class CTFArena extends Arena{
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public CTFArena(String sName, PVPArena plugin) {
-		super();
+	public CTFArena(String sName, PVPArena p) {
+		super(p);
 
 		this.name = sName;
+		this.plugin = p;
 		this.configFile = new File("plugins/pvparena/config.ctf_" + name + ".yml");
+
+		db.i("loading CTF Arena "+name);
 		
 		new File("plugins/pvparena").mkdir();
 		if (!(configFile.exists()))

@@ -19,10 +19,11 @@ import org.bukkit.entity.Player;
  * 
  * author: slipcor
  * 
- * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
+ * version: v0.3.14 - timed arena modes
  * 
  * history:
  *
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
@@ -41,10 +42,11 @@ public class FreeArena extends Arena{
 	 * - open or create a new configuration file
 	 * - parse the arena config
 	 */
-	public FreeArena(String sName, PVPArena plugin) {
-		super();
+	public FreeArena(String sName, PVPArena p) {
+		super(p);
 
 		this.name = sName;
+		this.plugin = p;
 		this.configFile = new File("plugins/pvparena/config.free_" + name + ".yml");
 		
 		new File("plugins/pvparena").mkdir();
