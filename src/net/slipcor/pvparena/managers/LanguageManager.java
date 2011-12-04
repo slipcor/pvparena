@@ -116,7 +116,6 @@ public class LanguageManager {
 		config.addDefault("lang.invalidamount","Invalid amount: %1%");
 		config.addDefault("lang.beteplaced","Your bet on %1% has been placed.");
 		config.addDefault("lang.regionset","Setting region enabled.");
-		config.addDefault("lang.regionalreadyset","A region has already been created.");
 		config.addDefault("lang.regionmodify","Modifying region enabled.");
 		config.addDefault("lang.noregionset","You must setup a region first.");
 		config.addDefault("lang.set2points","You must set two points first.");

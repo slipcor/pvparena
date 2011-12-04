@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import net.slipcor.pvparena.PARegion;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
@@ -45,10 +46,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
+ * version: v0.3.11 - set regions for lounges, spectator, exit
  * 
  * history:
  *
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes
@@ -88,8 +90,6 @@ public abstract class Arena {
 	public String powerupCause;
 	public String sTPexit;
 	public String sTPdeath;
-	public Location pos1;
-	public Location pos2;
 	public int powerupDiff;
 	public int powerupDiffI = 0;
 	public int wand;
@@ -109,12 +109,18 @@ public abstract class Arena {
 	public boolean randomSpawn = false;
 	public boolean usesPowerups;
 	public boolean usesProtection;
+
+	public boolean checkExitRegion = false;
+	public boolean checkSpectatorRegion = false;
+	public boolean checkLoungesRegion = false;
 	
 	int SPAWN_ID;
 
 	/*************
 	 * protected *
 	 *************/
+	public Location pos1;
+	public Location pos2; 
 	
 	protected int maxLives;
 	protected String sTPwin;
@@ -141,6 +147,7 @@ public abstract class Arena {
 	private final HashMap<Player, ItemStack[]> savedArmories = new HashMap<Player, ItemStack[]>();
 	private final HashMap<Player, Object> savedPlayerVars = new HashMap<Player, Object>();
 	private final HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
+	public final HashMap<String, PARegion> regions = new HashMap<String, PARegion>();
 	
 	private PVPArena plugin;
 	private String rewardItems;
@@ -261,6 +268,9 @@ public abstract class Arena {
 		config.addDefault("protection.fire.disable-lava-fire-spread",Boolean.valueOf(true));
 		config.addDefault("protection.ignition.block-tnt",Boolean.valueOf(true));
 		config.addDefault("protection.ignition.block-lighter",Boolean.valueOf(true));
+		config.addDefault("protection.checkExitRegion", Boolean.valueOf(false));
+		config.addDefault("protection.checkSpectatorRegion", Boolean.valueOf(false));
+		config.addDefault("protection.checkLoungesRegion", Boolean.valueOf(false));
 
 		config.addDefault("general.randomSpawn",Boolean.valueOf(false));
 
@@ -329,7 +339,11 @@ public abstract class Arena {
 		disableLavaFireSpread = config.getBoolean("protection.fire.disable-lava-fire-spread", true);
 		blockTnt = config.getBoolean("protection.ignition.block-tnt", true);
 		blockIgnite = config.getBoolean("protection.ignition.block-lighter",true);
-
+		
+		checkExitRegion = config.getBoolean("protection.checkExitRegion", false);
+		checkSpectatorRegion = config.getBoolean("protection.checkSpectatorRegion", false);
+		checkLoungesRegion = config.getBoolean("protection.checkLoungesRegion", false);
+		
 		maxLives = config.getInt("general.lives", 3);
 		joinRange = config.getInt("general.joinrange", 0);
 		checkRegions = config.getBoolean("general.checkRegions", false);
@@ -354,22 +368,38 @@ public abstract class Arena {
 		sTPdeath = config.getString("general.tp.death","spectator"); // old || exit || spectator
 		forceEven = config.getBoolean("general.forceeven", false);
 		randomSpawn = config.getBoolean("general.randomSpawn", false);
-		
-		if (config.getString("protection.region.min") == null
-				|| config.getString("protection.region.max") == null)
-			return; // no arena, no container
-		
-		String[] min1 = config.getString("protection.region.min").split(", ");
-		String[] max1 = config.getString("protection.region.max").split(", ");
-		String world = config.getString("protection.region.world");
-		Location min = new Location(Bukkit.getWorld(world), new Double(min1[0]).doubleValue(),
-				new Double(min1[1]).doubleValue(),
-				new Double(min1[2]).doubleValue());
-		Location max = new Location(Bukkit.getWorld(world), new Double(max1[0]).doubleValue(),
-				new Double(max1[1]).doubleValue(),
-				new Double(max1[2]).doubleValue());
-		pos1 = min;
-		pos2 = max;
+
+		if (config.getConfigurationSection("protection.regions") != null) {
+			Map<String, Object> regs = config.getConfigurationSection("protection.regions").getValues(false);
+			for (String rName : regs.keySet()) {
+				regions.put(rName, getRegionFromConfigNode(rName, config));
+			}
+		} else if (config.get("protection.region") != null) {
+			String[] min1 = config.getString("protection.region.min").split(", ");
+			String[] max1 = config.getString("protection.region.max").split(", ");
+			String world = config.getString("protection.region.world");
+			Location min = new Location(Bukkit.getWorld(world), new Double(min1[0]).doubleValue(),
+					new Double(min1[1]).doubleValue(),
+					new Double(min1[2]).doubleValue());
+			Location max = new Location(Bukkit.getWorld(world), new Double(max1[0]).doubleValue(),
+					new Double(max1[1]).doubleValue(),
+					new Double(max1[2]).doubleValue());
+			
+			regions.put("battlefield", new PARegion("battlefield",min,max));
+
+			Vector v1 = min.toVector();
+			Vector v2 = max.toVector();
+			config.set("protection.regions.battlefield.min", v1.getX() + ", " + v1.getY() + ", " + v1.getZ());
+			config.set("protection.regions.battlefield.max", v2.getX() + ", " + v2.getY() + ", " + v2.getZ());
+			config.set("protection.regions.battlefield.world", world);
+			config.set("protection.region", null);
+			
+			try {
+				config.save(configFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/*
@@ -378,6 +408,21 @@ public abstract class Arena {
 	 * returns null if setup correct
 	 * returns string if not
 	 */
+	private PARegion getRegionFromConfigNode(String string, YamlConfiguration config) {
+		
+		String[] min1 = config.getString("protection.regions.battlefield.min").split(", ");
+		String[] max1 = config.getString("protection.regions.battlefield.max").split(", ");
+		String world = config.getString("protection.regions.battlefield.world");
+		Location min = new Location(Bukkit.getWorld(world), new Double(min1[0]).doubleValue(),
+				new Double(min1[1]).doubleValue(),
+				new Double(min1[2]).doubleValue());
+		Location max = new Location(Bukkit.getWorld(world), new Double(max1[0]).doubleValue(),
+				new Double(max1[1]).doubleValue(),
+				new Double(max1[2]).doubleValue());
+		
+		return new PARegion(string, min, max);
+	}
+
 	public String isSetup() {
 		YamlConfiguration config = new YamlConfiguration();
 		try {
@@ -809,16 +854,16 @@ public abstract class Arena {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		};
-		if (config.get("protection.region") == null) {
+		if (config.get("protection.regions") == null) {
 			db.i("Region not set, skipping 1!");
 			return;
-		} else if (pos1 == null) {
+		} else if (regions.get("battlefield") == null) {
 			db.i("Region not set, skipping 2!");
 			return;
 		}
-		World world = pos1.getWorld();
+		World world = regions.get("battlefield").getWorld();
 		for (Entity e : world.getEntities()) {
-			if (((!(e instanceof Item)) && (!(e instanceof Arrow))) || (!(contains(e.getLocation().toVector()))))
+			if (((!(e instanceof Item)) && (!(e instanceof Arrow))) || (!(regions.get("battlefield").contains(e.getLocation().toVector()))))
 				continue;
 			e.remove();
 		}
@@ -844,26 +889,37 @@ public abstract class Arena {
 		player.teleport(getCoords(place));
 		paPlayersTelePass.remove(player.getName());
 	}
-	
+
 	/*
-	 * return "vector is inside the arena region"
+	 * return "vector is inside an arena region"
 	 */
 	public boolean contains(Vector pt) {
-		YamlConfiguration config = new YamlConfiguration();
-		try {
-			config.load(configFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		};
+
+		if (regions.get("battlefield") != null) {
+			if (regions.get("battlefield").contains(pt)) {
+				return true;
+			}
+		}
+		if (checkExitRegion && regions.get("exit") != null) {
+			if (regions.get("exit").contains(pt)) {
+				return true;
+			}
+		}
+		if (checkSpectatorRegion && regions.get("spectator") != null) {
+			if (regions.get("spectator").contains(pt)) {
+				return true;
+			}
+		}
+		if (!checkLoungesRegion) {
+			return false;
+		}
 		
-		if (pos1 == null || pos2 == null)
-			return false; // no arena, no container
-		
-		return pt.isInAABB(pos1.toVector(), pos2.toVector());
+		for (PARegion reg : regions.values()) {
+			if (reg.contains(pt)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/*
@@ -1357,12 +1413,8 @@ public abstract class Arena {
 				return false;
 			}
 			return true;
-		} else if (args.length == 3) {
+		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
 			// /pa bet [name] [amount]
-			if (!args[0].equalsIgnoreCase("bet")) {
-				tellPlayer(player, PVPArena.lang.parse("invalidcmd","503"));
-				return false;
-			}
 			if (!paPlayersTeam.containsKey(player.getName())) {
 				tellPlayer(player, PVPArena.lang.parse("betnotyours"));
 				return true;
@@ -1451,12 +1503,12 @@ public abstract class Arena {
 		}
 		
 		if (!PVPArena.hasAdminPerms(player)) {
-			tellPlayer(player, PVPArena.lang.parse("invalidcmd","504"));
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","503"));
 			return false;
 		}
 		
-		if ((args.length != 2) || (!args[0].equalsIgnoreCase("region"))) {
-			tellPlayer(player, PVPArena.lang.parse("invalidcmd","505"));
+		if ((args.length < 2) || (!args[0].equalsIgnoreCase("region"))) {
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","504"));
 			return false;
 		}
 
@@ -1477,12 +1529,9 @@ public abstract class Arena {
 				tellPlayer(player, PVPArena.lang.parse("regionalreadybeingset", Arena.regionmodify));
 				return true;
 			}
-			if (config.get("protection.region") == null) {
-				Arena.regionmodify = name;
-				tellPlayer(player, PVPArena.lang.parse("regionset"));
-			} else {
-				tellPlayer(player, PVPArena.lang.parse("regionalreadyset"));
-			}
+			Arena.regionmodify = name;
+			tellPlayer(player, PVPArena.lang.parse("regionset"));
+			return true;
 		} else if ((args[1].equalsIgnoreCase("modify"))
 				|| (args[1].equalsIgnoreCase("edit"))) {
 			if (!Arena.regionmodify.equals("")) {
@@ -1495,31 +1544,42 @@ public abstract class Arena {
 			} else {
 				tellPlayer(player, PVPArena.lang.parse("noregionset"));
 			}
-		} else if (args[1].equalsIgnoreCase("save")) {
+			return true;
+		}
+		if (args.length != 3) {
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","505"));
+			return false;
+		}
+		
+		if (!checkRegionCommand(args[2])) {
+			tellPlayer(player, PVPArena.lang.parse("invalidcmd","506"));
+			return false;
+		}
+		
+		if (args[1].equalsIgnoreCase("save")) {
 			if (Arena.regionmodify.equals("")) {
 				tellPlayer(player, PVPArena.lang.parse("regionnotbeingset", name));
 				return true;
 			}
-			if ((pos1 == null) || (pos2 == null)) {
-				tellPlayer(player, PVPArena.lang.parse("set2points"));
-			} else {
-				Vector v1 = pos1.toVector();
-				Vector v2 = pos2.toVector();
-				config.set("protection.region.min", v1.getX() + ", " + v1.getY() + ", " + v1.getZ());
-				config.set("protection.region.max", v2.getX() + ", " + v2.getY() + ", " + v2.getZ());
-				config.set("protection.region.world", player
-						.getWorld().getName());
-				try {
-					config.save(f);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				Arena.regionmodify = "";
-				tellPlayer(player, PVPArena.lang.parse("regionsaved"));
+			Vector v1 = pos1.toVector();
+			Vector v2 = pos2.toVector();
+			config.set("protection.regions."+args[2]+".min", v1.getX() + ", " + v1.getY() + ", " + v1.getZ());
+			config.set("protection.regions."+args[2]+".max", v2.getX() + ", " + v2.getY() + ", " + v2.getZ());
+			config.set("protection.regions."+args[2]+".world", player
+					.getWorld().getName());
+			regions.put(args[2], new PARegion(args[2], pos1, pos2));
+			pos1 = null;
+			pos2 = null;
+			try {
+				config.save(f);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			Arena.regionmodify = "";
+			tellPlayer(player, PVPArena.lang.parse("regionsaved"));
 		} else if (args[1].equalsIgnoreCase("remove")) {
-			if (config.get("protection.region") != null) {
-				config.set("protection.region", null);
+			if (config.get("protection.regions."+args[2]) != null) {
+				config.set("protection.regions."+args[2], null);
 				try {
 					config.save(f);
 				} catch (IOException e) {
@@ -1531,12 +1591,27 @@ public abstract class Arena {
 				tellPlayer(player, PVPArena.lang.parse("regionnotremoved"));
 			}
 
-		} else {
-			tellPlayer(player, PVPArena.lang.parse("invalidcmd","506"));
-			return false;
 		}
-		
 		return true;
+	}
+
+	private boolean checkRegionCommand(String s) {
+		db.i("checking region command: "+s);
+		if (s.equals("exit") || s.equals("spectator")) {
+			return true;
+		}
+		if (this instanceof CTFArena) {
+			if (s.equals("lounge")) {
+				return true;
+			}
+		} else {
+			for (String sName : paTeams.keySet()) {
+				if (s.equals(sName + "lounge")) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/*
@@ -1568,15 +1643,15 @@ public abstract class Arena {
 		if (joinRange < 1)
 			return false;
 		
-		if (pos1 == null || pos2 == null)
+		if (regions.get("battlefield") == null)
 			return false;
 		
-		if (!this.pos1.getWorld().equals(player.getWorld()))
+		if (!this.regions.get("battlefield").getWorld().equals(player.getWorld()))
 			return true;
 
 		db.i("checking join range");
-		Vector bvmin = this.pos1.toVector();
-		Vector bvmax = this.pos2.toVector();
+		Vector bvmin = regions.get("battlefield").getMin().toVector();
+		Vector bvmax = regions.get("battlefield").getMax().toVector();
 		Vector bvdiff = (BlockVector) bvmin.getMidpoint(bvmax);
 		
 		return (joinRange < bvdiff.distance(player.getLocation().toVector()));
@@ -1772,8 +1847,10 @@ public abstract class Arena {
 	 */
 	private void commitPowerupItemSpawn(Material item) {
 		db.i("dropping item?");
-		if (pos1 == null || pos2 == null)
+		if (regions.get("battlefield") == null)
 			return;
+		Location pos1 = regions.get("battlefield").getMin();
+		Location pos2 = regions.get("battlefield").getMax();
 		
 		db.i("dropping item");
 		int diffx = (int) (pos1.getX() - pos2.getX());
@@ -1912,8 +1989,11 @@ public abstract class Arena {
 	}
 
 	public boolean checkRegion(Arena arena) {
-		if (pos1 != null && arena.pos1 != null && arena.pos1.getWorld().equals(this.pos1.getWorld()))
-			return !arena.contains(pos1.toVector().midpoint(pos2.toVector()));
+		if ((regions.get("battlefield") != null)
+				&& (arena.regions.get("battlefield") != null)
+				&& arena.regions.get("battlefield").getWorld().equals(
+						this.regions.get("battlefield").getWorld()))
+			return !arena.regions.get("battlefield").contains(regions.get("battlefield").getMin().toVector().midpoint(regions.get("battlefield").getMax().toVector()));
 		
 		return true;
 	}

@@ -31,10 +31,11 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * author: slipcor
  * 
- * version: v0.3.10 - CraftBukkit #1337 config version, rewrite
+ * version: v0.3.11 - set regions for lounges, spectator, exit
  * 
  * history:
  *
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.7 - Bugfixes, Cleanup
  *     v0.3.5 - Powerups!!
@@ -114,7 +115,7 @@ public class PVPArena extends JavaPlugin {
 	
 	public void load_config() {
 		if (Bukkit.getPluginManager().getPlugin("Spout") != null)
-			spoutHandler = org.getspout.spout.Spout.getInstance().toString();
+			spoutHandler = SpoutManager.getInstance().toString();
 		else
 			lang.log_info("nospout");
 		
@@ -245,7 +246,7 @@ public class PVPArena extends JavaPlugin {
 		if (player.hasPermission(perms))
 			return true;
 		
-		if (Permissions == null)
+		if (Permissions != null)
 			return Permissions.has(player, perms);
 		
 		return false;			

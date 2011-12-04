@@ -19,10 +19,11 @@ import org.bukkit.util.Vector;
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.11 - set regions for lounges, spectator, exit
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
@@ -86,10 +87,8 @@ public class ArenaManager {
 	/*
 	 * find location, return arena
 	 */
-	public static Arena getArenaByBattlefieldLocation(Location location) {
+	public static Arena getArenaByRegionLocation(Location location) { 
 		for (Arena arena : arenas.values()) {
-			if ((arena.pos1 == null) || (arena.pos1.getWorld() != location.getWorld()))
-				continue;
 			boolean inside = arena.contains(new Vector(location.getX(), location.getY(),location.getZ()));
 			if (inside)
 				return arena;

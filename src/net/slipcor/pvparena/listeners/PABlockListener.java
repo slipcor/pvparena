@@ -15,10 +15,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.8 - BOSEconomy, rewrite
+ * version: v0.3.11 - set regions for lounges, spectator, exit
  * 
  * history:
  *
+ *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.1 - New Arena! FreeFight
  *     v0.3.0 - Multiple Arenas
  * 	   v0.2.1 - cleanup, comments
@@ -30,7 +31,7 @@ public class PABlockListener extends BlockListener {
 	public PABlockListener() {}
 
 	public void onBlockBreak(BlockBreakEvent event) {
-		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 
@@ -49,7 +50,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 
@@ -66,7 +67,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockBurn(BlockBurnEvent event) {
-		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 
@@ -79,7 +80,7 @@ public class PABlockListener extends BlockListener {
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getBlock().getLocation());
+		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock().getLocation());
 		if (arena == null)
 			return; // no arena => out
 

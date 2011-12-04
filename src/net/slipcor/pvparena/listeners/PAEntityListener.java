@@ -27,10 +27,11 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * author: slipcor
  * 
- * version: v0.3.9 - Permissions, rewrite
+ * version: v0.3.11 - set regions for lounges, spectator, exit
  * 
  * history:
  *
+ *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
  *     v0.3.5 - Powerups!!
@@ -249,7 +250,7 @@ public class PAEntityListener extends EntityListener {
 	}
 
 	public void onEntityExplode(EntityExplodeEvent event) {
-		Arena arena = ArenaManager.getArenaByBattlefieldLocation(event.getLocation());
+		Arena arena = ArenaManager.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
 
