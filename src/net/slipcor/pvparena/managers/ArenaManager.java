@@ -182,6 +182,8 @@ public class ArenaManager {
 		File path;
 		if (a instanceof FreeArena) {
 			path = new File("plugins/pvparena/config.free_" + string + ".yml");
+		} else if (a instanceof CTFArena) {
+			path = new File("plugins/pvparena/config.ctf_" + string + ".yml");
 		} else {
 			path = new File("plugins/pvparena/config_" + string + ".yml");
 		}

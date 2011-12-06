@@ -84,9 +84,9 @@ public class StatsManager {
 	 * 
 	 * this example means: slipcor lost 2 times and won 3 times
 	 */	
-	public static Map<String,Integer> getPlayerStats(String sName, Arena arena) {
-		YamlConfiguration config = getConfig("stats_"+sName, arena);
-		db.i("fetching player stats: "+sName+ " for arena "+arena.name);
+	public static Map<String,Integer> getPlayerStats(Arena arena) {
+		YamlConfiguration config = getConfig("stats_"+arena.name, arena);
+		db.i("fetching player stats for arena "+arena.name);
 		Map <String, Integer> players = new HashMap<String, Integer>(); // map to sum up the players
 
 		Map<String, Object> team = new HashMap<String, Object>(); // tempmap => iteration 
@@ -98,17 +98,17 @@ public class StatsManager {
 				if (players.get(rName+"_") != null)
 					sum = players.get(rName+"_"); // if exists: read entry
 				
-				sum += Integer.parseInt((String) team.get(rName));
+				sum += (Integer) team.get(rName);
 				db.i(rName + "_ => " + sum);
 				players.put(rName+"_", sum); // put the player into the map, together with the count
 			}
-			team = (Map<String, Object>) config.getConfigurationSection("losses" + sTeam).getValues(true);
+			team = (Map<String, Object>) config.getConfigurationSection("losses." + sTeam).getValues(true);
 			for (String rName : team.keySet()) {
 				sum = 0;
 				if (players.get(rName) != null)
 					sum = players.get(rName); // if exists: read entry
 
-				sum += Integer.parseInt((String) team.get(rName));
+				sum += (Integer) team.get(rName);
 				db.i(rName + " => " + sum);
 				players.put(rName, sum); // put the player into the map, together with the count
 			}
@@ -124,10 +124,9 @@ public class StatsManager {
 	 * this example means: blue won 2 times, lost 3 times ; red won 4 times, lost 5 times
 	 */
 	
-	public static String getTeamStats(String sName, Arena arena) {
-
-		db.i("fetching team stats: " + sName + " for arena "+arena.name);
-		YamlConfiguration config = getConfig("stats_"+sName, arena);
+	public static String getTeamStats(Arena arena) {
+		db.i("fetching team stats for arena "+arena.name);
+		YamlConfiguration config = getConfig("stats_"+arena.name, arena);
 		
 		String result = "";
 		Map<String, Object> team = new HashMap<String, Object>();
@@ -136,13 +135,13 @@ public class StatsManager {
 			team = (Map<String, Object>) config.getConfigurationSection("wins." + sTeam).getValues(true);
 			int count = 0;
 			for (Object rVal : team.values()) {
-				count += Integer.parseInt((String) rVal); // sum up the values, append the sum
+				count += (Integer) rVal; // sum up the values, append the sum
 			}
 			result += count + ";";
 			team = (Map<String, Object>) config.getConfigurationSection("losses." + sTeam).getValues(true);
 			count = 0;
 			for (Object rVal : team.values()) {
-				count += Integer.parseInt((String) rVal); // sum up the values, append the sum
+				count += (Integer) rVal; // sum up the values, append the sum
 			}
 			result += String.valueOf(count) + ";";
 			db.i(sTeam + ": " + count);

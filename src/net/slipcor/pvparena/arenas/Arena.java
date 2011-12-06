@@ -735,6 +735,22 @@ public abstract class Arena {
 	 * load player inventory from map
 	 */
 	public void loadInventory(Player player) {
+		if (player == null) {
+			PVPArena.instance.log.severe("player = null!");
+			return;
+		}
+		if (player.getInventory() == null) {
+			PVPArena.instance.log.severe("player.getInventory() = null!");
+			return;
+		}
+		if (savedInventories == null) {
+			PVPArena.instance.log.severe("savedInventories = null!");
+			return;
+		}
+		if (savedInventories.get(player) == null) {
+			PVPArena.instance.log.severe("savedInventories.get("+player+") = null!");
+			return;
+		}
 		player.getInventory().setContents((ItemStack[]) savedInventories.get(player));
 		player.getInventory().setArmorContents((ItemStack[]) savedArmories.get(player));
 	}
@@ -1372,6 +1388,54 @@ public abstract class Arena {
 				tpPlayerToCoordName(player, "spectator");
 				tellPlayer(player, PVPArena.lang.parse("specwelcome"));
 				return true;
+			} else if (args[0].equalsIgnoreCase("teams")) {
+				String team[] = StatsManager.getTeamStats(this).split(";");
+				int i = 0;
+				for (String sTeam : paTeams.keySet())
+					player.sendMessage(PVPArena.lang.parse("teamstat", ChatColor.valueOf((String) paTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
+				return true;
+			} else if (args[0].equalsIgnoreCase("users")) {
+				// wins are suffixed with "_"
+				Map<String, Integer> players = StatsManager.getPlayerStats(this);
+				
+				int wcount = 0;
+		
+				for (String name : players.keySet())
+					if (name.endsWith("_"))
+						wcount++;
+				
+				String[][] wins = new String[wcount][2];
+				String[][] losses = new String[players.size()-wcount][2];
+				int iw = 0;
+				int il = 0;
+			
+				for (String name : players.keySet()) {
+					if (name.endsWith("_")) {
+						// playername_ => win
+						wins[iw][0] = name.substring(0, name.length()-1);
+						wins[iw++][1] = String.valueOf(players.get(name));
+					} else {
+						// playername => lose
+						losses[il][0] = name;
+						losses[il++][1] = String.valueOf(players.get(name));
+					}
+				}
+				wins = sort(wins);
+				losses = sort(losses);
+				tellPlayer(player, PVPArena.lang.parse("top5wins"));
+				
+				for (int w=0; w<wins.length && w < 5 ; w++) {
+					tellPlayer(player, wins[w][0] + ": " + wins[w][1] + " " + PVPArena.lang.parse("wins"));
+				}
+				
+		
+				tellPlayer(player, "------------");
+				tellPlayer(player, PVPArena.lang.parse("top5lose"));
+				
+				for (int l=0; l<losses.length && l < 5 ; l++) {
+					tellPlayer(player, losses[l][0] + ": " + losses[l][1] + " " + PVPArena.lang.parse("losses"));
+				}
+				return true;
 			} else if (paTeams.get(args[0]) != null) {
 				
 
@@ -1472,56 +1536,6 @@ public abstract class Arena {
 			ma.subtract(amount);
 			tellPlayer(player, PVPArena.lang.parse("betplaced", args[1]));
 			paPlayersBetAmount.put(player.getName() + ":" + args[1], amount);
-			return true;
-		}
-		
-		if (args[0].equalsIgnoreCase("teams")) {
-			String team[] = StatsManager.getTeamStats(args[1], this).split(";");
-			int i = 0;
-			for (String sTeam : paTeams.keySet())
-				player.sendMessage(PVPArena.lang.parse("teamstat", ChatColor.valueOf((String) paTeams.get(sTeam)) + sTeam, team[i++], team[i++]));
-			return true;
-		} else if (args[0].equalsIgnoreCase("users")) {
-			// wins are suffixed with "_"
-			Map<String, Integer> players = StatsManager.getPlayerStats(args[1], this);
-			
-			int wcount = 0;
-	
-			for (String name : players.keySet())
-				if (name.endsWith("_"))
-					wcount++;
-			
-			String[][] wins = new String[wcount][2];
-			String[][] losses = new String[players.size()-wcount][2];
-			int iw = 0;
-			int il = 0;
-		
-			for (String name : players.keySet()) {
-				if (name.endsWith("_")) {
-					// playername_ => win
-					wins[iw][0] = name.substring(0, name.length()-1);
-					wins[iw++][1] = String.valueOf(players.get(name));
-				} else {
-					// playername => lose
-					losses[il][0] = name;
-					losses[il++][1] = String.valueOf(players.get(name));
-				}
-			}
-			wins = sort(wins);
-			losses = sort(losses);
-			tellPlayer(player, PVPArena.lang.parse("top5wins"));
-			
-			for (int w=0; w<wins.length && w < 5 ; w++) {
-				tellPlayer(player, wins[w][0] + ": " + wins[w][1] + " " + PVPArena.lang.parse("wins"));
-			}
-			
-	
-			tellPlayer(player, "------------");
-			tellPlayer(player, PVPArena.lang.parse("top5lose"));
-			
-			for (int l=0; l<losses.length && l < 5 ; l++) {
-				tellPlayer(player, losses[l][0] + ": " + losses[l][1] + " " + PVPArena.lang.parse("losses"));
-			}
 			return true;
 		}
 		
