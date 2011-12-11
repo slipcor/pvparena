@@ -1,25 +1,26 @@
+/*
+ * custom runnable class
+ * 
+ * author: slipcor
+ * 
+ * version: v0.4.0 - mayor rewrite, improved help
+ * 
+ * history:
+ * 
+ *     v0.3.14 - timed arena modes
+ *     v0.3.6 - CTF Arena
+ *     v0.3.5 - Powerups!!
+ */
+
 package net.slipcor.pvparena.arenas;
 
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.managers.DebugManager;
 
-/*
- * custom runnable class
- * 
- * author: slipcor
- * 
- * version: v0.3.14 - timed arena modes
- * 
- * history:
- *
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- */
-
 public class PowerupRunnable implements Runnable {
 	private final Arena a;
-	DebugManager db = new DebugManager();
+	private DebugManager db = new DebugManager();
 
 	public PowerupRunnable(Arena a) {
 		this.a = a;
@@ -31,7 +32,8 @@ public class PowerupRunnable implements Runnable {
 		if (a.fightInProgress)
 			a.calcPowerupSpawn();
 		else {
-			Bukkit.getServer().getScheduler().cancelTask(a.SPAWN_ID); // deactivate the auto saving task
+			// deactivate the auto saving task
+			Bukkit.getServer().getScheduler().cancelTask(a.SPAWN_ID);
 		}
 	}
 }

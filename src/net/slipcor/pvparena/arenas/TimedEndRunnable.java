@@ -1,24 +1,24 @@
+/*
+ * timed arena runnable class
+ * 
+ * author: slipcor
+ * 
+ * version: v0.4.0 - mayor rewrite, improved help
+ * 
+ * history:
+ * 
+ *     v0.3.14 - timed arena modes
+ */
+
 package net.slipcor.pvparena.arenas;
 
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.managers.DebugManager;
 
-/*
- * timed arena runnable class
- * 
- * author: slipcor
- * 
- * version: v0.3.14 - timed arena modes
- * 
- * history:
- *
- *     v0.3.14 - timed arena modes
- */
-
 public class TimedEndRunnable implements Runnable {
 	private final Arena a;
-	DebugManager db = new DebugManager();
+	private DebugManager db = new DebugManager();
 
 	public TimedEndRunnable(Arena a) {
 		this.a = a;
@@ -30,7 +30,8 @@ public class TimedEndRunnable implements Runnable {
 		if (a.fightInProgress)
 			a.timedEnd();
 		else {
-			Bukkit.getServer().getScheduler().cancelTask(a.END_ID); // deactivate the auto saving task
+			// deactivate the auto saving task
+			Bukkit.getServer().getScheduler().cancelTask(a.END_ID);
 		}
 	}
 }

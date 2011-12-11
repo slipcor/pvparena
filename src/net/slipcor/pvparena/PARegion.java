@@ -1,24 +1,27 @@
+/*
+ * region class
+ * 
+ * author: slipcor
+ * 
+ * version: v0.4.0 - mayor rewrite, improved help
+ * 
+ * history:
+ * 
+ *     v0.3.11 - set regions for lounges, spectator, exit
+ * 
+ */
+
 package net.slipcor.pvparena;
+
+import net.slipcor.pvparena.managers.DebugManager;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-/*
- * Region class
- * 
- * author: slipcor
- * 
- * version: v0.3.11 - set regions for lounges, spectator, exit
- * 
- * history:
- *
- *     v0.3.11 - set regions for lounges, spectator, exit
- * 
- */
-
 public class PARegion {
 	public String name;
+	private DebugManager db = new DebugManager();
 	private Location min;
 	private Location max;
 	
@@ -28,8 +31,11 @@ public class PARegion {
 		max = lMax;
 	}
 
-	public World getWorld() {
-		return min.getWorld();
+	public boolean contains(Vector vec) {
+		if (min == null || max == null)
+			return false; // no arena, no container
+		db.i("checking region "+name);
+		return vec.isInAABB(min.toVector(), max.toVector());
 	}
 
 	public Location getMin() {
@@ -40,9 +46,7 @@ public class PARegion {
 		return max;
 	}
 
-	public boolean contains(Vector vec) {
-		if (min == null || max == null)
-			return false; // no arena, no container
-		return vec.isInAABB(min.toVector(), max.toVector());
+	public World getWorld() {
+		return min.getWorld();
 	}
 }

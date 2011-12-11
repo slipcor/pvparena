@@ -1,3 +1,30 @@
+/*
+ * entity listener class
+ * 
+ * author: slipcor
+ * 
+ * version: v0.4.0 - mayor rewrite, improved help
+ * 
+ * history:
+ * 
+ *     v0.3.14 - timed arena modes
+ *     v0.3.11 - set regions for lounges, spectator, exit
+ *     v0.3.9 - Permissions, rewrite
+ *     v0.3.8 - BOSEconomy, rewrite
+ *     v0.3.6 - CTF Arena
+ *     v0.3.5 - Powerups!!
+ *     v0.3.3 - Random spawns possible for every arena
+ *     v0.3.1 - New Arena! FreeFight
+ *     v0.3.0 - Multiple Arenas
+ *     v0.2.1 - cleanup, comments
+ *     v0.2.0 - language support
+ *     v0.1.12 - display stats
+ *     v0.1.11 - fix for bows?
+ *     v0.1.8 - lives!
+ *     v0.1.5 - class choosing not toggling
+ *     v0.1.2 - class permission requirement
+ */
+
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
@@ -14,6 +41,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -22,38 +50,10 @@ import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-/*
- * EntityListener class
- * 
- * author: slipcor
- * 
- * version: v0.3.14 - timed arena modes
- * 
- * history:
- *
- *     v0.3.11 - set regions for lounges, spectator, exit
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.3 - Random spawns possible for every arena
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- *     v0.2.1 - cleanup, comments
- *     v0.2.0 - language support
- *     v0.1.12 - display stats
- *     v0.1.11 - fix for bows?
- *     v0.1.8 - lives!
- *     v0.1.5 - class choosing not toggling
- *     v0.1.2 - class permission requirement
- *
- */
-
 public class PAEntityListener extends EntityListener {
 	private DebugManager db = new DebugManager();
 
-	public PAEntityListener() {}
-
+	@Override
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity e = event.getEntity();
 		if (e instanceof Player) {
@@ -64,86 +64,108 @@ public class PAEntityListener extends EntityListener {
 				return;
 
 			db.i("onEntityDeath: fighting player");
-			if (arena.paPlayersTeam.containsKey(player.getName())) {
+			if (arena.playerManager.getTeam(player) != null) {
 				event.getDrops().clear();
-				String sTeam = arena.paPlayersTeam.get(player.getName());
-				String color = (String) arena.paTeams.get(sTeam);
-				if (!color.equals("free")) {
-					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
-				} else {
-					arena.tellEveryone(PVPArena.lang.parse("killed", ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
-				}
-				
-				StatsManager.addLoseStat(player, sTeam, arena);
-				arena.paPlayersTeam.remove(player.getName()); // needed so player does not get found when dead
-				arena.paPlayersRespawn.put(player.getName(), arena.paPlayersClass.get(player.getName()));
 
-				if (arena instanceof CTFArena) {
-					CTFArena ca = (CTFArena) arena;
-					db.i("ctf arena");
-					ca.checkEntityDeath(player);
-				}
-				
-				if (arena.timed > 0) {
-					db.i("timed areda!");
-					Player damager = null;
-					
-					if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
-						try {
-							EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) event.getEntity().getLastDamageCause();
-							damager = (Player) ee.getDamager();
-							db.i("damager found");
-						} catch (Exception ex) {
-							
-						}
-					}
-					String sKiller = "";
-					String sKilled = "";
-					if (arena instanceof CTFArena) {
-						db.i("timed ctf arena");
-						sKilled = player.getName();
-						if (damager != null) {
-							sKiller = damager.getName();
-							db.i("killer: " + sKiller);
-						}
-					} else {
-						sKilled = arena.paPlayersTeam.get(player.getName());
-						if (damager != null) {
-							sKiller = arena.paPlayersTeam.get(damager.getName());
-						}
-					}
-					if (damager != null) {
-						if (arena.paKills.containsKey(sKiller)) {
-							db.i("killer killed already");
-							arena.paKills.put(sKiller, arena.paKills.get(sKiller));
-						} else {
-							db.i("first kill");
-							arena.paKills.put(sKiller, 1);
-						}
-					}
-					
-					if (arena.paDeaths.containsKey(sKilled)) {
-						db.i("already died");
-						arena.paDeaths.put(sKilled, arena.paDeaths.get(sKilled));
-					} else {
-						db.i("first death");
-						arena.paDeaths.put(sKilled, 1);
-					}
-				}
-				if (arena.usesPowerups) {
-					if (arena.powerupCause.equals("death")) {
-						db.i("calculating powerup trigger death");
-						arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
-						if (arena.powerupDiffI == 0) {
-							arena.calcPowerupSpawn();
-						}
-					}
-				}
-				
-				if (arena.checkEndAndCommit())
-					return;
+				commitPlayerDeath(arena, player, event);
 			}
 		}
+	}
+
+	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
+
+		String sTeam = arena.playerManager.getTeam(player);
+		String color = arena.paTeams.get(sTeam);
+		if (!color.equals("free")) {
+			arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
+					ChatColor.valueOf(color) + player.getName()
+							+ ChatColor.YELLOW));
+		} else {
+			arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
+					ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
+		}
+
+		StatsManager.addLoseStat(player, sTeam, arena);
+		arena.playerManager.setTeam(player, null); // needed so player does not
+													// get found when dead
+		arena.playerManager.setRespawn(player, true);
+
+		if (arena instanceof CTFArena) {
+			CTFArena ca = (CTFArena) arena;
+			db.i("ctf arena");
+			ca.checkEntityDeath(player);
+		}
+
+		if (arena.timed > 0) {
+			db.i("timed arena!");
+			Player damager = null;
+
+			if (eEvent instanceof EntityDeathEvent) {
+				EntityDeathEvent event = (EntityDeathEvent) eEvent;
+				if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+					try {
+						EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) event
+								.getEntity().getLastDamageCause();
+						damager = (Player) ee.getDamager();
+						db.i("damager found in arg 2");
+					} catch (Exception ex) {
+
+					}
+				}
+			} else if (eEvent instanceof EntityDamageByEntityEvent) {
+				EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
+				try {
+					damager = (Player) event.getDamager();
+					db.i("damager found in arg 3");
+				} catch (Exception ex) {
+
+				}
+			}
+			String sKiller = "";
+			String sKilled = "";
+			if (arena instanceof CTFArena) {
+				db.i("timed ctf arena");
+				sKilled = player.getName();
+				if (damager != null) {
+					sKiller = damager.getName();
+					db.i("killer: " + sKiller);
+				}
+			} else {
+				sKilled = arena.playerManager.getTeam(player);
+				if (damager != null) {
+					sKiller = arena.playerManager.getTeam(damager);
+				}
+			}
+			if (damager != null) {
+				if (arena.playerManager.getKills(sKiller) > 0) {
+					db.i("killer killed already");
+					arena.playerManager.addKill(sKiller);
+				} else {
+					db.i("first kill");
+					arena.playerManager.addKill(sKiller);
+				}
+			}
+
+			if (arena.playerManager.getDeaths(sKilled) > 0) {
+				db.i("already died");
+				arena.playerManager.addDeath(sKilled);
+			} else {
+				db.i("first death");
+				arena.playerManager.addDeath(sKilled);
+			}
+		}
+		if (arena.usesPowerups) {
+			if (arena.powerupTrigger.equals("death")) {
+				db.i("calculating powerup trigger death");
+				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
+				if (arena.powerupDiffI == 0) {
+					arena.calcPowerupSpawn();
+				}
+			}
+		}
+
+		if (arena.checkEndAndCommit())
+			return;
 	}
 
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
@@ -151,7 +173,7 @@ public class PAEntityListener extends EntityListener {
 		Entity p2 = event.getEntity();
 
 		if (event.getCause() == DamageCause.PROJECTILE) {
-			p1 = ((Projectile)p1).getShooter();
+			p1 = ((Projectile) p1).getShooter();
 		}
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
@@ -160,27 +182,28 @@ public class PAEntityListener extends EntityListener {
 			return;
 
 		db.i("onEntityDamageByEntity: fighting player");
-		if ((!(arena.fightInProgress))
-	        || (p2 == null)
-			|| (!(p2 instanceof Player))) {
+		if ((!(arena.fightInProgress)) || (p2 == null)
+				|| (!(p2 instanceof Player))) {
 			return;
 		}
 		db.i("fight in progress and both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
-		if ((arena.paPlayersTeam.get(attacker.getName()) == null)
-			|| (arena.paPlayersTeam.get(defender.getName()) == null))
+
+		if ((arena.playerManager.getTeam(attacker) == null)
+				|| (arena.playerManager.getTeam(defender) == null))
 			return;
 
 		db.i("both players part of the arena");
-		if ((!arena.teamKilling) && ((String) arena.paPlayersTeam.get(attacker.getName()))
-				.equals(arena.paPlayersTeam.get(defender.getName()))) {
+		if ((!arena.teamKilling)
+				&& (arena.playerManager.getTeam(attacker))
+						.equals(arena.playerManager.getTeam(defender))) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
@@ -189,31 +212,44 @@ public class PAEntityListener extends EntityListener {
 			Powerup p = arena.pm.puActive.get(attacker);
 			if ((p != null) && (p.canBeTriggered()))
 				p.commit(attacker, defender, event);
-			
+
 			p = arena.pm.puActive.get(defender);
 			if ((p != null) && (p.canBeTriggered()))
 				p.commit(attacker, defender, event);
-			
+
 		}
 		if (event.getDamage() >= defender.getHealth()) {
 			db.i("damage >= health => death");
 			byte lives = 3;
 
-			lives = arena.paPlayersLives.get(defender.getName());
-			db.i("lives before death: "+lives);
+			lives = arena.playerManager.getLives(defender);
+			db.i("lives before death: " + lives);
 			if (lives < 1) {
-				return; // player died
-			} else if (lives > 0) {
+				if (!arena.preventDeath) {
+					return; // player died => commit death!
+				}
+				db.i("faking player death");
 
+				commitPlayerDeath(arena, defender, event);
+
+				db.i("fake removing player");
+
+				if (arena.sTPdeath.equals("old")) {
+					db.i("=> old location");
+				} else {
+					db.i("=> 'config=>death' location");
+				}
+				arena.removePlayer(defender, arena.sTPdeath);
+			} else {
 				lives--;
 				arena.respawnPlayer(defender, lives);
-				event.setCancelled(true);
-				return;
 			}
+			event.setCancelled(true);
 		}
 
 	}
 
+	@Override
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) {
 			return; // respect other plugins
@@ -223,23 +259,23 @@ public class PAEntityListener extends EntityListener {
 			onEntityDamageByEntity((EntityDamageByEntityEvent) event);
 			return; // hand over damage event
 		}
-		
+
 		Entity p1 = event.getEntity();
-		
+
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
-		
+
 		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
-		db.i("onEntityDamege: fighting player");
+		db.i("onEntityDamage: fighting player");
 		if (!arena.fightInProgress) {
 			return;
 		}
-		
+
 		Player player = (Player) p1;
-		if (arena.paPlayersTeam.get(player.getName()) == null)
+		if (arena.playerManager.getTeam(player) == null)
 			return;
 
 		// here it comes, process the damage!
@@ -247,7 +283,7 @@ public class PAEntityListener extends EntityListener {
 			db.i("damage >= health => death");
 			byte lives = 3;
 
-			lives = arena.paPlayersLives.get(player.getName());
+			lives = arena.playerManager.getLives(player);
 			if (lives < 1) {
 				return; // player died
 			} else if (lives > 0) {
@@ -257,20 +293,21 @@ public class PAEntityListener extends EntityListener {
 				return;
 			}
 		}
-		
+
 	}
-	
+
+	@Override
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 
 		if (event.isCancelled()) {
 			return; // respect other plugins
 		}
-		
+
 		Entity p1 = event.getEntity();
-		
+
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
-		
+
 		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
@@ -279,34 +316,37 @@ public class PAEntityListener extends EntityListener {
 		if (!arena.fightInProgress) {
 			return;
 		}
-		
+
 		Player player = (Player) p1;
-		if (arena.paPlayersTeam.get(player.getName()) == null)
+		if (arena.playerManager.getTeam(player) == null)
 			return;
-		
+
 		if (arena.pm != null) {
 			Powerup p = arena.pm.puActive.get(player);
 			if (p != null) {
 				if (p.canBeTriggered()) {
-					if (p.active(PowerupEffect.classes.HEAL)) {
+					if (p.isEffectActive(PowerupEffect.classes.HEAL)) {
 						event.setCancelled(true);
 						p.commit(event);
 					}
 				}
 			}
-			
+
 		}
 	}
 
+	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
-		Arena arena = ArenaManager.getArenaByRegionLocation(event.getLocation());
+		Arena arena = ArenaManager
+				.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.usesProtection)) || (!(arena.blockTnt)) || (!(event.getEntity() instanceof TNTPrimed)))
+		if ((!(arena.usesProtection)) || (!(arena.disableTnt))
+				|| (!(event.getEntity() instanceof TNTPrimed)))
 			return;
-		
-		event.setCancelled(true); //ELSE => cancel event
+
+		event.setCancelled(true); // ELSE => cancel event
 	}
 }

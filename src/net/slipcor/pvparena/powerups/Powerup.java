@@ -1,3 +1,17 @@
+/*
+ * powerup class
+ * 
+ * author: slipcor
+ * 
+ * version: v0.4.0 - mayor rewrite, improved help
+ * 
+ * history:
+ * 
+ *     v0.3.8 - BOSEconomy, rewrite
+ *     v0.3.6 - CTF Arena
+ *     v0.3.5 - Powerups!!
+ */
+
 package net.slipcor.pvparena.powerups;
 
 import java.util.HashMap;
@@ -11,25 +25,12 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.powerups.PowerupEffect.classes;
 
-/*
- * powerup class
- * 
- * author: slipcor
- * 
- * version: v0.3.8 - BOSEconomy, rewrite
- * 
- * history:
- *
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- */
-
 public class Powerup {
-	public String name;   // PowerUp display name
-	PowerupEffect[] effects; // Effects the Powerup has
+	public String name; // PowerUp display name
 	public Material item; // item that triggers this Powerup
-	DebugManager db = new DebugManager();
-	
+	private PowerupEffect[] effects; // Effects the Powerup has
+	private DebugManager db = new DebugManager();
+
 	/*
 	 * Powerup constructor
 	 * 
@@ -39,7 +40,7 @@ public class Powerup {
 	public Powerup(String pName, HashMap<String, Object> puEffects) {
 		int count = 0;
 		this.name = pName;
-		db.i("creating powerup "+pName);
+		db.i("creating powerup " + pName);
 		this.item = Material.valueOf((String) puEffects.get("item"));
 		db.i("item added: " + this.item.toString());
 		for (String eClass : puEffects.keySet()) {
@@ -49,7 +50,8 @@ public class Powerup {
 					db.w("unknown effect class: " + eClass);
 				continue;
 			}
-			PowerupEffect pe = new PowerupEffect(eClass, (HashMap<String, Object>) puEffects.get(eClass));
+			PowerupEffect pe = new PowerupEffect(eClass,
+					(HashMap<String, Object>) puEffects.get(eClass));
 			if (pe.type == null) {
 				continue;
 			}
@@ -58,7 +60,7 @@ public class Powerup {
 		db.i("effects found: " + count);
 		if (count < 1)
 			return;
-		
+
 		effects = new PowerupEffect[count];
 
 		count = 0;
@@ -67,14 +69,15 @@ public class Powerup {
 			if (pec == null) {
 				continue;
 			}
-			PowerupEffect pe = new PowerupEffect(eClass, (HashMap<String, Object>) puEffects.get(eClass));
+			PowerupEffect pe = new PowerupEffect(eClass,
+					(HashMap<String, Object>) puEffects.get(eClass));
 			if (pe.type == null) {
 				continue;
 			}
 			effects[count++] = pe;
 		}
 	}
-	
+
 	/*
 	 * Powerup constructor II
 	 * 
@@ -85,7 +88,7 @@ public class Powerup {
 		this.effects = p.effects;
 		this.item = p.item;
 	}
-	
+
 	/*
 	 * return "is Powerup active"
 	 */
@@ -96,7 +99,19 @@ public class Powerup {
 		}
 		return false;
 	}
-	
+
+	/*
+	 * return "is PowerupEffect active"
+	 */
+	public boolean isEffectActive(classes peClass) {
+		for (PowerupEffect pe : effects) {
+			if (pe.uses != 0 && pe.duration != 0)
+				if (pe.type.equals(peClass))
+					return true;
+		}
+		return false;
+	}
+
 	/*
 	 * return "can Powerup still be fired"
 	 */
@@ -129,18 +144,6 @@ public class Powerup {
 			if (pe.uses != 0 && pe.duration != 0)
 				pe.commit(attacker, defender, event);
 		}
-	}
-
-	/*
-	 * return "is Powerup active"
-	 */
-	public boolean active(classes peClass) {
-		for (PowerupEffect pe : effects) {
-			if (pe.uses != 0 && pe.duration != 0)
-				if (pe.type.equals(peClass))
-					return true;
-		}
-		return false;
 	}
 
 	/*

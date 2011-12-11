@@ -1,26 +1,13 @@
 name: pvparena
 main: net.slipcor.pvparena.PVPArena
-version: v0.3.14.13
+version: v0.4.0.0
 website: http://dev.bukkit.org/server-mods/pvp-arena
 commands:
     pvparena:
         description: Base commands for the PVP arena.
         aliases: ['pa']
         usage: |
-           /pvparena list | List all arenas
-           /pvparena reload | Reload all arenas
-           /pvparena leave | Leave the arena you're in
-           /pvparena setup | Get help setting up an arena
-           /pvparena [arenaname] create [type] | Create an arena
-           /pvparena [arenaname] remove | Remove an arena
-           /pvparena [arenaname] | Join the arena if random is active
-           /pvparena [arenaname] [team] | Join the arena if random is inactive
-           /pvparena [arenaname] enable/disable | Enable / Disable usage of an arena
-           /pvparena [arenaname] list | List all players in the arena
-           /pvparena [arenaname] watch | Watch a fight in the arena
-           /pvparena [arenaname] forcestop | Force an arena to stop
-           /pvparena [arenaname] bet [(player/team)name] [amount] | Bet on a player/team
-           /pvparena [arenaname] teams/users | Get teams / users statistics
+            /pvparena help
 permissions:
     fight.*:
         description: Gives access to all commands
