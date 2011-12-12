@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.9 - Permissions, rewrite
@@ -64,7 +65,7 @@ public class PAEntityListener extends EntityListener {
 				return;
 
 			db.i("onEntityDeath: fighting player");
-			if (arena.playerManager.getTeam(player) != null) {
+			if (!arena.playerManager.getTeam(player).equals("")) {
 				event.getDrops().clear();
 
 				commitPlayerDeath(arena, player, event);
@@ -86,11 +87,11 @@ public class PAEntityListener extends EntityListener {
 		}
 
 		StatsManager.addLoseStat(player, sTeam, arena);
-		arena.playerManager.setTeam(player, null); // needed so player does not
+		arena.playerManager.setTeam(player, ""); // needed so player does not
 													// get found when dead
 		arena.playerManager.setRespawn(player, true);
 
-		if (arena instanceof CTFArena) {
+		if (arena.getType().equals("ctf")) {
 			CTFArena ca = (CTFArena) arena;
 			db.i("ctf arena");
 			ca.checkEntityDeath(player);
@@ -123,7 +124,7 @@ public class PAEntityListener extends EntityListener {
 			}
 			String sKiller = "";
 			String sKilled = "";
-			if (arena instanceof CTFArena) {
+			if (arena.getType().equals("ctf")) {
 				db.i("timed ctf arena");
 				sKilled = player.getName();
 				if (damager != null) {
@@ -182,16 +183,16 @@ public class PAEntityListener extends EntityListener {
 			return;
 
 		db.i("onEntityDamageByEntity: fighting player");
-		if ((!(arena.fightInProgress)) || (p2 == null)
+		if ((p2 == null)
 				|| (!(p2 instanceof Player))) {
 			return;
 		}
-		db.i("fight in progress and both entities are players");
+		db.i("both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 
-		if ((arena.playerManager.getTeam(attacker) == null)
-				|| (arena.playerManager.getTeam(defender) == null))
+		if ((arena.playerManager.getTeam(attacker).equals(""))
+				|| (arena.playerManager.getTeam(defender).equals("")))
 			return;
 
 		db.i("both players part of the arena");
@@ -275,7 +276,7 @@ public class PAEntityListener extends EntityListener {
 		}
 
 		Player player = (Player) p1;
-		if (arena.playerManager.getTeam(player) == null)
+		if (arena.playerManager.getTeam(player).equals(""))
 			return;
 
 		// here it comes, process the damage!
@@ -318,7 +319,7 @@ public class PAEntityListener extends EntityListener {
 		}
 
 		Player player = (Player) p1;
-		if (arena.playerManager.getTeam(player) == null)
+		if (arena.playerManager.getTeam(player).equals(""))
 			return;
 
 		if (arena.pm != null) {

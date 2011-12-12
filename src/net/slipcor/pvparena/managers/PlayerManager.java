@@ -3,7 +3,7 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
@@ -12,13 +12,17 @@
 
 package net.slipcor.pvparena.managers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PAPlayer;
+import net.slipcor.pvparena.arenas.Arena;
 
 public class PlayerManager {
 	// bets placed mapped to value: BetterName:BetName => Amount
@@ -32,7 +36,7 @@ public class PlayerManager {
 	public String getTeamStringList(HashMap<String, String> paTeams) {
 		String result = "";
 		for (PAPlayer p : players.values()) {
-			if (p.getTeam() != null) {
+			if (!p.getTeam().equals("")) {
 
 				if (!result.equals(""))
 					result += ", ";
@@ -46,7 +50,7 @@ public class PlayerManager {
 	public HashMap<String, String> getPlayerTeamMap() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (PAPlayer p : players.values()) {
-			if (p.getTeam() != null) {
+			if (!p.getTeam().equals("")) {
 				result.put(p.getName(), p.getTeam());
 			}
 		}
@@ -61,7 +65,7 @@ public class PlayerManager {
 
 		// count each team members
 		for (PAPlayer p : players.values()) {
-			if (p.getTeam() != null) {
+			if (!p.getTeam().equals("")) {
 				if (!counts.containsKey(p.getTeam())) {
 					counts.put(p.getTeam(), 1);
 				} else {
@@ -89,7 +93,7 @@ public class PlayerManager {
 	public int countPlayersInTeams() {
 		int result = 0;
 		for (PAPlayer p : players.values()) {
-			if (p.getTeam() != null) {
+			if (!p.getTeam().equals("")) {
 				result++;
 			}
 		}
@@ -104,9 +108,29 @@ public class PlayerManager {
 		if (countPlayersInTeams() < 1) {
 			return false;
 		}
+		boolean onlyone = true;
+		List<String> activeteams = new ArrayList<String>(0);
+		for (String sTeam : getPlayerTeamMap().keySet()) {
+			if (activeteams.size() < 1) {
+				// fresh map
+				String team = getPlayerTeamMap().get(sTeam);
+				activeteams.add(team);
+			} else {
+				// map contains stuff
+				if (!activeteams.contains(getPlayerTeamMap().get(
+						sTeam))) {
+					// second team active => OUT!
+					onlyone = false;
+					break;
+				}
+			}
+		}
+		if (onlyone) {
+			return false;
+		}
 		for (PAPlayer p : players.values()) {
-			if (p.getTeam() != null) {
-				if (p.getFightClass() == null) {
+			if (!p.getTeam().equals("")) {
+				if (p.getFightClass().equals("")) {
 					// player not ready!
 					return false;
 				}
@@ -115,14 +139,16 @@ public class PlayerManager {
 		return true;
 	}
 
-	public void reset() {
+	public void reset(Arena arena) {
 		for (PAPlayer p : players.values()) {
+			arena.removePlayer(p.getPlayer(), arena.sTPexit);
 			p.setTeam(null);
 			p.setClass(null);
 			p.setLives((byte) 0);
 			p.setSignLocation(null);
 			paPlayersBetAmount.clear();
 		}
+		players.clear();
 	}
 
 	/*
@@ -150,7 +176,11 @@ public class PlayerManager {
 	}
 
 	public HashSet<PAPlayer> getPlayers() {
-		return (HashSet<PAPlayer>) players.values();
+		HashSet<PAPlayer> result = new HashSet<PAPlayer>();
+		for (PAPlayer p : players.values()) {
+			result.add(p);
+		}
+		return result;
 	}
 
 	public String getClass(Player player) {
@@ -223,5 +253,9 @@ public class PlayerManager {
 
 	public boolean getTelePass(Player player) {
 		return players.get(player.getName()).getTelePass();
+	}
+
+	public void addPlayer(Player player) {
+		players.put(player.getName(), new PAPlayer(player));
 	}
 }

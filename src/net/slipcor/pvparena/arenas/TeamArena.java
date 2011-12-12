@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
@@ -45,9 +46,12 @@ public class TeamArena extends Arena {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		config.addDefault("teams.custom.red", ChatColor.RED.name());
-		config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
-		config.options().copyDefaults(true);
+		if (config.get("teams.custom") == null) {
+			db.i("no teams defined, adding custom red and blue!");
+			config.addDefault("teams.custom.red", ChatColor.RED.name());
+			config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
+			config.options().copyDefaults(true);
+		}
 		try {
 			config.save(configFile);
 		} catch (IOException e) {
@@ -58,6 +62,7 @@ public class TeamArena extends Arena {
 
 		for (String sTeam : tempMap.keySet()) {
 			this.paTeams.put(sTeam, (String) tempMap.get(sTeam));
+			db.i("added team " + sTeam + " => " + this.paTeams.get(sTeam));
 		}
 	}
 }

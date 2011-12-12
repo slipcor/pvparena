@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.12 - set flag positions
  *     v0.3.11 - set regions for lounges, spectator, exit
@@ -33,13 +34,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import net.slipcor.pvparena.PAPlayer;
 import net.slipcor.pvparena.PARegion;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.managers.CommandManager;
 import net.slipcor.pvparena.managers.ConfigManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
@@ -151,7 +152,7 @@ public abstract class Arena {
 	private final HashMap<Player, ItemStack[]> savedInventories = new HashMap<Player, ItemStack[]>();
 	private final HashMap<Player, ItemStack[]> savedArmories = new HashMap<Player, ItemStack[]>();
 	// player mapped to misc vars: PlayerName => miscObjectVars
-	private final HashMap<Player, Object> savedPlayerVars = new HashMap<Player, Object>();
+	public final HashMap<Player, Object> savedPlayerVars = new HashMap<Player, Object>();
 
 	// static filling of the items array
 	static {
@@ -204,7 +205,7 @@ public abstract class Arena {
 			} catch (Exception e) {
 				PVPArena.lang.log_error("filecreateerror", "config_" + name);
 			}
-		ConfigManager.configParse("arena", this, configFile);
+		ConfigManager.configParse(this, configFile);
 	}
 
 	/*
@@ -249,311 +250,42 @@ public abstract class Arena {
 		db.i("parsing command: " + db.formatStringArray(args));
 
 		if (args == null || args.length < 1) {
-			// just /pa or /pvparena
-			String error = ConfigManager.isSetup(this);
-			if (error != null) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("arenanotsetup", error));
-				return true;
-			}
-			if (!PVPArena.instance.hasPerms(player)) {
-				ArenaManager
-						.tellPlayer(player, PVPArena.lang.parse("permjoin"));
-				return true;
-			}
-			if (!randomlySelectTeams) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("selectteam"));
-				return true;
-			}
-			if (savedPlayerVars.containsKey(player)) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("alreadyjoined"));
-				return true;
-			}
-			if (fightInProgress) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("fightinprogress"));
-				return true;
-			}
-			if (tooFarAway(player)) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("joinrange"));
-				return true;
-			}
-			if (PVPArena.instance.getMethod() != null) {
-				MethodAccount ma = PVPArena.instance.getMethod().getAccount(
-						player.getName());
-				if (ma == null) {
-					db.s("Account not found: " + player.getName());
-					return true;
-				}
-				if (!ma.hasEnough(entryFee)) {
-					// no money, no entry!
-					ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-							"notenough",
-							PVPArena.instance.getMethod().format(entryFee)));
-					return true;
-				}
-			}
-
-			prepare(player);
-			playerManager.setLives(player, (byte) maxLives);
-			if ((PVPArena.instance.getMethod() != null) && (entryFee > 0)) {
-				MethodAccount ma = PVPArena.instance.getMethod().getAccount(
-						player.getName());
-				ma.subtract(entryFee);
-			}
-			chooseColor(player);
-			prepareInventory(player);
-			return true;
+			return CommandManager.parseJoin(this, player);
 		}
 
 		if (args.length == 1) {
 
 			if (args[0].equalsIgnoreCase("enable")) {
-				if (!PVPArena.instance.hasAdminPerms(player)) {
-					ArenaManager.tellPlayer(
-							player,
-							PVPArena.lang.parse("nopermto",
-									PVPArena.lang.parse("enable")));
-					return true;
-				}
-				enabled = true;
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("enabled"));
-				return true;
+				return CommandManager.parseToggle(this, player, "enable");
 			} else if (args[0].equalsIgnoreCase("disable")) {
-				if (!PVPArena.instance.hasAdminPerms(player)) {
-					ArenaManager.tellPlayer(
-							player,
-							PVPArena.lang.parse("nopermto",
-									PVPArena.lang.parse("disable")));
-					return true;
-				}
-				enabled = false;
-				ArenaManager
-						.tellPlayer(player, PVPArena.lang.parse("disabled"));
+				return CommandManager.parseToggle(this, player, "disable");
 			} else if (args[0].equalsIgnoreCase("reload")) {
-				if (!PVPArena.instance.hasAdminPerms(player)) {
-					ArenaManager.tellPlayer(
-							player,
-							PVPArena.lang.parse("nopermto",
-									PVPArena.lang.parse("reload")));
-					return true;
-				}
-				PVPArena.instance.load_config();
-				ArenaManager
-						.tellPlayer(player, PVPArena.lang.parse("reloaded"));
-				return true;
+				return CommandManager.parseReload(player);
+			} else if (args[0].equalsIgnoreCase("check")) {
+				return CommandManager.parseCheck(this, player);
+			} else if (args[0].equalsIgnoreCase("info")) {
+				return CommandManager.parseInfo(this, player);
 			} else if (args[0].equalsIgnoreCase("list")) {
-				if (playerManager.countPlayersInTeams() < 1) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("noplayer"));
-					return true;
-				}
-				String plrs = playerManager.getTeamStringList(paTeams);
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("players")
-						+ ": " + plrs);
-				return true;
+				return CommandManager.parseList(this, player);
 			} else if (args[0].equalsIgnoreCase("watch")) {
-
-				String error = ConfigManager.isSetup(this);
-				if (error != null) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("arenanotsetup", error));
-					return true;
-				}
-				if (playerManager.getTeam(player) != null) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("alreadyjoined"));
-					return true;
-				}
-				tpPlayerToCoordName(player, "spectator");
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("specwelcome"));
-				return true;
+				return CommandManager.parseWatch(this, player);
 			} else if (args[0].equalsIgnoreCase("teams")) {
-				String team[] = StatsManager.getTeamStats(this).split(";");
-				int i = 0;
-				for (String sTeam : paTeams.keySet())
-					player.sendMessage(PVPArena.lang.parse("teamstat",
-							ChatColor.valueOf(paTeams.get(sTeam)) + sTeam,
-							team[i++], team[i++]));
-				return true;
+				return CommandManager.parseTeams(this, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
-				// wins are suffixed with "_"
-				Map<String, Integer> players = StatsManager
-						.getPlayerStats(this);
-
-				int wcount = 0;
-
-				for (String name : players.keySet())
-					if (name.endsWith("_"))
-						wcount++;
-
-				String[][] wins = new String[wcount][2];
-				String[][] losses = new String[players.size() - wcount][2];
-				int iw = 0;
-				int il = 0;
-
-				for (String name : players.keySet()) {
-					if (name.endsWith("_")) {
-						// playername_ => win
-						wins[iw][0] = name.substring(0, name.length() - 1);
-						wins[iw++][1] = String.valueOf(players.get(name));
-					} else {
-						// playername => lose
-						losses[il][0] = name;
-						losses[il++][1] = String.valueOf(players.get(name));
-					}
-				}
-				wins = ArenaManager.sort(wins);
-				losses = ArenaManager.sort(losses);
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("top5win"));
-
-				for (int w = 0; w < wins.length && w < 5; w++) {
-					ArenaManager.tellPlayer(player, wins[w][0] + ": "
-							+ wins[w][1] + " " + PVPArena.lang.parse("wins"));
-				}
-
-				ArenaManager.tellPlayer(player, "------------");
-				ArenaManager
-						.tellPlayer(player, PVPArena.lang.parse("top5lose"));
-
-				for (int l = 0; l < losses.length && l < 5; l++) {
-					ArenaManager.tellPlayer(player,
-							losses[l][0] + ": " + losses[l][1] + " "
-									+ PVPArena.lang.parse("losses"));
-				}
-				return true;
+				return CommandManager.parseUsers(this, player);
+			} else if (args[0].equalsIgnoreCase("region")) {
+				return CommandManager.parseRegion(this, player);
 			} else if (paTeams.get(args[0]) != null) {
-
-				// /pa [team] or /pvparena [team]
-
-				String error = ConfigManager.isSetup(this);
-				if (error != null) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("arenanotsetup", error));
-					return true;
-				}
-				if (!PVPArena.instance.hasPerms(player)) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("permjoin"));
-					return true;
-				}
-				if (!(manuallySelectTeams)) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("notselectteam"));
-					return true;
-				}
-				if (savedPlayerVars.containsKey(player)) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("alreadyjoined"));
-					return true;
-				}
-				if (fightInProgress) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("fightinprogress"));
-					return true;
-				}
-				if (tooFarAway(player)) {
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("joinrange"));
-					return true;
-				}
-
-				if (PVPArena.instance.getMethod() != null) {
-					MethodAccount ma = PVPArena.instance.getMethod()
-							.getAccount(player.getName());
-					if (ma == null) {
-						db.s("Account not found: " + player.getName());
-						return true;
-					}
-					if (!ma.hasEnough(entryFee)) {
-						// no money, no entry!
-						ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-								"notenough", PVPArena.instance.getMethod()
-										.format(entryFee)));
-						return true;
-					}
-				}
-
-				prepare(player);
-				playerManager.setLives(player, (byte) maxLives);
-
-				if ((PVPArena.instance.getMethod() != null) && (entryFee > 0)) {
-					MethodAccount ma = PVPArena.instance.getMethod()
-							.getAccount(player.getName());
-					ma.subtract(entryFee);
-				}
-
-				tpPlayerToCoordName(player, args[0] + "lounge");
-				playerManager.setTeam(player, args[0]);
-				ArenaManager.tellPlayer(
-						player,
-						PVPArena.lang.parse("youjoined",
-								ChatColor.valueOf(paTeams.get(args[0]))
-										+ args[0]));
-				playerManager.tellEveryoneExcept(player, PVPArena.lang.parse(
-						"playerjoined", player.getName(),
-						ChatColor.valueOf(paTeams.get(args[0])) + args[0]));
-
+				return CommandManager.parseJoinTeam(this, player, args[0]);
 			} else if (PVPArena.instance.hasAdminPerms(player)) {
-				return parseAdminCommand(args, player);
+				return CommandManager.parseAdminCommand(this, player, args[0]);
 			} else {
 				ArenaManager.tellPlayer(player,
 						PVPArena.lang.parse("invalidcmd", "502"));
 				return false;
 			}
-			return true;
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
-			// /pa bet [name] [amount]
-			if (playerManager.getTeam(player) != null) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("betnotyours"));
-				return true;
-			}
-
-			if (PVPArena.instance.getMethod() == null)
-				return true;
-
-			Player p = Bukkit.getPlayer(args[1]);
-
-			if ((paTeams.get(args[1]) == null)
-					&& (playerManager.getTeam(p) == null)) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("betoptions"));
-				return true;
-			}
-
-			double amount = 0;
-
-			try {
-				amount = Double.parseDouble(args[2]);
-			} catch (Exception e) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("invalidamount", args[2]));
-				return true;
-			}
-			MethodAccount ma = PVPArena.instance.getMethod().getAccount(
-					player.getName());
-			if (ma == null) {
-				db.s("Account not found: " + player.getName());
-				return true;
-			}
-			if (!ma.hasEnough(entryFee)) {
-				// no money, no entry!
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-						"notenough",
-						PVPArena.instance.getMethod().format(amount)));
-				return true;
-			}
-			ma.subtract(amount);
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("betplaced", args[1]));
-			playerManager.paPlayersBetAmount.put(player.getName() + ":"
-					+ args[1], amount);
-			return true;
+			return CommandManager.parseBetCommand(this, player, args);
 		}
 
 		if (!PVPArena.instance.hasAdminPerms(player)) {
@@ -562,16 +294,14 @@ public abstract class Arena {
 			return false;
 		}
 
-		if ((args.length < 2) || (!args[0].equalsIgnoreCase("region"))) {
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "504"));
-			return false;
-		}
+		/*
+		 * remaining commands: pa [name] region [regionname] pa [name] region
+		 * remove [regionname]
+		 */
 
-		File f = new File("plugins/pvparena", "config_" + name + ".yml");
 		YamlConfiguration config = new YamlConfiguration();
 		try {
-			config.load(f);
+			config.load(configFile);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -579,19 +309,13 @@ public abstract class Arena {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		;
 
-		if (args.length < 2) {
-			// /pa [name] region
-			if (!Arena.regionmodify.equals("")) {
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-						"regionalreadybeingset", Arena.regionmodify));
-				return true;
-			}
-			Arena.regionmodify = name;
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse("regionset"));
-			return true;
+		if (!checkRegionCommand(args[1])) {
+			ArenaManager.tellPlayer(player,
+					PVPArena.lang.parse("invalidcmd", "504"));
+			return false;
 		}
+
 		if (args.length == 2) {
 			// pa [name] region [regionname]
 			if (Arena.regionmodify.equals("")) {
@@ -599,42 +323,46 @@ public abstract class Arena {
 						PVPArena.lang.parse("regionnotbeingset", name));
 				return true;
 			}
-			Vector v1 = pos1.toVector();
-			Vector v2 = pos2.toVector();
-			config.set("protection.regions." + args[1] + ".min", v1.getX()
-					+ ", " + v1.getY() + ", " + v1.getZ());
-			config.set("protection.regions." + args[1] + ".max", v2.getX()
-					+ ", " + v2.getY() + ", " + v2.getZ());
+			
+			Vector realMin = new Vector(
+					Math.min(pos1.getBlockX(), pos2.getBlockX()),
+					Math.min(pos1.getBlockY(), pos2.getBlockY()),
+					Math.min(pos1.getBlockZ(), pos2.getBlockZ()));
+			Vector realMax = new Vector(
+					Math.max(pos1.getBlockX(), pos2.getBlockX()),
+					Math.max(pos1.getBlockY(), pos2.getBlockY()),
+					Math.max(pos1.getBlockZ(), pos2.getBlockZ()));
+
+			config.set("protection.regions." + args[1] + ".min", realMin.getX()
+					+ ", " + realMin.getY() + ", " + realMin.getZ());
+			config.set("protection.regions." + args[1] + ".max", realMax.getX()
+					+ ", " + realMax.getY() + ", " + realMax.getZ());
 			config.set("protection.regions." + args[1] + ".world", player
 					.getWorld().getName());
 			regions.put(args[1], new PARegion(args[1], pos1, pos2));
 			pos1 = null;
 			pos2 = null;
 			try {
-				config.save(f);
+				config.save(configFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			Arena.regionmodify = "";
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("regionsaved"));
+			return true;
 		}
+
 		if (args.length != 3) {
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("invalidcmd", "505"));
 			return false;
 		}
 
-		if (!checkRegionCommand(args[2])) {
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "506"));
-			return false;
-		}
-
-		if (args[1].equalsIgnoreCase("remove")) {
-			if (config.get("protection.regions." + args[2]) != null) {
-				config.set("protection.regions." + args[2], null);
+		if (args[2].equalsIgnoreCase("remove")) {
+			if (config.get("protection.regions." + args[1]) != null) {
+				config.set("protection.regions." + args[1], null);
 				try {
-					config.save(f);
+					config.save(configFile);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -656,7 +384,7 @@ public abstract class Arena {
 				|| s.equals("battlefield")) {
 			return true;
 		}
-		if (this instanceof CTFArena) {
+		if (this.getType().equals("ctf")) {
 			if (s.equals("lounge")) {
 				return true;
 			}
@@ -673,7 +401,7 @@ public abstract class Arena {
 	/*
 	 * returns "is player too far away"
 	 */
-	private boolean tooFarAway(Player player) {
+	public boolean tooFarAway(Player player) {
 		if (joinRange < 1)
 			return false;
 
@@ -690,95 +418,6 @@ public abstract class Arena {
 		Vector bvdiff = (Vector) bvmin.getMidpoint(bvmax);
 
 		return (joinRange < bvdiff.distance(player.getLocation().toVector()));
-	}
-
-	/*
-	 * process administration commands
-	 * 
-	 * - check for known/required location names - set locations
-	 */
-	boolean parseAdminCommand(String[] args, Player player) {
-
-		db.i("parsing admin command: " + db.formatStringArray(args));
-		if (args[0].equalsIgnoreCase("spectator")) {
-			setCoords(player, "spectator");
-			ArenaManager
-					.tellPlayer(player, PVPArena.lang.parse("setspectator"));
-		} else if (args[0].equalsIgnoreCase("exit")) {
-			setCoords(player, "exit");
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse("setexit"));
-		} else if (args[0].equalsIgnoreCase("forcestop")) {
-			if (fightInProgress) {
-				forcestop();
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("forcestop"));
-			} else {
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
-			}
-		} else if (args[0].equalsIgnoreCase("forcestop")) {
-			if (fightInProgress) {
-				forcestop();
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("forcestop"));
-			} else {
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
-			}
-		} else if (randomSpawn && (args[0].startsWith("spawn"))) {
-			setCoords(player, args[0]);
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("setspawn", args[0]));
-		} else {
-			// no random or not trying to set custom spawn
-			if ((!isLoungeCommand(args, player))
-					&& (!isSpawnCommand(args, player))
-					&& (!isCustomCommand(args, player))) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("invalidcmd", "501"));
-				return false;
-			}
-			// else: command lounge or spawn :)
-		}
-		return true;
-	}
-
-	public boolean isCustomCommand(String[] args, Player player) {
-		return false;
-	}
-
-	/*
-	 * returns "is spawn-set command"
-	 */
-	public boolean isSpawnCommand(String[] args, Player player) {
-		if (args[0].endsWith("spawn")) {
-			String sName = args[0].replace("spawn", "");
-			if (paTeams.get(sName) == null)
-				return false;
-
-			setCoords(player, args[0]);
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("setspawn", sName));
-			return true;
-		}
-		return false;
-	}
-
-	/*
-	 * returns "is lounge-set command"
-	 */
-	public boolean isLoungeCommand(String[] args, Player player) {
-		if (args[0].endsWith("lounge")) {
-			String color = args[0].replace("lounge", "");
-			if (paTeams.containsKey(color)) {
-				setCoords(player, args[0]);
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("setlounge", color));
-				return true;
-			}
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "506"));
-			return true;
-		}
-		return false;
 	}
 
 	/*
@@ -1080,7 +719,7 @@ public abstract class Arena {
 	 * stick a player into a team, based on calcFreeTeam
 	 */
 	public void chooseColor(Player player) {
-		if (playerManager.getTeam(player) == null) {
+		if (playerManager.getTeam(player).equals("")) {
 			String team = calcFreeTeam();
 			db.i("team found: " + team);
 			tpPlayerToCoordName(player, team + "lounge");
@@ -1214,12 +853,13 @@ public abstract class Arena {
 		player.setSaturation(20);
 		player.setExhaustion(0);
 		player.setGameMode(GameMode.getByValue(0));
+		playerManager.addPlayer(player);
 	}
 
 	/*
 	 * prepare a player inventory for arena start
 	 */
-	private void prepareInventory(Player player) {
+	public void prepareInventory(Player player) {
 		saveInventory(player);
 		clearInventory(player);
 	}
@@ -1257,19 +897,23 @@ public abstract class Arena {
 	 * return "vector is inside an arena region"
 	 */
 	public boolean contains(Vector pt) {
+		db.i("----------------CONTAINS-------------");
 		db.i("checking for vector: x: " + pt.getBlockX() + ", y:"
 				+ pt.getBlockY() + ", z: " + pt.getBlockZ());
 		if (regions.get("battlefield") != null) {
+			db.i("checking battlefield");
 			if (regions.get("battlefield").contains(pt)) {
 				return true;
 			}
 		}
 		if (checkExitRegion && regions.get("exit") != null) {
+			db.i("checking exit region");
 			if (regions.get("exit").contains(pt)) {
 				return true;
 			}
 		}
 		if (checkSpectatorRegion && regions.get("spectator") != null) {
+			db.i("checking spectator region");
 			if (regions.get("spectator").contains(pt)) {
 				return true;
 			}
@@ -1277,8 +921,12 @@ public abstract class Arena {
 		if (!checkLoungesRegion) {
 			return false;
 		}
-
+		db.i("checking regions:");
 		for (PARegion reg : regions.values()) {
+			if (!reg.name.endsWith("lounge"))
+				continue;
+
+			db.i(" - " + reg.name);
 			if (reg.contains(pt)) {
 				return true;
 			}
@@ -1297,6 +945,7 @@ public abstract class Arena {
 			return false;
 		List<String> activeteams = new ArrayList<String>(0);
 		String team = "";
+		
 		for (String sTeam : playerManager.getPlayerTeamMap().keySet()) {
 			if (activeteams.size() < 1) {
 				// fresh map
@@ -1329,7 +978,7 @@ public abstract class Arena {
 				StatsManager.addLoseStat(z, team, this);
 				resetPlayer(z, sTPlose);
 			}
-			playerManager.setClass(z, null);
+			playerManager.setClass(z, "");
 		}
 
 		if (PVPArena.instance.getMethod() != null) {
@@ -1369,8 +1018,8 @@ public abstract class Arena {
 	 */
 	public void removePlayer(Player player, String tploc) {
 		resetPlayer(player, tploc);
-		playerManager.setTeam(player, null);
-		playerManager.setClass(player, null);
+		playerManager.setTeam(player, "");
+		playerManager.setClass(player, "");
 	}
 
 	/*
@@ -1451,7 +1100,7 @@ public abstract class Arena {
 		String sClass = "exit";
 		if (playerManager.getRespawn(player) != null) {
 			sClass = playerManager.getRespawn(player);
-		} else if (playerManager.getClass(player) != null) {
+		} else if (!playerManager.getClass(player).equals("")) {
 			sClass = playerManager.getClass(player);
 		}
 		if (!sClass.equalsIgnoreCase("custom")) {
@@ -1850,12 +1499,16 @@ public abstract class Arena {
 		cleanSigns();
 		clearArena();
 		fightInProgress = false;
-		playerManager.reset();
+		playerManager.reset(this);
 		if (SPAWN_ID > -1)
 			Bukkit.getScheduler().cancelTask(SPAWN_ID);
 		SPAWN_ID = -1;
 		if (END_ID > -1)
 			Bukkit.getScheduler().cancelTask(END_ID);
 		END_ID = -1;
+	}
+
+	public String getType() {
+		return "team";
 	}
 }

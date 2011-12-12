@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.12 - set flag positions
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
@@ -34,7 +35,6 @@ import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.ConfigManager;
-import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatsManager;
 
 public class CTFArena extends Arena {
@@ -76,9 +76,12 @@ public class CTFArena extends Arena {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
-		config.addDefault("teams.custom.red", ChatColor.RED.name());
-		config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
-		config.options().copyDefaults(true);
+		if (config.get("teams.custom") == null) {
+			db.i("no teams defined, adding custom red and blue!");
+			config.addDefault("teams.custom.red", ChatColor.RED.name());
+			config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
+			config.options().copyDefaults(true);
+		}
 		try {
 			config.save(configFile);
 		} catch (IOException e) {
@@ -89,8 +92,9 @@ public class CTFArena extends Arena {
 
 		for (String sTeam : tempMap.keySet()) {
 			this.paTeams.put(sTeam, (String) tempMap.get(sTeam));
+			db.i("added team " + sTeam + " => " + this.paTeams.get(sTeam));
 		}
-		ConfigManager.configParse("ctf", this, configFile);
+		ConfigManager.configParse(this, configFile);
 	}
 
 	/*
@@ -124,7 +128,7 @@ public class CTFArena extends Arena {
 						.equals(team)) {
 					StatsManager.addLoseStat(z, team, this);
 					resetPlayer(z, sTPlose);
-					playerManager.setClass(z, null);
+					playerManager.setClass(z, "");
 				}
 			}
 
@@ -146,7 +150,7 @@ public class CTFArena extends Arena {
 				StatsManager.addWinStat(z, team, this);
 				resetPlayer(z, sTPwin);
 				giveRewards(z); // if we are the winning team, give reward!
-				playerManager.setClass(z, null);
+				playerManager.setClass(z, "");
 				winteam = team;
 			}
 		}
@@ -187,21 +191,6 @@ public class CTFArena extends Arena {
 				CommitEnd(team);
 			}
 		}
-	}
-
-	@Override
-	public boolean isCustomCommand(String[] args, Player player) {
-		if (args[0].endsWith("flag")) {
-			String sName = args[0].replace("flag", "");
-			if (paTeams.get(sName) == null)
-				return false;
-
-			setCoords(player, args[0]);
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("setflag", sName));
-			return true;
-		}
-		return false;
 	}
 
 	/*
@@ -301,5 +290,10 @@ public class CTFArena extends Arena {
 			PVPArena.lang.parse("flagsave", scPlayer, scFlagTeam);
 			paTeamFlags.remove(flagTeam);
 		}
+	}
+	
+	@Override
+	public String getType() {
+		return "ctf";
 	}
 }

@@ -3,7 +3,7 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
@@ -81,16 +81,16 @@ public class HelpManager {
 						+ "---  Admin Commands  ---");
 				ArenaManager.tellPlayer(player, ChatColor.RED
 						+ "/pa help info admin reload" + ChatColor.WHITE
-						+ " | for help with reloading");
+						+ " | reloading");
 				ArenaManager.tellPlayer(player, ChatColor.RED
 						+ "/pa help info admin remove" + ChatColor.WHITE
-						+ " | for help with removing");
+						+ " | removing");
 				ArenaManager.tellPlayer(player, ChatColor.RED
 						+ "/pa help info admin disable" + ChatColor.WHITE
-						+ " | for help with disabling");
+						+ " | disabling");
 				ArenaManager.tellPlayer(player, ChatColor.RED
 						+ "/pa help info admin forcestop" + ChatColor.WHITE
-						+ " | for help with force-stopping");
+						+ " | force-stopping");
 
 			} else {
 
@@ -317,17 +317,19 @@ public class HelpManager {
 				} else {
 
 					ArenaManager.tellPlayer(player, ChatColor.RED
+							+ "---  Admin Commands  ---");
+					ArenaManager.tellPlayer(player, ChatColor.RED
 							+ "/pa help info admin reload" + ChatColor.WHITE
-							+ " | for help with reloading");
+							+ " | reloading");
 					ArenaManager.tellPlayer(player, ChatColor.RED
 							+ "/pa help info admin remove" + ChatColor.WHITE
-							+ " | for help with removing");
+							+ " | removing");
 					ArenaManager.tellPlayer(player, ChatColor.RED
 							+ "/pa help info admin disable" + ChatColor.WHITE
-							+ " | for help with disabling");
+							+ " | disabling");
 					ArenaManager.tellPlayer(player, ChatColor.RED
 							+ "/pa help info admin forcestop" + ChatColor.WHITE
-							+ " | for help with force-stopping");
+							+ " | force-stopping");
 
 				}
 
@@ -337,7 +339,7 @@ public class HelpManager {
 
 			}
 		}
-		return false;
+		return true;
 	}
 
 	private static void helpList(Player player) {

@@ -3,7 +3,7 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 
 public class PAPlayer {
 	private Player player = null;
-	private String team = null;
-	private String fightClass = null;
+	private String team = "";
+	private String fightClass = "";
 	private String respawn = null;
 	private Location location = null;
 	private Byte lives = 0;

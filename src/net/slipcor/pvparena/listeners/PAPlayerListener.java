@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.13 - Telepass via Permission
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
@@ -126,7 +127,7 @@ public class PAPlayerListener extends PlayerListener {
 			return; // no fighting player => OUT
 		db.i("onPlayerQuit: fighting player");
 		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
-		if (color != null) {
+		if (!color.equals("")) {
 			arena.playerManager.tellEveryoneExcept(
 					player,
 					PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
@@ -286,10 +287,10 @@ public class PAPlayerListener extends PlayerListener {
 		db.i("arena: " + (arena == null ? null : arena.name));
 		if (arena != null) {
 			db.i("fight: " + arena.fightInProgress);
-			db.i("instanceof: " + (arena instanceof CTFArena));
+			db.i("instanceof: " + (arena.getType().equals("ctf")));
 		}
 		if (arena != null && arena.fightInProgress
-				&& (arena instanceof CTFArena)) {
+				&& (arena.getType().equals("ctf"))) {
 			db.i("onInteract: CTF");
 			CTFArena ca = (CTFArena) arena;
 			ca.checkInteract(player);
@@ -310,7 +311,7 @@ public class PAPlayerListener extends PlayerListener {
 
 				if ((arena.paClassItems.containsKey(sign.getLine(0)) || (sign
 						.getLine(0).equalsIgnoreCase("custom")))
-						&& (arena.playerManager.getTeam(player) != null)) {
+						&& (!arena.playerManager.getTeam(player).equals(""))) {
 
 					YamlConfiguration config = new YamlConfiguration();
 					try {
@@ -343,7 +344,7 @@ public class PAPlayerListener extends PlayerListener {
 
 					int i = 0;
 
-					if (arena.playerManager.getClass(player) != null) {
+					if (!arena.playerManager.getClass(player).equals("")) {
 						db.i("removing player from sign");
 						// already selected class, remove it!
 						Sign sSign = (Sign) arena.playerManager
@@ -464,9 +465,9 @@ public class PAPlayerListener extends PlayerListener {
 					+ "?");
 			if (block.getTypeId() == mMat.getId()) {
 				db.i("clicked ready block!");
-				if (arena.playerManager.getTeam(player) == null)
+				if (arena.playerManager.getTeam(player).equals(""))
 					return; // not a fighting player => OUT
-				if (arena.playerManager.getClass(player) == null)
+				if (arena.playerManager.getClass(player).equals(""))
 					return; // not a fighting player => OUT
 
 				String color = arena.playerManager.getTeam(player);

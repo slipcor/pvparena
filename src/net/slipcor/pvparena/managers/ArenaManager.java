@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.3.14 - timed arena modes
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
- *
+ * 
+ *     v0.3.14 - timed arena modes
  *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
@@ -265,16 +266,9 @@ public class ArenaManager {
 		db.i("unloading arena " + a.name);
 		a.forcestop();
 		arenas.remove(string);
-		File path;
-		if (a instanceof FreeArena) {
-			path = new File("plugins/pvparena/config.free_" + string + ".yml");
-		} else if (a instanceof CTFArena) {
-			path = new File("plugins/pvparena/config.ctf_" + string + ".yml");
-		} else {
-			path = new File("plugins/pvparena/config_" + string + ".yml");
-		}
+		a.configFile.delete();
+		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
-		path = new File("plugins/pvparena/stats_" + string + ".yml");
-		path.delete();
+		a = null;
 	}
 }

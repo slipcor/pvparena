@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
@@ -55,8 +56,12 @@ public class FreeArena extends Arena {
 						+ name);
 			}
 
-		ConfigManager.configParse("free", this, configFile);
-
+		ConfigManager.configParse(this, configFile);
+		db.i("FreeFight Arena default overrides START");
+		db.i("+teamKilling, -manualTeamSelect, +randomTeamSelect,");
+		db.i("-forceWoolHead, -forceEven, +randomSpawn");
+		db.i("only one team: free");
+		db.i("FreeFight Arena default overrides END");
 		this.teamKilling = true;
 		this.manuallySelectTeams = false;
 		this.randomlySelectTeams = true;
@@ -66,30 +71,7 @@ public class FreeArena extends Arena {
 		paTeams.clear();
 		paTeams.put("free", ChatColor.WHITE.name());
 	}
-
-	/*
-	 * returns "is spawn-set command"
-	 */
-	@Override
-	public boolean isSpawnCommand(String[] args, Player player) {
-		if (args[0].equalsIgnoreCase("lounge")) {
-			setCoords(player, "lounge");
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse("setlounge"));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isLoungeCommand(String[] args, Player player) {
-		if (args[0].equalsIgnoreCase("lounge")) {
-			setCoords(player, "lounge");
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse("setlounge"));
-			return true;
-		}
-		return false;
-	}
-
+	
 	/*
 	 * stick a player into the standard team
 	 */
@@ -133,9 +115,14 @@ public class FreeArena extends Arena {
 			StatsManager.addWinStat(z, "free", this);
 			resetPlayer(z, sTPwin);
 			giveRewards(z); // if we are the winning team, give reward!
-			playerManager.setClass(z, null);
+			playerManager.setClass(z, "");
 		}
 		reset();
 		return true;
+	}
+	
+	@Override
+	public String getType() {
+		return "free";
 	}
 }

@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
+ *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.11 - set regions for lounges, spectator, exit
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
@@ -67,6 +68,7 @@ public class PVPArena extends JavaPlugin {
 	// global vars for global static access
 	public static PVPArena instance;
 	public static final LanguageManager lang = new LanguageManager();
+	private static DebugManager db = new DebugManager();
 
 	public final Logger log = Logger.getLogger("Minecraft");
 
@@ -87,7 +89,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		PVPArena.instance = this;
-		// com.arandomappdev.bukkitstats.CallHome.load(this);
+		com.arandomappdev.bukkitstats.CallHome.load(this);
 		setupPermissions();
 		PluginDescriptionFile pdfFile = getDescription();
 
@@ -241,22 +243,28 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		String sName = args[0];
-		String[] newArgs = new String[args.length - 1];
-		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 
 		Arena arena = ArenaManager.getArenaByName(sName);
 		if (arena == null) {
-			if (ArenaManager.count() == 1)
+			db.i("arena not found, searching...");
+			if (ArenaManager.count() == 1) {
 				arena = ArenaManager.getFirst();
-			else if (ArenaManager.getArenaByName("default") != null)
+			db.i("found 1 arena: "+arena.name);
+			} else if (ArenaManager.getArenaByName("default") != null) {
 				arena = ArenaManager.getArenaByName("default");
-			else {
+			db.i("found default arena!");
+			} else {
 				ArenaManager.tellPlayer(player,
 						lang.parse("arenanotexists", sName));
 				return true;
 			}
+			return arena.parseCommand(player, args);
 		}
+
+		String[] newArgs = new String[args.length - 1];
+		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 		return arena.parseCommand(player, newArgs);
+		
 	}
 
 	/*

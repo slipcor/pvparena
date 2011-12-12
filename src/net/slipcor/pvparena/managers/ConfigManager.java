@@ -3,7 +3,7 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.0 - mayor rewrite, improved help
+ * version: v0.4.1 - command manager, arena information and arena config check
  * 
  * history:
  * 
@@ -15,6 +15,7 @@ package net.slipcor.pvparena.managers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,11 +29,11 @@ import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PARegion;
 import net.slipcor.pvparena.arenas.Arena;
-import net.slipcor.pvparena.arenas.CTFArena;
 
 public class ConfigManager {
+	private static DebugManager db = new DebugManager();
 
-	public static void configParse(String s, Arena arena, File configFile) {
+	public static void configParse(Arena arena, File configFile) {
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);
@@ -64,7 +65,7 @@ public class ConfigManager {
 		// prevent actually dying in an arena
 		config.addDefault("general.preventDeath", Boolean.valueOf(false));
 
-		if (!s.equals("free")) {
+		if (arena.getType().equals("free")) {
 			// enforce a wool head in case we dont have Spout installed
 			config.addDefault("general.woolhead", Boolean.valueOf(false));
 			// require even teams
@@ -102,7 +103,7 @@ public class ConfigManager {
 		// off | death:[diff] | time:[diff]
 		config.addDefault("general.powerups", "off");
 
-		if (!s.equals("free") && config.get("teams") == null) {
+		if (!arena.getType().equals("free") && config.get("teams") == null) {
 			config.addDefault("teams.team-killing-enabled",
 					Boolean.valueOf(false));
 			config.addDefault("teams.manually-select-teams",
@@ -124,6 +125,7 @@ public class ConfigManager {
 		for (String className : classes.keySet()) {
 			arena.paClassItems.put(className,
 					config.getString("classes." + className + ".items", null));
+			db.i("adding class item to class "+className+": "+config.getString("classes." + className + ".items", null));
 		}
 
 		HashMap<String, Object> powerups = new HashMap<String, Object>();
@@ -132,7 +134,7 @@ public class ConfigManager {
 					.getConfigurationSection("powerups").getValues(false);
 			HashMap<String, Object> map2 = new HashMap<String, Object>();
 			HashMap<String, Object> map3 = new HashMap<String, Object>();
-
+			db.i("parsing powerups");
 			for (String key : map.keySet()) {
 				// key e.g. "OneUp"
 				map2 = (HashMap<String, Object>) config
@@ -143,7 +145,9 @@ public class ConfigManager {
 					// kkey e.g. "dmg_receive"
 					if (kkey.equals("item")) {
 						temp_map.put(kkey, String.valueOf(map2.get(kkey)));
+						db.i(key + " => " + kkey + " => " + String.valueOf(map2.get(kkey)));
 					} else {
+						db.i(key + " => " + kkey + " => " + parseList(map3.values()));
 						map3 = (HashMap<String, Object>) config
 								.getConfigurationSection(
 										"powerups." + key + "." + kkey)
@@ -226,6 +230,8 @@ public class ConfigManager {
 						getRegionFromConfigNode(rName, config, arena));
 			}
 		} else if (config.get("protection.region") != null) {
+
+			db.i("legacy battlefield import");
 			String[] min1 = config.getString("protection.region.min").split(
 					", ");
 			String[] max1 = config.getString("protection.region.max").split(
@@ -243,10 +249,21 @@ public class ConfigManager {
 
 			Vector v1 = min.toVector();
 			Vector v2 = max.toVector();
-			config.set("protection.regions.battlefield.min", v1.getX() + ", "
-					+ v1.getY() + ", " + v1.getZ());
-			config.set("protection.regions.battlefield.max", v2.getX() + ", "
-					+ v2.getY() + ", " + v2.getZ());
+			
+			Vector realMin = new Vector(
+					Math.min(v1.getBlockX(), v2.getBlockX()),
+					Math.min(v1.getBlockY(), v2.getBlockY()),
+					Math.min(v1.getBlockZ(), v2.getBlockZ()));
+			Vector realMax = new Vector(
+					Math.max(v1.getBlockX(), v2.getBlockX()),
+					Math.max(v1.getBlockY(), v2.getBlockY()),
+					Math.max(v1.getBlockZ(), v2.getBlockZ()));
+			
+			
+			config.set("protection.regions.battlefield.min", realMin.getX() + ", "
+					+ realMin.getY() + ", " + realMin.getZ());
+			config.set("protection.regions.battlefield.max", realMax.getX() + ", "
+					+ realMax.getY() + ", " + realMax.getZ());
 			config.set("protection.regions.battlefield.world", world);
 			config.set("protection.region", null);
 
@@ -258,6 +275,17 @@ public class ConfigManager {
 		}
 	}
 
+	private static String parseList(Collection<Object> values) {
+		String s = "";
+		for (Object o : values) {
+			if (!s.equals("")) {
+				s += ",";
+			}
+			s += (String) o;
+		}
+		return s;
+	}
+
 	/*
 	 * setup check
 	 * 
@@ -265,11 +293,12 @@ public class ConfigManager {
 	 */
 	private static PARegion getRegionFromConfigNode(String string,
 			YamlConfiguration config, Arena arena) {
-		String[] min1 = config.getString("protection.regions.battlefield.min")
+		db.i("reading config region: "+arena.name + "=>" + string);
+		String[] min1 = config.getString("protection.regions."+string+".min")
 				.split(", ");
-		String[] max1 = config.getString("protection.regions.battlefield.max")
+		String[] max1 = config.getString("protection.regions."+string+".max")
 				.split(", ");
-		String world = config.getString("protection.regions.battlefield.world");
+		String world = config.getString("protection.regions."+string+".world");
 		Location min = new Location(Bukkit.getWorld(world),
 				new Double(min1[0]).doubleValue(),
 				new Double(min1[1]).doubleValue(),
@@ -307,7 +336,7 @@ public class ConfigManager {
 		if (!list.contains("exit"))
 			return "exit not set";
 
-		if (arena instanceof CTFArena) {
+		if (arena.getType().equals("ctf")) {
 			return isCTFsetup(arena, list);
 		}
 
