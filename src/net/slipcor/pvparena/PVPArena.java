@@ -40,6 +40,8 @@ package net.slipcor.pvparena;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.slipcor.pvparena.arenas.Arena;
@@ -113,6 +115,8 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener,
 				Event.Priority.Highest, this);
 
+		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.playerListener,
+				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,
@@ -135,7 +139,12 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener,
 				Event.Priority.Monitor, this);
 
+		List<String> blackList = new ArrayList<String>();
+		blackList.add("god");
+		blackList.add("time");
+		
 		getConfig().addDefault("debug", Boolean.valueOf(false));
+		getConfig().addDefault("blacklist", blackList);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
@@ -164,7 +173,7 @@ public class PVPArena extends JavaPlugin {
 
 		if (args == null || args.length < 1)
 			return false;
-
+		
 		if (args[0].equals("help")) {
 			return HelpManager.parseCommand(player, args);
 		}

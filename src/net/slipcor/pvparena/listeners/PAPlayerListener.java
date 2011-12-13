@@ -31,6 +31,7 @@ package net.slipcor.pvparena.listeners;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
@@ -49,6 +50,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -62,6 +64,27 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 public class PAPlayerListener extends PlayerListener {
 	private DebugManager db = new DebugManager();
 
+	@Override
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+		Player player = event.getPlayer();
+
+		Arena arena = ArenaManager.getArenaByPlayer(player);
+		if (arena == null) {
+			return; // no fighting player => OUT
+		}
+		
+		List<String> list = PVPArena.instance.getConfig().getStringList("blacklist");
+		db.i("checking command blacklist");
+		
+		for (String s : list) {
+			if (event.getMessage().startsWith("/" + s)) {
+				db.i("command blocked: " + s);
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
 	@Override
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();

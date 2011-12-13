@@ -3,11 +3,16 @@
  * 
  * author: slipcor
  * 
- * version: vv0.4.0 - mayor rewrite, improved help
+ * version: v0.4.3 - max / min bet
  * 
  * history:
  * 
- *     0.3.10 - CraftBukkit #1337 config version, rewrite
+ *     v0.4.1 - command manager, arena information and arena config check
+ * 
+ * history:
+ * 
+ *     v0.4.0 - mayor rewrite, improved help
+ *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
  *     v0.3.8 - BOSEconomy, rewrite
  *     v0.3.6 - CTF Arena
@@ -134,6 +139,8 @@ public class LanguageManager {
 				"Cannot place bets on your own match!");
 		config.addDefault("lang.betoptions",
 				"You can only bet on team name or arena player!");
+		config.addDefault("lang.wrongamount",
+				"Bet amount must be between %1% and %2%!");
 		config.addDefault("lang.invalidamount", "Invalid amount: %1%");
 		config.addDefault("lang.betplaced", "Your bet on %1% has been placed.");
 		config.addDefault("lang.regionset", "Setting region enabled.");

@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.3 - max / min bet
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  */
 
@@ -57,6 +58,7 @@ public class ConfigManager {
 		config.addDefault("general.tp.lose", "old"); // old || exit || spectator
 		config.addDefault("general.tp.exit", "exit"); // old || exit ||
 														// spectator
+		
 		// old || exit || spectator
 		config.addDefault("general.tp.death", "spectator");
 
@@ -102,6 +104,9 @@ public class ConfigManager {
 		config.addDefault("general.joinrange", Integer.valueOf(0));
 		// off | death:[diff] | time:[diff]
 		config.addDefault("general.powerups", "off");
+
+		config.addDefault("general.minbet", Double.valueOf(0));
+		config.addDefault("general.maxbet", Double.valueOf(0));
 
 		if (!arena.getType().equals("free") && config.get("teams") == null) {
 			config.addDefault("teams.team-killing-enabled",
@@ -221,6 +226,13 @@ public class ConfigManager {
 		arena.forceEven = config.getBoolean("general.forceeven", false);
 		arena.randomSpawn = config.getBoolean("general.randomSpawn", false);
 		arena.timed = config.getInt("general.timed", 0);
+
+		arena.minbet = config.getDouble("general.minbet");
+		arena.maxbet = config.getDouble("general.maxbet");
+		
+		if (arena.minbet > arena.maxbet) {
+			arena.maxbet = arena.minbet;
+		}
 
 		if (config.getConfigurationSection("protection.regions") != null) {
 			Map<String, Object> regs = config.getConfigurationSection(

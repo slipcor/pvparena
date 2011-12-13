@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.3 - max / min bet
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.12 - set flag positions
@@ -141,6 +142,9 @@ public abstract class Arena {
 	public int rewardAmount;
 	public int joinRange;
 	public boolean checkRegions;
+
+	public double maxbet = 0;
+	public double minbet = 0;
 
 	// Runnable IDs
 	int SPAWN_ID = -1;

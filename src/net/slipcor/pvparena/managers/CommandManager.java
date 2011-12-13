@@ -3,7 +3,7 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.3 - max / min bet
  * 
  * history:
  * 
@@ -311,9 +311,7 @@ public class CommandManager {
 			if ((!isLoungeCommand(arena, player, cmd))
 					&& (!isSpawnCommand(arena, player, cmd))
 					&& (!isCustomCommand(arena, player, cmd))) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("invalidcmd", "501"));
-				return false;
+				return CommandManager.parseJoin(arena, player);
 			}
 			// else: command lounge or spawn :)
 		}
@@ -396,7 +394,7 @@ public class CommandManager {
 	public static boolean parseBetCommand(Arena arena, Player player,
 			String[] args) {
 		// /pa bet [name] [amount]
-		if (!arena.playerManager.getTeam(player).equals("")) {
+		if (arena.playerManager.existsPlayer(player) && !arena.playerManager.getTeam(player).equals("")) {
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("betnotyours"));
 			return true;
@@ -429,13 +427,23 @@ public class CommandManager {
 			db.s("Account not found: " + player.getName());
 			return true;
 		}
-		if (!ma.hasEnough(arena.entryFee)) {
+		if (!ma.hasEnough(amount)) {
 			// no money, no entry!
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse(
 					"notenough",
 					PVPArena.instance.getMethod().format(amount)));
 			return true;
 		}
+		
+		if (amount < arena.minbet || (arena.maxbet > 0 && amount > arena.maxbet)) {
+			// wrong amount!
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse(
+					"wrongamount",
+					PVPArena.instance.getMethod().format(arena.minbet),
+					PVPArena.instance.getMethod().format(arena.maxbet)));
+			return true;
+		}
+		
 		ma.subtract(amount);
 		ArenaManager.tellPlayer(player,
 				PVPArena.lang.parse("betplaced", args[1]));
