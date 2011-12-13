@@ -471,18 +471,48 @@ public abstract class Arena {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
+			db.i("searching for spawns");
+
 			HashMap<String, Object> coords = (HashMap<String, Object>) config
 					.getConfigurationSection("coords").getValues(false);
-			for (String name : coords.keySet())
-				if (name.startsWith("spawn"))
+			for (String name : coords.keySet()) {
+				if (name.startsWith(place)) {
 					locs.put(i++, name);
+					db.i("found match: "+name);
+				}
+			}
 
 			Random r = new Random();
 
 			place = locs.get(r.nextInt(locs.size()));
 		}
-		if (config.get("coords." + place) == null)
-			return null;
+		if (config.get("coords." + place) == null) {
+			if (!place.contains("spawn")) {
+				db.i("place not found!");
+				return null;
+			}
+			//no exact match: assume we have multiple spawnpoints
+			HashMap<Integer, String> locs = new HashMap<Integer, String>();
+			int i = 0;
+
+			db.i("searching for team spawns");
+			
+			HashMap<String, Object> coords = (HashMap<String, Object>) config
+					.getConfigurationSection("coords").getValues(false);
+			for (String name : coords.keySet()) {
+				if (name.startsWith(place)) {
+					locs.put(i++, name);
+					db.i("found match: "+name);
+				}
+			}
+
+			if (locs.size() < 1) {
+				return null;
+			}
+			Random r = new Random();
+
+			place = locs.get(r.nextInt(locs.size()));
+		}
 		Double x = config.getDouble("coords." + place + ".x", 0.0D);
 		Double y = config.getDouble("coords." + place + ".y", 0.0D);
 		Double z = config.getDouble("coords." + place + ".z", 0.0D);
@@ -495,7 +525,7 @@ public abstract class Arena {
 	}
 
 	//
-	// ARE`NA PREPARE
+	// ARENA PREPARE
 	//
 
 	/*

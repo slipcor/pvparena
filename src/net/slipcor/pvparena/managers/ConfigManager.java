@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -355,14 +356,17 @@ public class ConfigManager {
 		if (arena.randomSpawn) {
 
 			// now we need a spawn and lounge for every team
+			
+			db.i("parsing random");
 
 			Iterator<String> iter = list.iterator();
 			int spawns = 0;
 			int lounges = 0;
 			while (iter.hasNext()) {
 				String s = iter.next();
-				if (s.equals("lounge"))
-					continue; // ctf setup remains, skip!
+				db.i("parsing '"+s+"'");
+				if (s.equals("lounge") && arena.getType().equals("team"))
+					continue; // skip except for FREE
 				if (s.startsWith("spawn"))
 					spawns++;
 				if (s.endsWith("lounge"))
@@ -376,15 +380,31 @@ public class ConfigManager {
 					+ arena.paTeams.size() + "x lounge";
 		} else {
 			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
+			db.i("parsing not random");
 			Iterator<String> iter = list.iterator();
 			int spawns = 0;
 			int lounges = 0;
+			HashSet<String> setTeams = new HashSet<String>();
 			while (iter.hasNext()) {
 				String s = iter.next();
-				if (s.endsWith("spawn") && (!s.equals("spawn")))
+				db.i("parsing '"+s+"'");
+				db.i("spawns: "+spawns+"; lounges: "+lounges);
+				if (s.endsWith("spawn") && (!s.equals("spawn"))) {
 					spawns++;
-				if (s.endsWith("lounge") && (!s.equals("lounge")))
+				} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
 					lounges++;
+				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
+					String[] temp = s.split("spawn");
+					if (arena.paTeams.get(temp[0]) != null) {
+						if (setTeams.contains(arena.paTeams.get(temp[0]))) {
+							db.i("team already set");
+							continue;
+						}
+						db.i("adding team");
+						setTeams.add(arena.paTeams.get(temp[0]));
+						spawns++;
+					}
+				}
 			}
 			if (spawns == arena.paTeams.size()
 					&& lounges == arena.paTeams.size()) {

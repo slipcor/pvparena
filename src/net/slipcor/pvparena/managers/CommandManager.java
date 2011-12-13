@@ -349,8 +349,9 @@ public class CommandManager {
 			return false;
 		}
 		
-		if (cmd.endsWith("spawn")) {
-			String sName = cmd.replace("spawn", "");
+		if (cmd.contains("spawn")) {
+			String[] split = cmd.split("spawn");
+			String sName = split[0];
 			if (arena.paTeams.get(sName) == null)
 				return false;
 
