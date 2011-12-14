@@ -3,14 +3,12 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.3 - max / min bet
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.3 - max / min bet
  *     v0.4.1 - command manager, arena information and arena config check
- * 
- * history:
- * 
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
  *     v0.3.9 - Permissions, rewrite
@@ -189,6 +187,8 @@ public class LanguageManager {
 				"Player %1% grabbed the flag of team %2%!");
 		config.addDefault("lang.flaghome",
 				"Player %1% brought home the flag of team %2%!");
+		config.addDefault("lang.flaghomeleft",
+				"Player %1% brought home the flag of team %2%! Lives left: %3%");
 		config.addDefault("lang.flagsave",
 				"Player %1% dropped the flag of team %2%!");
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");

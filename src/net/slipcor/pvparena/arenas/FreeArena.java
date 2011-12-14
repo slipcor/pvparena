@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.10 - CraftBukkit #1337 config version, rewrite
@@ -79,7 +80,7 @@ public class FreeArena extends Arena {
 	public void chooseColor(Player player) {
 		if (!(playerManager.getPlayerTeamMap().containsKey(player.getName()))) {
 			tpPlayerToCoordName(player, "lounge");
-			playerManager.getPlayerTeamMap().put(player.getName(), "free");
+			playerManager.setTeam(player, "free");
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("youjoinedfree"));
 			playerManager.tellEveryoneExcept(player,

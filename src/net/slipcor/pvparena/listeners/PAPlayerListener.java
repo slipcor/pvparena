@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.2 - command blacklist
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.2 - command blacklist
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.13 - Telepass via Permission
@@ -496,7 +497,7 @@ public class PAPlayerListener extends PlayerListener {
 
 				String color = arena.playerManager.getTeam(player);
 
-				if (!arena.playerManager.ready()) {
+				if (!arena.playerManager.ready(arena)) {
 					ArenaManager.tellPlayer(player,
 							PVPArena.lang.parse("notready"));
 					return; // team not ready => announce

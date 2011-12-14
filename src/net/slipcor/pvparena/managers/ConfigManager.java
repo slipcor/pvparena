@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.3 - max / min bet
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.3 - max / min bet
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  */
@@ -66,7 +67,7 @@ public class ConfigManager {
 		// require permissions for a class
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		// prevent actually dying in an arena
-		config.addDefault("general.preventDeath", Boolean.valueOf(false));
+		config.addDefault("general.preventDeath", Boolean.valueOf(true));
 
 		if (arena.getType().equals("free")) {
 			// enforce a wool head in case we dont have Spout installed
@@ -204,7 +205,7 @@ public class ConfigManager {
 		arena.joinRange = config.getInt("general.joinrange", 0);
 		arena.checkRegions = config.getBoolean("general.checkRegions", false);
 		arena.forceWoolHead = config.getBoolean("general.woolhead", false);
-		arena.preventDeath = config.getBoolean("general.preventDeath", false);
+		//arena.preventDeath = config.getBoolean("general.preventDeath", true);
 		String pu = config.getString("general.powerups", "off");
 
 		arena.usesPowerups = true;
@@ -349,8 +350,8 @@ public class ConfigManager {
 		if (!list.contains("exit"))
 			return "exit not set";
 
-		if (arena.getType().equals("ctf")) {
-			return isCTFsetup(arena, list);
+		if (arena.getType().equals("free")) {
+			return isFreesetup(arena, list);
 		}
 
 		if (arena.randomSpawn) {
@@ -416,7 +417,7 @@ public class ConfigManager {
 		}
 	}
 
-	private static String isCTFsetup(Arena arena, Set<String> list) {
+	private static String isFreesetup(Arena arena, Set<String> list) {
 		if (!list.contains("lounge"))
 			return "lounge not set";
 		Iterator<String> iter = list.iterator();

@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.3 - max / min bet
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.3 - max / min bet
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
@@ -135,7 +136,7 @@ public abstract class Arena {
 	public boolean checkExitRegion = false;
 	public boolean checkSpectatorRegion = false;
 	public boolean checkLoungesRegion = false;
-	public boolean preventDeath = false;
+	public boolean preventDeath = true;
 
 	public String rewardItems;
 	public int entryFee;
@@ -388,7 +389,7 @@ public abstract class Arena {
 				|| s.equals("battlefield")) {
 			return true;
 		}
-		if (this.getType().equals("ctf")) {
+		if (this.getType().equals("free")) {
 			if (s.equals("lounge")) {
 				return true;
 			}
@@ -997,7 +998,7 @@ public abstract class Arena {
 		}
 		playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
 				ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
-
+		//TODO clear signs here?
 		Set<String> set = playerManager.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
@@ -1054,6 +1055,7 @@ public abstract class Arena {
 		resetPlayer(player, tploc);
 		playerManager.setTeam(player, "");
 		playerManager.setClass(player, "");
+		playerManager.remove(player);
 	}
 
 	/*
@@ -1066,13 +1068,22 @@ public abstract class Arena {
 		db.i("resetting player: " + player.getName());
 		HashMap<String, String> tSM = (HashMap<String, String>) savedPlayerVars
 				.get(player);
-		if (tSM != null) {
-			try {
+		
+		if (tSM == null) {
+			db.w("------------");
+			db.w("--hack fix--");
+			db.w("------------");
+			return;
+		}
+		
+		
+		//if (tSM != null) {
+			//try {
 				player.setExhaustion(Float.parseFloat(tSM.get("EXHAUSTION")));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName()
-						+ "' had no valid EXHAUSTION entry!");
-			}
+			//} catch (Exception e) {
+				//System.out.println("[PVP Arena] player '" + player.getName()
+				//		+ "' had no valid EXHAUSTION entry!");
+			//}
 			try {
 				player.setFireTicks(Integer.parseInt(tSM.get("FIRETICKS")));
 			} catch (Exception e) {
@@ -1126,10 +1137,10 @@ public abstract class Arena {
 			}
 			playerManager.setTelePass(player, false);
 			savedPlayerVars.remove(player);
-		} else {
+		/*} else {
 			System.out.println("[PVP Arena] player '" + player.getName()
 					+ "' had no savedmisc entries!");
-		}
+		}*/
 		colorizePlayer(player, "");
 		String sClass = "exit";
 		if (playerManager.getRespawn(player) != null) {

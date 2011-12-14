@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  */
 
@@ -104,29 +105,31 @@ public class PlayerManager {
 		return players.containsKey(pPlayer.getName());
 	}
 
-	public boolean ready() {
-		if (countPlayersInTeams() < 1) {
+	public boolean ready(Arena arena) {
+		if (countPlayersInTeams() < 2) {
 			return false;
 		}
-		boolean onlyone = true;
-		List<String> activeteams = new ArrayList<String>(0);
-		for (String sTeam : getPlayerTeamMap().keySet()) {
-			if (activeteams.size() < 1) {
-				// fresh map
-				String team = getPlayerTeamMap().get(sTeam);
-				activeteams.add(team);
-			} else {
-				// map contains stuff
-				if (!activeteams.contains(getPlayerTeamMap().get(
-						sTeam))) {
-					// second team active => OUT!
-					onlyone = false;
-					break;
+		if (!arena.getType().equals("free")) {
+			boolean onlyone = true;
+			List<String> activeteams = new ArrayList<String>(0);
+			for (String sTeam : getPlayerTeamMap().keySet()) {
+				if (activeteams.size() < 1) {
+					// fresh map
+					String team = getPlayerTeamMap().get(sTeam);
+					activeteams.add(team);
+				} else {
+					// map contains stuff
+					if (!activeteams.contains(getPlayerTeamMap().get(
+							sTeam))) {
+						// second team active => OUT!
+						onlyone = false;
+						break;
+					}
 				}
 			}
-		}
-		if (onlyone) {
-			return false;
+			if (onlyone) {
+				return false;
+			}
 		}
 		for (PAPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
@@ -140,7 +143,12 @@ public class PlayerManager {
 	}
 
 	public void reset(Arena arena) {
+		HashSet<PAPlayer> pa = new HashSet<PAPlayer>();
 		for (PAPlayer p : players.values()) {
+			pa.add(p);
+		}
+		
+		for (PAPlayer p : pa) {
 			arena.removePlayer(p.getPlayer(), arena.sTPexit);
 			p.setTeam(null);
 			p.setClass(null);
@@ -257,5 +265,9 @@ public class PlayerManager {
 
 	public void addPlayer(Player player) {
 		players.put(player.getName(), new PAPlayer(player));
+	}
+
+	public void remove(Player player) {
+		players.remove(player.getName());
 	}
 }

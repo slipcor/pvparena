@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.11 - set regions for lounges, spectator, exit
@@ -232,7 +233,7 @@ public class PAEntityListener extends EntityListener {
 				db.i("faking player death");
 
 				commitPlayerDeath(arena, defender, event);
-
+				/*
 				db.i("fake removing player");
 
 				if (arena.sTPdeath.equals("old")) {
@@ -240,7 +241,7 @@ public class PAEntityListener extends EntityListener {
 				} else {
 					db.i("=> 'config=>death' location");
 				}
-				arena.removePlayer(defender, arena.sTPdeath);
+				arena.removePlayer(defender, arena.sTPdeath);*/
 			} else {
 				lives--;
 				arena.respawnPlayer(defender, lives);

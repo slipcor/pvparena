@@ -3,10 +3,12 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.2 - command blacklist
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.3 - max / min bet
+ *     v0.4.2 - command blacklist
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
@@ -117,7 +119,7 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.Highest, this);
 
 		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.playerListener,
-				Event.Priority.Highest, this);
+				Event.Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,

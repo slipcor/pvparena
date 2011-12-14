@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.1 - command manager, arena information and arena config check
+ * version: v0.4.4 - Random spawns per team, not shared
  * 
  * history:
  * 
+ *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
  *     v0.3.12 - set flag positions
@@ -229,8 +230,8 @@ public class CTFArena extends Arena {
 				String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
 						+ player.getName() + ChatColor.YELLOW;
 
-				playerManager.tellEveryone(PVPArena.lang.parse("flaghome",
-						scPlayer, scFlagTeam));
+				playerManager.tellEveryone(PVPArena.lang.parse("flaghomeleft",
+						scPlayer, scFlagTeam, String.valueOf(paTeamLives.get(flagTeam)-1)));
 				paTeamFlags.remove(flagTeam);
 				reduceLivesCheckEndAndCommit(flagTeam);
 			}
@@ -250,7 +251,7 @@ public class CTFArena extends Arena {
 				if (((vFlag == null) && (vLoc.distance(vSpawn) < 2))
 						|| ((vFlag != null) && (vLoc.distance(vFlag) < 2))) {
 					db.i("spawn found!");
-					db.i("vFlag: " + vFlag.toString());
+					db.i("vFlag: " + ((vFlag == null)?"null":vFlag.toString()));
 					String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
 							+ ChatColor.YELLOW;
 					String scPlayer = ChatColor
@@ -295,5 +296,21 @@ public class CTFArena extends Arena {
 	@Override
 	public String getType() {
 		return "ctf";
+	}
+	
+	@Override
+	public void respawnPlayer(Player player, byte lives) {
+
+		player.setHealth(20);
+		player.setFireTicks(0);
+		player.setFoodLevel(20);
+		player.setSaturation(20);
+		player.setExhaustion(0);
+		String sTeam = playerManager.getTeam(player);
+		String color = paTeams.get(sTeam);
+		playerManager.tellEveryone(PVPArena.lang.parse("killed",
+				ChatColor.valueOf(color) + player.getName()
+						+ ChatColor.YELLOW));
+		tpPlayerToCoordName(player, sTeam + "spawn");
 	}
 }
