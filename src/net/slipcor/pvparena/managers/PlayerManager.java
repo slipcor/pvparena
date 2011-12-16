@@ -119,8 +119,7 @@ public class PlayerManager {
 					activeteams.add(team);
 				} else {
 					// map contains stuff
-					if (!activeteams.contains(getPlayerTeamMap().get(
-							sTeam))) {
+					if (!activeteams.contains(getPlayerTeamMap().get(sTeam))) {
 						// second team active => OUT!
 						onlyone = false;
 						break;
@@ -147,7 +146,7 @@ public class PlayerManager {
 		for (PAPlayer p : players.values()) {
 			pa.add(p);
 		}
-		
+
 		for (PAPlayer p : pa) {
 			arena.removePlayer(p.getPlayer(), arena.sTPexit);
 			p.setTeam(null);

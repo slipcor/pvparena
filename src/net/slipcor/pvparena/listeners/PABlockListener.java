@@ -36,7 +36,7 @@ public class PABlockListener extends BlockListener {
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out
-
+		
 		db.i("block break inside the arena");
 		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage)))
 			return; // we don't need protection => OUT!
@@ -97,6 +97,9 @@ public class PABlockListener extends BlockListener {
 			// if not an event happend that we would like to block => OUT
 			return;
 
+		if (!arena.disableTnt && event.getBlock().getTypeId() == 46)
+			return; // we do not block TNT, so just return if it is TNT
+		
 		event.setCancelled(true);
 		return;
 	}

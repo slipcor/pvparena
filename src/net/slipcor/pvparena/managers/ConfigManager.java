@@ -60,7 +60,7 @@ public class ConfigManager {
 		config.addDefault("general.tp.lose", "old"); // old || exit || spectator
 		config.addDefault("general.tp.exit", "exit"); // old || exit ||
 														// spectator
-		
+
 		// old || exit || spectator
 		config.addDefault("general.tp.death", "spectator");
 
@@ -132,7 +132,8 @@ public class ConfigManager {
 		for (String className : classes.keySet()) {
 			arena.paClassItems.put(className,
 					config.getString("classes." + className + ".items", null));
-			db.i("adding class item to class "+className+": "+config.getString("classes." + className + ".items", null));
+			db.i("adding class item to class " + className + ": "
+					+ config.getString("classes." + className + ".items", null));
 		}
 
 		HashMap<String, Object> powerups = new HashMap<String, Object>();
@@ -152,9 +153,11 @@ public class ConfigManager {
 					// kkey e.g. "dmg_receive"
 					if (kkey.equals("item")) {
 						temp_map.put(kkey, String.valueOf(map2.get(kkey)));
-						db.i(key + " => " + kkey + " => " + String.valueOf(map2.get(kkey)));
+						db.i(key + " => " + kkey + " => "
+								+ String.valueOf(map2.get(kkey)));
 					} else {
-						db.i(key + " => " + kkey + " => " + parseList(map3.values()));
+						db.i(key + " => " + kkey + " => "
+								+ parseList(map3.values()));
 						map3 = (HashMap<String, Object>) config
 								.getConfigurationSection(
 										"powerups." + key + "." + kkey)
@@ -205,7 +208,7 @@ public class ConfigManager {
 		arena.joinRange = config.getInt("general.joinrange", 0);
 		arena.checkRegions = config.getBoolean("general.checkRegions", false);
 		arena.forceWoolHead = config.getBoolean("general.woolhead", false);
-		//arena.preventDeath = config.getBoolean("general.preventDeath", true);
+		// arena.preventDeath = config.getBoolean("general.preventDeath", true);
 		String pu = config.getString("general.powerups", "off");
 
 		arena.usesPowerups = true;
@@ -224,14 +227,14 @@ public class ConfigManager {
 		arena.sTPlose = config.getString("general.tp.lose", "old");
 		arena.sTPexit = config.getString("general.tp.exit", "exit");
 		arena.sTPdeath = config.getString("general.tp.death", "spectator");
-		
+
 		arena.forceEven = config.getBoolean("general.forceeven", false);
 		arena.randomSpawn = config.getBoolean("general.randomSpawn", false);
 		arena.timed = config.getInt("general.timed", 0);
 
 		arena.minbet = config.getDouble("general.minbet");
 		arena.maxbet = config.getDouble("general.maxbet");
-		
+
 		if (arena.minbet > arena.maxbet) {
 			arena.maxbet = arena.minbet;
 		}
@@ -263,21 +266,20 @@ public class ConfigManager {
 
 			Vector v1 = min.toVector();
 			Vector v2 = max.toVector();
-			
+
 			Vector realMin = new Vector(
-					Math.min(v1.getBlockX(), v2.getBlockX()),
-					Math.min(v1.getBlockY(), v2.getBlockY()),
-					Math.min(v1.getBlockZ(), v2.getBlockZ()));
+					Math.min(v1.getBlockX(), v2.getBlockX()), Math.min(
+							v1.getBlockY(), v2.getBlockY()), Math.min(
+							v1.getBlockZ(), v2.getBlockZ()));
 			Vector realMax = new Vector(
-					Math.max(v1.getBlockX(), v2.getBlockX()),
-					Math.max(v1.getBlockY(), v2.getBlockY()),
-					Math.max(v1.getBlockZ(), v2.getBlockZ()));
-			
-			
-			config.set("protection.regions.battlefield.min", realMin.getX() + ", "
-					+ realMin.getY() + ", " + realMin.getZ());
-			config.set("protection.regions.battlefield.max", realMax.getX() + ", "
-					+ realMax.getY() + ", " + realMax.getZ());
+					Math.max(v1.getBlockX(), v2.getBlockX()), Math.max(
+							v1.getBlockY(), v2.getBlockY()), Math.max(
+							v1.getBlockZ(), v2.getBlockZ()));
+
+			config.set("protection.regions.battlefield.min", realMin.getX()
+					+ ", " + realMin.getY() + ", " + realMin.getZ());
+			config.set("protection.regions.battlefield.max", realMax.getX()
+					+ ", " + realMax.getY() + ", " + realMax.getZ());
 			config.set("protection.regions.battlefield.world", world);
 			config.set("protection.region", null);
 
@@ -295,7 +297,13 @@ public class ConfigManager {
 			if (!s.equals("")) {
 				s += ",";
 			}
-			s += (String) o;
+			try {
+				s += String.valueOf(o);
+				db.i("a");
+			} catch(Exception e) {
+				db.i("b");
+				s += o.toString();
+			}
 		}
 		return s;
 	}
@@ -307,12 +315,13 @@ public class ConfigManager {
 	 */
 	private static PARegion getRegionFromConfigNode(String string,
 			YamlConfiguration config, Arena arena) {
-		db.i("reading config region: "+arena.name + "=>" + string);
-		String[] min1 = config.getString("protection.regions."+string+".min")
-				.split(", ");
-		String[] max1 = config.getString("protection.regions."+string+".max")
-				.split(", ");
-		String world = config.getString("protection.regions."+string+".world");
+		db.i("reading config region: " + arena.name + "=>" + string);
+		String[] min1 = config.getString(
+				"protection.regions." + string + ".min").split(", ");
+		String[] max1 = config.getString(
+				"protection.regions." + string + ".max").split(", ");
+		String world = config.getString("protection.regions." + string
+				+ ".world");
 		Location min = new Location(Bukkit.getWorld(world),
 				new Double(min1[0]).doubleValue(),
 				new Double(min1[1]).doubleValue(),
@@ -357,7 +366,7 @@ public class ConfigManager {
 		if (arena.randomSpawn) {
 
 			// now we need a spawn and lounge for every team
-			
+
 			db.i("parsing random");
 
 			Iterator<String> iter = list.iterator();
@@ -365,7 +374,7 @@ public class ConfigManager {
 			int lounges = 0;
 			while (iter.hasNext()) {
 				String s = iter.next();
-				db.i("parsing '"+s+"'");
+				db.i("parsing '" + s + "'");
 				if (s.equals("lounge") && arena.getType().equals("team"))
 					continue; // skip except for FREE
 				if (s.startsWith("spawn"))
@@ -388,8 +397,8 @@ public class ConfigManager {
 			HashSet<String> setTeams = new HashSet<String>();
 			while (iter.hasNext()) {
 				String s = iter.next();
-				db.i("parsing '"+s+"'");
-				db.i("spawns: "+spawns+"; lounges: "+lounges);
+				db.i("parsing '" + s + "'");
+				db.i("spawns: " + spawns + "; lounges: " + lounges);
 				if (s.endsWith("spawn") && (!s.equals("spawn"))) {
 					spawns++;
 				} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {

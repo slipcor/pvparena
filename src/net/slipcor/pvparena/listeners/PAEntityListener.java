@@ -184,8 +184,7 @@ public class PAEntityListener extends EntityListener {
 			return;
 
 		db.i("onEntityDamageByEntity: fighting player");
-		if ((p2 == null)
-				|| (!(p2 instanceof Player))) {
+		if ((p2 == null) || (!(p2 instanceof Player))) {
 			return;
 		}
 		db.i("both entities are players");
@@ -233,18 +232,13 @@ public class PAEntityListener extends EntityListener {
 				db.i("faking player death");
 
 				commitPlayerDeath(arena, defender, event);
-				/*
-				db.i("fake removing player");
-
-				if (arena.sTPdeath.equals("old")) {
-					db.i("=> old location");
-				} else {
-					db.i("=> 'config=>death' location");
-				}
-				arena.removePlayer(defender, arena.sTPdeath);*/
 			} else {
 				lives--;
 				arena.respawnPlayer(defender, lives);
+				if (arena.getType().equals("ctf")) {
+					CTFArena ca = (CTFArena) arena;
+					ca.checkEntityDeath(defender);
+				}
 			}
 			event.setCancelled(true);
 		}
@@ -286,14 +280,23 @@ public class PAEntityListener extends EntityListener {
 			byte lives = 3;
 
 			lives = arena.playerManager.getLives(player);
+			db.i("lives before death: " + lives);
 			if (lives < 1) {
-				return; // player died
-			} else if (lives > 0) {
+				if (!arena.preventDeath) {
+					return; // player died => commit death!
+				}
+				db.i("faking player death");
 
+				commitPlayerDeath(arena, player, event);
+			} else {
+				lives--;
 				arena.respawnPlayer(player, lives);
-				event.setCancelled(true);
-				return;
+				if (arena.getType().equals("ctf")) {
+					CTFArena ca = (CTFArena) arena;
+					ca.checkEntityDeath(player);
+				}
 			}
+			event.setCancelled(true);
 		}
 
 	}

@@ -74,10 +74,11 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		
-		List<String> list = PVPArena.instance.getConfig().getStringList("blacklist");
+
+		List<String> list = PVPArena.instance.getConfig().getStringList(
+				"blacklist");
 		db.i("checking command blacklist");
-		
+
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
 				db.i("command blocked: " + s);
@@ -86,7 +87,7 @@ public class PAPlayerListener extends PlayerListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -434,7 +435,7 @@ public class PAPlayerListener extends PlayerListener {
 								nSign.update();
 								// select class
 								if (sign.getLine(0).equalsIgnoreCase("custom")) {
-									// if custom,  give stuff back
+									// if custom, give stuff back
 									arena.loadInventory(player);
 								} else {
 									arena.givePlayerFightItems(player);

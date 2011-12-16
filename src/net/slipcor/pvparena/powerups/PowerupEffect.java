@@ -199,11 +199,10 @@ public class PowerupEffect {
 					// pasted from onEntityDeath;
 
 					String sTeam = arena.playerManager.getTeam(player);
-					String color = arena.paTeams.get(sTeam);
-					if (!color.equals("free")) {
+					if (!sTeam.equals("free")) {
 						arena.playerManager.tellEveryone(PVPArena.lang.parse(
 								"killed",
-								ChatColor.valueOf(color) + player.getName()
+								ChatColor.valueOf(arena.paTeams.get(sTeam)) + player.getName()
 										+ ChatColor.YELLOW));
 					} else {
 						arena.playerManager.tellEveryone(PVPArena.lang.parse(

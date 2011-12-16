@@ -276,7 +276,8 @@ public class CommandManager {
 		return true;
 	}
 
-	public static boolean parseAdminCommand(Arena arena, Player player, String cmd) {
+	public static boolean parseAdminCommand(Arena arena, Player player,
+			String cmd) {
 
 		db.i("parsing admin command: " + cmd);
 		if (cmd.equalsIgnoreCase("spectator")) {
@@ -318,8 +319,8 @@ public class CommandManager {
 		return true;
 	}
 
-
-	private static boolean isCustomCommand(Arena arena, Player player, String cmd) {
+	private static boolean isCustomCommand(Arena arena, Player player,
+			String cmd) {
 
 		if ((arena.getType().equals("ctf")) && cmd.endsWith("flag")) {
 			String sName = cmd.replace("flag", "");
@@ -338,17 +339,18 @@ public class CommandManager {
 	 * returns "is spawn-set command"
 	 */
 	private static boolean isSpawnCommand(Arena arena, Player player, String cmd) {
-		
+
 		if (arena.getType().equals("free")) {
 
 			if (cmd.startsWith("spawn")) {
 				arena.setCoords(player, cmd);
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("setspawn",cmd));
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("setspawn", cmd));
 				return true;
 			}
 			return false;
 		}
-		
+
 		if (cmd.contains("spawn")) {
 			String[] split = cmd.split("spawn");
 			String sName = split[0];
@@ -366,17 +368,19 @@ public class CommandManager {
 	/*
 	 * returns "is lounge-set command"
 	 */
-	private static boolean isLoungeCommand(Arena arena, Player player, String cmd) {
-		
+	private static boolean isLoungeCommand(Arena arena, Player player,
+			String cmd) {
+
 		if (arena.getType().equals("free")) {
 			if (cmd.equalsIgnoreCase("lounge")) {
 				arena.setCoords(player, "lounge");
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("setlounge"));
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("setlounge"));
 				return true;
 			}
 			return false;
 		}
-		
+
 		if (cmd.endsWith("lounge")) {
 			String color = cmd.replace("lounge", "");
 			if (arena.paTeams.containsKey(color)) {
@@ -395,9 +399,9 @@ public class CommandManager {
 	public static boolean parseBetCommand(Arena arena, Player player,
 			String[] args) {
 		// /pa bet [name] [amount]
-		if (arena.playerManager.existsPlayer(player) && !arena.playerManager.getTeam(player).equals("")) {
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("betnotyours"));
+		if (arena.playerManager.existsPlayer(player)
+				&& !arena.playerManager.getTeam(player).equals("")) {
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("betnotyours"));
 			return true;
 		}
 
@@ -408,8 +412,7 @@ public class CommandManager {
 
 		if ((arena.paTeams.get(args[1]) == null)
 				&& (arena.playerManager.getTeam(p).equals(""))) {
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("betoptions"));
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("betoptions"));
 			return true;
 		}
 
@@ -430,21 +433,20 @@ public class CommandManager {
 		}
 		if (!ma.hasEnough(amount)) {
 			// no money, no entry!
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-					"notenough",
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("notenough",
 					PVPArena.instance.getMethod().format(amount)));
 			return true;
 		}
-		
-		if (amount < arena.minbet || (arena.maxbet > 0 && amount > arena.maxbet)) {
+
+		if (amount < arena.minbet
+				|| (arena.maxbet > 0 && amount > arena.maxbet)) {
 			// wrong amount!
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse(
-					"wrongamount",
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("wrongamount",
 					PVPArena.instance.getMethod().format(arena.minbet),
 					PVPArena.instance.getMethod().format(arena.maxbet)));
 			return true;
 		}
-		
+
 		ma.subtract(amount);
 		ArenaManager.tellPlayer(player,
 				PVPArena.lang.parse("betplaced", args[1]));
@@ -452,7 +454,7 @@ public class CommandManager {
 				+ args[1], amount);
 		return true;
 	}
-	
+
 	/*
 	 * info command methods
 	 */
@@ -478,49 +480,79 @@ public class CommandManager {
 		}
 		return s;
 	}
-	
+
 	private static String colorVar(String s, boolean b) {
-		return (b?(ChatColor.GREEN+""):(ChatColor.RED+"")) + s + ChatColor.WHITE;
+		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
+				+ ChatColor.WHITE;
 	}
 
 	private static String colorVar(String s) {
 		if (s == null || s.equals("")) {
-			return colorVar("null",false);
+			return colorVar("null", false);
 		}
-		return colorVar(s,true);
+		return colorVar(s, true);
 	}
 
 	private static String colorVar(int timed) {
-		return colorVar(String.valueOf(timed),timed>0);
+		return colorVar(String.valueOf(timed), timed > 0);
 	}
 
 	private static String colorVar(boolean b) {
-		return colorVar(String.valueOf(b),b);
+		return colorVar(String.valueOf(b), b);
 	}
-	
+
 	public static boolean parseInfo(Arena arena, Player player) {
 		String type = arena.getType();
 		player.sendMessage("-----------------------------------------------------");
-		player.sendMessage("       Arena Information about ["+ChatColor.AQUA + arena.name + ChatColor.WHITE+"]");
+		player.sendMessage("       Arena Information about [" + ChatColor.AQUA
+				+ arena.name + ChatColor.WHITE + "]");
 		player.sendMessage("-----------------------------------------------------");
-		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE + " || " + "Teams: "+colorTeams(arena.paTeams));
-		player.sendMessage(colorVar("Enabled",arena.enabled) + " || "+colorVar("Fighting",arena.fightInProgress)+" || "+"Wand: "+Material.getMaterial(arena.wand).toString() + " || " + "Timing: "+colorVar(arena.timed) + " || " + "MaxLives: "+colorVar(arena.maxLives));
-		player.sendMessage("Regionset: "+colorVar(arena.name.equals(Arena.regionmodify))+ " || No Death: " + colorVar(arena.preventDeath) + " || " + "Force: "+colorVar("Even",arena.forceEven) + " | " + colorVar("Woolhead",arena.forceWoolHead));
-		player.sendMessage(colorVar("TeamKill",arena.teamKilling)+" || Team Select: "+colorVar("manual",arena.manuallySelectTeams)+" | "+colorVar("random",arena.randomlySelectTeams));
-		player.sendMessage("Regions: "+listRegions(arena.regions));
-		player.sendMessage("TPs: exit: "+colorVar(arena.sTPexit) + " | death: "+colorVar(arena.sTPdeath) + " | win: "+colorVar(arena.sTPwin) + " | lose: "+colorVar(arena.sTPlose));
-		player.sendMessage(colorVar("Powerups",arena.usesPowerups) + "(" + colorVar(arena.powerupTrigger) + ")" + " | " + colorVar("randomSpawn",arena.randomSpawn));
-		player.sendMessage(colorVar("Protection",arena.usesProtection)+ ": "+colorVar("Fire",arena.disableAllFireSpread)+" | " +colorVar("Destroy",arena.disableBlockDamage)+" | " +colorVar("Place",arena.disableBlockPlacement)+ " | "+colorVar("Ignite",arena.disableIgnite)+" | " +colorVar("Lava",arena.disableLavaFireSpread)+" | " +colorVar("Explode",arena.disableTnt));
-		player.sendMessage(colorVar("Check Regions",arena.checkRegions)+ ": "+colorVar("Exit",arena.checkExitRegion)+" | "+colorVar("Lounges",arena.checkLoungesRegion)+" | "+colorVar("Spectator",arena.checkSpectatorRegion));
-		player.sendMessage("JoinRange: "+colorVar(arena.joinRange) + " || Entry Fee: "+colorVar(arena.entryFee) + " || Reward: "+colorVar(arena.rewardAmount));
+		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE
+				+ " || " + "Teams: " + colorTeams(arena.paTeams));
+		player.sendMessage(colorVar("Enabled", arena.enabled) + " || "
+				+ colorVar("Fighting", arena.fightInProgress) + " || "
+				+ "Wand: " + Material.getMaterial(arena.wand).toString()
+				+ " || " + "Timing: " + colorVar(arena.timed) + " || "
+				+ "MaxLives: " + colorVar(arena.maxLives));
+		player.sendMessage("Regionset: "
+				+ colorVar(arena.name.equals(Arena.regionmodify))
+				+ " || No Death: " + colorVar(arena.preventDeath) + " || "
+				+ "Force: " + colorVar("Even", arena.forceEven) + " | "
+				+ colorVar("Woolhead", arena.forceWoolHead));
+		player.sendMessage(colorVar("TeamKill", arena.teamKilling)
+				+ " || Team Select: "
+				+ colorVar("manual", arena.manuallySelectTeams) + " | "
+				+ colorVar("random", arena.randomlySelectTeams));
+		player.sendMessage("Regions: " + listRegions(arena.regions));
+		player.sendMessage("TPs: exit: " + colorVar(arena.sTPexit)
+				+ " | death: " + colorVar(arena.sTPdeath) + " | win: "
+				+ colorVar(arena.sTPwin) + " | lose: "
+				+ colorVar(arena.sTPlose));
+		player.sendMessage(colorVar("Powerups", arena.usesPowerups) + "("
+				+ colorVar(arena.powerupTrigger) + ")" + " | "
+				+ colorVar("randomSpawn", arena.randomSpawn));
+		player.sendMessage(colorVar("Protection", arena.usesProtection) + ": "
+				+ colorVar("Fire", arena.disableAllFireSpread) + " | "
+				+ colorVar("Destroy", arena.disableBlockDamage) + " | "
+				+ colorVar("Place", arena.disableBlockPlacement) + " | "
+				+ colorVar("Ignite", arena.disableIgnite) + " | "
+				+ colorVar("Lava", arena.disableLavaFireSpread) + " | "
+				+ colorVar("Explode", arena.disableTnt));
+		player.sendMessage(colorVar("Check Regions", arena.checkRegions) + ": "
+				+ colorVar("Exit", arena.checkExitRegion) + " | "
+				+ colorVar("Lounges", arena.checkLoungesRegion) + " | "
+				+ colorVar("Spectator", arena.checkSpectatorRegion));
+		player.sendMessage("JoinRange: " + colorVar(arena.joinRange)
+				+ " || Entry Fee: " + colorVar(arena.entryFee) + " || Reward: "
+				+ colorVar(arena.rewardAmount));
 
 		return true;
 	}
-	
+
 	/*
 	 * check command methods
 	 */
-	
+
 	public static boolean parseCheck(Arena arena, Player player) {
 		boolean b = DebugManager.active;
 		DebugManager.active = true;
@@ -528,14 +560,13 @@ public class CommandManager {
 		db.i("-------------------------------");
 		db.i("Debug parsing Arena config for arena: " + arena);
 		db.i("-------------------------------");
-		
+
 		ArenaManager.loadArena(arena.name, arena.getType());
 
 		db.i("-------------------------------");
 		db.i("Debug parsing finished!");
 		db.i("-------------------------------");
-		
-		
+
 		DebugManager.active = b;
 		return true;
 	}

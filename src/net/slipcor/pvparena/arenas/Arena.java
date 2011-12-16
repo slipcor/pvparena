@@ -285,9 +285,7 @@ public abstract class Arena {
 			} else if (PVPArena.instance.hasAdminPerms(player)) {
 				return CommandManager.parseAdminCommand(this, player, args[0]);
 			} else {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("invalidcmd", "502"));
-				return false;
+				return CommandManager.parseJoin(this, player);
 			}
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
 			return CommandManager.parseBetCommand(this, player, args);

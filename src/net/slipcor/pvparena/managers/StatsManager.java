@@ -84,7 +84,7 @@ public class StatsManager {
 	public static Map<String, Integer> getPlayerStats(Arena arena) {
 		YamlConfiguration config = getConfig("stats_" + arena.name, arena);
 		db.i("fetching player stats for arena " + arena.name);
-		// map to sum up the  players
+		// map to sum up the players
 		Map<String, Integer> players = new HashMap<String, Integer>();
 		// tempmap => iteration
 		Map<String, Object> team = new HashMap<String, Object>();

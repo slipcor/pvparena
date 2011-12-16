@@ -233,10 +233,10 @@ public class PVPArena extends JavaPlugin {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
 				String sName = arena.playerManager.getTeam(player);
-				if (sName.equals("free")) {
+				if (!sName.equals("free")) {
 					arena.playerManager.tellEveryoneExcept(
 							player,
-							lang.parse("playerleave", ChatColor.valueOf(sName)
+							lang.parse("playerleave", ChatColor.valueOf(arena.paTeams.get(sName))
 									+ player.getName() + ChatColor.YELLOW));
 				} else {
 					arena.playerManager.tellEveryoneExcept(

@@ -271,10 +271,13 @@ public class CTFArena extends Arena {
 	 * get the team name of the flag a player holds
 	 */
 	private String getHeldFlagTeam(String player) {
-		for (String sTeam : paTeamFlags.keySet())
-			if (player.equals(paTeamFlags.get(sTeam)))
+		db.i("getting held flag of player "+player);
+		for (String sTeam : paTeamFlags.keySet()) {
+			db.i("team "+sTeam+" is in "+paTeamFlags.get(sTeam)+"s hands");
+			if (player.equals(paTeamFlags.get(sTeam))) {
 				return sTeam;
-
+			}
+		}
 		return null;
 	}
 
