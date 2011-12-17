@@ -34,7 +34,7 @@ public class PARegion {
 	public boolean contains(Vector vec) {
 		if (min == null || max == null)
 			return false; // no arena, no container
-		db.i("checking region "+name);
+		db.i("checking region "+name+": "+String.valueOf(vec.isInAABB(min.toVector(), max.toVector())));
 		return vec.isInAABB(min.toVector(), max.toVector());
 	}
 

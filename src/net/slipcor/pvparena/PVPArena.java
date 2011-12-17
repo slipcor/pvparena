@@ -108,6 +108,7 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener,
 				Event.Priority.High, this);
+		
 
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener,
 				Event.Priority.Highest, this);
@@ -116,6 +117,12 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener,
+				Event.Priority.Highest, this);
+		
+
+		pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entityListener,
 				Event.Priority.Highest, this);
 
 		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.playerListener,
@@ -233,7 +240,7 @@ public class PVPArena extends JavaPlugin {
 			Arena arena = ArenaManager.getArenaByPlayer(player);
 			if (arena != null) {
 				String sName = arena.playerManager.getTeam(player);
-				if (!sName.equals("free")) {
+				if (!sName.equals("free") && !sName.equals("")) {
 					arena.playerManager.tellEveryoneExcept(
 							player,
 							lang.parse("playerleave", ChatColor.valueOf(arena.paTeams.get(sName))

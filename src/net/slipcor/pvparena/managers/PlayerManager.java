@@ -247,7 +247,7 @@ public class PlayerManager {
 	}
 
 	public String getTeam(Player player) {
-		return players.get(player.getName()).getTeam();
+		return (players.get(player.getName()) == null)?"":players.get(player.getName()).getTeam();
 	}
 
 	public void setTeam(Player player, String s) {

@@ -96,7 +96,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		db.i("onPlayerMove: fighting player!");
+		//db.i("onPlayerMove: fighting player!");
 		if (arena.pm != null) {
 			Powerup p = arena.pm.puActive.get(player);
 			if (p != null) {

@@ -153,6 +153,9 @@ public class PowerupEffect {
 				event.setDamage((int) Math.round(event.getDamage() * factor));
 			} // else: chance fail :D
 		} else if (this.type == classes.DMG_REFLECT) {
+			if (attacker == null) {
+				return;
+			}
 			Random r = new Random();
 			if (r.nextFloat() <= chance) {
 				EntityDamageByEntityEvent reflectEvent = new EntityDamageByEntityEvent(

@@ -174,9 +174,64 @@ public class PAEntityListener extends EntityListener {
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
+		db.i("onEntityDamageByEntity: cause: "+event.getCause().name());
+		
+		if (event.getCause() == DamageCause.BLOCK_EXPLOSION) {
+			
+			db.i("onEntityDamageByEntity: fighting player");
+			if ((p2 == null) || (!(p2 instanceof Player))) {
+				return;
+			}
+			db.i("damaged entity is player");
+			Player defender = (Player) p2;
+			Arena arena = ArenaManager.getArenaByPlayer(defender);
+			if (arena == null)
+				return;
+
+			db.i("onEntityDamageByBLOCKDAMAGE: fighting player");
+
+			if (arena.playerManager.getTeam(defender).equals(""))
+				return;
+			
+			db.i("processing damage!");
+			if (arena.pm != null) {
+				db.i("committing powerup triggers");
+				Powerup p = arena.pm.puActive.get(defender);
+				if ((p != null) && (p.canBeTriggered()))
+					p.commit(null, defender, event);
+
+			}
+			
+			if (event.getDamage() >= defender.getHealth()) {
+				db.i("damage >= health => death");
+				byte lives = 3;
+
+				lives = arena.playerManager.getLives(defender);
+				db.i("lives before death: " + lives);
+				if (lives < 1) {
+					if (!arena.preventDeath) {
+						return; // player died => commit death!
+					}
+					db.i("faking player death");
+
+					commitPlayerDeath(arena, defender, event);
+				} else {
+					lives--;
+					arena.respawnPlayer(defender, lives);
+					if (arena.getType().equals("ctf")) {
+						CTFArena ca = (CTFArena) arena;
+						ca.checkEntityDeath(defender);
+					}
+				}
+				event.setCancelled(true);
+			}
+			return;
+		}
+		
 		if (event.getCause() == DamageCause.PROJECTILE) {
 			p1 = ((Projectile) p1).getShooter();
 		}
+		
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
 		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
@@ -342,13 +397,15 @@ public class PAEntityListener extends EntityListener {
 
 	@Override
 	public void onEntityExplode(EntityExplodeEvent event) {
+		db.i("explosion");
+
 		Arena arena = ArenaManager
 				.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableTnt))
+		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage))
 				|| (!(event.getEntity() instanceof TNTPrimed)))
 			return;
 

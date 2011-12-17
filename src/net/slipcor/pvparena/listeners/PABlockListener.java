@@ -38,7 +38,7 @@ public class PABlockListener extends BlockListener {
 			return; // no arena => out
 		
 		db.i("block break inside the arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage)))
+		if ((!(arena.usesProtection)) || (!(arena.disableBlockPlacement)))
 			return; // we don't need protection => OUT!
 		if (arena.playerManager.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
