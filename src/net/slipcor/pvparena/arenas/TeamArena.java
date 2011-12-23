@@ -18,13 +18,9 @@
 
 package net.slipcor.pvparena.arenas;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TeamArena extends Arena {
 
@@ -36,29 +32,17 @@ public class TeamArena extends Arena {
 	public TeamArena(String sName) {
 		super(sName);
 
-		YamlConfiguration config = new YamlConfiguration();
-		try {
-			config.load(configFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
-		}
-		if (config.get("teams.custom") == null) {
+		
+		if (cfg.get("teams.custom") == null && cfg.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.custom.red", ChatColor.RED.name());
-			config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
-			config.options().copyDefaults(true);
+			cfg.getYamlConfiguration().addDefault("teams.red", ChatColor.RED.name());
+			cfg.getYamlConfiguration().addDefault("teams.blue", ChatColor.BLUE.name());
+			cfg.getYamlConfiguration().options().copyDefaults(true);
+			cfg.reloadMaps();
 		}
-		try {
-			config.save(configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Map<String, Object> tempMap = (Map<String, Object>) config
-				.getConfigurationSection("teams.custom").getValues(true);
+		cfg.save();
+		Map<String, Object> tempMap = (Map<String, Object>) cfg.getYamlConfiguration()
+				.getConfigurationSection("teams").getValues(true);
 
 		for (String sTeam : tempMap.keySet()) {
 			this.paTeams.put(sTeam, (String) tempMap.get(sTeam));

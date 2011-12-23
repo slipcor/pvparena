@@ -38,7 +38,7 @@ public class PABlockListener extends BlockListener {
 			return; // no arena => out
 		
 		db.i("block break inside the arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableBlockPlacement)))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockplace", true))))
 			return; // we don't need protection => OUT!
 		if (arena.playerManager.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
@@ -60,10 +60,10 @@ public class PABlockListener extends BlockListener {
 			return; // no players, no game, no protection!
 		
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.usesProtection)
-				&& (((arena.disableLavaFireSpread) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.disableAllFireSpread) && (cause == BlockIgniteEvent.IgniteCause.SPREAD))
-						|| ((arena.disableIgnite) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
+		if ((arena.cfg.getBoolean("protection.enabled", true))
+				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+						|| ((arena.cfg.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD))
+						|| ((arena.cfg.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
 			// if an event happened that we would like to block
 			event.setCancelled(true); // ->cancel!
 		}
@@ -77,7 +77,7 @@ public class PABlockListener extends BlockListener {
 			return; // no arena => out
 
 		db.i("block burn inside the arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableAllFireSpread)))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.fire.firespread", true))))
 			// if not an event happend that we would like to block => OUT
 			return;
 
@@ -93,11 +93,11 @@ public class PABlockListener extends BlockListener {
 			return; // no arena => out
 
 		db.i("block place inside the arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableBlockPlacement)))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockplace", true))))
 			// if not an event happend that we would like to block => OUT
 			return;
 
-		if (!arena.disableTnt && event.getBlock().getTypeId() == 46)
+		if (!arena.cfg.getBoolean("protection.tnt", true) && event.getBlock().getTypeId() == 46)
 			return; // we do not block TNT, so just return if it is TNT
 		
 		event.setCancelled(true);

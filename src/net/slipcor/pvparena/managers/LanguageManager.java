@@ -194,6 +194,7 @@ public class LanguageManager {
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
 		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
 		config.addDefault("lang.notready", "Not everyone has picked a class!");
+		config.addDefault("lang.notsameworld", "Not in the same world as the arena (%1%)!");
 
 		config.addDefault("lang.checkregionerror",
 				"Waiting for a running arena to finish!");

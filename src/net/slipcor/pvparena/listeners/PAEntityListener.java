@@ -157,7 +157,7 @@ public class PAEntityListener extends EntityListener {
 			}
 		}
 		if (arena.usesPowerups) {
-			if (arena.powerupTrigger.equals("death")) {
+			if (arena.cfg.getString("general.powerups", "off").startsWith("death")) {
 				db.i("calculating powerup trigger death");
 				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
 				if (arena.powerupDiffI == 0) {
@@ -251,7 +251,7 @@ public class PAEntityListener extends EntityListener {
 			return;
 
 		db.i("both players part of the arena");
-		if ((!arena.teamKilling)
+		if ((!arena.cfg.getBoolean("general.teamkill", false))
 				&& (arena.playerManager.getTeam(attacker))
 						.equals(arena.playerManager.getTeam(defender))) {
 			// no team fights!
@@ -405,7 +405,7 @@ public class PAEntityListener extends EntityListener {
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.usesProtection)) || (!(arena.disableBlockDamage))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed)))
 			return;
 

@@ -38,7 +38,7 @@ public class CommandManager {
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("permjoin"));
 			return true;
 		}
-		if (!arena.randomlySelectTeams) {
+		if (!arena.cfg.getBoolean("general.random", true)) {
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("selectteam"));
 			return true;
 		}
@@ -56,6 +56,7 @@ public class CommandManager {
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("joinrange"));
 			return true;
 		}
+		int entryfee = arena.cfg.getInt("money.entry", 0);
 		if (PVPArena.instance.getMethod() != null) {
 			MethodAccount ma = PVPArena.instance.getMethod().getAccount(
 					player.getName());
@@ -63,21 +64,21 @@ public class CommandManager {
 				db.s("Account not found: " + player.getName());
 				return true;
 			}
-			if (!ma.hasEnough(arena.entryFee)) {
+			if (!ma.hasEnough(entryfee)) {
 				// no money, no entry!
 				ArenaManager.tellPlayer(player, PVPArena.lang.parse(
 						"notenough",
-						PVPArena.instance.getMethod().format(arena.entryFee)));
+						PVPArena.instance.getMethod().format(entryfee)));
 				return true;
 			}
 		}
 
 		arena.prepare(player);
-		arena.playerManager.setLives(player, (byte) arena.maxLives);
-		if ((PVPArena.instance.getMethod() != null) && (arena.entryFee > 0)) {
+		arena.playerManager.setLives(player, (byte) arena.cfg.getInt("general.lives", 3));
+		if ((PVPArena.instance.getMethod() != null) && (entryfee > 0)) {
 			MethodAccount ma = PVPArena.instance.getMethod().getAccount(
 					player.getName());
-			ma.subtract(arena.entryFee);
+			ma.subtract(entryfee);
 		}
 		arena.chooseColor(player);
 		arena.prepareInventory(player);
@@ -97,7 +98,7 @@ public class CommandManager {
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("permjoin"));
 			return true;
 		}
-		if (!(arena.manuallySelectTeams)) {
+		if (!(arena.cfg.getBoolean("general.manual", true))) {
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("notselectteam"));
 			return true;
@@ -124,22 +125,22 @@ public class CommandManager {
 				db.s("Account not found: " + player.getName());
 				return true;
 			}
-			if (!ma.hasEnough(arena.entryFee)) {
+			if (!ma.hasEnough(arena.cfg.getInt("rewards.entry-fee", 0))) {
 				// no money, no entry!
 				ArenaManager.tellPlayer(player, PVPArena.lang.parse(
 						"notenough",
-						PVPArena.instance.getMethod().format(arena.entryFee)));
+						PVPArena.instance.getMethod().format(arena.cfg.getInt("rewards.entry-fee", 0))));
 				return true;
 			}
 		}
 
 		arena.prepare(player);
-		arena.playerManager.setLives(player, (byte) arena.maxLives);
+		arena.playerManager.setLives(player, (byte) arena.cfg.getInt("general.lives", 3));
 
-		if ((PVPArena.instance.getMethod() != null) && (arena.entryFee > 0)) {
+		if ((PVPArena.instance.getMethod() != null) && (arena.cfg.getInt("rewards.entry-fee", 0) > 0)) {
 			MethodAccount ma = PVPArena.instance.getMethod().getAccount(
 					player.getName());
-			ma.subtract(arena.entryFee);
+			ma.subtract(arena.cfg.getInt("rewards.entry-fee", 0));
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
@@ -203,7 +204,9 @@ public class CommandManager {
 					PVPArena.lang.parse("alreadyjoined"));
 			return true;
 		}
+		arena.prepare(player);
 		arena.tpPlayerToCoordName(player, "spectator");
+		arena.prepareInventory(player);
 		ArenaManager.tellPlayer(player, PVPArena.lang.parse("specwelcome"));
 		return true;
 	}
@@ -281,10 +284,18 @@ public class CommandManager {
 
 		db.i("parsing admin command: " + cmd);
 		if (cmd.equalsIgnoreCase("spectator")) {
+			if (!player.getWorld().getName().equals(arena.getWorld())) {
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+				return false;
+			}
 			arena.setCoords(player, "spectator");
 			ArenaManager
 					.tellPlayer(player, PVPArena.lang.parse("setspectator"));
 		} else if (cmd.equalsIgnoreCase("exit")) {
+			if (!player.getWorld().getName().equals(arena.getWorld())) {
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+				return false;
+			}
 			arena.setCoords(player, "exit");
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("setexit"));
 		} else if (cmd.equalsIgnoreCase("forcestop")) {
@@ -303,7 +314,11 @@ public class CommandManager {
 			} else {
 				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
 			}
-		} else if (arena.randomSpawn && (cmd.startsWith("spawn"))) {
+		} else if (arena.cfg.getBoolean("general.randomSpawn", false) && (cmd.startsWith("spawn"))) {
+			if (!player.getWorld().getName().equals(arena.getWorld())) {
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+				return false;
+			}
 			arena.setCoords(player, cmd);
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("setspawn", cmd));
@@ -323,6 +338,10 @@ public class CommandManager {
 			String cmd) {
 
 		if ((arena.getType().equals("ctf")) && cmd.endsWith("flag")) {
+			if (!player.getWorld().getName().equals(arena.getWorld())) {
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+				return false;
+			}
 			String sName = cmd.replace("flag", "");
 			if (arena.paTeams.get(sName) == null)
 				return false;
@@ -339,6 +358,10 @@ public class CommandManager {
 	 * returns "is spawn-set command"
 	 */
 	private static boolean isSpawnCommand(Arena arena, Player player, String cmd) {
+		if (!player.getWorld().getName().equals(arena.getWorld())) {
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+			return false;
+		}
 
 		if (arena.getType().equals("free")) {
 
@@ -370,6 +393,10 @@ public class CommandManager {
 	 */
 	private static boolean isLoungeCommand(Arena arena, Player player,
 			String cmd) {
+		if (!player.getWorld().getName().equals(arena.getWorld())) {
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("notsameworld", arena.getWorld()));
+			return false;
+		}
 
 		if (arena.getType().equals("free")) {
 			if (cmd.equalsIgnoreCase("lounge")) {
@@ -438,12 +465,12 @@ public class CommandManager {
 			return true;
 		}
 
-		if (amount < arena.minbet
-				|| (arena.maxbet > 0 && amount > arena.maxbet)) {
+		if (amount < arena.cfg.getDouble("money.minbet")
+				|| (arena.cfg.getDouble("money.maxbet") > 0 && amount > arena.cfg.getDouble("money.maxbet"))) {
 			// wrong amount!
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("wrongamount",
-					PVPArena.instance.getMethod().format(arena.minbet),
-					PVPArena.instance.getMethod().format(arena.maxbet)));
+					PVPArena.instance.getMethod().format(arena.cfg.getDouble("money.minbet")),
+					PVPArena.instance.getMethod().format(arena.cfg.getDouble("money.maxbet"))));
 			return true;
 		}
 
@@ -511,40 +538,40 @@ public class CommandManager {
 				+ " || " + "Teams: " + colorTeams(arena.paTeams));
 		player.sendMessage(colorVar("Enabled", arena.enabled) + " || "
 				+ colorVar("Fighting", arena.fightInProgress) + " || "
-				+ "Wand: " + Material.getMaterial(arena.wand).toString()
+				+ "Wand: " + Material.getMaterial(arena.cfg.getInt("general.wand", 280)).toString()
 				+ " || " + "Timing: " + colorVar(arena.timed) + " || "
-				+ "MaxLives: " + colorVar(arena.maxLives));
+				+ "MaxLives: " + colorVar(arena.cfg.getInt("general.lives", 3)));
 		player.sendMessage("Regionset: "
 				+ colorVar(arena.name.equals(Arena.regionmodify))
 				+ " || No Death: " + colorVar(arena.preventDeath) + " || "
-				+ "Force: " + colorVar("Even", arena.forceEven) + " | "
-				+ colorVar("Woolhead", arena.forceWoolHead));
-		player.sendMessage(colorVar("TeamKill", arena.teamKilling)
+				+ "Force: " + colorVar("Even", arena.cfg.getBoolean("general.forceeven", false)) + " | "
+				+ colorVar("Woolhead", arena.cfg.getBoolean("general.woolhead", false)));
+		player.sendMessage(colorVar("TeamKill", arena.cfg.getBoolean("general.teamkill", false))
 				+ " || Team Select: "
-				+ colorVar("manual", arena.manuallySelectTeams) + " | "
-				+ colorVar("random", arena.randomlySelectTeams));
+				+ colorVar("manual", arena.cfg.getBoolean("general.manual", true)) + " | "
+				+ colorVar("random", arena.cfg.getBoolean("general.random", true)));
 		player.sendMessage("Regions: " + listRegions(arena.regions));
-		player.sendMessage("TPs: exit: " + colorVar(arena.sTPexit)
-				+ " | death: " + colorVar(arena.sTPdeath) + " | win: "
-				+ colorVar(arena.sTPwin) + " | lose: "
-				+ colorVar(arena.sTPlose));
+		player.sendMessage("TPs: exit: " + colorVar(arena.cfg.getString("tp.exit", "exit"))
+				+ " | death: " + colorVar(arena.cfg.getString("tp.death", "spectator")) + " | win: "
+				+ colorVar(arena.cfg.getString("tp.win", "old")) + " | lose: "
+				+ colorVar(arena.cfg.getString("tp.lose", "old")));
 		player.sendMessage(colorVar("Powerups", arena.usesPowerups) + "("
-				+ colorVar(arena.powerupTrigger) + ")" + " | "
-				+ colorVar("randomSpawn", arena.randomSpawn));
-		player.sendMessage(colorVar("Protection", arena.usesProtection) + ": "
-				+ colorVar("Fire", arena.disableAllFireSpread) + " | "
-				+ colorVar("Destroy", arena.disableBlockDamage) + " | "
-				+ colorVar("Place", arena.disableBlockPlacement) + " | "
-				+ colorVar("Ignite", arena.disableIgnite) + " | "
-				+ colorVar("Lava", arena.disableLavaFireSpread) + " | "
-				+ colorVar("Explode", arena.disableTnt));
-		player.sendMessage(colorVar("Check Regions", arena.checkRegions) + ": "
-				+ colorVar("Exit", arena.checkExitRegion) + " | "
-				+ colorVar("Lounges", arena.checkLoungesRegion) + " | "
-				+ colorVar("Spectator", arena.checkSpectatorRegion));
-		player.sendMessage("JoinRange: " + colorVar(arena.joinRange)
-				+ " || Entry Fee: " + colorVar(arena.entryFee) + " || Reward: "
-				+ colorVar(arena.rewardAmount));
+				+ colorVar(arena.cfg.getString("general.powerups")) + ")" + " | "
+				+ colorVar("randomSpawn", arena.cfg.getBoolean("general.randomSpawn", false)));
+		player.sendMessage(colorVar("Protection", arena.cfg.getBoolean("protection.enabled", true)) + ": "
+				+ colorVar("Fire", arena.cfg.getBoolean("protection.firespread", true)) + " | "
+				+ colorVar("Destroy", arena.cfg.getBoolean("protection.blockdamage", true)) + " | "
+				+ colorVar("Place", arena.cfg.getBoolean("protection.blockplace", true)) + " | "
+				+ colorVar("Ignite", arena.cfg.getBoolean("protection.lighter", true)) + " | "
+				+ colorVar("Lava", arena.cfg.getBoolean("protection.lavafirespread", true)) + " | "
+				+ colorVar("Explode", arena.cfg.getBoolean("protection.tnt", true)));
+		player.sendMessage(colorVar("Check Regions", arena.cfg.getBoolean("general.checkRegions", false)) + ": "
+				+ colorVar("Exit", arena.cfg.getBoolean("protection.checkExit", false)) + " | "
+				+ colorVar("Lounges", arena.cfg.getBoolean("protection.checkLounges", false)) + " | "
+				+ colorVar("Spectator", arena.cfg.getBoolean("protection.checkSpectator", false)));
+		player.sendMessage("JoinRange: " + colorVar(arena.cfg.getInt("general.joinrange", 0))
+				+ " || Entry Fee: " + colorVar(arena.cfg.getInt("money.entry", 0)) + " || Reward: "
+				+ colorVar(arena.cfg.getInt("money.reward", 0)));
 
 		return true;
 	}

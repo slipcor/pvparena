@@ -41,7 +41,6 @@ public class ArenaManager {
 	 * load all configs in the PVP Arena folder
 	 */
 	public static void load_arenas() {
-		int done = 0;
 		db.i("loading arenas...");
 		try {
 			File path = new File("plugins/pvparena");
@@ -53,7 +52,6 @@ public class ArenaManager {
 					sName = sName.replace(".yml", "");
 					db.i("standard arena: " + sName);
 					loadArena(sName, "");
-					done++;
 				}
 			}
 			for (i = 0; i < f.length; i++) {
@@ -63,7 +61,6 @@ public class ArenaManager {
 					sName = sName.replace(".yml", "");
 					db.i("free arena: " + sName);
 					loadArena(sName, "free");
-					done++;
 				}
 			}
 			for (i = 0; i < f.length; i++) {
@@ -73,24 +70,11 @@ public class ArenaManager {
 					sName = sName.replace(".yml", "");
 					db.i("ctf arena: " + sName);
 					loadArena(sName, "ctf");
-					done++;
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
-		}
-		if (done == 0) {
-			File path = new File("plugins/pvparena/config.yml"); // legacy
-																	// import
-			if (path.exists()) {
-				path.renameTo(new File("plugins/pvparena/config_default.yml"));
-				path = new File("plugins/pvparena/stats.yml");
-				if (path.exists()) {
-					path.renameTo(new File("plugins/pvparena/stats_default.yml"));
-				}
-			}
-			loadArena("default", "");
 		}
 	}
 
@@ -266,7 +250,8 @@ public class ArenaManager {
 		db.i("unloading arena " + a.name);
 		a.forcestop();
 		arenas.remove(string);
-		a.configFile.delete();
+		a.cfg.delete();
+		
 		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
 		a = null;

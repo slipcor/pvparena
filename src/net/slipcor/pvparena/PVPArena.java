@@ -205,6 +205,7 @@ public class PVPArena extends JavaPlugin {
 			} else {
 				ArenaManager.loadArena(args[0], "teams");
 			}
+			ArenaManager.getArenaByName(args[0]).setWorld(player.getWorld().getName());
 			ArenaManager.tellPlayer(player, lang.parse("created", args[0]));
 			return true;
 		} else if (args.length == 2 && args[1].equals("remove")) {
@@ -253,7 +254,7 @@ public class PVPArena extends JavaPlugin {
 											+ ChatColor.YELLOW));
 				}
 				ArenaManager.tellPlayer(player, lang.parse("youleave"));
-				arena.removePlayer(player, arena.sTPexit);
+				arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 				arena.checkEndAndCommit();
 			} else {
 				ArenaManager.tellPlayer(player, lang.parse("notinarena"));

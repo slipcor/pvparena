@@ -43,32 +43,31 @@ public class FreeArena extends Arena {
 	 */
 	public FreeArena(String sName) {
 		super();
-
 		this.name = sName;
-		this.configFile = new File("plugins/pvparena/config.free_" + name
-				+ ".yml");
+		cfg = new Config(new File("plugins/pvparena/config.free_" + name
+				+ ".yml"));
+		cfg.load();
+		if (cfg.get("cfgver") == null) {
+			ConfigManager.legacyImport(this, cfg);
+		}
+		ConfigManager.configParse(this, cfg);
 
-		new File("plugins/pvparena").mkdir();
-		if (!(configFile.exists()))
-			try {
-				configFile.createNewFile();
-			} catch (Exception e) {
-				PVPArena.lang.log_error("filecreateerror", "config.free_"
-						+ name);
-			}
-
-		ConfigManager.configParse(this, configFile);
 		db.i("FreeFight Arena default overrides START");
 		db.i("+teamKilling, -manualTeamSelect, +randomTeamSelect,");
 		db.i("-forceWoolHead, -forceEven, +randomSpawn");
 		db.i("only one team: free");
 		db.i("FreeFight Arena default overrides END");
-		this.teamKilling = true;
-		this.manuallySelectTeams = false;
-		this.randomlySelectTeams = true;
-		this.forceWoolHead = false;
-		this.forceEven = false;
-		this.randomSpawn = true;
+
+		cfg.set("general.teamkill", true);
+		cfg.set("general.manual", false);
+		cfg.set("general.random", true);
+		cfg.set("general.woolhead", false);
+		cfg.set("general.forceeven", false);
+		cfg.set("general.randomSpawn", true);
+		cfg.set("teams", null);
+		cfg.set("teams.free", "WHITE");
+		cfg.save();
+		
 		paTeams.clear();
 		paTeams.put("free", ChatColor.WHITE.name());
 	}
@@ -114,7 +113,7 @@ public class FreeArena extends Arena {
 
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 			StatsManager.addWinStat(z, "free", this);
-			resetPlayer(z, sTPwin);
+			resetPlayer(z, cfg.getString("tp.win", "old"));
 			giveRewards(z); // if we are the winning team, give reward!
 			playerManager.setClass(z, "");
 		}

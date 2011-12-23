@@ -59,7 +59,7 @@ public class PAPlayer {
 	public void setRespawn(boolean set) {
 		respawn = set?fightClass:null;
 	}
-
+	/*
 	public Location getSignLocation() {
 		return location;
 	}
@@ -67,7 +67,7 @@ public class PAPlayer {
 	public void setSignLocation(Location l) {
 		location = l;
 	}
-
+	*/
 	public byte getLives() {
 		return lives;
 	}

@@ -148,11 +148,11 @@ public class PlayerManager {
 		}
 
 		for (PAPlayer p : pa) {
-			arena.removePlayer(p.getPlayer(), arena.sTPexit);
+			arena.removePlayer(p.getPlayer(), arena.cfg.getString("tp.exit", "exit"));
 			p.setTeam(null);
 			p.setClass(null);
 			p.setLives((byte) 0);
-			p.setSignLocation(null);
+			//p.setSignLocation(null);
 			paPlayersBetAmount.clear();
 		}
 		players.clear();
@@ -237,7 +237,7 @@ public class PlayerManager {
 	public String getRespawn(Player player) {
 		return players.get(player.getName()).getRespawn();
 	}
-
+	/*
 	public Location getSignLocation(Player player) {
 		return players.get(player.getName()).getSignLocation();
 	}
@@ -245,7 +245,7 @@ public class PlayerManager {
 	public void setSignLocation(Player player, Location l) {
 		players.get(player.getName()).setSignLocation(l);
 	}
-
+	*/
 	public String getTeam(Player player) {
 		return (players.get(player.getName()) == null)?"":players.get(player.getName()).getTeam();
 	}

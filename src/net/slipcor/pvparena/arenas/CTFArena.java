@@ -20,8 +20,6 @@
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,8 +27,6 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -53,49 +49,31 @@ public class CTFArena extends Arena {
 		super();
 
 		this.name = sName;
-		this.configFile = new File("plugins/pvparena/config.ctf_" + name
-				+ ".yml");
 
 		db.i("loading CTF Arena " + name);
 
-		new File("plugins/pvparena").mkdir();
-		if (!(configFile.exists()))
-			try {
-				configFile.createNewFile();
-			} catch (Exception e) {
-				PVPArena.lang
-						.log_error("filecreateerror", "config.ctf_" + name);
-			}
-		this.randomSpawn = false;
-		YamlConfiguration config = new YamlConfiguration();
-		try {
-			config.load(configFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
+		cfg = new Config(new File("plugins/pvparena/config.ctf_" + name
+				+ ".yml"));
+		cfg.load();
+		if (cfg.get("cfgver") == null) {
+			ConfigManager.legacyImport(this, cfg);
 		}
-		if (config.get("teams.custom") == null) {
+		ConfigManager.configParse(this, cfg);
+		if (cfg.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.custom.red", ChatColor.RED.name());
-			config.addDefault("teams.custom.blue", ChatColor.BLUE.name());
-			config.options().copyDefaults(true);
+			cfg.getYamlConfiguration().addDefault("teams.red", ChatColor.RED.name());
+			cfg.getYamlConfiguration().addDefault("teams.blue", ChatColor.BLUE.name());
+			cfg.getYamlConfiguration().options().copyDefaults(true);
+			cfg.reloadMaps();
 		}
-		try {
-			config.save(configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Map<String, Object> tempMap = (Map<String, Object>) config
-				.getConfigurationSection("teams.custom").getValues(true);
+		cfg.save();
+		Map<String, Object> tempMap = (Map<String, Object>) cfg.getYamlConfiguration()
+				.getConfigurationSection("teams").getValues(true);
 
 		for (String sTeam : tempMap.keySet()) {
 			this.paTeams.put(sTeam, (String) tempMap.get(sTeam));
 			db.i("added team " + sTeam + " => " + this.paTeams.get(sTeam));
 		}
-		ConfigManager.configParse(this, configFile);
 	}
 
 	/*
@@ -128,7 +106,7 @@ public class CTFArena extends Arena {
 				if (playerManager.getPlayerTeamMap().get(z.getName())
 						.equals(team)) {
 					StatsManager.addLoseStat(z, team, this);
-					resetPlayer(z, sTPlose);
+					resetPlayer(z, cfg.getString("tp.lose", "old"));
 					playerManager.setClass(z, "");
 				}
 			}
@@ -149,7 +127,7 @@ public class CTFArena extends Arena {
 			if (paTeamLives.containsKey(playerManager.getPlayerTeamMap().get(
 					z.getName()))) {
 				StatsManager.addWinStat(z, team, this);
-				resetPlayer(z, sTPwin);
+				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
 				playerManager.setClass(z, "");
 				winteam = team;
@@ -171,7 +149,7 @@ public class CTFArena extends Arena {
 		for (String sTeam : this.paTeams.keySet()) {
 			if (playerManager.getPlayerTeamMap().containsValue(sTeam)) {
 				// team is active
-				this.paTeamLives.put(sTeam, this.maxLives);
+				this.paTeamLives.put(sTeam, this.cfg.getInt("general.lives", 3));
 			}
 		}
 	}

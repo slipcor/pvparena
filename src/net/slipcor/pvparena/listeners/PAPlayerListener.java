@@ -30,8 +30,6 @@
 
 package net.slipcor.pvparena.listeners;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,8 +46,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -132,16 +128,16 @@ public class PAPlayerListener extends PlayerListener {
 		db.i("respawning player");
 		Location l;
 
-		if (arena.sTPdeath.equals("old")) {
+		if (arena.cfg.getString("tp.death", "spectator").equals("old")) {
 			db.i("=> old location");
 			l = arena.getPlayerOldLocation(player);
 		} else {
 			db.i("=> 'config=>death' location");
-			l = arena.getCoords(arena.sTPdeath);
+			l = arena.getCoords(arena.cfg.getString("tp.death", "spectator"));
 		}
 		event.setRespawnLocation(l);
 
-		arena.removePlayer(player, arena.sTPdeath);
+		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
 		arena.playerManager.setRespawn(player, false);
 	}
 
@@ -165,7 +161,7 @@ public class PAPlayerListener extends PlayerListener {
 							ChatColor.WHITE + player.getName()
 									+ ChatColor.YELLOW));
 		}
-		arena.removePlayer(player, arena.sTPexit);
+		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 		arena.checkEndAndCommit();
 	}
 
@@ -269,7 +265,7 @@ public class PAPlayerListener extends PlayerListener {
 
 		if (arena != null && PVPArena.instance.hasAdminPerms(player)
 				&& (player.getItemInHand() != null)
-				&& (player.getItemInHand().getTypeId() == arena.wand)) {
+				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt("general.wand", 280))) {
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
@@ -339,19 +335,9 @@ public class PAPlayerListener extends PlayerListener {
 						.getLine(0).equalsIgnoreCase("custom")))
 						&& (!arena.playerManager.getTeam(player).equals(""))) {
 
-					YamlConfiguration config = new YamlConfiguration();
-					try {
-						config.load(arena.configFile);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (InvalidConfigurationException e) {
-						e.printStackTrace();
-					}
 					boolean classperms = false;
-					if (config.get("general.classperms") != null) {
-						classperms = config.getBoolean("general.classperms",
+					if (arena.cfg.get("general.classperms") != null) {
+						classperms = arena.cfg.getBoolean("general.classperms",
 								false);
 					}
 
@@ -369,7 +355,19 @@ public class PAPlayerListener extends PlayerListener {
 					}
 
 					int i = 0;
+					
 
+					arena.clearInventory(player);
+					arena.playerManager.setClass(player,
+							sign.getLine(0));
+					if (sign.getLine(0).equalsIgnoreCase("custom")) {
+						// if custom, give stuff back
+						arena.loadInventory(player);
+					} else {
+						arena.givePlayerFightItems(player);
+					}
+					/*
+					
 					if (!arena.playerManager.getClass(player).equals("")) {
 						db.i("removing player from sign");
 						// already selected class, remove it!
@@ -445,7 +443,8 @@ public class PAPlayerListener extends PlayerListener {
 						}
 					}
 					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("toomanyplayers"));
+							PVPArena.lang.parse("toomanyplayers"));*/
+					
 				}
 				return;
 			}
@@ -456,29 +455,19 @@ public class PAPlayerListener extends PlayerListener {
 
 			db.i("block click!");
 
-			YamlConfiguration config = new YamlConfiguration();
-			try {
-				config.load(arena.configFile);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (InvalidConfigurationException e1) {
-				e1.printStackTrace();
-			}
 			Material mMat = Material.IRON_BLOCK;
-			if (config.get("general.readyblock") != null) {
+			if (arena.cfg.get("general.readyblock") != null) {
 				db.i("reading ready block");
 				try {
-					mMat = Material.getMaterial(config
+					mMat = Material.getMaterial(arena.cfg
 							.getInt("general.readyblock"));
 					if (mMat == Material.AIR)
-						mMat = Material.getMaterial(config
+						mMat = Material.getMaterial(arena.cfg
 								.getString("general.readyblock"));
 					db.i("mMat now is " + mMat.name());
 				} catch (Exception e) {
 					db.i("exception reading ready block");
-					String sMat = config.getString("general.readyblock");
+					String sMat = arena.cfg.getString("general.readyblock");
 					try {
 						mMat = Material.getMaterial(sMat);
 						db.i("mMat now is " + mMat.name());
@@ -504,7 +493,7 @@ public class PAPlayerListener extends PlayerListener {
 					return; // team not ready => announce
 				}
 
-				if (arena.forceEven) {
+				if (arena.cfg.getBoolean("general.forceeven", false)) {
 					if (arena.playerManager.checkEven()) {
 						ArenaManager.tellPlayer(player,
 								PVPArena.lang.parse("waitequal"));
