@@ -466,7 +466,7 @@ public class CommandManager {
 		}
 
 		if (amount < arena.cfg.getDouble("money.minbet")
-				|| (arena.cfg.getDouble("money.maxbet") > 0 && amount > arena.cfg.getDouble("money.maxbet"))) {
+				|| (amount > arena.cfg.getDouble("money.maxbet"))) {
 			// wrong amount!
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("wrongamount",
 					PVPArena.instance.getMethod().format(arena.cfg.getDouble("money.minbet")),

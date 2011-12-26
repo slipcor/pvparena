@@ -50,6 +50,7 @@ public class ConfigManager {
 			config.addDefault("tp.exit", "exit");
 			config.addDefault("tp.death", "spectator");
 			
+			config.addDefault("general.wand", Integer.valueOf(280));
 			config.addDefault("general.readyblock", "IRON_BLOCK");
 			config.addDefault("general.lives", Integer.valueOf(3));
 			config.addDefault("general.language", "en");
@@ -70,7 +71,6 @@ public class ConfigManager {
 			config.addDefault("money.maxbet", Double.valueOf(0));
 	
 			config.addDefault("protection.enabled", Boolean.valueOf(true));
-			config.addDefault("protection.wand", Integer.valueOf(280));
 			config.addDefault("protection.blockplace",
 					Boolean.valueOf(true));
 			config.addDefault("protection.blockdamage",
