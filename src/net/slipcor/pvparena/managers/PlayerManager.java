@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.4 - Random spawns per team, not shared
+ * version: v0.5.2 - Bugfixes, configurable player start values
  * 
  * history:
  * 
+ *     v0.4.4 - Random spawns per team, not shared
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  */
@@ -88,7 +89,7 @@ public class PlayerManager {
 			if (temp != i)
 				return false; // different count => not even
 		}
-		return true; // every team as the same player count!
+		return true; // every team has the same player count!
 	}
 
 	public int countPlayersInTeams() {

@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.4 - Random spawns per team, not shared
+ * version: v0.5.2 - Bugfixes, configurable player start values
  * 
  * history:
  * 
+ *     v0.4.4 - Random spawns per team, not shared
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
@@ -282,11 +283,18 @@ public class CTFArena extends Arena {
 	@Override
 	public void respawnPlayer(Player player, byte lives) {
 
-		player.setHealth(20);
+		player.setHealth(cfg.getInt("general.startHealth",0));
 		player.setFireTicks(0);
-		player.setFoodLevel(20);
-		player.setSaturation(20);
-		player.setExhaustion(0);
+		player.setFoodLevel(cfg.getInt("general.startFoodLevel",20));
+		player.setSaturation(cfg.getInt("general.startSaturation",20));
+		player.setExhaustion((float) cfg.getDouble("general.start", 0.0));
+
+		
+		if (cfg.getBoolean("general.refillInventory") && !playerManager.getClass(player).equals("custom")) {
+			clearInventory(player);
+			givePlayerFightItems(player);
+		}
+		
 		String sTeam = playerManager.getTeam(player);
 		String color = paTeams.get(sTeam);
 		playerManager.tellEveryone(PVPArena.lang.parse("killed",

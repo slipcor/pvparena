@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.4 - Random spawns per team, not shared
+ * version: v0.5.2 - Bugfixes, configurable player start values
  * 
  * history:
  * 
+ *     v0.4.4 - Random spawns per team, not shared
  *     v0.4.3 - max / min bet
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
@@ -99,8 +100,14 @@ public class ConfigManager {
 			config.addDefault("general.woolhead", Boolean.valueOf(false));
 			config.addDefault("general.forceeven", Boolean.valueOf(false));
 		}
+		config.addDefault("general.refillInventory", Boolean.valueOf(false));
+
+		config.addDefault("general.startHealth", Integer.valueOf(20));
+		config.addDefault("general.startFoodLevel", Integer.valueOf(20));
+		config.addDefault("general.startSaturation", Integer.valueOf(20));
+		config.addDefault("general.startExhaustion", Float.valueOf(0));
 		config.options().copyDefaults(true);
-		cfg.set("cfgver", "0.5.0.7");
+		cfg.set("cfgver", "0.5.2.0");
 		cfg.save();
 		
 		Map<String, Object> classes = config.getConfigurationSection("classitems")
@@ -423,6 +430,18 @@ public class ConfigManager {
 				String s2 = "";
 				
 				for (int i=0;i<3;i++) {
+
+					try {
+						sMin[i] = String.valueOf(Math.round(Double.parseDouble(sMin[i])));
+					} catch (Exception e) {
+						
+					}
+					try {
+						sMax[i] = String.valueOf(Math.round(Double.parseDouble(sMax[i])));
+					} catch (Exception e) {
+						
+					}
+					
 					s1 += (s1.equals(""))?sMin[i]:(","+sMin[i]);
 					s2 += ","+sMax[i];
 				}

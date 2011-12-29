@@ -494,7 +494,7 @@ public class PAPlayerListener extends PlayerListener {
 				}
 
 				if (arena.cfg.getBoolean("general.forceeven", false)) {
-					if (arena.playerManager.checkEven()) {
+					if (!arena.playerManager.checkEven()) {
 						ArenaManager.tellPlayer(player,
 								PVPArena.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce

@@ -557,7 +557,8 @@ public class CommandManager {
 				+ colorVar(arena.cfg.getString("tp.lose", "old")));
 		player.sendMessage(colorVar("Powerups", arena.usesPowerups) + "("
 				+ colorVar(arena.cfg.getString("general.powerups")) + ")" + " | "
-				+ colorVar("randomSpawn", arena.cfg.getBoolean("general.randomSpawn", false)));
+				+ colorVar("randomSpawn", arena.cfg.getBoolean("general.randomSpawn", false)) + " | "
+				+ colorVar("refill",arena.cfg.getBoolean("general.refillInventory",false)));
 		player.sendMessage(colorVar("Protection", arena.cfg.getBoolean("protection.enabled", true)) + ": "
 				+ colorVar("Fire", arena.cfg.getBoolean("protection.firespread", true)) + " | "
 				+ colorVar("Destroy", arena.cfg.getBoolean("protection.blockdamage", true)) + " | "

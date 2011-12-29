@@ -3,10 +3,11 @@
  * 
  * author: slipcor
  * 
- * version: v0.4.4 - Random spawns per team, not shared
+ * version: v0.5.2 - Bugfixes, configurable player start values
  * 
  * history:
  * 
+ *     v0.4.4 - Random spawns per team, not shared
  *     v0.4.1 - command manager, arena information and arena config check
  *     v0.4.0 - mayor rewrite, improved help
  *     v0.3.14 - timed arena modes
@@ -91,6 +92,7 @@ public class PAEntityListener extends EntityListener {
 		arena.playerManager.setTeam(player, ""); // needed so player does not
 													// get found when dead
 		arena.playerManager.setRespawn(player, true);
+		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.getType().equals("ctf")) {
 			CTFArena ca = (CTFArena) arena;
