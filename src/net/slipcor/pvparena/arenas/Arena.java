@@ -64,6 +64,8 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
@@ -809,13 +811,23 @@ public abstract class Arena {
 	public void prepare(Player player) {
 		db.i("preparing player: " + player.getName());
 		saveMisc(player); // save player health, fire tick, hunger etc
-		player.setHealth(cfg.getInt("general.startHealth",0));
+		playersetHealth(player,cfg.getInt("general.startHealth",0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("general.startFoodLevel",20));
 		player.setSaturation(cfg.getInt("general.startSaturation",20));
 		player.setExhaustion((float) cfg.getDouble("general.start", 0.0));
 		player.setGameMode(GameMode.getByValue(0));
 		playerManager.addPlayer(player);
+	}
+
+	protected void playersetHealth(Player p, int value) {
+		int current = p.getHealth(); // 1-20 ; relative (heroes)
+		int regain  = value - current;
+		// Set the health, and fire off the event.
+		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain, RegainReason.CUSTOM);
+		Bukkit.getPluginManager().callEvent(event);
+		//p.sendMessage("max:"+p.getMaxHealth()+"; current: "+current+"; regain: "+regain+"; amount: "+event.getAmount());
+		p.setHealth(event.getAmount());
 	}
 
 	/*
@@ -1192,7 +1204,7 @@ public abstract class Arena {
 	 */
 	public void respawnPlayer(Player player, byte lives) {
 
-		player.setHealth(cfg.getInt("general.startHealth",0));
+		playersetHealth(player, cfg.getInt("general.startHealth",0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("general.startFoodLevel",20));
 		player.setSaturation(cfg.getInt("general.startSaturation",20));

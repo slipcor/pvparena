@@ -283,7 +283,7 @@ public class CTFArena extends Arena {
 	@Override
 	public void respawnPlayer(Player player, byte lives) {
 
-		player.setHealth(cfg.getInt("general.startHealth",0));
+		playersetHealth(player,cfg.getInt("general.startHealth",0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("general.startFoodLevel",20));
 		player.setSaturation(cfg.getInt("general.startSaturation",20));
