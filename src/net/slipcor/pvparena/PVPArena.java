@@ -1,43 +1,3 @@
-/*
- * main class
- * 
- * author: slipcor
- * 
- * version: v0.4.4 - Random spawns per team, not shared
- * 
- * history:
- * 
- *     v0.4.3 - max / min bet
- *     v0.4.2 - command blacklist
- *     v0.4.1 - command manager, arena information and arena config check
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.14 - timed arena modes
- *     v0.3.11 - set regions for lounges, spectator, exit
- *     v0.3.10 - CraftBukkit #1337 config version, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.7 - Bugfixes, Cleanup
- *     v0.3.5 - Powerups!!
- *     v0.3.3 - Random spawns possible for every arena
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- *     v0.2.1 - cleanup, comments, iConomy 6 support
- *     v0.2.0 - language support
- *     v0.1.13 - place bets on a match
- *     v0.1.12 - display stats with /pa users | /pa teams
- *     v0.1.11 - config: woolhead: put colored wool on heads!
- *     v0.1.10 - config: only start with even teams
- *     v0.1.9 - teleport location configuration
- *     v0.1.8 - lives!
- *     v0.1.7 - commands to show who is playing and on what team
- *     v0.1.6 - custom class: fight with own items
- *     v0.1.5 - class choosing not toggling
- *     v0.1.4 - arena disable via command * disable / * enable
- *     v0.1.3 - ingame config reload
- *     v0.1.2 - class permission requirement
- *     v0.1.0 - release version
- * 
- */
-
 package net.slipcor.pvparena;
 
 import com.nijiko.permissions.PermissionHandler;
@@ -69,6 +29,19 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 
+/**
+ * main class
+ * 
+ * -
+ * 
+ * contains central elements like plugin handlers, listeners and logging
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.3
+ * 
+ */
+
 public class PVPArena extends JavaPlugin {
 	// global vars for global static access
 	public static PVPArena instance;
@@ -91,6 +64,9 @@ public class PVPArena extends JavaPlugin {
 	 * Plugin Methods
 	 */
 
+	/**
+	 * plugin enabling method - register events and load the configs
+	 */
 	@Override
 	public void onEnable() {
 		PVPArena.instance = this;
@@ -108,7 +84,6 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockListener,
 				Event.Priority.High, this);
-		
 
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.entityListener,
 				Event.Priority.Highest, this);
@@ -118,15 +93,14 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.entityListener,
 				Event.Priority.Highest, this);
-		
 
 		pm.registerEvent(Event.Type.ENTITY_EXPLODE, this.entityListener,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entityListener,
 				Event.Priority.Highest, this);
 
-		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, this.playerListener,
-				Event.Priority.Lowest, this);
+		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS,
+				this.playerListener, Event.Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,
@@ -150,9 +124,9 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.Monitor, this);
 
 		List<String> blackList = new ArrayList<String>();
+		blackList.add("ma");
 		blackList.add("god");
-		blackList.add("time");
-		
+
 		getConfig().addDefault("debug", Boolean.valueOf(false));
 		getConfig().addDefault("blacklist", blackList);
 		getConfig().options().copyDefaults(true);
@@ -164,6 +138,9 @@ public class PVPArena extends JavaPlugin {
 		lang.log_info("enabled", pdfFile.getVersion());
 	}
 
+	/**
+	 * plugin disabling method - reset all arenas, cancel tasks
+	 */
 	@Override
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = getDescription();
@@ -171,6 +148,9 @@ public class PVPArena extends JavaPlugin {
 		lang.log_info("disabled", pdfFile.getVersion());
 	}
 
+	/**
+	 * command handling
+	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
@@ -183,7 +163,7 @@ public class PVPArena extends JavaPlugin {
 
 		if (args == null || args.length < 1)
 			return false;
-		
+
 		if (args[0].equals("help")) {
 			return HelpManager.parseCommand(player, args);
 		}
@@ -205,7 +185,8 @@ public class PVPArena extends JavaPlugin {
 			} else {
 				ArenaManager.loadArena(args[0], "teams");
 			}
-			ArenaManager.getArenaByName(args[0]).setWorld(player.getWorld().getName());
+			ArenaManager.getArenaByName(args[0]).setWorld(
+					player.getWorld().getName());
 			ArenaManager.tellPlayer(player, lang.parse("created", args[0]));
 			return true;
 		} else if (args.length == 2 && args[1].equals("remove")) {
@@ -244,8 +225,10 @@ public class PVPArena extends JavaPlugin {
 				if (!sName.equals("free") && !sName.equals("")) {
 					arena.playerManager.tellEveryoneExcept(
 							player,
-							lang.parse("playerleave", ChatColor.valueOf(arena.paTeams.get(sName))
-									+ player.getName() + ChatColor.YELLOW));
+							lang.parse("playerleave",
+									ChatColor.valueOf(arena.paTeams.get(sName))
+											+ player.getName()
+											+ ChatColor.YELLOW));
 				} else {
 					arena.playerManager.tellEveryoneExcept(
 							player,
@@ -254,7 +237,8 @@ public class PVPArena extends JavaPlugin {
 											+ ChatColor.YELLOW));
 				}
 				ArenaManager.tellPlayer(player, lang.parse("youleave"));
-				arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
+				arena.removePlayer(player,
+						arena.cfg.getString("tp.exit", "exit"));
 				arena.checkEndAndCommit();
 			} else {
 				ArenaManager.tellPlayer(player, lang.parse("notinarena"));
@@ -269,10 +253,10 @@ public class PVPArena extends JavaPlugin {
 			db.i("arena not found, searching...");
 			if (ArenaManager.count() == 1) {
 				arena = ArenaManager.getFirst();
-			db.i("found 1 arena: "+arena.name);
+				db.i("found 1 arena: " + arena.name);
 			} else if (ArenaManager.getArenaByName("default") != null) {
 				arena = ArenaManager.getArenaByName("default");
-			db.i("found default arena!");
+				db.i("found default arena!");
 			} else {
 				ArenaManager.tellPlayer(player,
 						lang.parse("arenanotexists", sName));
@@ -284,47 +268,75 @@ public class PVPArena extends JavaPlugin {
 		String[] newArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 		return arena.parseCommand(player, newArgs);
-		
+
 	}
 
 	/*
 	 * startup methods
 	 */
 
+	/**
+	 * config loading - load all arenas
+	 */
 	public void load_config() {
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null)
+		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-		else
+		} else {
 			lang.log_info("nospout");
+		}
 
 		ArenaManager.load_arenas();
 	}
 
+	/**
+	 * setup permissions
+	 */
 	private void setupPermissions() {
 		// TODO: remove legacy!
 		Plugin test = getServer().getPluginManager().getPlugin("Permissions");
-		if (permissionsHandler != null)
+		if (permissionsHandler != null) {
 			return;
-		if (test != null)
+		}
+		if (test != null) {
 			permissionsHandler = ((Permissions) test).getHandler();
-		else
+		} else {
 			lang.log_info("noperms");
+		}
 	}
 
-	/*
-	 * permission check methods
+	/**
+	 * has player admin permissions?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the player has admin permissions, false otherwise
 	 */
-
 	public boolean hasAdminPerms(Player player) {
 		return hasPerms(player, "pvparena.admin") ? true : hasPerms(player,
 				"fight.admin");
 	}
 
+	/**
+	 * has player basic permissions?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the player has basic permissions, false otherwise
+	 */
 	public boolean hasPerms(Player player) {
 		return hasPerms(player, "pvparena.user") ? true : hasPerms(player,
 				"fight.user");
 	}
 
+	/**
+	 * has player permission?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @param perms
+	 *            a permission node to check
+	 * @return true if the player has the permission, false otherwise
+	 */
 	public boolean hasPerms(Player player, String perms) {
 		if (player.hasPermission(perms))
 			return true;
@@ -335,22 +347,39 @@ public class PVPArena extends JavaPlugin {
 		return false;
 	}
 
-	/*
-	 * Getters and Setters
+	/**
+	 * get the eConomy handler
+	 * 
+	 * @return the handler method
 	 */
-
 	public Method getMethod() {
 		return economyHandler;
 	}
 
+	/**
+	 * set the eConomy handler
+	 * 
+	 * @param method
+	 *            the handler method
+	 */
 	public void setMethod(Method method) {
 		economyHandler = method;
 	}
 
+	/**
+	 * get the entitiy listener
+	 * 
+	 * @return the entity listener
+	 */
 	public PAEntityListener getEntityListener() {
 		return entityListener;
 	}
 
+	/**
+	 * get the spout handler
+	 * 
+	 * @return the spout handler string
+	 */
 	public String getSpoutHandler() {
 		return spoutHandler;
 	}

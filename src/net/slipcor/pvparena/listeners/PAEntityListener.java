@@ -1,33 +1,3 @@
-/*
- * entity listener class
- * 
- * author: slipcor
- * 
- * version: v0.5.2 - Bugfixes, configurable player start values
- * 
- * history:
- * 
- *     v0.4.4 - Random spawns per team, not shared
- *     v0.4.1 - command manager, arena information and arena config check
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.14 - timed arena modes
- *     v0.3.11 - set regions for lounges, spectator, exit
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.3 - Random spawns possible for every arena
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- *     v0.2.1 - cleanup, comments
- *     v0.2.0 - language support
- *     v0.1.12 - display stats
- *     v0.1.11 - fix for bows?
- *     v0.1.8 - lives!
- *     v0.1.5 - class choosing not toggling
- *     v0.1.2 - class permission requirement
- */
-
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
@@ -53,6 +23,19 @@ import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
+/**
+ * entity listener class
+ * 
+ * -
+ * 
+ * PVP Arena Entity Listener
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.2
+ * 
+ */
+
 public class PAEntityListener extends EntityListener {
 	private DebugManager db = new DebugManager();
 
@@ -75,6 +58,16 @@ public class PAEntityListener extends EntityListener {
 		}
 	}
 
+	/**
+	 * pretend a player death
+	 * 
+	 * @param arena
+	 *            the arena the player is playing in
+	 * @param player
+	 *            the player to kill
+	 * @param eEvent
+	 *            the event triggering the death
+	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
 
 		String sTeam = arena.playerManager.getTeam(player);
@@ -159,7 +152,8 @@ public class PAEntityListener extends EntityListener {
 			}
 		}
 		if (arena.usesPowerups) {
-			if (arena.cfg.getString("general.powerups", "off").startsWith("death")) {
+			if (arena.cfg.getString("general.powerups", "off").startsWith(
+					"death")) {
 				db.i("calculating powerup trigger death");
 				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
 				if (arena.powerupDiffI == 0) {
@@ -172,14 +166,20 @@ public class PAEntityListener extends EntityListener {
 			return;
 	}
 
+	/**
+	 * parsing of damage: Entity vs Entity
+	 * 
+	 * @param event
+	 *            the triggering event
+	 */
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
-		db.i("onEntityDamageByEntity: cause: "+event.getCause().name());
-		
+		db.i("onEntityDamageByEntity: cause: " + event.getCause().name());
+
 		if (event.getCause() == DamageCause.BLOCK_EXPLOSION) {
-			
+
 			db.i("onEntityDamageByEntity: fighting player");
 			if ((p2 == null) || (!(p2 instanceof Player))) {
 				return;
@@ -194,7 +194,7 @@ public class PAEntityListener extends EntityListener {
 
 			if (arena.playerManager.getTeam(defender).equals(""))
 				return;
-			
+
 			db.i("processing damage!");
 			if (arena.pm != null) {
 				db.i("committing powerup triggers");
@@ -203,7 +203,7 @@ public class PAEntityListener extends EntityListener {
 					p.commit(null, defender, event);
 
 			}
-			
+
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
 				byte lives = 3;
@@ -229,11 +229,11 @@ public class PAEntityListener extends EntityListener {
 			}
 			return;
 		}
-		
+
 		if (event.getCause() == DamageCause.PROJECTILE) {
 			p1 = ((Projectile) p1).getShooter();
 		}
-		
+
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
 		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
@@ -407,7 +407,8 @@ public class PAEntityListener extends EntityListener {
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockdamage", true)))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed)))
 			return;
 

@@ -1,17 +1,3 @@
-/*
- * custom runnable class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.4 - Powerups!!
- */
-
 package net.slipcor.pvparena.managers;
 
 import java.util.ArrayList;
@@ -22,15 +8,29 @@ import net.slipcor.pvparena.powerups.Powerup;
 
 import org.bukkit.entity.Player;
 
+/**
+ * powerup manager class
+ * 
+ * -
+ * 
+ * hands over all active or general powerups
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.0
+ * 
+ */
+
 public class PowerupManager {
 	public HashMap<Player, Powerup> puActive = new HashMap<Player, Powerup>();
 	public List<Powerup> puTotal = new ArrayList<Powerup>();
 	private DebugManager db = new DebugManager();
 
-	/*
-	 * PowerupManager constructor
+	/**
+	 * construct a powerup manager instance
 	 * 
-	 * read all powerup settings
+	 * @param powerUps
+	 *            the powerups to add
 	 */
 	@SuppressWarnings("unchecked")
 	public PowerupManager(HashMap<String, Object> powerUps) {
@@ -45,7 +45,7 @@ public class PowerupManager {
 		}
 	}
 
-	/*
+	/**
 	 * trigger all powerups
 	 */
 	public void tick() {

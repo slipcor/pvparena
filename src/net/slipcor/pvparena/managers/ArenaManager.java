@@ -1,22 +1,3 @@
-/*
- * Arena Manager class
- * 
- * author: slipcor
- * 
- * version: v0.4.1 - command manager, arena information and arena config check
- * 
- * history:
- * 
- *     v0.3.14 - timed arena modes
- *     v0.3.11 - set regions for lounges, spectator, exit
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- */
-
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
@@ -33,11 +14,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * arena manager class
+ * 
+ * -
+ * 
+ * provides access to the arenas, search them, trigger events, communication
+ * etc.
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.1
+ * 
+ */
+
 public class ArenaManager {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
 	private static DebugManager db = new DebugManager();
 
-	/*
+	/**
 	 * load all configs in the PVP Arena folder
 	 */
 	public static void load_arenas() {
@@ -78,8 +73,13 @@ public class ArenaManager {
 		}
 	}
 
-	/*
-	 * load arena with given name and type
+	/**
+	 * load a specific arena
+	 * 
+	 * @param configFile
+	 *            the file to load
+	 * @param type
+	 *            the arena type
 	 */
 	public static void loadArena(String configFile, String type) {
 		Arena arena;
@@ -94,8 +94,12 @@ public class ArenaManager {
 		arenas.put(arena.name, arena);
 	}
 
-	/*
-	 * find player, return arena name
+	/**
+	 * search the arenas by player
+	 * 
+	 * @param pPlayer
+	 *            the player to find
+	 * @return the arena name if found, null otherwise
 	 */
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
@@ -105,8 +109,12 @@ public class ArenaManager {
 		return null;
 	}
 
-	/*
-	 * find player, return arena
+	/**
+	 * search the arenas by player
+	 * 
+	 * @param pPlayer
+	 *            the player to find
+	 * @return the arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
@@ -116,33 +124,45 @@ public class ArenaManager {
 		return null;
 	}
 
-	/*
-	 * find location, return arena
+	/**
+	 * search the arenas by location
+	 * 
+	 * @param location
+	 *            the location to find
+	 * @return an arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByRegionLocation(Location location) {
 		for (Arena arena : arenas.values()) {
-			if (arena.contains(location.toVector()))
+			if (arena.contains(location))
 				return arena;
 		}
 		return null;
 	}
 
-	/*
-	 * find name, return arena
+	/**
+	 * search the arenas by arena name
+	 * 
+	 * @param sName
+	 *            the arena name
+	 * @return an arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByName(String sName) {
 		return arenas.get(sName);
 	}
 
-	/*
-	 * return arena count
+	/**
+	 * count the arenas
+	 * 
+	 * @return the arena count
 	 */
 	public static int count() {
 		return arenas.size();
 	}
 
-	/*
+	/**
 	 * return the first arena
+	 * 
+	 * @return the first arena instance
 	 */
 	public static Arena getFirst() {
 		for (Arena arena : arenas.values()) {
@@ -151,8 +171,10 @@ public class ArenaManager {
 		return null;
 	}
 
-	/*
-	 * return a list of all arena names
+	/**
+	 * get all arena names
+	 * 
+	 * @return a string with all arena names joined with comma
 	 */
 	public static String getNames() {
 		String result = "";
@@ -162,7 +184,7 @@ public class ArenaManager {
 		return result;
 	}
 
-	/*
+	/**
 	 * powerup tick, tick each arena that uses powerups
 	 */
 	public static void powerupTick() {
@@ -174,8 +196,12 @@ public class ArenaManager {
 		}
 	}
 
-	/*
-	 * returns "is no running arena interfering with given arena"
+	/**
+	 * check if an arena has interfering regions with other arenas
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @return true if no running arena interfering, false otherwise
 	 */
 	public static boolean checkRegions(Arena arena) {
 		for (Arena a : arenas.values()) {
@@ -189,7 +215,7 @@ public class ArenaManager {
 		return true;
 	}
 
-	/*
+	/**
 	 * reset all arenas
 	 */
 	public static void reset() {
@@ -199,8 +225,11 @@ public class ArenaManager {
 		}
 	}
 
-	/*
-	 * tell everyone on the server
+	/**
+	 * send a message to everyone on the server
+	 * 
+	 * @param msg
+	 *            the message to send
 	 */
 	public static void tellPublic(String msg) {
 		db.i("broadcast: " + msg);
@@ -208,8 +237,13 @@ public class ArenaManager {
 				ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 	}
 
-	/*
-	 * tell a specific player
+	/**
+	 * send a message to a single player
+	 * 
+	 * @param player
+	 *            the player to send to
+	 * @param msg
+	 *            the message to send
 	 */
 	public static void tellPlayer(Player player, String msg) {
 		db.i("@" + player.getName() + ": " + msg);
@@ -217,8 +251,12 @@ public class ArenaManager {
 				+ msg);
 	}
 
-	/*
-	 * take a string, sort it by first dimension and return it
+	/**
+	 * take a string array, sort it by first dimension and return
+	 * 
+	 * @param x
+	 *            the input array
+	 * @return the sorted output array
 	 */
 	public static String[][] sort(String[][] x) {
 		boolean undone = true;
@@ -242,8 +280,11 @@ public class ArenaManager {
 		return x;
 	}
 
-	/*
+	/**
 	 * unload and delete an arena
+	 * 
+	 * @param string
+	 *            the arena name to unload
 	 */
 	public static void unload(String string) {
 		Arena a = arenas.get(string);
@@ -251,7 +292,7 @@ public class ArenaManager {
 		a.forcestop();
 		arenas.remove(string);
 		a.cfg.delete();
-		
+
 		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
 		a = null;

@@ -1,22 +1,32 @@
-/*
- * help manager class
- * 
- * author: slipcor
- * 
- * version: v0.4.1 - command manager, arena information and arena config check
- * 
- * history:
- * 
- *     v0.4.0 - mayor rewrite, improved help
- */
-
 package net.slipcor.pvparena.managers;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+/**
+ * help manager class
+ * 
+ * -
+ * 
+ * provides command parsing to help players get along with PVP Arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.1
+ * 
+ */
+
 public class HelpManager {
 
+	/**
+	 * display detailed help
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 * @param args
+	 *            the command arguments
+	 * @return false if the command help should be displayed, true otherwise
+	 */
 	public static boolean parseCommand(Player player, String[] args) {
 		ArenaManager.tellPlayer(player, ChatColor.AQUA
 				+ "---  PVP Arena Help  ---");
@@ -342,6 +352,12 @@ public class HelpManager {
 		return true;
 	}
 
+	/**
+	 * display the help menu to a player
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 */
 	private static void helpList(Player player) {
 
 		ArenaManager.tellPlayer(player, ChatColor.YELLOW + "/pa help general"

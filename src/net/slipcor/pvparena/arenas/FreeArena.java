@@ -1,26 +1,3 @@
-/*
- * free fight arena class
- * 
- * author: slipcor
- * 
- * version: v0.4.4 - Random spawns per team, not shared
- * 
- * history:
- * 
- *     v0.4.1 - command manager, arena information and arena config check
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.14 - timed arena modes
- *     v0.3.10 - CraftBukkit #1337 config version, rewrite
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.7 - Bugfixes
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.4 - Customisable Teams
- *     v0.3.3 - Random spawns possible for every arena
- *     v0.3.1 - New Arena! FreeFight
- */
-
 package net.slipcor.pvparena.arenas;
 
 import java.io.File;
@@ -35,11 +12,26 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+/**
+ * free fight arena class
+ * 
+ * -
+ * 
+ * contains >FreeFight< arena methods and variables
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.1
+ * 
+ */
+
 public class FreeArena extends Arena {
-	/*
-	 * freefight constructor
+
+	/**
+	 * construct a free fight arena
 	 * 
-	 * - open or create a new configuration file - parse the arena config
+	 * @param sName
+	 *            the arena name
 	 */
 	public FreeArena(String sName) {
 		super();
@@ -67,13 +59,13 @@ public class FreeArena extends Arena {
 		cfg.set("teams", null);
 		cfg.set("teams.free", "WHITE");
 		cfg.save();
-		
+
 		paTeams.clear();
 		paTeams.put("free", ChatColor.WHITE.name());
 	}
-	
-	/*
-	 * stick a player into the standard team
+
+	/**
+	 * assign a player to the free team
 	 */
 	@Override
 	public void chooseColor(Player player) {
@@ -91,12 +83,6 @@ public class FreeArena extends Arena {
 		}
 	}
 
-	/*
-	 * return "only one player/team alive"
-	 * 
-	 * - if only one player/team is alive: - announce winning player - teleport
-	 * everyone out - give rewards - check for bets won
-	 */
 	@Override
 	public boolean checkEndAndCommit() {
 		if (playerManager.getPlayerTeamMap().size() > 1) {
@@ -120,7 +106,7 @@ public class FreeArena extends Arena {
 		reset();
 		return true;
 	}
-	
+
 	@Override
 	public String getType() {
 		return "free";

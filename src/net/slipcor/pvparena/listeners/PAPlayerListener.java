@@ -1,33 +1,3 @@
-/*
- * player listener class
- * 
- * author: slipcor
- * 
- * version: v0.4.4 - Random spawns per team, not shared
- * 
- * history:
- * 
- *     v0.4.2 - command blacklist
- *     v0.4.1 - command manager, arena information and arena config check
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.13 - Telepass via Permission
- *     v0.3.10 - CraftBukkit #1337 config version, rewrite
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.7 - Bugfixes
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.3 - Random spawns possible for every arena
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- * 	   v0.2.1 - cleanup, comments
- * 	   v0.1.10 - config: only start with even teams
- * 	   v0.1.9 - configure teleport locations
- * 	   v0.1.2 - class permission requirement
- * 	   v0.1.1 - ready block configurable
- * 	   v0.0.0 - copypaste
- */
-
 package net.slipcor.pvparena.listeners;
 
 import java.util.Iterator;
@@ -58,6 +28,19 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+
+/**
+ * player listener class
+ * 
+ * -
+ * 
+ * PVP Arena Player Listener
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.3
+ * 
+ */
 
 public class PAPlayerListener extends PlayerListener {
 	private DebugManager db = new DebugManager();
@@ -92,7 +75,7 @@ public class PAPlayerListener extends PlayerListener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		//db.i("onPlayerMove: fighting player!");
+		// db.i("onPlayerMove: fighting player!");
 		if (arena.pm != null) {
 			Powerup p = arena.pm.puActive.get(player);
 			if (p != null) {
@@ -263,9 +246,11 @@ public class PAPlayerListener extends PlayerListener {
 
 		Arena arena = ArenaManager.getArenaByName(Arena.regionmodify);
 
-		if (arena != null && PVPArena.instance.hasAdminPerms(player)
+		if (arena != null
+				&& PVPArena.instance.hasAdminPerms(player)
 				&& (player.getItemInHand() != null)
-				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt("general.wand", 280))) {
+				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
+						"general.wand", 280))) {
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
@@ -354,97 +339,14 @@ public class PAPlayerListener extends PlayerListener {
 						}
 					}
 
-					int i = 0;
-					
-
 					arena.clearInventory(player);
-					arena.playerManager.setClass(player,
-							sign.getLine(0));
+					arena.playerManager.setClass(player, sign.getLine(0));
 					if (sign.getLine(0).equalsIgnoreCase("custom")) {
 						// if custom, give stuff back
 						arena.loadInventory(player);
 					} else {
 						arena.givePlayerFightItems(player);
 					}
-					/*
-					
-					if (!arena.playerManager.getClass(player).equals("")) {
-						db.i("removing player from sign");
-						// already selected class, remove it!
-						Sign sSign = (Sign) arena.playerManager
-								.getSignLocation(player).getBlock().getState();
-
-						for (i = 2; i < 4; i++) {
-							if (sSign.getLine(i).equalsIgnoreCase(
-									player.getName())) {
-								sSign.setLine(i, "");
-								arena.clearInventory(player);
-								sSign.update();
-								break; // remove found player, break!
-							}
-						}
-						sSign = arena.getNext(sSign);
-
-						if (sSign != null) {
-							for (i = 0; i < 4; i++) {
-								if (sSign.getLine(i).equalsIgnoreCase(
-										player.getName())) {
-									sSign.setLine(i, "");
-									arena.clearInventory(player);
-									break; // remove found player, break!
-								}
-							}
-							sSign.update();
-						}
-					}
-
-					db.i("adding player to sign");
-					for (i = 2; i < 4; i++) {
-						if (sign.getLine(i).equals("")) {
-							arena.playerManager.setSignLocation(player, sign
-									.getBlock().getLocation());
-							arena.playerManager.setClass(player,
-									sign.getLine(0));
-							sign.setLine(i, player.getName());
-							sign.update();
-							// select class
-							if (sign.getLine(0).equalsIgnoreCase("custom")) {
-								// if custom, give stuff back
-								arena.loadInventory(player);
-							} else {
-								arena.givePlayerFightItems(player);
-							}
-							return;
-						}
-					}
-
-					Sign nSign = arena.getNext(sign);
-					db.i("fetching sign under sign");
-
-					if (nSign != null) {
-						db.i("found! trying to add");
-						for (i = 0; i < 4; i++) {
-							if (nSign.getLine(i).equals("")) {
-								arena.playerManager.setSignLocation(player,
-										sign.getBlock().getLocation());
-								arena.playerManager.setClass(player,
-										sign.getLine(0));
-								nSign.setLine(i, player.getName());
-								nSign.update();
-								// select class
-								if (sign.getLine(0).equalsIgnoreCase("custom")) {
-									// if custom, give stuff back
-									arena.loadInventory(player);
-								} else {
-									arena.givePlayerFightItems(player);
-								}
-								return;
-							}
-						}
-					}
-					ArenaManager.tellPlayer(player,
-							PVPArena.lang.parse("toomanyplayers"));*/
-					
 				}
 				return;
 			}

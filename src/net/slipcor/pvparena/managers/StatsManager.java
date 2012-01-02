@@ -1,22 +1,3 @@
-/*
- * statistics manager class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.10 - CraftBukkit #1337 config version, rewrite
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- *     v0.2.1 - cleanup, comments
- *     v0.2.0 - language support
- *     v0.1.12 - display stats
- */
-
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
@@ -32,11 +13,30 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+/**
+ * statistics manager class
+ * 
+ * -
+ * 
+ * provides commands to save win/lose stats to a yml file
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.0
+ * 
+ */
+
 public class StatsManager {
 	private static DebugManager db = new DebugManager();
 
-	/*
-	 * retrieve config and create one if it doesn't exist
+	/**
+	 * return a configuration of a arena
+	 * 
+	 * @param file
+	 *            the filename to read
+	 * @param arena
+	 *            the arena to access
+	 * @return the arena configuration
 	 */
 	private static YamlConfiguration getConfig(String file, Arena arena) {
 		new File("plugins/pvparena").mkdir();
@@ -76,10 +76,12 @@ public class StatsManager {
 		return config;
 	}
 
-	/*
-	 * returns a map of all players like: slipcor: 2 slipcor_: 3 ....
+	/**
+	 * parse the config contents to a player map
 	 * 
-	 * this example means: slipcor lost 2 times and won 3 times
+	 * @param arena
+	 *            the arena to read
+	 * @return a map consisting of players attached to their stats
 	 */
 	public static Map<String, Integer> getPlayerStats(Arena arena) {
 		YamlConfiguration config = getConfig("stats_" + arena.name, arena);
@@ -118,15 +120,13 @@ public class StatsManager {
 		return players;
 	}
 
-	/*
-	 * returns a string containing team statistics like:
+	/**
+	 * parse the config contents to a team stat string
 	 * 
-	 * 2;3;4;5
-	 * 
-	 * this example means: blue won 2 times, lost 3 times ; red won 4 times,
-	 * lost 5 times
+	 * @param arena
+	 *            the arena to read
+	 * @return a string consisting of teams joined with stats
 	 */
-
 	public static String getTeamStats(Arena arena) {
 		db.i("fetching team stats for arena " + arena.name);
 		YamlConfiguration config = getConfig("stats_" + arena.name, arena);
@@ -154,42 +154,65 @@ public class StatsManager {
 		return result;
 	}
 
-	/*
+	/**
 	 * add a win stat to the player and the team
+	 * 
+	 * @param player
+	 *            the player to access
+	 * @param sTeam
+	 *            the team name to access
+	 * @param arena
+	 *            the arena to access
 	 */
-	public static void addWinStat(Player player, String color, Arena arena) {
-		if (color.equals(""))
+	public static void addWinStat(Player player, String sTeam, Arena arena) {
+		if (sTeam.equals(""))
 			addStat(player, true, arena);
 		else
-			addStat(player, color, true, arena);
+			addStat(player, sTeam, true, arena);
 	}
 
-	/*
+	/**
 	 * add a lose stat to the player and the team
+	 * 
+	 * @param player
+	 *            the player to access
+	 * @param sTeam
+	 *            the team name to access
+	 * @param arena
+	 *            the arena to access
 	 */
-	public static void addLoseStat(Player player, String color, Arena arena) {
-		if (color.equals(""))
+	public static void addLoseStat(Player player, String sTeam, Arena arena) {
+		if (sTeam.equals(""))
 			addStat(player, false, arena);
 		else
-			addStat(player, color, false, arena);
+			addStat(player, sTeam, false, arena);
 	}
 
-	/*
+	/**
 	 * add a stat to the player and the team
+	 * 
+	 * @param player
+	 *            the player to access
+	 * @param sTeam
+	 *            the team name to access
+	 * @param win
+	 *            true if win, false otherwise
+	 * @param arena
+	 *            the arena to access
 	 */
-	private static void addStat(Player player, String color, boolean win,
+	private static void addStat(Player player, String sTeam, boolean win,
 			Arena arena) {
-		db.i("adding stat: player " + player.getName() + "; color: " + color
+		db.i("adding stat: player " + player.getName() + "; color: " + sTeam
 				+ "; win: " + String.valueOf(win) + "; arena: " + arena.name);
 		String sName = ArenaManager.getArenaNameByPlayer(player);
 		YamlConfiguration config = getConfig("stats_" + sName, arena);
 
-		String c = arena.paTeams.get(color);
-		if (c == null) {
-			PVPArena.lang.log_warning("teamnotfound", color);
+		String color = arena.paTeams.get(sTeam);
+		if (color == null) {
+			PVPArena.lang.log_warning("teamnotfound", sTeam);
 			return; // invalid team
 		}
-		String path = (win ? "wins." : "losses.") + color + "."
+		String path = (win ? "wins." : "losses.") + sTeam + "."
 				+ player.getName();
 		int sum = 0;
 		if (config.get(path) != null)
@@ -203,8 +226,15 @@ public class StatsManager {
 		}
 	}
 
-	/*
+	/**
 	 * add a stat to the player and the team
+	 * 
+	 * @param player
+	 *            the player to access
+	 * @param win
+	 *            true if win, false otherwise
+	 * @param arena
+	 *            the arena to access
 	 */
 	private static void addStat(Player player, boolean win, Arena arena) {
 		db.i("adding stat: player " + player.getName() + "; win: "

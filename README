@@ -1,0 +1,43 @@
+ v0.5.3 - Backend rewrite, 
+ v0.5.2 - Bugfixes, configurable player start values
+ v0.5.1 - rewrite, temporary sign bug fix
+ ---------------------------------------------
+ v0.4.4 - Random spawns per team, not shared
+ v0.4.3 - max / min bet
+ v0.4.2 - command blacklist
+ v0.4.1 - command manager, arena information and arena config check
+ v0.4.0 - mayor rewrite, improved help
+ ---------------------------------------------
+ v0.3.14 - timed arena modes
+ v0.3.13 - Telepass via Permission
+ v0.3.12 - set flag positions
+ v0.3.11 - set regions for lounges, spectator, exit
+ v0.3.10 - CraftBukkit #1337 config version, rewrite
+ v0.3.9 - Permissions, rewrite
+ v0.3.8 - BOSEconomy, rewrite
+ v0.3.7 - Bugfixes, Cleanup
+ v0.3.6 - CTF Arena
+ v0.3.5 - Powerups!!
+ v0.3.4 - Rewrite
+ v0.3.3 - Random spawns possible for every arena
+ v0.3.2 - Classes now can store up to 6 players
+ v0.3.1 - New Arena! FreeFight
+ v0.3.0 - Multiple Arenas
+ ---------------------------------------------
+ v0.2.1 - cleanup, comments, iConomy 6 support
+ v0.2.0 - language support
+ 
+ v0.1.13 - place bets on a match
+ v0.1.12 - display stats with /pa users | /pa teams
+ v0.1.11 - config: woolhead: put colored wool on heads!
+ v0.1.10 - config: only start with even teams
+ v0.1.9 - teleport location configuration
+ v0.1.8 - lives!
+ v0.1.7 - commands to show who is playing and on what team
+ v0.1.6 - custom class: fight with own items
+ v0.1.5 - class choosing not toggling
+ v0.1.4 - arena disable via command * disable / * enable
+ v0.1.3 - ingame config reload
+ v0.1.2 - class permission requirement
+ v0.1.1 - ready block configurable
+ v0.1.0 - release version

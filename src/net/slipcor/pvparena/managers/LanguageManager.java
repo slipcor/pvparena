@@ -1,27 +1,3 @@
-/*
- * language manager class
- * 
- * author: slipcor
- * 
- * version: v0.4.4 - Random spawns per team, not shared
- * 
- * history:
- * 
- *     v0.4.3 - max / min bet
- *     v0.4.1 - command manager, arena information and arena config check
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.10 - CraftBukkit #1337 config version, rewrite
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- *     v0.3.4 - Rewrite
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- * 	   v0.2.1 - cleanup, comments
- * 	   v0.2.0 - language support
- */
-
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
@@ -33,12 +9,27 @@ import net.slipcor.pvparena.PVPArena;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-//TODO maybe add the respective arena name somewhere? 
-
+/**
+ * language manager class
+ * 
+ * -
+ * 
+ * provides methods to display configurable texts
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.1
+ * 
+ */
 public class LanguageManager {
 	Map<String, Object> lang = null; // game language map
 	Map<String, Object> log = null; // log language map
 
+	// TODO maybe add the respective arena name somewhere?
+
+	/**
+	 * create a language manager instance
+	 */
 	public LanguageManager() {
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/lang.yml");
@@ -194,7 +185,8 @@ public class LanguageManager {
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
 		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
 		config.addDefault("lang.notready", "Not everyone has picked a class!");
-		config.addDefault("lang.notsameworld", "Not in the same world as the arena (%1%)!");
+		config.addDefault("lang.notsameworld",
+				"Not in the same world as the arena (%1%)!");
 
 		config.addDefault("lang.checkregionerror",
 				"Waiting for a running arena to finish!");
@@ -210,48 +202,117 @@ public class LanguageManager {
 				.getValues(true);
 		log = (Map<String, Object>) config.getConfigurationSection("log")
 				.getValues(true);
-		;
 
 	}
 
+	/**
+	 * read a node from the config and return its value
+	 * 
+	 * @param s
+	 *            the node name
+	 * @return the node string
+	 */
 	public String parse(String s) {
 		return (String) lang.get(s); // hand over map value
 	}
 
+	/**
+	 * read a node from the config and return its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 * @return the replaced node string
+	 */
 	public String parse(String s, String arg) {
 		String var = (String) lang.get(s);
 		return var.replace("%1%", arg); // hand over replaced map value
 	}
 
+	/**
+	 * read a node from the config and return its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg1
+	 *            a string to replace
+	 * @param arg2
+	 *            a string to replace
+	 * @return the replaced node string
+	 */
 	public String parse(String s, String arg1, String arg2) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		return var.replace("%1%", arg1); // hand over replaced map value
 	}
 
+	/**
+	 * read a node from the config and return its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg1
+	 *            a string to replace
+	 * @param arg2
+	 *            a string to replace
+	 * @param arg3
+	 *            a string to replace
+	 * @return the replaced node string
+	 */
 	public String parse(String s, String arg1, String arg2, String arg3) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
 		return var.replace("%1%", arg1); // hand over replaced map value
 	}
 
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
 	public void log_error(String s, String arg) {
 		String var = (String) log.get(s);
 		PVPArena.instance.log.severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
 	public void log_warning(String s, String arg) {
 		String var = (String) log.get(s);
 		PVPArena.instance.log.warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
 	public void log_info(String s, String arg) {
 		String var = (String) log.get(s);
 		PVPArena.instance.log.info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
+	/**
+	 * read a node from the config and log its value
+	 * 
+	 * @param s
+	 *            the node name
+	 */
 	public void log_info(String s) {
 		String var = (String) log.get(s);
 		PVPArena.instance.log.info("[PVP Arena] " + var);

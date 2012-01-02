@@ -1,20 +1,3 @@
-/*
- * block listener class
- * 
- * author: slipcor
- * 
- * version: v0.4.4 - Random spawns per team, not shared
- * 
- * history:
- * 
- *     v0.4.0 - mayor rewrite, improved help
- *     v0.3.11 - set regions for lounges, spectator, exit
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- * 	   v0.2.1 - cleanup, comments
- */
-
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.arenas.Arena;
@@ -26,6 +9,19 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+
+/**
+ * block listener class
+ * 
+ * -
+ * 
+ * PVP Arena Block Listener
+ * 
+ * @author slipcor
+ * 
+ * @version v0.5.1
+ * 
+ */
 
 public class PABlockListener extends BlockListener {
 	private DebugManager db = new DebugManager();

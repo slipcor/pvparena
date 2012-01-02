@@ -1,32 +1,42 @@
-/*
- * custom runnable class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.14 - timed arena modes
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- */
-
 package net.slipcor.pvparena.arenas;
 
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.managers.DebugManager;
 
+/**
+ * custom runnable class
+ * 
+ * -
+ * 
+ * implements an own runnable class in order to commit a powerup spawn in the
+ * arena it is running in
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.0
+ * 
+ */
+
 public class PowerupRunnable implements Runnable {
 	private final Arena a;
 	private DebugManager db = new DebugManager();
 
+	/**
+	 * construct a powerup spawn runnable
+	 * 
+	 * @param a
+	 *            the arena it's running in
+	 */
 	public PowerupRunnable(Arena a) {
 		this.a = a;
 		db.i("PowerupRunnable constructor");
 	}
 
+	/**
+	 * the run method, spawn a powerup
+	 */
+	@Override
 	public void run() {
 		db.i("PowerupRunnable commiting spawn");
 		if (a.fightInProgress)

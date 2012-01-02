@@ -1,19 +1,3 @@
-/*
- * powerup effect class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.10 - rewrite
- *     v0.3.9 - Permissions, rewrite
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- */
-
 package net.slipcor.pvparena.powerups;
 
 import java.util.ArrayList;
@@ -33,6 +17,19 @@ import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
+
+/**
+ * powerup effect class
+ * 
+ * -
+ * 
+ * contains definitions and values of a powerup effect
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.4
+ * 
+ */
 
 public class PowerupEffect {
 	protected boolean active = false;
@@ -60,21 +57,13 @@ public class PowerupEffect {
 		FREEZE, HEALTH, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT;
 	}
 
-	/*
-	 * get the PowerupEffect class from name
-	 */
-	public static classes parseClass(String s) {
-		for (classes c : classes.values()) {
-			if (c.name().equalsIgnoreCase(s))
-				return c;
-		}
-		return null;
-	}
-
-	/*
-	 * PowerupEffect constructor
+	/**
+	 * create a powerup effect class
 	 * 
-	 * read a powerup effect and add it to the powerup
+	 * @param eClass
+	 *            the effect class to create
+	 * @param puEffectVals
+	 *            the map of effect values to set/add
 	 */
 	public PowerupEffect(String eClass, HashMap<String, Object> puEffectVals) {
 		db.i("adding effect " + eClass);
@@ -110,8 +99,26 @@ public class PowerupEffect {
 		}
 	}
 
-	/*
+	/**
+	 * get the PowerupEffect class from name
+	 * 
+	 * @param s
+	 *            the class name
+	 * @return a powerup effect
+	 */
+	public static classes parseClass(String s) {
+		for (classes c : classes.values()) {
+			if (c.name().equalsIgnoreCase(s))
+				return c;
+		}
+		return null;
+	}
+
+	/**
 	 * initiate PowerupEffect
+	 * 
+	 * @param player
+	 *            the player to commit the effect on
 	 */
 	public void init(Player player) {
 		if (uses == 0)
@@ -136,8 +143,15 @@ public class PowerupEffect {
 		}
 	}
 
-	/*
+	/**
 	 * commit PowerupEffect in combat
+	 * 
+	 * @param attacker
+	 *            the attacking player to access
+	 * @param defender
+	 *            the defending player to access
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(Player attacker, Player defender,
 			EntityDamageByEntityEvent event) {
@@ -174,8 +188,12 @@ public class PowerupEffect {
 		}
 	}
 
-	/*
+	/**
 	 * commit PowerupEffect on player
+	 * 
+	 * @param player
+	 *            the player to commit the effect on
+	 * @return true if the commit succeeded, false otherwise
 	 */
 	public boolean commit(Player player) {
 
@@ -205,8 +223,8 @@ public class PowerupEffect {
 					if (!sTeam.equals("free")) {
 						arena.playerManager.tellEveryone(PVPArena.lang.parse(
 								"killed",
-								ChatColor.valueOf(arena.paTeams.get(sTeam)) + player.getName()
-										+ ChatColor.YELLOW));
+								ChatColor.valueOf(arena.paTeams.get(sTeam))
+										+ player.getName() + ChatColor.YELLOW));
 					} else {
 						arena.playerManager.tellEveryone(PVPArena.lang.parse(
 								"killed", ChatColor.WHITE + player.getName()
@@ -260,8 +278,11 @@ public class PowerupEffect {
 		return false;
 	}
 
-	/*
+	/**
 	 * commit PowerupEffect on health gain
+	 * 
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(EntityRegainHealthEvent event) {
 		db.i("committing entityregainhealthevent " + this.type.name());
@@ -277,8 +298,11 @@ public class PowerupEffect {
 		}
 	}
 
-	/*
+	/**
 	 * commit PowerupEffect on velocity event
+	 * 
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(PlayerVelocityEvent event) {
 		db.i("committing velocityevent " + this.type.name());

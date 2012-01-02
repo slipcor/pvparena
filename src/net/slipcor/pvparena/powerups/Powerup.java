@@ -1,17 +1,3 @@
-/*
- * powerup class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.8 - BOSEconomy, rewrite
- *     v0.3.6 - CTF Arena
- *     v0.3.5 - Powerups!!
- */
-
 package net.slipcor.pvparena.powerups;
 
 import java.util.HashMap;
@@ -25,16 +11,32 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.powerups.PowerupEffect.classes;
 
+/**
+ * powerup class
+ * 
+ * -
+ * 
+ * contains basic powerup methods and variables
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.0
+ * 
+ */
+
 public class Powerup {
 	public String name; // PowerUp display name
 	public Material item; // item that triggers this Powerup
 	private PowerupEffect[] effects; // Effects the Powerup has
 	private DebugManager db = new DebugManager();
 
-	/*
-	 * Powerup constructor
+	/**
+	 * construct a powerup instance
 	 * 
-	 * initiate Powerup, load PowerupEffects belonging to it
+	 * @param pName
+	 *            the powerup name
+	 * @param puEffects
+	 *            the powerup effects
 	 */
 	@SuppressWarnings("unchecked")
 	public Powerup(String pName, HashMap<String, Object> puEffects) {
@@ -78,10 +80,10 @@ public class Powerup {
 		}
 	}
 
-	/*
-	 * Powerup constructor II
+	/**
+	 * second constructor, referencing instead of creating
 	 * 
-	 * simply handing over everything
+	 * @param p
 	 */
 	public Powerup(Powerup p) {
 		this.name = p.name;
@@ -89,8 +91,10 @@ public class Powerup {
 		this.item = p.item;
 	}
 
-	/*
-	 * return "is Powerup active"
+	/**
+	 * check if a powerup has active effects
+	 * 
+	 * @return true if an effect still is active, false otherwise
 	 */
 	public boolean isActive() {
 		for (PowerupEffect pe : effects) {
@@ -100,8 +104,12 @@ public class Powerup {
 		return false;
 	}
 
-	/*
-	 * return "is PowerupEffect active"
+	/**
+	 * check if a powerup running effect is running
+	 * 
+	 * @param peClass
+	 *            the class to check
+	 * @return true if an effect still is active, false otherwise
 	 */
 	public boolean isEffectActive(classes peClass) {
 		for (PowerupEffect pe : effects) {
@@ -112,8 +120,10 @@ public class Powerup {
 		return false;
 	}
 
-	/*
-	 * return "can Powerup still be fired"
+	/**
+	 * check if any effect can be fired
+	 * 
+	 * @return true if an event can be fired, false otherwise
 	 */
 	public boolean canBeTriggered() {
 		for (PowerupEffect pe : effects) {
@@ -123,8 +133,11 @@ public class Powerup {
 		return false;
 	}
 
-	/*
+	/**
 	 * initiate Powerup effects
+	 * 
+	 * @param player
+	 *            the player to commit the effect on
 	 */
 	public void activate(Player player) {
 		db.i("activating! - " + name);
@@ -134,8 +147,15 @@ public class Powerup {
 		}
 	}
 
-	/*
-	 * activate Powerup effects
+	/**
+	 * commit PowerupEffect in combat
+	 * 
+	 * @param attacker
+	 *            the attacking player to access
+	 * @param defender
+	 *            the defending player to access
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(Player attacker, Player defender,
 			EntityDamageByEntityEvent event) {
@@ -146,8 +166,11 @@ public class Powerup {
 		}
 	}
 
-	/*
+	/**
 	 * commit all PowerupEffects
+	 * 
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(EntityRegainHealthEvent event) {
 		for (PowerupEffect pe : effects) {
@@ -157,8 +180,11 @@ public class Powerup {
 		}
 	}
 
-	/*
+	/**
 	 * commit all PowerupEffects
+	 * 
+	 * @param event
+	 *            the triggering event
 	 */
 	public void commit(PlayerVelocityEvent event) {
 		for (PowerupEffect pe : effects) {
@@ -168,8 +194,8 @@ public class Powerup {
 		}
 	}
 
-	/*
-	 * tick...
+	/**
+	 * calculate down the duration
 	 */
 	public void tick() {
 		for (PowerupEffect pe : effects) {
@@ -178,7 +204,7 @@ public class Powerup {
 		}
 	}
 
-	/*
+	/**
 	 * disable all PowerupEffects
 	 */
 	public void disable() {

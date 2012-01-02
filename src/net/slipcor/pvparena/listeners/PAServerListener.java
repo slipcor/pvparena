@@ -1,18 +1,3 @@
-/*
- * server listener class
- * 
- * author: slipcor
- * 
- * version: v0.4.0 - mayor rewrite, improved help
- * 
- * history:
- * 
- *     v0.3.1 - New Arena! FreeFight
- *     v0.3.0 - Multiple Arenas
- * 	   v0.2.1 - cleanup, comments
- * 	   v0.2.0 - language support
- */
-
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
@@ -22,6 +7,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerListener;
+
+/**
+ * server listener class
+ * 
+ * -
+ * 
+ * PVP Arena Server Listener
+ * 
+ * @author slipcor
+ * 
+ * @version v0.4.0
+ * 
+ */
 
 public class PAServerListener extends ServerListener {
 	private Methods methods = null;
