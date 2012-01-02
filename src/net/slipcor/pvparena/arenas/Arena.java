@@ -845,8 +845,12 @@ public abstract class Arena {
 	 *            the health value
 	 */
 	protected void playersetHealth(Player p, int value) {
+		p.setHealth(value);
 		int current = p.getHealth();
 		int regain = value - current;
+		if (regain > 0) {
+			return;
+		}
 		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain,
 				RegainReason.CUSTOM);
 		Bukkit.getPluginManager().callEvent(event);
