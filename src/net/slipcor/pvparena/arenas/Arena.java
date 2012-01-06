@@ -47,7 +47,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.5.4
  * 
  */
 
@@ -642,7 +642,9 @@ public abstract class Arena {
 		tempMap.put("SATURATION", String.valueOf(player.getSaturation()));
 		tempMap.put("LOCATION", sLoc);
 		tempMap.put("GAMEMODE", String.valueOf(player.getGameMode().getValue()));
-		tempMap.put("DISPLAYNAME", player.getDisplayName());
+		if (cfg.getBoolean("general.colorNick", true)) {
+			tempMap.put("DISPLAYNAME", player.getDisplayName());
+		}
 		savedPlayerVars.put(player, tempMap);
 	}
 
@@ -845,12 +847,12 @@ public abstract class Arena {
 	 *            the health value
 	 */
 	protected void playersetHealth(Player p, int value) {
-		p.setHealth(value);
+		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
+			p.setHealth(value);
+		}
 		int current = p.getHealth();
 		int regain = value - current;
-		if (regain > 0) {
-			return;
-		}
+		
 		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain,
 				RegainReason.CUSTOM);
 		Bukkit.getPluginManager().callEvent(event);
@@ -882,7 +884,7 @@ public abstract class Arena {
 												.getCode(), 16).toLowerCase();
 			}
 		}
-		if (!color.equals(""))
+		if (!color.equals("") && cfg.getBoolean("general.colorNick", true))
 			colorizePlayer(player, color);
 
 		playerManager.setTelePass(player, true);
@@ -1083,12 +1085,14 @@ public abstract class Arena {
 			System.out.println("[PVP Arena] player '" + player.getName()
 					+ "' had no valid EXHAUSTION entry!");
 		}
-		try {
-			player.setDisplayName(tSM.get("DISPLAYNAME"));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid DISPLAYNAME entry!");
-			colorizePlayer(player, "");
+		if (cfg.getBoolean("general.colorNick", true)) {
+			try {
+				player.setDisplayName(tSM.get("DISPLAYNAME"));
+			} catch (Exception e) {
+				System.out.println("[PVP Arena] player '" + player.getName()
+						+ "' had no valid DISPLAYNAME entry!");
+				colorizePlayer(player, "");
+			}
 		}
 		playerManager.setTelePass(player, true);
 		db.i("string = " + string);

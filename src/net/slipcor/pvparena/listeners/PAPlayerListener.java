@@ -6,6 +6,7 @@ import java.util.List;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
+import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.powerups.Powerup;
@@ -38,7 +39,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.5.4
  * 
  */
 
@@ -132,7 +133,7 @@ public class PAPlayerListener extends PlayerListener {
 			return; // no fighting player => OUT
 		db.i("onPlayerQuit: fighting player");
 		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
-		if (!color.equals("")) {
+		if (color != null && !color.equals("")) {
 			arena.playerManager.tellEveryoneExcept(
 					player,
 					PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
@@ -290,17 +291,34 @@ public class PAPlayerListener extends PlayerListener {
 					}
 				}
 			}
+			if (Arena.regionmodify.contains(":")) {
+				String[] s = Arena.regionmodify.split(":");
+				arena = ArenaManager.getArenaByName(s[0]);
+				if (arena == null) {
+					return;
+				}
+				db.i("onInteract: pumpkin");
+				PumpkinArena pa = (PumpkinArena) arena;
+				pa.setPumpkin(player, event.getClickedBlock());
+				return;
+			}
 		}
 		db.i("arena: " + (arena == null ? null : arena.name));
 		if (arena != null) {
 			db.i("fight: " + arena.fightInProgress);
-			db.i("instanceof: " + (arena.getType().equals("ctf")));
+			db.i("instanceof: " + (arena.getType().equals("ctf") || arena.getType().equals("pumpkin")));
 		}
 		if (arena != null && arena.fightInProgress
 				&& (arena.getType().equals("ctf"))) {
 			db.i("onInteract: CTF");
 			CTFArena ca = (CTFArena) arena;
-			ca.checkInteract(player);
+			ca.checkInteract(player, event.getClickedBlock());
+			return;
+		} else if (arena != null && arena.fightInProgress
+				&& (arena.getType().equals("pumpkin"))) {
+			db.i("onInteract: pumpkin");
+			PumpkinArena pa = (PumpkinArena) arena;
+			pa.checkInteract(player, event.getClickedBlock());
 			return;
 		}
 
@@ -409,7 +427,7 @@ public class PAPlayerListener extends PlayerListener {
 					return;
 				}
 
-				if (color != "free") {
+				if (!color.equals("free") && !color.equals("")) {
 					String sName = color;
 					color = arena.paTeams.get(color);
 

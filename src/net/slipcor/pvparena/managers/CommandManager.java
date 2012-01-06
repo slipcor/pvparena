@@ -21,7 +21,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.2
+ * @version v0.5.4
  * 
  */
 
@@ -408,14 +408,6 @@ public class CommandManager {
 			} else {
 				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
 			}
-		} else if (cmd.equalsIgnoreCase("forcestop")) {
-			if (arena.fightInProgress) {
-				arena.forcestop();
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("forcestop"));
-			} else {
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
-			}
 		} else if (arena.cfg.getBoolean("general.randomSpawn", false)
 				&& (cmd.startsWith("spawn"))) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
@@ -465,6 +457,20 @@ public class CommandManager {
 			arena.setCoords(player, cmd);
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("setflag", sName));
+			return true;
+		} else if ((arena.getType().equals("pumpkin")) && cmd.endsWith("pumpkin")) {
+			if (!player.getWorld().getName().equals(arena.getWorld())) {
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("notsameworld", arena.getWorld()));
+				return false;
+			}
+			String sName = cmd.replace("pumpkin", "");
+			if (arena.paTeams.get(sName) == null)
+				return false;
+
+			Arena.regionmodify = arena.name+":"+sName;
+			ArenaManager.tellPlayer(player,
+					PVPArena.lang.parse("tosetpumpkin", sName));
 			return true;
 		}
 		return false;

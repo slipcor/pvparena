@@ -3,6 +3,7 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
+import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.StatsManager;
@@ -32,7 +33,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.2
+ * @version v0.5.4
  * 
  */
 
@@ -72,7 +73,7 @@ public class PAEntityListener extends EntityListener {
 
 		String sTeam = arena.playerManager.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
-		if (!color.equals("free")) {
+		if (!color.equals("") && !color.equals("free")) {
 			arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
 					ChatColor.valueOf(color) + player.getName()
 							+ ChatColor.YELLOW));
@@ -91,6 +92,10 @@ public class PAEntityListener extends EntityListener {
 			CTFArena ca = (CTFArena) arena;
 			db.i("ctf arena");
 			ca.checkEntityDeath(player);
+		} else if (arena.getType().equals("pumpkin")) {
+			PumpkinArena pa = (PumpkinArena) arena;
+			db.i("pumpkin arena");
+			pa.checkEntityDeath(player);
 		}
 
 		if (arena.timed > 0) {
@@ -120,8 +125,8 @@ public class PAEntityListener extends EntityListener {
 			}
 			String sKiller = "";
 			String sKilled = "";
-			if (arena.getType().equals("ctf")) {
-				db.i("timed ctf arena");
+			if (arena.getType().equals("ctf") || arena.getType().equals("pumpkin")) {
+				db.i("timed ctf/pumpkin arena");
 				sKilled = player.getName();
 				if (damager != null) {
 					sKiller = damager.getName();
@@ -220,10 +225,6 @@ public class PAEntityListener extends EntityListener {
 				} else {
 					lives--;
 					arena.respawnPlayer(defender, lives);
-					if (arena.getType().equals("ctf")) {
-						CTFArena ca = (CTFArena) arena;
-						ca.checkEntityDeath(defender);
-					}
 				}
 				event.setCancelled(true);
 			}
@@ -292,10 +293,6 @@ public class PAEntityListener extends EntityListener {
 			} else {
 				lives--;
 				arena.respawnPlayer(defender, lives);
-				if (arena.getType().equals("ctf")) {
-					CTFArena ca = (CTFArena) arena;
-					ca.checkEntityDeath(defender);
-				}
 			}
 			event.setCancelled(true);
 		}
@@ -348,10 +345,6 @@ public class PAEntityListener extends EntityListener {
 			} else {
 				lives--;
 				arena.respawnPlayer(player, lives);
-				if (arena.getType().equals("ctf")) {
-					CTFArena ca = (CTFArena) arena;
-					ca.checkEntityDeath(player);
-				}
 			}
 			event.setCancelled(true);
 		}

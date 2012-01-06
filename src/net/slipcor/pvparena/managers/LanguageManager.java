@@ -191,6 +191,12 @@ public class LanguageManager {
 		config.addDefault("lang.checkregionerror",
 				"Waiting for a running arena to finish!");
 
+		config.addDefault("lang.pumpkinhomeleft","Player %1% brought home the pumpkin of team %2%! Lives left: %3%");
+		config.addDefault("lang.pumpkingrab","Player %1% grabbed the pumpkin of team %2%!");
+		config.addDefault("lang.pumpkinsave","Player %1% dropped the pumpkin of team %2%!");
+		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
+		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

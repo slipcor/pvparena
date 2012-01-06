@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
+import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.arenas.TeamArena;
 import net.slipcor.pvparena.arenas.FreeArena;
 
@@ -24,7 +25,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.5.1
+ * @version v0.5.4
  * 
  */
 
@@ -67,6 +68,15 @@ public class ArenaManager {
 					loadArena(sName, "ctf");
 				}
 			}
+			for (i = 0; i < f.length; i++) {
+				if (!f[i].isDirectory()
+						&& f[i].getName().contains("config.pumpkin_")) {
+					String sName = f[i].getName().replace("config.pumpkin_", "");
+					sName = sName.replace(".yml", "");
+					db.i("pumpkin arena: " + sName);
+					loadArena(sName, "pumpkin");
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -84,12 +94,15 @@ public class ArenaManager {
 	public static void loadArena(String configFile, String type) {
 		Arena arena;
 		db.i("loading arena " + configFile + " (" + type + ")");
-		if (type.equals("free"))
+		if (type.equals("free")) {
 			arena = new FreeArena(configFile);
-		else if (type.equals("ctf"))
+		} else if (type.equals("ctf")) {
 			arena = new CTFArena(configFile);
-		else
+		} else if (type.equals("pumpkin")) {
+			arena = new PumpkinArena(configFile);
+		} else {
 			arena = new TeamArena(configFile);
+		}
 
 		arenas.put(arena.name, arena);
 	}
