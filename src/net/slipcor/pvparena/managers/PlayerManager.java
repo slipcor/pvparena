@@ -153,7 +153,6 @@ public class PlayerManager {
 					return 0;
 				}
 			}
-			return 1;
 		}
 
 		if (!arena.getType().equals("free")) {

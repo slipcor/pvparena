@@ -59,6 +59,7 @@ public class PAPlayerListener extends PlayerListener {
 
 		List<String> list = PVPArena.instance.getConfig().getStringList(
 				"whitelist");
+		list.add("pa");
 		db.i("checking command whitelist");
 
 		for (String s : list) {
@@ -68,6 +69,7 @@ public class PAPlayerListener extends PlayerListener {
 			}
 		}
 		db.i("command blocked: " + event.getMessage());
+		ArenaManager.tellPlayer(player, ChatColor.RED + event.getMessage());
 		event.setCancelled(true);
 	}
 
@@ -417,7 +419,9 @@ public class PAPlayerListener extends PlayerListener {
 					return; // not a fighting player => OUT
 				if (arena.playerManager.getClass(player).equals(""))
 					return; // not a fighting player => OUT
-
+				
+				arena.paReady.add(player.getName());
+				
 				String color = arena.playerManager.getTeam(player);
 				
 				

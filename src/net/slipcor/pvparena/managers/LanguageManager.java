@@ -75,7 +75,6 @@ public class LanguageManager {
 				"You don't have permission for that class.");
 		config.addDefault("lang.toomanyplayers",
 				"There are too many of this class, pick another class.");
-		config.addDefault("lang.notready", "Not everyone has picked a class!");
 		config.addDefault("lang.waitequal",
 				"Waiting for the teams to have equal player number!");
 		config.addDefault("lang.ready", "%1% team is ready!");
@@ -195,7 +194,8 @@ public class LanguageManager {
 		config.addDefault("lang.pumpkinsave","Player %1% dropped the pumpkin of team %2%!");
 		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
 		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
-		
+
+		config.addDefault("lang.notready", "Not everyone has picked a class!");
 		config.addDefault("lang.notready1", "You are alone in the arena!");
 		config.addDefault("lang.notready2", "Your team is alone in the arena!");
 		config.addDefault("lang.notready3", "A team is missing players!");
