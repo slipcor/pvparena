@@ -184,7 +184,6 @@ public class LanguageManager {
 				"Player %1% dropped the flag of team %2%!");
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
 		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
-		config.addDefault("lang.notready", "Not everyone has picked a class!");
 		config.addDefault("lang.notsameworld",
 				"Not in the same world as the arena (%1%)!");
 
@@ -196,7 +195,11 @@ public class LanguageManager {
 		config.addDefault("lang.pumpkinsave","Player %1% dropped the pumpkin of team %2%!");
 		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
 		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
-
+		
+		config.addDefault("lang.notready1", "You are alone in the arena!");
+		config.addDefault("lang.notready2", "Your team is alone in the arena!");
+		config.addDefault("lang.notready3", "A team is missing players!");
+		
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

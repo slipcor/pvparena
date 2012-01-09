@@ -135,12 +135,27 @@ public class PlayerManager {
 	 * 
 	 * @param arena
 	 *            the arena to check
-	 * @return true if the arena is ready, false otherwise
+	 * @return
+	 *            1 if the arena is ready
+	 *            0 if at least one player not ready
+	 *           -1 if player is the only player
+	 *           -2 if only one team active
+	 *           -3 if not enough players in a team
 	 */
-	public boolean ready(Arena arena) {
+	public int ready(Arena arena) {
 		if (countPlayersInTeams() < 2) {
-			return false;
+			return -1;
 		}
+
+		if (arena.cfg.getBoolean("general.readyCheckEach")) {
+			for (String sTeam : getPlayerTeamMap().keySet()) {
+				if (!arena.paReady.contains(sTeam)) {
+					return 0;
+				}
+			}
+			return 1;
+		}
+
 		if (!arena.getType().equals("free")) {
 			boolean onlyone = true;
 			List<String> activeteams = new ArrayList<String>(0);
@@ -159,18 +174,40 @@ public class PlayerManager {
 				}
 			}
 			if (onlyone) {
-				return false;
+				return -2;
+			}
+
+			for (String sTeam : activeteams) {
+				if (countPlayers(sTeam) < arena.cfg.getInt("general.readyMin")) {
+					return -3;
+				}
 			}
 		}
 		for (PAPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
 				if (p.getFightClass().equals("")) {
 					// player not ready!
-					return false;
+					return 0;
 				}
 			}
 		}
-		return true;
+		return 1;
+	}
+
+	/**
+	 * count the players in a team
+	 * 
+	 * @param sTeam
+	 * @return the team player count
+	 */
+	private int countPlayers(String sTeam) {
+		int result = 0;
+		for (PAPlayer p : players.values()) {
+			if (p.getTeam() != null && p.getTeam().equals(sTeam)) {
+				result++;
+			}
+		}
+		return result;
 	}
 
 	/**

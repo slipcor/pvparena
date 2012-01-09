@@ -9,6 +9,7 @@ import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.managers.UpdateManager;
 import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.powerups.PowerupEffect;
 
@@ -22,6 +23,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -39,7 +41,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.5.6
  * 
  */
 
@@ -56,16 +58,27 @@ public class PAPlayerListener extends PlayerListener {
 		}
 
 		List<String> list = PVPArena.instance.getConfig().getStringList(
-				"blacklist");
-		db.i("checking command blacklist");
+				"whitelist");
+		db.i("checking command whitelist");
 
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
-				db.i("command blocked: " + s);
-				event.setCancelled(true);
+				db.i("command allowed: " + s);
 				return;
 			}
 		}
+		db.i("command blocked: " + event.getMessage());
+		event.setCancelled(true);
+	}
+
+	@Override
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+
+		if (!player.isOp()) {
+			return; // no OP => OUT
+		}
+		UpdateManager.message(player);
 	}
 
 	@Override
@@ -406,10 +419,24 @@ public class PAPlayerListener extends PlayerListener {
 					return; // not a fighting player => OUT
 
 				String color = arena.playerManager.getTeam(player);
-
-				if (!arena.playerManager.ready(arena)) {
+				
+				
+				int ready = arena.playerManager.ready(arena);
+				if (ready == 0) {
 					ArenaManager.tellPlayer(player,
 							PVPArena.lang.parse("notready"));
+					return; // team not ready => announce
+				} else if (ready == -1) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notready1"));
+					return; // team not ready => announce
+				} else if (ready == -2) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notready2"));
+					return; // team not ready => announce
+				} else if (ready == -3) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notready3"));
 					return; // team not ready => announce
 				}
 

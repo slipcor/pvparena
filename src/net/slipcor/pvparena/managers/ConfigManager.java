@@ -28,7 +28,7 @@ import net.slipcor.pvparena.arenas.Config;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.5.6
  * 
  */
 
@@ -108,8 +108,10 @@ public class ConfigManager {
 		config.addDefault("general.startExhaustion", Float.valueOf(0));
 
 		config.addDefault("general.colorNick", Boolean.valueOf(true));
+		config.addDefault("general.readyCheckEach", Boolean.valueOf(true));
+		config.addDefault("general.readyMin", Integer.valueOf(1));
 		config.options().copyDefaults(true);
-		cfg.set("cfgver", "0.5.3.1");
+		cfg.set("cfgver", "0.5.6.0");
 		cfg.save();
 
 		Map<String, Object> classes = config.getConfigurationSection(

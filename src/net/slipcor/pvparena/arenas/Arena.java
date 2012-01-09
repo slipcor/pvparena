@@ -47,7 +47,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.5.6
  * 
  */
 
@@ -65,7 +65,7 @@ public abstract class Arena {
 	private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
 	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
 	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
-
+	
 	/*
 	 * arena maps, contain the arena data
 	 */
@@ -75,6 +75,7 @@ public abstract class Arena {
 	public final HashMap<String, String> paTeams = new HashMap<String, String>();
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, PARegion> regions = new HashMap<String, PARegion>();
+	public final HashSet<String> paReady = new HashSet<String>();
 
 	public PowerupManager pm;
 	public PlayerManager playerManager = new PlayerManager();
@@ -1482,6 +1483,7 @@ public abstract class Arena {
 	 */
 	public void reset() {
 		clearArena();
+		paReady.clear();
 		fightInProgress = false;
 		playerManager.reset(this);
 		if (SPAWN_ID > -1)

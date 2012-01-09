@@ -16,6 +16,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.HelpManager;
 import net.slipcor.pvparena.managers.LanguageManager;
+import net.slipcor.pvparena.managers.UpdateManager;
 import net.slipcor.pvparena.register.payment.Method;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.5.6
  * 
  */
 
@@ -105,6 +106,8 @@ public class PVPArena extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,
 				Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener,
+				Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener,
 				Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListener,
@@ -123,18 +126,20 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.serverListener,
 				Event.Priority.Monitor, this);
 
-		List<String> blackList = new ArrayList<String>();
-		blackList.add("ma");
-		blackList.add("god");
+		List<String> whiteList = new ArrayList<String>();
+		whiteList.add("ungod");
 
 		getConfig().addDefault("debug", Boolean.valueOf(false));
-		getConfig().addDefault("blacklist", blackList);
+		getConfig().addDefault("whitelist", whiteList);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
 		DebugManager.active = getConfig().getBoolean("debug");
 
 		load_config();
+		
+		UpdateManager.updateCheck();
+		
 		lang.log_info("enabled", pdfFile.getVersion());
 	}
 

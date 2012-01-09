@@ -21,7 +21,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.5.5
  * 
  */
 
@@ -505,7 +505,7 @@ public class CommandManager {
 			return false;
 		}
 
-		if (cmd.contains("spawn")) {
+		if (cmd.contains("spawn") && !cmd.equals("spawn")) {
 			String[] split = cmd.split("spawn");
 			String sName = split[0];
 			if (arena.paTeams.get(sName) == null)
