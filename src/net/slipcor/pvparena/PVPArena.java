@@ -39,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.6
+ * @version v0.5.8
  * 
  */
 
@@ -71,7 +71,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		PVPArena.instance = this;
-		//com.arandomappdev.bukkitstats.CallHome.load(this);
+		// com.arandomappdev.bukkitstats.CallHome.load(this);
 		setupPermissions();
 		PluginDescriptionFile pdfFile = getDescription();
 
@@ -137,9 +137,9 @@ public class PVPArena extends JavaPlugin {
 		DebugManager.active = getConfig().getBoolean("debug");
 
 		load_config();
-		
+
 		UpdateManager.updateCheck();
-		
+
 		lang.log_info("enabled", pdfFile.getVersion());
 	}
 
@@ -175,7 +175,7 @@ public class PVPArena extends JavaPlugin {
 
 		if ((args.length == 3 || args.length == 2) && args[1].equals("create")) {
 			// /pa [name] create [type]
-			if (!hasAdminPerms(player)) {
+			if (!hasAdminPerms(player) && !(hasCreatePerms(player, null))) {
 				ArenaManager.tellPlayer(player,
 						lang.parse("nopermto", lang.parse("create")));
 				return true;
@@ -190,13 +190,20 @@ public class PVPArena extends JavaPlugin {
 			} else {
 				ArenaManager.loadArena(args[0], "teams");
 			}
-			ArenaManager.getArenaByName(args[0]).setWorld(
-					player.getWorld().getName());
+			Arena a = ArenaManager.getArenaByName(args[0]);
+			a.setWorld(player.getWorld().getName());
+			if (!hasAdminPerms(player)) {
+				a.owner = player.getName();
+			}
+			a.cfg.set("general.owner", a.owner);
+			a.cfg.save();
 			ArenaManager.tellPlayer(player, lang.parse("created", args[0]));
 			return true;
 		} else if (args.length == 2 && args[1].equals("remove")) {
 			// /pa [name] remove
-			if (!hasAdminPerms(player)) {
+			if (!hasAdminPerms(player)
+					&& !(hasCreatePerms(player,
+							ArenaManager.getArenaByName(args[0])))) {
 				ArenaManager.tellPlayer(player,
 						lang.parse("nopermto", lang.parse("remove")));
 				return true;
@@ -317,8 +324,21 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if the player has admin permissions, false otherwise
 	 */
 	public boolean hasAdminPerms(Player player) {
-		return hasPerms(player, "pvparena.admin") ? true : hasPerms(player,
-				"fight.admin");
+		return hasPerms(player, "pvparena.admin");
+	}
+
+	/**
+	 * has player creating permissions?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @param arena
+	 *            the arena to check
+	 * @return true if the player has creating permissions, false otherwise
+	 */
+	public boolean hasCreatePerms(Player player, Arena arena) {
+		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
+				.equals(player.getName())));
 	}
 
 	/**
@@ -329,8 +349,7 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if the player has basic permissions, false otherwise
 	 */
 	public boolean hasPerms(Player player) {
-		return hasPerms(player, "pvparena.user") ? true : hasPerms(player,
-				"fight.user");
+		return hasPerms(player, "pvparena.user");
 	}
 
 	/**

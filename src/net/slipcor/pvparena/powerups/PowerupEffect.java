@@ -27,7 +27,7 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * @author slipcor
  * 
- * @version v0.4.4
+ * @version v0.5.7
  * 
  */
 
@@ -232,7 +232,7 @@ public class PowerupEffect {
 					}
 					StatsManager.addLoseStat(player, sTeam, arena);
 					// needed so player does not get found when dead
-					arena.playerManager.setTeam(player, null);
+					arena.playerManager.setTeam(player, "");
 					arena.playerManager.setRespawn(player, true);
 
 					arena.checkEndAndCommit();

@@ -28,7 +28,7 @@ import net.slipcor.pvparena.arenas.Config;
  * 
  * @author slipcor
  * 
- * @version v0.5.6
+ * @version v0.5.8
  * 
  */
 
@@ -46,56 +46,55 @@ public class ConfigManager {
 	public static void configParse(Arena arena, Config cfg) {
 		cfg.load();
 		YamlConfiguration config = cfg.getYamlConfiguration();
-		if (config.get("cfgver") == null) {
-			config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
-			config.addDefault("classitems.Swordsman", "276,306,307,308,309");
-			config.addDefault("classitems.Tank", "272,310,311,312,313");
-			config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
+		
+		config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
+		config.addDefault("classitems.Swordsman", "276,306,307,308,309");
+		config.addDefault("classitems.Tank", "272,310,311,312,313");
+		config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
 
-			config.addDefault("tp.win", "old");
-			config.addDefault("tp.lose", "old");
-			config.addDefault("tp.exit", "exit");
-			config.addDefault("tp.death", "spectator");
+		config.addDefault("tp.win", "old");
+		config.addDefault("tp.lose", "old");
+		config.addDefault("tp.exit", "exit");
+		config.addDefault("tp.death", "spectator");
 
-			config.addDefault("general.wand", Integer.valueOf(280));
-			config.addDefault("general.readyblock", "IRON_BLOCK");
-			config.addDefault("general.lives", Integer.valueOf(3));
-			config.addDefault("general.language", "en");
-			config.addDefault("general.classperms", Boolean.valueOf(false));
-			config.addDefault("general.preventDeath", Boolean.valueOf(true));
+		config.addDefault("general.wand", Integer.valueOf(280));
+		config.addDefault("general.readyblock", "IRON_BLOCK");
+		config.addDefault("general.lives", Integer.valueOf(3));
+		config.addDefault("general.language", "en");
+		config.addDefault("general.classperms", Boolean.valueOf(false));
+		config.addDefault("general.preventDeath", Boolean.valueOf(true));
 
-			config.addDefault("general.randomSpawn", Boolean.valueOf(false));
-			config.addDefault("general.timed", Integer.valueOf(0));
+		config.addDefault("general.randomSpawn", Boolean.valueOf(false));
+		config.addDefault("general.timed", Integer.valueOf(0));
 
-			config.addDefault("general.joinrange", Integer.valueOf(0));
-			config.addDefault("general.powerups", "off");
-			config.addDefault("general.item-rewards", "none");
-			config.addDefault("general.checkRegions", Boolean.valueOf(false));
+		config.addDefault("general.joinrange", Integer.valueOf(0));
+		config.addDefault("general.powerups", "off");
+		config.addDefault("general.checkRegions", Boolean.valueOf(false));
 
-			config.addDefault("money.entry", Integer.valueOf(0));
-			config.addDefault("money.reward", Integer.valueOf(0));
-			config.addDefault("money.minbet", Double.valueOf(0));
-			config.addDefault("money.maxbet", Double.valueOf(0));
+		config.addDefault("money.entry", Integer.valueOf(0));
+		config.addDefault("money.reward", Integer.valueOf(0));
+		config.addDefault("money.minbet", Double.valueOf(0));
+		config.addDefault("money.maxbet", Double.valueOf(0));
 
-			config.addDefault("protection.enabled", Boolean.valueOf(true));
-			config.addDefault("protection.blockplace", Boolean.valueOf(true));
-			config.addDefault("protection.blockdamage", Boolean.valueOf(true));
-			config.addDefault("protection.firespread", Boolean.valueOf(true));
-			config.addDefault("protection.lavafirespread",
-					Boolean.valueOf(true));
-			config.addDefault("protection.tnt", Boolean.valueOf(true));
-			config.addDefault("protection.lighter", Boolean.valueOf(true));
-			config.addDefault("protection.checkExit", Boolean.valueOf(false));
-			config.addDefault("protection.checkSpectator",
-					Boolean.valueOf(false));
-			config.addDefault("protection.checkLounges", Boolean.valueOf(false));
+		config.addDefault("protection.enabled", Boolean.valueOf(true));
+		config.addDefault("protection.blockplace", Boolean.valueOf(true));
+		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
+		config.addDefault("protection.firespread", Boolean.valueOf(true));
+		config.addDefault("protection.lavafirespread",
+				Boolean.valueOf(true));
+		config.addDefault("protection.tnt", Boolean.valueOf(true));
+		config.addDefault("protection.lighter", Boolean.valueOf(true));
+		config.addDefault("protection.checkExit", Boolean.valueOf(false));
+		config.addDefault("protection.checkSpectator",
+				Boolean.valueOf(false));
+		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
 
-			if (!arena.getType().equals("free") && config.get("teams") == null) {
-				config.addDefault("general.teamkill", Boolean.valueOf(false));
-				config.addDefault("general.manual", Boolean.valueOf(true));
-				config.addDefault("general.random", Boolean.valueOf(true));
-			}
+		if (!arena.getType().equals("free") && config.get("teams") == null) {
+			config.addDefault("general.teamkill", Boolean.valueOf(false));
+			config.addDefault("general.manual", Boolean.valueOf(true));
+			config.addDefault("general.random", Boolean.valueOf(true));
 		}
+		
 		if (!arena.getType().equals("free")) {
 			config.addDefault("general.woolhead", Boolean.valueOf(false));
 			config.addDefault("general.forceeven", Boolean.valueOf(false));
@@ -110,8 +109,10 @@ public class ConfigManager {
 		config.addDefault("general.colorNick", Boolean.valueOf(true));
 		config.addDefault("general.readyCheckEach", Boolean.valueOf(true));
 		config.addDefault("general.readyMin", Integer.valueOf(1));
+		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.options().copyDefaults(true);
-		cfg.set("cfgver", "0.5.6.0");
+		
+		cfg.set("cfgver", "0.5.7.0");
 		cfg.save();
 
 		Map<String, Object> classes = config.getConfigurationSection(
@@ -123,7 +124,7 @@ public class ConfigManager {
 			ItemStack[] items = new ItemStack[ss.length];
 
 			for (int i = 0; i < ss.length; i++) {
-				items[i] = arena.getItemStackFromString(ss[i]);
+				items[i] = arena.getItemStackFromString(ss[i], null);
 			}
 
 			arena.paClassItems.put(className, items);
@@ -164,7 +165,10 @@ public class ConfigManager {
 
 			arena.pm = new PowerupManager(powerups);
 		}
-
+		arena.sm = new SettingManager(arena);
+		if (cfg.getString("general.owner") != null) {
+			arena.owner = cfg.getString("general.owner");
+		}
 		String pu = config.getString("general.powerups", "off");
 
 		arena.usesPowerups = true;
@@ -433,7 +437,7 @@ public class ConfigManager {
 		moveBoolean("teams.team-killing-enabled", "general.manual", cfg);
 		moveBoolean("teams.manually-select-teams", "general.random", cfg);
 		moveBoolean("teams.randomly-select-teams", "general.teamkill", cfg);
-		moveString("rewards.items", "general.reward-items", "none", cfg);
+		moveString("rewards.items", "general.item-rewards", "none", cfg);
 
 		moveInt("rewards.entry-fee", "money.entry", cfg);
 		moveInt("rewards.amount", "money.reward", cfg);

@@ -1,7 +1,7 @@
 name: pvparena
 author: slipcor
 main: net.slipcor.pvparena.PVPArena
-version: v0.5.6.4
+version: v0.5.8.4
 website: http://dev.bukkit.org/server-mods/pvp-arena
 commands:
     pvparena:
@@ -10,25 +10,17 @@ commands:
         usage: |
             /pvparena help
 permissions:
-    fight.*:
-        description: Gives access to all commands
-        children:
-            fight.admin: true
-            fight.user: true
     pvparena.*:
         description: Gives access to all commands
         children:
             pvparena.admin: true
             pvparena.telepass: true
             pvparena.user: true
-    fight.admin:
-        description: Allows you to administrate the arena
-        default: op
-    fight.user:
-        description: Allows you to use the arena
-        default: true
     pvparena.admin:
-        description: Allows you to administrate the arena
+        description: Allows you to administrate arenas
+        default: op
+    pvparena.create:
+        description: Allows you to create and administrate an arena
         default: op
     pvparena.telepass:
         description: Allows you to teleport while in an arena

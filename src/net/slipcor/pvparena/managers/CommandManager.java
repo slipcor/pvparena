@@ -21,7 +21,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.5
+ * @version v0.5.8
  * 
  */
 
@@ -194,12 +194,13 @@ public class CommandManager {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public static boolean parseToggle(Arena arena, Player player, String string) {
-		if (!PVPArena.instance.hasAdminPerms(player)) {
+		if (!PVPArena.instance.hasAdminPerms(player) && !(PVPArena.instance.hasCreatePerms(player,arena))) {
 			ArenaManager.tellPlayer(player, PVPArena.lang.parse("nopermto",
 					PVPArena.lang.parse(string)));
 			return true;
 		}
-		arena.enabled = string.equals("enabled");
+		arena.cfg.set("general.enabled", string.equals("enabled"));
+		arena.cfg.save();
 		ArenaManager.tellPlayer(player, PVPArena.lang.parse(string));
 		return true;
 	}
@@ -408,6 +409,8 @@ public class CommandManager {
 			} else {
 				ArenaManager.tellPlayer(player, PVPArena.lang.parse("nofight"));
 			}
+		} else if (cmd.equalsIgnoreCase("set")) {
+			arena.sm.list(player, 1);
 		} else if (arena.cfg.getBoolean("general.randomSpawn", false)
 				&& (cmd.startsWith("spawn"))) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
@@ -739,7 +742,7 @@ public class CommandManager {
 		player.sendMessage("-----------------------------------------------------");
 		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE
 				+ " || " + "Teams: " + colorTeams(arena.paTeams));
-		player.sendMessage(colorVar("Enabled", arena.enabled)
+		player.sendMessage(colorVar("Enabled", arena.cfg.getBoolean("general.enabled"))
 				+ " || "
 				+ colorVar("Fighting", arena.fightInProgress)
 				+ " || "

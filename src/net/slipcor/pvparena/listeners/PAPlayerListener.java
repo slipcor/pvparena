@@ -41,7 +41,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.6
+ * @version v0.5.8
  * 
  */
 
@@ -263,7 +263,7 @@ public class PAPlayerListener extends PlayerListener {
 		Arena arena = ArenaManager.getArenaByName(Arena.regionmodify);
 
 		if (arena != null
-				&& PVPArena.instance.hasAdminPerms(player)
+				&& (PVPArena.instance.hasAdminPerms(player) || (PVPArena.instance.hasCreatePerms(player,arena)))
 				&& (player.getItemInHand() != null)
 				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
 						"general.wand", 280))) {
@@ -321,7 +321,9 @@ public class PAPlayerListener extends PlayerListener {
 		db.i("arena: " + (arena == null ? null : arena.name));
 		if (arena != null) {
 			db.i("fight: " + arena.fightInProgress);
-			db.i("instanceof: " + (arena.getType().equals("ctf") || arena.getType().equals("pumpkin")));
+			db.i("instanceof: "
+					+ (arena.getType().equals("ctf") || arena.getType().equals(
+							"pumpkin")));
 		}
 		if (arena != null && arena.fightInProgress
 				&& (arena.getType().equals("ctf"))) {
@@ -361,10 +363,8 @@ public class PAPlayerListener extends PlayerListener {
 
 					if (classperms) {
 						db.i("checking classperms");
-						if (!(PVPArena.instance.hasPerms(player, "fight.group."
-								+ sign.getLine(0)) || PVPArena.instance
-								.hasPerms(player,
-										"pvparena.class." + sign.getLine(0)))) {
+						if (!(PVPArena.instance.hasPerms(player,
+								"pvparena.class." + sign.getLine(0)))) {
 							ArenaManager.tellPlayer(player,
 									PVPArena.lang.parse("classperms"));
 							return; // class permission desired and failed =>
@@ -419,12 +419,11 @@ public class PAPlayerListener extends PlayerListener {
 					return; // not a fighting player => OUT
 				if (arena.playerManager.getClass(player).equals(""))
 					return; // not a fighting player => OUT
-				
+
 				arena.paReady.add(player.getName());
-				
+
 				String color = arena.playerManager.getTeam(player);
-				
-				
+
 				int ready = arena.playerManager.ready(arena);
 				if (ready == 0) {
 					ArenaManager.tellPlayer(player,

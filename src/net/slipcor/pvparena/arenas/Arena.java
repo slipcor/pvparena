@@ -19,6 +19,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.DebugManager;
 import net.slipcor.pvparena.managers.PlayerManager;
 import net.slipcor.pvparena.managers.PowerupManager;
+import net.slipcor.pvparena.managers.SettingManager;
 import net.slipcor.pvparena.managers.StatsManager;
 import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
@@ -47,7 +48,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.6
+ * @version v0.5.8
  * 
  */
 
@@ -78,8 +79,10 @@ public abstract class Arena {
 	public final HashSet<String> paReady = new HashSet<String>();
 
 	public PowerupManager pm;
+	public SettingManager sm;
 	public PlayerManager playerManager = new PlayerManager();
 	public String name = "default";
+	public String owner = "%server%";
 
 	public int powerupDiff; // powerup trigger cap
 	public int powerupDiffI = 0; // powerup trigger count
@@ -87,8 +90,8 @@ public abstract class Arena {
 
 	public Location pos1; // temporary position 1 (region select)
 	public Location pos2; // temporary position 2 (region select)
+	
 	// arena status
-	public boolean enabled = true;
 	public boolean fightInProgress = false;
 
 	// arena settings
@@ -203,7 +206,7 @@ public abstract class Arena {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public boolean parseCommand(Player player, String[] args) {
-		if (!enabled && !PVPArena.instance.hasAdminPerms(player)) {
+		if (!cfg.getBoolean("general.enabled") && !PVPArena.instance.hasAdminPerms(player) && !(PVPArena.instance.hasCreatePerms(player, this))) {
 			PVPArena.lang.parse("arenadisabled");
 			return true;
 		}
@@ -237,16 +240,30 @@ public abstract class Arena {
 				return CommandManager.parseRegion(this, player);
 			} else if (paTeams.get(args[0]) != null) {
 				return CommandManager.parseJoinTeam(this, player, args[0]);
-			} else if (PVPArena.instance.hasAdminPerms(player)) {
+			} else if (PVPArena.instance.hasAdminPerms(player) || (PVPArena.instance.hasCreatePerms(player,this))) {
 				return CommandManager.parseAdminCommand(this, player, args[0]);
 			} else {
 				return CommandManager.parseJoin(this, player);
 			}
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
 			return CommandManager.parseBetCommand(this, player, args);
+		} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
+			// pa [name] set [node] [value]
+			sm.set(player, args[1], args[2]);
+			return true;
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("set")) {
+			// pa [name] set [page]
+			int i = 1;
+			try {
+				i = Integer.parseInt(args[1]);
+			} catch (Exception e) {
+				// nothing
+			}
+			sm.list(player, i);
+			return true;
 		}
 
-		if (!PVPArena.instance.hasAdminPerms(player)) {
+		if (!PVPArena.instance.hasAdminPerms(player) && !(PVPArena.instance.hasCreatePerms(player,this))) {
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("invalidcmd", "503"));
 			return false;
@@ -259,35 +276,46 @@ public abstract class Arena {
 		}
 
 		if (args.length == 2) {
-			// pa [name] region [regionname]
-			if (Arena.regionmodify.equals("")) {
-				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("regionnotbeingset", name));
+			
+			if (args[0].equalsIgnoreCase("region")) {
+				
+				// pa [name] region [regionname]
+				if (Arena.regionmodify.equals("")) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("regionnotbeingset", name));
+					return true;
+				}
+	
+				Vector realMin = new Vector(Math.min(pos1.getBlockX(),
+						pos2.getBlockX()), Math.min(pos1.getBlockY(),
+						pos2.getBlockY()), Math.min(pos1.getBlockZ(),
+						pos2.getBlockZ()));
+				Vector realMax = new Vector(Math.max(pos1.getBlockX(),
+						pos2.getBlockX()), Math.max(pos1.getBlockY(),
+						pos2.getBlockY()), Math.max(pos1.getBlockZ(),
+						pos2.getBlockZ()));
+	
+				String s = realMin.getBlockX() + "," + realMin.getBlockY() + ","
+						+ realMin.getBlockZ() + "," + realMax.getBlockX() + ","
+						+ realMax.getBlockY() + "," + realMax.getBlockZ();
+	
+				cfg.set("regions." + args[1], s);
+				regions.put(args[1], new PARegion(args[1], pos1, pos2));
+				pos1 = null;
+				pos2 = null;
+				cfg.save();
+	
+				Arena.regionmodify = "";
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("regionsaved"));
+				return true;
+				
+			} else if (args[0].equalsIgnoreCase("remove")) {
+				// pa [name] remove [spawnname]
+				cfg.set("spawns." + args[1], null);
+				cfg.save();
+				ArenaManager.tellPlayer(player, PVPArena.lang.parse("spawnremoved", args[1]));
 				return true;
 			}
-
-			Vector realMin = new Vector(Math.min(pos1.getBlockX(),
-					pos2.getBlockX()), Math.min(pos1.getBlockY(),
-					pos2.getBlockY()), Math.min(pos1.getBlockZ(),
-					pos2.getBlockZ()));
-			Vector realMax = new Vector(Math.max(pos1.getBlockX(),
-					pos2.getBlockX()), Math.max(pos1.getBlockY(),
-					pos2.getBlockY()), Math.max(pos1.getBlockZ(),
-					pos2.getBlockZ()));
-
-			String s = realMin.getBlockX() + "," + realMin.getBlockY() + ","
-					+ realMin.getBlockZ() + "," + realMax.getBlockX() + ","
-					+ realMax.getBlockY() + "," + realMax.getBlockZ();
-
-			cfg.set("regions." + args[1], s);
-			regions.put(args[1], new PARegion(args[1], pos1, pos2));
-			pos1 = null;
-			pos2 = null;
-			cfg.save();
-
-			Arena.regionmodify = "";
-			ArenaManager.tellPlayer(player, PVPArena.lang.parse("regionsaved"));
-			return true;
 		}
 
 		if (args.length != 3) {
@@ -656,7 +684,7 @@ public abstract class Arena {
 	 *            the formatted string: [itemid/name][~[dmg]]~[data]:[amount]
 	 * @return the itemstack
 	 */
-	public ItemStack getItemStackFromString(String s) {
+	public ItemStack getItemStackFromString(String s, Player p) {
 
 		// [itemid/name]~[dmg]~[data]:[amount]
 
@@ -673,21 +701,27 @@ public abstract class Arena {
 		temp = temp[0].split("~");
 
 		mat = parseMat(temp[0]);
-		if (temp.length == 1) {
-			// [itemid/name]:[amount]
-			return new ItemStack(mat, amount);
+		if (mat != null) {
+			if (temp.length == 1) {
+				// [itemid/name]:[amount]
+				return new ItemStack(mat, amount);
+			}
+			dmg = Short.parseShort(temp[1]);
+			if (temp.length == 2) {
+				// [itemid/name]~[dmg]:[amount]
+				return new ItemStack(mat, amount, dmg);
+			}
+			data = Byte.parseByte(temp[2]);
+			if (temp.length == 3) {
+				// [itemid/name]~[dmg]~[data]:[amount]
+				return new ItemStack(mat, amount, dmg, data);
+			}
 		}
-		dmg = Short.parseShort(temp[1]);
-		if (temp.length == 2) {
-			// [itemid/name]~[dmg]:[amount]
-			return new ItemStack(mat, amount, dmg);
+		if (p == null) {
+			db.w("unrecognized item: " + s);
+		} else {
+			ArenaManager.tellPlayer(p, "unrecognized item: " + s);
 		}
-		data = Byte.parseByte(temp[2]);
-		if (temp.length == 3) {
-			// [itemid/name]~[dmg]~[data]:[amount]
-			return new ItemStack(mat, amount, dmg, data);
-		}
-		db.w("unrecognized itemstack: " + s);
 		return null;
 	}
 
@@ -1448,12 +1482,12 @@ public abstract class Arena {
 					PVPArena.instance.getMethod().format(
 							cfg.getInt("money.reward", 0))));
 		}
-		String sItems = cfg.getString("general.reward-items", "none");
+		String sItems = cfg.getString("general.item-rewards", "none");
 		if (sItems.equals("none"))
 			return;
 		String[] items = sItems.split(",");
 		for (int i = 0; i < items.length; ++i) {
-			ItemStack stack = getItemStackFromString(items[i]);
+			ItemStack stack = getItemStackFromString(items[i], null);
 			try {
 				player.getInventory().setItem(
 						player.getInventory().firstEmpty(), stack);
