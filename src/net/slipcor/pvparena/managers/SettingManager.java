@@ -21,7 +21,7 @@ import net.slipcor.pvparena.arenas.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.5.8
+ * @version v0.5.9
  * 
  */
 
@@ -88,6 +88,9 @@ public class SettingManager {
 		types.put("general.colorNick", "boolean");
 		types.put("general.readyCheckEach", "boolean");
 		types.put("general.readyMin", "int");
+		types.put("general.readyMax", "int");
+		types.put("general.readyMinTeam", "int");
+		types.put("general.readyMaxTeam", "int");
 		types.put("general.enabled", "boolean");
 	}
 	

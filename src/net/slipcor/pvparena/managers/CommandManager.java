@@ -21,7 +21,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.8
+ * @version v0.5.9
  * 
  */
 
@@ -83,7 +83,14 @@ public class CommandManager {
 				return true;
 			}
 		}
+		if (arena.calcFreeTeam() == null || (arena.cfg.getInt("general.readyMax") > 0 && arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams())) {
 
+			ArenaManager.tellPlayer(
+					player,
+					PVPArena.lang.parse("arenafull"));
+			return true;
+		}
+		
 		arena.prepare(player);
 		arena.playerManager.setLives(player,
 				(byte) arena.cfg.getInt("general.lives", 3));
@@ -156,6 +163,15 @@ public class CommandManager {
 								arena.cfg.getInt("rewards.entry-fee", 0))));
 				return true;
 			}
+		}
+		
+		if (arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams()) {
+
+			ArenaManager.tellPlayer(
+					player,
+					PVPArena.lang.parse("teamfull",
+							ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+			return true;
 		}
 
 		arena.prepare(player);

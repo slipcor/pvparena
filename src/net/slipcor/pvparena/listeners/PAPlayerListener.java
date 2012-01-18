@@ -41,7 +41,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.8
+ * @version v0.5.9
  * 
  */
 
@@ -441,6 +441,10 @@ public class PAPlayerListener extends PlayerListener {
 					ArenaManager.tellPlayer(player,
 							PVPArena.lang.parse("notready3"));
 					return; // team not ready => announce
+				} else if (ready == -4) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notready4"));
+					return; // arena not ready => announce
 				}
 
 				if (arena.cfg.getBoolean("general.forceeven", false)) {

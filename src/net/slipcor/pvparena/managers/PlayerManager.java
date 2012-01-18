@@ -20,7 +20,7 @@ import net.slipcor.pvparena.arenas.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.5.9
  * 
  */
 
@@ -141,10 +141,14 @@ public class PlayerManager {
 	 *           -1 if player is the only player
 	 *           -2 if only one team active
 	 *           -3 if not enough players in a team
+	 *           -4 if not enough players
 	 */
 	public int ready(Arena arena) {
 		if (countPlayersInTeams() < 2) {
 			return -1;
+		}
+		if (countPlayersInTeams() < arena.cfg.getInt("general.readyMin")+1) {
+			return -4;
 		}
 
 		if (arena.cfg.getBoolean("general.readyCheckEach")) {
@@ -177,7 +181,7 @@ public class PlayerManager {
 			}
 
 			for (String sTeam : activeteams) {
-				if (countPlayers(sTeam) < arena.cfg.getInt("general.readyMin")) {
+				if (countPlayers(sTeam) < arena.cfg.getInt("general.readyMinTeam")) {
 					return -3;
 				}
 			}

@@ -48,7 +48,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.8
+ * @version v0.5.9
  * 
  */
 
@@ -734,6 +734,7 @@ public abstract class Arena {
 	public void chooseColor(Player player) {
 		if (playerManager.getTeam(player).equals("")) {
 			String team = calcFreeTeam();
+			
 			db.i("team found: " + team);
 			tpPlayerToCoordName(player, team + "lounge");
 			playerManager.setTeam(player, team);
@@ -755,7 +756,7 @@ public abstract class Arena {
 	 * 
 	 * @return the team name
 	 */
-	private String calcFreeTeam() {
+	public String calcFreeTeam() {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
@@ -769,89 +770,89 @@ public abstract class Arena {
 				db.i("team " + team + " updated to " + i);
 			}
 		}
-		// counts: TEAMNAME, TEAMPLAYERCOUNT
-		db.i("counts now has size " + counts.size());
-		List<String> notmax = new ArrayList<String>(0);
-
-		int lastInt = -1;
-		String lastStr = "";
-
-		// add teams to notmax that don't need players because they have more
-		// than others
-		for (String team : counts.keySet()) {
-			if (lastInt == -1) {
-				lastStr = team;
-				lastInt = counts.get(team);
-				db.i("first team found: " + team);
-				continue;
-			}
-			int thisInt = counts.get(team);
-			db.i("next team found: " + team);
-			if (thisInt < lastInt) {
-				// this team has space!
-				notmax.add(team);
-				db.i("this team has space: " + team);
-				lastStr = team;
-				lastInt = counts.get(team);
-			} else if (thisInt > lastInt) {
-				// last team had space
-				notmax.add(lastStr);
-				db.i("last team had space: " + lastStr);
-				lastStr = team;
-				lastInt = counts.get(team);
+		// counts contains TEAMNAME => PLAYERCOUNT
+		
+		if (counts.size() < paTeams.size()) {
+			// there is a team without members, calculate one of those
+			return returnEmptyTeam(counts.keySet());
+		}
+		
+		boolean full = true;
+		
+		for (String s : paTeams.keySet()) {
+			// check if we are full
+			if (counts.get(s) < cfg.getInt("general.readyMax") || cfg.getInt("general.readyMax") == 0) {
+				full = false;
 			}
 		}
-		// notmax: TEAMNAME
-		if (notmax.size() < 1) { // no team added
-			db.i("notmax < 1");
-			if (counts.size() != 1) {
-				// empty or equal => add all teams!
-				db.i("lastStr empty");
-				for (String xxx : paTeams.keySet())
-					notmax.add(xxx);
-			} else {
-				// notmax empty because first team was the only team
-				db.i("only one team! reverting!");
-
-				List<String> max = new ArrayList<String>();
-
-				for (String xxx : paTeams.keySet())
-					if (!lastStr.equals(xxx)) {
-						max.add(xxx);
-						db.i("adding to max: " + xxx);
-					}
-				max.remove(lastStr);
-
-				db.i("revert done, commit! " + max.size());
-				Random r = new Random();
-
-				int rand = r.nextInt(max.size());
-
-				Iterator<String> itt = max.iterator();
-				while (itt.hasNext()) {
-					String s = itt.next();
-					if (rand-- == 0) {
-						return s;
-					}
-				}
-				return null;
+		
+		if (full) {
+			// full => OUT!
+			return null;
+		}
+		
+		HashSet<String> free = new HashSet<String>();
+		
+		int max = cfg.getInt("general.readyMaxTeam");
+		max = max==0?Integer.MAX_VALUE:max;
+		// calculate the max value down to the minimum
+		for (String s : counts.keySet()) {
+			int i = counts.get(s);
+			if (i < max) {
+				free.clear();
+				free.add(s);
+				max = i;
+			} else if (i == max) {
+				free.add(s);
 			}
 		}
-		// commit notmax selection
+		
+		// free now has the minimum teams
+		
+		if (free.size() == 1) {
+			for (String s : free) {
+				return s;
+			}
+		}
 
-		db.i("no revert, commit! " + notmax.size());
 		Random r = new Random();
-
-		int rand = r.nextInt(notmax.size());
-
-		Iterator<String> itt = notmax.iterator();
-		while (itt.hasNext()) {
-			String s = itt.next();
+		int rand = r.nextInt(free.size());
+		for (String s : free) {
 			if (rand-- == 0) {
 				return s;
 			}
 		}
-		db.i("error - returning null");
+		
+		return null;
+	}
+	
+	/**
+	 * return all empty teams
+	 * @param set the set to search
+	 * @return one empty team name
+	 */
+	private String returnEmptyTeam(Set<String> set) {
+		HashSet<String> empty = new HashSet<String>();
+		for (String s : paTeams.keySet()) {
+			if (set.contains(s)) {
+				continue;
+			}
+			empty.add(s);
+		}
+		if (empty.size() == 1) {
+			for (String s : empty) {
+				return s;
+			}
+		}
+
+		Random r = new Random();
+		int rand = r.nextInt(empty.size());
+		for (String s : empty) {
+			if (rand-- == 0) {
+				return s;
+			}
+		}
+		
 		return null;
 	}
 

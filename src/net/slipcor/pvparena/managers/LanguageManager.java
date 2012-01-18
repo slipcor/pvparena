@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.5.1
+ * @version v0.5.9
  * 
  */
 public class LanguageManager {
@@ -199,6 +199,11 @@ public class LanguageManager {
 		config.addDefault("lang.notready1", "You are alone in the arena!");
 		config.addDefault("lang.notready2", "Your team is alone in the arena!");
 		config.addDefault("lang.notready3", "A team is missing players!");
+		config.addDefault("lang.notready4", "The arena is missing players!");
+
+		config.addDefault("lang.teamfull", "%1% is full!");
+		config.addDefault("lang.arenafull", "arena is full!");
+		
 		
 		config.options().copyDefaults(true);
 		try {
