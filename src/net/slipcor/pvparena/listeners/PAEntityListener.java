@@ -11,6 +11,7 @@ import net.slipcor.pvparena.powerups.Powerup;
 import net.slipcor.pvparena.powerups.PowerupEffect;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * entity listener class
@@ -33,7 +35,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.5.10
  * 
  */
 
@@ -85,6 +87,18 @@ public class PAEntityListener extends EntityListener {
 		StatsManager.addLoseStat(player, sTeam, arena);
 		arena.playerManager.setTeam(player, ""); // needed so player does not
 													// get found when dead
+		
+		if (arena.isCustomClassActive()) {
+			Location loc = player.getLocation();
+			for (ItemStack is : player.getInventory().getArmorContents()) {
+				loc.getWorld().dropItemNaturally(loc, is);
+			}
+			for (ItemStack is : player.getInventory().getContents()) {
+				loc.getWorld().dropItemNaturally(loc, is);
+			}
+			player.getInventory().clear();
+		}
+		
 		arena.playerManager.setRespawn(player, true);
 		arena.tpPlayerToCoordName(player, "spectator");
 

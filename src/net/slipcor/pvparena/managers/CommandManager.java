@@ -21,7 +21,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.5.10
  * 
  */
 
@@ -281,6 +281,10 @@ public class CommandManager {
 		if (!arena.playerManager.getTeam(player).equals("")) {
 			ArenaManager.tellPlayer(player,
 					PVPArena.lang.parse("alreadyjoined"));
+			return true;
+		}
+		if (arena.tooFarAway(player)) {
+			ArenaManager.tellPlayer(player, PVPArena.lang.parse("joinrange"));
 			return true;
 		}
 		arena.prepare(player);

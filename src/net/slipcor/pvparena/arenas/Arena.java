@@ -36,6 +36,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -48,7 +49,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.5.10
  * 
  */
 
@@ -109,6 +110,7 @@ public abstract class Arena {
 	 */
 	private final HashMap<String, ItemStack[]> savedInventories = new HashMap<String, ItemStack[]>();
 	private final HashMap<String, ItemStack[]> savedArmories = new HashMap<String, ItemStack[]>();
+	private final HashMap<Player, PermissionAttachment> tempPermissions = new HashMap<Player, PermissionAttachment>();
 	// player mapped to misc vars: PlayerName => miscObjectVars
 	public final HashMap<Player, Object> savedPlayerVars = new HashMap<Player, Object>();
 
@@ -598,6 +600,7 @@ public abstract class Arena {
 			} else {
 				tpPlayerToCoordName(z, "spawn");
 			}
+			setPermissions(z);
 		}
 		init_arena();
 
@@ -628,6 +631,53 @@ public abstract class Arena {
 			}
 		}
 
+	}
+
+	private void setPermissions(Player p) {
+		HashMap<String,Boolean> perms = getTempPerms();
+        if (perms == null || perms.isEmpty()) return;
+
+        PermissionAttachment pa = p.addAttachment(PVPArena.instance);
+        tempPermissions.put(p,pa);
+        for (String entry : perms.keySet()) {
+            pa.setPermission(entry, perms.get(entry));
+        }
+	}
+	
+	private void removePermissions(Player p) {
+		if (tempPermissions.get(p) == null) return;
+        
+        for (PermissionAttachment pa : tempPermissions.values()) {
+            if (pa != null) {
+            	pa.remove();
+            }
+        }
+	}
+	
+	/**
+	 * get the permissions map
+	 * @return
+	 */
+	private HashMap<String, Boolean> getTempPerms() {
+		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+
+		if (cfg.getYamlConfiguration().getConfigurationSection("perms.default") != null) {
+			List<String> list = cfg.getStringList("perms.default", new ArrayList<String>());
+			for (String key : list) {
+				result.put(key.replace("-", "").replace("^", ""), (key.startsWith("^") || key.startsWith("-")));
+			}
+		}
+		
+		return result;
+	}
+	
+	public boolean isCustomClassActive() {
+		for (PAPlayer p : playerManager.getPlayers()) {
+			if (p.getClass().equals("custom")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1082,7 +1132,9 @@ public abstract class Arena {
 		db.i("resetting player: " + player.getName());
 		HashMap<String, String> tSM = (HashMap<String, String>) savedPlayerVars
 				.get(player);
-
+		
+		removePermissions(player);
+		
 		if (tSM == null) {
 			db.w("------------");
 			db.w("--hack fix--");
