@@ -112,7 +112,9 @@ public class PlayerManager {
 	public int countPlayersInTeams() {
 		int result = 0;
 		for (PAPlayer p : players.values()) {
+			db.i("player: "+p.getPlayer().getName());
 			if (!p.getTeam().equals("")) {
+				db.i("- team "+p.getTeam());
 				result++;
 			}
 		}

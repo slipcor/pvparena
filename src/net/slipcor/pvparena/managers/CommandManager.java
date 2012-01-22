@@ -83,7 +83,8 @@ public class CommandManager {
 				return true;
 			}
 		}
-		if (arena.calcFreeTeam() == null || (arena.cfg.getInt("general.readyMax") > 0 && arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams())) {
+		
+		if (arena.calcFreeTeam() == null || ((arena.cfg.getInt("general.readyMax") > 0) && (arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams()))) {
 
 			ArenaManager.tellPlayer(
 					player,

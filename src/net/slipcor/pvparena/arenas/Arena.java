@@ -831,8 +831,10 @@ public abstract class Arena {
 		
 		for (String s : paTeams.keySet()) {
 			// check if we are full
+			db.i("String s: "+s+"; max: "+cfg.getInt("general.readyMax"));
 			if (counts.get(s) < cfg.getInt("general.readyMax") || cfg.getInt("general.readyMax") == 0) {
 				full = false;
+				break;
 			}
 		}
 		
@@ -884,11 +886,14 @@ public abstract class Arena {
 	private String returnEmptyTeam(Set<String> set) {
 		HashSet<String> empty = new HashSet<String>();
 		for (String s : paTeams.keySet()) {
+			db.i("team: "+s);
 			if (set.contains(s)) {
+				db.i("done");
 				continue;
 			}
 			empty.add(s);
 		}
+		db.i("empty.size: "+empty.size());
 		if (empty.size() == 1) {
 			for (String s : empty) {
 				return s;
