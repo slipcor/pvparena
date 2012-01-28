@@ -21,12 +21,32 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
  * 
  * @author slipcor
  * 
- * @version v0.5.10
+ * @version v0.5.11
  * 
  */
 
 public class CommandManager {
 	private static DebugManager db = new DebugManager();
+	
+	/**
+	 * check and commit chat command
+	 * 
+	 * @param arena
+	 *            the arena to join
+	 * @param player
+	 *            the player who joins
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseChat(Arena arena, Player player) {
+		if (arena.paChat.contains(player.getName())) {
+			arena.paChat.remove(player.getName());
+			ArenaManager.tellPlayer(player, "You now talk to the public!");
+		} else {
+			arena.paChat.add(player.getName());
+			ArenaManager.tellPlayer(player, "You now talk to your team!");
+		}
+		return true;
+	}
 
 	/**
 	 * check and commit join command
@@ -468,34 +488,44 @@ public class CommandManager {
 	private static boolean isCustomCommand(Arena arena, Player player,
 			String cmd) {
 
-		if ((arena.getType().equals("ctf")) && cmd.endsWith("flag")) {
-			if (!player.getWorld().getName().equals(arena.getWorld())) {
+		if (cmd.endsWith("flag")) {
+			if (arena.getType().equals("ctf")) {
+				if (!player.getWorld().getName().equals(arena.getWorld())) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notsameworld", arena.getWorld()));
+					return false;
+				}
+				String sName = cmd.replace("flag", "");
+				if (arena.paTeams.get(sName) == null)
+					return false;
+	
+				arena.setCoords(player, cmd);
 				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("notsameworld", arena.getWorld()));
-				return false;
-			}
-			String sName = cmd.replace("flag", "");
-			if (arena.paTeams.get(sName) == null)
-				return false;
-
-			arena.setCoords(player, cmd);
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("setflag", sName));
-			return true;
-		} else if ((arena.getType().equals("pumpkin")) && cmd.endsWith("pumpkin")) {
-			if (!player.getWorld().getName().equals(arena.getWorld())) {
+						PVPArena.lang.parse("setflag", sName));
+				return true;
+			} else {
 				ArenaManager.tellPlayer(player,
-						PVPArena.lang.parse("notsameworld", arena.getWorld()));
-				return false;
+						PVPArena.lang.parse("errorcustomflag"));
 			}
-			String sName = cmd.replace("pumpkin", "");
-			if (arena.paTeams.get(sName) == null)
-				return false;
-
-			Arena.regionmodify = arena.name+":"+sName;
-			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("tosetpumpkin", sName));
-			return true;
+		} else if (cmd.endsWith("pumpkin")) {
+			if (arena.getType().equals("pumpkin")) {
+				if (!player.getWorld().getName().equals(arena.getWorld())) {
+					ArenaManager.tellPlayer(player,
+							PVPArena.lang.parse("notsameworld", arena.getWorld()));
+					return false;
+				}
+				String sName = cmd.replace("pumpkin", "");
+				if (arena.paTeams.get(sName) == null)
+					return false;
+	
+				Arena.regionmodify = arena.name+":"+sName;
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("tosetpumpkin", sName));
+				return true;
+			} else {
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("errorcustompumpkin"));
+			}
 		}
 		return false;
 	}
@@ -518,15 +548,18 @@ public class CommandManager {
 			return false;
 		}
 
-		if (arena.getType().equals("free")) {
+		if (cmd.startsWith("spawn") && !cmd.equals("spawn")) {
 
-			if (cmd.startsWith("spawn")) {
+			if (arena.getType().equals("free")) {
 				arena.setCoords(player, cmd);
 				ArenaManager.tellPlayer(player,
 						PVPArena.lang.parse("setspawn", cmd));
 				return true;
+			} else {
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("errorspawnfree", cmd));
+				return false;
 			}
-			return false;
 		}
 
 		if (cmd.contains("spawn") && !cmd.equals("spawn")) {
@@ -562,14 +595,17 @@ public class CommandManager {
 			return false;
 		}
 
-		if (arena.getType().equals("free")) {
-			if (cmd.equalsIgnoreCase("lounge")) {
+		if (cmd.equalsIgnoreCase("lounge")) {
+			if (arena.getType().equals("free")) {
 				arena.setCoords(player, "lounge");
 				ArenaManager.tellPlayer(player,
 						PVPArena.lang.parse("setlounge"));
 				return true;
+			} else {
+				ArenaManager.tellPlayer(player,
+						PVPArena.lang.parse("errorloungefree"));
+				return false;
 			}
-			return false;
 		}
 
 		if (cmd.endsWith("lounge")) {

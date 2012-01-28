@@ -63,10 +63,14 @@ public class PARegion {
 				|| loc.getWorld() != world)
 			return false; // no arena, no container or not in the same world
 		Vector vec = loc.toVector();
+		
 		db.i("checking region " + name + ": "
 				+ String.valueOf(vec.isInAABB(min, max)));
+		db.i("("+vec.toString()+" isInAABB "+min.toString()+"/"+max.toString()+")");
 		return vec.isInAABB(min, max);
 	}
+	
+	
 
 	/**
 	 * is a location farther away than a given length?

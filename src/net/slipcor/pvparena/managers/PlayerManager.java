@@ -20,7 +20,7 @@ import net.slipcor.pvparena.arenas.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.5.11
  * 
  */
 
@@ -268,6 +268,28 @@ public class PlayerManager {
 				continue;
 			p.getPlayer().sendMessage(
 					ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
+		}
+	}
+
+
+	/**
+	 * send a message to every player of a given team
+	 * 
+	 * @param player
+	 *            the team to send to
+	 * @param msg
+	 *            the message to send
+	 */
+	public void tellTeam(String team, String msg) { //TODO link the color here
+		if (team.equals("")) {
+			return;
+		}
+		db.i("@" + team + ": " + msg);
+		for (PAPlayer p : players.values()) {
+			if (!p.getTeam().equals(team))
+				continue;
+			p.getPlayer().sendMessage(
+					ChatColor.YELLOW + "[" + team + "] " + ChatColor.WHITE + msg);
 		}
 	}
 

@@ -39,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.8
+ * @version v0.5.11
  * 
  */
 
@@ -100,6 +100,8 @@ public class PVPArena extends JavaPlugin {
 		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entityListener,
 				Event.Priority.Highest, this);
 
+		pm.registerEvent(Event.Type.PLAYER_CHAT,
+				this.playerListener, Event.Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS,
 				this.playerListener, Event.Priority.Lowest, this);
 		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.playerListener,

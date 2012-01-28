@@ -25,16 +25,17 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.5.11
  * 
  */
 
 public class CTFArena extends Arena {
 	protected HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags
-																					// "lives"
-	protected HashMap<String, String> paTeamFlags = new HashMap<String, String>(); // carried
-																					// flags
-
+																					
+	/**
+	 * TeamName => PlayerName
+	 */
+	protected HashMap<String, String> paTeamFlags = new HashMap<String, String>();
 	/**
 	 * create a capture the flag arena
 	 * 
@@ -51,9 +52,6 @@ public class CTFArena extends Arena {
 		cfg = new Config(new File("plugins/pvparena/config.ctf_" + name
 				+ ".yml"));
 		cfg.load();
-		if (cfg.get("cfgver") == null) {
-			ConfigManager.legacyImport(this, cfg);
-		}
 		ConfigManager.configParse(this, cfg);
 		if (cfg.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
@@ -201,6 +199,7 @@ public class CTFArena extends Arena {
 		Vector vFlag = null;
 
 		if (paTeamFlags.containsValue(player.getName())) {
+			// player has flag, check for home and win
 			db.i("player " + player.getName() + " has got a flag");
 			vLoc = player.getLocation().toVector();
 			sTeam = playerManager.getTeam(player);
@@ -236,8 +235,11 @@ public class CTFArena extends Arena {
 				String playerTeam = playerManager.getTeam(player);
 				if (team.equals(playerTeam))
 					continue;
-				if (!playerManager.getPlayerTeamMap().containsValue(team))
+				if (!playerManager.getPlayerTeamMap().containsKey(team))
 					continue; // dont check for inactive teams
+				if (paTeamFlags.containsKey(team)) {
+					continue; // already taken
+				}
 				db.i("checking for spawn of team " + team);
 				vLoc = player.getLocation().toVector();
 				vSpawn = this.getCoords(team + "spawn").toVector();

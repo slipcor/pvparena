@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.5.1
+ * @version v0.5.11
  * 
  */
 
@@ -39,9 +39,6 @@ public class FreeArena extends Arena {
 		cfg = new Config(new File("plugins/pvparena/config.free_" + name
 				+ ".yml"));
 		cfg.load();
-		if (cfg.get("cfgver") == null) {
-			ConfigManager.legacyImport(this, cfg);
-		}
 		ConfigManager.configParse(this, cfg);
 
 		db.i("FreeFight Arena default overrides START");

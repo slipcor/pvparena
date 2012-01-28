@@ -20,6 +20,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -70,6 +71,28 @@ public class PAPlayerListener extends PlayerListener {
 		}
 		db.i("command blocked: " + event.getMessage());
 		ArenaManager.tellPlayer(player, ChatColor.RED + event.getMessage());
+		event.setCancelled(true);
+	}
+	
+	@Override
+	public void onPlayerChat(PlayerChatEvent event) {
+
+		Player player = event.getPlayer();
+
+		Arena arena = ArenaManager.getArenaByPlayer(player);
+		if (arena == null || arena.playerManager.getTeam(player).equals("")) {
+			return; // no fighting player => OUT
+		}
+		
+		if (!arena.cfg.getBoolean("general.chat")) {
+			return; // no chat editing
+		}
+		
+		if (!arena.paChat.contains(player.getName())) {
+			return; // player not chatting
+		}
+		
+		arena.playerManager.tellTeam(arena.playerManager.getTeam(player), event.getMessage());
 		event.setCancelled(true);
 	}
 

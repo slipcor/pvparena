@@ -49,7 +49,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.10
+ * @version v0.5.11
  * 
  */
 
@@ -78,6 +78,7 @@ public abstract class Arena {
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, PARegion> regions = new HashMap<String, PARegion>();
 	public final HashSet<String> paReady = new HashSet<String>();
+	public final HashSet<String> paChat = new HashSet<String>();
 
 	public PowerupManager pm;
 	public SettingManager sm;
@@ -159,9 +160,6 @@ public abstract class Arena {
 
 		cfg = new Config(new File("plugins/pvparena/config_" + name + ".yml"));
 		cfg.load();
-		if (cfg.get("cfgver") == null) {
-			ConfigManager.legacyImport(this, cfg);
-		}
 		ConfigManager.configParse(this, cfg);
 	}
 
@@ -238,6 +236,8 @@ public abstract class Arena {
 				return CommandManager.parseTeams(this, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return CommandManager.parseUsers(this, player);
+			} else if (args[0].equalsIgnoreCase("chat")) {
+				return CommandManager.parseChat(this, player);
 			} else if (args[0].equalsIgnoreCase("region")) {
 				return CommandManager.parseRegion(this, player);
 			} else if (paTeams.get(args[0]) != null) {
@@ -267,7 +267,7 @@ public abstract class Arena {
 
 		if (!PVPArena.instance.hasAdminPerms(player) && !(PVPArena.instance.hasCreatePerms(player,this))) {
 			ArenaManager.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "503"));
+					PVPArena.lang.parse("nopermto", PVPArena.lang.parse("admin")));
 			return false;
 		}
 
@@ -496,7 +496,7 @@ public abstract class Arena {
 	public void setCoords(Player player, String place) {
 		// "x,y,z,yaw,pitch"
 
-		Location location = player.getEyeLocation();
+		Location location = player.getLocation();
 
 		Integer x = location.getBlockX();
 		Integer y = location.getBlockY();
@@ -964,6 +964,10 @@ public abstract class Arena {
 	public void tpPlayerToCoordName(Player player, String place) {
 		String color = "";
 		if (place.endsWith("lounge")) {
+			// at the start of the match
+			if (cfg.getBoolean("general.defaultchat") && cfg.getBoolean("general.chat")) {
+				paChat.add(player.getName());
+			}
 			if (place.equals("lounge"))
 				color = "&f";
 			else {
@@ -1576,6 +1580,7 @@ public abstract class Arena {
 	public void reset() {
 		clearArena();
 		paReady.clear();
+		paChat.clear();
 		fightInProgress = false;
 		playerManager.reset(this);
 		if (SPAWN_ID > -1)

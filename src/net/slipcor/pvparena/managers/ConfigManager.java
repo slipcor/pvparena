@@ -10,11 +10,8 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import net.slipcor.pvparena.PARegion;
 import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.Config;
@@ -28,7 +25,7 @@ import net.slipcor.pvparena.arenas.Config;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.5.11
  * 
  */
 
@@ -113,9 +110,11 @@ public class ConfigManager {
 		config.addDefault("general.readyMinTeam", Integer.valueOf(1));
 		config.addDefault("general.readyMaxTeam", Integer.valueOf(0));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
+		config.addDefault("general.chat", Boolean.valueOf(true));
+		config.addDefault("general.defaultchat", Boolean.valueOf(false));
 		config.options().copyDefaults(true);
 		
-		cfg.set("cfgver", "0.5.9.0");
+		cfg.set("cfgver", "0.5.11.0");
 		cfg.save();
 
 		Map<String, Object> classes = config.getConfigurationSection(
@@ -195,43 +194,6 @@ public class ConfigManager {
 				arena.regions.put(rName,
 						getRegionFromConfigNode(rName, config, arena));
 			}
-		} else if (config.get("protection.region") != null) {
-
-			db.i("legacy battlefield import");
-			String[] min1 = config.getString("protection.region.min").split(
-					", ");
-			String[] max1 = config.getString("protection.region.max").split(
-					", ");
-			String world = config.getString("protection.region.world");
-			Location min = new Location(Bukkit.getWorld(world), new Double(
-					min1[0]).doubleValue(), new Double(min1[1]).doubleValue(),
-					new Double(min1[2]).doubleValue());
-			Location max = new Location(Bukkit.getWorld(world), new Double(
-					max1[0]).doubleValue(), new Double(max1[1]).doubleValue(),
-					new Double(max1[2]).doubleValue());
-
-			arena.regions.put("battlefield", new PARegion("battlefield", min,
-					max));
-
-			Vector v1 = min.toVector();
-			Vector v2 = max.toVector();
-
-			Vector realMin = new Vector(
-					Math.min(v1.getBlockX(), v2.getBlockX()), Math.min(
-							v1.getBlockY(), v2.getBlockY()), Math.min(
-							v1.getBlockZ(), v2.getBlockZ()));
-			Vector realMax = new Vector(
-					Math.max(v1.getBlockX(), v2.getBlockX()), Math.max(
-							v1.getBlockY(), v2.getBlockY()), Math.max(
-							v1.getBlockZ(), v2.getBlockZ()));
-
-			String s = realMin.getBlockX() + "," + realMin.getBlockY() + ","
-					+ realMin.getBlockZ() + "," + realMax.getBlockX() + ","
-					+ realMax.getBlockY() + "," + realMax.getBlockZ();
-			config.set("regions.battlefield", s);
-			config.set("protection.region", null);
-
-			cfg.save();
 		}
 	}
 
@@ -395,243 +357,5 @@ public class ConfigManager {
 		}
 
 		return "not enough spawns (" + spawns + ")";
-	}
-
-	/**
-	 * import outdated arena versions to the latest version
-	 * 
-	 * @param arena
-	 *            the arena to import
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	public static void legacyImport(Arena arena, Config cfg) {
-
-		if (cfg.getYamlConfiguration().getValues(true).size() < 1) {
-			db.i("no config");
-			return;
-		}
-
-		// Classes import
-
-		ConfigurationSection cs = (ConfigurationSection) cfg.get("classes");
-		Map<String, Object> map = cs.getValues(false);
-		for (String className : map.keySet()) {
-			moveString("classes." + className + ".items", "classitems."
-					+ className, cfg);
-			db.i("adding class item to class " + className + ": "
-					+ cfg.getString("classitems." + className, null));
-		}
-		cfg.set("classes", null);
-
-		// Teleports import
-
-		cs = (ConfigurationSection) cfg.get("general.tp");
-		map = cs.getValues(false);
-		for (String tpName : map.keySet()) {
-			moveString("general.tp." + tpName, "tp." + tpName, cfg);
-			db.i("adding teleport " + tpName + ": "
-					+ cfg.getString("tp." + tpName, null));
-		}
-		cfg.set("general.tp", null);
-		cfg.set("general.return", null);
-		moveInt("protection.wand", "general.wand", cfg);
-
-		moveBoolean("teams.team-killing-enabled", "general.manual", cfg);
-		moveBoolean("teams.manually-select-teams", "general.random", cfg);
-		moveBoolean("teams.randomly-select-teams", "general.teamkill", cfg);
-		moveString("rewards.items", "general.item-rewards", "none", cfg);
-
-		moveInt("rewards.entry-fee", "money.entry", cfg);
-		moveInt("rewards.amount", "money.reward", cfg);
-		cfg.set("rewards", null);
-
-		moveDouble("general.minbet", "money.minbet", cfg);
-		moveDouble("general.maxbet", "money.maxbet", cfg);
-
-		// Teams import
-
-		cs = (ConfigurationSection) cfg.get("teams.custom");
-		map = cs.getValues(false);
-		for (String teamName : map.keySet()) {
-			moveString("teams.custom." + teamName, "teams." + teamName, cfg);
-			db.i("adding team " + teamName + ": "
-					+ cfg.getString("teams." + teamName, null));
-		}
-		cfg.set("teams.custom", null);
-
-		// Regions import
-
-		cs = (ConfigurationSection) cfg.get("protection.regions");
-		if (cs != null) {
-			map = cs.getValues(false);
-			for (String regionName : map.keySet()) {
-				String min = cfg.getString("protection.regions." + regionName
-						+ ".min", "0,0,0");
-				String max = cfg.getString("protection.regions." + regionName
-						+ ".max", "0,0,0");
-
-				String[] sMin = min.split(", ");
-				String[] sMax = max.split(", ");
-
-				String s1 = "";
-				String s2 = "";
-
-				for (int i = 0; i < 3; i++) {
-
-					try {
-						sMin[i] = String.valueOf(Math.round(Double
-								.parseDouble(sMin[i])));
-					} catch (Exception e) {
-
-					}
-					try {
-						sMax[i] = String.valueOf(Math.round(Double
-								.parseDouble(sMax[i])));
-					} catch (Exception e) {
-
-					}
-
-					s1 += (s1.equals("")) ? sMin[i] : ("," + sMin[i]);
-					s2 += "," + sMax[i];
-				}
-				String s = s1 + s2;
-				cfg.set("regions." + regionName, s);
-				db.i("adding region " + regionName + ": " + s);
-			}
-			cfg.set("protection.regions", null);
-		}
-
-		// Spawns import
-		cs = (ConfigurationSection) cfg.get("coords");
-		if (cs != null) {
-			map = cs.getValues(false);
-			for (String spawnName : map.keySet()) {
-				Integer x = (int) Math.round(cfg.getDouble("coords."
-						+ spawnName + ".x", 0.0d));
-				Integer y = (int) Math.round(cfg.getDouble("coords."
-						+ spawnName + ".y", 0.0d));
-				Integer z = (int) Math.round(cfg.getDouble("coords."
-						+ spawnName + ".z", 0.0d));
-
-				Float pitch = (float) cfg.getDouble("coords." + spawnName
-						+ ".pitch", 0.0d);
-				Float yaw = (float) cfg.getDouble("coords." + spawnName
-						+ ".yaw", 0.0d);
-				cfg.set("general.world",
-						cfg.getString("coords." + spawnName + ".world", Bukkit
-								.getWorlds().get(0).getName()));
-
-				String s = x.toString() + "," + y.toString() + ","
-						+ z.toString() + "," + yaw.toString() + ","
-						+ pitch.toString();
-
-				cfg.set("spawns." + spawnName, s);
-				db.i("adding spawn " + spawnName + ": " + s);
-			}
-			cfg.set("coords", null);
-		}
-
-		// protection import / change
-		moveBoolean("protection.player.disable-block-placement",
-				"protection.blockplace", cfg);
-		moveBoolean("protection.player.disable-block-damage",
-				"protection.blockdamage", cfg);
-		moveBoolean("protection.fire.all-fire-spread", "protection.firespread",
-				cfg);
-		moveBoolean("protection.fire.lava-fire-spread",
-				"protection.lavafirespread", cfg);
-		moveBoolean("protection.ignition.block-tnt", "protection.tnt", cfg);
-		moveBoolean("protection.ignition.block-lighter", "protection.lighter",
-				cfg);
-		moveBoolean("protection.checkExitRegion", "protection.checkExit", cfg);
-		moveBoolean("protection.checkSpectatorRegion",
-				"protection.checkSpectator", cfg);
-		moveBoolean("protection.checkLoungesRegion", "protection.checkLounges",
-				cfg);
-
-		cfg.set("protection.player", null);
-		cfg.set("protection.fire", null);
-		cfg.set("protection.ignition", null);
-
-		cfg.set("cfgver", "0.5.0.6");
-		cfg.save();
-	}
-
-	/**
-	 * move a string inside the configuration
-	 * 
-	 * @param path1
-	 *            source path
-	 * @param path2
-	 *            destination path
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	private static void moveString(String path1, String path2, Config cfg) {
-		moveString(path1, path2, null, cfg);
-	}
-
-	/**
-	 * move a string inside the configuration
-	 * 
-	 * @param path1
-	 *            source path
-	 * @param path2
-	 *            destination path
-	 * @param def
-	 *            the default value
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	private static void moveString(String path1, String path2, String def,
-			Config cfg) {
-		cfg.set(path2, cfg.getString(path1, def));
-		cfg.set(path1, null);
-	}
-
-	/**
-	 * move a boolean inside the configuration
-	 * 
-	 * @param path1
-	 *            source path
-	 * @param path2
-	 *            destination path
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	private static void moveBoolean(String path1, String path2, Config cfg) {
-		cfg.set(path2, cfg.getBoolean(path1));
-		cfg.set(path1, null);
-	}
-
-	/**
-	 * move a double inside the configuration
-	 * 
-	 * @param path1
-	 *            source path
-	 * @param path2
-	 *            destination path
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	private static void moveDouble(String path1, String path2, Config cfg) {
-		cfg.set(path2, cfg.getDouble(path1, 0.0d));
-		cfg.set(path1, null);
-	}
-
-	/**
-	 * move an integer inside the configuration
-	 * 
-	 * @param path1
-	 *            source path
-	 * @param path2
-	 *            destination path
-	 * @param cfg
-	 *            the configuration to read/write
-	 */
-	private static void moveInt(String path1, String path2, Config cfg) {
-		cfg.set(path2, cfg.getInt(path1, 0));
-		cfg.set(path1, null);
 	}
 }

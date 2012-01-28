@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.5.11
  * 
  */
 public class LanguageManager {
@@ -106,6 +106,7 @@ public class LanguageManager {
 		config.addDefault("lang.reload", "reload");
 		config.addDefault("lang.enabled", "Enabled!");
 		config.addDefault("lang.disabled", "Disabled!");
+		config.addDefault("lang.admin", "administrate");
 		config.addDefault("lang.reloaded", "Config reloaded!");
 		config.addDefault("lang.noplayer", "No player in the PVP arena.");
 		config.addDefault("lang.players", "Players");
@@ -203,7 +204,11 @@ public class LanguageManager {
 
 		config.addDefault("lang.teamfull", "%1% is full!");
 		config.addDefault("lang.arenafull", "arena is full!");
-		
+
+		config.addDefault("lang.errorcustomflag", "Error! Arena is not of type ctf.");
+		config.addDefault("lang.errorcustompumpkin", "Error! Arena is not of type pumpkin.");
+		config.addDefault("lang.errorspawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!");
+		config.addDefault("lang.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'");
 		
 		config.options().copyDefaults(true);
 		try {
