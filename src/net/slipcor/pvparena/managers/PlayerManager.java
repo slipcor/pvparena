@@ -154,8 +154,8 @@ public class PlayerManager {
 		}
 
 		if (arena.cfg.getBoolean("general.readyCheckEach")) {
-			for (String sTeam : getPlayerTeamMap().keySet()) {
-				if (!arena.paReady.contains(sTeam)) {
+			for (String sPlayer : getPlayerTeamMap().keySet()) {
+				if (!arena.paReady.contains(sPlayer)) {
 					return 0;
 				}
 			}

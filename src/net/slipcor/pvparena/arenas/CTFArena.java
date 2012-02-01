@@ -231,11 +231,14 @@ public class CTFArena extends Arena {
 				reduceLivesCheckEndAndCommit(flagTeam);
 			}
 		} else {
+			db.i("----ctf---");
 			for (String team : paTeams.keySet()) {
+
+				db.i("team" + team);
 				String playerTeam = playerManager.getTeam(player);
 				if (team.equals(playerTeam))
 					continue;
-				if (!playerManager.getPlayerTeamMap().containsKey(team))
+				if (!playerManager.getPlayerTeamMap().containsValue(team))
 					continue; // dont check for inactive teams
 				if (paTeamFlags.containsKey(team)) {
 					continue; // already taken

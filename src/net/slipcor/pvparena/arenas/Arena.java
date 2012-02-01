@@ -896,6 +896,7 @@ public abstract class Arena {
 		db.i("empty.size: "+empty.size());
 		if (empty.size() == 1) {
 			for (String s : empty) {
+				db.i("return: "+s);
 				return s;
 			}
 		}
@@ -1048,16 +1049,16 @@ public abstract class Arena {
 		List<String> activeteams = new ArrayList<String>(0);
 		String team = "";
 
-		for (String sTeam : playerManager.getPlayerTeamMap().keySet()) {
+		for (String sPlayer : playerManager.getPlayerTeamMap().keySet()) {
 			if (activeteams.size() < 1) {
 				// fresh map
-				team = playerManager.getPlayerTeamMap().get(sTeam);
+				team = playerManager.getPlayerTeamMap().get(sPlayer);
 				activeteams.add(team);
 				db.i("team set to " + team);
 			} else {
 				// map contains stuff
 				if (!activeteams.contains(playerManager.getPlayerTeamMap().get(
-						sTeam))) {
+						sPlayer))) {
 					// second team active => OUT!
 					return false;
 				}
