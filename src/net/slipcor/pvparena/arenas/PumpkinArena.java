@@ -126,8 +126,11 @@ public class PumpkinArena extends CTFArena {
 				String playerTeam = playerManager.getTeam(player);
 				if (team.equals(playerTeam))
 					continue;
-				if (!playerManager.getPlayerTeamMap().containsValue(team))
+				if (!playerManager.getPlayerTeamMap().containsKey(team))
 					continue; // dont check for inactive teams
+				if (paTeamFlags.containsKey(team)) {
+					continue; // already taken
+				}
 				db.i("checking for pumpkin of team " + team);
 				vLoc = player.getLocation().toVector();
 				if (this.getCoords(team + "pumpkin") != null) {

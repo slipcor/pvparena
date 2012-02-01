@@ -57,7 +57,7 @@ public class PlayerManager {
 	/**
 	 * get all players stuck into a map [playername]=>[player]
 	 * 
-	 * @return a map [playername]=>[player]
+	 * @return a map [playername]=>[teamname]
 	 */
 	public HashMap<String, String> getPlayerTeamMap() {
 		HashMap<String, String> result = new HashMap<String, String>();
@@ -149,7 +149,7 @@ public class PlayerManager {
 		if (countPlayersInTeams() < 2) {
 			return -1;
 		}
-		if (countPlayersInTeams() < arena.cfg.getInt("general.readyMin")+1) {
+		if (countPlayersInTeams() < arena.cfg.getInt("general.readyMin")) {
 			return -4;
 		}
 
@@ -164,14 +164,18 @@ public class PlayerManager {
 		if (!arena.getType().equals("free")) {
 			boolean onlyone = true;
 			List<String> activeteams = new ArrayList<String>(0);
-			for (String sTeam : getPlayerTeamMap().keySet()) {
+			db.i("ready(): reading playerteammap");
+			for (String sPlayer : getPlayerTeamMap().keySet()) {
+				db.i("player "+sPlayer);
 				if (activeteams.size() < 1) {
 					// fresh map
-					String team = getPlayerTeamMap().get(sTeam);
+					String team = getPlayerTeamMap().get(sPlayer);
+					db.i("is in team "+team);
 					activeteams.add(team);
 				} else {
+					db.i("map not empty");
 					// map contains stuff
-					if (!activeteams.contains(getPlayerTeamMap().get(sTeam))) {
+					if (!activeteams.contains(getPlayerTeamMap().get(sPlayer))) {
 						// second team active => OUT!
 						onlyone = false;
 						break;
@@ -183,6 +187,7 @@ public class PlayerManager {
 			}
 
 			for (String sTeam : activeteams) {
+				db.i("TEAM "+sTeam);
 				if (countPlayers(sTeam) < arena.cfg.getInt("general.readyMinTeam")) {
 					return -3;
 				}
@@ -206,8 +211,10 @@ public class PlayerManager {
 	 * @return the team player count
 	 */
 	private int countPlayers(String sTeam) {
+		db.i("counting players in team "+sTeam);
 		int result = 0;
 		for (PAPlayer p : players.values()) {
+			db.i(" - player "+p.getPlayer().getName()+", team "+String.valueOf(p.getTeam()));
 			if (p.getTeam() != null && p.getTeam().equals(sTeam)) {
 				result++;
 			}
