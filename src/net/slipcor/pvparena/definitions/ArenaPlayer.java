@@ -1,4 +1,4 @@
-package net.slipcor.pvparena;
+package net.slipcor.pvparena.definitions;
 
 import org.bukkit.entity.Player;
 
@@ -11,16 +11,16 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.6.0
  * 
  */
 
-public class PAPlayer {
+public class ArenaPlayer {
 	private Player player = null;
 	private String team = "";
 	private String fightClass = "";
 	private String respawn = null;
-	private Byte lives = 0;
+	private Byte lives = 0; // TODO: remove, add paLives, Map<> back into Arena
 	private boolean telePass = false;
 
 	/**
@@ -29,7 +29,7 @@ public class PAPlayer {
 	 * @param p
 	 *            the bukkit player
 	 */
-	public PAPlayer(Player p) {
+	public ArenaPlayer(Player p) {
 		player = p;
 	}
 

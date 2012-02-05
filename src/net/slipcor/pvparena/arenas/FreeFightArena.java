@@ -5,9 +5,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.ConfigManager;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.StatsManager;
+import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.managers.ArenaConfigs;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Statistics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,11 +23,11 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.5.11
+ * @version v0.6.0
  * 
  */
 
-public class FreeArena extends Arena {
+public class FreeFightArena extends Arena {
 
 	/**
 	 * construct a free fight arena
@@ -33,13 +35,13 @@ public class FreeArena extends Arena {
 	 * @param sName
 	 *            the arena name
 	 */
-	public FreeArena(String sName) {
+	public FreeFightArena(String sName) {
 		super();
 		this.name = sName;
 		cfg = new Config(new File("plugins/pvparena/config.free_" + name
 				+ ".yml"));
 		cfg.load();
-		ConfigManager.configParse(this, cfg);
+		ArenaConfigs.configParse(this, cfg);
 
 		db.i("FreeFight Arena default overrides START");
 		db.i("+teamKilling, -manualTeamSelect, +randomTeamSelect,");
@@ -69,13 +71,13 @@ public class FreeArena extends Arena {
 		if (!(playerManager.getPlayerTeamMap().containsKey(player.getName()))) {
 			tpPlayerToCoordName(player, "lounge");
 			playerManager.setTeam(player, "free");
-			ArenaManager.tellPlayer(player,
+			Arenas.tellPlayer(player,
 					PVPArena.lang.parse("youjoinedfree"));
 			playerManager.tellEveryoneExcept(player,
 					PVPArena.lang.parse("playerjoinedfree", player.getName()));
 
 		} else {
-			ArenaManager.tellPlayer(player,
+			Arenas.tellPlayer(player,
 					PVPArena.lang.parse("alreadyjoined"));
 		}
 	}
@@ -95,7 +97,7 @@ public class FreeArena extends Arena {
 					ChatColor.WHITE + o.toString()));
 
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			StatsManager.addWinStat(z, "free", this);
+			Statistics.addWinStat(z, "free", this);
 			resetPlayer(z, cfg.getString("tp.win", "old"));
 			giveRewards(z); // if we are the winning team, give reward!
 			playerManager.setClass(z, "");

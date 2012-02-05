@@ -1,6 +1,6 @@
-package net.slipcor.pvparena.managers;
+package net.slipcor.pvparena.core;
 
-import net.slipcor.pvparena.PVPArena;
+import org.bukkit.Bukkit;
 
 /**
  * debug manager class
@@ -11,11 +11,11 @@ import net.slipcor.pvparena.PVPArena;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
-public class DebugManager {
+public class Debug {
 	public static boolean active;
 
 	/**
@@ -27,7 +27,7 @@ public class DebugManager {
 	public void i(String s) {
 		if (!active)
 			return;
-		PVPArena.instance.log.info(s);
+		Bukkit.getLogger().info(s);
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class DebugManager {
 	public void w(String s) {
 		if (!active)
 			return;
-		PVPArena.instance.log.warning(s);
+		Bukkit.getLogger().warning(s);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class DebugManager {
 	public void s(String s) {
 		if (!active)
 			return;
-		PVPArena.instance.log.severe(s);
+		Bukkit.getLogger().severe(s);
 	}
 
 	/**

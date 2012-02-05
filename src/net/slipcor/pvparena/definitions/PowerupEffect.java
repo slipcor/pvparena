@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.powerups;
+package net.slipcor.pvparena.definitions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,10 +13,9 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.Arena;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.DebugManager;
-import net.slipcor.pvparena.managers.StatsManager;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Statistics;
 
 /**
  * powerup effect class
@@ -27,7 +26,7 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.7
+ * @version v0.6.0
  * 
  */
 
@@ -41,7 +40,7 @@ public class PowerupEffect {
 	private double chance = 1.0;
 	private int diff = 0;
 	private List<String> items = new ArrayList<String>();
-	private DebugManager db = new DebugManager();
+	private Debug db = new Debug();
 
 	/*
 	 * PowerupEffect classes
@@ -175,7 +174,7 @@ public class PowerupEffect {
 				EntityDamageByEntityEvent reflectEvent = new EntityDamageByEntityEvent(
 						defender, attacker, event.getCause(),
 						(int) Math.round(event.getDamage() * factor));
-				PVPArena.instance.getEntityListener().onEntityDamageByEntity(
+				PVPArena.entityListener.onEntityDamageByEntity(
 						reflectEvent);
 			} // else: chance fail :D
 		} else if (this.type == classes.IGNITE) {
@@ -209,13 +208,13 @@ public class PowerupEffect {
 				}
 				return true;
 			} else if (this.type == classes.LIVES) {
-				byte lives = ArenaManager.getArenaByPlayer(player).playerManager
+				byte lives = Arenas.getArenaByPlayer(player).playerManager
 						.getLives(player);
 				if (lives > 0)
-					ArenaManager.getArenaByPlayer(player).playerManager
+					Arenas.getArenaByPlayer(player).playerManager
 							.setLives(player, (byte) (lives + diff));
 				else {
-					Arena arena = ArenaManager.getArenaByPlayer(player);
+					Arena arena = Arenas.getArenaByPlayer(player);
 
 					// pasted from onEntityDeath;
 
@@ -230,7 +229,7 @@ public class PowerupEffect {
 								"killed", ChatColor.WHITE + player.getName()
 										+ ChatColor.YELLOW));
 					}
-					StatsManager.addLoseStat(player, sTeam, arena);
+					Statistics.addLoseStat(player, sTeam, arena);
 					// needed so player does not get found when dead
 					arena.playerManager.setTeam(player, "");
 					arena.playerManager.setRespawn(player, true);

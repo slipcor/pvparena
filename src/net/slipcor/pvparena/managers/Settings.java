@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * setting manager class
@@ -21,11 +21,11 @@ import net.slipcor.pvparena.arenas.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.6.0
  * 
  */
 
-public class SettingManager {
+public class Settings {
 	private final Arena arena;
 	private static HashMap<String, String> types = new HashMap<String, String>();
 	
@@ -94,7 +94,7 @@ public class SettingManager {
 		types.put("general.enabled", "boolean");
 	}
 	
-	public SettingManager(Arena a) {
+	public Settings(Arena a) {
 		arena = a;
 	}
 
@@ -119,9 +119,9 @@ public class SettingManager {
 				break;
 			}
 		}
-		ArenaManager.tellPlayer(player, ChatColor.GRAY + "------ config list ["+page+"] ------");
+		Arenas.tellPlayer(player, ChatColor.GRAY + "------ config list ["+page+"] ------");
 		for (String node : keys) {
-			ArenaManager.tellPlayer(player, node + " => " + types.get(getNode(node)));
+			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)));
 		}
 		
 	}
@@ -142,9 +142,9 @@ public class SettingManager {
 
 	public void set(Player player, String node, String value) {
 		
-		if (!PVPArena.instance.hasAdminPerms(player) && !PVPArena.instance.hasCreatePerms(player, arena)) {
+		if (!PVPArena.hasAdminPerms(player) && !PVPArena.hasCreatePerms(player, arena)) {
 
-			ArenaManager.tellPlayer(player,
+			Arenas.tellPlayer(player,
 					PVPArena.lang.parse("nopermto", "set"));
 			return;
 		}
@@ -165,67 +165,67 @@ public class SettingManager {
 		if (type.equals("boolean")) {
 			if (value.equalsIgnoreCase("true")) {
 				arena.cfg.set(node, Boolean.valueOf(true));
-				ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(value.equalsIgnoreCase("true")));
+				Arenas.tellPlayer(player, node + " set to "+String.valueOf(value.equalsIgnoreCase("true")));
 			} else if (value.equalsIgnoreCase("false")) {
 				arena.cfg.set(node, Boolean.valueOf(false));
-				ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(value.equalsIgnoreCase("true")));
+				Arenas.tellPlayer(player, node + " set to "+String.valueOf(value.equalsIgnoreCase("true")));
 			} else {
-				ArenaManager.tellPlayer(player, "No valid boolean '" + value + "'!");
-				ArenaManager.tellPlayer(player, "Valid values: true | false");
+				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!");
+				Arenas.tellPlayer(player, "Valid values: true | false");
 				return;
 			}
 		} else if (type.equals("string")) {
 			arena.cfg.set(node, String.valueOf(value));
-			ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(value));			
+			Arenas.tellPlayer(player, node + " set to "+String.valueOf(value));			
 		} else if (type.equals("int")) {
 			int i = 0;
 			
 			try {
 				i = Integer.parseInt(value);
 			} catch (Exception e) {
-				ArenaManager.tellPlayer(player, "No valid int '"+value+"'! Use numbers without decimals!");
+				Arenas.tellPlayer(player, "No valid int '"+value+"'! Use numbers without decimals!");
 				return;
 			}
 			arena.cfg.set(node, i);
-			ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(i));
+			Arenas.tellPlayer(player, node + " set to "+String.valueOf(i));
 		} else if (type.equals("double")) {
 			double d = 0;
 			
 			try {
 				d = Double.parseDouble(value);
 			} catch (Exception e) {
-				ArenaManager.tellPlayer(player, "No valid double '"+value+"'! Use numbers with period (.)!");
+				Arenas.tellPlayer(player, "No valid double '"+value+"'! Use numbers with period (.)!");
 				return;
 			}
 			arena.cfg.set(node, d);
-			ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(d));
+			Arenas.tellPlayer(player, node + " set to "+String.valueOf(d));
 		} else if (type.equals("tp")) {
 			if (!value.equals("exit") && !value.equals("old") && !value.equals("spectator")) {
-				ArenaManager.tellPlayer(player, "No valid tp '"+value+"'!");
-				ArenaManager.tellPlayer(player, "Valid values: exit | old | spectator");
+				Arenas.tellPlayer(player, "No valid tp '"+value+"'!");
+				Arenas.tellPlayer(player, "Valid values: exit | old | spectator");
 				return;
 			}
 			arena.cfg.set(node, String.valueOf(value));
-			ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(value));
+			Arenas.tellPlayer(player, node + " set to "+String.valueOf(value));
 		} else if (type.equals("item")) {
 			try {
 				try {
 					Material mat = Material.valueOf(value);
 					if (!mat.equals(Material.AIR)) {
 						arena.cfg.set(node, mat.name());
-						ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(mat.name()));
+						Arenas.tellPlayer(player, node + " set to "+String.valueOf(mat.name()));
 					}
 				} catch (Exception e2) {
 					Material mat = Material.getMaterial(Integer.parseInt(value));
 					arena.cfg.set(node, mat.name());
-					ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(mat.name()));
+					Arenas.tellPlayer(player, node + " set to "+String.valueOf(mat.name()));
 				}
 				arena.cfg.save();
 				return;
 			} catch (Exception e) {
 				//nothing
 			}
-			ArenaManager.tellPlayer(player, "No valid item '"+value+"'! Use valid ENUM or item id");
+			Arenas.tellPlayer(player, "No valid item '"+value+"'! Use valid ENUM or item id");
 			return;
 		} else if (type.equals("items")) {
 			String[] ss = value.split(",");
@@ -239,12 +239,12 @@ public class SettingManager {
 			}
 			
 			arena.cfg.set(node, String.valueOf(value));
-			ArenaManager.tellPlayer(player, node + " set to "+String.valueOf(value));
+			Arenas.tellPlayer(player, node + " set to "+String.valueOf(value));
 		} else if (type.equals("lang")) {
 			return; // TODO : lang support
 		} else {
-			ArenaManager.tellPlayer(player, "Unknown node: " + node);
-			ArenaManager.tellPlayer(player, "use /pa [name] set [page] to get a node list");
+			Arenas.tellPlayer(player, "Unknown node: " + node);
+			Arenas.tellPlayer(player, "use /pa [name] set [page] to get a node list");
 			return;
 		}
 		arena.cfg.save();

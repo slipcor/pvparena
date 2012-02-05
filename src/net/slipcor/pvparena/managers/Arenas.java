@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.PumpkinArena;
-import net.slipcor.pvparena.arenas.TeamArena;
-import net.slipcor.pvparena.arenas.FreeArena;
+import net.slipcor.pvparena.arenas.TeamFightArena;
+import net.slipcor.pvparena.arenas.FreeFightArena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,13 +26,13 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.6.0
  * 
  */
 
-public class ArenaManager {
+public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	private static DebugManager db = new DebugManager();
+	private static Debug db = new Debug();
 
 	/**
 	 * load all configs in the PVP Arena folder
@@ -95,13 +96,13 @@ public class ArenaManager {
 		Arena arena;
 		db.i("loading arena " + configFile + " (" + type + ")");
 		if (type.equals("free")) {
-			arena = new FreeArena(configFile);
+			arena = new FreeFightArena(configFile);
 		} else if (type.equals("ctf")) {
 			arena = new CTFArena(configFile);
 		} else if (type.equals("pumpkin")) {
 			arena = new PumpkinArena(configFile);
 		} else {
-			arena = new TeamArena(configFile);
+			arena = new TeamFightArena(configFile);
 		}
 
 		arenas.put(arena.name, arena);

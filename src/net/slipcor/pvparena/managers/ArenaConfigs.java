@@ -12,9 +12,11 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import net.slipcor.pvparena.PARegion;
-import net.slipcor.pvparena.arenas.Arena;
-import net.slipcor.pvparena.arenas.Config;
+
+import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaRegion;
 
 /**
  * config manager class
@@ -25,12 +27,12 @@ import net.slipcor.pvparena.arenas.Config;
  * 
  * @author slipcor
  * 
- * @version v0.5.11
+ * @version v0.6.0
  * 
  */
 
-public class ConfigManager {
-	private static DebugManager db = new DebugManager();
+public class ArenaConfigs {
+	private static Debug db = new Debug();
 
 	/**
 	 * create a config manager instance
@@ -165,9 +167,9 @@ public class ConfigManager {
 				powerups.put(key, temp_map);
 			}
 
-			arena.pm = new PowerupManager(powerups);
+			arena.pm = new Powerups(powerups);
 		}
-		arena.sm = new SettingManager(arena);
+		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
 			arena.owner = cfg.getString("general.owner");
 		}
@@ -232,14 +234,14 @@ public class ConfigManager {
 	 *            the arena to check
 	 * @return an error string if a node is missing, null otherwise
 	 */
-	private static PARegion getRegionFromConfigNode(String string,
+	private static ArenaRegion getRegionFromConfigNode(String string,
 			YamlConfiguration config, Arena arena) {
 		db.i("reading config region: " + arena.name + "=>" + string);
 		String coords = config.getString("regions." + string);
 		World world = Bukkit.getWorld(arena.getWorld());
 		Location[] l = Config.parseCuboid(world, coords);
 
-		return new PARegion(string, l[0], l[1]);
+		return new ArenaRegion(string, l[0], l[1]);
 	}
 
 	/**

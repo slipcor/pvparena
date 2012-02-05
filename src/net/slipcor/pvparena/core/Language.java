@@ -1,11 +1,11 @@
-package net.slipcor.pvparena.managers;
+package net.slipcor.pvparena.core;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-import net.slipcor.pvparena.PVPArena;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -18,10 +18,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.5.11
+ * @version v0.6.0
  * 
  */
-public class LanguageManager {
+public class Language {
 	Map<String, Object> lang = null; // game language map
 	Map<String, Object> log = null; // log language map
 
@@ -30,14 +30,14 @@ public class LanguageManager {
 	/**
 	 * create a language manager instance
 	 */
-	public LanguageManager() {
+	public Language() {
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/lang.yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				PVPArena.instance.log
+				Bukkit.getLogger()
 						.severe("[PVP Arena] Error when creating language file.");
 			}
 
@@ -294,7 +294,7 @@ public class LanguageManager {
 	 */
 	public void log_error(String s, String arg) {
 		String var = (String) log.get(s);
-		PVPArena.instance.log.severe("[PVP Arena] " + var.replace("%1%", arg));
+		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
@@ -308,7 +308,7 @@ public class LanguageManager {
 	 */
 	public void log_warning(String s, String arg) {
 		String var = (String) log.get(s);
-		PVPArena.instance.log.warning("[PVP Arena] " + var.replace("%1%", arg));
+		Bukkit.getLogger().warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
@@ -322,7 +322,7 @@ public class LanguageManager {
 	 */
 	public void log_info(String s, String arg) {
 		String var = (String) log.get(s);
-		PVPArena.instance.log.info("[PVP Arena] " + var.replace("%1%", arg));
+		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
 
@@ -334,7 +334,7 @@ public class LanguageManager {
 	 */
 	public void log_info(String s) {
 		String var = (String) log.get(s);
-		PVPArena.instance.log.info("[PVP Arena] " + var);
+		Bukkit.getLogger().info("[PVP Arena] " + var);
 		// log map value
 	}
 }

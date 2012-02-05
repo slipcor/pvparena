@@ -4,28 +4,31 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.PumpkinArena;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.DebugManager;
-import net.slipcor.pvparena.managers.UpdateManager;
-import net.slipcor.pvparena.powerups.Powerup;
-import net.slipcor.pvparena.powerups.PowerupEffect;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Update;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.Powerup;
+import net.slipcor.pvparena.definitions.PowerupEffect;
+import net.slipcor.pvparena.managers.Arenas;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -42,44 +45,37 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.9
+ * @version v0.6.0
  * 
  */
 
-public class PAPlayerListener extends PlayerListener {
-	private DebugManager db = new DebugManager();
-
-	@Override
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-		Player player = event.getPlayer();
-
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if (arena == null) {
-			return; // no fighting player => OUT
-		}
-
-		List<String> list = PVPArena.instance.getConfig().getStringList(
-				"whitelist");
-		list.add("pa");
-		db.i("checking command whitelist");
-
-		for (String s : list) {
-			if (event.getMessage().startsWith("/" + s)) {
-				db.i("command allowed: " + s);
-				return;
-			}
-		}
-		db.i("command blocked: " + event.getMessage());
-		ArenaManager.tellPlayer(player, ChatColor.RED + event.getMessage());
-		event.setCancelled(true);
-	}
+public class PlayerListener implements Listener {
+	private Debug db = new Debug();
+	/*
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,
+				Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener,
+				Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener,
+				Event.Priority.Normal, this);
+		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListener,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_VELOCITY, this.playerListener,
+				Event.Priority.Highest, this);
+	 */
 	
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event) {
 
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaManager.getArenaByPlayer(player);
+		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null || arena.playerManager.getTeam(player).equals("")) {
 			return; // no fighting player => OUT
 		}
@@ -96,197 +92,53 @@ public class PAPlayerListener extends PlayerListener {
 		event.setCancelled(true);
 	}
 
-	@Override
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 
-		if (!player.isOp()) {
-			return; // no OP => OUT
-		}
-		UpdateManager.message(player);
-	}
-
-	@Override
-	public void onPlayerMove(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-
-		Arena arena = ArenaManager.getArenaByPlayer(player);
+		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		// db.i("onPlayerMove: fighting player!");
-		if (arena.pm != null) {
-			Powerup p = arena.pm.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.FREEZE)) {
-						db.i("freeze in effect, cancelling!");
-						event.setCancelled(true);
-					}
-					if (p.isEffectActive(PowerupEffect.classes.SPRINT)) {
-						db.i("sprint in effect, sprinting!");
-						event.getPlayer().setSprinting(true);
-					}
-					if (p.isEffectActive(PowerupEffect.classes.SLIP)) {
-						//
-					}
-				}
+
+		List<String> list = Bukkit.getServer().getPluginManager().getPlugin("pvparena").getConfig().getStringList(
+				"whitelist");
+		list.add("pa");
+		db.i("checking command whitelist");
+
+		for (String s : list) {
+			if (event.getMessage().startsWith("/" + s)) {
+				db.i("command allowed: " + s);
+				return;
 			}
 		}
+		db.i("command blocked: " + event.getMessage());
+		Arenas.tellPlayer(player, ChatColor.RED + event.getMessage());
+		event.setCancelled(true);
 	}
 
-	@Override
-	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if (arena == null) {
-			return; // no fighting player => OUT
-		}
-		db.i("onPlayerRespawn: fighting player");
-		if (arena.playerManager.getRespawn(player) != null) {
-			return; // no respawning player => OUT
-		}
-		db.i("respawning player");
-		Location l;
-
-		if (arena.cfg.getString("tp.death", "spectator").equals("old")) {
-			db.i("=> old location");
-			l = arena.getPlayerOldLocation(player);
-		} else {
-			db.i("=> 'config=>death' location");
-			l = arena.getCoords(arena.cfg.getString("tp.death", "spectator"));
-		}
-		event.setRespawnLocation(l);
-
-		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
-		arena.playerManager.setRespawn(player, false);
-	}
-
-	@Override
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if (arena == null)
-			return; // no fighting player => OUT
-		db.i("onPlayerQuit: fighting player");
-		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
-		if (color != null && !color.equals("")) {
-			arena.playerManager.tellEveryoneExcept(
-					player,
-					PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
-							+ player.getName() + ChatColor.YELLOW));
-		} else {
-			arena.playerManager.tellEveryoneExcept(
-					player,
-					PVPArena.lang.parse("playerleave",
-							ChatColor.WHITE + player.getName()
-									+ ChatColor.YELLOW));
-		}
-		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
-		arena.checkEndAndCommit();
-	}
-
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaManager.getArenaByPlayer(player);
+		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
 
 		db.i("onPlayerDropItem: fighting player");
-		ArenaManager.tellPlayer(player, (PVPArena.lang.parse("dropitem")));
+		Arenas.tellPlayer(player, (PVPArena.lang.parse("dropitem")));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
 
-	@Override
-	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		if (event.isCancelled())
-			return;
-
-		Player player = event.getPlayer();
-
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if ((arena == null) || (arena.pm == null)
-				|| (arena.pm.puTotal.size() < 1))
-			return; // no fighting player or no powerups => OUT
-
-		db.i("onPlayerPickupItem: fighting player");
-		Iterator<Powerup> pi = arena.pm.puTotal.iterator();
-		while (pi.hasNext()) {
-			Powerup p = pi.next();
-			if (event.getItem().getItemStack().getType().equals(p.item)) {
-				Powerup newP = new Powerup(p);
-				if (arena.pm.puActive.containsKey(player)) {
-					arena.pm.puActive.get(player).disable();
-				}
-				arena.pm.puActive.put(player, newP);
-				arena.playerManager.tellEveryone(PVPArena.lang.parse(
-						"playerpowerup", player.getName(), newP.name));
-				event.setCancelled(true);
-				event.getItem().remove();
-				if (newP.canBeTriggered())
-					newP.activate(player); // activate for the first time
-
-				return;
-			}
-		}
-	}
-
-	@Override
-	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		Player player = event.getPlayer();
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if (arena == null)
-			return; // no fighting player => OUT
-
-		db.i("onPlayerTeleport: fighting player (uncancel)");
-		event.setCancelled(false); // fighting player - first recon NOT to
-									// cancel!
-
-		if (arena.playerManager.getTelePass(player)
-				|| PVPArena.instance.hasPerms(player, "pvparena.telepass"))
-			return; // if allowed => OUT
-
-		db.i("onPlayerTeleport: no tele pass, cancelling!");
-		event.setCancelled(true); // cancel and tell
-		ArenaManager.tellPlayer(player, PVPArena.lang.parse("usepatoexit"));
-	}
-
-	@Override
-	public void onPlayerVelocity(PlayerVelocityEvent event) {
-		if (event.isCancelled())
-			return;
-
-		Player player = event.getPlayer();
-
-		Arena arena = ArenaManager.getArenaByPlayer(player);
-		if (arena == null)
-			return; // no fighting player or no powerups => OUT
-
-		db.i("inPlayerVelocity: fighting player");
-		if (arena.pm != null) {
-			Powerup p = arena.pm.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.JUMP)) {
-						p.commit(event);
-					}
-				}
-			}
-		}
-	}
-
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaManager.getArenaByName(Arena.regionmodify);
+		Arena arena = Arenas.getArenaByName(Arena.regionmodify);
 
 		if (arena != null
-				&& (PVPArena.instance.hasAdminPerms(player) || (PVPArena.instance.hasCreatePerms(player,arena)))
+				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(player,arena)))
 				&& (player.getItemInHand() != null)
 				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
 						"general.wand", 280))) {
@@ -296,18 +148,18 @@ public class PAPlayerListener extends PlayerListener {
 			db.i("modify&adminperms&wand");
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("pos1"));
+				Arenas.tellPlayer(player, PVPArena.lang.parse("pos1"));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				ArenaManager.tellPlayer(player, PVPArena.lang.parse("pos2"));
+				Arenas.tellPlayer(player, PVPArena.lang.parse("pos2"));
 				return; // right click => pos2
 			}
 		}
-		arena = ArenaManager.getArenaByPlayer(player);
+		arena = Arenas.getArenaByPlayer(player);
 		if (arena == null) {
 			db.i("onInteract: sign check");
 			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -318,9 +170,9 @@ public class PAPlayerListener extends PlayerListener {
 						String sName = sign.getLine(1);
 						String[] newArgs = null;
 
-						Arena a = ArenaManager.getArenaByName(sName);
+						Arena a = Arenas.getArenaByName(sName);
 						if (a == null) {
-							ArenaManager.tellPlayer(player, PVPArena.lang
+							Arenas.tellPlayer(player, PVPArena.lang
 									.parse("arenanotexists", sName));
 							return;
 						}
@@ -331,7 +183,7 @@ public class PAPlayerListener extends PlayerListener {
 			}
 			if (Arena.regionmodify.contains(":")) {
 				String[] s = Arena.regionmodify.split(":");
-				arena = ArenaManager.getArenaByName(s[0]);
+				arena = Arenas.getArenaByName(s[0]);
 				if (arena == null) {
 					return;
 				}
@@ -386,9 +238,9 @@ public class PAPlayerListener extends PlayerListener {
 
 					if (classperms) {
 						db.i("checking classperms");
-						if (!(PVPArena.instance.hasPerms(player,
+						if (!(PVPArena.hasPerms(player,
 								"pvparena.class." + sign.getLine(0)))) {
-							ArenaManager.tellPlayer(player,
+							Arenas.tellPlayer(player,
 									PVPArena.lang.parse("classperms"));
 							return; // class permission desired and failed =>
 									// announce and OUT
@@ -449,37 +301,37 @@ public class PAPlayerListener extends PlayerListener {
 
 				int ready = arena.playerManager.ready(arena);
 				if (ready == 0) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready"));
 					return; // team not ready => announce
 				} else if (ready == -1) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready1"));
 					return; // team not ready => announce
 				} else if (ready == -2) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready2"));
 					return; // team not ready => announce
 				} else if (ready == -3) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready3"));
 					return; // team not ready => announce
 				} else if (ready == -4) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready4"));
 					return; // arena not ready => announce
 				}
 
 				if (arena.cfg.getBoolean("general.forceeven", false)) {
 					if (!arena.playerManager.checkEven()) {
-						ArenaManager.tellPlayer(player,
+						Arenas.tellPlayer(player,
 								PVPArena.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce
 					}
 				}
 
 				if (!arena.checkRegions()) {
-					ArenaManager.tellPlayer(player,
+					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("checkregionerror"));
 					return;
 				}
@@ -501,6 +353,174 @@ public class PAPlayerListener extends PlayerListener {
 					arena.fightInProgress = true;
 					arena.playerManager.tellEveryone(PVPArena.lang
 							.parse("begin"));
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+
+		if (!player.isOp()) {
+			return; // no OP => OUT
+		}
+		Update.message(player);
+	}
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null) {
+			return; // no fighting player => OUT
+		}
+		// db.i("onPlayerMove: fighting player!");
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(player);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					if (p.isEffectActive(PowerupEffect.classes.FREEZE)) {
+						db.i("freeze in effect, cancelling!");
+						event.setCancelled(true);
+					}
+					if (p.isEffectActive(PowerupEffect.classes.SPRINT)) {
+						db.i("sprint in effect, sprinting!");
+						event.getPlayer().setSprinting(true);
+					}
+					if (p.isEffectActive(PowerupEffect.classes.SLIP)) {
+						//
+					}
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		if (event.isCancelled())
+			return;
+
+		Player player = event.getPlayer();
+
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if ((arena == null) || (arena.pm == null)
+				|| (arena.pm.puTotal.size() < 1))
+			return; // no fighting player or no powerups => OUT
+
+		db.i("onPlayerPickupItem: fighting player");
+		Iterator<Powerup> pi = arena.pm.puTotal.iterator();
+		while (pi.hasNext()) {
+			Powerup p = pi.next();
+			if (event.getItem().getItemStack().getType().equals(p.item)) {
+				Powerup newP = new Powerup(p);
+				if (arena.pm.puActive.containsKey(player)) {
+					arena.pm.puActive.get(player).disable();
+				}
+				arena.pm.puActive.put(player, newP);
+				arena.playerManager.tellEveryone(PVPArena.lang.parse(
+						"playerpowerup", player.getName(), newP.name));
+				event.setCancelled(true);
+				event.getItem().remove();
+				if (newP.canBeTriggered())
+					newP.activate(player); // activate for the first time
+
+				return;
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player => OUT
+		db.i("onPlayerQuit: fighting player");
+		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
+		if (color != null && !color.equals("")) {
+			arena.playerManager.tellEveryoneExcept(
+					player,
+					PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
+							+ player.getName() + ChatColor.YELLOW));
+		} else {
+			arena.playerManager.tellEveryoneExcept(
+					player,
+					PVPArena.lang.parse("playerleave",
+							ChatColor.WHITE + player.getName()
+									+ ChatColor.YELLOW));
+		}
+		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
+		arena.checkEndAndCommit();
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		Player player = event.getPlayer();
+
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null) {
+			return; // no fighting player => OUT
+		}
+		db.i("onPlayerRespawn: fighting player");
+		if (arena.playerManager.getRespawn(player) != null) {
+			return; // no respawning player => OUT
+		}
+		db.i("respawning player");
+		Location l;
+
+		if (arena.cfg.getString("tp.death", "spectator").equals("old")) {
+			db.i("=> old location");
+			l = arena.getPlayerOldLocation(player);
+		} else {
+			db.i("=> 'config=>death' location");
+			l = arena.getCoords(arena.cfg.getString("tp.death", "spectator"));
+		}
+		event.setRespawnLocation(l);
+
+		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
+		arena.playerManager.setRespawn(player, false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		Player player = event.getPlayer();
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player => OUT
+
+		db.i("onPlayerTeleport: fighting player (uncancel)");
+		event.setCancelled(false); // fighting player - first recon NOT to
+									// cancel!
+
+		if (arena.playerManager.getTelePass(player)
+				|| PVPArena.hasPerms(player, "pvparena.telepass"))
+			return; // if allowed => OUT
+
+		db.i("onPlayerTeleport: no tele pass, cancelling!");
+		event.setCancelled(true); // cancel and tell
+		Arenas.tellPlayer(player, PVPArena.lang.parse("usepatoexit"));
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerVelocity(PlayerVelocityEvent event) {
+		if (event.isCancelled())
+			return;
+
+		Player player = event.getPlayer();
+
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player or no powerups => OUT
+
+		db.i("inPlayerVelocity: fighting player");
+		if (arena.pm != null) {
+			Powerup p = arena.pm.puActive.get(player);
+			if (p != null) {
+				if (p.canBeTriggered()) {
+					if (p.isEffectActive(PowerupEffect.classes.JUMP)) {
+						p.commit(event);
+					}
 				}
 			}
 		}

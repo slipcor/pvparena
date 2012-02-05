@@ -1,14 +1,14 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.Arena;
 import net.slipcor.pvparena.arenas.CTFArena;
 import net.slipcor.pvparena.arenas.PumpkinArena;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.DebugManager;
-import net.slipcor.pvparena.managers.StatsManager;
-import net.slipcor.pvparena.powerups.Powerup;
-import net.slipcor.pvparena.powerups.PowerupEffect;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.Powerup;
+import net.slipcor.pvparena.definitions.PowerupEffect;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,12 +17,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -35,20 +37,20 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.5.10
+ * @version v0.6.0
  * 
  */
 
-public class PAEntityListener extends EntityListener {
-	private DebugManager db = new DebugManager();
+public class EntityListener implements Listener {
+	private Debug db = new Debug();
 
-	@Override
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity e = event.getEntity();
 		if (e instanceof Player) {
 			Player player = (Player) e;
 
-			Arena arena = ArenaManager.getArenaByPlayer(player);
+			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena == null)
 				return;
 
@@ -84,7 +86,7 @@ public class PAEntityListener extends EntityListener {
 					ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
 		}
 
-		StatsManager.addLoseStat(player, sTeam, arena);
+		Statistics.addLoseStat(player, sTeam, arena);
 		arena.playerManager.setTeam(player, ""); // needed so player does not
 													// get found when dead
 		
@@ -205,7 +207,7 @@ public class PAEntityListener extends EntityListener {
 			}
 			db.i("damaged entity is player");
 			Player defender = (Player) p2;
-			Arena arena = ArenaManager.getArenaByPlayer(defender);
+			Arena arena = Arenas.getArenaByPlayer(defender);
 			if (arena == null)
 				return;
 
@@ -251,7 +253,7 @@ public class PAEntityListener extends EntityListener {
 
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // attacker no player
-		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		Arena arena = Arenas.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
@@ -313,7 +315,7 @@ public class PAEntityListener extends EntityListener {
 
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) {
 			return; // respect other plugins
@@ -329,7 +331,7 @@ public class PAEntityListener extends EntityListener {
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
 
-		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		Arena arena = Arenas.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
@@ -365,7 +367,7 @@ public class PAEntityListener extends EntityListener {
 
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 
 		if (event.isCancelled()) {
@@ -377,7 +379,7 @@ public class PAEntityListener extends EntityListener {
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
 
-		Arena arena = ArenaManager.getArenaByPlayer((Player) p1);
+		Arena arena = Arenas.getArenaByPlayer((Player) p1);
 		if (arena == null)
 			return;
 
@@ -404,11 +406,11 @@ public class PAEntityListener extends EntityListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		db.i("explosion");
 
-		Arena arena = ArenaManager
+		Arena arena = Arenas
 				.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out

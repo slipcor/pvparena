@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,12 +23,12 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
-public class StatsManager {
-	private static DebugManager db = new DebugManager();
+public class Statistics {
+	private static Debug db = new Debug();
 
 	/**
 	 * return a configuration of a arena
@@ -204,7 +205,7 @@ public class StatsManager {
 			Arena arena) {
 		db.i("adding stat: player " + player.getName() + "; color: " + sTeam
 				+ "; win: " + String.valueOf(win) + "; arena: " + arena.name);
-		String sName = ArenaManager.getArenaNameByPlayer(player);
+		String sName = Arenas.getArenaNameByPlayer(player);
 		YamlConfiguration config = getConfig("stats_" + sName, arena);
 
 		String color = arena.paTeams.get(sTeam);
@@ -239,7 +240,7 @@ public class StatsManager {
 	private static void addStat(Player player, boolean win, Arena arena) {
 		db.i("adding stat: player " + player.getName() + "; win: "
 				+ String.valueOf(win) + "; arena: " + arena.name);
-		String sName = ArenaManager.getArenaNameByPlayer(player);
+		String sName = Arenas.getArenaNameByPlayer(player);
 		YamlConfiguration config = getConfig("stats_" + sName, arena);
 
 		String path = (win ? "wins." : "losses.") + player.getName();

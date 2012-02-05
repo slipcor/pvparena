@@ -1,8 +1,8 @@
-package net.slipcor.pvparena;
+package net.slipcor.pvparena.definitions;
 
 import java.util.Random;
 
-import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,12 +22,12 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.5.3
+ * @version v0.6.0
  * 
  */
 
-public class PARegion {
-	private DebugManager db = new DebugManager();
+public class ArenaRegion {
+	private Debug db = new Debug();
 	protected Vector min;
 	protected Vector max;
 	protected World world;
@@ -43,7 +43,7 @@ public class PARegion {
 	 * @param lMax
 	 *            the region maximum location
 	 */
-	public PARegion(String sName, Location lMin, Location lMax) {
+	public ArenaRegion(String sName, Location lMin, Location lMax) {
 		name = sName;
 		min = lMin.toVector();
 		max = lMax.toVector();
@@ -99,7 +99,7 @@ public class PARegion {
 	 *            the other region
 	 * @return true if the regions overlap, false otherwise
 	 */
-	public boolean overlapsWith(PARegion paRegion) {
+	public boolean overlapsWith(ArenaRegion paRegion) {
 		if (min.getX() > paRegion.max.getX()
 				|| min.getY() > paRegion.max.getY()
 				|| min.getZ() > paRegion.max.getZ()) {

@@ -1,8 +1,9 @@
-package net.slipcor.pvparena.arenas;
+package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 
-import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * custom runnable class
@@ -14,13 +15,13 @@ import net.slipcor.pvparena.managers.DebugManager;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
 public class PowerupRunnable implements Runnable {
 	private final Arena a;
-	private DebugManager db = new DebugManager();
+	private Debug db = new Debug();
 
 	/**
 	 * construct a powerup spawn runnable

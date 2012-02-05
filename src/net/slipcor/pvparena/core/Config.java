@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.arenas;
+package net.slipcor.pvparena.core;
 
 import java.io.File;
 import java.util.HashMap;

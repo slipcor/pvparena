@@ -4,9 +4,11 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.register.payment.Methods;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.event.server.ServerListener;
 
 /**
  * server listener class
@@ -17,19 +19,19 @@ import org.bukkit.event.server.ServerListener;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
-public class PAServerListener extends ServerListener {
+public class ServerListener implements Listener {
 	private Methods methods = null;
 
-	public PAServerListener() {
+	public ServerListener() {
 		this.methods = new Methods();
 	}
 
 	@SuppressWarnings("static-access")
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPluginDisable(PluginDisableEvent event) {
 		// Check to see if the plugin thats being disabled is the one we are
 		// using
@@ -37,24 +39,23 @@ public class PAServerListener extends ServerListener {
 			Boolean check = this.methods.checkDisabled(event.getPlugin());
 
 			if (check) {
-				PVPArena.instance.setMethod(null);
+				PVPArena.eco = null;
 				PVPArena.lang.log_info("iconomyoff");
 			}
 		}
 	}
 
 	@SuppressWarnings("static-access")
-	@Override
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPluginEnable(PluginEnableEvent event) {
 		// Check to see if we need a payment method
 		if (!this.methods.hasMethod()) {
 			if (this.methods.setMethod(Bukkit.getServer().getPluginManager())) {
-				PVPArena.instance.setMethod(this.methods.getMethod());
+				PVPArena.eco = this.methods.getMethod();
 				PVPArena.lang.log_info("iconomyon");
 			} else {
 				PVPArena.lang.log_info("iconomyoff");
 			}
 		}
 	}
-
 }

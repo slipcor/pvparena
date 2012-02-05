@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.slipcor.pvparena.powerups.Powerup;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Powerup;
 
 import org.bukkit.entity.Player;
 
@@ -17,14 +18,14 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
-public class PowerupManager {
+public class Powerups {
 	public HashMap<Player, Powerup> puActive = new HashMap<Player, Powerup>();
 	public List<Powerup> puTotal = new ArrayList<Powerup>();
-	private DebugManager db = new DebugManager();
+	private Debug db = new Debug();
 
 	/**
 	 * construct a powerup manager instance
@@ -33,7 +34,7 @@ public class PowerupManager {
 	 *            the powerups to add
 	 */
 	@SuppressWarnings("unchecked")
-	public PowerupManager(HashMap<String, Object> powerUps) {
+	public Powerups(HashMap<String, Object> powerUps) {
 		// receives the config map, adds all plugins
 		db.i("initialising powerupmanager");
 		Powerup p;

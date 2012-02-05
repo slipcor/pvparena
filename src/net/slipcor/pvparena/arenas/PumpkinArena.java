@@ -5,8 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.ConfigManager;
+import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.ArenaConfigs;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.5.4
+ * @version v0.6.0
  * 
  */
 
@@ -47,7 +49,7 @@ public class PumpkinArena extends CTFArena {
 		cfg = new Config(new File("plugins/pvparena/config.pumpkin_" + name
 				+ ".yml"));
 		cfg.load();
-		ConfigManager.configParse(this, cfg);
+		ArenaConfigs.configParse(this, cfg);
 		if (cfg.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
 			cfg.getYamlConfiguration().addDefault("teams.red",
@@ -178,7 +180,7 @@ public class PumpkinArena extends CTFArena {
 		cfg.set("spawns." + sName + "pumpkin", s);
 		
 		cfg.save();
-		ArenaManager.tellPlayer(player, PVPArena.lang.parse("setpumpkin", sName));
+		Arenas.tellPlayer(player, PVPArena.lang.parse("setpumpkin", sName));
 		
 		Arena.regionmodify = "";
 	}

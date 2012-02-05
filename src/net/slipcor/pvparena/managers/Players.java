@@ -8,8 +8,9 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.slipcor.pvparena.PAPlayer;
-import net.slipcor.pvparena.arenas.Arena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 /**
  * player manager class
@@ -20,18 +21,18 @@ import net.slipcor.pvparena.arenas.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.5.11
+ * @version v0.6.0
  * 
  */
 
-public class PlayerManager {
+public class Players {
 	// bets placed mapped to value: BetterName:BetName => Amount
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 
-	private HashMap<String, PAPlayer> players = new HashMap<String, PAPlayer>();
+	private HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
 	private HashMap<String, Integer> kills = new HashMap<String, Integer>();
 	private HashMap<String, Integer> deaths = new HashMap<String, Integer>();
-	private DebugManager db = new DebugManager();
+	private Debug db = new Debug();
 
 	/**
 	 * parse all teams and join them colored, comma separated
@@ -42,7 +43,7 @@ public class PlayerManager {
 	 */
 	public String getTeamStringList(HashMap<String, String> paTeams) {
 		String result = "";
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
 
 				if (!result.equals(""))
@@ -61,7 +62,7 @@ public class PlayerManager {
 	 */
 	public HashMap<String, String> getPlayerTeamMap() {
 		HashMap<String, String> result = new HashMap<String, String>();
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
 				result.put(p.getPlayer().getName(), p.getTeam());
 			}
@@ -78,7 +79,7 @@ public class PlayerManager {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
 				if (!counts.containsKey(p.getTeam())) {
 					counts.put(p.getTeam(), 1);
@@ -111,7 +112,7 @@ public class PlayerManager {
 	 */
 	public int countPlayersInTeams() {
 		int result = 0;
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			db.i("player: "+p.getPlayer().getName());
 			if (!p.getTeam().equals("")) {
 				db.i("- team "+p.getTeam());
@@ -193,7 +194,7 @@ public class PlayerManager {
 				}
 			}
 		}
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (!p.getTeam().equals("")) {
 				if (p.getFightClass().equals("")) {
 					// player not ready!
@@ -213,7 +214,7 @@ public class PlayerManager {
 	private int countPlayers(String sTeam) {
 		db.i("counting players in team "+sTeam);
 		int result = 0;
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			db.i(" - player "+p.getPlayer().getName()+", team "+String.valueOf(p.getTeam()));
 			if (p.getTeam() != null && p.getTeam().equals(sTeam)) {
 				result++;
@@ -229,12 +230,12 @@ public class PlayerManager {
 	 *            the arena to reset
 	 */
 	public void reset(Arena arena) {
-		HashSet<PAPlayer> pa = new HashSet<PAPlayer>();
-		for (PAPlayer p : players.values()) {
+		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
+		for (ArenaPlayer p : players.values()) {
 			pa.add(p);
 		}
 
-		for (PAPlayer p : pa) {
+		for (ArenaPlayer p : pa) {
 			arena.removePlayer(p.getPlayer(),
 					arena.cfg.getString("tp.exit", "exit"));
 			p.setTeam(null);
@@ -254,7 +255,7 @@ public class PlayerManager {
 	 */
 	public void tellEveryone(String msg) {
 		db.i("@all: " + msg);
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			p.getPlayer().sendMessage(
 					ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 		}
@@ -270,7 +271,7 @@ public class PlayerManager {
 	 */
 	public void tellEveryoneExcept(Player player, String msg) {
 		db.i("@all/" + player.getName() + ": " + msg);
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (p.getPlayer().equals(player))
 				continue;
 			p.getPlayer().sendMessage(
@@ -292,7 +293,7 @@ public class PlayerManager {
 			return;
 		}
 		db.i("@" + team + ": " + msg);
-		for (PAPlayer p : players.values()) {
+		for (ArenaPlayer p : players.values()) {
 			if (!p.getTeam().equals(team))
 				continue;
 			p.getPlayer().sendMessage(
@@ -305,9 +306,9 @@ public class PlayerManager {
 	 * 
 	 * @return a hashset of all players
 	 */
-	public HashSet<PAPlayer> getPlayers() {
-		HashSet<PAPlayer> result = new HashSet<PAPlayer>();
-		for (PAPlayer p : players.values()) {
+	public HashSet<ArenaPlayer> getPlayers() {
+		HashSet<ArenaPlayer> result = new HashSet<ArenaPlayer>();
+		for (ArenaPlayer p : players.values()) {
 			result.add(p);
 		}
 		return result;
@@ -486,7 +487,7 @@ public class PlayerManager {
 	 *            the player to add
 	 */
 	public void addPlayer(Player player) {
-		players.put(player.getName(), new PAPlayer(player));
+		players.put(player.getName(), new ArenaPlayer(player));
 	}
 
 	/**

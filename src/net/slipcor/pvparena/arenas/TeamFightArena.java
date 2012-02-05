@@ -2,6 +2,8 @@ package net.slipcor.pvparena.arenas;
 
 import java.util.Map;
 
+import net.slipcor.pvparena.definitions.Arena;
+
 import org.bukkit.ChatColor;
 
 /**
@@ -13,11 +15,11 @@ import org.bukkit.ChatColor;
  * 
  * @author slipcor
  * 
- * @version v0.5.1
+ * @version v0.6.0
  * 
  */
 
-public class TeamArena extends Arena {
+public class TeamFightArena extends Arena {
 
 	/**
 	 * construct a team fight arena
@@ -25,7 +27,7 @@ public class TeamArena extends Arena {
 	 * @param sName
 	 *            the arena name
 	 */
-	public TeamArena(String sName) {
+	public TeamFightArena(String sName) {
 		super(sName);
 
 		if (cfg.get("teams.custom") == null && cfg.get("teams") == null) {

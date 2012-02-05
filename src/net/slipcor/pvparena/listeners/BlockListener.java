@@ -1,13 +1,15 @@
 package net.slipcor.pvparena.listeners;
 
-import net.slipcor.pvparena.arenas.Arena;
-import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.DebugManager;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.managers.Arenas;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 /**
@@ -19,16 +21,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * 
  * @author slipcor
  * 
- * @version v0.5.1
+ * @version v0.6.0
  * 
  */
 
-public class PABlockListener extends BlockListener {
-	private DebugManager db = new DebugManager();
-
-	@Override
+public class BlockListener implements Listener {
+	private Debug db = new Debug();
+	
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
-		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock()
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out
@@ -43,9 +45,9 @@ public class PABlockListener extends BlockListener {
 		return;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock()
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out
@@ -65,9 +67,9 @@ public class PABlockListener extends BlockListener {
 		}
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBurn(BlockBurnEvent event) {
-		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock()
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out
@@ -81,9 +83,9 @@ public class PABlockListener extends BlockListener {
 		return;
 	}
 
-	@Override
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		Arena arena = ArenaManager.getArenaByRegionLocation(event.getBlock()
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out

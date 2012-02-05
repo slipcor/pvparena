@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.powerups;
+package net.slipcor.pvparena.definitions;
 
 import java.util.HashMap;
 
@@ -8,8 +8,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import net.slipcor.pvparena.managers.DebugManager;
-import net.slipcor.pvparena.powerups.PowerupEffect.classes;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.PowerupEffect.classes;
 
 /**
  * powerup class
@@ -20,7 +20,7 @@ import net.slipcor.pvparena.powerups.PowerupEffect.classes;
  * 
  * @author slipcor
  * 
- * @version v0.4.0
+ * @version v0.6.0
  * 
  */
 
@@ -28,7 +28,7 @@ public class Powerup {
 	public String name; // PowerUp display name
 	public Material item; // item that triggers this Powerup
 	private PowerupEffect[] effects; // Effects the Powerup has
-	private DebugManager db = new DebugManager();
+	private Debug db = new Debug();
 
 	/**
 	 * construct a powerup instance

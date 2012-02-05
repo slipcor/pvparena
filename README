@@ -1,3 +1,15 @@
+
+
+[ v0.6 ]
+huge rewrite;
+- re-added sign updating/check
+- added announcements being configured to be public
+- changed arena type handling enormously
+  => replaced by config settings (end: time|kills|deaths ; flags: false|true ; teams: true)
+- reactivated player death possibility, added a arena-end-timer for winners to collect loot
+- leaderboards and proper statistics
+
+ ---------------------------------------------
  v0.5.11 - CTF flag bug, command error msg improvement
  v0.5.10 - fight temp perms, custom class drops, spectate fix
  v0.5.9 - max players, max team pleayers

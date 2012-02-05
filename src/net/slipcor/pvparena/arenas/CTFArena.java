@@ -13,8 +13,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.ConfigManager;
-import net.slipcor.pvparena.managers.StatsManager;
+import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.managers.ArenaConfigs;
+import net.slipcor.pvparena.managers.Statistics;
 
 /**
  * capture the flag arena class
@@ -25,11 +27,12 @@ import net.slipcor.pvparena.managers.StatsManager;
  * 
  * @author slipcor
  * 
- * @version v0.5.11
+ * @version v0.6.0
  * 
  */
 
 public class CTFArena extends Arena {
+	
 	protected HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags
 																					
 	/**
@@ -52,7 +55,7 @@ public class CTFArena extends Arena {
 		cfg = new Config(new File("plugins/pvparena/config.ctf_" + name
 				+ ".yml"));
 		cfg.load();
-		ConfigManager.configParse(this, cfg);
+		ArenaConfigs.configParse(this, cfg);
 		if (cfg.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
 			cfg.getYamlConfiguration().addDefault("teams.red",
@@ -111,7 +114,7 @@ public class CTFArena extends Arena {
 				Player z = Bukkit.getServer().getPlayer(o.toString());
 				if (!win && playerManager.getPlayerTeamMap().get(z.getName())
 						.equals(team)) {
-					StatsManager.addLoseStat(z, team, this);
+					Statistics.addLoseStat(z, team, this);
 					resetPlayer(z, cfg.getString("tp.lose", "old"));
 					playerManager.setClass(z, "");
 				}
@@ -135,7 +138,7 @@ public class CTFArena extends Arena {
 				if (winteam.equals("")) {
 					team = playerManager.getPlayerTeamMap().get(z.getName());
 				}
-				StatsManager.addWinStat(z, team, this);
+				Statistics.addWinStat(z, team, this);
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
 				playerManager.setClass(z, "");

@@ -1,12 +1,14 @@
-package net.slipcor.pvparena.managers;
+package net.slipcor.pvparena.core;
 
 import java.net.URL;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.managers.Arenas;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,21 +23,24 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.5.5
+ * @version v0.6.0
  * 
  */
 
-public class UpdateManager {
+public class Update {
 	
 	public static boolean msg = false;
 	public static boolean outdated = false;
+	
 	private static String vOnline;
 	private static String vThis;
+	private static Plugin plugin;
 	
 	/**
 	 * check for updates, update variables
 	 */
-	public static void updateCheck() {
+	public static void updateCheck(Plugin instance) {
+		plugin = instance;
 	    String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
 	    try {
 	      URL url = new URL(pluginUrlString);
@@ -50,14 +55,14 @@ public class UpdateManager {
 	        NodeList firstNodes = firstNameElement.getChildNodes();
 	        
 	        String sOnlineVersion = firstNodes.item(0).getNodeValue();
-	        String sThisVersion = PVPArena.instance.getDescription().getVersion();
+	        String sThisVersion = plugin.getDescription().getVersion();
 	        
 	        while(sOnlineVersion.contains(" ")) {
 	        	sOnlineVersion = sOnlineVersion.substring(sOnlineVersion.indexOf(" ")+1);
 	        }
 	        
-	        UpdateManager.vOnline = sOnlineVersion.replace("v", "");
-	        UpdateManager.vThis = sThisVersion.replace("v", "");
+	        Update.vOnline = sOnlineVersion.replace("v", "");
+	        Update.vThis = sThisVersion.replace("v", "");
 	        
 	        calculateVersions();
 	        return;
@@ -86,7 +91,7 @@ public class UpdateManager {
 				msg = true;
 				outdated = (o > t);
 				
-				UpdateManager.message(null);
+				Update.message(null);
 				return;
 			} catch (Exception e) {
 				calculateRadixString(aOnline[i],aThis[i]);
@@ -111,7 +116,7 @@ public class UpdateManager {
 			msg = true;
 			outdated = (o > t);
 			
-			UpdateManager.message(null);
+			Update.message(null);
 		} catch (Exception e) {
 		}
 	}
@@ -123,12 +128,12 @@ public class UpdateManager {
 	public static void message(Player player) {
 		if (player == null || !(player instanceof Player)) {
 			if (!msg) {
-				PVPArena.instance.log.info("[PVP Arena] You are on latest version!");
+				Bukkit.getLogger().info("[PVP Arena] You are on latest version!");
 			} else {
 				if (outdated) {
-					PVPArena.instance.log.warning("[PVP Arena] You are using v"+vThis+", an outdated version! Latest: "+vOnline);
+					Bukkit.getLogger().warning("[PVP Arena] You are using v"+vThis+", an outdated version! Latest: "+vOnline);
 				} else {
-					PVPArena.instance.log.warning("[PVP Arena] You are using v"+vThis+", an experimental version! Latest stable: "+vOnline);
+					Bukkit.getLogger().warning("[PVP Arena] You are using v"+vThis+", an experimental version! Latest stable: "+vOnline);
 				}
 			}
 		}
@@ -137,9 +142,9 @@ public class UpdateManager {
 		}
 
 		if (outdated) {
-			ArenaManager.tellPlayer(player, "You are using "+colorize("v"+vThis,'o')+", an outdated version! Latest: "+colorize("v"+vOnline,'s'));
+			Arenas.tellPlayer(player, "You are using "+colorize("v"+vThis,'o')+", an outdated version! Latest: "+colorize("v"+vOnline,'s'));
 		} else {
-			ArenaManager.tellPlayer(player, "You are using "+colorize("v"+vThis,'e')+", an experimental version! Latest stable: "+colorize("v"+vOnline,'s'));
+			Arenas.tellPlayer(player, "You are using "+colorize("v"+vThis,'e')+", an experimental version! Latest stable: "+colorize("v"+vOnline,'s'));
 		}
 	}
 	
