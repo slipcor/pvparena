@@ -251,14 +251,21 @@ public class EntityListener implements Listener {
 			p1 = ((Projectile) p1).getShooter();
 		}
 
-		if ((p1 == null) || (!(p1 instanceof Player)))
-			return; // attacker no player
-		Arena arena = Arenas.getArenaByPlayer((Player) p1);
-		if (arena == null)
+		if ((p2 == null) || (!(p2 instanceof Player))) {
 			return;
+		}
+		
+		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		if (arena == null) {
+			// defender no arena player => out
+			return;
+		}
 
 		db.i("onEntityDamageByEntity: fighting player");
-		if ((p2 == null) || (!(p2 instanceof Player))) {
+		
+		if ((p1 == null) || (!(p1 instanceof Player))) {
+			 // attacker no player => cancel and out!
+			event.setCancelled(true);
 			return;
 		}
 		db.i("both entities are players");

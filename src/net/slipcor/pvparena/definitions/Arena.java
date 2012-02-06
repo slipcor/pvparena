@@ -77,6 +77,13 @@ public class Arena {
 	public final HashMap<String, String> paTeams = new HashMap<String, String>();
 	//TODO: if no teams set, FFA
 	
+	protected HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
+	/**
+	 * TeamName => PlayerName
+	 */
+	protected HashMap<String, String> paTeamFlags = null;
+	
+	
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, ArenaRegion> regions = new HashMap<String, ArenaRegion>();
 	public final HashSet<String> paReady = new HashSet<String>();

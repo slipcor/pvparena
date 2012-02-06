@@ -6,6 +6,7 @@ import java.util.List;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.listeners.BlockListener;
@@ -71,7 +72,10 @@ public class PVPArena extends JavaPlugin {
 		load_config();
 
 		Update.updateCheck(this);
-
+		
+		Tracker trackMe = new Tracker(this);
+		trackMe.start();
+		
 		lang.log_info("enabled", getDescription().getFullName());
 	}
 
@@ -81,6 +85,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		Arenas.reset();
+		Tracker.stop();
 		lang.log_info("disabled", getDescription().getFullName());
 	}
 

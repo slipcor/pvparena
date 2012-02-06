@@ -33,13 +33,9 @@ import net.slipcor.pvparena.managers.Statistics;
 
 public class CTFArena extends Arena {
 	
-	protected HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>(); // flags
-																					
+																				
 	/**
-	 * TeamName => PlayerName
-	 */
-	protected HashMap<String, String> paTeamFlags = new HashMap<String, String>();
-	/**
+	 * 
 	 * create a capture the flag arena
 	 * 
 	 * @param sName
@@ -74,6 +70,7 @@ public class CTFArena extends Arena {
 			this.paTeams.put(sTeam, (String) tempMap.get(sTeam));
 			db.i("added team " + sTeam + " => " + this.paTeams.get(sTeam));
 		}
+		paTeamFlags = new HashMap<String, String>();
 	}
 	
 	/**
@@ -120,7 +117,7 @@ public class CTFArena extends Arena {
 				}
 			}
 
-			if (paTeamLives.size() > 1) {
+			if (paLives.size() > 1) {
 				return;
 			}
 		}
@@ -133,7 +130,7 @@ public class CTFArena extends Arena {
 			db.i("praecessing: " + o.toString());
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 
-			if (paTeamLives.containsKey(playerManager.getPlayerTeamMap().get(
+			if (paLives.containsKey(playerManager.getPlayerTeamMap().get(
 					z.getName()))) {
 				if (winteam.equals("")) {
 					team = playerManager.getPlayerTeamMap().get(z.getName());
@@ -152,7 +149,7 @@ public class CTFArena extends Arena {
 			System.out.print(winteam);
 		}
 
-		paTeamLives.clear();
+		paLives.clear();
 		reset();
 	}
 
@@ -164,7 +161,7 @@ public class CTFArena extends Arena {
 		for (String sTeam : this.paTeams.keySet()) {
 			if (playerManager.getPlayerTeamMap().containsValue(sTeam)) {
 				// team is active
-				this.paTeamLives
+				this.paLives
 						.put(sTeam, this.cfg.getInt("general.lives", 3));
 			}
 		}
@@ -177,12 +174,12 @@ public class CTFArena extends Arena {
 	 *            the team name to take away
 	 */
 	protected void reduceLivesCheckEndAndCommit(String team) {
-		if (paTeamLives.get(team) != null) {
-			int i = paTeamLives.get(team) - 1;
+		if (paLives.get(team) != null) {
+			int i = paLives.get(team) - 1;
 			if (i > 0) {
-				paTeamLives.put(team, i);
+				paLives.put(team, i);
 			} else {
-				paTeamLives.remove(team);
+				paLives.remove(team);
 				CommitEnd(team, false);
 			}
 		}
@@ -229,7 +226,7 @@ public class CTFArena extends Arena {
 
 				playerManager.tellEveryone(PVPArena.lang.parse("flaghomeleft",
 						scPlayer, scFlagTeam,
-						String.valueOf(paTeamLives.get(flagTeam) - 1)));
+						String.valueOf(paLives.get(flagTeam) - 1)));
 				paTeamFlags.remove(flagTeam);
 				reduceLivesCheckEndAndCommit(flagTeam);
 			}

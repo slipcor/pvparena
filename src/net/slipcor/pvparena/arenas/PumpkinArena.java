@@ -115,7 +115,7 @@ public class PumpkinArena extends CTFArena {
 
 				playerManager.tellEveryone(PVPArena.lang.parse("pumpkinhomeleft",
 						scPlayer, scFlagTeam,
-						String.valueOf(paTeamLives.get(flagTeam) - 1)));
+						String.valueOf(paLives.get(flagTeam) - 1)));
 				paTeamFlags.remove(flagTeam);
 				
 				player.getInventory().setHelmet(paHeadGears.get(player.getName()).clone());

@@ -188,7 +188,7 @@ public class Commands {
 			}
 		}
 		
-		if (arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams()) {
+		if (arena.cfg.getInt("general.readyMax") > 0 && arena.cfg.getInt("general.readyMax") <= arena.playerManager.countPlayersInTeams()) {
 
 			Arenas.tellPlayer(
 					player,
