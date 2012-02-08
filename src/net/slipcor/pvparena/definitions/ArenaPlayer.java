@@ -1,6 +1,11 @@
 package net.slipcor.pvparena.definitions;
 
+import java.util.HashSet;
+
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachment;
 
 /**
  * player class
@@ -11,7 +16,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -20,8 +25,19 @@ public class ArenaPlayer {
 	private String team = "";
 	private String fightClass = "";
 	private String respawn = null;
-	private Byte lives = 0; // TODO: remove, add paLives, Map<> back into Arena
 	private boolean telePass = false;
+	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
+	public ItemStack[] savedInventories;
+	public ItemStack[] savedArmories;
+	public float exhaustion;
+	public int fireticks;
+	public int foodlevel;
+	public int health;
+	public float saturation;
+	public Location location;
+	public int gamemode;
+	public String displayname;
+	public boolean dead = false;
 
 	/**
 	 * create a PVP Arena player istance
@@ -97,25 +113,6 @@ public class ArenaPlayer {
 	 */
 	public void setRespawn(boolean set) {
 		respawn = set ? fightClass : null;
-	}
-
-	/**
-	 * get the PVP Arena player lives
-	 * 
-	 * @return the lives
-	 */
-	public byte getLives() {
-		return lives;
-	}
-
-	/**
-	 * set the PVP Arena player lives
-	 * 
-	 * @param l
-	 *            the lives
-	 */
-	public void setLives(byte l) {
-		lives = l;
 	}
 
 	/**

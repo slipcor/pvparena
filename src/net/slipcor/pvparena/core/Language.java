@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 public class Language {
@@ -143,8 +143,6 @@ public class Language {
 		config.addDefault("lang.awarded", "You have been awarded %1%");
 		config.addDefault("lang.invfull",
 				"Your inventory was full. You did not receive all rewards!");
-		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
-		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
 		config.addDefault("lang.arenaexists", "Arena already exists!");
 		config.addDefault("lang.arenanotexists", "Arena does not exist: %1%");
 		config.addDefault("lang.regionalreadybeingset",

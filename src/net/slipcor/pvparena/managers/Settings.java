@@ -21,7 +21,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -41,20 +41,19 @@ public class Settings {
 		types.put("tp.exit", "tp");
 		types.put("tp.death", "tp");
 
-		types.put("general.wand", "int");
-		types.put("general.readyblock", "item");
-		types.put("general.lives", "int");
-		types.put("general.language", "lang");
+		types.put("setup.wand", "int");
+		types.put("game.lives", "int");
+		types.put("messages.language", "lang");
 		types.put("general.classperms", "boolean");
-		types.put("general.preventDeath", "boolean");
+		types.put("game.preventDeath", "boolean");
 		
-		types.put("general.randomSpawn", "boolean");
-		types.put("general.timed", "int");
+		types.put("arenatype.randomSpawn", "boolean");
+		types.put("goal.timed", "int");
 
-		types.put("general.joinrange", "int");
-		types.put("general.powerups", "string");
+		types.put("join.range", "int");
+		types.put("game.powerups", "string");
 		types.put("general.item-rewards", "items");
-		types.put("general.checkRegions", "boolean");
+		types.put("periphery.checkRegions", "boolean");
 		
 		types.put("money.entry", "int");
 		types.put("money.reward", "int");
@@ -72,25 +71,28 @@ public class Settings {
 		types.put("protection.checkSpectator", "boolean");
 		types.put("protection.checkLounges", "boolean");
 		
-		types.put("general.teamkill", "boolean");
-		types.put("general.manual", "boolean");
-		types.put("general.random", "boolean");
+		types.put("game.teamKill", "boolean");
+		types.put("join.manual", "boolean");
+		types.put("join.random", "boolean");
 		
-		types.put("general.woolhead", "boolean");
-		types.put("general.forceeven", "boolean");
-		types.put("general.refillInventory", "boolean");
+		types.put("game.woolHead", "boolean");
+		types.put("join.forceEven", "boolean");
+		types.put("game.refillInventory", "boolean");
 
-		types.put("general.startHealth", "int");
-		types.put("general.startFoodLevel", "int");
-		types.put("general.startSaturation", "int");
-		types.put("general.startExhaustion", "double");
+		types.put("start.health", "int");
+		types.put("start.foodLevel", "int");
+		types.put("start.saturation", "int");
+		types.put("start.exhaustion", "double");
 
-		types.put("general.colorNick", "boolean");
-		types.put("general.readyCheckEach", "boolean");
-		types.put("general.readyMin", "int");
-		types.put("general.readyMax", "int");
-		types.put("general.readyMinTeam", "int");
-		types.put("general.readyMaxTeam", "int");
+		types.put("messages.colorNick", "boolean");
+
+		types.put("ready.block", "item");
+		types.put("ready.checkEach", "boolean");
+		types.put("ready.min", "int");
+		types.put("ready.max", "int");
+		types.put("ready.minTeam", "int");
+		types.put("ready.maxTeam", "int");
+		
 		types.put("general.enabled", "boolean");
 	}
 	

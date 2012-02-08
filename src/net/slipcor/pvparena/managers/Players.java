@@ -21,7 +21,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -150,11 +150,11 @@ public class Players {
 		if (countPlayersInTeams() < 2) {
 			return -1;
 		}
-		if (countPlayersInTeams() < arena.cfg.getInt("general.readyMin")) {
+		if (countPlayersInTeams() < arena.cfg.getInt("ready.min")) {
 			return -4;
 		}
 
-		if (arena.cfg.getBoolean("general.readyCheckEach")) {
+		if (arena.cfg.getBoolean("ready.checkEach")) {
 			for (String sPlayer : getPlayerTeamMap().keySet()) {
 				if (!arena.paReady.contains(sPlayer)) {
 					return 0;
@@ -189,7 +189,7 @@ public class Players {
 
 			for (String sTeam : activeteams) {
 				db.i("TEAM "+sTeam);
-				if (countPlayers(sTeam) < arena.cfg.getInt("general.readyMinTeam")) {
+				if (countPlayers(sTeam) < arena.cfg.getInt("ready.minTeam")) {
 					return -3;
 				}
 			}
@@ -240,8 +240,7 @@ public class Players {
 					arena.cfg.getString("tp.exit", "exit"));
 			p.setTeam(null);
 			p.setClass(null);
-			p.setLives((byte) 0);
-			// p.setSignLocation(null);
+			arena.paLives.remove(p.getPlayer().getName());
 			paPlayersBetAmount.clear();
 		}
 		players.clear();
@@ -256,8 +255,7 @@ public class Players {
 	public void tellEveryone(String msg) {
 		db.i("@all: " + msg);
 		for (ArenaPlayer p : players.values()) {
-			p.getPlayer().sendMessage(
-					ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
+			Arenas.tellPlayer(p.getPlayer(), msg);
 		}
 	}
 
@@ -274,8 +272,7 @@ public class Players {
 		for (ArenaPlayer p : players.values()) {
 			if (p.getPlayer().equals(player))
 				continue;
-			p.getPlayer().sendMessage(
-					ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
+			Arenas.tellPlayer(player, msg);
 		}
 	}
 
@@ -288,7 +285,7 @@ public class Players {
 	 * @param msg
 	 *            the message to send
 	 */
-	public void tellTeam(String team, String msg) { //TODO link the color here
+	public void tellTeam(String team, String msg, ChatColor c) {
 		if (team.equals("")) {
 			return;
 		}
@@ -297,7 +294,7 @@ public class Players {
 			if (!p.getTeam().equals(team))
 				continue;
 			p.getPlayer().sendMessage(
-					ChatColor.YELLOW + "[" + team + "] " + ChatColor.WHITE + msg);
+					c + "[" + team + "] " + ChatColor.WHITE + msg);
 		}
 	}
 
@@ -388,29 +385,6 @@ public class Players {
 	}
 
 	/**
-	 * hand over a player's lives
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return the lives
-	 */
-	public byte getLives(Player player) {
-		return players.get(player.getName()).getLives();
-	}
-
-	/**
-	 * hand over a player's lives
-	 * 
-	 * @param player
-	 *            the player to update
-	 * @param l
-	 *            the lives
-	 */
-	public void setLives(Player player, byte l) {
-		players.get(player.getName()).setLives(l);
-	}
-
-	/**
 	 * hand over a player's respawn
 	 * 
 	 * @param player
@@ -498,5 +472,9 @@ public class Players {
 	 */
 	public void remove(Player player) {
 		players.remove(player.getName());
+	}
+	
+	public ArenaPlayer parsePlayer(Player player) {
+		return players.get(player.getName());
 	}
 }

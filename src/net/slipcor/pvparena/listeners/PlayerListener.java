@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.CTFArena;
-import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Update;
+import net.slipcor.pvparena.definitions.Announcement;
+import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
@@ -45,7 +45,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -80,15 +80,15 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		
-		if (!arena.cfg.getBoolean("general.chat")) {
+		if (!arena.cfg.getBoolean("messages.chat")) {
 			return; // no chat editing
 		}
 		
 		if (!arena.paChat.contains(player.getName())) {
 			return; // player not chatting
 		}
-		
-		arena.playerManager.tellTeam(arena.playerManager.getTeam(player), event.getMessage());
+		String sTeam = arena.playerManager.getTeam(player);
+		arena.playerManager.tellTeam(sTeam, event.getMessage(), ChatColor.valueOf(arena.paTeams.get(sTeam)));
 		event.setCancelled(true);
 	}
 
@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
 				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(player,arena)))
 				&& (player.getItemInHand() != null)
 				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
-						"general.wand", 280))) {
+						"setup.wand", 280))) {
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
@@ -188,8 +188,9 @@ public class PlayerListener implements Listener {
 					return;
 				}
 				db.i("onInteract: pumpkin");
-				PumpkinArena pa = (PumpkinArena) arena;
-				pa.setPumpkin(player, event.getClickedBlock());
+				if (arena.cfg.getBoolean("arenatype.pumpkin")) {
+					arena.setPumpkin(player, event.getClickedBlock());
+				}
 				return;
 			}
 		}
@@ -199,19 +200,9 @@ public class PlayerListener implements Listener {
 			db.i("instanceof: "
 					+ (arena.getType().equals("ctf") || arena.getType().equals(
 							"pumpkin")));
-		}
-		if (arena != null && arena.fightInProgress
-				&& (arena.getType().equals("ctf"))) {
-			db.i("onInteract: CTF");
-			CTFArena ca = (CTFArena) arena;
-			ca.checkInteract(player, event.getClickedBlock());
-			return;
-		} else if (arena != null && arena.fightInProgress
-				&& (arena.getType().equals("pumpkin"))) {
-			db.i("onInteract: pumpkin");
-			PumpkinArena pa = (PumpkinArena) arena;
-			pa.checkInteract(player, event.getClickedBlock());
-			return;
+			if (arena.cfg.getBoolean("arenatype.flags")) {
+				arena.checkInteract(player, event.getClickedBlock());
+			}
 		}
 
 		if (arena == null || arena.fightInProgress)
@@ -266,18 +257,18 @@ public class PlayerListener implements Listener {
 			db.i("block click!");
 
 			Material mMat = Material.IRON_BLOCK;
-			if (arena.cfg.get("general.readyblock") != null) {
+			if (arena.cfg.get("ready.block") != null) {
 				db.i("reading ready block");
 				try {
 					mMat = Material.getMaterial(arena.cfg
-							.getInt("general.readyblock"));
+							.getInt("ready.block"));
 					if (mMat == Material.AIR)
 						mMat = Material.getMaterial(arena.cfg
-								.getString("general.readyblock"));
+								.getString("ready.block"));
 					db.i("mMat now is " + mMat.name());
 				} catch (Exception e) {
 					db.i("exception reading ready block");
-					String sMat = arena.cfg.getString("general.readyblock");
+					String sMat = arena.cfg.getString("ready.block");
 					try {
 						mMat = Material.getMaterial(sMat);
 						db.i("mMat now is " + mMat.name());
@@ -296,8 +287,6 @@ public class PlayerListener implements Listener {
 					return; // not a fighting player => OUT
 
 				arena.paReady.add(player.getName());
-
-				String color = arena.playerManager.getTeam(player);
 
 				int ready = arena.playerManager.ready(arena);
 				if (ready == 0) {
@@ -322,7 +311,7 @@ public class PlayerListener implements Listener {
 					return; // arena not ready => announce
 				}
 
-				if (arena.cfg.getBoolean("general.forceeven", false)) {
+				if (arena.cfg.getBoolean("join.forceEven", false)) {
 					if (!arena.playerManager.checkEven()) {
 						Arenas.tellPlayer(player,
 								PVPArena.lang.parse("waitequal"));
@@ -336,24 +325,12 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				if (!color.equals("free") && !color.equals("")) {
-					String sName = color;
-					color = arena.paTeams.get(color);
-
-					arena.playerManager.tellEveryone(PVPArena.lang.parse(
-							"ready", ChatColor.valueOf(color) + sName
-									+ ChatColor.WHITE));
-
-					arena.teleportAllToSpawn();
-					arena.fightInProgress = true;
-					arena.playerManager.tellEveryone(PVPArena.lang
-							.parse("begin"));
-				} else {
-					arena.teleportAllToSpawn();
-					arena.fightInProgress = true;
-					arena.playerManager.tellEveryone(PVPArena.lang
-							.parse("begin"));
-				}
+				arena.teleportAllToSpawn();
+				arena.fightInProgress = true;
+				arena.playerManager.tellEveryone(PVPArena.lang
+						.parse("begin"));
+				Announcement.announce(arena, type.START, PVPArena.lang
+						.parse("begin"));
 			}
 		}
 	}
@@ -438,18 +415,12 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		db.i("onPlayerQuit: fighting player");
 		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
-		if (color != null && !color.equals("")) {
-			arena.playerManager.tellEveryoneExcept(
-					player,
-					PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
-							+ player.getName() + ChatColor.YELLOW));
-		} else {
-			arena.playerManager.tellEveryoneExcept(
-					player,
-					PVPArena.lang.parse("playerleave",
-							ChatColor.WHITE + player.getName()
-									+ ChatColor.YELLOW));
-		}
+		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("playerleave", 
+						player.getName()));
+		arena.playerManager.tellEveryoneExcept(
+				player,
+				PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
+						+ player.getName() + ChatColor.YELLOW));
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 		arena.checkEndAndCommit();
 	}

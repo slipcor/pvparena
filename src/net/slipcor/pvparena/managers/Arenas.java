@@ -4,14 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.arenas.CTFArena;
-import net.slipcor.pvparena.arenas.PumpkinArena;
-import net.slipcor.pvparena.arenas.TeamFightArena;
-import net.slipcor.pvparena.arenas.FreeFightArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -26,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -48,34 +43,7 @@ public class Arenas {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
 					db.i("standard arena: " + sName);
-					loadArena(sName, "");
-				}
-			}
-			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory()
-						&& f[i].getName().contains("config.free_")) {
-					String sName = f[i].getName().replace("config.free_", "");
-					sName = sName.replace(".yml", "");
-					db.i("free arena: " + sName);
-					loadArena(sName, "free");
-				}
-			}
-			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory()
-						&& f[i].getName().contains("config.ctf_")) {
-					String sName = f[i].getName().replace("config.ctf_", "");
-					sName = sName.replace(".yml", "");
-					db.i("ctf arena: " + sName);
-					loadArena(sName, "ctf");
-				}
-			}
-			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory()
-						&& f[i].getName().contains("config.pumpkin_")) {
-					String sName = f[i].getName().replace("config.pumpkin_", "");
-					sName = sName.replace(".yml", "");
-					db.i("pumpkin arena: " + sName);
-					loadArena(sName, "pumpkin");
+					loadArena(sName, null);
 				}
 			}
 		} catch (Exception e) {
@@ -95,16 +63,7 @@ public class Arenas {
 	public static void loadArena(String configFile, String type) {
 		Arena arena;
 		db.i("loading arena " + configFile + " (" + type + ")");
-		if (type.equals("free")) {
-			arena = new FreeFightArena(configFile);
-		} else if (type.equals("ctf")) {
-			arena = new CTFArena(configFile);
-		} else if (type.equals("pumpkin")) {
-			arena = new PumpkinArena(configFile);
-		} else {
-			arena = new TeamFightArena(configFile);
-		}
-
+		arena = new Arena(configFile, type);
 		arenas.put(arena.name, arena);
 	}
 
@@ -237,18 +196,6 @@ public class Arenas {
 			db.i("resetting arena " + arena.name);
 			arena.reset();
 		}
-	}
-
-	/**
-	 * send a message to everyone on the server
-	 * 
-	 * @param msg
-	 *            the message to send
-	 */
-	public static void tellPublic(String msg) {
-		db.i("broadcast: " + msg);
-		Bukkit.getServer().broadcastMessage(
-				ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE + msg);
 	}
 
 	/**

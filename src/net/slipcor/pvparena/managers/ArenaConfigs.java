@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -27,7 +28,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -41,10 +42,16 @@ public class ArenaConfigs {
 	 *            the arena to load
 	 * @param cfg
 	 *            the configuration
+	 * @param type 
 	 */
-	public static void configParse(Arena arena, Config cfg) {
+	public static void configParse(Arena arena, Config cfg, String type) {
 		cfg.load();
 		YamlConfiguration config = cfg.getYamlConfiguration();
+		
+		if (type == null) {
+			// opening existing arena
+			type = arena.getType();
+		}
 		
 		config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
 		config.addDefault("classitems.Swordsman", "276,306,307,308,309");
@@ -56,19 +63,18 @@ public class ArenaConfigs {
 		config.addDefault("tp.exit", "exit");
 		config.addDefault("tp.death", "spectator");
 
-		config.addDefault("general.wand", Integer.valueOf(280));
-		config.addDefault("general.readyblock", "IRON_BLOCK");
-		config.addDefault("general.lives", Integer.valueOf(3));
-		config.addDefault("general.language", "en");
+		config.addDefault("setup.wand", Integer.valueOf(280));
+		config.addDefault("game.lives", Integer.valueOf(3));
+		config.addDefault("messages.language", "en");
 		config.addDefault("general.classperms", Boolean.valueOf(false));
-		config.addDefault("general.preventDeath", Boolean.valueOf(true));
+		config.addDefault("game.preventDeath", Boolean.valueOf(true));
 
-		config.addDefault("general.randomSpawn", Boolean.valueOf(false));
-		config.addDefault("general.timed", Integer.valueOf(0));
+		config.addDefault("arenatype.randomSpawn", Boolean.valueOf(false));
+		config.addDefault("goal.timed", Integer.valueOf(0));
 
-		config.addDefault("general.joinrange", Integer.valueOf(0));
-		config.addDefault("general.powerups", "off");
-		config.addDefault("general.checkRegions", Boolean.valueOf(false));
+		config.addDefault("join.range", Integer.valueOf(0));
+		config.addDefault("game.powerups", "off");
+		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
 
 		config.addDefault("money.entry", Integer.valueOf(0));
 		config.addDefault("money.reward", Integer.valueOf(0));
@@ -88,36 +94,61 @@ public class ArenaConfigs {
 				Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
 
-		if (!arena.getType().equals("free") && config.get("teams") == null) {
-			config.addDefault("general.teamkill", Boolean.valueOf(false));
-			config.addDefault("general.manual", Boolean.valueOf(true));
-			config.addDefault("general.random", Boolean.valueOf(true));
+		if (!type.equals("free")) {
+			config.addDefault("game.teamKill", Boolean.valueOf(false));
+			config.addDefault("join.manual", Boolean.valueOf(true));
+			config.addDefault("join.random", Boolean.valueOf(true));
+			config.addDefault("game.woolHead", Boolean.valueOf(false));
+			config.addDefault("join.forceeven", Boolean.valueOf(false));
+		}
+		config.addDefault("game.refillInventory", Boolean.valueOf(false));
+
+		config.addDefault("start.health", Integer.valueOf(20));
+		config.addDefault("start.foodLevel", Integer.valueOf(20));
+		config.addDefault("start.saturation", Integer.valueOf(20));
+		config.addDefault("start.exhaustion", Float.valueOf(0));
+
+		config.addDefault("messages.colorNick", Boolean.valueOf(true));
+
+		config.addDefault("ready.block", "IRON_BLOCK");
+		config.addDefault("ready.checkEach", Boolean.valueOf(true));
+		config.addDefault("ready.min", Integer.valueOf(2));
+		config.addDefault("ready.max", Integer.valueOf(0));
+		config.addDefault("ready.minTeam", Integer.valueOf(1));
+		config.addDefault("ready.maxTeam", Integer.valueOf(0));
+		config.addDefault("general.enabled", Boolean.valueOf(true));
+		config.addDefault("messages.chat", Boolean.valueOf(true));
+		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
+		
+
+		config.addDefault("announcements.join", Boolean.valueOf(false));
+		config.addDefault("announcements.start", Boolean.valueOf(false));
+		config.addDefault("announcements.end", Boolean.valueOf(false));
+		config.addDefault("announcements.winner", Boolean.valueOf(false));
+		config.addDefault("announcements.loser", Boolean.valueOf(false));
+		config.addDefault("announcements.prize", Boolean.valueOf(false));
+		config.addDefault("announcements.radius", Integer.valueOf(0));
+		config.addDefault("announcements.color", "AQUA");
+
+		config.addDefault("arenatype.teams", Boolean.valueOf(!type.equals("free")));
+		config.addDefault("arenatype.flags", Boolean.valueOf(type.equals("ctf")||type.equals("pumpkin")));
+		config.addDefault("arenatype.pumpkin", Boolean.valueOf(type.equals("pumpkin")));
+		
+		if ((!type.equals("free") || cfg.getBoolean("arenatype.teams")) && (cfg.get("teams") == null)) {
+			db.i("no teams defined, adding custom red and blue!");
+			cfg.getYamlConfiguration().addDefault("teams.red",
+					ChatColor.RED.name());
+			cfg.getYamlConfiguration().addDefault("teams.blue",
+					ChatColor.BLUE.name());
+		} else if (cfg.get("teams") == null) {
+			cfg.getYamlConfiguration().addDefault("teams.free", ChatColor.WHITE.name());
 		}
 		
-		if (!arena.getType().equals("free")) {
-			config.addDefault("general.woolhead", Boolean.valueOf(false));
-			config.addDefault("general.forceeven", Boolean.valueOf(false));
-		}
-		config.addDefault("general.refillInventory", Boolean.valueOf(false));
-
-		config.addDefault("general.startHealth", Integer.valueOf(20));
-		config.addDefault("general.startFoodLevel", Integer.valueOf(20));
-		config.addDefault("general.startSaturation", Integer.valueOf(20));
-		config.addDefault("general.startExhaustion", Float.valueOf(0));
-
-		config.addDefault("general.colorNick", Boolean.valueOf(true));
-		config.addDefault("general.readyCheckEach", Boolean.valueOf(true));
-		config.addDefault("general.readyMin", Integer.valueOf(2));
-		config.addDefault("general.readyMax", Integer.valueOf(0));
-		config.addDefault("general.readyMinTeam", Integer.valueOf(1));
-		config.addDefault("general.readyMaxTeam", Integer.valueOf(0));
-		config.addDefault("general.enabled", Boolean.valueOf(true));
-		config.addDefault("general.chat", Boolean.valueOf(true));
-		config.addDefault("general.defaultchat", Boolean.valueOf(false));
 		config.options().copyDefaults(true);
 		
-		cfg.set("cfgver", "0.5.11.0");
+		cfg.set("cfgver", "0.6.0.0");
 		cfg.save();
+		cfg.load();
 
 		Map<String, Object> classes = config.getConfigurationSection(
 				"classitems").getValues(false);
@@ -173,7 +204,7 @@ public class ArenaConfigs {
 		if (cfg.getString("general.owner") != null) {
 			arena.owner = cfg.getString("general.owner");
 		}
-		String pu = config.getString("general.powerups", "off");
+		String pu = config.getString("game.powerups", "off");
 
 		arena.usesPowerups = true;
 		String[] ss = pu.split(":");
@@ -187,7 +218,7 @@ public class ArenaConfigs {
 			arena.usesPowerups = false;
 		}
 
-		arena.timed = config.getInt("general.timed", 0);
+		arena.timed = config.getInt("goal.timed", 0);
 
 		if (config.getConfigurationSection("regions") != null) {
 			Map<String, Object> regs = config
@@ -196,6 +227,39 @@ public class ArenaConfigs {
 				arena.regions.put(rName,
 						getRegionFromConfigNode(rName, config, arena));
 			}
+		}
+		
+		Map<String, Object> tempMap = (Map<String, Object>) cfg
+				.getYamlConfiguration().getConfigurationSection("teams")
+				.getValues(true);
+
+		for (String sTeam : tempMap.keySet()) {
+			arena.paTeams.put(sTeam, (String) tempMap.get(sTeam));
+			db.i("added team " + sTeam + " => " + arena.paTeams.get(sTeam));
+		}
+		if (arena.cfg.getBoolean("arenatype.flags") || arena.cfg.getBoolean("arenatype.pumpkin")) {
+			arena.paTeamFlags = new HashMap<String, String>();
+		}
+		if (arena.cfg.getBoolean("arenatype.pumpkin")) {
+			arena.paHeadGears = new HashMap<String, ItemStack>();
+		}
+		if (!cfg.getBoolean("usesTeams") && type.equals("free")) {
+
+			db.i("FreeFight Arena default overrides START");
+			db.i("+teamKilling, -manualTeamSelect, +randomTeamSelect,");
+			db.i("-forceWoolHead, -forceEven, +randomSpawn");
+			db.i("only one team: free");
+			db.i("FreeFight Arena default overrides END");
+
+			cfg.set("game.teamKill", true);
+			cfg.set("join.manual", false);
+			cfg.set("join.random", true);
+			cfg.set("game.woolHead", false);
+			cfg.set("join.forceeven", false);
+			cfg.set("arenatype.randomSpawn", true);
+			cfg.set("teams", null);
+			cfg.set("teams.free", "WHITE");
+			cfg.save();
 		}
 	}
 
@@ -272,7 +336,7 @@ public class ArenaConfigs {
 			return isFreesetup(arena, list);
 		}
 
-		if (arena.cfg.getBoolean("general.randomSpawn", false)) {
+		if (arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
 
 			// now we need a spawn and lounge for every team
 

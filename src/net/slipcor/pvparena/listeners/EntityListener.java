@@ -1,9 +1,9 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arenas.CTFArena;
-import net.slipcor.pvparena.arenas.PumpkinArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Announcement;
+import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
@@ -37,7 +37,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -77,14 +77,11 @@ public class EntityListener implements Listener {
 
 		String sTeam = arena.playerManager.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
-		if (!color.equals("") && !color.equals("free")) {
-			arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
-					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW));
-		} else {
-			arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
-					ChatColor.WHITE + player.getName() + ChatColor.YELLOW));
-		}
+		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("killed",
+				player.getName()));
+		arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
+				ChatColor.valueOf(color) + player.getName()
+						+ ChatColor.YELLOW));
 
 		Statistics.addLoseStat(player, sTeam, arena);
 		arena.playerManager.setTeam(player, ""); // needed so player does not
@@ -104,14 +101,8 @@ public class EntityListener implements Listener {
 		arena.playerManager.setRespawn(player, true);
 		arena.tpPlayerToCoordName(player, "spectator");
 
-		if (arena.getType().equals("ctf")) {
-			CTFArena ca = (CTFArena) arena;
-			db.i("ctf arena");
-			ca.checkEntityDeath(player);
-		} else if (arena.getType().equals("pumpkin")) {
-			PumpkinArena pa = (PumpkinArena) arena;
-			db.i("pumpkin arena");
-			pa.checkEntityDeath(player);
+		if (arena.cfg.getBoolean("arenatype.flags")) {
+			arena.checkEntityDeath(player);
 		}
 
 		if (arena.timed > 0) {
@@ -173,7 +164,7 @@ public class EntityListener implements Listener {
 			}
 		}
 		if (arena.usesPowerups) {
-			if (arena.cfg.getString("general.powerups", "off").startsWith(
+			if (arena.cfg.getString("game.powerups", "off").startsWith(
 					"death")) {
 				db.i("calculating powerup trigger death");
 				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
@@ -227,9 +218,9 @@ public class EntityListener implements Listener {
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
-				byte lives = 3;
+				int lives = 3;
 
-				lives = arena.playerManager.getLives(defender);
+				lives = arena.paLives.get(defender.getName());
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
 					if (!arena.preventDeath) {
@@ -277,7 +268,7 @@ public class EntityListener implements Listener {
 			return;
 
 		db.i("both players part of the arena");
-		if ((!arena.cfg.getBoolean("general.teamkill", false))
+		if ((!arena.cfg.getBoolean("game.teamKill", false))
 				&& (arena.playerManager.getTeam(attacker))
 						.equals(arena.playerManager.getTeam(defender))) {
 			// no team fights!
@@ -302,9 +293,9 @@ public class EntityListener implements Listener {
 		}
 		if (event.getDamage() >= defender.getHealth()) {
 			db.i("damage >= health => death");
-			byte lives = 3;
+			int lives = 3;
 
-			lives = arena.playerManager.getLives(defender);
+			lives = arena.paLives.get(defender.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.preventDeath) {
@@ -354,9 +345,9 @@ public class EntityListener implements Listener {
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			db.i("damage >= health => death");
-			byte lives = 3;
+			int lives = 3;
 
-			lives = arena.playerManager.getLives(player);
+			lives = arena.paLives.get(player.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.preventDeath) {

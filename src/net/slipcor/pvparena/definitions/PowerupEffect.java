@@ -26,7 +26,7 @@ import net.slipcor.pvparena.managers.Statistics;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -208,27 +208,24 @@ public class PowerupEffect {
 				}
 				return true;
 			} else if (this.type == classes.LIVES) {
-				byte lives = Arenas.getArenaByPlayer(player).playerManager
-						.getLives(player);
+				int lives = Arenas.getArenaByPlayer(player).paLives
+						.get(player.getName());
 				if (lives > 0)
-					Arenas.getArenaByPlayer(player).playerManager
-							.setLives(player, (byte) (lives + diff));
+					Arenas.getArenaByPlayer(player).paLives
+							.put(player.getName(), lives + diff);
 				else {
 					Arena arena = Arenas.getArenaByPlayer(player);
 
 					// pasted from onEntityDeath;
 
 					String sTeam = arena.playerManager.getTeam(player);
-					if (!sTeam.equals("free") && !sTeam.equals("")) {
-						arena.playerManager.tellEveryone(PVPArena.lang.parse(
-								"killed",
-								ChatColor.valueOf(arena.paTeams.get(sTeam))
-										+ player.getName() + ChatColor.YELLOW));
-					} else {
-						arena.playerManager.tellEveryone(PVPArena.lang.parse(
-								"killed", ChatColor.WHITE + player.getName()
-										+ ChatColor.YELLOW));
-					}
+					
+					Announcement.announce(arena, Announcement.type.LOSER, PVPArena.lang.parse(
+							"killed",player.getName()));
+					arena.playerManager.tellEveryone(PVPArena.lang.parse(
+							"killed",
+							ChatColor.valueOf(arena.paTeams.get(sTeam))
+									+ player.getName() + ChatColor.YELLOW));
 					Statistics.addLoseStat(player, sTeam, arena);
 					// needed so player does not get found when dead
 					arena.playerManager.setTeam(player, "");

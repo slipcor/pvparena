@@ -1,14 +1,10 @@
 ADDITIONS
-- remove player=>lives
-  => add arena=>lives (usesFlag=true?team lives:player lives)
 - re-add sign updating/check
-- add announcements being public
-- remove arena definitions
-  => replace by config settings (end: time|kills|deaths ; flags: false|true ; teams: true)
 - reactivate player death possibility, add a arena-end-timer for winners to collect loot
 - leaderboards and proper statistics
 
 FIXES
+- flag collection
 
 PROBLEMS:
 - loot not possible with flag mode!

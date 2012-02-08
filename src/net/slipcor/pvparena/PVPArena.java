@@ -8,6 +8,8 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
+import net.slipcor.pvparena.definitions.Announcement;
+import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.EntityListener;
@@ -170,20 +172,16 @@ public class PVPArena extends JavaPlugin {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
 				String sName = arena.playerManager.getTeam(player);
-				if (!sName.equals("free") && !sName.equals("")) {
-					arena.playerManager.tellEveryoneExcept(
-							player,
-							lang.parse("playerleave",
-									ChatColor.valueOf(arena.paTeams.get(sName))
-											+ player.getName()
-											+ ChatColor.YELLOW));
-				} else {
-					arena.playerManager.tellEveryoneExcept(
-							player,
-							lang.parse("playerleave",
-									ChatColor.WHITE + player.getName()
-											+ ChatColor.YELLOW));
-				}
+				
+				Announcement.announce(arena, type.LOSER, lang.parse("playerleave",
+						player.getName()));
+
+				arena.playerManager.tellEveryoneExcept(
+						player,
+						lang.parse("playerleave",
+								ChatColor.valueOf(arena.paTeams.get(sName))
+										+ player.getName()
+										+ ChatColor.YELLOW));
 				Arenas.tellPlayer(player, lang.parse("youleave"));
 				arena.removePlayer(player,
 						arena.cfg.getString("tp.exit", "exit"));

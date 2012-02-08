@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.definitions;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.Set;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.ArenaConfigs;
 import net.slipcor.pvparena.managers.Arenas;
@@ -31,6 +33,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -49,7 +52,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
@@ -77,11 +80,13 @@ public class Arena {
 	public final HashMap<String, String> paTeams = new HashMap<String, String>();
 	//TODO: if no teams set, FFA
 	
-	protected HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
+	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
 	/**
 	 * TeamName => PlayerName
 	 */
-	protected HashMap<String, String> paTeamFlags = null;
+	public HashMap<String, String> paTeamFlags = null;
+	public HashMap<String, ItemStack> paHeadGears = null;
+	
 	
 	
 	// regions an arena has defined: RegionName => Region
@@ -108,26 +113,13 @@ public class Arena {
 	// arena settings
 	public boolean usesPowerups;
 	public boolean preventDeath;
-
-	public boolean usesFlags; //TODO: if true, pa
-	public boolean usesPumpkin; //TODO if true; pumpkinhead + direct block interact
 	
 	// Runnable IDs
 	public int SPAWN_ID = -1;
 	public int END_ID = -1;
 
 	public Config cfg;
-
-	/*
-	 * private variables
-	 */
-	private final HashMap<String, ItemStack[]> savedInventories = new HashMap<String, ItemStack[]>();
-	private final HashMap<String, ItemStack[]> savedArmories = new HashMap<String, ItemStack[]>();
-	private final HashMap<Player, PermissionAttachment> tempPermissions = new HashMap<Player, PermissionAttachment>();
-	// player mapped to misc vars: PlayerName => miscObjectVars
-	public final HashMap<Player, Object> savedPlayerVars = new HashMap<Player, Object>();
-
-	// static filling of the items array
+    // static filling of the items array
 	static {
 		HELMETS_TYPE.add(Material.LEATHER_HELMET);
 		HELMETS_TYPE.add(Material.GOLD_HELMET);
@@ -165,20 +157,24 @@ public class Arena {
 	 * @param name
 	 *            the arena name
 	 */
-	public Arena(String name) {
+	public Arena(String name, String type) {
 		this.name = name;
 
 		db.i("loading Arena " + name);
-
-		cfg = new Config(new File("plugins/pvparena/config_" + name + ".yml"));
+		File file = new File("plugins/pvparena/config_" + name + ".yml");
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		cfg = new Config(file);
 		cfg.load();
-		ArenaConfigs.configParse(this, cfg);
-	}
-
-	/**
-	 * empty arena constructor, used by sub-arenas
-	 */
-	public Arena() {
+		ArenaConfigs.configParse(this, cfg, type);
+		
+		cfg.save();
+		
 	}
 
 	//
@@ -389,7 +385,7 @@ public class Arena {
 	 * @return true if the player is too far away, false otherwise
 	 */
 	public boolean tooFarAway(Player player) {
-		int joinRange = cfg.getInt("general.joinrange", 0);
+		int joinRange = cfg.getInt("join.range", 0);
 		if (joinRange < 1)
 			return false;
 		if (regions.get("battlefield") == null)
@@ -405,7 +401,7 @@ public class Arena {
 	 *         otherwise
 	 */
 	public boolean checkRegions() {
-		if (!this.cfg.getBoolean("general.checkRegions", false))
+		if (!this.cfg.getBoolean("periphery.checkRegions", false))
 			return true;
 		db.i("checking regions");
 
@@ -549,7 +545,7 @@ public class Arena {
 				player.getInventory().addItem(new ItemStack[] { stack });
 			}
 		}
-		if (cfg.getBoolean("general.woolhead", false)) {
+		if (cfg.getBoolean("game.woolHead", false)) {
 			String sTeam = playerManager.getTeam(player);
 			String color = paTeams.get(sTeam);
 			db.i("forcing woolhead: " + sTeam + "/" + color);
@@ -606,7 +602,7 @@ public class Arena {
 	public void teleportAllToSpawn() {
 		for (String p : playerManager.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
-			if (!cfg.getBoolean("general.randomSpawn", false)) {
+			if (!cfg.getBoolean("arenatype.randomSpawn", false)) {
 				tpPlayerToCoordName(z, playerManager.getPlayerTeamMap().get(p)
 						+ "spawn");
 			} else {
@@ -627,9 +623,9 @@ public class Arena {
 		}
 		db.i("teleported everyone!");
 		if (usesPowerups) {
-			db.i("using powerups : " + cfg.getString("general.powerups", "off")
+			db.i("using powerups : " + cfg.getString("game.powerups", "off")
 					+ " : " + powerupDiff);
-			if (cfg.getString("general.powerups", "off").startsWith("time")
+			if (cfg.getString("game.powerups", "off").startsWith("time")
 					&& powerupDiff > 0) {
 				db.i("powerup time trigger!");
 				powerupDiff = powerupDiff * 20; // calculate ticks to seconds
@@ -649,17 +645,20 @@ public class Arena {
 		HashMap<String,Boolean> perms = getTempPerms();
         if (perms == null || perms.isEmpty()) return;
 
+        ArenaPlayer player = playerManager.parsePlayer(p);
         PermissionAttachment pa = p.addAttachment(Bukkit.getServer().getPluginManager().getPlugin("pvparena"));
-        tempPermissions.put(p,pa);
+        player.tempPermissions.add(pa);
         for (String entry : perms.keySet()) {
             pa.setPermission(entry, perms.get(entry));
         }
 	}
 	
 	private void removePermissions(Player p) {
-		if (tempPermissions.get(p) == null) return;
-        
-        for (PermissionAttachment pa : tempPermissions.values()) {
+        ArenaPlayer player = playerManager.parsePlayer(p);
+		if (player == null || player.tempPermissions == null) {
+			return;
+		}
+        for (PermissionAttachment pa : player.tempPermissions) {
             if (pa != null) {
             	pa.remove();
             }
@@ -692,11 +691,286 @@ public class Arena {
 		return false;
 	}
 
+
 	/**
-	 * dud method for CTF arena to override
+	 * [FLAG] take away one life of a team
+	 * 
+	 * @param team
+	 *            the team name to take away
+	 */
+	protected void reduceLivesCheckEndAndCommit(String team) {
+		if (paLives.get(team) != null) {
+			int i = paLives.get(team) - 1;
+			if (i > 0) {
+				paLives.put(team, i);
+			} else {
+				paLives.remove(team);
+				CommitEnd(team, false);
+			}
+		}
+	}
+	
+
+	/**
+	 * get the team name of the flag a player holds
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return a team name
+	 */
+	protected String getHeldFlagTeam(String player) {
+		db.i("getting held FLAG of player " + player);
+		for (String sTeam : paTeamFlags.keySet()) {
+			db.i("team " + sTeam + " is in " + paTeamFlags.get(sTeam)
+					+ "s hands");
+			if (player.equals(paTeamFlags.get(sTeam))) {
+				return sTeam;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * parse player interaction
+	 * 
+	 * @param player
+	 *            the player to parse
+	 * @param block the clicked block
+	 */
+	public void checkInteract(Player player, Block block) {
+		if (cfg.getBoolean("arenatype.pumpkin")) {
+
+			if (block == null) {
+				return;
+			}
+			
+			
+			if (!block.getType().equals(Material.PUMPKIN)) {
+				return;
+			}
+			db.i("pumpkin click!");
+			
+			Vector vLoc;
+			String sTeam;
+			Vector vFlag = null;
+
+			if (paTeamFlags.containsValue(player.getName())) {
+				db.i("player " + player.getName() + " has got a pumpkin");
+				vLoc = block.getLocation().toVector();
+				sTeam = playerManager.getTeam(player);
+				if (this.getCoords(sTeam + "pumpkin") != null) {
+					vFlag = this.getCoords(sTeam + "pumpkin").toVector();
+				} else {
+					db.i(sTeam + "pumpkin" + " = null");
+				}
+
+				db.i("player is in the team " + sTeam);
+				if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
+
+					db.i("player is at his pumpkin");
+					String flagTeam = getHeldFlagTeam(player.getName());
+
+					db.i("the flag belongs to team " + flagTeam);
+
+					String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+							+ flagTeam + ChatColor.YELLOW;
+					String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
+							+ player.getName() + ChatColor.YELLOW;
+
+					playerManager.tellEveryone(PVPArena.lang.parse("pumpkinhomeleft",
+							scPlayer, scFlagTeam,
+							String.valueOf(paLives.get(flagTeam) - 1)));
+					paTeamFlags.remove(flagTeam);
+					
+					player.getInventory().setHelmet(paHeadGears.get(player.getName()).clone());
+					paHeadGears.remove(player.getName());
+					
+					reduceLivesCheckEndAndCommit(flagTeam);
+				}
+			} else {
+				for (String team : paTeams.keySet()) {
+					String playerTeam = playerManager.getTeam(player);
+					if (team.equals(playerTeam))
+						continue;
+					if (!playerManager.getPlayerTeamMap().containsValue(team))
+						continue; // dont check for inactive teams
+					if (paTeamFlags.containsKey(team)) {
+						continue; // already taken
+					}
+					db.i("checking for pumpkin of team " + team);
+					vLoc = player.getLocation().toVector();
+					if (this.getCoords(team + "pumpkin") != null) {
+						vFlag = this.getCoords(team + "pumpkin").toVector();
+					}
+					if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
+						db.i("spawn found!");
+						db.i("vFlag: " + vFlag.toString());
+						String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
+								+ ChatColor.YELLOW;
+						String scPlayer = ChatColor
+								.valueOf(paTeams.get(playerTeam))
+								+ player.getName() + ChatColor.YELLOW;
+						playerManager.tellEveryone(PVPArena.lang.parse("pumpkingrab",
+								scPlayer, scTeam));
+						paHeadGears.put(player.getName(), player.getInventory().getHelmet().clone());
+						player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN,1));
+						paTeamFlags.put(team, player.getName());
+						return;
+					}
+				}
+			}
+		} else {
+			Vector vLoc;
+			String sTeam;
+			Vector vSpawn;
+			Vector vFlag = null;
+	
+			if (paTeamFlags.containsValue(player.getName())) {
+				// player has flag, check for home and win
+				db.i("player " + player.getName() + " has got a flag");
+				vLoc = player.getLocation().toVector();
+				sTeam = playerManager.getTeam(player);
+				vSpawn = this.getCoords(sTeam + "spawn").toVector();
+				if (this.getCoords(sTeam + "flag") != null) {
+					vFlag = this.getCoords(sTeam + "flag").toVector();
+				} else {
+					db.i(sTeam + "flag" + " = null");
+				}
+	
+				db.i("player is in the team " + sTeam);
+				if ((vFlag == null && vLoc.distance(vSpawn) < 2)
+						|| (vFlag != null && vLoc.distance(vFlag) < 2)) {
+	
+					db.i("player is at his spawn");
+					String flagTeam = getHeldFlagTeam(player.getName());
+	
+					db.i("the flag belongs to team " + flagTeam);
+	
+					String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+							+ flagTeam + ChatColor.YELLOW;
+					String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
+							+ player.getName() + ChatColor.YELLOW;
+	
+					playerManager.tellEveryone(PVPArena.lang.parse("flaghomeleft",
+							scPlayer, scFlagTeam,
+							String.valueOf(paLives.get(flagTeam) - 1)));
+					paTeamFlags.remove(flagTeam);
+					reduceLivesCheckEndAndCommit(flagTeam);
+				}
+			} else {
+				db.i("----ctf---");
+				for (String team : paTeams.keySet()) {
+	
+					db.i("team" + team);
+					String playerTeam = playerManager.getTeam(player);
+					if (team.equals(playerTeam))
+						continue;
+					if (!playerManager.getPlayerTeamMap().containsValue(team))
+						continue; // dont check for inactive teams
+					if (paTeamFlags.containsKey(team)) {
+						continue; // already taken
+					}
+					db.i("checking for spawn of team " + team);
+					vLoc = player.getLocation().toVector();
+					vSpawn = this.getCoords(team + "spawn").toVector();
+					if (this.getCoords(team + "flag") != null) {
+						vFlag = this.getCoords(team + "flag").toVector();
+					}
+					if (((vFlag == null) && (vLoc.distance(vSpawn) < 2))
+							|| ((vFlag != null) && (vLoc.distance(vFlag) < 2))) {
+						db.i("spawn found!");
+						db.i("vFlag: "
+								+ ((vFlag == null) ? "null" : vFlag.toString()));
+						String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
+								+ ChatColor.YELLOW;
+						String scPlayer = ChatColor
+								.valueOf(paTeams.get(playerTeam))
+								+ player.getName() + ChatColor.YELLOW;
+						playerManager.tellEveryone(PVPArena.lang.parse("flaggrab",
+								scPlayer, scTeam));
+	
+						paTeamFlags.put(team, player.getName());
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	/*
+	 * set the pumpkin to the selected block
+	 */
+	public void setPumpkin(Player player, Block block) {
+		if (block == null || !block.getType().equals(Material.PUMPKIN)) {
+			return;
+		}
+		String sName = Arena.regionmodify.replace(this.name+":", "");
+		
+		Location location = block.getLocation();
+
+		Integer x = location.getBlockX();
+		Integer y = location.getBlockY();
+		Integer z = location.getBlockZ();
+		Float yaw = location.getYaw();
+		Float pitch = location.getPitch();
+
+		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
+				+ yaw.toString() + "," + pitch.toString();
+
+		cfg.set("spawns." + sName + "pumpkin", s);
+		
+		cfg.save();
+		Arenas.tellPlayer(player, PVPArena.lang.parse("setpumpkin", sName));
+		
+		Arena.regionmodify = "";
+	}
+	
+	/**
+	 * check a dying player if he held a flag, drop it, if so
+	 * 
+	 * @param player
+	 *            the player to check
+	 */
+	public void checkEntityDeath(Player player) {
+		
+		if (cfg.getBoolean("arenatype.pumpkin")) {
+			String flagTeam = getHeldFlagTeam(player.getName());
+			if (flagTeam != null) {
+				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+						+ flagTeam + ChatColor.YELLOW;
+				String scPlayer = ChatColor.valueOf(paTeams.get(playerManager
+						.getTeam(player))) + player.getName() + ChatColor.YELLOW;
+				PVPArena.lang.parse("pumpkinsave", scPlayer, scFlagTeam);
+				paTeamFlags.remove(flagTeam);
+			}
+		} else {
+
+			String flagTeam = getHeldFlagTeam(player.getName());
+			if (flagTeam != null) {
+				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+						+ flagTeam + ChatColor.YELLOW;
+				String scPlayer = ChatColor.valueOf(paTeams.get(playerManager
+						.getTeam(player))) + player.getName() + ChatColor.YELLOW;
+				PVPArena.lang.parse("flagsave", scPlayer, scFlagTeam);
+				paTeamFlags.remove(flagTeam);
+			}
+		}
+		
+		
+	}
+	
+	
+	/**
+	 * method for CTF arena to override
 	 */
 	public void init_arena() {
-		// nothing to see here
+		for (String sTeam : this.paTeams.keySet()) {
+			if (playerManager.getPlayerTeamMap().containsValue(sTeam)) {
+				// team is active
+				this.paLives
+						.put(sTeam, this.cfg.getInt("game.lives", 3));
+			}
+		}
 	}
 
 	/**
@@ -706,10 +980,12 @@ public class Arena {
 	 *            the player to save
 	 */
 	public void prepareInventory(Player player) {
-		savedInventories.put(player.getName(), player.getInventory()
-				.getContents());
-		savedArmories.put(player.getName(), player.getInventory()
-				.getArmorContents());
+
+		ArenaPlayer p = playerManager.parsePlayer(player);
+		p.savedInventories=  player.getInventory()
+				.getContents().clone();
+		p.savedArmories = player.getInventory()
+				.getArmorContents().clone();
 		clearInventory(player);
 	}
 
@@ -720,23 +996,18 @@ public class Arena {
 	 *            the player to save
 	 */
 	public void saveMisc(Player player) {
-		HashMap<String, String> tempMap = new HashMap<String, String>();
+		ArenaPlayer p = playerManager.parsePlayer(player);
+		p.exhaustion = player.getExhaustion();
+		p.fireticks = player.getFireTicks();
+		p.foodlevel = player.getFoodLevel();
+		p.health = player.getHealth();
+		p.saturation = player.getSaturation();
+		p.location = player.getLocation();
+		p.gamemode = player.getGameMode().getValue();
 
-		Location lLoc = player.getLocation();
-		String sLoc = lLoc.getWorld().getName() + "/" + lLoc.getBlockX() + "/"
-				+ lLoc.getBlockY() + "/" + lLoc.getBlockZ() + "/";
-
-		tempMap.put("EXHAUSTION", String.valueOf(player.getExhaustion()));
-		tempMap.put("FIRETICKS", String.valueOf(player.getFireTicks()));
-		tempMap.put("FOODLEVEL", String.valueOf(player.getFoodLevel()));
-		tempMap.put("HEALTH", String.valueOf(player.getHealth()));
-		tempMap.put("SATURATION", String.valueOf(player.getSaturation()));
-		tempMap.put("LOCATION", sLoc);
-		tempMap.put("GAMEMODE", String.valueOf(player.getGameMode().getValue()));
-		if (cfg.getBoolean("general.colorNick", true)) {
-			tempMap.put("DISPLAYNAME", player.getDisplayName());
+		if (cfg.getBoolean("messages.colorNick", true)) {
+			p.displayname = player.getDisplayName();
 		}
-		savedPlayerVars.put(player, tempMap);
 	}
 
 	/**
@@ -794,22 +1065,42 @@ public class Arena {
 	 *            the player to assign
 	 */
 	public void chooseColor(Player player) {
-		if (playerManager.getTeam(player).equals("")) {
-			String team = calcFreeTeam();
-			
-			db.i("team found: " + team);
-			tpPlayerToCoordName(player, team + "lounge");
-			playerManager.setTeam(player, team);
-			Arenas.tellPlayer(
-					player,
-					PVPArena.lang.parse("youjoined",
-							ChatColor.valueOf(paTeams.get(team)) + team));
-			playerManager.tellEveryoneExcept(player, PVPArena.lang.parse(
-					"playerjoined", player.getName(),
-					ChatColor.valueOf(paTeams.get(team)) + team));
+		if (!cfg.getBoolean("arenatype.teams")) {
+
+			if (!(playerManager.getPlayerTeamMap().containsKey(player.getName()))) {
+				tpPlayerToCoordName(player, "lounge");
+				playerManager.setTeam(player, "free");
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("youjoinedfree"));
+				Announcement.announce(this, type.JOIN, PVPArena.lang.parse("playerjoinedfree", player.getName()));
+				playerManager.tellEveryoneExcept(player,
+						PVPArena.lang.parse("playerjoinedfree", player.getName()));
+
+			} else {
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("alreadyjoined"));
+			}
 		} else {
-			Arenas.tellPlayer(player,
-					PVPArena.lang.parse("alreadyjoined"));
+			if (playerManager.getTeam(player).equals("")) {
+				String team = calcFreeTeam();
+				
+				db.i("team found: " + team);
+				tpPlayerToCoordName(player, team + "lounge");
+				playerManager.setTeam(player, team);
+				Arenas.tellPlayer(
+						player,
+						PVPArena.lang.parse("youjoined",
+								ChatColor.valueOf(paTeams.get(team)) + team));
+				Announcement.announce(this, type.JOIN, PVPArena.lang.parse(
+						"playerjoined", player.getName(),
+						ChatColor.valueOf(paTeams.get(team)) + team));
+				playerManager.tellEveryoneExcept(player, PVPArena.lang.parse(
+						"playerjoined", player.getName(),
+						ChatColor.valueOf(paTeams.get(team)) + team));
+			} else {
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("alreadyjoined"));
+			}
 		}
 	}
 
@@ -843,8 +1134,8 @@ public class Arena {
 		
 		for (String s : paTeams.keySet()) {
 			// check if we are full
-			db.i("String s: "+s+"; max: "+cfg.getInt("general.readyMax"));
-			if (counts.get(s) < cfg.getInt("general.readyMax") || cfg.getInt("general.readyMax") == 0) {
+			db.i("String s: "+s+"; max: "+cfg.getInt("ready.max"));
+			if (counts.get(s) < cfg.getInt("ready.max") || cfg.getInt("ready.max") == 0) {
 				full = false;
 				break;
 			}
@@ -857,7 +1148,7 @@ public class Arena {
 		
 		HashSet<String> free = new HashSet<String>();
 		
-		int max = cfg.getInt("general.readyMaxTeam");
+		int max = cfg.getInt("ready.maxTeam");
 		max = max==0?Integer.MAX_VALUE:max;
 		// calculate the max value down to the minimum
 		for (String s : counts.keySet()) {
@@ -931,15 +1222,15 @@ public class Arena {
 	 */
 	public void prepare(Player player) {
 		db.i("preparing player: " + player.getName());
+		playerManager.addPlayer(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
-		playersetHealth(player, cfg.getInt("general.startHealth", 0));
+		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
-		player.setFoodLevel(cfg.getInt("general.startFoodLevel", 20));
-		player.setSaturation(cfg.getInt("general.startSaturation", 20));
-		player.setExhaustion((float) cfg.getDouble("general.startExhaustion",
+		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
+		player.setSaturation(cfg.getInt("start.saturation", 20));
+		player.setExhaustion((float) cfg.getDouble("start.exhaustion",
 				0.0));
 		player.setGameMode(GameMode.getByValue(0));
-		playerManager.addPlayer(player);
 	}
 
 	/**
@@ -978,7 +1269,7 @@ public class Arena {
 		String color = "";
 		if (place.endsWith("lounge")) {
 			// at the start of the match
-			if (cfg.getBoolean("general.defaultchat") && cfg.getBoolean("general.chat")) {
+			if (cfg.getBoolean("messages.defaultChat") && cfg.getBoolean("messages.chat")) {
 				paChat.add(player.getName());
 			}
 			if (place.equals("lounge"))
@@ -991,7 +1282,7 @@ public class Arena {
 										ChatColor.valueOf(paTeams.get(color)).ordinal(), 16).toLowerCase();
 			}
 		}
-		if (!color.equals("") && cfg.getBoolean("general.colorNick", true))
+		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, color);
 
 		playerManager.setTelePass(player, true);
@@ -1049,12 +1340,117 @@ public class Arena {
 		return false;
 	}
 
+	
+
+	/**
+	 * [FLAG] commit the arena end
+	 * 
+	 * @param team
+	 *            the team name
+	 * @param win
+	 *            winning team?
+	 */
+	protected void CommitEnd(String team, boolean win) {
+		Set<String> set = playerManager.getPlayerTeamMap().keySet();
+		Iterator<String> iter = set.iterator();
+		if (!team.equals("$%&/")) {
+			while (iter.hasNext()) {
+				Object o = iter.next();
+				db.i("precessing: " + o.toString());
+				Player z = Bukkit.getServer().getPlayer(o.toString());
+				if (!win && playerManager.getPlayerTeamMap().get(z.getName())
+						.equals(team)) {
+					Statistics.addLoseStat(z, team, this);
+					resetPlayer(z, cfg.getString("tp.lose", "old"));
+					playerManager.setClass(z, "");
+				}
+			}
+
+			if (paLives.size() > 1) {
+				return;
+			}
+		}
+
+		String winteam = "";
+		set = playerManager.getPlayerTeamMap().keySet();
+		iter = set.iterator();
+		while (iter.hasNext()) {
+			Object o = iter.next();
+			db.i("praecessing: " + o.toString());
+			Player z = Bukkit.getServer().getPlayer(o.toString());
+
+			if (paLives.containsKey(playerManager.getPlayerTeamMap().get(
+					z.getName()))) {
+				if (winteam.equals("")) {
+					team = playerManager.getPlayerTeamMap().get(z.getName());
+				}
+				Statistics.addWinStat(z, team, this);
+				resetPlayer(z, cfg.getString("tp.win", "old"));
+				giveRewards(z); // if we are the winning team, give reward!
+				playerManager.setClass(z, "");
+				winteam = team;
+			}
+		}
+		if (paTeams.get(winteam) != null) {
+			Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
+					"Team " + winteam));
+			playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
+					ChatColor.valueOf(paTeams.get(winteam)) + "Team " + winteam));
+		} else {
+			System.out.print(winteam);
+		}
+
+		paLives.clear();
+		reset();
+	}
+	
 	/**
 	 * checks if the arena is over, if an end has to be committed
 	 * 
 	 * @return true if we ended the game just yet, false otherwise
 	 */
 	public boolean checkEndAndCommit() {
+		if (!cfg.getBoolean("arenatype.teams")) {
+			if (playerManager.getPlayerTeamMap().size() > 1) {
+				return false;
+			}
+
+			Set<String> set = playerManager.getPlayerTeamMap().keySet();
+			Iterator<String> iter = set.iterator();
+			while (iter.hasNext()) {
+				Object o = iter.next();
+
+				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("playerhaswon",
+						ChatColor.WHITE + o.toString()));
+				playerManager.tellEveryone(PVPArena.lang.parse("playerhaswon",
+						ChatColor.WHITE + o.toString()));
+
+				Player z = Bukkit.getServer().getPlayer(o.toString());
+				Statistics.addWinStat(z, "free", this);
+				resetPlayer(z, cfg.getString("tp.win", "old"));
+				giveRewards(z); // if we are the winning team, give reward!
+				playerManager.setClass(z, "");
+			}
+			reset();
+			return true;
+		}
+		if (cfg.getBoolean("arenatype.flags")) {
+
+			if (playerManager.countPlayersInTeams() < 2) {
+				String team = "$%&/";
+				if (playerManager.countPlayersInTeams() != 0)
+					for (String t : playerManager.getPlayerTeamMap().values()) {
+						team = t;
+						break;
+					}
+				CommitEnd(team, true);
+			}
+			return false;
+		
+			
+		}
+		
+		
 		if (!this.fightInProgress)
 			return false;
 		List<String> activeteams = new ArrayList<String>(0);
@@ -1075,6 +1471,9 @@ public class Arena {
 				}
 			}
 		}
+
+		Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
+				"Team " + team));
 		playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
 				ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
 
@@ -1148,82 +1547,28 @@ public class Arena {
 	 * @param player
 	 * @param string
 	 */
-	@SuppressWarnings("unchecked")
 	public void resetPlayer(Player player, String string) {
 		db.i("resetting player: " + player.getName());
-		HashMap<String, String> tSM = (HashMap<String, String>) savedPlayerVars
-				.get(player);
 		
 		removePermissions(player);
-		
-		if (tSM == null) {
-			db.w("------------");
-			db.w("--hack fix--");
-			db.w("------------");
-			return;
-		}
-
-		try {
-			player.setFireTicks(Integer.parseInt(tSM.get("FIRETICKS")));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid FIRETICKS entry!");
-		}
-		try {
-			player.setFoodLevel(Integer.parseInt(tSM.get("FOODLEVEL")));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid FOODLEVEL entry!");
-		}
-		try {
-			player.setHealth(Integer.parseInt(tSM.get("HEALTH")));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid HEALTH entry!");
-		}
-		try {
-			player.setSaturation(Float.parseFloat(tSM.get("SATURATION")));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid SATURATION entry!");
-		}
-		try {
-			player.setGameMode(GameMode.getByValue(Integer.parseInt(tSM
-					.get("GAMEMODE"))));
-		} catch (Exception e) {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no valid EXHAUSTION entry!");
-		}
-		if (cfg.getBoolean("general.colorNick", true)) {
-			try {
-				player.setDisplayName(tSM.get("DISPLAYNAME"));
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName()
-						+ "' had no valid DISPLAYNAME entry!");
-				colorizePlayer(player, "");
-			}
+		ArenaPlayer ap = playerManager.parsePlayer(player);
+		player.setFireTicks(ap.fireticks);
+		player.setFoodLevel(ap.foodlevel);
+		player.setHealth(ap.health);
+		player.setSaturation(ap.saturation);
+		player.setGameMode(GameMode.getByValue(ap.gamemode));
+		if (cfg.getBoolean("messages.colorNick", true)) {
+			player.setDisplayName(ap.displayname);
 		}
 		playerManager.setTelePass(player, true);
 		db.i("string = " + string);
 		if (string.equalsIgnoreCase("old")) {
-			try {
-				String sLoc = tSM.get("LOCATION");
-				String[] aLoc = sLoc.split("/");
-				Location lLoc = new Location(Bukkit.getWorld(aLoc[0]),
-						Double.parseDouble(aLoc[1]),
-						Double.parseDouble(aLoc[2]),
-						Double.parseDouble(aLoc[3]));
-				player.teleport(lLoc);
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName()
-						+ "' had no valid LOCATION entry!");
-			}
+			player.teleport(ap.location);
 		} else {
 			Location l = getCoords(string);
 			player.teleport(l);
 		}
 		playerManager.setTelePass(player, false);
-		savedPlayerVars.remove(player);
 
 		String sClass = "exit";
 		if (playerManager.getRespawn(player) != null) {
@@ -1281,7 +1626,7 @@ public class Arena {
 			if (--i > 0)
 				continue;
 			commitPowerupItemSpawn(p.item);
-			Arenas.tellPublic(PVPArena.lang
+			playerManager.tellEveryone(PVPArena.lang
 					.parse("serverpowerup", p.name));
 			return;
 		}
@@ -1308,30 +1653,9 @@ public class Arena {
 	 *            the player to check
 	 * @return the saved location
 	 */
-	@SuppressWarnings("unchecked")
 	public Location getPlayerOldLocation(Player player) {
-		HashMap<String, String> tSM = (HashMap<String, String>) savedPlayerVars
-				.get(player);
-		if (tSM != null) {
-
-			try {
-				String sLoc = tSM.get("LOCATION");
-				String[] aLoc = sLoc.split("/");
-				Location lLoc = new Location(Bukkit.getWorld(aLoc[0]),
-						Double.parseDouble(aLoc[1]),
-						Double.parseDouble(aLoc[2]),
-						Double.parseDouble(aLoc[3]));
-				return lLoc;
-			} catch (Exception e) {
-				System.out.println("[PVP Arena] player '" + player.getName()
-						+ "' had no valid LOCATION entry!");
-			}
-
-		} else {
-			System.out.println("[PVP Arena] player '" + player.getName()
-					+ "' had no savedmisc entries!");
-		}
-		return null;
+		ArenaPlayer ap = playerManager.parsePlayer(player);
+		return ap.location;
 	}
 
 	/**
@@ -1342,35 +1666,44 @@ public class Arena {
 	 * @param lives
 	 *            the lives to set and display
 	 */
-	public void respawnPlayer(Player player, byte lives) {
-
-		playersetHealth(player, cfg.getInt("general.startHealth", 0));
+	public void respawnPlayer(Player player, int lives) {
+		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
-		player.setFoodLevel(cfg.getInt("general.startFoodLevel", 20));
-		player.setSaturation(cfg.getInt("general.startSaturation", 20));
-		player.setExhaustion((float) cfg.getDouble("general.start", 0.0));
-
-		if (cfg.getBoolean("general.refillInventory")
+		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
+		player.setSaturation(cfg.getInt("start.saturation", 20));
+		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
+		
+		if (cfg.getBoolean("game.refillInventory")
 				&& !playerManager.getClass(player).equals("custom")) {
 			clearInventory(player);
 			givePlayerFightItems(player);
 		}
+		
 
 		String sTeam = playerManager.getTeam(player);
 		String color = paTeams.get(sTeam);
-		if (!cfg.getBoolean("general.randomSpawn", false) && color != null
-				&& !sTeam.equals("free")) {
-			playerManager.tellEveryone(PVPArena.lang.parse("lostlife",
-					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW, String.valueOf(lives)));
+		
+		if (cfg.getBoolean("arenatype.flags")) {
+			playerManager
+					.tellEveryone(PVPArena.lang.parse("killed",
+							ChatColor.valueOf(color) + player.getName()
+									+ ChatColor.YELLOW));
 			tpPlayerToCoordName(player, sTeam + "spawn");
+			
+			checkEntityDeath(player);
 		} else {
+
 			playerManager.tellEveryone(PVPArena.lang.parse("lostlife",
 					ChatColor.WHITE + player.getName() + ChatColor.YELLOW,
 					String.valueOf(lives)));
-			tpPlayerToCoordName(player, "spawn");
+			if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
+					&& !sTeam.equals("free")) {
+				tpPlayerToCoordName(player, sTeam + "spawn");
+			} else {
+				tpPlayerToCoordName(player, "spawn");
+			}
+			paLives.put(player.getName(), lives);
 		}
-		playerManager.setLives(player, lives);
 	}
 
 	/**
@@ -1434,9 +1767,12 @@ public class Arena {
 		}
 
 		for (String team : result) {
-			if (result.contains(team))
+			if (result.contains(team)) {
+				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
+						"Team " + team));
 				playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
 						ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
+			}
 
 		}
 
@@ -1501,16 +1837,16 @@ public class Arena {
 		if (player.getInventory() == null) {
 			return;
 		}
-		if (savedInventories == null) {
-			return;
-		}
-		if (savedInventories.get(player.getName()) == null) {
+		
+		ArenaPlayer p = playerManager.parsePlayer(player);
+		
+		if (p.savedInventories == null) {
 			return;
 		}
 		player.getInventory().setContents(
-				(ItemStack[]) savedInventories.get(player.getName()));
+				p.savedInventories);
 		player.getInventory().setArmorContents(
-				(ItemStack[]) savedArmories.get(player.getName()));
+				p.savedArmories);
 	}
 
 	/**
@@ -1531,6 +1867,10 @@ public class Arena {
 							.getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
+						Announcement.announce(this, type.PRIZE, PVPArena.lang.parse(
+								"awarded",
+								PVPArena.eco.format(
+										cfg.getInt("money.reward", 0))));
 						Arenas.tellPlayer(Bukkit.getPlayer(nSplit[0]),
 								PVPArena.lang.parse("youwon", PVPArena
 										.eco.format(amount)));
@@ -1604,7 +1944,14 @@ public class Arena {
 	 * @return the arena type name
 	 */
 	public String getType() {
-		return "team";
+		if (cfg.getBoolean("arenatype.pumpkin")) {
+			return "pumpkin";
+		} else if (cfg.getBoolean("arenatype.flags")) {
+			return "ctf";
+		} else if (!cfg.getBoolean("arenatype.teams")) {
+			return "free";
+		}
+		return "teams";
 	}
 
 	/**
