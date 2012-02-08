@@ -60,11 +60,11 @@ public class Arenas {
 	 * @param type
 	 *            the arena type
 	 */
-	public static void loadArena(String configFile, String type) {
-		Arena arena;
+	public static Arena loadArena(String configFile, String type) {
 		db.i("loading arena " + configFile + " (" + type + ")");
-		arena = new Arena(configFile, type);
+		Arena arena = new Arena(configFile, type);
 		arenas.put(arena.name, arena);
+		return arena;
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class Arenas {
 	 */
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.playerManager.existsPlayer(pPlayer))
+			if (arena.pm.existsPlayer(pPlayer))
 				return arena.name;
 		}
 		return null;
@@ -91,7 +91,7 @@ public class Arenas {
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.playerManager.existsPlayer(pPlayer))
+			if (arena.pm.existsPlayer(pPlayer))
 				return arena;
 		}
 		return null;
@@ -162,10 +162,10 @@ public class Arenas {
 	 */
 	public static void powerupTick() {
 		for (Arena arena : arenas.values()) {
-			if (arena.pm == null)
+			if (arena.pum == null)
 				continue;
 			db.i("ticking: arena " + arena.name);
-			arena.pm.tick();
+			arena.pum.tick();
 		}
 	}
 

@@ -64,16 +64,32 @@ public class ArenaConfigs {
 		config.addDefault("tp.death", "spectator");
 
 		config.addDefault("setup.wand", Integer.valueOf(280));
+		
 		config.addDefault("game.lives", Integer.valueOf(3));
-		config.addDefault("messages.language", "en");
-		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
+		config.addDefault("game.powerups", "off");
+		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
+		config.addDefault("game.woolHead", Boolean.valueOf(false));
+		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 
+		config.addDefault("messages.language", "en");
+		config.addDefault("messages.colorNick", Boolean.valueOf(true));
+		config.addDefault("messages.chat", Boolean.valueOf(true));
+		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
+
+		config.addDefault("general.classperms", Boolean.valueOf(false));
+		config.addDefault("general.enabled", Boolean.valueOf(true));
+		config.addDefault("general.item-rewards", "none");
+		
+		
+		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
+		config.addDefault("join.random", Boolean.valueOf(true));
+		config.addDefault("join.forceeven", Boolean.valueOf(false));
+		
 		config.addDefault("arenatype.randomSpawn", Boolean.valueOf(false));
 		config.addDefault("goal.timed", Integer.valueOf(0));
 
 		config.addDefault("join.range", Integer.valueOf(0));
-		config.addDefault("game.powerups", "off");
 		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
 
 		config.addDefault("money.entry", Integer.valueOf(0));
@@ -94,21 +110,12 @@ public class ArenaConfigs {
 				Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
 
-		if (!type.equals("free")) {
-			config.addDefault("game.teamKill", Boolean.valueOf(false));
-			config.addDefault("join.manual", Boolean.valueOf(true));
-			config.addDefault("join.random", Boolean.valueOf(true));
-			config.addDefault("game.woolHead", Boolean.valueOf(false));
-			config.addDefault("join.forceeven", Boolean.valueOf(false));
-		}
-		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 
 		config.addDefault("start.health", Integer.valueOf(20));
 		config.addDefault("start.foodLevel", Integer.valueOf(20));
 		config.addDefault("start.saturation", Integer.valueOf(20));
 		config.addDefault("start.exhaustion", Float.valueOf(0));
 
-		config.addDefault("messages.colorNick", Boolean.valueOf(true));
 
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
@@ -116,9 +123,6 @@ public class ArenaConfigs {
 		config.addDefault("ready.max", Integer.valueOf(0));
 		config.addDefault("ready.minTeam", Integer.valueOf(1));
 		config.addDefault("ready.maxTeam", Integer.valueOf(0));
-		config.addDefault("general.enabled", Boolean.valueOf(true));
-		config.addDefault("messages.chat", Boolean.valueOf(true));
-		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
 		
 
 		config.addDefault("announcements.join", Boolean.valueOf(false));
@@ -146,7 +150,7 @@ public class ArenaConfigs {
 		
 		config.options().copyDefaults(true);
 		
-		cfg.set("cfgver", "0.6.0.0");
+		cfg.set("cfgver", "0.6.1.0");
 		cfg.save();
 		cfg.load();
 
@@ -198,7 +202,7 @@ public class ArenaConfigs {
 				powerups.put(key, temp_map);
 			}
 
-			arena.pm = new Powerups(powerups);
+			arena.pum = new Powerups(powerups);
 		}
 		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
@@ -217,8 +221,6 @@ public class ArenaConfigs {
 		} else {
 			arena.usesPowerups = false;
 		}
-
-		arena.timed = config.getInt("goal.timed", 0);
 
 		if (config.getConfigurationSection("regions") != null) {
 			Map<String, Object> regs = config

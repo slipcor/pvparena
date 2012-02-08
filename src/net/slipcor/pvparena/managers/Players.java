@@ -44,12 +44,12 @@ public class Players {
 	public String getTeamStringList(HashMap<String, String> paTeams) {
 		String result = "";
 		for (ArenaPlayer p : players.values()) {
-			if (!p.getTeam().equals("")) {
+			if (!p.team.equals("")) {
 
 				if (!result.equals(""))
 					result += ", ";
-				result += ChatColor.valueOf(paTeams.get(p.getTeam()))
-						+ p.getPlayer().getName() + ChatColor.WHITE;
+				result += ChatColor.valueOf(paTeams.get(p.team))
+						+ p.get().getName() + ChatColor.WHITE;
 			}
 		}
 		return result;
@@ -63,8 +63,8 @@ public class Players {
 	public HashMap<String, String> getPlayerTeamMap() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (ArenaPlayer p : players.values()) {
-			if (!p.getTeam().equals("")) {
-				result.put(p.getPlayer().getName(), p.getTeam());
+			if (!p.team.equals("")) {
+				result.put(p.get().getName(), p.team);
 			}
 		}
 		return result;
@@ -80,12 +80,12 @@ public class Players {
 
 		// count each team members
 		for (ArenaPlayer p : players.values()) {
-			if (!p.getTeam().equals("")) {
-				if (!counts.containsKey(p.getTeam())) {
-					counts.put(p.getTeam(), 1);
+			if (!p.team.equals("")) {
+				if (!counts.containsKey(p.team)) {
+					counts.put(p.team, 1);
 				} else {
-					int i = counts.get(p.getTeam());
-					counts.put(p.getTeam(), i);
+					int i = counts.get(p.team);
+					counts.put(p.team, i);
 				}
 			}
 		}
@@ -113,9 +113,9 @@ public class Players {
 	public int countPlayersInTeams() {
 		int result = 0;
 		for (ArenaPlayer p : players.values()) {
-			db.i("player: "+p.getPlayer().getName());
-			if (!p.getTeam().equals("")) {
-				db.i("- team "+p.getTeam());
+			db.i("player: "+p.get().getName());
+			if (!p.team.equals("")) {
+				db.i("- team "+p.team);
 				result++;
 			}
 		}
@@ -195,8 +195,8 @@ public class Players {
 			}
 		}
 		for (ArenaPlayer p : players.values()) {
-			if (!p.getTeam().equals("")) {
-				if (p.getFightClass().equals("")) {
+			if (!p.team.equals("")) {
+				if (p.aClass != null) {
 					// player not ready!
 					return 0;
 				}
@@ -215,8 +215,8 @@ public class Players {
 		db.i("counting players in team "+sTeam);
 		int result = 0;
 		for (ArenaPlayer p : players.values()) {
-			db.i(" - player "+p.getPlayer().getName()+", team "+String.valueOf(p.getTeam()));
-			if (p.getTeam() != null && p.getTeam().equals(sTeam)) {
+			db.i(" - player "+p.get().getName()+", team "+String.valueOf(p.team));
+			if (p.team != null && p.team.equals(sTeam)) {
 				result++;
 			}
 		}
@@ -236,11 +236,11 @@ public class Players {
 		}
 
 		for (ArenaPlayer p : pa) {
-			arena.removePlayer(p.getPlayer(),
+			arena.removePlayer(p.get(),
 					arena.cfg.getString("tp.exit", "exit"));
-			p.setTeam(null);
-			p.setClass(null);
-			arena.paLives.remove(p.getPlayer().getName());
+			p.team = null;
+			p.aClass = null;
+			arena.paLives.remove(p.get().getName());
 			paPlayersBetAmount.clear();
 		}
 		players.clear();
@@ -255,7 +255,7 @@ public class Players {
 	public void tellEveryone(String msg) {
 		db.i("@all: " + msg);
 		for (ArenaPlayer p : players.values()) {
-			Arenas.tellPlayer(p.getPlayer(), msg);
+			Arenas.tellPlayer(p.get(), msg);
 		}
 	}
 
@@ -270,7 +270,7 @@ public class Players {
 	public void tellEveryoneExcept(Player player, String msg) {
 		db.i("@all/" + player.getName() + ": " + msg);
 		for (ArenaPlayer p : players.values()) {
-			if (p.getPlayer().equals(player))
+			if (p.get().equals(player))
 				continue;
 			Arenas.tellPlayer(player, msg);
 		}
@@ -291,9 +291,9 @@ public class Players {
 		}
 		db.i("@" + team + ": " + msg);
 		for (ArenaPlayer p : players.values()) {
-			if (!p.getTeam().equals(team))
+			if (!p.team.equals(team))
 				continue;
-			p.getPlayer().sendMessage(
+			p.get().sendMessage(
 					c + "[" + team + "] " + ChatColor.WHITE + msg);
 		}
 	}
@@ -319,7 +319,7 @@ public class Players {
 	 * @return the player's class name
 	 */
 	public String getClass(Player player) {
-		return players.get(player.getName()).getFightClass();
+		return players.get(player.getName()).aClass;
 	}
 
 	/**
@@ -331,7 +331,7 @@ public class Players {
 	 *            a player class name
 	 */
 	public void setClass(Player player, String s) {
-		players.get(player.getName()).setClass(s);
+		players.get(player.getName()).aClass = s;
 	}
 
 	/**
@@ -416,7 +416,7 @@ public class Players {
 	 */
 	public String getTeam(Player player) {
 		return (players.get(player.getName()) == null) ? "" : players.get(
-				player.getName()).getTeam();
+				player.getName()).team;
 	}
 
 	/**
@@ -428,7 +428,7 @@ public class Players {
 	 *            the team name
 	 */
 	public void setTeam(Player player, String s) {
-		players.get(player.getName()).setTeam(s);
+		players.get(player.getName()).team = s;
 	}
 
 	/**
@@ -440,7 +440,7 @@ public class Players {
 	 *            true if may pass, false otherwise
 	 */
 	public void setTelePass(Player player, boolean b) {
-		players.get(player.getName()).setTelePass(b);
+		players.get(player.getName()).telePass = b;
 	}
 
 	/**
@@ -451,7 +451,7 @@ public class Players {
 	 * @return true if may pass, false otherwise
 	 */
 	public boolean getTelePass(Player player) {
-		return players.get(player.getName()).getTelePass();
+		return players.get(player.getName()).telePass;
 	}
 
 	/**

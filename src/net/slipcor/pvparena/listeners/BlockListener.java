@@ -38,7 +38,7 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockplace", true))))
 			return; // we don't need protection => OUT!
-		if (arena.playerManager.getPlayers().size() < 1)
+		if (arena.pm.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
 		
 		event.setCancelled(true);
@@ -54,7 +54,7 @@ public class BlockListener implements Listener {
 
 		db.i("block ignite inside the arena");
 
-		if (arena.playerManager.getPlayers().size() < 1)
+		if (arena.pm.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
 		
 		BlockIgniteEvent.IgniteCause cause = event.getCause();

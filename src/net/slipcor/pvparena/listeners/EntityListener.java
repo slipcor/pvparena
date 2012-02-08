@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.listeners;
+		package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
@@ -55,7 +55,7 @@ public class EntityListener implements Listener {
 				return;
 
 			db.i("onEntityDeath: fighting player");
-			if (!arena.playerManager.getTeam(player).equals("")) {
+			if (!arena.pm.getTeam(player).equals("")) {
 				event.getDrops().clear();
 
 				commitPlayerDeath(arena, player, event);
@@ -75,16 +75,16 @@ public class EntityListener implements Listener {
 	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
 
-		String sTeam = arena.playerManager.getTeam(player);
+		String sTeam = arena.pm.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
 		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("killed",
 				player.getName()));
-		arena.playerManager.tellEveryone(PVPArena.lang.parse("killed",
+		arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 				ChatColor.valueOf(color) + player.getName()
 						+ ChatColor.YELLOW));
 
 		Statistics.addLoseStat(player, sTeam, arena);
-		arena.playerManager.setTeam(player, ""); // needed so player does not
+		arena.pm.setTeam(player, ""); // needed so player does not
 													// get found when dead
 		
 		if (arena.isCustomClassActive()) {
@@ -98,14 +98,14 @@ public class EntityListener implements Listener {
 			player.getInventory().clear();
 		}
 		
-		arena.playerManager.setRespawn(player, true);
+		arena.pm.setRespawn(player, true);
 		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			arena.checkEntityDeath(player);
 		}
 
-		if (arena.timed > 0) {
+		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");
 			Player damager = null;
 
@@ -140,27 +140,27 @@ public class EntityListener implements Listener {
 					db.i("killer: " + sKiller);
 				}
 			} else {
-				sKilled = arena.playerManager.getTeam(player);
+				sKilled = arena.pm.getTeam(player);
 				if (damager != null) {
-					sKiller = arena.playerManager.getTeam(damager);
+					sKiller = arena.pm.getTeam(damager);
 				}
 			}
 			if (damager != null) {
-				if (arena.playerManager.getKills(sKiller) > 0) {
+				if (arena.pm.getKills(sKiller) > 0) {
 					db.i("killer killed already");
-					arena.playerManager.addKill(sKiller);
+					arena.pm.addKill(sKiller);
 				} else {
 					db.i("first kill");
-					arena.playerManager.addKill(sKiller);
+					arena.pm.addKill(sKiller);
 				}
 			}
 
-			if (arena.playerManager.getDeaths(sKilled) > 0) {
+			if (arena.pm.getDeaths(sKilled) > 0) {
 				db.i("already died");
-				arena.playerManager.addDeath(sKilled);
+				arena.pm.addDeath(sKilled);
 			} else {
 				db.i("first death");
-				arena.playerManager.addDeath(sKilled);
+				arena.pm.addDeath(sKilled);
 			}
 		}
 		if (arena.usesPowerups) {
@@ -203,14 +203,15 @@ public class EntityListener implements Listener {
 				return;
 
 			db.i("onEntityDamageByBLOCKDAMAGE: fighting player");
-
-			if (arena.playerManager.getTeam(defender).equals(""))
+			
+			if (arena.pm.getPlayerTeamMap().get(defender.getName()) == null) {
 				return;
+			}
 
 			db.i("processing damage!");
-			if (arena.pm != null) {
+			if (arena.pum != null) {
 				db.i("committing powerup triggers");
-				Powerup p = arena.pm.puActive.get(defender);
+				Powerup p = arena.pum.puActive.get(defender);
 				if ((p != null) && (p.canBeTriggered()))
 					p.commit(null, defender, event);
 
@@ -263,14 +264,14 @@ public class EntityListener implements Listener {
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 
-		if ((arena.playerManager.getTeam(attacker).equals(""))
-				|| (arena.playerManager.getTeam(defender).equals("")))
+		if ((arena.pm.getTeam(attacker).equals(""))
+				|| (arena.pm.getTeam(defender).equals("")))
 			return;
 
 		db.i("both players part of the arena");
 		if ((!arena.cfg.getBoolean("game.teamKill", false))
-				&& (arena.playerManager.getTeam(attacker))
-						.equals(arena.playerManager.getTeam(defender))) {
+				&& (arena.pm.getTeam(attacker))
+						.equals(arena.pm.getTeam(defender))) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
@@ -280,13 +281,13 @@ public class EntityListener implements Listener {
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
-		if (arena.pm != null) {
+		if (arena.pum != null) {
 			db.i("committing powerup triggers");
-			Powerup p = arena.pm.puActive.get(attacker);
+			Powerup p = arena.pum.puActive.get(attacker);
 			if ((p != null) && (p.canBeTriggered()))
 				p.commit(attacker, defender, event);
 
-			p = arena.pm.puActive.get(defender);
+			p = arena.pum.puActive.get(defender);
 			if ((p != null) && (p.canBeTriggered()))
 				p.commit(attacker, defender, event);
 
@@ -339,7 +340,7 @@ public class EntityListener implements Listener {
 		}
 
 		Player player = (Player) p1;
-		if (arena.playerManager.getTeam(player).equals(""))
+		if (arena.pm.getTeam(player).equals(""))
 			return;
 
 		// here it comes, process the damage!
@@ -387,11 +388,11 @@ public class EntityListener implements Listener {
 		}
 
 		Player player = (Player) p1;
-		if (arena.playerManager.getTeam(player).equals(""))
+		if (arena.pm.getTeam(player).equals(""))
 			return;
 
-		if (arena.pm != null) {
-			Powerup p = arena.pm.puActive.get(player);
+		if (arena.pum != null) {
+			Powerup p = arena.pum.puActive.get(player);
 			if (p != null) {
 				if (p.canBeTriggered()) {
 					if (p.isEffectActive(PowerupEffect.classes.HEAL)) {

@@ -4,8 +4,15 @@ ADDITIONS
 - leaderboards and proper statistics
 
 FIXES
+- team belongings vs spectator
+- team belingings vs dead
 - flag collection
+  - flag = block !!
+  - flag = colored wool. Taken => white; 
 
 PROBLEMS:
 - loot not possible with flag mode!
 - loot maybe OP with "last man standing"
+
+CODING:
+- group/sort

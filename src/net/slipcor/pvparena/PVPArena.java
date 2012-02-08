@@ -17,13 +17,11 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.register.payment.Method;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spoutapi.SpoutManager;
 
 /**
  * main class
@@ -43,13 +41,11 @@ public class PVPArena extends JavaPlugin {
 	public static final Language lang = new Language();
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
-	public static String spout = null;
-	
-	private static Debug debug = new Debug();
 	
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
+	private final Debug debug = new Debug();
 	
 	/**
 	 * plugin enabling method - register events and load the configs
@@ -71,7 +67,7 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.active = getConfig().getBoolean("debug");
 
-		load_config();
+		Arenas.load_arenas();
 
 		Update.updateCheck(this);
 		
@@ -104,15 +100,16 @@ public class PVPArena extends JavaPlugin {
 
 		Player player = (Player) sender;
 
-		if (args == null || args.length < 1)
+		if (args == null || args.length < 1) {
 			return false;
+		}
 
 		if (args[0].equals("help")) {
 			return Help.parseCommand(player, args);
 		}
 
-		if ((args.length == 3 || args.length == 2) && args[1].equals("create")) {
-			// /pa [name] create [type]
+		if ((args.length > 1) && args[1].equals("create")) {
+			// /pa [name] create {type} {...}
 			if (!hasAdminPerms(player) && !(hasCreatePerms(player, null))) {
 				Arenas.tellPlayer(player,
 						lang.parse("nopermto", lang.parse("create")));
@@ -123,12 +120,12 @@ public class PVPArena extends JavaPlugin {
 				Arenas.tellPlayer(player, lang.parse("arenaexists"));
 				return true;
 			}
-			if (args.length == 3) {
-				Arenas.loadArena(args[0], args[2]);
+			Arena a = null;
+			if (args.length > 2) {
+				a = Arenas.loadArena(args[0], args[2]);
 			} else {
-				Arenas.loadArena(args[0], "teams");
+				a = Arenas.loadArena(args[0], "teams");
 			}
-			Arena a = Arenas.getArenaByName(args[0]);
 			a.setWorld(player.getWorld().getName());
 			if (!hasAdminPerms(player)) {
 				a.owner = player.getName();
@@ -161,7 +158,7 @@ public class PVPArena extends JavaPlugin {
 						lang.parse("nopermto", lang.parse("reload")));
 				return true;
 			}
-			load_config();
+			Arenas.load_arenas();
 			Arenas.tellPlayer(player, lang.parse("reloaded"));
 			return true;
 		} else if (args[0].equalsIgnoreCase("list")) {
@@ -171,12 +168,12 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
-				String sName = arena.playerManager.getTeam(player);
+				String sName = arena.pm.getTeam(player);
 				
 				Announcement.announce(arena, type.LOSER, lang.parse("playerleave",
 						player.getName()));
 
-				arena.playerManager.tellEveryoneExcept(
+				arena.pm.tellEveryoneExcept(
 						player,
 						lang.parse("playerleave",
 								ChatColor.valueOf(arena.paTeams.get(sName))
@@ -214,19 +211,6 @@ public class PVPArena extends JavaPlugin {
 		String[] newArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 		return arena.parseCommand(player, newArgs);
-	}
-
-	/**
-	 * config loading - load all arenas
-	 */
-	public static void load_config() {
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
-			spout = SpoutManager.getInstance().toString();
-		} else {
-			lang.log_info("nospout");
-		}
-
-		Arenas.load_arenas();
 	}
 
 	/**

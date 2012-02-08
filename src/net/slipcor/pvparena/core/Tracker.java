@@ -32,8 +32,7 @@ public class Tracker implements Runnable {
 
 	public void start() {
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
-				0L, 1200L);
-		// TODO: 72000L
+				0L, 72000L);
 	}
 
 	public static void stop() {

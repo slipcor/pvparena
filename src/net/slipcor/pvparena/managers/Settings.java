@@ -30,11 +30,6 @@ public class Settings {
 	private static HashMap<String, String> types = new HashMap<String, String>();
 	
 	static {
-		
-		types.put("classitems.Ranger", "items");
-		types.put("classitems.Swordsman", "items");
-		types.put("classitems.Tank", "items");
-		types.put("classitems.Pyro", "items");
 
 		types.put("tp.win", "tp");
 		types.put("tp.lose", "tp");
@@ -42,17 +37,38 @@ public class Settings {
 		types.put("tp.death", "tp");
 
 		types.put("setup.wand", "int");
-		types.put("game.lives", "int");
-		types.put("messages.language", "lang");
-		types.put("general.classperms", "boolean");
-		types.put("game.preventDeath", "boolean");
 		
+		types.put("game.lives", "int");
+		types.put("game.preventDeath", "boolean");
+		types.put("game.powerups", "string");
+		types.put("game.refillInventory", "boolean");
+		types.put("game.teamKill", "boolean");
+		types.put("game.woolHead", "boolean");
+		types.put("game.colorNick", "boolean");
+
+		types.put("messages.chat", "boolean");
+		types.put("messages.colorNick", "boolean");
+		types.put("messages.defaultChat", "boolean");
+		types.put("messages.language", "lang");
+		
+		types.put("general.classperms", "boolean");
+		types.put("general.enabled", "boolean");
+		types.put("general.owner", "string");
+		types.put("general.world", "string");
+		types.put("general.item-rewards", "items");
+
 		types.put("arenatype.randomSpawn", "boolean");
+		types.put("arenatype.teams", "boolean");
+		types.put("arenatype.flags", "boolean");
+		types.put("arenatype.pumpkin", "boolean");
+		
 		types.put("goal.timed", "int");
 
+		types.put("join.forceEven", "boolean");
+		types.put("join.manual", "boolean");
+		types.put("join.random", "boolean");
 		types.put("join.range", "int");
-		types.put("game.powerups", "string");
-		types.put("general.item-rewards", "items");
+		
 		types.put("periphery.checkRegions", "boolean");
 		
 		types.put("money.entry", "int");
@@ -70,21 +86,11 @@ public class Settings {
 		types.put("protection.checkExit", "boolean");
 		types.put("protection.checkSpectator", "boolean");
 		types.put("protection.checkLounges", "boolean");
-		
-		types.put("game.teamKill", "boolean");
-		types.put("join.manual", "boolean");
-		types.put("join.random", "boolean");
-		
-		types.put("game.woolHead", "boolean");
-		types.put("join.forceEven", "boolean");
-		types.put("game.refillInventory", "boolean");
 
 		types.put("start.health", "int");
 		types.put("start.foodLevel", "int");
 		types.put("start.saturation", "int");
 		types.put("start.exhaustion", "double");
-
-		types.put("messages.colorNick", "boolean");
 
 		types.put("ready.block", "item");
 		types.put("ready.checkEach", "boolean");
@@ -92,8 +98,15 @@ public class Settings {
 		types.put("ready.max", "int");
 		types.put("ready.minTeam", "int");
 		types.put("ready.maxTeam", "int");
-		
-		types.put("general.enabled", "boolean");
+
+		types.put("announcements.join", "boolean");
+		types.put("announcements.start", "boolean");
+		types.put("announcements.end", "boolean");
+		types.put("announcements.winner", "boolean");
+		types.put("announcements.loser", "boolean");
+		types.put("announcements.prize", "boolean");
+		types.put("announcements.radius", "int");
+		types.put("announcements.color", "string");
 	}
 	
 	public Settings(Arena a) {

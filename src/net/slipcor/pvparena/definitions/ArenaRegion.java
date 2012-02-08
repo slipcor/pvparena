@@ -45,10 +45,35 @@ public class ArenaRegion {
 	 */
 	public ArenaRegion(String sName, Location lMin, Location lMax) {
 		name = sName;
+		Location[] sane = sanityCheck(lMin, lMax);
+		lMin = sane[0].clone();
+		lMax = sane[1].clone();
 		min = lMin.toVector();
 		max = lMax.toVector();
 		world = lMin.getWorld();
-		// TODO add sanity check (real min? real max?)
+	}
+
+	private Location[] sanityCheck(Location lMin, Location lMax) {
+		boolean x =  (lMin.getBlockX() > lMax.getBlockX());
+		boolean y = (lMin.getBlockY() > lMax.getBlockY());
+		boolean z = (lMin.getBlockZ() > lMax.getBlockZ());
+		
+		if (!(x|y|z))
+		{
+			return new Location[] {lMin, lMax};
+		}
+		Location l1;
+		Location l2;
+
+		l1 = new Location(lMin.getWorld(),
+				x?lMax.getBlockX():lMin.getBlockX(),
+				y?lMax.getBlockY():lMin.getBlockY(),
+				z?lMax.getBlockZ():lMin.getBlockZ());
+		l2 = new Location(lMin.getWorld(),
+				x?lMin.getBlockX():lMax.getBlockX(),
+				y?lMin.getBlockY():lMax.getBlockY(),
+				z?lMin.getBlockZ():lMax.getBlockZ());
+		return new Location[] {l1, l2};
 	}
 
 	/**

@@ -218,18 +218,18 @@ public class PowerupEffect {
 
 					// pasted from onEntityDeath;
 
-					String sTeam = arena.playerManager.getTeam(player);
+					String sTeam = arena.pm.getTeam(player);
 					
 					Announcement.announce(arena, Announcement.type.LOSER, PVPArena.lang.parse(
 							"killed",player.getName()));
-					arena.playerManager.tellEveryone(PVPArena.lang.parse(
+					arena.pm.tellEveryone(PVPArena.lang.parse(
 							"killed",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
 									+ player.getName() + ChatColor.YELLOW));
 					Statistics.addLoseStat(player, sTeam, arena);
 					// needed so player does not get found when dead
-					arena.playerManager.setTeam(player, "");
-					arena.playerManager.setRespawn(player, true);
+					arena.pm.setTeam(player, "");
+					arena.pm.setRespawn(player, true);
 
 					arena.checkEndAndCommit();
 				}

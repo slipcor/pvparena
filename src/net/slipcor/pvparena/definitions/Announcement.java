@@ -30,7 +30,7 @@ public class Announcement {
 		Bukkit.getServer().getWorld(a.getWorld()).getPlayers();
 		
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (a.playerManager.existsPlayer(p)) {
+			if (a.pm.existsPlayer(p)) {
 				continue;
 			}
 			send(a,p,message.replace(ChatColor.WHITE.toString(), ChatColor.valueOf(a.cfg.getString("announcements.color")).toString()));

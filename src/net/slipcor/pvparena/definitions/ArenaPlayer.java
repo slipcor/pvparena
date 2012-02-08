@@ -22,13 +22,15 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class ArenaPlayer {
 	private Player player = null;
-	private String team = "";
-	private String fightClass = "";
+	public String team = "";
+	public String aClass = "";
 	private String respawn = null;
-	private boolean telePass = false;
+	public boolean telePass = false;
+	
 	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
-	public ItemStack[] savedInventories;
-	public ItemStack[] savedArmories;
+	
+	public ItemStack[] savedInventory;
+	public ItemStack[] savedArmor;
 	public float exhaustion;
 	public int fireticks;
 	public int foodlevel;
@@ -54,46 +56,8 @@ public class ArenaPlayer {
 	 * 
 	 * @return the bukkit player instance
 	 */
-	public Player getPlayer() {
+	public Player get() {
 		return player;
-	}
-
-	/**
-	 * return the PVP Arena player team
-	 * 
-	 * @return the team name
-	 */
-	public String getTeam() {
-		return team;
-	}
-
-	/**
-	 * set the PVP Arena player team
-	 * 
-	 * @param s
-	 *            the team name
-	 */
-	public void setTeam(String s) {
-		team = s;
-	}
-
-	/**
-	 * get the PVP Arena player class
-	 * 
-	 * @return the class name
-	 */
-	public String getFightClass() {
-		return fightClass;
-	}
-
-	/**
-	 * set the PVP Arena player class
-	 * 
-	 * @param s
-	 *            the class name
-	 */
-	public void setClass(String s) {
-		fightClass = s;
 	}
 
 	/**
@@ -112,25 +76,6 @@ public class ArenaPlayer {
 	 *            the coord name
 	 */
 	public void setRespawn(boolean set) {
-		respawn = set ? fightClass : null;
-	}
-
-	/**
-	 * set the teleport pass
-	 * 
-	 * @param b
-	 *            the teleport pass
-	 */
-	public void setTelePass(boolean b) {
-		telePass = b;
-	}
-
-	/**
-	 * get the teleport pass
-	 * 
-	 * @return true if may pass, false otherwise
-	 */
-	public boolean getTelePass() {
-		return telePass;
+		respawn = set ? aClass : null;
 	}
 }

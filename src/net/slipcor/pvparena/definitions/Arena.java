@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
@@ -41,7 +42,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.util.Vector;
-import org.getspout.spoutapi.SpoutManager;
 
 /**
  * arena class
@@ -78,7 +78,6 @@ public class Arena {
 	public final HashMap<String, ItemStack[]> paClassItems = new HashMap<String, ItemStack[]>();
 	// available teams mapped to color: TeamName => ColorString
 	public final HashMap<String, String> paTeams = new HashMap<String, String>();
-	//TODO: if no teams set, FFA
 	
 	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
 	/**
@@ -94,15 +93,14 @@ public class Arena {
 	public final HashSet<String> paReady = new HashSet<String>();
 	public final HashSet<String> paChat = new HashSet<String>();
 
-	public Powerups pm;
+	public Powerups pum;
 	public Settings sm;
-	public Players playerManager = new Players();
+	public Players pm = new Players();
 	public String name = "default";
 	public String owner = "%server%";
 
 	public int powerupDiff; // powerup trigger cap
 	public int powerupDiffI = 0; // powerup trigger count
-	public int timed = 0; // timed arena? (<1 => false, else: limit in seconds)
 
 	public Location pos1; // temporary position 1 (region select)
 	public Location pos2; // temporary position 2 (region select)
@@ -152,7 +150,7 @@ public class Arena {
 	}
 
 	/**
-	 * basic arena constructor
+	 * arena constructor
 	 * 
 	 * @param name
 	 *            the arena name
@@ -176,10 +174,6 @@ public class Arena {
 		cfg.save();
 		
 	}
-
-	//
-	// GENERAL
-	//
 
 	/**
 	 * retrieve a material from a string
@@ -388,8 +382,10 @@ public class Arena {
 		int joinRange = cfg.getInt("join.range", 0);
 		if (joinRange < 1)
 			return false;
-		if (regions.get("battlefield") == null)
+		if (regions.get("battlefield") == null) {
+			Bukkit.getLogger().warning("[PVP Arena] JoinRange set, but Battlefield not set!");
 			return false;
+		}
 		return regions.get("battlefield").tooFarAway(joinRange,
 				player.getLocation());
 	}
@@ -417,10 +413,10 @@ public class Arena {
 	 */
 	public boolean checkRegion(Arena arena) {
 		if ((regions.get("battlefield") != null)
-				&& (arena.regions.get("battlefield") != null))
+				&& (arena.regions.get("battlefield") != null)) {
 			return !arena.regions.get("battlefield").overlapsWith(
 					regions.get("battlefield"));
-
+		}
 		return true;
 	}
 
@@ -435,7 +431,7 @@ public class Arena {
 		db.i("get coords: " + place);
 		World world = Bukkit.getWorld(cfg.getString("general.world", Bukkit
 				.getWorlds().get(0).getName()));
-		if (place.equals("spawn")) {
+		if (place.equals("spawn") || place.equals("popup")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
@@ -454,8 +450,7 @@ public class Arena {
 			Random r = new Random();
 
 			place = locs.get(r.nextInt(locs.size()));
-		}
-		if (cfg.get("spawns." + place) == null) {
+		} else if (cfg.get("spawns." + place) == null) {
 			if (!place.contains("spawn")) {
 				db.i("place not found!");
 				return null;
@@ -489,10 +484,6 @@ public class Arena {
 		return Config.parseLocation(world, sLoc);
 	}
 
-	//
-	// ARENA PREPARE
-	//
-
 	/**
 	 * set an arena coord to a player's position
 	 * 
@@ -520,10 +511,6 @@ public class Arena {
 		cfg.save();
 	}
 
-	//
-	// ARENA START
-	//
-
 	/**
 	 * supply a player with class items and eventually wool head
 	 * 
@@ -531,7 +518,7 @@ public class Arena {
 	 *            the player to supply
 	 */
 	public void givePlayerFightItems(Player player) {
-		String playerClass = playerManager.getClass(player);
+		String playerClass = pm.getClass(player);
 		db.i("giving items to player '" + player.getName() + "', class '"
 				+ playerClass + "'");
 
@@ -546,7 +533,7 @@ public class Arena {
 			}
 		}
 		if (cfg.getBoolean("game.woolHead", false)) {
-			String sTeam = playerManager.getTeam(player);
+			String sTeam = pm.getTeam(player);
 			String color = paTeams.get(sTeam);
 			db.i("forcing woolhead: " + sTeam + "/" + color);
 			player.getInventory().setHelmet(
@@ -586,24 +573,25 @@ public class Arena {
 	 */
 	public void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
 		Material type = stack.getType();
-		if (HELMETS_TYPE.contains(type))
+		if (HELMETS_TYPE.contains(type)) {
 			inv.setHelmet(stack);
-		else if (CHESTPLATES_TYPE.contains(type))
+		} else if (CHESTPLATES_TYPE.contains(type)) {
 			inv.setChestplate(stack);
-		else if (LEGGINGS_TYPE.contains(type))
+		} else if (LEGGINGS_TYPE.contains(type)) {
 			inv.setLeggings(stack);
-		else if (BOOTS_TYPE.contains(type))
+		} else if (BOOTS_TYPE.contains(type)) {
 			inv.setBoots(stack);
+		}
 	}
 
 	/**
 	 * teleport all players to their respective spawn
 	 */
 	public void teleportAllToSpawn() {
-		for (String p : playerManager.getPlayerTeamMap().keySet()) {
+		for (String p : pm.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
 			if (!cfg.getBoolean("arenatype.randomSpawn", false)) {
-				tpPlayerToCoordName(z, playerManager.getPlayerTeamMap().get(p)
+				tpPlayerToCoordName(z, pm.getPlayerTeamMap().get(p)
 						+ "spawn");
 			} else {
 				tpPlayerToCoordName(z, "spawn");
@@ -611,7 +599,7 @@ public class Arena {
 			setPermissions(z);
 		}
 		init_arena();
-
+		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
 			db.i("arena timing!");
 			// initiate autosave timer
@@ -645,7 +633,7 @@ public class Arena {
 		HashMap<String,Boolean> perms = getTempPerms();
         if (perms == null || perms.isEmpty()) return;
 
-        ArenaPlayer player = playerManager.parsePlayer(p);
+        ArenaPlayer player = pm.parsePlayer(p);
         PermissionAttachment pa = p.addAttachment(Bukkit.getServer().getPluginManager().getPlugin("pvparena"));
         player.tempPermissions.add(pa);
         for (String entry : perms.keySet()) {
@@ -654,7 +642,7 @@ public class Arena {
 	}
 	
 	private void removePermissions(Player p) {
-        ArenaPlayer player = playerManager.parsePlayer(p);
+        ArenaPlayer player = pm.parsePlayer(p);
 		if (player == null || player.tempPermissions == null) {
 			return;
 		}
@@ -683,15 +671,14 @@ public class Arena {
 	}
 	
 	public boolean isCustomClassActive() {
-		for (ArenaPlayer p : playerManager.getPlayers()) {
+		for (ArenaPlayer p : pm.getPlayers()) {
 			if (p.getClass().equals("custom")) {
 				return true;
 			}
 		}
 		return false;
 	}
-
-
+	
 	/**
 	 * [FLAG] take away one life of a team
 	 * 
@@ -710,7 +697,6 @@ public class Arena {
 		}
 	}
 	
-
 	/**
 	 * get the team name of the flag a player holds
 	 * 
@@ -738,160 +724,94 @@ public class Arena {
 	 * @param block the clicked block
 	 */
 	public void checkInteract(Player player, Block block) {
-		if (cfg.getBoolean("arenatype.pumpkin")) {
+		
+		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
+		
+		if (block == null) {
+			return;
+		}
+		
+		if (pumpkin && !block.getType().equals(Material.PUMPKIN)) {
+			return;
+		} else if (!pumpkin && !block.getType().equals(Material.WOOL)) {
+			return;
+		}
+		String type = null;
+		if (pumpkin) {
+			type = "pumpkin";
+		} else {
+			type = "flag";
+		}
+		db.i(type+" click!");
+		
+		Vector vLoc;
+		String sTeam;
+		Vector vFlag = null;
 
-			if (block == null) {
-				return;
-			}
-			
-			
-			if (!block.getType().equals(Material.PUMPKIN)) {
-				return;
-			}
-			db.i("pumpkin click!");
-			
-			Vector vLoc;
-			String sTeam;
-			Vector vFlag = null;
-
-			if (paTeamFlags.containsValue(player.getName())) {
-				db.i("player " + player.getName() + " has got a pumpkin");
-				vLoc = block.getLocation().toVector();
-				sTeam = playerManager.getTeam(player);
-				if (this.getCoords(sTeam + "pumpkin") != null) {
-					vFlag = this.getCoords(sTeam + "pumpkin").toVector();
-				} else {
-					db.i(sTeam + "pumpkin" + " = null");
-				}
-
-				db.i("player is in the team " + sTeam);
-				if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
-
-					db.i("player is at his pumpkin");
-					String flagTeam = getHeldFlagTeam(player.getName());
-
-					db.i("the flag belongs to team " + flagTeam);
-
-					String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
-							+ flagTeam + ChatColor.YELLOW;
-					String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
-							+ player.getName() + ChatColor.YELLOW;
-
-					playerManager.tellEveryone(PVPArena.lang.parse("pumpkinhomeleft",
-							scPlayer, scFlagTeam,
-							String.valueOf(paLives.get(flagTeam) - 1)));
-					paTeamFlags.remove(flagTeam);
-					
-					player.getInventory().setHelmet(paHeadGears.get(player.getName()).clone());
-					paHeadGears.remove(player.getName());
-					
-					reduceLivesCheckEndAndCommit(flagTeam);
-				}
+		if (paTeamFlags.containsValue(player.getName())) {
+			db.i("player " + player.getName() + " has got a "+type);
+			vLoc = block.getLocation().toVector();
+			sTeam = pm.getTeam(player);
+			if (this.getCoords(sTeam + type) != null) {
+				vFlag = this.getCoords(sTeam + type).toVector();
 			} else {
-				for (String team : paTeams.keySet()) {
-					String playerTeam = playerManager.getTeam(player);
-					if (team.equals(playerTeam))
-						continue;
-					if (!playerManager.getPlayerTeamMap().containsValue(team))
-						continue; // dont check for inactive teams
-					if (paTeamFlags.containsKey(team)) {
-						continue; // already taken
-					}
-					db.i("checking for pumpkin of team " + team);
-					vLoc = player.getLocation().toVector();
-					if (this.getCoords(team + "pumpkin") != null) {
-						vFlag = this.getCoords(team + "pumpkin").toVector();
-					}
-					if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-						db.i("spawn found!");
-						db.i("vFlag: " + vFlag.toString());
-						String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
-								+ ChatColor.YELLOW;
-						String scPlayer = ChatColor
-								.valueOf(paTeams.get(playerTeam))
-								+ player.getName() + ChatColor.YELLOW;
-						playerManager.tellEveryone(PVPArena.lang.parse("pumpkingrab",
-								scPlayer, scTeam));
-						paHeadGears.put(player.getName(), player.getInventory().getHelmet().clone());
-						player.getInventory().setHelmet(new ItemStack(Material.PUMPKIN,1));
-						paTeamFlags.put(team, player.getName());
-						return;
-					}
-				}
+				db.i(sTeam + type + " = null");
+			}
+
+			db.i("player is in the team " + sTeam);
+			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
+
+				db.i("player is at his "+type);
+				String flagTeam = getHeldFlagTeam(player.getName());
+
+				db.i("the "+type+" belongs to team " + flagTeam);
+
+				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+						+ flagTeam + ChatColor.YELLOW;
+				String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
+						+ player.getName() + ChatColor.YELLOW;
+
+				pm.tellEveryone(PVPArena.lang.parse(type+"homeleft",
+						scPlayer, scFlagTeam,
+						String.valueOf(paLives.get(flagTeam) - 1)));
+				paTeamFlags.remove(flagTeam);
+				
+				player.getInventory().setHelmet(paHeadGears.get(player.getName()).clone());
+				paHeadGears.remove(player.getName());
+				
+				reduceLivesCheckEndAndCommit(flagTeam);
 			}
 		} else {
-			Vector vLoc;
-			String sTeam;
-			Vector vSpawn;
-			Vector vFlag = null;
-	
-			if (paTeamFlags.containsValue(player.getName())) {
-				// player has flag, check for home and win
-				db.i("player " + player.getName() + " has got a flag");
+			for (String team : paTeams.keySet()) {
+				String playerTeam = pm.getTeam(player);
+				if (team.equals(playerTeam))
+					continue;
+				if (!pm.getPlayerTeamMap().containsValue(team))
+					continue; // dont check for inactive teams
+				if (paTeamFlags.containsKey(team)) {
+					continue; // already taken
+				}
+				db.i("checking for "+type+" of team " + team);
 				vLoc = player.getLocation().toVector();
-				sTeam = playerManager.getTeam(player);
-				vSpawn = this.getCoords(sTeam + "spawn").toVector();
-				if (this.getCoords(sTeam + "flag") != null) {
-					vFlag = this.getCoords(sTeam + "flag").toVector();
-				} else {
-					db.i(sTeam + "flag" + " = null");
+				if (this.getCoords(team + type) != null) {
+					vFlag = this.getCoords(team + type).toVector();
 				}
-	
-				db.i("player is in the team " + sTeam);
-				if ((vFlag == null && vLoc.distance(vSpawn) < 2)
-						|| (vFlag != null && vLoc.distance(vFlag) < 2)) {
-	
-					db.i("player is at his spawn");
-					String flagTeam = getHeldFlagTeam(player.getName());
-	
-					db.i("the flag belongs to team " + flagTeam);
-	
-					String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
-							+ flagTeam + ChatColor.YELLOW;
-					String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
+				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
+					db.i(type+" found!");
+					db.i("vFlag: " + vFlag.toString());
+					String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
+							+ ChatColor.YELLOW;
+					String scPlayer = ChatColor
+							.valueOf(paTeams.get(playerTeam))
 							+ player.getName() + ChatColor.YELLOW;
-	
-					playerManager.tellEveryone(PVPArena.lang.parse("flaghomeleft",
-							scPlayer, scFlagTeam,
-							String.valueOf(paLives.get(flagTeam) - 1)));
-					paTeamFlags.remove(flagTeam);
-					reduceLivesCheckEndAndCommit(flagTeam);
-				}
-			} else {
-				db.i("----ctf---");
-				for (String team : paTeams.keySet()) {
-	
-					db.i("team" + team);
-					String playerTeam = playerManager.getTeam(player);
-					if (team.equals(playerTeam))
-						continue;
-					if (!playerManager.getPlayerTeamMap().containsValue(team))
-						continue; // dont check for inactive teams
-					if (paTeamFlags.containsKey(team)) {
-						continue; // already taken
-					}
-					db.i("checking for spawn of team " + team);
-					vLoc = player.getLocation().toVector();
-					vSpawn = this.getCoords(team + "spawn").toVector();
-					if (this.getCoords(team + "flag") != null) {
-						vFlag = this.getCoords(team + "flag").toVector();
-					}
-					if (((vFlag == null) && (vLoc.distance(vSpawn) < 2))
-							|| ((vFlag != null) && (vLoc.distance(vFlag) < 2))) {
-						db.i("spawn found!");
-						db.i("vFlag: "
-								+ ((vFlag == null) ? "null" : vFlag.toString()));
-						String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
-								+ ChatColor.YELLOW;
-						String scPlayer = ChatColor
-								.valueOf(paTeams.get(playerTeam))
-								+ player.getName() + ChatColor.YELLOW;
-						playerManager.tellEveryone(PVPArena.lang.parse("flaggrab",
-								scPlayer, scTeam));
-	
-						paTeamFlags.put(team, player.getName());
-						return;
-					}
+					pm.tellEveryone(PVPArena.lang.parse(type+"grab",
+							scPlayer, scTeam));
+					
+					paHeadGears.put(player.getName(), player.getInventory().getHelmet().clone());
+					player.getInventory().setHelmet(block.getState().getData().toItemStack().clone());
+					
+					paTeamFlags.put(team, player.getName());
+					return;
 				}
 			}
 		}
@@ -900,10 +820,25 @@ public class Arena {
 	/*
 	 * set the pumpkin to the selected block
 	 */
-	public void setPumpkin(Player player, Block block) {
-		if (block == null || !block.getType().equals(Material.PUMPKIN)) {
+	public void setFlag(Player player, Block block) {
+		if (block == null) {
 			return;
 		}
+		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
+		
+		if (pumpkin && !block.getType().equals(Material.PUMPKIN)) {
+			return;
+		} else if (!pumpkin && !block.getType().equals(Material.WOOL)) {
+			return;
+		}
+		
+		String type = null;
+		if (pumpkin) {
+			type = "pumpkin";
+		} else {
+			type = "flag";
+		}
+		
 		String sName = Arena.regionmodify.replace(this.name+":", "");
 		
 		Location location = block.getLocation();
@@ -917,10 +852,10 @@ public class Arena {
 		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
 				+ yaw.toString() + "," + pitch.toString();
 
-		cfg.set("spawns." + sName + "pumpkin", s);
+		cfg.set("spawns." + sName + type, s);
 		
 		cfg.save();
-		Arenas.tellPlayer(player, PVPArena.lang.parse("setpumpkin", sName));
+		Arenas.tellPlayer(player, PVPArena.lang.parse("set"+type, sName));
 		
 		Arena.regionmodify = "";
 	}
@@ -932,31 +867,24 @@ public class Arena {
 	 *            the player to check
 	 */
 	public void checkEntityDeath(Player player) {
+		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
 		
-		if (cfg.getBoolean("arenatype.pumpkin")) {
-			String flagTeam = getHeldFlagTeam(player.getName());
-			if (flagTeam != null) {
-				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
-						+ flagTeam + ChatColor.YELLOW;
-				String scPlayer = ChatColor.valueOf(paTeams.get(playerManager
-						.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-				PVPArena.lang.parse("pumpkinsave", scPlayer, scFlagTeam);
-				paTeamFlags.remove(flagTeam);
-			}
+		String type = null;
+		if (pumpkin) {
+			type = "pumpkin";
 		} else {
-
-			String flagTeam = getHeldFlagTeam(player.getName());
-			if (flagTeam != null) {
-				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
-						+ flagTeam + ChatColor.YELLOW;
-				String scPlayer = ChatColor.valueOf(paTeams.get(playerManager
-						.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-				PVPArena.lang.parse("flagsave", scPlayer, scFlagTeam);
-				paTeamFlags.remove(flagTeam);
-			}
+			type = "flag";
 		}
 		
-		
+		String flagTeam = getHeldFlagTeam(player.getName());
+		if (flagTeam != null) {
+			String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
+					+ flagTeam + ChatColor.YELLOW;
+			String scPlayer = ChatColor.valueOf(paTeams.get(pm
+					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
+			PVPArena.lang.parse(type+"save", scPlayer, scFlagTeam);
+			paTeamFlags.remove(flagTeam);
+		}
 	}
 	
 	
@@ -965,7 +893,7 @@ public class Arena {
 	 */
 	public void init_arena() {
 		for (String sTeam : this.paTeams.keySet()) {
-			if (playerManager.getPlayerTeamMap().containsValue(sTeam)) {
+			if (pm.getPlayerTeamMap().containsValue(sTeam)) {
 				// team is active
 				this.paLives
 						.put(sTeam, this.cfg.getInt("game.lives", 3));
@@ -981,10 +909,10 @@ public class Arena {
 	 */
 	public void prepareInventory(Player player) {
 
-		ArenaPlayer p = playerManager.parsePlayer(player);
-		p.savedInventories=  player.getInventory()
+		ArenaPlayer p = pm.parsePlayer(player);
+		p.savedInventory=  player.getInventory()
 				.getContents().clone();
-		p.savedArmories = player.getInventory()
+		p.savedArmor = player.getInventory()
 				.getArmorContents().clone();
 		clearInventory(player);
 	}
@@ -996,7 +924,7 @@ public class Arena {
 	 *            the player to save
 	 */
 	public void saveMisc(Player player) {
-		ArenaPlayer p = playerManager.parsePlayer(player);
+		ArenaPlayer p = pm.parsePlayer(player);
 		p.exhaustion = player.getExhaustion();
 		p.fireticks = player.getFireTicks();
 		p.foodlevel = player.getFoodLevel();
@@ -1065,43 +993,31 @@ public class Arena {
 	 *            the player to assign
 	 */
 	public void chooseColor(Player player) {
-		if (!cfg.getBoolean("arenatype.teams")) {
-
-			if (!(playerManager.getPlayerTeamMap().containsKey(player.getName()))) {
-				tpPlayerToCoordName(player, "lounge");
-				playerManager.setTeam(player, "free");
-				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("youjoinedfree"));
-				Announcement.announce(this, type.JOIN, PVPArena.lang.parse("playerjoinedfree", player.getName()));
-				playerManager.tellEveryoneExcept(player,
-						PVPArena.lang.parse("playerjoinedfree", player.getName()));
-
-			} else {
-				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("alreadyjoined"));
-			}
-		} else {
-			if (playerManager.getTeam(player).equals("")) {
-				String team = calcFreeTeam();
-				
-				db.i("team found: " + team);
-				tpPlayerToCoordName(player, team + "lounge");
-				playerManager.setTeam(player, team);
-				Arenas.tellPlayer(
-						player,
-						PVPArena.lang.parse("youjoined",
-								ChatColor.valueOf(paTeams.get(team)) + team));
-				Announcement.announce(this, type.JOIN, PVPArena.lang.parse(
-						"playerjoined", player.getName(),
-						ChatColor.valueOf(paTeams.get(team)) + team));
-				playerManager.tellEveryoneExcept(player, PVPArena.lang.parse(
-						"playerjoined", player.getName(),
-						ChatColor.valueOf(paTeams.get(team)) + team));
-			} else {
-				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("alreadyjoined"));
-			}
+		
+		boolean free = !cfg.getBoolean("arenatype.teams");
+		
+		if (free && (pm.getPlayerTeamMap().containsKey(player.getName()))) {
+			Arenas.tellPlayer(player,
+					PVPArena.lang.parse("alreadyjoined"));
 		}
+		
+		String team = free?"free":calcFreeTeam();
+		
+		if (free) {
+			tpPlayerToCoordName(player, "lounge");
+		} else {
+			tpPlayerToCoordName(player, team + "lounge");
+		}
+		Arenas.tellPlayer(
+				player,
+				PVPArena.lang.parse("youjoined"+(free?"free":""),
+						ChatColor.valueOf(paTeams.get(team)) + team));
+		Announcement.announce(this, type.JOIN, PVPArena.lang.parse(
+				"playerjoined"+(free?"free":""), player.getName(),
+				ChatColor.valueOf(paTeams.get(team)) + team));
+		pm.tellEveryoneExcept(player, PVPArena.lang.parse(
+				"playerjoined"+(free?"free":""), player.getName(),
+				ChatColor.valueOf(paTeams.get(team)) + team));
 	}
 
 	/**
@@ -1113,7 +1029,7 @@ public class Arena {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
-		for (String team : playerManager.getPlayerTeamMap().values()) {
+		for (String team : pm.getPlayerTeamMap().values()) {
 			if (!counts.containsKey(team)) {
 				counts.put(team, 1);
 				db.i("team " + team + " found");
@@ -1222,7 +1138,7 @@ public class Arena {
 	 */
 	public void prepare(Player player) {
 		db.i("preparing player: " + player.getName());
-		playerManager.addPlayer(player);
+		pm.addPlayer(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
 		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
@@ -1253,10 +1169,6 @@ public class Arena {
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
-	//
-	// ARENA RUNTIME
-	//
-
 	/**
 	 * teleport a given player to the given coord string
 	 * 
@@ -1285,9 +1197,9 @@ public class Arena {
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, color);
 
-		playerManager.setTelePass(player, true);
+		pm.setTelePass(player, true);
 		player.teleport(getCoords(place));
-		playerManager.setTelePass(player, false);
+		pm.setTelePass(player, false);
 	}
 
 	/**
@@ -1351,18 +1263,18 @@ public class Arena {
 	 *            winning team?
 	 */
 	protected void CommitEnd(String team, boolean win) {
-		Set<String> set = playerManager.getPlayerTeamMap().keySet();
+		Set<String> set = pm.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();
 		if (!team.equals("$%&/")) {
 			while (iter.hasNext()) {
 				Object o = iter.next();
 				db.i("precessing: " + o.toString());
 				Player z = Bukkit.getServer().getPlayer(o.toString());
-				if (!win && playerManager.getPlayerTeamMap().get(z.getName())
+				if (!win && pm.getPlayerTeamMap().get(z.getName())
 						.equals(team)) {
 					Statistics.addLoseStat(z, team, this);
 					resetPlayer(z, cfg.getString("tp.lose", "old"));
-					playerManager.setClass(z, "");
+					pm.setClass(z, "");
 				}
 			}
 
@@ -1372,29 +1284,29 @@ public class Arena {
 		}
 
 		String winteam = "";
-		set = playerManager.getPlayerTeamMap().keySet();
+		set = pm.getPlayerTeamMap().keySet();
 		iter = set.iterator();
 		while (iter.hasNext()) {
 			Object o = iter.next();
 			db.i("praecessing: " + o.toString());
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 
-			if (paLives.containsKey(playerManager.getPlayerTeamMap().get(
+			if (paLives.containsKey(pm.getPlayerTeamMap().get(
 					z.getName()))) {
 				if (winteam.equals("")) {
-					team = playerManager.getPlayerTeamMap().get(z.getName());
+					team = pm.getPlayerTeamMap().get(z.getName());
 				}
 				Statistics.addWinStat(z, team, this);
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
-				playerManager.setClass(z, "");
+				pm.setClass(z, "");
 				winteam = team;
 			}
 		}
 		if (paTeams.get(winteam) != null) {
 			Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
 					"Team " + winteam));
-			playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
+			pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 					ChatColor.valueOf(paTeams.get(winteam)) + "Team " + winteam));
 		} else {
 			System.out.print(winteam);
@@ -1411,35 +1323,35 @@ public class Arena {
 	 */
 	public boolean checkEndAndCommit() {
 		if (!cfg.getBoolean("arenatype.teams")) {
-			if (playerManager.getPlayerTeamMap().size() > 1) {
+			if (pm.getPlayerTeamMap().size() > 1) {
 				return false;
 			}
 
-			Set<String> set = playerManager.getPlayerTeamMap().keySet();
+			Set<String> set = pm.getPlayerTeamMap().keySet();
 			Iterator<String> iter = set.iterator();
 			while (iter.hasNext()) {
 				Object o = iter.next();
 
 				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("playerhaswon",
 						ChatColor.WHITE + o.toString()));
-				playerManager.tellEveryone(PVPArena.lang.parse("playerhaswon",
+				pm.tellEveryone(PVPArena.lang.parse("playerhaswon",
 						ChatColor.WHITE + o.toString()));
 
 				Player z = Bukkit.getServer().getPlayer(o.toString());
 				Statistics.addWinStat(z, "free", this);
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
-				playerManager.setClass(z, "");
+				pm.setClass(z, "");
 			}
 			reset();
 			return true;
 		}
 		if (cfg.getBoolean("arenatype.flags")) {
 
-			if (playerManager.countPlayersInTeams() < 2) {
+			if (pm.countPlayersInTeams() < 2) {
 				String team = "$%&/";
-				if (playerManager.countPlayersInTeams() != 0)
-					for (String t : playerManager.getPlayerTeamMap().values()) {
+				if (pm.countPlayersInTeams() != 0)
+					for (String t : pm.getPlayerTeamMap().values()) {
 						team = t;
 						break;
 					}
@@ -1456,15 +1368,15 @@ public class Arena {
 		List<String> activeteams = new ArrayList<String>(0);
 		String team = "";
 
-		for (String sPlayer : playerManager.getPlayerTeamMap().keySet()) {
+		for (String sPlayer : pm.getPlayerTeamMap().keySet()) {
 			if (activeteams.size() < 1) {
 				// fresh map
-				team = playerManager.getPlayerTeamMap().get(sPlayer);
+				team = pm.getPlayerTeamMap().get(sPlayer);
 				activeteams.add(team);
 				db.i("team set to " + team);
 			} else {
 				// map contains stuff
-				if (!activeteams.contains(playerManager.getPlayerTeamMap().get(
+				if (!activeteams.contains(pm.getPlayerTeamMap().get(
 						sPlayer))) {
 					// second team active => OUT!
 					return false;
@@ -1474,16 +1386,16 @@ public class Arena {
 
 		Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
 				"Team " + team));
-		playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
+		pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 				ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
 
-		Set<String> set = playerManager.getPlayerTeamMap().keySet();
+		Set<String> set = pm.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();
 		while (iter.hasNext()) {
 			String sPlayer = iter.next();
 
 			Player z = Bukkit.getServer().getPlayer(sPlayer);
-			if (playerManager.getPlayerTeamMap().get(z.getName()).equals(team)) {
+			if (pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
 				Statistics.addWinStat(z, team, this);
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
@@ -1491,11 +1403,11 @@ public class Arena {
 				Statistics.addLoseStat(z, team, this);
 				resetPlayer(z, cfg.getString("tp.lose", "old"));
 			}
-			playerManager.setClass(z, "");
+			pm.setClass(z, "");
 		}
 
 		if (PVPArena.eco != null) {
-			for (String nKey : playerManager.paPlayersBetAmount.keySet()) {
+			for (String nKey : pm.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
 
 				if (paTeams.get(nSplit[1]) == null
@@ -1503,7 +1415,7 @@ public class Arena {
 					continue;
 
 				if (nSplit[1].equalsIgnoreCase(team)) {
-					double amount = playerManager.paPlayersBetAmount.get(nKey) * 2;
+					double amount = pm.paPlayersBetAmount.get(nKey) * 2;
 
 					MethodAccount ma = PVPArena.eco
 							.getAccount(nSplit[0]);
@@ -1536,9 +1448,9 @@ public class Arena {
 	 */
 	public void removePlayer(Player player, String tploc) {
 		resetPlayer(player, tploc);
-		playerManager.setTeam(player, "");
-		playerManager.setClass(player, "");
-		playerManager.remove(player);
+		pm.setTeam(player, "");
+		pm.setClass(player, "");
+		pm.remove(player);
 	}
 
 	/**
@@ -1551,7 +1463,7 @@ public class Arena {
 		db.i("resetting player: " + player.getName());
 		
 		removePermissions(player);
-		ArenaPlayer ap = playerManager.parsePlayer(player);
+		ArenaPlayer ap = pm.parsePlayer(player);
 		player.setFireTicks(ap.fireticks);
 		player.setFoodLevel(ap.foodlevel);
 		player.setHealth(ap.health);
@@ -1560,7 +1472,7 @@ public class Arena {
 		if (cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(ap.displayname);
 		}
-		playerManager.setTelePass(player, true);
+		pm.setTelePass(player, true);
 		db.i("string = " + string);
 		if (string.equalsIgnoreCase("old")) {
 			player.teleport(ap.location);
@@ -1568,13 +1480,13 @@ public class Arena {
 			Location l = getCoords(string);
 			player.teleport(l);
 		}
-		playerManager.setTelePass(player, false);
+		pm.setTelePass(player, false);
 
 		String sClass = "exit";
-		if (playerManager.getRespawn(player) != null) {
-			sClass = playerManager.getRespawn(player);
-		} else if (!playerManager.getClass(player).equals("")) {
-			sClass = playerManager.getClass(player);
+		if (pm.getRespawn(player) != null) {
+			sClass = pm.getRespawn(player);
+		} else if (!pm.getClass(player).equals("")) {
+			sClass = pm.getClass(player);
 		}
 		if (!sClass.equalsIgnoreCase("custom")) {
 			clearInventory(player);
@@ -1586,8 +1498,8 @@ public class Arena {
 	 * force stop an arena
 	 */
 	public void forcestop() {
-		for (ArenaPlayer p : playerManager.getPlayers()) {
-			removePlayer(p.getPlayer(), "spectator");
+		for (ArenaPlayer p : pm.getPlayers()) {
+			removePlayer(p.get(), "spectator");
 		}
 		reset();
 	}
@@ -1611,22 +1523,22 @@ public class Arena {
 	 */
 	public void calcPowerupSpawn() {
 		db.i("committing");
-		if (this.pm == null)
+		if (this.pum == null)
 			return;
 
 		db.i("pm is not null");
-		if (this.pm.puTotal.size() <= 0)
+		if (this.pum.puTotal.size() <= 0)
 			return;
 
 		db.i("totals are filled");
 		Random r = new Random();
-		int i = r.nextInt(this.pm.puTotal.size());
+		int i = r.nextInt(this.pum.puTotal.size());
 
-		for (Powerup p : this.pm.puTotal) {
+		for (Powerup p : this.pum.puTotal) {
 			if (--i > 0)
 				continue;
 			commitPowerupItemSpawn(p.item);
-			playerManager.tellEveryone(PVPArena.lang
+			pm.tellEveryone(PVPArena.lang
 					.parse("serverpowerup", p.name));
 			return;
 		}
@@ -1643,7 +1555,20 @@ public class Arena {
 		db.i("dropping item?");
 		if (regions.get("battlefield") == null)
 			return;
-		regions.get("battlefield").dropItemRandom(item);
+		if (cfg.getBoolean("game.dropSpawn")) {
+			dropItemOnSpawn(item);
+		} else {
+			regions.get("battlefield").dropItemRandom(item);
+		}
+	}
+
+	private void dropItemOnSpawn(Material item) {
+		Location aim = getCoords("popup").getBlock().getRelative(BlockFace.UP).getLocation();
+
+		db.i("dropping item on spawn.");
+		Bukkit.getWorld(this.getWorld()).dropItem(aim,
+				new ItemStack(item, 1));
+		
 	}
 
 	/**
@@ -1654,7 +1579,7 @@ public class Arena {
 	 * @return the saved location
 	 */
 	public Location getPlayerOldLocation(Player player) {
-		ArenaPlayer ap = playerManager.parsePlayer(player);
+		ArenaPlayer ap = pm.parsePlayer(player);
 		return ap.location;
 	}
 
@@ -1674,17 +1599,17 @@ public class Arena {
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
 		
 		if (cfg.getBoolean("game.refillInventory")
-				&& !playerManager.getClass(player).equals("custom")) {
+				&& !pm.getClass(player).equals("custom")) {
 			clearInventory(player);
 			givePlayerFightItems(player);
 		}
 		
 
-		String sTeam = playerManager.getTeam(player);
+		String sTeam = pm.getTeam(player);
 		String color = paTeams.get(sTeam);
 		
 		if (cfg.getBoolean("arenatype.flags")) {
-			playerManager
+			pm
 					.tellEveryone(PVPArena.lang.parse("killed",
 							ChatColor.valueOf(color) + player.getName()
 									+ ChatColor.YELLOW));
@@ -1693,7 +1618,7 @@ public class Arena {
 			checkEntityDeath(player);
 		} else {
 
-			playerManager.tellEveryone(PVPArena.lang.parse("lostlife",
+			pm.tellEveryone(PVPArena.lang.parse("lostlife",
 					ChatColor.WHITE + player.getName() + ChatColor.YELLOW,
 					String.valueOf(lives)));
 			if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
@@ -1717,21 +1642,12 @@ public class Arena {
 	public void colorizePlayer(Player player, String color) {
 		if (color.equals("")) {
 			player.setDisplayName(player.getName());
-
-			if (PVPArena.spout != null)
-				SpoutManager.getAppearanceManager().setGlobalTitle(player,
-						player.getName());
-
 			return;
 		}
 
 		String n = color + player.getName();
 
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
-
-		if (PVPArena.spout != null)
-			SpoutManager.getAppearanceManager().setGlobalTitle(player,
-					n.replaceAll("(&([a-f0-9]))", "§$2"));
 	}
 
 	/**
@@ -1749,12 +1665,12 @@ public class Arena {
 			iDeaths = 0;
 
 			try {
-				iKills = playerManager.getKills(sTeam);
+				iKills = pm.getKills(sTeam);
 			} catch (Exception e) {
 			}
 
 			try {
-				iDeaths = playerManager.getDeaths(sTeam);
+				iDeaths = pm.getDeaths(sTeam);
 			} catch (Exception e) {
 			}
 
@@ -1770,28 +1686,28 @@ public class Arena {
 			if (result.contains(team)) {
 				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
 						"Team " + team));
-				playerManager.tellEveryone(PVPArena.lang.parse("teamhaswon",
+				pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 						ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
 			}
 
 		}
 
-		for (ArenaPlayer p : playerManager.getPlayers()) {
+		for (ArenaPlayer p : pm.getPlayers()) {
 
-			Player z = p.getPlayer();
-			if (result.contains(p.getTeam())) {
-				Statistics.addWinStat(z, p.getTeam(), this);
+			Player z = p.get();
+			if (result.contains(p.team)) {
+				Statistics.addWinStat(z, p.team, this);
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
 			} else {
-				Statistics.addLoseStat(z, p.getTeam(), this);
+				Statistics.addLoseStat(z, p.team, this);
 				resetPlayer(z, cfg.getString("tp.lose", "old"));
 			}
-			p.setClass(null);
+			p.aClass = null;
 		}
 
 		if (PVPArena.eco != null) {
-			for (String nKey : playerManager.paPlayersBetAmount.keySet()) {
+			for (String nKey : pm.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
 
 				if (paTeams.get(nSplit[1]) == null
@@ -1799,7 +1715,7 @@ public class Arena {
 					continue;
 
 				if (result.contains(nSplit[1])) {
-					double amount = playerManager.paPlayersBetAmount.get(nKey) * 2;
+					double amount = pm.paPlayersBetAmount.get(nKey) * 2;
 
 					MethodAccount ma = PVPArena.eco
 							.getAccount(nSplit[0]);
@@ -1821,10 +1737,6 @@ public class Arena {
 		reset();
 	}
 
-	//
-	// ARENA CLEANUP
-	//
-
 	/**
 	 * reload player inventories from saved variables
 	 * 
@@ -1838,15 +1750,15 @@ public class Arena {
 			return;
 		}
 		
-		ArenaPlayer p = playerManager.parsePlayer(player);
+		ArenaPlayer p = pm.parsePlayer(player);
 		
-		if (p.savedInventories == null) {
+		if (p.savedInventory == null) {
 			return;
 		}
 		player.getInventory().setContents(
-				p.savedInventories);
+				p.savedInventory);
 		player.getInventory().setArmorContents(
-				p.savedArmories);
+				p.savedArmor);
 	}
 
 	/**
@@ -1857,11 +1769,11 @@ public class Arena {
 	 */
 	public void giveRewards(Player player) {
 		if (PVPArena.eco != null) {
-			for (String nKey : playerManager.paPlayersBetAmount.keySet()) {
+			for (String nKey : pm.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
 
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double amount = playerManager.paPlayersBetAmount.get(nKey) * 4;
+					double amount = pm.paPlayersBetAmount.get(nKey) * 4;
 
 					MethodAccount ma = PVPArena.eco
 							.getAccount(nSplit[0]);
@@ -1929,7 +1841,7 @@ public class Arena {
 		paReady.clear();
 		paChat.clear();
 		fightInProgress = false;
-		playerManager.reset(this);
+		pm.reset(this);
 		if (SPAWN_ID > -1)
 			Bukkit.getScheduler().cancelTask(SPAWN_ID);
 		SPAWN_ID = -1;

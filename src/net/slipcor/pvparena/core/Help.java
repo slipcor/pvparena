@@ -72,19 +72,19 @@ public class Help {
 				Arenas.tellPlayer(player, ChatColor.GREEN
 						+ "---  Setup Commands  ---");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help info setup create" + ChatColor.WHITE
+						+ "/pa help setup create" + ChatColor.WHITE
 						+ " | for help with spawns");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help info setup spawn" + ChatColor.WHITE
+						+ "/pa help setup spawn" + ChatColor.WHITE
 						+ " | for help with spawns");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help info setup regionset" + ChatColor.WHITE
+						+ "/pa help setup regionset" + ChatColor.WHITE
 						+ " | for help with setting a region");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help info setup regionsave" + ChatColor.WHITE
+						+ "/pa help setup regionsave" + ChatColor.WHITE
 						+ " | for help with saving a region");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help info setup regionremove" + ChatColor.WHITE
+						+ "/pa help setup regionremove" + ChatColor.WHITE
 						+ " | for help with removing a region");
 
 			} else if (args[1].equalsIgnoreCase("admin")) {
@@ -92,22 +92,20 @@ public class Help {
 				Arenas.tellPlayer(player, ChatColor.RED
 						+ "---  Admin Commands  ---");
 				Arenas.tellPlayer(player, ChatColor.RED
-						+ "/pa help info admin reload" + ChatColor.WHITE
+						+ "/pa help admin reload" + ChatColor.WHITE
 						+ " | reloading");
 				Arenas.tellPlayer(player, ChatColor.RED
-						+ "/pa help info admin remove" + ChatColor.WHITE
+						+ "/pa help admin remove" + ChatColor.WHITE
 						+ " | removing");
 				Arenas.tellPlayer(player, ChatColor.RED
-						+ "/pa help info admin disable" + ChatColor.WHITE
+						+ "/pa help admin disable" + ChatColor.WHITE
 						+ " | disabling");
 				Arenas.tellPlayer(player, ChatColor.RED
-						+ "/pa help info admin forcestop" + ChatColor.WHITE
+						+ "/pa help admin forcestop" + ChatColor.WHITE
 						+ " | force-stopping");
 
 			} else {
-
 				helpList(player);
-
 			}
 
 		} else if (args.length == 3) {
@@ -269,20 +267,20 @@ public class Help {
 				} else {
 
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help info setup create" + ChatColor.WHITE
+							+ "/pa help setup create" + ChatColor.WHITE
 							+ " | for help with spawns");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help info setup spawn" + ChatColor.WHITE
+							+ "/pa help setup spawn" + ChatColor.WHITE
 							+ " | for help with spawns");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help info setup regionset" + ChatColor.WHITE
+							+ "/pa help setup regionset" + ChatColor.WHITE
 							+ " | for help with setting a region");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help info setup regionsave"
+							+ "/pa help setup regionsave"
 							+ ChatColor.WHITE
 							+ " | for help with saving a region");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help info setup regionremove"
+							+ "/pa help setup regionremove"
 							+ ChatColor.WHITE
 							+ " | for help with removing a region");
 
@@ -331,24 +329,22 @@ public class Help {
 					Arenas.tellPlayer(player, ChatColor.RED
 							+ "---  Admin Commands  ---");
 					Arenas.tellPlayer(player, ChatColor.RED
-							+ "/pa help info admin reload" + ChatColor.WHITE
+							+ "/pa help admin reload" + ChatColor.WHITE
 							+ " | reloading");
 					Arenas.tellPlayer(player, ChatColor.RED
-							+ "/pa help info admin remove" + ChatColor.WHITE
+							+ "/pa help admin remove" + ChatColor.WHITE
 							+ " | removing");
 					Arenas.tellPlayer(player, ChatColor.RED
-							+ "/pa help info admin disable" + ChatColor.WHITE
+							+ "/pa help admin disable" + ChatColor.WHITE
 							+ " | disabling");
 					Arenas.tellPlayer(player, ChatColor.RED
-							+ "/pa help info admin forcestop" + ChatColor.WHITE
+							+ "/pa help admin forcestop" + ChatColor.WHITE
 							+ " | force-stopping");
 
 				}
 
 			} else {
-
 				helpList(player);
-
 			}
 		}
 		return true;

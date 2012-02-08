@@ -25,8 +25,6 @@ public class Language {
 	Map<String, Object> lang = null; // game language map
 	Map<String, Object> log = null; // log language map
 
-	// TODO maybe add the respective arena name somewhere?
-
 	/**
 	 * create a language manager instance
 	 */
@@ -57,8 +55,6 @@ public class Language {
 		config.addDefault("log.matnotfound", "Unrecognized material: %1%");
 		config.addDefault("log.iconomyon", "<3 iConomy");
 		config.addDefault("log.iconomyoff", "</3 iConomy");
-		config.addDefault("log.nospout",
-				"Spout not found, you are missing some features ;)");
 		config.addDefault("log.enabled", "enabled (version %1%)");
 		config.addDefault("log.disabled", "disabled (version %1%)");
 		config.addDefault("log.noperms",
@@ -193,8 +189,9 @@ public class Language {
 		config.addDefault("lang.pumpkinsave","Player %1% dropped the pumpkin of team %2%!");
 		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
 		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
+		config.addDefault("lang.tosetflag", "Flag to set: %1%");
 
-		config.addDefault("lang.notready", "Not everyone has picked a class!");
+		config.addDefault("lang.notready", "At least one player is not ready!");
 		config.addDefault("lang.notready1", "You are alone in the arena!");
 		config.addDefault("lang.notready2", "Your team is alone in the arena!");
 		config.addDefault("lang.notready3", "A team is missing players!");

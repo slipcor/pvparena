@@ -51,32 +51,13 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class PlayerListener implements Listener {
 	private Debug db = new Debug();
-	/*
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.playerListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.playerListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_MOVE, this.playerListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.playerListener,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, this.playerListener,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.playerListener,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.playerListener,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_VELOCITY, this.playerListener,
-				Event.Priority.Highest, this);
-	 */
-	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event) {
 
 		Player player = event.getPlayer();
 
 		Arena arena = Arenas.getArenaByPlayer(player);
-		if (arena == null || arena.playerManager.getTeam(player).equals("")) {
+		if (arena == null || arena.pm.getTeam(player).equals("")) {
 			return; // no fighting player => OUT
 		}
 		
@@ -87,8 +68,8 @@ public class PlayerListener implements Listener {
 		if (!arena.paChat.contains(player.getName())) {
 			return; // player not chatting
 		}
-		String sTeam = arena.playerManager.getTeam(player);
-		arena.playerManager.tellTeam(sTeam, event.getMessage(), ChatColor.valueOf(arena.paTeams.get(sTeam)));
+		String sTeam = arena.pm.getTeam(player);
+		arena.pm.tellTeam(sTeam, event.getMessage(), ChatColor.valueOf(arena.paTeams.get(sTeam)));
 		event.setCancelled(true);
 	}
 
@@ -188,8 +169,8 @@ public class PlayerListener implements Listener {
 					return;
 				}
 				db.i("onInteract: pumpkin");
-				if (arena.cfg.getBoolean("arenatype.pumpkin")) {
-					arena.setPumpkin(player, event.getClickedBlock());
+				if (arena.cfg.getBoolean("arenatype.flags")) {
+					arena.setFlag(player, event.getClickedBlock());
 				}
 				return;
 			}
@@ -205,11 +186,12 @@ public class PlayerListener implements Listener {
 			}
 		}
 
-		if (arena == null || arena.fightInProgress)
+		if (arena == null || arena.fightInProgress) {
 			return; // not fighting or fight already in progress => OUT
-
+		}
+		
 		// fighting player inside the lobby!
-		event.setCancelled(true); //
+		event.setCancelled(true);
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
@@ -219,7 +201,7 @@ public class PlayerListener implements Listener {
 
 				if ((arena.paClassItems.containsKey(sign.getLine(0)) || (sign
 						.getLine(0).equalsIgnoreCase("custom")))
-						&& (!arena.playerManager.getTeam(player).equals(""))) {
+						&& (!arena.pm.getTeam(player).equals(""))) {
 
 					boolean classperms = false;
 					if (arena.cfg.get("general.classperms") != null) {
@@ -239,7 +221,7 @@ public class PlayerListener implements Listener {
 					}
 
 					arena.clearInventory(player);
-					arena.playerManager.setClass(player, sign.getLine(0));
+					arena.pm.setClass(player, sign.getLine(0));
 					if (sign.getLine(0).equalsIgnoreCase("custom")) {
 						// if custom, give stuff back
 						arena.loadInventory(player);
@@ -281,14 +263,16 @@ public class PlayerListener implements Listener {
 					+ "?");
 			if (block.getTypeId() == mMat.getId()) {
 				db.i("clicked ready block!");
-				if (arena.playerManager.getTeam(player).equals(""))
+				if (arena.pm.getTeam(player).equals("")) {
 					return; // not a fighting player => OUT
-				if (arena.playerManager.getClass(player).equals(""))
+				}
+				if (arena.pm.getClass(player).equals("")) {
 					return; // not a fighting player => OUT
+				}
 
 				arena.paReady.add(player.getName());
 
-				int ready = arena.playerManager.ready(arena);
+				int ready = arena.pm.ready(arena);
 				if (ready == 0) {
 					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready"));
@@ -312,7 +296,7 @@ public class PlayerListener implements Listener {
 				}
 
 				if (arena.cfg.getBoolean("join.forceEven", false)) {
-					if (!arena.playerManager.checkEven()) {
+					if (!arena.pm.checkEven()) {
 						Arenas.tellPlayer(player,
 								PVPArena.lang.parse("waitequal"));
 						return; // even teams desired, not done => announce
@@ -327,7 +311,7 @@ public class PlayerListener implements Listener {
 
 				arena.teleportAllToSpawn();
 				arena.fightInProgress = true;
-				arena.playerManager.tellEveryone(PVPArena.lang
+				arena.pm.tellEveryone(PVPArena.lang
 						.parse("begin"));
 				Announcement.announce(arena, type.START, PVPArena.lang
 						.parse("begin"));
@@ -353,8 +337,8 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		// db.i("onPlayerMove: fighting player!");
-		if (arena.pm != null) {
-			Powerup p = arena.pm.puActive.get(player);
+		if (arena.pum != null) {
+			Powerup p = arena.pum.puActive.get(player);
 			if (p != null) {
 				if (p.canBeTriggered()) {
 					if (p.isEffectActive(PowerupEffect.classes.FREEZE)) {
@@ -381,21 +365,21 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = Arenas.getArenaByPlayer(player);
-		if ((arena == null) || (arena.pm == null)
-				|| (arena.pm.puTotal.size() < 1))
+		if ((arena == null) || (arena.pum == null)
+				|| (arena.pum.puTotal.size() < 1))
 			return; // no fighting player or no powerups => OUT
 
 		db.i("onPlayerPickupItem: fighting player");
-		Iterator<Powerup> pi = arena.pm.puTotal.iterator();
+		Iterator<Powerup> pi = arena.pum.puTotal.iterator();
 		while (pi.hasNext()) {
 			Powerup p = pi.next();
 			if (event.getItem().getItemStack().getType().equals(p.item)) {
 				Powerup newP = new Powerup(p);
-				if (arena.pm.puActive.containsKey(player)) {
-					arena.pm.puActive.get(player).disable();
+				if (arena.pum.puActive.containsKey(player)) {
+					arena.pum.puActive.get(player).disable();
 				}
-				arena.pm.puActive.put(player, newP);
-				arena.playerManager.tellEveryone(PVPArena.lang.parse(
+				arena.pum.puActive.put(player, newP);
+				arena.pm.tellEveryone(PVPArena.lang.parse(
 						"playerpowerup", player.getName(), newP.name));
 				event.setCancelled(true);
 				event.getItem().remove();
@@ -414,10 +398,10 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player => OUT
 		db.i("onPlayerQuit: fighting player");
-		String color = arena.paTeams.get(arena.playerManager.getTeam(player));
+		String color = arena.paTeams.get(arena.pm.getTeam(player));
 		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("playerleave", 
 						player.getName()));
-		arena.playerManager.tellEveryoneExcept(
+		arena.pm.tellEveryoneExcept(
 				player,
 				PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
 						+ player.getName() + ChatColor.YELLOW));
@@ -434,7 +418,7 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		db.i("onPlayerRespawn: fighting player");
-		if (arena.playerManager.getRespawn(player) != null) {
+		if (arena.pm.getRespawn(player) != null) {
 			return; // no respawning player => OUT
 		}
 		db.i("respawning player");
@@ -450,7 +434,7 @@ public class PlayerListener implements Listener {
 		event.setRespawnLocation(l);
 
 		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
-		arena.playerManager.setRespawn(player, false);
+		arena.pm.setRespawn(player, false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -464,7 +448,7 @@ public class PlayerListener implements Listener {
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
-		if (arena.playerManager.getTelePass(player)
+		if (arena.pm.getTelePass(player)
 				|| PVPArena.hasPerms(player, "pvparena.telepass"))
 			return; // if allowed => OUT
 
@@ -485,8 +469,8 @@ public class PlayerListener implements Listener {
 			return; // no fighting player or no powerups => OUT
 
 		db.i("inPlayerVelocity: fighting player");
-		if (arena.pm != null) {
-			Powerup p = arena.pm.puActive.get(player);
+		if (arena.pum != null) {
+			Powerup p = arena.pum.puActive.get(player);
 			if (p != null) {
 				if (p.canBeTriggered()) {
 					if (p.isEffectActive(PowerupEffect.classes.JUMP)) {
