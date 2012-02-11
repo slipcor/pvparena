@@ -30,8 +30,6 @@ public class Players {
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 
 	private HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
-	private HashMap<String, Integer> kills = new HashMap<String, Integer>();
-	private HashMap<String, Integer> deaths = new HashMap<String, Integer>();
 	private Debug db = new Debug();
 
 	/**
@@ -41,7 +39,7 @@ public class Players {
 	 *            the team hashmap to parse
 	 * @return a colorized, comma separated string
 	 */
-	public String getTeamStringList(HashMap<String, String> paTeams) {
+	public String getTeamStringList(HashMap<String, String> paTeams) { 
 		String result = "";
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals("")) {
@@ -49,6 +47,12 @@ public class Players {
 				if (!result.equals(""))
 					result += ", ";
 				result += ChatColor.valueOf(paTeams.get(p.team))
+						+ p.get().getName() + ChatColor.WHITE;
+			} else {
+
+				if (!result.equals(""))
+					result += ", ";
+				result += ChatColor.GRAY
 						+ p.get().getName() + ChatColor.WHITE;
 			}
 		}
@@ -129,7 +133,7 @@ public class Players {
 	 *            the player to find
 	 * @return true if the player is known, false otherwise
 	 */
-	public boolean existsPlayer(Player pPlayer) {
+	public boolean existsPlayer(Player pPlayer) { 
 		return players.containsKey(pPlayer.getName());
 	}
 
@@ -166,17 +170,18 @@ public class Players {
 			boolean onlyone = true;
 			List<String> activeteams = new ArrayList<String>(0);
 			db.i("ready(): reading playerteammap");
-			for (String sPlayer : getPlayerTeamMap().keySet()) {
+			HashMap<String, String> test = getPlayerTeamMap();
+			for (String sPlayer : test.keySet()) {
 				db.i("player "+sPlayer);
 				if (activeteams.size() < 1) {
 					// fresh map
-					String team = getPlayerTeamMap().get(sPlayer);
+					String team = test.get(sPlayer);
 					db.i("is in team "+team);
 					activeteams.add(team);
 				} else {
 					db.i("map not empty");
 					// map contains stuff
-					if (!activeteams.contains(getPlayerTeamMap().get(sPlayer))) {
+					if (!activeteams.contains(test.get(sPlayer))) {
 						// second team active => OUT!
 						onlyone = false;
 						break;
@@ -196,7 +201,7 @@ public class Players {
 		}
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals("")) {
-				if (p.aClass != null) {
+				if (!p.aClass.equals("")) {
 					// player not ready!
 					return 0;
 				}
@@ -228,20 +233,23 @@ public class Players {
 	 * 
 	 * @param arena
 	 *            the arena to reset
+	 * @param force 
 	 */
-	public void reset(Arena arena) {
+	public void reset(Arena arena, boolean force) {
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
 			pa.add(p);
 		}
 
 		for (ArenaPlayer p : pa) {
-			arena.removePlayer(p.get(),
-					arena.cfg.getString("tp.exit", "exit"));
-			p.team = null;
-			p.aClass = null;
-			arena.paLives.remove(p.get().getName());
-			paPlayersBetAmount.clear();
+			Player z = p.get();
+			if (!force) {
+				p.wins++;
+			}
+			arena.resetPlayer(z, arena.cfg.getString("tp.win", "old"));
+			if (!force)
+				arena.giveRewards(z); // if we are the winning team, give reward!
+			p = null;
 		}
 		players.clear();
 	}
@@ -342,7 +350,7 @@ public class Players {
 	 * @return the player's death count
 	 */
 	public int getDeaths(String s) {
-		return deaths.get(s);
+		return players.get(s).deaths;
 	}
 
 	/**
@@ -353,7 +361,7 @@ public class Players {
 	 * @return the player's kill count
 	 */
 	public int getKills(String s) {
-		return kills.get(s);
+		return players.get(s).kills;
 	}
 
 	/**
@@ -363,11 +371,7 @@ public class Players {
 	 *            the player to add one
 	 */
 	public void addKill(String sKiller) {
-		if (kills.get(sKiller) != null) {
-			kills.put(sKiller, kills.get(sKiller) + 1);
-		} else {
-			kills.put(sKiller, 1);
-		}
+		players.get(sKiller).kills++;
 	}
 
 	/**
@@ -377,34 +381,7 @@ public class Players {
 	 *            the player to add one
 	 */
 	public void addDeath(String sKilled) {
-		if (deaths.get(sKilled) != null) {
-			deaths.put(sKilled, deaths.get(sKilled) + 1);
-		} else {
-			deaths.put(sKilled, 1);
-		}
-	}
-
-	/**
-	 * hand over a player's respawn
-	 * 
-	 * @param player
-	 *            the player to update
-	 * @param s
-	 *            true:set | false:unset
-	 */
-	public void setRespawn(Player player, boolean s) {
-		players.get(player.getName()).setRespawn(s);
-	}
-
-	/**
-	 * hand over a player's respawn
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return the player's respawn
-	 */
-	public String getRespawn(Player player) {
-		return players.get(player.getName()).getRespawn();
+		players.get(sKilled).deaths++;
 	}
 
 	/**

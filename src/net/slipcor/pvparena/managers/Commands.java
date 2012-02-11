@@ -1,20 +1,20 @@
 package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
-import java.util.Map;
+
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Announcement;
+import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
+import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaRegion;
-import net.slipcor.pvparena.definitions.Announcement.type;
-import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 
 /**
  * command manager class
@@ -322,26 +322,6 @@ public class Commands {
 	}
 
 	/**
-	 * send a list of arena teams
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseTeams(Arena arena, Player player) {
-
-		String team[] = Statistics.getTeamStats(arena).split(";");
-		int i = 0;
-		for (String sTeam : arena.paTeams.keySet())
-			player.sendMessage(PVPArena.lang.parse("teamstat",
-					ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam,
-					team[i++], team[i++]));
-		return true;
-	}
-
-	/**
 	 * display player stats
 	 * 
 	 * @param arena
@@ -352,46 +332,32 @@ public class Commands {
 	 */
 	public static boolean parseUsers(Arena arena, Player player) {
 		// wins are suffixed with "_"
-		Map<String, Integer> players = Statistics.getPlayerStats(arena);
-
-		int wcount = 0;
-
-		for (String name : players.keySet())
-			if (name.endsWith("_"))
-				wcount++;
-
-		String[][] wins = new String[wcount][2];
-		String[][] losses = new String[players.size() - wcount][2];
-		int iw = 0;
-		int il = 0;
-
-		for (String name : players.keySet()) {
-			if (name.endsWith("_")) {
-				// playername_ => win
-				wins[iw][0] = name.substring(0, name.length() - 1);
-				wins[iw++][1] = String.valueOf(players.get(name));
-			} else {
-				// playername => lose
-				losses[il][0] = name;
-				losses[il++][1] = String.valueOf(players.get(name));
-			}
-		}
-		wins = Arenas.sort(wins);
-		losses = Arenas.sort(losses);
+		ArenaPlayer[] players = Statistics.getStats(arena, Statistics.type.WINS);
+		
 		Arenas.tellPlayer(player, PVPArena.lang.parse("top5win"));
 
-		for (int w = 0; w < wins.length && w < 5; w++) {
-			Arenas.tellPlayer(player, wins[w][0] + ": " + wins[w][1]
+		int limit = 5;
+		
+		for (ArenaPlayer ap : players) {
+			if (limit-- < 1) {
+				break;
+			}
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.wins
 					+ " " + PVPArena.lang.parse("wins"));
 		}
 
 		Arenas.tellPlayer(player, "------------");
 		Arenas.tellPlayer(player, PVPArena.lang.parse("top5lose"));
 
-		for (int l = 0; l < losses.length && l < 5; l++) {
-			Arenas.tellPlayer(player, losses[l][0] + ": " + losses[l][1]
+		players = Statistics.getStats(arena, Statistics.type.LOSSES);
+		for (ArenaPlayer ap : players) {
+			if (limit-- < 1) {
+				break;
+			}
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.losses
 					+ " " + PVPArena.lang.parse("losses"));
 		}
+		
 		return true;
 	}
 

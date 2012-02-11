@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Statistics;
 
 /**
  * powerup effect class
@@ -210,10 +209,10 @@ public class PowerupEffect {
 			} else if (this.type == classes.LIVES) {
 				int lives = Arenas.getArenaByPlayer(player).paLives
 						.get(player.getName());
-				if (lives > 0)
+				if (lives > 0) {
 					Arenas.getArenaByPlayer(player).paLives
 							.put(player.getName(), lives + diff);
-				else {
+				} else {
 					Arena arena = Arenas.getArenaByPlayer(player);
 
 					// pasted from onEntityDeath;
@@ -226,11 +225,10 @@ public class PowerupEffect {
 							"killed",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
 									+ player.getName() + ChatColor.YELLOW));
-					Statistics.addLoseStat(player, sTeam, arena);
+					arena.pm.parsePlayer(player).losses++;
 					// needed so player does not get found when dead
 					arena.pm.setTeam(player, "");
-					arena.pm.setRespawn(player, true);
-
+					
 					arena.checkEndAndCommit();
 				}
 

@@ -79,6 +79,7 @@ public class ArenaConfigs {
 
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
+		config.addDefault("general.signs", Boolean.valueOf(false));
 		config.addDefault("general.item-rewards", "none");
 		
 		
@@ -333,6 +334,16 @@ public class ArenaConfigs {
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
+		
+		
+		if (arena.cfg.getBoolean("gametype.flags")) {
+			String type = arena.getType();
+			for (String team : arena.paTeams.keySet()) {
+				if (!list.contains(team+type)) {
+					return team+type + " not set";
+				}
+			}
+		}
 
 		if (arena.getType().equals("free")) {
 			return isFreesetup(arena, list);

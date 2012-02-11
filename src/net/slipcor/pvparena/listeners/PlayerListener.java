@@ -9,6 +9,8 @@ import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
+import net.slipcor.pvparena.definitions.ArenaSign;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
@@ -219,7 +221,20 @@ public class PlayerListener implements Listener {
 									// announce and OUT
 						}
 					}
-
+					
+					if (arena.cfg.getBoolean("general.signs")) {
+						ArenaSign.remove(arena.paSigns, player);
+						ArenaSign as = ArenaSign.used(block.getLocation(), arena.paSigns);
+						if (as == null) {
+							as = new ArenaSign(block.getLocation());
+						}
+						arena.paSigns.add(as);
+						if (as.add(player)) {
+							Arenas.tellPlayer(player,
+									PVPArena.lang.parse("classfull"));
+							return;
+						}
+					}
 					arena.clearInventory(player);
 					arena.pm.setClass(player, sign.getLine(0));
 					if (sign.getLine(0).equalsIgnoreCase("custom")) {
@@ -418,7 +433,7 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		db.i("onPlayerRespawn: fighting player");
-		if (arena.pm.getRespawn(player) != null) {
+		if (arena.pm.equals("")) {
 			return; // no respawning player => OUT
 		}
 		db.i("respawning player");
@@ -434,7 +449,8 @@ public class PlayerListener implements Listener {
 		event.setRespawnLocation(l);
 
 		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
-		arena.pm.setRespawn(player, false);
+		ArenaPlayer p = arena.pm.parsePlayer(player);
+		p.respawn = "";
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

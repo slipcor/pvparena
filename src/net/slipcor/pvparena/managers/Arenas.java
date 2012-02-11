@@ -6,6 +6,7 @@ import java.util.Map;
 
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaBoard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,12 +22,13 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
 public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
+	public static HashMap<Location, ArenaBoard> boards = new HashMap<Location, ArenaBoard>();
 	private static Debug db = new Debug();
 
 	/**
@@ -191,10 +193,10 @@ public class Arenas {
 	/**
 	 * reset all arenas
 	 */
-	public static void reset() {
+	public static void reset(boolean force) {
 		for (Arena arena : arenas.values()) {
 			db.i("resetting arena " + arena.name);
-			arena.reset();
+			arena.reset(force);
 		}
 	}
 
@@ -210,35 +212,6 @@ public class Arenas {
 		db.i("@" + player.getName() + ": " + msg);
 		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
 				+ msg);
-	}
-
-	/**
-	 * take a string array, sort it by first dimension and return
-	 * 
-	 * @param x
-	 *            the input array
-	 * @return the sorted output array
-	 */
-	public static String[][] sort(String[][] x) {
-		boolean undone = true;
-		String temp;
-		String itemp;
-
-		while (undone) {
-			undone = false;
-			for (int i = 0; i < x.length - 1; i++)
-				if (Integer.parseInt(x[i][1]) < Integer.parseInt(x[i + 1][1])) {
-					temp = x[i][1];
-					x[i][1] = x[i + 1][1];
-					x[i + 1][1] = temp;
-
-					itemp = x[i][0];
-					x[i][0] = x[i + 1][0];
-					x[i + 1][0] = itemp;
-					undone = true;
-				}
-		}
-		return x;
 	}
 
 	/**

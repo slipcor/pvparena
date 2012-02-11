@@ -1,12 +1,10 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 
 /**
- * timed arena runnable class
+ * arena ending runnable class
  * 
  * -
  * 
@@ -14,11 +12,11 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.1
  * 
  */
 
-public class TimedEndRunnable implements Runnable {
+public class EndRunnable implements Runnable {
 	private final Arena a;
 	private Debug db = new Debug();
 
@@ -28,9 +26,9 @@ public class TimedEndRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public TimedEndRunnable(Arena a) {
+	public EndRunnable(Arena a) {
 		this.a = a;
-		db.i("TimedEndRunnable constructor");
+		db.i("EndRunnable constructor");
 	}
 
 	/**
@@ -38,12 +36,7 @@ public class TimedEndRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("TimedEndRunnable commiting");
-		if (a.fightInProgress)
-			a.timedEnd();
-		else {
-			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(a.END_ID);
-		}
+		db.i("EndRunnable commiting");
+		a.reset(false);
 	}
 }

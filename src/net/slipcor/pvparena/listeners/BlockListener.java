@@ -1,7 +1,9 @@
 package net.slipcor.pvparena.listeners;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.event.EventHandler;
@@ -11,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 
 /**
  * block listener class
@@ -21,7 +24,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 
@@ -100,5 +103,39 @@ public class BlockListener implements Listener {
 		
 		event.setCancelled(true);
 		return;
+	}
+	
+	@EventHandler()
+	public void onSignChange(SignChangeEvent event) {
+		String headline = event.getLine(0);
+		if ((headline == null) || (headline.equals(""))) {
+			return;
+		}
+		
+		if (!headline.startsWith("[PAA]")) {
+			return;
+		}
+		
+		headline = headline.replace("[PAA]", "");
+		
+		Arena a = Arenas.getArenaByName(headline);
+		if (a == null) {
+			return;
+		}
+		
+		// trying to create an arena leaderboard
+		
+		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
+			Arenas.tellPlayer(event.getPlayer(), PVPArena.lang.parse("boardexists"));
+			return;
+		}
+		
+		if (!PVPArena.hasCreatePerms(event.getPlayer(), a)) {
+			Arenas.tellPlayer(event.getPlayer(), PVPArena.lang.parse("nopermto",PVPArena.lang.parse("createleaderboard")));
+			return;
+		}
+		
+		event.setLine(0, headline);
+		Arenas.boards.put(event.getBlock().getLocation(),new ArenaBoard(event.getBlock().getLocation(), a));
 	}
 }

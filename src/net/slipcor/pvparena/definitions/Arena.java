@@ -21,8 +21,8 @@ import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Powerups;
 import net.slipcor.pvparena.managers.Settings;
-import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.PowerupRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -52,7 +52,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
@@ -70,7 +70,7 @@ public class Arena {
 	private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
 	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
 	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
-	
+
 	/*
 	 * arena maps, contain the arena data
 	 */
@@ -78,20 +78,19 @@ public class Arena {
 	public final HashMap<String, ItemStack[]> paClassItems = new HashMap<String, ItemStack[]>();
 	// available teams mapped to color: TeamName => ColorString
 	public final HashMap<String, String> paTeams = new HashMap<String, String>();
-	
+
 	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
 	/**
 	 * TeamName => PlayerName
 	 */
 	public HashMap<String, String> paTeamFlags = null;
 	public HashMap<String, ItemStack> paHeadGears = null;
-	
-	
-	
+
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, ArenaRegion> regions = new HashMap<String, ArenaRegion>();
 	public final HashSet<String> paReady = new HashSet<String>();
 	public final HashSet<String> paChat = new HashSet<String>();
+	public final HashSet<ArenaSign> paSigns = new HashSet<ArenaSign>();
 
 	public Powerups pum;
 	public Settings sm;
@@ -104,20 +103,22 @@ public class Arena {
 
 	public Location pos1; // temporary position 1 (region select)
 	public Location pos2; // temporary position 2 (region select)
-	
+
 	// arena status
 	public boolean fightInProgress = false;
 
 	// arena settings
 	public boolean usesPowerups;
 	public boolean preventDeath;
-	
+
 	// Runnable IDs
 	public int SPAWN_ID = -1;
 	public int END_ID = -1;
 
 	public Config cfg;
-    // static filling of the items array
+
+	public boolean betPossible;
+	// static filling of the items array
 	static {
 		HELMETS_TYPE.add(Material.LEATHER_HELMET);
 		HELMETS_TYPE.add(Material.GOLD_HELMET);
@@ -170,9 +171,9 @@ public class Arena {
 		cfg = new Config(file);
 		cfg.load();
 		ArenaConfigs.configParse(this, cfg, type);
-		
+
 		cfg.save();
-		
+
 	}
 
 	/**
@@ -208,7 +209,9 @@ public class Arena {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public boolean parseCommand(Player player, String[] args) {
-		if (!cfg.getBoolean("general.enabled") && !PVPArena.hasAdminPerms(player) && !(PVPArena.hasCreatePerms(player, this))) {
+		if (!cfg.getBoolean("general.enabled")
+				&& !PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, this))) {
 			PVPArena.lang.parse("arenadisabled");
 			return true;
 		}
@@ -234,8 +237,6 @@ public class Arena {
 				return Commands.parseList(this, player);
 			} else if (args[0].equalsIgnoreCase("watch")) {
 				return Commands.parseSpectate(this, player);
-			} else if (args[0].equalsIgnoreCase("teams")) {
-				return Commands.parseTeams(this, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return Commands.parseUsers(this, player);
 			} else if (args[0].equalsIgnoreCase("chat")) {
@@ -244,7 +245,8 @@ public class Arena {
 				return Commands.parseRegion(this, player);
 			} else if (paTeams.get(args[0]) != null) {
 				return Commands.parseJoinTeam(this, player, args[0]);
-			} else if (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(player,this))) {
+			} else if (PVPArena.hasAdminPerms(player)
+					|| (PVPArena.hasCreatePerms(player, this))) {
 				return Commands.parseAdminCommand(this, player, args[0]);
 			} else {
 				return Commands.parseJoin(this, player);
@@ -267,29 +269,31 @@ public class Arena {
 			return true;
 		}
 
-		if (!PVPArena.hasAdminPerms(player) && !(PVPArena.hasCreatePerms(player,this))) {
-			Arenas.tellPlayer(player,
-					PVPArena.lang.parse("nopermto", PVPArena.lang.parse("admin")));
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, this))) {
+			Arenas.tellPlayer(
+					player,
+					PVPArena.lang.parse("nopermto",
+							PVPArena.lang.parse("admin")));
 			return false;
 		}
 
 		if (!checkRegionCommand(args[1])) {
-			Arenas.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "504"));
+			Arenas.tellPlayer(player, PVPArena.lang.parse("invalidcmd", "504"));
 			return false;
 		}
 
 		if (args.length == 2) {
-			
+
 			if (args[0].equalsIgnoreCase("region")) {
-				
+
 				// pa [name] region [regionname]
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("regionnotbeingset", name));
 					return true;
 				}
-	
+
 				Vector realMin = new Vector(Math.min(pos1.getBlockX(),
 						pos2.getBlockX()), Math.min(pos1.getBlockY(),
 						pos2.getBlockY()), Math.min(pos1.getBlockZ(),
@@ -298,33 +302,33 @@ public class Arena {
 						pos2.getBlockX()), Math.max(pos1.getBlockY(),
 						pos2.getBlockY()), Math.max(pos1.getBlockZ(),
 						pos2.getBlockZ()));
-	
-				String s = realMin.getBlockX() + "," + realMin.getBlockY() + ","
-						+ realMin.getBlockZ() + "," + realMax.getBlockX() + ","
-						+ realMax.getBlockY() + "," + realMax.getBlockZ();
-	
+
+				String s = realMin.getBlockX() + "," + realMin.getBlockY()
+						+ "," + realMin.getBlockZ() + "," + realMax.getBlockX()
+						+ "," + realMax.getBlockY() + "," + realMax.getBlockZ();
+
 				cfg.set("regions." + args[1], s);
 				regions.put(args[1], new ArenaRegion(args[1], pos1, pos2));
 				pos1 = null;
 				pos2 = null;
 				cfg.save();
-	
+
 				Arena.regionmodify = "";
 				Arenas.tellPlayer(player, PVPArena.lang.parse("regionsaved"));
 				return true;
-				
+
 			} else if (args[0].equalsIgnoreCase("remove")) {
 				// pa [name] remove [spawnname]
 				cfg.set("spawns." + args[1], null);
 				cfg.save();
-				Arenas.tellPlayer(player, PVPArena.lang.parse("spawnremoved", args[1]));
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("spawnremoved", args[1]));
 				return true;
 			}
 		}
 
 		if (args.length != 3) {
-			Arenas.tellPlayer(player,
-					PVPArena.lang.parse("invalidcmd", "505"));
+			Arenas.tellPlayer(player, PVPArena.lang.parse("invalidcmd", "505"));
 			return false;
 		}
 
@@ -333,8 +337,7 @@ public class Arena {
 				cfg.set("regions." + args[1], null);
 				cfg.save();
 				Arena.regionmodify = "";
-				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("regionremoved"));
+				Arenas.tellPlayer(player, PVPArena.lang.parse("regionremoved"));
 			} else {
 				Arenas.tellPlayer(player,
 						PVPArena.lang.parse("regionnotremoved"));
@@ -383,7 +386,8 @@ public class Arena {
 		if (joinRange < 1)
 			return false;
 		if (regions.get("battlefield") == null) {
-			Bukkit.getLogger().warning("[PVP Arena] JoinRange set, but Battlefield not set!");
+			Bukkit.getLogger().warning(
+					"[PVP Arena] JoinRange set, but Battlefield not set!");
 			return false;
 		}
 		return regions.get("battlefield").tooFarAway(joinRange,
@@ -591,8 +595,7 @@ public class Arena {
 		for (String p : pm.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
 			if (!cfg.getBoolean("arenatype.randomSpawn", false)) {
-				tpPlayerToCoordName(z, pm.getPlayerTeamMap().get(p)
-						+ "spawn");
+				tpPlayerToCoordName(z, pm.getPlayerTeamMap().get(p) + "spawn");
 			} else {
 				tpPlayerToCoordName(z, "spawn");
 			}
@@ -606,8 +609,10 @@ public class Arena {
 			END_ID = Bukkit
 					.getServer()
 					.getScheduler()
-					.scheduleSyncRepeatingTask(Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
-							new TimedEndRunnable(this), timed * 20, timed * 20);
+					.scheduleSyncDelayedTask(
+							Bukkit.getServer().getPluginManager()
+									.getPlugin("pvparena"),
+							new TimedEndRunnable(this), timed * 20);
 		}
 		db.i("teleported everyone!");
 		if (usesPowerups) {
@@ -621,7 +626,9 @@ public class Arena {
 				SPAWN_ID = Bukkit
 						.getServer()
 						.getScheduler()
-						.scheduleSyncRepeatingTask(Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+						.scheduleSyncRepeatingTask(
+								Bukkit.getServer().getPluginManager()
+										.getPlugin("pvparena"),
 								new PowerupRunnable(this), powerupDiff,
 								powerupDiff);
 			}
@@ -630,46 +637,51 @@ public class Arena {
 	}
 
 	private void setPermissions(Player p) {
-		HashMap<String,Boolean> perms = getTempPerms();
-        if (perms == null || perms.isEmpty()) return;
+		HashMap<String, Boolean> perms = getTempPerms();
+		if (perms == null || perms.isEmpty())
+			return;
 
-        ArenaPlayer player = pm.parsePlayer(p);
-        PermissionAttachment pa = p.addAttachment(Bukkit.getServer().getPluginManager().getPlugin("pvparena"));
-        player.tempPermissions.add(pa);
-        for (String entry : perms.keySet()) {
-            pa.setPermission(entry, perms.get(entry));
-        }
+		ArenaPlayer player = pm.parsePlayer(p);
+		PermissionAttachment pa = p.addAttachment(Bukkit.getServer()
+				.getPluginManager().getPlugin("pvparena"));
+		player.tempPermissions.add(pa);
+		for (String entry : perms.keySet()) {
+			pa.setPermission(entry, perms.get(entry));
+		}
 	}
-	
+
 	private void removePermissions(Player p) {
-        ArenaPlayer player = pm.parsePlayer(p);
+		ArenaPlayer player = pm.parsePlayer(p);
 		if (player == null || player.tempPermissions == null) {
 			return;
 		}
-        for (PermissionAttachment pa : player.tempPermissions) {
-            if (pa != null) {
-            	pa.remove();
-            }
-        }
+		for (PermissionAttachment pa : player.tempPermissions) {
+			if (pa != null) {
+				pa.remove();
+			}
+		}
 	}
-	
+
 	/**
 	 * get the permissions map
+	 * 
 	 * @return
 	 */
 	private HashMap<String, Boolean> getTempPerms() {
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
 
 		if (cfg.getYamlConfiguration().getConfigurationSection("perms.default") != null) {
-			List<String> list = cfg.getStringList("perms.default", new ArrayList<String>());
+			List<String> list = cfg.getStringList("perms.default",
+					new ArrayList<String>());
 			for (String key : list) {
-				result.put(key.replace("-", "").replace("^", ""), (key.startsWith("^") || key.startsWith("-")));
+				result.put(key.replace("-", "").replace("^", ""),
+						(key.startsWith("^") || key.startsWith("-")));
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	public boolean isCustomClassActive() {
 		for (ArenaPlayer p : pm.getPlayers()) {
 			if (p.getClass().equals("custom")) {
@@ -678,7 +690,7 @@ public class Arena {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * [FLAG] take away one life of a team
 	 * 
@@ -696,7 +708,7 @@ public class Arena {
 			}
 		}
 	}
-	
+
 	/**
 	 * get the team name of the flag a player holds
 	 * 
@@ -715,22 +727,23 @@ public class Arena {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * parse player interaction
 	 * 
 	 * @param player
 	 *            the player to parse
-	 * @param block the clicked block
+	 * @param block
+	 *            the clicked block
 	 */
 	public void checkInteract(Player player, Block block) {
-		
+
 		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
-		
+
 		if (block == null) {
 			return;
 		}
-		
+
 		if (pumpkin && !block.getType().equals(Material.PUMPKIN)) {
 			return;
 		} else if (!pumpkin && !block.getType().equals(Material.WOOL)) {
@@ -742,14 +755,14 @@ public class Arena {
 		} else {
 			type = "flag";
 		}
-		db.i(type+" click!");
-		
+		db.i(type + " click!");
+
 		Vector vLoc;
 		String sTeam;
 		Vector vFlag = null;
 
 		if (paTeamFlags.containsValue(player.getName())) {
-			db.i("player " + player.getName() + " has got a "+type);
+			db.i("player " + player.getName() + " has got a " + type);
 			vLoc = block.getLocation().toVector();
 			sTeam = pm.getTeam(player);
 			if (this.getCoords(sTeam + type) != null) {
@@ -761,24 +774,25 @@ public class Arena {
 			db.i("player is in the team " + sTeam);
 			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
 
-				db.i("player is at his "+type);
+				db.i("player is at his " + type);
 				String flagTeam = getHeldFlagTeam(player.getName());
 
-				db.i("the "+type+" belongs to team " + flagTeam);
+				db.i("the " + type + " belongs to team " + flagTeam);
 
 				String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
 						+ flagTeam + ChatColor.YELLOW;
 				String scPlayer = ChatColor.valueOf(paTeams.get(sTeam))
 						+ player.getName() + ChatColor.YELLOW;
 
-				pm.tellEveryone(PVPArena.lang.parse(type+"homeleft",
+				pm.tellEveryone(PVPArena.lang.parse(type + "homeleft",
 						scPlayer, scFlagTeam,
 						String.valueOf(paLives.get(flagTeam) - 1)));
 				paTeamFlags.remove(flagTeam);
-				
-				player.getInventory().setHelmet(paHeadGears.get(player.getName()).clone());
+
+				player.getInventory().setHelmet(
+						paHeadGears.get(player.getName()).clone());
 				paHeadGears.remove(player.getName());
-				
+
 				reduceLivesCheckEndAndCommit(flagTeam);
 			}
 		} else {
@@ -791,25 +805,27 @@ public class Arena {
 				if (paTeamFlags.containsKey(team)) {
 					continue; // already taken
 				}
-				db.i("checking for "+type+" of team " + team);
+				db.i("checking for " + type + " of team " + team);
 				vLoc = player.getLocation().toVector();
 				if (this.getCoords(team + type) != null) {
 					vFlag = this.getCoords(team + type).toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-					db.i(type+" found!");
+					db.i(type + " found!");
 					db.i("vFlag: " + vFlag.toString());
 					String scTeam = ChatColor.valueOf(paTeams.get(team)) + team
 							+ ChatColor.YELLOW;
 					String scPlayer = ChatColor
 							.valueOf(paTeams.get(playerTeam))
 							+ player.getName() + ChatColor.YELLOW;
-					pm.tellEveryone(PVPArena.lang.parse(type+"grab",
+					pm.tellEveryone(PVPArena.lang.parse(type + "grab",
 							scPlayer, scTeam));
-					
-					paHeadGears.put(player.getName(), player.getInventory().getHelmet().clone());
-					player.getInventory().setHelmet(block.getState().getData().toItemStack().clone());
-					
+
+					paHeadGears.put(player.getName(), player.getInventory()
+							.getHelmet().clone());
+					player.getInventory().setHelmet(
+							block.getState().getData().toItemStack().clone());
+
 					paTeamFlags.put(team, player.getName());
 					return;
 				}
@@ -825,22 +841,22 @@ public class Arena {
 			return;
 		}
 		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
-		
+
 		if (pumpkin && !block.getType().equals(Material.PUMPKIN)) {
 			return;
 		} else if (!pumpkin && !block.getType().equals(Material.WOOL)) {
 			return;
 		}
-		
+
 		String type = null;
 		if (pumpkin) {
 			type = "pumpkin";
 		} else {
 			type = "flag";
 		}
-		
-		String sName = Arena.regionmodify.replace(this.name+":", "");
-		
+
+		String sName = Arena.regionmodify.replace(this.name + ":", "");
+
 		Location location = block.getLocation();
 
 		Integer x = location.getBlockX();
@@ -853,13 +869,13 @@ public class Arena {
 				+ yaw.toString() + "," + pitch.toString();
 
 		cfg.set("spawns." + sName + type, s);
-		
+
 		cfg.save();
-		Arenas.tellPlayer(player, PVPArena.lang.parse("set"+type, sName));
-		
+		Arenas.tellPlayer(player, PVPArena.lang.parse("set" + type, sName));
+
 		Arena.regionmodify = "";
 	}
-	
+
 	/**
 	 * check a dying player if he held a flag, drop it, if so
 	 * 
@@ -868,26 +884,26 @@ public class Arena {
 	 */
 	public void checkEntityDeath(Player player) {
 		boolean pumpkin = cfg.getBoolean("arenatype.pumpkin");
-		
+
 		String type = null;
 		if (pumpkin) {
 			type = "pumpkin";
 		} else {
 			type = "flag";
 		}
-		
+
 		String flagTeam = getHeldFlagTeam(player.getName());
 		if (flagTeam != null) {
 			String scFlagTeam = ChatColor.valueOf(paTeams.get(flagTeam))
 					+ flagTeam + ChatColor.YELLOW;
-			String scPlayer = ChatColor.valueOf(paTeams.get(pm
-					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-			PVPArena.lang.parse(type+"save", scPlayer, scFlagTeam);
+			String scPlayer = ChatColor
+					.valueOf(paTeams.get(pm.getTeam(player)))
+					+ player.getName() + ChatColor.YELLOW;
+			PVPArena.lang.parse(type + "save", scPlayer, scFlagTeam);
 			paTeamFlags.remove(flagTeam);
 		}
 	}
-	
-	
+
 	/**
 	 * method for CTF arena to override
 	 */
@@ -895,8 +911,7 @@ public class Arena {
 		for (String sTeam : this.paTeams.keySet()) {
 			if (pm.getPlayerTeamMap().containsValue(sTeam)) {
 				// team is active
-				this.paLives
-						.put(sTeam, this.cfg.getInt("game.lives", 3));
+				this.paLives.put(sTeam, this.cfg.getInt("game.lives", 3));
 			}
 		}
 	}
@@ -910,10 +925,8 @@ public class Arena {
 	public void prepareInventory(Player player) {
 
 		ArenaPlayer p = pm.parsePlayer(player);
-		p.savedInventory=  player.getInventory()
-				.getContents().clone();
-		p.savedArmor = player.getInventory()
-				.getArmorContents().clone();
+		p.savedInventory = player.getInventory().getContents().clone();
+		p.savedArmor = player.getInventory().getArmorContents().clone();
 		clearInventory(player);
 	}
 
@@ -993,30 +1006,28 @@ public class Arena {
 	 *            the player to assign
 	 */
 	public void chooseColor(Player player) {
-		
+
 		boolean free = !cfg.getBoolean("arenatype.teams");
-		
-		if (free && (pm.getPlayerTeamMap().containsKey(player.getName()))) {
-			Arenas.tellPlayer(player,
-					PVPArena.lang.parse("alreadyjoined"));
+
+		if (pm.getPlayerTeamMap().containsKey(player.getName())) {
+			Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 		}
-		
-		String team = free?"free":calcFreeTeam();
-		
+
+		String team = free ? "free" : calcFreeTeam();
+
 		if (free) {
 			tpPlayerToCoordName(player, "lounge");
 		} else {
 			tpPlayerToCoordName(player, team + "lounge");
 		}
-		Arenas.tellPlayer(
-				player,
-				PVPArena.lang.parse("youjoined"+(free?"free":""),
-						ChatColor.valueOf(paTeams.get(team)) + team));
+		Arenas.tellPlayer(player, PVPArena.lang.parse("youjoined"
+				+ (free ? "free" : ""), ChatColor.valueOf(paTeams.get(team))
+				+ team));
 		Announcement.announce(this, type.JOIN, PVPArena.lang.parse(
-				"playerjoined"+(free?"free":""), player.getName(),
+				"playerjoined" + (free ? "free" : ""), player.getName(),
 				ChatColor.valueOf(paTeams.get(team)) + team));
-		pm.tellEveryoneExcept(player, PVPArena.lang.parse(
-				"playerjoined"+(free?"free":""), player.getName(),
+		pm.tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined"
+				+ (free ? "free" : ""), player.getName(),
 				ChatColor.valueOf(paTeams.get(team)) + team));
 	}
 
@@ -1040,32 +1051,33 @@ public class Arena {
 			}
 		}
 		// counts contains TEAMNAME => PLAYERCOUNT
-		
+
 		if (counts.size() < paTeams.size()) {
 			// there is a team without members, calculate one of those
 			return returnEmptyTeam(counts.keySet());
 		}
-		
+
 		boolean full = true;
-		
+
 		for (String s : paTeams.keySet()) {
 			// check if we are full
-			db.i("String s: "+s+"; max: "+cfg.getInt("ready.max"));
-			if (counts.get(s) < cfg.getInt("ready.max") || cfg.getInt("ready.max") == 0) {
+			db.i("String s: " + s + "; max: " + cfg.getInt("ready.max"));
+			if (counts.get(s) < cfg.getInt("ready.max")
+					|| cfg.getInt("ready.max") == 0) {
 				full = false;
 				break;
 			}
 		}
-		
+
 		if (full) {
 			// full => OUT!
 			return null;
 		}
-		
+
 		HashSet<String> free = new HashSet<String>();
-		
+
 		int max = cfg.getInt("ready.maxTeam");
-		max = max==0?Integer.MAX_VALUE:max;
+		max = max == 0 ? Integer.MAX_VALUE : max;
 		// calculate the max value down to the minimum
 		for (String s : counts.keySet()) {
 			int i = counts.get(s);
@@ -1077,9 +1089,9 @@ public class Arena {
 				free.add(s);
 			}
 		}
-		
+
 		// free now has the minimum teams
-		
+
 		if (free.size() == 1) {
 			for (String s : free) {
 				return s;
@@ -1093,29 +1105,31 @@ public class Arena {
 				return s;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * return all empty teams
-	 * @param set the set to search
+	 * 
+	 * @param set
+	 *            the set to search
 	 * @return one empty team name
 	 */
 	private String returnEmptyTeam(Set<String> set) {
 		HashSet<String> empty = new HashSet<String>();
 		for (String s : paTeams.keySet()) {
-			db.i("team: "+s);
+			db.i("team: " + s);
 			if (set.contains(s)) {
 				db.i("done");
 				continue;
 			}
 			empty.add(s);
 		}
-		db.i("empty.size: "+empty.size());
+		db.i("empty.size: " + empty.size());
 		if (empty.size() == 1) {
 			for (String s : empty) {
-				db.i("return: "+s);
+				db.i("return: " + s);
 				return s;
 			}
 		}
@@ -1127,7 +1141,7 @@ public class Arena {
 				return s;
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -1144,8 +1158,7 @@ public class Arena {
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
 		player.setSaturation(cfg.getInt("start.saturation", 20));
-		player.setExhaustion((float) cfg.getDouble("start.exhaustion",
-				0.0));
+		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
 		player.setGameMode(GameMode.getByValue(0));
 	}
 
@@ -1163,7 +1176,7 @@ public class Arena {
 		}
 		int current = p.getHealth();
 		int regain = value - current;
-		
+
 		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain,
 				RegainReason.CUSTOM);
 		Bukkit.getPluginManager().callEvent(event);
@@ -1181,7 +1194,8 @@ public class Arena {
 		String color = "";
 		if (place.endsWith("lounge")) {
 			// at the start of the match
-			if (cfg.getBoolean("messages.defaultChat") && cfg.getBoolean("messages.chat")) {
+			if (cfg.getBoolean("messages.defaultChat")
+					&& cfg.getBoolean("messages.chat")) {
 				paChat.add(player.getName());
 			}
 			if (place.equals("lounge"))
@@ -1191,7 +1205,8 @@ public class Arena {
 				color = "&"
 						+ Integer
 								.toString(
-										ChatColor.valueOf(paTeams.get(color)).ordinal(), 16).toLowerCase();
+										ChatColor.valueOf(paTeams.get(color))
+												.ordinal(), 16).toLowerCase();
 			}
 		}
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
@@ -1252,8 +1267,6 @@ public class Arena {
 		return false;
 	}
 
-	
-
 	/**
 	 * [FLAG] commit the arena end
 	 * 
@@ -1270,11 +1283,9 @@ public class Arena {
 				Object o = iter.next();
 				db.i("precessing: " + o.toString());
 				Player z = Bukkit.getServer().getPlayer(o.toString());
-				if (!win && pm.getPlayerTeamMap().get(z.getName())
-						.equals(team)) {
-					Statistics.addLoseStat(z, team, this);
+				if (!win && pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
+					pm.parsePlayer(z).losses++;
 					resetPlayer(z, cfg.getString("tp.lose", "old"));
-					pm.setClass(z, "");
 				}
 			}
 
@@ -1291,21 +1302,19 @@ public class Arena {
 			db.i("praecessing: " + o.toString());
 			Player z = Bukkit.getServer().getPlayer(o.toString());
 
-			if (paLives.containsKey(pm.getPlayerTeamMap().get(
-					z.getName()))) {
+			if (paLives.containsKey(pm.getPlayerTeamMap().get(z.getName()))) {
 				if (winteam.equals("")) {
 					team = pm.getPlayerTeamMap().get(z.getName());
 				}
-				Statistics.addWinStat(z, team, this);
+				pm.parsePlayer(z).wins++;
 				resetPlayer(z, cfg.getString("tp.win", "old"));
 				giveRewards(z); // if we are the winning team, give reward!
-				pm.setClass(z, "");
 				winteam = team;
 			}
 		}
 		if (paTeams.get(winteam) != null) {
-			Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
-					"Team " + winteam));
+			Announcement.announce(this, type.WINNER,
+					PVPArena.lang.parse("teamhaswon", "Team " + winteam));
 			pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 					ChatColor.valueOf(paTeams.get(winteam)) + "Team " + winteam));
 		} else {
@@ -1313,9 +1322,11 @@ public class Arena {
 		}
 
 		paLives.clear();
-		reset();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(
+				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				new EndRunnable(this), 15 * 20L);
 	}
-	
+
 	/**
 	 * checks if the arena is over, if an end has to be committed
 	 * 
@@ -1332,18 +1343,17 @@ public class Arena {
 			while (iter.hasNext()) {
 				Object o = iter.next();
 
-				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("playerhaswon",
-						ChatColor.WHITE + o.toString()));
+				Announcement.announce(
+						this,
+						type.WINNER,
+						PVPArena.lang.parse("playerhaswon",
+								ChatColor.WHITE + o.toString()));
 				pm.tellEveryone(PVPArena.lang.parse("playerhaswon",
 						ChatColor.WHITE + o.toString()));
-
-				Player z = Bukkit.getServer().getPlayer(o.toString());
-				Statistics.addWinStat(z, "free", this);
-				resetPlayer(z, cfg.getString("tp.win", "old"));
-				giveRewards(z); // if we are the winning team, give reward!
-				pm.setClass(z, "");
 			}
-			reset();
+			Bukkit.getScheduler().scheduleSyncDelayedTask(
+					Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+					new EndRunnable(this), 15 * 20L);
 			return true;
 		}
 		if (cfg.getBoolean("arenatype.flags")) {
@@ -1358,34 +1368,31 @@ public class Arena {
 				CommitEnd(team, true);
 			}
 			return false;
-		
-			
+
 		}
-		
-		
+
 		if (!this.fightInProgress)
 			return false;
 		List<String> activeteams = new ArrayList<String>(0);
 		String team = "";
-
-		for (String sPlayer : pm.getPlayerTeamMap().keySet()) {
+		HashMap<String, String> test = pm.getPlayerTeamMap();
+		for (String sPlayer : test.keySet()) {
 			if (activeteams.size() < 1) {
 				// fresh map
-				team = pm.getPlayerTeamMap().get(sPlayer);
+				team = test.get(sPlayer);
 				activeteams.add(team);
 				db.i("team set to " + team);
 			} else {
 				// map contains stuff
-				if (!activeteams.contains(pm.getPlayerTeamMap().get(
-						sPlayer))) {
+				if (!activeteams.contains(test.get(sPlayer))) {
 					// second team active => OUT!
 					return false;
 				}
 			}
 		}
 
-		Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
-				"Team " + team));
+		Announcement.announce(this, type.WINNER,
+				PVPArena.lang.parse("teamhaswon", "Team " + team));
 		pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 				ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
 
@@ -1395,15 +1402,10 @@ public class Arena {
 			String sPlayer = iter.next();
 
 			Player z = Bukkit.getServer().getPlayer(sPlayer);
-			if (pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
-				Statistics.addWinStat(z, team, this);
-				resetPlayer(z, cfg.getString("tp.win", "old"));
-				giveRewards(z); // if we are the winning team, give reward!
-			} else {
-				Statistics.addLoseStat(z, team, this);
+			if (!pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
+				pm.parsePlayer(z).losses++;
 				resetPlayer(z, cfg.getString("tp.lose", "old"));
 			}
-			pm.setClass(z, "");
 		}
 
 		if (PVPArena.eco != null) {
@@ -1417,24 +1419,26 @@ public class Arena {
 				if (nSplit[1].equalsIgnoreCase(team)) {
 					double amount = pm.paPlayersBetAmount.get(nKey) * 2;
 
-					MethodAccount ma = PVPArena.eco
-							.getAccount(nSplit[0]);
+					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {
 						db.s("Account not found: " + nSplit[0]);
 						return true;
 					}
 					ma.add(amount);
 					try {
-						Arenas.tellPlayer(Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon", PVPArena
-										.eco.format(amount)));
+						Arenas.tellPlayer(
+								Bukkit.getPlayer(nSplit[0]),
+								PVPArena.lang.parse("youwon",
+										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
 				}
 			}
 		}
-		reset();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(
+				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				new EndRunnable(this), 15 * 20L);
 		return true;
 	}
 
@@ -1449,8 +1453,10 @@ public class Arena {
 	public void removePlayer(Player player, String tploc) {
 		resetPlayer(player, tploc);
 		pm.setTeam(player, "");
-		pm.setClass(player, "");
 		pm.remove(player);
+		if (cfg.getBoolean("general.signs")) {
+			ArenaSign.remove(paSigns, player);
+		}
 	}
 
 	/**
@@ -1461,7 +1467,7 @@ public class Arena {
 	 */
 	public void resetPlayer(Player player, String string) {
 		db.i("resetting player: " + player.getName());
-		
+
 		removePermissions(player);
 		ArenaPlayer ap = pm.parsePlayer(player);
 		player.setFireTicks(ap.fireticks);
@@ -1483,9 +1489,7 @@ public class Arena {
 		pm.setTelePass(player, false);
 
 		String sClass = "exit";
-		if (pm.getRespawn(player) != null) {
-			sClass = pm.getRespawn(player);
-		} else if (!pm.getClass(player).equals("")) {
+		if (!pm.getClass(player).equals("")) {
 			sClass = pm.getClass(player);
 		}
 		if (!sClass.equalsIgnoreCase("custom")) {
@@ -1501,7 +1505,7 @@ public class Arena {
 		for (ArenaPlayer p : pm.getPlayers()) {
 			removePlayer(p.get(), "spectator");
 		}
-		reset();
+		reset(true);
 	}
 
 	/**
@@ -1538,8 +1542,7 @@ public class Arena {
 			if (--i > 0)
 				continue;
 			commitPowerupItemSpawn(p.item);
-			pm.tellEveryone(PVPArena.lang
-					.parse("serverpowerup", p.name));
+			pm.tellEveryone(PVPArena.lang.parse("serverpowerup", p.name));
 			return;
 		}
 
@@ -1563,12 +1566,12 @@ public class Arena {
 	}
 
 	private void dropItemOnSpawn(Material item) {
-		Location aim = getCoords("popup").getBlock().getRelative(BlockFace.UP).getLocation();
+		Location aim = getCoords("popup").getBlock().getRelative(BlockFace.UP)
+				.getLocation();
 
 		db.i("dropping item on spawn.");
-		Bukkit.getWorld(this.getWorld()).dropItem(aim,
-				new ItemStack(item, 1));
-		
+		Bukkit.getWorld(this.getWorld()).dropItem(aim, new ItemStack(item, 1));
+
 	}
 
 	/**
@@ -1597,32 +1600,30 @@ public class Arena {
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
 		player.setSaturation(cfg.getInt("start.saturation", 20));
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
-		
+
 		if (cfg.getBoolean("game.refillInventory")
 				&& !pm.getClass(player).equals("custom")) {
 			clearInventory(player);
 			givePlayerFightItems(player);
 		}
-		
 
 		String sTeam = pm.getTeam(player);
 		String color = paTeams.get(sTeam);
-		
+
 		if (cfg.getBoolean("arenatype.flags")) {
-			pm
-					.tellEveryone(PVPArena.lang.parse("killed",
-							ChatColor.valueOf(color) + player.getName()
-									+ ChatColor.YELLOW));
+			pm.tellEveryone(PVPArena.lang.parse("killed",
+					ChatColor.valueOf(color) + player.getName()
+							+ ChatColor.YELLOW));
 			tpPlayerToCoordName(player, sTeam + "spawn");
-			
+
 			checkEntityDeath(player);
 		} else {
 
-			pm.tellEveryone(PVPArena.lang.parse("lostlife",
-					ChatColor.WHITE + player.getName() + ChatColor.YELLOW,
+			pm.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.WHITE
+					+ player.getName() + ChatColor.YELLOW,
 					String.valueOf(lives)));
-			if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
-					&& !sTeam.equals("free")) {
+			if (!cfg.getBoolean("arenatype.randomSpawn", false)
+					&& color != null && !sTeam.equals("free")) {
 				tpPlayerToCoordName(player, sTeam + "spawn");
 			} else {
 				tpPlayerToCoordName(player, "spawn");
@@ -1684,8 +1685,8 @@ public class Arena {
 
 		for (String team : result) {
 			if (result.contains(team)) {
-				Announcement.announce(this, type.WINNER, PVPArena.lang.parse("teamhaswon",
-						"Team " + team));
+				Announcement.announce(this, type.WINNER,
+						PVPArena.lang.parse("teamhaswon", "Team " + team));
 				pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 						ChatColor.valueOf(paTeams.get(team)) + "Team " + team));
 			}
@@ -1695,15 +1696,11 @@ public class Arena {
 		for (ArenaPlayer p : pm.getPlayers()) {
 
 			Player z = p.get();
-			if (result.contains(p.team)) {
-				Statistics.addWinStat(z, p.team, this);
-				resetPlayer(z, cfg.getString("tp.win", "old"));
-				giveRewards(z); // if we are the winning team, give reward!
-			} else {
-				Statistics.addLoseStat(z, p.team, this);
+			if (!result.contains(p.team)) {
+				pm.parsePlayer(z).losses++;
 				resetPlayer(z, cfg.getString("tp.lose", "old"));
 			}
-			p.aClass = null;
+			p = null;
 		}
 
 		if (PVPArena.eco != null) {
@@ -1717,24 +1714,26 @@ public class Arena {
 				if (result.contains(nSplit[1])) {
 					double amount = pm.paPlayersBetAmount.get(nKey) * 2;
 
-					MethodAccount ma = PVPArena.eco
-							.getAccount(nSplit[0]);
+					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {
 						db.s("Account not found: " + nSplit[0]);
 						continue;
 					}
 					ma.add(amount);
 					try {
-						Arenas.tellPlayer(Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon", PVPArena
-										.eco.format(amount)));
+						Arenas.tellPlayer(
+								Bukkit.getPlayer(nSplit[0]),
+								PVPArena.lang.parse("youwon",
+										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
 				}
 			}
 		}
-		reset();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(
+				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				new EndRunnable(this), 15 * 20L);
 	}
 
 	/**
@@ -1749,16 +1748,14 @@ public class Arena {
 		if (player.getInventory() == null) {
 			return;
 		}
-		
+
 		ArenaPlayer p = pm.parsePlayer(player);
-		
+
 		if (p.savedInventory == null) {
 			return;
 		}
-		player.getInventory().setContents(
-				p.savedInventory);
-		player.getInventory().setArmorContents(
-				p.savedArmor);
+		player.getInventory().setContents(p.savedInventory);
+		player.getInventory().setArmorContents(p.savedArmor);
 	}
 
 	/**
@@ -1775,17 +1772,16 @@ public class Arena {
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
 					double amount = pm.paPlayersBetAmount.get(nKey) * 4;
 
-					MethodAccount ma = PVPArena.eco
-							.getAccount(nSplit[0]);
+					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						Announcement.announce(this, type.PRIZE, PVPArena.lang.parse(
-								"awarded",
-								PVPArena.eco.format(
-										cfg.getInt("money.reward", 0))));
-						Arenas.tellPlayer(Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon", PVPArena
-										.eco.format(amount)));
+						Announcement.announce(this, type.PRIZE, PVPArena.lang
+								.parse("awarded", PVPArena.eco.format(cfg
+										.getInt("money.reward", 0))));
+						Arenas.tellPlayer(
+								Bukkit.getPlayer(nSplit[0]),
+								PVPArena.lang.parse("youwon",
+										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing
 					}
@@ -1793,15 +1789,13 @@ public class Arena {
 			}
 		}
 
-		if ((PVPArena.eco != null)
-				&& (cfg.getInt("money.reward", 0) > 0)) {
-			MethodAccount ma = PVPArena.eco.getAccount(
-					player.getName());
+		if ((PVPArena.eco != null) && (cfg.getInt("money.reward", 0) > 0)) {
+			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 			ma.add(cfg.getInt("money.reward", 0));
-			Arenas.tellPlayer(player, PVPArena.lang.parse(
-					"awarded",
-					PVPArena.eco.format(
-							cfg.getInt("money.reward", 0))));
+			Arenas.tellPlayer(
+					player,
+					PVPArena.lang.parse("awarded",
+							PVPArena.eco.format(cfg.getInt("money.reward", 0))));
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
 		if (sItems.equals("none"))
@@ -1836,12 +1830,12 @@ public class Arena {
 	/**
 	 * reset an arena
 	 */
-	public void reset() {
+	public void reset(boolean force) {
 		clearArena();
 		paReady.clear();
 		paChat.clear();
 		fightInProgress = false;
-		pm.reset(this);
+		pm.reset(this, force);
 		if (SPAWN_ID > -1)
 			Bukkit.getScheduler().cancelTask(SPAWN_ID);
 		SPAWN_ID = -1;

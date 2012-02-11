@@ -1,5 +1,7 @@
 package net.slipcor.pvparena;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,8 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.register.payment.Method;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -64,6 +68,16 @@ public class PVPArena extends JavaPlugin {
 		getConfig().addDefault("whitelist", whiteList);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
+		
+		File players = new File("plugins/pvparena/players.yml");
+		if (!players.exists()) {
+			try {
+				players.createNewFile();
+			} catch (IOException e) {
+				Bukkit.getLogger().severe("Could not create players.yml! More errors will be happening!");
+				e.printStackTrace();
+			}
+		}
 
 		Debug.active = getConfig().getBoolean("debug");
 
@@ -82,7 +96,7 @@ public class PVPArena extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		Arenas.reset();
+		Arenas.reset(true);
 		Tracker.stop();
 		lang.log_info("disabled", getDescription().getFullName());
 	}

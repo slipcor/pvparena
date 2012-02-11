@@ -5,11 +5,10 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Statistics;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -83,7 +82,7 @@ public class EntityListener implements Listener {
 				ChatColor.valueOf(color) + player.getName()
 						+ ChatColor.YELLOW));
 
-		Statistics.addLoseStat(player, sTeam, arena);
+		arena.pm.parsePlayer(player).losses++;
 		arena.pm.setTeam(player, ""); // needed so player does not
 													// get found when dead
 		
@@ -98,7 +97,8 @@ public class EntityListener implements Listener {
 			player.getInventory().clear();
 		}
 		
-		arena.pm.setRespawn(player, true);
+		ArenaPlayer p = arena.pm.parsePlayer(player);
+		p.respawn = "lose";
 		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
@@ -161,6 +161,7 @@ public class EntityListener implements Listener {
 			} else {
 				db.i("first death");
 				arena.pm.addDeath(sKilled);
+				arena.betPossible = false;
 			}
 		}
 		if (arena.usesPowerups) {

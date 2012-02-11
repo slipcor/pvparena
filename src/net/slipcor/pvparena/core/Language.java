@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 public class Language {
@@ -109,7 +109,6 @@ public class Language {
 		config.addDefault(
 				"lang.specwelcome",
 				"Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
-		config.addDefault("lang.teamstat", "%1% %2% wins, %3% losses");
 		config.addDefault("lang.top5win", "Top 5 winners");
 		config.addDefault("lang.top5lose", "Top 5 losers");
 		config.addDefault("lang.wins", "wins");
@@ -199,11 +198,17 @@ public class Language {
 
 		config.addDefault("lang.teamfull", "%1% is full!");
 		config.addDefault("lang.arenafull", "arena is full!");
+		config.addDefault("lang.classfull", "class is full!");
 
 		config.addDefault("lang.errorcustomflag", "Error! Arena is not of type ctf.");
 		config.addDefault("lang.errorcustompumpkin", "Error! Arena is not of type pumpkin.");
 		config.addDefault("lang.errorspawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!");
 		config.addDefault("lang.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'");
+
+		config.addDefault("lang.createleaderbard", "create a leaderboard'");
+		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
+		
+		
 		
 		config.options().copyDefaults(true);
 		try {

@@ -1,18 +1,7 @@
 package net.slipcor.pvparena.managers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
-
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 /**
  * statistics manager class
@@ -23,236 +12,120 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 
 public class Statistics {
-	private static Debug db = new Debug();
-
-	/**
-	 * return a configuration of a arena
-	 * 
-	 * @param file
-	 *            the filename to read
-	 * @param arena
-	 *            the arena to access
-	 * @return the arena configuration
-	 */
-	private static YamlConfiguration getConfig(String file, Arena arena) {
-		new File("plugins/pvparena").mkdir();
-		File configFile = new File("plugins/pvparena/" + file + ".yml");
-		boolean bNew = false;
-		if (!(configFile.exists()))
-			try {
-				configFile.createNewFile();
-				bNew = true; // mark as new
-			} catch (Exception e) {
-				PVPArena.lang.log_error("filecreateerror", file);
-			}
-
-		YamlConfiguration config = new YamlConfiguration();
-		try {
-			config.load(configFile);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} catch (InvalidConfigurationException e1) {
-			e1.printStackTrace();
-		}
-		if (bNew) { // if marked as new, create default entries
-
-			for (String sTeam : arena.paTeams.keySet()) {
-				config.addDefault("wins." + sTeam + ".slipcor", 0);
-				config.addDefault("losses." + sTeam + ".slipcor", 0);
-			}
-			config.options().copyDefaults(true);
-			try {
-				config.save(configFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return config;
+	public static enum type {
+		WINS, LOSSES, KILLS, DEATHS, DAMAGE, DAMAGETAKE, DMGSUM, DMGSUMTAKE, NULL
 	}
 
-	/**
-	 * parse the config contents to a player map
-	 * 
-	 * @param arena
-	 *            the arena to read
-	 * @return a map consisting of players attached to their stats
-	 */
-	public static Map<String, Integer> getPlayerStats(Arena arena) {
-		YamlConfiguration config = getConfig("stats_" + arena.name, arena);
-		db.i("fetching player stats for arena " + arena.name);
-		// map to sum up the players
-		Map<String, Integer> players = new HashMap<String, Integer>();
-		// tempmap => iteration
-		Map<String, Object> team = new HashMap<String, Object>();
-		int sum = 0;
-		for (String sTeam : arena.paTeams.keySet()) {
-			team = (Map<String, Object>) config.getConfigurationSection(
-					"wins." + sTeam).getValues(true);
-			for (String rName : team.keySet()) {
-				sum = 0;
-				if (players.get(rName + "_") != null)
-					sum = players.get(rName + "_"); // if exists: read entry
-
-				sum += (Integer) team.get(rName);
-				db.i(rName + "_ => " + sum);
-				// put the player into the map, together with the count
-				players.put(rName + "_", sum);
-			}
-			team = (Map<String, Object>) config.getConfigurationSection(
-					"losses." + sTeam).getValues(true);
-			for (String rName : team.keySet()) {
-				sum = 0;
-				if (players.get(rName) != null)
-					sum = players.get(rName); // if exists: read entry
-
-				sum += (Integer) team.get(rName);
-				db.i(rName + " => " + sum);
-				// put the player into the map, together with the count
-				players.put(rName, sum);
-			}
-		}
-		return players;
+	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
+		return getStats(a, sortBy, true);
 	}
 
-	/**
-	 * parse the config contents to a team stat string
-	 * 
-	 * @param arena
-	 *            the arena to read
-	 * @return a string consisting of teams joined with stats
-	 */
-	public static String getTeamStats(Arena arena) {
-		db.i("fetching team stats for arena " + arena.name);
-		YamlConfiguration config = getConfig("stats_" + arena.name, arena);
+	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
+		ArenaPlayer[] aps = new ArenaPlayer[a.pm.getPlayers().size()];
+		int i = 0;
+		for (ArenaPlayer p : a.pm.getPlayers()) {
+			aps[i++] = p;
+		}
 
-		String result = "";
-		Map<String, Object> team = new HashMap<String, Object>();
+		sortBy(aps, sortBy, desc);
 
-		for (String sTeam : arena.paTeams.keySet()) {
-			team = (Map<String, Object>) config.getConfigurationSection(
-					"wins." + sTeam).getValues(true);
-			int count = 0;
-			for (Object rVal : team.values()) {
-				count += (Integer) rVal; // sum up the values, append the sum
+		return aps;
+		// TODO use the result of this function in the leaderboards
+	}
+
+	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc) {
+		int n = aps.length;
+		boolean doMore = true;
+		while (doMore) {
+			n--;
+			doMore = false; // assume this is our last pass over the array
+			for (int i = 0; i < n; i++) {
+				if (decide(aps, i, sortBy, desc)) {
+					// exchange elements
+					ArenaPlayer temp = aps[i];
+					aps[i] = aps[i + 1];
+					aps[i + 1] = temp;
+					doMore = true; // after an exchange, must look again
+				}
 			}
-			result += count + ";";
-			team = (Map<String, Object>) config.getConfigurationSection(
-					"losses." + sTeam).getValues(true);
-			count = 0;
-			for (Object rVal : team.values()) {
-				count += (Integer) rVal; // sum up the values, append the sum
+		}
+	}
+
+	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy, boolean desc) {
+		int a=0;
+		int b=0;
+		if (sortBy.equals(type.DAMAGE)) {
+			a = aps[pos].damage;
+			b = aps[pos + 1].damage;
+		} else if (sortBy.equals(type.DAMAGETAKE)) {
+			a = aps[pos].damagetake;
+			b = aps[pos + 1].damagetake;
+		} else if (sortBy.equals(type.DEATHS)) {
+			a = aps[pos].deaths;
+			b = aps[pos + 1].deaths;
+		} else if (sortBy.equals(type.DMGSUM)) {
+			a = aps[pos].damagesum;
+			b = aps[pos + 1].damagesum;
+		} else if (sortBy.equals(type.DMGSUMTAKE)) {
+			a = aps[pos].damagesumtake;
+			b = aps[pos + 1].damagesumtake;
+		} else if (sortBy.equals(type.KILLS)) {
+			a = aps[pos].kills;
+			b = aps[pos + 1].kills;
+		} else if (sortBy.equals(type.LOSSES)) {
+			a = aps[pos].losses;
+			b = aps[pos + 1].losses;
+		} else if (sortBy.equals(type.WINS)) {
+			a = aps[pos].wins;
+			b = aps[pos + 1].wins;
+		}
+
+		return desc ? (a < b) : (a > b);
+	}
+
+	public static type getTypeBySignLine(String line) {
+		if (!line.startsWith("[PA]")) {
+			return type.NULL;
+		}
+		line = line.replace("[PA]", "").toUpperCase();
+		
+		for (type t : type.values()) {
+			if (t.name().equals(line)) {
+				return t;
 			}
-			result += String.valueOf(count) + ";";
-			db.i(sTeam + ": " + count);
+		}
+		return type.NULL;
+	}
+
+	public static String[] read(ArenaPlayer[] players, type t) {
+		String[] result = new String[players.length];
+		int i = 0;
+		for (ArenaPlayer p : players) {
+			if (t.equals(type.DAMAGE)) {
+				result[i++] = String.valueOf(p.damage);
+			} else if (t.equals(type.DAMAGETAKE)) {
+				result[i++] = String.valueOf(p.damagetake);
+			} else if (t.equals(type.DEATHS)) {
+				result[i++] = String.valueOf(p.deaths);
+			} else if (t.equals(type.DMGSUM)) {
+				result[i++] = String.valueOf(p.damagesum);
+			} else if (t.equals(type.DMGSUMTAKE)) {
+				result[i++] = String.valueOf(p.damagesumtake);
+			} else if (t.equals(type.KILLS)) {
+				result[i++] = String.valueOf(p.kills);
+			} else if (t.equals(type.LOSSES)) {
+				result[i++] = String.valueOf(p.losses);
+			} else if (t.equals(type.WINS)) {
+				result[i++] = String.valueOf(p.wins);
+			} else {
+				result[i++] = p.get().getName();
+			}
 		}
 		return result;
-	}
-
-	/**
-	 * add a win stat to the player and the team
-	 * 
-	 * @param player
-	 *            the player to access
-	 * @param sTeam
-	 *            the team name to access
-	 * @param arena
-	 *            the arena to access
-	 */
-	public static void addWinStat(Player player, String sTeam, Arena arena) {
-		if (sTeam.equals(""))
-			addStat(player, true, arena);
-		else
-			addStat(player, sTeam, true, arena);
-	}
-
-	/**
-	 * add a lose stat to the player and the team
-	 * 
-	 * @param player
-	 *            the player to access
-	 * @param sTeam
-	 *            the team name to access
-	 * @param arena
-	 *            the arena to access
-	 */
-	public static void addLoseStat(Player player, String sTeam, Arena arena) {
-		if (sTeam.equals(""))
-			addStat(player, false, arena);
-		else
-			addStat(player, sTeam, false, arena);
-	}
-
-	/**
-	 * add a stat to the player and the team
-	 * 
-	 * @param player
-	 *            the player to access
-	 * @param sTeam
-	 *            the team name to access
-	 * @param win
-	 *            true if win, false otherwise
-	 * @param arena
-	 *            the arena to access
-	 */
-	private static void addStat(Player player, String sTeam, boolean win,
-			Arena arena) {
-		db.i("adding stat: player " + player.getName() + "; color: " + sTeam
-				+ "; win: " + String.valueOf(win) + "; arena: " + arena.name);
-		String sName = Arenas.getArenaNameByPlayer(player);
-		YamlConfiguration config = getConfig("stats_" + sName, arena);
-
-		String color = arena.paTeams.get(sTeam);
-		if (color == null) {
-			PVPArena.lang.log_warning("teamnotfound", sTeam);
-			return; // invalid team
-		}
-		String path = (win ? "wins." : "losses.") + sTeam + "."
-				+ player.getName();
-		int sum = 0;
-		if (config.get(path) != null)
-			sum += config.getInt(path, 0); // fetch the sum if available
-		sum++; // sum up, add, save
-		config.set(path, Integer.valueOf(sum));
-		try {
-			config.save(new File("plugins/pvparena/stats_" + sName + ".yml"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * add a stat to the player and the team
-	 * 
-	 * @param player
-	 *            the player to access
-	 * @param win
-	 *            true if win, false otherwise
-	 * @param arena
-	 *            the arena to access
-	 */
-	private static void addStat(Player player, boolean win, Arena arena) {
-		db.i("adding stat: player " + player.getName() + "; win: "
-				+ String.valueOf(win) + "; arena: " + arena.name);
-		String sName = Arenas.getArenaNameByPlayer(player);
-		YamlConfiguration config = getConfig("stats_" + sName, arena);
-
-		String path = (win ? "wins." : "losses.") + player.getName();
-		int sum = 0;
-		if (config.get(path) != null)
-			sum += config.getInt(path, 0); // fetch the sum if available
-		sum++; // sum up, add, save
-		config.set(path, Integer.valueOf(sum));
-		try {
-			config.save(new File("plugins/pvparena/stats_" + sName + ".yml"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }

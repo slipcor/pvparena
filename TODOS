@@ -1,14 +1,12 @@
 ADDITIONS
-- re-add sign updating/check
-- reactivate player death possibility, add a arena-end-timer for winners to collect loot
 - leaderboards and proper statistics
+[[ MAP support: player location, flag / spawn location ]]
+- spawn protection, radius
+
 
 FIXES
-- team belongings vs spectator
-- team belingings vs dead
-- flag collection
-  - flag = block !!
-  - flag = colored wool. Taken => white; 
+- flag = colored wool. Taken => white; 
+- tamed wolves should damage players
 
 PROBLEMS:
 - loot not possible with flag mode!
