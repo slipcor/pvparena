@@ -195,6 +195,7 @@ public class Language {
 		config.addDefault("lang.notready2", "Your team is alone in the arena!");
 		config.addDefault("lang.notready3", "A team is missing players!");
 		config.addDefault("lang.notready4", "The arena is missing players!");
+		config.addDefault("lang.notready5", "At least one player has not chosen a class!");
 
 		config.addDefault("lang.teamfull", "%1% is full!");
 		config.addDefault("lang.arenafull", "arena is full!");
@@ -205,7 +206,7 @@ public class Language {
 		config.addDefault("lang.errorspawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!");
 		config.addDefault("lang.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'");
 
-		config.addDefault("lang.createleaderbard", "create a leaderboard'");
+		config.addDefault("lang.createleaderboard", "create a leaderboard");
 		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
 		
 		

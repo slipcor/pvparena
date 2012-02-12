@@ -7,6 +7,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+/**
+ * arena sign class
+ * 
+ * @author slipcor
+ * 
+ * @version v0.6.2
+ * 
+ */
+
 public class ArenaSign {
 	Location location;
 	
@@ -15,7 +24,7 @@ public class ArenaSign {
 		this.clear();
 	}
 
-	private void clear() {
+	void clear() {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
 			s.setLine(2, "");
@@ -55,7 +64,7 @@ public class ArenaSign {
 
 	private boolean setFreeLine(String name) {
 		try {
-			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN).getState();
+			Sign s = (Sign) location.getBlock().getState();
 			for (int i=2;i<4;i++) {
 				if (s.getLine(i) == null || s.getLine(i).equals("")) {
 					s.setLine(i, name);
@@ -85,7 +94,7 @@ public class ArenaSign {
 
 	private void remove(String name) {
 		try {
-			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN).getState();
+			Sign s = (Sign) location.getBlock().getState();
 			for (int i=2;i<4;i++) {
 				if (s.getLine(i) != null && s.getLine(i).equals(name)) {
 					s.setLine(i, "");

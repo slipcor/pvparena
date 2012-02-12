@@ -1014,6 +1014,7 @@ public class Arena {
 		}
 
 		String team = free ? "free" : calcFreeTeam();
+		pm.setTeam(player, team);
 
 		if (free) {
 			tpPlayerToCoordName(player, "lounge");
@@ -1619,7 +1620,7 @@ public class Arena {
 			checkEntityDeath(player);
 		} else {
 
-			pm.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.WHITE
+			pm.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.valueOf(color)
 					+ player.getName() + ChatColor.YELLOW,
 					String.valueOf(lives)));
 			if (!cfg.getBoolean("arenatype.randomSpawn", false)
@@ -1834,6 +1835,10 @@ public class Arena {
 		clearArena();
 		paReady.clear();
 		paChat.clear();
+		for (ArenaSign as : paSigns) {
+			as.clear();
+		}
+		paSigns.clear();
 		fightInProgress = false;
 		pm.reset(this, force);
 		if (SPAWN_ID > -1)

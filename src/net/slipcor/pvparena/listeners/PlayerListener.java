@@ -47,7 +47,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
@@ -197,6 +197,7 @@ public class PlayerListener implements Listener {
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
+			db.i("player team: "+arena.pm.getTeam(player));
 			if (block.getState() instanceof Sign) {
 				db.i("sign click!");
 				Sign sign = (Sign) block.getState();
@@ -204,13 +205,16 @@ public class PlayerListener implements Listener {
 				if ((arena.paClassItems.containsKey(sign.getLine(0)) || (sign
 						.getLine(0).equalsIgnoreCase("custom")))
 						&& (!arena.pm.getTeam(player).equals(""))) {
+					
+					db.i("legit class: "+sign.getLine(0));
 
 					boolean classperms = false;
 					if (arena.cfg.get("general.classperms") != null) {
 						classperms = arena.cfg.getBoolean("general.classperms",
 								false);
 					}
-
+					
+					
 					if (classperms) {
 						db.i("checking classperms");
 						if (!(PVPArena.hasPerms(player,
@@ -229,7 +233,7 @@ public class PlayerListener implements Listener {
 							as = new ArenaSign(block.getLocation());
 						}
 						arena.paSigns.add(as);
-						if (as.add(player)) {
+						if (!as.add(player)) {
 							Arenas.tellPlayer(player,
 									PVPArena.lang.parse("classfull"));
 							return;
@@ -307,6 +311,10 @@ public class PlayerListener implements Listener {
 				} else if (ready == -4) {
 					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("notready4"));
+					return; // arena not ready => announce
+				} else if (ready == -5) {
+					Arenas.tellPlayer(player,
+							PVPArena.lang.parse("notready5"));
 					return; // arena not ready => announce
 				}
 
@@ -449,8 +457,12 @@ public class PlayerListener implements Listener {
 		event.setRespawnLocation(l);
 
 		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
-		ArenaPlayer p = arena.pm.parsePlayer(player);
-		p.respawn = "";
+		try {
+			ArenaPlayer p = arena.pm.parsePlayer(player);
+			p.respawn = "";
+		} catch (Exception e) {
+			
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

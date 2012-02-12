@@ -1,4 +1,4 @@
-		package net.slipcor.pvparena.listeners;
+package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
@@ -265,8 +265,7 @@ public class EntityListener implements Listener {
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 
-		if ((arena.pm.getTeam(attacker).equals(""))
-				|| (arena.pm.getTeam(defender).equals("")))
+		if (arena.pm.getTeam(defender).equals(""))
 			return;
 
 		db.i("both players part of the arena");
@@ -278,7 +277,13 @@ public class EntityListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-
+		
+		if (!arena.fightInProgress) {
+			 // fight not started, cancel!
+			event.setCancelled(true);
+			return;
+		}
+		
 		// here it comes, process the damage!
 
 		db.i("processing damage!");

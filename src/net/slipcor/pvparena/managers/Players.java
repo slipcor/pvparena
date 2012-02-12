@@ -149,6 +149,7 @@ public class Players {
 	 *           -2 if only one team active
 	 *           -3 if not enough players in a team
 	 *           -4 if not enough players
+	 *           -5 if at least one player not selected class
 	 */
 	public int ready(Arena arena) {
 		if (countPlayersInTeams() < 2) {
@@ -191,19 +192,22 @@ public class Players {
 			if (onlyone) {
 				return -2;
 			}
-
-			for (String sTeam : activeteams) {
+			for (String sTeam : arena.paTeams.keySet()) {
+				if (!test.containsValue(sTeam)) {
+					db.i("skipping TEAM "+sTeam);
+					continue;
+				}
 				db.i("TEAM "+sTeam);
-				if (countPlayers(sTeam) < arena.cfg.getInt("ready.minTeam")) {
+				if (arena.cfg.getInt("ready.minTeam") > 0 && countPlayers(sTeam) < arena.cfg.getInt("ready.minTeam")) {
 					return -3;
 				}
 			}
 		}
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals("")) {
-				if (!p.aClass.equals("")) {
+				if (p.aClass.equals("")) {
 					// player not ready!
-					return 0;
+					return -5;
 				}
 			}
 		}
@@ -225,6 +229,7 @@ public class Players {
 				result++;
 			}
 		}
+		db.i("count result: "+result);
 		return result;
 	}
 

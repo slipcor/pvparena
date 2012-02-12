@@ -130,7 +130,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		if (!PVPArena.hasCreatePerms(event.getPlayer(), a)) {
+		if (!PVPArena.hasAdminPerms(event.getPlayer()) && !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
 			Arenas.tellPlayer(event.getPlayer(), PVPArena.lang.parse("nopermto",PVPArena.lang.parse("createleaderboard")));
 			return;
 		}
