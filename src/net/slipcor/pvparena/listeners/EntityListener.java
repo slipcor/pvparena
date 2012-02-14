@@ -11,6 +11,7 @@ import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -284,6 +285,17 @@ public class EntityListener implements Listener {
 			return;
 		}
 		
+		if (arena.cfg.getBoolean("game.weaponDamage")) {
+			if ((attacker.getItemInHand() != null)
+					&& (attacker.getItemInHand().getType() != null)
+					&& (attacker.getItemInHand().getType() != Material.AIR)) {
+				attacker.getItemInHand().setDurability((byte) 0);
+			}
+		}
+		
+		
+		//TODO calculate armor
+		
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
@@ -349,6 +361,7 @@ public class EntityListener implements Listener {
 		if (arena.pm.getTeam(player).equals(""))
 			return;
 
+		//TODO calculate damage and armor
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			db.i("damage >= health => death");

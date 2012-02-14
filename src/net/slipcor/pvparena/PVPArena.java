@@ -186,17 +186,23 @@ public class PVPArena extends JavaPlugin {
 				
 				Announcement.announce(arena, type.LOSER, lang.parse("playerleave",
 						player.getName()));
-
-				arena.pm.tellEveryoneExcept(
-						player,
-						lang.parse("playerleave",
-								ChatColor.valueOf(arena.paTeams.get(sName))
-										+ player.getName()
-										+ ChatColor.YELLOW));
-				Arenas.tellPlayer(player, lang.parse("youleave"));
-				arena.removePlayer(player,
-						arena.cfg.getString("tp.exit", "exit"));
-				arena.checkEndAndCommit();
+				
+				if (arena.paTeams.get(sName) == null) {
+					Arenas.tellPlayer(player, lang.parse("youleave"));
+					arena.removePlayer(player,
+							arena.cfg.getString("tp.exit", "exit"));
+				} else {
+					arena.pm.tellEveryoneExcept(
+							player,
+							lang.parse("playerleave",
+									ChatColor.valueOf(arena.paTeams.get(sName))
+											+ player.getName()
+											+ ChatColor.YELLOW));
+					Arenas.tellPlayer(player, lang.parse("youleave"));
+					arena.removePlayer(player,
+							arena.cfg.getString("tp.exit", "exit"));
+					arena.checkEndAndCommit();
+				}
 			} else {
 				Arenas.tellPlayer(player, lang.parse("notinarena"));
 			}

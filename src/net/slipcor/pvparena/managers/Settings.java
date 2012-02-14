@@ -45,6 +45,7 @@ public class Settings {
 		types.put("game.teamKill", "boolean");
 		types.put("game.woolHead", "boolean");
 		types.put("game.colorNick", "boolean");
+		types.put("game.weaponDamage", "boolean");
 
 		types.put("messages.chat", "boolean");
 		types.put("messages.colorNick", "boolean");

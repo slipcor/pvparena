@@ -71,6 +71,7 @@ public class ArenaConfigs {
 		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
 		config.addDefault("game.woolHead", Boolean.valueOf(false));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
+		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
 
 		config.addDefault("messages.language", "en");
 		config.addDefault("messages.colorNick", Boolean.valueOf(true));
@@ -308,7 +309,7 @@ public class ArenaConfigs {
 		World world = Bukkit.getWorld(arena.getWorld());
 		Location[] l = Config.parseCuboid(world, coords);
 
-		return new ArenaRegion(string, l[0], l[1]);
+		return new ArenaRegion(string, l[0], l[1], true);
 	}
 
 	/**
@@ -336,8 +337,10 @@ public class ArenaConfigs {
 			return "exit not set";
 		
 		
-		if (arena.cfg.getBoolean("gametype.flags")) {
+		if (arena.cfg.getBoolean("arenatype.flags")) {
 			String type = arena.getType();
+			System.out.print("ready check: "+type);
+			type = type.equals("pumpkin")?type:"flag";
 			for (String team : arena.paTeams.keySet()) {
 				if (!list.contains(team+type)) {
 					return team+type + " not set";

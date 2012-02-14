@@ -114,10 +114,12 @@ public class Arena {
 	// Runnable IDs
 	public int SPAWN_ID = -1;
 	public int END_ID = -1;
+	public int BOARD_ID = -1;
 
 	public Config cfg;
 
 	public boolean betPossible;
+
 	// static filling of the items array
 	static {
 		HELMETS_TYPE.add(Material.LEATHER_HELMET);
@@ -308,7 +310,7 @@ public class Arena {
 						+ "," + realMax.getBlockY() + "," + realMax.getBlockZ();
 
 				cfg.set("regions." + args[1], s);
-				regions.put(args[1], new ArenaRegion(args[1], pos1, pos2));
+				regions.put(args[1], new ArenaRegion(args[1], pos1, pos2, true));
 				pos1 = null;
 				pos2 = null;
 				cfg.save();
@@ -1302,7 +1304,6 @@ public class Arena {
 			Object o = iter.next();
 			db.i("praecessing: " + o.toString());
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-
 			if (paLives.containsKey(pm.getPlayerTeamMap().get(z.getName()))) {
 				if (winteam.equals("")) {
 					team = pm.getPlayerTeamMap().get(z.getName());
@@ -1771,7 +1772,7 @@ public class Arena {
 				String[] nSplit = nKey.split(":");
 
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double amount = pm.paPlayersBetAmount.get(nKey) * 4;
+					double amount = pm.paPlayersBetAmount.get(nKey) * 4; //TODO: config
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
@@ -1847,6 +1848,9 @@ public class Arena {
 		if (END_ID > -1)
 			Bukkit.getScheduler().cancelTask(END_ID);
 		END_ID = -1;
+		if (BOARD_ID > -1)
+			Bukkit.getScheduler().cancelTask(BOARD_ID);
+		BOARD_ID = -1;
 	}
 
 	/**

@@ -31,6 +31,7 @@ public class ArenaBoardColumn {
 
 	private void fetchSigns() {
 		Location l = location.getBlock().getRelative(BlockFace.DOWN).getLocation();
+		int border = 10;
 		try {
 			Sign s = (Sign) l.getBlock().getState();
 			s.setLine(0, "");
@@ -41,7 +42,7 @@ public class ArenaBoardColumn {
 			do {
 				signs.add(new ArenaBoardSign(this, l));
 				l = l.getBlock().getRelative(BlockFace.DOWN).getLocation();
-			} while (true);
+			} while (border-->0);
 		} catch(Exception e) {
 			//no more signs, out!
 		}

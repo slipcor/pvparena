@@ -251,12 +251,16 @@ public class Players {
 			if (!force) {
 				p.wins++;
 			}
+			boolean spectator = p.team.equals("");
 			arena.resetPlayer(z, arena.cfg.getString("tp.win", "old"));
-			if (!force)
+			if (!force && !spectator) {
 				arena.giveRewards(z); // if we are the winning team, give reward!
+			}
+			p.destroy();
 			p = null;
 		}
 		players.clear();
+		paPlayersBetAmount.clear();
 	}
 
 	/**

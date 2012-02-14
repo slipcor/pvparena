@@ -42,8 +42,8 @@ public class Announcement {
 	}
 
 	private static void send(Arena a, Player p, String message) {
-		if (a.cfg.getInt("announcements.range") > 0) {
-			if (a.regions.get("battlefield").tooFarAway(a.cfg.getInt("announcements.range"), p.getLocation())) {
+		if (a.cfg.getInt("announcements.radius") > 0) {
+			if (a.regions.get("battlefield").tooFarAway(a.cfg.getInt("announcements.radius"), p.getLocation())) {
 				return; // too far away: out (checks world!)
 			}
 		}

@@ -5,7 +5,9 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.runnables.BoardRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -137,5 +139,6 @@ public class BlockListener implements Listener {
 		
 		event.setLine(0, headline);
 		Arenas.boards.put(event.getBlock().getLocation(),new ArenaBoard(event.getBlock().getLocation(), a));
+		a.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("pvparena"), new BoardRunnable(a), 100L, 100L);
 	}
 }

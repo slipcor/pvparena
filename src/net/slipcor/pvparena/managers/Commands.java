@@ -212,6 +212,7 @@ public class Commands {
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
 		arena.pm.setTeam(player, sTeam);
+		arena.prepareInventory(player);
 		Arenas.tellPlayer(
 				player,
 				PVPArena.lang.parse("youjoined",
@@ -460,11 +461,11 @@ public class Commands {
 	private static boolean isCustomCommand(Arena arena, Player player,
 			String cmd) {
 		
-		if (arena.cfg.getBoolean("arenatype.flags")) {
+		if (!arena.cfg.getBoolean("arenatype.flags")) {
 			return false;
 		}
 		
-		String type = arena.getType();
+		String type = arena.getType().equals("pumpkin")?"pumpkin":"flag";
 		
 		if (!cmd.endsWith(type)) {
 			return false;
