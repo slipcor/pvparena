@@ -30,8 +30,7 @@ public class Help {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public static boolean parseCommand(Player player, String[] args) {
-		Arenas.tellPlayer(player, ChatColor.AQUA
-				+ "---  PVP Arena Help  ---");
+		Arenas.tellPlayer(player, ChatColor.AQUA + "---  PVP Arena Help  ---");
 
 		if (args.length == 1) {
 
@@ -60,9 +59,8 @@ public class Help {
 
 				Arenas.tellPlayer(player, ChatColor.BLUE
 						+ "---  Info  Commands  ---");
-				Arenas.tellPlayer(player, ChatColor.BLUE
-						+ "/pa help info list" + ChatColor.WHITE
-						+ " | for information commands");
+				Arenas.tellPlayer(player, ChatColor.BLUE + "/pa help info list"
+						+ ChatColor.WHITE + " | for information commands");
 				Arenas.tellPlayer(player, ChatColor.BLUE
 						+ "/pa help info stats" + ChatColor.WHITE
 						+ " | for information commands");
@@ -132,24 +130,21 @@ public class Help {
 
 				} else if (args[2].equalsIgnoreCase("bet")) {
 
-					Arenas
-							.tellPlayer(
-									player,
-									ChatColor.YELLOW
-											+ "/pa [arenaname] bet [(player/team)name] [amount]"
-											+ ChatColor.WHITE
-											+ " | Bet on a player/team");
-					Arenas
-							.tellPlayer(player,
-									"Note: You get 4x money for betting on a the right player, ");
+					Arenas.tellPlayer(
+							player,
+							ChatColor.YELLOW
+									+ "/pa [arenaname] bet [(player/team)name] [amount]"
+									+ ChatColor.WHITE
+									+ " | Bet on a player/team");
+					Arenas.tellPlayer(player,
+							"Note: You get 4x money for betting on a the right player, ");
 					Arenas.tellPlayer(player,
 							"      2x the money for betting on the right team");
 
 				} else if (args[2].equalsIgnoreCase("leave")) {
 
-					Arenas.tellPlayer(player, ChatColor.YELLOW
-							+ "/pa leave" + ChatColor.WHITE
-							+ " | Leave the arena you are in");
+					Arenas.tellPlayer(player, ChatColor.YELLOW + "/pa leave"
+							+ ChatColor.WHITE + " | Leave the arena you are in");
 
 				} else {
 
@@ -211,9 +206,8 @@ public class Help {
 					Arenas.tellPlayer(player, ChatColor.GREEN
 							+ "/pa [arenaname] create [type]" + ChatColor.WHITE
 							+ " | Create an arena");
-					Arenas
-							.tellPlayer(player,
-									"Note: valid types are: team, ctf, free ; all other types fall back to team");
+					Arenas.tellPlayer(player,
+							"Note: valid types are: team, ctf, free ; all other types fall back to team");
 
 				} else if (args[2].equalsIgnoreCase("spawn")) {
 
@@ -225,12 +219,10 @@ public class Help {
 							"All Arena types: spectator, exit");
 					Arenas.tellPlayer(player,
 							"CTF: [teamname]lounge, [teamname]spawn");
-					Arenas
-							.tellPlayer(player,
-									"Team: [teamname]lounge, [teamname]spawn (if randomSpawn is not set)");
-					Arenas
-							.tellPlayer(player,
-									"Free: lounge, spawn[x] (or for Team if randomSpawn is set)");
+					Arenas.tellPlayer(player,
+							"Team: [teamname]lounge, [teamname]spawn (if randomSpawn is not set)");
+					Arenas.tellPlayer(player,
+							"Free: lounge, spawn[x] (or for Team if randomSpawn is set)");
 					Arenas.tellPlayer(player,
 							"Note: [x] can be any letter or digit.");
 
@@ -248,8 +240,7 @@ public class Help {
 					Arenas.tellPlayer(player, "Valid region names are:");
 					Arenas.tellPlayer(player,
 							"All Arena types: spectator, exit");
-					Arenas.tellPlayer(player,
-							"CTF, Team: [teamname]lounge");
+					Arenas.tellPlayer(player, "CTF, Team: [teamname]lounge");
 					Arenas.tellPlayer(player, "Free: freelounge");
 
 				} else if (args[2].equalsIgnoreCase("regionremove")) {
@@ -260,8 +251,7 @@ public class Help {
 					Arenas.tellPlayer(player, "Valid region names are:");
 					Arenas.tellPlayer(player,
 							"All Arena types: spectator, exit");
-					Arenas.tellPlayer(player,
-							"CTF, Team: [teamname]lounge");
+					Arenas.tellPlayer(player, "CTF, Team: [teamname]lounge");
 					Arenas.tellPlayer(player, "Free: freelounge");
 
 				} else {
@@ -276,12 +266,10 @@ public class Help {
 							+ "/pa help setup regionset" + ChatColor.WHITE
 							+ " | for help with setting a region");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help setup regionsave"
-							+ ChatColor.WHITE
+							+ "/pa help setup regionsave" + ChatColor.WHITE
 							+ " | for help with saving a region");
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa help setup regionremove"
-							+ ChatColor.WHITE
+							+ "/pa help setup regionremove" + ChatColor.WHITE
 							+ " | for help with removing a region");
 
 				}
@@ -293,12 +281,10 @@ public class Help {
 
 				if (args[2].equalsIgnoreCase("reload")) {
 
-					Arenas.tellPlayer(player, ChatColor.RED
-							+ "/pa reload" + ChatColor.WHITE
-							+ " | Reload all arenas");
-					Arenas
-							.tellPlayer(player,
-									"Note: use this to reload PVP Arena. The /reload command is buggy!");
+					Arenas.tellPlayer(player, ChatColor.RED + "/pa reload"
+							+ ChatColor.WHITE + " | Reload all arenas");
+					Arenas.tellPlayer(player,
+							"Note: use this to reload PVP Arena. The /reload command is buggy!");
 
 				} else if (args[2].equalsIgnoreCase("remove")) {
 
@@ -314,9 +300,8 @@ public class Help {
 					Arenas.tellPlayer(player, ChatColor.RED
 							+ "/pa [arenaname] enable" + ChatColor.WHITE
 							+ " | Enable usage of an arena");
-					Arenas
-							.tellPlayer(player,
-									"Note: OPs still can access the arena for testing purposes.");
+					Arenas.tellPlayer(player,
+							"Note: OPs still can access the arena for testing purposes.");
 
 				} else if (args[2].equalsIgnoreCase("forcestop")) {
 

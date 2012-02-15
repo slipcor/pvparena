@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 
 public class Debug {
 	public static boolean active;
-	public static String prefix = "[PA-debug] "; 
+	public static String prefix = "[PA-debug] ";
 
 	/**
 	 * log a message as prefixed INFO
@@ -28,7 +28,7 @@ public class Debug {
 	public void i(String s) {
 		if (!active)
 			return;
-		Bukkit.getLogger().info(prefix+s);
+		Bukkit.getLogger().info(prefix + s);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class Debug {
 	public void w(String s) {
 		if (!active)
 			return;
-		Bukkit.getLogger().warning(prefix+s);
+		Bukkit.getLogger().warning(prefix + s);
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class Debug {
 	public void s(String s) {
 		if (!active)
 			return;
-		Bukkit.getLogger().severe(prefix+s);
+		Bukkit.getLogger().severe(prefix + s);
 	}
 
 	/**

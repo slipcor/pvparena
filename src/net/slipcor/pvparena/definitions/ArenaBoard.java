@@ -19,18 +19,18 @@ import org.bukkit.block.Sign;
  */
 
 public class ArenaBoard {
-	
+
 	private Location location;
 	public Arena arena;
-	
+
 	public Statistics.type sortBy = Statistics.type.KILLS;
-	
-	private HashMap<Statistics.type,ArenaBoardColumn> columns = new HashMap<Statistics.type,ArenaBoardColumn>();
-	
+
+	private HashMap<Statistics.type, ArenaBoardColumn> columns = new HashMap<Statistics.type, ArenaBoardColumn>();
+
 	public ArenaBoard(Location loc, Arena a) {
 		location = loc;
 		arena = a;
-		
+
 		Bukkit.getLogger().info("constructing");
 		construct();
 	}
@@ -46,37 +46,40 @@ public class ArenaBoard {
 				Statistics.type t = null;
 				try {
 					t = Statistics.getTypeBySignLine(s.getLine(0));
-				} catch(Exception e) {
+				} catch (Exception e) {
 					// nothing
 				}
-				
+
 				columns.put(t, new ArenaBoardColumn(this, l));
 				Bukkit.getLogger().info("putting column");
 				l = l.getBlock().getRelative(bf).getLocation();
-			} while (border-->0);
-		} catch(Exception e) {
-			//no more signs, out!
+			} while (border-- > 0);
+		} catch (Exception e) {
+			// no more signs, out!
 		}
 	}
-	
-	private BlockFace getRightDirection(Sign s)
-    {
-        byte data = s.getRawData();
 
-        if (data == 2) return BlockFace.NORTH;
-        if (data == 3) return BlockFace.SOUTH;
-        if (data == 4) return BlockFace.WEST;
-        if (data == 5) return BlockFace.EAST;
-        
-        return null;
-    }
-	
+	private BlockFace getRightDirection(Sign s) {
+		byte data = s.getRawData();
+
+		if (data == 2)
+			return BlockFace.NORTH;
+		if (data == 3)
+			return BlockFace.SOUTH;
+		if (data == 4)
+			return BlockFace.WEST;
+		if (data == 5)
+			return BlockFace.EAST;
+
+		return null;
+	}
+
 	public void update() {
 		for (Statistics.type t : Statistics.type.values()) {
 			if (!columns.containsKey(t)) {
 				continue;
 			}
-			String[] s = Statistics.read(Statistics.getStats(this.arena, t),t);
+			String[] s = Statistics.read(Statistics.getStats(this.arena, t), t);
 			columns.get(t).write(s);
 		}
 	}

@@ -15,14 +15,14 @@ import org.bukkit.block.Sign;
 public class ArenaBoardSign {
 	protected ArenaBoardColumn column;
 	private Location location;
-	
+
 	public ArenaBoardSign(ArenaBoardColumn abc, Location loc) {
 		column = abc;
 		location = loc;
 	}
 
 	public void set(int i, String string) {
-		((Sign) location.getBlock().getState()).setLine(i,string);
+		((Sign) location.getBlock().getState()).setLine(i, string);
 	}
 
 	public void update() {

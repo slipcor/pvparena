@@ -43,16 +43,16 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 
 public class PVPArena extends JavaPlugin {
-	
+
 	public static final Language lang = new Language();
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
-	
+
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
 	private final Debug debug = new Debug();
-	
+
 	/**
 	 * plugin enabling method - register events and load the configs
 	 */
@@ -70,13 +70,14 @@ public class PVPArena extends JavaPlugin {
 		getConfig().addDefault("whitelist", whiteList);
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-		
+
 		File players = new File("plugins/pvparena/players.yml");
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
 			} catch (IOException e) {
-				Bukkit.getLogger().severe("Could not create players.yml! More errors will be happening!");
+				Bukkit.getLogger()
+						.severe("Could not create players.yml! More errors will be happening!");
 				e.printStackTrace();
 			}
 		}
@@ -86,10 +87,10 @@ public class PVPArena extends JavaPlugin {
 		Arenas.load_arenas();
 
 		Update.updateCheck(this);
-		
+
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
-		
+
 		lang.log_info("enabled", getDescription().getFullName());
 	}
 
@@ -153,16 +154,14 @@ public class PVPArena extends JavaPlugin {
 		} else if (args.length == 2 && args[1].equals("remove")) {
 			// /pa [name] remove
 			if (!hasAdminPerms(player)
-					&& !(hasCreatePerms(player,
-							Arenas.getArenaByName(args[0])))) {
+					&& !(hasCreatePerms(player, Arenas.getArenaByName(args[0])))) {
 				Arenas.tellPlayer(player,
 						lang.parse("nopermto", lang.parse("remove")));
 				return true;
 			}
 			Arena arena = Arenas.getArenaByName(args[0]);
 			if (arena == null) {
-				Arenas.tellPlayer(player,
-						lang.parse("arenanotexists", args[0]));
+				Arenas.tellPlayer(player, lang.parse("arenanotexists", args[0]));
 				return true;
 			}
 			Arenas.unload(args[0]);
@@ -178,17 +177,16 @@ public class PVPArena extends JavaPlugin {
 			Arenas.tellPlayer(player, lang.parse("reloaded"));
 			return true;
 		} else if (args[0].equalsIgnoreCase("list")) {
-			Arenas.tellPlayer(player,
-					lang.parse("arenas", Arenas.getNames()));
+			Arenas.tellPlayer(player, lang.parse("arenas", Arenas.getNames()));
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
 				String sName = arena.pm.getTeam(player);
-				
-				Announcement.announce(arena, type.LOSER, lang.parse("playerleave",
-						player.getName()));
-				
+
+				Announcement.announce(arena, type.LOSER,
+						lang.parse("playerleave", player.getName()));
+
 				if (arena.paTeams.get(sName) == null) {
 					Arenas.tellPlayer(player, lang.parse("youleave"));
 					arena.removePlayer(player,
@@ -223,8 +221,7 @@ public class PVPArena extends JavaPlugin {
 				arena = Arenas.getArenaByName("default");
 				debug.i("found default arena!");
 			} else {
-				Arenas.tellPlayer(player,
-						lang.parse("arenanotexists", sName));
+				Arenas.tellPlayer(player, lang.parse("arenanotexists", sName));
 				return true;
 			}
 			return Commands.parseCommand(arena, player, args);

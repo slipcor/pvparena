@@ -95,7 +95,7 @@ public class Update {
 				}
 				msg = true;
 				outdated = (o > t);
-				v = (byte)i;
+				v = (byte) i;
 				Update.message(null);
 				return;
 			} catch (Exception e) {
@@ -113,7 +113,8 @@ public class Update {
 	 * @param sThis
 	 *            the local letter(s)
 	 */
-	private static void calculateRadixString(String sOnline, String sThis, int pos) {
+	private static void calculateRadixString(String sOnline, String sThis,
+			int pos) {
 		try {
 			int o = Integer.parseInt(sOnline, 46);
 			int t = Integer.parseInt(sThis, 46);
@@ -161,16 +162,12 @@ public class Update {
 		}
 
 		if (outdated) {
-			Arenas.tellPlayer(
-					player,
-					"You are using " + colorize("v" + vThis)
-							+ ", an outdated version! Latest: §a"
-							+ "v" + vOnline);
+			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+					+ ", an outdated version! Latest: §a" + "v" + vOnline);
 		} else {
-			Arenas.tellPlayer(player,
-					"You are using " + colorize("v" + vThis)
-							+ ", an experimental version! Latest stable: §a"
-							+ "v"+ vOnline);
+			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+					+ ", an experimental version! Latest stable: §a" + "v"
+					+ vOnline);
 		}
 	}
 

@@ -29,7 +29,6 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
 public class Inventories {
 
 	public static final Debug db = new Debug();
-	
 
 	// private statics: item definitions
 	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
@@ -124,8 +123,8 @@ public class Inventories {
 			String color = arena.paTeams.get(sTeam);
 			db.i("forcing woolhead: " + sTeam + "/" + color);
 			player.getInventory().setHelmet(
-					new ItemStack(Material.WOOL, 1,
-							StringParser.getColorDataFromENUM(color)));
+					new ItemStack(Material.WOOL, 1, StringParser
+							.getColorDataFromENUM(color)));
 		}
 	}
 

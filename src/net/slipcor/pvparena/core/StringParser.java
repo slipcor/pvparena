@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 public class StringParser {
 
 	public static final Debug db = new Debug();
-	
+
 	/**
 	 * calculate a color short from a color enum
 	 * 
@@ -84,7 +84,7 @@ public class StringParser {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * retrieve a material from a string
 	 * 

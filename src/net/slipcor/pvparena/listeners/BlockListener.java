@@ -32,20 +32,21 @@ import org.bukkit.event.block.SignChangeEvent;
 
 public class BlockListener implements Listener {
 	private Debug db = new Debug();
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
 			return; // no arena => out
-		
+
 		db.i("block break inside the arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockplace", true))))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.blockplace", true))))
 			return; // we don't need protection => OUT!
 		if (arena.pm.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
-		
+
 		event.setCancelled(true);
 		return;
 	}
@@ -61,12 +62,13 @@ public class BlockListener implements Listener {
 
 		if (arena.pm.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
-		
+
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
 		if ((arena.cfg.getBoolean("protection.enabled", true))
 				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.cfg.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD))
-						|| ((arena.cfg.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
+						|| ((arena.cfg
+								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
+						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
 			// if an event happened that we would like to block
 			event.setCancelled(true); // ->cancel!
 		}
@@ -80,7 +82,8 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		db.i("block burn inside the arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.fire.firespread", true))))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.fire.firespread", true))))
 			// if not an event happend that we would like to block => OUT
 			return;
 
@@ -96,49 +99,59 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		db.i("block place inside the arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg.getBoolean("protection.blockplace", true))))
+		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.blockplace", true))))
 			// if not an event happend that we would like to block => OUT
 			return;
 
-		if (!arena.cfg.getBoolean("protection.tnt", true) && event.getBlock().getTypeId() == 46)
+		if (!arena.cfg.getBoolean("protection.tnt", true)
+				&& event.getBlock().getTypeId() == 46)
 			return; // we do not block TNT, so just return if it is TNT
-		
+
 		event.setCancelled(true);
 		return;
 	}
-	
+
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
 		String headline = event.getLine(0);
 		if ((headline == null) || (headline.equals(""))) {
 			return;
 		}
-		
+
 		if (!headline.startsWith("[PAA]")) {
 			return;
 		}
-		
+
 		headline = headline.replace("[PAA]", "");
-		
+
 		Arena a = Arenas.getArenaByName(headline);
 		if (a == null) {
 			return;
 		}
-		
+
 		// trying to create an arena leaderboard
-		
+
 		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
-			Arenas.tellPlayer(event.getPlayer(), PVPArena.lang.parse("boardexists"));
+			Arenas.tellPlayer(event.getPlayer(),
+					PVPArena.lang.parse("boardexists"));
 			return;
 		}
-		
-		if (!PVPArena.hasAdminPerms(event.getPlayer()) && !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
-			Arenas.tellPlayer(event.getPlayer(), PVPArena.lang.parse("nopermto",PVPArena.lang.parse("createleaderboard")));
+
+		if (!PVPArena.hasAdminPerms(event.getPlayer())
+				&& !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
+			Arenas.tellPlayer(
+					event.getPlayer(),
+					PVPArena.lang.parse("nopermto",
+							PVPArena.lang.parse("createleaderboard")));
 			return;
 		}
-		
+
 		event.setLine(0, headline);
-		Arenas.boards.put(event.getBlock().getLocation(),new ArenaBoard(event.getBlock().getLocation(), a));
-		a.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("pvparena"), new BoardRunnable(a), 100L, 100L);
+		Arenas.boards.put(event.getBlock().getLocation(), new ArenaBoard(event
+				.getBlock().getLocation(), a));
+		a.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				Bukkit.getPluginManager().getPlugin("pvparena"),
+				new BoardRunnable(a), 100L, 100L);
 	}
 }

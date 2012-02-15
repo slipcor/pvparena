@@ -56,9 +56,10 @@ public class Statistics {
 		}
 	}
 
-	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy, boolean desc) {
-		int a=0;
-		int b=0;
+	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy,
+			boolean desc) {
+		int a = 0;
+		int b = 0;
 		if (sortBy.equals(type.DAMAGE)) {
 			a = aps[pos].damage;
 			b = aps[pos + 1].damage;
@@ -93,7 +94,7 @@ public class Statistics {
 			return type.NULL;
 		}
 		line = line.replace("[PA]", "").toUpperCase();
-		
+
 		for (type t : type.values()) {
 			if (t.name().equals(line)) {
 				return t;

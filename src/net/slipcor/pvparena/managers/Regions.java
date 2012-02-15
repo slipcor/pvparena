@@ -22,10 +22,12 @@ import net.slipcor.pvparena.definitions.Arena;
 public class Regions {
 
 	private final static Debug db = new Debug();
+
 	/**
 	 * check if an arena has overlapping battlefield region with another arena
 	 * 
-	 * @param arena2 TODO
+	 * @param arena2
+	 *            TODO
 	 * @param arena
 	 *            the arena to check
 	 * @return true if it does not overlap, false otherwise

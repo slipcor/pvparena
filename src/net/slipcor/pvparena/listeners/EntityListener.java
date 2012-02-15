@@ -82,16 +82,15 @@ public class EntityListener implements Listener {
 
 		String sTeam = arena.pm.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
-		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("killed",
-				player.getName()));
+		Announcement.announce(arena, type.LOSER,
+				PVPArena.lang.parse("killed", player.getName()));
 		arena.pm.tellEveryone(PVPArena.lang.parse("killed",
-				ChatColor.valueOf(color) + player.getName()
-						+ ChatColor.YELLOW));
+				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 
 		arena.pm.parsePlayer(player).losses++;
 		arena.pm.setTeam(player, ""); // needed so player does not
-													// get found when dead
-		
+										// get found when dead
+
 		if (arena.isCustomClassActive()) {
 			Location loc = player.getLocation();
 			for (ItemStack is : player.getInventory().getArmorContents()) {
@@ -102,7 +101,7 @@ public class EntityListener implements Listener {
 			}
 			player.getInventory().clear();
 		}
-		
+
 		ArenaPlayer p = arena.pm.parsePlayer(player);
 		p.respawn = "lose";
 		arena.tpPlayerToCoordName(player, "spectator");
@@ -138,7 +137,8 @@ public class EntityListener implements Listener {
 			}
 			String sKiller = "";
 			String sKilled = "";
-			if (arena.getType().equals("ctf") || arena.getType().equals("pumpkin")) {
+			if (arena.getType().equals("ctf")
+					|| arena.getType().equals("pumpkin")) {
 				db.i("timed ctf/pumpkin arena");
 				sKilled = player.getName();
 				if (damager != null) {
@@ -171,8 +171,7 @@ public class EntityListener implements Listener {
 			}
 		}
 		if (arena.usesPowerups) {
-			if (arena.cfg.getString("game.powerups", "off").startsWith(
-					"death")) {
+			if (arena.cfg.getString("game.powerups", "off").startsWith("death")) {
 				db.i("calculating powerup trigger death");
 				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
 				if (arena.powerupDiffI == 0) {
@@ -210,13 +209,13 @@ public class EntityListener implements Listener {
 				return;
 
 			db.i("onEntityDamageByBLOCKDAMAGE: fighting player");
-			
+
 			if (arena.pm.getPlayerTeamMap().get(defender.getName()) == null) {
 				return;
 			}
 
 			db.i("processing damage!");
-			
+
 			if (arena.pum != null) {
 				db.i("committing powerup triggers");
 				Powerup p = arena.pum.puActive.get(defender);
@@ -250,9 +249,9 @@ public class EntityListener implements Listener {
 		if (event.getCause() == DamageCause.PROJECTILE) {
 			p1 = ((Projectile) p1).getShooter();
 		}
-		
+
 		if (event.getEntity() instanceof Wolf) {
-			Wolf wolf = (Wolf)  event.getEntity();
+			Wolf wolf = (Wolf) event.getEntity();
 			if (wolf.getOwner() != null) {
 				p1 = (Entity) wolf.getOwner();
 			}
@@ -261,7 +260,7 @@ public class EntityListener implements Listener {
 		if ((p2 == null) || (!(p2 instanceof Player))) {
 			return;
 		}
-		
+
 		Arena arena = Arenas.getArenaByPlayer((Player) p2);
 		if (arena == null) {
 			// defender no arena player => out
@@ -269,9 +268,9 @@ public class EntityListener implements Listener {
 		}
 
 		db.i("onEntityDamageByEntity: fighting player");
-		
+
 		if ((p1 == null) || (!(p1 instanceof Player))) {
-			 // attacker no player => cancel and out!
+			// attacker no player => cancel and out!
 			event.setCancelled(true);
 			return;
 		}
@@ -284,20 +283,20 @@ public class EntityListener implements Listener {
 
 		db.i("both players part of the arena");
 		if ((!arena.cfg.getBoolean("game.teamKill", false))
-				&& (arena.pm.getTeam(attacker))
-						.equals(arena.pm.getTeam(defender))) {
+				&& (arena.pm.getTeam(attacker)).equals(arena.pm
+						.getTeam(defender))) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if (!arena.fightInProgress) {
-			 // fight not started, cancel!
+			// fight not started, cancel!
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		if (arena.cfg.getBoolean("game.weaponDamage")) {
 			if ((attacker.getItemInHand() != null)
 					&& (attacker.getItemInHand().getType() != null)
@@ -305,19 +304,19 @@ public class EntityListener implements Listener {
 				attacker.getItemInHand().setDurability((byte) 0);
 			}
 		}
-		
+
 		if (arena.cfg.getInt("protection.spawn") > 0) {
-			if (Spawns.isNearSpawn(arena, defender, arena.cfg.getInt("protection.spawn"))) {
+			if (Spawns.isNearSpawn(arena, defender,
+					arena.cfg.getInt("protection.spawn"))) {
 				// spawn protection!
 				db.i("spawn protection! damage cancelled!");
 				event.setCancelled(true);
 				return;
 			}
 		}
-		
-		
-		//TODO calculate armor
-		
+
+		// TODO calculate armor
+
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
@@ -383,7 +382,7 @@ public class EntityListener implements Listener {
 		if (arena.pm.getTeam(player).equals(""))
 			return;
 
-		//TODO calculate damage and armor
+		// TODO calculate damage and armor
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			db.i("damage >= health => death");
@@ -450,8 +449,7 @@ public class EntityListener implements Listener {
 	public void onEntityExplode(EntityExplodeEvent event) {
 		db.i("explosion");
 
-		Arena arena = Arenas
-				.getArenaByRegionLocation(event.getLocation());
+		Arena arena = Arenas.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
 			return; // no arena => out
 

@@ -35,8 +35,8 @@ public class Language {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
-				Bukkit.getLogger()
-						.severe("[PVP Arena] Error when creating language file.");
+				Bukkit.getLogger().severe(
+						"[PVP Arena] Error when creating language file.");
 			}
 
 		YamlConfiguration config = new YamlConfiguration();
@@ -183,9 +183,12 @@ public class Language {
 		config.addDefault("lang.checkregionerror",
 				"Waiting for a running arena to finish!");
 
-		config.addDefault("lang.pumpkinhomeleft","Player %1% brought home the pumpkin of team %2%! Lives left: %3%");
-		config.addDefault("lang.pumpkingrab","Player %1% grabbed the pumpkin of team %2%!");
-		config.addDefault("lang.pumpkinsave","Player %1% dropped the pumpkin of team %2%!");
+		config.addDefault("lang.pumpkinhomeleft",
+				"Player %1% brought home the pumpkin of team %2%! Lives left: %3%");
+		config.addDefault("lang.pumpkingrab",
+				"Player %1% grabbed the pumpkin of team %2%!");
+		config.addDefault("lang.pumpkinsave",
+				"Player %1% dropped the pumpkin of team %2%!");
 		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
 		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
 		config.addDefault("lang.tosetflag", "Flag to set: %1%");
@@ -195,22 +198,25 @@ public class Language {
 		config.addDefault("lang.notready2", "Your team is alone in the arena!");
 		config.addDefault("lang.notready3", "A team is missing players!");
 		config.addDefault("lang.notready4", "The arena is missing players!");
-		config.addDefault("lang.notready5", "At least one player has not chosen a class!");
+		config.addDefault("lang.notready5",
+				"At least one player has not chosen a class!");
 
 		config.addDefault("lang.teamfull", "%1% is full!");
 		config.addDefault("lang.arenafull", "arena is full!");
 		config.addDefault("lang.classfull", "class is full!");
 
-		config.addDefault("lang.errorcustomflag", "Error! Arena is not of type ctf.");
-		config.addDefault("lang.errorcustompumpkin", "Error! Arena is not of type pumpkin.");
-		config.addDefault("lang.errorspawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!");
-		config.addDefault("lang.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'");
+		config.addDefault("lang.errorcustomflag",
+				"Error! Arena is not of type ctf.");
+		config.addDefault("lang.errorcustompumpkin",
+				"Error! Arena is not of type pumpkin.");
+		config.addDefault("lang.errorspawnfree",
+				"Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!");
+		config.addDefault("lang.errorloungefree",
+				"Error! Arena is not of type free. Use '[teamname]lounge'");
 
 		config.addDefault("lang.createleaderboard", "create a leaderboard");
 		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
-		
-		
-		
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

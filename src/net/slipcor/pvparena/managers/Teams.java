@@ -29,8 +29,6 @@ import net.slipcor.pvparena.definitions.Arena;
 
 public class Teams {
 	private static Debug db = new Debug();
-	
-
 
 	/**
 	 * assign a player to a team
@@ -55,8 +53,8 @@ public class Teams {
 			arena.tpPlayerToCoordName(player, team + "lounge");
 		}
 		Arenas.tellPlayer(player, PVPArena.lang.parse("youjoined"
-				+ (free ? "free" : ""), ChatColor.valueOf(arena.paTeams.get(team))
-				+ team));
+				+ (free ? "free" : ""),
+				ChatColor.valueOf(arena.paTeams.get(team)) + team));
 		Announcement.announce(arena, type.JOIN, PVPArena.lang.parse(
 				"playerjoined" + (free ? "free" : ""), player.getName(),
 				ChatColor.valueOf(arena.paTeams.get(team)) + team));

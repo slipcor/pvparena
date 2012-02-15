@@ -36,15 +36,16 @@ public class Spawns {
 	 */
 	public static Location getCoords(Arena arena, String place) {
 		Arena.db.i("get coords: " + place);
-		World world = Bukkit.getWorld(arena.cfg.getString("general.world", Bukkit
-				.getWorlds().get(0).getName()));
+		World world = Bukkit.getWorld(arena.cfg.getString("general.world",
+				Bukkit.getWorlds().get(0).getName()));
 		if (place.equals("spawn") || place.equals("popup")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
-	
+
 			Arena.db.i("searching for spawns");
-	
-			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg.getYamlConfiguration().getConfigurationSection("spawns")
+
+			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
+					.getYamlConfiguration().getConfigurationSection("spawns")
 					.getValues(false);
 			for (String name : coords.keySet()) {
 				if (name.startsWith(place)) {
@@ -52,9 +53,9 @@ public class Spawns {
 					Arena.db.i("found match: " + name);
 				}
 			}
-	
+
 			Random r = new Random();
-	
+
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.cfg.get("spawns." + place) == null) {
 			if (!place.contains("spawn")) {
@@ -64,10 +65,11 @@ public class Spawns {
 			// no exact match: assume we have multiple spawnpoints
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
-	
+
 			Arena.db.i("searching for team spawns");
-	
-			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg.getYamlConfiguration().getConfigurationSection("spawns")
+
+			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
+					.getYamlConfiguration().getConfigurationSection("spawns")
 					.getValues(false);
 			for (String name : coords.keySet()) {
 				if (name.startsWith(place)) {
@@ -75,15 +77,15 @@ public class Spawns {
 					Arena.db.i("found match: " + name);
 				}
 			}
-	
+
 			if (locs.size() < 1) {
 				return null;
 			}
 			Random r = new Random();
-	
+
 			place = locs.get(r.nextInt(locs.size()));
 		}
-	
+
 		String sLoc = arena.cfg.getString("spawns." + place, null);
 		Arena.db.i("parsing location: " + sLoc);
 		return Config.parseLocation(world, sLoc);
@@ -123,22 +125,23 @@ public class Spawns {
 		if (arena.pm.getTeam(player).equals("")) {
 			return false;
 		}
-		
+
 		HashSet<Location> spawns = getSpawns(arena, arena.pm.getTeam(player));
-		
+
 		for (Location loc : spawns) {
 			if (loc.distance(player.getLocation()) <= diff) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
 	private static HashSet<Location> getSpawns(Arena arena, String sTeam) {
 		HashSet<Location> result = new HashSet<Location>();
-		
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg.getYamlConfiguration().getConfigurationSection("spawns")
+
+		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
+				.getYamlConfiguration().getConfigurationSection("spawns")
 				.getValues(false);
 		World world = Bukkit.getWorld(arena.getWorld());
 		for (String name : coords.keySet()) {
@@ -147,9 +150,9 @@ public class Spawns {
 					continue;
 				}
 			}
-			result.add(Config.parseLocation(world,name));
+			result.add(Config.parseLocation(world, name));
 		}
-		
+
 		return result;
 	}
 }

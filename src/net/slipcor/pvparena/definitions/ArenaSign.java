@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class ArenaSign {
 	Location location;
-	
+
 	public ArenaSign(Location loc) {
 		location = loc;
 		this.clear();
@@ -38,7 +38,8 @@ public class ArenaSign {
 
 	private void clearNext() {
 		try {
-			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN).getState();
+			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+					.getState();
 			s.setLine(0, "");
 			s.setLine(1, "");
 			s.setLine(2, "");
@@ -65,15 +66,16 @@ public class ArenaSign {
 	private boolean setFreeLine(String name) {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
-			for (int i=2;i<4;i++) {
+			for (int i = 2; i < 4; i++) {
 				if (s.getLine(i) == null || s.getLine(i).equals("")) {
 					s.setLine(i, name);
 					s.update();
 					return true;
 				}
 			}
-			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN).getState();
-			for (int i=0;i<4;i++) {
+			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+					.getState();
+			for (int i = 0; i < 4; i++) {
 				if (s.getLine(i) == null || s.getLine(i).equals("")) {
 					s.setLine(i, name);
 					s.update();
@@ -95,14 +97,15 @@ public class ArenaSign {
 	private void remove(String name) {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
-			for (int i=2;i<4;i++) {
+			for (int i = 2; i < 4; i++) {
 				if (s.getLine(i) != null && s.getLine(i).equals(name)) {
 					s.setLine(i, "");
 				}
 			}
 			s.update();
-			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN).getState();
-			for (int i=0;i<4;i++) {
+			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+					.getState();
+			for (int i = 0; i < 4; i++) {
 				if (s.getLine(i) != null && s.getLine(i).equals(name)) {
 					s.setLine(i, "");
 				}

@@ -30,7 +30,6 @@ public class Flags {
 	// protected static: Debug manager (same for all child Arenas)
 	public static final Debug db = new Debug();
 
-
 	/**
 	 * [FLAG] take away one life of a team
 	 * 
@@ -105,7 +104,7 @@ public class Flags {
 			db.i("player " + player.getName() + " has got a " + type);
 			vLoc = block.getLocation().toVector();
 			sTeam = arena.pm.getTeam(player);
-			db.i("block: "+vLoc.toString());
+			db.i("block: " + vLoc.toString());
 			if (Spawns.getCoords(arena, sTeam + type) != null) {
 				vFlag = Spawns.getCoords(arena, sTeam + type).toVector();
 			} else {
@@ -119,9 +118,9 @@ public class Flags {
 				String flagTeam = getHeldFlagTeam(arena, player.getName());
 
 				db.i("the " + type + " belongs to team " + flagTeam);
-				
-				String scFlagTeam = ChatColor.valueOf(arena.paTeams.get(flagTeam))
-						+ flagTeam + ChatColor.YELLOW;
+
+				String scFlagTeam = ChatColor.valueOf(arena.paTeams
+						.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
 				String scPlayer = ChatColor.valueOf(arena.paTeams.get(sTeam))
 						+ player.getName() + ChatColor.YELLOW;
 
@@ -129,8 +128,9 @@ public class Flags {
 						scPlayer, scFlagTeam,
 						String.valueOf(arena.paLives.get(flagTeam) - 1)));
 				arena.paTeamFlags.remove(flagTeam);
-				
-				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin, Spawns.getCoords(arena, flagTeam + type));
+
+				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
+						Spawns.getCoords(arena, flagTeam + type));
 
 				player.getInventory().setHelmet(
 						arena.paHeadGears.get(player.getName()).clone());
@@ -150,27 +150,29 @@ public class Flags {
 				}
 				db.i("checking for " + type + " of team " + team);
 				vLoc = block.getLocation().toVector();
-				db.i("block: "+vLoc.toString());
+				db.i("block: " + vLoc.toString());
 				if (Spawns.getCoords(arena, team + type) != null) {
 					vFlag = Spawns.getCoords(arena, team + type).toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i(type + " found!");
 					db.i("vFlag: " + vFlag.toString());
-					String scTeam = ChatColor.valueOf(arena.paTeams.get(team)) + team
+					String scTeam = ChatColor.valueOf(arena.paTeams.get(team))
+							+ team + ChatColor.YELLOW;
+					String scPlayer = ChatColor.valueOf(arena.paTeams
+							.get(playerTeam))
+							+ player.getName()
 							+ ChatColor.YELLOW;
-					String scPlayer = ChatColor
-							.valueOf(arena.paTeams.get(playerTeam))
-							+ player.getName() + ChatColor.YELLOW;
 					arena.pm.tellEveryone(PVPArena.lang.parse(type + "grab",
 							scPlayer, scTeam));
 
-					arena.paHeadGears.put(player.getName(), player.getInventory()
-							.getHelmet().clone());
+					arena.paHeadGears.put(player.getName(), player
+							.getInventory().getHelmet().clone());
 					player.getInventory().setHelmet(
 							block.getState().getData().toItemStack().clone());
-					
-					takeFlag(arena.paTeams.get(team), true, pumpkin, block.getLocation());
+
+					takeFlag(arena.paTeams.get(team), true, pumpkin,
+							block.getLocation());
 
 					arena.paTeamFlags.put(team, player.getName());
 					return;
@@ -179,15 +181,18 @@ public class Flags {
 		}
 	}
 
-	private static void takeFlag(String flagColor, boolean take, boolean pumpkin, Location lBlock) {
+	private static void takeFlag(String flagColor, boolean take,
+			boolean pumpkin, Location lBlock) {
 		if (pumpkin) {
 			return;
 		}
-		
+
 		if (take) {
-			lBlock.getBlock().setData(StringParser.getColorDataFromENUM("WHITE"));
+			lBlock.getBlock().setData(
+					StringParser.getColorDataFromENUM("WHITE"));
 		} else {
-			lBlock.getBlock().setData(StringParser.getColorDataFromENUM(flagColor));
+			lBlock.getBlock().setData(
+					StringParser.getColorDataFromENUM(flagColor));
 		}
 	}
 
@@ -254,10 +259,10 @@ public class Flags {
 		if (flagTeam != null) {
 			String scFlagTeam = ChatColor.valueOf(arena.paTeams.get(flagTeam))
 					+ flagTeam + ChatColor.YELLOW;
-			String scPlayer = ChatColor
-					.valueOf(arena.paTeams.get(arena.pm.getTeam(player)))
-					+ player.getName() + ChatColor.YELLOW;
-			arena.pm.tellEveryone(PVPArena.lang.parse(type + "save", scPlayer, scFlagTeam));
+			String scPlayer = ChatColor.valueOf(arena.paTeams.get(arena.pm
+					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
+			arena.pm.tellEveryone(PVPArena.lang.parse(type + "save", scPlayer,
+					scFlagTeam));
 			arena.paTeamFlags.remove(flagTeam);
 			if (arena.paHeadGears != null) {
 				player.getInventory().setHelmet(

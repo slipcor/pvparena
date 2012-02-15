@@ -59,6 +59,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class PlayerListener implements Listener {
 	private Debug db = new Debug();
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event) {
 
@@ -68,16 +69,17 @@ public class PlayerListener implements Listener {
 		if (arena == null || arena.pm.getTeam(player).equals("")) {
 			return; // no fighting player => OUT
 		}
-		
+
 		if (!arena.cfg.getBoolean("messages.chat")) {
 			return; // no chat editing
 		}
-		
+
 		if (!arena.paChat.contains(player.getName())) {
 			return; // player not chatting
 		}
 		String sTeam = arena.pm.getTeam(player);
-		arena.pm.tellTeam(sTeam, event.getMessage(), ChatColor.valueOf(arena.paTeams.get(sTeam)));
+		arena.pm.tellTeam(sTeam, event.getMessage(),
+				ChatColor.valueOf(arena.paTeams.get(sTeam)));
 		event.setCancelled(true);
 	}
 
@@ -90,8 +92,8 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 
-		List<String> list = Bukkit.getServer().getPluginManager().getPlugin("pvparena").getConfig().getStringList(
-				"whitelist");
+		List<String> list = Bukkit.getServer().getPluginManager()
+				.getPlugin("pvparena").getConfig().getStringList("whitelist");
 		list.add("pa");
 		db.i("checking command whitelist");
 
@@ -127,7 +129,8 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByName(Arena.regionmodify);
 
 		if (arena != null
-				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(player,arena)))
+				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
+						player, arena)))
 				&& (player.getItemInHand() != null)
 				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
 						"setup.wand", 280))) {
@@ -161,8 +164,8 @@ public class PlayerListener implements Listener {
 
 						Arena a = Arenas.getArenaByName(sName);
 						if (a == null) {
-							Arenas.tellPlayer(player, PVPArena.lang
-									.parse("arenanotexists", sName));
+							Arenas.tellPlayer(player, PVPArena.lang.parse(
+									"arenanotexists", sName));
 							return;
 						}
 						Commands.parseCommand(a, player, newArgs);
@@ -197,13 +200,13 @@ public class PlayerListener implements Listener {
 		if (arena == null || arena.fightInProgress) {
 			return; // not fighting or fight already in progress => OUT
 		}
-		
+
 		// fighting player inside the lobby!
 		event.setCancelled(true);
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
-			db.i("player team: "+arena.pm.getTeam(player));
+			db.i("player team: " + arena.pm.getTeam(player));
 			if (block.getState() instanceof Sign) {
 				db.i("sign click!");
 				Sign sign = (Sign) block.getState();
@@ -211,30 +214,30 @@ public class PlayerListener implements Listener {
 				if ((arena.paClassItems.containsKey(sign.getLine(0)) || (sign
 						.getLine(0).equalsIgnoreCase("custom")))
 						&& (!arena.pm.getTeam(player).equals(""))) {
-					
-					db.i("legit class: "+sign.getLine(0));
+
+					db.i("legit class: " + sign.getLine(0));
 
 					boolean classperms = false;
 					if (arena.cfg.get("general.classperms") != null) {
 						classperms = arena.cfg.getBoolean("general.classperms",
 								false);
 					}
-					
-					
+
 					if (classperms) {
 						db.i("checking classperms");
-						if (!(PVPArena.hasPerms(player,
-								"pvparena.class." + sign.getLine(0)))) {
+						if (!(PVPArena.hasPerms(player, "pvparena.class."
+								+ sign.getLine(0)))) {
 							Arenas.tellPlayer(player,
 									PVPArena.lang.parse("classperms"));
 							return; // class permission desired and failed =>
 									// announce and OUT
 						}
 					}
-					
+
 					if (arena.cfg.getBoolean("general.signs")) {
 						ArenaSign.remove(arena.paSigns, player);
-						ArenaSign as = ArenaSign.used(block.getLocation(), arena.paSigns);
+						ArenaSign as = ArenaSign.used(block.getLocation(),
+								arena.paSigns);
 						if (as == null) {
 							as = new ArenaSign(block.getLocation());
 						}
@@ -267,8 +270,8 @@ public class PlayerListener implements Listener {
 			if (arena.cfg.get("ready.block") != null) {
 				db.i("reading ready block");
 				try {
-					mMat = Material.getMaterial(arena.cfg
-							.getInt("ready.block"));
+					mMat = Material
+							.getMaterial(arena.cfg.getInt("ready.block"));
 					if (mMat == Material.AIR)
 						mMat = Material.getMaterial(arena.cfg
 								.getString("ready.block"));
@@ -299,28 +302,22 @@ public class PlayerListener implements Listener {
 
 				int ready = arena.pm.ready(arena);
 				if (ready == 0) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready"));
 					return; // team not ready => announce
 				} else if (ready == -1) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready1"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready1"));
 					return; // team not ready => announce
 				} else if (ready == -2) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready2"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready2"));
 					return; // team not ready => announce
 				} else if (ready == -3) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready3"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready3"));
 					return; // team not ready => announce
 				} else if (ready == -4) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready4"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready4"));
 					return; // arena not ready => announce
 				} else if (ready == -5) {
-					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("notready5"));
+					Arenas.tellPlayer(player, PVPArena.lang.parse("notready5"));
 					return; // arena not ready => announce
 				}
 
@@ -340,10 +337,9 @@ public class PlayerListener implements Listener {
 
 				arena.teleportAllToSpawn();
 				arena.fightInProgress = true;
-				arena.pm.tellEveryone(PVPArena.lang
-						.parse("begin"));
-				Announcement.announce(arena, type.START, PVPArena.lang
-						.parse("begin"));
+				arena.pm.tellEveryone(PVPArena.lang.parse("begin"));
+				Announcement.announce(arena, type.START,
+						PVPArena.lang.parse("begin"));
 			}
 		}
 	}
@@ -357,6 +353,7 @@ public class PlayerListener implements Listener {
 		}
 		Update.message(player);
 	}
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -408,8 +405,8 @@ public class PlayerListener implements Listener {
 					arena.pum.puActive.get(player).disable();
 				}
 				arena.pum.puActive.put(player, newP);
-				arena.pm.tellEveryone(PVPArena.lang.parse(
-						"playerpowerup", player.getName(), newP.name));
+				arena.pm.tellEveryone(PVPArena.lang.parse("playerpowerup",
+						player.getName(), newP.name));
 				event.setCancelled(true);
 				event.getItem().remove();
 				if (newP.canBeTriggered())
@@ -428,8 +425,8 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		db.i("onPlayerQuit: fighting player");
 		String color = arena.paTeams.get(arena.pm.getTeam(player));
-		Announcement.announce(arena, type.LOSER, PVPArena.lang.parse("playerleave", 
-						player.getName()));
+		Announcement.announce(arena, type.LOSER,
+				PVPArena.lang.parse("playerleave", player.getName()));
 		arena.pm.tellEveryoneExcept(
 				player,
 				PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
@@ -458,7 +455,8 @@ public class PlayerListener implements Listener {
 			l = arena.getPlayerOldLocation(player);
 		} else {
 			db.i("=> 'config=>death' location");
-			l = Spawns.getCoords(arena, arena.cfg.getString("tp.death", "spectator"));
+			l = Spawns.getCoords(arena,
+					arena.cfg.getString("tp.death", "spectator"));
 		}
 		event.setRespawnLocation(l);
 
@@ -467,7 +465,7 @@ public class PlayerListener implements Listener {
 			ArenaPlayer p = arena.pm.parsePlayer(player);
 			p.respawn = "";
 		} catch (Exception e) {
-			
+
 		}
 	}
 

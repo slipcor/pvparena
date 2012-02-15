@@ -49,8 +49,10 @@ public class Tracker implements Runnable {
 			url = String
 					.format("http://www.slipcor.net/stats/call.php?port=%s&name=%s&version=%s",
 							plugin.getServer().getPort(),
-							URLEncoder.encode(plugin.getDescription().getName(), "UTF-8"),
-							URLEncoder.encode(plugin.getDescription().getVersion(), "UTF-8"));
+							URLEncoder.encode(
+									plugin.getDescription().getName(), "UTF-8"),
+							URLEncoder.encode(plugin.getDescription()
+									.getVersion(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}

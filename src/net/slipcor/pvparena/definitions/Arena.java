@@ -58,7 +58,6 @@ public class Arena {
 	// protected static: Debug manager (same for all child Arenas)
 	public static final Debug db = new Debug();
 
-
 	/*
 	 * arena maps, contain the arena data
 	 */
@@ -493,8 +492,8 @@ public class Arena {
 	}
 
 	private void dropItemOnSpawn(Material item) {
-		Location aim = Spawns.getCoords(this, "popup").getBlock().getRelative(BlockFace.UP)
-				.getLocation();
+		Location aim = Spawns.getCoords(this, "popup").getBlock()
+				.getRelative(BlockFace.UP).getLocation();
 
 		db.i("dropping item on spawn.");
 		Bukkit.getWorld(this.getWorld()).dropItem(aim, new ItemStack(item, 1));
@@ -531,7 +530,7 @@ public class Arena {
 		if (cfg.getBoolean("game.refillInventory")
 				&& !pm.getClass(player).equals("custom")) {
 			Inventories.clearInventory(player);
-			Inventories.givePlayerFightItems(this,player);
+			Inventories.givePlayerFightItems(this, player);
 		}
 
 		String sTeam = pm.getTeam(player);
@@ -546,9 +545,9 @@ public class Arena {
 			Flags.checkEntityDeath(this, player);
 		} else {
 
-			pm.tellEveryone(PVPArena.lang.parse("lostlife", ChatColor.valueOf(color)
-					+ player.getName() + ChatColor.YELLOW,
-					String.valueOf(lives)));
+			pm.tellEveryone(PVPArena.lang.parse("lostlife",
+					ChatColor.valueOf(color) + player.getName()
+							+ ChatColor.YELLOW, String.valueOf(lives)));
 			if (!cfg.getBoolean("arenatype.randomSpawn", false)
 					&& color != null && !sTeam.equals("free")) {
 				tpPlayerToCoordName(player, sTeam + "spawn");
@@ -590,7 +589,8 @@ public class Arena {
 				String[] nSplit = nKey.split(":");
 
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double amount = pm.paPlayersBetAmount.get(nKey) * 4; //TODO: config
+					double amount = pm.paPlayersBetAmount.get(nKey) * 4; // TODO:
+																			// config
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);

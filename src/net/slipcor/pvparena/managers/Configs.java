@@ -35,7 +35,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
 
 public class Configs {
 	private static Debug db = new Debug();
-	
+
 	/**
 	 * create a config manager instance
 	 * 
@@ -43,17 +43,17 @@ public class Configs {
 	 *            the arena to load
 	 * @param cfg
 	 *            the configuration
-	 * @param type 
+	 * @param type
 	 */
 	public static void configParse(Arena arena, Config cfg, String type) {
 		cfg.load();
 		YamlConfiguration config = cfg.getYamlConfiguration();
-		
+
 		if (type == null) {
 			// opening existing arena
 			type = arena.getType();
 		}
-		
+
 		if (config.get("classitems") == null) {
 			config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
 			config.addDefault("classitems.Swordsman", "276,306,307,308,309");
@@ -66,7 +66,7 @@ public class Configs {
 		config.addDefault("tp.death", "spectator");
 
 		config.addDefault("setup.wand", Integer.valueOf(280));
-		
+
 		config.addDefault("game.lives", Integer.valueOf(3));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
 		config.addDefault("game.powerups", "off");
@@ -84,12 +84,11 @@ public class Configs {
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.signs", Boolean.valueOf(false));
 		config.addDefault("general.item-rewards", "none");
-		
-		
+
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
 		config.addDefault("join.random", Boolean.valueOf(true));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
-		
+
 		config.addDefault("arenatype.randomSpawn", Boolean.valueOf(false));
 		config.addDefault("goal.timed", Integer.valueOf(0));
 
@@ -106,21 +105,17 @@ public class Configs {
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
 		config.addDefault("protection.firespread", Boolean.valueOf(true));
-		config.addDefault("protection.lavafirespread",
-				Boolean.valueOf(true));
+		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
 		config.addDefault("protection.tnt", Boolean.valueOf(true));
 		config.addDefault("protection.lighter", Boolean.valueOf(true));
 		config.addDefault("protection.checkExit", Boolean.valueOf(false));
-		config.addDefault("protection.checkSpectator",
-				Boolean.valueOf(false));
+		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
-
 
 		config.addDefault("start.health", Integer.valueOf(20));
 		config.addDefault("start.foodLevel", Integer.valueOf(20));
 		config.addDefault("start.saturation", Integer.valueOf(20));
 		config.addDefault("start.exhaustion", Float.valueOf(0));
-
 
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
@@ -128,7 +123,6 @@ public class Configs {
 		config.addDefault("ready.max", Integer.valueOf(0));
 		config.addDefault("ready.minTeam", Integer.valueOf(1));
 		config.addDefault("ready.maxTeam", Integer.valueOf(0));
-		
 
 		config.addDefault("announcements.join", Boolean.valueOf(false));
 		config.addDefault("announcements.start", Boolean.valueOf(false));
@@ -139,22 +133,27 @@ public class Configs {
 		config.addDefault("announcements.radius", Integer.valueOf(0));
 		config.addDefault("announcements.color", "AQUA");
 
-		config.addDefault("arenatype.teams", Boolean.valueOf(!type.equals("free")));
-		config.addDefault("arenatype.flags", Boolean.valueOf(type.equals("ctf")||type.equals("pumpkin")));
-		config.addDefault("arenatype.pumpkin", Boolean.valueOf(type.equals("pumpkin")));
-		
-		if ((!type.equals("free") || cfg.getBoolean("arenatype.teams")) && (cfg.get("teams") == null)) {
+		config.addDefault("arenatype.teams",
+				Boolean.valueOf(!type.equals("free")));
+		config.addDefault("arenatype.flags",
+				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")));
+		config.addDefault("arenatype.pumpkin",
+				Boolean.valueOf(type.equals("pumpkin")));
+
+		if ((!type.equals("free") || cfg.getBoolean("arenatype.teams"))
+				&& (cfg.get("teams") == null)) {
 			db.i("no teams defined, adding custom red and blue!");
 			cfg.getYamlConfiguration().addDefault("teams.red",
 					ChatColor.RED.name());
 			cfg.getYamlConfiguration().addDefault("teams.blue",
 					ChatColor.BLUE.name());
 		} else if (cfg.get("teams") == null) {
-			cfg.getYamlConfiguration().addDefault("teams.free", ChatColor.WHITE.name());
+			cfg.getYamlConfiguration().addDefault("teams.free",
+					ChatColor.WHITE.name());
 		}
-		
+
 		config.options().copyDefaults(true);
-		
+
 		cfg.set("cfgver", "0.6.1.0");
 		cfg.save();
 		cfg.load();
@@ -238,7 +237,7 @@ public class Configs {
 						getRegionFromConfigNode(rName, config, arena));
 			}
 		}
-		
+
 		Map<String, Object> tempMap = (Map<String, Object>) cfg
 				.getYamlConfiguration().getConfigurationSection("teams")
 				.getValues(true);
@@ -341,15 +340,14 @@ public class Configs {
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-		
-		
+
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			String type = arena.getType();
-			System.out.print("ready check: "+type);
-			type = type.equals("pumpkin")?type:"flag";
+			System.out.print("ready check: " + type);
+			type = type.equals("pumpkin") ? type : "flag";
 			for (String team : arena.paTeams.keySet()) {
-				if (!list.contains(team+type)) {
-					return team+type + " not set";
+				if (!list.contains(team + type)) {
+					return team + type + " not set";
 				}
 			}
 		}

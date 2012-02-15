@@ -36,7 +36,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class Ends {
 
 	private static final Debug db = new Debug();
-	
 
 	/**
 	 * [FLAG] commit the arena end
@@ -47,8 +46,8 @@ public class Ends {
 	 *            winning team?
 	 */
 	public static void commit(Arena arena, String team, boolean win) {
-		db.i("[FLAG] committing end: "+team);
-		db.i("win: "+String.valueOf(win));
+		db.i("[FLAG] committing end: " + team);
+		db.i("win: " + String.valueOf(win));
 		Set<String> set = arena.pm.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();
 		if (!team.equals("$%&/")) {
@@ -56,7 +55,9 @@ public class Ends {
 				Object o = iter.next();
 				db.i("precessing: " + o.toString());
 				Player z = Bukkit.getServer().getPlayer(o.toString());
-				if (!win && arena.pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
+				if (!win
+						&& arena.pm.getPlayerTeamMap().get(z.getName())
+								.equals(team)) {
 					arena.pm.parsePlayer(z).losses++;
 					arena.resetPlayer(z, arena.cfg.getString("tp.lose", "old"));
 				}
@@ -70,23 +71,25 @@ public class Ends {
 			Object o = iter.next();
 			db.i("praecessing: " + o.toString());
 			Player z = Bukkit.getServer().getPlayer(o.toString());
-			if (arena.paLives.containsKey(arena.pm.getPlayerTeamMap().get(z.getName()))) {
+			if (arena.paLives.containsKey(arena.pm.getPlayerTeamMap().get(
+					z.getName()))) {
 				if (winteam.equals("")) {
 					winteam = arena.pm.getPlayerTeamMap().get(z.getName());
 					break;
 				}
 				/*
-				pm.parsePlayer(z).wins++;
-				resetPlayer(z, cfg.getString("tp.win", "old"));
-				giveRewards(z); // if we are the winning team, give reward!
-				winteam = team;*/
+				 * pm.parsePlayer(z).wins++; resetPlayer(z,
+				 * cfg.getString("tp.win", "old")); giveRewards(z); // if we are
+				 * the winning team, give reward! winteam = team;
+				 */
 			}
 		}
 		if (arena.paTeams.get(winteam) != null) {
 			Announcement.announce(arena, type.WINNER,
 					PVPArena.lang.parse("teamhaswon", "Team " + winteam));
 			arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
-					ChatColor.valueOf(arena.paTeams.get(winteam)) + "Team " + winteam));
+					ChatColor.valueOf(arena.paTeams.get(winteam)) + "Team "
+							+ winteam));
 		} else {
 			System.out.print("WINTEAM NULL!");
 		}
@@ -121,9 +124,11 @@ public class Ends {
 				arena.pm.tellEveryone(PVPArena.lang.parse("playerhaswon",
 						ChatColor.WHITE + o.toString()));
 			}
-			Bukkit.getScheduler().scheduleSyncDelayedTask(
-					Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
-					new EndRunnable(arena), 15 * 20L);
+			Bukkit.getScheduler()
+					.scheduleSyncDelayedTask(
+							Bukkit.getServer().getPluginManager()
+									.getPlugin("pvparena"),
+							new EndRunnable(arena), 15 * 20L);
 			return true;
 		}
 		if (arena.cfg.getBoolean("arenatype.flags")) {
@@ -249,7 +254,8 @@ public class Ends {
 				Announcement.announce(arena, type.WINNER,
 						PVPArena.lang.parse("teamhaswon", "Team " + team));
 				arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
-						ChatColor.valueOf(arena.paTeams.get(team)) + "Team " + team));
+						ChatColor.valueOf(arena.paTeams.get(team)) + "Team "
+								+ team));
 			}
 
 		}

@@ -174,8 +174,7 @@ public class PowerupEffect {
 				EntityDamageByEntityEvent reflectEvent = new EntityDamageByEntityEvent(
 						defender, attacker, event.getCause(),
 						(int) Math.round(event.getDamage() * factor));
-				PVPArena.entityListener.onEntityDamageByEntity(
-						reflectEvent);
+				PVPArena.entityListener.onEntityDamageByEntity(reflectEvent);
 			} // else: chance fail :D
 		} else if (this.type == classes.IGNITE) {
 			Random r = new Random();
@@ -208,28 +207,27 @@ public class PowerupEffect {
 				}
 				return true;
 			} else if (this.type == classes.LIVES) {
-				int lives = Arenas.getArenaByPlayer(player).paLives
-						.get(player.getName());
+				int lives = Arenas.getArenaByPlayer(player).paLives.get(player
+						.getName());
 				if (lives > 0) {
-					Arenas.getArenaByPlayer(player).paLives
-							.put(player.getName(), lives + diff);
+					Arenas.getArenaByPlayer(player).paLives.put(
+							player.getName(), lives + diff);
 				} else {
 					Arena arena = Arenas.getArenaByPlayer(player);
 
 					// pasted from onEntityDeath;
 
 					String sTeam = arena.pm.getTeam(player);
-					
-					Announcement.announce(arena, Announcement.type.LOSER, PVPArena.lang.parse(
-							"killed",player.getName()));
-					arena.pm.tellEveryone(PVPArena.lang.parse(
-							"killed",
+
+					Announcement.announce(arena, Announcement.type.LOSER,
+							PVPArena.lang.parse("killed", player.getName()));
+					arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
 									+ player.getName() + ChatColor.YELLOW));
 					arena.pm.parsePlayer(player).losses++;
 					// needed so player does not get found when dead
 					arena.pm.setTeam(player, "");
-					
+
 					Ends.checkAndCommit(arena);
 				}
 
