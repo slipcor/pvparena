@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 
@@ -28,13 +29,13 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
-public class ArenaConfigs {
+public class Configs {
 	private static Debug db = new Debug();
-
+	
 	/**
 	 * create a config manager instance
 	 * 
@@ -53,11 +54,12 @@ public class ArenaConfigs {
 			type = arena.getType();
 		}
 		
-		config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
-		config.addDefault("classitems.Swordsman", "276,306,307,308,309");
-		config.addDefault("classitems.Tank", "272,310,311,312,313");
-		config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
-
+		if (config.get("classitems") == null) {
+			config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
+			config.addDefault("classitems.Swordsman", "276,306,307,308,309");
+			config.addDefault("classitems.Tank", "272,310,311,312,313");
+			config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
+		}
 		config.addDefault("tp.win", "old");
 		config.addDefault("tp.lose", "old");
 		config.addDefault("tp.exit", "exit");
@@ -99,6 +101,7 @@ public class ArenaConfigs {
 		config.addDefault("money.minbet", Double.valueOf(0));
 		config.addDefault("money.maxbet", Double.valueOf(0));
 
+		config.addDefault("protection.spawn", Integer.valueOf(3));
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
@@ -165,7 +168,10 @@ public class ArenaConfigs {
 			ItemStack[] items = new ItemStack[ss.length];
 
 			for (int i = 0; i < ss.length; i++) {
-				items[i] = arena.getItemStackFromString(ss[i], null);
+				items[i] = StringParser.getItemStackFromString(ss[i]);
+				if (items[i] == null) {
+					db.w("unrecognized item: " + items[i]);
+				}
 			}
 
 			arena.paClassItems.put(className, items);
@@ -241,10 +247,10 @@ public class ArenaConfigs {
 			arena.paTeams.put(sTeam, (String) tempMap.get(sTeam));
 			db.i("added team " + sTeam + " => " + arena.paTeams.get(sTeam));
 		}
-		if (arena.cfg.getBoolean("arenatype.flags") || arena.cfg.getBoolean("arenatype.pumpkin")) {
+		if (arena.cfg.getBoolean("arenatype.flags")) {
 			arena.paTeamFlags = new HashMap<String, String>();
 		}
-		if (arena.cfg.getBoolean("arenatype.pumpkin")) {
+		if (arena.cfg.getBoolean("arenatype.flags")) {
 			arena.paHeadGears = new HashMap<String, ItemStack>();
 		}
 		if (!cfg.getBoolean("usesTeams") && type.equals("free")) {

@@ -14,6 +14,12 @@ import net.slipcor.pvparena.definitions.ArenaSign;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Commands;
+import net.slipcor.pvparena.managers.Ends;
+import net.slipcor.pvparena.managers.Flags;
+import net.slipcor.pvparena.managers.Inventories;
+import net.slipcor.pvparena.managers.Regions;
+import net.slipcor.pvparena.managers.Spawns;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -159,7 +165,7 @@ public class PlayerListener implements Listener {
 									.parse("arenanotexists", sName));
 							return;
 						}
-						a.parseCommand(player, newArgs);
+						Commands.parseCommand(a, player, newArgs);
 						return;
 					}
 				}
@@ -172,7 +178,7 @@ public class PlayerListener implements Listener {
 				}
 				db.i("onInteract: pumpkin");
 				if (arena.cfg.getBoolean("arenatype.flags")) {
-					arena.setFlag(player, event.getClickedBlock());
+					Flags.setFlag(arena, player, event.getClickedBlock());
 				}
 				return;
 			}
@@ -184,7 +190,7 @@ public class PlayerListener implements Listener {
 					+ (arena.getType().equals("ctf") || arena.getType().equals(
 							"pumpkin")));
 			if (arena.cfg.getBoolean("arenatype.flags")) {
-				arena.checkInteract(player, event.getClickedBlock());
+				Flags.checkInteract(arena, player, event.getClickedBlock());
 			}
 		}
 
@@ -239,13 +245,13 @@ public class PlayerListener implements Listener {
 							return;
 						}
 					}
-					arena.clearInventory(player);
+					Inventories.clearInventory(player);
 					arena.pm.setClass(player, sign.getLine(0));
 					if (sign.getLine(0).equalsIgnoreCase("custom")) {
 						// if custom, give stuff back
-						arena.loadInventory(player);
+						Inventories.loadInventory(arena, player);
 					} else {
-						arena.givePlayerFightItems(player);
+						Inventories.givePlayerFightItems(arena, player);
 					}
 				}
 				return;
@@ -326,7 +332,7 @@ public class PlayerListener implements Listener {
 					}
 				}
 
-				if (!arena.checkRegions()) {
+				if (!Regions.checkRegions(arena)) {
 					Arenas.tellPlayer(player,
 							PVPArena.lang.parse("checkregionerror"));
 					return;
@@ -429,7 +435,7 @@ public class PlayerListener implements Listener {
 				PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
 						+ player.getName() + ChatColor.YELLOW));
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
-		arena.checkEndAndCommit();
+		Ends.checkAndCommit(arena);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -452,7 +458,7 @@ public class PlayerListener implements Listener {
 			l = arena.getPlayerOldLocation(player);
 		} else {
 			db.i("=> 'config=>death' location");
-			l = arena.getCoords(arena.cfg.getString("tp.death", "spectator"));
+			l = Spawns.getCoords(arena, arena.cfg.getString("tp.death", "spectator"));
 		}
 		event.setRespawnLocation(l);
 

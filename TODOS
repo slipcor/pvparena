@@ -2,14 +2,10 @@ ADDITIONS
 - leaderboards and proper statistics
 [[ MAP support: player location, flag / spawn location ]]
 - spawn protection, radius
-- config: no weapon damage
 - "[player] killed" + " by [player/cause]"
 
 
 FIXES
-- /pa leave --> end check!!! (ctf)
-- flag = colored wool. Taken => white; 
-- tamed wolves should damage players 
 - lose 2 lives (temp godmode between teleporting)
 
 CODING:

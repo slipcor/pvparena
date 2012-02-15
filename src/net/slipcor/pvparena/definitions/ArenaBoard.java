@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.definitions;
 
 import java.util.HashMap;
+
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.Bukkit;

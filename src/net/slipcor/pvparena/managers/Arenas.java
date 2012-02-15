@@ -183,7 +183,7 @@ public class Arenas {
 			if (a.equals(arena))
 				continue;
 
-			if ((a.fightInProgress) && !a.checkRegion(arena)) {
+			if ((a.fightInProgress) && !Regions.checkRegion(a, arena)) {
 				return false;
 			}
 		}

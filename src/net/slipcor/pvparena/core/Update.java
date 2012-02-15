@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 

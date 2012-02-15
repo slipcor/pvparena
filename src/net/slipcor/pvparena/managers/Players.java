@@ -21,7 +21,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 

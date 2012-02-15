@@ -9,6 +9,10 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Ends;
+import net.slipcor.pvparena.managers.Flags;
+import net.slipcor.pvparena.managers.Spawns;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -37,7 +42,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
@@ -103,7 +108,7 @@ public class EntityListener implements Listener {
 		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
-			arena.checkEntityDeath(player);
+			Flags.checkEntityDeath(arena, player);
 		}
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
@@ -176,7 +181,7 @@ public class EntityListener implements Listener {
 			}
 		}
 
-		if (arena.checkEndAndCommit())
+		if (Ends.checkAndCommit(arena))
 			return;
 	}
 
@@ -211,6 +216,7 @@ public class EntityListener implements Listener {
 			}
 
 			db.i("processing damage!");
+			
 			if (arena.pum != null) {
 				db.i("committing powerup triggers");
 				Powerup p = arena.pum.puActive.get(defender);
@@ -243,6 +249,13 @@ public class EntityListener implements Listener {
 
 		if (event.getCause() == DamageCause.PROJECTILE) {
 			p1 = ((Projectile) p1).getShooter();
+		}
+		
+		if (event.getEntity() instanceof Wolf) {
+			Wolf wolf = (Wolf)  event.getEntity();
+			if (wolf.getOwner() != null) {
+				p1 = (Entity) wolf.getOwner();
+			}
 		}
 
 		if ((p2 == null) || (!(p2 instanceof Player))) {
@@ -290,6 +303,15 @@ public class EntityListener implements Listener {
 					&& (attacker.getItemInHand().getType() != null)
 					&& (attacker.getItemInHand().getType() != Material.AIR)) {
 				attacker.getItemInHand().setDurability((byte) 0);
+			}
+		}
+		
+		if (arena.cfg.getInt("protection.spawn") > 0) {
+			if (Spawns.isNearSpawn(arena, defender, arena.cfg.getInt("protection.spawn"))) {
+				// spawn protection!
+				db.i("spawn protection! damage cancelled!");
+				event.setCancelled(true);
+				return;
 			}
 		}
 		

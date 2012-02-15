@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 

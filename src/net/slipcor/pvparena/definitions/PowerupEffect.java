@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Ends;
 
 /**
  * powerup effect class
@@ -25,7 +26,7 @@ import net.slipcor.pvparena.managers.Arenas;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
@@ -229,7 +230,7 @@ public class PowerupEffect {
 					// needed so player does not get found when dead
 					arena.pm.setTeam(player, "");
 					
-					arena.checkEndAndCommit();
+					Ends.checkAndCommit(arena);
 				}
 
 				return true;

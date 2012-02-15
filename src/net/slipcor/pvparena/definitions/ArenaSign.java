@@ -24,7 +24,7 @@ public class ArenaSign {
 		this.clear();
 	}
 
-	void clear() {
+	public void clear() {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
 			s.setLine(2, "");

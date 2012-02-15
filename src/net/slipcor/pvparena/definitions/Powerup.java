@@ -20,7 +20,7 @@ import net.slipcor.pvparena.definitions.PowerupEffect.classes;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 

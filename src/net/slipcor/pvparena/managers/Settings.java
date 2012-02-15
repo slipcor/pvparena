@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Arena;
 
 /**
@@ -21,7 +22,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.1
+ * @version v0.6.2
  * 
  */
 
@@ -78,6 +79,7 @@ public class Settings {
 		types.put("money.minbet", "double");
 		types.put("money.maxbet", "double");
 		
+		types.put("protection.spawn", "int");
 		types.put("protection.enabled", "boolean");
 		types.put("protection.blockplace", "boolean");
 		types.put("protection.blockdamage", "boolean");
@@ -249,8 +251,9 @@ public class Settings {
 			ItemStack[] items = new ItemStack[ss.length];
 
 			for (int i = 0; i < ss.length; i++) {
-				items[i] = arena.getItemStackFromString(ss[i], player);
+				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
+					Arenas.tellPlayer(player, "unrecognized item: " + items[i]);
 					return;
 				}
 			}

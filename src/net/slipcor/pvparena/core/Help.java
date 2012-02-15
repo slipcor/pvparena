@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 

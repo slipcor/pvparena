@@ -11,13 +11,15 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Commands;
+import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.register.payment.Method;
 
 import org.bukkit.Bukkit;
@@ -36,7 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.6.0
+ * @version v0.6.2
  * 
  */
 
@@ -201,7 +203,7 @@ public class PVPArena extends JavaPlugin {
 					Arenas.tellPlayer(player, lang.parse("youleave"));
 					arena.removePlayer(player,
 							arena.cfg.getString("tp.exit", "exit"));
-					arena.checkEndAndCommit();
+					Ends.checkAndCommit(arena);
 				}
 			} else {
 				Arenas.tellPlayer(player, lang.parse("notinarena"));
@@ -225,12 +227,12 @@ public class PVPArena extends JavaPlugin {
 						lang.parse("arenanotexists", sName));
 				return true;
 			}
-			return arena.parseCommand(player, args);
+			return Commands.parseCommand(arena, player, args);
 		}
 
 		String[] newArgs = new String[args.length - 1];
 		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
-		return arena.parseCommand(player, newArgs);
+		return Commands.parseCommand(arena, player, newArgs);
 	}
 
 	/**

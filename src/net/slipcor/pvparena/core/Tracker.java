@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version 0.6.0
+ * @version v0.6.2
  * 
  */
 
