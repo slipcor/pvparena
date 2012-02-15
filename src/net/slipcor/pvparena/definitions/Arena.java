@@ -21,6 +21,7 @@ import net.slipcor.pvparena.managers.Powerups;
 import net.slipcor.pvparena.managers.Settings;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
+import net.slipcor.pvparena.runnables.BoardRunnable;
 import net.slipcor.pvparena.runnables.PowerupRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -162,6 +163,9 @@ public class Arena {
 									.getPlugin("pvparena"),
 							new TimedEndRunnable(this), timed * 20);
 		}
+		this.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				Bukkit.getPluginManager().getPlugin("pvparena"),
+				new BoardRunnable(this), 100L, 100L);
 		db.i("teleported everyone!");
 		if (usesPowerups) {
 			db.i("using powerups : " + cfg.getString("game.powerups", "off")

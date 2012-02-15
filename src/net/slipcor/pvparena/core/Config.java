@@ -411,7 +411,7 @@ public class Config {
 		String[] parts = coords.split(",");
 		if (parts.length != 5)
 			throw new IllegalArgumentException(
-					"Input string must contain x, y, z, yaw and pitch");
+					"Input string must contain x, y, z, yaw and pitch: " + coords);
 
 		Integer x = parseInteger(parts[0]);
 		Integer y = parseInteger(parts[1]);

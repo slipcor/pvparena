@@ -1,5 +1,9 @@
 package net.slipcor.pvparena.managers;
 
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 
@@ -17,8 +21,9 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  */
 
 public class Statistics {
+	public static final Debug db = new Debug();
 	public static enum type {
-		WINS, LOSSES, KILLS, DEATHS, DAMAGE, DAMAGETAKE, DMGSUM, DMGSUMTAKE, NULL
+		WINS, LOSSES, KILLS, DEATHS, MAXDAMAGE, MAXDAMAGETAKE, DAMAGE, DAMAGETAKE, NULL
 	}
 
 	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
@@ -60,21 +65,21 @@ public class Statistics {
 			boolean desc) {
 		int a = 0;
 		int b = 0;
-		if (sortBy.equals(type.DAMAGE)) {
+		if (sortBy.equals(type.MAXDAMAGE)) {
+			a = aps[pos].maxdamage;
+			b = aps[pos + 1].maxdamage;
+		} else if (sortBy.equals(type.MAXDAMAGETAKE)) {
+			a = aps[pos].maxdamagetake;
+			b = aps[pos + 1].maxdamagetake;
+		} else if (sortBy.equals(type.DEATHS)) {
+			a = aps[pos].deaths;
+			b = aps[pos + 1].deaths;
+		} else if (sortBy.equals(type.DAMAGE)) {
 			a = aps[pos].damage;
 			b = aps[pos + 1].damage;
 		} else if (sortBy.equals(type.DAMAGETAKE)) {
 			a = aps[pos].damagetake;
 			b = aps[pos + 1].damagetake;
-		} else if (sortBy.equals(type.DEATHS)) {
-			a = aps[pos].deaths;
-			b = aps[pos + 1].deaths;
-		} else if (sortBy.equals(type.DMGSUM)) {
-			a = aps[pos].damagesum;
-			b = aps[pos + 1].damagesum;
-		} else if (sortBy.equals(type.DMGSUMTAKE)) {
-			a = aps[pos].damagesumtake;
-			b = aps[pos + 1].damagesumtake;
 		} else if (sortBy.equals(type.KILLS)) {
 			a = aps[pos].kills;
 			b = aps[pos + 1].kills;
@@ -107,16 +112,16 @@ public class Statistics {
 		String[] result = new String[players.length];
 		int i = 0;
 		for (ArenaPlayer p : players) {
-			if (t.equals(type.DAMAGE)) {
+			if (t.equals(type.MAXDAMAGE)) {
+				result[i++] = String.valueOf(p.maxdamage);
+			} else if (t.equals(type.MAXDAMAGETAKE)) {
+				result[i++] = String.valueOf(p.maxdamagetake);
+			} else if (t.equals(type.DEATHS)) {
+				result[i++] = String.valueOf(p.deaths);
+			} else if (t.equals(type.DAMAGE)) {
 				result[i++] = String.valueOf(p.damage);
 			} else if (t.equals(type.DAMAGETAKE)) {
 				result[i++] = String.valueOf(p.damagetake);
-			} else if (t.equals(type.DEATHS)) {
-				result[i++] = String.valueOf(p.deaths);
-			} else if (t.equals(type.DMGSUM)) {
-				result[i++] = String.valueOf(p.damagesum);
-			} else if (t.equals(type.DMGSUMTAKE)) {
-				result[i++] = String.valueOf(p.damagesumtake);
 			} else if (t.equals(type.KILLS)) {
 				result[i++] = String.valueOf(p.kills);
 			} else if (t.equals(type.LOSSES)) {
@@ -128,5 +133,37 @@ public class Statistics {
 			}
 		}
 		return result;
+	}
+
+	public static void damage(Arena arena, Entity e, Player defender,
+			int dmg) {
+		
+		db.i("adding damage to player "+defender.getName());
+		
+		if ((e != null) && (e instanceof Player)) {
+			Player attacker = (Player) e;
+			db.i("attacker is player: "+attacker.getName());
+			if (arena.pm.existsPlayer(attacker)) {
+				db.i("attacker is in the arena, adding damage!");
+				ArenaPlayer p = arena.pm.parsePlayer(attacker);
+				p.damage += dmg;
+				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
+			}
+		}
+		ArenaPlayer p = arena.pm.parsePlayer(defender);
+		p.damagetake += dmg;
+		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
+	}
+
+	public static void kill(Arena arena, Entity e, Player defender) {
+		if ((e != null) && (e instanceof Player)) {
+			Player attacker = (Player) e;
+			if (arena.pm.existsPlayer(attacker)) {
+				ArenaPlayer p = arena.pm.parsePlayer(attacker);
+				p.kills++;
+			}
+		}
+		ArenaPlayer p = arena.pm.parsePlayer(defender);
+		p.deaths++;
 	}
 }

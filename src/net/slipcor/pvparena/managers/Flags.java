@@ -115,6 +115,20 @@ public class Flags {
 			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
 
 				db.i("player is at his " + type);
+				
+				
+				if (arena.paTeamFlags.containsKey(sTeam)) {
+					db.i("the "+ type + " of the own team is taken!");
+					
+					if (arena.cfg.getBoolean("game.mustbesafe")) {
+						db.i("cancelling");
+						
+						Arenas.tellPlayer(player, PVPArena.lang.parse(type+"notsafe"));
+						return;
+					}
+				}
+				
+				
 				String flagTeam = getHeldFlagTeam(arena, player.getName());
 
 				db.i("the " + type + " belongs to team " + flagTeam);
@@ -269,6 +283,10 @@ public class Flags {
 						arena.paHeadGears.get(player.getName()).clone());
 				arena.paHeadGears.remove(player.getName());
 			}
+
+			takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
+					Spawns.getCoords(arena, flagTeam + type));
+			
 		}
 	}
 

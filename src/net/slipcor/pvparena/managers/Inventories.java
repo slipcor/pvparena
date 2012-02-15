@@ -170,4 +170,14 @@ public class Inventories {
 		player.getInventory().setContents(p.savedInventory);
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
+
+	public static void drop(Player player) {
+		for (ItemStack is : player.getInventory().getArmorContents()) {
+			player.getWorld().dropItemNaturally(player.getLocation(), is);
+		}
+		for (ItemStack is : player.getInventory().getContents()) {
+			player.getWorld().dropItemNaturally(player.getLocation(), is);
+		}
+		player.getInventory().clear();
+	}
 }

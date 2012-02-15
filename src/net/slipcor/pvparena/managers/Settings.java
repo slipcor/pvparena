@@ -39,7 +39,9 @@ public class Settings {
 
 		types.put("setup.wand", "int");
 
+		types.put("game.dropSpawn", "boolean");
 		types.put("game.lives", "int");
+		types.put("game.mustbesafe", "boolean");
 		types.put("game.preventDeath", "boolean");
 		types.put("game.powerups", "string");
 		types.put("game.refillInventory", "boolean");
@@ -129,7 +131,6 @@ public class Settings {
 			if (types.get(node) == null) {
 				continue;
 			}
-			System.out.print("reading...");
 			if (i++ >= (page - 1) * 10) {
 				String[] s = node.split("\\.");
 				keys.add(s[s.length - 1]);

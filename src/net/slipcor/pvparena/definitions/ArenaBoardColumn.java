@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.definitions;
 
-import java.util.HashSet;
-
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -19,7 +17,7 @@ public class ArenaBoardColumn {
 	protected ArenaBoard board;
 	private Location location;
 
-	private HashSet<ArenaBoardSign> signs = new HashSet<ArenaBoardSign>();
+	private ArenaBoardSign[] signs = new ArenaBoardSign[5];
 
 	public ArenaBoardColumn(ArenaBoard ab, Location loc) {
 		board = ab;
@@ -31,18 +29,18 @@ public class ArenaBoardColumn {
 	private void fetchSigns() {
 		Location l = location.getBlock().getRelative(BlockFace.DOWN)
 				.getLocation();
-		int border = 10;
+		int i = 0;
 		try {
-			Sign s = (Sign) l.getBlock().getState();
-			s.setLine(0, "");
-			s.setLine(1, "");
-			s.setLine(2, "");
-			s.setLine(3, "");
-			s.update();
 			do {
-				signs.add(new ArenaBoardSign(this, l));
+				Sign s = (Sign) l.getBlock().getState();
+				s.setLine(0, "");
+				s.setLine(1, "");
+				s.setLine(2, "");
+				s.setLine(3, "");
+				s.update();
+				signs[i] = (new ArenaBoardSign(this, l));
 				l = l.getBlock().getRelative(BlockFace.DOWN).getLocation();
-			} while (border-- > 0);
+			} while (++i < 5);
 		} catch (Exception e) {
 			// no more signs, out!
 		}
@@ -52,6 +50,9 @@ public class ArenaBoardColumn {
 		int i = 0;
 
 		for (ArenaBoardSign abs : signs) {
+			if (abs == null) {
+				return;
+			}
 			int ii = 0;
 			while (i < s.length && ii < 4) {
 				abs.set(ii++, s[i++]);

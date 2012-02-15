@@ -11,7 +11,9 @@ import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
+import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -61,7 +63,9 @@ public class EntityListener implements Listener {
 
 			db.i("onEntityDeath: fighting player");
 			if (!arena.pm.getTeam(player).equals("")) {
-				event.getDrops().clear();
+				if (!arena.isCustomClassActive()) {
+					event.getDrops().clear();
+				}
 
 				commitPlayerDeath(arena, player, event);
 			}
@@ -86,7 +90,12 @@ public class EntityListener implements Listener {
 				PVPArena.lang.parse("killed", player.getName()));
 		arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
-
+		
+		if (!arena.isCustomClassActive()) {
+			Inventories.drop(player);
+		}
+		
+		
 		arena.pm.parsePlayer(player).losses++;
 		arena.pm.setTeam(player, ""); // needed so player does not
 										// get found when dead
@@ -223,11 +232,12 @@ public class EntityListener implements Listener {
 					p.commit(null, defender, event);
 
 			}
+			
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
 				int lives = 3;
-
+				
 				lives = arena.paLives.get(defender.getName());
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
@@ -331,10 +341,17 @@ public class EntityListener implements Listener {
 				p.commit(attacker, defender, event);
 
 		}
+		
+
+		Statistics.damage(arena, attacker, defender, event.getDamage());
+		
+		
 		if (event.getDamage() >= defender.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
-
+			
+			Statistics.kill(arena, attacker, defender);
+			
 			lives = arena.paLives.get(defender.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
@@ -381,13 +398,17 @@ public class EntityListener implements Listener {
 		Player player = (Player) p1;
 		if (arena.pm.getTeam(player).equals(""))
 			return;
-
+		
+		Statistics.damage(arena, null, player, event.getDamage());
+		
 		// TODO calculate damage and armor
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
-
+			
+			Statistics.kill(arena, null, player);
+			
 			lives = arena.paLives.get(player.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {

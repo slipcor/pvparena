@@ -50,8 +50,6 @@ public class ArenaPlayer {
 	public String displayname;
 	public boolean dead = false;
 
-	public int damagesum;
-	public int damagesumtake;
 	public int losses = 0;
 	public int wins = 0;
 	public int kills = 0;
@@ -74,15 +72,13 @@ public class ArenaPlayer {
 		try {
 			cfg.load("plugins/pvparena/players.yml");
 
-			damagesum = cfg.getInt(p.getName() + ".damagesum", 0);
-			damagesumtake = cfg.getInt(p.getName() + ".damagesumtake", 0);
 			losses = cfg.getInt(p.getName() + ".losses", 0);
 			wins = cfg.getInt(p.getName() + ".wins", 0);
 			kills = cfg.getInt(p.getName() + ".kills", 0);
 			deaths = cfg.getInt(p.getName() + ".deaths", 0);
 			damage = cfg.getInt(p.getName() + ".damage", 0);
-			maxdamage = cfg.getInt(p.getName() + ".maxdamage", 0);
 			damagetake = cfg.getInt(p.getName() + ".damagetake", 0);
+			maxdamage = cfg.getInt(p.getName() + ".maxdamage", 0);
 			maxdamagetake = cfg.getInt(p.getName() + ".maxdamagetake", 0);
 
 		} catch (FileNotFoundException e) {
@@ -118,8 +114,6 @@ public class ArenaPlayer {
 			String file = "plugins/pvparena/players.yml";
 			cfg.load(file);
 
-			cfg.set(player.getName() + ".damagesum", damagesum);
-			cfg.set(player.getName() + ".damagesumtake", damagesumtake);
 			cfg.set(player.getName() + ".losses", losses);
 			cfg.set(player.getName() + ".wins", wins);
 			cfg.set(player.getName() + ".kills", kills);

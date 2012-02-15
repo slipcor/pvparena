@@ -216,6 +216,9 @@ public class Language {
 
 		config.addDefault("lang.createleaderboard", "create a leaderboard");
 		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
+		
+		config.addDefault("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'");
+		config.addDefault("lang.pumpkinnotsafe", "Your pumpkin is taken! Cannot bring back an enemy pumpkin!'");
 
 		config.options().copyDefaults(true);
 		try {

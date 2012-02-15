@@ -67,7 +67,9 @@ public class Configs {
 
 		config.addDefault("setup.wand", Integer.valueOf(280));
 
+		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
+		config.addDefault("game.mustbesafe", Boolean.valueOf(false));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
 		config.addDefault("game.powerups", "off");
 		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
@@ -343,7 +345,6 @@ public class Configs {
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			String type = arena.getType();
-			System.out.print("ready check: " + type);
 			type = type.equals("pumpkin") ? type : "flag";
 			for (String team : arena.paTeams.keySet()) {
 				if (!list.contains(team + type)) {

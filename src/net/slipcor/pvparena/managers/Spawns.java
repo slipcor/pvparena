@@ -150,7 +150,8 @@ public class Spawns {
 					continue;
 				}
 			}
-			result.add(Config.parseLocation(world, name));
+			String sLoc = arena.cfg.getString("spawns." + name, null);
+			result.add(Config.parseLocation(world, sLoc));
 		}
 
 		return result;

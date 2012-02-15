@@ -2,6 +2,7 @@ package net.slipcor.pvparena.definitions;
 
 import java.util.HashMap;
 
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.Bukkit;
@@ -20,6 +21,8 @@ import org.bukkit.block.Sign;
 
 public class ArenaBoard {
 
+	public static final Debug db = new Debug();
+	
 	private Location location;
 	public Arena arena;
 
@@ -53,6 +56,7 @@ public class ArenaBoard {
 				columns.put(t, new ArenaBoardColumn(this, l));
 				Bukkit.getLogger().info("putting column");
 				l = l.getBlock().getRelative(bf).getLocation();
+				s = (Sign) l.getBlock().getState();
 			} while (border-- > 0);
 		} catch (Exception e) {
 			// no more signs, out!
@@ -75,11 +79,14 @@ public class ArenaBoard {
 	}
 
 	public void update() {
+		db.i("ArenaBoard update()");
 		for (Statistics.type t : Statistics.type.values()) {
+			db.i("checking stat: "+t.name());
 			if (!columns.containsKey(t)) {
 				continue;
 			}
-			String[] s = Statistics.read(Statistics.getStats(this.arena, t), t);
+			db.i("found! reading!");
+			String[] s = Statistics.read(Statistics.getStats(this.arena, sortBy), t);
 			columns.get(t).write(s);
 		}
 	}

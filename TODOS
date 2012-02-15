@@ -1,14 +1,13 @@
 ADDITIONS
-- leaderboards and proper statistics
 [[ MAP support: player location, flag / spawn location ]]
-- spawn protection, radius
-- "[player] killed" + " by [player/cause]"
+-[ "[player] killed" + " by [player/cause]"]
 
 
 FIXES
-- lose 2 lives (temp godmode between teleporting)
+-[ lose 2 lives (temp godmode between teleporting)]
+-[ punish spawn camping ]
 
-CODING:
-- arena board runnable is started on boardsetup and cancelled on game end -fix!
-- arena board setup is derpy, add sign checks!
-- 
+
+KNOWN ISSUES:
+- death issues, dead players f* up the arena
+
