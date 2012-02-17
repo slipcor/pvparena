@@ -220,6 +220,10 @@ public class Language {
 		config.addDefault("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'");
 		config.addDefault("lang.pumpkinnotsafe", "Your pumpkin is taken! Cannot bring back an enemy pumpkin!'");
 
+
+		config.addDefault("lang.frag",
+				"%1% killed another player! Total frags: %2%.");
+		
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

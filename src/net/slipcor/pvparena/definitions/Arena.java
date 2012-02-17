@@ -22,6 +22,7 @@ import net.slipcor.pvparena.managers.Settings;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.BoardRunnable;
+import net.slipcor.pvparena.runnables.DominationRunnable;
 import net.slipcor.pvparena.runnables.PowerupRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -52,7 +53,7 @@ import org.bukkit.util.Vector;
  */
 
 public class Arena {
-
+	
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
 
@@ -72,6 +73,8 @@ public class Arena {
 	 * TeamName => PlayerName
 	 */
 	public HashMap<String, String> paTeamFlags = null;
+	public HashMap<Location, String> paFlags = null;
+	public HashMap<Location, DominationRunnable> paRuns = new HashMap<Location, DominationRunnable>();
 	public HashMap<String, ItemStack> paHeadGears = null;
 
 	// regions an arena has defined: RegionName => Region
@@ -148,7 +151,7 @@ public class Arena {
 			setPermissions(z);
 		}
 
-		if (cfg.getBoolean("arenatype.flags")) {
+		if (cfg.getBoolean("arenatype.flags") || cfg.getBoolean("arenatype.deathmatch")) {
 			Flags.init_arena(this);
 		}
 		int timed = cfg.getInt("goal.timed");
@@ -547,18 +550,17 @@ public class Arena {
 			tpPlayerToCoordName(player, sTeam + "spawn");
 
 			Flags.checkEntityDeath(this, player);
-		} else {
-
+		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
 			pm.tellEveryone(PVPArena.lang.parse("lostlife",
 					ChatColor.valueOf(color) + player.getName()
 							+ ChatColor.YELLOW, String.valueOf(lives)));
-			if (!cfg.getBoolean("arenatype.randomSpawn", false)
-					&& color != null && !sTeam.equals("free")) {
-				tpPlayerToCoordName(player, sTeam + "spawn");
-			} else {
-				tpPlayerToCoordName(player, "spawn");
-			}
 			paLives.put(player.getName(), lives);
+		}
+		if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
+				&& !sTeam.equals("free")) {
+			tpPlayerToCoordName(player, sTeam + "spawn");
+		} else {
+			tpPlayerToCoordName(player, "spawn");
 		}
 	}
 
@@ -691,12 +693,20 @@ public class Arena {
 	 * @return the arena type name
 	 */
 	public String getType() {
-		if (cfg.getBoolean("arenatype.pumpkin")) {
-			return "pumpkin";
-		} else if (cfg.getBoolean("arenatype.flags")) {
-			return "ctf";
-		} else if (!cfg.getBoolean("arenatype.teams")) {
+		if (!cfg.getBoolean("arenatype.teams")) {
 			return "free";
+		}
+		if (cfg.getBoolean("arenatype.flags")) {
+			if (!cfg.getBoolean("arenatype.domination")) {
+				return "dom";
+			}
+			if (cfg.getBoolean("arenatype.pumpkin")) {
+				return "pumpkin";
+			}
+			return "ctf";
+		}
+		if (!cfg.getBoolean("arenatype.deathmatch")) {
+			return "dm";
 		}
 		return "teams";
 	}
@@ -719,5 +729,25 @@ public class Arena {
 	public void setWorld(String sWorld) {
 		cfg.set("general.world", sWorld);
 		cfg.save();
+	}
+
+	public void deathMatch(Player attacker) {
+		// TODO get player team, announce death, remove "lives"
+		
+		if (!cfg.getBoolean("arenatype.deathmatch")) {
+			return; // no deathmatch, out!
+		}
+		
+		String sTeam = pm.getTeam(attacker);
+		if (sTeam.equals("")) {
+			return; // no team => out
+		}
+		
+		Flags.reduceLivesCheckEndAndCommit(this, sTeam);
+		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam)) + attacker.getName();
+		
+		pm.tellEveryone(PVPArena.lang.parse("frag",
+				sColoredPlayer,
+				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam) + 1)));
 	}
 }

@@ -46,7 +46,11 @@ public class Ends {
 	 *            winning team?
 	 */
 	public static void commit(Arena arena, String team, boolean win) {
-		db.i("[FLAG] committing end: " + team);
+		if (arena.cfg.getBoolean("arenatype.deathmatch") ||
+				arena.cfg.getBoolean("arenatype.domination")) {
+			win = !win;
+		}
+		db.i("[FLAG/DM/DOM] committing end: " + team);
 		db.i("win: " + String.valueOf(win));
 		Set<String> set = arena.pm.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();

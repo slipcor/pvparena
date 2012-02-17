@@ -58,26 +58,23 @@ public class ArenaRegion {
 	}
 
 	private Location[] sanityCheck(Location lMin, Location lMax) {
-		boolean x =  (lMin.getBlockX() > lMax.getBlockX());
+		boolean x = (lMin.getBlockX() > lMax.getBlockX());
 		boolean y = (lMin.getBlockY() > lMax.getBlockY());
 		boolean z = (lMin.getBlockZ() > lMax.getBlockZ());
-		
-		if (!(x|y|z))
-		{
-			return new Location[] {lMin, lMax};
+
+		if (!(x | y | z)) {
+			return new Location[] { lMin, lMax };
 		}
 		Location l1;
 		Location l2;
 
-		l1 = new Location(lMin.getWorld(),
-				x?lMax.getBlockX():lMin.getBlockX(),
-				y?lMax.getBlockY():lMin.getBlockY(),
-				z?lMax.getBlockZ():lMin.getBlockZ());
-		l2 = new Location(lMin.getWorld(),
-				x?lMin.getBlockX():lMax.getBlockX(),
-				y?lMin.getBlockY():lMax.getBlockY(),
-				z?lMin.getBlockZ():lMax.getBlockZ());
-		return new Location[] {l1, l2};
+		l1 = new Location(lMin.getWorld(), x ? lMax.getBlockX()
+				: lMin.getBlockX(), y ? lMax.getBlockY() : lMin.getBlockY(),
+				z ? lMax.getBlockZ() : lMin.getBlockZ());
+		l2 = new Location(lMin.getWorld(), x ? lMin.getBlockX()
+				: lMax.getBlockX(), y ? lMin.getBlockY() : lMax.getBlockY(),
+				z ? lMin.getBlockZ() : lMax.getBlockZ());
+		return new Location[] { l1, l2 };
 	}
 
 	/**
@@ -92,19 +89,18 @@ public class ArenaRegion {
 				|| loc.getWorld() != world)
 			return false; // no arena, no container or not in the same world
 		Vector vec = loc.toVector();
-		
+
 		if (cuboid) {
-		
+
 			db.i("checking region " + name + ": "
 					+ String.valueOf(vec.isInAABB(min, max)));
-			db.i("("+vec.toString()+" isInAABB "+min.toString()+"/"+max.toString()+")");
+			db.i("(" + vec.toString() + " isInAABB " + min.toString() + "/"
+					+ max.toString() + ")");
 			return vec.isInAABB(min, max);
 		} else {
 			return vec.distance(min.getMidpoint(max)) <= min.distance(max);
 		}
 	}
-	
-	
 
 	/**
 	 * is a location farther away than a given length?
@@ -146,33 +142,35 @@ public class ArenaRegion {
 					|| paRegion.min.getZ() > max.getZ()) {
 				return false;
 			}
-	
+
 			return true;
 		} else if (!this.cuboid && !paRegion.cuboid) {
 			// compare 2 spheres
 			Vector thisCenter = this.max.getMidpoint(this.min);
 			Vector thatCenter = paRegion.max.getMidpoint(paRegion.min);
 
-			double thisRadius = this.max.distance(min)/2;
-			double thatRadius = paRegion.max.distance(paRegion.min)/2;
-			
+			double thisRadius = this.max.distance(min) / 2;
+			double thatRadius = paRegion.max.distance(paRegion.min) / 2;
+
 			return thisCenter.distance(thatCenter) < (thisRadius + thatRadius);
-			
+
 		} else if (this.cuboid && !paRegion.cuboid) {
 			// we are cube and search for intersecting sphere
 
 			Vector thisCenter = this.max.getMidpoint(this.min);
 			Vector thatCenter = paRegion.max.getMidpoint(paRegion.min);
-			
+
 			if (contains(thatCenter.toLocation(world))) {
 				return true; // the sphere is inside!
 			}
-			
-			Vector diff = thatCenter.subtract(thisCenter); // diff is pointing from that to this
-			
+
+			Vector diff = thatCenter.subtract(thisCenter); // diff is pointing
+															// from that to this
+
 			return this.contains(diff.normalize().toLocation(world));
 		} else {
-			return paRegion.overlapsWith(this); // just check the other freaking way round!
+			return paRegion.overlapsWith(this); // just check the other freaking
+												// way round!
 		}
 	}
 
@@ -190,13 +188,35 @@ public class ArenaRegion {
 
 		Random r = new Random();
 
-		int posx = diffx == 0 ? min.getBlockX() : (int) ((diffx / Math
-				.abs(diffx)) * r.nextInt(Math.abs(diffx)) + max.getX());
-		int posy = diffy == 0 ? min.getBlockY() : (int) ((diffx / Math
-				.abs(diffy)) * r.nextInt(Math.abs(diffy)) + max.getY());
-		int posz = diffz == 0 ? min.getBlockZ() : (int) ((diffx / Math
-				.abs(diffz)) * r.nextInt(Math.abs(diffz)) + max.getZ());
+		int posx=0;
+		int posy=0;
+		int posz=0;
 
+		if (cuboid) {
+			posx = diffx == 0 ? min.getBlockX() : (int) ((diffx / Math
+					.abs(diffx)) * r.nextInt(Math.abs(diffx)) + max.getX());
+			posy = diffy == 0 ? min.getBlockY() : (int) ((diffx / Math
+					.abs(diffy)) * r.nextInt(Math.abs(diffy)) + max.getY());
+			posz = diffz == 0 ? min.getBlockZ() : (int) ((diffx / Math
+					.abs(diffz)) * r.nextInt(Math.abs(diffz)) + max.getZ());
+		} else {
+			Vector thisCenter = this.max.getMidpoint(this.min);
+			double thisRadius = this.max.distance(min)/2;
+			
+			Vector spawnPosition = thisCenter.add(Vector.getRandom().normalize().multiply(r.nextDouble()*thisRadius));
+			
+			while (spawnPosition.toLocation(world).getBlock().getType() == null ||
+					spawnPosition.toLocation(world).getBlock().getType().equals(Material.AIR)) {
+				spawnPosition.add(new Vector(0,1,0));
+			}
+			spawnPosition.add(new Vector(0,1,0)); // 1 above ground
+			
+			posx=spawnPosition.getBlockX();
+			posy=spawnPosition.getBlockY();
+			posz=spawnPosition.getBlockZ();
+			
+		}
+		
 		world.dropItem(new Location(world, posx, posy + 1, posz),
 				new ItemStack(item, 1));
 	}

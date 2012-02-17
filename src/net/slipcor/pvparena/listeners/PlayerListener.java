@@ -362,6 +362,11 @@ public class PlayerListener implements Listener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
+		
+		if (arena.cfg.getBoolean("arenatype.domination")) {
+			Flags.parseMove(arena, player);
+		}
+		
 		// db.i("onPlayerMove: fighting player!");
 		if (arena.pum != null) {
 			Powerup p = arena.pum.puActive.get(player);

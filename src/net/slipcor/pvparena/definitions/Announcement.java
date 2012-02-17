@@ -51,7 +51,7 @@ public class Announcement {
 				return; // too far away: out (checks world!)
 			}
 		}
-		Arenas.tellPlayer(p,
+		Arenas.tellPlayer(p, "§f[§a"+a.name+"§f] "+
 				ChatColor.valueOf(a.cfg.getString("announcements.color"))
 						+ message);
 	}

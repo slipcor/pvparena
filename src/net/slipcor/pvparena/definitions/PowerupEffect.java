@@ -226,6 +226,7 @@ public class PowerupEffect {
 									+ player.getName() + ChatColor.YELLOW));
 					arena.pm.parsePlayer(player).losses++;
 					// needed so player does not get found when dead
+					arena.removePlayer(player, "lose");
 					arena.pm.setTeam(player, "");
 
 					Ends.checkAndCommit(arena);

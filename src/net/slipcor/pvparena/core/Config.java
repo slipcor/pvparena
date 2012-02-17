@@ -346,6 +346,44 @@ public class Config {
 	 *            a string of the form "x1,y1,z1,x2,y2,z2"
 	 * @return a Location array in the given world with the given coordinates
 	 */
+	public static Location[] parseShere(World world, String coords) {
+		String[] parts = coords.split(",");
+		if (parts.length < 6)
+			throw new IllegalArgumentException(
+					"Input string must contain only x1, y1, z1, x2, y2, and z2");
+
+		if (parts.length < 7) {
+			return null;
+		}
+		
+		Integer x1 = parseInteger(parts[0]);
+		Integer y1 = parseInteger(parts[1]);
+		Integer z1 = parseInteger(parts[2]);
+		Integer x2 = parseInteger(parts[3]);
+		Integer y2 = parseInteger(parts[4]);
+		Integer z2 = parseInteger(parts[5]);
+
+		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
+				|| z2 == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		Location[] l = { new Location(world, x1, y1, z1),
+				new Location(world, x2, y2, z2) };
+		return l;
+
+	}
+
+	/**
+	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
+	 * to create a Location array. This method will only accept strings of the
+	 * specified form.
+	 * 
+	 * @param world
+	 *            the World in which the Locations exists
+	 * @param coords
+	 *            a string of the form "x1,y1,z1,x2,y2,z2"
+	 * @return a Location array in the given world with the given coordinates
+	 */
 	public static Location[] parseCuboid(World world, String coords) {
 		String[] parts = coords.split(",");
 		if (parts.length != 6)

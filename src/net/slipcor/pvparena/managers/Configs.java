@@ -138,9 +138,13 @@ public class Configs {
 		config.addDefault("arenatype.teams",
 				Boolean.valueOf(!type.equals("free")));
 		config.addDefault("arenatype.flags",
-				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")));
+				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")  || type.equals("dom")));
 		config.addDefault("arenatype.pumpkin",
 				Boolean.valueOf(type.equals("pumpkin")));
+		config.addDefault("arenatype.deathmatch",
+				Boolean.valueOf(type.equals("dm")));
+		config.addDefault("arenatype.domination",
+				Boolean.valueOf(type.equals("dom")));
 
 		if ((!type.equals("free") || cfg.getBoolean("arenatype.teams"))
 				&& (cfg.get("teams") == null)) {
@@ -156,7 +160,7 @@ public class Configs {
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.6.1.0");
+		cfg.set("cfgver", "0.6.3.0");
 		cfg.save();
 		cfg.load();
 
@@ -314,9 +318,16 @@ public class Configs {
 		db.i("reading config region: " + arena.name + "=>" + string);
 		String coords = config.getString("regions." + string);
 		World world = Bukkit.getWorld(arena.getWorld());
-		Location[] l = Config.parseCuboid(world, coords);
+		Location[] l = Config.parseShere(world, coords);
+		
+		boolean cuboid = false;
+		
+		if (l == null) {
+			l = Config.parseCuboid(world, coords);
+			cuboid = true;
+		}
 
-		return new ArenaRegion(string, l[0], l[1], true);
+		return new ArenaRegion(string, l[0], l[1], cuboid);
 	}
 
 	/**

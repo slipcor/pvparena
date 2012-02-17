@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.core.Debug;
@@ -459,5 +460,28 @@ public class Players {
 
 	public ArenaPlayer parsePlayer(Player player) {
 		return players.get(player.getName());
+	}
+
+	public HashSet<String> checkLocationPresentTeams(Location loc, Player player, int distance) {
+		HashSet<String> result = new HashSet<String>();
+		String sTeam = parsePlayer(player).team;
+		
+		for (ArenaPlayer p : players.values()) {
+			if (p.get().getLocation().distance(loc) > distance) {
+				continue;
+			}
+			
+			if (p.get().getName().equals(player.getName())) {
+				continue;
+			}
+			
+			if (p.team.equals(sTeam)) {
+				continue;
+			}
+			
+			result.add(p.team);
+		}
+		
+		return result;
 	}
 }

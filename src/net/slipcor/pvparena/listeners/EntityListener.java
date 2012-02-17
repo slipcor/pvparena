@@ -91,11 +91,6 @@ public class EntityListener implements Listener {
 		arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
 		
-		if (!arena.isCustomClassActive()) {
-			Inventories.drop(player);
-		}
-		
-		
 		arena.pm.parsePlayer(player).losses++;
 		arena.pm.setTeam(player, ""); // needed so player does not
 										// get found when dead
@@ -109,10 +104,11 @@ public class EntityListener implements Listener {
 				loc.getWorld().dropItemNaturally(loc, is);
 			}
 			player.getInventory().clear();
+		} else {
+			Inventories.drop(player);
 		}
 
 		ArenaPlayer p = arena.pm.parsePlayer(player);
-		p.respawn = "lose";
 		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
@@ -363,6 +359,7 @@ public class EntityListener implements Listener {
 				commitPlayerDeath(arena, defender, event);
 			} else {
 				lives--;
+				arena.deathMatch(attacker);
 				arena.respawnPlayer(defender, lives);
 			}
 			event.setCancelled(true);

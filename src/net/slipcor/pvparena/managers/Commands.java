@@ -523,11 +523,11 @@ public class Commands {
 			return false;
 		}
 
-		if (args.length == 2) {
+		if ((args.length == 2) || (args.length == 3)) {
 
 			if (args[0].equalsIgnoreCase("region")) {
 
-				// pa [name] region [regionname]
+				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player, PVPArena.lang.parse(
 							"regionnotbeingset", arena.name));
@@ -547,9 +547,21 @@ public class Commands {
 						+ "," + realMin.getBlockZ() + "," + realMax.getBlockX()
 						+ "," + realMax.getBlockY() + "," + realMax.getBlockZ();
 
+				boolean cuboid = (args.length == 2);
+				
+				if (!cuboid) {
+					// not clear yet, last way to get cuboid: "cuboid"
+					cuboid = args[2].equals("cuboid");
+					
+					s += ",sphere";
+				}
+				
+				
+				// only cuboid if args = 2 | args[2] = cuboid
+				
 				arena.cfg.set("regions." + args[1], s);
 				arena.regions.put(args[1], new ArenaRegion(args[1], arena.pos1,
-						arena.pos2, true));
+						arena.pos2, cuboid));
 				arena.pos1 = null;
 				arena.pos2 = null;
 				arena.cfg.save();

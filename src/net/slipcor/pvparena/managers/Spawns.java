@@ -137,7 +137,7 @@ public class Spawns {
 		return false;
 	}
 
-	private static HashSet<Location> getSpawns(Arena arena, String sTeam) {
+	static HashSet<Location> getSpawns(Arena arena, String sTeam) {
 		HashSet<Location> result = new HashSet<Location>();
 
 		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
@@ -145,7 +145,11 @@ public class Spawns {
 				.getValues(false);
 		World world = Bukkit.getWorld(arena.getWorld());
 		for (String name : coords.keySet()) {
-			if (name.endsWith("flag") || name.endsWith("pumpkin")) {
+			if (sTeam.equals("flags")) {
+				if (!name.startsWith("flag")) {
+					continue;
+				}
+			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
 				if (!name.equals(sTeam)) {
 					continue;
 				}
