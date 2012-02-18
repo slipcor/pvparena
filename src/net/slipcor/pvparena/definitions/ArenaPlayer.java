@@ -48,7 +48,7 @@ public class ArenaPlayer {
 	public float saturation;
 	public Location location;
 	public String displayname;
-	public boolean dead = false;
+	public boolean spectator = false;
 
 	public int losses = 0;
 	public int wins = 0;

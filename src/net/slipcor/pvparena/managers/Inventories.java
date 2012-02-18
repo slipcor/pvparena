@@ -173,9 +173,15 @@ public class Inventories {
 
 	public static void drop(Player player) {
 		for (ItemStack is : player.getInventory().getArmorContents()) {
+			if ((is == null) || (is.getType().equals(Material.AIR))) {
+				continue;
+			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		for (ItemStack is : player.getInventory().getContents()) {
+			if ((is == null) || (is.getType().equals(Material.AIR))) {
+				continue;
+			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		player.getInventory().clear();

@@ -53,7 +53,7 @@ import org.bukkit.util.Vector;
  */
 
 public class Arena {
-	
+
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
 
@@ -100,7 +100,6 @@ public class Arena {
 
 	// arena settings
 	public boolean usesPowerups;
-	public boolean preventDeath;
 
 	// Runnable IDs
 	public int SPAWN_ID = -1;
@@ -151,7 +150,8 @@ public class Arena {
 			setPermissions(z);
 		}
 
-		if (cfg.getBoolean("arenatype.flags") || cfg.getBoolean("arenatype.deathmatch")) {
+		if (cfg.getBoolean("arenatype.flags")
+				|| cfg.getBoolean("arenatype.deathmatch")) {
 			Flags.init_arena(this);
 		}
 		int timed = cfg.getInt("goal.timed");
@@ -161,14 +161,11 @@ public class Arena {
 			END_ID = Bukkit
 					.getServer()
 					.getScheduler()
-					.scheduleSyncDelayedTask(
-							Bukkit.getServer().getPluginManager()
-									.getPlugin("pvparena"),
+					.scheduleSyncDelayedTask(PVPArena.instance,
 							new TimedEndRunnable(this), timed * 20);
 		}
 		this.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				Bukkit.getPluginManager().getPlugin("pvparena"),
-				new BoardRunnable(this), 100L, 100L);
+				PVPArena.instance, new BoardRunnable(this), 100L, 100L);
 		db.i("teleported everyone!");
 		if (usesPowerups) {
 			db.i("using powerups : " + cfg.getString("game.powerups", "off")
@@ -181,9 +178,7 @@ public class Arena {
 				SPAWN_ID = Bukkit
 						.getServer()
 						.getScheduler()
-						.scheduleSyncRepeatingTask(
-								Bukkit.getServer().getPluginManager()
-										.getPlugin("pvparena"),
+						.scheduleSyncRepeatingTask(PVPArena.instance,
 								new PowerupRunnable(this), powerupDiff,
 								powerupDiff);
 			}
@@ -197,8 +192,7 @@ public class Arena {
 			return;
 
 		ArenaPlayer player = pm.parsePlayer(p);
-		PermissionAttachment pa = p.addAttachment(Bukkit.getServer()
-				.getPluginManager().getPlugin("pvparena"));
+		PermissionAttachment pa = p.addAttachment(PVPArena.instance);
 		player.tempPermissions.add(pa);
 		for (String entry : perms.keySet()) {
 			pa.setPermission(entry, perms.get(entry));
@@ -333,7 +327,9 @@ public class Arena {
 		}
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, color);
-
+		if (place.equals("spectator")) {
+			pm.parsePlayer(player).spectator = true;
+		}
 		pm.setTelePass(player, true);
 		player.teleport(Spawns.getCoords(this, place));
 		pm.setTelePass(player, false);
@@ -451,6 +447,7 @@ public class Arena {
 	public void forcestop() {
 		for (ArenaPlayer p : pm.getPlayers()) {
 			removePlayer(p.get(), "spectator");
+			p.spectator = true;
 		}
 		reset(true);
 	}
@@ -674,8 +671,8 @@ public class Arena {
 		if (paHeadGears != null) {
 			paHeadGears.clear();
 		}
-		fightInProgress = false;
 		pm.reset(this, force);
+		fightInProgress = false;
 		if (SPAWN_ID > -1)
 			Bukkit.getScheduler().cancelTask(SPAWN_ID);
 		SPAWN_ID = -1;
@@ -733,21 +730,24 @@ public class Arena {
 
 	public void deathMatch(Player attacker) {
 		// TODO get player team, announce death, remove "lives"
-		
+
 		if (!cfg.getBoolean("arenatype.deathmatch")) {
 			return; // no deathmatch, out!
 		}
-		
+
 		String sTeam = pm.getTeam(attacker);
 		if (sTeam.equals("")) {
 			return; // no team => out
 		}
-		
+
 		Flags.reduceLivesCheckEndAndCommit(this, sTeam);
-		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam)) + attacker.getName();
-		
-		pm.tellEveryone(PVPArena.lang.parse("frag",
+		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam))
+				+ attacker.getName();
+
+		pm.tellEveryone(PVPArena.lang.parse(
+				"frag",
 				sColoredPlayer,
-				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam) + 1)));
+				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam)
+						+ 1)));
 	}
 }

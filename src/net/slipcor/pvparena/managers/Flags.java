@@ -142,12 +142,16 @@ public class Flags {
 						.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
 				String scPlayer = ChatColor.valueOf(arena.paTeams.get(sTeam))
 						+ player.getName() + ChatColor.YELLOW;
-
+				
+				try {
+				
 				arena.pm.tellEveryone(PVPArena.lang.parse(type + "homeleft",
 						scPlayer, scFlagTeam,
 						String.valueOf(arena.paLives.get(flagTeam) - 1)));
 				arena.paTeamFlags.remove(flagTeam);
-
+				} catch (Exception e) {
+					Bukkit.getLogger().severe("[PVP Arena] team unknown/no lives: "+flagTeam);
+				}
 				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
 
@@ -323,9 +327,7 @@ public class Flags {
 		 * 
 		 */
 		
-		String sTeam = arena.pm.getTeam(player);
-		
-		if (sTeam.equals("")) {
+		if (arena.pm.parsePlayer(player).spectator) {
 			return; // spectator or dead. OUT
 		}
 		
@@ -369,7 +371,7 @@ public class Flags {
 						DominationRunnable running = new DominationRunnable(arena, false, loc, "");
 						long interval = 20L * 60 * 10;
 						Bukkit.getScheduler().scheduleSyncDelayedTask(
-								Bukkit.getPluginManager().getPlugin("pvparena"),
+								PVPArena.instance,
 								running, interval);
 						arena.paRuns.put(loc, running);
 					}
@@ -381,7 +383,7 @@ public class Flags {
 					DominationRunnable running = new DominationRunnable(arena, true, loc, arena.pm.parsePlayer(player).team);
 					long interval = 20L * 60 * 10;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(
-							Bukkit.getPluginManager().getPlugin("pvparena"),
+							PVPArena.instance,
 							running, interval);
 					arena.paRuns.put(loc, running);
 				}

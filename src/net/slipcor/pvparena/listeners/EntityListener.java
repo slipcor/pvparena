@@ -5,7 +5,6 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
@@ -108,7 +107,6 @@ public class EntityListener implements Listener {
 			Inventories.drop(player);
 		}
 
-		ArenaPlayer p = arena.pm.parsePlayer(player);
 		arena.tpPlayerToCoordName(player, "spectator");
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
@@ -237,7 +235,7 @@ public class EntityListener implements Listener {
 				lives = arena.paLives.get(defender.getName());
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
-					if (!arena.preventDeath) {
+					if (!arena.cfg.getBoolean("game.preventDeath")) {
 						return; // player died => commit death!
 					}
 					db.i("faking player death");
@@ -259,7 +257,11 @@ public class EntityListener implements Listener {
 		if (event.getEntity() instanceof Wolf) {
 			Wolf wolf = (Wolf) event.getEntity();
 			if (wolf.getOwner() != null) {
+				try {
 				p1 = (Entity) wolf.getOwner();
+				} catch (Exception e) {
+					// wolf belongs to dead player or whatnot
+				}
 			}
 		}
 
@@ -351,7 +353,7 @@ public class EntityListener implements Listener {
 			lives = arena.paLives.get(defender.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
-				if (!arena.preventDeath) {
+				if (!arena.cfg.getBoolean("game.preventDeath")) {
 					return; // player died => commit death!
 				}
 				db.i("faking player death");
@@ -405,11 +407,12 @@ public class EntityListener implements Listener {
 			int lives = 3;
 			
 			Statistics.kill(arena, null, player);
-			
-			lives = arena.paLives.get(player.getName());
-			db.i("lives before death: " + lives);
+			if (!arena.cfg.getBoolean("arenatype.flags")) {
+				lives = arena.paLives.get(player.getName());
+				db.i("lives before death: " + lives);
+			}
 			if (lives < 1) {
-				if (!arena.preventDeath) {
+				if (!arena.cfg.getBoolean("game.preventDeath")) {
 					return; // player died => commit death!
 				}
 				db.i("faking player death");

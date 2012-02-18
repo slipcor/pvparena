@@ -100,7 +100,7 @@ public class Ends {
 
 		arena.paLives.clear();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(
-				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 	}
 
@@ -130,8 +130,7 @@ public class Ends {
 			}
 			Bukkit.getScheduler()
 					.scheduleSyncDelayedTask(
-							Bukkit.getServer().getPluginManager()
-									.getPlugin("pvparena"),
+							PVPArena.instance,
 							new EndRunnable(arena), 15 * 20L);
 			return true;
 		}
@@ -169,11 +168,14 @@ public class Ends {
 				}
 			}
 		}
-
+		if (arena.paTeams.get(team) != null) {
 		Announcement.announce(arena, type.WINNER,
 				PVPArena.lang.parse("teamhaswon", "Team " + team));
 		arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
 				ChatColor.valueOf(arena.paTeams.get(team)) + "Team " + team));
+		} else {
+			Bukkit.getLogger().severe("[PVP Arena] team unknown: " + team);
+		}
 
 		Set<String> set = arena.pm.getPlayerTeamMap().keySet();
 		Iterator<String> iter = set.iterator();
@@ -216,7 +218,7 @@ public class Ends {
 			}
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(
-				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 		return true;
 	}
@@ -303,7 +305,7 @@ public class Ends {
 			}
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(
-				Bukkit.getServer().getPluginManager().getPlugin("pvparena"),
+				PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 	}
 }

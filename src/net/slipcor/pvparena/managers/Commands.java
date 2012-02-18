@@ -946,7 +946,7 @@ public class Commands {
 		player.sendMessage("Regionset: "
 				+ colorVar(arena.name.equals(Arena.regionmodify))
 				+ " || No Death: "
-				+ colorVar(arena.preventDeath)
+				+ colorVar(arena.cfg.getBoolean("game.preventDeath"))
 				+ " || "
 				+ "Force: "
 				+ colorVar("Even",

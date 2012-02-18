@@ -21,7 +21,6 @@ import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -92,8 +91,7 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 
-		List<String> list = Bukkit.getServer().getPluginManager()
-				.getPlugin("pvparena").getConfig().getStringList("whitelist");
+		List<String> list = PVPArena.instance.getConfig().getStringList("whitelist");
 		list.add("pa");
 		db.i("checking command whitelist");
 

@@ -47,6 +47,7 @@ public class PVPArena extends JavaPlugin {
 	public static final Language lang = new Language();
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
+	public static PVPArena instance = null;
 
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
@@ -58,6 +59,7 @@ public class PVPArena extends JavaPlugin {
 	 */
 	@Override
 	public void onEnable() {
+		instance = this;
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);

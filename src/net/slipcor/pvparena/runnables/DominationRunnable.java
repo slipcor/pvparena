@@ -3,6 +3,7 @@ package net.slipcor.pvparena.runnables;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Flags;
@@ -41,7 +42,7 @@ public class DominationRunnable implements Runnable {
 		loc = l;
 		db.i("Domination constructor");
 	}
-	
+
 	/**
 	 * the run method, commit arena end
 	 */
@@ -57,9 +58,10 @@ public class DominationRunnable implements Runnable {
 				// flag unclaimed! claim!
 				arena.paFlags.put(loc, team);
 				long interval = 20L * 60 * 5;
-				DominationRunnable running = new DominationRunnable(arena, take, loc, team);
+				DominationRunnable running = new DominationRunnable(arena,
+						take, loc, team);
 				running.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-						Bukkit.getPluginManager().getPlugin("pvparena"), running, interval, interval);
+						PVPArena.instance, running, interval, interval);
 				arena.paRuns.put(loc, running);
 			}
 		} else {
