@@ -78,9 +78,12 @@ public class Commands {
 			Arenas.tellPlayer(player, PVPArena.lang.parse("selectteam"));
 			return true;
 		}
-		if (arena.pm.existsPlayer(player)) {
-			Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
-			return true;
+		if (Arenas.getArenaByPlayer(player) != null) {
+			if (!arena.pm.existsPlayer(player) || !arena.pm.parsePlayer(player).spectator) {
+
+				Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
+				return true;
+			}
 		}
 		if (arena.fightInProgress) {
 			Arenas.tellPlayer(player, PVPArena.lang.parse("fightinprogress"));
@@ -154,9 +157,12 @@ public class Commands {
 			Arenas.tellPlayer(player, PVPArena.lang.parse("notselectteam"));
 			return true;
 		}
-		if (arena.pm.existsPlayer(player)) {
-			Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
-			return true;
+		if (Arenas.getArenaByPlayer(player) != null) {
+			if (!arena.pm.existsPlayer(player) || !arena.pm.parsePlayer(player).spectator) {
+
+				Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
+				return true;
+			}
 		}
 		if (arena.fightInProgress) {
 			Arenas.tellPlayer(player, PVPArena.lang.parse("fightinprogress"));

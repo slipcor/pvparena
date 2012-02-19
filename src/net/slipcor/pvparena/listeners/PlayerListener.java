@@ -184,7 +184,7 @@ public class PlayerListener implements Listener {
 								return;
 							}
 							Spawns.setCoords(arena, block.getLocation(), "flag"+flags.size());
-							Arenas.tellPlayer(player, PVPArena.lang.parse("lang.setflag", String.valueOf(flags.size())));
+							Arenas.tellPlayer(player, PVPArena.lang.parse("setflag", String.valueOf(flags.size())));
 						}
 					}
 				}
