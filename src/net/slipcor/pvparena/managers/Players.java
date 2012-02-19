@@ -67,7 +67,7 @@ public class Players {
 	public HashMap<String, String> getPlayerTeamMap() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (ArenaPlayer p : players.values()) {
-			if (!p.team.equals("")) {
+			if (!p.team.equals("") && !p.spectator) {
 				result.put(p.get().getName(), p.team);
 			}
 		}

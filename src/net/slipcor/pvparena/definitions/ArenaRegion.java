@@ -55,6 +55,7 @@ public class ArenaRegion {
 		min = lMin.toVector();
 		max = lMax.toVector();
 		world = lMin.getWorld();
+		db.i("creating region: "+sName+" - "+(cube?"cuboid":"sphere"));
 	}
 
 	private Location[] sanityCheck(Location lMin, Location lMax) {
@@ -98,7 +99,7 @@ public class ArenaRegion {
 					+ max.toString() + ")");
 			return vec.isInAABB(min, max);
 		} else {
-			return vec.distance(min.getMidpoint(max)) <= min.distance(max);
+			return vec.distance(min.getMidpoint(max)) <= (min.distance(max)/2);
 		}
 	}
 

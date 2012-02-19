@@ -5,6 +5,8 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Spawns;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -147,5 +149,6 @@ public class BlockListener implements Listener {
 		event.setLine(0, headline);
 		Arenas.boards.put(event.getBlock().getLocation(), new ArenaBoard(event
 				.getBlock().getLocation(), a));
+		Spawns.setCoords(a, event.getBlock().getLocation(), "leaderboard");
 	}
 }

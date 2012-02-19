@@ -329,6 +329,7 @@ public class Arena {
 			colorizePlayer(player, color);
 		if (place.equals("spectator")) {
 			pm.parsePlayer(player).spectator = true;
+			pm.parsePlayer(player).team = "";
 		}
 		pm.setTelePass(player, true);
 		player.teleport(Spawns.getCoords(this, place));
@@ -496,7 +497,7 @@ public class Arena {
 	}
 
 	private void dropItemOnSpawn(Material item) {
-		Location aim = Spawns.getCoords(this, "popup").getBlock()
+		Location aim = Spawns.getCoords(this, "powerup").getBlock()
 				.getRelative(BlockFace.UP).getLocation();
 
 		db.i("dropping item on spawn.");
@@ -682,6 +683,15 @@ public class Arena {
 		if (BOARD_ID > -1)
 			Bukkit.getScheduler().cancelTask(BOARD_ID);
 		BOARD_ID = -1;
+		
+		if (paRuns == null || paRuns.size() < 1) {
+			return;
+		}
+		
+		for (DominationRunnable run : paRuns.values()) {
+			Bukkit.getScheduler().cancelTask(run.ID);
+		}
+		paRuns.clear();
 	}
 
 	/**
@@ -694,7 +704,7 @@ public class Arena {
 			return "free";
 		}
 		if (cfg.getBoolean("arenatype.flags")) {
-			if (!cfg.getBoolean("arenatype.domination")) {
+			if (cfg.getBoolean("arenatype.domination")) {
 				return "dom";
 			}
 			if (cfg.getBoolean("arenatype.pumpkin")) {
@@ -702,7 +712,7 @@ public class Arena {
 			}
 			return "ctf";
 		}
-		if (!cfg.getBoolean("arenatype.deathmatch")) {
+		if (cfg.getBoolean("arenatype.deathmatch")) {
 			return "dm";
 		}
 		return "teams";
@@ -729,8 +739,6 @@ public class Arena {
 	}
 
 	public void deathMatch(Player attacker) {
-		// TODO get player team, announce death, remove "lives"
-
 		if (!cfg.getBoolean("arenatype.deathmatch")) {
 			return; // no deathmatch, out!
 		}
@@ -740,14 +748,15 @@ public class Arena {
 			return; // no team => out
 		}
 
-		Flags.reduceLivesCheckEndAndCommit(this, sTeam);
+		if (Flags.reduceLivesCheckEndAndCommit(this, sTeam)) {
+			return;
+		}
 		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam))
-				+ attacker.getName();
+				+ attacker.getName() + ChatColor.YELLOW;
 
 		pm.tellEveryone(PVPArena.lang.parse(
 				"frag",
 				sColoredPlayer,
-				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam)
-						+ 1)));
+				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam))));
 	}
 }

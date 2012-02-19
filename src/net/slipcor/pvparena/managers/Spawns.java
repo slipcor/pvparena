@@ -38,7 +38,7 @@ public class Spawns {
 		Arena.db.i("get coords: " + place);
 		World world = Bukkit.getWorld(arena.cfg.getString("general.world",
 				Bukkit.getWorlds().get(0).getName()));
-		if (place.equals("spawn") || place.equals("popup")) {
+		if (place.equals("spawn") || place.equals("powerup")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
@@ -118,6 +118,31 @@ public class Spawns {
 		arena.cfg.save();
 	}
 
+	/**
+	 * set an arena coord to a given location
+	 * 
+	 * @param loc
+	 *            the location to save
+	 * @param place
+	 *            the coord name to save the location to
+	 */
+	public static void setCoords(Arena arena, Location loc, String place) {
+		// "x,y,z,yaw,pitch"
+
+		Integer x = loc.getBlockX();
+		Integer y = loc.getBlockY();
+		Integer z = loc.getBlockZ();
+		Float yaw = loc.getYaw();
+		Float pitch = loc.getPitch();
+
+		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
+				+ yaw.toString() + "," + pitch.toString();
+
+		arena.cfg.set("spawns." + place, s);
+
+		arena.cfg.save();
+	}
+
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
 		if (!arena.pm.existsPlayer(player)) {
 			return false;
@@ -137,7 +162,7 @@ public class Spawns {
 		return false;
 	}
 
-	static HashSet<Location> getSpawns(Arena arena, String sTeam) {
+	public static HashSet<Location> getSpawns(Arena arena, String sTeam) {
 		HashSet<Location> result = new HashSet<Location>();
 
 		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg

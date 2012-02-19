@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 
 /**
@@ -69,7 +70,7 @@ public class Configs {
 
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
-		config.addDefault("game.mustbesafe", Boolean.valueOf(false));
+		config.addDefault("game.mustbesafe", Boolean.valueOf(true));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
 		config.addDefault("game.powerups", "off");
 		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
@@ -84,7 +85,7 @@ public class Configs {
 
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
-		config.addDefault("general.signs", Boolean.valueOf(false));
+		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
 
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
@@ -216,6 +217,7 @@ public class Configs {
 			}
 
 			arena.pum = new Powerups(powerups);
+			
 		}
 		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
@@ -275,6 +277,15 @@ public class Configs {
 			cfg.set("teams", null);
 			cfg.set("teams.free", "WHITE");
 			cfg.save();
+		}
+		if (config.get("spawns") != null) {
+			db.i("spawns exist");
+			if (config.get("spawns.leaderboard") != null) {
+				db.i("leaderboard exists");
+				Location loc = Config.parseLocation(Bukkit.getWorld(arena.getWorld()), config.getString("spawns.leaderboard"));
+
+				Arenas.boards.put(loc, new ArenaBoard(loc, arena));
+			}
 		}
 	}
 
@@ -356,10 +367,25 @@ public class Configs {
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			String type = arena.getType();
-			type = type.equals("pumpkin") ? type : "flag";
-			for (String team : arena.paTeams.keySet()) {
-				if (!list.contains(team + type)) {
-					return team + type + " not set";
+			
+			if (type.equals("dom")) {
+				boolean contains = false;
+				for (String s : list) {
+					if (s.startsWith("flag")) {
+						contains = true;
+						break;
+					}
+				}
+				if (!contains) {
+					return "flags not set";
+				}
+			} else {
+			
+				type = type.equals("pumpkin") ? type : "flag";
+				for (String team : arena.paTeams.keySet()) {
+					if (!list.contains(team + type)) {
+						return team + type + " not set";
+					}
 				}
 			}
 		}

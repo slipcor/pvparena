@@ -211,11 +211,13 @@ public class EntityListener implements Listener {
 			if (arena == null)
 				return;
 
-			db.i("onEntityDamageByBLOCKDAMAGE: fighting player");
+			db.i("onEntityDamageByBLOCKDAMAGE: arena player");
 
 			if (arena.pm.getPlayerTeamMap().get(defender.getName()) == null) {
 				return;
 			}
+
+			db.i("onEntityDamageByBLOCKDAMAGE: fighting player");
 
 			db.i("processing damage!");
 

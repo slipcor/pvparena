@@ -57,7 +57,7 @@ public class DominationRunnable implements Runnable {
 			} else {
 				// flag unclaimed! claim!
 				arena.paFlags.put(loc, team);
-				long interval = 20L * 60 * 5;
+				long interval = 20L * 5;
 				DominationRunnable running = new DominationRunnable(arena,
 						take, loc, team);
 				running.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(

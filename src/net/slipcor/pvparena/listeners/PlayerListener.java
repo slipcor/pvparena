@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
+import net.slipcor.pvparena.managers.Dominate;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
@@ -169,6 +171,22 @@ public class PlayerListener implements Listener {
 						Commands.parseCommand(a, player, newArgs);
 						return;
 					}
+				} else if (block.getType().equals(Material.WOOL)){
+					arena = Arenas.getArenaByRegionLocation(block.getLocation());
+					if (arena != null) {
+						if ((PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
+								player, arena)))
+						&& (player.getItemInHand() != null)
+						&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
+								"setup.wand", 280))) {
+							HashSet<Location> flags =  Spawns.getSpawns(arena, "flags");
+							if (flags.contains(block.getLocation())) {
+								return;
+							}
+							Spawns.setCoords(arena, block.getLocation(), "flag"+flags.size());
+							Arenas.tellPlayer(player, PVPArena.lang.parse("lang.setflag", String.valueOf(flags.size())));
+						}
+					}
 				}
 			}
 			if (Arena.regionmodify.contains(":")) {
@@ -177,7 +195,7 @@ public class PlayerListener implements Listener {
 				if (arena == null) {
 					return;
 				}
-				db.i("onInteract: pumpkin");
+				db.i("onInteract: flag/pumpkin");
 				if (arena.cfg.getBoolean("arenatype.flags")) {
 					Flags.setFlag(arena, player, event.getClickedBlock());
 				}
@@ -362,7 +380,7 @@ public class PlayerListener implements Listener {
 		}
 		
 		if (arena.cfg.getBoolean("arenatype.domination")) {
-			Flags.parseMove(arena, player);
+			Dominate.parseMove(arena, player);
 		}
 		
 		// db.i("onPlayerMove: fighting player!");
