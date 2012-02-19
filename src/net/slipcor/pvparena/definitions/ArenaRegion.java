@@ -22,7 +22,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.2
+ * @version v0.6.3
  * 
  */
 

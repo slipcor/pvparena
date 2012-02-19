@@ -10,6 +10,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * domination manager class
+ * 
+ * -
+ * 
+ * provides commands to deal with domination mode
+ * 
+ * @author slipcor
+ * 
+ * @version v0.6.3
+ * 
+ */
+
 public class Dominate {
 
 

@@ -29,7 +29,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.6.2
+ * @version v0.6.3
  * 
  */
 
