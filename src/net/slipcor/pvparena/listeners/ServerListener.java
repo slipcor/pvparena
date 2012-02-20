@@ -26,6 +26,9 @@ import org.bukkit.event.server.PluginEnableEvent;
 public class ServerListener implements Listener {
 	private Methods methods = null;
 
+	/**
+	 * create a server listener instance
+	 */
 	public ServerListener() {
 		this.methods = new Methods();
 	}

@@ -19,6 +19,14 @@ public class ArenaBoardColumn {
 
 	private ArenaBoardSign[] signs = new ArenaBoardSign[5];
 
+	/**
+	 * create an arena board column instance
+	 * 
+	 * @param ab
+	 *            the arena board to hook to
+	 * @param loc
+	 *            the location of the column header
+	 */
 	public ArenaBoardColumn(ArenaBoard ab, Location loc) {
 		board = ab;
 		location = loc;
@@ -26,6 +34,9 @@ public class ArenaBoardColumn {
 		fetchSigns();
 	}
 
+	/**
+	 * fetch sub signs and attach them to the sign array
+	 */
 	private void fetchSigns() {
 		Location l = location.getBlock().getRelative(BlockFace.DOWN)
 				.getLocation();
@@ -46,6 +57,12 @@ public class ArenaBoardColumn {
 		}
 	}
 
+	/**
+	 * write a string array to the signs
+	 * 
+	 * @param s
+	 *            the string array to save
+	 */
 	public void write(String[] s) {
 		int i = 0;
 

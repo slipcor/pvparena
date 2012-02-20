@@ -117,10 +117,24 @@ public class Settings {
 		types.put("announcements.color", "string");
 	}
 
+	/**
+	 * create a settings instance
+	 * 
+	 * @param a
+	 *            the arena to link to
+	 */
 	public Settings(Arena a) {
 		arena = a;
 	}
 
+	/**
+	 * spam a list of settings to a player
+	 * 
+	 * @param player
+	 *            the player to send to
+	 * @param page
+	 *            the settings page to send
+	 */
 	public void list(Player player, int page) {
 		if (page < 1) {
 			page = 1;
@@ -149,7 +163,14 @@ public class Settings {
 
 	}
 
-	private Object getNode(String node) {
+	/**
+	 * hand over a config node
+	 * 
+	 * @param node
+	 *            the key to search
+	 * @return the full path to the node
+	 */
+	private String getNode(String node) {
 		for (String s : arena.cfg.getYamlConfiguration().getKeys(true)) {
 
 			if (types.get(s) == null) {
@@ -163,6 +184,16 @@ public class Settings {
 		return "null";
 	}
 
+	/**
+	 * set a setting
+	 * 
+	 * @param player
+	 *            the player committing the setting
+	 * @param node
+	 *            the node to set
+	 * @param value
+	 *            the value to set
+	 */
 	public void set(Player player, String node, String value) {
 
 		if (!PVPArena.hasAdminPerms(player)
@@ -280,8 +311,6 @@ public class Settings {
 
 			arena.cfg.set(node, String.valueOf(value));
 			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value));
-		} else if (type.equals("lang")) {
-			return; // TODO : lang support
 		} else {
 			Arenas.tellPlayer(player, "Unknown node: " + node);
 			Arenas.tellPlayer(player,

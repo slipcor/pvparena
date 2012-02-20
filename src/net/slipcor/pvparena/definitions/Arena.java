@@ -61,9 +61,6 @@ public class Arena {
 	// protected static: Debug manager (same for all child Arenas)
 	public static final Debug db = new Debug();
 
-	/*
-	 * arena maps, contain the arena data
-	 */
 	// available arena classes mapped to their items: ClassName => itemString
 	public final HashMap<String, ItemStack[]> paClassItems = new HashMap<String, ItemStack[]>();
 	// available teams mapped to color: TeamName => ColorString
@@ -82,7 +79,7 @@ public class Arena {
 	public final HashMap<String, ArenaRegion> regions = new HashMap<String, ArenaRegion>();
 	public final HashSet<String> paReady = new HashSet<String>();
 	public final HashSet<String> paChat = new HashSet<String>();
-	public final HashSet<ArenaSign> paSigns = new HashSet<ArenaSign>();
+	public final HashSet<ArenaClassSign> paSigns = new HashSet<ArenaClassSign>();
 
 	public Powerups pum;
 	public Settings sm;
@@ -187,12 +184,18 @@ public class Arena {
 
 	}
 
+	/**
+	 * set temporary permissions for a player
+	 * 
+	 * @param p
+	 *            the player to set
+	 */
 	private void setPermissions(Player p) {
 		HashMap<String, Boolean> perms = getTempPerms();
 		if (perms == null || perms.isEmpty())
 			return;
 
-		ArenaPlayer player = pm.parsePlayer(p);
+		ArenaPlayer player = Players.parsePlayer(this, p);
 		PermissionAttachment pa = p.addAttachment(PVPArena.instance);
 		player.tempPermissions.add(pa);
 		for (String entry : perms.keySet()) {
@@ -200,8 +203,14 @@ public class Arena {
 		}
 	}
 
+	/**
+	 * remove temporary permissions from a player
+	 * 
+	 * @param p
+	 *            the player to reset
+	 */
 	private void removePermissions(Player p) {
-		ArenaPlayer player = pm.parsePlayer(p);
+		ArenaPlayer player = Players.parsePlayer(this, p);
 		if (player == null || player.tempPermissions == null) {
 			return;
 		}
@@ -215,7 +224,7 @@ public class Arena {
 	/**
 	 * get the permissions map
 	 * 
-	 * @return
+	 * @return the temporary permissions map
 	 */
 	private HashMap<String, Boolean> getTempPerms() {
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
@@ -232,9 +241,14 @@ public class Arena {
 		return result;
 	}
 
+	/**
+	 * check if a custom class player is alive
+	 * 
+	 * @return true if there is a custom class player alive, false otherwise
+	 */
 	public boolean isCustomClassActive() {
 		for (ArenaPlayer p : pm.getPlayers()) {
-			if (p.getClass().equals("custom")) {
+			if (!p.spectator && p.getClass().equals("custom")) {
 				return true;
 			}
 		}
@@ -248,7 +262,7 @@ public class Arena {
 	 *            the player to save
 	 */
 	public void saveMisc(Player player) {
-		ArenaPlayer p = pm.parsePlayer(player);
+		ArenaPlayer p = Players.parsePlayer(this, player);
 		p.exhaustion = player.getExhaustion();
 		p.fireticks = player.getFireTicks();
 		p.foodlevel = player.getFoodLevel();
@@ -329,8 +343,8 @@ public class Arena {
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, color);
 		if (place.equals("spectator")) {
-			pm.parsePlayer(player).spectator = true;
-			pm.parsePlayer(player).team = "";
+			Players.parsePlayer(this, player).spectator = true;
+			Players.parsePlayer(this, player).team = "";
 		}
 		pm.setTelePass(player, true);
 		player.teleport(Spawns.getCoords(this, place));
@@ -400,7 +414,7 @@ public class Arena {
 		pm.setTeam(player, "");
 		pm.remove(player);
 		if (cfg.getBoolean("general.signs")) {
-			ArenaSign.remove(paSigns, player);
+			ArenaClassSign.remove(paSigns, player);
 		}
 	}
 
@@ -414,7 +428,7 @@ public class Arena {
 		db.i("resetting player: " + player.getName());
 
 		removePermissions(player);
-		ArenaPlayer ap = pm.parsePlayer(player);
+		ArenaPlayer ap = Players.parsePlayer(this, player);
 		player.setFireTicks(ap.fireticks);
 		player.setFoodLevel(ap.foodlevel);
 		player.setHealth(ap.health);
@@ -497,6 +511,12 @@ public class Arena {
 		}
 	}
 
+	/**
+	 * drop an item at a powerup spawn point
+	 * 
+	 * @param item
+	 *            the item to drop
+	 */
 	private void dropItemOnSpawn(Material item) {
 		Location aim = Spawns.getCoords(this, "powerup").getBlock()
 				.getRelative(BlockFace.UP).getLocation();
@@ -514,7 +534,7 @@ public class Arena {
 	 * @return the saved location
 	 */
 	public Location getPlayerOldLocation(Player player) {
-		ArenaPlayer ap = pm.parsePlayer(player);
+		ArenaPlayer ap = Players.parsePlayer(this, player);
 		return ap.location;
 	}
 
@@ -663,7 +683,7 @@ public class Arena {
 		clearArena();
 		paReady.clear();
 		paChat.clear();
-		for (ArenaSign as : paSigns) {
+		for (ArenaClassSign as : paSigns) {
 			as.clear();
 		}
 		paSigns.clear();
@@ -686,11 +706,11 @@ public class Arena {
 		BOARD_ID = -1;
 
 		Blocks.resetBlocks(this);
-		
+
 		if (paRuns == null || paRuns.size() < 1) {
 			return;
 		}
-		
+
 		for (DominationRunnable run : paRuns.values()) {
 			Bukkit.getScheduler().cancelTask(run.ID);
 		}
@@ -741,6 +761,12 @@ public class Arena {
 		cfg.save();
 	}
 
+	/**
+	 * handle a deathmatch frag
+	 * 
+	 * @param attacker
+	 *            the player to count a frag
+	 */
 	public void deathMatch(Player attacker) {
 		if (!cfg.getBoolean("arenatype.deathmatch")) {
 			return; // no deathmatch, out!
@@ -757,9 +783,7 @@ public class Arena {
 		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam))
 				+ attacker.getName() + ChatColor.YELLOW;
 
-		pm.tellEveryone(PVPArena.lang.parse(
-				"frag",
-				sColoredPlayer,
+		pm.tellEveryone(PVPArena.lang.parse("frag", sColoredPlayer,
 				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam))));
 	}
 }

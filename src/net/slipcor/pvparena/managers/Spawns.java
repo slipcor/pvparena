@@ -143,6 +143,17 @@ public class Spawns {
 		arena.cfg.save();
 	}
 
+	/**
+	 * is a player near a spawn?
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player to check
+	 * @param diff
+	 *            the distance to check
+	 * @return true if the player is near, false otherwise
+	 */
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
 		if (!arena.pm.existsPlayer(player)) {
 			return false;
@@ -162,6 +173,15 @@ public class Spawns {
 		return false;
 	}
 
+	/**
+	 * get all (team) spawns of an arena
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param sTeam
+	 *            a team name or "flags" or "[team]pumpkin" or "[team]flag"
+	 * @return a set of possible spawn matches
+	 */
 	public static HashSet<Location> getSpawns(Arena arena, String sTeam) {
 		HashSet<Location> result = new HashSet<Location>();
 

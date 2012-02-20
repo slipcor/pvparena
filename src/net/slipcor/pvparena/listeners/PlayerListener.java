@@ -11,7 +11,7 @@ import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
-import net.slipcor.pvparena.definitions.ArenaSign;
+import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
@@ -20,6 +20,7 @@ import net.slipcor.pvparena.managers.Dominate;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
+import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
 
@@ -93,7 +94,8 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 
-		List<String> list = PVPArena.instance.getConfig().getStringList("whitelist");
+		List<String> list = PVPArena.instance.getConfig().getStringList(
+				"whitelist");
 		list.add("pa");
 		db.i("checking command whitelist");
 
@@ -171,20 +173,26 @@ public class PlayerListener implements Listener {
 						Commands.parseCommand(a, player, newArgs);
 						return;
 					}
-				} else if (block.getType().equals(Material.WOOL)){
-					arena = Arenas.getArenaByRegionLocation(block.getLocation());
+				} else if (block.getType().equals(Material.WOOL)) {
+					arena = Arenas
+							.getArenaByRegionLocation(block.getLocation());
 					if (arena != null) {
-						if ((PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
-								player, arena)))
-						&& (player.getItemInHand() != null)
-						&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
-								"setup.wand", 280))) {
-							HashSet<Location> flags =  Spawns.getSpawns(arena, "flags");
+						if ((PVPArena.hasAdminPerms(player) || (PVPArena
+								.hasCreatePerms(player, arena)))
+								&& (player.getItemInHand() != null)
+								&& (player.getItemInHand().getTypeId() == arena.cfg
+										.getInt("setup.wand", 280))) {
+							HashSet<Location> flags = Spawns.getSpawns(arena,
+									"flags");
 							if (flags.contains(block.getLocation())) {
 								return;
 							}
-							Spawns.setCoords(arena, block.getLocation(), "flag"+flags.size());
-							Arenas.tellPlayer(player, PVPArena.lang.parse("setflag", String.valueOf(flags.size())));
+							Spawns.setCoords(arena, block.getLocation(), "flag"
+									+ flags.size());
+							Arenas.tellPlayer(
+									player,
+									PVPArena.lang.parse("setflag",
+											String.valueOf(flags.size())));
 						}
 					}
 				}
@@ -251,11 +259,11 @@ public class PlayerListener implements Listener {
 					}
 
 					if (arena.cfg.getBoolean("general.signs")) {
-						ArenaSign.remove(arena.paSigns, player);
-						ArenaSign as = ArenaSign.used(block.getLocation(),
-								arena.paSigns);
+						ArenaClassSign.remove(arena.paSigns, player);
+						ArenaClassSign as = ArenaClassSign.used(
+								block.getLocation(), arena.paSigns);
 						if (as == null) {
-							as = new ArenaSign(block.getLocation());
+							as = new ArenaClassSign(block.getLocation());
 						}
 						arena.paSigns.add(as);
 						if (!as.add(player)) {
@@ -378,11 +386,11 @@ public class PlayerListener implements Listener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		
+
 		if (arena.cfg.getBoolean("arenatype.domination")) {
 			Dominate.parseMove(arena, player);
 		}
-		
+
 		// db.i("onPlayerMove: fighting player!");
 		if (arena.pum != null) {
 			Powerup p = arena.pum.puActive.get(player);
@@ -483,7 +491,7 @@ public class PlayerListener implements Listener {
 
 		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
 		try {
-			ArenaPlayer p = arena.pm.parsePlayer(player);
+			ArenaPlayer p = Players.parsePlayer(arena, player);
 			p.respawn = "";
 		} catch (Exception e) {
 

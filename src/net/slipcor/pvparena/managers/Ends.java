@@ -65,19 +65,19 @@ public class Ends {
 						&& arena.pm.getPlayerTeamMap().get(z.getName())
 								.equals(team)) {
 					// team not winning and player team = team
-					arena.pm.parsePlayer(z).losses++;
+					Players.parsePlayer(arena, z).losses++;
 					arena.removePlayer(z, "spectator");
 				} else if (win
 						&& !arena.pm.getPlayerTeamMap().get(z.getName())
 								.equals(team)) {
 					// team winning and other team
-					arena.pm.parsePlayer(z).losses++;
+					Players.parsePlayer(arena, z).losses++;
 					arena.removePlayer(z, "spectator");
 				}
 			}
 		}
 
-		String winteam = win?team:"";
+		String winteam = win ? team : "";
 		set = arena.pm.getPlayerTeamMap().keySet();
 		iter = set.iterator();
 		while (winteam.equals("") && iter.hasNext()) {
@@ -182,7 +182,7 @@ public class Ends {
 
 			Player z = Bukkit.getServer().getPlayer(sPlayer);
 			if (!arena.pm.getPlayerTeamMap().get(z.getName()).equals(team)) {
-				arena.pm.parsePlayer(z).losses++;
+				Players.parsePlayer(arena, z).losses++;
 				arena.resetPlayer(z, arena.cfg.getString("tp.lose", "old"));
 			}
 		}
@@ -267,7 +267,7 @@ public class Ends {
 
 			Player z = p.get();
 			if (!result.contains(p.team)) {
-				arena.pm.parsePlayer(z).losses++;
+				Players.parsePlayer(arena, z).losses++;
 				arena.resetPlayer(z, arena.cfg.getString("tp.lose", "old"));
 			}
 			p = null;

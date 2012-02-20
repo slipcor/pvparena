@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.core.Debug;
@@ -30,7 +29,7 @@ public class Players {
 	// bets placed mapped to value: BetterName:BetName => Amount
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 
-	private HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
+	HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
 	private Debug db = new Debug();
 
 	/**
@@ -457,30 +456,14 @@ public class Players {
 		players.remove(player.getName());
 	}
 
-	public ArenaPlayer parsePlayer(Player player) {
-		return players.get(player.getName());
-	}
-
-	public HashSet<String> checkLocationPresentTeams(Location loc, Player player, int distance) {
-		HashSet<String> result = new HashSet<String>();
-		String sTeam = parsePlayer(player).team;
-		
-		for (ArenaPlayer p : players.values()) {
-			if (p.get().getLocation().distance(loc) > distance) {
-				continue;
-			}
-			
-			if (p.get().getName().equals(player.getName())) {
-				continue;
-			}
-			
-			if (p.team.equals(sTeam)) {
-				continue;
-			}
-			
-			result.add(p.team);
-		}
-		
-		return result;
+	/**
+	 * get an ArenaPlayer from a player
+	 * 
+	 * @param player
+	 *            the player to get
+	 * @return an ArenaPlayer instace belonging to that player
+	 */
+	public static ArenaPlayer parsePlayer(Arena arena, Player player) {
+		return arena.pm.players.get(player.getName());
 	}
 }

@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
 
 		db.i("block break inside the arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
+				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
 			if (arena.fightInProgress) {
 				Blocks.saveBlock(event.getBlock());
 			}

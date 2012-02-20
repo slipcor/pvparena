@@ -34,6 +34,10 @@ public class ArenaRegion {
 	protected World world;
 	public String name;
 
+	public static enum regionType {
+		CUBOID, SPHERIC
+	}
+
 	/**
 	 * create a PVP Arena region instance
 	 * 
@@ -44,10 +48,11 @@ public class ArenaRegion {
 	 * @param lMax
 	 *            the region maximum location
 	 */
-	public ArenaRegion(String sName, Location lMin, Location lMax, boolean cube) {
+	public ArenaRegion(String sName, Location lMin, Location lMax,
+			regionType type) {
 		name = sName;
-		cuboid = cube;
-		if (cuboid) {
+
+		if (type.equals(regionType.CUBOID)) {
 			Location[] sane = sanityCheck(lMin, lMax);
 			lMin = sane[0].clone();
 			lMax = sane[1].clone();
@@ -55,9 +60,19 @@ public class ArenaRegion {
 		min = lMin.toVector();
 		max = lMax.toVector();
 		world = lMin.getWorld();
-		db.i("creating region: "+sName+" - "+(cube?"cuboid":"sphere"));
+		db.i("creating region: " + sName + " - "
+				+ (type.equals(regionType.CUBOID) ? "cuboid" : "sphere"));
 	}
 
+	/**
+	 * sanitize a pair of locations
+	 * 
+	 * @param lMin
+	 *            the minimum point
+	 * @param lMax
+	 *            the maximum point
+	 * @return a recalculated pair of locations
+	 */
 	private Location[] sanityCheck(Location lMin, Location lMax) {
 		boolean x = (lMin.getBlockX() > lMax.getBlockX());
 		boolean y = (lMin.getBlockY() > lMax.getBlockY());
@@ -99,7 +114,7 @@ public class ArenaRegion {
 					+ max.toString() + ")");
 			return vec.isInAABB(min, max);
 		} else {
-			return vec.distance(min.getMidpoint(max)) <= (min.distance(max)/2);
+			return vec.distance(min.getMidpoint(max)) <= (min.distance(max) / 2);
 		}
 	}
 
@@ -189,9 +204,9 @@ public class ArenaRegion {
 
 		Random r = new Random();
 
-		int posx=0;
-		int posy=0;
-		int posz=0;
+		int posx = 0;
+		int posy = 0;
+		int posz = 0;
 
 		if (cuboid) {
 			posx = diffx == 0 ? min.getBlockX() : (int) ((diffx / Math
@@ -202,22 +217,24 @@ public class ArenaRegion {
 					.abs(diffz)) * r.nextInt(Math.abs(diffz)) + max.getZ());
 		} else {
 			Vector thisCenter = this.max.getMidpoint(this.min);
-			double thisRadius = this.max.distance(min)/2;
-			
-			Vector spawnPosition = thisCenter.add(Vector.getRandom().normalize().multiply(r.nextDouble()*thisRadius));
-			
-			while (spawnPosition.toLocation(world).getBlock().getType() == null ||
-					spawnPosition.toLocation(world).getBlock().getType().equals(Material.AIR)) {
-				spawnPosition.add(new Vector(0,1,0));
+			double thisRadius = this.max.distance(min) / 2;
+
+			Vector spawnPosition = thisCenter.add(Vector.getRandom()
+					.normalize().multiply(r.nextDouble() * thisRadius));
+
+			while (spawnPosition.toLocation(world).getBlock().getType() == null
+					|| spawnPosition.toLocation(world).getBlock().getType()
+							.equals(Material.AIR)) {
+				spawnPosition.add(new Vector(0, 1, 0));
 			}
-			spawnPosition.add(new Vector(0,1,0)); // 1 above ground
-			
-			posx=spawnPosition.getBlockX();
-			posy=spawnPosition.getBlockY();
-			posz=spawnPosition.getBlockZ();
-			
+			spawnPosition.add(new Vector(0, 1, 0)); // 1 above ground
+
+			posx = spawnPosition.getBlockX();
+			posy = spawnPosition.getBlockY();
+			posz = spawnPosition.getBlockZ();
+
 		}
-		
+
 		world.dropItem(new Location(world, posx, posy + 1, posz),
 				new ItemStack(item, 1));
 	}

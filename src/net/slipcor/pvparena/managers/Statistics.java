@@ -22,14 +22,35 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 public class Statistics {
 	public static final Debug db = new Debug();
+
 	public static enum type {
 		WINS, LOSSES, KILLS, DEATHS, MAXDAMAGE, MAXDAMAGETAKE, DAMAGE, DAMAGETAKE, NULL
 	}
 
+	/**
+	 * get a set of arena players sorted by type
+	 * 
+	 * @param a
+	 *            the arena to check
+	 * @param sortBy
+	 *            the type to sort
+	 * @return an array of ArenaPlayer
+	 */
 	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
 		return getStats(a, sortBy, true);
 	}
 
+	/**
+	 * get a set of arena players sorted by type
+	 * 
+	 * @param a
+	 *            the arena to check
+	 * @param sortBy
+	 *            the type to sort
+	 * @param desc
+	 *            should it be sorted descending?
+	 * @return an array of ArenaPlayer
+	 */
 	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
 		ArenaPlayer[] aps = new ArenaPlayer[a.pm.getPlayers().size()];
 		int i = 0;
@@ -40,9 +61,18 @@ public class Statistics {
 		sortBy(aps, sortBy, desc);
 
 		return aps;
-		// TODO use the result of this function in the leaderboards
 	}
 
+	/**
+	 * bubble sort an ArenaPlayer array by type
+	 * 
+	 * @param aps
+	 *            the ArenaPlayer array
+	 * @param sortBy
+	 *            the type to sort by
+	 * @param desc
+	 *            descending order?
+	 */
 	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc) {
 		int n = aps.length;
 		boolean doMore = true;
@@ -61,6 +91,19 @@ public class Statistics {
 		}
 	}
 
+	/**
+	 * decide if a pair has to be sorted
+	 * 
+	 * @param aps
+	 *            the ArenaPlayer array
+	 * @param pos
+	 *            the position to check
+	 * @param sortBy
+	 *            the type to sort by
+	 * @param desc
+	 *            descending order?
+	 * @return true if pair has to be sorted, false otherwise
+	 */
 	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy,
 			boolean desc) {
 		int a = 0;
@@ -94,6 +137,13 @@ public class Statistics {
 		return desc ? (a < b) : (a > b);
 	}
 
+	/**
+	 * get the type by the sign headline
+	 * 
+	 * @param line
+	 *            the line to determine the type
+	 * @return the Statistics type
+	 */
 	public static type getTypeBySignLine(String line) {
 		if (!line.startsWith("[PA]")) {
 			return type.NULL;
@@ -108,6 +158,15 @@ public class Statistics {
 		return type.NULL;
 	}
 
+	/**
+	 * gather all type information of an array of ArenaPlayers
+	 * 
+	 * @param players
+	 *            the ArenaPlayer array to check
+	 * @param t
+	 *            the type to read
+	 * @return an Array of String
+	 */
 	public static String[] read(ArenaPlayer[] players, type t) {
 		String[] result = new String[players.length];
 		int i = 0;
@@ -135,35 +194,56 @@ public class Statistics {
 		return result;
 	}
 
-	public static void damage(Arena arena, Entity e, Player defender,
-			int dmg) {
-		
-		db.i("adding damage to player "+defender.getName());
-		
+	/**
+	 * commit damage
+	 * 
+	 * @param arena
+	 *            the arena where that happens
+	 * @param e
+	 *            an eventual attacker
+	 * @param defender
+	 *            the attacked player
+	 * @param dmg
+	 *            the damage value
+	 */
+	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
+
+		db.i("adding damage to player " + defender.getName());
+
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
-			db.i("attacker is player: "+attacker.getName());
+			db.i("attacker is player: " + attacker.getName());
 			if (arena.pm.existsPlayer(attacker)) {
 				db.i("attacker is in the arena, adding damage!");
-				ArenaPlayer p = arena.pm.parsePlayer(attacker);
+				ArenaPlayer p = Players.parsePlayer(arena, attacker);
 				p.damage += dmg;
 				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
 			}
 		}
-		ArenaPlayer p = arena.pm.parsePlayer(defender);
+		ArenaPlayer p = Players.parsePlayer(arena, defender);
 		p.damagetake += dmg;
 		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
 	}
 
+	/**
+	 * commit a kill
+	 * 
+	 * @param arena
+	 *            the arena where that happens
+	 * @param e
+	 *            an eventual attacker
+	 * @param defender
+	 *            the attacked player
+	 */
 	public static void kill(Arena arena, Entity e, Player defender) {
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			if (arena.pm.existsPlayer(attacker)) {
-				ArenaPlayer p = arena.pm.parsePlayer(attacker);
+				ArenaPlayer p = Players.parsePlayer(arena, attacker);
 				p.kills++;
 			}
 		}
-		ArenaPlayer p = arena.pm.parsePlayer(defender);
+		ArenaPlayer p = Players.parsePlayer(arena, defender);
 		p.deaths++;
 	}
 }

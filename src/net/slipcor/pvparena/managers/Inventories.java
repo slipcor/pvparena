@@ -77,7 +77,7 @@ public class Inventories {
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
 
-		ArenaPlayer p = arena.pm.parsePlayer(player);
+		ArenaPlayer p = Players.parsePlayer(arena, player);
 		p.savedInventory = player.getInventory().getContents().clone();
 		p.savedArmor = player.getInventory().getArmorContents().clone();
 		clearInventory(player);
@@ -162,7 +162,7 @@ public class Inventories {
 			return;
 		}
 
-		ArenaPlayer p = arena.pm.parsePlayer(player);
+		ArenaPlayer p = Players.parsePlayer(arena, player);
 
 		if (p.savedInventory == null) {
 			return;
@@ -171,6 +171,12 @@ public class Inventories {
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
 
+	/**
+	 * drop a player's inventory
+	 * 
+	 * @param player
+	 *            the player to empty
+	 */
 	public static void drop(Player player) {
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {

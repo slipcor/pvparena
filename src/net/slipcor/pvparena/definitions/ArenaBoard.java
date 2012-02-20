@@ -22,7 +22,7 @@ import org.bukkit.block.Sign;
 public class ArenaBoard {
 
 	public static final Debug db = new Debug();
-	
+
 	private Location location;
 	public Arena arena;
 
@@ -30,6 +30,14 @@ public class ArenaBoard {
 
 	private HashMap<Statistics.type, ArenaBoardColumn> columns = new HashMap<Statistics.type, ArenaBoardColumn>();
 
+	/**
+	 * create an arena board instance
+	 * 
+	 * @param loc
+	 *            the location to hook to
+	 * @param a
+	 *            the arena to save the board to
+	 */
 	public ArenaBoard(Location loc, Arena a) {
 		location = loc;
 		arena = a;
@@ -38,6 +46,9 @@ public class ArenaBoard {
 		construct();
 	}
 
+	/**
+	 * actually construct the arena board, read colums, save signs etc
+	 */
 	private void construct() {
 		Location l = location;
 		int border = 10;
@@ -63,6 +74,13 @@ public class ArenaBoard {
 		}
 	}
 
+	/**
+	 * get the right next board direction from the attachment data
+	 * 
+	 * @param s
+	 *            the sign to check
+	 * @return the blockface of the direction of the next column
+	 */
 	private BlockFace getRightDirection(Sign s) {
 		byte data = s.getRawData();
 
@@ -78,15 +96,19 @@ public class ArenaBoard {
 		return null;
 	}
 
+	/**
+	 * save arena board statistics to each column
+	 */
 	public void update() {
 		db.i("ArenaBoard update()");
 		for (Statistics.type t : Statistics.type.values()) {
-			db.i("checking stat: "+t.name());
+			db.i("checking stat: " + t.name());
 			if (!columns.containsKey(t)) {
 				continue;
 			}
 			db.i("found! reading!");
-			String[] s = Statistics.read(Statistics.getStats(this.arena, sortBy), t);
+			String[] s = Statistics.read(
+					Statistics.getStats(this.arena, sortBy), t);
 			columns.get(t).write(s);
 		}
 	}

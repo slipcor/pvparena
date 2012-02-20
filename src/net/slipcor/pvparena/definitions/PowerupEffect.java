@@ -16,6 +16,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Ends;
+import net.slipcor.pvparena.managers.Players;
 
 /**
  * powerup effect class
@@ -42,14 +43,14 @@ public class PowerupEffect {
 	private List<String> items = new ArrayList<String>();
 	private Debug db = new Debug();
 
-	/*
+	/**
 	 * PowerupEffect classes
 	 */
 	public static enum classes {
 		DMG_CAUSE, DMG_RECEIVE, DMG_REFLECT, FREEZE, HEAL, HEALTH, IGNITE, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT, JUMP;
 	}
 
-	/*
+	/**
 	 * PowerupEffect instant classes (effects that activate when collecting)
 	 */
 	public static enum instants {
@@ -224,7 +225,7 @@ public class PowerupEffect {
 					arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
 									+ player.getName() + ChatColor.YELLOW));
-					arena.pm.parsePlayer(player).losses++;
+					Players.parsePlayer(arena, player).losses++;
 					// needed so player does not get found when dead
 					arena.removePlayer(player, "lose");
 					arena.pm.setTeam(player, "");

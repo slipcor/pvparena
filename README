@@ -1,11 +1,7 @@
-
-
-[ v0.6 ]
-huge rewrite;
-
- v0.6.3 - game mode: death match, spheric regions, 
+ v0.6.3 - game mode: death match, spheric regions, block repair, powerup spawn
  v0.6.2 - leaderboards RELOADED, spawn protection, flag coloring/whitening, inv drops
  v0.6.1 - sign update/check, announcements, death!, arena end timer
+ v0.6.0 - huge rewrite
  ---------------------------------------------
  v0.5.11 - CTF flag bug, command error msg improvement
  v0.5.10 - fight temp perms, custom class drops, spectate fix

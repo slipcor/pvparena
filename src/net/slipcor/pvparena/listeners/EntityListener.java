@@ -12,6 +12,7 @@ import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
+import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
 
@@ -91,8 +92,8 @@ public class EntityListener implements Listener {
 				PVPArena.lang.parse("killed", player.getName()));
 		arena.pm.tellEveryone(PVPArena.lang.parse("killed",
 				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW));
-		
-		arena.pm.parsePlayer(player).losses++;
+
+		Players.parsePlayer(arena, player).losses++;
 		arena.pm.setTeam(player, ""); // needed so player does not
 										// get found when dead
 
@@ -230,12 +231,11 @@ public class EntityListener implements Listener {
 					p.commit(null, defender, event);
 
 			}
-			
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
 				int lives = 3;
-				
+
 				lives = arena.paLives.get(defender.getName());
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
@@ -262,7 +262,7 @@ public class EntityListener implements Listener {
 			Wolf wolf = (Wolf) event.getEntity();
 			if (wolf.getOwner() != null) {
 				try {
-				p1 = (Entity) wolf.getOwner();
+					p1 = (Entity) wolf.getOwner();
 				} catch (Exception e) {
 					// wolf belongs to dead player or whatnot
 				}
@@ -343,17 +343,15 @@ public class EntityListener implements Listener {
 				p.commit(attacker, defender, event);
 
 		}
-		
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
-		
-		
+
 		if (event.getDamage() >= defender.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
-			
+
 			Statistics.kill(arena, attacker, defender);
-			
+
 			lives = arena.paLives.get(defender.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
@@ -401,15 +399,15 @@ public class EntityListener implements Listener {
 		Player player = (Player) p1;
 		if (arena.pm.getTeam(player).equals(""))
 			return;
-		
+
 		Statistics.damage(arena, null, player, event.getDamage());
-		
+
 		// TODO calculate damage and armor
 		// here it comes, process the damage!
 		if (event.getDamage() >= player.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
-			
+
 			Statistics.kill(arena, null, player);
 			if (!arena.cfg.getBoolean("arenatype.flags")) {
 				lives = arena.paLives.get(player.getName());

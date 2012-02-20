@@ -16,14 +16,23 @@ import org.bukkit.entity.Player;
  * 
  */
 
-public class ArenaSign {
+public class ArenaClassSign {
 	Location location;
 
-	public ArenaSign(Location loc) {
+	/**
+	 * create an arena class sign instance
+	 * 
+	 * @param loc
+	 *            the location the sign resides
+	 */
+	public ArenaClassSign(Location loc) {
 		location = loc;
 		this.clear();
 	}
 
+	/**
+	 * clear the sign contents
+	 */
 	public void clear() {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
@@ -36,6 +45,9 @@ public class ArenaSign {
 		}
 	}
 
+	/**
+	 * clear the next sign
+	 */
 	private void clearNext() {
 		try {
 			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
@@ -50,8 +62,18 @@ public class ArenaSign {
 		}
 	}
 
-	public static ArenaSign used(Location loc, HashSet<ArenaSign> paSigns) {
-		for (ArenaSign sign : paSigns) {
+	/**
+	 * check if a location already is reserved by a class sign
+	 * 
+	 * @param loc
+	 *            the location to check
+	 * @param paSigns
+	 *            the set of signs to check against
+	 * @return the sign instance if reserved, null otherwise
+	 */
+	public static ArenaClassSign used(Location loc,
+			HashSet<ArenaClassSign> paSigns) {
+		for (ArenaClassSign sign : paSigns) {
 			if (sign.location.equals(loc)) {
 				return sign;
 			}
@@ -59,10 +81,24 @@ public class ArenaSign {
 		return null;
 	}
 
+	/**
+	 * add a player name to a sign
+	 * 
+	 * @param player
+	 *            the player name to add
+	 * @return true if successful, false otherwise
+	 */
 	public boolean add(Player player) {
 		return setFreeLine(player.getName());
 	}
 
+	/**
+	 * add a player name to the first free line on a sign group
+	 * 
+	 * @param name
+	 *            the name to set
+	 * @return true if successful, false otherwise
+	 */
 	private boolean setFreeLine(String name) {
 		try {
 			Sign s = (Sign) location.getBlock().getState();
@@ -88,12 +124,26 @@ public class ArenaSign {
 		return false;
 	}
 
-	public static void remove(HashSet<ArenaSign> paSigns, Player player) {
-		for (ArenaSign s : paSigns) {
+	/**
+	 * remove a player from all signs he may be on
+	 * 
+	 * @param paSigns
+	 *            the signs to check
+	 * @param player
+	 *            the player to remove
+	 */
+	public static void remove(HashSet<ArenaClassSign> paSigns, Player player) {
+		for (ArenaClassSign s : paSigns) {
 			s.remove(player.getName());
 		}
 	}
 
+	/**
+	 * remove a player name from a string
+	 * 
+	 * @param name
+	 *            the name to remove
+	 */
 	private void remove(String name) {
 		try {
 			Sign s = (Sign) location.getBlock().getState();

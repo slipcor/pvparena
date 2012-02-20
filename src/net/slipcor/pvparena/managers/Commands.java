@@ -79,7 +79,8 @@ public class Commands {
 			return true;
 		}
 		if (Arenas.getArenaByPlayer(player) != null) {
-			if (!arena.pm.existsPlayer(player) || !arena.pm.parsePlayer(player).spectator) {
+			if (!arena.pm.existsPlayer(player)
+					|| !Players.parsePlayer(arena, player).spectator) {
 
 				Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 				return true;
@@ -158,7 +159,8 @@ public class Commands {
 			return true;
 		}
 		if (Arenas.getArenaByPlayer(player) != null) {
-			if (!arena.pm.existsPlayer(player) || !arena.pm.parsePlayer(player).spectator) {
+			if (!arena.pm.existsPlayer(player)
+					|| !Players.parsePlayer(arena, player).spectator) {
 
 				Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
 				return true;
@@ -553,21 +555,26 @@ public class Commands {
 						+ "," + realMin.getBlockZ() + "," + realMax.getBlockX()
 						+ "," + realMax.getBlockY() + "," + realMax.getBlockZ();
 
-				boolean cuboid = (args.length == 2);
-				
-				if (!cuboid) {
-					// not clear yet, last way to get cuboid: "cuboid"
-					cuboid = args[2].equals("cuboid");
-					
-					s += ",sphere";
+				ArenaRegion.regionType type;
+
+				if (args.length == 2) {
+					type = ArenaRegion.regionType.CUBOID;
+				} else {
+
+					if (args[2].startsWith("c")) {
+						type = ArenaRegion.regionType.CUBOID;
+					} else if (args[2].startsWith("s")) {
+						type = ArenaRegion.regionType.SPHERIC;
+					} else {
+						type = ArenaRegion.regionType.CUBOID;
+					}
 				}
-				
-				
+
 				// only cuboid if args = 2 | args[2] = cuboid
-				
+
 				arena.cfg.set("regions." + args[1], s);
 				arena.regions.put(args[1], new ArenaRegion(args[1], arena.pos1,
-						arena.pos2, cuboid));
+						arena.pos2, type));
 				arena.pos1 = null;
 				arena.pos2 = null;
 				arena.cfg.save();
@@ -649,7 +656,7 @@ public class Commands {
 	 * check if a given string is a valid region command
 	 * 
 	 * @param arena
-	 *            TODO
+	 *            the arena to check
 	 * @param s
 	 *            the string to check
 	 * @return true if the command is valid, false otherwise
@@ -713,6 +720,12 @@ public class Commands {
 
 			Spawns.setCoords(arena, player, cmd);
 			Arenas.tellPlayer(player, PVPArena.lang.parse("setspawn", sName));
+			return true;
+		}
+		
+		if (cmd.startsWith("powerup")) {
+			Spawns.setCoords(arena, player, cmd);
+			Arenas.tellPlayer(player, PVPArena.lang.parse("setspawn", cmd));
 			return true;
 		}
 		return false;

@@ -30,13 +30,13 @@ public class Flags {
 
 	// protected static: Debug manager (same for all child Arenas)
 	public static final Debug db = new Debug();
-	
+
 	/**
 	 * [FLAG] take away one life of a team
 	 * 
 	 * @param team
 	 *            the team name to take away
-	 * @return 
+	 * @return
 	 */
 	public static boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
 		if (arena.paLives.get(team) != null) {
@@ -119,20 +119,19 @@ public class Flags {
 			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
 
 				db.i("player is at his " + type);
-				
-				
+
 				if (arena.paTeamFlags.containsKey(sTeam)) {
-					db.i("the "+ type + " of the own team is taken!");
-					
+					db.i("the " + type + " of the own team is taken!");
+
 					if (arena.cfg.getBoolean("game.mustbesafe")) {
 						db.i("cancelling");
-						
-						Arenas.tellPlayer(player, PVPArena.lang.parse(type+"notsafe"));
+
+						Arenas.tellPlayer(player,
+								PVPArena.lang.parse(type + "notsafe"));
 						return;
 					}
 				}
-				
-				
+
 				String flagTeam = getHeldFlagTeam(arena, player.getName());
 
 				db.i("the " + type + " belongs to team " + flagTeam);
@@ -141,15 +140,16 @@ public class Flags {
 						.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
 				String scPlayer = ChatColor.valueOf(arena.paTeams.get(sTeam))
 						+ player.getName() + ChatColor.YELLOW;
-				
+
 				try {
-				
-				arena.pm.tellEveryone(PVPArena.lang.parse(type + "homeleft",
-						scPlayer, scFlagTeam,
-						String.valueOf(arena.paLives.get(flagTeam) - 1)));
-				arena.paTeamFlags.remove(flagTeam);
+
+					arena.pm.tellEveryone(PVPArena.lang.parse(
+							type + "homeleft", scPlayer, scFlagTeam,
+							String.valueOf(arena.paLives.get(flagTeam) - 1)));
+					arena.paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
-					Bukkit.getLogger().severe("[PVP Arena] team unknown/no lives: "+flagTeam);
+					Bukkit.getLogger().severe(
+							"[PVP Arena] team unknown/no lives: " + flagTeam);
 				}
 				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
@@ -203,6 +203,18 @@ public class Flags {
 		}
 	}
 
+	/**
+	 * take/reset an arena flag
+	 * 
+	 * @param flagColor
+	 *            the teamcolor to reset
+	 * @param take
+	 *            true if take, else reset
+	 * @param pumpkin
+	 *            true if pumpkin, false otherwise
+	 * @param lBlock
+	 *            the location to take/reset
+	 */
 	private static void takeFlag(String flagColor, boolean take,
 			boolean pumpkin, Location lBlock) {
 		if (pumpkin) {
@@ -218,8 +230,15 @@ public class Flags {
 		}
 	}
 
-	/*
-	 * set the pumpkin to the selected block
+	/**
+	 * set the flag/pumpkin to the selected block
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player doing the selection
+	 * @param block
+	 *            the block being selected
 	 */
 	public static void setFlag(Arena arena, Player player, Block block) {
 		if (block == null) {
@@ -243,7 +262,7 @@ public class Flags {
 		String sName = Arena.regionmodify.replace(arena.name + ":", "");
 
 		Spawns.setCoords(arena, block.getLocation(), sName + type);
-		
+
 		Arenas.tellPlayer(player, PVPArena.lang.parse("set" + type, sName));
 
 		Arena.regionmodify = "";
@@ -282,7 +301,7 @@ public class Flags {
 
 			takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 					Spawns.getCoords(arena, flagTeam + type));
-			
+
 		}
 	}
 

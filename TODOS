@@ -1,7 +1,6 @@
 ADDITIONS
 [[ MAP support: player location, flag / spawn location ]]
 -[ "[player] killed" + " by [player/cause]"]
--[Arena regeneration.]
 -[Potion effects for powerups]
 
 FIXES
@@ -9,7 +8,6 @@ FIXES
 -[ punish spawn camping ]
 
 CODING
--API
 -stats integration ( command wise )
 
 KNOWN ISSUES:

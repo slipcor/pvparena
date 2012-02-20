@@ -138,8 +138,10 @@ public class Configs {
 
 		config.addDefault("arenatype.teams",
 				Boolean.valueOf(!type.equals("free")));
-		config.addDefault("arenatype.flags",
-				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")  || type.equals("dom")));
+		config.addDefault(
+				"arenatype.flags",
+				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")
+						|| type.equals("dom")));
 		config.addDefault("arenatype.pumpkin",
 				Boolean.valueOf(type.equals("pumpkin")));
 		config.addDefault("arenatype.deathmatch",
@@ -217,7 +219,7 @@ public class Configs {
 			}
 
 			arena.pum = new Powerups(powerups);
-			
+
 		}
 		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
@@ -282,7 +284,9 @@ public class Configs {
 			db.i("spawns exist");
 			if (config.get("spawns.leaderboard") != null) {
 				db.i("leaderboard exists");
-				Location loc = Config.parseLocation(Bukkit.getWorld(arena.getWorld()), config.getString("spawns.leaderboard"));
+				Location loc = Config.parseLocation(
+						Bukkit.getWorld(arena.getWorld()),
+						config.getString("spawns.leaderboard"));
 
 				Arenas.boards.put(loc, new ArenaBoard(loc, arena));
 			}
@@ -330,15 +334,15 @@ public class Configs {
 		String coords = config.getString("regions." + string);
 		World world = Bukkit.getWorld(arena.getWorld());
 		Location[] l = Config.parseShere(world, coords);
-		
-		boolean cuboid = false;
-		
+
+		ArenaRegion.regionType type = ArenaRegion.regionType.SPHERIC;
+
 		if (l == null) {
 			l = Config.parseCuboid(world, coords);
-			cuboid = true;
+			type = ArenaRegion.regionType.CUBOID;
 		}
 
-		return new ArenaRegion(string, l[0], l[1], cuboid);
+		return new ArenaRegion(string, l[0], l[1], type);
 	}
 
 	/**
@@ -367,7 +371,7 @@ public class Configs {
 
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			String type = arena.getType();
-			
+
 			if (type.equals("dom")) {
 				boolean contains = false;
 				for (String s : list) {
@@ -380,7 +384,7 @@ public class Configs {
 					return "flags not set";
 				}
 			} else {
-			
+
 				type = type.equals("pumpkin") ? type : "flag";
 				for (String team : arena.paTeams.keySet()) {
 					if (!list.contains(team + type)) {

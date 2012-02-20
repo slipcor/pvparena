@@ -26,19 +26,34 @@ public class Tracker implements Runnable {
 	private static Plugin plugin;
 	private static int taskID = -1;
 
+	/**
+	 * construct a tracker instance
+	 * 
+	 * @param p
+	 *            the main plugin instance
+	 */
 	public Tracker(Plugin p) {
 		plugin = p;
 	}
 
+	/**
+	 * start tracking
+	 */
 	public void start() {
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
 				0L, 72000L);
 	}
 
+	/**
+	 * stop tracking
+	 */
 	public static void stop() {
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 
+	/**
+	 * call home to save the server/plugin state
+	 */
 	private void callHome() {
 		if (!plugin.getConfig().getBoolean("stats", true)) {
 			return;

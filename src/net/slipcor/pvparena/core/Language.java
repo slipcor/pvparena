@@ -29,9 +29,9 @@ public class Language {
 	 * create a language manager instance
 	 */
 	public Language(String s) {
-		s = s.equals("en")?"":"_"+s;
+		s = s.equals("en") ? "" : "_" + s;
 		new File("plugins/pvparena").mkdir();
-		File configFile = new File("plugins/pvparena/lang"+s+".yml");
+		File configFile = new File("plugins/pvparena/lang" + s + ".yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
@@ -200,14 +200,15 @@ public class Language {
 
 		config.addDefault("lang.createleaderboard", "create a leaderboard");
 		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
-		
-		config.addDefault("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'");
-		config.addDefault("lang.pumpkinnotsafe", "Your pumpkin is taken! Cannot bring back an enemy pumpkin!'");
 
+		config.addDefault("lang.flagnotsafe",
+				"Your flag is taken! Cannot bring back an enemy flag!'");
+		config.addDefault("lang.pumpkinnotsafe",
+				"Your pumpkin is taken! Cannot bring back an enemy pumpkin!'");
 
 		config.addDefault("lang.frag",
 				"%1% killed another player! Total frags: %2%.");
-		
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

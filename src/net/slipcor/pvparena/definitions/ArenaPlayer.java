@@ -108,6 +108,9 @@ public class ArenaPlayer {
 		return respawn;
 	}
 
+	/**
+	 * save and destroy a player instance
+	 */
 	public void destroy() {
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
