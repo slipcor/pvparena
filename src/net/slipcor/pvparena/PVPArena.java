@@ -44,7 +44,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PVPArena extends JavaPlugin {
 
-	public static final Language lang = new Language();
+	public static Language lang;
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
 	public static PVPArena instance = null;
@@ -60,6 +60,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		lang = new Language(getConfig().getString("language", "en"));
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
@@ -69,6 +70,7 @@ public class PVPArena extends JavaPlugin {
 		whiteList.add("ungod");
 
 		getConfig().addDefault("debug", Boolean.valueOf(false));
+		getConfig().addDefault("language", "en");
 		getConfig().addDefault("whitelist", whiteList);
 		getConfig().options().copyDefaults(true);
 		saveConfig();

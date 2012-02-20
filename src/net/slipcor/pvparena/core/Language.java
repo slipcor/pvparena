@@ -28,9 +28,10 @@ public class Language {
 	/**
 	 * create a language manager instance
 	 */
-	public Language() {
+	public Language(String s) {
+		s = s.equals("en")?"":"_"+s;
 		new File("plugins/pvparena").mkdir();
-		File configFile = new File("plugins/pvparena/lang.yml");
+		File configFile = new File("plugins/pvparena/lang"+s+".yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
@@ -50,11 +51,9 @@ public class Language {
 			e1.printStackTrace();
 		}
 
-		config.addDefault("log.filecreateerror", "Error creating %1% file.");
-		config.addDefault("log.teamnotfound", "Unrecognized team: %1%");
 		config.addDefault("log.matnotfound", "Unrecognized material: %1%");
-		config.addDefault("log.iconomyon", "<3 iConomy");
-		config.addDefault("log.iconomyoff", "</3 iConomy");
+		config.addDefault("log.iconomyon", "<3 eConomy");
+		config.addDefault("log.iconomyoff", "</3 eConomy");
 		config.addDefault("log.enabled", "enabled (version %1%)");
 		config.addDefault("log.disabled", "disabled (version %1%)");
 		config.addDefault("log.noperms",
@@ -69,8 +68,6 @@ public class Language {
 		config.addDefault("lang.pos2", "Second position set.");
 		config.addDefault("lang.classperms",
 				"You don't have permission for that class.");
-		config.addDefault("lang.toomanyplayers",
-				"There are too many of this class, pick another class.");
 		config.addDefault("lang.waitequal",
 				"Waiting for the teams to have equal player number!");
 		config.addDefault("lang.ready", "%1% team is ready!");
@@ -86,10 +83,6 @@ public class Language {
 				"All waypoints must be set up first. %1%");
 		config.addDefault("lang.permjoin",
 				"You don't have permission to join the arena!");
-		config.addDefault("lang.selectteam",
-				"You must select a team to join! /pa [arenaname] [team]");
-		config.addDefault("lang.notselectteam",
-				"You cannot select a team to join! /pa [arenaname]");
 		config.addDefault("lang.alreadyjoined", "You already joined!");
 		config.addDefault("lang.fightinprogress",
 				"A fight is already in progress!");
@@ -109,10 +102,6 @@ public class Language {
 		config.addDefault(
 				"lang.specwelcome",
 				"Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
-		config.addDefault("lang.top5win", "Top 5 winners");
-		config.addDefault("lang.top5lose", "Top 5 losers");
-		config.addDefault("lang.wins", "wins");
-		config.addDefault("lang.losses", "losses");
 		config.addDefault("lang.setspectator", "Spectator spawn set.");
 		config.addDefault("lang.setexit", "Exit spawn set.");
 		config.addDefault("lang.forcestop",
@@ -128,9 +117,6 @@ public class Language {
 		config.addDefault("lang.invalidamount", "Invalid amount: %1%");
 		config.addDefault("lang.betplaced", "Your bet on %1% has been placed.");
 		config.addDefault("lang.regionset", "Setting region enabled.");
-		config.addDefault("lang.regionmodify", "Modifying region enabled.");
-		config.addDefault("lang.noregionset", "You must setup a region first.");
-		config.addDefault("lang.set2points", "You must set two points first.");
 		config.addDefault("lang.regionsaved", "Region saved.");
 		config.addDefault("lang.regionremoved", "Region removed.");
 		config.addDefault("lang.regionnotremoved", "There is no region setup.");
@@ -169,8 +155,6 @@ public class Language {
 		config.addDefault("lang.serverpowerup", "Powerup %1% deployed!");
 		config.addDefault("lang.flaggrab",
 				"Player %1% grabbed the flag of team %2%!");
-		config.addDefault("lang.flaghome",
-				"Player %1% brought home the flag of team %2%!");
 		config.addDefault("lang.flaghomeleft",
 				"Player %1% brought home the flag of team %2%! Lives left: %3%");
 		config.addDefault("lang.flagsave",
@@ -201,7 +185,7 @@ public class Language {
 		config.addDefault("lang.notready5",
 				"At least one player has not chosen a class!");
 
-		config.addDefault("lang.teamfull", "%1% is full!");
+		config.addDefault("lang.teamfull", "team %1% is full!");
 		config.addDefault("lang.arenafull", "arena is full!");
 		config.addDefault("lang.classfull", "class is full!");
 

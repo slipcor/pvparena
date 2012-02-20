@@ -5,6 +5,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Spawns;
 
 import org.bukkit.event.EventHandler;
@@ -41,8 +42,12 @@ public class BlockListener implements Listener {
 
 		db.i("block break inside the arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockplace", true))))
+				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
+			if (arena.fightInProgress) {
+				Blocks.saveBlock(event.getBlock());
+			}
 			return; // we don't need protection => OUT!
+		}
 		if (arena.pm.getPlayers().size() < 1)
 			return; // no players, no game, no protection!
 
@@ -99,14 +104,21 @@ public class BlockListener implements Listener {
 
 		db.i("block place inside the arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockplace", true))))
+				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
+			if (arena.fightInProgress) {
+				Blocks.saveBlock(event.getBlock(),event.getBlockReplacedState().getType());
+			}
 			// if not an event happend that we would like to block => OUT
 			return;
+		}
 
 		if (!arena.cfg.getBoolean("protection.tnt", true)
-				&& event.getBlock().getTypeId() == 46)
+				&& event.getBlock().getTypeId() == 46) {
+			if (arena.fightInProgress) {
+				Blocks.saveBlock(event.getBlock(),event.getBlockReplacedState().getType());
+			}
 			return; // we do not block TNT, so just return if it is TNT
-
+		}
 		event.setCancelled(true);
 		return;
 	}

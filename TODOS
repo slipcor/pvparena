@@ -1,8 +1,6 @@
 ADDITIONS
 [[ MAP support: player location, flag / spawn location ]]
 -[ "[player] killed" + " by [player/cause]"]
--domination mode (battlefield-style)
--Game type: King of the hill (possibly a person punches a white wool block and it becomes their colour type thing)
 -[Arena regeneration.]
 -[Potion effects for powerups]
 

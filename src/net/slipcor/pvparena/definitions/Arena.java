@@ -12,6 +12,7 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Flags;
@@ -683,6 +684,8 @@ public class Arena {
 		if (BOARD_ID > -1)
 			Bukkit.getScheduler().cancelTask(BOARD_ID);
 		BOARD_ID = -1;
+
+		Blocks.resetBlocks(this);
 		
 		if (paRuns == null || paRuns.size() < 1) {
 			return;

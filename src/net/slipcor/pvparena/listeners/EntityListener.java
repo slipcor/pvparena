@@ -8,6 +8,7 @@ import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
@@ -17,6 +18,7 @@ import net.slipcor.pvparena.managers.Statistics;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -479,8 +481,14 @@ public class EntityListener implements Listener {
 		db.i("explosion inside an arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
-				|| (!(event.getEntity() instanceof TNTPrimed)))
+				|| (!(event.getEntity() instanceof TNTPrimed))) {
+			if (arena.fightInProgress) {
+				for (Block b : event.blockList()) {
+					Blocks.saveBlock(b);
+				}
+			}
 			return;
+		}
 
 		event.setCancelled(true); // ELSE => cancel event
 	}
