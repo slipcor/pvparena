@@ -2,6 +2,7 @@ package net.slipcor.pvparena.definitions;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.potion.PotionEffect;
 
 /**
  * player class
@@ -48,6 +50,7 @@ public class ArenaPlayer {
 	public float saturation;
 	public Location location;
 	public String displayname;
+	public Collection<PotionEffect> potionEffects;
 	public boolean spectator = false;
 
 	public int losses = 0;

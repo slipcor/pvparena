@@ -38,6 +38,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
 /**
@@ -270,6 +271,7 @@ public class Arena {
 		p.saturation = player.getSaturation();
 		p.location = player.getLocation();
 		p.gamemode = player.getGameMode().getValue();
+		p.potionEffects = player.getActivePotionEffects();
 
 		if (cfg.getBoolean("messages.colorNick", true)) {
 			p.displayname = player.getDisplayName();
@@ -291,6 +293,10 @@ public class Arena {
 		player.setSaturation(cfg.getInt("start.saturation", 20));
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
 		player.setGameMode(GameMode.getByValue(0));
+		for (PotionEffect pe : player.getActivePotionEffects()) {
+			player.removePotionEffect(pe.getType());
+		}
+		
 	}
 
 	/**
@@ -429,7 +435,7 @@ public class Arena {
 
 		removePermissions(player);
 		ArenaPlayer ap = Players.parsePlayer(this, player);
-		player.setFireTicks(ap.fireticks);
+		player.setFireTicks(ap.fireticks>0?ap.fireticks:1);
 		player.setFoodLevel(ap.foodlevel);
 		player.setHealth(ap.health);
 		player.setSaturation(ap.saturation);
@@ -437,6 +443,13 @@ public class Arena {
 		if (cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(ap.displayname);
 		}
+
+		for (PotionEffect pe : player.getActivePotionEffects()) {
+			player.removePotionEffect(pe.getType());
+		}
+
+		player.addPotionEffects(ap.potionEffects);
+		
 		pm.setTelePass(player, true);
 		db.i("string = " + string);
 		if (string.equalsIgnoreCase("old")) {
