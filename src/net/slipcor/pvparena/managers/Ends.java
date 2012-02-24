@@ -196,7 +196,13 @@ public class Ends {
 					continue;
 
 				if (nSplit[1].equalsIgnoreCase(team)) {
-					double amount = arena.pm.paPlayersBetAmount.get(nKey) * 2;
+					double teamFactor = arena.cfg.getDouble("money.betTeamWinFactor") * arena.teamCount;
+					if (teamFactor <= 0) {
+						teamFactor = 1;
+					}
+					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
+							
+					double amount = arena.pm.paPlayersBetAmount.get(nKey) * teamFactor;
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {
@@ -282,7 +288,13 @@ public class Ends {
 					continue;
 
 				if (result.contains(nSplit[1])) {
-					double amount = arena.pm.paPlayersBetAmount.get(nKey) * 2;
+					double teamFactor = arena.cfg.getDouble("money.betTeamWinFactor") * arena.teamCount;
+					if (teamFactor <= 0) {
+						teamFactor = 1;
+					}
+					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
+							
+					double amount = arena.pm.paPlayersBetAmount.get(nKey) * teamFactor;
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {

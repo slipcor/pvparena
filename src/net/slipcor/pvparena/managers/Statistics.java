@@ -168,7 +168,7 @@ public class Statistics {
 	 * @return an Array of String
 	 */
 	public static String[] read(ArenaPlayer[] players, type t) {
-		String[] result = new String[players.length];
+		String[] result = new String[players.length<8?8:players.length];
 		int i = 0;
 		for (ArenaPlayer p : players) {
 			if (t.equals(type.MAXDAMAGE)) {
@@ -190,6 +190,9 @@ public class Statistics {
 			} else {
 				result[i++] = p.get().getName();
 			}
+		}
+		while (i < 8) {
+			result[i++] = "";
 		}
 		return result;
 	}

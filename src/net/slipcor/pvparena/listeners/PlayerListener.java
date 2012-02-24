@@ -11,7 +11,6 @@ import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
-import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
@@ -19,7 +18,6 @@ import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Dominate;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
-import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
@@ -81,7 +79,7 @@ public class PlayerListener implements Listener {
 		}
 		String sTeam = arena.pm.getTeam(player);
 		arena.pm.tellTeam(sTeam, event.getMessage(),
-				ChatColor.valueOf(arena.paTeams.get(sTeam)));
+				ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
 		event.setCancelled(true);
 	}
 
@@ -239,47 +237,7 @@ public class PlayerListener implements Listener {
 						.getLine(0).equalsIgnoreCase("custom")))
 						&& (!arena.pm.getTeam(player).equals(""))) {
 
-					db.i("legit class: " + sign.getLine(0));
-
-					boolean classperms = false;
-					if (arena.cfg.get("general.classperms") != null) {
-						classperms = arena.cfg.getBoolean("general.classperms",
-								false);
-					}
-
-					if (classperms) {
-						db.i("checking classperms");
-						if (!(PVPArena.hasPerms(player, "pvparena.class."
-								+ sign.getLine(0)))) {
-							Arenas.tellPlayer(player,
-									PVPArena.lang.parse("classperms"));
-							return; // class permission desired and failed =>
-									// announce and OUT
-						}
-					}
-
-					if (arena.cfg.getBoolean("general.signs")) {
-						ArenaClassSign.remove(arena.paSigns, player);
-						ArenaClassSign as = ArenaClassSign.used(
-								block.getLocation(), arena.paSigns);
-						if (as == null) {
-							as = new ArenaClassSign(block.getLocation());
-						}
-						arena.paSigns.add(as);
-						if (!as.add(player)) {
-							Arenas.tellPlayer(player,
-									PVPArena.lang.parse("classfull"));
-							return;
-						}
-					}
-					Inventories.clearInventory(player);
-					arena.pm.setClass(player, sign.getLine(0));
-					if (sign.getLine(0).equalsIgnoreCase("custom")) {
-						// if custom, give stuff back
-						Inventories.loadInventory(arena, player);
-					} else {
-						Inventories.givePlayerFightItems(arena, player);
-					}
+					Players.chooseClass(arena, player, sign, sign.getLine(0));
 				}
 				return;
 			}

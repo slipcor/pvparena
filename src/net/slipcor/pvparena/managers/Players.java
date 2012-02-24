@@ -6,10 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 /**
@@ -298,8 +302,9 @@ public class Players {
 	 *            the team to send to
 	 * @param msg
 	 *            the message to send
+	 * @param player 
 	 */
-	public void tellTeam(String team, String msg, ChatColor c) {
+	public void tellTeam(String team, String msg, ChatColor c, Player player) {
 		if (team.equals("")) {
 			return;
 		}
@@ -307,7 +312,7 @@ public class Players {
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals(team))
 				continue;
-			p.get().sendMessage(c + "[" + team + "] " + ChatColor.WHITE + msg);
+			p.get().sendMessage(c + "[" + team + "] " + player.getName() + ChatColor.WHITE + ": " + msg);
 		}
 	}
 
@@ -465,5 +470,48 @@ public class Players {
 	 */
 	public static ArenaPlayer parsePlayer(Arena arena, Player player) {
 		return arena.pm.players.get(player.getName());
+	}
+
+	public static void chooseClass(Arena arena, Player player, Sign sign, String className) {
+		
+		boolean classperms = false;
+		if (arena.cfg.get("general.classperms") != null) {
+			classperms = arena.cfg.getBoolean("general.classperms",
+					false);
+		}
+
+		if (classperms) {
+			if (!(PVPArena.hasPerms(player, "pvparena.class."
+					+ sign.getLine(0)))) {
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("classperms"));
+				return; // class permission desired and failed =>
+						// announce and OUT
+			}
+		}
+
+		if (sign != null && arena.cfg.getBoolean("general.signs")) {
+			ArenaClassSign.remove(arena.paSigns, player);
+			Block block = sign.getBlock();
+			ArenaClassSign as = ArenaClassSign.used(
+					block.getLocation(), arena.paSigns);
+			if (as == null) {
+				as = new ArenaClassSign(block.getLocation());
+			}
+			arena.paSigns.add(as);
+			if (!as.add(player)) {
+				Arenas.tellPlayer(player,
+						PVPArena.lang.parse("classfull"));
+				return;
+			}
+		}
+		Inventories.clearInventory(player);
+		arena.pm.setClass(player, className);
+		if (className.equalsIgnoreCase("custom")) {
+			// if custom, give stuff back
+			Inventories.loadInventory(arena, player);
+		} else {
+			Inventories.givePlayerFightItems(arena, player);
+		}
 	}
 }

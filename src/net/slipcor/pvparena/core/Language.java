@@ -208,6 +208,8 @@ public class Language {
 
 		config.addDefault("lang.frag",
 				"%1% killed another player! Total frags: %2%.");
+		config.addDefault("log.nospout",
+				"Spout not found, you are missing some features ;)");
 
 		config.options().copyDefaults(true);
 		try {

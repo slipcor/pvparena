@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 /**
@@ -153,10 +154,11 @@ public class Flags {
 				}
 				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
-
-				player.getInventory().setHelmet(
-						arena.paHeadGears.get(player.getName()).clone());
-				arena.paHeadGears.remove(player.getName());
+				if (arena.cfg.getBoolean("game.woolFlagHead")) {
+					player.getInventory().setHelmet(
+							arena.paHeadGears.get(player.getName()).clone());
+					arena.paHeadGears.remove(player.getName());
+				}
 
 				reduceLivesCheckEndAndCommit(arena, flagTeam);
 			}
@@ -187,12 +189,17 @@ public class Flags {
 							+ ChatColor.YELLOW;
 					arena.pm.tellEveryone(PVPArena.lang.parse(type + "grab",
 							scPlayer, scTeam));
-
-					arena.paHeadGears.put(player.getName(), player
-							.getInventory().getHelmet().clone());
-					player.getInventory().setHelmet(
-							block.getState().getData().toItemStack().clone());
-
+					
+					if (arena.cfg.getBoolean("game.woolFlagHead")) {
+					
+						arena.paHeadGears.put(player.getName(), player
+								.getInventory().getHelmet().clone());
+						ItemStack is = block.getState().getData().toItemStack().clone();
+						is.setDurability(getFlagOverrideTeamShort(arena, team));
+						player.getInventory().setHelmet(is);
+					
+					}
+					
 					takeFlag(arena.paTeams.get(team), true, pumpkin,
 							block.getLocation());
 
@@ -201,6 +208,20 @@ public class Flags {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * get the durability short from a team name
+	 * @param arena the arena to check
+ 	 * @param team the team to read
+	 * @return the wool color short of the override
+	 */
+	private static short getFlagOverrideTeamShort(Arena arena, String team) {
+		if (arena.cfg.get("flagColors."+team) == null) {
+			
+			return StringParser.getColorDataFromENUM(arena.paTeams.get(team));
+		}
+		return StringParser.getColorDataFromENUM(arena.cfg.getString("flagColors."+team));
 	}
 
 	/**

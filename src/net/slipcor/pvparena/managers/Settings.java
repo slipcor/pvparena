@@ -39,6 +39,7 @@ public class Settings {
 
 		types.put("setup.wand", "int");
 
+		types.put("game.allowDrops", "boolean");
 		types.put("game.dropSpawn", "boolean");
 		types.put("game.lives", "int");
 		types.put("game.mustbesafe", "boolean");
@@ -47,6 +48,7 @@ public class Settings {
 		types.put("game.refillInventory", "boolean");
 		types.put("game.teamKill", "boolean");
 		types.put("game.woolHead", "boolean");
+		types.put("game.woolFlagHead", "boolean");
 		types.put("game.colorNick", "boolean");
 		types.put("game.weaponDamage", "boolean");
 
@@ -82,6 +84,15 @@ public class Settings {
 		types.put("money.reward", "int");
 		types.put("money.minbet", "double");
 		types.put("money.maxbet", "double");
+		types.put("money.betWinFactor", "double");
+		types.put("money.betTeamWinFactor", "double");
+		types.put("money.betPlayerWinFactor", "double");
+		/**
+		 * 
+-config: betWinFactor [2]
+-config: betTeamWinFactor [1] 
+-config: betPlayerWinFactor [2]
+		 */
 
 		types.put("protection.spawn", "int");
 		types.put("protection.enabled", "boolean");
@@ -99,6 +110,7 @@ public class Settings {
 		types.put("start.foodLevel", "int");
 		types.put("start.saturation", "int");
 		types.put("start.exhaustion", "double");
+		types.put("start.autoclass", "double");
 
 		types.put("ready.block", "item");
 		types.put("ready.checkEach", "boolean");
@@ -106,6 +118,8 @@ public class Settings {
 		types.put("ready.max", "int");
 		types.put("ready.minTeam", "int");
 		types.put("ready.maxTeam", "int");
+		types.put("ready.autoclass", "string");
+
 
 		types.put("announcements.join", "boolean");
 		types.put("announcements.start", "boolean");

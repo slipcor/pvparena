@@ -14,6 +14,7 @@ import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.listeners.BlockListener;
+import net.slipcor.pvparena.listeners.CustomListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.listeners.ServerListener;
@@ -28,6 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.getspout.spoutapi.SpoutManager;
 
 /**
  * main class
@@ -52,7 +54,10 @@ public class PVPArena extends JavaPlugin {
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
+	private final CustomListener customListener = new CustomListener();
 	private final Debug debug = new Debug();
+
+	public String spoutHandler = null;
 
 	/**
 	 * plugin enabling method - register events and load the configs
@@ -60,11 +65,21 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+
+		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+			spoutHandler = SpoutManager.getInstance().toString();
+		} else {
+			lang.log_info("nospout");
+		}
+		
 		lang = new Language(getConfig().getString("language", "en"));
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
+		if (spoutHandler != null) {
+			getServer().getPluginManager().registerEvents(customListener , this);
+		}
 
 		List<String> whiteList = new ArrayList<String>();
 		whiteList.add("ungod");

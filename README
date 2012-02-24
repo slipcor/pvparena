@@ -1,3 +1,15 @@
+.26 =>
+- config: betWinFactor [2]
+- config: betTeamWinFactor [1] 
+- config: betPlayerWinFactor [2]
+- config: allowDrops [true]
+- config: flagColors: set flag (head) colors
+- config: woolFlagHead: change/set woolhead on flag grabbing
+- config: autoclass: [classname]
+- team chat: add player name
+- [Spout] wool lock (inv change cancel)
+- [Spout] color name over head
+
  v0.6.3 - game mode: death match, spheric regions, block repair, powerup spawn
  v0.6.2 - leaderboards RELOADED, spawn protection, flag coloring/whitening, inv drops
  v0.6.1 - sign update/check, announcements, death!, arena end timer

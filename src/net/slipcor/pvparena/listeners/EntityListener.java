@@ -17,7 +17,6 @@ import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -35,7 +34,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * entity listener class
@@ -64,8 +62,8 @@ public class EntityListener implements Listener {
 				return;
 
 			db.i("onEntityDeath: fighting player");
-			if (!arena.pm.getTeam(player).equals("")) {
-				if (!arena.isCustomClassActive()) {
+			if (!Players.parsePlayer(arena, player).spectator) {
+				if (!arena.isCustomClassActive() || !arena.cfg.getBoolean("game.allowDrops")) {
 					event.getDrops().clear();
 				}
 
@@ -97,18 +95,10 @@ public class EntityListener implements Listener {
 		arena.pm.setTeam(player, ""); // needed so player does not
 										// get found when dead
 
-		if (arena.isCustomClassActive()) {
-			Location loc = player.getLocation();
-			for (ItemStack is : player.getInventory().getArmorContents()) {
-				loc.getWorld().dropItemNaturally(loc, is);
-			}
-			for (ItemStack is : player.getInventory().getContents()) {
-				loc.getWorld().dropItemNaturally(loc, is);
-			}
-			player.getInventory().clear();
-		} else {
+		if (arena.isCustomClassActive() && arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
 		}
+		player.getInventory().clear();
 
 		arena.tpPlayerToCoordName(player, "spectator");
 

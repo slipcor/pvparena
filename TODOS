@@ -1,11 +1,26 @@
+[[ later ]]
+-[ soon ]
+- next version
+
+
+
 ADDITIONS
+[[ RUSH mode - base defend VS conquer base ]]
 [[ MAP support: player location, flag / spawn location ]]
+[[ multiple flags for CTF? ]]
+[[ enchantments ]]
+[[ CHEST powerup placement ]]
+[[ chest / dispenser refill ]]
+[[ join: /pa {name} [amount] - win amount : winFactor ]]
+-[ custom join region ]
 -[ "[player] killed" + " by [player/cause]"]
+-[ arena chat ]
 -[Potion effects for powerups]
 
 FIXES
 -[ lose 2 lives (temp godmode between teleporting)]
 -[ punish spawn camping ]
+-add speaking DOM arena ^^
 
 CODING
 -stats integration ( command wise )

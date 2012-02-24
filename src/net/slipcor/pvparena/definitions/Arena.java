@@ -40,6 +40,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
+import org.getspout.spoutapi.SpoutManager;
 
 /**
  * arena class
@@ -109,6 +110,9 @@ public class Arena {
 
 	public boolean betPossible;
 
+	private int playerCount = 0;
+	public int teamCount = 0;
+
 	/**
 	 * arena constructor
 	 * 
@@ -147,6 +151,7 @@ public class Arena {
 				tpPlayerToCoordName(z, "spawn");
 			}
 			setPermissions(z);
+			playerCount++;
 		}
 
 		if (cfg.getBoolean("arenatype.flags")
@@ -182,7 +187,7 @@ public class Arena {
 								powerupDiff);
 			}
 		}
-
+		teamCount = countActiveTeams();
 	}
 
 	/**
@@ -296,7 +301,7 @@ public class Arena {
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
 		}
-		
+
 	}
 
 	/**
@@ -344,6 +349,15 @@ public class Arena {
 								.toString(
 										ChatColor.valueOf(paTeams.get(color))
 												.ordinal(), 16).toLowerCase();
+			}
+			// process auto classing
+			String autoClass = cfg.getString("ready.autoclass");
+			if (autoClass != null && !autoClass.equals("none")) {
+				if (paClassItems.containsKey(autoClass)) {
+					Players.chooseClass(this, player, null, autoClass);
+				} else {
+					db.w("autoclass selected that does not exist: "+autoClass);
+				}
 			}
 		}
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
@@ -435,7 +449,7 @@ public class Arena {
 
 		removePermissions(player);
 		ArenaPlayer ap = Players.parsePlayer(this, player);
-		player.setFireTicks(ap.fireticks>0?ap.fireticks:1);
+		player.setFireTicks(ap.fireticks > 0 ? ap.fireticks : 1);
 		player.setFoodLevel(ap.foodlevel);
 		player.setHealth(ap.health);
 		player.setSaturation(ap.saturation);
@@ -449,7 +463,7 @@ public class Arena {
 		}
 
 		player.addPotionEffects(ap.potionEffects);
-		
+
 		pm.setTelePass(player, true);
 		db.i("string = " + string);
 		if (string.equalsIgnoreCase("old")) {
@@ -607,12 +621,19 @@ public class Arena {
 	public void colorizePlayer(Player player, String color) {
 		if (color.equals("")) {
 			player.setDisplayName(player.getName());
+			
+			if (PVPArena.instance.spoutHandler != null)
+				SpoutManager.getAppearanceManager().setGlobalTitle(player,
+				player.getName());
+			
 			return;
 		}
 
 		String n = color + player.getName();
-
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
+		if (PVPArena.instance.spoutHandler != null)
+			SpoutManager.getAppearanceManager().setGlobalTitle(player,
+			n.replaceAll("(&([a-f0-9]))", "§$2"));
 	}
 
 	/**
@@ -627,8 +648,17 @@ public class Arena {
 				String[] nSplit = nKey.split(":");
 
 				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double amount = pm.paPlayersBetAmount.get(nKey) * 4; // TODO:
-																			// config
+					double playerFactor = playerCount
+							* cfg.getDouble("money.betPlayerWinFactor");
+
+					if (playerFactor <= 0) {
+						playerFactor = 1;
+					}
+
+					playerFactor *= cfg.getDouble("money.betWinFactor");
+
+					double amount = pm.paPlayersBetAmount.get(nKey)
+							* playerFactor;
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
@@ -728,6 +758,7 @@ public class Arena {
 			Bukkit.getScheduler().cancelTask(run.ID);
 		}
 		paRuns.clear();
+		this.playerCount = 0;
 	}
 
 	/**
@@ -798,5 +829,25 @@ public class Arena {
 
 		pm.tellEveryone(PVPArena.lang.parse("frag", sColoredPlayer,
 				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam))));
+	}
+
+	public int countActiveTeams() {
+		List<String> activeteams = new ArrayList<String>(0);
+		HashMap<String, String> test = pm.getPlayerTeamMap();
+		for (String sPlayer : test.keySet()) {
+			db.i("player " + sPlayer);
+			if (activeteams.size() < 1) {
+				// fresh map
+				String team = test.get(sPlayer);
+				db.i("is in team " + team);
+				activeteams.add(team);
+			} else {
+				// map contains stuff
+				if (!activeteams.contains(test.get(sPlayer))) {
+					activeteams.add(test.get(sPlayer));
+				}
+			}
+		}
+		return activeteams.size();
 	}
 }

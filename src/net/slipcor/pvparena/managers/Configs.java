@@ -68,6 +68,7 @@ public class Configs {
 
 		config.addDefault("setup.wand", Integer.valueOf(280));
 
+		config.addDefault("game.allowDrops", Boolean.valueOf(true));
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
 		config.addDefault("game.mustbesafe", Boolean.valueOf(true));
@@ -75,6 +76,7 @@ public class Configs {
 		config.addDefault("game.powerups", "off");
 		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
 		config.addDefault("game.woolHead", Boolean.valueOf(false));
+		config.addDefault("game.woolFlagHead", Boolean.valueOf(false));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
 
@@ -102,7 +104,10 @@ public class Configs {
 		config.addDefault("money.reward", Integer.valueOf(0));
 		config.addDefault("money.minbet", Double.valueOf(0));
 		config.addDefault("money.maxbet", Double.valueOf(0));
-
+		config.addDefault("money.betWinFactor", Double.valueOf(1));
+		config.addDefault("money.betTeamWinFactor", Double.valueOf(1));
+		config.addDefault("money.betPlayerWinFactor", Double.valueOf(1));
+		
 		config.addDefault("protection.spawn", Integer.valueOf(3));
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
@@ -126,6 +131,7 @@ public class Configs {
 		config.addDefault("ready.max", Integer.valueOf(0));
 		config.addDefault("ready.minTeam", Integer.valueOf(1));
 		config.addDefault("ready.maxTeam", Integer.valueOf(0));
+		config.addDefault("ready.autoclass", "none");
 
 		config.addDefault("announcements.join", Boolean.valueOf(false));
 		config.addDefault("announcements.start", Boolean.valueOf(false));
@@ -149,13 +155,20 @@ public class Configs {
 		config.addDefault("arenatype.domination",
 				Boolean.valueOf(type.equals("dom")));
 
-		if ((!type.equals("free") || cfg.getBoolean("arenatype.teams"))
-				&& (cfg.get("teams") == null)) {
-			db.i("no teams defined, adding custom red and blue!");
-			cfg.getYamlConfiguration().addDefault("teams.red",
-					ChatColor.RED.name());
-			cfg.getYamlConfiguration().addDefault("teams.blue",
-					ChatColor.BLUE.name());
+		if (!type.equals("free") || cfg.getBoolean("arenatype.teams")) {
+			if (cfg.get("teams") == null) {
+				db.i("no teams defined, adding custom red and blue!");
+				cfg.getYamlConfiguration().addDefault("teams.red",
+						ChatColor.RED.name());
+				cfg.getYamlConfiguration().addDefault("teams.blue",
+						ChatColor.BLUE.name());
+			}
+			if (cfg.getBoolean("woolFlagHead")
+					&& (cfg.get("flagColors") == null)) {
+				db.i("no flagheads defined, adding white and black!");
+				config.addDefault("flagColors.red", "WHITE");
+				config.addDefault("flagColors.blue", "BLACK");
+			}
 		} else if (cfg.get("teams") == null) {
 			cfg.getYamlConfiguration().addDefault("teams.free",
 					ChatColor.WHITE.name());
