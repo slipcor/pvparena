@@ -66,13 +66,14 @@ public class PVPArena extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 
+		lang = new Language(getConfig().getString("language", "en"));
+		
 		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
 		} else {
 			lang.log_info("nospout");
 		}
 		
-		lang = new Language(getConfig().getString("language", "en"));
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
@@ -186,6 +187,11 @@ public class PVPArena extends JavaPlugin {
 			Arenas.unload(args[0]);
 			Arenas.tellPlayer(player, lang.parse("removed", args[0]));
 			return true;
+		} else if (args[0].equalsIgnoreCase("chat")) {
+			Arena arena = Arenas.getArenaByPlayer(player);
+			if (arena != null) {
+				return Commands.parseChat(arena, player);
+			}
 		} else if (args[0].equalsIgnoreCase("reload")) {
 			if (!hasAdminPerms(player)) {
 				Arenas.tellPlayer(player,

@@ -127,6 +127,16 @@ public class Commands {
 		}
 		Teams.chooseColor(arena, player);
 		Inventories.prepareInventory(arena, player);
+		
+		// process auto classing
+		String autoClass = arena.cfg.getString("ready.autoclass");
+		if (autoClass != null && !autoClass.equals("none")) {
+			if (arena.paClassItems.containsKey(autoClass)) {
+				Players.chooseClass(arena, player, null, autoClass);
+			} else {
+				db.w("autoclass selected that does not exist: "+autoClass);
+			}
+		}
 		return true;
 	}
 
@@ -224,6 +234,19 @@ public class Commands {
 				player,
 				PVPArena.lang.parse("playerjoined", player.getName(),
 						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+		
+		
+
+		// process auto classing
+		String autoClass = arena.cfg.getString("ready.autoclass");
+		if (autoClass != null && !autoClass.equals("none")) {
+			if (arena.paClassItems.containsKey(autoClass)) {
+				Players.chooseClass(arena, player, null, autoClass);
+			} else {
+				db.w("autoclass selected that does not exist: "+autoClass);
+			}
+		}
+		
 		return true;
 	}
 
@@ -487,8 +510,6 @@ public class Commands {
 				return parseSpectate(arena, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return parseUsers(arena, player);
-			} else if (args[0].equalsIgnoreCase("chat")) {
-				return parseChat(arena, player);
 			} else if (args[0].equalsIgnoreCase("region")) {
 				return parseRegion(arena, player);
 			} else if (arena.paTeams.get(args[0]) != null) {

@@ -163,7 +163,7 @@ public class Configs {
 				cfg.getYamlConfiguration().addDefault("teams.blue",
 						ChatColor.BLUE.name());
 			}
-			if (cfg.getBoolean("woolFlagHead")
+			if (cfg.getBoolean("game.woolFlagHead")
 					&& (cfg.get("flagColors") == null)) {
 				db.i("no flagheads defined, adding white and black!");
 				config.addDefault("flagColors.red", "WHITE");

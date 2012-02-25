@@ -350,15 +350,6 @@ public class Arena {
 										ChatColor.valueOf(paTeams.get(color))
 												.ordinal(), 16).toLowerCase();
 			}
-			// process auto classing
-			String autoClass = cfg.getString("ready.autoclass");
-			if (autoClass != null && !autoClass.equals("none")) {
-				if (paClassItems.containsKey(autoClass)) {
-					Players.chooseClass(this, player, null, autoClass);
-				} else {
-					db.w("autoclass selected that does not exist: "+autoClass);
-				}
-			}
 		}
 		if (!color.equals("") && cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, color);

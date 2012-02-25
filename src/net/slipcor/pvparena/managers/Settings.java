@@ -110,7 +110,6 @@ public class Settings {
 		types.put("start.foodLevel", "int");
 		types.put("start.saturation", "int");
 		types.put("start.exhaustion", "double");
-		types.put("start.autoclass", "double");
 
 		types.put("ready.block", "item");
 		types.put("ready.checkEach", "boolean");
