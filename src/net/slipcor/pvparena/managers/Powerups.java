@@ -18,14 +18,14 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Powerups {
 	public HashMap<Player, Powerup> puActive = new HashMap<Player, Powerup>();
 	public List<Powerup> puTotal = new ArrayList<Powerup>();
-	private Debug db = new Debug();
+	private Debug db = new Debug(32);
 
 	/**
 	 * construct a powerup manager instance

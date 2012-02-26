@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.definitions;
 
+import net.slipcor.pvparena.core.Debug;
+
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
@@ -8,13 +10,14 @@ import org.bukkit.block.Sign;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class ArenaBoardSign {
 	protected ArenaBoardColumn column;
 	private Location location;
+	private Debug db = new Debug(12);
 
 	/**
 	 * create an arena board sign instance

@@ -3,6 +3,7 @@ package net.slipcor.pvparena.managers;
 import java.util.HashMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Arena;
 import org.bukkit.Bukkit;
@@ -23,14 +24,14 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Flags {
 
 	// protected static: Debug manager (same for all child Arenas)
-	public static final Debug db = new Debug();
+	public static final Debug db = new Debug(29);
 
 	/**
 	 * [FLAG] take away one life of a team
@@ -128,7 +129,7 @@ public class Flags {
 						db.i("cancelling");
 
 						Arenas.tellPlayer(player,
-								PVPArena.lang.parse(type + "notsafe"));
+								Language.parse(type + "notsafe"));
 						return;
 					}
 				}
@@ -144,7 +145,7 @@ public class Flags {
 
 				try {
 
-					arena.pm.tellEveryone(PVPArena.lang.parse(
+					arena.pm.tellEveryone(Language.parse(
 							type + "homeleft", scPlayer, scFlagTeam,
 							String.valueOf(arena.paLives.get(flagTeam) - 1)));
 					arena.paTeamFlags.remove(flagTeam);
@@ -187,7 +188,7 @@ public class Flags {
 							.get(playerTeam))
 							+ player.getName()
 							+ ChatColor.YELLOW;
-					arena.pm.tellEveryone(PVPArena.lang.parse(type + "grab",
+					arena.pm.tellEveryone(Language.parse(type + "grab",
 							scPlayer, scTeam));
 					
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
@@ -284,7 +285,7 @@ public class Flags {
 
 		Spawns.setCoords(arena, block.getLocation(), sName + type);
 
-		Arenas.tellPlayer(player, PVPArena.lang.parse("set" + type, sName));
+		Arenas.tellPlayer(player, Language.parse("set" + type, sName));
 
 		Arena.regionmodify = "";
 	}
@@ -311,7 +312,7 @@ public class Flags {
 					+ flagTeam + ChatColor.YELLOW;
 			String scPlayer = ChatColor.valueOf(arena.paTeams.get(arena.pm
 					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-			arena.pm.tellEveryone(PVPArena.lang.parse(type + "save", scPlayer,
+			arena.pm.tellEveryone(Language.parse(type + "save", scPlayer,
 					scFlagTeam));
 			arena.paTeamFlags.remove(flagTeam);
 			if (arena.paHeadGears != null) {

@@ -13,13 +13,13 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class StringParser {
 
-	public static final Debug db = new Debug();
+	public static final Debug db = new Debug(4);
 
 	/**
 	 * calculate a color short from a color enum

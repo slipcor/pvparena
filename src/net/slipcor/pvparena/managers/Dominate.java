@@ -3,6 +3,7 @@ package net.slipcor.pvparena.managers;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.runnables.DominationRunnable;
@@ -20,12 +21,13 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Dominate {
 
+	private Debug db = new Debug(27);
 	/**
 	 * check a moving player for nearby flags
 	 * 

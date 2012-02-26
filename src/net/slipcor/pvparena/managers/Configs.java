@@ -30,12 +30,12 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Configs {
-	private static Debug db = new Debug();
+	private static Debug db = new Debug(26);
 
 	/**
 	 * create a config manager instance
@@ -370,6 +370,10 @@ public class Configs {
 
 		if (arena.cfg.get("spawns") == null) {
 			return "no spawns set";
+		}
+		
+		if (arena.edit) {
+			return "edit mode!";
 		}
 
 		Set<String> list = arena.cfg.getYamlConfiguration()

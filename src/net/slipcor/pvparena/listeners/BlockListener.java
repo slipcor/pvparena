@@ -2,6 +2,7 @@ package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
@@ -26,12 +27,12 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class BlockListener implements Listener {
-	private Debug db = new Debug();
+	private Debug db = new Debug(18);
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
@@ -41,15 +42,13 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		db.i("block break inside the arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
 			if (arena.fightInProgress) {
 				Blocks.saveBlock(event.getBlock());
 			}
 			return; // we don't need protection => OUT!
 		}
-		if (arena.pm.getPlayers().size() < 1)
-			return; // no players, no game, no protection!
 
 		event.setCancelled(true);
 		return;
@@ -103,10 +102,11 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		db.i("block place inside the arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
 			if (arena.fightInProgress) {
-				Blocks.saveBlock(event.getBlock(),event.getBlockReplacedState().getType());
+				Blocks.saveBlock(event.getBlock(), event
+						.getBlockReplacedState().getType());
 			}
 			// if not an event happend that we would like to block => OUT
 			return;
@@ -115,7 +115,8 @@ public class BlockListener implements Listener {
 		if (!arena.cfg.getBoolean("protection.tnt", true)
 				&& event.getBlock().getTypeId() == 46) {
 			if (arena.fightInProgress) {
-				Blocks.saveBlock(event.getBlock(),event.getBlockReplacedState().getType());
+				Blocks.saveBlock(event.getBlock(), event
+						.getBlockReplacedState().getType());
 			}
 			return; // we do not block TNT, so just return if it is TNT
 		}
@@ -145,7 +146,7 @@ public class BlockListener implements Listener {
 
 		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
 			Arenas.tellPlayer(event.getPlayer(),
-					PVPArena.lang.parse("boardexists"));
+					Language.parse("boardexists"));
 			return;
 		}
 
@@ -153,8 +154,8 @@ public class BlockListener implements Listener {
 				&& !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
 			Arenas.tellPlayer(
 					event.getPlayer(),
-					PVPArena.lang.parse("nopermto",
-							PVPArena.lang.parse("createleaderboard")));
+					Language.parse("nopermto",
+							Language.parse("createleaderboard")));
 			return;
 		}
 

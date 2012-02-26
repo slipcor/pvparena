@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.api;
 
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -15,11 +16,12 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class PVPArenaAPI {
+	private Debug db = new Debug(2);
 	/**
 	 * get the arena a player is in (fighting or spectating)
 	 * 

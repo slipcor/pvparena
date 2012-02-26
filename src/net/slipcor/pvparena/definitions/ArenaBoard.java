@@ -15,13 +15,13 @@ import org.bukkit.block.Sign;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class ArenaBoard {
 
-	public static final Debug db = new Debug();
+	public static final Debug db = new Debug(10);
 
 	private Location location;
 	public Arena arena;

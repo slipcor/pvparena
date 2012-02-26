@@ -22,12 +22,12 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class ArenaRegion {
-	private Debug db = new Debug();
+	private Debug db = new Debug(15);
 	private boolean cuboid;
 	protected Vector min;
 	protected Vector max;

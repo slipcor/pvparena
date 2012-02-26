@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
@@ -16,7 +17,6 @@ import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Dominate;
-import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
@@ -53,12 +53,12 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class PlayerListener implements Listener {
-	private Debug db = new Debug();
+	private Debug db = new Debug(21);
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event) {
@@ -117,7 +117,7 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 
 		db.i("onPlayerDropItem: fighting player");
-		Arenas.tellPlayer(player, (PVPArena.lang.parse("dropitem")));
+		Arenas.tellPlayer(player, (Language.parse("dropitem")));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
@@ -140,14 +140,14 @@ public class PlayerListener implements Listener {
 			db.i("modify&adminperms&wand");
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, PVPArena.lang.parse("pos1"));
+				Arenas.tellPlayer(player, Language.parse("pos1"));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, PVPArena.lang.parse("pos2"));
+				Arenas.tellPlayer(player, Language.parse("pos2"));
 				return; // right click => pos2
 			}
 		}
@@ -164,7 +164,7 @@ public class PlayerListener implements Listener {
 
 						Arena a = Arenas.getArenaByName(sName);
 						if (a == null) {
-							Arenas.tellPlayer(player, PVPArena.lang.parse(
+							Arenas.tellPlayer(player, Language.parse(
 									"arenanotexists", sName));
 							return;
 						}
@@ -189,7 +189,7 @@ public class PlayerListener implements Listener {
 									+ flags.size());
 							Arenas.tellPlayer(
 									player,
-									PVPArena.lang.parse("setflag",
+									Language.parse("setflag",
 											String.valueOf(flags.size())));
 						}
 					}
@@ -265,7 +265,7 @@ public class PlayerListener implements Listener {
 						mMat = Material.getMaterial(sMat);
 						db.i("mMat now is " + mMat.name());
 					} catch (Exception e2) {
-						PVPArena.lang.log_warning("matnotfound", sMat);
+						Language.log_warning("matnotfound", sMat);
 					}
 				}
 			}
@@ -284,44 +284,44 @@ public class PlayerListener implements Listener {
 
 				int ready = arena.pm.ready(arena);
 				if (ready == 0) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready"));
+					Arenas.tellPlayer(player, Language.parse("notready"));
 					return; // team not ready => announce
 				} else if (ready == -1) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready1"));
+					Arenas.tellPlayer(player, Language.parse("notready1"));
 					return; // team not ready => announce
 				} else if (ready == -2) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready2"));
+					Arenas.tellPlayer(player, Language.parse("notready2"));
 					return; // team not ready => announce
 				} else if (ready == -3) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready3"));
+					Arenas.tellPlayer(player, Language.parse("notready3"));
 					return; // team not ready => announce
 				} else if (ready == -4) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready4"));
+					Arenas.tellPlayer(player, Language.parse("notready4"));
 					return; // arena not ready => announce
 				} else if (ready == -5) {
-					Arenas.tellPlayer(player, PVPArena.lang.parse("notready5"));
+					Arenas.tellPlayer(player, Language.parse("notready5"));
 					return; // arena not ready => announce
 				}
 
 				if (arena.cfg.getBoolean("join.forceEven", false)) {
 					if (!arena.pm.checkEven()) {
 						Arenas.tellPlayer(player,
-								PVPArena.lang.parse("waitequal"));
+								Language.parse("waitequal"));
 						return; // even teams desired, not done => announce
 					}
 				}
 
 				if (!Regions.checkRegions(arena)) {
 					Arenas.tellPlayer(player,
-							PVPArena.lang.parse("checkregionerror"));
+							Language.parse("checkregionerror"));
 					return;
 				}
 
 				arena.teleportAllToSpawn();
 				arena.fightInProgress = true;
-				arena.pm.tellEveryone(PVPArena.lang.parse("begin"));
+				arena.pm.tellEveryone(Language.parse("begin"));
 				Announcement.announce(arena, type.START,
-						PVPArena.lang.parse("begin"));
+						Language.parse("begin"));
 			}
 		}
 	}
@@ -392,7 +392,7 @@ public class PlayerListener implements Listener {
 					arena.pum.puActive.get(player).disable();
 				}
 				arena.pum.puActive.put(player, newP);
-				arena.pm.tellEveryone(PVPArena.lang.parse("playerpowerup",
+				arena.pm.tellEveryone(Language.parse("playerpowerup",
 						player.getName(), newP.name));
 				event.setCancelled(true);
 				event.getItem().remove();
@@ -410,16 +410,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		db.i("onPlayerQuit: fighting player");
-		String color = arena.paTeams.get(arena.pm.getTeam(player));
-		Announcement.announce(arena, type.LOSER,
-				PVPArena.lang.parse("playerleave", player.getName()));
-		arena.pm.tellEveryoneExcept(
-				player,
-				PVPArena.lang.parse("playerleave", ChatColor.valueOf(color)
-						+ player.getName() + ChatColor.YELLOW));
-		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
-		Ends.checkAndCommit(arena);
+		Players.playerLeave(arena, player);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -473,7 +464,7 @@ public class PlayerListener implements Listener {
 
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
 		event.setCancelled(true); // cancel and tell
-		Arenas.tellPlayer(player, PVPArena.lang.parse("usepatoexit"));
+		Arenas.tellPlayer(player, Language.parse("usepatoexit"));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

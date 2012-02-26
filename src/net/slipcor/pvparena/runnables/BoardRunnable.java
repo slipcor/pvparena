@@ -14,13 +14,13 @@ import net.slipcor.pvparena.managers.Arenas;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class BoardRunnable implements Runnable {
 	private final Arena a;
-	private Debug db = new Debug();
+	private Debug db = new Debug(38);
 
 	/**
 	 * create a timed arena runnable

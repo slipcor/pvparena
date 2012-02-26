@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
+import net.slipcor.pvparena.core.Debug;
+
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +24,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -33,6 +35,7 @@ public class ArenaPlayer {
 	public String respawn = "";
 	public boolean telePass = false;
 	public status state = status.FIGHT;
+	private Debug db = new Debug(14);
 
 	public static enum status {
 		FIGHT, DEAD, SPECTATE;

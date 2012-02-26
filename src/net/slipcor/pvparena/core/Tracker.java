@@ -18,13 +18,14 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Tracker implements Runnable {
 	private static Plugin plugin;
 	private static int taskID = -1;
+	private Debug db = new Debug(5);
 
 	/**
 	 * construct a tracker instance

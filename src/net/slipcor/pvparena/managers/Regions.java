@@ -15,13 +15,13 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Regions {
 
-	private final static Debug db = new Debug();
+	private final static Debug db = new Debug(33);
 
 	/**
 	 * check if an arena has overlapping battlefield region with another arena

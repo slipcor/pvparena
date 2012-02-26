@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
@@ -29,13 +30,13 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Ends {
 
-	private static final Debug db = new Debug();
+	private static final Debug db = new Debug(28);
 
 	/**
 	 * [FLAG] commit the arena end
@@ -91,8 +92,8 @@ public class Ends {
 		}
 		if (arena.paTeams.get(winteam) != null) {
 			Announcement.announce(arena, type.WINNER,
-					PVPArena.lang.parse("teamhaswon", "Team " + winteam));
-			arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
+					Language.parse("teamhaswon", "Team " + winteam));
+			arena.pm.tellEveryone(Language.parse("teamhaswon",
 					ChatColor.valueOf(arena.paTeams.get(winteam)) + "Team "
 							+ winteam));
 		} else {
@@ -123,9 +124,9 @@ public class Ends {
 				Announcement.announce(
 						arena,
 						type.WINNER,
-						PVPArena.lang.parse("playerhaswon",
+						Language.parse("playerhaswon",
 								ChatColor.WHITE + o.toString()));
-				arena.pm.tellEveryone(PVPArena.lang.parse("playerhaswon",
+				arena.pm.tellEveryone(Language.parse("playerhaswon",
 						ChatColor.WHITE + o.toString()));
 			}
 			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
@@ -168,8 +169,8 @@ public class Ends {
 		}
 		if (arena.paTeams.get(team) != null) {
 			Announcement.announce(arena, type.WINNER,
-					PVPArena.lang.parse("teamhaswon", "Team " + team));
-			arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
+					Language.parse("teamhaswon", "Team " + team));
+			arena.pm.tellEveryone(Language.parse("teamhaswon",
 					ChatColor.valueOf(arena.paTeams.get(team)) + "Team " + team));
 		} else {
 			Bukkit.getLogger().severe("[PVP Arena] team unknown: " + team);
@@ -213,7 +214,7 @@ public class Ends {
 					try {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon",
+								Language.parse("youwon",
 										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing
@@ -261,8 +262,8 @@ public class Ends {
 		for (String team : result) {
 			if (result.contains(team)) {
 				Announcement.announce(arena, type.WINNER,
-						PVPArena.lang.parse("teamhaswon", "Team " + team));
-				arena.pm.tellEveryone(PVPArena.lang.parse("teamhaswon",
+						Language.parse("teamhaswon", "Team " + team));
+				arena.pm.tellEveryone(Language.parse("teamhaswon",
 						ChatColor.valueOf(arena.paTeams.get(team)) + "Team "
 								+ team));
 			}
@@ -305,7 +306,7 @@ public class Ends {
 					try {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon",
+								Language.parse("youwon",
 										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing

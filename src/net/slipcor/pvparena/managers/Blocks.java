@@ -2,6 +2,7 @@ package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
 
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBlock;
 
@@ -16,15 +17,16 @@ import org.bukkit.block.Block;
  * 
  * manages the blocks to be reset after the match
  * 
- * @version v0.6.3
- * 
  * @author slipcor
+ * 
+ * @version v0.6.15
  * 
  */
 
 public class Blocks {
 	public static HashMap<Location, ArenaBlock> blocks = new HashMap<Location, ArenaBlock>();
 
+	private Debug db = new Debug(24);
 	/**
 	 * get all blocks that have to be reset (arena wise)
 	 * 

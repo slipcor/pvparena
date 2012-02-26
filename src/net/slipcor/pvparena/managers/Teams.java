@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
@@ -23,12 +24,12 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Teams {
-	private static Debug db = new Debug();
+	private static Debug db = new Debug(37);
 
 	/**
 	 * assign a player to a team
@@ -41,7 +42,7 @@ public class Teams {
 		boolean free = !arena.cfg.getBoolean("arenatype.teams");
 
 		if (arena.pm.getPlayerTeamMap().containsKey(player.getName())) {
-			Arenas.tellPlayer(player, PVPArena.lang.parse("alreadyjoined"));
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 		}
 
 		String team = free ? "free" : calcFreeTeam(arena);
@@ -52,13 +53,13 @@ public class Teams {
 		} else {
 			arena.tpPlayerToCoordName(player, team + "lounge");
 		}
-		Arenas.tellPlayer(player, PVPArena.lang.parse("youjoined"
+		Arenas.tellPlayer(player, Language.parse("youjoined"
 				+ (free ? "free" : ""),
 				ChatColor.valueOf(arena.paTeams.get(team)) + team));
-		Announcement.announce(arena, type.JOIN, PVPArena.lang.parse(
+		Announcement.announce(arena, type.JOIN, Language.parse(
 				"playerjoined" + (free ? "free" : ""), player.getName(),
 				ChatColor.valueOf(arena.paTeams.get(team)) + team));
-		arena.pm.tellEveryoneExcept(player, PVPArena.lang.parse("playerjoined"
+		arena.pm.tellEveryoneExcept(player, Language.parse("playerjoined"
 				+ (free ? "free" : ""), player.getName(),
 				ChatColor.valueOf(arena.paTeams.get(team)) + team));
 	}

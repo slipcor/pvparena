@@ -8,13 +8,18 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
+import net.slipcor.pvparena.definitions.Announcement.type;
 
 /**
  * player manager class
@@ -25,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -34,7 +39,7 @@ public class Players {
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 
 	HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
-	private Debug db = new Debug();
+	private Debug db = new Debug(31);
 
 	/**
 	 * parse all teams and join them colored, comma separated
@@ -484,7 +489,7 @@ public class Players {
 			if (!(PVPArena.hasPerms(player, "pvparena.class."
 					+ sign.getLine(0)))) {
 				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("classperms"));
+						Language.parse("classperms"));
 				return; // class permission desired and failed =>
 						// announce and OUT
 			}
@@ -501,7 +506,7 @@ public class Players {
 			arena.paSigns.add(as);
 			if (!as.add(player)) {
 				Arenas.tellPlayer(player,
-						PVPArena.lang.parse("classfull"));
+						Language.parse("classfull"));
 				return;
 			}
 		}
@@ -512,6 +517,62 @@ public class Players {
 			Inventories.loadInventory(arena, player);
 		} else {
 			Inventories.givePlayerFightItems(arena, player);
+		}
+	}
+
+	public static void playerLeave(Arena arena, Player player) {
+		ArenaPlayer ap = Players.parsePlayer(arena, player);
+		boolean spectator = ap.spectator;
+
+		String color = arena.paTeams.get(arena.pm.getTeam(player));
+
+		if (!spectator) {
+
+			Announcement.announce(arena, type.LOSER,
+					Language.parse("playerleave", player.getName()));
+
+			arena.pm.tellEveryoneExcept(
+					player,
+					Language.parse("playerleave", ChatColor.valueOf(color)
+							+ player.getName() + ChatColor.YELLOW));
+
+			Arenas.tellPlayer(player, Language.parse("youleave"));
+		}
+		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
+
+		arena.pm.remove(player);
+		ap.destroy();
+		ap = null;
+
+		if (!spectator && arena.fightInProgress) {
+			Ends.checkAndCommit(arena);
+		}
+	}
+
+	public static String parseDeathCause(Arena arena, Player player,
+			DamageCause cause, Entity damager) {
+		
+		switch (cause) {
+		case ENTITY_ATTACK: 
+			if (damager instanceof Player) {
+				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
+				if (ap != null) {
+					return ChatColor.valueOf(arena.paTeams.get(ap.team)) + 
+							ap.get().getName() + ChatColor.YELLOW;
+				}
+			}
+			return Language.parse("custom");
+		case PROJECTILE:
+			if (damager instanceof Player) {
+				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
+				if (ap != null) {
+					return ChatColor.valueOf(arena.paTeams.get(ap.team)) + 
+							ap.get().getName() + ChatColor.YELLOW;
+				}
+			}
+			return Language.parse(cause.toString().toLowerCase());
+		default:
+			return Language.parse(cause.toString().toLowerCase());	
 		}
 	}
 }

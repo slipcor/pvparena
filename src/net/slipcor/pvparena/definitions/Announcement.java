@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.definitions;
 
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.Bukkit;
@@ -15,10 +16,11 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 public class Announcement {
+	private Debug db = new Debug(7);
 	public static enum type {
 		JOIN, START, END, WINNER, LOSER, PRIZE;
 	}

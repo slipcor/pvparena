@@ -2,8 +2,6 @@
 -[ soon ]
 - next version
 
-
-
 ADDITIONS
 [[ RUSH mode - base defend VS conquer base ]]
 [[ MAP support: player location, flag / spawn location ]]
@@ -11,11 +9,12 @@ ADDITIONS
 [[ enchantments ]]
 [[ CHEST powerup placement ]]
 [[ chest / dispenser refill ]]
+[[ sort leaderboards on click ]]
 [[ join: /pa {name} [amount] - win amount : winFactor ]]
+-[ ready countdown (when everyone has chosen ) ]
 -[ custom join region ]
--[ "[player] killed" + " by [player/cause]"]
 -[ arena chat ]
--[Potion effects for powerups]
+-[ Potion effects for powerups ]
 
 FIXES
 -[ lose 2 lives (temp godmode between teleporting)]

@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.definitions;
 
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.Location;
@@ -14,12 +15,14 @@ import org.bukkit.block.Sign;
  * 
  * defines a block to recreate on match end
  * 
- * @version v0.6.3
- * 
  * @author slipcor
+ * 
+ * @version v0.6.15
  * 
  */
 public class ArenaBlock {
+	private Debug db = new Debug(9);
+	
 	public String arena;
 	private final Location location;
 	public final Material material;

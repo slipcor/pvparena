@@ -23,11 +23,12 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Update {
+	private Debug db = new Debug(6);
 
 	public static boolean msg = false;
 	public static boolean outdated = false;

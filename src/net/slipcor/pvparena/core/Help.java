@@ -14,11 +14,12 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Help {
+	private Debug db = new Debug(3);
 
 	/**
 	 * display detailed help

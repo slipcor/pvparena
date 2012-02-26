@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.Bukkit;
@@ -21,11 +22,12 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Spawns {
+	private static Debug db = new Debug(35);
 
 	/**
 	 * get the location from a coord string
@@ -35,14 +37,14 @@ public class Spawns {
 	 * @return the location of that string
 	 */
 	public static Location getCoords(Arena arena, String place) {
-		Arena.db.i("get coords: " + place);
+		db.i("get coords: " + place);
 		World world = Bukkit.getWorld(arena.cfg.getString("general.world",
 				Bukkit.getWorlds().get(0).getName()));
 		if (place.equals("spawn") || place.equals("powerup")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
-			Arena.db.i("searching for spawns");
+			db.i("searching for spawns");
 
 			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
 					.getYamlConfiguration().getConfigurationSection("spawns")
@@ -50,7 +52,7 @@ public class Spawns {
 			for (String name : coords.keySet()) {
 				if (name.startsWith(place)) {
 					locs.put(i++, name);
-					Arena.db.i("found match: " + name);
+					db.i("found match: " + name);
 				}
 			}
 
@@ -59,14 +61,14 @@ public class Spawns {
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.cfg.get("spawns." + place) == null) {
 			if (!place.contains("spawn")) {
-				Arena.db.i("place not found!");
+				db.i("place not found!");
 				return null;
 			}
 			// no exact match: assume we have multiple spawnpoints
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
-			Arena.db.i("searching for team spawns");
+			db.i("searching for team spawns");
 
 			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
 					.getYamlConfiguration().getConfigurationSection("spawns")
@@ -74,7 +76,7 @@ public class Spawns {
 			for (String name : coords.keySet()) {
 				if (name.startsWith(place)) {
 					locs.put(i++, name);
-					Arena.db.i("found match: " + name);
+					db.i("found match: " + name);
 				}
 			}
 
@@ -87,7 +89,7 @@ public class Spawns {
 		}
 
 		String sLoc = arena.cfg.getString("spawns." + place, null);
-		Arena.db.i("parsing location: " + sLoc);
+		db.i("parsing location: " + sLoc);
 		return Config.parseLocation(world, sLoc);
 	}
 

@@ -16,12 +16,12 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Statistics {
-	public static final Debug db = new Debug();
+	public static final Debug db = new Debug(36);
 
 	public static enum type {
 		WINS, LOSSES, KILLS, DEATHS, MAXDAMAGE, MAXDAMAGETAKE, DAMAGE, DAMAGETAKE, NULL

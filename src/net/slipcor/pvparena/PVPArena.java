@@ -10,9 +10,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.CustomListener;
 import net.slipcor.pvparena.listeners.EntityListener;
@@ -20,11 +18,10 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
-import net.slipcor.pvparena.managers.Ends;
+import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.register.payment.Method;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,24 +37,23 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class PVPArena extends JavaPlugin {
 
-	public static Language lang;
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
 	public static PVPArena instance = null;
+	public static String spoutHandler = null;
 
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
 	private final CustomListener customListener = new CustomListener();
-	private final Debug debug = new Debug();
+	private final Debug db = new Debug(1);
 
-	public String spoutHandler = null;
 
 	/**
 	 * plugin enabling method - register events and load the configs
@@ -66,28 +62,33 @@ public class PVPArena extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 
-		lang = new Language(getConfig().getString("language", "en"));
+		Language.init(getConfig().getString("language", "en"));
 		
 		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
+			Language.log_info("spout");
+			getServer().getPluginManager().registerEvents(customListener , this);
 		} else {
-			lang.log_info("nospout");
+			Language.log_info("nospout");
 		}
 		
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
-		if (spoutHandler != null) {
-			getServer().getPluginManager().registerEvents(customListener , this);
-		}
 
 		List<String> whiteList = new ArrayList<String>();
 		whiteList.add("ungod");
+		
+		if (getConfig().get("language") != null && getConfig().get("onlyPVPinArena") == null) {
+			getConfig().set("debug", "none"); // 0.3.15 correction
+		}
 
-		getConfig().addDefault("debug", Boolean.valueOf(false));
+		getConfig().addDefault("debug", "none");
 		getConfig().addDefault("language", "en");
+		getConfig().addDefault("onlyPVPinArena", Boolean.valueOf(false));
 		getConfig().addDefault("whitelist", whiteList);
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
@@ -95,23 +96,22 @@ public class PVPArena extends JavaPlugin {
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
+				db.i("players.yml created successfully");
 			} catch (IOException e) {
 				Bukkit.getLogger()
 						.severe("Could not create players.yml! More errors will be happening!");
 				e.printStackTrace();
 			}
 		}
-
-		Debug.active = getConfig().getBoolean("debug");
-
+		
+		Debug.load(this);
 		Arenas.load_arenas();
-
 		Update.updateCheck(this);
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
 
-		lang.log_info("enabled", getDescription().getFullName());
+		Language.log_info("enabled", getDescription().getFullName());
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class PVPArena extends JavaPlugin {
 	public void onDisable() {
 		Arenas.reset(true);
 		Tracker.stop();
-		lang.log_info("disabled", getDescription().getFullName());
+		Language.log_info("disabled", getDescription().getFullName());
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class PVPArena extends JavaPlugin {
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
 		if (!(sender instanceof Player)) {
-			lang.parse("onlyplayers");
+			Language.parse("onlyplayers");
 			return true;
 		}
 
@@ -149,12 +149,12 @@ public class PVPArena extends JavaPlugin {
 			// /pa [name] create {type} {...}
 			if (!hasAdminPerms(player) && !(hasCreatePerms(player, null))) {
 				Arenas.tellPlayer(player,
-						lang.parse("nopermto", lang.parse("create")));
+						Language.parse("nopermto", Language.parse("create")));
 				return true;
 			}
 			Arena arena = Arenas.getArenaByName(args[0]);
 			if (arena != null) {
-				Arenas.tellPlayer(player, lang.parse("arenaexists"));
+				Arenas.tellPlayer(player, Language.parse("arenaexists"));
 				return true;
 			}
 			Arena a = null;
@@ -169,23 +169,23 @@ public class PVPArena extends JavaPlugin {
 			}
 			a.cfg.set("general.owner", a.owner);
 			a.cfg.save();
-			Arenas.tellPlayer(player, lang.parse("created", args[0]));
+			Arenas.tellPlayer(player, Language.parse("created", args[0]));
 			return true;
 		} else if (args.length == 2 && args[1].equals("remove")) {
 			// /pa [name] remove
 			if (!hasAdminPerms(player)
 					&& !(hasCreatePerms(player, Arenas.getArenaByName(args[0])))) {
 				Arenas.tellPlayer(player,
-						lang.parse("nopermto", lang.parse("remove")));
+						Language.parse("nopermto", Language.parse("remove")));
 				return true;
 			}
 			Arena arena = Arenas.getArenaByName(args[0]);
 			if (arena == null) {
-				Arenas.tellPlayer(player, lang.parse("arenanotexists", args[0]));
+				Arenas.tellPlayer(player, Language.parse("arenanotexists", args[0]));
 				return true;
 			}
 			Arenas.unload(args[0]);
-			Arenas.tellPlayer(player, lang.parse("removed", args[0]));
+			Arenas.tellPlayer(player, Language.parse("removed", args[0]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("chat")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
@@ -195,41 +195,21 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("reload")) {
 			if (!hasAdminPerms(player)) {
 				Arenas.tellPlayer(player,
-						lang.parse("nopermto", lang.parse("reload")));
+						Language.parse("nopermto", Language.parse("reload")));
 				return true;
 			}
 			Arenas.load_arenas();
-			Arenas.tellPlayer(player, lang.parse("reloaded"));
+			Arenas.tellPlayer(player, Language.parse("reloaded"));
 			return true;
 		} else if (args[0].equalsIgnoreCase("list")) {
-			Arenas.tellPlayer(player, lang.parse("arenas", Arenas.getNames()));
+			Arenas.tellPlayer(player, Language.parse("arenas", Arenas.getNames()));
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
-				String sName = arena.pm.getTeam(player);
-
-				Announcement.announce(arena, type.LOSER,
-						lang.parse("playerleave", player.getName()));
-
-				if (arena.paTeams.get(sName) == null) {
-					Arenas.tellPlayer(player, lang.parse("youleave"));
-					arena.removePlayer(player,
-							arena.cfg.getString("tp.exit", "exit"));
-				} else {
-					arena.pm.tellEveryoneExcept(
-							player,
-							lang.parse("playerleave",
-									ChatColor.valueOf(arena.paTeams.get(sName))
-											+ player.getName()
-											+ ChatColor.YELLOW));
-					Arenas.tellPlayer(player, lang.parse("youleave"));
-					arena.removePlayer(player,
-							arena.cfg.getString("tp.exit", "exit"));
-					Ends.checkAndCommit(arena);
-				}
+				Players.playerLeave(arena, player);
 			} else {
-				Arenas.tellPlayer(player, lang.parse("notinarena"));
+				Arenas.tellPlayer(player, Language.parse("notinarena"));
 			}
 			return true;
 		}
@@ -238,15 +218,15 @@ public class PVPArena extends JavaPlugin {
 
 		Arena arena = Arenas.getArenaByName(sName);
 		if (arena == null) {
-			debug.i("arena not found, searching...");
+			db.i("arena not found, searching...");
 			if (Arenas.count() == 1) {
 				arena = Arenas.getFirst();
-				debug.i("found 1 arena: " + arena.name);
+				db.i("found 1 arena: " + arena.name);
 			} else if (Arenas.getArenaByName("default") != null) {
 				arena = Arenas.getArenaByName("default");
-				debug.i("found default arena!");
+				db.i("found default arena!");
 			} else {
-				Arenas.tellPlayer(player, lang.parse("arenanotexists", sName));
+				Arenas.tellPlayer(player, Language.parse("arenanotexists", sName));
 				return true;
 			}
 			return Commands.parseCommand(arena, player, args);

@@ -18,17 +18,17 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 public class Language {
-	Map<String, Object> lang = null; // game language map
-	Map<String, Object> log = null; // log language map
+	static Map<String, Object> lang = null; // game language map
+	static Map<String, Object> log = null; // log language map
 
 	/**
 	 * create a language manager instance
 	 */
-	public Language(String s) {
+	public static void init(String s) {
 		s = s.equals("en") ? "" : "_" + s;
 		new File("plugins/pvparena").mkdir();
 		File configFile = new File("plugins/pvparena/lang" + s + ".yml");
@@ -58,6 +58,10 @@ public class Language {
 		config.addDefault("log.disabled", "disabled (version %1%)");
 		config.addDefault("log.noperms",
 				"Permissions plugin not found, defaulting to OP.");
+		config.addDefault("log.nospout",
+				"Spout not found, you are missing some features ;)");
+		config.addDefault("log.spout",
+				"Hooking into Spout!");
 
 		config.addDefault("lang.playerleave", "%1% has left the fight!");
 		config.addDefault("lang.youleave", "You have left the fight!");
@@ -72,9 +76,9 @@ public class Language {
 				"Waiting for the teams to have equal player number!");
 		config.addDefault("lang.ready", "%1% team is ready!");
 		config.addDefault("lang.begin", "Let the fight begin!");
-		config.addDefault("lang.killed", "%1% has been killed!");
-		config.addDefault("lang.lostlife",
-				"%1% has lost a life! %2% remaining.");
+		config.addDefault("lang.killedby", "%1% has been killed by %2%!");
+		config.addDefault("lang.killedbylives",
+				"%1% has been killed by %2%! %3% lives remaining.");
 		config.addDefault("lang.onlyplayers",
 				"Only players may access this command!");
 		config.addDefault("lang.arenadisabled",
@@ -208,8 +212,34 @@ public class Language {
 
 		config.addDefault("lang.frag",
 				"%1% killed another player! Total frags: %2%.");
-		config.addDefault("lang.nospout",
-				"Spout not found, you are missing some features ;)");
+		
+
+		config.addDefault("lang.edit","edit an arena");
+		config.addDefault("lang.edittrue","Enabled edit mode for arena: %1%");
+		config.addDefault("lang.editfalse","Disabled edit mode for arena: %1%");
+		
+		/**
+		 * death causes : "player was killed by ****"
+		 */
+		
+		config.addDefault("lang.BLOCK_EXPLOSION".toLowerCase(), "an explosion");
+		config.addDefault("lang.CONTACT".toLowerCase(), "a cactus");
+		config.addDefault("lang.CUSTOM".toLowerCase(), "Herobrine");
+		config.addDefault("lang.DROWNING".toLowerCase(), "water");
+		config.addDefault("lang.ENTITY_EXPLOSION".toLowerCase(), "a creeper");
+		config.addDefault("lang.FALL".toLowerCase(), "gravity");
+		config.addDefault("lang.FIRE".toLowerCase(), "a fire");
+		config.addDefault("lang.FIRE_TICK".toLowerCase(), "fire");
+		config.addDefault("lang.LAVA".toLowerCase(), "lava");
+		config.addDefault("lang.LIGHTNING".toLowerCase(), "Thor");
+		config.addDefault("lang.MAGIC".toLowerCase(), "Magical Powers");
+		config.addDefault("lang.POISON".toLowerCase(), "Poison");
+		config.addDefault("lang.PROJECTILE".toLowerCase(), "something he didn't see coming");
+		config.addDefault("lang.STARVATION".toLowerCase(), "hunger");
+		config.addDefault("lang.SUFFOCATION".toLowerCase(), "lack of air");
+		config.addDefault("lang.SUICIDE".toLowerCase(), "Herobrine");
+		config.addDefault("lang.VOID".toLowerCase(), "the Void");
+		
 
 		config.options().copyDefaults(true);
 		try {
@@ -232,7 +262,7 @@ public class Language {
 	 *            the node name
 	 * @return the node string
 	 */
-	public String parse(String s) {
+	public static String parse(String s) {
 		return (String) lang.get(s); // hand over map value
 	}
 
@@ -245,7 +275,7 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public String parse(String s, String arg) {
+	public static String parse(String s, String arg) {
 		String var = (String) lang.get(s);
 		return var.replace("%1%", arg); // hand over replaced map value
 	}
@@ -261,7 +291,7 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public String parse(String s, String arg1, String arg2) {
+	public static String parse(String s, String arg1, String arg2) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		return var.replace("%1%", arg1); // hand over replaced map value
 	}
@@ -279,7 +309,7 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public String parse(String s, String arg1, String arg2, String arg3) {
+	public static String parse(String s, String arg1, String arg2, String arg3) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
 		return var.replace("%1%", arg1); // hand over replaced map value
@@ -293,7 +323,7 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public void log_error(String s, String arg) {
+	public static void log_error(String s, String arg) {
 		String var = (String) log.get(s);
 		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
@@ -307,7 +337,7 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public void log_warning(String s, String arg) {
+	public static void log_warning(String s, String arg) {
 		String var = (String) log.get(s);
 		Bukkit.getLogger().warning("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
@@ -321,7 +351,7 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public void log_info(String s, String arg) {
+	public static void log_info(String s, String arg) {
 		String var = (String) log.get(s);
 		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
@@ -333,7 +363,7 @@ public class Language {
 	 * @param s
 	 *            the node name
 	 */
-	public void log_info(String s) {
+	public static void log_info(String s) {
 		String var = (String) log.get(s);
 		Bukkit.getLogger().info("[PVP Arena] " + var);
 		// log map value

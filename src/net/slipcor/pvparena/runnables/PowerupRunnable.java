@@ -15,13 +15,13 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class PowerupRunnable implements Runnable {
 	private final Arena a;
-	private Debug db = new Debug();
+	private Debug db = new Debug(41);
 
 	/**
 	 * construct a powerup spawn runnable

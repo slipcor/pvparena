@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.register.payment.Methods;
 
 import org.bukkit.Bukkit;
@@ -19,12 +21,13 @@ import org.bukkit.event.server.PluginEnableEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class ServerListener implements Listener {
 	private Methods methods = null;
+	private Debug db = new Debug(22);
 
 	/**
 	 * create a server listener instance
@@ -43,7 +46,7 @@ public class ServerListener implements Listener {
 
 			if (check) {
 				PVPArena.eco = null;
-				PVPArena.lang.log_info("iconomyoff");
+				Language.log_info("iconomyoff");
 			}
 		}
 	}
@@ -55,9 +58,9 @@ public class ServerListener implements Listener {
 		if (!this.methods.hasMethod()) {
 			if (this.methods.setMethod(Bukkit.getServer().getPluginManager())) {
 				PVPArena.eco = this.methods.getMethod();
-				PVPArena.lang.log_info("iconomyon");
+				Language.log_info("iconomyon");
 			} else {
-				PVPArena.lang.log_info("iconomyoff");
+				Language.log_info("iconomyoff");
 			}
 		}
 	}

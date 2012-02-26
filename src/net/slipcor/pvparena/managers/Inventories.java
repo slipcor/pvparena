@@ -22,13 +22,13 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Inventories {
 
-	public static final Debug db = new Debug();
+	public static final Debug db = new Debug(30);
 
 	// private statics: item definitions
 	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();

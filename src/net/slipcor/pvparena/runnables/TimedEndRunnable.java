@@ -15,13 +15,13 @@ import net.slipcor.pvparena.managers.Ends;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class TimedEndRunnable implements Runnable {
 	private final Arena a;
-	private Debug db = new Debug();
+	private Debug db = new Debug(42);
 
 	/**
 	 * create a timed arena runnable

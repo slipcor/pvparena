@@ -17,7 +17,7 @@ import net.slipcor.pvparena.managers.Flags;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -27,7 +27,7 @@ public class DominationRunnable implements Runnable {
 	private final Arena arena;
 	private final Location loc;
 	private final String team;
-	private Debug db = new Debug();
+	private Debug db = new Debug(39);
 
 	/**
 	 * create a dominateion runnable

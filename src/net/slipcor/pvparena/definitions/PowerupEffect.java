@@ -8,12 +8,14 @@ import java.util.Random;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Players;
@@ -27,7 +29,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -41,7 +43,7 @@ public class PowerupEffect {
 	private double chance = 1.0;
 	private int diff = 0;
 	private List<String> items = new ArrayList<String>();
-	private Debug db = new Debug();
+	private Debug db = new Debug(17);
 
 	/**
 	 * PowerupEffect classes
@@ -221,10 +223,10 @@ public class PowerupEffect {
 					String sTeam = arena.pm.getTeam(player);
 
 					Announcement.announce(arena, Announcement.type.LOSER,
-							PVPArena.lang.parse("killed", player.getName()));
-					arena.pm.tellEveryone(PVPArena.lang.parse("killed",
+							Language.parse("killedby", player.getName(), Players.parseDeathCause(arena, player, DamageCause.MAGIC, player)));
+					arena.pm.tellEveryone(Language.parse("killedby",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
-									+ player.getName() + ChatColor.YELLOW));
+									+ player.getName() + ChatColor.YELLOW, Players.parseDeathCause(arena, player, DamageCause.MAGIC, player)));
 					Players.parsePlayer(arena, player).losses++;
 					// needed so player does not get found when dead
 					arena.removePlayer(player, "lose");

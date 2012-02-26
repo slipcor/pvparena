@@ -20,7 +20,7 @@ import net.slipcor.pvparena.definitions.PowerupEffect.classes;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -28,7 +28,7 @@ public class Powerup {
 	public String name; // PowerUp display name
 	public Material item; // item that triggers this Powerup
 	private PowerupEffect[] effects; // Effects the Powerup has
-	private Debug db = new Debug();
+	private Debug db = new Debug(16);
 
 	/**
 	 * construct a powerup instance

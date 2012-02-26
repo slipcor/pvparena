@@ -22,14 +22,14 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
 	public static HashMap<Location, ArenaBoard> boards = new HashMap<Location, ArenaBoard>();
-	private static Debug db = new Debug();
+	private static Debug db = new Debug(23);
 
 	/**
 	 * load all configs in the PVP Arena folder

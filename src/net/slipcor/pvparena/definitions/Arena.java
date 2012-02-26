@@ -10,6 +10,7 @@ import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.managers.Blocks;
@@ -33,7 +34,9 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
@@ -51,17 +54,15 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class Arena {
+	private Debug db = new Debug(8);
 
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
-
-	// protected static: Debug manager (same for all child Arenas)
-	public static final Debug db = new Debug();
 
 	// available arena classes mapped to their items: ClassName => itemString
 	public final HashMap<String, ItemStack[]> paClassItems = new HashMap<String, ItemStack[]>();
@@ -97,6 +98,7 @@ public class Arena {
 
 	// arena status
 	public boolean fightInProgress = false;
+	public boolean edit = false;
 
 	// arena settings
 	public boolean usesPowerups;
@@ -506,7 +508,7 @@ public class Arena {
 			if (--i > 0)
 				continue;
 			commitPowerupItemSpawn(p.item);
-			pm.tellEveryone(PVPArena.lang.parse("serverpowerup", p.name));
+			pm.tellEveryone(Language.parse("serverpowerup", p.name));
 			return;
 		}
 
@@ -564,7 +566,7 @@ public class Arena {
 	 * @param lives
 	 *            the lives to set and display
 	 */
-	public void respawnPlayer(Player player, int lives) {
+	public void respawnPlayer(Player player, int lives, DamageCause cause, Entity damager) {
 		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
@@ -581,16 +583,16 @@ public class Arena {
 		String color = paTeams.get(sTeam);
 
 		if (cfg.getBoolean("arenatype.flags")) {
-			pm.tellEveryone(PVPArena.lang.parse("killed",
+			pm.tellEveryone(Language.parse("killedby",
 					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW));
+							+ ChatColor.YELLOW, Players.parseDeathCause(this, player, cause, damager)));
 			tpPlayerToCoordName(player, sTeam + "spawn");
 
 			Flags.checkEntityDeath(this, player);
 		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
-			pm.tellEveryone(PVPArena.lang.parse("lostlife",
+			pm.tellEveryone(Language.parse("killedbylives",
 					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW, String.valueOf(lives)));
+							+ ChatColor.YELLOW, Players.parseDeathCause(this, player, cause, damager), String.valueOf(lives)));
 			paLives.put(player.getName(), lives);
 		}
 		if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
@@ -613,7 +615,7 @@ public class Arena {
 		if (color.equals("")) {
 			player.setDisplayName(player.getName());
 			
-			if (PVPArena.instance.spoutHandler != null)
+			if (PVPArena.spoutHandler != null)
 				SpoutManager.getAppearanceManager().setGlobalTitle(player,
 				player.getName());
 			
@@ -622,7 +624,7 @@ public class Arena {
 
 		String n = color + player.getName();
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
-		if (PVPArena.instance.spoutHandler != null)
+		if (PVPArena.spoutHandler != null)
 			SpoutManager.getAppearanceManager().setGlobalTitle(player,
 			n.replaceAll("(&([a-f0-9]))", "§$2"));
 	}
@@ -654,12 +656,12 @@ public class Arena {
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						Announcement.announce(this, type.PRIZE, PVPArena.lang
+						Announcement.announce(this, type.PRIZE, Language
 								.parse("awarded", PVPArena.eco.format(cfg
 										.getInt("money.reward", 0))));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
-								PVPArena.lang.parse("youwon",
+								Language.parse("youwon",
 										PVPArena.eco.format(amount)));
 					} catch (Exception e) {
 						// nothing
@@ -673,7 +675,7 @@ public class Arena {
 			ma.add(cfg.getInt("money.reward", 0));
 			Arenas.tellPlayer(
 					player,
-					PVPArena.lang.parse("awarded",
+					Language.parse("awarded",
 							PVPArena.eco.format(cfg.getInt("money.reward", 0))));
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
@@ -690,7 +692,7 @@ public class Arena {
 				player.getInventory().setItem(
 						player.getInventory().firstEmpty(), stack);
 			} catch (Exception e) {
-				Arenas.tellPlayer(player, PVPArena.lang.parse("invfull"));
+				Arenas.tellPlayer(player, Language.parse("invfull"));
 				return;
 			}
 		}
@@ -750,6 +752,7 @@ public class Arena {
 		}
 		paRuns.clear();
 		this.playerCount = 0;
+		this.teamCount = 0;
 	}
 
 	/**
@@ -818,7 +821,7 @@ public class Arena {
 		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam))
 				+ attacker.getName() + ChatColor.YELLOW;
 
-		pm.tellEveryone(PVPArena.lang.parse("frag", sColoredPlayer,
+		pm.tellEveryone(Language.parse("frag", sColoredPlayer,
 				String.valueOf(cfg.getInt("game.lives") - paLives.get(sTeam))));
 	}
 

@@ -2,6 +2,8 @@ package net.slipcor.pvparena.definitions;
 
 import java.util.HashSet;
 
+import net.slipcor.pvparena.core.Debug;
+
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -12,12 +14,13 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
 public class ArenaClassSign {
 	Location location;
+	private Debug db = new Debug(13);
 
 	/**
 	 * create an arena class sign instance

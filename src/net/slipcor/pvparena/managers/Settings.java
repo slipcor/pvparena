@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Arena;
 
@@ -22,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.3
+ * @version v0.6.15
  * 
  */
 
@@ -30,6 +32,8 @@ public class Settings {
 	private final Arena arena;
 	private static HashMap<String, String> types = new HashMap<String, String>();
 
+	private Debug db = new Debug(34);
+	
 	static {
 
 		types.put("tp.win", "tp");
@@ -212,7 +216,7 @@ public class Settings {
 		if (!PVPArena.hasAdminPerms(player)
 				&& !PVPArena.hasCreatePerms(player, arena)) {
 
-			Arenas.tellPlayer(player, PVPArena.lang.parse("nopermto", "set"));
+			Arenas.tellPlayer(player, Language.parse("nopermto", Language.parse("set")));
 			return;
 		}
 
