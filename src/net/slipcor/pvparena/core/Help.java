@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  */
 
 public class Help {
-	private Debug db = new Debug(3);
+	private static Debug db = new Debug(3);
 
 	/**
 	 * display detailed help
@@ -31,6 +31,8 @@ public class Help {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public static boolean parseCommand(Player player, String[] args) {
+		db.i("parsing help command of player " + player.getName()
+				+ StringParser.parseArray(args));
 		Arenas.tellPlayer(player, ChatColor.AQUA + "---  PVP Arena Help  ---");
 
 		if (args.length == 1) {

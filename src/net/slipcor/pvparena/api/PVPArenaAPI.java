@@ -21,7 +21,8 @@ import org.bukkit.entity.Player;
  */
 
 public class PVPArenaAPI {
-	private Debug db = new Debug(2);
+	private static Debug db = new Debug(2);
+
 	/**
 	 * get the arena a player is in (fighting or spectating)
 	 * 
@@ -30,6 +31,7 @@ public class PVPArenaAPI {
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
 	public static String getArenaName(Player player) {
+		db.i("API: get arena of player: " + player.getName());
 		Arena arena = Arenas.getArenaByPlayer(player);
 		return (arena == null) ? "" : arena.name;
 	}
@@ -42,6 +44,7 @@ public class PVPArenaAPI {
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
 	public static String getArenaNameByLocation(Location location) {
+		db.i("API: get arena of location: " + location.toString());
 		Arena arena = Arenas.getArenaByRegionLocation(location);
 		return (arena == null) ? "" : arena.name;
 	}

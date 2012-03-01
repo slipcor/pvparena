@@ -39,7 +39,7 @@ public class Players {
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
 
 	HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
-	private Debug db = new Debug(31);
+	private static Debug db = new Debug(31);
 
 	/**
 	 * parse all teams and join them colored, comma separated
@@ -64,6 +64,7 @@ public class Players {
 				result += ChatColor.GRAY + p.get().getName() + ChatColor.WHITE;
 			}
 		}
+		db.i("teamstringlist: " + result);
 		return result;
 	}
 
@@ -73,10 +74,12 @@ public class Players {
 	 * @return a map [playername]=>[teamname]
 	 */
 	public HashMap<String, String> getPlayerTeamMap() {
+		db.i("getTeamPlayerMap:");
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals("") && !p.spectator) {
 				result.put(p.get().getName(), p.team);
+				db.i(" - " + p.get().getName() + " => " + p.team);
 			}
 		}
 		return result;
@@ -88,6 +91,7 @@ public class Players {
 	 * @return true if teams have the same amount of players, false otherwise
 	 */
 	public boolean checkEven() {
+		db.i("checkinv if teams are even");
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
@@ -95,15 +99,19 @@ public class Players {
 			if (!p.team.equals("")) {
 				if (!counts.containsKey(p.team)) {
 					counts.put(p.team, 1);
+					db.i(p.team + ": " + 1);
 				} else {
 					int i = counts.get(p.team);
 					counts.put(p.team, i);
+					db.i(p.team + ": " + i);
 				}
 			}
 		}
 
-		if (counts.size() < 1)
+		if (counts.size() < 1) {
+			db.i("noone in there");
 			return false; // noone there => not even
+		}
 
 		int temp = -1;
 		for (int i : counts.values()) {
@@ -111,9 +119,12 @@ public class Players {
 				temp = i;
 				continue;
 			}
-			if (temp != i)
+			if (temp != i) {
+				db.i("NOT EVEN");
 				return false; // different count => not even
+			}
 		}
+		db.i("EVEN");
 		return true; // every team has the same player count!
 	}
 
@@ -131,6 +142,7 @@ public class Players {
 				result++;
 			}
 		}
+		db.i("players having a team: " + result);
 		return result;
 	}
 
@@ -248,6 +260,7 @@ public class Players {
 	 * @param force
 	 */
 	public void reset(Arena arena, boolean force) {
+		db.i("resetting player manager");
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
 			pa.add(p);
@@ -296,7 +309,7 @@ public class Players {
 		for (ArenaPlayer p : players.values()) {
 			if (p.get().equals(player))
 				continue;
-			Arenas.tellPlayer(player, msg);
+			Arenas.tellPlayer(p.get(), msg);
 		}
 	}
 
@@ -307,7 +320,7 @@ public class Players {
 	 *            the team to send to
 	 * @param msg
 	 *            the message to send
-	 * @param player 
+	 * @param player
 	 */
 	public void tellTeam(String team, String msg, ChatColor c, Player player) {
 		if (team.equals("")) {
@@ -317,7 +330,9 @@ public class Players {
 		for (ArenaPlayer p : players.values()) {
 			if (!p.team.equals(team))
 				continue;
-			p.get().sendMessage(c + "[" + team + "] " + player.getName() + ChatColor.WHITE + ": " + msg);
+			p.get().sendMessage(
+					c + "[" + team + "] " + player.getName() + ChatColor.WHITE
+							+ ": " + msg);
 		}
 	}
 
@@ -477,37 +492,40 @@ public class Players {
 		return arena.pm.players.get(player.getName());
 	}
 
-	public static void chooseClass(Arena arena, Player player, Sign sign, String className) {
-		
-		boolean classperms = false;
-		if (arena.cfg.get("general.classperms") != null) {
-			classperms = arena.cfg.getBoolean("general.classperms",
-					false);
-		}
+	public static void chooseClass(Arena arena, Player player, Sign sign,
+			String className) {
 
-		if (classperms) {
-			if (!(PVPArena.hasPerms(player, "pvparena.class."
-					+ sign.getLine(0)))) {
-				Arenas.tellPlayer(player,
-						Language.parse("classperms"));
-				return; // class permission desired and failed =>
-						// announce and OUT
-			}
-		}
+		db.i("forcing player class");
 
-		if (sign != null && arena.cfg.getBoolean("general.signs")) {
-			ArenaClassSign.remove(arena.paSigns, player);
-			Block block = sign.getBlock();
-			ArenaClassSign as = ArenaClassSign.used(
-					block.getLocation(), arena.paSigns);
-			if (as == null) {
-				as = new ArenaClassSign(block.getLocation());
+		if (sign != null) {
+
+			boolean classperms = false;
+			if (arena.cfg.get("general.classperms") != null) {
+				classperms = arena.cfg.getBoolean("general.classperms", false);
 			}
-			arena.paSigns.add(as);
-			if (!as.add(player)) {
-				Arenas.tellPlayer(player,
-						Language.parse("classfull"));
-				return;
+
+			if (classperms) {
+				db.i("checking class perms");
+				if (!(PVPArena.hasPerms(player, "pvparena.class." + className))) {
+					Arenas.tellPlayer(player, Language.parse("classperms"));
+					return; // class permission desired and failed =>
+							// announce and OUT
+				}
+			}
+
+			if (arena.cfg.getBoolean("general.signs")) {
+				ArenaClassSign.remove(arena.paSigns, player);
+				Block block = sign.getBlock();
+				ArenaClassSign as = ArenaClassSign.used(block.getLocation(),
+						arena.paSigns);
+				if (as == null) {
+					as = new ArenaClassSign(block.getLocation());
+				}
+				arena.paSigns.add(as);
+				if (!as.add(player)) {
+					Arenas.tellPlayer(player, Language.parse("classfull"));
+					return;
+				}
 			}
 		}
 		Inventories.clearInventory(player);
@@ -521,6 +539,7 @@ public class Players {
 	}
 
 	public static void playerLeave(Arena arena, Player player) {
+		db.i("fully removing player from arena");
 		ArenaPlayer ap = Players.parsePlayer(arena, player);
 		boolean spectator = ap.spectator;
 
@@ -549,16 +568,31 @@ public class Players {
 		}
 	}
 
+	/**
+	 * return an understandable representation of a player's death cause
+	 * 
+	 * @param arena
+	 *            the arena the death is happening in
+	 * @param player
+	 *            the dying player
+	 * @param cause
+	 *            the cause
+	 * @param damager
+	 *            an eventual damager entity
+	 * @return a colored string
+	 */
 	public static String parseDeathCause(Arena arena, Player player,
 			DamageCause cause, Entity damager) {
-		
+
+		db.i("return a ");
+
 		switch (cause) {
-		case ENTITY_ATTACK: 
+		case ENTITY_ATTACK:
 			if (damager instanceof Player) {
 				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
 				if (ap != null) {
-					return ChatColor.valueOf(arena.paTeams.get(ap.team)) + 
-							ap.get().getName() + ChatColor.YELLOW;
+					return ChatColor.valueOf(arena.paTeams.get(ap.team))
+							+ ap.get().getName() + ChatColor.YELLOW;
 				}
 			}
 			return Language.parse("custom");
@@ -566,13 +600,13 @@ public class Players {
 			if (damager instanceof Player) {
 				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
 				if (ap != null) {
-					return ChatColor.valueOf(arena.paTeams.get(ap.team)) + 
-							ap.get().getName() + ChatColor.YELLOW;
+					return ChatColor.valueOf(arena.paTeams.get(ap.team))
+							+ ap.get().getName() + ChatColor.YELLOW;
 				}
 			}
 			return Language.parse(cause.toString().toLowerCase());
 		default:
-			return Language.parse(cause.toString().toLowerCase());	
+			return Language.parse(cause.toString().toLowerCase());
 		}
 	}
 }

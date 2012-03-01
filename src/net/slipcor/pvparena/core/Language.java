@@ -60,8 +60,7 @@ public class Language {
 				"Permissions plugin not found, defaulting to OP.");
 		config.addDefault("log.nospout",
 				"Spout not found, you are missing some features ;)");
-		config.addDefault("log.spout",
-				"Hooking into Spout!");
+		config.addDefault("log.spout", "Hooking into Spout!");
 
 		config.addDefault("lang.playerleave", "%1% has left the fight!");
 		config.addDefault("lang.youleave", "You have left the fight!");
@@ -212,16 +211,15 @@ public class Language {
 
 		config.addDefault("lang.frag",
 				"%1% killed another player! Total frags: %2%.");
-		
 
-		config.addDefault("lang.edit","edit an arena");
-		config.addDefault("lang.edittrue","Enabled edit mode for arena: %1%");
-		config.addDefault("lang.editfalse","Disabled edit mode for arena: %1%");
-		
+		config.addDefault("lang.edit", "edit an arena");
+		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");
+		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
+
 		/**
 		 * death causes : "player was killed by ****"
 		 */
-		
+
 		config.addDefault("lang.BLOCK_EXPLOSION".toLowerCase(), "an explosion");
 		config.addDefault("lang.CONTACT".toLowerCase(), "a cactus");
 		config.addDefault("lang.CUSTOM".toLowerCase(), "Herobrine");
@@ -234,12 +232,12 @@ public class Language {
 		config.addDefault("lang.LIGHTNING".toLowerCase(), "Thor");
 		config.addDefault("lang.MAGIC".toLowerCase(), "Magical Powers");
 		config.addDefault("lang.POISON".toLowerCase(), "Poison");
-		config.addDefault("lang.PROJECTILE".toLowerCase(), "something he didn't see coming");
+		config.addDefault("lang.PROJECTILE".toLowerCase(),
+				"something he didn't see coming");
 		config.addDefault("lang.STARVATION".toLowerCase(), "hunger");
 		config.addDefault("lang.SUFFOCATION".toLowerCase(), "lack of air");
 		config.addDefault("lang.SUICIDE".toLowerCase(), "Herobrine");
 		config.addDefault("lang.VOID".toLowerCase(), "the Void");
-		
 
 		config.options().copyDefaults(true);
 		try {

@@ -145,6 +145,7 @@ public class Arena {
 	 * teleport all players to their respective spawn
 	 */
 	public void teleportAllToSpawn() {
+		db.i("teleporting all players to their spawns");
 		for (String p : pm.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
 			if (!cfg.getBoolean("arenatype.randomSpawn", false)) {
@@ -257,9 +258,11 @@ public class Arena {
 	public boolean isCustomClassActive() {
 		for (ArenaPlayer p : pm.getPlayers()) {
 			if (!p.spectator && p.getClass().equals("custom")) {
+				db.i("custom class active: true");
 				return true;
 			}
 		}
+		db.i("custom class active: false");
 		return false;
 	}
 
@@ -270,6 +273,8 @@ public class Arena {
 	 *            the player to save
 	 */
 	public void saveMisc(Player player) {
+		db.i("saving player vars: " + player.getName());
+
 		ArenaPlayer p = Players.parsePlayer(this, player);
 		p.exhaustion = player.getExhaustion();
 		p.fireticks = player.getFireTicks();
@@ -315,6 +320,7 @@ public class Arena {
 	 *            the health value
 	 */
 	protected void playersetHealth(Player p, int value) {
+		db.i("setting health to " + value + "/20");
 		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
 			p.setHealth(value);
 		}
@@ -335,6 +341,7 @@ public class Arena {
 	 *            the coord string
 	 */
 	public void tpPlayerToCoordName(Player player, String place) {
+		db.i("teleporting " + player + " to coord " + place);
 		String color = "";
 		if (place.endsWith("lounge")) {
 			// at the start of the match
@@ -373,28 +380,25 @@ public class Arena {
 	 */
 	public boolean contains(Location loc) {
 		Vector pt = loc.toVector();
-		db.i("----------------CONTAINS-------------");
-		db.i("checking for vector: x: " + pt.getBlockX() + ", y:"
+		db.i("CONTAINS: checking for vector: x: " + pt.getBlockX() + ", y:"
 				+ pt.getBlockY() + ", z: " + pt.getBlockZ());
 		if (regions.get("battlefield") != null) {
 			db.i("checking battlefield");
-			if (regions.get("battlefield").contains(
-					pt.toLocation(loc.getWorld()))) {
+			if (regions.get("battlefield").contains(loc)) {
 				return true;
 			}
 		}
 		if (cfg.getBoolean("protection.checkExit", false)
 				&& regions.get("exit") != null) {
 			db.i("checking exit region");
-			if (regions.get("exit").contains(pt.toLocation(loc.getWorld()))) {
+			if (regions.get("exit").contains(loc)) {
 				return true;
 			}
 		}
 		if (cfg.getBoolean("protection.checkSpectator", false)
 				&& regions.get("spectator") != null) {
 			db.i("checking spectator region");
-			if (regions.get("spectator")
-					.contains(pt.toLocation(loc.getWorld()))) {
+			if (regions.get("spectator").contains(loc)) {
 				return true;
 			}
 		}
@@ -407,7 +411,7 @@ public class Arena {
 				continue;
 
 			db.i(" - " + reg.name);
-			if (reg.contains(pt.toLocation(loc.getWorld()))) {
+			if (reg.contains(loc)) {
 				return true;
 			}
 		}
@@ -423,6 +427,7 @@ public class Arena {
 	 *            the coord string to teleport the player to
 	 */
 	public void removePlayer(Player player, String tploc) {
+		db.i("removing player " + player.getName() + " (soft), tp to " + tploc);
 		resetPlayer(player, tploc);
 		pm.setTeam(player, "");
 		pm.remove(player);
@@ -481,6 +486,7 @@ public class Arena {
 	 * force stop an arena
 	 */
 	public void forcestop() {
+		db.i("forcing arena to stop");
 		for (ArenaPlayer p : pm.getPlayers()) {
 			removePlayer(p.get(), "spectator");
 			p.spectator = true;
@@ -492,7 +498,7 @@ public class Arena {
 	 * calculate a powerup and commit it
 	 */
 	public void calcPowerupSpawn() {
-		db.i("committing");
+		db.i("powerups?");
 		if (this.pum == null)
 			return;
 
@@ -538,10 +544,11 @@ public class Arena {
 	 *            the item to drop
 	 */
 	private void dropItemOnSpawn(Material item) {
+		db.i("calculating item spawn location");
 		Location aim = Spawns.getCoords(this, "powerup").getBlock()
 				.getRelative(BlockFace.UP).getLocation();
 
-		db.i("dropping item on spawn.");
+		db.i("dropping item on spawn: " + aim.toString());
 		Bukkit.getWorld(this.getWorld()).dropItem(aim, new ItemStack(item, 1));
 
 	}
@@ -554,6 +561,7 @@ public class Arena {
 	 * @return the saved location
 	 */
 	public Location getPlayerOldLocation(Player player) {
+		db.i("reading old location of player " + player.getName());
 		ArenaPlayer ap = Players.parsePlayer(this, player);
 		return ap.location;
 	}
@@ -566,7 +574,9 @@ public class Arena {
 	 * @param lives
 	 *            the lives to set and display
 	 */
-	public void respawnPlayer(Player player, int lives, DamageCause cause, Entity damager) {
+	public void respawnPlayer(Player player, int lives, DamageCause cause,
+			Entity damager) {
+		db.i("respawning player " + player.getName());
 		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
@@ -583,16 +593,18 @@ public class Arena {
 		String color = paTeams.get(sTeam);
 
 		if (cfg.getBoolean("arenatype.flags")) {
-			pm.tellEveryone(Language.parse("killedby",
-					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW, Players.parseDeathCause(this, player, cause, damager)));
+			pm.tellEveryone(Language.parse("killedby", ChatColor.valueOf(color)
+					+ player.getName() + ChatColor.YELLOW,
+					Players.parseDeathCause(this, player, cause, damager)));
 			tpPlayerToCoordName(player, sTeam + "spawn");
 
 			Flags.checkEntityDeath(this, player);
 		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
 			pm.tellEveryone(Language.parse("killedbylives",
 					ChatColor.valueOf(color) + player.getName()
-							+ ChatColor.YELLOW, Players.parseDeathCause(this, player, cause, damager), String.valueOf(lives)));
+							+ ChatColor.YELLOW,
+					Players.parseDeathCause(this, player, cause, damager),
+					String.valueOf(lives)));
 			paLives.put(player.getName(), lives);
 		}
 		if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
@@ -612,13 +624,15 @@ public class Arena {
 	 *            the color string to parse
 	 */
 	public void colorizePlayer(Player player, String color) {
+		db.i("colorizing player " + player.getName() + "; color " + color);
+
 		if (color.equals("")) {
 			player.setDisplayName(player.getName());
-			
+
 			if (PVPArena.spoutHandler != null)
 				SpoutManager.getAppearanceManager().setGlobalTitle(player,
-				player.getName());
-			
+						player.getName());
+
 			return;
 		}
 
@@ -626,7 +640,7 @@ public class Arena {
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
 		if (PVPArena.spoutHandler != null)
 			SpoutManager.getAppearanceManager().setGlobalTitle(player,
-			n.replaceAll("(&([a-f0-9]))", "§$2"));
+					n.replaceAll("(&([a-f0-9]))", "§$2"));
 	}
 
 	/**
@@ -636,6 +650,7 @@ public class Arena {
 	 *            the player to give the reward
 	 */
 	public void giveRewards(Player player) {
+		db.i("giving rewards to " + player.getName());
 		if (PVPArena.eco != null) {
 			for (String nKey : pm.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
@@ -656,9 +671,9 @@ public class Arena {
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						Announcement.announce(this, type.PRIZE, Language
-								.parse("awarded", PVPArena.eco.format(cfg
-										.getInt("money.reward", 0))));
+						Announcement.announce(this, type.PRIZE, Language.parse(
+								"awarded", PVPArena.eco.format(cfg.getInt(
+										"money.reward", 0))));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
@@ -702,11 +717,12 @@ public class Arena {
 	 * restore an arena if region is set
 	 */
 	public void clearArena() {
+		db.i("clearing arena");
 		if (cfg.get("regions") == null) {
-			db.i("Region not set, skipping 1!");
+			db.i("Region not set, skipping!");
 			return;
 		} else if (regions.get("battlefield") == null) {
-			db.i("Region not set, skipping 2!");
+			db.i("Battlefield region not set, skipping!");
 			return;
 		}
 		regions.get("battlefield").restore();
@@ -716,6 +732,7 @@ public class Arena {
 	 * reset an arena
 	 */
 	public void reset(boolean force) {
+		db.i("resetting arena; force: " + String.valueOf(force));
 		clearArena();
 		paReady.clear();
 		paChat.clear();
@@ -809,6 +826,7 @@ public class Arena {
 		if (!cfg.getBoolean("arenatype.deathmatch")) {
 			return; // no deathmatch, out!
 		}
+		db.i("handling deathmatch flag");
 
 		String sTeam = pm.getTeam(attacker);
 		if (sTeam.equals("")) {
@@ -826,6 +844,7 @@ public class Arena {
 	}
 
 	public int countActiveTeams() {
+		db.i("counting active teams");
 		List<String> activeteams = new ArrayList<String>(0);
 		HashMap<String, String> test = pm.getPlayerTeamMap();
 		for (String sPlayer : test.keySet()) {
@@ -842,6 +861,7 @@ public class Arena {
 				}
 			}
 		}
+		db.i("result: " + activeteams.size());
 		return activeteams.size();
 	}
 }

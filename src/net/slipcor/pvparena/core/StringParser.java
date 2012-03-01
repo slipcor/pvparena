@@ -38,6 +38,7 @@ public class StringParser {
 			if (dc.name().equalsIgnoreCase(color))
 				return dc.getData();
 		}
+		db.w("unknown color enum: " + color);
 
 		return (short) 0;
 	}
@@ -50,6 +51,7 @@ public class StringParser {
 	 * @return the itemstack
 	 */
 	public static ItemStack getItemStackFromString(String s) {
+		db.i("parsing itemstack string: " + s);
 
 		// [itemid/name]~[dmg]~[data]:[amount]
 
@@ -93,6 +95,7 @@ public class StringParser {
 	 * @return the material
 	 */
 	public static Material parseMat(String string) {
+		db.i("parsing material: " + string);
 		Material mat;
 		try {
 			mat = Material.getMaterial(Integer.parseInt(string));
@@ -106,5 +109,13 @@ public class StringParser {
 			db.w("unrecognized material: " + string);
 		}
 		return mat;
+	}
+
+	public static String parseArray(String[] args) {
+		String result = "";
+		for (String s : args) {
+			result += " " + s;
+		}
+		return result;
 	}
 }

@@ -8,7 +8,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
@@ -37,7 +36,9 @@ public class Teams {
 	 * @param player
 	 *            the player to assign
 	 */
-	public static void chooseColor(Arena arena, Player player) {
+	public static void choosePlayerTeam(Arena arena, Player player) {
+
+		db.i("calculating player team");
 
 		boolean free = !arena.cfg.getBoolean("arenatype.teams");
 
@@ -53,15 +54,21 @@ public class Teams {
 		} else {
 			arena.tpPlayerToCoordName(player, team + "lounge");
 		}
-		Arenas.tellPlayer(player, Language.parse("youjoined"
-				+ (free ? "free" : ""),
-				ChatColor.valueOf(arena.paTeams.get(team)) + team));
-		Announcement.announce(arena, type.JOIN, Language.parse(
-				"playerjoined" + (free ? "free" : ""), player.getName(),
-				ChatColor.valueOf(arena.paTeams.get(team)) + team));
-		arena.pm.tellEveryoneExcept(player, Language.parse("playerjoined"
-				+ (free ? "free" : ""), player.getName(),
-				ChatColor.valueOf(arena.paTeams.get(team)) + team));
+		Arenas.tellPlayer(
+				player,
+				Language.parse("youjoined" + (free ? "free" : ""),
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
+		Announcement.announce(
+				arena,
+				type.JOIN,
+				Language.parse("playerjoined" + (free ? "free" : ""),
+						player.getName(),
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
+		arena.pm.tellEveryoneExcept(
+				player,
+				Language.parse("playerjoined" + (free ? "free" : ""),
+						player.getName(),
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
 	}
 
 	/**
@@ -70,6 +77,7 @@ public class Teams {
 	 * @return the team name
 	 */
 	public static String calcFreeTeam(Arena arena) {
+		db.i("calculating free team");
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
@@ -150,11 +158,11 @@ public class Teams {
 	 * @return one empty team name
 	 */
 	private static String returnEmptyTeam(Arena arena, Set<String> set) {
+		db.i("choosing an empty team");
 		HashSet<String> empty = new HashSet<String>();
 		for (String s : arena.paTeams.keySet()) {
 			db.i("team: " + s);
 			if (set.contains(s)) {
-				db.i("done");
 				continue;
 			}
 			empty.add(s);

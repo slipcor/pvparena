@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.16
  * 
  */
 
@@ -33,7 +33,7 @@ public class Settings {
 	private static HashMap<String, String> types = new HashMap<String, String>();
 
 	private Debug db = new Debug(34);
-	
+
 	static {
 
 		types.put("tp.win", "tp");
@@ -77,6 +77,7 @@ public class Settings {
 
 		types.put("goal.timed", "int");
 
+		types.put("join.explicitPermission", "boolean");
 		types.put("join.forceEven", "boolean");
 		types.put("join.manual", "boolean");
 		types.put("join.random", "boolean");
@@ -91,12 +92,6 @@ public class Settings {
 		types.put("money.betWinFactor", "double");
 		types.put("money.betTeamWinFactor", "double");
 		types.put("money.betPlayerWinFactor", "double");
-		/**
-		 * 
--config: betWinFactor [2]
--config: betTeamWinFactor [1] 
--config: betPlayerWinFactor [2]
-		 */
 
 		types.put("protection.spawn", "int");
 		types.put("protection.enabled", "boolean");
@@ -122,7 +117,6 @@ public class Settings {
 		types.put("ready.minTeam", "int");
 		types.put("ready.maxTeam", "int");
 		types.put("ready.autoclass", "string");
-
 
 		types.put("announcements.join", "boolean");
 		types.put("announcements.start", "boolean");
@@ -212,11 +206,14 @@ public class Settings {
 	 *            the value to set
 	 */
 	public void set(Player player, String node, String value) {
+		db.i("player '" + player.getName() + "' tries to set node '" + node
+				+ "' to '" + value + "'");
 
 		if (!PVPArena.hasAdminPerms(player)
 				&& !PVPArena.hasCreatePerms(player, arena)) {
 
-			Arenas.tellPlayer(player, Language.parse("nopermto", Language.parse("set")));
+			Arenas.tellPlayer(player,
+					Language.parse("nopermto", Language.parse("set")));
 			return;
 		}
 

@@ -26,7 +26,8 @@ import org.bukkit.block.Block;
 public class Blocks {
 	public static HashMap<Location, ArenaBlock> blocks = new HashMap<Location, ArenaBlock>();
 
-	private Debug db = new Debug(24);
+	private static Debug db = new Debug(24);
+
 	/**
 	 * get all blocks that have to be reset (arena wise)
 	 * 
@@ -37,10 +38,12 @@ public class Blocks {
 	private static HashMap<Location, ArenaBlock> getBlocks(Arena arena) {
 		HashMap<Location, ArenaBlock> result = new HashMap<Location, ArenaBlock>();
 
+		db.i("reading all arenablocks");
 		for (Location l : blocks.keySet()) {
 			if (blocks.get(l).arena.equals(arena.name)
 					|| blocks.get(l).arena.equals("")) {
 				result.put(l, blocks.get(l));
+				db.i(" - " + l.toString());
 			}
 		}
 
@@ -54,6 +57,7 @@ public class Blocks {
 	 *            the arena to reset
 	 */
 	public static void resetBlocks(Arena arena) {
+		db.i("resetting blocks");
 		HashMap<Location, ArenaBlock> removals = getBlocks(arena);
 		for (Location l : removals.keySet()) {
 			removals.get(l).reset();
@@ -68,6 +72,7 @@ public class Blocks {
 	 *            the block to save
 	 */
 	public static void saveBlock(Block block) {
+		db.i("save block at " + block.getLocation().toString());
 		if (!blocks.containsKey(block.getLocation())) {
 			blocks.put(block.getLocation(), new ArenaBlock(block));
 		}
@@ -82,6 +87,8 @@ public class Blocks {
 	 *            the material to override
 	 */
 	public static void saveBlock(Block block, Material type) {
+		db.i("save block at " + block.getLocation().toString());
+		db.i(" - type: " + type.toString());
 		if (!blocks.containsKey(block.getLocation())) {
 			blocks.put(block.getLocation(), new ArenaBlock(block, type));
 		}

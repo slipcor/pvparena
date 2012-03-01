@@ -22,7 +22,7 @@ import org.bukkit.block.Sign;
  */
 public class ArenaBlock {
 	private Debug db = new Debug(9);
-	
+
 	public String arena;
 	private final Location location;
 	public final Material material;
@@ -39,6 +39,11 @@ public class ArenaBlock {
 		location = block.getLocation();
 		material = block.getType();
 		data = block.getData();
+
+		db.i("creating arena block:");
+		db.i("loc: " + location.toString() + "; mat: " + material.toString()
+				+ "; data " + String.valueOf(data));
+
 		try {
 			arena = Arenas.getArenaByRegionLocation(location).name;
 		} catch (Exception e) {
@@ -69,6 +74,11 @@ public class ArenaBlock {
 		material = type;
 		data = block.getData();
 		lines = null;
+
+		db.i("creating arena block:");
+		db.i("loc: " + location.toString() + "; mat: " + material.toString()
+				+ "; data " + String.valueOf(data));
+
 	}
 
 	/**

@@ -20,7 +20,8 @@ import org.bukkit.entity.Player;
  * 
  */
 public class Announcement {
-	private Debug db = new Debug(7);
+	private static Debug db = new Debug(7);
+
 	public static enum type {
 		JOIN, START, END, WINNER, LOSER, PRIZE;
 	}
@@ -39,6 +40,7 @@ public class Announcement {
 		if (!sendCheck(a, t)) {
 			return; // do not send the announcement type
 		}
+		db.i("announce [" + a.name + "] type: " + t.name() + " : " + message);
 		Bukkit.getServer().getWorld(a.getWorld()).getPlayers();
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
@@ -78,8 +80,10 @@ public class Announcement {
 	 */
 	private static void send(Arena a, Player p, String message) {
 		if (a.cfg.getInt("announcements.radius") > 0) {
-			if (a.regions.get("battlefield") == null || a.regions.get("battlefield").tooFarAway(
-					a.cfg.getInt("announcements.radius"), p.getLocation())) {
+			if (a.regions.get("battlefield") == null
+					|| a.regions.get("battlefield").tooFarAway(
+							a.cfg.getInt("announcements.radius"),
+							p.getLocation())) {
 				return; // too far away: out (checks world!)
 			}
 		}

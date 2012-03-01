@@ -66,6 +66,7 @@ public class EntityListener implements Listener {
 			if (!Players.parsePlayer(arena, player).spectator) {
 				if (!arena.isCustomClassActive()
 						|| !arena.cfg.getBoolean("game.allowDrops")) {
+					db.i("clearing drops");
 					event.getDrops().clear();
 				}
 
@@ -88,9 +89,9 @@ public class EntityListener implements Listener {
 
 		String sTeam = arena.pm.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
-		Announcement.announce(arena, type.LOSER, Language.parse(
-				"killedby", player.getName(), Players.parseDeathCause(arena,
-						player, player.getLastDamageCause().getCause(), null)));
+		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
+				player.getName(), Players.parseDeathCause(arena, player, player
+						.getLastDamageCause().getCause(), null)));
 		arena.pm.tellEveryone(Language.parse("killedby",
 				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW,
 				Players.parseDeathCause(arena, player, player
@@ -193,11 +194,11 @@ public class EntityListener implements Listener {
 	 *            the triggering event
 	 */
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		
+
 		if (event.isCancelled()) {
 			return;
 		}
-		
+
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
@@ -269,13 +270,15 @@ public class EntityListener implements Listener {
 				}
 			}
 		}
-		
-		if ((p1 != null && p2 != null) && p1 instanceof Player && p2 instanceof Player) {
+
+		if ((p1 != null && p2 != null) && p1 instanceof Player
+				&& p2 instanceof Player) {
 			if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
-				event.setCancelled(true); // cancel events for regular no PVP servers
+				event.setCancelled(true); // cancel events for regular no PVP
+											// servers
 			}
 		}
-		
+
 		if ((p2 == null) || (!(p2 instanceof Player))) {
 			return;
 		}
@@ -296,16 +299,17 @@ public class EntityListener implements Listener {
 		db.i("both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
-		
+
 		if (arena.pm.getTeam(defender).equals(""))
 			return;
 
 		db.i("both players part of the arena");
-		
+
 		if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
-			event.setCancelled(false); // uncancel events for regular no PVP servers
+			event.setCancelled(false); // uncancel events for regular no PVP
+										// servers
 		}
-		
+
 		if ((!arena.cfg.getBoolean("game.teamKill", false))
 				&& (arena.pm.getTeam(attacker)).equals(arena.pm
 						.getTeam(defender))) {

@@ -47,11 +47,9 @@ public class Ends {
 	 *            winning team?
 	 */
 	public static void commit(Arena arena, String team, boolean win) {
-		db.i("win:" + String.valueOf(win));
 		if (arena.cfg.getBoolean("arenatype.deathmatch")
 				|| arena.cfg.getBoolean("arenatype.domination")) {
 			win = !win;
-			db.i("win:" + String.valueOf(win));
 		}
 		db.i("[FLAG/DM/DOM] committing end: " + team);
 		db.i("win: " + String.valueOf(win));
@@ -111,8 +109,16 @@ public class Ends {
 	 * @return true if we ended the game just yet, false otherwise
 	 */
 	public static boolean checkAndCommit(Arena arena) {
+		db.i("checking for arena end");
+		if (!arena.fightInProgress) {
+			db.i("no fight, no end ^^");
+			return false;
+		}
+
 		if (!arena.cfg.getBoolean("arenatype.teams")) {
+			db.i("[FREE]");
 			if (arena.pm.getPlayerTeamMap().size() > 1) {
+				db.i("more than one team active => no end :p");
 				return false;
 			}
 
@@ -134,6 +140,7 @@ public class Ends {
 			return true;
 		}
 		if (arena.cfg.getBoolean("arenatype.flags")) {
+			db.i("[FLAG]");
 
 			if (arena.pm.countPlayersInTeams() < 2) {
 				String team = "$%&/";
@@ -147,9 +154,8 @@ public class Ends {
 			return false;
 
 		}
+		db.i("[TEAMS]");
 
-		if (!arena.fightInProgress)
-			return false;
 		List<String> activeteams = new ArrayList<String>(0);
 		String team = "";
 		HashMap<String, String> test = arena.pm.getPlayerTeamMap();
@@ -189,7 +195,9 @@ public class Ends {
 		}
 
 		if (PVPArena.eco != null) {
+			db.i("eConomy set, parse bets");
 			for (String nKey : arena.pm.paPlayersBetAmount.keySet()) {
+				db.i("bet: " + nKey);
 				String[] nSplit = nKey.split(":");
 
 				if (arena.paTeams.get(nSplit[1]) == null
@@ -197,13 +205,16 @@ public class Ends {
 					continue;
 
 				if (nSplit[1].equalsIgnoreCase(team)) {
-					double teamFactor = arena.cfg.getDouble("money.betTeamWinFactor") * arena.teamCount;
+					double teamFactor = arena.cfg
+							.getDouble("money.betTeamWinFactor")
+							* arena.teamCount;
 					if (teamFactor <= 0) {
 						teamFactor = 1;
 					}
 					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
-							
-					double amount = arena.pm.paPlayersBetAmount.get(nKey) * teamFactor;
+
+					double amount = arena.pm.paPlayersBetAmount.get(nKey)
+							* teamFactor;
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {
@@ -236,6 +247,7 @@ public class Ends {
 
 		int max = -1;
 		HashSet<String> result = new HashSet<String>();
+		db.i("timed end!");
 
 		for (String sTeam : arena.paTeams.keySet()) {
 			iKills = 0;
@@ -289,13 +301,16 @@ public class Ends {
 					continue;
 
 				if (result.contains(nSplit[1])) {
-					double teamFactor = arena.cfg.getDouble("money.betTeamWinFactor") * arena.teamCount;
+					double teamFactor = arena.cfg
+							.getDouble("money.betTeamWinFactor")
+							* arena.teamCount;
 					if (teamFactor <= 0) {
 						teamFactor = 1;
 					}
 					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
-							
-					double amount = arena.pm.paPlayersBetAmount.get(nKey) * teamFactor;
+
+					double amount = arena.pm.paPlayersBetAmount.get(nKey)
+							* teamFactor;
 
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					if (ma == null) {

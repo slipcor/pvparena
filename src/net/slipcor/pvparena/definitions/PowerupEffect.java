@@ -223,10 +223,14 @@ public class PowerupEffect {
 					String sTeam = arena.pm.getTeam(player);
 
 					Announcement.announce(arena, Announcement.type.LOSER,
-							Language.parse("killedby", player.getName(), Players.parseDeathCause(arena, player, DamageCause.MAGIC, player)));
+							Language.parse("killedby", player.getName(),
+									Players.parseDeathCause(arena, player,
+											DamageCause.MAGIC, player)));
 					arena.pm.tellEveryone(Language.parse("killedby",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
-									+ player.getName() + ChatColor.YELLOW, Players.parseDeathCause(arena, player, DamageCause.MAGIC, player)));
+									+ player.getName() + ChatColor.YELLOW,
+							Players.parseDeathCause(arena, player,
+									DamageCause.MAGIC, player)));
 					Players.parsePlayer(arena, player).losses++;
 					// needed so player does not get found when dead
 					arena.removePlayer(player, "lose");

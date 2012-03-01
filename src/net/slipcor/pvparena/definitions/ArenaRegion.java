@@ -60,7 +60,7 @@ public class ArenaRegion {
 		min = lMin.toVector();
 		max = lMax.toVector();
 		world = lMin.getWorld();
-		db.i("creating region: " + sName + " - "
+		db.i("created region: " + sName + " - "
 				+ (type.equals(regionType.CUBOID) ? "cuboid" : "sphere"));
 	}
 
@@ -74,6 +74,7 @@ public class ArenaRegion {
 	 * @return a recalculated pair of locations
 	 */
 	private Location[] sanityCheck(Location lMin, Location lMax) {
+		db.i("santizing locations");
 		boolean x = (lMin.getBlockX() > lMax.getBlockX());
 		boolean y = (lMin.getBlockY() > lMax.getBlockY());
 		boolean z = (lMin.getBlockZ() > lMax.getBlockZ());
@@ -146,45 +147,57 @@ public class ArenaRegion {
 	 * @return true if the regions overlap, false otherwise
 	 */
 	public boolean overlapsWith(ArenaRegion paRegion) {
+		db.i("checking if " + name + " overlaps with " + paRegion.name);
 		if (this.cuboid && paRegion.cuboid) {
 			// compare 2 cuboids
+			db.i("compare 2 cuboids");
 			if (min.getX() > paRegion.max.getX()
 					|| min.getY() > paRegion.max.getY()
 					|| min.getZ() > paRegion.max.getZ()) {
+				db.i("pos greater than other region");
 				return false;
 			}
 			if (paRegion.min.getX() > max.getX()
 					|| paRegion.min.getY() > max.getY()
 					|| paRegion.min.getZ() > max.getZ()) {
+				db.i("pos smaller than other region");
 				return false;
 			}
-
+			db.i("min ^ max overlap!");
 			return true;
 		} else if (!this.cuboid && !paRegion.cuboid) {
 			// compare 2 spheres
+			db.i("compare 2 spheres");
 			Vector thisCenter = this.max.getMidpoint(this.min);
 			Vector thatCenter = paRegion.max.getMidpoint(paRegion.min);
 
 			double thisRadius = this.max.distance(min) / 2;
 			double thatRadius = paRegion.max.distance(paRegion.min) / 2;
 
+			db.i("dist: " + thisCenter.distance(thatCenter) + "; thisRadius: "
+					+ thisRadius + "; thatRadius: " + thatRadius);
+
 			return thisCenter.distance(thatCenter) < (thisRadius + thatRadius);
 
 		} else if (this.cuboid && !paRegion.cuboid) {
 			// we are cube and search for intersecting sphere
 
+			db.i("compare local cube to other sphere");
+
 			Vector thisCenter = this.max.getMidpoint(this.min);
 			Vector thatCenter = paRegion.max.getMidpoint(paRegion.min);
 
 			if (contains(thatCenter.toLocation(world))) {
+				db.i("cuboid is INSIDE sphere");
 				return true; // the sphere is inside!
 			}
 
 			Vector diff = thatCenter.subtract(thisCenter); // diff is pointing
 															// from that to this
-
+			db.i("checking calculated vector");
 			return this.contains(diff.normalize().toLocation(world));
 		} else {
+			db.i("link=>other way round!");
 			return paRegion.overlapsWith(this); // just check the other freaking
 												// way round!
 		}
@@ -197,7 +210,7 @@ public class ArenaRegion {
 	 */
 	public void dropItemRandom(Material item) {
 
-		db.i("dropping item");
+		db.i("dropping item " + item.toString());
 		int diffx = (int) (min.getX() - max.getX());
 		int diffy = (int) (min.getY() - max.getY());
 		int diffz = (int) (min.getZ() - max.getZ());
@@ -243,7 +256,7 @@ public class ArenaRegion {
 	 * restore the region (atm just remove all arrows and items)
 	 */
 	public void restore() {
-
+		db.i("restoring region " + name);
 		for (Entity e : world.getEntities()) {
 			if (((!(e instanceof Item)) && (!(e instanceof Arrow)))
 					|| (!contains(e.getLocation())))

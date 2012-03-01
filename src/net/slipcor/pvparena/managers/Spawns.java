@@ -115,6 +115,8 @@ public class Spawns {
 		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
 				+ yaw.toString() + "," + pitch.toString();
 
+		db.i("setting spawn " + place + " to " + s.toString());
+
 		arena.cfg.set("spawns." + place, s);
 
 		arena.cfg.save();
@@ -140,6 +142,8 @@ public class Spawns {
 		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
 				+ yaw.toString() + "," + pitch.toString();
 
+		db.i("setting spawn " + place + " to " + s.toString());
+
 		arena.cfg.set("spawns." + place, s);
 
 		arena.cfg.save();
@@ -157,6 +161,7 @@ public class Spawns {
 	 * @return true if the player is near, false otherwise
 	 */
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
+		db.i("checking if arena is near a spawn");
 		if (!arena.pm.existsPlayer(player)) {
 			return false;
 		}
@@ -168,6 +173,7 @@ public class Spawns {
 
 		for (Location loc : spawns) {
 			if (loc.distance(player.getLocation()) <= diff) {
+				db.i("found near spawn: " + loc.toString());
 				return true;
 			}
 		}
@@ -185,6 +191,7 @@ public class Spawns {
 	 * @return a set of possible spawn matches
 	 */
 	public static HashSet<Location> getSpawns(Arena arena, String sTeam) {
+		db.i("reading spawns of arena " + arena + " (" + sTeam + ")");
 		HashSet<Location> result = new HashSet<Location>();
 
 		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
@@ -201,6 +208,7 @@ public class Spawns {
 					continue;
 				}
 			}
+			db.i(" - " + name);
 			String sLoc = arena.cfg.getString("spawns." + name, null);
 			result.add(Config.parseLocation(world, sLoc));
 		}

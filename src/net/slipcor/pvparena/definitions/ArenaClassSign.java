@@ -30,6 +30,7 @@ public class ArenaClassSign {
 	 */
 	public ArenaClassSign(Location loc) {
 		location = loc;
+		db.i("adding arena class sign: " + location.toString());
 		this.clear();
 	}
 

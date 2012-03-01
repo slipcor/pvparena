@@ -52,6 +52,8 @@ public class Statistics {
 	 * @return an array of ArenaPlayer
 	 */
 	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
+		db.i("getting stats: " + a.name + " sorted by " + sortBy + " "
+				+ (desc ? "desc" : "asc"));
 		ArenaPlayer[] aps = new ArenaPlayer[a.pm.getPlayers().size()];
 		int i = 0;
 		for (ArenaPlayer p : a.pm.getPlayers()) {
@@ -168,7 +170,7 @@ public class Statistics {
 	 * @return an Array of String
 	 */
 	public static String[] read(ArenaPlayer[] players, type t) {
-		String[] result = new String[players.length<8?8:players.length];
+		String[] result = new String[players.length < 8 ? 8 : players.length];
 		int i = 0;
 		for (ArenaPlayer p : players) {
 			if (t.equals(type.MAXDAMAGE)) {

@@ -26,17 +26,18 @@ public class Regions {
 	/**
 	 * check if an arena has overlapping battlefield region with another arena
 	 * 
-	 * @param arena2
-	 *            TODO
-	 * @param arena
+	 * @param a1
+	 *            the arena to check
+	 * @param a2
 	 *            the arena to check
 	 * @return true if it does not overlap, false otherwise
 	 */
-	public static boolean checkRegion(Arena arena2, Arena arena) {
-		if ((arena2.regions.get("battlefield") != null)
-				&& (arena.regions.get("battlefield") != null)) {
-			return !arena.regions.get("battlefield").overlapsWith(
-					arena2.regions.get("battlefield"));
+	public static boolean checkRegion(Arena a1, Arena a2) {
+		if ((a1.regions.get("battlefield") != null)
+				&& (a2.regions.get("battlefield") != null)) {
+			db.i("checking battlefield region overlapping");
+			return !a2.regions.get("battlefield").overlapsWith(
+					a1.regions.get("battlefield"));
 		}
 		return true;
 	}
@@ -68,7 +69,7 @@ public class Regions {
 			return false;
 		if (arena.regions.get("battlefield") == null) {
 			Bukkit.getLogger().warning(
-					"[PVP Arena] JoinRange set, but Battlefield not set!");
+					"[PVP Arena] join range set, but battlefield not set!");
 			return false;
 		}
 		return arena.regions.get("battlefield").tooFarAway(joinRange,

@@ -27,7 +27,8 @@ import org.bukkit.entity.Player;
 
 public class Dominate {
 
-	private Debug db = new Debug(27);
+	private static Debug db = new Debug(27);
+
 	/**
 	 * check a moving player for nearby flags
 	 * 
@@ -77,8 +78,7 @@ public class Dominate {
 
 				if (arena.paRuns.containsKey(loc)) {
 					if (arena.paRuns.get(loc).take) {
-						// runnable is trying to score
-						// abort
+						db.i("runnable is trying to score, abort");
 						int del_id = arena.paRuns.get(loc).ID;
 						Bukkit.getScheduler().cancelTask(del_id);
 

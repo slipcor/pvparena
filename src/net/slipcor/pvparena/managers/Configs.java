@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.16
  * 
  */
 
@@ -90,6 +90,7 @@ public class Configs {
 		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
 
+		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
 		config.addDefault("join.random", Boolean.valueOf(true));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
@@ -107,7 +108,7 @@ public class Configs {
 		config.addDefault("money.betWinFactor", Double.valueOf(1));
 		config.addDefault("money.betTeamWinFactor", Double.valueOf(1));
 		config.addDefault("money.betPlayerWinFactor", Double.valueOf(1));
-		
+
 		config.addDefault("protection.spawn", Integer.valueOf(3));
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
@@ -176,13 +177,14 @@ public class Configs {
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.6.3.0");
+		cfg.set("cfgver", "0.6.15.0");
 		cfg.save();
 		cfg.load();
 
 		Map<String, Object> classes = config.getConfigurationSection(
 				"classitems").getValues(false);
 		arena.paClassItems.clear();
+		db.i("reading class items");
 		for (String className : classes.keySet()) {
 			String s = (String) classes.get(className);
 			String[] ss = s.split(",");
@@ -277,11 +279,7 @@ public class Configs {
 		}
 		if (!cfg.getBoolean("usesTeams") && type.equals("free")) {
 
-			db.i("FreeFight Arena default overrides START");
-			db.i("+teamKilling, -manualTeamSelect, +randomTeamSelect,");
-			db.i("-forceWoolHead, -forceEven, +randomSpawn");
-			db.i("only one team: free");
-			db.i("FreeFight Arena default overrides END");
+			db.i("FreeFight Arena default overrides");
 
 			cfg.set("game.teamKill", true);
 			cfg.set("join.manual", false);
@@ -294,7 +292,7 @@ public class Configs {
 			cfg.save();
 		}
 		if (config.get("spawns") != null) {
-			db.i("spawns exist");
+			db.i("checkinf for leaderboard");
 			if (config.get("spawns.leaderboard") != null) {
 				db.i("leaderboard exists");
 				Location loc = Config.parseLocation(
@@ -371,7 +369,7 @@ public class Configs {
 		if (arena.cfg.get("spawns") == null) {
 			return "no spawns set";
 		}
-		
+
 		if (arena.edit) {
 			return "edit mode!";
 		}

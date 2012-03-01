@@ -34,6 +34,7 @@ public class ArenaBoardColumn {
 		board = ab;
 		location = loc;
 
+		db.i("fetching sign column");
 		fetchSigns();
 	}
 

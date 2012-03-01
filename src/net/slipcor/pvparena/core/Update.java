@@ -28,7 +28,6 @@ import org.w3c.dom.NodeList;
  */
 
 public class Update {
-	private Debug db = new Debug(6);
 
 	public static boolean msg = false;
 	public static boolean outdated = false;
@@ -37,12 +36,18 @@ public class Update {
 	private static String vOnline;
 	private static String vThis;
 	private static Plugin plugin;
+	private static Debug db = new Debug(6);
 
 	/**
 	 * check for updates, update variables
 	 */
 	public static void updateCheck(Plugin instance) {
+		db.i("checking for updates");
 		plugin = instance;
+		if (!plugin.getConfig().getBoolean("updatecheck")) {
+			return;
+		}
+
 		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
 		try {
 			URL url = new URL(pluginUrlString);
@@ -68,8 +73,10 @@ public class Update {
 							.indexOf(" ") + 1);
 				}
 
-				Update.vOnline = sOnlineVersion.replace("v", "");
-				Update.vThis = sThisVersion.replace("v", "");
+				vOnline = sOnlineVersion.replace("v", "");
+				vThis = sThisVersion.replace("v", "");
+				db.i("online version: " + vOnline);
+				db.i("local version: " + vThis);
 
 				calculateVersions();
 				return;
@@ -82,6 +89,7 @@ public class Update {
 	 * calculate the message variables based on the versions
 	 */
 	private static void calculateVersions() {
+		db.i("calculating versions");
 		String[] aOnline = vOnline.split("\\.");
 		String[] aThis = vThis.split("\\.");
 		outdated = false;
@@ -97,7 +105,7 @@ public class Update {
 				msg = true;
 				outdated = (o > t);
 				v = (byte) i;
-				Update.message(null);
+				message(null);
 				return;
 			} catch (Exception e) {
 				calculateRadixString(aOnline[i], aThis[i], i);
@@ -116,6 +124,7 @@ public class Update {
 	 */
 	private static void calculateRadixString(String sOnline, String sThis,
 			int pos) {
+		db.i("calculating including letters");
 		try {
 			int o = Integer.parseInt(sOnline, 46);
 			int t = Integer.parseInt(sThis, 46);
@@ -126,7 +135,7 @@ public class Update {
 			msg = true;
 			outdated = (o > t);
 			v = (byte) pos;
-			Update.message(null);
+			message(null);
 		} catch (Exception e) {
 		}
 	}
@@ -159,6 +168,7 @@ public class Update {
 			}
 		}
 		if (!msg) {
+			db.i("version is up to date!");
 			return;
 		}
 

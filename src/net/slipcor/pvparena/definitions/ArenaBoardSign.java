@@ -30,6 +30,7 @@ public class ArenaBoardSign {
 	public ArenaBoardSign(ArenaBoardColumn abc, Location loc) {
 		column = abc;
 		location = loc;
+		db.i("adding sign at location " + location.toString());
 	}
 
 	/**

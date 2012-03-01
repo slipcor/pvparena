@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.register.payment.Methods;
 
@@ -27,7 +26,6 @@ import org.bukkit.event.server.PluginEnableEvent;
 
 public class ServerListener implements Listener {
 	private Methods methods = null;
-	private Debug db = new Debug(22);
 
 	/**
 	 * create a server listener instance

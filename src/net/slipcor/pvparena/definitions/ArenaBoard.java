@@ -5,7 +5,6 @@ import java.util.HashMap;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Statistics;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -42,7 +41,7 @@ public class ArenaBoard {
 		location = loc;
 		arena = a;
 
-		Bukkit.getLogger().info("constructing");
+		db.i("constructing arena board");
 		construct();
 	}
 
@@ -55,7 +54,7 @@ public class ArenaBoard {
 		try {
 			Sign s = (Sign) l.getBlock().getState();
 			BlockFace bf = getRightDirection(s);
-			Bukkit.getLogger().info("parsing signs:");
+			db.i("parsing signs:");
 			do {
 				Statistics.type t = null;
 				try {
@@ -65,7 +64,7 @@ public class ArenaBoard {
 				}
 
 				columns.put(t, new ArenaBoardColumn(this, l));
-				Bukkit.getLogger().info("putting column");
+				db.i("putting column type " + toString());
 				l = l.getBlock().getRelative(bf).getLocation();
 				s = (Sign) l.getBlock().getState();
 			} while (border-- > 0);

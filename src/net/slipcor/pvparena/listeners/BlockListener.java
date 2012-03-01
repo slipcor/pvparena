@@ -145,8 +145,7 @@ public class BlockListener implements Listener {
 		// trying to create an arena leaderboard
 
 		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
-			Arenas.tellPlayer(event.getPlayer(),
-					Language.parse("boardexists"));
+			Arenas.tellPlayer(event.getPlayer(), Language.parse("boardexists"));
 			return;
 		}
 

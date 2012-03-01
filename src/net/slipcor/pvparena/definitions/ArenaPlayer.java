@@ -34,12 +34,7 @@ public class ArenaPlayer {
 	public String aClass = "";
 	public String respawn = "";
 	public boolean telePass = false;
-	public status state = status.FIGHT;
 	private Debug db = new Debug(14);
-
-	public static enum status {
-		FIGHT, DEAD, SPECTATE;
-	}
 
 	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
 
@@ -72,6 +67,7 @@ public class ArenaPlayer {
 	 *            the bukkit player
 	 */
 	public ArenaPlayer(Player p) {
+		db.i("creating arena player: " + p.getName());
 		player = p;
 
 		YamlConfiguration cfg = new YamlConfiguration();
@@ -118,6 +114,7 @@ public class ArenaPlayer {
 	 * save and destroy a player instance
 	 */
 	public void destroy() {
+		db.i("destroying arena player " + player.getName());
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			String file = "plugins/pvparena/players.yml";

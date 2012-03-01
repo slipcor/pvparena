@@ -24,7 +24,7 @@ public class Debug {
 
 	private static String prefix = "[PA-debug] ";
 	private static HashSet<Integer> check = new HashSet<Integer>();
-	private static byte level = 0;
+	private static byte level = 3;
 
 	private int id = 0;
 
@@ -102,23 +102,24 @@ public class Debug {
 
 	public static void load(PVPArena instance) {
 		String debugs = instance.getConfig().getString("debug");
-
 		if (!debugs.equals("none")) {
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
+				System.out.print("debugging EVERYTHING");
 			} else {
 				String[] sIds = debugs.split(",");
 				for (String s : sIds) {
 					try {
 						Debug.check.add(Integer.valueOf(s));
+						System.out.print("debugging: " + s);
 					} catch (Exception e) {
-						// nothing
+						System.out.print("debug load error: " + s);
 					}
 					if (s.equals("i")) {
 						level = (byte) 1;
-					} else if (s.equals("s")) {
-						level = (byte) 2;
 					} else if (s.equals("w")) {
+						level = (byte) 2;
+					} else if (s.equals("s")) {
 						level = (byte) 3;
 					}
 				}
@@ -149,7 +150,7 @@ public class Debug {
 // 19 - CustomListener
 // 20 - EntityListener
 // 21 - PlayerListener
-// 22 - ServerListener
+//
 // 23 - Arenas
 // 24 - Blocks
 // 25 - Commands

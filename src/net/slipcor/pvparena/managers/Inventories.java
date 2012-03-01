@@ -76,6 +76,7 @@ public class Inventories {
 	 *            the player to save
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
+		db.i("saving player inventory: " + player.getName());
 
 		ArenaPlayer p = Players.parsePlayer(arena, player);
 		p.savedInventory = player.getInventory().getContents().clone();
@@ -90,6 +91,8 @@ public class Inventories {
 	 *            the player to clear
 	 */
 	public static void clearInventory(Player player) {
+		db.i("fully clear player inventory: " + player.getName());
+
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
 		player.getInventory().setBoots(null);
@@ -158,6 +161,7 @@ public class Inventories {
 		if (player == null) {
 			return;
 		}
+		db.i("resetting inventory: " + player.getName());
 		if (player.getInventory() == null) {
 			return;
 		}
@@ -178,6 +182,7 @@ public class Inventories {
 	 *            the player to empty
 	 */
 	public static void drop(Player player) {
+		db.i("dropping player inventory: " + player.getName());
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {
 				continue;

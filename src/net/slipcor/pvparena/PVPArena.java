@@ -8,6 +8,7 @@ import java.util.List;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.definitions.Arena;
@@ -37,7 +38,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.16
  * 
  */
 
@@ -54,7 +55,6 @@ public class PVPArena extends JavaPlugin {
 	private final CustomListener customListener = new CustomListener();
 	private final Debug db = new Debug(1);
 
-
 	/**
 	 * plugin enabling method - register events and load the configs
 	 */
@@ -63,15 +63,15 @@ public class PVPArena extends JavaPlugin {
 		instance = this;
 
 		Language.init(getConfig().getString("language", "en"));
-		
+
 		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
 			Language.log_info("spout");
-			getServer().getPluginManager().registerEvents(customListener , this);
+			getServer().getPluginManager().registerEvents(customListener, this);
 		} else {
 			Language.log_info("nospout");
 		}
-		
+
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
@@ -79,16 +79,19 @@ public class PVPArena extends JavaPlugin {
 
 		List<String> whiteList = new ArrayList<String>();
 		whiteList.add("ungod");
-		
-		if (getConfig().get("language") != null && getConfig().get("onlyPVPinArena") == null) {
+
+		if (getConfig().get("language") != null
+				&& getConfig().get("onlyPVPinArena") == null) {
 			getConfig().set("debug", "none"); // 0.3.15 correction
+			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
 		}
 
 		getConfig().addDefault("debug", "none");
+		getConfig().addDefault("updatecheck", Boolean.valueOf(true));
 		getConfig().addDefault("language", "en");
 		getConfig().addDefault("onlyPVPinArena", Boolean.valueOf(false));
 		getConfig().addDefault("whitelist", whiteList);
-		
+
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
@@ -103,7 +106,7 @@ public class PVPArena extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		
+
 		Debug.load(this);
 		Arenas.load_arenas();
 		Update.updateCheck(this);
@@ -136,6 +139,9 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		Player player = (Player) sender;
+
+		db.i("onCommand: player " + player.getName() + ": /" + commandLabel
+				+ StringParser.parseArray(args));
 
 		if (args == null || args.length < 1) {
 			return false;
@@ -181,7 +187,8 @@ public class PVPArena extends JavaPlugin {
 			}
 			Arena arena = Arenas.getArenaByName(args[0]);
 			if (arena == null) {
-				Arenas.tellPlayer(player, Language.parse("arenanotexists", args[0]));
+				Arenas.tellPlayer(player,
+						Language.parse("arenanotexists", args[0]));
 				return true;
 			}
 			Arenas.unload(args[0]);
@@ -202,7 +209,8 @@ public class PVPArena extends JavaPlugin {
 			Arenas.tellPlayer(player, Language.parse("reloaded"));
 			return true;
 		} else if (args[0].equalsIgnoreCase("list")) {
-			Arenas.tellPlayer(player, Language.parse("arenas", Arenas.getNames()));
+			Arenas.tellPlayer(player,
+					Language.parse("arenas", Arenas.getNames()));
 			return true;
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
@@ -226,7 +234,8 @@ public class PVPArena extends JavaPlugin {
 				arena = Arenas.getArenaByName("default");
 				db.i("found default arena!");
 			} else {
-				Arenas.tellPlayer(player, Language.parse("arenanotexists", sName));
+				Arenas.tellPlayer(player,
+						Language.parse("arenanotexists", sName));
 				return true;
 			}
 			return Commands.parseCommand(arena, player, args);
@@ -263,17 +272,6 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * has player basic permissions?
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return true if the player has basic permissions, false otherwise
-	 */
-	public static boolean hasPerms(Player player) {
-		return hasPerms(player, "pvparena.user");
-	}
-
-	/**
 	 * has player permission?
 	 * 
 	 * @param player
@@ -284,5 +282,21 @@ public class PVPArena extends JavaPlugin {
 	 */
 	public static boolean hasPerms(Player player, String perms) {
 		return player.hasPermission(perms);
+	}
+
+	/**
+	 * has player permission?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @param arena
+	 *            the arena to check
+	 * @return true if explicit permission not needed or granted, false
+	 *         otherwise
+	 */
+	public static boolean hasPerms(Player player, Arena arena) {
+		return arena.cfg.getBoolean("join.explicitPermission") ? player
+				.hasPermission("pvparena.join." + arena.name.toLowerCase())
+				: hasPerms(player, "pvparena.user");
 	}
 }

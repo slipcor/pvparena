@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -41,6 +40,7 @@ public class Flags {
 	 * @return
 	 */
 	public static boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
+		db.i("reducing lives of team " + team);
 		if (arena.paLives.get(team) != null) {
 			int i = arena.paLives.get(team) - 1;
 			if (i > 0) {
@@ -88,10 +88,13 @@ public class Flags {
 		if (block == null) {
 			return;
 		}
+		db.i("checking interact");
 
 		if (pumpkin && !block.getType().equals(Material.PUMPKIN)) {
+			db.i("pumpkin & not pumpkin");
 			return;
 		} else if (!pumpkin && !block.getType().equals(Material.WOOL)) {
+			db.i("flag & not flag");
 			return;
 		}
 		String type = null;
@@ -145,8 +148,8 @@ public class Flags {
 
 				try {
 
-					arena.pm.tellEveryone(Language.parse(
-							type + "homeleft", scPlayer, scFlagTeam,
+					arena.pm.tellEveryone(Language.parse(type + "homeleft",
+							scPlayer, scFlagTeam,
 							String.valueOf(arena.paLives.get(flagTeam) - 1)));
 					arena.paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
@@ -190,17 +193,18 @@ public class Flags {
 							+ ChatColor.YELLOW;
 					arena.pm.tellEveryone(Language.parse(type + "grab",
 							scPlayer, scTeam));
-					
+
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
-					
+
 						arena.paHeadGears.put(player.getName(), player
 								.getInventory().getHelmet().clone());
-						ItemStack is = block.getState().getData().toItemStack().clone();
+						ItemStack is = block.getState().getData().toItemStack()
+								.clone();
 						is.setDurability(getFlagOverrideTeamShort(arena, team));
 						player.getInventory().setHelmet(is);
-					
+
 					}
-					
+
 					takeFlag(arena.paTeams.get(team), true, pumpkin,
 							block.getLocation());
 
@@ -210,19 +214,23 @@ public class Flags {
 			}
 		}
 	}
-	
+
 	/**
 	 * get the durability short from a team name
-	 * @param arena the arena to check
- 	 * @param team the team to read
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param team
+	 *            the team to read
 	 * @return the wool color short of the override
 	 */
 	private static short getFlagOverrideTeamShort(Arena arena, String team) {
-		if (arena.cfg.get("flagColors."+team) == null) {
-			
+		if (arena.cfg.get("flagColors." + team) == null) {
+
 			return StringParser.getColorDataFromENUM(arena.paTeams.get(team));
 		}
-		return StringParser.getColorDataFromENUM(arena.cfg.getString("flagColors."+team));
+		return StringParser.getColorDataFromENUM(arena.cfg
+				.getString("flagColors." + team));
 	}
 
 	/**
@@ -280,6 +288,7 @@ public class Flags {
 		} else {
 			type = "flag";
 		}
+		db.i("trying to set a " + type);
 
 		String sName = Arena.regionmodify.replace(arena.name + ":", "");
 
@@ -305,6 +314,7 @@ public class Flags {
 		} else {
 			type = "flag";
 		}
+		db.i("checking death in a " + type + " arena");
 
 		String flagTeam = getHeldFlagTeam(arena, player.getName());
 		if (flagTeam != null) {

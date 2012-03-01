@@ -25,7 +25,7 @@ import org.bukkit.plugin.Plugin;
 public class Tracker implements Runnable {
 	private static Plugin plugin;
 	private static int taskID = -1;
-	private Debug db = new Debug(5);
+	private static Debug db = new Debug(5);
 
 	/**
 	 * construct a tracker instance
@@ -41,6 +41,7 @@ public class Tracker implements Runnable {
 	 * start tracking
 	 */
 	public void start() {
+		db.i("starting tracker runnable");
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
 				0L, 72000L);
 	}
@@ -49,6 +50,7 @@ public class Tracker implements Runnable {
 	 * stop tracking
 	 */
 	public static void stop() {
+		db.i("stopping tracker runnable");
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 
@@ -57,8 +59,10 @@ public class Tracker implements Runnable {
 	 */
 	private void callHome() {
 		if (!plugin.getConfig().getBoolean("stats", true)) {
+			stop();
 			return;
 		}
+		db.i("calling home...");
 
 		String url = null;
 		try {
@@ -80,6 +84,7 @@ public class Tracker implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		db.i("successfully called home!");
 	}
 
 	@Override

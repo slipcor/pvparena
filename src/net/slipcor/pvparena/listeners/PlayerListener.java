@@ -69,6 +69,7 @@ public class PlayerListener implements Listener {
 		if (arena == null || arena.pm.getTeam(player).equals("")) {
 			return; // no fighting player => OUT
 		}
+		db.i("fighting player chatting!");
 
 		if (!arena.cfg.getBoolean("messages.chat")) {
 			return; // no chat editing
@@ -164,8 +165,8 @@ public class PlayerListener implements Listener {
 
 						Arena a = Arenas.getArenaByName(sName);
 						if (a == null) {
-							Arenas.tellPlayer(player, Language.parse(
-									"arenanotexists", sName));
+							Arenas.tellPlayer(player,
+									Language.parse("arenanotexists", sName));
 							return;
 						}
 						Commands.parseCommand(a, player, newArgs);
@@ -211,9 +212,6 @@ public class PlayerListener implements Listener {
 		db.i("arena: " + (arena == null ? null : arena.name));
 		if (arena != null) {
 			db.i("fight: " + arena.fightInProgress);
-			db.i("instanceof: "
-					+ (arena.getType().equals("ctf") || arena.getType().equals(
-							"pumpkin")));
 			if (arena.cfg.getBoolean("arenatype.flags")) {
 				Flags.checkInteract(arena, player, event.getClickedBlock());
 			}
@@ -305,8 +303,7 @@ public class PlayerListener implements Listener {
 
 				if (arena.cfg.getBoolean("join.forceEven", false)) {
 					if (!arena.pm.checkEven()) {
-						Arenas.tellPlayer(player,
-								Language.parse("waitequal"));
+						Arenas.tellPlayer(player, Language.parse("waitequal"));
 						return; // even teams desired, not done => announce
 					}
 				}
@@ -326,13 +323,14 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 
 		if (!player.isOp()) {
 			return; // no OP => OUT
 		}
+		db.i("OP joins the game");
 		Update.message(player);
 	}
 
