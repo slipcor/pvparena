@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.17
  * 
  */
 
@@ -230,5 +230,23 @@ public class Arenas {
 		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
 		a = null;
+	}
+
+	/**
+	 * check if join region is set and if player is inside, if so
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if not set or player inside, false otherwise
+	 */
+	public static boolean checkJoin(Player player) {
+		for (Arena a : arenas.values()) {
+			for (String rName : a.regions.keySet()) {
+				if (rName.equals("join")) {
+					return a.regions.get(rName).contains(player.getLocation());
+				}
+			}
+		}
+		return true; // no join region set
 	}
 }

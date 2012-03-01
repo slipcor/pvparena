@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.17
  * 
  */
 public class Language {
@@ -211,6 +211,8 @@ public class Language {
 
 		config.addDefault("lang.frag",
 				"%1% killed another player! Total frags: %2%.");
+		config.addDefault("lang.notjoinregion",
+				"You are not in the join region! Move there to join!");
 
 		config.addDefault("lang.edit", "edit an arena");
 		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");

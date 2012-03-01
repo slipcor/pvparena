@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.17
  * 
  */
 
@@ -178,6 +178,15 @@ public class Commands {
 		return true;
 	}
 
+	/**
+	 * check various methods to see if the player may join the arena
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player to check
+	 * @return true if the player may join, false otherwise
+	 */
 	private static boolean checkJoin(Arena arena, Player player) {
 		String error = Configs.isSetup(arena);
 		if (error != null) {
@@ -197,6 +206,11 @@ public class Commands {
 				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 				return false;
 			}
+		}
+
+		if (!Arenas.checkJoin(player)) {
+			Arenas.tellPlayer(player, Language.parse("notjoinregion"));
+			return false;
 		}
 
 		if (arena.fightInProgress) {
@@ -680,7 +694,7 @@ public class Commands {
 	public static boolean isRegionCommand(Arena arena, String s) {
 		db.i("checking region command: " + s);
 		if (s.equals("exit") || s.equals("spectator")
-				|| s.equals("battlefield")) {
+				|| s.equals("battlefield") || s.equals("join")) {
 			return true;
 		}
 		if (arena.getType().equals("free")) {
