@@ -290,10 +290,10 @@ public class EntityListener implements Listener {
 		}
 
 		db.i("onEntityDamageByEntity: fighting player");
-
+		
 		if ((p1 == null) || (!(p1 instanceof Player))) {
-			// attacker no player => cancel and out!
-			event.setCancelled(true);
+			// attacker no player => out!
+			// event.setCancelled(true);
 			return;
 		}
 		db.i("both entities are players");

@@ -12,9 +12,10 @@ ADDITIONS
 [[ sort leaderboards on click ]]
 [[ join: /pa {name} [amount] - win amount : winFactor ]]
 -[ ready countdown (when everyone has chosen ) ]
--[ custom join region ]
 -[ arena chat ]
 -[ Potion effects for powerups ]
+-[ config: no name over head ]
+- FLAGS: join INGAME
 
 FIXES
 -[ lose 2 lives (temp godmode between teleporting)]
@@ -22,6 +23,7 @@ FIXES
 -add speaking DOM arena ^^
 
 CODING
+-[ config /info update! ]
 -stats integration ( command wise )
 
 KNOWN ISSUES:

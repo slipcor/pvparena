@@ -53,7 +53,7 @@ public class PVPArena extends JavaPlugin {
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
 	private final CustomListener customListener = new CustomListener();
-	private final Debug db = new Debug(1);
+	private final static Debug db = new Debug(1);
 
 	/**
 	 * plugin enabling method - register events and load the configs
@@ -295,6 +295,15 @@ public class PVPArena extends JavaPlugin {
 	 *         otherwise
 	 */
 	public static boolean hasPerms(Player player, Arena arena) {
+		db.i("perm check.");
+		if (arena.cfg.getBoolean("join.explicitPermission")) {
+			db.i(" - explicit: "
+					+ String.valueOf(player.hasPermission("pvparena.join."
+							+ arena.name.toLowerCase())));
+		} else {
+			db.i(String.valueOf(hasPerms(player, "pvparena.user")));
+		}
+
 		return arena.cfg.getBoolean("join.explicitPermission") ? player
 				.hasPermission("pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
