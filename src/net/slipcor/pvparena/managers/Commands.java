@@ -89,6 +89,7 @@ public class Commands {
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
 			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 			ma.subtract(entryfee);
+			Arenas.tellPlayer(player, Language.parse("joinpay",PVPArena.eco.format(entryfee)));
 		}
 
 		Teams.choosePlayerTeam(arena, player);
@@ -146,6 +147,7 @@ public class Commands {
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
 			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 			ma.subtract(entryfee);
+			Arenas.tellPlayer(player, Language.parse("joinpay",PVPArena.eco.format(entryfee)));
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");

@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.17
+ * @version v0.6.18
  * 
  */
 public class Language {
@@ -217,6 +217,8 @@ public class Language {
 		config.addDefault("lang.edit", "edit an arena");
 		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
+
+		config.addDefault("lang.joinpay", "You paid %1% to join the arena!");
 
 		/**
 		 * death causes : "player was killed by ****"

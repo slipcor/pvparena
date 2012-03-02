@@ -1,3 +1,4 @@
+ v0.6.18 - added entry fee "pay" message
  v0.6.17 - force joining from a special region, if one arena has set "join" region
  v0.6.16 - "explicitPermission" to enable need of "pvparena.join.[arenaname]"
  v0.6.15 - new debug system
