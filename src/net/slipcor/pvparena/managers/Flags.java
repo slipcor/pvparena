@@ -1,6 +1,9 @@
 package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -23,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.21
  * 
  */
 
@@ -350,5 +353,54 @@ public class Flags {
 		if (arena.cfg.getBoolean("arenatype.domination")) {
 			arena.paFlags = new HashMap<Location, String>();
 		}
+	}
+
+	/**
+	 * check if a flag is being set
+	 * 
+	 * @param block
+	 *            the block being clicked
+	 * @param player
+	 *            the player interacting
+	 * @return true if a flag is being set, false otherwise
+	 */
+	public static boolean checkSetFlag(Block block, Player player) {
+
+		if (Arena.regionmodify.contains(":")) {
+			String[] s = Arena.regionmodify.split(":");
+			Arena arena = Arenas.getArenaByName(s[0]);
+			if (arena == null) {
+				return false;
+			}
+			db.i("onInteract: flag/pumpkin");
+			if (arena.cfg.getBoolean("arenatype.flags")) {
+				Flags.setFlag(arena, player, block);
+				if (Arena.regionmodify.equals("")) {
+					return true; // success :)
+				}
+			}
+		} else if (block.getType().equals(Material.WOOL)) {
+			Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
+			if (arena != null) {
+				if ((PVPArena.hasAdminPerms(player) || (PVPArena
+						.hasCreatePerms(player, arena)))
+						&& (player.getItemInHand() != null)
+						&& (player.getItemInHand().getTypeId() == arena.cfg
+								.getInt("setup.wand", 280))) {
+					HashSet<Location> flags = Spawns.getSpawns(arena, "flags");
+					if (flags.contains(block.getLocation())) {
+						return false;
+					}
+					Spawns.setCoords(arena, block.getLocation(),
+							"flag" + flags.size());
+					Arenas.tellPlayer(
+							player,
+							Language.parse("setflag",
+									String.valueOf(flags.size())));
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

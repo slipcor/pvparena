@@ -14,7 +14,6 @@ ADDITIONS
 -[ arena chat ]
 -[ Potion effects for powerups ]
 -[ config: no name over head ]
-- FLAGS: join INGAME
 
 FIXES
 -[ lose 2 lives (temp godmode between teleporting)]

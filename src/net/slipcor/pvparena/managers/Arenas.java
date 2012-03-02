@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * arena manager class
@@ -22,7 +27,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.17
+ * @version v0.6.21
  * 
  */
 
@@ -248,5 +253,28 @@ public class Arenas {
 			}
 		}
 		return true; // no join region set
+	}
+
+	public static void tryJoin(PlayerInteractEvent event, Player player) {
+		db.i("onInteract: sign check");
+		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+			Block block = event.getClickedBlock();
+			if (block.getState() instanceof Sign) {
+				Sign sign = (Sign) block.getState();
+				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
+					String sName = sign.getLine(1);
+					String[] newArgs = null;
+
+					Arena a = arenas.get(sName);
+					if (a == null) {
+						Arenas.tellPlayer(player,
+								Language.parse("arenanotexists", sName));
+						return;
+					}
+					Commands.parseCommand(a, player, newArgs);
+					return;
+				}
+			}
+		}
 	}
 }

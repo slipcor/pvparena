@@ -1,7 +1,7 @@
 name: pvparena
 author: slipcor
 main: net.slipcor.pvparena.PVPArena
-version: 0.6.20.0
+version: 0.6.21.0
 website: http://dev.bukkit.org/server-mods/pvp-arena
 commands:
     pvparena:

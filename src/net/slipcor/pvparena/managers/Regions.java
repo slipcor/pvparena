@@ -2,8 +2,12 @@ package net.slipcor.pvparena.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Arena;
 
 /**
@@ -15,7 +19,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.21
  * 
  */
 
@@ -74,5 +78,43 @@ public class Regions {
 		}
 		return arena.regions.get("battlefield").tooFarAway(joinRange,
 				player.getLocation());
+	}
+
+	/**
+	 * check if an admin tries to set an arena position
+	 * 
+	 * @param event
+	 *            the interact event to hand over
+	 * @param player
+	 *            the player interacting
+	 * @return true if the position is being saved, false otherwise
+	 */
+	public static boolean checkRegionSetPosition(PlayerInteractEvent event,
+			Player player) {
+		Arena arena = Arenas.getArenaByName(Arena.regionmodify);
+		if (arena != null
+				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
+						player, arena)))
+				&& (player.getItemInHand() != null)
+				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
+						"setup.wand", 280))) {
+			// - modify mode is active
+			// - player has admin perms
+			// - player has wand in hand
+			db.i("modify&adminperms&wand");
+			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+				arena.pos1 = event.getClickedBlock().getLocation();
+				Arenas.tellPlayer(player, Language.parse("pos1"));
+				event.setCancelled(true); // no destruction in creative mode :)
+				return true; // left click => pos1
+			}
+
+			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				arena.pos2 = event.getClickedBlock().getLocation();
+				Arenas.tellPlayer(player, Language.parse("pos2"));
+				return true; // right click => pos2
+			}
+		}
+		return false;
 	}
 }

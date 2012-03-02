@@ -1,3 +1,4 @@
+ v0.6.21 - [PUMPKIN|CTF|DOM] join arenas ingame
  v0.6.20 - arena start runnable (5s, if readycount > x%), interrupted by player join
  v0.6.19 - fixed players joining from vehicles
  v0.6.18 - added entry fee "pay" message

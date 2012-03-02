@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.16
+ * @version v0.6.21
  * 
  */
 
@@ -94,6 +94,7 @@ public class Configs {
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
 		config.addDefault("join.random", Boolean.valueOf(true));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
+		config.addDefault("join.inbattle", Boolean.valueOf(false));
 
 		config.addDefault("arenatype.randomSpawn", Boolean.valueOf(false));
 		config.addDefault("goal.timed", Integer.valueOf(0));

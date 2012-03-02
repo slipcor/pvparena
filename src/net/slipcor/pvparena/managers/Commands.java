@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.20
+ * @version v0.6.21
  * 
  */
 
@@ -221,6 +221,10 @@ public class Commands {
 		}
 
 		if (arena.fightInProgress) {
+			if (arena.cfg.getBoolean("arenatype.flags") &&
+					arena.cfg.getBoolean("join.inbattle")) {
+				return true;
+			}
 			Arenas.tellPlayer(player, Language.parse("fightinprogress"));
 			return false;
 		}

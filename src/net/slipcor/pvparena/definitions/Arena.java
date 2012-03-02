@@ -55,7 +55,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.20
+ * @version v0.6.21
  * 
  */
 
@@ -114,7 +114,7 @@ public class Arena {
 
 	public boolean betPossible;
 
-	private int playerCount = 0;
+	public int playerCount = 0;
 	public int teamCount = 0;
 	
 	/**
@@ -201,7 +201,7 @@ public class Arena {
 	 * @param p
 	 *            the player to set
 	 */
-	private void setPermissions(Player p) {
+	public void setPermissions(Player p) {
 		HashMap<String, Boolean> perms = getTempPerms();
 		if (perms == null || perms.isEmpty())
 			return;

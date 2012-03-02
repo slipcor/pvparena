@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.listeners;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Dominate;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
@@ -125,98 +123,37 @@ public class PlayerListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
-		Arena arena = Arenas.getArenaByName(Arena.regionmodify);
+		
+		
+		/*
+		 //TODO
+		
+			if (arena.cfg.getBoolean("arenatype.flags") &&
+					arena.cfg.getBoolean("join.inbattle")) {
 
-		if (arena != null
-				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
-						player, arena)))
-				&& (player.getItemInHand() != null)
-				&& (player.getItemInHand().getTypeId() == arena.cfg.getInt(
-						"setup.wand", 280))) {
-			// - modify mode is active
-			// - player has admin perms
-			// - player has wand in hand
-			db.i("modify&adminperms&wand");
-			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-				arena.pos1 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos1"));
-				event.setCancelled(true); // no destruction in creative mode :)
-				return; // left click => pos1
-			}
-
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				arena.pos2 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos2"));
-				return; // right click => pos2
-			}
+		 */
+		
+		if (Regions.checkRegionSetPosition(event, player)) {
+			return;
 		}
-		arena = Arenas.getArenaByPlayer(player);
+
+		if (Flags.checkSetFlag(event.getClickedBlock(), player)) {
+			return;
+		}
+
+		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null) {
-			db.i("onInteract: sign check");
-			if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-				Block block = event.getClickedBlock();
-				if (block.getState() instanceof Sign) {
-					Sign sign = (Sign) block.getState();
-					if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
-						String sName = sign.getLine(1);
-						String[] newArgs = null;
-
-						Arena a = Arenas.getArenaByName(sName);
-						if (a == null) {
-							Arenas.tellPlayer(player,
-									Language.parse("arenanotexists", sName));
-							return;
-						}
-						Commands.parseCommand(a, player, newArgs);
-						return;
-					}
-				} else if (block.getType().equals(Material.WOOL)) {
-					arena = Arenas
-							.getArenaByRegionLocation(block.getLocation());
-					if (arena != null) {
-						if ((PVPArena.hasAdminPerms(player) || (PVPArena
-								.hasCreatePerms(player, arena)))
-								&& (player.getItemInHand() != null)
-								&& (player.getItemInHand().getTypeId() == arena.cfg
-										.getInt("setup.wand", 280))) {
-							HashSet<Location> flags = Spawns.getSpawns(arena,
-									"flags");
-							if (flags.contains(block.getLocation())) {
-								return;
-							}
-							Spawns.setCoords(arena, block.getLocation(), "flag"
-									+ flags.size());
-							Arenas.tellPlayer(
-									player,
-									Language.parse("setflag",
-											String.valueOf(flags.size())));
-						}
-					}
-				}
-			}
-			if (Arena.regionmodify.contains(":")) {
-				String[] s = Arena.regionmodify.split(":");
-				arena = Arenas.getArenaByName(s[0]);
-				if (arena == null) {
-					return;
-				}
-				db.i("onInteract: flag/pumpkin");
-				if (arena.cfg.getBoolean("arenatype.flags")) {
-					Flags.setFlag(arena, player, event.getClickedBlock());
-				}
-				return;
-			}
+			Arenas.tryJoin(event, player);
+			return;
 		}
-		db.i("arena: " + (arena == null ? null : arena.name));
-		if (arena != null) {
-			db.i("fight: " + arena.fightInProgress);
-			if (arena.cfg.getBoolean("arenatype.flags")) {
-				Flags.checkInteract(arena, player, event.getClickedBlock());
-			}
+		
+		if (arena.cfg.getBoolean("arenatype.flags")) {
+			Flags.checkInteract(arena, player, event.getClickedBlock());
 		}
-
-		if (arena == null || arena.fightInProgress) {
-			return; // not fighting or fight already in progress => OUT
+		
+		if (arena.fightInProgress && !arena.cfg.getBoolean("arenatype.flags")) {
+			db.i("exiting! fight in progress AND no flag arena!");
+			return; // no flag arena and fight already in progress => OUT
 		}
 
 		// fighting player inside the lobby!
@@ -269,48 +206,64 @@ public class PlayerListener implements Listener {
 					return; // not a fighting player => OUT
 				}
 				if (arena.pm.getClass(player).equals("")) {
-					return; // not a fighting player => OUT
+					return; // not chosen class => OUT
 				}
 
-				if (arena.cfg.getBoolean("join.forceEven", false)) {
-					if (!arena.pm.checkEven()) {
-						Arenas.tellPlayer(player, Language.parse("waitequal"));
-						return; // even teams desired, not done => announce
+				if (arena.fightInProgress) {
+				
+					if (arena.cfg.getBoolean("join.forceEven", false)) {
+						if (!arena.pm.checkEven()) {
+							Arenas.tellPlayer(player, Language.parse("waitequal"));
+							return; // even teams desired, not done => announce
+						}
 					}
-				}
-
-				if (!Regions.checkRegions(arena)) {
-					Arenas.tellPlayer(player,
-							Language.parse("checkregionerror"));
+	
+					if (!Regions.checkRegions(arena)) {
+						Arenas.tellPlayer(player,
+								Language.parse("checkregionerror"));
+						return;
+					}
+					
+					
+	
+					arena.paReady.add(player.getName());
+	
+					int ready = arena.pm.ready(arena);
+					if (ready == 0) {
+						Arenas.tellPlayer(player, Language.parse("notready"));
+						return; // team not ready => announce
+					} else if (ready == -1) {
+						Arenas.tellPlayer(player, Language.parse("notready1"));
+						return; // team not ready => announce
+					} else if (ready == -2) {
+						Arenas.tellPlayer(player, Language.parse("notready2"));
+						return; // team not ready => announce
+					} else if (ready == -3) {
+						Arenas.tellPlayer(player, Language.parse("notready3"));
+						return; // team not ready => announce
+					} else if (ready == -4) {
+						Arenas.tellPlayer(player, Language.parse("notready4"));
+						return; // arena not ready => announce
+					} else if (ready == -5) {
+						Arenas.tellPlayer(player, Language.parse("notready5"));
+						return; // arena not ready => announce
+					} else if (ready == -6) {
+						Arenas.tellPlayer(player, Language.parse("notready6"));
+						return; // arena ready => countdown
+					}
+					arena.start();
 					return;
 				}
-
-				arena.paReady.add(player.getName());
-
-				int ready = arena.pm.ready(arena);
-				if (ready == 0) {
-					Arenas.tellPlayer(player, Language.parse("notready"));
-					return; // team not ready => announce
-				} else if (ready == -1) {
-					Arenas.tellPlayer(player, Language.parse("notready1"));
-					return; // team not ready => announce
-				} else if (ready == -2) {
-					Arenas.tellPlayer(player, Language.parse("notready2"));
-					return; // team not ready => announce
-				} else if (ready == -3) {
-					Arenas.tellPlayer(player, Language.parse("notready3"));
-					return; // team not ready => announce
-				} else if (ready == -4) {
-					Arenas.tellPlayer(player, Language.parse("notready4"));
-					return; // arena not ready => announce
-				} else if (ready == -5) {
-					Arenas.tellPlayer(player, Language.parse("notready5"));
-					return; // arena not ready => announce
-				} else if (ready == -6) {
-					Arenas.tellPlayer(player, Language.parse("notready6"));
-					return; // arena ready => countdown
+				
+				if (!arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
+					arena.tpPlayerToCoordName(player, arena.pm.getPlayerTeamMap().get(player) + "spawn");
+				} else {
+					arena.tpPlayerToCoordName(player, "spawn");
 				}
+				arena.setPermissions(player);
+				arena.playerCount++;
 
+				arena.teamCount = arena.countActiveTeams();
 			}
 		}
 	}
