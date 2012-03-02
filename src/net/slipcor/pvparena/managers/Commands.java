@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.17
+ * @version v0.6.18
  * 
  */
 
@@ -208,6 +208,11 @@ public class Commands {
 				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 				return false;
 			}
+		}
+		
+		if (player.isInsideVehicle()) {
+			Arenas.tellPlayer(player, Language.parse("insidevehicle"));
+			return false;
 		}
 
 		if (!Arenas.checkJoin(player)) {

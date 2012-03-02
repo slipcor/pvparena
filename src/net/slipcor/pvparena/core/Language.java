@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.18
+ * @version v0.6.19
  * 
  */
 public class Language {
@@ -219,6 +219,7 @@ public class Language {
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
 
 		config.addDefault("lang.joinpay", "You paid %1% to join the arena!");
+		config.addDefault("lang.insidevehicle", "You cannot join while on a vehicle!");
 
 		/**
 		 * death causes : "player was killed by ****"
@@ -240,7 +241,7 @@ public class Language {
 				"something he didn't see coming");
 		config.addDefault("lang.STARVATION".toLowerCase(), "hunger");
 		config.addDefault("lang.SUFFOCATION".toLowerCase(), "lack of air");
-		config.addDefault("lang.SUICIDE".toLowerCase(), "Herobrine");
+		config.addDefault("lang.SUICIDE".toLowerCase(), "self");
 		config.addDefault("lang.VOID".toLowerCase(), "the Void");
 
 		config.options().copyDefaults(true);
