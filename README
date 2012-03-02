@@ -1,4 +1,5 @@
- v0.6.19 - fixed players joining from
+ v0.6.20 - arena start runnable (5s, if readycount > x%), interrupted by player join
+ v0.6.19 - fixed players joining from vehicles
  v0.6.18 - added entry fee "pay" message
  v0.6.17 - force joining from a special region, if one arena has set "join" region
  v0.6.16 - "explicitPermission" to enable need of "pvparena.join.[arenaname]"

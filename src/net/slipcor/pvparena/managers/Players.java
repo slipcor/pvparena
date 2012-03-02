@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.Announcement.type;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.20
  * 
  */
 
@@ -165,14 +165,27 @@ public class Players {
 	 * @return 1 if the arena is ready 0 if at least one player not ready -1 if
 	 *         player is the only player -2 if only one team active -3 if not
 	 *         enough players in a team -4 if not enough players -5 if at least
-	 *         one player not selected class
+	 *         one player not selected class, -6 if counting down
 	 */
 	public int ready(Arena arena) {
+
 		if (countPlayersInTeams() < 2) {
 			return -1;
 		}
 		if (countPlayersInTeams() < arena.cfg.getInt("ready.min")) {
 			return -4;
+		}
+
+		if (arena.cfg.getDouble("ready.startRatio") > 0) {
+			double ratio = arena.cfg.getDouble("ready.startRatio");
+			
+			int players = getPlayerTeamMap().size();
+			int readyPlayers = arena.paReady.size();
+			
+			if (readyPlayers / players >= ratio) {
+				arena.countDown();
+				return -6;
+			}
 		}
 
 		if (arena.cfg.getBoolean("ready.checkEach")) {

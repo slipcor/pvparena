@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.16
+ * @version v0.6.20
  * 
  */
 
@@ -117,6 +117,7 @@ public class Settings {
 		types.put("ready.minTeam", "int");
 		types.put("ready.maxTeam", "int");
 		types.put("ready.autoclass", "string");
+		types.put("ready.startRatio", "double");
 
 		types.put("announcements.join", "boolean");
 		types.put("announcements.start", "boolean");

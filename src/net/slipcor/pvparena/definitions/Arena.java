@@ -26,6 +26,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.BoardRunnable;
 import net.slipcor.pvparena.runnables.DominationRunnable;
 import net.slipcor.pvparena.runnables.PowerupRunnable;
+import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
 import org.bukkit.Bukkit;
@@ -54,7 +55,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.20
  * 
  */
 
@@ -107,6 +108,7 @@ public class Arena {
 	public int SPAWN_ID = -1;
 	public int END_ID = -1;
 	public int BOARD_ID = -1;
+	public int START_ID = -1;
 
 	public Config cfg;
 
@@ -114,7 +116,7 @@ public class Arena {
 
 	private int playerCount = 0;
 	public int teamCount = 0;
-
+	
 	/**
 	 * arena constructor
 	 * 
@@ -863,5 +865,25 @@ public class Arena {
 		}
 		db.i("result: " + activeteams.size());
 		return activeteams.size();
+	}
+
+	public void countDown() {
+		if (START_ID != -1 || this.fightInProgress) {
+			return;
+		}
+		
+		long duration = 20L*5;
+		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new StartRunnable(this), duration);
+		this.pm.tellEveryone(Language.parse("starting"));
+	}
+
+	public void start() {
+		START_ID = -1;
+		
+		teleportAllToSpawn();
+		fightInProgress = true;
+		pm.tellEveryone(Language.parse("begin"));
+		Announcement.announce(this, type.START,
+				Language.parse("begin"));
 	}
 }

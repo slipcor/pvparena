@@ -220,6 +220,7 @@ public class Language {
 
 		config.addDefault("lang.joinpay", "You paid %1% to join the arena!");
 		config.addDefault("lang.insidevehicle", "You cannot join while on a vehicle!");
+		config.addDefault("lang.starting", "Enough players ready. Starting in 5 seconds!");
 
 		/**
 		 * death causes : "player was killed by ****"

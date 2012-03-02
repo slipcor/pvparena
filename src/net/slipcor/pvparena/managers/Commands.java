@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.18
+ * @version v0.6.20
  * 
  */
 
@@ -245,6 +245,11 @@ public class Commands {
 			}
 		}
 
+		if (arena.START_ID != -1) {
+			Bukkit.getScheduler().cancelTask(arena.START_ID);
+			db.i("player joining, cancelling start timer");
+		}
+		
 		return true;
 	}
 

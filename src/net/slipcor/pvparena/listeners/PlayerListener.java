@@ -8,8 +8,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
@@ -53,7 +51,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.20
  * 
  */
 
@@ -239,11 +237,7 @@ public class PlayerListener implements Listener {
 				}
 				return;
 			}
-		}
-
-		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-			Block block = event.getClickedBlock();
-
+			
 			db.i("block click!");
 
 			Material mMat = Material.IRON_BLOCK;
@@ -278,6 +272,19 @@ public class PlayerListener implements Listener {
 					return; // not a fighting player => OUT
 				}
 
+				if (arena.cfg.getBoolean("join.forceEven", false)) {
+					if (!arena.pm.checkEven()) {
+						Arenas.tellPlayer(player, Language.parse("waitequal"));
+						return; // even teams desired, not done => announce
+					}
+				}
+
+				if (!Regions.checkRegions(arena)) {
+					Arenas.tellPlayer(player,
+							Language.parse("checkregionerror"));
+					return;
+				}
+
 				arena.paReady.add(player.getName());
 
 				int ready = arena.pm.ready(arena);
@@ -299,26 +306,11 @@ public class PlayerListener implements Listener {
 				} else if (ready == -5) {
 					Arenas.tellPlayer(player, Language.parse("notready5"));
 					return; // arena not ready => announce
+				} else if (ready == -6) {
+					Arenas.tellPlayer(player, Language.parse("notready6"));
+					return; // arena ready => countdown
 				}
 
-				if (arena.cfg.getBoolean("join.forceEven", false)) {
-					if (!arena.pm.checkEven()) {
-						Arenas.tellPlayer(player, Language.parse("waitequal"));
-						return; // even teams desired, not done => announce
-					}
-				}
-
-				if (!Regions.checkRegions(arena)) {
-					Arenas.tellPlayer(player,
-							Language.parse("checkregionerror"));
-					return;
-				}
-
-				arena.teleportAllToSpawn();
-				arena.fightInProgress = true;
-				arena.pm.tellEveryone(Language.parse("begin"));
-				Announcement.announce(arena, type.START,
-						Language.parse("begin"));
 			}
 		}
 	}
