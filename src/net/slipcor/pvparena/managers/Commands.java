@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.25
  * 
  */
 
@@ -89,7 +89,8 @@ public class Commands {
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
 			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 			ma.subtract(entryfee);
-			Arenas.tellPlayer(player, Language.parse("joinpay",PVPArena.eco.format(entryfee)));
+			Arenas.tellPlayer(player,
+					Language.parse("joinpay", PVPArena.eco.format(entryfee)));
 		}
 
 		Teams.choosePlayerTeam(arena, player);
@@ -147,7 +148,8 @@ public class Commands {
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
 			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 			ma.subtract(entryfee);
-			Arenas.tellPlayer(player, Language.parse("joinpay",PVPArena.eco.format(entryfee)));
+			Arenas.tellPlayer(player,
+					Language.parse("joinpay", PVPArena.eco.format(entryfee)));
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
@@ -209,7 +211,7 @@ public class Commands {
 				return false;
 			}
 		}
-		
+
 		if (player.isInsideVehicle()) {
 			Arenas.tellPlayer(player, Language.parse("insidevehicle"));
 			return false;
@@ -221,8 +223,8 @@ public class Commands {
 		}
 
 		if (arena.fightInProgress) {
-			if (arena.cfg.getBoolean("arenatype.flags") &&
-					arena.cfg.getBoolean("join.inbattle")) {
+			if (arena.cfg.getBoolean("arenatype.flags")
+					&& arena.cfg.getBoolean("join.inbattle")) {
 				return true;
 			}
 			Arenas.tellPlayer(player, Language.parse("fightinprogress"));
@@ -253,7 +255,7 @@ public class Commands {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			db.i("player joining, cancelling start timer");
 		}
-		
+
 		return true;
 	}
 
@@ -528,6 +530,9 @@ public class Commands {
 			}
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
 			return parseBetCommand(arena, player, args);
+		} else if ((args.length == 2 || args.length == 3)
+				&& args[0].equalsIgnoreCase("stats")) {
+			return parseStats(arena, player, args);
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
 			// pa [name] set [node] [value]
 			arena.sm.set(player, args[1], args[2]);
@@ -638,13 +643,49 @@ public class Commands {
 	}
 
 	/**
+	 * check and commit stats command
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player to check
+	 * @param args
+	 *            the array {"stats", [stattype] {asc/desc}}
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	private static boolean parseStats(Arena arena, Player player, String[] args) {
+		
+		Statistics.type type = Statistics.type.getByString(args[1]);
+		
+		if (type == null) {
+			Arenas.tellPlayer(player, Language.parse("invalidstattype",args[1]));
+			return true;
+		}
+		
+		
+		ArenaPlayer[] aps = Statistics.getStats(arena, type);
+		String[] s = Statistics.read(aps, type);
+		
+		int i = 0;
+		
+		for (ArenaPlayer ap : aps) {
+			Arenas.tellPlayer(player, ap.get().getName()+": "+s[i++]);
+			if (i>9) {
+				return true;
+			}
+		}
+		
+		return true;
+	}
+
+	/**
 	 * check and commit edit command
 	 * 
 	 * @param arena
-	 * 
+	 *            the arena to check
 	 * @param player
 	 *            the player to check
-	 * @return false if the command help should be displayed, false otherwise
+	 * @return false if the command help should be displayed, true otherwise
 	 */
 	private static boolean parseEdit(Arena arena, Player player) {
 		if (!PVPArena.hasAdminPerms(player)) {

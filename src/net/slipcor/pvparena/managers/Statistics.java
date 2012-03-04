@@ -16,7 +16,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.24
+ * @version v0.6.25
  * 
  */
 
@@ -60,6 +60,16 @@ public class Statistics {
 
 		public String getName() {
 			return this.fullName;
+		}
+
+		public static type getByString(
+				String string) {
+			for (type t : type.values()) {
+				if (t.name().equals(string.toUpperCase())) {
+					return t;
+				}
+			}
+			return null;
 		}
 	}
 

@@ -225,6 +225,7 @@ public class Language {
 		config.addDefault("lang.starting", "Enough players ready. Starting in 5 seconds!");
 
 		config.addDefault("lang.sortingby", "Arena Board now sorted by %1%");
+		config.addDefault("lang.invalidstattype", "Invalid statistics type: %1%");
 		
 		for (Statistics.type t : Statistics.type.values()) {
 			config.addDefault("lang."+t, t.getName());
