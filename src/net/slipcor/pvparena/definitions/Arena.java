@@ -13,8 +13,8 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Announcement.type;
-import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAEndEvent;
+import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
@@ -309,7 +309,7 @@ public class Arena {
 	 * @param player
 	 */
 	public void prepare(Player player, boolean spectate) {
-		PADeathEvent event = new PADeathEvent(this, player, spectate);
+		PAJoinEvent event = new PAJoinEvent(this, player, spectate);
 		Bukkit.getPluginManager().callEvent(event);
 		
 		db.i("preparing player: " + player.getName());
