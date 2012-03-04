@@ -3,18 +3,23 @@ package net.slipcor.pvparena.definitions;
 import java.util.HashMap;
 
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * arena board class
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.24
  * 
  */
 
@@ -110,5 +115,39 @@ public class ArenaBoard {
 					Statistics.getStats(this.arena, sortBy), t);
 			columns.get(t).write(s);
 		}
+	}
+
+	/**
+	 * check if a player clicked a leaderboard sign
+	 * 
+	 * @param event
+	 *            the InteractEvent
+	 * @param player
+	 *            the player interacting
+	 * @return true if the player clicked a leaderboard sign, false otherwise
+	 */
+	public static boolean checkInteract(PlayerInteractEvent event, Player player) {
+		
+		if (event.getClickedBlock() == null) {
+			return false;
+		}
+		
+		if (!Arenas.boards.containsKey(event.getClickedBlock().getLocation())) {
+			return false;
+		}
+		
+		ArenaBoard ab = Arenas.boards.get(event.getClickedBlock().getLocation());
+		
+		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+			ab.sortBy = Statistics.type.next(ab.sortBy);
+			Arenas.tellPlayer(player, Language.parse("sortingby",ab.sortBy.toString()));
+			return true;
+		} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			ab.sortBy = Statistics.type.last(ab.sortBy);
+			Arenas.tellPlayer(player, Language.parse("sortingby",ab.sortBy.toString()));
+			return true;
+		}
+		
+		return false;
 	}
 }

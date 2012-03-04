@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import net.slipcor.pvparena.managers.Statistics;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.19
+ * @version v0.6.24
  * 
  */
 public class Language {
@@ -222,20 +224,11 @@ public class Language {
 		config.addDefault("lang.insidevehicle", "You cannot join while on a vehicle!");
 		config.addDefault("lang.starting", "Enough players ready. Starting in 5 seconds!");
 
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
-		config.addDefault("lang.", "");
+		config.addDefault("lang.sortingby", "Arena Board now sorted by %1%");
 		
+		for (Statistics.type t : Statistics.type.values()) {
+			config.addDefault("lang."+t, t.getName());
+		}		
 		
 		/**
 		 * death causes : "player was killed by ****"

@@ -16,7 +16,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.24
  * 
  */
 
@@ -24,7 +24,43 @@ public class Statistics {
 	public static final Debug db = new Debug(36);
 
 	public static enum type {
-		WINS, LOSSES, KILLS, DEATHS, MAXDAMAGE, MAXDAMAGETAKE, DAMAGE, DAMAGETAKE, NULL
+		WINS("matches won"),
+		LOSSES("matches lost"),
+		KILLS("kills"),
+		DEATHS("deaths"),
+		MAXDAMAGE("max damage dealt"),
+		MAXDAMAGETAKE("max damage taken"),
+		DAMAGE("full damage dealt"),
+		DAMAGETAKE("full damage taken"),
+		NULL("player name");
+
+
+		private final String fullName;
+		type(String s) {
+			fullName = s;
+		}
+		
+		public static type next(type sortBy) {
+			type[] types = type.values();
+			int ord = sortBy.ordinal();
+			if (ord >= types.length-2) {
+				return types[0];
+			}
+			return types[ord+1];
+		}
+
+		public static type last(type sortBy) {
+			type[] types = type.values();
+			int ord = sortBy.ordinal();
+			if (ord <= 0) {
+				return types[types.length-2];
+			}
+			return types[ord-1];
+		}
+
+		public String getName() {
+			return this.fullName;
+		}
 	}
 
 	/**
