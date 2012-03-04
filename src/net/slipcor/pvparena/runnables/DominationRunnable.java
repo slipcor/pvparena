@@ -2,10 +2,10 @@ package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.managers.Flags;
 
 /**
@@ -17,15 +17,15 @@ import net.slipcor.pvparena.managers.Flags;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.21
  * 
  */
 
 public class DominationRunnable implements Runnable {
 	public final boolean take;
+	public final Location loc;
 	public int ID = -1;
 	private final Arena arena;
-	private final Location loc;
 	private final String team;
 	private Debug db = new Debug(39);
 
@@ -71,5 +71,14 @@ public class DominationRunnable implements Runnable {
 				Bukkit.getScheduler().cancelTask(run_id);
 			}
 		}
+	}
+
+	public boolean noOneThere(int checkDistance) {
+		for (ArenaPlayer p : arena.pm.getPlayers()) {
+			if (p.get().getLocation().distance(loc) < checkDistance) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

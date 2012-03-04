@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.23
  * 
  */
 

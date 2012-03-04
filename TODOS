@@ -13,11 +13,9 @@ ADDITIONS
 [[ join: /pa {name} [amount] - win amount : winFactor ]]
 -[ arena chat ]
 -[ Potion effects for powerups ]
--[ config: no name over head ]
 
 FIXES
 -[ lose 2 lives (temp godmode between teleporting)]
--[ punish spawn camping ]
 -add speaking DOM arena ^^
 
 CODING

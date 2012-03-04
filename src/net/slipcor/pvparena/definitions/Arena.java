@@ -26,6 +26,7 @@ import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.BoardRunnable;
 import net.slipcor.pvparena.runnables.DominationRunnable;
 import net.slipcor.pvparena.runnables.PowerupRunnable;
+import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -55,7 +56,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.22
  * 
  */
 
@@ -109,6 +110,7 @@ public class Arena {
 	public int END_ID = -1;
 	public int BOARD_ID = -1;
 	public int START_ID = -1;
+	public int SPAWNCAMP_ID = -1;
 
 	public Config cfg;
 
@@ -116,6 +118,7 @@ public class Arena {
 
 	public int playerCount = 0;
 	public int teamCount = 0;
+
 	
 	/**
 	 * arena constructor
@@ -193,6 +196,7 @@ public class Arena {
 			}
 		}
 		teamCount = countActiveTeams();
+		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
 	}
 
 	/**
@@ -627,13 +631,19 @@ public class Arena {
 	 */
 	public void colorizePlayer(Player player, String color) {
 		db.i("colorizing player " + player.getName() + "; color " + color);
-
-		if (color.equals("")) {
+		
+		if (color != null  && color.equals("")) {
 			player.setDisplayName(player.getName());
 
 			if (PVPArena.spoutHandler != null)
 				SpoutManager.getAppearanceManager().setGlobalTitle(player,
 						player.getName());
+
+			return;
+		} else if (color == null) {
+			if (PVPArena.spoutHandler != null)
+				SpoutManager.getAppearanceManager().setGlobalTitle(player,
+						" ");
 
 			return;
 		}
@@ -885,5 +895,24 @@ public class Arena {
 		pm.tellEveryone(Language.parse("begin"));
 		Announcement.announce(this, type.START,
 				Language.parse("begin"));
+	}
+
+	public void spawnCampPunish() {
+		
+		HashMap<Location,ArenaPlayer> players = new HashMap<Location,ArenaPlayer>();
+		
+		for (ArenaPlayer ap : pm.getPlayers()) {
+			players.put(ap.get().getLocation(), ap);
+		}
+		
+		for (String sTeam : paTeams.keySet()) {
+			for (Location loc : Spawns.getSpawns(this, sTeam)) {
+				for (Location loc2 : players.keySet()) {
+					if (loc.distance(loc2) < 3) {
+						players.get(loc).get().damage(1);
+					}
+				}
+			}
+		}
 	}
 }

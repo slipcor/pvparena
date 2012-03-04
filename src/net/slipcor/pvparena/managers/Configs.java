@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.23
  * 
  */
 
@@ -70,6 +70,7 @@ public class Configs {
 
 		config.addDefault("game.allowDrops", Boolean.valueOf(true));
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
+		config.addDefault("game.hideName", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
 		config.addDefault("game.mustbesafe", Boolean.valueOf(true));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));

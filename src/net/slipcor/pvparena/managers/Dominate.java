@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.21
  * 
  */
 
@@ -38,44 +38,44 @@ public class Dominate {
 	 *            the player to check
 	 */
 	public static void parseMove(Arena arena, Player player) {
-
-		/*
-		 * - noone there and not taken: takerunnable 10 seconds - another team
-		 * there and not taken: return
-		 * 
-		 * - noone there and enemy taken: takerunnable 10 seconds - another team
-		 * there and taken: takerunnable (false), untake!
-		 */
-
 		if (Players.parsePlayer(arena, player).spectator) {
 			return; // spectator or dead. OUT
 		}
-
+		
+		// player is alive and no spectator
+		
+		int checkDistance = 5;
+		boolean found = false;
+		
 		for (Location loc : Spawns.getSpawns(arena, "flags")) {
-
-			int checkDistance = 5;
-
+			// check every flag location
+			
 			if (player.getLocation().distance(loc) > checkDistance) {
-				continue;
+				continue; // not near the flag. NEXT
 			}
+			
+			found = true; // mark a found flag!
 			// player is at spawn location
 
 			HashSet<String> teams = Dominate.checkLocationPresentTeams(loc,
 					player, checkDistance);
 
+			// teams now contains all (other) teams near the flag
+			
 			if (arena.paFlags.containsKey(loc)) {
-				// flag taken - is there anyone?
+				
+				// flag is taken. by whom?
+				
 				if (arena.paFlags.get(loc).equals(
 						Players.parsePlayer(arena, player).team)) {
 					// taken by own team, NEXT!
-					// TODO: cancel unclaim event when moving outside of the
-					// arena and own flag
-					// and no other team here
 					continue;
 				}
 
 				// taken by other team!
 
+				// TODO logic? -.-
+				
 				if (arena.paRuns.containsKey(loc)) {
 					if (arena.paRuns.get(loc).take) {
 						db.i("runnable is trying to score, abort");
@@ -114,7 +114,18 @@ public class Dominate {
 				}
 			}
 		}
-
+		if (!found) {
+			// player is not near any flag. Check if player
+			// team tried to claim any flags
+			// and cancel if no players around
+			for (DominationRunnable run : arena.paRuns.values()) {
+				if (run.noOneThere(checkDistance)) {
+					Bukkit.getScheduler().cancelTask(run.ID);
+					arena.paRuns.remove(run.loc);
+					return;
+				}
+			}
+		}
 	}
 
 	/**

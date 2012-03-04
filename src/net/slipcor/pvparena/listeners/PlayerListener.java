@@ -49,7 +49,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.20
+ * @version v0.6.23
  * 
  */
 
@@ -400,7 +400,12 @@ public class PlayerListener implements Listener {
 		db.i("onPlayerTeleport: fighting player (uncancel)");
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
-
+		
+		if (arena.cfg.getBoolean("game.hideName")) {
+			player.setSneaking(true);
+			arena.colorizePlayer(player, null);
+		}
+		
 		if (arena.pm.getTelePass(player)
 				|| PVPArena.hasPerms(player, "pvparena.telepass"))
 			return; // if allowed => OUT

@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.23
  * 
  */
 
@@ -45,6 +45,7 @@ public class Settings {
 
 		types.put("game.allowDrops", "boolean");
 		types.put("game.dropSpawn", "boolean");
+		types.put("game.hideName", "boolean");
 		types.put("game.lives", "int");
 		types.put("game.mustbesafe", "boolean");
 		types.put("game.preventDeath", "boolean");

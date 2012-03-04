@@ -222,6 +222,21 @@ public class Language {
 		config.addDefault("lang.insidevehicle", "You cannot join while on a vehicle!");
 		config.addDefault("lang.starting", "Enough players ready. Starting in 5 seconds!");
 
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		config.addDefault("lang.", "");
+		
+		
 		/**
 		 * death causes : "player was killed by ****"
 		 */
