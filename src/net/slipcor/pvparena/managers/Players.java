@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -20,6 +21,7 @@ import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.events.PALeaveEvent;
 
 /**
  * player manager class
@@ -30,17 +32,22 @@ import net.slipcor.pvparena.definitions.Announcement.type;
  * 
  * @author slipcor
  * 
- * @version v0.6.20
+ * @version v0.6.26
  * 
  */
 
 public class Players {
 	// bets placed mapped to value: BetterName:BetName => Amount
 	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
-
+	private final Arena arena;
+	
 	HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
 	private static Debug db = new Debug(31);
 
+	public Players(Arena a) {
+		arena = a;
+	}
+	
 	/**
 	 * parse all teams and join them colored, comma separated
 	 * 
@@ -491,6 +498,9 @@ public class Players {
 	 *            the player to remove
 	 */
 	public void remove(Player player) {
+		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(player.getName()).spectator);
+		Bukkit.getPluginManager().callEvent(event);
+		
 		players.remove(player.getName());
 	}
 

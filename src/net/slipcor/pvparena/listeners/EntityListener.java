@@ -45,7 +45,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.26
  * 
  */
 
@@ -366,7 +366,7 @@ public class EntityListener implements Listener {
 			db.i("damage >= health => death");
 			int lives = 3;
 
-			Statistics.kill(arena, attacker, defender);
+			Statistics.kill(arena, attacker, defender, (lives > 0));
 
 			lives = arena.paLives.get(defender.getName());
 			db.i("lives before death: " + lives);
@@ -424,7 +424,7 @@ public class EntityListener implements Listener {
 			db.i("damage >= health => death");
 			int lives = 3;
 
-			Statistics.kill(arena, null, player);
+			Statistics.kill(arena, null, player, (lives > 0));
 			if (!arena.cfg.getBoolean("arenatype.flags")) {
 				lives = arena.paLives.get(player.getName());
 				db.i("lives before death: " + lives);

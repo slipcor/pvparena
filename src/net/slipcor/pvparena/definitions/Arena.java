@@ -13,6 +13,9 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.events.PADeathEvent;
+import net.slipcor.pvparena.events.PAEndEvent;
+import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
@@ -56,7 +59,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.22
+ * @version v0.6.26
  * 
  */
 
@@ -88,7 +91,7 @@ public class Arena {
 
 	public Powerups pum;
 	public Settings sm;
-	public Players pm = new Players();
+	public Players pm = new Players(this);
 	public String name = "default";
 	public String owner = "%server%";
 
@@ -150,6 +153,10 @@ public class Arena {
 	 * teleport all players to their respective spawn
 	 */
 	public void teleportAllToSpawn() {
+
+		PAStartEvent event = new PAStartEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		
 		db.i("teleporting all players to their spawns");
 		for (String p : pm.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
@@ -301,7 +308,10 @@ public class Arena {
 	 * 
 	 * @param player
 	 */
-	public void prepare(Player player) {
+	public void prepare(Player player, boolean spectate) {
+		PADeathEvent event = new PADeathEvent(this, player, spectate);
+		Bukkit.getPluginManager().callEvent(event);
+		
 		db.i("preparing player: " + player.getName());
 		pm.addPlayer(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
@@ -744,6 +754,10 @@ public class Arena {
 	 * reset an arena
 	 */
 	public void reset(boolean force) {
+		
+		PAEndEvent event = new PAEndEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		
 		db.i("resetting arena; force: " + String.valueOf(force));
 		clearArena();
 		paReady.clear();

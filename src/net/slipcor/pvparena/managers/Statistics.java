@@ -1,11 +1,13 @@
 package net.slipcor.pvparena.managers;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
+import net.slipcor.pvparena.events.PADeathEvent;
 
 /**
  * statistics manager class
@@ -16,7 +18,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.25
+ * @version v0.6.26
  * 
  */
 
@@ -286,7 +288,10 @@ public class Statistics {
 	 * @param defender
 	 *            the attacked player
 	 */
-	public static void kill(Arena arena, Entity e, Player defender) {
+	public static void kill(Arena arena, Entity e, Player defender, boolean willRespawn) {
+		PADeathEvent event = new PADeathEvent(arena, defender, willRespawn);
+		Bukkit.getPluginManager().callEvent(event);
+		
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			if (arena.pm.existsPlayer(attacker)) {

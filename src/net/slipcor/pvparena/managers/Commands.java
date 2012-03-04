@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.25
+ * @version v0.6.26
  * 
  */
 
@@ -83,7 +83,7 @@ public class Commands {
 			return true;
 		}
 
-		arena.prepare(player);
+		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
@@ -142,7 +142,7 @@ public class Commands {
 			return true;
 		}
 
-		arena.prepare(player);
+		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		if ((PVPArena.eco != null) && (entryfee > 0)) {
@@ -344,7 +344,7 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("joinrange"));
 			return true;
 		}
-		arena.prepare(player);
+		arena.prepare(player, true);
 		arena.tpPlayerToCoordName(player, "spectator");
 		Inventories.prepareInventory(arena, player);
 		Arenas.tellPlayer(player, Language.parse("specwelcome"));
