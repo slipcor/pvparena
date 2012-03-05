@@ -4,6 +4,7 @@ import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * 
@@ -13,7 +14,7 @@ import org.bukkit.event.Event;
  * 
  * is thrown when a player dies in the arena
  * 
- * @version 0.6.3.26
+ * @version 0.6.27
  * 
  * @author slipcor
  * 
@@ -21,7 +22,7 @@ import org.bukkit.event.Event;
 
 public class PADeathEvent extends Event {
 
-	private static final long serialVersionUID = 913817643961941345L;
+    private static final HandlerList handlers = new HandlerList();
 	private Arena arena;
 	private Player player;
 	private boolean respawn;
@@ -67,5 +68,10 @@ public class PADeathEvent extends Event {
 	 */
 	public boolean getRespawn() {
 		return respawn;
+	}
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
 	}
 }

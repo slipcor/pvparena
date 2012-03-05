@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.27
  * 
  */
 
@@ -379,7 +379,7 @@ public class Flags {
 					return true; // success :)
 				}
 			}
-		} else if (block.getType().equals(Material.WOOL)) {
+		} else if (block != null && block.getType().equals(Material.WOOL)) {
 			Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
 			if (arena != null) {
 				if ((PVPArena.hasAdminPerms(player) || (PVPArena

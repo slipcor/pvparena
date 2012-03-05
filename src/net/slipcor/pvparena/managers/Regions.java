@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.managers;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -19,7 +18,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.27
  * 
  */
 
@@ -72,9 +71,7 @@ public class Regions {
 		if (joinRange < 1)
 			return false;
 		if (arena.regions.get("battlefield") == null) {
-			Bukkit.getLogger().warning(
-					"[PVP Arena] join range set, but battlefield not set!");
-			return false;
+			return Spawns.getRegionCenter(arena).distance(player.getLocation())>joinRange;
 		}
 		return arena.regions.get("battlefield").tooFarAway(joinRange,
 				player.getLocation());

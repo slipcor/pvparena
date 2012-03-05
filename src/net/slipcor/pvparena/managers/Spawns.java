@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 /**
  * spawn manager class
@@ -22,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.27
  * 
  */
 
@@ -207,6 +208,10 @@ public class Spawns {
 				if (!name.equals(sTeam)) {
 					continue;
 				}
+			} else if (sTeam.equals("free")){
+				if (!name.startsWith("spawn")) {
+					continue;
+				}
 			}
 			db.i(" - " + name);
 			String sLoc = arena.cfg.getString("spawns." + name, null);
@@ -214,5 +219,30 @@ public class Spawns {
 		}
 
 		return result;
+	}
+
+	/**
+	 * calculate the arena center, including all team spawn locations
+	 * @param arena
+	 * @return
+	 */
+	public static Location getRegionCenter(Arena arena) {
+		HashSet<Location> locs = new HashSet<Location>();
+		
+		for (String sTeam : arena.paTeams.keySet()) {
+			for (Location loc : getSpawns(arena, sTeam)) {
+				locs.add(loc);
+			}
+		}
+	
+		Vector v = new Vector(0,0,0);
+		
+		for (Location loc : locs) {
+			v.add(loc.toVector());
+		}
+		
+		v.multiply(1 / locs.size());
+		
+		return v.toLocation(Bukkit.getWorld(arena.getWorld()));
 	}
 }

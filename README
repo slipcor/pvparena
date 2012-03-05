@@ -1,3 +1,5 @@
+ v0.6.27 - join range possible without set region
+ v0.6.26.2 - fixed NPE
  v0.6.26.1 - added proper join event calling
  v0.6.26 - add custom events for other plugins to listen to
  v0.6.25 - get stats with /pa {name} stats [stattype]
