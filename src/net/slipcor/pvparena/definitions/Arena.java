@@ -59,7 +59,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.26
+ * @version v0.6.28
  * 
  */
 
@@ -122,7 +122,6 @@ public class Arena {
 	public int playerCount = 0;
 	public int teamCount = 0;
 
-	
 	/**
 	 * arena constructor
 	 * 
@@ -156,7 +155,7 @@ public class Arena {
 
 		PAStartEvent event = new PAStartEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
-		
+
 		db.i("teleporting all players to their spawns");
 		for (String p : pm.getPlayerTeamMap().keySet()) {
 			Player z = Bukkit.getServer().getPlayer(p);
@@ -203,7 +202,8 @@ public class Arena {
 			}
 		}
 		teamCount = countActiveTeams();
-		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
+		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
 	}
 
 	/**
@@ -311,7 +311,7 @@ public class Arena {
 	public void prepare(Player player, boolean spectate) {
 		PAJoinEvent event = new PAJoinEvent(this, player, spectate);
 		Bukkit.getPluginManager().callEvent(event);
-		
+
 		db.i("preparing player: " + player.getName());
 		pm.addPlayer(player);
 		saveMisc(player); // save player health, fire tick, hunger etc
@@ -641,8 +641,8 @@ public class Arena {
 	 */
 	public void colorizePlayer(Player player, String color) {
 		db.i("colorizing player " + player.getName() + "; color " + color);
-		
-		if (color != null  && color.equals("")) {
+
+		if (color != null && color.equals("")) {
 			player.setDisplayName(player.getName());
 
 			if (PVPArena.spoutHandler != null)
@@ -652,8 +652,7 @@ public class Arena {
 			return;
 		} else if (color == null) {
 			if (PVPArena.spoutHandler != null)
-				SpoutManager.getAppearanceManager().setGlobalTitle(player,
-						" ");
+				SpoutManager.getAppearanceManager().setGlobalTitle(player, " ");
 
 			return;
 		}
@@ -754,10 +753,10 @@ public class Arena {
 	 * reset an arena
 	 */
 	public void reset(boolean force) {
-		
+
 		PAEndEvent event = new PAEndEvent(this);
 		Bukkit.getPluginManager().callEvent(event);
-		
+
 		db.i("resetting arena; force: " + String.valueOf(force));
 		clearArena();
 		paReady.clear();
@@ -895,35 +894,35 @@ public class Arena {
 		if (START_ID != -1 || this.fightInProgress) {
 			return;
 		}
-		
-		long duration = 20L*5;
-		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new StartRunnable(this), duration);
+
+		long duration = 20L * 5;
+		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(
+				PVPArena.instance, new StartRunnable(this), duration);
 		this.pm.tellEveryone(Language.parse("starting"));
 	}
 
 	public void start() {
 		START_ID = -1;
-		
+
 		teleportAllToSpawn();
 		fightInProgress = true;
 		pm.tellEveryone(Language.parse("begin"));
-		Announcement.announce(this, type.START,
-				Language.parse("begin"));
+		Announcement.announce(this, type.START, Language.parse("begin"));
 	}
 
 	public void spawnCampPunish() {
-		
-		HashMap<Location,ArenaPlayer> players = new HashMap<Location,ArenaPlayer>();
-		
+
+		HashMap<Location, ArenaPlayer> players = new HashMap<Location, ArenaPlayer>();
+
 		for (ArenaPlayer ap : pm.getPlayers()) {
 			players.put(ap.get().getLocation(), ap);
 		}
-		
+
 		for (String sTeam : paTeams.keySet()) {
-			for (Location loc : Spawns.getSpawns(this, sTeam)) {
-				for (Location loc2 : players.keySet()) {
-					if (loc.distance(loc2) < 3) {
-						players.get(loc).get().damage(1);
+			for (Location spawnLoc : Spawns.getSpawns(this, sTeam)) {
+				for (Location playerLoc : players.keySet()) {
+					if (spawnLoc.distance(playerLoc) < 3) {
+						players.get(playerLoc).get().damage(1);
 					}
 				}
 			}

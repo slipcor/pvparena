@@ -582,7 +582,6 @@ public class Players {
 		}
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 
-		arena.pm.remove(player);
 		ap.destroy();
 		ap = null;
 

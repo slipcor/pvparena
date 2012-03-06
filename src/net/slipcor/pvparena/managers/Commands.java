@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.26
+ * @version v0.6.28
  * 
  */
 
@@ -565,6 +565,20 @@ public class Commands {
 
 			if (args[0].equalsIgnoreCase("region")) {
 
+
+				if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
+					// pa region remove [regionname]
+					if (arena.cfg.get("regions." + args[1]) != null) {
+						arena.cfg.set("regions." + args[1], null);
+						arena.cfg.save();
+						Arena.regionmodify = "";
+						Arenas.tellPlayer(player, Language.parse("regionremoved"));
+					} else {
+						Arenas.tellPlayer(player, Language.parse("regionnotremoved"));
+					}
+					return true;
+				}
+				
 				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
@@ -626,18 +640,6 @@ public class Commands {
 		if (args.length != 3) {
 			Arenas.tellPlayer(player, Language.parse("invalidcmd", "505"));
 			return false;
-		}
-
-		if (args[2].equalsIgnoreCase("remove")) {
-			if (arena.cfg.get("regions." + args[1]) != null) {
-				arena.cfg.set("regions." + args[1], null);
-				arena.cfg.save();
-				Arena.regionmodify = "";
-				Arenas.tellPlayer(player, Language.parse("regionremoved"));
-			} else {
-				Arenas.tellPlayer(player, Language.parse("regionnotremoved"));
-			}
-
 		}
 		return true;
 	}
