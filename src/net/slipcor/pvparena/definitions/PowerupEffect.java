@@ -12,6 +12,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
@@ -29,7 +31,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.28
  * 
  */
 
@@ -44,19 +46,20 @@ public class PowerupEffect {
 	private int diff = 0;
 	private List<String> items = new ArrayList<String>();
 	private Debug db = new Debug(17);
+	private PotionEffect potEff = null;
 
 	/**
 	 * PowerupEffect classes
 	 */
 	public static enum classes {
-		DMG_CAUSE, DMG_RECEIVE, DMG_REFLECT, FREEZE, HEAL, HEALTH, IGNITE, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT, JUMP;
+		DMG_CAUSE, DMG_RECEIVE, DMG_REFLECT, FREEZE, HEAL, HEALTH, IGNITE, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT, JUMP, POTEFF;
 	}
 
 	/**
 	 * PowerupEffect instant classes (effects that activate when collecting)
 	 */
 	public static enum instants {
-		FREEZE, HEALTH, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT;
+		FREEZE, HEALTH, LIVES, PORTAL, REPAIR, SLIP, SPAWN_MOB, SPRINT, POTEFF;
 	}
 
 	/**
@@ -67,9 +70,11 @@ public class PowerupEffect {
 	 * @param puEffectVals
 	 *            the map of effect values to set/add
 	 */
-	public PowerupEffect(String eClass, HashMap<String, Object> puEffectVals) {
+	public PowerupEffect(String eClass, HashMap<String, Object> puEffectVals,
+			PotionEffect effect) {
 		db.i("adding effect " + eClass);
 		this.type = parseClass(eClass);
+		this.potEff = effect;
 
 		db.i("effect class is " + type.toString());
 		for (Object evName : puEffectVals.keySet()) {
@@ -112,6 +117,9 @@ public class PowerupEffect {
 		for (classes c : classes.values()) {
 			if (c.name().equalsIgnoreCase(s))
 				return c;
+			if (s.toUpperCase().startsWith("POTION.")) {
+				return classes.POTEFF;
+			}
 		}
 		return null;
 	}
@@ -142,6 +150,21 @@ public class PowerupEffect {
 				// type is instant. commit!
 				commit(player);
 			}
+		}
+		if (potEff != null) {
+			player.addPotionEffect(potEff);
+		}
+	}
+
+	/**
+	 * remove PowerupEffect Potion Effect from player
+	 * 
+	 * @param player
+	 *            the player to clear
+	 */
+	public void removeEffect(Player player) {
+		if (potEff != null) {
+			player.removePotionEffect(potEff.getType());
 		}
 	}
 
@@ -315,5 +338,47 @@ public class PowerupEffect {
 		} else {
 			db.w("unexpected jump effect: " + this.type.name());
 		}
+	}
+	
+	/**
+	 * Get the PotionEffect of a PotionEffect class string
+	 * @param eClass the class string to parse
+	 * @return the PotionEffect or null
+	 */
+	public static PotionEffect parsePotionEffect(String eClass) {
+		eClass = eClass.replace("POTION.", "");
+		
+		// POTION.BLA:1 <--- duration
+		// POTION.BLA:1:1 <--- amplifyer
+		
+		int duration = 1;
+		int amplifyer = 1;
+		
+		if (eClass.contains(":")) {
+			String[] s = eClass.split(":");
+			
+			eClass = s[0];
+			try {
+				duration = Integer.parseInt(s[1]);
+			} catch(Exception e) {
+				Language.log_warning("warn", "invalid duration for PotionEffect "+eClass);
+			}
+			
+			if (s.length>2) {
+
+				try {
+					amplifyer = Integer.parseInt(s[2]);
+				} catch(Exception e) {
+					Language.log_warning("warn", "invalid duration for PotionEffect "+eClass);
+				}
+			}
+		}
+		
+		for (PotionEffectType pet : PotionEffectType.values()) {
+			if (pet.getName().equals(eClass)) {
+				return new PotionEffect(pet, duration, amplifyer);
+			}
+		}
+		return null;
 	}
 }

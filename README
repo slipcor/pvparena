@@ -1,3 +1,6 @@
+ v0.6.28.2 - fix a very bad bug occurring after fixing an NPE
+ v0.6.28.1 - fix various NPEs
+ v0.6.28 - potion effects for PowerUps
  v0.6.27 - join range possible without set region
  v0.6.26.2 - fixed NPE
  v0.6.26.1 - added proper join event calling

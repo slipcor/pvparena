@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.24
+ * @version v0.6.28
  * 
  */
 public class Language {
@@ -63,6 +63,7 @@ public class Language {
 		config.addDefault("log.nospout",
 				"Spout not found, you are missing some features ;)");
 		config.addDefault("log.spout", "Hooking into Spout!");
+		config.addDefault("log.warn", "%1%");
 
 		config.addDefault("lang.playerleave", "%1% has left the fight!");
 		config.addDefault("lang.youleave", "You have left the fight!");

@@ -50,7 +50,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.24
+ * @version v0.6.28
  * 
  */
 
@@ -212,7 +212,7 @@ public class PlayerListener implements Listener {
 					return; // not chosen class => OUT
 				}
 
-				if (arena.fightInProgress) {
+				if (!arena.fightInProgress) {
 				
 					if (arena.cfg.getBoolean("join.forceEven", false)) {
 						if (!arena.pm.checkEven()) {
@@ -259,7 +259,7 @@ public class PlayerListener implements Listener {
 				}
 				
 				if (!arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
-					arena.tpPlayerToCoordName(player, arena.pm.getPlayerTeamMap().get(player) + "spawn");
+					arena.tpPlayerToCoordName(player, arena.pm.getPlayerTeamMap().get(player.getName()) + "spawn");
 				} else {
 					arena.tpPlayerToCoordName(player, "spawn");
 				}
