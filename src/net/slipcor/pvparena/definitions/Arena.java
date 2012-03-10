@@ -892,6 +892,7 @@ public class Arena {
 
 	public void countDown() {
 		if (START_ID != -1 || this.fightInProgress) {
+			Bukkit.getScheduler().cancelTask(START_ID);
 			return;
 		}
 
@@ -915,6 +916,9 @@ public class Arena {
 		HashMap<Location, ArenaPlayer> players = new HashMap<Location, ArenaPlayer>();
 
 		for (ArenaPlayer ap : pm.getPlayers()) {
+			if (ap.spectator) {
+				continue;
+			}
 			players.put(ap.get().getLocation(), ap);
 		}
 

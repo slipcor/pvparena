@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.27
+ * @version v0.6.28
  * 
  */
 
@@ -212,6 +212,8 @@ public class Spawns {
 				if (!name.startsWith("spawn")) {
 					continue;
 				}
+			} else if (name.contains("lounge") || !name.contains(sTeam)) {
+				continue;
 			}
 			db.i(" - " + name);
 			String sLoc = arena.cfg.getString("spawns." + name, null);
