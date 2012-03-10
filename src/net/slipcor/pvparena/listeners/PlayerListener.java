@@ -251,7 +251,7 @@ public class PlayerListener implements Listener {
 						Arenas.tellPlayer(player, Language.parse("notready5"));
 						return; // arena not ready => announce
 					} else if (ready == -6) {
-						Arenas.tellPlayer(player, Language.parse("notready6"));
+						arena.countDown();
 						return; // arena ready => countdown
 					}
 					arena.start();

@@ -14,7 +14,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.22
+ * @version v0.6.28
  * 
  */
 
@@ -39,7 +39,7 @@ public class SpawnCampRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("SpawnCampRunnable commiting");
-		if (a.fightInProgress)
+		if (a.fightInProgress && a.cfg.getBoolean("protection.punish"))
 			a.spawnCampPunish();
 		else {
 			// deactivate the auto saving task

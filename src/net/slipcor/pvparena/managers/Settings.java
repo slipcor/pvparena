@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.23
+ * @version v0.6.28
  * 
  */
 
@@ -101,6 +101,7 @@ public class Settings {
 		types.put("protection.blockdamage", "boolean");
 		types.put("protection.firespread", "boolean");
 		types.put("protection.lavafirespread", "boolean");
+		types.put("protection.punish", "boolean");
 		types.put("protection.tnt", "boolean");
 		types.put("protection.lighter", "boolean");
 		types.put("protection.checkExit", "boolean");

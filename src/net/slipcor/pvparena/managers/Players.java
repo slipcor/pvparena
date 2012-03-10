@@ -190,7 +190,6 @@ public class Players {
 			int readyPlayers = arena.paReady.size();
 			
 			if (readyPlayers / players >= ratio) {
-				arena.countDown();
 				return -6;
 			}
 		}

@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.23
+ * @version v0.6.28
  * 
  */
 
@@ -119,6 +119,7 @@ public class Configs {
 		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
 		config.addDefault("protection.tnt", Boolean.valueOf(true));
 		config.addDefault("protection.lighter", Boolean.valueOf(true));
+		config.addDefault("protection.punish", Boolean.valueOf(false));
 		config.addDefault("protection.checkExit", Boolean.valueOf(false));
 		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
