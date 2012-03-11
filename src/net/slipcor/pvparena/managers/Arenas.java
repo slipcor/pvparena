@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.23
+ * @version v0.6.29
  * 
  */
 
@@ -264,8 +264,11 @@ public class Arenas {
 				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
 					String sName = sign.getLine(1);
 					String[] newArgs = null;
-
 					Arena a = arenas.get(sName);
+					if (sign.getLine(2) != null && a.paTeams.containsKey(sign.getLine(2))) {
+						newArgs = new String[1];
+						newArgs[0] = sign.getLine(2);
+					}
 					if (a == null) {
 						Arenas.tellPlayer(player,
 								Language.parse("arenanotexists", sName));

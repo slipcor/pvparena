@@ -1,3 +1,4 @@
+ v0.6.29 - join teams with sign. Line 2: teamname
  v0.6.28.6 - cancel 5s countdown if player joins
  v0.6.28.5 - spawn camping just for battlefield & fighting players
  v0.6.28.4 - add config: protection.punish (default false)
