@@ -1,3 +1,5 @@
+ v0.6.29.2 - fixed sign restoring bug
+ v0.6.29.1 - fixed inventory hack bug
  v0.6.29 - join teams with sign. Line 2: teamname
  v0.6.28.6 - cancel 5s countdown if player joins
  v0.6.28.5 - spawn camping just for battlefield & fighting players

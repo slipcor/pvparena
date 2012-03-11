@@ -22,7 +22,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.29
  * 
  */
 
@@ -93,11 +93,15 @@ public class Inventories {
 	public static void clearInventory(Player player) {
 		db.i("fully clear player inventory: " + player.getName());
 
+		player.closeInventory();
+		
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
 		player.getInventory().setBoots(null);
 		player.getInventory().setChestplate(null);
 		player.getInventory().setLeggings(null);
+		
+		
 	}
 
 	/**

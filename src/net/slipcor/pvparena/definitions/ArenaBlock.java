@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.definitions;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -17,7 +18,7 @@ import org.bukkit.block.Sign;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.29
  * 
  */
 public class ArenaBlock {
@@ -92,7 +93,11 @@ public class ArenaBlock {
 			int i = 0;
 			for (String s : lines) {
 				if (s != null) {
-					((Sign) b.getState()).setLine(i, s);
+					try {
+						((Sign) b.getState()).setLine(i, s);
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("tried to reset sign at location "+location.toString());
+					}
 				}
 				i++;
 			}
