@@ -50,7 +50,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.29
  * 
  */
 
@@ -413,6 +413,13 @@ public class PlayerListener implements Listener {
 				|| PVPArena.hasPerms(player, "pvparena.telepass"))
 			return; // if allowed => OUT
 
+		if (arena.regions.containsKey("battlefield")) {
+			if (arena.regions.get("battlefield").contains(event.getFrom()) &&
+					arena.regions.get("battlefield").contains(event.getTo())) {
+				return; // teleporting inside the arena: allowed!
+			}
+		}
+		
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
 		event.setCancelled(true); // cancel and tell
 		Arenas.tellPlayer(player, Language.parse("usepatoexit"));
