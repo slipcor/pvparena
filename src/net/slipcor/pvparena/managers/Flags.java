@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.27
+ * @version v0.6.29
  * 
  */
 
@@ -328,7 +328,7 @@ public class Flags {
 			arena.pm.tellEveryone(Language.parse(type + "save", scPlayer,
 					scFlagTeam));
 			arena.paTeamFlags.remove(flagTeam);
-			if (arena.paHeadGears != null) {
+			if (arena.paHeadGears != null && arena.paHeadGears.get(player.getName()) != null) {
 				player.getInventory().setHelmet(
 						arena.paHeadGears.get(player.getName()).clone());
 				arena.paHeadGears.remove(player.getName());
