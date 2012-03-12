@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.29
  * 
  */
 
@@ -112,6 +112,7 @@ public class Configs {
 		config.addDefault("money.betPlayerWinFactor", Double.valueOf(1));
 
 		config.addDefault("protection.spawn", Integer.valueOf(3));
+		config.addDefault("protection.restore", Boolean.valueOf(true));
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));

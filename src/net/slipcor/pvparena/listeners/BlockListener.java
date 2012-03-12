@@ -27,7 +27,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.29
  * 
  */
 
@@ -44,7 +44,7 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
-			if (arena.fightInProgress) {
+			if (arena.fightInProgress && arena.cfg.getBoolean("protection.restore")) {
 				Blocks.saveBlock(event.getBlock());
 			}
 			return; // we don't need protection => OUT!
@@ -104,7 +104,7 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			if (arena.fightInProgress) {
+			if (arena.fightInProgress && arena.cfg.getBoolean("protection.restore")) {
 				Blocks.saveBlock(event.getBlock(), event
 						.getBlockReplacedState().getType());
 			}
