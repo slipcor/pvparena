@@ -893,6 +893,7 @@ public class Arena {
 	public void countDown() {
 		if (START_ID != -1 || this.fightInProgress) {
 			Bukkit.getScheduler().cancelTask(START_ID);
+			START_ID = -1;
 			return;
 		}
 
