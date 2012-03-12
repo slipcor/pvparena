@@ -159,6 +159,7 @@ public class Flags {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
 				}
+				
 				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
 				if (arena.cfg.getBoolean("game.woolFlagHead")) {
@@ -344,11 +345,20 @@ public class Flags {
 	 * method for CTF arena to override
 	 */
 	public static void init_arena(Arena arena) {
+		boolean pumpkin = arena.cfg.getBoolean("arenatype.pumpkin");
+		String type = null;
+		if (pumpkin) {
+			type = "pumpkin";
+		} else {
+			type = "flag";
+		}
 		for (String sTeam : arena.paTeams.keySet()) {
 			if (arena.pm.getPlayerTeamMap().containsValue(sTeam)) {
 				// team is active
 				arena.paLives.put(sTeam, arena.cfg.getInt("game.lives", 3));
 			}
+			takeFlag(arena.paTeams.get(sTeam), false, pumpkin,
+					Spawns.getCoords(arena, sTeam + type));
 		}
 		if (arena.cfg.getBoolean("arenatype.domination")) {
 			arena.paFlags = new HashMap<Location, String>();
