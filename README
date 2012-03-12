@@ -1,3 +1,4 @@
+ v0.6.29.8 - create custom events properly
  v0.6.29.7 - reset team flags on arena startup to be colored
  v0.6.29.6 - fixed CTF NPE
  v0.6.29.5 - added config setting protection.restore to stop block restoring

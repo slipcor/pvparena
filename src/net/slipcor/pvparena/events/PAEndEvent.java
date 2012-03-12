@@ -15,7 +15,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when an arena match ends
  * 
- * @version 0.6.27
+ * @version 0.6.29
  * 
  * @author slipcor
  * 
@@ -43,9 +43,12 @@ public class PAEndEvent extends Event {
 		return arena;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
-		return handlers;
+	    return handlers;
+	}
+	 
+	public static HandlerList getHandlerList() {
+	    return handlers;
 	}
 	
 	/**

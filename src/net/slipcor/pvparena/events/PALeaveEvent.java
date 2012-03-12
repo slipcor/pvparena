@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player leaves the arena
  * 
- * @version 0.6.27
+ * @version 0.6.29
  * 
  * @author slipcor
  * 
@@ -70,8 +70,11 @@ public class PALeaveEvent extends Event {
 		return spectator;
 	}
 
-	@Override
 	public HandlerList getHandlers() {
-		return handlers;
+	    return handlers;
+	}
+	 
+	public static HandlerList getHandlerList() {
+	    return handlers;
 	}
 }
