@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.HashSet;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -45,13 +47,15 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.26
+ * @version v0.6.29
  * 
  */
 
 public class EntityListener implements Listener {
 	private Debug db = new Debug(20);
-
+	
+	static HashSet<Player> burningPlayers = new HashSet<Player>();
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEntityDeath(EntityDeathEvent event) {
 		Entity e = event.getEntity();
@@ -87,6 +91,7 @@ public class EntityListener implements Listener {
 	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
 
+		EntityListener.addBurningPlayer(player);
 		String sTeam = arena.pm.getTeam(player);
 		String color = arena.paTeams.get(sTeam);
 		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
@@ -413,8 +418,18 @@ public class EntityListener implements Listener {
 		}
 
 		Player player = (Player) p1;
-		if (arena.pm.getTeam(player).equals(""))
+		
+		if (burningPlayers.contains(player) && (event.getCause().equals(DamageCause.FIRE_TICK))) {
+			player.setFireTicks(0);
+			event.setCancelled(true);
+			burningPlayers.remove(player);
 			return;
+		}
+		
+		if (arena.pm.getTeam(player).equals("") || Players.parsePlayer(arena, player).spectator) {
+			event.setCancelled(true);
+			return;
+		}
 
 		Statistics.damage(arena, null, player, event.getDamage());
 
@@ -505,5 +520,9 @@ public class EntityListener implements Listener {
 		}
 
 		event.setCancelled(true); // ELSE => cancel event
+	}
+
+	public static void addBurningPlayer(Player player) {
+		burningPlayers.add(player);
 	}
 }

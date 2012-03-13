@@ -16,6 +16,7 @@ import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
+import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
@@ -59,7 +60,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.29
  * 
  */
 
@@ -463,7 +464,6 @@ public class Arena {
 
 		removePermissions(player);
 		ArenaPlayer ap = Players.parsePlayer(this, player);
-		player.setFireTicks(ap.fireticks > 0 ? ap.fireticks : 1);
 		player.setFoodLevel(ap.foodlevel);
 		player.setHealth(ap.health);
 		player.setSaturation(ap.saturation);
@@ -488,6 +488,10 @@ public class Arena {
 		}
 		pm.setTelePass(player, false);
 
+		EntityListener.addBurningPlayer(player);
+		player.setFireTicks(ap.fireticks);
+		player.setNoDamageTicks(60);
+		
 		String sClass = "exit";
 		if (!pm.getClass(player).equals("")) {
 			sClass = pm.getClass(player);
@@ -594,7 +598,6 @@ public class Arena {
 			Entity damager) {
 		db.i("respawning player " + player.getName());
 		playersetHealth(player, cfg.getInt("start.health", 0));
-		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
 		player.setSaturation(cfg.getInt("start.saturation", 20));
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
@@ -629,6 +632,9 @@ public class Arena {
 		} else {
 			tpPlayerToCoordName(player, "spawn");
 		}
+		player.setFireTicks(0);
+		player.setNoDamageTicks(60);
+		EntityListener.addBurningPlayer(player);
 	}
 
 	/**
