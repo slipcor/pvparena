@@ -18,7 +18,7 @@ import net.slipcor.pvparena.events.PADeathEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.26
+ * @version v0.6.30
  * 
  */
 
@@ -26,46 +26,40 @@ public class Statistics {
 	public static final Debug db = new Debug(36);
 
 	public static enum type {
-		WINS("matches won"),
-		LOSSES("matches lost"),
-		KILLS("kills"),
-		DEATHS("deaths"),
-		MAXDAMAGE("max damage dealt"),
-		MAXDAMAGETAKE("max damage taken"),
-		DAMAGE("full damage dealt"),
-		DAMAGETAKE("full damage taken"),
-		NULL("player name");
-
+		WINS("matches won"), LOSSES("matches lost"), KILLS("kills"), DEATHS(
+				"deaths"), MAXDAMAGE("max damage dealt"), MAXDAMAGETAKE(
+				"max damage taken"), DAMAGE("full damage dealt"), DAMAGETAKE(
+				"full damage taken"), NULL("player name");
 
 		private final String fullName;
+
 		type(String s) {
 			fullName = s;
 		}
-		
+
 		public static type next(type sortBy) {
 			type[] types = type.values();
 			int ord = sortBy.ordinal();
-			if (ord >= types.length-2) {
+			if (ord >= types.length - 2) {
 				return types[0];
 			}
-			return types[ord+1];
+			return types[ord + 1];
 		}
 
 		public static type last(type sortBy) {
 			type[] types = type.values();
 			int ord = sortBy.ordinal();
 			if (ord <= 0) {
-				return types[types.length-2];
+				return types[types.length - 2];
 			}
-			return types[ord-1];
+			return types[ord - 1];
 		}
 
 		public String getName() {
 			return this.fullName;
 		}
 
-		public static type getByString(
-				String string) {
+		public static type getByString(String string) {
 			for (type t : type.values()) {
 				if (t.name().equals(string.toUpperCase())) {
 					return t;
@@ -102,9 +96,13 @@ public class Statistics {
 	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
 		db.i("getting stats: " + a.name + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
-		ArenaPlayer[] aps = new ArenaPlayer[a.pm.getPlayers().size()];
+		ArenaPlayer[] aps = new ArenaPlayer[Players.getPlayers(a).size()];
 		int i = 0;
-		for (ArenaPlayer p : a.pm.getPlayers()) {
+		for (ArenaPlayer p : Players.getPlayers(a)) {
+
+			if (p.arena == null || !p.arena.equals(a)) {
+				continue;
+			}
 			aps[i++] = p;
 		}
 
@@ -266,14 +264,14 @@ public class Statistics {
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			db.i("attacker is player: " + attacker.getName());
-			if (arena.pm.existsPlayer(attacker)) {
+			if (Players.isPartOf(arena, attacker)) {
 				db.i("attacker is in the arena, adding damage!");
-				ArenaPlayer p = Players.parsePlayer(arena, attacker);
+				ArenaPlayer p = Players.parsePlayer(attacker);
 				p.damage += dmg;
 				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
 			}
 		}
-		ArenaPlayer p = Players.parsePlayer(arena, defender);
+		ArenaPlayer p = Players.parsePlayer(defender);
 		p.damagetake += dmg;
 		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
 	}
@@ -288,18 +286,19 @@ public class Statistics {
 	 * @param defender
 	 *            the attacked player
 	 */
-	public static void kill(Arena arena, Entity e, Player defender, boolean willRespawn) {
+	public static void kill(Arena arena, Entity e, Player defender,
+			boolean willRespawn) {
 		PADeathEvent event = new PADeathEvent(arena, defender, willRespawn);
 		Bukkit.getPluginManager().callEvent(event);
-		
+
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
-			if (arena.pm.existsPlayer(attacker)) {
-				ArenaPlayer p = Players.parsePlayer(arena, attacker);
+			if (Players.isPartOf(arena, attacker)) {
+				ArenaPlayer p = Players.parsePlayer(attacker);
 				p.kills++;
 			}
 		}
-		ArenaPlayer p = Players.parsePlayer(arena, defender);
+		ArenaPlayer p = Players.parsePlayer(defender);
 		p.deaths++;
 	}
 }

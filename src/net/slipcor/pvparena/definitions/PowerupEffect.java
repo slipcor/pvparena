@@ -243,21 +243,21 @@ public class PowerupEffect {
 
 					// pasted from onEntityDeath;
 
-					String sTeam = arena.pm.getTeam(player);
+					String sTeam = Players.getTeam(player);
 
 					Announcement.announce(arena, Announcement.type.LOSER,
 							Language.parse("killedby", player.getName(),
 									Players.parseDeathCause(arena, player,
 											DamageCause.MAGIC, player)));
-					arena.pm.tellEveryone(Language.parse("killedby",
+					Players.tellEveryone(arena, Language.parse("killedby",
 							ChatColor.valueOf(arena.paTeams.get(sTeam))
 									+ player.getName() + ChatColor.YELLOW,
 							Players.parseDeathCause(arena, player,
 									DamageCause.MAGIC, player)));
-					Players.parsePlayer(arena, player).losses++;
+					Players.parsePlayer(player).losses++;
 					// needed so player does not get found when dead
 					arena.removePlayer(player, "lose");
-					arena.pm.setTeam(player, "");
+					Players.setTeam(player, "");
 
 					Ends.checkAndCommit(arena);
 				}
@@ -339,41 +339,45 @@ public class PowerupEffect {
 			db.w("unexpected jump effect: " + this.type.name());
 		}
 	}
-	
+
 	/**
 	 * Get the PotionEffect of a PotionEffect class string
-	 * @param eClass the class string to parse
+	 * 
+	 * @param eClass
+	 *            the class string to parse
 	 * @return the PotionEffect or null
 	 */
 	public static PotionEffect parsePotionEffect(String eClass) {
 		eClass = eClass.replace("POTION.", "");
-		
+
 		// POTION.BLA:1 <--- duration
 		// POTION.BLA:1:1 <--- amplifyer
-		
+
 		int duration = 1;
 		int amplifyer = 1;
-		
+
 		if (eClass.contains(":")) {
 			String[] s = eClass.split(":");
-			
+
 			eClass = s[0];
 			try {
 				duration = Integer.parseInt(s[1]);
-			} catch(Exception e) {
-				Language.log_warning("warn", "invalid duration for PotionEffect "+eClass);
+			} catch (Exception e) {
+				Language.log_warning("warn",
+						"invalid duration for PotionEffect " + eClass);
 			}
-			
-			if (s.length>2) {
+
+			if (s.length > 2) {
 
 				try {
 					amplifyer = Integer.parseInt(s[2]);
-				} catch(Exception e) {
-					Language.log_warning("warn", "invalid duration for PotionEffect "+eClass);
+				} catch (Exception e) {
+					Language.log_warning("warn",
+							"invalid duration for PotionEffect " + eClass);
 				}
 			}
 		}
-		
+
 		for (PotionEffectType pet : PotionEffectType.values()) {
 			if (pet.getName().equals(eClass)) {
 				return new PotionEffect(pet, duration, amplifyer);

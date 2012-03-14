@@ -7,6 +7,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.managers.Flags;
+import net.slipcor.pvparena.managers.Players;
 
 /**
  * domination runnable class
@@ -17,7 +18,7 @@ import net.slipcor.pvparena.managers.Flags;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.30
  * 
  */
 
@@ -74,7 +75,7 @@ public class DominationRunnable implements Runnable {
 	}
 
 	public boolean noOneThere(int checkDistance) {
-		for (ArenaPlayer p : arena.pm.getPlayers()) {
+		for (ArenaPlayer p : Players.getPlayers(arena)) {
 			if (p.get().getLocation().distance(loc) < checkDistance) {
 				return false;
 			}

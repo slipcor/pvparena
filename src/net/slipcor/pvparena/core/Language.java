@@ -222,16 +222,19 @@ public class Language {
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
 
 		config.addDefault("lang.joinpay", "You paid %1% to join the arena!");
-		config.addDefault("lang.insidevehicle", "You cannot join while on a vehicle!");
-		config.addDefault("lang.starting", "Enough players ready. Starting in 5 seconds!");
+		config.addDefault("lang.insidevehicle",
+				"You cannot join while on a vehicle!");
+		config.addDefault("lang.starting",
+				"Enough players ready. Starting in 5 seconds!");
 
 		config.addDefault("lang.sortingby", "Arena Board now sorted by %1%");
-		config.addDefault("lang.invalidstattype", "Invalid statistics type: %1%");
-		
+		config.addDefault("lang.invalidstattype",
+				"Invalid statistics type: %1%");
+
 		for (Statistics.type t : Statistics.type.values()) {
-			config.addDefault("lang."+t, t.getName());
-		}		
-		
+			config.addDefault("lang." + t, t.getName());
+		}
+
 		/**
 		 * death causes : "player was killed by ****"
 		 */

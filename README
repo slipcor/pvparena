@@ -1,3 +1,4 @@
+ v0.6.35 - fix the death issues, finally
  v0.6.29.9 - fix the fire bug, finally
  v0.6.29.8 - create custom events properly
  v0.6.29.7 - reset team flags on arena startup to be colored

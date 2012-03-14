@@ -22,7 +22,7 @@ import net.slipcor.pvparena.definitions.ArenaPlayer;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.6.30
  * 
  */
 
@@ -78,7 +78,7 @@ public class Inventories {
 	public static void prepareInventory(Arena arena, Player player) {
 		db.i("saving player inventory: " + player.getName());
 
-		ArenaPlayer p = Players.parsePlayer(arena, player);
+		ArenaPlayer p = Players.parsePlayer(player);
 		p.savedInventory = player.getInventory().getContents().clone();
 		p.savedArmor = player.getInventory().getArmorContents().clone();
 		clearInventory(player);
@@ -94,14 +94,13 @@ public class Inventories {
 		db.i("fully clear player inventory: " + player.getName());
 
 		player.closeInventory();
-		
+
 		player.getInventory().clear();
 		player.getInventory().setHelmet(null);
 		player.getInventory().setBoots(null);
 		player.getInventory().setChestplate(null);
 		player.getInventory().setLeggings(null);
-		
-		
+
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class Inventories {
 	 *            the player to supply
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
-		String playerClass = arena.pm.getClass(player);
+		String playerClass = Players.getClass(player);
 		db.i("giving items to player '" + player.getName() + "', class '"
 				+ playerClass + "'");
 
@@ -126,7 +125,7 @@ public class Inventories {
 			}
 		}
 		if (arena.cfg.getBoolean("game.woolHead", false)) {
-			String sTeam = arena.pm.getTeam(player);
+			String sTeam = Players.getTeam(player);
 			String color = arena.paTeams.get(sTeam);
 			db.i("forcing woolhead: " + sTeam + "/" + color);
 			player.getInventory().setHelmet(
@@ -170,7 +169,7 @@ public class Inventories {
 			return;
 		}
 
-		ArenaPlayer p = Players.parsePlayer(arena, player);
+		ArenaPlayer p = Players.parsePlayer(player);
 
 		if (p.savedInventory == null) {
 			return;

@@ -163,14 +163,14 @@ public class Spawns {
 	 */
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
 		db.i("checking if arena is near a spawn");
-		if (!arena.pm.existsPlayer(player)) {
+		if (!Players.isPartOf(arena, player)) {
 			return false;
 		}
-		if (arena.pm.getTeam(player).equals("")) {
+		if (Players.getTeam(player).equals("")) {
 			return false;
 		}
 
-		HashSet<Location> spawns = getSpawns(arena, arena.pm.getTeam(player));
+		HashSet<Location> spawns = getSpawns(arena, Players.getTeam(player));
 
 		for (Location loc : spawns) {
 			if (loc.distance(player.getLocation()) <= diff) {
@@ -208,7 +208,7 @@ public class Spawns {
 				if (!name.equals(sTeam)) {
 					continue;
 				}
-			} else if (sTeam.equals("free")){
+			} else if (sTeam.equals("free")) {
 				if (!name.startsWith("spawn")) {
 					continue;
 				}
@@ -225,26 +225,27 @@ public class Spawns {
 
 	/**
 	 * calculate the arena center, including all team spawn locations
+	 * 
 	 * @param arena
 	 * @return
 	 */
 	public static Location getRegionCenter(Arena arena) {
 		HashSet<Location> locs = new HashSet<Location>();
-		
+
 		for (String sTeam : arena.paTeams.keySet()) {
 			for (Location loc : getSpawns(arena, sTeam)) {
 				locs.add(loc);
 			}
 		}
-	
-		Vector v = new Vector(0,0,0);
-		
+
+		Vector v = new Vector(0, 0, 0);
+
 		for (Location loc : locs) {
 			v.add(loc.toVector());
 		}
-		
+
 		v.multiply(1 / locs.size());
-		
+
 		return v.toLocation(Bukkit.getWorld(arena.getWorld()));
 	}
 }

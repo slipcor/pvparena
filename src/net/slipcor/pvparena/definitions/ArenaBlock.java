@@ -96,7 +96,9 @@ public class ArenaBlock {
 					try {
 						((Sign) b.getState()).setLine(i, s);
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("tried to reset sign at location "+location.toString());
+						PVPArena.instance.getLogger().warning(
+								"tried to reset sign at location "
+										+ location.toString());
 					}
 				}
 				i++;

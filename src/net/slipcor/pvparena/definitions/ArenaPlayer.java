@@ -24,7 +24,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.30
  * 
  */
 
@@ -59,6 +59,7 @@ public class ArenaPlayer {
 	public int maxdamage = 0;
 	public int damagetake = 0;
 	public int maxdamagetake = 0;
+	public Arena arena = null;
 
 	/**
 	 * create a PVP Arena player istance
@@ -66,9 +67,10 @@ public class ArenaPlayer {
 	 * @param p
 	 *            the bukkit player
 	 */
-	public ArenaPlayer(Player p) {
+	public ArenaPlayer(Player p, Arena a) {
 		db.i("creating arena player: " + p.getName());
 		player = p;
+		arena = a;
 
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {

@@ -23,7 +23,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.30
  * 
  */
 
@@ -42,12 +42,12 @@ public class Teams {
 
 		boolean free = !arena.cfg.getBoolean("arenatype.teams");
 
-		if (arena.pm.getPlayerTeamMap().containsKey(player.getName())) {
+		if (Players.getPlayerTeamMap(arena).containsKey(player.getName())) {
 			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 		}
 
 		String team = free ? "free" : calcFreeTeam(arena);
-		arena.pm.setTeam(player, team);
+		Players.setTeam(player, team);
 
 		if (free) {
 			arena.tpPlayerToCoordName(player, "lounge");
@@ -64,7 +64,8 @@ public class Teams {
 				Language.parse("playerjoined" + (free ? "free" : ""),
 						player.getName(),
 						ChatColor.valueOf(arena.paTeams.get(team)) + team));
-		arena.pm.tellEveryoneExcept(
+		Players.tellEveryoneExcept(
+				arena,
 				player,
 				Language.parse("playerjoined" + (free ? "free" : ""),
 						player.getName(),
@@ -81,7 +82,7 @@ public class Teams {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
-		for (String team : arena.pm.getPlayerTeamMap().values()) {
+		for (String team : Players.getPlayerTeamMap(arena).values()) {
 			if (!counts.containsKey(team)) {
 				counts.put(team, 1);
 				db.i("team " + team + " found");

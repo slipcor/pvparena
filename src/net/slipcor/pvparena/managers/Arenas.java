@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.6.30
  * 
  */
 
@@ -83,7 +83,7 @@ public class Arenas {
 	 */
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.pm.existsPlayer(pPlayer))
+			if (Players.isPartOf(arena, pPlayer))
 				return arena.name;
 		}
 		return null;
@@ -98,7 +98,7 @@ public class Arenas {
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (arena.pm.existsPlayer(pPlayer))
+			if (Players.isPartOf(arena, pPlayer))
 				return arena;
 		}
 		return null;

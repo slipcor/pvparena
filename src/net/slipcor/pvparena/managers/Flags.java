@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.6.30
  * 
  */
 
@@ -115,7 +115,7 @@ public class Flags {
 		if (arena.paTeamFlags.containsValue(player.getName())) {
 			db.i("player " + player.getName() + " has got a " + type);
 			vLoc = block.getLocation().toVector();
-			sTeam = arena.pm.getTeam(player);
+			sTeam = Players.getTeam(player);
 			db.i("block: " + vLoc.toString());
 			if (Spawns.getCoords(arena, sTeam + type) != null) {
 				vFlag = Spawns.getCoords(arena, sTeam + type).toVector();
@@ -151,15 +151,15 @@ public class Flags {
 
 				try {
 
-					arena.pm.tellEveryone(Language.parse(type + "homeleft",
-							scPlayer, scFlagTeam,
+					Players.tellEveryone(arena, Language.parse(type
+							+ "homeleft", scPlayer, scFlagTeam,
 							String.valueOf(arena.paLives.get(flagTeam) - 1)));
 					arena.paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
 				}
-				
+
 				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
 				if (arena.cfg.getBoolean("game.woolFlagHead")) {
@@ -172,10 +172,10 @@ public class Flags {
 			}
 		} else {
 			for (String team : arena.paTeams.keySet()) {
-				String playerTeam = arena.pm.getTeam(player);
+				String playerTeam = Players.getTeam(player);
 				if (team.equals(playerTeam))
 					continue;
-				if (!arena.pm.getPlayerTeamMap().containsValue(team))
+				if (!Players.getPlayerTeamMap(arena).containsValue(team))
 					continue; // dont check for inactive teams
 				if (arena.paTeamFlags.containsKey(team)) {
 					continue; // already taken
@@ -195,8 +195,8 @@ public class Flags {
 							.get(playerTeam))
 							+ player.getName()
 							+ ChatColor.YELLOW;
-					arena.pm.tellEveryone(Language.parse(type + "grab",
-							scPlayer, scTeam));
+					Players.tellEveryone(arena,
+							Language.parse(type + "grab", scPlayer, scTeam));
 
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
 
@@ -324,12 +324,13 @@ public class Flags {
 		if (flagTeam != null) {
 			String scFlagTeam = ChatColor.valueOf(arena.paTeams.get(flagTeam))
 					+ flagTeam + ChatColor.YELLOW;
-			String scPlayer = ChatColor.valueOf(arena.paTeams.get(arena.pm
+			String scPlayer = ChatColor.valueOf(arena.paTeams.get(Players
 					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-			arena.pm.tellEveryone(Language.parse(type + "save", scPlayer,
-					scFlagTeam));
+			Players.tellEveryone(arena,
+					Language.parse(type + "save", scPlayer, scFlagTeam));
 			arena.paTeamFlags.remove(flagTeam);
-			if (arena.paHeadGears != null && arena.paHeadGears.get(player.getName()) != null) {
+			if (arena.paHeadGears != null
+					&& arena.paHeadGears.get(player.getName()) != null) {
 				player.getInventory().setHelmet(
 						arena.paHeadGears.get(player.getName()).clone());
 				arena.paHeadGears.remove(player.getName());
@@ -353,7 +354,7 @@ public class Flags {
 			type = "flag";
 		}
 		for (String sTeam : arena.paTeams.keySet()) {
-			if (arena.pm.getPlayerTeamMap().containsValue(sTeam)) {
+			if (Players.getPlayerTeamMap(arena).containsValue(sTeam)) {
 				// team is active
 				arena.paLives.put(sTeam, arena.cfg.getInt("game.lives", 3));
 			}

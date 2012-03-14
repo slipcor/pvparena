@@ -130,7 +130,7 @@ public class Configs {
 		config.addDefault("start.saturation", Integer.valueOf(20));
 		config.addDefault("start.exhaustion", Float.valueOf(0));
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
-		
+
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
 		config.addDefault("ready.min", Integer.valueOf(2));

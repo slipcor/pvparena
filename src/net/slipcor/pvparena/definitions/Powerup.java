@@ -53,7 +53,8 @@ public class Powerup {
 				continue;
 			}
 			PowerupEffect pe = new PowerupEffect(eClass,
-					(HashMap<String, Object>) puEffects.get(eClass), PowerupEffect.parsePotionEffect(eClass));
+					(HashMap<String, Object>) puEffects.get(eClass),
+					PowerupEffect.parsePotionEffect(eClass));
 			if (pe.type == null) {
 				continue;
 			}
@@ -72,7 +73,8 @@ public class Powerup {
 				continue;
 			}
 			PowerupEffect pe = new PowerupEffect(eClass,
-					(HashMap<String, Object>) puEffects.get(eClass), PowerupEffect.parsePotionEffect(eClass));
+					(HashMap<String, Object>) puEffects.get(eClass),
+					PowerupEffect.parsePotionEffect(eClass));
 			if (pe.type == null) {
 				continue;
 			}

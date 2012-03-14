@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.21
+ * @version v0.6.30
  * 
  */
 
@@ -38,22 +38,22 @@ public class Dominate {
 	 *            the player to check
 	 */
 	public static void parseMove(Arena arena, Player player) {
-		if (Players.parsePlayer(arena, player).spectator) {
+		if (Players.parsePlayer(player).spectator) {
 			return; // spectator or dead. OUT
 		}
-		
+
 		// player is alive and no spectator
-		
+
 		int checkDistance = 5;
 		boolean found = false;
-		
+
 		for (Location loc : Spawns.getSpawns(arena, "flags")) {
 			// check every flag location
-			
+
 			if (player.getLocation().distance(loc) > checkDistance) {
 				continue; // not near the flag. NEXT
 			}
-			
+
 			found = true; // mark a found flag!
 			// player is at spawn location
 
@@ -61,13 +61,13 @@ public class Dominate {
 					player, checkDistance);
 
 			// teams now contains all (other) teams near the flag
-			
+
 			if (arena.paFlags.containsKey(loc)) {
-				
+
 				// flag is taken. by whom?
-				
+
 				if (arena.paFlags.get(loc).equals(
-						Players.parsePlayer(arena, player).team)) {
+						Players.parsePlayer(player).team)) {
 					// taken by own team, NEXT!
 					continue;
 				}
@@ -75,7 +75,7 @@ public class Dominate {
 				// taken by other team!
 
 				// TODO logic? -.-
-				
+
 				if (arena.paRuns.containsKey(loc)) {
 					if (arena.paRuns.get(loc).take) {
 						db.i("runnable is trying to score, abort");
@@ -106,7 +106,7 @@ public class Dominate {
 					}
 
 					DominationRunnable running = new DominationRunnable(arena,
-							true, loc, Players.parsePlayer(arena, player).team);
+							true, loc, Players.parsePlayer(player).team);
 					long interval = 20L * 10;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(
 							PVPArena.instance, running, interval);
@@ -144,9 +144,14 @@ public class Dominate {
 			Player player, int distance) {
 		HashSet<String> result = new HashSet<String>();
 		Arena arena = Arenas.getArenaByPlayer(player);
-		String sTeam = Players.parsePlayer(arena, player).team;
+		String sTeam = Players.parsePlayer(player).team;
 
-		for (ArenaPlayer p : arena.pm.players.values()) {
+		for (ArenaPlayer p : Players.players.values()) {
+
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+
 			if (p.get().getLocation().distance(loc) > distance) {
 				continue;
 			}

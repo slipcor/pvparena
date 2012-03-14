@@ -11,14 +11,11 @@ ADDITIONS
 [[ chest / dispenser refill ]]
 [[ join: /pa {name} [amount] - win amount : winFactor ]]
 -[ arena chat ]
--[ Potion effects for powerups ]
 
 FIXES
--[ lose 2 lives (temp godmode between teleporting)]
 -add speaking DOM arena ^^
 
 CODING
 -[ config /info update! ]
 
 KNOWN ISSUES:
-- death issues, dead players f* up the arena 

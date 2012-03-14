@@ -22,7 +22,7 @@ import org.bukkit.event.HandlerList;
 
 public class PALeaveEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private Arena arena;
 	private Player player;
 	private boolean spectator;
@@ -71,10 +71,10 @@ public class PALeaveEvent extends Event {
 	}
 
 	public HandlerList getHandlers() {
-	    return handlers;
+		return handlers;
 	}
-	 
+
 	public static HandlerList getHandlerList() {
-	    return handlers;
+		return handlers;
 	}
 }

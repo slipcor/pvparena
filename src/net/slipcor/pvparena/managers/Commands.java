@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.30
  * 
  */
 
@@ -77,7 +77,8 @@ public class Commands {
 
 		if (Teams.calcFreeTeam(arena) == null
 				|| ((arena.cfg.getInt("ready.max") > 0) && (arena.cfg
-						.getInt("ready.max") <= arena.pm.countPlayersInTeams()))) {
+						.getInt("ready.max") <= Players
+						.countPlayersInTeams(arena)))) {
 
 			Arenas.tellPlayer(player, Language.parse("arenafull"));
 			return true;
@@ -134,8 +135,8 @@ public class Commands {
 		int entryfee = arena.cfg.getInt("money.entry", 0);
 
 		if (arena.cfg.getInt("ready.max") > 0
-				&& arena.cfg.getInt("ready.max") <= arena.pm
-						.countPlayersInTeams()) {
+				&& arena.cfg.getInt("ready.max") <= Players
+						.countPlayersInTeams(arena)) {
 
 			Arenas.tellPlayer(player, Language.parse("teamfull",
 					ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
@@ -153,7 +154,7 @@ public class Commands {
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
-		arena.pm.setTeam(player, sTeam);
+		Players.setTeam(player, sTeam);
 		Inventories.prepareInventory(arena, player);
 		Arenas.tellPlayer(
 				player,
@@ -164,7 +165,8 @@ public class Commands {
 				type.JOIN,
 				Language.parse("playerjoined", player.getName(),
 						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
-		arena.pm.tellEveryoneExcept(
+		Players.tellEveryoneExcept(
+				arena,
 				player,
 				Language.parse("playerjoined", player.getName(),
 						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
@@ -204,8 +206,8 @@ public class Commands {
 		}
 
 		if (Arenas.getArenaByPlayer(player) != null) {
-			if (!arena.pm.existsPlayer(player)
-					|| !Players.parsePlayer(arena, player).spectator) {
+			if (!Players.isPartOf(arena, player)
+					|| !Players.parsePlayer(player).spectator) {
 
 				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 				return false;
@@ -312,11 +314,11 @@ public class Commands {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	public static boolean parseList(Arena arena, Player player) {
-		if (arena.pm.countPlayersInTeams() < 1) {
+		if (Players.countPlayersInTeams(arena) < 1) {
 			Arenas.tellPlayer(player, Language.parse("noplayer"));
 			return true;
 		}
-		String plrs = arena.pm.getTeamStringList(arena.paTeams);
+		String plrs = Players.getTeamStringList(arena, arena.paTeams);
 		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs);
 		return true;
 	}
@@ -336,7 +338,7 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error));
 			return true;
 		}
-		if (!arena.pm.getTeam(player).equals("")) {
+		if (!Players.getTeam(player).equals("")) {
 			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 			return true;
 		}
@@ -565,20 +567,21 @@ public class Commands {
 
 			if (args[0].equalsIgnoreCase("region")) {
 
-
 				if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
 					// pa region remove [regionname]
 					if (arena.cfg.get("regions." + args[1]) != null) {
 						arena.cfg.set("regions." + args[1], null);
 						arena.cfg.save();
 						Arena.regionmodify = "";
-						Arenas.tellPlayer(player, Language.parse("regionremoved"));
+						Arenas.tellPlayer(player,
+								Language.parse("regionremoved"));
 					} else {
-						Arenas.tellPlayer(player, Language.parse("regionnotremoved"));
+						Arenas.tellPlayer(player,
+								Language.parse("regionnotremoved"));
 					}
 					return true;
 				}
-				
+
 				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
@@ -656,27 +659,27 @@ public class Commands {
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	private static boolean parseStats(Arena arena, Player player, String[] args) {
-		
+
 		Statistics.type type = Statistics.type.getByString(args[1]);
-		
+
 		if (type == null) {
-			Arenas.tellPlayer(player, Language.parse("invalidstattype",args[1]));
+			Arenas.tellPlayer(player,
+					Language.parse("invalidstattype", args[1]));
 			return true;
 		}
-		
-		
+
 		ArenaPlayer[] aps = Statistics.getStats(arena, type);
 		String[] s = Statistics.read(aps, type);
-		
+
 		int i = 0;
-		
+
 		for (ArenaPlayer ap : aps) {
-			Arenas.tellPlayer(player, ap.get().getName()+": "+s[i++]);
-			if (i>9) {
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + s[i++]);
+			if (i > 9) {
 				return true;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -876,8 +879,8 @@ public class Commands {
 	public static boolean parseBetCommand(Arena arena, Player player,
 			String[] args) {
 		// /pa bet [name] [amount]
-		if (arena.pm.existsPlayer(player)
-				&& !arena.pm.getTeam(player).equals("")) {
+		if (Players.isPartOf(arena, player)
+				&& !Players.getTeam(player).equals("")) {
 			Arenas.tellPlayer(player, Language.parse("betnotyours"));
 			return true;
 		}
@@ -888,7 +891,7 @@ public class Commands {
 		Player p = Bukkit.getPlayer(args[1]);
 
 		if ((arena.paTeams.get(args[1]) == null)
-				&& (arena.pm.getTeam(p).equals(""))) {
+				&& (Players.getTeam(p).equals(""))) {
 			Arenas.tellPlayer(player, Language.parse("betoptions"));
 			return true;
 		}
@@ -924,8 +927,8 @@ public class Commands {
 
 		ma.subtract(amount);
 		Arenas.tellPlayer(player, Language.parse("betplaced", args[1]));
-		arena.pm.paPlayersBetAmount.put(player.getName() + ":" + args[1],
-				amount);
+		Players.paPlayersBetAmount
+				.put(player.getName() + ":" + args[1], amount);
 		return true;
 	}
 

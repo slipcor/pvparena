@@ -71,7 +71,7 @@ public class Regions {
 		if (joinRange < 1)
 			return false;
 		if (arena.regions.get("battlefield") == null) {
-			return Spawns.getRegionCenter(arena).distance(player.getLocation())>joinRange;
+			return Spawns.getRegionCenter(arena).distance(player.getLocation()) > joinRange;
 		}
 		return arena.regions.get("battlefield").tooFarAway(joinRange,
 				player.getLocation());

@@ -2,6 +2,7 @@ package net.slipcor.pvparena.definitions;
 
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Players;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +17,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.30
  * 
  */
 public class Announcement {
@@ -44,7 +45,7 @@ public class Announcement {
 		Bukkit.getServer().getWorld(a.getWorld()).getPlayers();
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			if (a.pm.existsPlayer(p)) {
+			if (Players.isPartOf(a, p)) {
 				continue;
 			}
 			send(a, p,

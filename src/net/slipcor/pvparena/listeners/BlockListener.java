@@ -7,6 +7,7 @@ import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Blocks;
+import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
 
 import org.bukkit.event.EventHandler;
@@ -44,7 +45,8 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
-			if (arena.fightInProgress && arena.cfg.getBoolean("protection.restore")) {
+			if (arena.fightInProgress
+					&& arena.cfg.getBoolean("protection.restore")) {
 				Blocks.saveBlock(event.getBlock());
 			}
 			return; // we don't need protection => OUT!
@@ -63,7 +65,7 @@ public class BlockListener implements Listener {
 
 		db.i("block ignite inside the arena");
 
-		if (arena.pm.getPlayers().size() < 1)
+		if (Players.getPlayers(arena).size() < 1)
 			return; // no players, no game, no protection!
 
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
@@ -104,7 +106,8 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			if (arena.fightInProgress && arena.cfg.getBoolean("protection.restore")) {
+			if (arena.fightInProgress
+					&& arena.cfg.getBoolean("protection.restore")) {
 				Blocks.saveBlock(event.getBlock(), event
 						.getBlockReplacedState().getType());
 			}

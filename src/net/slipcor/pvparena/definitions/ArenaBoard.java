@@ -127,27 +127,30 @@ public class ArenaBoard {
 	 * @return true if the player clicked a leaderboard sign, false otherwise
 	 */
 	public static boolean checkInteract(PlayerInteractEvent event, Player player) {
-		
+
 		if (event.getClickedBlock() == null) {
 			return false;
 		}
-		
+
 		if (!Arenas.boards.containsKey(event.getClickedBlock().getLocation())) {
 			return false;
 		}
-		
-		ArenaBoard ab = Arenas.boards.get(event.getClickedBlock().getLocation());
-		
+
+		ArenaBoard ab = Arenas.boards
+				.get(event.getClickedBlock().getLocation());
+
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			ab.sortBy = Statistics.type.next(ab.sortBy);
-			Arenas.tellPlayer(player, Language.parse("sortingby",ab.sortBy.toString()));
+			Arenas.tellPlayer(player,
+					Language.parse("sortingby", ab.sortBy.toString()));
 			return true;
 		} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			ab.sortBy = Statistics.type.last(ab.sortBy);
-			Arenas.tellPlayer(player, Language.parse("sortingby",ab.sortBy.toString()));
+			Arenas.tellPlayer(player,
+					Language.parse("sortingby", ab.sortBy.toString()));
 			return true;
 		}
-		
+
 		return false;
 	}
 }

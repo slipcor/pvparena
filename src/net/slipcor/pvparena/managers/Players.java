@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
@@ -32,22 +33,19 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.26
+ * @version v0.6.30
  * 
  */
 
 public class Players {
 	// bets placed mapped to value: BetterName:BetName => Amount
-	public HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
-	private final Arena arena;
-	
-	HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
+	public static HashMap<String, Double> paPlayersBetAmount = new HashMap<String, Double>();
+
+	static HashMap<String, ArenaPlayer> players = new HashMap<String, ArenaPlayer>();
+	static HashMap<ArenaPlayer, String> deadPlayers = new HashMap<ArenaPlayer, String>();
+
 	private static Debug db = new Debug(31);
 
-	public Players(Arena a) {
-		arena = a;
-	}
-	
 	/**
 	 * parse all teams and join them colored, comma separated
 	 * 
@@ -55,9 +53,13 @@ public class Players {
 	 *            the team hashmap to parse
 	 * @return a colorized, comma separated string
 	 */
-	public String getTeamStringList(HashMap<String, String> paTeams) {
+	public static String getTeamStringList(Arena arena,
+			HashMap<String, String> paTeams) {
 		String result = "";
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (!p.team.equals("")) {
 
 				if (!result.equals(""))
@@ -80,10 +82,13 @@ public class Players {
 	 * 
 	 * @return a map [playername]=>[teamname]
 	 */
-	public HashMap<String, String> getPlayerTeamMap() {
+	public static HashMap<String, String> getPlayerTeamMap(Arena arena) {
 		db.i("getTeamPlayerMap:");
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (!p.team.equals("") && !p.spectator) {
 				result.put(p.get().getName(), p.team);
 				db.i(" - " + p.get().getName() + " => " + p.team);
@@ -97,12 +102,15 @@ public class Players {
 	 * 
 	 * @return true if teams have the same amount of players, false otherwise
 	 */
-	public boolean checkEven() {
+	public static boolean checkEven(Arena arena) {
 		db.i("checkinv if teams are even");
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (!p.team.equals("")) {
 				if (!counts.containsKey(p.team)) {
 					counts.put(p.team, 1);
@@ -140,9 +148,12 @@ public class Players {
 	 * 
 	 * @return the team player count
 	 */
-	public int countPlayersInTeams() {
+	public static int countPlayersInTeams(Arena arena) {
 		int result = 0;
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			db.i("player: " + p.get().getName());
 			if (!p.team.equals("")) {
 				db.i("- team " + p.team);
@@ -160,8 +171,10 @@ public class Players {
 	 *            the player to find
 	 * @return true if the player is known, false otherwise
 	 */
-	public boolean existsPlayer(Player pPlayer) {
-		return players.containsKey(pPlayer.getName());
+	public static boolean isPartOf(Arena arena, Player pPlayer) {
+		return (players.containsKey(pPlayer.getName())
+				&& (players.get(pPlayer.getName()).arena != null) && (players
+					.get(pPlayer.getName()).arena.equals(arena)));
 	}
 
 	/**
@@ -174,28 +187,28 @@ public class Players {
 	 *         enough players in a team -4 if not enough players -5 if at least
 	 *         one player not selected class, -6 if counting down
 	 */
-	public int ready(Arena arena) {
+	public static int ready(Arena arena) {
 
-		if (countPlayersInTeams() < 2) {
+		if (countPlayersInTeams(arena) < 2) {
 			return -1;
 		}
-		if (countPlayersInTeams() < arena.cfg.getInt("ready.min")) {
+		if (countPlayersInTeams(arena) < arena.cfg.getInt("ready.min")) {
 			return -4;
 		}
 
 		if (arena.cfg.getDouble("ready.startRatio") > 0) {
 			double ratio = arena.cfg.getDouble("ready.startRatio");
-			
-			int players = getPlayerTeamMap().size();
+
+			int players = getPlayerTeamMap(arena).size();
 			int readyPlayers = arena.paReady.size();
-			
+
 			if (readyPlayers / players >= ratio) {
 				return -6;
 			}
 		}
 
 		if (arena.cfg.getBoolean("ready.checkEach")) {
-			for (String sPlayer : getPlayerTeamMap().keySet()) {
+			for (String sPlayer : getPlayerTeamMap(arena).keySet()) {
 				if (!arena.paReady.contains(sPlayer)) {
 					return 0;
 				}
@@ -206,7 +219,7 @@ public class Players {
 			boolean onlyone = true;
 			List<String> activeteams = new ArrayList<String>(0);
 			db.i("ready(): reading playerteammap");
-			HashMap<String, String> test = getPlayerTeamMap();
+			HashMap<String, String> test = getPlayerTeamMap(arena);
 			for (String sPlayer : test.keySet()) {
 				db.i("player " + sPlayer);
 				if (activeteams.size() < 1) {
@@ -234,13 +247,16 @@ public class Players {
 				}
 				db.i("TEAM " + sTeam);
 				if (arena.cfg.getInt("ready.minTeam") > 0
-						&& countPlayers(sTeam) < arena.cfg
+						&& countPlayers(arena, sTeam) < arena.cfg
 								.getInt("ready.minTeam")) {
 					return -3;
 				}
 			}
 		}
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (!p.team.equals("")) {
 				if (p.aClass.equals("")) {
 					// player not ready!
@@ -257,10 +273,13 @@ public class Players {
 	 * @param sTeam
 	 * @return the team player count
 	 */
-	private int countPlayers(String sTeam) {
+	private static int countPlayers(Arena arena, String sTeam) {
 		db.i("counting players in team " + sTeam);
 		int result = 0;
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			db.i(" - player " + p.get().getName() + ", team "
 					+ String.valueOf(p.team));
 			if (p.team != null && p.team.equals(sTeam)) {
@@ -278,10 +297,13 @@ public class Players {
 	 *            the arena to reset
 	 * @param force
 	 */
-	public void reset(Arena arena, boolean force) {
+	public static void reset(Arena arena, boolean force) {
 		db.i("resetting player manager");
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			pa.add(p);
 		}
 
@@ -296,10 +318,13 @@ public class Players {
 										// reward!
 			}
 			p.destroy();
-			p = null;
+			if (!p.get().isDead()) {
+				p.arena = null;
+			}
 		}
-		players.clear();
-		paPlayersBetAmount.clear();
+		if (force) {
+			paPlayersBetAmount.clear();
+		}
 	}
 
 	/**
@@ -308,9 +333,12 @@ public class Players {
 	 * @param msg
 	 *            the message to send
 	 */
-	public void tellEveryone(String msg) {
+	public static void tellEveryone(Arena arena, String msg) {
 		db.i("@all: " + msg);
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			Arenas.tellPlayer(p.get(), msg);
 		}
 	}
@@ -323,9 +351,12 @@ public class Players {
 	 * @param msg
 	 *            the message to send
 	 */
-	public void tellEveryoneExcept(Player player, String msg) {
+	public static void tellEveryoneExcept(Arena arena, Player player, String msg) {
 		db.i("@all/" + player.getName() + ": " + msg);
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (p.get().equals(player))
 				continue;
 			Arenas.tellPlayer(p.get(), msg);
@@ -341,12 +372,16 @@ public class Players {
 	 *            the message to send
 	 * @param player
 	 */
-	public void tellTeam(String team, String msg, ChatColor c, Player player) {
+	public static void tellTeam(Arena arena, String team, String msg,
+			ChatColor c, Player player) {
 		if (team.equals("")) {
 			return;
 		}
 		db.i("@" + team + ": " + msg);
 		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
 			if (!p.team.equals(team))
 				continue;
 			p.get().sendMessage(
@@ -360,9 +395,12 @@ public class Players {
 	 * 
 	 * @return a hashset of all players
 	 */
-	public HashSet<ArenaPlayer> getPlayers() {
+	public static HashSet<ArenaPlayer> getPlayers(Arena arena) {
 		HashSet<ArenaPlayer> result = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
+			if ((arena != null) && (p.arena == null || !p.arena.equals(arena))) {
+				continue;
+			}
 			result.add(p);
 		}
 		return result;
@@ -375,7 +413,7 @@ public class Players {
 	 *            the player to read
 	 * @return the player's class name
 	 */
-	public String getClass(Player player) {
+	public static String getClass(Player player) {
 		return players.get(player.getName()).aClass;
 	}
 
@@ -387,7 +425,7 @@ public class Players {
 	 * @param s
 	 *            a player class name
 	 */
-	public void setClass(Player player, String s) {
+	public static void setClass(Player player, String s) {
 		players.get(player.getName()).aClass = s;
 	}
 
@@ -398,7 +436,7 @@ public class Players {
 	 *            the player name to read
 	 * @return the player's death count
 	 */
-	public int getDeaths(String s) {
+	public static int getDeaths(String s) {
 		return players.get(s).deaths;
 	}
 
@@ -409,7 +447,7 @@ public class Players {
 	 *            the player name to read
 	 * @return the player's kill count
 	 */
-	public int getKills(String s) {
+	public static int getKills(String s) {
 		return players.get(s).kills;
 	}
 
@@ -419,7 +457,7 @@ public class Players {
 	 * @param sKiller
 	 *            the player to add one
 	 */
-	public void addKill(String sKiller) {
+	public static void addKill(String sKiller) {
 		players.get(sKiller).kills++;
 	}
 
@@ -429,7 +467,7 @@ public class Players {
 	 * @param sKilled
 	 *            the player to add one
 	 */
-	public void addDeath(String sKilled) {
+	public static void addDeath(String sKilled) {
 		players.get(sKilled).deaths++;
 	}
 
@@ -440,7 +478,7 @@ public class Players {
 	 *            the player to check
 	 * @return the player's team name
 	 */
-	public String getTeam(Player player) {
+	public static String getTeam(Player player) {
 		return (players.get(player.getName()) == null) ? "" : players
 				.get(player.getName()).team;
 	}
@@ -453,7 +491,7 @@ public class Players {
 	 * @param s
 	 *            the team name
 	 */
-	public void setTeam(Player player, String s) {
+	public static void setTeam(Player player, String s) {
 		players.get(player.getName()).team = s;
 	}
 
@@ -465,7 +503,7 @@ public class Players {
 	 * @param b
 	 *            true if may pass, false otherwise
 	 */
-	public void setTelePass(Player player, boolean b) {
+	public static void setTelePass(Player player, boolean b) {
 		players.get(player.getName()).telePass = b;
 	}
 
@@ -476,7 +514,7 @@ public class Players {
 	 *            the player to check
 	 * @return true if may pass, false otherwise
 	 */
-	public boolean getTelePass(Player player) {
+	public static boolean getTelePass(Player player) {
 		return players.get(player.getName()).telePass;
 	}
 
@@ -486,21 +524,22 @@ public class Players {
 	 * @param player
 	 *            the player to add
 	 */
-	public void addPlayer(Player player) {
-		players.put(player.getName(), new ArenaPlayer(player));
+	public static void addPlayer(Arena arena, Player player) {
+		players.put(player.getName(), new ArenaPlayer(player, arena));
 	}
 
 	/**
-	 * remove a player from the player map
+	 * remove a player from the arena
 	 * 
 	 * @param player
 	 *            the player to remove
 	 */
-	public void remove(Player player) {
-		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(player.getName()).spectator);
+	public static void remove(Arena arena, Player player) {
+		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(player
+				.getName()).spectator);
 		Bukkit.getPluginManager().callEvent(event);
-		
-		players.remove(player.getName());
+
+		players.get(player.getName()).arena = null;
 	}
 
 	/**
@@ -508,10 +547,14 @@ public class Players {
 	 * 
 	 * @param player
 	 *            the player to get
-	 * @return an ArenaPlayer instace belonging to that player
+	 * @return an ArenaPlayer instance belonging to that player
 	 */
-	public static ArenaPlayer parsePlayer(Arena arena, Player player) {
-		return arena.pm.players.get(player.getName());
+	public static ArenaPlayer parsePlayer(Player player) {
+		if (Players.players.get(player.getName()) == null) {
+			Players.players
+					.put(player.getName(), new ArenaPlayer(player, null));
+		}
+		return Players.players.get(player.getName());
 	}
 
 	public static void chooseClass(Arena arena, Player player, Sign sign,
@@ -551,7 +594,7 @@ public class Players {
 			}
 		}
 		Inventories.clearInventory(player);
-		arena.pm.setClass(player, className);
+		Players.setClass(player, className);
 		if (className.equalsIgnoreCase("custom")) {
 			// if custom, give stuff back
 			Inventories.loadInventory(arena, player);
@@ -562,17 +605,18 @@ public class Players {
 
 	public static void playerLeave(Arena arena, Player player) {
 		db.i("fully removing player from arena");
-		ArenaPlayer ap = Players.parsePlayer(arena, player);
+		ArenaPlayer ap = Players.parsePlayer(player);
 		boolean spectator = ap.spectator;
 
-		String color = arena.paTeams.get(arena.pm.getTeam(player));
+		String color = arena.paTeams.get(Players.getTeam(player));
 
 		if (!spectator) {
 
 			Announcement.announce(arena, type.LOSER,
 					Language.parse("playerleave", player.getName()));
 
-			arena.pm.tellEveryoneExcept(
+			Players.tellEveryoneExcept(
+					arena,
 					player,
 					Language.parse("playerleave", ChatColor.valueOf(color)
 							+ player.getName() + ChatColor.YELLOW));
@@ -582,7 +626,6 @@ public class Players {
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 
 		ap.destroy();
-		ap = null;
 
 		if (!spectator && arena.fightInProgress) {
 			Ends.checkAndCommit(arena);
@@ -605,12 +648,12 @@ public class Players {
 	public static String parseDeathCause(Arena arena, Player player,
 			DamageCause cause, Entity damager) {
 
-		db.i("return a ");
+		db.i("return a damage name for : "+cause.toString());
 
 		switch (cause) {
 		case ENTITY_ATTACK:
 			if (damager instanceof Player) {
-				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
+				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
 					return ChatColor.valueOf(arena.paTeams.get(ap.team))
 							+ ap.get().getName() + ChatColor.YELLOW;
@@ -619,7 +662,7 @@ public class Players {
 			return Language.parse("custom");
 		case PROJECTILE:
 			if (damager instanceof Player) {
-				ArenaPlayer ap = parsePlayer(arena, (Player) damager);
+				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
 					return ChatColor.valueOf(arena.paTeams.get(ap.team))
 							+ ap.get().getName() + ChatColor.YELLOW;
@@ -629,5 +672,80 @@ public class Players {
 		default:
 			return Language.parse(cause.toString().toLowerCase());
 		}
+	}
+
+	/**
+	 * add a dead player to the dead player map
+	 * 
+	 * @param player
+	 *            the player to add
+	 * @param location
+	 *            the location to respawn
+	 */
+	public static void addDeadPlayer(ArenaPlayer player, String string) {
+		deadPlayers.put(player, string);
+	}
+
+	/**
+	 * has a player died in the arena?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the arena has died, false otherwise
+	 */
+	public static boolean isDead(Player player) {
+		for (ArenaPlayer ap : deadPlayers.keySet()) {
+			if (ap.get().equals(player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * get the respawn location of a dead player
+	 * 
+	 * @param player
+	 *            the dead player
+	 * @return the respawn location
+	 */
+	public static Location getDeadLocation(Arena arena, Player player) {
+		String string = null;
+		db.i("fetching dead player's location");
+		for (ArenaPlayer ap : deadPlayers.keySet()) {
+			db.i("checking player: "+ap.get().getName());
+			if (ap.get().equals(player)) {
+				db.i("there you are!");
+				string = deadPlayers.get(ap);
+				db.i("plaayer will spawn at: "+string);
+				if (string.equalsIgnoreCase("old")) {
+					return ap.location;
+				} else {
+					return Spawns.getCoords(arena, string);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * remove the dead player from the map
+	 * 
+	 * @param player
+	 *            the player to remove
+	 */
+	public static void removeDeadPlayer(Arena arena, Player player) {
+		if (arena != null) {
+			arena.resetPlayer(player, arena.cfg.getString("tp.death", "spectator"));
+		}
+		for (ArenaPlayer ap : deadPlayers.keySet()) {
+			if (ap.get().equals(player)) {
+				ap.arena.resetPlayer(player, ap.arena.cfg.getString("tp.death", "spectator"));
+				deadPlayers.remove(ap);
+				ap.arena = null;
+				return;
+			}
+		}
+		deadPlayers.remove(player);
 	}
 }

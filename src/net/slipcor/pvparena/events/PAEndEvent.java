@@ -22,7 +22,7 @@ import org.bukkit.event.HandlerList;
  */
 
 public class PAEndEvent extends Event {
-    private static final HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 	private Arena arena;
 
 	/**
@@ -34,9 +34,10 @@ public class PAEndEvent extends Event {
 	public PAEndEvent(Arena a) {
 		arena = a;
 	}
-	
+
 	/**
 	 * hand over the arena instance
+	 * 
 	 * @return the ending arena
 	 */
 	public Arena getArena() {
@@ -44,15 +45,16 @@ public class PAEndEvent extends Event {
 	}
 
 	public HandlerList getHandlers() {
-	    return handlers;
+		return handlers;
 	}
-	 
+
 	public static HandlerList getHandlerList() {
-	    return handlers;
+		return handlers;
 	}
-	
+
 	/**
 	 * return the battlefield center
+	 * 
 	 * @return the battlefield center location
 	 */
 	public Location getRegionCenter() {
