@@ -2,9 +2,6 @@ package net.slipcor.pvparena;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
@@ -38,7 +35,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.16
+ * @version v0.6.35
  * 
  */
 
@@ -56,79 +53,7 @@ public class PVPArena extends JavaPlugin {
 	private final static Debug db = new Debug(1);
 
 	/**
-	 * plugin enabling method - register events and load the configs
-	 */
-	@Override
-	public void onEnable() {
-		instance = this;
-
-		Language.init(getConfig().getString("language", "en"));
-
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
-			spoutHandler = SpoutManager.getInstance().toString();
-			Language.log_info("spout");
-			getServer().getPluginManager().registerEvents(customListener, this);
-		} else {
-			Language.log_info("nospout");
-		}
-
-		getServer().getPluginManager().registerEvents(blockListener, this);
-		getServer().getPluginManager().registerEvents(entityListener, this);
-		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(serverListener, this);
-
-		List<String> whiteList = new ArrayList<String>();
-		whiteList.add("ungod");
-
-		if (getConfig().get("language") != null
-				&& getConfig().get("onlyPVPinArena") == null) {
-			getConfig().set("debug", "none"); // 0.3.15 correction
-			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
-		}
-
-		getConfig().addDefault("debug", "none");
-		getConfig().addDefault("updatecheck", Boolean.valueOf(true));
-		getConfig().addDefault("language", "en");
-		getConfig().addDefault("onlyPVPinArena", Boolean.valueOf(false));
-		getConfig().addDefault("whitelist", whiteList);
-
-		getConfig().options().copyDefaults(true);
-		saveConfig();
-
-		File players = new File("plugins/pvparena/players.yml");
-		if (!players.exists()) {
-			try {
-				players.createNewFile();
-				db.i("players.yml created successfully");
-			} catch (IOException e) {
-				Bukkit.getLogger()
-						.severe("Could not create players.yml! More errors will be happening!");
-				e.printStackTrace();
-			}
-		}
-
-		Debug.load(this);
-		Arenas.load_arenas();
-		Update.updateCheck(this);
-
-		Tracker trackMe = new Tracker(this);
-		trackMe.start();
-
-		Language.log_info("enabled", getDescription().getFullName());
-	}
-
-	/**
-	 * plugin disabling method - reset all arenas, cancel tasks
-	 */
-	@Override
-	public void onDisable() {
-		Arenas.reset(true);
-		Tracker.stop();
-		Language.log_info("disabled", getDescription().getFullName());
-	}
-
-	/**
-	 * command handling
+	 * Command handling
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
@@ -247,7 +172,70 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * has player admin permissions?
+	 * Plugin disabling method - reset all arenas, cancel tasks
+	 */
+	@Override
+	public void onDisable() {
+		Arenas.reset(true);
+		Tracker.stop();
+		Language.log_info("disabled", getDescription().getFullName());
+	}
+
+	/**
+	 * Plugin enabling method - register events and load the configs
+	 */
+	@Override
+	public void onEnable() {
+		instance = this;
+
+		Language.init(getConfig().getString("language", "en"));
+
+		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+			spoutHandler = SpoutManager.getInstance().toString();
+			Language.log_info("spout");
+			getServer().getPluginManager().registerEvents(customListener, this);
+		} else {
+			Language.log_info("nospout");
+		}
+
+		getServer().getPluginManager().registerEvents(blockListener, this);
+		getServer().getPluginManager().registerEvents(entityListener, this);
+		getServer().getPluginManager().registerEvents(playerListener, this);
+		getServer().getPluginManager().registerEvents(serverListener, this);
+
+		if (getConfig().get("language") != null
+				&& getConfig().get("onlyPVPinArena") == null) {
+			getConfig().set("debug", "none"); // 0.3.15 correction
+			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
+		}
+
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+
+		File players = new File("plugins/pvparena/players.yml");
+		if (!players.exists()) {
+			try {
+				players.createNewFile();
+				db.i("players.yml created successfully");
+			} catch (IOException e) {
+				Bukkit.getLogger()
+						.severe("Could not create players.yml! More errors will be happening!");
+				e.printStackTrace();
+			}
+		}
+
+		Debug.load(this);
+		Arenas.load_arenas();
+		Update.updateCheck(this);
+
+		Tracker trackMe = new Tracker(this);
+		trackMe.start();
+
+		Language.log_info("enabled", getDescription().getFullName());
+	}
+
+	/**
+	 * Check if the player has admin permissions
 	 * 
 	 * @param player
 	 *            the player to check
@@ -258,13 +246,13 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * has player creating permissions?
+	 * Check if the player has creation permissions
 	 * 
 	 * @param player
 	 *            the player to check
 	 * @param arena
 	 *            the arena to check
-	 * @return true if the player has creating permissions, false otherwise
+	 * @return true if the player has creation permissions, false otherwise
 	 */
 	public static boolean hasCreatePerms(Player player, Arena arena) {
 		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
@@ -272,20 +260,7 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * has player permission?
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @param perms
-	 *            a permission node to check
-	 * @return true if the player has the permission, false otherwise
-	 */
-	public static boolean hasPerms(Player player, String perms) {
-		return player.hasPermission(perms);
-	}
-
-	/**
-	 * has player permission?
+	 * Check if the player has permission for an arena
 	 * 
 	 * @param player
 	 *            the player to check
@@ -307,5 +282,18 @@ public class PVPArena extends JavaPlugin {
 		return arena.cfg.getBoolean("join.explicitPermission") ? player
 				.hasPermission("pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
+	}
+
+	/**
+	 * Check if a player has a permission
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @param perms
+	 *            a permission node to check
+	 * @return true if the player has the permission, false otherwise
+	 */
+	public static boolean hasPerms(Player player, String perms) {
+		return player.hasPermission(perms);
 	}
 }
