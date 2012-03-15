@@ -30,7 +30,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -99,7 +99,7 @@ public class Ends {
 							ChatColor.valueOf(arena.paTeams.get(winteam))
 									+ "Team " + winteam));
 		} else {
-			System.out.print("WINTEAM NULL: "+winteam);
+			System.out.print("[PVP Arena] WINTEAM NULL: "+winteam);
 		}
 
 		arena.paLives.clear();

@@ -47,7 +47,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -91,12 +91,11 @@ public class EntityListener implements Listener {
 
 		EntityListener.addBurningPlayer(player);
 		String sTeam = Players.getTeam(player);
-		String color = arena.paTeams.get(sTeam);
 		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
 				player.getName(), Players.parseDeathCause(arena, player, player
 						.getLastDamageCause().getCause(), null)));
 		Players.tellEveryone(arena, Language.parse("killedby",
-				ChatColor.valueOf(color) + player.getName() + ChatColor.YELLOW,
+				arena.colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
 				Players.parseDeathCause(arena, player, player
 						.getLastDamageCause().getCause(), null)));
 
@@ -143,20 +142,14 @@ public class EntityListener implements Listener {
 			}
 			String sKiller = "";
 			String sKilled = "";
-			if (arena.getType().equals("ctf")
-					|| arena.getType().equals("pumpkin")) {
-				db.i("timed ctf/pumpkin arena");
-				sKilled = player.getName();
-				if (damager != null) {
-					sKiller = damager.getName();
-					db.i("killer: " + sKiller);
-				}
-			} else {
-				sKilled = Players.getTeam(player);
-				if (damager != null) {
-					sKiller = Players.getTeam(damager);
-				}
+
+			db.i("timed ctf/pumpkin arena");
+			sKilled = player.getName();
+			if (damager != null) {
+				sKiller = damager.getName();
+				db.i("killer: " + sKiller);
 			}
+			
 			if (damager != null) {
 				if (Players.getKills(sKiller) > 0) {
 					db.i("killer killed already");

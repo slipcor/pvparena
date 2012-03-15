@@ -258,6 +258,16 @@ public class Language {
 		config.addDefault("lang.SUICIDE".toLowerCase(), "self");
 		config.addDefault("lang.VOID".toLowerCase(), "the Void");
 
+
+		config.addDefault("lang.domscore",
+				"Team %1% scored a point by holding a flag!");
+		config.addDefault("lang.domclaiming",
+				"Team %1% is claiming a flag!");
+		config.addDefault("lang.domunclaiming",
+				"A flag claimed by Team %1% is being unclaimed!");
+		config.addDefault("lang.domclaiming",
+				"A flag claimed by Team %1% is being unclaimed by %2%!");
+		
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

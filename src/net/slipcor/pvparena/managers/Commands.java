@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -139,7 +139,7 @@ public class Commands {
 						.countPlayersInTeams(arena)) {
 
 			Arenas.tellPlayer(player, Language.parse("teamfull",
-					ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+					arena.colorizeTeam(sTeam)));
 			return true;
 		}
 
@@ -158,18 +158,17 @@ public class Commands {
 		Inventories.prepareInventory(arena, player);
 		Arenas.tellPlayer(
 				player,
-				Language.parse("youjoined",
-						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+				Language.parse("youjoined",arena.colorizeTeam(sTeam)));
 		Announcement.announce(
 				arena,
 				type.JOIN,
 				Language.parse("playerjoined", player.getName(),
-						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+						arena.colorizeTeam(sTeam)));
 		Players.tellEveryoneExcept(
 				arena,
 				player,
 				Language.parse("playerjoined", player.getName(),
-						ChatColor.valueOf(arena.paTeams.get(sTeam)) + sTeam));
+						arena.colorizeTeam(sTeam)));
 
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");

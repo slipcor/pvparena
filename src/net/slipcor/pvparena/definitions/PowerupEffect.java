@@ -31,7 +31,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.35
  * 
  */
 
@@ -250,8 +250,7 @@ public class PowerupEffect {
 									Players.parseDeathCause(arena, player,
 											DamageCause.MAGIC, player)));
 					Players.tellEveryone(arena, Language.parse("killedby",
-							ChatColor.valueOf(arena.paTeams.get(sTeam))
-									+ player.getName() + ChatColor.YELLOW,
+							arena.colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
 							Players.parseDeathCause(arena, player,
 									DamageCause.MAGIC, player)));
 					Players.parsePlayer(player).losses++;

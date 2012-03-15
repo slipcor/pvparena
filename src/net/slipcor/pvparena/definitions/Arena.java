@@ -60,7 +60,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -624,11 +624,10 @@ public class Arena {
 		}
 
 		String sTeam = Players.getTeam(player);
-		String color = paTeams.get(sTeam);
 
 		if (cfg.getBoolean("arenatype.flags")) {
 			Players.tellEveryone(this, Language.parse("killedby",
-					ChatColor.valueOf(color) + player.getName()
+					colorizePlayerByTeam(player, sTeam)
 							+ ChatColor.YELLOW,
 					Players.parseDeathCause(this, player, cause, damager)));
 			tpPlayerToCoordName(player, sTeam + "spawn");
@@ -636,13 +635,13 @@ public class Arena {
 			Flags.checkEntityDeath(this, player);
 		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
 			Players.tellEveryone(this, Language.parse("killedbylives",
-					ChatColor.valueOf(color) + player.getName()
+					colorizePlayerByTeam(player, sTeam)
 							+ ChatColor.YELLOW,
 					Players.parseDeathCause(this, player, cause, damager),
 					String.valueOf(lives)));
 			paLives.put(player.getName(), lives);
 		}
-		if (!cfg.getBoolean("arenatype.randomSpawn", false) && color != null
+		if (!cfg.getBoolean("arenatype.randomSpawn", false)
 				&& !sTeam.equals("free")) {
 			tpPlayerToCoordName(player, sTeam + "spawn");
 		} else {
@@ -883,14 +882,11 @@ public class Arena {
 		if (Flags.reduceLivesCheckEndAndCommit(this, sTeam)) {
 			return;
 		}
-		String sColoredPlayer = ChatColor.valueOf(paTeams.get(sTeam))
-				+ attacker.getName() + ChatColor.YELLOW;
-
 		Players.tellEveryone(
 				this,
 				Language.parse(
 						"frag",
-						sColoredPlayer,
+						colorizePlayerByTeam(attacker, sTeam) + ChatColor.YELLOW,
 						String.valueOf(cfg.getInt("game.lives")
 								- paLives.get(sTeam))));
 	}
@@ -959,5 +955,21 @@ public class Arena {
 				}
 			}
 		}
+	}
+
+	public String teamColor(String team) {
+		return ChatColor.valueOf(paTeams.get(team)) + "";
+	}
+
+	public String colorizeTeam(String team) {
+		return ChatColor.valueOf(paTeams.get(team)) + team;
+	}
+
+	public String colorizePlayerByTeam(Player player, String team) {
+		return ChatColor.valueOf(paTeams.get(team)) + player.getName();
+	}
+
+	public String colorizePlayerByTeam(Player player) {
+		return ChatColor.valueOf(paTeams.get(Players.getTeam(player))) + player.getName();
 	}
 }

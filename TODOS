@@ -5,12 +5,13 @@
 ADDITIONS
 [[ RUSH mode - base defend VS conquer base ]]
 [[ MAP support: player location, flag / spawn location ]]
-[[ multiple flags for CTF? ]]
 [[ enchantments ]]
 [[ CHEST powerup placement ]]
-[[ chest / dispenser refill ]]
-[[ join: /pa {name} [amount] - win amount : winFactor ]]
--[ arena chat ]
+-[ multiple flags for CTF? ]
+-[ chest / dispenser refill ]
+-join: /pa {name} [amount] - win amount : winFactor
+-arena chat
+-item reward random
 
 FIXES
 -add speaking DOM arena ^^

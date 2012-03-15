@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -144,15 +144,13 @@ public class Flags {
 
 				db.i("the " + type + " belongs to team " + flagTeam);
 
-				String scFlagTeam = ChatColor.valueOf(arena.paTeams
-						.get(flagTeam)) + flagTeam + ChatColor.YELLOW;
-				String scPlayer = ChatColor.valueOf(arena.paTeams.get(sTeam))
-						+ player.getName() + ChatColor.YELLOW;
-
 				try {
 
 					Players.tellEveryone(arena, Language.parse(type
-							+ "homeleft", scPlayer, scFlagTeam,
+							+ "homeleft",
+							arena.colorizePlayerByTeam(player, sTeam)
+									+ ChatColor.YELLOW,
+							arena.colorizeTeam(flagTeam) + ChatColor.YELLOW,
 							String.valueOf(arena.paLives.get(flagTeam) - 1)));
 					arena.paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
@@ -189,14 +187,10 @@ public class Flags {
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i(type + " found!");
 					db.i("vFlag: " + vFlag.toString());
-					String scTeam = ChatColor.valueOf(arena.paTeams.get(team))
-							+ team + ChatColor.YELLOW;
-					String scPlayer = ChatColor.valueOf(arena.paTeams
-							.get(playerTeam))
-							+ player.getName()
-							+ ChatColor.YELLOW;
-					Players.tellEveryone(arena,
-							Language.parse(type + "grab", scPlayer, scTeam));
+					Players.tellEveryone(arena, Language.parse(type + "grab",
+							arena.colorizePlayerByTeam(player, playerTeam)
+									+ ChatColor.YELLOW,
+							arena.colorizeTeam(team) + ChatColor.YELLOW));
 
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
 
@@ -322,12 +316,14 @@ public class Flags {
 
 		String flagTeam = getHeldFlagTeam(arena, player.getName());
 		if (flagTeam != null) {
-			String scFlagTeam = ChatColor.valueOf(arena.paTeams.get(flagTeam))
-					+ flagTeam + ChatColor.YELLOW;
-			String scPlayer = ChatColor.valueOf(arena.paTeams.get(Players
-					.getTeam(player))) + player.getName() + ChatColor.YELLOW;
-			Players.tellEveryone(arena,
-					Language.parse(type + "save", scPlayer, scFlagTeam));
+			Players.tellEveryone(
+					arena,
+					Language.parse(
+							type + "save",
+							arena.colorizePlayerByTeam(player,
+									Players.getTeam(player))
+									+ ChatColor.YELLOW,
+							arena.colorizeTeam(flagTeam) + ChatColor.YELLOW));
 			arena.paTeamFlags.remove(flagTeam);
 			if (arena.paHeadGears != null
 					&& arena.paHeadGears.get(player.getName()) != null) {

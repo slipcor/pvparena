@@ -4,11 +4,13 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.runnables.DominationRunnable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -21,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -79,6 +81,12 @@ public class Dominate {
 				if (arena.paRuns.containsKey(loc)) {
 					if (arena.paRuns.get(loc).take) {
 						db.i("runnable is trying to score, abort");
+
+						Players.tellEveryone(arena, Language.parse(
+								"domcancelclaiming",
+								arena.colorizeTeam(arena.paRuns.get(loc).team) + ChatColor.YELLOW,
+								arena.colorizePlayerByTeam(player) + ChatColor.YELLOW));
+
 						int del_id = arena.paRuns.get(loc).ID;
 						Bukkit.getScheduler().cancelTask(del_id);
 

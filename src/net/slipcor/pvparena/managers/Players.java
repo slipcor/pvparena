@@ -33,7 +33,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -64,8 +64,7 @@ public class Players {
 
 				if (!result.equals(""))
 					result += ", ";
-				result += ChatColor.valueOf(paTeams.get(p.team))
-						+ p.get().getName() + ChatColor.WHITE;
+				result += arena.colorizePlayerByTeam(p.get(), p.team) + ChatColor.WHITE;
 			} else {
 
 				if (!result.equals(""))
@@ -202,7 +201,7 @@ public class Players {
 			int players = getPlayerTeamMap(arena).size();
 			int readyPlayers = arena.paReady.size();
 
-			if (readyPlayers / players >= ratio) {
+			if (players > 0 && readyPlayers / players >= ratio) {
 				return -6;
 			}
 		}
@@ -608,8 +607,6 @@ public class Players {
 		ArenaPlayer ap = Players.parsePlayer(player);
 		boolean spectator = ap.spectator;
 
-		String color = arena.paTeams.get(Players.getTeam(player));
-
 		if (!spectator) {
 
 			Announcement.announce(arena, type.LOSER,
@@ -618,8 +615,7 @@ public class Players {
 			Players.tellEveryoneExcept(
 					arena,
 					player,
-					Language.parse("playerleave", ChatColor.valueOf(color)
-							+ player.getName() + ChatColor.YELLOW));
+					Language.parse("playerleave", arena.colorizePlayerByTeam(player) + ChatColor.YELLOW));
 
 			Arenas.tellPlayer(player, Language.parse("youleave"));
 		}
@@ -655,7 +651,7 @@ public class Players {
 			if (damager instanceof Player) {
 				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
-					return ChatColor.valueOf(arena.paTeams.get(ap.team))
+					return arena.colorizePlayerByTeam(ap.get(), ap.team)
 							+ ap.get().getName() + ChatColor.YELLOW;
 				}
 			}
@@ -664,8 +660,7 @@ public class Players {
 			if (damager instanceof Player) {
 				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
-					return ChatColor.valueOf(arena.paTeams.get(ap.team))
-							+ ap.get().getName() + ChatColor.YELLOW;
+					return arena.colorizePlayerByTeam(ap.get(), ap.team) + ChatColor.YELLOW;
 				}
 			}
 			return Language.parse(cause.toString().toLowerCase());
