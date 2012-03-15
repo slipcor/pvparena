@@ -40,18 +40,18 @@ import org.getspout.spoutapi.SpoutManager;
  */
 
 public class PVPArena extends JavaPlugin {
-
+	
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
 	public static PVPArena instance = null;
 	public static String spoutHandler = null;
-
+	
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
 	private final CustomListener customListener = new CustomListener();
 	private final static Debug db = new Debug(1);
-
+	
 	/**
 	 * Command handling
 	 */
@@ -83,7 +83,9 @@ public class PVPArena extends JavaPlugin {
 						Language.parse("nopermto", Language.parse("create")));
 				return true;
 			}
+			
 			Arena arena = Arenas.getArenaByName(args[0]);
+			
 			if (arena != null) {
 				Arenas.tellPlayer(player, Language.parse("arenaexists"));
 				return true;
@@ -170,7 +172,7 @@ public class PVPArena extends JavaPlugin {
 		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 		return Commands.parseCommand(arena, player, newArgs);
 	}
-
+	
 	/**
 	 * Plugin disabling method - reset all arenas, cancel tasks
 	 */
@@ -233,7 +235,7 @@ public class PVPArena extends JavaPlugin {
 
 		Language.log_info("enabled", getDescription().getFullName());
 	}
-
+	
 	/**
 	 * Check if the player has admin permissions
 	 * 
@@ -244,7 +246,7 @@ public class PVPArena extends JavaPlugin {
 	public static boolean hasAdminPerms(Player player) {
 		return hasPerms(player, "pvparena.admin");
 	}
-
+	
 	/**
 	 * Check if the player has creation permissions
 	 * 
@@ -258,7 +260,7 @@ public class PVPArena extends JavaPlugin {
 		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
 				.equals(player.getName())));
 	}
-
+	
 	/**
 	 * Check if the player has permission for an arena
 	 * 
@@ -283,7 +285,7 @@ public class PVPArena extends JavaPlugin {
 				.hasPermission("pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
 	}
-
+	
 	/**
 	 * Check if a player has a permission
 	 * 
