@@ -157,7 +157,11 @@ public class PlayerListener implements Listener {
 			db.i("exiting! fight in progress AND no flag arena!");
 			return; // no flag arena and fight already in progress => OUT
 		}
-
+		
+		if (arena.fightInProgress && !arena.cfg.getBoolean("join.inbattle")) {
+			return;
+		}
+		
 		// fighting player inside the lobby!
 		event.setCancelled(true);
 
