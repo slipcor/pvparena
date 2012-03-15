@@ -19,7 +19,6 @@ import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.register.payment.Method;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -174,7 +173,7 @@ public class PVPArena extends JavaPlugin {
 	}
 	
 	/**
-	 * Plugin disabling method - reset all arenas, cancel tasks
+	 * Plugin disabling method - Reset all arenas, cancel tasks
 	 */
 	@Override
 	public void onDisable() {
@@ -184,52 +183,62 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * Plugin enabling method - register events and load the configs
+	 * Plugin enabling method - Register events and load the configs
 	 */
 	@Override
 	public void onEnable() {
 		instance = this;
-
+		
 		Language.init(getConfig().getString("language", "en"));
-
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+		
+		// getServer() is better!
+		
+		if (getServer().getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-			Language.log_info("spout");
 			getServer().getPluginManager().registerEvents(customListener, this);
-		} else {
-			Language.log_info("nospout");
 		}
-
+		
+		// You're going to use the Language thingy anyway
+		// Let's put them in one line!
+		
+		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
+		
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
-
+		
 		if (getConfig().get("language") != null
 				&& getConfig().get("onlyPVPinArena") == null) {
 			getConfig().set("debug", "none"); // 0.3.15 correction
-			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
+			
+			// You really can leave Bukkit out of a lot of code in here
+			
+			getLogger().info("[PA-debug] 0.3.15 correction");
 		}
-
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-
-		File players = new File("plugins/pvparena/players.yml");
+		
+		// Just get that folder with this!
+		
+		File players = new File(getDataFolder(), "players.yml");
+		
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
 				db.i("players.yml created successfully");
 			} catch (IOException e) {
-				Bukkit.getLogger()
+				getLogger()
 						.severe("Could not create players.yml! More errors will be happening!");
 				e.printStackTrace();
 			}
 		}
-
+		
 		Debug.load(this);
 		Arenas.load_arenas();
 		Update.updateCheck(this);
-
+		
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
 
