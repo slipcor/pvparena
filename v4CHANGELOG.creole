@@ -1,0 +1,7 @@
+== PVP-Arena v4 Changelog
+
+* v0.4.4 - Random spawns per team, not shared
+* v0.4.3 - max / min bet
+* v0.4.2 - command blacklist
+* v0.4.1 - command manager, arena information and arena config check
+* v0.4.0 - mayor rewrite, improved help

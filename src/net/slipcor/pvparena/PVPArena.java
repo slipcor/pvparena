@@ -19,7 +19,6 @@ import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.register.payment.Method;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,18 +39,18 @@ import org.getspout.spoutapi.SpoutManager;
  */
 
 public class PVPArena extends JavaPlugin {
-
+	
 	public static final EntityListener entityListener = new EntityListener();
 	public static Method eco = null;
 	public static PVPArena instance = null;
 	public static String spoutHandler = null;
-
+	
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
 	private final ServerListener serverListener = new ServerListener();
 	private final CustomListener customListener = new CustomListener();
 	private final static Debug db = new Debug(1);
-
+	
 	/**
 	 * Command handling
 	 */
@@ -83,7 +82,9 @@ public class PVPArena extends JavaPlugin {
 						Language.parse("nopermto", Language.parse("create")));
 				return true;
 			}
+			
 			Arena arena = Arenas.getArenaByName(args[0]);
+			
 			if (arena != null) {
 				Arenas.tellPlayer(player, Language.parse("arenaexists"));
 				return true;
@@ -170,9 +171,9 @@ public class PVPArena extends JavaPlugin {
 		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 		return Commands.parseCommand(arena, player, newArgs);
 	}
-
+	
 	/**
-	 * Plugin disabling method - reset all arenas, cancel tasks
+	 * Plugin disabling method - Reset all arenas, cancel tasks
 	 */
 	@Override
 	public void onDisable() {
@@ -182,58 +183,68 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * Plugin enabling method - register events and load the configs
+	 * Plugin enabling method - Register events and load the configs
 	 */
 	@Override
 	public void onEnable() {
 		instance = this;
-
+		
 		Language.init(getConfig().getString("language", "en"));
-
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+		
+		// getServer() is better!
+		
+		if (getServer().getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-			Language.log_info("spout");
 			getServer().getPluginManager().registerEvents(customListener, this);
-		} else {
-			Language.log_info("nospout");
 		}
-
+		
+		// You're going to use the Language thingy anyway
+		// Let's put them in one line!
+		
+		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
+		
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
-
+		
 		if (getConfig().get("language") != null
 				&& getConfig().get("onlyPVPinArena") == null) {
 			getConfig().set("debug", "none"); // 0.3.15 correction
-			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
+			
+			// You really can leave Bukkit out of a lot of code in here
+			
+			getLogger().info("[PA-debug] 0.3.15 correction");
 		}
-
+		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-
-		File players = new File("plugins/pvparena/players.yml");
+		
+		// Just get that folder with this!
+		
+		File players = new File(getDataFolder(), "players.yml");
+		
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
 				db.i("players.yml created successfully");
 			} catch (IOException e) {
-				Bukkit.getLogger()
+				getLogger()
 						.severe("Could not create players.yml! More errors will be happening!");
 				e.printStackTrace();
 			}
 		}
-
+		
 		Debug.load(this);
 		Arenas.load_arenas();
 		Update.updateCheck(this);
-
+		
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
 
 		Language.log_info("enabled", getDescription().getFullName());
 	}
-
+	
 	/**
 	 * Check if the player has admin permissions
 	 * 
@@ -244,7 +255,7 @@ public class PVPArena extends JavaPlugin {
 	public static boolean hasAdminPerms(Player player) {
 		return hasPerms(player, "pvparena.admin");
 	}
-
+	
 	/**
 	 * Check if the player has creation permissions
 	 * 
@@ -258,7 +269,7 @@ public class PVPArena extends JavaPlugin {
 		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
 				.equals(player.getName())));
 	}
-
+	
 	/**
 	 * Check if the player has permission for an arena
 	 * 
@@ -283,7 +294,7 @@ public class PVPArena extends JavaPlugin {
 				.hasPermission("pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
 	}
-
+	
 	/**
 	 * Check if a player has a permission
 	 * 
