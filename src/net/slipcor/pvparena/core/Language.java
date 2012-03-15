@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.35
  * 
  */
 public class Language {
@@ -265,7 +265,7 @@ public class Language {
 				"Team %1% is claiming a flag!");
 		config.addDefault("lang.domunclaiming",
 				"A flag claimed by Team %1% is being unclaimed!");
-		config.addDefault("lang.domclaiming",
+		config.addDefault("lang.domunclaimingby",
 				"A flag claimed by Team %1% is being unclaimed by %2%!");
 		
 		config.options().copyDefaults(true);

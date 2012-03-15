@@ -84,8 +84,10 @@ public class Dominate {
 
 						Players.tellEveryone(arena, Language.parse(
 								"domcancelclaiming",
-								arena.colorizeTeam(arena.paRuns.get(loc).team) + ChatColor.YELLOW,
-								arena.colorizePlayerByTeam(player) + ChatColor.YELLOW));
+								arena.colorizeTeam(arena.paRuns.get(loc).team)
+										+ ChatColor.YELLOW,
+								arena.colorizePlayerByTeam(player)
+										+ ChatColor.YELLOW));
 
 						int del_id = arena.paRuns.get(loc).ID;
 						Bukkit.getScheduler().cancelTask(del_id);
@@ -99,6 +101,13 @@ public class Dominate {
 						DominationRunnable running = new DominationRunnable(
 								arena, false, loc, "");
 						long interval = 20L * 10;
+
+						Players.tellEveryone(arena, Language.parse(
+								"domunclaimingby",
+								arena.colorizeTeam(arena.paRuns.get(loc).team)
+										+ ChatColor.YELLOW, arena
+										.colorizePlayerByTeam(player)));
+
 						Bukkit.getScheduler().scheduleSyncDelayedTask(
 								PVPArena.instance, running, interval);
 						arena.paRuns.put(loc, running);
@@ -112,9 +121,13 @@ public class Dominate {
 					if (arena.paRuns.containsKey(loc)) {
 						return;
 					}
-
+					String sTeam = Players.parsePlayer(player).team;
+					Players.tellEveryone(arena, Language.parse(
+							"domclaiming",
+							arena.colorizeTeam(sTeam)));
+					
 					DominationRunnable running = new DominationRunnable(arena,
-							true, loc, Players.parsePlayer(player).team);
+							true, loc, sTeam);
 					long interval = 20L * 10;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(
 							PVPArena.instance, running, interval);
