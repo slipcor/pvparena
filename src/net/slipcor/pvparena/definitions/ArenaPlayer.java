@@ -143,6 +143,12 @@ public class ArenaPlayer {
 		if (player.isDead()) {
 			return;
 		}
+
+		team = "";
+		aClass = "";
+		respawn = "";
+		telePass = false;
+		
 		savedInventory = null;
 		savedArmor = null;
 		exhaustion = 0;

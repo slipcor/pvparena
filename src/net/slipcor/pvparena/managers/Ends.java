@@ -203,7 +203,7 @@ public class Ends {
 			}
 		}
 
-		if (PVPArena.eco != null) {
+		if (PVPArena.eco != null || PVPArena.economy != null) {
 			db.i("eConomy set, parse bets");
 			for (String nKey : Players.paPlayersBetAmount.keySet()) {
 				db.i("bet: " + nKey);
@@ -225,19 +225,35 @@ public class Ends {
 					double amount = Players.paPlayersBetAmount.get(nKey)
 							* teamFactor;
 
-					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
-					if (ma == null) {
-						db.s("Account not found: " + nSplit[0]);
-						return true;
-					}
-					ma.add(amount);
-					try {
-						Arenas.tellPlayer(
-								Bukkit.getPlayer(nSplit[0]),
-								Language.parse("youwon",
-										PVPArena.eco.format(amount)));
-					} catch (Exception e) {
-						// nothing
+					if (PVPArena.economy == null && PVPArena.eco != null) {
+						MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
+						if (ma == null) {
+							db.s("Account not found: " + nSplit[0]);
+							return true;
+						}
+						ma.add(amount);
+						try {
+							Arenas.tellPlayer(
+									Bukkit.getPlayer(nSplit[0]),
+									Language.parse("youwon",
+											PVPArena.eco.format(amount)));
+						} catch (Exception e) {
+							// nothing
+						}
+					} else {
+						if (!PVPArena.economy.hasAccount(nSplit[0])) {
+							db.s("Account not found: " + nSplit[0]);
+							return true;
+						}
+						PVPArena.economy.depositPlayer(nSplit[0],amount);
+						try {
+							Arenas.tellPlayer(
+									Bukkit.getPlayer(nSplit[0]),
+									Language.parse("youwon",
+											PVPArena.economy.format(amount)));
+						} catch (Exception e) {
+							// nothing
+						}
 					}
 				}
 			}
@@ -323,19 +339,36 @@ public class Ends {
 					double amount = Players.paPlayersBetAmount.get(nKey)
 							* teamFactor;
 
-					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
-					if (ma == null) {
-						db.s("Account not found: " + nSplit[0]);
-						continue;
-					}
-					ma.add(amount);
-					try {
-						Arenas.tellPlayer(
-								Bukkit.getPlayer(nSplit[0]),
-								Language.parse("youwon",
-										PVPArena.eco.format(amount)));
-					} catch (Exception e) {
-						// nothing
+					
+					if (PVPArena.economy == null && PVPArena.eco != null) {
+						MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
+						if (ma == null) {
+							db.s("Account not found: " + nSplit[0]);
+							continue;
+						}
+						ma.add(amount);
+						try {
+							Arenas.tellPlayer(
+									Bukkit.getPlayer(nSplit[0]),
+									Language.parse("youwon",
+											PVPArena.eco.format(amount)));
+						} catch (Exception e) {
+							// nothing
+						}
+					} else {
+						if (!PVPArena.economy.hasAccount(nSplit[0])) {
+							db.s("Account not found: " + nSplit[0]);
+							continue;
+						}
+						PVPArena.economy.depositPlayer(nSplit[0],amount);
+						try {
+							Arenas.tellPlayer(
+									Bukkit.getPlayer(nSplit[0]),
+									Language.parse("youwon",
+											PVPArena.economy.format(amount)));
+						} catch (Exception e) {
+							// nothing
+						}
 					}
 				}
 			}

@@ -68,7 +68,8 @@ public class Players {
 
 				if (!result.equals(""))
 					result += ", ";
-				result += arena.colorizePlayerByTeam(p.get(), p.team) + ChatColor.WHITE;
+				result += arena.colorizePlayerByTeam(p.get(), p.team)
+						+ ChatColor.WHITE;
 			} else {
 
 				if (!result.equals(""))
@@ -257,11 +258,15 @@ public class Players {
 			}
 		}
 		for (ArenaPlayer p : players.values()) {
+			db.i("checking ready: " + p.get().getName());
 			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
+			db.i("arena is right");
 			if (!p.team.equals("")) {
+				db.i("player has team: " + p.team);
 				if (p.aClass.equals("")) {
+					db.i("player has class: " + p.aClass);
 					// player no class!
 					return -5;
 				}
@@ -616,7 +621,9 @@ public class Players {
 			Players.tellEveryoneExcept(
 					arena,
 					player,
-					Language.parse("playerleave", arena.colorizePlayerByTeam(player) + ChatColor.YELLOW));
+					Language.parse("playerleave",
+							arena.colorizePlayerByTeam(player)
+									+ ChatColor.YELLOW));
 
 			Arenas.tellPlayer(player, Language.parse("youleave"));
 		}
@@ -645,7 +652,7 @@ public class Players {
 	public static String parseDeathCause(Arena arena, Player player,
 			DamageCause cause, Entity damager) {
 
-		db.i("return a damage name for : "+cause.toString());
+		db.i("return a damage name for : " + cause.toString());
 
 		switch (cause) {
 		case ENTITY_ATTACK:
@@ -653,7 +660,7 @@ public class Players {
 				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
 					return arena.colorizePlayerByTeam(ap.get(), ap.team)
-							+ ap.get().getName() + ChatColor.YELLOW;
+							 + ChatColor.YELLOW;
 				}
 			}
 			return Language.parse("custom");
@@ -661,7 +668,8 @@ public class Players {
 			if (damager instanceof Player) {
 				ArenaPlayer ap = parsePlayer((Player) damager);
 				if (ap != null) {
-					return arena.colorizePlayerByTeam(ap.get(), ap.team) + ChatColor.YELLOW;
+					return arena.colorizePlayerByTeam(ap.get(), ap.team)
+							+ ChatColor.YELLOW;
 				}
 			}
 			return Language.parse(cause.toString().toLowerCase());
@@ -709,16 +717,31 @@ public class Players {
 		String string = null;
 		db.i("fetching dead player's location");
 		for (ArenaPlayer ap : deadPlayers.keySet()) {
-			db.i("checking player: "+ap.get().getName());
+			db.i("checking player: " + ap.get().getName());
 			if (ap.get().equals(player)) {
 				db.i("there you are!");
 				string = deadPlayers.get(ap);
-				db.i("plaayer will spawn at: "+string);
+				db.i("plaayer will spawn at: " + string);
 				if (string.equalsIgnoreCase("old")) {
 					return ap.location;
 				} else {
 					return Spawns.getCoords(arena, string);
 				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * fetch a dead arena player
+	 * @param player the player to fetch
+	 * @return the instance of the dead arena player
+	 */
+	public static ArenaPlayer getDeadPlayer(Player player) {
+		for (ArenaPlayer ap : deadPlayers.keySet()) {
+			if (ap.get().equals(player)) {
+				db.i("successfully fetching dead player");
+				return ap;
 			}
 		}
 		return null;
@@ -732,11 +755,13 @@ public class Players {
 	 */
 	public static void removeDeadPlayer(Arena arena, Player player) {
 		if (arena != null) {
-			arena.resetPlayer(player, arena.cfg.getString("tp.death", "spectator"));
+			arena.resetPlayer(player,
+					arena.cfg.getString("tp.death", "spectator"));
 		}
 		for (ArenaPlayer ap : deadPlayers.keySet()) {
 			if (ap.get().equals(player)) {
-				ap.arena.resetPlayer(player, ap.arena.cfg.getString("tp.death", "spectator"));
+				ap.arena.resetPlayer(player,
+						ap.arena.cfg.getString("tp.death", "spectator"));
 				deadPlayers.remove(ap);
 				ap.arena = null;
 				return;
@@ -746,14 +771,16 @@ public class Players {
 	}
 
 	public static Player getLastDamagingPlayer(Event eEvent) {
+		db.i("trying to get the last damaging player");
 		if (eEvent instanceof EntityDamageByEntityEvent) {
+			db.i("there was an EDBEE");
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
-			
+
 			Entity p1 = event.getDamager();
-			
 
 			if (event.getCause() == DamageCause.PROJECTILE) {
 				p1 = ((Projectile) p1).getShooter();
+				db.i("killed by projectile, shooter is found");
 			}
 
 			if (event.getEntity() instanceof Wolf) {
@@ -761,16 +788,20 @@ public class Players {
 				if (wolf.getOwner() != null) {
 					try {
 						p1 = (Entity) wolf.getOwner();
+						db.i("tamed wolf is found");
 					} catch (Exception e) {
 						// wolf belongs to dead player or whatnot
 					}
 				}
 			}
-			
+
 			if (p1 instanceof Player) {
+				db.i("it was a player!");
 				return (Player) p1;
 			}
 		}
+		db.i("last damaging player is null");
+		db.i("last damaging event: "+eEvent.getEventName());
 		return null;
 	}
 }

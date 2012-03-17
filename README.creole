@@ -34,6 +34,7 @@ A PVP experience enhancing plugin.
 
 ==== Optional
 
+* Vault
 * a SuperPerms compatible Permissions system
 * iConomy 5/6
 * Spout
@@ -50,6 +51,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.36.2 - add Vault support
+* v0.6.36 - fix for every arena start bug caused by leaving / quitting players
 * v0.6.35.3 - taught talking to DOM arena
 * v0.6.35.2 - fix the CTF issues
 * v0.6.35 - fix the death issues, finally

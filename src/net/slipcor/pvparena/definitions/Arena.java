@@ -60,7 +60,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -693,7 +693,38 @@ public class Arena {
 	 */
 	public void giveRewards(Player player) {
 		db.i("giving rewards to " + player.getName());
-		if (PVPArena.eco != null) {
+		if (PVPArena.economy != null) {
+			for (String nKey : Players.paPlayersBetAmount.keySet()) {
+				String[] nSplit = nKey.split(":");
+
+				if (nSplit[1].equalsIgnoreCase(player.getName())) {
+					double playerFactor = playerCount
+							* cfg.getDouble("money.betPlayerWinFactor");
+
+					if (playerFactor <= 0) {
+						playerFactor = 1;
+					}
+
+					playerFactor *= cfg.getDouble("money.betWinFactor");
+
+					double amount = Players.paPlayersBetAmount.get(nKey)
+							* playerFactor;
+					
+					PVPArena.economy.depositPlayer(nSplit[0], amount);
+					try {
+						Announcement.announce(this, type.PRIZE, Language.parse(
+								"awarded", PVPArena.economy.format(cfg.getInt(
+										"money.reward", 0))));
+						Arenas.tellPlayer(
+								Bukkit.getPlayer(nSplit[0]),
+								Language.parse("youwon",
+										PVPArena.economy.format(amount)));
+					} catch (Exception e) {
+						// nothing
+					}
+				}
+			}
+		} else if (PVPArena.eco != null) {
 			for (String nKey : Players.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
 
@@ -727,13 +758,21 @@ public class Arena {
 			}
 		}
 
-		if ((PVPArena.eco != null) && (cfg.getInt("money.reward", 0) > 0)) {
-			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-			ma.add(cfg.getInt("money.reward", 0));
-			Arenas.tellPlayer(
-					player,
-					Language.parse("awarded",
-							PVPArena.eco.format(cfg.getInt("money.reward", 0))));
+		if (cfg.getInt("money.reward", 0) > 0) {
+			if (PVPArena.economy != null) {
+				PVPArena.economy.depositPlayer(player.getName(), cfg.getInt("money.reward", 0));
+				Arenas.tellPlayer(
+						player,
+						Language.parse("awarded",
+								PVPArena.economy.format(cfg.getInt("money.reward", 0))));
+			} else if (PVPArena.eco != null) {
+				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
+				ma.add(cfg.getInt("money.reward", 0));
+				Arenas.tellPlayer(
+						player,
+						Language.parse("awarded",
+								PVPArena.eco.format(cfg.getInt("money.reward", 0))));
+			}
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
 		if (sItems.equals("none"))

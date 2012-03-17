@@ -18,7 +18,9 @@ import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.35
  * 
  */
 
@@ -157,11 +159,11 @@ public class PlayerListener implements Listener {
 			db.i("exiting! fight in progress AND no flag arena!");
 			return; // no flag arena and fight already in progress => OUT
 		}
-		
+
 		if (arena.fightInProgress && !arena.cfg.getBoolean("join.inbattle")) {
 			return;
 		}
-		
+
 		// fighting player inside the lobby!
 		event.setCancelled(true);
 
@@ -214,6 +216,9 @@ public class PlayerListener implements Listener {
 				if (Players.getClass(player).equals("")) {
 					return; // not chosen class => OUT
 				}
+				db.i("===============");
+				db.i("===== class: " + Players.getClass(player) + " =====");
+				db.i("===============");
 
 				if (!arena.fightInProgress) {
 
@@ -280,6 +285,10 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		
+		Players.parsePlayer(player).destroy();
+		// instantiate and/or reset a player. This fixes issues with leaving players
+		// and makes sure every player is an arenaplayer ^^
 
 		if (!player.isOp()) {
 			return; // no OP => OUT
@@ -377,9 +386,12 @@ public class PlayerListener implements Listener {
 
 		if (Players.isDead(player)) {
 			db.i("respawning dead player");
+			ArenaPlayer ap = Players.getDeadPlayer(player);
 
 			event.setRespawnLocation(Players.getDeadLocation(arena, player));
 			Players.removeDeadPlayer(arena, player);
+			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance,
+					new PlayerResetRunnable(ap), 20L);
 			return;
 		}
 

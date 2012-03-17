@@ -20,7 +20,7 @@ import org.bukkit.event.server.PluginEnableEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.36
  * 
  */
 
@@ -37,6 +37,9 @@ public class ServerListener implements Listener {
 	@SuppressWarnings("static-access")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPluginDisable(PluginDisableEvent event) {
+		if (PVPArena.economy != null) {
+			return;
+		}
 		// Check to see if the plugin thats being disabled is the one we are
 		// using
 		if (this.methods != null && this.methods.hasMethod()) {
@@ -52,6 +55,9 @@ public class ServerListener implements Listener {
 	@SuppressWarnings("static-access")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPluginEnable(PluginEnableEvent event) {
+		if (PVPArena.economy != null) {
+			return;
+		}
 		// Check to see if we need a payment method
 		if (!this.methods.hasMethod()) {
 			if (this.methods.setMethod(Bukkit.getServer().getPluginManager())) {

@@ -2,6 +2,9 @@ package net.slipcor.pvparena;
 
 import java.io.File;
 import java.io.IOException;
+
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.permission.Permission;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
@@ -19,9 +22,11 @@ import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.register.payment.Method;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
 
@@ -34,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -44,6 +49,9 @@ public class PVPArena extends JavaPlugin {
 	public static Method eco = null;
 	public static PVPArena instance = null;
 	public static String spoutHandler = null;
+
+	public static Permission permission = null;
+    public static Economy economy = null;
 
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
@@ -197,6 +205,11 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
+		
+		if (getServer().getPluginManager().getPlugin("Vault") != null) {
+			setupPermissions();
+			setupEconomy();
+		}
 
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
@@ -274,14 +287,13 @@ public class PVPArena extends JavaPlugin {
 		db.i("perm check.");
 		if (arena.cfg.getBoolean("join.explicitPermission")) {
 			db.i(" - explicit: "
-					+ String.valueOf(player.hasPermission("pvparena.join."
+					+ String.valueOf(hasPerms(player, "pvparena.join."
 							+ arena.name.toLowerCase())));
 		} else {
 			db.i(String.valueOf(hasPerms(player, "pvparena.user")));
 		}
 
-		return arena.cfg.getBoolean("join.explicitPermission") ? player
-				.hasPermission("pvparena.join." + arena.name.toLowerCase())
+		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(player, "pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
 	}
 
@@ -295,6 +307,25 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if the player has the permission, false otherwise
 	 */
 	public static boolean hasPerms(Player player, String perms) {
-		return player.hasPermission(perms);
+		return permission == null ? player.hasPermission(perms) : permission.has(player, perms);
 	}
+
+    private boolean setupPermissions()
+    {
+        RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
+    
+    private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 }

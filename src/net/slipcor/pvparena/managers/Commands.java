@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -87,11 +87,17 @@ public class Commands {
 		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
-		if ((PVPArena.eco != null) && (entryfee > 0)) {
-			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-			ma.subtract(entryfee);
-			Arenas.tellPlayer(player,
-					Language.parse("joinpay", PVPArena.eco.format(entryfee)));
+		if (entryfee > 0) {
+			if (PVPArena.economy != null) {
+				PVPArena.economy.withdrawPlayer(player.getName(), entryfee);
+				Arenas.tellPlayer(player,
+						Language.parse("joinpay", PVPArena.economy.format(entryfee)));
+			} else if (PVPArena.eco != null) {
+				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
+				ma.subtract(entryfee);
+				Arenas.tellPlayer(player,
+						Language.parse("joinpay", PVPArena.eco.format(entryfee)));
+			}
 		}
 
 		Teams.choosePlayerTeam(arena, player);
@@ -146,11 +152,17 @@ public class Commands {
 		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
-		if ((PVPArena.eco != null) && (entryfee > 0)) {
-			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-			ma.subtract(entryfee);
-			Arenas.tellPlayer(player,
-					Language.parse("joinpay", PVPArena.eco.format(entryfee)));
+		if (entryfee > 0) {
+			if (PVPArena.economy != null) {
+				PVPArena.economy.withdrawPlayer(player.getName(), entryfee);
+				Arenas.tellPlayer(player,
+						Language.parse("joinpay", PVPArena.economy.format(entryfee)));
+			} else if (PVPArena.eco != null) {
+				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
+				ma.subtract(entryfee);
+				Arenas.tellPlayer(player,
+						Language.parse("joinpay", PVPArena.eco.format(entryfee)));
+			}
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
@@ -237,18 +249,32 @@ public class Commands {
 			return false;
 		}
 
-		if ((PVPArena.eco != null) && (arena.cfg.getInt("money.entry", 0) > 0)) {
-			MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-			if (ma == null) {
-				db.s("Account not found: " + player.getName());
-				return false;
-			}
-			if (!ma.hasEnough(arena.cfg.getInt("money.entry", 0))) {
-				// no money, no entry!
-				Arenas.tellPlayer(player, Language
-						.parse("notenough", PVPArena.eco.format(arena.cfg
-								.getInt("money.entry", 0))));
-				return false;
+		if (arena.cfg.getInt("money.entry", 0) > 0) {
+			if (PVPArena.economy != null) {
+				if (!PVPArena.economy.hasAccount(player.getName())) {
+					db.s("Account not found: " + player.getName());
+					return false;
+				}
+				if (!PVPArena.economy.has(player.getName(), arena.cfg.getInt("money.entry", 0))) {
+					// no money, no entry!
+					Arenas.tellPlayer(player, Language
+							.parse("notenough", PVPArena.economy.format(arena.cfg
+									.getInt("money.entry", 0))));
+					return false;
+				}
+			} else if (PVPArena.eco != null) {
+				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
+				if (ma == null) {
+					db.s("Account not found: " + player.getName());
+					return false;
+				}
+				if (!ma.hasEnough(arena.cfg.getInt("money.entry", 0))) {
+					// no money, no entry!
+					Arenas.tellPlayer(player, Language
+							.parse("notenough", PVPArena.eco.format(arena.cfg
+									.getInt("money.entry", 0))));
+					return false;
+				}
 			}
 		}
 
@@ -884,7 +910,7 @@ public class Commands {
 			return true;
 		}
 
-		if (PVPArena.eco == null)
+		if (PVPArena.economy == null && PVPArena.eco == null)
 			return true;
 
 		Player p = Bukkit.getPlayer(args[1]);
@@ -903,28 +929,52 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("invalidamount", args[2]));
 			return true;
 		}
-		MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-		if (ma == null) {
-			db.s("Account not found: " + player.getName());
-			return true;
-		}
-		if (!ma.hasEnough(amount)) {
-			// no money, no entry!
-			Arenas.tellPlayer(player,
-					Language.parse("notenough", PVPArena.eco.format(amount)));
-			return true;
+		MethodAccount ma = null;
+		if (PVPArena.economy != null) {
+			if (!PVPArena.economy.hasAccount(player.getName())) {
+				db.s("Account not found: " + player.getName());
+				return true;
+			}
+			if (!PVPArena.economy.has(player.getName(), amount)) {
+				// no money, no entry!
+				Arenas.tellPlayer(player,
+						Language.parse("notenough", PVPArena.economy.format(amount)));
+				return true;
+			}
+		} else {
+			ma = PVPArena.eco.getAccount(player.getName());
+			if (ma == null) {
+				db.s("Account not found: " + player.getName());
+				return true;
+			}
+			if (!ma.hasEnough(amount)) {
+				// no money, no entry!
+				Arenas.tellPlayer(player,
+						Language.parse("notenough", PVPArena.eco.format(amount)));
+				return true;
+			}
 		}
 
 		if (amount < arena.cfg.getDouble("money.minbet")
 				|| (amount > arena.cfg.getDouble("money.maxbet"))) {
 			// wrong amount!
-			Arenas.tellPlayer(player, Language.parse("wrongamount",
-					PVPArena.eco.format(arena.cfg.getDouble("money.minbet")),
-					PVPArena.eco.format(arena.cfg.getDouble("money.maxbet"))));
+			if (PVPArena.economy != null) {
+				Arenas.tellPlayer(player, Language.parse("wrongamount",
+						PVPArena.economy.format(arena.cfg.getDouble("money.minbet")),
+						PVPArena.economy.format(arena.cfg.getDouble("money.maxbet"))));
+			} else {
+				Arenas.tellPlayer(player, Language.parse("wrongamount",
+						PVPArena.eco.format(arena.cfg.getDouble("money.minbet")),
+						PVPArena.eco.format(arena.cfg.getDouble("money.maxbet"))));
+			}
 			return true;
 		}
 
-		ma.subtract(amount);
+		if (PVPArena.economy != null) {
+			ma.subtract(amount);
+		} else {
+			PVPArena.economy.withdrawPlayer(player.getName(), amount);
+		}
 		Arenas.tellPlayer(player, Language.parse("betplaced", args[1]));
 		Players.paPlayersBetAmount
 				.put(player.getName() + ":" + args[1], amount);
