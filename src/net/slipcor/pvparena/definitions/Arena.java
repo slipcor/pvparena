@@ -713,8 +713,7 @@ public class Arena {
 					PVPArena.economy.depositPlayer(nSplit[0], amount);
 					try {
 						Announcement.announce(this, type.PRIZE, Language.parse(
-								"awarded", PVPArena.economy.format(cfg.getInt(
-										"money.reward", 0))));
+								"awarded", PVPArena.economy.format(amount)));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
@@ -745,8 +744,7 @@ public class Arena {
 					ma.add(amount);
 					try {
 						Announcement.announce(this, type.PRIZE, Language.parse(
-								"awarded", PVPArena.eco.format(cfg.getInt(
-										"money.reward", 0))));
+								"awarded", PVPArena.eco.format(amount)));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
