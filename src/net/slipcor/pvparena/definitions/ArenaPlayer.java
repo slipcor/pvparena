@@ -140,5 +140,30 @@ public class ArenaPlayer {
 		} catch (InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
+		if (player.isDead()) {
+			return;
+		}
+		savedInventory = null;
+		savedArmor = null;
+		exhaustion = 0;
+		fireticks = 0;
+		foodlevel = 0;
+		health = 0;
+		gamemode = 0;
+		saturation = 0;
+		location = null;
+		displayname = null;
+		potionEffects = null;
+		spectator = false;
+
+		losses = 0;
+		wins = 0;
+		kills = 0;
+		deaths = 0;
+		damage = 0;
+		maxdamage = 0;
+		damagetake = 0;
+		maxdamagetake = 0;
+		arena = null;
 	}
 }

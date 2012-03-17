@@ -262,7 +262,7 @@ public class Players {
 			}
 			if (!p.team.equals("")) {
 				if (p.aClass.equals("")) {
-					// player not ready!
+					// player no class!
 					return -5;
 				}
 			}
@@ -321,9 +321,6 @@ public class Players {
 										// reward!
 			}
 			p.destroy();
-			if (!p.get().isDead()) {
-				p.arena = null;
-			}
 		}
 		if (force) {
 			paPlayersBetAmount.clear();
