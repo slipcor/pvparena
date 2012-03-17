@@ -51,8 +51,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v0.6.36.4 - add a PAKillEvent
-* v0.6.36.3 - add a proper arena start message
+* v0.6.36.4 - add a proper arena start message ; add a PAKillEvent
+* v0.6.36.3 - fix bet placing NPE
 * v0.6.36.2 - add Vault support
 * v0.6.36 - fix for every arena start bug caused by leaving / quitting players
 * v0.6.35.3 - taught talking to DOM arena
