@@ -1,0 +1,133 @@
+== PVP-Arena
+
+A PVP experience enhancing plugin.
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Features
+
+* Multiple arenas
+* Battlefield regions
+* Customisable classes
+* Player-state saving
+* Arena regions
+* In-game config access
+* Arena temp-disable
+* Leaderboards
+* Spawn protection
+* Flag colouring
+* Inventory drops
+* Announcements
+* Arena end timer
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Functions
+
+* Enhancing PVP experience
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Dependecies
+
+* CraftBukkit Beta 1.2.3-R0.2
+
+==== Optional
+
+* a SuperPerms compatible Permissions system
+* iConomy 5/6
+* Spout
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== How to install
+
+* Place in plugins folder
+* Configure if you wish to
+* Done!
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Changelog
+
+* v0.6.35.3 - taught talking to DOM arena
+* v0.6.35.2 - fix the CTF issues
+* v0.6.35 - fix the death issues, finally
+* v0.6.29.9 - fix the fire bug, finally
+* v0.6.29.8 - create custom events properly
+* v0.6.29.7 - reset team flags on arena startup to be colored
+* v0.6.29.6 - fixed CTF NPE
+* v0.6.29.5 - added config setting protection.restore to stop block restoring
+* v0.6.29.4 - added teleport ignoring INSIDE the battlefield
+* v0.6.29.3 - fixed countdown join bug, for real :D
+* v0.6.29.2 - fixed sign restoring bug
+* v0.6.29.1 - fixed inventory hack bug
+* v0.6.29 - join teams with sign. Line 2: teamname
+* v0.6.28.6 - cancel 5s countdown if player joins
+* v0.6.28.5 - spawn camping just for battlefield & fighting players
+* v0.6.28.4 - add config: protection.punish (default false)
+* v0.6.28.3 - fix 2 NPEs happening when spawn camping or using /pa leave
+* v0.6.28.2 - fix a very bad bug occurring after fixing an NPE
+* v0.6.28.1 - fix various NPEs
+* v0.6.28 - potion effects for PowerUps
+* v0.6.27 - join range possible without set region
+* v0.6.26.2 - fixed NPE
+* v0.6.26.1 - added proper join event calling
+* v0.6.26 - add custom events for other plugins to listen to
+* v0.6.25 - get stats with /pa {name} stats [stattype]
+* v0.6.24 - sort arena board by click
+* v0.6.23 - config "hideName": remove names over head
+* v0.6.22 - punish spawn camping
+* v0.6.21 - [PUMPKIN|CTF|DOM] join arenas ingame
+* v0.6.20 - arena start runnable (5s, if readycount > x%), interrupted by player join
+* v0.6.19 - fixed players joining from vehicles
+* v0.6.18 - added entry fee "pay" message
+* v0.6.17 - force joining from a special region, if one arena has set "join" region
+* v0.6.16 - "explicitPermission" to enable need of "pvparena.join.[arenaname]"
+* v0.6.15 - new debug system
+* v0.6.14 - main config: onlyPVPinArena -> cancel all damage except arena!
+* v0.6.13.2 - quitting ingame does not break anything
+* v0.6.13.1 - fixed block destruction being possible
+* v0.6.13 - EDIT mode /pa {name} edit
+* v0.6.12 - "[player] killed" + " by [player/cause]"
+* v0.6.11 - config: betWinFactor [2], betTeamWinFactor [1], betPlayerWinFactor [2]
+* v0.6.10 - config: allowDrops [true]
+* v0.6.9 - config: flagColors: set flag (head) colors
+* v0.6.8 - config: woolFlagHead: change/set woolhead on flag grabbing
+* v0.6.7 - config: autoclass: [classname]
+* v0.6.6 - team chat: add player name
+* v0.6.5 - [Spout] wool lock (inv change cancel)
+* v0.6.4 - [Spout] color name over head
+* v0.6.3 - game mode: death match, spheric regions, block repair, powerup spawn
+* v0.6.2 - leaderboards RELOADED, spawn protection, flag coloring/whitening, inv drops
+* v0.6.1 - sign update/check, announcements, death!, arena end timer
+* v0.6.0 - huge rewrite
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Todo
+
+* Fixes
+** DOM arena fixing
+* Features
+** Item reward random
+** Arena chat
+** Join: /pa {name} [amount] - win amount : win factor
+** Chest/Dispenser refill
+** Chest powerup placement
+** Enchantments
+** Multiple flags for CTF
+** MAP support: Player location, flag/spawn location
+** RUSH mode - Base defend vs Conquer base
+** Spout: Adding "skin" key to classes, MobDisguise hooking
+
+-----------------------------------------------------------------------------------------------------------------------
+
+=== Credits
+* Deminetix for the very root, the Fight plugin
+* Bradley Hilton for the fork until version v0.0.3
+* Carbon131 for adding features until version v0.0.5
+* Drehverschluss for great support during the v0.6 rewrite
+* NodinChan for helping me cleaning up my code
+
+-----------------------------------------------------------------------------------------------------------------------

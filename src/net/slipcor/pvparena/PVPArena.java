@@ -19,7 +19,6 @@ import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.register.payment.Method;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -83,7 +82,9 @@ public class PVPArena extends JavaPlugin {
 						Language.parse("nopermto", Language.parse("create")));
 				return true;
 			}
+
 			Arena arena = Arenas.getArenaByName(args[0]);
+
 			if (arena != null) {
 				Arenas.tellPlayer(player, Language.parse("arenaexists"));
 				return true;
@@ -172,7 +173,7 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * Plugin disabling method - reset all arenas, cancel tasks
+	 * Plugin disabling method - Reset all arenas, cancel tasks
 	 */
 	@Override
 	public void onDisable() {
@@ -182,7 +183,7 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	/**
-	 * Plugin enabling method - register events and load the configs
+	 * Plugin enabling method - Register events and load the configs
 	 */
 	@Override
 	public void onEnable() {
@@ -190,13 +191,12 @@ public class PVPArena extends JavaPlugin {
 
 		Language.init(getConfig().getString("language", "en"));
 
-		if (Bukkit.getPluginManager().getPlugin("Spout") != null) {
+		if (getServer().getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-			Language.log_info("spout");
 			getServer().getPluginManager().registerEvents(customListener, this);
-		} else {
-			Language.log_info("nospout");
 		}
+
+		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
 
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
@@ -206,19 +206,20 @@ public class PVPArena extends JavaPlugin {
 		if (getConfig().get("language") != null
 				&& getConfig().get("onlyPVPinArena") == null) {
 			getConfig().set("debug", "none"); // 0.3.15 correction
-			Bukkit.getLogger().info("[PA-debug] 0.3.15 correction");
+			getServer().getLogger().info("[PA-debug] 0.3.15 correction");
 		}
 
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 
-		File players = new File("plugins/pvparena/players.yml");
+		File players = new File(getDataFolder(), "players.yml");
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
 				db.i("players.yml created successfully");
 			} catch (IOException e) {
-				Bukkit.getLogger()
+				getServer()
+						.getLogger()
 						.severe("Could not create players.yml! More errors will be happening!");
 				e.printStackTrace();
 			}

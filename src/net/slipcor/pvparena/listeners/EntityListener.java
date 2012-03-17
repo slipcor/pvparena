@@ -93,11 +93,11 @@ public class EntityListener implements Listener {
 		String sTeam = Players.getTeam(player);
 		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
 				player.getName(), Players.parseDeathCause(arena, player, player
-						.getLastDamageCause().getCause(), null)));
+						.getLastDamageCause().getCause(), Players.getLastDamagingPlayer(eEvent))));
 		Players.tellEveryone(arena, Language.parse("killedby",
 				arena.colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
 				Players.parseDeathCause(arena, player, player
-						.getLastDamageCause().getCause(), null)));
+						.getLastDamageCause().getCause(), Players.getLastDamagingPlayer(eEvent))));
 
 		Players.parsePlayer(player).losses++;
 		Players.setTeam(player, ""); // needed so player does not

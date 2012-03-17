@@ -12,6 +12,10 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Wolf;
+import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import net.slipcor.pvparena.PVPArena;
@@ -742,5 +746,34 @@ public class Players {
 			}
 		}
 		deadPlayers.remove(player);
+	}
+
+	public static Player getLastDamagingPlayer(Event eEvent) {
+		if (eEvent instanceof EntityDamageByEntityEvent) {
+			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
+			
+			Entity p1 = event.getDamager();
+			
+
+			if (event.getCause() == DamageCause.PROJECTILE) {
+				p1 = ((Projectile) p1).getShooter();
+			}
+
+			if (event.getEntity() instanceof Wolf) {
+				Wolf wolf = (Wolf) event.getEntity();
+				if (wolf.getOwner() != null) {
+					try {
+						p1 = (Entity) wolf.getOwner();
+					} catch (Exception e) {
+						// wolf belongs to dead player or whatnot
+					}
+				}
+			}
+			
+			if (p1 instanceof Player) {
+				return (Player) p1;
+			}
+		}
+		return null;
 	}
 }
