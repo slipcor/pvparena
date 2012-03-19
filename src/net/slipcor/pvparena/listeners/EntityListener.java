@@ -198,7 +198,7 @@ public class EntityListener implements Listener {
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
-		db.i("onEntityDamageByEntity: cause: " + event.getCause().name());
+		db.i("onEntityDamageByEntity: cause: " + event.getCause().name() + " : " + event.getDamager().toString() + " => " + event.getEntity().toString());
 
 		if (event.getCause() == DamageCause.BLOCK_EXPLOSION) {
 

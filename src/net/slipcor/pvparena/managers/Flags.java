@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -354,8 +354,10 @@ public class Flags {
 				// team is active
 				arena.paLives.put(sTeam, arena.cfg.getInt("game.lives", 3));
 			}
+			if (arena.cfg.getBoolean("arenatype.flags")) {
 			takeFlag(arena.paTeams.get(sTeam), false, pumpkin,
 					Spawns.getCoords(arena, sTeam + type));
+			}
 		}
 		if (arena.cfg.getBoolean("arenatype.domination")) {
 			arena.paFlags = new HashMap<Location, String>();

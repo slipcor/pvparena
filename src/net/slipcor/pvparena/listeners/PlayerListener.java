@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -220,7 +220,7 @@ public class PlayerListener implements Listener {
 				db.i("===== class: " + Players.getClass(player) + " =====");
 				db.i("===============");
 
-				if (!arena.fightInProgress) {
+				if (!arena.fightInProgress && arena.START_ID == -1) {
 
 					if (arena.cfg.getBoolean("join.forceEven", false)) {
 						if (!Players.checkEven(arena)) {

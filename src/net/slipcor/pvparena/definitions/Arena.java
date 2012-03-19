@@ -641,11 +641,13 @@ public class Arena {
 					String.valueOf(lives)));
 			paLives.put(player.getName(), lives);
 		}
-		if (!cfg.getBoolean("arenatype.randomSpawn", false)
-				&& !sTeam.equals("free")) {
-			tpPlayerToCoordName(player, sTeam + "spawn");
-		} else {
-			tpPlayerToCoordName(player, "spawn");
+		if (!sTeam.equals("")) {
+			if (!cfg.getBoolean("arenatype.randomSpawn", false)
+					&& !sTeam.equals("free")) {
+				tpPlayerToCoordName(player, sTeam + "spawn");
+			} else {
+				tpPlayerToCoordName(player, "spawn");
+			}
 		}
 		player.setFireTicks(0);
 		player.setNoDamageTicks(60);
