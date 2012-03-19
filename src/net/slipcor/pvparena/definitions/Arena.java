@@ -86,7 +86,6 @@ public class Arena {
 
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, ArenaRegion> regions = new HashMap<String, ArenaRegion>();
-	public final HashSet<String> paReady = new HashSet<String>();
 	public final HashSet<String> paChat = new HashSet<String>();
 	public final HashSet<ArenaClassSign> paSigns = new HashSet<ArenaClassSign>();
 
@@ -819,7 +818,6 @@ public class Arena {
 
 		db.i("resetting arena; force: " + String.valueOf(force));
 		clearArena();
-		paReady.clear();
 		paChat.clear();
 		for (ArenaClassSign as : paSigns) {
 			as.clear();

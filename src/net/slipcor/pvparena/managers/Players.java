@@ -37,7 +37,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.36
  * 
  */
 
@@ -204,7 +204,7 @@ public class Players {
 			double ratio = arena.cfg.getDouble("ready.startRatio");
 
 			int players = getPlayerTeamMap(arena).size();
-			int readyPlayers = arena.paReady.size();
+			int readyPlayers = Players.countReadyPlayers(arena);
 
 			if (players > 0 && readyPlayers / players >= ratio) {
 				return -6;
@@ -213,7 +213,7 @@ public class Players {
 
 		if (arena.cfg.getBoolean("ready.checkEach")) {
 			for (String sPlayer : getPlayerTeamMap(arena).keySet()) {
-				if (!arena.paReady.contains(sPlayer)) {
+				if (!Players.parsePlayer(sPlayer).ready) {
 					return 0;
 				}
 			}
@@ -273,6 +273,17 @@ public class Players {
 			}
 		}
 		return 1;
+	}
+
+	private static int countReadyPlayers(Arena arena) {
+		int sum = 0;
+		for (ArenaPlayer p : players.values()) {
+			if (p.ready) {
+				sum++;
+			}
+		}
+		db.i("ready players: " + sum);
+		return sum;
 	}
 
 	/**
@@ -562,6 +573,17 @@ public class Players {
 		return Players.players.get(player.getName());
 	}
 
+	/**
+	 * get an ArenaPlayer from a player name
+	 * 
+	 * @param sPlayer
+	 *            the player name to get
+	 * @return an ArenaPlayer instance belonging to that player
+	 */
+	private static ArenaPlayer parsePlayer(String sPlayer) {
+		return players.get(sPlayer);
+	}
+
 	public static void chooseClass(Arena arena, Player player, Sign sign,
 			String className) {
 
@@ -628,7 +650,12 @@ public class Players {
 			Arenas.tellPlayer(player, Language.parse("youleave"));
 		}
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
-
+		
+		if (arena.START_ID != -1) {
+			Bukkit.getScheduler().cancelTask(arena.START_ID);
+			arena.START_ID = -1;
+		}
+		
 		ap.destroy();
 
 		if (!spectator && arena.fightInProgress) {

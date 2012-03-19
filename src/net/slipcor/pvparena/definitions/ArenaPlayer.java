@@ -50,6 +50,7 @@ public class ArenaPlayer {
 	public String displayname;
 	public Collection<PotionEffect> potionEffects;
 	public boolean spectator = false;
+	public boolean ready = false;
 
 	public int losses = 0;
 	public int wins = 0;
@@ -161,6 +162,7 @@ public class ArenaPlayer {
 		displayname = null;
 		potionEffects = null;
 		spectator = false;
+		ready = false;
 
 		losses = 0;
 		wins = 0;

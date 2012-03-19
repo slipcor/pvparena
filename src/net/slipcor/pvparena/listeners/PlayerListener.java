@@ -235,10 +235,15 @@ public class PlayerListener implements Listener {
 								Language.parse("checkregionerror"));
 						return;
 					}
-
-					arena.paReady.add(player.getName());
+					
+					Players.parsePlayer(player).ready = true;
 
 					int ready = Players.ready(arena);
+
+					db.i("===============");
+					db.i("===== ready: " + ready + " =====");
+					db.i("===============");
+					
 					if (ready == 0) {
 						Arenas.tellPlayer(player, Language.parse("notready"));
 						return; // team not ready => announce
