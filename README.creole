@@ -51,6 +51,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.37 - Item reward random
 * v0.6.36.11 - fix a bug where players were able to start alone / with just one team
 * v0.6.36.8 - fix various bugs
 * v0.6.36.4 - add a proper arena start message ; add a PAKillEvent
@@ -117,7 +118,6 @@ A PVP experience enhancing plugin.
 * Fixes
 ** DOM arena fixing
 * Features
-** Item reward random
 ** Arena chat
 ** Join: /pa {name} [amount] - win amount : win factor
 ** Chest/Dispenser refill

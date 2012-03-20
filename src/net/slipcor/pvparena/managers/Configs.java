@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.6.37
  * 
  */
 
@@ -90,6 +90,7 @@ public class Configs {
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
+		config.addDefault("general.random-reward", Boolean.valueOf(false));
 
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));

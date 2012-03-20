@@ -45,7 +45,7 @@ public class PowerupEffect {
 	private double chance = 1.0;
 	private int diff = 0;
 	private List<String> items = new ArrayList<String>();
-	private Debug db = new Debug(17);
+	private static Debug db = new Debug(17);
 	private PotionEffect potEff = null;
 
 	/**
@@ -378,6 +378,11 @@ public class PowerupEffect {
 		}
 
 		for (PotionEffectType pet : PotionEffectType.values()) {
+			db.i("parsing PET " + pet.toString());
+			if (pet.getName() == null) {
+				db.s("pet.getName == null");
+				continue;
+			}
 			if (pet.getName().equals(eClass)) {
 				return new PotionEffect(pet, duration, amplifyer);
 			}

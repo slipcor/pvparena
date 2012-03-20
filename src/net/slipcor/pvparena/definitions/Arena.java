@@ -777,10 +777,16 @@ public class Arena {
 		if (sItems.equals("none"))
 			return;
 		String[] items = sItems.split(",");
+		boolean random = cfg.getBoolean("general.random-reward");
+		Random r = new Random();
+		int randomItem = r.nextInt(items.length);
 		for (int i = 0; i < items.length; ++i) {
 			ItemStack stack = StringParser.getItemStackFromString(items[i]);
 			if (stack == null) {
 				db.w("unrecognized item: " + items[i]);
+				continue;
+			}
+			if (random && i != randomItem) {
 				continue;
 			}
 			try {

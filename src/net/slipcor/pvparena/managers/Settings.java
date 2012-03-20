@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.6.37
  * 
  */
 
@@ -67,6 +67,7 @@ public class Settings {
 		types.put("general.owner", "string");
 		types.put("general.world", "string");
 		types.put("general.item-rewards", "items");
+		types.put("general.random-reward", "boolean");
 		types.put("general.signs", "boolean");
 
 		types.put("arenatype.randomSpawn", "boolean");
