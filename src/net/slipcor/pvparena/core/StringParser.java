@@ -2,6 +2,7 @@ package net.slipcor.pvparena.core;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -13,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.39
  * 
  */
 
@@ -53,7 +54,7 @@ public class StringParser {
 	public static ItemStack getItemStackFromString(String s) {
 		db.i("parsing itemstack string: " + s);
 
-		// [itemid/name]~[dmg]~[data]:[amount]
+		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
 
 		short dmg = 0;
 		byte data = 0;
@@ -65,23 +66,47 @@ public class StringParser {
 		if (temp.length > 1) {
 			amount = Integer.parseInt(temp[1]);
 		}
+		Enchantment ench = null;
+		Integer enchLevel = 0;
+		if (temp[0].contains("|")) {
+			String[] temp2 = temp[0].split("|");
+			temp[0] = temp2[0];
+			
+			String strEnch = temp2[1];
+			if (strEnch.contains("~")) {
+				String[] arrEnch = strEnch.split("~");
+				ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
+				enchLevel = Integer.parseInt(arrEnch[1]);
+			}
+		}
+		
 		temp = temp[0].split("~");
 
 		mat = parseMat(temp[0]);
 		if (mat != null) {
 			if (temp.length == 1) {
 				// [itemid/name]:[amount]
-				return new ItemStack(mat, amount);
+				
+				ItemStack is = new ItemStack(mat, amount);
+				if (ench != null)
+					is.addUnsafeEnchantment(ench, enchLevel);
+				return is;
 			}
 			dmg = Short.parseShort(temp[1]);
 			if (temp.length == 2) {
 				// [itemid/name]~[dmg]:[amount]
-				return new ItemStack(mat, amount, dmg);
+				ItemStack is = new ItemStack(mat, amount, dmg);
+				if (ench != null)
+					is.addUnsafeEnchantment(ench, enchLevel);
+				return is;
 			}
 			data = Byte.parseByte(temp[2]);
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
-				return new ItemStack(mat, amount, dmg, data);
+				ItemStack is = new ItemStack(mat, amount, dmg, data);
+				if (ench != null)
+					is.addUnsafeEnchantment(ench, enchLevel);
+				return is;
 			}
 		}
 		return null;
