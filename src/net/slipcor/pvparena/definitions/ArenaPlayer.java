@@ -24,7 +24,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.39
  * 
  */
 
@@ -41,6 +41,8 @@ public class ArenaPlayer {
 	public ItemStack[] savedInventory;
 	public ItemStack[] savedArmor;
 	public float exhaustion;
+	public float experience;
+	public int explevel;
 	public int fireticks;
 	public int foodlevel;
 	public int health;
@@ -157,6 +159,7 @@ public class ArenaPlayer {
 		foodlevel = 0;
 		health = 0;
 		gamemode = 0;
+		experience = 0;
 		saturation = 0;
 		location = null;
 		displayname = null;

@@ -296,6 +296,8 @@ public class Arena {
 		p.saturation = player.getSaturation();
 		p.location = player.getLocation();
 		p.gamemode = player.getGameMode().getValue();
+		p.experience = player.getExp();
+		p.explevel = player.getLevel();
 		p.potionEffects = player.getActivePotionEffects();
 
 		if (cfg.getBoolean("messages.colorNick", true)) {
@@ -330,6 +332,8 @@ public class Arena {
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
 		player.setSaturation(cfg.getInt("start.saturation", 20));
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
+		player.setLevel(0);
+		player.setExp(0);
 		player.setGameMode(GameMode.getByValue(0));
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
@@ -483,6 +487,9 @@ public class Arena {
 		player.setHealth(ap.health);
 		player.setSaturation(ap.saturation);
 		player.setGameMode(GameMode.getByValue(ap.gamemode));
+		player.setLevel(ap.explevel);
+		player.setExp(ap.experience);
+		player.setExhaustion(ap.exhaustion);
 		if (cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(ap.displayname);
 		}

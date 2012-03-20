@@ -55,7 +55,7 @@ public class StringParser {
 		db.i("parsing itemstack string: " + s);
 
 		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
-
+		
 		short dmg = 0;
 		byte data = 0;
 		int amount = 1;
@@ -69,11 +69,16 @@ public class StringParser {
 		Enchantment ench = null;
 		Integer enchLevel = 0;
 		if (temp[0].contains("|")) {
-			String[] temp2 = temp[0].split("|");
+			db.i("trying to add enchantment");
+			String[] temp2 = temp[0].split("\\|");
+			db.i("temp2 length: " + temp2.length);
 			temp[0] = temp2[0];
+			
+			db.i("correcting item temp to " + temp[0]);
 			
 			String strEnch = temp2[1];
 			if (strEnch.contains("~")) {
+				db.i("we have a level");
 				String[] arrEnch = strEnch.split("~");
 				ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
 				enchLevel = Integer.parseInt(arrEnch[1]);
