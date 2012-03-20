@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.37
+ * @version v0.6.38
  * 
  */
 
@@ -85,6 +85,7 @@ public class Configs {
 		config.addDefault("messages.colorNick", Boolean.valueOf(true));
 		config.addDefault("messages.chat", Boolean.valueOf(true));
 		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
+		config.addDefault("messages.onlyChat", Boolean.valueOf(false));
 
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));

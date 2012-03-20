@@ -37,7 +37,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.38
  * 
  */
 
@@ -404,6 +404,21 @@ public class Players {
 					c + "[" + team + "] " + player.getName() + ChatColor.WHITE
 							+ ": " + msg);
 		}
+	}
+
+	/**
+	 * send a message to every player of a given team
+	 * 
+	 * @param player
+	 *            the team to send to
+	 * @param msg
+	 *            the message to send
+	 * @param player
+	 */
+	public static void tellEveryone(Arena arena, String msg,
+			ChatColor c, Player player) {
+		tellEveryone(arena, c + player.getName() + ChatColor.WHITE
+							+ ": " + msg);
 	}
 
 	/**

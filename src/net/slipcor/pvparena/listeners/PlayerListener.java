@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.38
  * 
  */
 
@@ -69,16 +69,32 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		db.i("fighting player chatting!");
+		
+		if (!arena.cfg.getBoolean("messages.onlyChat")) {
+			if (!arena.cfg.getBoolean("messages.chat")) {
+				return; // no chat editing
+			}
 
-		if (!arena.cfg.getBoolean("messages.chat")) {
-			return; // no chat editing
-		}
+			if (!arena.paChat.contains(player.getName())) {
+				return; // player not chatting
+			}
 
-		if (!arena.paChat.contains(player.getName())) {
-			return; // player not chatting
+			String sTeam = Players.getTeam(player);
+			Players.tellTeam(arena, sTeam, event.getMessage(),
+					ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
+			event.setCancelled(true);
 		}
+		
+		if (arena.cfg.getBoolean("messages.chat") && arena.paChat.contains(player.getName())) {
+			String sTeam = Players.getTeam(player);
+			Players.tellTeam(arena, sTeam, event.getMessage(),
+					ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
+			event.setCancelled(true);
+			return;
+		}
+		
 		String sTeam = Players.getTeam(player);
-		Players.tellTeam(arena, sTeam, event.getMessage(),
+		Players.tellEveryone(arena, event.getMessage(),
 				ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
 		event.setCancelled(true);
 	}

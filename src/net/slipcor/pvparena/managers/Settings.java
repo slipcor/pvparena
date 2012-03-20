@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.37
+ * @version v0.6.38
  * 
  */
 
@@ -60,6 +60,7 @@ public class Settings {
 		types.put("messages.chat", "boolean");
 		types.put("messages.colorNick", "boolean");
 		types.put("messages.defaultChat", "boolean");
+		types.put("messages.onlyChat", "boolean");
 		types.put("messages.language", "lang");
 
 		types.put("general.classperms", "boolean");
