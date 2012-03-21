@@ -47,7 +47,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.40
  * 
  */
 
@@ -189,6 +189,7 @@ public class EntityListener implements Listener {
 	 * @param event
 	 *            the triggering event
 	 */
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 
 		if (event.isCancelled()) {
@@ -386,15 +387,10 @@ public class EntityListener implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.isCancelled()) {
 			return; // respect other plugins
-		}
-
-		if (event instanceof EntityDamageByEntityEvent) {
-			onEntityDamageByEntity((EntityDamageByEntityEvent) event);
-			return; // hand over damage event
 		}
 
 		Entity p1 = event.getEntity();

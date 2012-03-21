@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.38
+ * @version v0.6.40
  * 
  */
 
@@ -411,7 +411,15 @@ public class Configs {
 				type = type.equals("pumpkin") ? type : "flag";
 				for (String team : arena.paTeams.keySet()) {
 					if (!list.contains(team + type)) {
-						return team + type + " not set";
+						boolean found = false;
+						for (String s : list) {
+							if (s.startsWith(team) && s.endsWith(type)) {
+								found = true;
+								break;
+							}
+						}
+						if (!found)
+							return team + type + " not set";
 					}
 				}
 			}

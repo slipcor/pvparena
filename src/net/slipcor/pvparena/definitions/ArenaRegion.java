@@ -2,6 +2,7 @@ package net.slipcor.pvparena.definitions;
 
 import java.util.Random;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Location;
@@ -22,7 +23,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.40
  * 
  */
 
@@ -257,6 +258,12 @@ public class ArenaRegion {
 	 */
 	public void restore() {
 		db.i("restoring region " + name);
+		if (world == null) {
+			PVPArena.instance.getLogger().severe("[PA-debug] world is null in region " + name);
+			return;
+		} else if (world.getEntities() == null) {
+			return;
+		}
 		for (Entity e : world.getEntities()) {
 			if (((!(e instanceof Item)) && (!(e instanceof Arrow)))
 					|| (!contains(e.getLocation())))

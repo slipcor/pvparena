@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.40
  * 
  */
 
@@ -760,7 +760,7 @@ public class Commands {
 
 		String type = arena.getType().equals("pumpkin") ? "pumpkin" : "flag";
 
-		if (!cmd.endsWith(type)) {
+		if (!cmd.contains(type)) {
 			return false;
 		}
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
@@ -769,7 +769,16 @@ public class Commands {
 			return false;
 		}
 		String sName = cmd.replace(type, "");
-		if (arena.paTeams.get(sName) == null) {
+		
+		boolean found = false;
+		
+		for (String sTeam : arena.paTeams.keySet()) {
+			if (sName.startsWith(sTeam)) {
+				found = true;
+			}
+		}
+		
+		if (!found) {
 			return false;
 		}
 

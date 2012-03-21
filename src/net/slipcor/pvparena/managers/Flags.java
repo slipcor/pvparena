@@ -117,8 +117,8 @@ public class Flags {
 			vLoc = block.getLocation().toVector();
 			sTeam = Players.getTeam(player);
 			db.i("block: " + vLoc.toString());
-			if (Spawns.getCoords(arena, sTeam + type) != null) {
-				vFlag = Spawns.getCoords(arena, sTeam + type).toVector();
+			if (Spawns.getSpawns(arena, sTeam + type).size() > 0) {
+				vFlag = Spawns.getNearest(Spawns.getSpawns(arena, sTeam + type), player.getLocation()).toVector();
 			} else {
 				db.i(sTeam + type + " = null");
 			}
@@ -181,8 +181,8 @@ public class Flags {
 				db.i("checking for " + type + " of team " + team);
 				vLoc = block.getLocation().toVector();
 				db.i("block: " + vLoc.toString());
-				if (Spawns.getCoords(arena, team + type) != null) {
-					vFlag = Spawns.getCoords(arena, team + type).toVector();
+				if (Spawns.getSpawns(arena, team + type).size() > 0) {
+					vFlag = Spawns.getNearest(Spawns.getSpawns(arena, team + type), player.getLocation()).toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i(type + " found!");
@@ -290,6 +290,9 @@ public class Flags {
 
 		String sName = Arena.regionmodify.replace(arena.name + ":", "");
 
+		// command : /pa redflag1
+		// location: red1flag:
+		
 		Spawns.setCoords(arena, block.getLocation(), sName + type);
 
 		Arenas.tellPlayer(player, Language.parse("set" + type, sName));

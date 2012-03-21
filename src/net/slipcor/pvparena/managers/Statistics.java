@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.40
  * 
  */
 
@@ -291,6 +291,7 @@ public class Statistics {
 			boolean willRespawn) {
 		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
 		Bukkit.getPluginManager().callEvent(dEvent);
+		
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;

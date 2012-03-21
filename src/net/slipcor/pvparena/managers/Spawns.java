@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.6.40
  * 
  */
 
@@ -61,7 +61,12 @@ public class Spawns {
 
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.cfg.get("spawns." + place) == null) {
-			if (!place.contains("spawn")) {
+			String type = null;
+			if (arena.cfg.getBoolean("arenatype.flags")) {
+				type = arena.getType();
+				type = type.equals("pumpkin") ? type : "flag";
+			}
+			if (!place.contains("spawn") && type == null) {
 				db.i("place not found!");
 				return null;
 			}
@@ -78,6 +83,14 @@ public class Spawns {
 				if (name.startsWith(place)) {
 					locs.put(i++, name);
 					db.i("found match: " + name);
+				}
+				if (name.endsWith(type)) {
+					for (String sTeam : arena.paTeams.keySet()) {
+						if (name.startsWith(sTeam)) {
+							locs.put(i++, name);
+							db.i("found match: " + name);
+						}
+					}
 				}
 			}
 
@@ -205,7 +218,10 @@ public class Spawns {
 					continue;
 				}
 			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
-				if (!name.equals(sTeam)) {
+				String sName = sTeam.replace("flag", "");
+				sName = sName.replace("pumpkin", "");
+				db.i("checking if " + name + " starts with " + sName);
+				if (!name.startsWith(sName)) {
 					continue;
 				}
 			} else if (sTeam.equals("free")) {
@@ -247,5 +263,18 @@ public class Spawns {
 		v.multiply(1 / locs.size());
 
 		return v.toLocation(Bukkit.getWorld(arena.getWorld()));
+	}
+
+	public static Location getNearest(HashSet<Location> spawns,
+			Location location) {
+		Location result = null;
+		
+		for (Location loc : spawns) {
+			if (result == null || result.distance(location) > loc.distance(location)) {
+				result = loc;
+			}
+		}
+		
+		return result;
 	}
 }
