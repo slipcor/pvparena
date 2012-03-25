@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.38
+ * @version v0.6.40
  * 
  */
 
@@ -84,6 +84,7 @@ public class Settings {
 		types.put("join.forceEven", "boolean");
 		types.put("join.inbattle", "boolean");
 		types.put("join.manual", "boolean");
+		types.put("join.onCountdown", "boolean");
 		types.put("join.random", "boolean");
 		types.put("join.range", "int");
 

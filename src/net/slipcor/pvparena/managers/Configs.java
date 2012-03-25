@@ -96,6 +96,7 @@ public class Configs {
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
 		config.addDefault("join.random", Boolean.valueOf(true));
+		config.addDefault("join.onCountdown", Boolean.valueOf(false));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
 		config.addDefault("join.inbattle", Boolean.valueOf(false));
 

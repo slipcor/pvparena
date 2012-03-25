@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.38
+ * @version v0.6.40
  * 
  */
 
@@ -138,7 +138,7 @@ public class PlayerListener implements Listener {
 		// cancel the drop event for fighting players, with message
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 

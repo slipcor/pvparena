@@ -291,6 +291,10 @@ public class Commands {
 		if (arena.START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			db.i("player joining, cancelling start timer");
+			if (!arena.cfg.getBoolean("join.onCountdown")) {
+				Arenas.tellPlayer(player, Language.parse("fightinprogress"));
+				return false;
+			}
 		}
 
 		return true;

@@ -51,6 +51,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.9 - fix another issue with the startup countdown
 * v0.6.40.8 - Backend organising by NodinChan, has NO effect on the plugin atm
 * v0.6.40.7 - Fix NPE and fix LeaderBoards
 * v0.6.40.6 - Tries to fix mcMMO damage messing up the arena ;)
