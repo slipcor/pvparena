@@ -51,7 +51,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v0.6.40.7 - Fix NPE
+* v0.6.40.8 - Backend organising by NodinChan, has NO effect on the plugin atm
+* v0.6.40.7 - Fix NPE and fix LeaderBoards
 * v0.6.40.6 - Tries to fix mcMMO damage messing up the arena ;)
 * v0.6.40 - Multiple flags for CTF
 * v0.6.39 - Enchantments
