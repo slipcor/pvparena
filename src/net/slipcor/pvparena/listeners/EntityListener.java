@@ -22,6 +22,7 @@ import net.slipcor.pvparena.managers.Statistics;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.entity.CraftThrownPotion;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -253,8 +254,10 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (event.getCause() == DamageCause.PROJECTILE) {
+		if (p1 instanceof Projectile) {
+			db.i("parsing projectile");
 			p1 = ((Projectile) p1).getShooter();
+			db.i("=> " + p1.toString());
 		}
 
 		if (event.getEntity() instanceof Wolf) {

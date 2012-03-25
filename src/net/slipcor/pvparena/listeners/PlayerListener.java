@@ -23,7 +23,7 @@ import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Material;	
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -152,7 +152,7 @@ public class PlayerListener implements Listener {
 		 * if (arena.cfg.getBoolean("arenatype.flags") &&
 		 * arena.cfg.getBoolean("join.inbattle")) {
 		 */
-
+		
 		if (Regions.checkRegionSetPosition(event, player)) {
 			return;
 		}

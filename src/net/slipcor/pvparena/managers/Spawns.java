@@ -84,6 +84,9 @@ public class Spawns {
 					locs.put(i++, name);
 					db.i("found match: " + name);
 				}
+				if (type == null) {
+					continue;
+				}
 				if (name.endsWith(type)) {
 					for (String sTeam : arena.paTeams.keySet()) {
 						if (name.startsWith(sTeam)) {

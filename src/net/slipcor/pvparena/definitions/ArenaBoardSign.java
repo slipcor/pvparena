@@ -3,6 +3,7 @@ package net.slipcor.pvparena.definitions;
 import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Location;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 
 /**
@@ -10,13 +11,13 @@ import org.bukkit.block.Sign;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.40
  * 
  */
 
 public class ArenaBoardSign {
 	protected ArenaBoardColumn column;
-	private Location location;
+	private BlockState state;
 	private Debug db = new Debug(12);
 
 	/**
@@ -29,8 +30,8 @@ public class ArenaBoardSign {
 	 */
 	public ArenaBoardSign(ArenaBoardColumn abc, Location loc) {
 		column = abc;
-		location = loc;
-		db.i("adding sign at location " + location.toString());
+		state = loc.getBlock().getState();
+		db.i("adding sign at location " + loc.toString());
 	}
 
 	/**
@@ -42,13 +43,13 @@ public class ArenaBoardSign {
 	 *            the string to set
 	 */
 	public void set(int i, String string) {
-		((Sign) location.getBlock().getState()).setLine(i, string);
+		((Sign) state).setLine(i, string);
 	}
 
 	/**
 	 * update the sign
 	 */
 	public void update() {
-		((Sign) location.getBlock().getState()).update();
+		((Sign) state).update();
 	}
 }

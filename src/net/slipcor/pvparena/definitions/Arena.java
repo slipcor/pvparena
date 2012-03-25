@@ -219,10 +219,12 @@ public class Arena {
 
 		ArenaPlayer player = Players.parsePlayer(p);
 		PermissionAttachment pa = p.addAttachment(PVPArena.instance);
-		player.tempPermissions.add(pa);
+		
 		for (String entry : perms.keySet()) {
 			pa.setPermission(entry, perms.get(entry));
 		}
+		p.recalculatePermissions();
+		player.tempPermissions.add(pa);
 	}
 
 	/**
@@ -241,6 +243,7 @@ public class Arena {
 				pa.remove();
 			}
 		}
+		p.recalculatePermissions();
 	}
 
 	/**
@@ -633,16 +636,14 @@ public class Arena {
 
 		if (cfg.getBoolean("arenatype.flags")) {
 			Players.tellEveryone(this, Language.parse("killedby",
-					colorizePlayerByTeam(player, sTeam)
-							+ ChatColor.YELLOW,
+					colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
 					Players.parseDeathCause(this, player, cause, damager)));
 			tpPlayerToCoordName(player, sTeam + "spawn");
 
 			Flags.checkEntityDeath(this, player);
 		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
 			Players.tellEveryone(this, Language.parse("killedbylives",
-					colorizePlayerByTeam(player, sTeam)
-							+ ChatColor.YELLOW,
+					colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
 					Players.parseDeathCause(this, player, cause, damager),
 					String.valueOf(lives)));
 			paLives.put(player.getName(), lives);
@@ -717,11 +718,14 @@ public class Arena {
 
 					double amount = Players.paPlayersBetAmount.get(nKey)
 							* playerFactor;
-					
+
 					PVPArena.economy.depositPlayer(nSplit[0], amount);
 					try {
-						Announcement.announce(this, type.PRIZE, Language.parse(
-								"awarded", PVPArena.economy.format(amount)));
+						Announcement.announce(
+								this,
+								type.PRIZE,
+								Language.parse("awarded",
+										PVPArena.economy.format(amount)));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
@@ -751,8 +755,11 @@ public class Arena {
 					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 					ma.add(amount);
 					try {
-						Announcement.announce(this, type.PRIZE, Language.parse(
-								"awarded", PVPArena.eco.format(amount)));
+						Announcement.announce(
+								this,
+								type.PRIZE,
+								Language.parse("awarded",
+										PVPArena.eco.format(amount)));
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
@@ -766,18 +773,15 @@ public class Arena {
 
 		if (cfg.getInt("money.reward", 0) > 0) {
 			if (PVPArena.economy != null) {
-				PVPArena.economy.depositPlayer(player.getName(), cfg.getInt("money.reward", 0));
-				Arenas.tellPlayer(
-						player,
-						Language.parse("awarded",
-								PVPArena.economy.format(cfg.getInt("money.reward", 0))));
+				PVPArena.economy.depositPlayer(player.getName(),
+						cfg.getInt("money.reward", 0));
+				Arenas.tellPlayer(player, Language.parse("awarded",
+						PVPArena.economy.format(cfg.getInt("money.reward", 0))));
 			} else if (PVPArena.eco != null) {
 				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 				ma.add(cfg.getInt("money.reward", 0));
-				Arenas.tellPlayer(
-						player,
-						Language.parse("awarded",
-								PVPArena.eco.format(cfg.getInt("money.reward", 0))));
+				Arenas.tellPlayer(player, Language.parse("awarded",
+						PVPArena.eco.format(cfg.getInt("money.reward", 0))));
 			}
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
@@ -936,7 +940,8 @@ public class Arena {
 				this,
 				Language.parse(
 						"frag",
-						colorizePlayerByTeam(attacker, sTeam) + ChatColor.YELLOW,
+						colorizePlayerByTeam(attacker, sTeam)
+								+ ChatColor.YELLOW,
 						String.valueOf(cfg.getInt("game.lives")
 								- paLives.get(sTeam))));
 	}
@@ -1020,6 +1025,7 @@ public class Arena {
 	}
 
 	public String colorizePlayerByTeam(Player player) {
-		return ChatColor.valueOf(paTeams.get(Players.getTeam(player))) + player.getName();
+		return ChatColor.valueOf(paTeams.get(Players.getTeam(player)))
+				+ player.getName();
 	}
 }

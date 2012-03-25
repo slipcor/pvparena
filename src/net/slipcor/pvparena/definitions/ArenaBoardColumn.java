@@ -69,7 +69,7 @@ public class ArenaBoardColumn {
 	 */
 	public void write(String[] s) {
 		int i = 0;
-
+		db.i("writing to column at location " + location.toString());
 		for (ArenaBoardSign abs : signs) {
 			if (abs == null) {
 				return;
