@@ -17,7 +17,7 @@ import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.6.40
  * 
  */
 public class CustomListener implements Listener {
@@ -32,14 +32,18 @@ public class CustomListener implements Listener {
 		if (arena == null) {
 			return;
 		}
-		// player is part of arena
-		if (!arena.getType().equals("ctf")) {
-			return;
-		}
-		db.i("onInventoryClick inside CTF arena");
-		// arena is using flags that can be taken
-		if (!arena.paTeamFlags.containsValue(p.getName())) {
-			return;
+		
+		if (!arena.cfg.getBoolean("woolHead")) {
+		
+			// player is part of arena
+			if (!arena.getType().equals("ctf")) {
+				return;
+			}
+			db.i("onInventoryClick inside CTF arena");
+			// arena is using flags that can be taken
+			if (!arena.paTeamFlags.containsValue(p.getName())) {
+				return;
+			}
 		}
 		db.i("cancelling!");
 		// player is carrying a flag

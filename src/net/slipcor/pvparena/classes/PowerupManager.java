@@ -12,6 +12,7 @@ import java.util.List;
  * Manages powerups
  * 
  * @author NodinChan
+ * @slipcor approves
  *
  */
 

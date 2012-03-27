@@ -2,6 +2,9 @@ package net.slipcor.pvparena.classes;
 
 import org.bukkit.entity.Player;
 
+// well I think you knew what I was doing with my effects after committing this.
+// I will let myself be inspired by this ^^
+
 public class Effect {
 	
 	private final String name;

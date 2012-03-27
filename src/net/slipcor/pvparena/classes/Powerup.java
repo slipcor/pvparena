@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
  * For powerups to extend
  * 
  * @author NodinChan
+ * @slipcor approves
  *
  */
 public class Powerup {

@@ -11,8 +11,8 @@ public final class ArenaClass {
 	private final String name;
 	
 	private final Material[] items;
-	
-	private final Map<Material, Integer> amounts;
+	// ^^ vv this will be replaced by ItemStack[], my StringParse lib supports enchantments and data values :)
+	private final Map<Material, Integer> amounts; 
 	
 	public ArenaClass(String name, Map<Material, Integer> amounts) {
 		this.name = name;

@@ -31,7 +31,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.40
  * 
  */
 
@@ -271,11 +271,11 @@ public class PowerupEffect {
 					if (i.contains("HELM")) {
 						is = player.getInventory().getHelmet();
 					} else if ((i.contains("CHEST")) || (i.contains("PLATE"))) {
-						is = player.getInventory().getHelmet();
+						is = player.getInventory().getChestplate();
 					} else if (i.contains("LEGGINS")) {
-						is = player.getInventory().getHelmet();
+						is = player.getInventory().getLeggings();
 					} else if (i.contains("BOOTS")) {
-						is = player.getInventory().getHelmet();
+						is = player.getInventory().getBoots();
 					} else if (i.contains("SWORD")) {
 						is = player.getItemInHand();
 					}

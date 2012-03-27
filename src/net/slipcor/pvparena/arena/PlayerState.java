@@ -7,6 +7,12 @@ public final class PlayerState {
 	
 	private Player player;
 	
+	// I'll add saturation and stuff you missed, but I think I understood what you were
+	// doing in here ^^
+	
+	// though I'm wondering what you gain from switching 2*5 lines to a whole new class to
+	// do the same-except you dont need the player because you saved it in the first place
+	
 	private int fireticks;
 	private int foodlevel;
 	private int gamemode;

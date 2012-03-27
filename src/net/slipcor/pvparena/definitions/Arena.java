@@ -399,8 +399,13 @@ public class Arena {
 			Players.parsePlayer(player).spectator = true;
 			Players.parsePlayer(player).team = "";
 		}
+		Location loc = Spawns.getCoords(this, place);
+		if (loc == null) {
+			System.out.print("[PA-debug] Spawn null : " + place);
+			return;
+		}
 		Players.setTelePass(player, true);
-		player.teleport(Spawns.getCoords(this, place));
+		player.teleport(loc);
 		Players.setTelePass(player, false);
 	}
 

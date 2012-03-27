@@ -55,7 +55,7 @@ public final class ArenaPlayer {
 	}
 	
 	public final class EffectScheduler implements Runnable {
-		
+		// one runnable for every player.. mhh... yeah... that might improve it ^^
 		@Override
 		public void run() {
 			List<Effect> removalPending = new ArrayList<Effect>();

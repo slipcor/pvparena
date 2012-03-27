@@ -13,6 +13,8 @@ public class ArenaManager {
 	private static List<ArenaClass> classes = new ArrayList<ArenaClass>();
 	private static List<ArenaPlayer> players = new ArrayList<ArenaPlayer>();
 	
+	// Why Lists, not HashSets? otherwise, will be done.
+	
 	public static void createArena(String name, String type) {
 		Arena arena = new Arena(name, type);
 		arenas.add(arena);

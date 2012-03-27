@@ -5,6 +5,8 @@ import java.util.List;
 
 public final class Arena {
 	
+	// will integrate the following, hoping people don't disappear again
+	
 	private final List<ArenaPlayer> players;
 	
 	public Arena(String name, String type) {

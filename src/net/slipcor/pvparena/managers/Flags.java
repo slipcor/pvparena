@@ -193,9 +193,12 @@ public class Flags {
 							arena.colorizeTeam(team) + ChatColor.YELLOW));
 
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
-
+						try {
 						arena.paHeadGears.put(player.getName(), player
 								.getInventory().getHelmet().clone());
+						} catch (Exception e) {
+							
+						}
 						ItemStack is = block.getState().getData().toItemStack()
 								.clone();
 						is.setDurability(getFlagOverrideTeamShort(arena, team));
