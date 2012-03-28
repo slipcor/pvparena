@@ -4,10 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
 
@@ -20,7 +20,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.7.0
  * 
  */
 
@@ -59,7 +59,7 @@ public class DominationRunnable implements Runnable {
 				Flags.reduceLivesCheckEndAndCommit(arena, team);
 				Players.tellEveryone(
 						arena,
-						Language.parse("domscore", arena.colorizeTeam(team)
+						Language.parse("domscore", arena.getTeam(team).colorize()
 								+ ChatColor.YELLOW));
 			} else {
 				// flag unclaimed! claim!
@@ -68,7 +68,7 @@ public class DominationRunnable implements Runnable {
 				
 				Players.tellEveryone(
 						arena,
-						Language.parse("domclaiming", arena.colorizeTeam(team)
+						Language.parse("domclaiming", arena.getTeam(team).colorize()
 								+ ChatColor.YELLOW));
 				
 				DominationRunnable running = new DominationRunnable(arena,
@@ -82,7 +82,7 @@ public class DominationRunnable implements Runnable {
 			if (arena.paRuns.containsKey(loc)) {
 				Players.tellEveryone(
 						arena,
-						Language.parse("domunclaiming", arena.colorizeTeam(arena.paRuns.get(loc).team)
+						Language.parse("domunclaiming", arena.getTeam(arena.paRuns.get(loc).team).colorize()
 								+ ChatColor.YELLOW));
 				
 				int run_id = arena.paRuns.get(loc).ID;

@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.runnables;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -14,7 +14,7 @@ import net.slipcor.pvparena.managers.Arenas;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.7.0
  * 
  */
 

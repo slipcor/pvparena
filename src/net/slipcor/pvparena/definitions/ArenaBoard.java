@@ -2,6 +2,7 @@ package net.slipcor.pvparena.definitions;
 
 import java.util.HashMap;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
@@ -19,7 +20,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.24
+ * @version v0.7.0
  * 
  */
 

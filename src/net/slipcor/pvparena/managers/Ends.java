@@ -1,22 +1,16 @@
 package net.slipcor.pvparena.managers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
+import org.bukkit.Location;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -30,7 +24,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.7.0
  * 
  */
 
@@ -41,65 +35,52 @@ public class Ends {
 	/**
 	 * [FLAG] commit the arena end
 	 * 
-	 * @param team
+	 * @param sTeam
 	 *            the team name
 	 * @param win
 	 *            winning team?
 	 */
-	public static void commit(Arena arena, String team, boolean win) {
+	public static void commit(Arena arena, String sTeam, boolean win) {
 		if (arena.cfg.getBoolean("arenatype.deathmatch")
 				|| arena.cfg.getBoolean("arenatype.domination")) {
 			win = !win;
 		}
-		db.i("[FLAG/DM/DOM] committing end: " + team);
+		db.i("[FLAG/DM/DOM] committing end: " + sTeam);
 		db.i("win: " + String.valueOf(win));
-		Set<String> set = Players.getPlayerTeamMap(arena).keySet();
-		Iterator<String> iter = set.iterator();
-		if (!team.equals("$%&/")) {
-			while (iter.hasNext()) {
-				Object o = iter.next();
-				db.i("precessing: " + o.toString());
-				Player z = Bukkit.getServer().getPlayer(o.toString());
-				if (!win
-						&& Players.getPlayerTeamMap(arena).get(z.getName())
-								.equals(team)) {
-					// team not winning and player team = team
-					Players.parsePlayer(z).losses++;
-					arena.removePlayer(z, "spectator");
-					Players.parsePlayer(z).destroy();
-				} else if (win
-						&& !Players.getPlayerTeamMap(arena).get(z.getName())
-								.equals(team)) {
-					// team winning and other team
-					Players.parsePlayer(z).losses++;
-					arena.removePlayer(z, "spectator");
-					Players.parsePlayer(z).destroy();
+
+		String winteam = sTeam;
+
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getName().equals(sTeam) == win) {
+				continue;
+			}
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+
+				Players.parsePlayer(ap.get()).losses++;
+				Players.setTelePass(ap.get(), true);
+				Location l = Spawns.getCoords(arena, "spectator");
+				ap.get().teleport(l);
+				Players.setTelePass(ap.get(), false);
+				ap.setSpectator(true);
+			}
+		}
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (ap.isSpectator()) {
+					continue;
 				}
+				winteam = team.getName();
+				break;
 			}
 		}
 
-		String winteam = win ? team : "";
-		set = Players.getPlayerTeamMap(arena).keySet();
-		iter = set.iterator();
-		while (winteam.equals("") && iter.hasNext()) {
-			Object o = iter.next();
-			db.i("praecessing: " + o.toString());
-			Player z = Bukkit.getServer().getPlayer(o.toString());
-			if (arena.paLives.containsKey(Players.getPlayerTeamMap(arena).get(
-					z.getName()))) {
-				winteam = Players.getPlayerTeamMap(arena).get(z.getName());
-			}
-		}
-		if (arena.paTeams.get(winteam) != null) {
+		if (arena.getTeam(winteam) != null) {
 			Announcement.announce(arena, type.WINNER,
 					Language.parse("teamhaswon", "Team " + winteam));
 			Players.tellEveryone(
 					arena,
-					Language.parse("teamhaswon",
-							ChatColor.valueOf(arena.paTeams.get(winteam))
-									+ "Team " + winteam));
-		} else {
-			System.out.print("[PVP Arena] WINTEAM NULL: "+winteam);
+					Language.parse("teamhaswon", arena.getTeam(winteam)
+							.getColor() + "Team " + winteam));
 		}
 
 		arena.paLives.clear();
@@ -121,26 +102,25 @@ public class Ends {
 
 		if (!arena.cfg.getBoolean("arenatype.teams")) {
 			db.i("[FREE]");
-			if (Players.getPlayerTeamMap(arena).size() > 1) {
-				db.i("more than one team active => no end :p");
+			if (Players.countPlayersInTeams(arena) > 1) {
+				db.i("more than one player active => no end :p");
 				return false;
 			}
 
-			Set<String> set = Players.getPlayerTeamMap(arena).keySet();
-			Iterator<String> iter = set.iterator();
-			while (iter.hasNext()) {
-				Object o = iter.next();
-
-				Announcement.announce(
-						arena,
-						type.WINNER,
-						Language.parse("playerhaswon",
-								ChatColor.WHITE + o.toString()));
-				Players.tellEveryone(
-						arena,
-						Language.parse("playerhaswon",
-								ChatColor.WHITE + o.toString()));
+			for (ArenaPlayer ap : arena.getPlayers()) {
+				if (!ap.isSpectator()) {
+					Announcement.announce(
+							arena,
+							type.WINNER,
+							Language.parse("playerhaswon",
+									ChatColor.WHITE + ap.getName()));
+					Players.tellEveryone(
+							arena,
+							Language.parse("playerhaswon",
+									ChatColor.WHITE + ap.getName()));
+				}
 			}
+
 			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 					new EndRunnable(arena), 15 * 20L);
 			return true;
@@ -149,58 +129,46 @@ public class Ends {
 			db.i("[FLAG]");
 
 			if (Players.countPlayersInTeams(arena) < 2) {
-				String team = "$%&/";
-				if (Players.countPlayersInTeams(arena) != 0)
-					for (String t : Players.getPlayerTeamMap(arena).values()) {
-						team = t;
-						break;
+				String sTeam = "$%&/";
+				if (Players.countPlayersInTeams(arena) != 0) {
+					for (ArenaTeam team : arena.getTeams()) {
+						for (ArenaPlayer ap : team.getTeamMembers()) {
+							if (!ap.isSpectator()) {
+								commit(arena, team.getName(), true);
+								return true;
+							}
+						}
 					}
-				commit(arena, team, true);
+				}
+				commit(arena, sTeam, true);
 			}
 			return false;
 
 		}
 		db.i("[TEAMS]");
 
-		List<String> activeteams = new ArrayList<String>(0);
-		String team = "";
-		HashMap<String, String> test = Players.getPlayerTeamMap(arena);
-		for (String sPlayer : test.keySet()) {
-			if (activeteams.size() < 1) {
-				// fresh map
-				team = test.get(sPlayer);
-				activeteams.add(team);
-				db.i("team set to " + team);
-			} else {
-				// map contains stuff
-				if (!activeteams.contains(test.get(sPlayer))) {
-					// second team active => OUT!
-					return false;
+		ArenaTeam aTeam = null;
+
+		if (arena.countActiveTeams() > 1) {
+			return false;
+		}
+
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (!ap.isSpectator()) {
+					aTeam = team;
+					break;
 				}
 			}
 		}
-		if (arena.paTeams.get(team) != null) {
+
+		if (aTeam != null) {
 			Announcement.announce(arena, type.WINNER,
-					Language.parse("teamhaswon", "Team " + team));
+					Language.parse("teamhaswon", "Team " + aTeam.getName()));
 			Players.tellEveryone(
 					arena,
-					Language.parse("teamhaswon",
-							ChatColor.valueOf(arena.paTeams.get(team))
-									+ "Team " + team));
-		} else {
-			Bukkit.getLogger().severe("[PVP Arena] team unknown: " + team);
-		}
-
-		Set<String> set = Players.getPlayerTeamMap(arena).keySet();
-		Iterator<String> iter = set.iterator();
-		while (iter.hasNext()) {
-			String sPlayer = iter.next();
-
-			Player z = Bukkit.getServer().getPlayer(sPlayer);
-			if (!Players.getPlayerTeamMap(arena).get(z.getName()).equals(team)) {
-				Players.parsePlayer(z).losses++;
-				arena.resetPlayer(z, arena.cfg.getString("tp.lose", "old"));
-			}
+					Language.parse("teamhaswon", aTeam.getColor() + "Team "
+							+ aTeam.getName()));
 		}
 
 		if (PVPArena.eco != null || PVPArena.economy != null) {
@@ -209,11 +177,11 @@ public class Ends {
 				db.i("bet: " + nKey);
 				String[] nSplit = nKey.split(":");
 
-				if (arena.paTeams.get(nSplit[1]) == null
-						|| arena.paTeams.get(nSplit[1]).equals("free"))
+				if (arena.getTeam(nSplit[1]) == null
+						|| arena.getTeam(nSplit[1]).getName().equals("free"))
 					continue;
 
-				if (nSplit[1].equalsIgnoreCase(team)) {
+				if (nSplit[1].equalsIgnoreCase(aTeam.getName())) {
 					double teamFactor = arena.cfg
 							.getDouble("money.betTeamWinFactor")
 							* arena.teamCount;
@@ -245,7 +213,7 @@ public class Ends {
 							db.s("Account not found: " + nSplit[0]);
 							return true;
 						}
-						PVPArena.economy.depositPlayer(nSplit[0],amount);
+						PVPArena.economy.depositPlayer(nSplit[0], amount);
 						try {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
@@ -267,64 +235,60 @@ public class Ends {
 	 * end the arena due to timing
 	 */
 	public static void timed(Arena arena) {
-		int iKills;
-		int iDeaths;
+		int i;
 
-		int max = -1;
+		int max = arena.cfg.getBoolean("arenatype.deathmatch") ? 10000 : -1;
 		HashSet<String> result = new HashSet<String>();
 		db.i("timed end!");
 
-		for (String sTeam : arena.paTeams.keySet()) {
-			iKills = 0;
-			iDeaths = 0;
+		for (String sTeam : arena.paLives.keySet()) {
+			i = arena.paLives.get(sTeam);
 
-			try {
-				iKills = Players.getKills(sTeam);
-			} catch (Exception e) {
+			if (arena.cfg.getBoolean("arenatype.deathmatch")) {
+				if (i < max) {
+					result = new HashSet<String>();
+					result.add(sTeam);
+					max = i;
+				} else if (i == max) {
+					result.add(sTeam);
+				}
+			} else {
+				if (i > max) {
+					result = new HashSet<String>();
+					result.add(sTeam);
+					max = i;
+				} else if (i == max) {
+					result.add(sTeam);
+				}
 			}
 
-			try {
-				iDeaths = Players.getDeaths(sTeam);
-			} catch (Exception e) {
-			}
-
-			if ((iKills - iDeaths) > max) {
-				result = new HashSet<String>();
-				result.add(sTeam);
-			} else if ((iKills - iDeaths) == max) {
-				result.add(sTeam);
-			}
 		}
 
-		for (String team : result) {
-			if (result.contains(team)) {
+		for (ArenaTeam team : arena.getTeams()) {
+			if (result.contains(team.getName())) {
 				Announcement.announce(arena, type.WINNER,
-						Language.parse("teamhaswon", "Team " + team));
+						Language.parse("teamhaswon", "Team " + team.getName()));
 				Players.tellEveryone(
 						arena,
-						Language.parse("teamhaswon",
-								ChatColor.valueOf(arena.paTeams.get(team))
-										+ "Team " + team));
+						Language.parse("teamhaswon", team.getColor() + "Team "
+								+ team.getName()));
 			}
-
-		}
-
-		for (ArenaPlayer p : Players.getPlayers(arena)) {
-
-			Player z = p.get();
-			if (!result.contains(p.team)) {
-				Players.parsePlayer(z).losses++;
-				arena.resetPlayer(z, arena.cfg.getString("tp.lose", "old"));
+			for (ArenaPlayer p : arena.getPlayers()) {
+				if (p.isSpectator()) {
+					continue;
+				}
+				if (!result.contains(team.getName())) {
+					p.losses++;
+					arena.tpPlayerToCoordName(p.get(), "spectator");
+				}
 			}
-			p = null;
 		}
 
 		if (PVPArena.eco != null) {
 			for (String nKey : Players.paPlayersBetAmount.keySet()) {
 				String[] nSplit = nKey.split(":");
-
-				if (arena.paTeams.get(nSplit[1]) == null
-						|| arena.paTeams.get(nSplit[1]).equals("free"))
+				ArenaTeam team = arena.getTeam(nSplit[1]);
+				if (team == null || team.getName().equals("free"))
 					continue;
 
 				if (result.contains(nSplit[1])) {
@@ -339,7 +303,6 @@ public class Ends {
 					double amount = Players.paPlayersBetAmount.get(nKey)
 							* teamFactor;
 
-					
 					if (PVPArena.economy == null && PVPArena.eco != null) {
 						MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
 						if (ma == null) {
@@ -360,7 +323,7 @@ public class Ends {
 							db.s("Account not found: " + nSplit[0]);
 							continue;
 						}
-						PVPArena.economy.depositPlayer(nSplit[0],amount);
+						PVPArena.economy.depositPlayer(nSplit[0], amount);
 						try {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
@@ -373,6 +336,7 @@ public class Ends {
 				}
 			}
 		}
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 	}

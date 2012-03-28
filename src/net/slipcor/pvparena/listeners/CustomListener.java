@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +17,7 @@ import org.getspout.spoutapi.event.inventory.InventoryClickEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.0
  * 
  */
 public class CustomListener implements Listener {

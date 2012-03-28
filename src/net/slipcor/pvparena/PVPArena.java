@@ -5,13 +5,13 @@ import java.io.IOException;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.CustomListener;
 import net.slipcor.pvparena.listeners.EntityListener;
@@ -39,7 +39,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.7.0
  * 
  */
 

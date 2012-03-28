@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.events;
 
-import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.managers.Spawns;
 
 import org.bukkit.Location;
@@ -15,7 +15,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when an arena match starts
  * 
- * @version 0.6.29
+ * @version v0.7.0
  * 
  * @author slipcor
  * 

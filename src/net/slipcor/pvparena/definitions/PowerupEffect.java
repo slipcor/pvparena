@@ -16,6 +16,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
@@ -31,7 +34,7 @@ import net.slipcor.pvparena.managers.Players;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.0
  * 
  */
 
@@ -242,21 +245,21 @@ public class PowerupEffect {
 					Arena arena = Arenas.getArenaByPlayer(player);
 
 					// pasted from onEntityDeath;
-
-					String sTeam = Players.getTeam(player);
+					ArenaPlayer ap = Players.parsePlayer(player);
+					ArenaTeam team = arena.getTeam(ap);
 
 					Announcement.announce(arena, Announcement.type.LOSER,
 							Language.parse("killedby", player.getName(),
 									Players.parseDeathCause(arena, player,
 											DamageCause.MAGIC, player)));
 					Players.tellEveryone(arena, Language.parse("killedby",
-							arena.colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
+							team.colorizePlayer(player) + ChatColor.YELLOW,
 							Players.parseDeathCause(arena, player,
 									DamageCause.MAGIC, player)));
 					Players.parsePlayer(player).losses++;
 					// needed so player does not get found when dead
 					arena.removePlayer(player, "lose");
-					Players.setTeam(player, "");
+					arena.removeTeam(Players.parsePlayer(player));
 
 					Ends.checkAndCommit(arena);
 				}

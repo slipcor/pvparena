@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.events;
 
-import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.arena.Arena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player joins the arena
  * 
- * @version 0.6.29
+ * @version v0.7.0
  * 
  * @author slipcor
  * 
