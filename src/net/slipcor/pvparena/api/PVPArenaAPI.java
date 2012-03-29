@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.api;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.Location;
@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.15
  * 
  */
 

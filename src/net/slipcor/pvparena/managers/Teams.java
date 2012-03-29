@@ -5,15 +5,14 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * teams manager class
@@ -24,7 +23,7 @@ import net.slipcor.pvparena.definitions.Announcement.type;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.30
  * 
  */
 
@@ -42,42 +41,35 @@ public class Teams {
 		db.i("calculating player team");
 
 		boolean free = !arena.cfg.getBoolean("arenatype.teams");
-		ArenaPlayer ap = Players.parsePlayer(player);
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().contains(ap)) {
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
-				return;
-			}
+
+		if (Players.getPlayerTeamMap(arena).containsKey(player.getName())) {
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 		}
-		
 
-		String sTeam = free ? "free" : calcFreeTeam(arena);
-
-		ArenaTeam aTeam = arena.getTeam(sTeam);
-		
+		String team = free ? "free" : calcFreeTeam(arena);
+		Players.setTeam(player, team);
 
 		if (free) {
 			arena.tpPlayerToCoordName(player, "lounge");
 		} else {
-			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
+			arena.tpPlayerToCoordName(player, team + "lounge");
 		}
-		String coloredTeam = aTeam.colorize();
 		Arenas.tellPlayer(
 				player,
 				Language.parse("youjoined" + (free ? "free" : ""),
-						coloredTeam));
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
 		Announcement.announce(
 				arena,
 				type.JOIN,
 				Language.parse("playerjoined" + (free ? "free" : ""),
 						player.getName(),
-						coloredTeam));
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
 		Players.tellEveryoneExcept(
 				arena,
 				player,
 				Language.parse("playerjoined" + (free ? "free" : ""),
 						player.getName(),
-						coloredTeam));
+						ChatColor.valueOf(arena.paTeams.get(team)) + team));
 	}
 
 	/**
@@ -90,27 +82,26 @@ public class Teams {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
-		
-		for (ArenaTeam team : arena.getTeams()) {
-			int count = team.getTeamMembers().size();
-			
-			if (count > 0) {
-				counts.put(team.getName(), count);
-				db.i("team " + team.getName() + " contains " + count);
+		for (String team : Players.getPlayerTeamMap(arena).values()) {
+			if (!counts.containsKey(team)) {
+				counts.put(team, 1);
+				db.i("team " + team + " found");
+			} else {
+				int i = counts.get(team);
+				counts.put(team, ++i);
+				db.i("team " + team + " updated to " + i);
 			}
 		}
-		
 		// counts contains TEAMNAME => PLAYERCOUNT
 
-		if (counts.size() < arena.getTeams().size()) {
+		if (counts.size() < arena.paTeams.size()) {
 			// there is a team without members, calculate one of those
 			return returnEmptyTeam(arena, counts.keySet());
 		}
 
 		boolean full = true;
 
-		for (ArenaTeam team : arena.getTeams()) {
-			String s = team.getName();
+		for (String s : arena.paTeams.keySet()) {
 			// check if we are full
 			db.i("String s: " + s + "; max: " + arena.cfg.getInt("ready.max"));
 			if (counts.get(s) < arena.cfg.getInt("ready.max")
@@ -170,8 +161,7 @@ public class Teams {
 	private static String returnEmptyTeam(Arena arena, Set<String> set) {
 		db.i("choosing an empty team");
 		HashSet<String> empty = new HashSet<String>();
-		for (ArenaTeam team : arena.getTeams()) {
-			String s = team.getName();
+		for (String s : arena.paTeams.keySet()) {
 			db.i("team: " + s);
 			if (set.contains(s)) {
 				continue;

@@ -4,9 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 
@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 
@@ -101,7 +101,7 @@ public class Statistics {
 		int i = 0;
 		for (ArenaPlayer p : Players.getPlayers(a)) {
 
-			if (p.getArena() == null || !p.getArena().equals(a)) {
+			if (p.arena == null || !p.arena.equals(a)) {
 				continue;
 			}
 			aps[i++] = p;

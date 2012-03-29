@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.runnables;
 
-import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 /**
  * player reset runnable class
@@ -12,7 +12,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.35
  * 
  */
 

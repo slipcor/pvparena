@@ -3,11 +3,10 @@ package net.slipcor.pvparena.managers;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.runnables.DominationRunnable;
 
 import org.bukkit.Bukkit;
@@ -24,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.35
  * 
  */
 
@@ -41,7 +40,7 @@ public class Dominate {
 	 *            the player to check
 	 */
 	public static void parseMove(Arena arena, Player player) {
-		if (Players.parsePlayer(player).isSpectator()) {
+		if (Players.parsePlayer(player).spectator) {
 			return; // spectator or dead. OUT
 		}
 
@@ -65,12 +64,12 @@ public class Dominate {
 
 			// teams now contains all (other) teams near the flag
 
-			ArenaTeam team = arena.getTeam(Players.parsePlayer(player));
 			if (arena.paFlags.containsKey(loc)) {
 
 				// flag is taken. by whom?
+
 				if (arena.paFlags.get(loc).equals(
-						team.getName())) {
+						Players.parsePlayer(player).team)) {
 					// taken by own team, NEXT!
 					continue;
 				}
@@ -85,9 +84,9 @@ public class Dominate {
 
 						Players.tellEveryone(arena, Language.parse(
 								"domcancelclaiming",
-								arena.getTeam(arena.paRuns.get(loc).team).colorize()
+								arena.colorizeTeam(arena.paRuns.get(loc).team)
 										+ ChatColor.YELLOW,
-								team.colorizePlayer(player)
+								arena.colorizePlayerByTeam(player)
 										+ ChatColor.YELLOW));
 
 						int del_id = arena.paRuns.get(loc).ID;
@@ -105,8 +104,9 @@ public class Dominate {
 
 						Players.tellEveryone(arena, Language.parse(
 								"domunclaimingby",
-								arena.getTeam(arena.paRuns.get(loc).team).colorize()
-										+ ChatColor.YELLOW, team.colorizePlayer(player)));
+								arena.colorizeTeam(arena.paRuns.get(loc).team)
+										+ ChatColor.YELLOW, arena
+										.colorizePlayerByTeam(player)));
 
 						Bukkit.getScheduler().scheduleSyncDelayedTask(
 								PVPArena.instance, running, interval);
@@ -121,12 +121,13 @@ public class Dominate {
 					if (arena.paRuns.containsKey(loc)) {
 						return;
 					}
+					String sTeam = Players.parsePlayer(player).team;
 					Players.tellEveryone(arena, Language.parse(
 							"domclaiming",
-							team.colorize()));
+							arena.colorizeTeam(sTeam)));
 					
 					DominationRunnable running = new DominationRunnable(arena,
-							true, loc, team.getName());
+							true, loc, sTeam);
 					long interval = 20L * 10;
 					Bukkit.getScheduler().scheduleSyncDelayedTask(
 							PVPArena.instance, running, interval);
@@ -164,11 +165,11 @@ public class Dominate {
 			Player player, int distance) {
 		HashSet<String> result = new HashSet<String>();
 		Arena arena = Arenas.getArenaByPlayer(player);
-		ArenaTeam team = arena.getTeam(Players.parsePlayer(player));
+		String sTeam = Players.parsePlayer(player).team;
 
 		for (ArenaPlayer p : Players.players.values()) {
 
-			if (p.getArena() == null || !p.getArena().equals(arena)) {
+			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
 
@@ -180,11 +181,11 @@ public class Dominate {
 				continue;
 			}
 
-			if (arena.getTeam(p).equals(team)) {
+			if (p.team.equals(sTeam)) {
 				continue;
 			}
 
-			result.add(arena.getTeam(p).getName());
+			result.add(p.team);
 		}
 
 		return result;

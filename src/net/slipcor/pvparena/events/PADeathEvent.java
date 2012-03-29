@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.events;
 
-import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player dies in the arena
  * 
- * @version v0.7.0
+ * @version 0.6.29
  * 
  * @author slipcor
  * 

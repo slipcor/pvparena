@@ -5,9 +5,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * region manager class
@@ -18,7 +18,7 @@ import net.slipcor.pvparena.core.Language;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.27
  * 
  */
 

@@ -1,9 +1,9 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Blocks;
@@ -28,7 +28,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.29
  * 
  */
 

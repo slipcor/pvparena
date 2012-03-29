@@ -4,11 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -25,7 +23,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 
@@ -90,8 +88,7 @@ public class Spawns {
 					continue;
 				}
 				if (name.endsWith(type)) {
-					for (ArenaTeam team : arena.getTeams()) {
-						String sTeam = team.getName();
+					for (String sTeam : arena.paTeams.keySet()) {
 						if (name.startsWith(sTeam)) {
 							locs.put(i++, name);
 							db.i("found match: " + name);
@@ -185,13 +182,11 @@ public class Spawns {
 		if (!Players.isPartOf(arena, player)) {
 			return false;
 		}
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
-		if (team == null) {
+		if (Players.getTeam(player).equals("")) {
 			return false;
 		}
 
-		HashSet<Location> spawns = getSpawns(arena, team.getName());
+		HashSet<Location> spawns = getSpawns(arena, Players.getTeam(player));
 
 		for (Location loc : spawns) {
 			if (loc.distance(player.getLocation()) <= diff) {
@@ -256,8 +251,7 @@ public class Spawns {
 	public static Location getRegionCenter(Arena arena) {
 		HashSet<Location> locs = new HashSet<Location>();
 
-		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+		for (String sTeam : arena.paTeams.keySet()) {
 			for (Location loc : getSpawns(arena, sTeam)) {
 				locs.add(loc);
 			}

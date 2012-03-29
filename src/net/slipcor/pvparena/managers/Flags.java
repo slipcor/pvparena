@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.definitions.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.36
  * 
  */
 
@@ -116,9 +114,8 @@ public class Flags {
 
 		if (arena.paTeamFlags.containsValue(player.getName())) {
 			db.i("player " + player.getName() + " has got a " + type);
-			ArenaPlayer ap = Players.parsePlayer(player);
 			vLoc = block.getLocation().toVector();
-			sTeam = arena.getTeam(ap).getName();
+			sTeam = Players.getTeam(player);
 			db.i("block: " + vLoc.toString());
 			if (Spawns.getSpawns(arena, sTeam + type).size() > 0) {
 				vFlag = Spawns.getNearest(Spawns.getSpawns(arena, sTeam + type), player.getLocation()).toVector();
@@ -151,9 +148,9 @@ public class Flags {
 
 					Players.tellEveryone(arena, Language.parse(type
 							+ "homeleft",
-							arena.getTeam(sTeam).colorizePlayer(player)
+							arena.colorizePlayerByTeam(player, sTeam)
 									+ ChatColor.YELLOW,
-							arena.getTeam(flagTeam).colorize() + ChatColor.YELLOW,
+							arena.colorizeTeam(flagTeam) + ChatColor.YELLOW,
 							String.valueOf(arena.paLives.get(flagTeam) - 1)));
 					arena.paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
@@ -161,7 +158,7 @@ public class Flags {
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
 				}
 
-				takeFlag(arena.getTeam(flagTeam).getColor().name(), false, pumpkin,
+				takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
 						Spawns.getCoords(arena, flagTeam + type));
 				if (arena.cfg.getBoolean("game.woolFlagHead")) {
 					player.getInventory().setHelmet(
@@ -172,30 +169,28 @@ public class Flags {
 				reduceLivesCheckEndAndCommit(arena, flagTeam);
 			}
 		} else {
-			for (ArenaTeam team : arena.getTeams()) {
-				String aTeam = team.getName();
-				ArenaTeam pTeam = arena.getTeam(Players.parsePlayer(player));
-				
-				if (aTeam.equals(pTeam.getName()))
+			for (String team : arena.paTeams.keySet()) {
+				String playerTeam = Players.getTeam(player);
+				if (team.equals(playerTeam))
 					continue;
-				if (arena.getTeam(aTeam).getTeamMembers().size() < 1)
+				if (!Players.getPlayerTeamMap(arena).containsValue(team))
 					continue; // dont check for inactive teams
-				if (arena.paTeamFlags.containsKey(aTeam)) {
+				if (arena.paTeamFlags.containsKey(team)) {
 					continue; // already taken
 				}
-				db.i("checking for " + type + " of team " + aTeam);
+				db.i("checking for " + type + " of team " + team);
 				vLoc = block.getLocation().toVector();
 				db.i("block: " + vLoc.toString());
-				if (Spawns.getSpawns(arena, aTeam + type).size() > 0) {
-					vFlag = Spawns.getNearest(Spawns.getSpawns(arena, aTeam + type), player.getLocation()).toVector();
+				if (Spawns.getSpawns(arena, team + type).size() > 0) {
+					vFlag = Spawns.getNearest(Spawns.getSpawns(arena, team + type), player.getLocation()).toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i(type + " found!");
 					db.i("vFlag: " + vFlag.toString());
 					Players.tellEveryone(arena, Language.parse(type + "grab",
-							pTeam.colorizePlayer(player)
+							arena.colorizePlayerByTeam(player, playerTeam)
 									+ ChatColor.YELLOW,
-							team.colorize() + ChatColor.YELLOW));
+							arena.colorizeTeam(team) + ChatColor.YELLOW));
 
 					if (arena.cfg.getBoolean("game.woolFlagHead")) {
 						try {
@@ -206,15 +201,15 @@ public class Flags {
 						}
 						ItemStack is = block.getState().getData().toItemStack()
 								.clone();
-						is.setDurability(getFlagOverrideTeamShort(arena, aTeam));
+						is.setDurability(getFlagOverrideTeamShort(arena, team));
 						player.getInventory().setHelmet(is);
 
 					}
 
-					takeFlag(team.getColor().name(), true, pumpkin,
+					takeFlag(arena.paTeams.get(team), true, pumpkin,
 							block.getLocation());
 
-					arena.paTeamFlags.put(aTeam, player.getName());
+					arena.paTeamFlags.put(team, player.getName());
 					return;
 				}
 			}
@@ -233,7 +228,7 @@ public class Flags {
 	private static short getFlagOverrideTeamShort(Arena arena, String team) {
 		if (arena.cfg.get("flagColors." + team) == null) {
 
-			return StringParser.getColorDataFromENUM(arena.getTeam(team).getColor().name());
+			return StringParser.getColorDataFromENUM(arena.paTeams.get(team));
 		}
 		return StringParser.getColorDataFromENUM(arena.cfg
 				.getString("flagColors." + team));
@@ -325,18 +320,17 @@ public class Flags {
 		}
 		db.i("checking death in a " + type + " arena");
 
-		ArenaTeam flagTeam = arena.getTeam(getHeldFlagTeam(arena, player.getName()));
+		String flagTeam = getHeldFlagTeam(arena, player.getName());
 		if (flagTeam != null) {
-			ArenaPlayer ap = Players.parsePlayer(player);
 			Players.tellEveryone(
 					arena,
 					Language.parse(
 							type + "save",
-							arena.getTeam(ap).colorizePlayer(player),
-									arena.getTeam(ap).getName()
+							arena.colorizePlayerByTeam(player,
+									Players.getTeam(player))
 									+ ChatColor.YELLOW,
-							flagTeam.colorize() + ChatColor.YELLOW));
-			arena.paTeamFlags.remove(flagTeam.getName());
+							arena.colorizeTeam(flagTeam) + ChatColor.YELLOW));
+			arena.paTeamFlags.remove(flagTeam);
 			if (arena.paHeadGears != null
 					&& arena.paHeadGears.get(player.getName()) != null) {
 				player.getInventory().setHelmet(
@@ -344,8 +338,8 @@ public class Flags {
 				arena.paHeadGears.remove(player.getName());
 			}
 
-			takeFlag(flagTeam.getColor().name(), false, pumpkin,
-					Spawns.getCoords(arena, flagTeam.getName() + type));
+			takeFlag(arena.paTeams.get(flagTeam), false, pumpkin,
+					Spawns.getCoords(arena, flagTeam + type));
 
 		}
 	}
@@ -361,14 +355,14 @@ public class Flags {
 		} else {
 			type = "flag";
 		}
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().size() > 0) {
+		for (String sTeam : arena.paTeams.keySet()) {
+			if (Players.getPlayerTeamMap(arena).containsValue(sTeam)) {
 				// team is active
-				arena.paLives.put(team.getName(), arena.cfg.getInt("game.lives", 3));
+				arena.paLives.put(sTeam, arena.cfg.getInt("game.lives", 3));
 			}
 			if (arena.cfg.getBoolean("arenatype.flags")) {
-			takeFlag(team.getColor().name(), false, pumpkin,
-					Spawns.getCoords(arena, team.getName() + type));
+			takeFlag(arena.paTeams.get(sTeam), false, pumpkin,
+					Spawns.getCoords(arena, sTeam + type));
 			}
 		}
 		if (arena.cfg.getBoolean("arenatype.domination")) {

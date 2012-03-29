@@ -4,13 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
@@ -24,7 +23,7 @@ import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Material;	
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -53,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 
@@ -66,15 +65,11 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = Arenas.getArenaByPlayer(player);
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
-
-		if (arena == null || team == null) {
+		if (arena == null || Players.getTeam(player).equals("")) {
 			return; // no fighting player => OUT
 		}
 		db.i("fighting player chatting!");
-		String sTeam = team.getName();
-
+		
 		if (!arena.cfg.getBoolean("messages.onlyChat")) {
 			if (!arena.cfg.getBoolean("messages.chat")) {
 				return; // no chat editing
@@ -84,21 +79,23 @@ public class PlayerListener implements Listener {
 				return; // player not chatting
 			}
 
-			Players.tellTeam(arena, sTeam, event.getMessage(), team.getColor(),
-					event.getPlayer());
+			String sTeam = Players.getTeam(player);
+			Players.tellTeam(arena, sTeam, event.getMessage(),
+					ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
 			event.setCancelled(true);
 		}
-
-		if (arena.cfg.getBoolean("messages.chat")
-				&& arena.paChat.contains(player.getName())) {
-			Players.tellTeam(arena, sTeam, event.getMessage(), team.getColor(),
-					event.getPlayer());
+		
+		if (arena.cfg.getBoolean("messages.chat") && arena.paChat.contains(player.getName())) {
+			String sTeam = Players.getTeam(player);
+			Players.tellTeam(arena, sTeam, event.getMessage(),
+					ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
 			event.setCancelled(true);
 			return;
 		}
-
-		Players.tellEveryone(arena, event.getMessage(), team.getColor(),
-				event.getPlayer());
+		
+		String sTeam = Players.getTeam(player);
+		Players.tellEveryone(arena, event.getMessage(),
+				ChatColor.valueOf(arena.paTeams.get(sTeam)), event.getPlayer());
 		event.setCancelled(true);
 	}
 
@@ -148,6 +145,13 @@ public class PlayerListener implements Listener {
 		if (ArenaBoard.checkInteract(event, player)) {
 			return;
 		}
+
+		/*
+		 * //TODO
+		 * 
+		 * if (arena.cfg.getBoolean("arenatype.flags") &&
+		 * arena.cfg.getBoolean("join.inbattle")) {
+		 */
 		
 		if (Regions.checkRegionSetPosition(event, player)) {
 			return;
@@ -178,19 +182,17 @@ public class PlayerListener implements Listener {
 
 		// fighting player inside the lobby!
 		event.setCancelled(true);
-		
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
-			db.i("player team: " + team.getName());
+			db.i("player team: " + Players.getTeam(player));
 			if (block.getState() instanceof Sign) {
 				db.i("sign click!");
 				Sign sign = (Sign) block.getState();
 
-				if ((sign.getLine(0).equalsIgnoreCase("custom")) || arena.classExists(sign.getLine(0))
-						&& (team != null)) {
+				if ((arena.paClassItems.containsKey(sign.getLine(0)) || (sign
+						.getLine(0).equalsIgnoreCase("custom")))
+						&& (!Players.getTeam(player).equals(""))) {
 
 					Players.chooseClass(arena, player, sign, sign.getLine(0));
 				}
@@ -224,6 +226,9 @@ public class PlayerListener implements Listener {
 					+ "?");
 			if (block.getTypeId() == mMat.getId()) {
 				db.i("clicked ready block!");
+				if (Players.getTeam(player).equals("")) {
+					return; // not a fighting player => OUT
+				}
 				if (Players.getClass(player).equals("")) {
 					return; // not chosen class => OUT
 				}
@@ -284,7 +289,8 @@ public class PlayerListener implements Listener {
 				if (!arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
 					arena.tpPlayerToCoordName(
 							player,
-							team.getName()
+							Players.getPlayerTeamMap(arena).get(
+									player.getName())
 									+ "spawn");
 				} else {
 					arena.tpPlayerToCoordName(player, "spawn");
@@ -300,10 +306,9 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-
+		
 		Players.parsePlayer(player).destroy();
-		// instantiate and/or reset a player. This fixes issues with leaving
-		// players
+		// instantiate and/or reset a player. This fixes issues with leaving players
 		// and makes sure every player is an arenaplayer ^^
 
 		if (!player.isOp()) {

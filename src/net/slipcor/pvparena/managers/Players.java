@@ -19,14 +19,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.events.PALeaveEvent;
 
@@ -39,7 +37,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.38
  * 
  */
 
@@ -55,22 +53,28 @@ public class Players {
 	/**
 	 * parse all teams and join them colored, comma separated
 	 * 
+	 * @param paTeams
+	 *            the team hashmap to parse
 	 * @return a colorized, comma separated string
 	 */
-	public static String getTeamStringList(Arena arena) {
+	public static String getTeamStringList(Arena arena,
+			HashMap<String, String> paTeams) {
 		String result = "";
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().size() < 1) {
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
-			
-			if (!result.equals(""))
-				result += ", ";
-			
-			for (ArenaPlayer p : team.getTeamMembers()) {
+			if (!p.team.equals("")) {
+
 				if (!result.equals(""))
 					result += ", ";
-				result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
+				result += arena.colorizePlayerByTeam(p.get(), p.team)
+						+ ChatColor.WHITE;
+			} else {
+
+				if (!result.equals(""))
+					result += ", ";
+				result += ChatColor.GRAY + p.get().getName() + ChatColor.WHITE;
 			}
 		}
 		db.i("teamstringlist: " + result);
@@ -78,18 +82,49 @@ public class Players {
 	}
 
 	/**
-	 * check if the teams are even
+	 * get all players stuck into a map [playername]=>[player]
+	 * 
+	 * @return a map [playername]=>[teamname]
+	 */
+	public static HashMap<String, String> getPlayerTeamMap(Arena arena) {
+		db.i("getTeamPlayerMap:");
+		HashMap<String, String> result = new HashMap<String, String>();
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			if (!p.team.equals("") && !p.spectator) {
+				result.put(p.get().getName(), p.team);
+				db.i(" - " + p.get().getName() + " => " + p.team);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * check if the teams are equal
 	 * 
 	 * @return true if teams have the same amount of players, false otherwise
 	 */
 	public static boolean checkEven(Arena arena) {
-		db.i("checking if teams are even");
+		db.i("checkinv if teams are even");
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
-
-		for (ArenaTeam team : arena.getTeams()) {
-			db.i(team.getName() + ": " + team.getTeamMembers().size());
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			if (!p.team.equals("")) {
+				if (!counts.containsKey(p.team)) {
+					counts.put(p.team, 1);
+					db.i(p.team + ": " + 1);
+				} else {
+					int i = counts.get(p.team);
+					counts.put(p.team, i);
+					db.i(p.team + ": " + i);
+				}
+			}
 		}
 
 		if (counts.size() < 1) {
@@ -119,11 +154,14 @@ public class Players {
 	 */
 	public static int countPlayersInTeams(Arena arena) {
 		int result = 0;
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.isSpectator()) {
-					result += 1;
-				}
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			db.i("player: " + p.get().getName());
+			if (!p.team.equals("")) {
+				db.i("- team " + p.team);
+				result++;
 			}
 		}
 		db.i("players having a team: " + result);
@@ -138,8 +176,9 @@ public class Players {
 	 * @return true if the player is known, false otherwise
 	 */
 	public static boolean isPartOf(Arena arena, Player pPlayer) {
-		ArenaPlayer ap = parsePlayer(pPlayer);
-		return arena.getPlayers().contains(ap);
+		return (players.containsKey(pPlayer.getName())
+				&& (players.get(pPlayer.getName()).arena != null) && (players
+					.get(pPlayer.getName()).arena.equals(arena)));
 	}
 
 	/**
@@ -161,19 +200,10 @@ public class Players {
 			return -4;
 		}
 
-		if (arena.cfg.getBoolean("ready.checkEach")) {
-			for (ArenaTeam team : arena.getTeams()) {
-				for (ArenaPlayer ap : team.getTeamMembers())
-				if (!ap.ready) {
-					return 0;
-				}
-			}
-		}
-
 		if (arena.cfg.getDouble("ready.startRatio") > 0) {
 			double ratio = arena.cfg.getDouble("ready.startRatio");
 
-			int players = countPlayersInTeams(arena);
+			int players = getPlayerTeamMap(arena).size();
 			int readyPlayers = Players.countReadyPlayers(arena);
 
 			if (players > 0 && readyPlayers / players >= ratio) {
@@ -181,48 +211,62 @@ public class Players {
 			}
 		}
 
+		if (arena.cfg.getBoolean("ready.checkEach")) {
+			for (String sPlayer : getPlayerTeamMap(arena).keySet()) {
+				if (!Players.parsePlayer(sPlayer).ready) {
+					return 0;
+				}
+			}
+		}
+
 		if (!arena.getType().equals("free")) {
 			boolean onlyone = true;
 			List<String> activeteams = new ArrayList<String>(0);
 			db.i("ready(): reading playerteammap");
-			for (ArenaTeam team : arena.getTeams()) {
-				if (team.getTeamMembers().size() > 0) {
-					if (activeteams.size() < 1) {
-						// fresh map
-						activeteams.add(team.getName());
-					} else {
-						db.i("map not empty");
-						// map contains stuff
-						if (!activeteams.contains(team.getName())) {
-							// second team active => OUT!
-							onlyone = false;
-							break;
-						}
+			HashMap<String, String> test = getPlayerTeamMap(arena);
+			for (String sPlayer : test.keySet()) {
+				db.i("player " + sPlayer);
+				if (activeteams.size() < 1) {
+					// fresh map
+					String team = test.get(sPlayer);
+					db.i("is in team " + team);
+					activeteams.add(team);
+				} else {
+					db.i("map not empty");
+					// map contains stuff
+					if (!activeteams.contains(test.get(sPlayer))) {
+						// second team active => OUT!
+						onlyone = false;
+						break;
 					}
 				}
 			}
 			if (onlyone) {
 				return -2;
 			}
-			for (ArenaTeam team : arena.getTeams()) {
-				if (team.getTeamMembers().size() < 1) {
-					db.i("skipping TEAM " + team.getName());
+			for (String sTeam : arena.paTeams.keySet()) {
+				if (!test.containsValue(sTeam)) {
+					db.i("skipping TEAM " + sTeam);
 					continue;
 				}
-				db.i("TEAM " + team.getName());
+				db.i("TEAM " + sTeam);
 				if (arena.cfg.getInt("ready.minTeam") > 0
-						&& team.getTeamMembers().size() < arena.cfg
+						&& countPlayers(arena, sTeam) < arena.cfg
 								.getInt("ready.minTeam")) {
 					return -3;
 				}
 			}
 		}
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer p :team.getTeamMembers()) {
-				db.i("checking class: " + p.get().getName());
-				
-				if (p.getaClass().equals("")) {
-					db.i("player has class: " + p.getaClass());
+		for (ArenaPlayer p : players.values()) {
+			db.i("checking ready: " + p.get().getName());
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			db.i("arena is right");
+			if (!p.team.equals("")) {
+				db.i("player has team: " + p.team);
+				if (p.aClass.equals("")) {
+					db.i("player has class: " + p.aClass);
 					// player no class!
 					return -5;
 				}
@@ -233,15 +277,36 @@ public class Players {
 
 	private static int countReadyPlayers(Arena arena) {
 		int sum = 0;
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer p :team.getTeamMembers()) {
-				if (p.ready) {
-					sum++;
-				}
+		for (ArenaPlayer p : players.values()) {
+			if (p.ready) {
+				sum++;
 			}
 		}
 		db.i("ready players: " + sum);
 		return sum;
+	}
+
+	/**
+	 * count the players in a team
+	 * 
+	 * @param sTeam
+	 * @return the team player count
+	 */
+	private static int countPlayers(Arena arena, String sTeam) {
+		db.i("counting players in team " + sTeam);
+		int result = 0;
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			db.i(" - player " + p.get().getName() + ", team "
+					+ String.valueOf(p.team));
+			if (p.team != null && p.team.equals(sTeam)) {
+				result++;
+			}
+		}
+		db.i("count result: " + result);
+		return result;
 	}
 
 	/**
@@ -255,7 +320,7 @@ public class Players {
 		db.i("resetting player manager");
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
-			if (p.getArena() == null || !p.getArena().equals(arena)) {
+			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
 			pa.add(p);
@@ -267,7 +332,7 @@ public class Players {
 				p.wins++;
 			}
 			arena.resetPlayer(z, arena.cfg.getString("tp.win", "old"));
-			if (!force && !p.isSpectator() && arena.fightInProgress) {
+			if (!force && !p.spectator && arena.fightInProgress) {
 				arena.giveRewards(z); // if we are the winning team, give
 										// reward!
 			}
@@ -287,7 +352,7 @@ public class Players {
 	public static void tellEveryone(Arena arena, String msg) {
 		db.i("@all: " + msg);
 		for (ArenaPlayer p : players.values()) {
-			if (p.getArena() == null || !p.getArena().equals(arena)) {
+			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
 			Arenas.tellPlayer(p.get(), msg);
@@ -305,7 +370,7 @@ public class Players {
 	public static void tellEveryoneExcept(Arena arena, Player player, String msg) {
 		db.i("@all/" + player.getName() + ": " + msg);
 		for (ArenaPlayer p : players.values()) {
-			if (p.getArena() == null || !p.getArena().equals(arena)) {
+			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
 			if (p.get().equals(player))
@@ -323,17 +388,20 @@ public class Players {
 	 *            the message to send
 	 * @param player
 	 */
-	public static void tellTeam(Arena arena, String sTeam, String msg,
+	public static void tellTeam(Arena arena, String team, String msg,
 			ChatColor c, Player player) {
-		ArenaTeam team = arena.getTeam(sTeam);
-		if (team == null) {
+		if (team.equals("")) {
 			return;
 		}
-		sTeam = team.getName();
-		db.i("@" + sTeam + ": " + msg);
-		for (ArenaPlayer p : team.getTeamMembers()) {
+		db.i("@" + team + ": " + msg);
+		for (ArenaPlayer p : players.values()) {
+			if (p.arena == null || !p.arena.equals(arena)) {
+				continue;
+			}
+			if (!p.team.equals(team))
+				continue;
 			p.get().sendMessage(
-					c + "[" + sTeam + "] " + player.getName() + ChatColor.WHITE
+					c + "[" + team + "] " + player.getName() + ChatColor.WHITE
 							+ ": " + msg);
 		}
 	}
@@ -361,7 +429,7 @@ public class Players {
 	public static HashSet<ArenaPlayer> getPlayers(Arena arena) {
 		HashSet<ArenaPlayer> result = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
-			if ((arena != null) && (p.getArena() == null || !p.getArena().equals(arena))) {
+			if ((arena != null) && (p.arena == null || !p.arena.equals(arena))) {
 				continue;
 			}
 			result.add(p);
@@ -374,10 +442,10 @@ public class Players {
 	 * 
 	 * @param player
 	 *            the player to read
-	 * @return the player's class
+	 * @return the player's class name
 	 */
-	public static ArenaClass getClass(Player player) {
-		return players.get(player.getName()).getaClass();
+	public static String getClass(Player player) {
+		return players.get(player.getName()).aClass;
 	}
 
 	/**
@@ -389,19 +457,7 @@ public class Players {
 	 *            a player class name
 	 */
 	public static void setClass(Player player, String s) {
-		ArenaPlayer ap = parsePlayer(player);
-		
-		if (ap.getArena() == null) {
-			System.out.print("[PA-debug] failed to set class " + s + " to player " + player.getName());
-			return;
-		}
-		for (ArenaClass ac : ap.getArena().getClasses()) {
-			if (ac.getName().equalsIgnoreCase(s)) {
-				ap.setArenaClass(ac);
-				return;
-			}
-		}
-		System.out.print("[PA-debug] failed to set class " + s + " to player " + player.getName());
+		players.get(player.getName()).aClass = s;
 	}
 
 	/**
@@ -447,6 +503,30 @@ public class Players {
 	}
 
 	/**
+	 * hand over a player's team name
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return the player's team name
+	 */
+	public static String getTeam(Player player) {
+		return (players.get(player.getName()) == null) ? "" : players
+				.get(player.getName()).team;
+	}
+
+	/**
+	 * hand over a player's team name
+	 * 
+	 * @param player
+	 *            the player to update
+	 * @param s
+	 *            the team name
+	 */
+	public static void setTeam(Player player, String s) {
+		players.get(player.getName()).team = s;
+	}
+
+	/**
 	 * hand over a player's tele pass
 	 * 
 	 * @param player
@@ -487,10 +567,10 @@ public class Players {
 	 */
 	public static void remove(Arena arena, Player player) {
 		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(player
-				.getName()).isSpectator());
+				.getName()).spectator);
 		Bukkit.getPluginManager().callEvent(event);
 
-		players.get(player.getName()).setArena(null);
+		players.get(player.getName()).arena = null;
 	}
 
 	/**
@@ -506,6 +586,17 @@ public class Players {
 					.put(player.getName(), new ArenaPlayer(player, null));
 		}
 		return Players.players.get(player.getName());
+	}
+
+	/**
+	 * get an ArenaPlayer from a player name
+	 * 
+	 * @param sPlayer
+	 *            the player name to get
+	 * @return an ArenaPlayer instance belonging to that player
+	 */
+	private static ArenaPlayer parsePlayer(String sPlayer) {
+		return players.get(sPlayer);
 	}
 
 	public static void chooseClass(Arena arena, Player player, Sign sign,
@@ -557,18 +648,18 @@ public class Players {
 	public static void playerLeave(Arena arena, Player player) {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = Players.parsePlayer(player);
-		boolean spectator = ap.isSpectator();
+		boolean spectator = ap.spectator;
 
 		if (!spectator) {
-			ArenaTeam team = arena.getTeam(ap);
+
 			Announcement.announce(arena, type.LOSER,
-					Language.parse("playerleave", team.colorizePlayer(player)));
+					Language.parse("playerleave", player.getName()));
 
 			Players.tellEveryoneExcept(
 					arena,
 					player,
 					Language.parse("playerleave",
-							team.colorizePlayer(player)
+							arena.colorizePlayerByTeam(player)
 									+ ChatColor.YELLOW));
 
 			Arenas.tellPlayer(player, Language.parse("youleave"));
@@ -604,25 +695,24 @@ public class Players {
 			DamageCause cause, Entity damager) {
 
 		db.i("return a damage name for : " + cause.toString());
-		ArenaPlayer ap = null;
-		ArenaTeam team = null;
-
-		if (damager instanceof Player) {
-			ap = parsePlayer((Player) damager);
-			team = arena.getTeam(ap);
-		}
 
 		switch (cause) {
 		case ENTITY_ATTACK:
-			if ((damager instanceof Player) && (team != null)) {
-				return team.colorizePlayer(ap.get())
-						 + ChatColor.YELLOW;
+			if (damager instanceof Player) {
+				ArenaPlayer ap = parsePlayer((Player) damager);
+				if (ap != null) {
+					return arena.colorizePlayerByTeam(ap.get(), ap.team)
+							 + ChatColor.YELLOW;
+				}
 			}
 			return Language.parse("custom");
 		case PROJECTILE:
-			if ((damager instanceof Player) && (team != null)) {
-				return team.colorizePlayer(ap.get())
-						+ ChatColor.YELLOW;
+			if (damager instanceof Player) {
+				ArenaPlayer ap = parsePlayer((Player) damager);
+				if (ap != null) {
+					return arena.colorizePlayerByTeam(ap.get(), ap.team)
+							+ ChatColor.YELLOW;
+				}
 			}
 			return Language.parse(cause.toString().toLowerCase());
 		default:
@@ -712,10 +802,10 @@ public class Players {
 		}
 		for (ArenaPlayer ap : deadPlayers.keySet()) {
 			if (ap.get().equals(player)) {
-				ap.getArena().resetPlayer(player,
-						ap.getArena().cfg.getString("tp.death", "spectator"));
+				ap.arena.resetPlayer(player,
+						ap.arena.cfg.getString("tp.death", "spectator"));
 				deadPlayers.remove(ap);
-				ap.setArena(null);
+				ap.arena = null;
 				return;
 			}
 		}

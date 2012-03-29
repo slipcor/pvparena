@@ -2,8 +2,8 @@ package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Ends;
 
 /**
@@ -15,7 +15,7 @@ import net.slipcor.pvparena.managers.Ends;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.15
  * 
  */
 

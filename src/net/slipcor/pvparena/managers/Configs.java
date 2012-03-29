@@ -14,11 +14,10 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 
@@ -31,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 
@@ -193,7 +192,7 @@ public class Configs {
 
 		Map<String, Object> classes = config.getConfigurationSection(
 				"classitems").getValues(false);
-		arena.getClasses().clear();
+		arena.paClassItems.clear();
 		db.i("reading class items");
 		for (String className : classes.keySet()) {
 			String s = (String) classes.get(className);
@@ -206,7 +205,8 @@ public class Configs {
 					db.w("unrecognized item: " + items[i]);
 				}
 			}
-			arena.addClass(className, items);
+
+			arena.paClassItems.put(className, items);
 			db.i("adding class items to class " + className);
 		}
 
@@ -277,9 +277,8 @@ public class Configs {
 				.getValues(true);
 
 		for (String sTeam : tempMap.keySet()) {
-			ArenaTeam team = new ArenaTeam(sTeam, (String) tempMap.get(sTeam));
-			arena.addTeam(team);
-			db.i("added team " + team.getName() + " => " + team.getColorString());
+			arena.paTeams.put(sTeam, (String) tempMap.get(sTeam));
+			db.i("added team " + sTeam + " => " + arena.paTeams.get(sTeam));
 		}
 		if (arena.cfg.getBoolean("arenatype.flags")) {
 			arena.paTeamFlags = new HashMap<String, String>();
@@ -411,12 +410,11 @@ public class Configs {
 			} else {
 
 				type = type.equals("pumpkin") ? type : "flag";
-				for (ArenaTeam team : arena.getTeams()) {
-					String sTeam = team.getName();
+				for (String team : arena.paTeams.keySet()) {
 					if (!list.contains(team + type)) {
 						boolean found = false;
 						for (String s : list) {
-							if (s.startsWith(sTeam) && s.endsWith(type)) {
+							if (s.startsWith(team) && s.endsWith(type)) {
 								found = true;
 								break;
 							}
@@ -451,12 +449,12 @@ public class Configs {
 				if (s.endsWith("lounge"))
 					lounges++;
 			}
-			if (spawns > 3 && lounges >= arena.getTeams().size()) {
+			if (spawns > 3 && lounges >= arena.paTeams.size()) {
 				return null;
 			}
 
 			return spawns + "/" + 4 + "x spawn ; " + lounges + "/"
-					+ arena.getTeams().size() + "x lounge";
+					+ arena.paTeams.size() + "x lounge";
 		} else {
 			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
 			db.i("parsing not random");
@@ -474,24 +472,24 @@ public class Configs {
 					lounges++;
 				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
 					String[] temp = s.split("spawn");
-					if (arena.getTeam(temp[0]) != null) {
-						if (setTeams.contains(temp[0])) {
+					if (arena.paTeams.get(temp[0]) != null) {
+						if (setTeams.contains(arena.paTeams.get(temp[0]))) {
 							db.i("team already set");
 							continue;
 						}
 						db.i("adding team");
-						setTeams.add(temp[0]);
+						setTeams.add(arena.paTeams.get(temp[0]));
 						spawns++;
 					}
 				}
 			}
-			if (spawns == arena.getTeams().size()
-					&& lounges == arena.getTeams().size()) {
+			if (spawns == arena.paTeams.size()
+					&& lounges == arena.paTeams.size()) {
 				return null;
 			}
 
-			return spawns + "/" + arena.getTeams().size() + "x spawn ; " + lounges
-					+ "/" + arena.getTeams().size() + "x lounge";
+			return spawns + "/" + arena.paTeams.size() + "x spawn ; " + lounges
+					+ "/" + arena.paTeams.size() + "x lounge";
 		}
 	}
 

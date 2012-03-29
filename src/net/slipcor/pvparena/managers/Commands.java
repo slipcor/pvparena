@@ -3,13 +3,12 @@ package net.slipcor.pvparena.managers;
 import java.util.HashMap;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.Announcement.type;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 
@@ -28,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 
@@ -109,7 +108,7 @@ public class Commands {
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
 		if (autoClass != null && !autoClass.equals("none")) {
-			if (arena.classExists(autoClass)) {
+			if (arena.paClassItems.containsKey(autoClass)) {
 				Players.chooseClass(arena, player, null, autoClass);
 			} else {
 				db.w("autoclass selected that does not exist: " + autoClass);
@@ -148,7 +147,7 @@ public class Commands {
 						.countPlayersInTeams(arena)) {
 
 			Arenas.tellPlayer(player,
-					Language.parse("teamfull", arena.getTeam(sTeam).colorize()));
+					Language.parse("teamfull", arena.colorizeTeam(sTeam)));
 			return true;
 		}
 
@@ -171,37 +170,31 @@ public class Commands {
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
-		
-		ArenaTeam team = arena.getTeam(sTeam);
-		ArenaPlayer ap = Players.parsePlayer(player);
-		
-		team.add(ap);
-		
+		Players.setTeam(player, sTeam);
 		Inventories.prepareInventory(arena, player);
-		if (Players.countPlayersInTeams(arena) < 2) {
+		if (Players.getPlayerTeamMap(arena).size() < 2) {
 			Announcement.announce(
 					arena,
 					type.START,
 					Language.parse("joinarena", arena.name));
 		}
-		String coloredTeam = team.colorize();
 		Arenas.tellPlayer(player,
-				Language.parse("youjoined", coloredTeam));
+				Language.parse("youjoined", arena.colorizeTeam(sTeam)));
 		Announcement.announce(
 				arena,
 				type.JOIN,
 				Language.parse("playerjoined", player.getName(),
-						coloredTeam));
+						arena.colorizeTeam(sTeam)));
 		Players.tellEveryoneExcept(
 				arena,
 				player,
 				Language.parse("playerjoined", player.getName(),
-						coloredTeam));
+						arena.colorizeTeam(sTeam)));
 
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
 		if (autoClass != null && !autoClass.equals("none")) {
-			if (arena.classExists(autoClass)) {
+			if (arena.paClassItems.containsKey(autoClass)) {
 				Players.chooseClass(arena, player, null, autoClass);
 			} else {
 				db.w("autoclass selected that does not exist: " + autoClass);
@@ -234,7 +227,7 @@ public class Commands {
 
 		if (Arenas.getArenaByPlayer(player) != null) {
 			if (!Players.isPartOf(arena, player)
-					|| !Players.parsePlayer(player).isSpectator()) {
+					|| !Players.parsePlayer(player).spectator) {
 
 				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 				return false;
@@ -364,7 +357,7 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("noplayer"));
 			return true;
 		}
-		String plrs = Players.getTeamStringList(arena);
+		String plrs = Players.getTeamStringList(arena, arena.paTeams);
 		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs);
 		return true;
 	}
@@ -384,9 +377,7 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error));
 			return true;
 		}
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
-		if (team != null) {
+		if (!Players.getTeam(player).equals("")) {
 			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 			return true;
 		}
@@ -570,7 +561,7 @@ public class Commands {
 				return parseUsers(arena, player);
 			} else if (args[0].equalsIgnoreCase("region")) {
 				return parseRegion(arena, player);
-			} else if (arena.getTeam(args[0]) != null) {
+			} else if (arena.paTeams.get(args[0]) != null) {
 				return parseJoinTeam(arena, player, args[0]);
 			} else if (PVPArena.hasAdminPerms(player)
 					|| (PVPArena.hasCreatePerms(player, arena))) {
@@ -785,8 +776,7 @@ public class Commands {
 		
 		boolean found = false;
 		
-		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+		for (String sTeam : arena.paTeams.keySet()) {
 			if (sName.startsWith(sTeam)) {
 				found = true;
 			}
@@ -822,8 +812,7 @@ public class Commands {
 				return true;
 			}
 		} else {
-			for (ArenaTeam team : arena.getTeams()) {
-				String sName = team.getName();
+			for (String sName : arena.paTeams.keySet()) {
 				if (s.equals(sName + "lounge")) {
 					return true;
 				}
@@ -865,7 +854,7 @@ public class Commands {
 		if (cmd.contains("spawn") && !cmd.equals("spawn")) {
 			String[] split = cmd.split("spawn");
 			String sName = split[0];
-			if (arena.getTeam(sName) == null)
+			if (arena.paTeams.get(sName) == null)
 				return false;
 
 			Spawns.setCoords(arena, player, cmd);
@@ -912,10 +901,10 @@ public class Commands {
 		}
 
 		if (cmd.endsWith("lounge")) {
-			String sTeam = cmd.replace("lounge", "");
-			if (arena.getTeam(sTeam) != null) {
+			String color = cmd.replace("lounge", "");
+			if (arena.paTeams.containsKey(color)) {
 				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam));
+				Arenas.tellPlayer(player, Language.parse("setlounge", color));
 				return true;
 			}
 			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"));
@@ -937,10 +926,9 @@ public class Commands {
 	 */
 	public static boolean parseBetCommand(Arena arena, Player player,
 			String[] args) {
-		ArenaPlayer ap = Players.parsePlayer(player);
-		
 		// /pa bet [name] [amount]
-		if (arena.getTeam(ap) != null) {
+		if (Players.isPartOf(arena, player)
+				&& !Players.getTeam(player).equals("")) {
 			Arenas.tellPlayer(player, Language.parse("betnotyours"));
 			return true;
 		}
@@ -949,9 +937,9 @@ public class Commands {
 			return true;
 
 		Player p = Bukkit.getPlayer(args[1]);
-		ap = Players.parsePlayer(p);
-		if ((arena.getTeam(args[1]) == null)
-				&& (arena.getTeam(ap) == null)) {
+
+		if ((arena.paTeams.get(args[1]) == null)
+				&& (Players.getTeam(p).equals(""))) {
 			Arenas.tellPlayer(player, Language.parse("betoptions"));
 			return true;
 		}
@@ -1023,17 +1011,17 @@ public class Commands {
 	/**
 	 * turn a hashmap into a pipe separated string
 	 * 
-	 * @param arena
+	 * @param map
 	 *            the input team map
 	 * @return the joined and colored string
 	 */
-	private static String colorTeams(Arena arena) {
+	private static String colorTeams(HashMap<String, String> map) {
 		String s = "";
-		for (ArenaTeam team : arena.getTeams()) {
+		for (String k : map.keySet()) {
 			if (!s.equals("")) {
 				s += " | ";
 			}
-			s += team.colorize() + ChatColor.WHITE;
+			s += ChatColor.valueOf(map.get(k)) + k + ChatColor.WHITE;
 		}
 		return s;
 	}
@@ -1123,7 +1111,7 @@ public class Commands {
 				+ arena.name + ChatColor.WHITE + "]");
 		player.sendMessage("-----------------------------------------------------");
 		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE
-				+ " || " + "Teams: " + colorTeams(arena));
+				+ " || " + "Teams: " + colorTeams(arena.paTeams));
 		player.sendMessage(colorVar("Enabled",
 				arena.cfg.getBoolean("general.enabled"))
 				+ " || "

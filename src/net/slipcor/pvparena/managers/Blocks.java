@@ -2,8 +2,8 @@ package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBlock;
 
 import org.bukkit.Location;
@@ -19,7 +19,7 @@ import org.bukkit.block.Block;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.15
  * 
  */
 

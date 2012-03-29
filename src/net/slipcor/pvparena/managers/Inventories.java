@@ -1,13 +1,17 @@
 package net.slipcor.pvparena.managers;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
+import org.bukkit.inventory.PlayerInventory;
+
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.definitions.ArenaPlayer;
 
 /**
  * inventory manager class
@@ -18,7 +22,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.30
  * 
  */
 
@@ -26,6 +30,44 @@ public class Inventories {
 
 	public static final Debug db = new Debug(30);
 
+	// private statics: item definitions
+	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
+	private static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
+	private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
+	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
+	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
+
+	// static filling of the items array
+	static {
+		HELMETS_TYPE.add(Material.LEATHER_HELMET);
+		HELMETS_TYPE.add(Material.GOLD_HELMET);
+		HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
+		HELMETS_TYPE.add(Material.IRON_HELMET);
+		HELMETS_TYPE.add(Material.DIAMOND_HELMET);
+
+		CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
+		CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
+		CHESTPLATES_TYPE.add(Material.CHAINMAIL_CHESTPLATE);
+		CHESTPLATES_TYPE.add(Material.IRON_CHESTPLATE);
+		CHESTPLATES_TYPE.add(Material.DIAMOND_CHESTPLATE);
+
+		LEGGINGS_TYPE.add(Material.LEATHER_LEGGINGS);
+		LEGGINGS_TYPE.add(Material.GOLD_LEGGINGS);
+		LEGGINGS_TYPE.add(Material.CHAINMAIL_LEGGINGS);
+		LEGGINGS_TYPE.add(Material.IRON_LEGGINGS);
+		LEGGINGS_TYPE.add(Material.DIAMOND_LEGGINGS);
+
+		BOOTS_TYPE.add(Material.LEATHER_BOOTS);
+		BOOTS_TYPE.add(Material.GOLD_BOOTS);
+		BOOTS_TYPE.add(Material.CHAINMAIL_BOOTS);
+		BOOTS_TYPE.add(Material.IRON_BOOTS);
+		BOOTS_TYPE.add(Material.DIAMOND_BOOTS);
+
+		ARMORS_TYPE.addAll(HELMETS_TYPE);
+		ARMORS_TYPE.addAll(CHESTPLATES_TYPE);
+		ARMORS_TYPE.addAll(LEGGINGS_TYPE);
+		ARMORS_TYPE.addAll(BOOTS_TYPE);
+	}
 
 	/**
 	 * prepare a player's inventory, back it up and clear it
@@ -68,21 +110,48 @@ public class Inventories {
 	 *            the player to supply
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
-		ArenaPlayer ap = Players.parsePlayer(player);
-		
-		ArenaClass playerClass = ap.getaClass();
+		String playerClass = Players.getClass(player);
 		db.i("giving items to player '" + player.getName() + "', class '"
-				+ playerClass.getName() + "'");
+				+ playerClass + "'");
 
-		playerClass.load(player);
-		
+		ItemStack[] items = arena.paClassItems.get(playerClass);
+
+		for (int i = 0; i < items.length; ++i) {
+			ItemStack stack = items[i];
+			if (ARMORS_TYPE.contains(stack.getType())) {
+				equipArmorPiece(stack, player.getInventory());
+			} else {
+				player.getInventory().addItem(new ItemStack[] { stack });
+			}
+		}
 		if (arena.cfg.getBoolean("game.woolHead", false)) {
-			String sTeam = arena.getTeam(ap).getName();
-			String color = arena.getTeam(sTeam).getColor().name();
+			String sTeam = Players.getTeam(player);
+			String color = arena.paTeams.get(sTeam);
 			db.i("forcing woolhead: " + sTeam + "/" + color);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
 							.getColorDataFromENUM(color)));
+		}
+	}
+
+	/**
+	 * equip an armor item to the respective slot
+	 * 
+	 * @param stack
+	 *            the item to equip
+	 * @param inv
+	 *            the player's inventory
+	 */
+	public static void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
+		Material type = stack.getType();
+		if (HELMETS_TYPE.contains(type)) {
+			inv.setHelmet(stack);
+		} else if (CHESTPLATES_TYPE.contains(type)) {
+			inv.setChestplate(stack);
+		} else if (LEGGINGS_TYPE.contains(type)) {
+			inv.setLeggings(stack);
+		} else if (BOOTS_TYPE.contains(type)) {
+			inv.setBoots(stack);
 		}
 	}
 

@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 
 import org.bukkit.ChatColor;
@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.30
  * 
  */
 
@@ -265,7 +265,7 @@ public class Arenas {
 					String sName = sign.getLine(1);
 					String[] newArgs = null;
 					Arena a = arenas.get(sName);
-					if (sign.getLine(2) != null && a.getTeam(sign.getLine(2)) != null) {
+					if (sign.getLine(2) != null && a.paTeams.containsKey(sign.getLine(2))) {
 						newArgs = new String[1];
 						newArgs[0] = sign.getLine(2);
 					}
