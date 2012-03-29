@@ -267,7 +267,8 @@ public class Language {
 				"A flag claimed by Team %1% is being unclaimed!");
 		config.addDefault("lang.domunclaimingby",
 				"A flag claimed by Team %1% is being unclaimed by %2%!");
-		
+		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
+		config.addDefault("lang.regionremoved", "Region removed: %1%");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");

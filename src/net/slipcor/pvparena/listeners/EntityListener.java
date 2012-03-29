@@ -256,7 +256,7 @@ public class EntityListener implements Listener {
 		if (p1 instanceof Projectile) {
 			db.i("parsing projectile");
 			p1 = ((Projectile) p1).getShooter();
-			db.i("=> " + p1.toString());
+			db.i("=> " + String.valueOf(p1));
 		}
 
 		if (event.getEntity() instanceof Wolf) {

@@ -377,7 +377,8 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error));
 			return true;
 		}
-		if (!Players.getTeam(player).equals("")) {
+		
+		if (Arenas.getArenaByPlayer(player) != null) {
 			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
 			return true;
 		}

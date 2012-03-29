@@ -51,6 +51,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.13 - fix abusing the spectator state
 * v0.6.40.11 - fix a random NPE; fix WoolHead enforcement
 * v0.6.40.10 - fix powerup type REPAIR and a NPE in flag arenas
 * v0.6.40.9 - fix another issue with the startup countdown
