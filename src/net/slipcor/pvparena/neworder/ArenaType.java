@@ -516,4 +516,8 @@ public abstract class ArenaType {
 			}
 		}
 	}
+
+	public void parseMove(Player player) {
+		return;
+	}
 }

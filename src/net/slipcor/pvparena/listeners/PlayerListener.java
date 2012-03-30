@@ -14,7 +14,6 @@ import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Dominate;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
@@ -315,10 +314,8 @@ public class PlayerListener implements Listener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-
-		if (arena.cfg.getBoolean("arenatype.domination")) {
-			Dominate.parseMove(arena, player);
-		}
+		
+		arena.type().parseMove(player);
 
 		// db.i("onPlayerMove: fighting player!");
 		if (arena.pum != null) {
