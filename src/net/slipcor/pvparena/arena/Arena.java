@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.lang.reflect.*;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
@@ -16,7 +18,6 @@ import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.definitions.Powerup;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
@@ -24,12 +25,12 @@ import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Powerups;
 import net.slipcor.pvparena.managers.Settings;
 import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.BoardRunnable;
 import net.slipcor.pvparena.runnables.DominationRunnable;
@@ -39,7 +40,6 @@ import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,6 +73,8 @@ public class Arena {
 	private final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
+	
+	private final ArenaType type;
 
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
@@ -133,6 +135,35 @@ public class Arena {
 	public Arena(String name, String type) {
 		this.name = name;
 
+		String className = "net.slipcor.pvparena.arenas." + type;
+		Class<?> cl = null;
+		try {
+			cl = Class.forName(className);
+		} catch (ClassNotFoundException e3) {
+			e3.printStackTrace();
+		}
+		Constructor<?> con = null;
+		try {
+			con = cl.getConstructor(String.class);
+		} catch (SecurityException e2) {
+			e2.printStackTrace();
+		} catch (NoSuchMethodException e2) {
+			e2.printStackTrace();
+		}
+		Object xyz = null;
+		try {
+			xyz = con.newInstance(type);
+		} catch (IllegalArgumentException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (InvocationTargetException e1) {
+			e1.printStackTrace();
+		}
+		this.type = (ArenaType) xyz;
+		
 		db.i("loading Arena " + name);
 		File file = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!file.exists()) {
@@ -162,7 +193,7 @@ public class Arena {
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				
-				if (!cfg.getBoolean("arenatype.randomSpawn", false)) {
+				if (!type.allowsRandomSpawns()) {
 					tpPlayerToCoordName(ap.get(), team.getName()
 							+ "spawn");
 				} else {
@@ -172,11 +203,9 @@ public class Arena {
 				playerCount++;
 			}
 		}
-
-		if (cfg.getBoolean("arenatype.flags")
-				|| cfg.getBoolean("arenatype.deathmatch")) {
-			Flags.init_arena(this);
-		}
+		
+		type.init();
+		
 		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
 			db.i("arena timing!");
@@ -606,21 +635,9 @@ public class Arena {
 			return;
 		}
 
-		if (cfg.getBoolean("arenatype.flags")) {
-			Players.tellEveryone(this, Language.parse("killedby", team.
-					colorizePlayer(player) + ChatColor.YELLOW,
-					Players.parseDeathCause(this, player, cause, damager)));
-			tpPlayerToCoordName(player, team.getName() + "spawn");
-
-			Flags.checkEntityDeath(this, player);
-		} else if (!cfg.getBoolean("arenatype.deathmatch")) {
-			Players.tellEveryone(this, Language.parse("killedbylives", team.
-					colorizePlayer(player) + ChatColor.YELLOW,
-					Players.parseDeathCause(this, player, cause, damager),
-					String.valueOf(lives)));
-			paLives.put(player.getName(), lives);
-		}
-		if (!cfg.getBoolean("arenatype.randomSpawn", false)
+		type.parseRespawn(player, team, lives, cause, damager);
+		
+		if (!type.allowsRandomSpawns()
 				&& !team.getName().equals("free")) {
 			tpPlayerToCoordName(player, team.getName() + "spawn");
 		} else {
@@ -693,7 +710,7 @@ public class Arena {
 					try {
 						Announcement.announce(
 								this,
-								type.PRIZE,
+								Announcement.type.PRIZE,
 								Language.parse("awarded",
 										PVPArena.economy.format(amount)));
 						Arenas.tellPlayer(
@@ -727,7 +744,7 @@ public class Arena {
 					try {
 						Announcement.announce(
 								this,
-								type.PRIZE,
+								Announcement.type.PRIZE,
 								Language.parse("awarded",
 										PVPArena.eco.format(amount)));
 						Arenas.tellPlayer(
@@ -886,36 +903,7 @@ public class Arena {
 		cfg.save();
 	}
 
-	/**
-	 * handle a deathmatch frag
-	 * 
-	 * @param attacker
-	 *            the player to count a frag
-	 */
-	public void deathMatch(Player attacker) {
-		if (!cfg.getBoolean("arenatype.deathmatch")) {
-			return; // no deathmatch, out!
-		}
-		db.i("handling deathmatch flag");
-
-		ArenaTeam team = this.getTeam(Players.parsePlayer(attacker));
-		
-		if (team == null) {
-			return;
-		}
-
-		if (Flags.reduceLivesCheckEndAndCommit(this, team.getName())) {
-			return;
-		}
-		Players.tellEveryone(
-				this,
-				Language.parse(
-						"frag", team.
-						colorizePlayer(attacker)
-								+ ChatColor.YELLOW,
-						String.valueOf(cfg.getInt("game.lives")
-								- paLives.get(team.getName()))));
-	}
+	
 
 	public int countActiveTeams() {
 		db.i("counting active teams");
@@ -952,7 +940,7 @@ public class Arena {
 		teleportAllToSpawn();
 		fightInProgress = true;
 		Players.tellEveryone(this, Language.parse("begin"));
-		Announcement.announce(this, type.START, Language.parse("begin"));
+		Announcement.announce(this, Announcement.type.START, Language.parse("begin"));
 	}
 
 	public void spawnCampPunish() {
@@ -1042,5 +1030,9 @@ public class Arena {
 
 	public void addClass(String className, ItemStack[] items) {
 		classes.add(new ArenaClass(className, items));
+	}
+	
+	public ArenaType type() {
+		return this.type;
 	}
 }

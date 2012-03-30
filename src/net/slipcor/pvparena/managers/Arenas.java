@@ -280,4 +280,14 @@ public class Arenas {
 			}
 		}
 	}
+
+	public static boolean checkAndCommit(Arena arena) {
+		db.i("checking for arena end");
+		if (!arena.fightInProgress) {
+			db.i("no fight, no end ^^");
+			return false;
+		}
+		
+		return arena.type().checkAndCommit();
+	}
 }

@@ -8,7 +8,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
 
 /**
@@ -56,7 +55,7 @@ public class DominationRunnable implements Runnable {
 			// claim a flag for the team
 			if (arena.paFlags.containsKey(loc)) {
 				// flag claimed! add score!
-				Flags.reduceLivesCheckEndAndCommit(arena, team);
+				arena.type().reduceLivesCheckEndAndCommit(team);
 				Players.tellEveryone(
 						arena,
 						Language.parse("domscore", arena.getTeam(team).colorize()

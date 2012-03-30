@@ -14,8 +14,6 @@ import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Blocks;
-import net.slipcor.pvparena.managers.Ends;
-import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
@@ -115,10 +113,8 @@ public class EntityListener implements Listener {
 		player.getInventory().clear();
 
 		arena.tpPlayerToCoordName(player, "spectator");
-
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			Flags.checkEntityDeath(arena, player);
-		}
+		
+		arena.type().checkEntityDeath(player);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");
@@ -184,7 +180,7 @@ public class EntityListener implements Listener {
 			}
 		}
 
-		if (Ends.checkAndCommit(arena))
+		if (Arenas.checkAndCommit(arena))
 			return;
 	}
 
@@ -409,7 +405,6 @@ public class EntityListener implements Listener {
 				commitPlayerDeath(arena, defender, event);
 			} else {
 				lives--;
-				arena.deathMatch(attacker);
 				arena.respawnPlayer(defender, lives, event.getCause(), attacker);
 			}
 			event.setCancelled(true);
@@ -464,10 +459,7 @@ public class EntityListener implements Listener {
 			int lives = 3;
 
 			Statistics.kill(arena, null, player, (lives > 0));
-			if (!arena.cfg.getBoolean("arenatype.flags")) {
-				lives = arena.paLives.get(player.getName());
-				db.i("lives before death: " + lives);
-			}
+			lives = arena.type().reduceLives(player, lives);
 			if (lives < 1) {
 				if (!arena.cfg.getBoolean("game.preventDeath")) {
 					return; // player died => commit death!

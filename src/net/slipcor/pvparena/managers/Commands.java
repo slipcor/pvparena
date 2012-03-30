@@ -252,8 +252,7 @@ public class Commands {
 		}
 
 		if (arena.fightInProgress) {
-			if (arena.cfg.getBoolean("arenatype.flags")
-					&& arena.cfg.getBoolean("join.inbattle")) {
+			if (arena.type().allowsJoinInBattle()) {
 				return true;
 			}
 			Arenas.tellPlayer(player, Language.parse("fightinprogress"));
@@ -503,7 +502,7 @@ public class Commands {
 			}
 		} else if (cmd.equalsIgnoreCase("set")) {
 			arena.sm.list(player, 1);
-		} else if (arena.cfg.getBoolean("arenatype.randomSpawn", false)
+		} else if (arena.type().allowsRandomSpawns()
 				&& (cmd.startsWith("spawn"))) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
 				Arenas.tellPlayer(player,
@@ -514,9 +513,9 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
 		} else {
 			// no random or not trying to set custom spawn
-			if ((!isLoungeCommand(arena, player, cmd))
-					&& (!isSpawnCommand(arena, player, cmd))
-					&& (!isCustomCommand(arena, player, cmd))) {
+			if ((!arena.type().isLoungeCommand(player, cmd))
+					&& (!arena.type().isSpawnCommand(player, cmd))
+					&& (!arena.type().isCustomCommand(player, cmd))) {
 				return parseJoin(arena, player);
 			}
 			// else: command lounge or spawn :)
@@ -754,55 +753,6 @@ public class Commands {
 	}
 
 	/**
-	 * check if a command is a valid custom command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @param cmd
-	 *            the command to check
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	private static boolean isCustomCommand(Arena arena, Player player,
-			String cmd) {
-
-		if (!arena.cfg.getBoolean("arenatype.flags")) {
-			return false;
-		}
-
-		String type = arena.getType().equals("pumpkin") ? "pumpkin" : "flag";
-
-		if (!cmd.contains(type)) {
-			return false;
-		}
-		if (!player.getWorld().getName().equals(arena.getWorld())) {
-			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
-			return false;
-		}
-		String sName = cmd.replace(type, "");
-		
-		boolean found = false;
-		
-		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
-			if (sName.startsWith(sTeam)) {
-				found = true;
-			}
-		}
-		
-		if (!found) {
-			return false;
-		}
-
-		Arena.regionmodify = arena.name + ":" + sName;
-		Arenas.tellPlayer(player, Language.parse("toset" + type, sName));
-		return true;
-
-	}
-
-	/**
 	 * check if a given string is a valid region command
 	 * 
 	 * @param arena
@@ -828,98 +778,6 @@ public class Commands {
 					return true;
 				}
 			}
-		}
-		return false;
-	}
-
-	/**
-	 * check if a command is a valid spawn command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @param cmd
-	 *            the command to check
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	private static boolean isSpawnCommand(Arena arena, Player player, String cmd) {
-		if (!player.getWorld().getName().equals(arena.getWorld())) {
-			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
-			return false;
-		}
-
-		if (cmd.startsWith("spawn") && !cmd.equals("spawn")) {
-
-			if (arena.getType().equals("free")) {
-				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
-				return true;
-			} else {
-				Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd));
-				return false;
-			}
-		}
-
-		if (cmd.contains("spawn") && !cmd.equals("spawn")) {
-			String[] split = cmd.split("spawn");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null)
-				return false;
-
-			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", sName));
-			return true;
-		}
-
-		if (cmd.startsWith("powerup")) {
-			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * check if a command is a valid lounge command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @param cmd
-	 *            the command to check
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	private static boolean isLoungeCommand(Arena arena, Player player,
-			String cmd) {
-		if (!player.getWorld().getName().equals(arena.getWorld())) {
-			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
-			return false;
-		}
-
-		if (cmd.equalsIgnoreCase("lounge")) {
-			if (arena.getType().equals("free")) {
-				Spawns.setCoords(arena, player, "lounge");
-				Arenas.tellPlayer(player, Language.parse("setlounge"));
-				return true;
-			} else {
-				Arenas.tellPlayer(player, Language.parse("errorloungefree"));
-				return false;
-			}
-		}
-
-		if (cmd.endsWith("lounge")) {
-			String sTeam = cmd.replace("lounge", "");
-			if (arena.getTeam(sTeam) != null) {
-				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam));
-				return true;
-			}
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"));
-			return true;
 		}
 		return false;
 	}
@@ -1167,7 +1025,7 @@ public class Commands {
 				+ ")"
 				+ " | "
 				+ colorVar("randomSpawn",
-						arena.cfg.getBoolean("arenatype.randomSpawn", false))
+						arena.type().allowsRandomSpawns())
 				+ " | "
 				+ colorVar("refill",
 						arena.cfg.getBoolean("game.refillInventory", false)));

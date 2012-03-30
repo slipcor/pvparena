@@ -2,13 +2,11 @@ package net.slipcor.pvparena.managers;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -166,24 +164,7 @@ public class Configs {
 		config.addDefault("arenatype.domination",
 				Boolean.valueOf(type.equals("dom")));
 
-		if (!type.equals("free") || cfg.getBoolean("arenatype.teams")) {
-			if (cfg.get("teams") == null) {
-				db.i("no teams defined, adding custom red and blue!");
-				cfg.getYamlConfiguration().addDefault("teams.red",
-						ChatColor.RED.name());
-				cfg.getYamlConfiguration().addDefault("teams.blue",
-						ChatColor.BLUE.name());
-			}
-			if (cfg.getBoolean("game.woolFlagHead")
-					&& (cfg.get("flagColors") == null)) {
-				db.i("no flagheads defined, adding white and black!");
-				config.addDefault("flagColors.red", "WHITE");
-				config.addDefault("flagColors.blue", "BLACK");
-			}
-		} else if (cfg.get("teams") == null) {
-			cfg.getYamlConfiguration().addDefault("teams.free",
-					ChatColor.WHITE.name());
-		}
+		arena.type().addDefaultTeams(config);
 
 		config.options().copyDefaults(true);
 
@@ -281,28 +262,11 @@ public class Configs {
 			arena.addTeam(team);
 			db.i("added team " + team.getName() + " => " + team.getColorString());
 		}
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			arena.paTeamFlags = new HashMap<String, String>();
-		}
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			arena.paHeadGears = new HashMap<String, ItemStack>();
-		}
-		if (!cfg.getBoolean("usesTeams") && type.equals("free")) {
-
-			db.i("FreeFight Arena default overrides");
-
-			cfg.set("game.teamKill", true);
-			cfg.set("join.manual", false);
-			cfg.set("join.random", true);
-			cfg.set("game.woolHead", false);
-			cfg.set("join.forceeven", false);
-			cfg.set("arenatype.randomSpawn", true);
-			cfg.set("teams", null);
-			cfg.set("teams.free", "WHITE");
-			cfg.save();
-		}
+		
+		arena.type().configParse();
+		
 		if (config.get("spawns") != null) {
-			db.i("checkinf for leaderboard");
+			db.i("checking for leaderboard");
 			if (config.get("spawns.leaderboard") != null) {
 				db.i("leaderboard exists");
 				Location loc = Config.parseLocation(
@@ -386,45 +350,18 @@ public class Configs {
 
 		Set<String> list = arena.cfg.getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false).keySet();
-
+		
 		// we need the 2 that every arena has
 
 		if (!list.contains("spectator"))
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			String type = arena.getType();
-
-			if (type.equals("dom")) {
-				boolean contains = false;
-				for (String s : list) {
-					if (s.startsWith("flag")) {
-						contains = true;
-						break;
-					}
-				}
-				if (!contains) {
-					return "flags not set";
-				}
-			} else {
-
-				type = type.equals("pumpkin") ? type : "flag";
-				for (ArenaTeam team : arena.getTeams()) {
-					String sTeam = team.getName();
-					if (!list.contains(team + type)) {
-						boolean found = false;
-						for (String s : list) {
-							if (s.startsWith(sTeam) && s.endsWith(type)) {
-								found = true;
-								break;
-							}
-						}
-						if (!found)
-							return team + type + " not set";
-					}
-				}
+		
+		if (arena.type().usesFlags()) {
+			String error = arena.type().checkFlags(list);
+			if (error != null) {
+				return error;
 			}
 		}
 
@@ -432,67 +369,7 @@ public class Configs {
 			return isFreesetup(arena, list);
 		}
 
-		if (arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
-
-			// now we need a spawn and lounge for every team
-
-			db.i("parsing random");
-
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				if (s.equals("lounge") && arena.getType().equals("team"))
-					continue; // skip except for FREE
-				if (s.startsWith("spawn"))
-					spawns++;
-				if (s.endsWith("lounge"))
-					lounges++;
-			}
-			if (spawns > 3 && lounges >= arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + 4 + "x spawn ; " + lounges + "/"
-					+ arena.getTeams().size() + "x lounge";
-		} else {
-			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
-			db.i("parsing not random");
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			HashSet<String> setTeams = new HashSet<String>();
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				db.i("spawns: " + spawns + "; lounges: " + lounges);
-				if (s.endsWith("spawn") && (!s.equals("spawn"))) {
-					spawns++;
-				} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
-					lounges++;
-				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
-					String[] temp = s.split("spawn");
-					if (arena.getTeam(temp[0]) != null) {
-						if (setTeams.contains(temp[0])) {
-							db.i("team already set");
-							continue;
-						}
-						db.i("adding team");
-						setTeams.add(temp[0]);
-						spawns++;
-					}
-				}
-			}
-			if (spawns == arena.getTeams().size()
-					&& lounges == arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + arena.getTeams().size() + "x spawn ; " + lounges
-					+ "/" + arena.getTeams().size() + "x lounge";
-		}
+		return arena.type().checkSpawns(list);
 	}
 
 	/**

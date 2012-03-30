@@ -63,49 +63,10 @@ public class Spawns {
 
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.cfg.get("spawns." + place) == null) {
-			String type = null;
-			if (arena.cfg.getBoolean("arenatype.flags")) {
-				type = arena.getType();
-				type = type.equals("pumpkin") ? type : "flag";
-			}
-			if (!place.contains("spawn") && type == null) {
-				db.i("place not found!");
+			place = arena.type().guessSpawn(place);
+			if (place == null) {
 				return null;
 			}
-			// no exact match: assume we have multiple spawnpoints
-			HashMap<Integer, String> locs = new HashMap<Integer, String>();
-			int i = 0;
-
-			db.i("searching for team spawns");
-
-			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
-					.getYamlConfiguration().getConfigurationSection("spawns")
-					.getValues(false);
-			for (String name : coords.keySet()) {
-				if (name.startsWith(place)) {
-					locs.put(i++, name);
-					db.i("found match: " + name);
-				}
-				if (type == null) {
-					continue;
-				}
-				if (name.endsWith(type)) {
-					for (ArenaTeam team : arena.getTeams()) {
-						String sTeam = team.getName();
-						if (name.startsWith(sTeam)) {
-							locs.put(i++, name);
-							db.i("found match: " + name);
-						}
-					}
-				}
-			}
-
-			if (locs.size() < 1) {
-				return null;
-			}
-			Random r = new Random();
-
-			place = locs.get(r.nextInt(locs.size()));
 		}
 
 		String sLoc = arena.cfg.getString("spawns." + place, null);

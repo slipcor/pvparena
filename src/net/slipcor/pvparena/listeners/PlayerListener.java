@@ -15,10 +15,10 @@ import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Dominate;
-import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
 import org.bukkit.Bukkit;
@@ -153,7 +153,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (Flags.checkSetFlag(event.getClickedBlock(), player)) {
+		if (ArenaType.checkSetFlag(event.getClickedBlock(), player)) {
 			return;
 		}
 
@@ -163,16 +163,10 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			Flags.checkInteract(arena, player, event.getClickedBlock());
-		}
-
-		if (arena.fightInProgress && !arena.cfg.getBoolean("arenatype.flags")) {
-			db.i("exiting! fight in progress AND no flag arena!");
-			return; // no flag arena and fight already in progress => OUT
-		}
-
-		if (arena.fightInProgress && !arena.cfg.getBoolean("join.inbattle")) {
+		arena.type().checkInteract(player, event.getClickedBlock());
+		
+		if (arena.fightInProgress && !arena.type().allowsJoinInBattle()) {
+			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!");
 			return;
 		}
 
@@ -281,7 +275,7 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				if (!arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
+				if (!arena.type().allowsRandomSpawns()) {
 					arena.tpPlayerToCoordName(
 							player,
 							team.getName()

@@ -583,7 +583,7 @@ public class Players {
 		ap.destroy();
 
 		if (!spectator && arena.fightInProgress) {
-			Ends.checkAndCommit(arena);
+			Arenas.checkAndCommit(arena);
 		}
 	}
 

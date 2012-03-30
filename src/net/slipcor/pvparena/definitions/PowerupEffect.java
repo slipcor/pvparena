@@ -22,7 +22,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Ends;
 import net.slipcor.pvparena.managers.Players;
 
 /**
@@ -261,7 +260,7 @@ public class PowerupEffect {
 					arena.removePlayer(player, "lose");
 					arena.removeTeam(Players.parsePlayer(player));
 
-					Ends.checkAndCommit(arena);
+					Arenas.checkAndCommit(arena);
 				}
 
 				return true;
