@@ -695,7 +695,7 @@ public class Commands {
 	 * @param player
 	 *            the player to check
 	 * @param args
-	 *            the array {"stats", [stattype] {asc/desc}}
+	 *            the array {"stats", [stattype], {asc/desc}}
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	private static boolean parseStats(Arena arena, Player player, String[] args) {

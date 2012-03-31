@@ -51,6 +51,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.16 - fix ready block hit while countdown teleporting ppl inside the arena. Bad, bad players!
+* v0.6.40.15 - hackfix Potion Effects not vanishing. Bad, bad API!
+* v0.6.40.14 - fix resetting of player stats -.-
 * v0.6.40.13 - fix abusing the spectator state
 * v0.6.40.11 - fix a random NPE; fix WoolHead enforcement
 * v0.6.40.10 - fix powerup type REPAIR and a NPE in flag arenas

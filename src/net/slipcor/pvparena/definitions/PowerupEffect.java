@@ -164,7 +164,7 @@ public class PowerupEffect {
 	 */
 	public void removeEffect(Player player) {
 		if (potEff != null) {
-			player.removePotionEffect(potEff.getType());
+			player.addPotionEffect(new PotionEffect(potEff.getType(), 0, 0));
 		}
 	}
 

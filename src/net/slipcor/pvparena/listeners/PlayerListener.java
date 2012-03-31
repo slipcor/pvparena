@@ -232,6 +232,9 @@ public class PlayerListener implements Listener {
 				if (Players.getClass(player).equals("")) {
 					return; // not chosen class => OUT
 				}
+				if (arena.START_ID != -1) {
+					return; // counting down => OUT
+				}
 				db.i("===============");
 				db.i("===== class: " + Players.getClass(player) + " =====");
 				db.i("===============");
@@ -307,7 +310,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		
-		Players.parsePlayer(player).destroy();
+		Players.parsePlayer(player).arena = null;
 		// instantiate and/or reset a player. This fixes issues with leaving players
 		// and makes sure every player is an arenaplayer ^^
 
