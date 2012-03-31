@@ -33,18 +33,10 @@ public class CustomListener implements Listener {
 			return;
 		}
 		
-		if (!arena.cfg.getBoolean("woolHead")) {
-		
-			// player is part of arena
-			if (!arena.getType().equals("ctf")) {
-				return;
-			}
-			db.i("onInventoryClick inside CTF arena");
-			// arena is using flags that can be taken
-			if (!arena.paTeamFlags.containsValue(p.getName())) {
-				return;
-			}
+		if (!arena.type().usesFlags()) {
+			return;
 		}
+		
 		db.i("cancelling!");
 		// player is carrying a flag
 		event.setCancelled(true);

@@ -2,7 +2,6 @@ package net.slipcor.pvparena.managers;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,7 +50,7 @@ public class Configs {
 
 		if (type == null) {
 			// opening existing arena
-			type = arena.getType();
+			type = arena.type().getName();
 		}
 
 		if (config.get("classitems") == null) {
@@ -153,10 +152,7 @@ public class Configs {
 
 		config.addDefault("arenatype.teams",
 				Boolean.valueOf(!type.equals("free")));
-		config.addDefault(
-				"arenatype.flags",
-				Boolean.valueOf(type.equals("ctf") || type.equals("pumpkin")
-						|| type.equals("dom")));
+		config.addDefault("arenatype.flags", arena.type().usesFlags());
 		config.addDefault("arenatype.pumpkin",
 				Boolean.valueOf(type.equals("pumpkin")));
 		config.addDefault("arenatype.deathmatch",
@@ -260,11 +256,12 @@ public class Configs {
 		for (String sTeam : tempMap.keySet()) {
 			ArenaTeam team = new ArenaTeam(sTeam, (String) tempMap.get(sTeam));
 			arena.addTeam(team);
-			db.i("added team " + team.getName() + " => " + team.getColorString());
+			db.i("added team " + team.getName() + " => "
+					+ team.getColorString());
 		}
-		
+
 		arena.type().configParse();
-		
+
 		if (config.get("spawns") != null) {
 			db.i("checking for leaderboard");
 			if (config.get("spawns.leaderboard") != null) {
@@ -350,51 +347,14 @@ public class Configs {
 
 		Set<String> list = arena.cfg.getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false).keySet();
-		
+
 		// we need the 2 that every arena has
 
 		if (!list.contains("spectator"))
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-		
-		if (arena.type().usesFlags()) {
-			String error = arena.type().checkFlags(list);
-			if (error != null) {
-				return error;
-			}
-		}
-
-		if (arena.getType().equals("free")) {
-			return isFreesetup(arena, list);
-		}
 
 		return arena.type().checkSpawns(list);
-	}
-
-	/**
-	 * check if a free arena is configured completely
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param list
-	 *            the defined spawn points
-	 * @return an error string if there is something missing, null otherwise
-	 */
-	private static String isFreesetup(Arena arena, Set<String> list) {
-		if (!list.contains("lounge"))
-			return "lounge not set";
-		Iterator<String> iter = list.iterator();
-		int spawns = 0;
-		while (iter.hasNext()) {
-			String s = iter.next();
-			if (s.startsWith("spawn"))
-				spawns++;
-		}
-		if (spawns > 3) {
-			return null;
-		}
-
-		return "not enough spawns (" + spawns + ")";
 	}
 }

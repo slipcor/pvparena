@@ -832,30 +832,6 @@ public class Arena {
 	}
 
 	/**
-	 * return the arena type
-	 * 
-	 * @return the arena type name
-	 */
-	public String getType() {
-		if (!cfg.getBoolean("arenatype.teams")) {
-			return "free";
-		}
-		if (cfg.getBoolean("arenatype.flags")) {
-			if (cfg.getBoolean("arenatype.domination")) {
-				return "dom";
-			}
-			if (cfg.getBoolean("arenatype.pumpkin")) {
-				return "pumpkin";
-			}
-			return "ctf";
-		}
-		if (cfg.getBoolean("arenatype.deathmatch")) {
-			return "dm";
-		}
-		return "teams";
-	}
-
-	/**
 	 * return the arena world
 	 * 
 	 * @return the world name

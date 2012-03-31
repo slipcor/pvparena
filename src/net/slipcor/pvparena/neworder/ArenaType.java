@@ -59,7 +59,11 @@ public class ArenaType extends Loadable {
 	 * does the arena type allow random spawns?
 	 */
 	public boolean allowsRandomSpawns() {
-		return false;
+		return arena.cfg.getBoolean("arenatype.randomSpawn", false);
+	}
+	
+	public int ready(Arena arena) {
+		return 0;
 	}
 
 	/**
@@ -70,67 +74,40 @@ public class ArenaType extends Loadable {
 	}
 
 	public String checkSpawns(Set<String> list) {
-		if (arena.cfg.getBoolean("arenatype.randomSpawn", false)) {
-
-			// now we need 1 spawn and a lounge for every team
-
-			db.i("parsing random");
-
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				if (s.equals("lounge") && arena.getType().equals("team"))
-					continue; // skip except for FREE
-				if (s.startsWith("spawn"))
-					spawns++;
-				if (s.endsWith("lounge"))
-					lounges++;
-			}
-			if (spawns > 3 && lounges >= arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + 4 + "x spawn ; " + lounges + "/"
-					+ arena.getTeams().size() + "x lounge";
-		} else {
-			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
-			db.i("parsing not random");
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			HashSet<String> setTeams = new HashSet<String>();
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				db.i("spawns: " + spawns + "; lounges: " + lounges);
-				if (s.endsWith("spawn") && (!s.equals("spawn"))) {
-					spawns++;
-				} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
-					lounges++;
-				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
-					String[] temp = s.split("spawn");
-					if (arena.getTeam(temp[0]) != null) {
-						if (setTeams.contains(temp[0])) {
-							db.i("team already set");
-							continue;
-						}
-						db.i("adding team");
-						setTeams.add(temp[0]);
-						spawns++;
+		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
+		db.i("parsing not random");
+		Iterator<String> iter = list.iterator();
+		int spawns = 0;
+		int lounges = 0;
+		HashSet<String> setTeams = new HashSet<String>();
+		while (iter.hasNext()) {
+			String s = iter.next();
+			db.i("parsing '" + s + "'");
+			db.i("spawns: " + spawns + "; lounges: " + lounges);
+			if (s.endsWith("spawn") && (!s.equals("spawn"))) {
+				spawns++;
+			} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
+				lounges++;
+			} else if (s.contains("spawn") && (!s.equals("spawn"))) {
+				String[] temp = s.split("spawn");
+				if (arena.getTeam(temp[0]) != null) {
+					if (setTeams.contains(temp[0])) {
+						db.i("team already set");
+						continue;
 					}
+					db.i("adding team");
+					setTeams.add(temp[0]);
+					spawns++;
 				}
 			}
-			if (spawns == arena.getTeams().size()
-					&& lounges == arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + arena.getTeams().size() + "x spawn ; "
-					+ lounges + "/" + arena.getTeams().size() + "x lounge";
 		}
+		if (spawns == arena.getTeams().size()
+				&& lounges == arena.getTeams().size()) {
+			return null;
+		}
+
+		return spawns + "/" + arena.getTeams().size() + "x spawn ; "
+				+ lounges + "/" + arena.getTeams().size() + "x lounge";
 	}
 
 	public String checkFlags(Set<String> list) {
@@ -369,12 +346,7 @@ public class ArenaType extends Loadable {
 	}
 
 	public String guessSpawn(String place) {
-		String type = null;
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			type = arena.getType();
-			type = type.equals("pumpkin") ? type : "flag";
-		}
-		if (!place.contains("spawn") && type == null) {
+		if (!place.contains("spawn")) {
 			db.i("place not found!");
 			return null;
 		}
@@ -391,18 +363,6 @@ public class ArenaType extends Loadable {
 			if (name.startsWith(place)) {
 				locs.put(i++, name);
 				db.i("found match: " + name);
-			}
-			if (type == null) {
-				continue;
-			}
-			if (name.endsWith(type)) {
-				for (ArenaTeam team : arena.getTeams()) {
-					String sTeam = team.getName();
-					if (name.startsWith(sTeam)) {
-						locs.put(i++, name);
-						db.i("found match: " + name);
-					}
-				}
 			}
 		}
 
@@ -528,5 +488,20 @@ public class ArenaType extends Loadable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean isRegionCommand(String s) {
+		db.i("checking region command: " + s);
+		if (s.equals("exit") || s.equals("spectator")
+				|| s.equals("battlefield") || s.equals("join")) {
+			return true;
+		}
+		for (ArenaTeam team : arena.getTeams()) {
+			String sName = team.getName();
+			if (s.equals(sName + "lounge")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

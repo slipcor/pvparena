@@ -1,10 +1,7 @@
 package net.slipcor.pvparena.managers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -180,43 +177,12 @@ public class Players {
 				return -6;
 			}
 		}
-
-		if (!arena.getType().equals("free")) {
-			boolean onlyone = true;
-			List<String> activeteams = new ArrayList<String>(0);
-			db.i("ready(): reading playerteammap");
-			for (ArenaTeam team : arena.getTeams()) {
-				if (team.getTeamMembers().size() > 0) {
-					if (activeteams.size() < 1) {
-						// fresh map
-						activeteams.add(team.getName());
-					} else {
-						db.i("map not empty");
-						// map contains stuff
-						if (!activeteams.contains(team.getName())) {
-							// second team active => OUT!
-							onlyone = false;
-							break;
-						}
-					}
-				}
-			}
-			if (onlyone) {
-				return -2;
-			}
-			for (ArenaTeam team : arena.getTeams()) {
-				if (team.getTeamMembers().size() < 1) {
-					db.i("skipping TEAM " + team.getName());
-					continue;
-				}
-				db.i("TEAM " + team.getName());
-				if (arena.cfg.getInt("ready.minTeam") > 0
-						&& team.getTeamMembers().size() < arena.cfg
-								.getInt("ready.minTeam")) {
-					return -3;
-				}
-			}
+		
+		int arenaTypeCheck = arena.type().ready(arena);
+		if (arenaTypeCheck != 0) {
+			return arenaTypeCheck;
 		}
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer p :team.getTeamMembers()) {
 				db.i("checking class: " + p.get().getName());

@@ -605,7 +605,7 @@ public class Commands {
 			return false;
 		}
 
-		if (!isRegionCommand(arena, args[1])) {
+		if (!arena.type().isRegionCommand(args[1])) {
 			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"));
 			return false;
 		}
@@ -750,36 +750,6 @@ public class Commands {
 		Arenas.tellPlayer(player,
 				Language.parse("edit" + String.valueOf(arena.edit), arena.name));
 		return true;
-	}
-
-	/**
-	 * check if a given string is a valid region command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param s
-	 *            the string to check
-	 * @return true if the command is valid, false otherwise
-	 */
-	public static boolean isRegionCommand(Arena arena, String s) {
-		db.i("checking region command: " + s);
-		if (s.equals("exit") || s.equals("spectator")
-				|| s.equals("battlefield") || s.equals("join")) {
-			return true;
-		}
-		if (arena.getType().equals("free")) {
-			if (s.equals("lounge")) {
-				return true;
-			}
-		} else {
-			for (ArenaTeam team : arena.getTeams()) {
-				String sName = team.getName();
-				if (s.equals(sName + "lounge")) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	/**
@@ -975,7 +945,7 @@ public class Commands {
 	 */
 	public static boolean parseInfo(Arena arena, Player player) {
 		// TODO reorganize and update
-		String type = arena.getType();
+		String type = arena.type().getName();
 		player.sendMessage("-----------------------------------------------------");
 		player.sendMessage("       Arena Information about [" + ChatColor.AQUA
 				+ arena.name + ChatColor.WHITE + "]");
@@ -1086,7 +1056,7 @@ public class Commands {
 		db.i("Debug parsing Arena config for arena: " + arena);
 		db.i("-------------------------------");
 
-		Arenas.loadArena(arena.name, arena.getType());
+		Arenas.loadArena(arena.name, arena.type().getName());
 
 		db.i("-------------------------------");
 		db.i("Debug parsing finished!");
