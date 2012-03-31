@@ -1055,7 +1055,7 @@ public class Commands {
 		db.i("-------------------------------");
 		db.i("Debug parsing Arena config for arena: " + arena);
 		db.i("-------------------------------");
-
+		
 		Arenas.loadArena(arena.name, arena.type().getName());
 
 		db.i("-------------------------------");

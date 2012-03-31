@@ -50,7 +50,7 @@ public class Configs {
 
 		if (type == null) {
 			// opening existing arena
-			type = arena.type().getName();
+			type = cfg.getString("general.type", "teams");
 		}
 
 		if (config.get("classitems") == null) {
@@ -85,6 +85,7 @@ public class Configs {
 		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
 		config.addDefault("messages.onlyChat", Boolean.valueOf(false));
 
+		config.addDefault("general.type", type);
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.signs", Boolean.valueOf(true));
@@ -98,7 +99,7 @@ public class Configs {
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
 		config.addDefault("join.inbattle", Boolean.valueOf(false));
 
-		config.addDefault("arenatype.randomSpawn", Boolean.valueOf(false));
+		config.addDefault("arenatype.randomSpawn", !type.equals("free"));
 		config.addDefault("goal.timed", Integer.valueOf(0));
 
 		config.addDefault("join.range", Integer.valueOf(0));
@@ -130,8 +131,8 @@ public class Configs {
 		config.addDefault("start.foodLevel", Integer.valueOf(20));
 		config.addDefault("start.saturation", Integer.valueOf(20));
 		config.addDefault("start.exhaustion", Float.valueOf(0));
+		
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
-
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
 		config.addDefault("ready.min", Integer.valueOf(2));
@@ -148,23 +149,13 @@ public class Configs {
 		config.addDefault("announcements.loser", Boolean.valueOf(false));
 		config.addDefault("announcements.prize", Boolean.valueOf(false));
 		config.addDefault("announcements.radius", Integer.valueOf(0));
-		config.addDefault("announcements.color", "AQUA");
-
-		config.addDefault("arenatype.teams",
-				Boolean.valueOf(!type.equals("free")));
-		config.addDefault("arenatype.flags", arena.type().usesFlags());
-		config.addDefault("arenatype.pumpkin",
-				Boolean.valueOf(type.equals("pumpkin")));
-		config.addDefault("arenatype.deathmatch",
-				Boolean.valueOf(type.equals("dm")));
-		config.addDefault("arenatype.domination",
-				Boolean.valueOf(type.equals("dom")));
+		config.addDefault("announcements.color", "AQUA");;
 
 		arena.type().addDefaultTeams(config);
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.6.15.0");
+		cfg.set("cfgver", "0.7.0.0");
 		cfg.save();
 		cfg.load();
 

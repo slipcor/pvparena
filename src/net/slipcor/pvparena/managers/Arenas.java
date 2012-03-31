@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.ArenaBoard;
+import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -49,14 +52,40 @@ public class Arenas {
 				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
-					db.i("standard arena: " + sName);
-					loadArena(sName, null);
+					String arenaType = preParse(sName);
+					if (arenaType == null) {
+						db.i("arena: " + sName);
+						loadArena(sName, arenaType);
+						// this is on purpose, I want to call with NULL :p
+					} else {
+						System.out
+								.print("[PVP Arena] "
+										+ Language.parse("arenatypeunknown",
+												arenaType));
+					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
+	}
+
+	private static String preParse(String name) {
+		db.i("pre-Parsing Arena " + name);
+		File file = new File(PVPArena.instance.getDataFolder() + "/config_"
+				+ name + ".yml");
+		if (!file.exists()) {
+			return "file does not exist";
+		}
+		Config cfg = new Config(file);
+		cfg.load();
+		String arenaType = cfg.getString("general.type",
+				"please redo your arena");
+
+		ArenaType type = PVPArena.instance.getAtm().getType(arenaType);
+
+		return type == null ? arenaType : null;
 	}
 
 	/**
@@ -265,7 +294,8 @@ public class Arenas {
 					String sName = sign.getLine(1);
 					String[] newArgs = null;
 					Arena a = arenas.get(sName);
-					if (sign.getLine(2) != null && a.getTeam(sign.getLine(2)) != null) {
+					if (sign.getLine(2) != null
+							&& a.getTeam(sign.getLine(2)) != null) {
 						newArgs = new String[1];
 						newArgs[0] = sign.getLine(2);
 					}
@@ -287,7 +317,7 @@ public class Arenas {
 			db.i("no fight, no end ^^");
 			return false;
 		}
-		
+
 		return arena.type().checkAndCommit();
 	}
 }

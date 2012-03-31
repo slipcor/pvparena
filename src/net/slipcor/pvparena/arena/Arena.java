@@ -134,6 +134,7 @@ public class Arena {
 		this.name = name;
 		
 		ArenaType aType = PVPArena.instance.getAtm().getType(type);
+		
 		this.type = aType.cloneThis();
 		
 		db.i("loading Arena " + name);

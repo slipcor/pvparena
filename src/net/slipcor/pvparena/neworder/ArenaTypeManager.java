@@ -11,7 +11,11 @@ public class ArenaTypeManager {
 	private final List<ArenaType> types;
 	
 	public ArenaTypeManager(PVPArena instance) {
-		types = new Loader<ArenaType>(instance, new File(instance.getDataFolder().toString() + "/plugins"), new Object[] {}).load();
+		File path = new File(instance.getDataFolder().toString() + "/arenas");
+		if (!path.exists()) {
+			path.mkdir();
+		}
+		types = new Loader<ArenaType>(instance, path, new Object[] {}).load();
 	}
 	
 	public ArenaType getType(String tName) {

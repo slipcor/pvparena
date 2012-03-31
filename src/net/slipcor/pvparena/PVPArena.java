@@ -102,8 +102,18 @@ public class PVPArena extends JavaPlugin {
 			}
 			Arena a = null;
 			if (args.length > 2) {
+				if (atm.getType(args[2]) == null) {
+					Arenas.tellPlayer(player,  Language.parse("arenatypeunknown", args[2]));
+					return true;
+				}
+				
 				a = Arenas.loadArena(args[0], args[2]);
 			} else {
+				if (atm.getType("teams") == null) {
+					Arenas.tellPlayer(player,  Language.parse("arenatypeunknown", "teams"));
+					return true;
+				}
+				
 				a = Arenas.loadArena(args[0], "teams");
 			}
 			a.setWorld(player.getWorld().getName());
@@ -206,7 +216,6 @@ public class PVPArena extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-			getServer().getPluginManager().registerEvents(customListener, this);
 		}
 
 		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
@@ -220,6 +229,7 @@ public class PVPArena extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
+		getServer().getPluginManager().registerEvents(customListener, this);
 
 		if (getConfig().get("language") != null
 				&& getConfig().get("onlyPVPinArena") == null) {
