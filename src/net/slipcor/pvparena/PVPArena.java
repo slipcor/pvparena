@@ -20,6 +20,7 @@ import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.managers.Players;
+import net.slipcor.pvparena.neworder.ArenaTypeManager;
 import net.slipcor.pvparena.register.payment.Method;
 
 import org.bukkit.Bukkit;
@@ -58,6 +59,8 @@ public class PVPArena extends JavaPlugin {
 	private final ServerListener serverListener = new ServerListener();
 	private final CustomListener customListener = new CustomListener();
 	private final static Debug db = new Debug(1);
+	
+	private ArenaTypeManager atm = null;
 
 	/**
 	 * Command handling
@@ -196,6 +199,8 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		atm = new ArenaTypeManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
 
@@ -328,4 +333,8 @@ public class PVPArena extends JavaPlugin {
 
         return (economy != null);
     }
+
+	public ArenaTypeManager getAtm() {
+		return atm;
+	}
 }

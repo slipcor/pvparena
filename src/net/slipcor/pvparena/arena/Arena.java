@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.lang.reflect.*;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
@@ -134,35 +132,9 @@ public class Arena {
 	 */
 	public Arena(String name, String type) {
 		this.name = name;
-
-		String className = "net.slipcor.pvparena.arenas." + type;
-		Class<?> cl = null;
-		try {
-			cl = Class.forName(className);
-		} catch (ClassNotFoundException e3) {
-			e3.printStackTrace();
-		}
-		Constructor<?> con = null;
-		try {
-			con = cl.getConstructor(String.class);
-		} catch (SecurityException e2) {
-			e2.printStackTrace();
-		} catch (NoSuchMethodException e2) {
-			e2.printStackTrace();
-		}
-		Object xyz = null;
-		try {
-			xyz = con.newInstance(type);
-		} catch (IllegalArgumentException e1) {
-			e1.printStackTrace();
-		} catch (InstantiationException e1) {
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
-		} catch (InvocationTargetException e1) {
-			e1.printStackTrace();
-		}
-		this.type = (ArenaType) xyz;
+		
+		ArenaType aType = PVPArena.instance.getAtm().getType(type);
+		this.type = aType.cloneThis();
 		
 		db.i("loading Arena " + name);
 		File file = new File("plugins/pvparena/config_" + name + ".yml");

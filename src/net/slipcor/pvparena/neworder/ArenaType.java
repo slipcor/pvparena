@@ -15,6 +15,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import com.nodinchan.loader.Loadable;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -41,14 +43,16 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  Object xyz = con.newInstance(param1, param2);
 
  */
-public abstract class ArenaType {
-	private final String name;
-	protected final Arena arena;
+public class ArenaType extends Loadable {
+	protected Arena arena;
 	protected final static Debug db = new Debug(45);
 
-	public ArenaType(Arena aArena, String sName) {
-		this.name = sName;
-		this.arena = aArena;
+	public ArenaType(String sName) {
+		super(sName);
+	}
+	
+	protected void setArena(Arena arena) {
+		this.arena = arena;
 	}
 
 	/**
@@ -63,10 +67,6 @@ public abstract class ArenaType {
 	 */
 	public boolean usesFlags() {
 		return false;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String checkSpawns(Set<String> list) {
@@ -134,7 +134,7 @@ public abstract class ArenaType {
 	}
 
 	public String checkFlags(Set<String> list) {
-		return null; // notneeded by default, so true: no error
+		return null;
 	}
 
 	public boolean isLoungeCommand(Player player, String cmd) {
@@ -519,5 +519,14 @@ public abstract class ArenaType {
 
 	public void parseMove(Player player) {
 		return;
+	}
+
+	public ArenaType cloneThis() {
+		try {
+			return (ArenaType) this.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
