@@ -51,6 +51,10 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.20 - fix dead players still wearing their armor
+* v0.6.40.19 - set debug ingame /pa debug [value]
+* v0.6.40.18 - recognize players running outside of the arena
+* v0.6.40.17 - fix woolhead removal for flag arenas
 * v0.6.40.16 - fix ready block hit while countdown teleporting ppl inside the arena. Bad, bad players!
 * v0.6.40.15 - hackfix Potion Effects not vanishing. Bad, bad API!
 * v0.6.40.14 - fix resetting of player stats -.-

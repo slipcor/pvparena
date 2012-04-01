@@ -575,6 +575,13 @@ public class Commands {
 		} else if ((args.length == 2 || args.length == 3)
 				&& args[0].equalsIgnoreCase("stats")) {
 			return parseStats(arena, player, args);
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("borders")) {
+			ArenaRegion region = arena.regions.get(args[1]);
+			if (region == null) {
+				Arenas.tellPlayer(player, "Region unknown: " + args[1]);
+				return true;
+			}
+			region.showBorder(player);
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
 			// pa [name] set [node] [value]
 			arena.sm.set(player, args[1], args[2]);

@@ -128,6 +128,11 @@ public class PVPArena extends JavaPlugin {
 			Arenas.unload(args[0]);
 			Arenas.tellPlayer(player, Language.parse("removed", args[0]));
 			return true;
+		} else if (args[0].equalsIgnoreCase("debug")) {
+			Arena arena = Arenas.getArenaByPlayer(player);
+			if (arena != null) {
+				getConfig().set("debug", args[1]);
+			}
 		} else if (args[0].equalsIgnoreCase("chat")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
@@ -201,7 +206,6 @@ public class PVPArena extends JavaPlugin {
 
 		if (getServer().getPluginManager().getPlugin("Spout") != null) {
 			spoutHandler = SpoutManager.getInstance().toString();
-			getServer().getPluginManager().registerEvents(customListener, this);
 		}
 
 		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
@@ -215,6 +219,7 @@ public class PVPArena extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(serverListener, this);
+		getServer().getPluginManager().registerEvents(customListener, this);
 
 		if (getConfig().get("language") != null
 				&& getConfig().get("onlyPVPinArena") == null) {

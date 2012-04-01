@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -259,7 +260,8 @@ public class ArenaRegion {
 	public void restore() {
 		db.i("restoring region " + name);
 		if (world == null) {
-			PVPArena.instance.getLogger().severe("[PA-debug] world is null in region " + name);
+			PVPArena.instance.getLogger().severe(
+					"[PA-debug] world is null in region " + name);
 			return;
 		} else if (world.getEntities() == null) {
 			return;
@@ -269,6 +271,50 @@ public class ArenaRegion {
 					|| (!contains(e.getLocation())))
 				continue;
 			e.remove();
+		}
+	}
+
+	public void showBorder(Player player) {
+		if (cuboid) {
+			// move along exclusive x, create miny+maxy+minz+maxz
+			for (int x = min.getBlockX() + 1; x < max.getBlockX(); x++) {
+				player.sendBlockChange(new Location(world, x, min.getBlockY(),
+						min.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, x, min.getBlockY(),
+						max.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, x, max.getBlockY(),
+						min.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, x, max.getBlockY(),
+						max.getBlockZ()), Material.WOOL, (byte) 0);
+			}
+			// move along exclusive y, create minx+maxx+minz+maxz
+			for (int y = min.getBlockY() + 1; y < max.getBlockY(); y++) {
+				player.sendBlockChange(new Location(world, min.getBlockX(), y,
+						min.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, min.getBlockX(), y,
+						max.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, max.getBlockX(), y,
+						min.getBlockZ()), Material.WOOL, (byte) 0);
+				player.sendBlockChange(new Location(world, max.getBlockX(), y,
+						max.getBlockZ()), Material.WOOL, (byte) 0);
+			}
+			// move along inclusive z, create minx+maxx+miny+maxy
+			for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+				player.sendBlockChange(
+						new Location(world, min.getBlockX(), min.getBlockY(), z),
+						Material.WOOL, (byte) 0);
+				player.sendBlockChange(
+						new Location(world, min.getBlockX(), max.getBlockY(), z),
+						Material.WOOL, (byte) 0);
+				player.sendBlockChange(
+						new Location(world, max.getBlockX(), min.getBlockY(), z),
+						Material.WOOL, (byte) 0);
+				player.sendBlockChange(
+						new Location(world, max.getBlockX(), max.getBlockY(), z),
+						Material.WOOL, (byte) 0);
+			}
+		} else {
+			//TODO - sphere generation
 		}
 	}
 }

@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
  * 
  * @author slipcor
  * 
- * @version v0.6.20
+ * @version v0.6.40
  * 
  */
 
@@ -101,6 +101,8 @@ public class Debug {
 	}
 
 	public static void load(PVPArena instance) {
+		Debug.check.clear();
+		level = 0;
 		String debugs = instance.getConfig().getString("debug");
 		if (!debugs.equals("none")) {
 			if (debugs.equals("all") || debugs.equals("full")) {

@@ -1033,4 +1033,20 @@ public class Arena {
 		return ChatColor.valueOf(paTeams.get(Players.getTeam(player)))
 				+ player.getName();
 	}
+
+	public void checkForQuitters() {
+		if (!this.regions.containsKey("battlefield")) {
+			db.i("region battlefield not set, aborting quit check");
+			return;
+		}
+		if (!this.regions.containsKey("spectator")) {
+			db.i("region spectator not set, aborting quit check");
+			return;
+		}
+		for (ArenaPlayer ap : Players.getPlayers(this)) {
+			if (!this.contains(ap.get().getLocation())) {
+				Players.playerLeave(this, ap.get());
+			}
+		}
+	}
 }
