@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.40
  * 
  */
 public class Language {
@@ -269,6 +269,8 @@ public class Language {
 				"A flag claimed by Team %1% is being unclaimed by %2%!");
 		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
 		config.addDefault("lang.regionremoved", "Region removed: %1%");
+
+		config.addDefault("lang.select2", "Select two points before trying to save.");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");

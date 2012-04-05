@@ -35,6 +35,7 @@ public class ArenaRegion {
 	protected Vector max;
 	protected World world;
 	public String name;
+	private regionType type;
 
 	public static enum regionType {
 		CUBOID, SPHERIC
@@ -58,10 +59,14 @@ public class ArenaRegion {
 			Location[] sane = sanityCheck(lMin, lMax);
 			lMin = sane[0].clone();
 			lMax = sane[1].clone();
+			cuboid = true;
+		} else {
+			cuboid = false;
 		}
 		min = lMin.toVector();
 		max = lMax.toVector();
 		world = lMin.getWorld();
+		this.type = type;
 		db.i("created region: " + sName + " - "
 				+ (type.equals(regionType.CUBOID) ? "cuboid" : "sphere"));
 	}
@@ -316,5 +321,9 @@ public class ArenaRegion {
 		} else {
 			//TODO - sphere generation
 		}
+	}
+	
+	public regionType getTye() {
+		return type;
 	}
 }

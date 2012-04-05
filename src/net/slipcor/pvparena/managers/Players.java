@@ -800,16 +800,21 @@ public class Players {
 			arena.resetPlayer(player,
 					arena.cfg.getString("tp.death", "spectator"));
 		}
+		ArenaPlayer tempAP = null;
 		for (ArenaPlayer ap : deadPlayers.keySet()) {
 			if (ap.get().equals(player)) {
-				ap.arena.resetPlayer(player,
-						ap.arena.cfg.getString("tp.death", "spectator"));
-				deadPlayers.remove(ap);
-				ap.arena = null;
-				return;
+				tempAP = ap;
+				if (ap.arena != null) {
+					ap.arena.resetPlayer(player,
+							ap.arena.cfg.getString("tp.death", "spectator"));
+					ap.arena = null;
+				} else {
+					System.out.print("[PA-debug] Arena NULL: " + player.getName());
+				}
+				break;
 			}
 		}
-		deadPlayers.remove(player);
+		deadPlayers.remove(tempAP);
 	}
 
 	public static Player getLastDamagingPlayer(Event eEvent) {

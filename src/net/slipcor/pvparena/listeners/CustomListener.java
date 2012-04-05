@@ -39,11 +39,18 @@ public class CustomListener implements Listener {
 			return;
 		}
 		
+		db.i("InventoryClick: arena player");
+		
 		if (!arena.cfg.getBoolean("arenatype.flags")) {
 			return;
 		}
-		
-		if (!event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getRawSlot() != 5) {
+		if (!arena.cfg.getBoolean("protection.inventory")) {
+			if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
+				if (event.getRawSlot() != 5) {
+					return;
+				}
+			}
+		} else if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 			return;
 		}
 		

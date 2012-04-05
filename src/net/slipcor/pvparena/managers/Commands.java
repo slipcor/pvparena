@@ -635,7 +635,12 @@ public class Commands {
 							Language.parse("regionnotbeingset", arena.name));
 					return true;
 				}
-
+				
+				if (arena.pos1 == null || arena.pos2 == null) {
+					Arenas.tellPlayer(player, Language.parse("select2"));
+					return true;
+				}
+				
 				Vector realMin = new Vector(
 						Math.min(arena.pos1.getBlockX(), arena.pos2.getBlockX()),
 						Math.min(arena.pos1.getBlockY(), arena.pos2.getBlockY()),
@@ -1047,7 +1052,7 @@ public class Commands {
 			if (!s.equals("")) {
 				s += " | ";
 			}
-			s += p.name;
+			s += p.name + " ("+p.getTye().name().charAt(0)+")";
 		}
 		return s;
 	}

@@ -51,6 +51,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.26 - fix NPE when not selecting a region before trying to save the selection
+* v0.6.40.25 - fix inventory protection
+* v0.6.40.24 - fix region protection issues
 * v0.6.40.20 - fix dead players still wearing their armor
 * v0.6.40.19 - set debug ingame /pa debug [value]
 * v0.6.40.18 - recognize players running outside of the arena
