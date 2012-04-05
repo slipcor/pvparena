@@ -60,10 +60,10 @@ public class Players {
 			if (team.getTeamMembers().size() < 1) {
 				continue;
 			}
-			
+
 			if (!result.equals(""))
 				result += ", ";
-			
+
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (!result.equals(""))
 					result += ", ";
@@ -161,9 +161,9 @@ public class Players {
 		if (arena.cfg.getBoolean("ready.checkEach")) {
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
-				if (!ap.ready) {
-					return 0;
-				}
+					if (!ap.ready) {
+						return 0;
+					}
 			}
 		}
 
@@ -177,16 +177,16 @@ public class Players {
 				return -6;
 			}
 		}
-		
+
 		int arenaTypeCheck = arena.type().ready(arena);
 		if (arenaTypeCheck != 0) {
 			return arenaTypeCheck;
 		}
-		
+
 		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer p :team.getTeamMembers()) {
+			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("checking class: " + p.get().getName());
-				
+
 				if (p.getaClass().equals("")) {
 					db.i("player has class: " + p.getaClass());
 					// player no class!
@@ -200,7 +200,7 @@ public class Players {
 	private static int countReadyPlayers(Arena arena) {
 		int sum = 0;
 		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer p :team.getTeamMembers()) {
+			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (p.ready) {
 					sum++;
 				}
@@ -313,10 +313,9 @@ public class Players {
 	 *            the message to send
 	 * @param player
 	 */
-	public static void tellEveryone(Arena arena, String msg,
-			ChatColor c, Player player) {
-		tellEveryone(arena, c + player.getName() + ChatColor.WHITE
-							+ ": " + msg);
+	public static void tellEveryone(Arena arena, String msg, ChatColor c,
+			Player player) {
+		tellEveryone(arena, c + player.getName() + ChatColor.WHITE + ": " + msg);
 	}
 
 	/**
@@ -327,7 +326,8 @@ public class Players {
 	public static HashSet<ArenaPlayer> getPlayers(Arena arena) {
 		HashSet<ArenaPlayer> result = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
-			if ((arena != null) && (p.getArena() == null || !p.getArena().equals(arena))) {
+			if ((arena != null)
+					&& (p.getArena() == null || !p.getArena().equals(arena))) {
 				continue;
 			}
 			result.add(p);
@@ -356,9 +356,10 @@ public class Players {
 	 */
 	public static void setClass(Player player, String s) {
 		ArenaPlayer ap = parsePlayer(player);
-		
+
 		if (ap.getArena() == null) {
-			System.out.print("[PA-debug] failed to set class " + s + " to player " + player.getName());
+			System.out.print("[PA-debug] failed to set class " + s
+					+ " to player " + player.getName());
 			return;
 		}
 		for (ArenaClass ac : ap.getArena().getClasses()) {
@@ -367,7 +368,8 @@ public class Players {
 				return;
 			}
 		}
-		System.out.print("[PA-debug] failed to set class " + s + " to player " + player.getName());
+		System.out.print("[PA-debug] failed to set class " + s + " to player "
+				+ player.getName());
 	}
 
 	/**
@@ -452,8 +454,8 @@ public class Players {
 	 *            the player to remove
 	 */
 	public static void remove(Arena arena, Player player) {
-		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(player
-				.getName()).isSpectator());
+		PALeaveEvent event = new PALeaveEvent(arena, player, players.get(
+				player.getName()).isSpectator());
 		Bukkit.getPluginManager().callEvent(event);
 
 		players.get(player.getName()).setArena(null);
@@ -533,19 +535,18 @@ public class Players {
 			Players.tellEveryoneExcept(
 					arena,
 					player,
-					Language.parse("playerleave",
-							team.colorizePlayer(player)
-									+ ChatColor.YELLOW));
+					Language.parse("playerleave", team.colorizePlayer(player)
+							+ ChatColor.YELLOW));
 
 			Arenas.tellPlayer(player, Language.parse("youleave"));
 		}
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
-		
+
 		if (arena.START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			arena.START_ID = -1;
 		}
-		
+
 		ap.destroy();
 
 		if (!spectator && arena.fightInProgress) {
@@ -581,14 +582,12 @@ public class Players {
 		switch (cause) {
 		case ENTITY_ATTACK:
 			if ((damager instanceof Player) && (team != null)) {
-				return team.colorizePlayer(ap.get())
-						 + ChatColor.YELLOW;
+				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
 			return Language.parse("custom");
 		case PROJECTILE:
 			if ((damager instanceof Player) && (team != null)) {
-				return team.colorizePlayer(ap.get())
-						+ ChatColor.YELLOW;
+				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
 			return Language.parse(cause.toString().toLowerCase());
 		default:
@@ -649,10 +648,12 @@ public class Players {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * fetch a dead arena player
-	 * @param player the player to fetch
+	 * 
+	 * @param player
+	 *            the player to fetch
 	 * @return the instance of the dead arena player
 	 */
 	public static ArenaPlayer getDeadPlayer(Player player) {
@@ -676,16 +677,22 @@ public class Players {
 			arena.resetPlayer(player,
 					arena.cfg.getString("tp.death", "spectator"));
 		}
+		ArenaPlayer tempAP = null;
 		for (ArenaPlayer ap : deadPlayers.keySet()) {
 			if (ap.get().equals(player)) {
-				ap.getArena().resetPlayer(player,
-						ap.getArena().cfg.getString("tp.death", "spectator"));
-				deadPlayers.remove(ap);
-				ap.setArena(null);
-				return;
+				tempAP = ap;
+				if (ap.getArena() != null) {
+					ap.getArena().resetPlayer(player,
+							ap.getArena().cfg.getString("tp.death", "spectator"));
+					ap.setArena(null);
+				} else {
+					System.out.print("[PA-debug] Arena NULL: "
+							+ player.getName());
+				}
+				break;
 			}
 		}
-		deadPlayers.remove(player);
+		deadPlayers.remove(tempAP);
 	}
 
 	public static Player getLastDamagingPlayer(Event eEvent) {
@@ -719,7 +726,7 @@ public class Players {
 			}
 		}
 		db.i("last damaging player is null");
-		db.i("last damaging event: "+eEvent.getEventName());
+		db.i("last damaging event: " + eEvent.getEventName());
 		return null;
 	}
 }

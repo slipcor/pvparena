@@ -20,7 +20,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.40
  * 
  */
 public class Language {
@@ -124,7 +124,6 @@ public class Language {
 		config.addDefault("lang.betplaced", "Your bet on %1% has been placed.");
 		config.addDefault("lang.regionset", "Setting region enabled.");
 		config.addDefault("lang.regionsaved", "Region saved.");
-		config.addDefault("lang.regionremoved", "Region removed.");
 		config.addDefault("lang.regionnotremoved", "There is no region setup.");
 		config.addDefault("lang.youwon", "You won %1%");
 		config.addDefault("lang.awarded", "You have been awarded %1%");
@@ -270,6 +269,10 @@ public class Language {
 		config.addDefault("lang.domunclaimingby",
 				"A flag claimed by Team %1% is being unclaimed by %2%!");
 		
+		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
+		config.addDefault("lang.regionremoved", "Region removed: %1%");
+		
+		config.addDefault("lang.select2", "Select two points before trying to save.");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");

@@ -110,7 +110,7 @@ public class EntityListener implements Listener {
 				&& arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
 		}
-		player.getInventory().clear();
+		Inventories.clearInventory(player);
 
 		arena.tpPlayerToCoordName(player, "spectator");
 		

@@ -171,32 +171,23 @@ public class Commands {
 		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
-		
+
 		ArenaTeam team = arena.getTeam(sTeam);
 		ArenaPlayer ap = Players.parsePlayer(player);
-		
+
 		team.add(ap);
-		
+
 		Inventories.prepareInventory(arena, player);
 		if (Players.countPlayersInTeams(arena) < 2) {
-			Announcement.announce(
-					arena,
-					type.START,
+			Announcement.announce(arena, type.START,
 					Language.parse("joinarena", arena.name));
 		}
 		String coloredTeam = team.colorize();
-		Arenas.tellPlayer(player,
-				Language.parse("youjoined", coloredTeam));
-		Announcement.announce(
-				arena,
-				type.JOIN,
-				Language.parse("playerjoined", player.getName(),
-						coloredTeam));
-		Players.tellEveryoneExcept(
-				arena,
-				player,
-				Language.parse("playerjoined", player.getName(),
-						coloredTeam));
+		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam));
+		Announcement.announce(arena, type.JOIN,
+				Language.parse("playerjoined", player.getName(), coloredTeam));
+		Players.tellEveryoneExcept(arena, player,
+				Language.parse("playerjoined", player.getName(), coloredTeam));
 
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
@@ -233,12 +224,8 @@ public class Commands {
 		}
 
 		if (Arenas.getArenaByPlayer(player) != null) {
-			if (!Players.isPartOf(arena, player)
-					|| !Players.parsePlayer(player).isSpectator()) {
-
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
-				return false;
-			}
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
+			return false;
 		}
 
 		if (player.isInsideVehicle()) {
@@ -582,6 +569,13 @@ public class Commands {
 		} else if ((args.length == 2 || args.length == 3)
 				&& args[0].equalsIgnoreCase("stats")) {
 			return parseStats(arena, player, args);
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("borders")) {
+			ArenaRegion region = arena.regions.get(args[1]);
+			if (region == null) {
+				Arenas.tellPlayer(player, "Region unknown: " + args[1]);
+				return true;
+			}
+			region.showBorder(player);
 		} else if (args.length == 3 && args[0].equalsIgnoreCase("set")) {
 			// pa [name] set [node] [value]
 			arena.sm.set(player, args[1], args[2]);
@@ -633,6 +627,11 @@ public class Commands {
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
 							Language.parse("regionnotbeingset", arena.name));
+					return true;
+				}
+
+				if (arena.pos1 == null || arena.pos2 == null) {
+					Arenas.tellPlayer(player, Language.parse("select2"));
 					return true;
 				}
 
@@ -702,7 +701,7 @@ public class Commands {
 	 * @param player
 	 *            the player to check
 	 * @param args
-	 *            the array {"stats", [stattype] {asc/desc}}
+	 *            the array {"stats", [stattype], {asc/desc}}
 	 * @return false if the command help should be displayed, true otherwise
 	 */
 	private static boolean parseStats(Arena arena, Player player, String[] args) {
@@ -766,7 +765,7 @@ public class Commands {
 	public static boolean parseBetCommand(Arena arena, Player player,
 			String[] args) {
 		ArenaPlayer ap = Players.parsePlayer(player);
-		
+
 		// /pa bet [name] [amount]
 		if (arena.getTeam(ap) != null) {
 			Arenas.tellPlayer(player, Language.parse("betnotyours"));
@@ -778,8 +777,7 @@ public class Commands {
 
 		Player p = Bukkit.getPlayer(args[1]);
 		ap = Players.parsePlayer(p);
-		if ((arena.getTeam(args[1]) == null)
-				&& (arena.getTeam(ap) == null)) {
+		if ((arena.getTeam(args[1]) == null) && (arena.getTeam(ap) == null)) {
 			Arenas.tellPlayer(player, Language.parse("betoptions"));
 			return true;
 		}
@@ -879,7 +877,7 @@ public class Commands {
 			if (!s.equals("")) {
 				s += " | ";
 			}
-			s += p.name;
+			s += p.name + " ("+p.getType().name().charAt(0)+")";
 		}
 		return s;
 	}
@@ -994,8 +992,7 @@ public class Commands {
 				+ colorVar(arena.cfg.getString("game.powerups"))
 				+ ")"
 				+ " | "
-				+ colorVar("randomSpawn",
-						arena.type().allowsRandomSpawns())
+				+ colorVar("randomSpawn", arena.type().allowsRandomSpawns())
 				+ " | "
 				+ colorVar("refill",
 						arena.cfg.getBoolean("game.refillInventory", false)));
@@ -1055,7 +1052,7 @@ public class Commands {
 		db.i("-------------------------------");
 		db.i("Debug parsing Arena config for arena: " + arena);
 		db.i("-------------------------------");
-		
+
 		Arenas.loadArena(arena.name, arena.type().getName());
 
 		db.i("-------------------------------");

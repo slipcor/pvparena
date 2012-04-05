@@ -141,6 +141,13 @@ public class PVPArena extends JavaPlugin {
 			Arenas.unload(args[0]);
 			Arenas.tellPlayer(player, Language.parse("removed", args[0]));
 			return true;
+		} else if (args[0].equalsIgnoreCase("debug")) {
+
+			Arena arena = Arenas.getArenaByPlayer(player);
+
+			if (arena != null) {
+				getConfig().set("debug", args[1]);
+			}
 		} else if (args[0].equalsIgnoreCase("chat")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {

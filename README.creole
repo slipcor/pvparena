@@ -51,6 +51,17 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.40.26 - fix NPE when not selecting a region before trying to save the selection
+* v0.6.40.25 - fix inventory protection
+* v0.6.40.24 - fix region protection issues
+* v0.6.40.20 - fix dead players still wearing their armor
+* v0.6.40.19 - set debug ingame /pa debug [value]
+* v0.6.40.18 - recognize players running outside of the arena
+* v0.6.40.17 - fix woolhead removal for flag arenas
+* v0.6.40.16 - fix ready block hit while countdown teleporting ppl inside the arena. Bad, bad players!
+* v0.6.40.15 - hackfix Potion Effects not vanishing. Bad, bad API!
+* v0.6.40.14 - fix resetting of player stats -.-
+* v0.6.40.13 - fix abusing the spectator state
 * v0.6.40.11 - fix a random NPE; fix WoolHead enforcement
 * v0.6.40.10 - fix powerup type REPAIR and a NPE in flag arenas
 * v0.6.40.9 - fix another issue with the startup countdown

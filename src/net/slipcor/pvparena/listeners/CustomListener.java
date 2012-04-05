@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.6.40
  * 
  */
 public class CustomListener implements Listener {
@@ -26,28 +26,37 @@ public class CustomListener implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		
 		Player p = (Player) event.getWhoClicked();
-		
+
 		Arena arena = Arenas.getArenaByPlayer(p);
 
 		if (arena == null) {
 			return;
 		}
-		
+
 		if (event.isShiftClick()) {
 			event.setCancelled(true);
 			return;
 		}
-		
-		if (!arena.type().usesFlags()) {
+
+		db.i("InventoryClick: arena player");
+
+		if (!arena.cfg.getBoolean("arenatype.flags")) {
 			return;
 		}
-		
-		if (!event.getInventory().getType().equals(InventoryType.CRAFTING) || event.getRawSlot() != 5) {
+
+		if (!arena.cfg.getBoolean("protection.inventory")) {
+
+			if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
+				if (event.getRawSlot() != 5) {
+					return;
+				}
+			}
+		} else if (event.getInventory().getType()
+				.equals(InventoryType.CRAFTING)) {
 			return;
 		}
-		
+
 		db.i("cancelling!");
 		// player is carrying a flag
 		event.setCancelled(true);

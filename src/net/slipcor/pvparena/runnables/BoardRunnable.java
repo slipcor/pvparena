@@ -39,6 +39,7 @@ public class BoardRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("BoardRunnable commiting");
+		a.checkForQuitters();
 		for (ArenaBoard ab : Arenas.boards.values()) {
 			db.i("");
 			if (ab.arena.name.equals(a.name)) {

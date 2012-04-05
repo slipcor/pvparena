@@ -159,15 +159,7 @@ public class ArenaPlayer {
 		spectator = false;
 		ready = false;
 
-		losses = 0;
-		wins = 0;
-		kills = 0;
-		deaths = 0;
-		damage = 0;
-		maxdamage = 0;
-		damagetake = 0;
-		maxdamagetake = 0;
-		setArena(null);
+		arena = null;
 	}
 
 	public String getName() {

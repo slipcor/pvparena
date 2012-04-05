@@ -71,13 +71,12 @@ public class Arena {
 	private final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
-	
+
 	private final ArenaType type;
 
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
 
-	
 	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
 	/**
 	 * TeamName => PlayerName
@@ -132,11 +131,11 @@ public class Arena {
 	 */
 	public Arena(String name, String type) {
 		this.name = name;
-		
+
 		ArenaType aType = PVPArena.instance.getAtm().getType(type);
-		
+
 		this.type = aType.cloneThis();
-		
+
 		db.i("loading Arena " + name);
 		File file = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!file.exists()) {
@@ -165,10 +164,9 @@ public class Arena {
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				
+
 				if (!type.allowsRandomSpawns()) {
-					tpPlayerToCoordName(ap.get(), team.getName()
-							+ "spawn");
+					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 				} else {
 					tpPlayerToCoordName(ap.get(), "spawn");
 				}
@@ -176,9 +174,9 @@ public class Arena {
 				playerCount++;
 			}
 		}
-		
+
 		type.init();
-		
+
 		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
 			db.i("arena timing!");
@@ -226,7 +224,7 @@ public class Arena {
 
 		ArenaPlayer player = Players.parsePlayer(p);
 		PermissionAttachment pa = p.addAttachment(PVPArena.instance);
-		
+
 		for (String entry : perms.keySet()) {
 			pa.setPermission(entry, perms.get(entry));
 		}
@@ -312,12 +310,12 @@ public class Arena {
 		Bukkit.getPluginManager().callEvent(event);
 
 		db.i("preparing player: " + player.getName());
-		
+
 		ArenaPlayer ap = Players.parsePlayer(player);
-		
+
 		ap.setArena(this);
 		this.addPlayer(ap);
-				
+
 		saveMisc(player); // save player health, fire tick, hunger etc
 		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
@@ -328,7 +326,7 @@ public class Arena {
 		player.setExp(0);
 		player.setGameMode(GameMode.getByValue(0));
 		for (PotionEffect pe : player.getActivePotionEffects()) {
-			player.removePotionEffect(pe.getType());
+			player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
 		}
 
 	}
@@ -371,9 +369,7 @@ public class Arena {
 				paChat.add(player.getName());
 			}
 		}
-		
-		
-		
+
 		if (cfg.getBoolean("messages.colorNick", true))
 			colorizePlayer(player, "a");
 		if (place.equals("spectator")) {
@@ -448,7 +444,7 @@ public class Arena {
 	public void removePlayer(Player player, String tploc) {
 		db.i("removing player " + player.getName() + " (soft), tp to " + tploc);
 		resetPlayer(player, tploc);
-		
+
 		ArenaPlayer ap = Players.parsePlayer(player);
 		this.removeTeam(ap);
 		Players.remove(this, player);
@@ -474,9 +470,9 @@ public class Arena {
 
 		removePermissions(player);
 		ArenaPlayer ap = Players.parsePlayer(player);
-		
+
 		ap.getState().unload();
-		
+
 		db.i("string = " + string);
 		Players.setTelePass(player, true);
 		if (string.equalsIgnoreCase("old")) {
@@ -603,15 +599,14 @@ public class Arena {
 		}
 
 		ArenaTeam team = this.getTeam(Players.parsePlayer(player));
-		
+
 		if (team == null) {
 			return;
 		}
 
 		type.parseRespawn(player, team, lives, cause, damager);
-		
-		if (!type.allowsRandomSpawns()
-				&& !team.getName().equals("free")) {
+
+		if (!type.allowsRandomSpawns() && !team.getName().equals("free")) {
 			tpPlayerToCoordName(player, team.getName() + "spawn");
 		} else {
 			tpPlayerToCoordName(player, "spawn");
@@ -631,7 +626,7 @@ public class Arena {
 	 */
 	public void colorizePlayer(Player player, String color) {
 		db.i("colorizing player " + player.getName() + "; color " + color);
-		
+
 		if (color != null && color.equals("")) {
 			player.setDisplayName(player.getName());
 
@@ -852,8 +847,6 @@ public class Arena {
 		cfg.save();
 	}
 
-	
-
 	public int countActiveTeams() {
 		db.i("counting active teams");
 
@@ -889,7 +882,8 @@ public class Arena {
 		teleportAllToSpawn();
 		fightInProgress = true;
 		Players.tellEveryone(this, Language.parse("begin"));
-		Announcement.announce(this, Announcement.type.START, Language.parse("begin"));
+		Announcement.announce(this, Announcement.type.START,
+				Language.parse("begin"));
 	}
 
 	public void spawnCampPunish() {
@@ -925,7 +919,7 @@ public class Arena {
 	public void removePlayer(ArenaPlayer player) {
 		this.players.remove(player);
 	}
-	
+
 	public void addPlayer(ArenaPlayer player) {
 		this.players.add(player);
 	}
@@ -933,7 +927,7 @@ public class Arena {
 	public HashSet<ArenaTeam> getTeams() {
 		return teams;
 	}
-	
+
 	public ArenaTeam getTeam(ArenaPlayer player) {
 		for (ArenaTeam team : teams) {
 			if (team.getTeamMembers().contains(player)) {
@@ -942,7 +936,7 @@ public class Arena {
 		}
 		return null;
 	}
-	
+
 	public ArenaTeam getTeam(String name) {
 		for (ArenaTeam team : teams) {
 			if (team.getName().equalsIgnoreCase(name)) {
@@ -951,9 +945,7 @@ public class Arena {
 		}
 		return null;
 	}
-	
-	
-	
+
 	public void removeTeam(ArenaPlayer player) {
 		for (ArenaTeam team : teams) {
 			team.remove(player);
@@ -980,8 +972,24 @@ public class Arena {
 	public void addClass(String className, ItemStack[] items) {
 		classes.add(new ArenaClass(className, items));
 	}
-	
+
 	public ArenaType type() {
 		return this.type;
+	}
+
+	public void checkForQuitters() {
+		if (!this.regions.containsKey("battlefield")) {
+			db.i("region battlefield not set, aborting quit check");
+			return;
+		}
+		if (!this.regions.containsKey("spectator")) {
+			db.i("region spectator not set, aborting quit check");
+			return;
+		}
+		for (ArenaPlayer ap : Players.getPlayers(this)) {
+			if (!this.contains(ap.get().getLocation())) {
+				Players.playerLeave(this, ap.get());
+			}
+		}
 	}
 }
