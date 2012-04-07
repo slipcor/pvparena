@@ -24,7 +24,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.6.41
  * 
  */
 
@@ -175,9 +175,9 @@ public class Settings {
 			}
 		}
 		Arenas.tellPlayer(player, ChatColor.GRAY + "------ config list ["
-				+ page + "] ------");
+				+ page + "] ------", arena.prefix);
 		for (String node : keys) {
-			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)));
+			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)), arena.prefix);
 		}
 
 	}
@@ -221,7 +221,7 @@ public class Settings {
 				&& !PVPArena.hasCreatePerms(player, arena)) {
 
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("set")));
+					Language.parse("nopermto", Language.parse("set")), arena.prefix);
 			return;
 		}
 
@@ -245,22 +245,22 @@ public class Settings {
 						player,
 						node
 								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")));
+								+ String.valueOf(value.equalsIgnoreCase("true")), arena.prefix);
 			} else if (value.equalsIgnoreCase("false")) {
 				arena.cfg.set(node, Boolean.valueOf(false));
 				Arenas.tellPlayer(
 						player,
 						node
 								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")));
+								+ String.valueOf(value.equalsIgnoreCase("true")), arena.prefix);
 			} else {
-				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!");
-				Arenas.tellPlayer(player, "Valid values: true | false");
+				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!", arena.prefix);
+				Arenas.tellPlayer(player, "Valid values: true | false", arena.prefix);
 				return;
 			}
 		} else if (type.equals("string")) {
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value));
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena.prefix);
 		} else if (type.equals("int")) {
 			int i = 0;
 
@@ -268,11 +268,11 @@ public class Settings {
 				i = Integer.parseInt(value);
 			} catch (Exception e) {
 				Arenas.tellPlayer(player, "No valid int '" + value
-						+ "'! Use numbers without decimals!");
+						+ "'! Use numbers without decimals!", arena.prefix);
 				return;
 			}
 			arena.cfg.set(node, i);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(i));
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(i), arena.prefix);
 		} else if (type.equals("double")) {
 			double d = 0;
 
@@ -280,21 +280,21 @@ public class Settings {
 				d = Double.parseDouble(value);
 			} catch (Exception e) {
 				Arenas.tellPlayer(player, "No valid double '" + value
-						+ "'! Use numbers with period (.)!");
+						+ "'! Use numbers with period (.)!", arena.prefix);
 				return;
 			}
 			arena.cfg.set(node, d);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(d));
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(d), arena.prefix);
 		} else if (type.equals("tp")) {
 			if (!value.equals("exit") && !value.equals("old")
 					&& !value.equals("spectator")) {
-				Arenas.tellPlayer(player, "No valid tp '" + value + "'!");
+				Arenas.tellPlayer(player, "No valid tp '" + value + "'!", arena.prefix);
 				Arenas.tellPlayer(player,
-						"Valid values: exit | old | spectator");
+						"Valid values: exit | old | spectator", arena.prefix);
 				return;
 			}
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value));
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena.prefix);
 		} else if (type.equals("item")) {
 			try {
 				try {
@@ -302,14 +302,14 @@ public class Settings {
 					if (!mat.equals(Material.AIR)) {
 						arena.cfg.set(node, mat.name());
 						Arenas.tellPlayer(player,
-								node + " set to " + String.valueOf(mat.name()));
+								node + " set to " + String.valueOf(mat.name()), arena.prefix);
 					}
 				} catch (Exception e2) {
 					Material mat = Material
 							.getMaterial(Integer.parseInt(value));
 					arena.cfg.set(node, mat.name());
 					Arenas.tellPlayer(player,
-							node + " set to " + String.valueOf(mat.name()));
+							node + " set to " + String.valueOf(mat.name()), arena.prefix);
 				}
 				arena.cfg.save();
 				return;
@@ -317,7 +317,7 @@ public class Settings {
 				// nothing
 			}
 			Arenas.tellPlayer(player, "No valid item '" + value
-					+ "'! Use valid ENUM or item id");
+					+ "'! Use valid ENUM or item id", arena.prefix);
 			return;
 		} else if (type.equals("items")) {
 			String[] ss = value.split(",");
@@ -326,17 +326,17 @@ public class Settings {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					Arenas.tellPlayer(player, "unrecognized item: " + items[i]);
+					Arenas.tellPlayer(player, "unrecognized item: " + items[i], arena.prefix);
 					return;
 				}
 			}
 
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value));
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena.prefix);
 		} else {
-			Arenas.tellPlayer(player, "Unknown node: " + node);
+			Arenas.tellPlayer(player, "Unknown node: " + node, arena.prefix);
 			Arenas.tellPlayer(player,
-					"use /pa [name] set [page] to get a node list");
+					"use /pa [name] set [page] to get a node list", arena.prefix);
 			return;
 		}
 		arena.cfg.save();

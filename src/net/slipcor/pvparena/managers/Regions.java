@@ -18,7 +18,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.27
+ * @version v0.6.41
  * 
  */
 
@@ -101,14 +101,14 @@ public class Regions {
 			db.i("modify&adminperms&wand");
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos1"));
+				Arenas.tellPlayer(player, Language.parse("pos1"), arena.prefix);
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos2"));
+				Arenas.tellPlayer(player, Language.parse("pos2"), arena.prefix);
 				return true; // right click => pos2
 			}
 		}

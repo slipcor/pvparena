@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.41
  * 
  */
 public class Announcement {
@@ -94,7 +94,7 @@ public class Announcement {
 						+ a.name
 						+ "§f] "
 						+ ChatColor.valueOf(a.cfg
-								.getString("announcements.color")) + message);
+								.getString("announcements.color")) + message, a.prefix);
 	}
 
 }

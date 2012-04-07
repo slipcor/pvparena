@@ -26,7 +26,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.41
  * 
  */
 
@@ -135,7 +135,7 @@ public class Flags {
 						db.i("cancelling");
 
 						Arenas.tellPlayer(player,
-								Language.parse(type + "notsafe"));
+								Language.parse(type + "notsafe"), arena.prefix);
 						return;
 					}
 				}
@@ -298,7 +298,7 @@ public class Flags {
 		
 		Spawns.setCoords(arena, block.getLocation(), sName + type);
 
-		Arenas.tellPlayer(player, Language.parse("set" + type, sName));
+		Arenas.tellPlayer(player, Language.parse("set" + type, sName), arena.prefix);
 
 		Arena.regionmodify = "";
 	}
@@ -411,7 +411,7 @@ public class Flags {
 					Arenas.tellPlayer(
 							player,
 							Language.parse("setflag",
-									String.valueOf(flags.size())));
+									String.valueOf(flags.size())), arena.prefix);
 					return true;
 				}
 			}

@@ -30,7 +30,7 @@ import net.slipcor.pvparena.definitions.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.6.41
  * 
  */
 
@@ -91,6 +91,7 @@ public class Configs {
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
+		config.addDefault("general.prefix", "PVP Arena");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
 
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
@@ -311,6 +312,7 @@ public class Configs {
 				Arenas.boards.put(loc, new ArenaBoard(loc, arena));
 			}
 		}
+		arena.prefix = cfg.getString("general.prefix");
 	}
 
 	/**

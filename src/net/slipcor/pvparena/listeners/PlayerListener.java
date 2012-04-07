@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.6.41
  * 
  */
 
@@ -120,7 +120,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 		db.i("command blocked: " + event.getMessage());
-		Arenas.tellPlayer(player, ChatColor.RED + event.getMessage());
+		Arenas.tellPlayer(player, ChatColor.RED + event.getMessage(), arena.prefix);
 		event.setCancelled(true);
 	}
 
@@ -133,7 +133,7 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 
 		db.i("onPlayerDropItem: fighting player");
-		Arenas.tellPlayer(player, (Language.parse("dropitem")));
+		Arenas.tellPlayer(player, (Language.parse("dropitem")), arena.prefix);
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
@@ -244,14 +244,14 @@ public class PlayerListener implements Listener {
 					if (arena.cfg.getBoolean("join.forceEven", false)) {
 						if (!Players.checkEven(arena)) {
 							Arenas.tellPlayer(player,
-									Language.parse("waitequal"));
+									Language.parse("waitequal"), arena.prefix);
 							return; // even teams desired, not done => announce
 						}
 					}
 
 					if (!Regions.checkRegions(arena)) {
 						Arenas.tellPlayer(player,
-								Language.parse("checkregionerror"));
+								Language.parse("checkregionerror"), arena.prefix);
 						return;
 					}
 					
@@ -264,22 +264,22 @@ public class PlayerListener implements Listener {
 					db.i("===============");
 					
 					if (ready == 0) {
-						Arenas.tellPlayer(player, Language.parse("notready"));
+						Arenas.tellPlayer(player, Language.parse("notready"), arena.prefix);
 						return; // team not ready => announce
 					} else if (ready == -1) {
-						Arenas.tellPlayer(player, Language.parse("notready1"));
+						Arenas.tellPlayer(player, Language.parse("notready1"), arena.prefix);
 						return; // team not ready => announce
 					} else if (ready == -2) {
-						Arenas.tellPlayer(player, Language.parse("notready2"));
+						Arenas.tellPlayer(player, Language.parse("notready2"), arena.prefix);
 						return; // team not ready => announce
 					} else if (ready == -3) {
-						Arenas.tellPlayer(player, Language.parse("notready3"));
+						Arenas.tellPlayer(player, Language.parse("notready3"), arena.prefix);
 						return; // team not ready => announce
 					} else if (ready == -4) {
-						Arenas.tellPlayer(player, Language.parse("notready4"));
+						Arenas.tellPlayer(player, Language.parse("notready4"), arena.prefix);
 						return; // arena not ready => announce
 					} else if (ready == -5) {
-						Arenas.tellPlayer(player, Language.parse("notready5"));
+						Arenas.tellPlayer(player, Language.parse("notready5"), arena.prefix);
 						return; // arena not ready => announce
 					} else if (ready == -6) {
 						arena.countDown();
@@ -473,7 +473,7 @@ public class PlayerListener implements Listener {
 
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
 		event.setCancelled(true); // cancel and tell
-		Arenas.tellPlayer(player, Language.parse("usepatoexit"));
+		Arenas.tellPlayer(player, Language.parse("usepatoexit"), arena.prefix);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

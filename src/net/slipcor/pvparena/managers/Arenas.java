@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.41
  * 
  */
 
@@ -214,8 +214,20 @@ public class Arenas {
 	 *            the message to send
 	 */
 	public static void tellPlayer(Player player, String msg) {
+		tellPlayer(player, msg, "PVP Arena");
+	}
+
+	/**
+	 * send a message to a single player
+	 * 
+	 * @param player
+	 *            the player to send to
+	 * @param msg
+	 *            the message to send
+	 */
+	public static void tellPlayer(Player player, String msg, String prefix) {
 		db.i("@" + player.getName() + ": " + msg);
-		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
+		player.sendMessage(ChatColor.YELLOW + "[" + prefix + "]" + ChatColor.WHITE
 				+ msg);
 	}
 

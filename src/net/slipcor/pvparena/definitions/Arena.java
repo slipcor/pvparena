@@ -60,7 +60,7 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.6.41
  * 
  */
 
@@ -120,6 +120,8 @@ public class Arena {
 
 	public int playerCount = 0;
 	public int teamCount = 0;
+	
+	public String prefix = "PVP Arena";
 
 	/**
 	 * arena constructor
@@ -734,7 +736,7 @@ public class Arena {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
-										PVPArena.economy.format(amount)));
+										PVPArena.economy.format(amount)), this.prefix);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -768,7 +770,7 @@ public class Arena {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
-										PVPArena.eco.format(amount)));
+										PVPArena.eco.format(amount)), this.name);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -781,12 +783,12 @@ public class Arena {
 				PVPArena.economy.depositPlayer(player.getName(),
 						cfg.getInt("money.reward", 0));
 				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.economy.format(cfg.getInt("money.reward", 0))));
+						PVPArena.economy.format(cfg.getInt("money.reward", 0))), this.prefix);
 			} else if (PVPArena.eco != null) {
 				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 				ma.add(cfg.getInt("money.reward", 0));
 				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.eco.format(cfg.getInt("money.reward", 0))));
+						PVPArena.eco.format(cfg.getInt("money.reward", 0))), this.prefix);
 			}
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
@@ -809,7 +811,7 @@ public class Arena {
 				player.getInventory().setItem(
 						player.getInventory().firstEmpty(), stack);
 			} catch (Exception e) {
-				Arenas.tellPlayer(player, Language.parse("invfull"));
+				Arenas.tellPlayer(player, Language.parse("invfull"), this.prefix);
 				return;
 			}
 		}

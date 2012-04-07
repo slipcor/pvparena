@@ -37,7 +37,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.38
+ * @version v0.6.41
  * 
  */
 
@@ -355,7 +355,7 @@ public class Players {
 			if (p.arena == null || !p.arena.equals(arena)) {
 				continue;
 			}
-			Arenas.tellPlayer(p.get(), msg);
+			Arenas.tellPlayer(p.get(), msg, arena.prefix);
 		}
 	}
 
@@ -375,7 +375,7 @@ public class Players {
 			}
 			if (p.get().equals(player))
 				continue;
-			Arenas.tellPlayer(p.get(), msg);
+			Arenas.tellPlayer(p.get(), msg, arena.prefix);
 		}
 	}
 
@@ -614,7 +614,7 @@ public class Players {
 			if (classperms) {
 				db.i("checking class perms");
 				if (!(PVPArena.hasPerms(player, "pvparena.class." + className))) {
-					Arenas.tellPlayer(player, Language.parse("classperms"));
+					Arenas.tellPlayer(player, Language.parse("classperms"), arena.prefix);
 					return; // class permission desired and failed =>
 							// announce and OUT
 				}
@@ -630,7 +630,7 @@ public class Players {
 				}
 				arena.paSigns.add(as);
 				if (!as.add(player)) {
-					Arenas.tellPlayer(player, Language.parse("classfull"));
+					Arenas.tellPlayer(player, Language.parse("classfull"), arena.prefix);
 					return;
 				}
 			}
@@ -662,7 +662,7 @@ public class Players {
 							arena.colorizePlayerByTeam(player)
 									+ ChatColor.YELLOW));
 
-			Arenas.tellPlayer(player, Language.parse("youleave"));
+			Arenas.tellPlayer(player, Language.parse("youleave"), arena.prefix);
 		}
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 		

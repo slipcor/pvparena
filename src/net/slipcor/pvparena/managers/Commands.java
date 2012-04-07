@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.6.41
  * 
  */
 
@@ -46,10 +46,10 @@ public class Commands {
 	public static boolean parseChat(Arena arena, Player player) {
 		if (arena.paChat.contains(player.getName())) {
 			arena.paChat.remove(player.getName());
-			Arenas.tellPlayer(player, "You now talk to the public!");
+			Arenas.tellPlayer(player, "You now talk to the public!", arena.prefix);
 		} else {
 			arena.paChat.add(player.getName());
-			Arenas.tellPlayer(player, "You now talk to your team!");
+			Arenas.tellPlayer(player, "You now talk to your team!", arena.prefix);
 		}
 		return true;
 	}
@@ -70,7 +70,7 @@ public class Commands {
 			return true;
 		}
 		if (!arena.cfg.getBoolean("join.random", true)) {
-			Arenas.tellPlayer(player, Language.parse("selectteam"));
+			Arenas.tellPlayer(player, Language.parse("selectteam"), arena.prefix);
 			return true;
 		}
 		int entryfee = arena.cfg.getInt("money.entry", 0);
@@ -80,7 +80,7 @@ public class Commands {
 						.getInt("ready.max") <= Players
 						.countPlayersInTeams(arena)))) {
 
-			Arenas.tellPlayer(player, Language.parse("arenafull"));
+			Arenas.tellPlayer(player, Language.parse("arenafull"), arena.prefix);
 			return true;
 		}
 
@@ -93,12 +93,12 @@ public class Commands {
 				Arenas.tellPlayer(
 						player,
 						Language.parse("joinpay",
-								PVPArena.economy.format(entryfee)));
+								PVPArena.economy.format(entryfee)), arena.prefix);
 			} else if (PVPArena.eco != null) {
 				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 				ma.subtract(entryfee);
 				Arenas.tellPlayer(player, Language.parse("joinpay",
-						PVPArena.eco.format(entryfee)));
+						PVPArena.eco.format(entryfee)), arena.prefix);
 			}
 		}
 
@@ -137,7 +137,7 @@ public class Commands {
 		}
 
 		if (!(arena.cfg.getBoolean("join.manual", true))) {
-			Arenas.tellPlayer(player, Language.parse("notselectteam"));
+			Arenas.tellPlayer(player, Language.parse("notselectteam"), arena.prefix);
 			return true;
 		}
 		int entryfee = arena.cfg.getInt("money.entry", 0);
@@ -147,7 +147,7 @@ public class Commands {
 						.countPlayersInTeams(arena)) {
 
 			Arenas.tellPlayer(player,
-					Language.parse("teamfull", arena.colorizeTeam(sTeam)));
+					Language.parse("teamfull", arena.colorizeTeam(sTeam)), arena.prefix);
 			return true;
 		}
 
@@ -160,12 +160,12 @@ public class Commands {
 				Arenas.tellPlayer(
 						player,
 						Language.parse("joinpay",
-								PVPArena.economy.format(entryfee)));
+								PVPArena.economy.format(entryfee)), arena.prefix);
 			} else if (PVPArena.eco != null) {
 				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 				ma.subtract(entryfee);
 				Arenas.tellPlayer(player, Language.parse("joinpay",
-						PVPArena.eco.format(entryfee)));
+						PVPArena.eco.format(entryfee)), arena.prefix);
 			}
 		}
 
@@ -176,10 +176,10 @@ public class Commands {
 			Announcement.announce(
 					arena,
 					type.START,
-					Language.parse("joinarena", arena.name));
+					Language.parse("joinarena", arena.prefix));
 		}
 		Arenas.tellPlayer(player,
-				Language.parse("youjoined", arena.colorizeTeam(sTeam)));
+				Language.parse("youjoined", arena.colorizeTeam(sTeam)), arena.prefix);
 		Announcement.announce(
 				arena,
 				type.JOIN,
@@ -216,12 +216,12 @@ public class Commands {
 	private static boolean checkJoin(Arena arena, Player player) {
 		String error = Configs.isSetup(arena);
 		if (error != null) {
-			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error));
+			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error), arena.prefix);
 			return false;
 		}
 
 		if (!PVPArena.hasPerms(player, arena)) {
-			Arenas.tellPlayer(player, Language.parse("permjoin"));
+			Arenas.tellPlayer(player, Language.parse("permjoin"), arena.prefix);
 			return false;
 		}
 
@@ -229,18 +229,18 @@ public class Commands {
 			if (!Players.isPartOf(arena, player)
 					|| !Players.parsePlayer(player).spectator) {
 
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
+				Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena.prefix);
 				return false;
 			}
 		}
 
 		if (player.isInsideVehicle()) {
-			Arenas.tellPlayer(player, Language.parse("insidevehicle"));
+			Arenas.tellPlayer(player, Language.parse("insidevehicle"), arena.prefix);
 			return false;
 		}
 
 		if (!Arenas.checkJoin(player)) {
-			Arenas.tellPlayer(player, Language.parse("notjoinregion"));
+			Arenas.tellPlayer(player, Language.parse("notjoinregion"), arena.prefix);
 			return false;
 		}
 
@@ -249,12 +249,12 @@ public class Commands {
 					&& arena.cfg.getBoolean("join.inbattle")) {
 				return true;
 			}
-			Arenas.tellPlayer(player, Language.parse("fightinprogress"));
+			Arenas.tellPlayer(player, Language.parse("fightinprogress"), arena.prefix);
 			return false;
 		}
 
 		if (Regions.tooFarAway(arena, player)) {
-			Arenas.tellPlayer(player, Language.parse("joinrange"));
+			Arenas.tellPlayer(player, Language.parse("joinrange"), arena.prefix);
 			return false;
 		}
 
@@ -269,7 +269,7 @@ public class Commands {
 					// no money, no entry!
 					Arenas.tellPlayer(player, Language.parse("notenough",
 							PVPArena.economy.format(arena.cfg.getInt(
-									"money.entry", 0))));
+									"money.entry", 0))), arena.prefix);
 					return false;
 				}
 			} else if (PVPArena.eco != null) {
@@ -282,7 +282,7 @@ public class Commands {
 					// no money, no entry!
 					Arenas.tellPlayer(player, Language.parse("notenough",
 							PVPArena.eco.format(arena.cfg.getInt("money.entry",
-									0))));
+									0))), arena.prefix);
 					return false;
 				}
 			}
@@ -292,7 +292,7 @@ public class Commands {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			db.i("player joining, cancelling start timer");
 			if (!arena.cfg.getBoolean("join.onCountdown")) {
-				Arenas.tellPlayer(player, Language.parse("fightinprogress"));
+				Arenas.tellPlayer(player, Language.parse("fightinprogress"), arena.prefix);
 				return false;
 			}
 		}
@@ -315,12 +315,12 @@ public class Commands {
 		if (!PVPArena.hasAdminPerms(player)
 				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse(string)));
+					Language.parse("nopermto", Language.parse(string)), arena.prefix);
 			return true;
 		}
 		arena.cfg.set("general.enabled", string.equals("enabled"));
 		arena.cfg.save();
-		Arenas.tellPlayer(player, Language.parse(string));
+		Arenas.tellPlayer(player, Language.parse(string), arena.prefix);
 		return true;
 	}
 
@@ -354,11 +354,11 @@ public class Commands {
 	 */
 	public static boolean parseList(Arena arena, Player player) {
 		if (Players.countPlayersInTeams(arena) < 1) {
-			Arenas.tellPlayer(player, Language.parse("noplayer"));
+			Arenas.tellPlayer(player, Language.parse("noplayer"), arena.prefix);
 			return true;
 		}
 		String plrs = Players.getTeamStringList(arena, arena.paTeams);
-		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs);
+		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs, arena.prefix);
 		return true;
 	}
 
@@ -374,22 +374,22 @@ public class Commands {
 	public static boolean parseSpectate(Arena arena, Player player) {
 		String error = Configs.isSetup(arena);
 		if (error != null) {
-			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error));
+			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error), arena.prefix);
 			return true;
 		}
 		
 		if (Arenas.getArenaByPlayer(player) != null) {
-			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena.prefix);
 			return true;
 		}
 		if (Regions.tooFarAway(arena, player)) {
-			Arenas.tellPlayer(player, Language.parse("joinrange"));
+			Arenas.tellPlayer(player, Language.parse("joinrange"), arena.prefix);
 			return true;
 		}
 		arena.prepare(player, true);
 		arena.tpPlayerToCoordName(player, "spectator");
 		Inventories.prepareInventory(arena, player);
-		Arenas.tellPlayer(player, Language.parse("specwelcome"));
+		Arenas.tellPlayer(player, Language.parse("specwelcome"), arena.prefix);
 		return true;
 	}
 
@@ -407,7 +407,7 @@ public class Commands {
 		ArenaPlayer[] players = Statistics
 				.getStats(arena, Statistics.type.WINS);
 
-		Arenas.tellPlayer(player, Language.parse("top5win"));
+		Arenas.tellPlayer(player, Language.parse("top5win"), arena.prefix);
 
 		int limit = 5;
 
@@ -416,11 +416,11 @@ public class Commands {
 				break;
 			}
 			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.wins + " "
-					+ Language.parse("wins"));
+					+ Language.parse("wins"), arena.prefix);
 		}
 
-		Arenas.tellPlayer(player, "------------");
-		Arenas.tellPlayer(player, Language.parse("top5lose"));
+		Arenas.tellPlayer(player, "------------", arena.prefix);
+		Arenas.tellPlayer(player, Language.parse("top5lose"), arena.prefix);
 
 		players = Statistics.getStats(arena, Statistics.type.LOSSES);
 		for (ArenaPlayer ap : players) {
@@ -428,7 +428,7 @@ public class Commands {
 				break;
 			}
 			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.losses
-					+ " " + Language.parse("losses"));
+					+ " " + Language.parse("losses"), arena.prefix);
 		}
 
 		return true;
@@ -447,11 +447,11 @@ public class Commands {
 		// /pa [name] region
 		if (!Arena.regionmodify.equals("")) {
 			Arenas.tellPlayer(player,
-					Language.parse("regionalreadybeingset", Arena.regionmodify));
+					Language.parse("regionalreadybeingset", Arena.regionmodify), arena.prefix);
 			return true;
 		}
 		Arena.regionmodify = arena.name;
-		Arenas.tellPlayer(player, Language.parse("regionset"));
+		Arenas.tellPlayer(player, Language.parse("regionset"), arena.prefix);
 		return true;
 	}
 
@@ -473,25 +473,25 @@ public class Commands {
 		if (cmd.equalsIgnoreCase("spectator")) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
 				Arenas.tellPlayer(player,
-						Language.parse("notsameworld", arena.getWorld()));
+						Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 				return false;
 			}
 			Spawns.setCoords(arena, player, "spectator");
-			Arenas.tellPlayer(player, Language.parse("setspectator"));
+			Arenas.tellPlayer(player, Language.parse("setspectator"), arena.prefix);
 		} else if (cmd.equalsIgnoreCase("exit")) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
 				Arenas.tellPlayer(player,
-						Language.parse("notsameworld", arena.getWorld()));
+						Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 				return false;
 			}
 			Spawns.setCoords(arena, player, "exit");
-			Arenas.tellPlayer(player, Language.parse("setexit"));
+			Arenas.tellPlayer(player, Language.parse("setexit"), arena.prefix);
 		} else if (cmd.equalsIgnoreCase("forcestop")) {
 			if (arena.fightInProgress) {
 				arena.forcestop();
-				Arenas.tellPlayer(player, Language.parse("forcestop"));
+				Arenas.tellPlayer(player, Language.parse("forcestop"), arena.prefix);
 			} else {
-				Arenas.tellPlayer(player, Language.parse("nofight"));
+				Arenas.tellPlayer(player, Language.parse("nofight"), arena.prefix);
 			}
 		} else if (cmd.equalsIgnoreCase("set")) {
 			arena.sm.list(player, 1);
@@ -499,11 +499,11 @@ public class Commands {
 				&& (cmd.startsWith("spawn"))) {
 			if (!player.getWorld().getName().equals(arena.getWorld())) {
 				Arenas.tellPlayer(player,
-						Language.parse("notsameworld", arena.getWorld()));
+						Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 				return false;
 			}
 			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
+			Arenas.tellPlayer(player, Language.parse("setspawn", cmd), arena.prefix);
 		} else {
 			// no random or not trying to set custom spawn
 			if ((!isLoungeCommand(arena, player, cmd))
@@ -578,7 +578,7 @@ public class Commands {
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("borders")) {
 			ArenaRegion region = arena.regions.get(args[1]);
 			if (region == null) {
-				Arenas.tellPlayer(player, "Region unknown: " + args[1]);
+				Arenas.tellPlayer(player, "Region unknown: " + args[1], arena.prefix);
 				return true;
 			}
 			region.showBorder(player);
@@ -601,12 +601,12 @@ public class Commands {
 		if (!PVPArena.hasAdminPerms(player)
 				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("admin")));
+					Language.parse("nopermto", Language.parse("admin")), arena.prefix);
 			return false;
 		}
 
 		if (!isRegionCommand(arena, args[1])) {
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"));
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"), arena.prefix);
 			return false;
 		}
 
@@ -621,10 +621,10 @@ public class Commands {
 						arena.cfg.save();
 						Arena.regionmodify = "";
 						Arenas.tellPlayer(player,
-								Language.parse("regionremoved"));
+								Language.parse("regionremoved"), arena.prefix);
 					} else {
 						Arenas.tellPlayer(player,
-								Language.parse("regionnotremoved"));
+								Language.parse("regionnotremoved"), arena.prefix);
 					}
 					return true;
 				}
@@ -632,12 +632,12 @@ public class Commands {
 				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
-							Language.parse("regionnotbeingset", arena.name));
+							Language.parse("regionnotbeingset"), arena.prefix);
 					return true;
 				}
 				
 				if (arena.pos1 == null || arena.pos2 == null) {
-					Arenas.tellPlayer(player, Language.parse("select2"));
+					Arenas.tellPlayer(player, Language.parse("select2"), arena.prefix);
 					return true;
 				}
 				
@@ -679,7 +679,7 @@ public class Commands {
 				arena.cfg.save();
 
 				Arena.regionmodify = "";
-				Arenas.tellPlayer(player, Language.parse("regionsaved"));
+				Arenas.tellPlayer(player, Language.parse("regionsaved"), arena.prefix);
 				return true;
 
 			} else if (args[0].equalsIgnoreCase("remove")) {
@@ -687,13 +687,13 @@ public class Commands {
 				arena.cfg.set("spawns." + args[1], null);
 				arena.cfg.save();
 				Arenas.tellPlayer(player,
-						Language.parse("spawnremoved", args[1]));
+						Language.parse("spawnremoved", args[1]), arena.prefix);
 				return true;
 			}
 		}
 
 		if (args.length != 3) {
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "505"));
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "505"), arena.prefix);
 			return false;
 		}
 		return true;
@@ -716,7 +716,7 @@ public class Commands {
 
 		if (type == null) {
 			Arenas.tellPlayer(player,
-					Language.parse("invalidstattype", args[1]));
+					Language.parse("invalidstattype", args[1]), arena.prefix);
 			return true;
 		}
 
@@ -726,7 +726,7 @@ public class Commands {
 		int i = 0;
 
 		for (ArenaPlayer ap : aps) {
-			Arenas.tellPlayer(player, ap.get().getName() + ": " + s[i++]);
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + s[i++], arena.prefix);
 			if (i > 9) {
 				return true;
 			}
@@ -747,13 +747,13 @@ public class Commands {
 	private static boolean parseEdit(Arena arena, Player player) {
 		if (!PVPArena.hasAdminPerms(player)) {
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("edit")));
+					Language.parse("nopermto", Language.parse("edit")), arena.prefix);
 			return true;
 		}
 
 		arena.edit = !arena.edit;
 		Arenas.tellPlayer(player,
-				Language.parse("edit" + String.valueOf(arena.edit), arena.name));
+				Language.parse("edit" + String.valueOf(arena.edit), arena.name), arena.prefix);
 		return true;
 	}
 
@@ -782,7 +782,7 @@ public class Commands {
 		}
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
+					Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 			return false;
 		}
 		String sName = cmd.replace(type, "");
@@ -800,7 +800,7 @@ public class Commands {
 		}
 
 		Arena.regionmodify = arena.name + ":" + sName;
-		Arenas.tellPlayer(player, Language.parse("toset" + type, sName));
+		Arenas.tellPlayer(player, Language.parse("toset" + type, sName), arena.prefix);
 		return true;
 
 	}
@@ -848,7 +848,7 @@ public class Commands {
 	private static boolean isSpawnCommand(Arena arena, Player player, String cmd) {
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
+					Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 			return false;
 		}
 
@@ -856,10 +856,10 @@ public class Commands {
 
 			if (arena.getType().equals("free")) {
 				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
+				Arenas.tellPlayer(player, Language.parse("setspawn", cmd), arena.prefix);
 				return true;
 			} else {
-				Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd));
+				Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd), arena.prefix);
 				return false;
 			}
 		}
@@ -871,13 +871,13 @@ public class Commands {
 				return false;
 
 			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", sName));
+			Arenas.tellPlayer(player, Language.parse("setspawn", sName), arena.prefix);
 			return true;
 		}
 
 		if (cmd.startsWith("powerup")) {
 			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
+			Arenas.tellPlayer(player, Language.parse("setspawn", cmd), arena.prefix);
 			return true;
 		}
 		return false;
@@ -898,17 +898,17 @@ public class Commands {
 			String cmd) {
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
+					Language.parse("notsameworld", arena.getWorld()), arena.prefix);
 			return false;
 		}
 
 		if (cmd.equalsIgnoreCase("lounge")) {
 			if (arena.getType().equals("free")) {
 				Spawns.setCoords(arena, player, "lounge");
-				Arenas.tellPlayer(player, Language.parse("setlounge"));
+				Arenas.tellPlayer(player, Language.parse("setlounge"), arena.prefix);
 				return true;
 			} else {
-				Arenas.tellPlayer(player, Language.parse("errorloungefree"));
+				Arenas.tellPlayer(player, Language.parse("errorloungefree"), arena.prefix);
 				return false;
 			}
 		}
@@ -917,10 +917,10 @@ public class Commands {
 			String color = cmd.replace("lounge", "");
 			if (arena.paTeams.containsKey(color)) {
 				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setlounge", color));
+				Arenas.tellPlayer(player, Language.parse("setlounge", color), arena.prefix);
 				return true;
 			}
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"));
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"), arena.prefix);
 			return true;
 		}
 		return false;
@@ -942,7 +942,7 @@ public class Commands {
 		// /pa bet [name] [amount]
 		if (Players.isPartOf(arena, player)
 				&& !Players.getTeam(player).equals("")) {
-			Arenas.tellPlayer(player, Language.parse("betnotyours"));
+			Arenas.tellPlayer(player, Language.parse("betnotyours"), arena.prefix);
 			return true;
 		}
 
@@ -953,7 +953,7 @@ public class Commands {
 
 		if ((arena.paTeams.get(args[1]) == null)
 				&& (Players.getTeam(p).equals(""))) {
-			Arenas.tellPlayer(player, Language.parse("betoptions"));
+			Arenas.tellPlayer(player, Language.parse("betoptions"), arena.prefix);
 			return true;
 		}
 
@@ -962,7 +962,7 @@ public class Commands {
 		try {
 			amount = Double.parseDouble(args[2]);
 		} catch (Exception e) {
-			Arenas.tellPlayer(player, Language.parse("invalidamount", args[2]));
+			Arenas.tellPlayer(player, Language.parse("invalidamount", args[2]), arena.prefix);
 			return true;
 		}
 		MethodAccount ma = null;
@@ -976,7 +976,7 @@ public class Commands {
 				Arenas.tellPlayer(
 						player,
 						Language.parse("notenough",
-								PVPArena.economy.format(amount)));
+								PVPArena.economy.format(amount)), arena.prefix);
 				return true;
 			}
 		} else {
@@ -988,7 +988,7 @@ public class Commands {
 			if (!ma.hasEnough(amount)) {
 				// no money, no entry!
 				Arenas.tellPlayer(player, Language.parse("notenough",
-						PVPArena.eco.format(amount)));
+						PVPArena.eco.format(amount)), arena.prefix);
 				return true;
 			}
 		}
@@ -1000,12 +1000,12 @@ public class Commands {
 				Arenas.tellPlayer(player, Language.parse("wrongamount",
 						PVPArena.economy.format(arena.cfg
 								.getDouble("money.minbet")), PVPArena.economy
-								.format(arena.cfg.getDouble("money.maxbet"))));
+								.format(arena.cfg.getDouble("money.maxbet"))), arena.prefix);
 			} else {
 				Arenas.tellPlayer(player, Language
 						.parse("wrongamount", PVPArena.eco.format(arena.cfg
 								.getDouble("money.minbet")), PVPArena.eco
-								.format(arena.cfg.getDouble("money.maxbet"))));
+								.format(arena.cfg.getDouble("money.maxbet"))), arena.prefix);
 			}
 			return true;
 		}
@@ -1015,7 +1015,7 @@ public class Commands {
 		} else {
 			ma.subtract(amount);
 		}
-		Arenas.tellPlayer(player, Language.parse("betplaced", args[1]));
+		Arenas.tellPlayer(player, Language.parse("betplaced", args[1]), arena.prefix);
 		Players.paPlayersBetAmount
 				.put(player.getName() + ":" + args[1], amount);
 		return true;

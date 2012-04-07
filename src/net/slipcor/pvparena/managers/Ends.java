@@ -30,7 +30,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.6.35
+ * @version v0.6.41
  * 
  */
 
@@ -236,7 +236,7 @@ public class Ends {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.eco.format(amount)));
+											PVPArena.eco.format(amount)), arena.prefix);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -250,7 +250,7 @@ public class Ends {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.economy.format(amount)));
+											PVPArena.economy.format(amount)), arena.prefix);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -351,7 +351,7 @@ public class Ends {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.eco.format(amount)));
+											PVPArena.eco.format(amount)), arena.prefix);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -365,7 +365,7 @@ public class Ends {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.economy.format(amount)));
+											PVPArena.economy.format(amount)), arena.prefix);
 						} catch (Exception e) {
 							// nothing
 						}

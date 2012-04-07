@@ -23,7 +23,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.30
+ * @version v0.6.41
  * 
  */
 
@@ -43,7 +43,7 @@ public class Teams {
 		boolean free = !arena.cfg.getBoolean("arenatype.teams");
 
 		if (Players.getPlayerTeamMap(arena).containsKey(player.getName())) {
-			Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena.prefix);
 		}
 
 		String team = free ? "free" : calcFreeTeam(arena);
@@ -57,7 +57,7 @@ public class Teams {
 		Arenas.tellPlayer(
 				player,
 				Language.parse("youjoined" + (free ? "free" : ""),
-						ChatColor.valueOf(arena.paTeams.get(team)) + team));
+						ChatColor.valueOf(arena.paTeams.get(team)) + team), arena.prefix);
 		Announcement.announce(
 				arena,
 				type.JOIN,
