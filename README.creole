@@ -51,6 +51,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.6.41.1 - fix the Potion Type NPE
+* v0.6.41.0 - possibility to customize the Arena prefix
 * v0.6.40.26 - fix NPE when not selecting a region before trying to save the selection
 * v0.6.40.25 - fix inventory protection
 * v0.6.40.24 - fix region protection issues

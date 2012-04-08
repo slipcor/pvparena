@@ -45,7 +45,7 @@ public class Teams {
 		ArenaPlayer ap = Players.parsePlayer(player);
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"));
+				Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena);
 				return;
 			}
 		}
@@ -65,7 +65,7 @@ public class Teams {
 		Arenas.tellPlayer(
 				player,
 				Language.parse("youjoined" + (free ? "free" : ""),
-						coloredTeam));
+						coloredTeam), arena);
 		Announcement.announce(
 				arena,
 				type.JOIN,

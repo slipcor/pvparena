@@ -95,7 +95,7 @@ public class Announcement {
 						+ a.name
 						+ "§f] "
 						+ ChatColor.valueOf(a.cfg
-								.getString("announcements.color")) + message);
+								.getString("announcements.color")) + message, a);
 	}
 
 }

@@ -264,6 +264,8 @@ public class Configs {
 				Arenas.boards.put(loc, new ArenaBoard(loc, arena));
 			}
 		}
+		
+		arena.prefix = cfg.getString("general.prefix", "PVP Arena");
 	}
 
 	/**

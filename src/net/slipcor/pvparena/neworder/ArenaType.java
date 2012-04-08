@@ -118,12 +118,12 @@ public class ArenaType extends Loadable {
 
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
+					Language.parse("notsameworld", arena.getWorld()), arena);
 			return false;
 		}
 
 		if (cmd.equalsIgnoreCase("lounge")) {
-			Arenas.tellPlayer(player, Language.parse("errorloungefree"));
+			Arenas.tellPlayer(player, Language.parse("errorloungefree"), arena);
 			return false;
 		}
 
@@ -131,10 +131,10 @@ public class ArenaType extends Loadable {
 			String sTeam = cmd.replace("lounge", "");
 			if (arena.getTeam(sTeam) != null) {
 				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam));
+				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam), arena);
 				return true;
 			}
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"));
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"), arena);
 			return true;
 		}
 		return false;
@@ -143,12 +143,12 @@ public class ArenaType extends Loadable {
 	public boolean isSpawnCommand(Player player, String cmd) {
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
-					Language.parse("notsameworld", arena.getWorld()));
+					Language.parse("notsameworld", arena.getWorld()), arena);
 			return false;
 		}
 
 		if (cmd.startsWith("spawn") || cmd.equals("spawn")) {
-			Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd));
+			Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd), arena);
 			return false;
 		}
 
@@ -159,13 +159,13 @@ public class ArenaType extends Loadable {
 				return false;
 
 			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", sName));
+			Arenas.tellPlayer(player, Language.parse("setspawn", sName), arena);
 			return true;
 		}
 
 		if (cmd.startsWith("powerup")) {
 			Spawns.setCoords(arena, player, cmd);
-			Arenas.tellPlayer(player, Language.parse("setspawn", cmd));
+			Arenas.tellPlayer(player, Language.parse("setspawn", cmd), arena);
 			return true;
 		}
 		return false;
@@ -251,7 +251,7 @@ public class ArenaType extends Loadable {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.eco.format(amount)));
+											PVPArena.eco.format(amount)), arena);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -265,7 +265,7 @@ public class ArenaType extends Loadable {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.economy.format(amount)));
+											PVPArena.economy.format(amount)), arena);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -453,7 +453,7 @@ public class ArenaType extends Loadable {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.eco.format(amount)));
+											PVPArena.eco.format(amount)), arena);
 						} catch (Exception e) {
 							// nothing
 						}
@@ -467,7 +467,7 @@ public class ArenaType extends Loadable {
 							Arenas.tellPlayer(
 									Bukkit.getPlayer(nSplit[0]),
 									Language.parse("youwon",
-											PVPArena.economy.format(amount)));
+											PVPArena.economy.format(amount)), arena);
 						} catch (Exception e) {
 							// nothing
 						}

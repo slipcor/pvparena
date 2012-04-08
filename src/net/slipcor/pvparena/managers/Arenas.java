@@ -241,9 +241,24 @@ public class Arenas {
 	 *            the player to send to
 	 * @param msg
 	 *            the message to send
+	 * @param a
+	 *            the arena sending this message
+	 */
+	public static void tellPlayer(Player player, String msg, Arena a) {
+		db.i("@" + player.getName() + ": " + msg);
+		player.sendMessage(ChatColor.YELLOW + "[" + a.prefix + "] "
+				+ ChatColor.WHITE + msg);
+	}
+
+	/**
+	 * send a message to a single player
+	 * 
+	 * @param player
+	 *            the player to send to
+	 * @param msg
+	 *            the message to send
 	 */
 	public static void tellPlayer(Player player, String msg) {
-		db.i("@" + player.getName() + ": " + msg);
 		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
 				+ msg);
 	}

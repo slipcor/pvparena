@@ -101,14 +101,14 @@ public class Regions {
 			db.i("modify&adminperms&wand");
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos1"));
+				Arenas.tellPlayer(player, Language.parse("pos1"), arena);
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos2"));
+				Arenas.tellPlayer(player, Language.parse("pos2"), arena);
 				return true; // right click => pos2
 			}
 		}

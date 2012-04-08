@@ -256,7 +256,7 @@ public class Players {
 			if (p.getArena() == null || !p.getArena().equals(arena)) {
 				continue;
 			}
-			Arenas.tellPlayer(p.get(), msg);
+			Arenas.tellPlayer(p.get(), msg, arena);
 		}
 	}
 
@@ -276,7 +276,7 @@ public class Players {
 			}
 			if (p.get().equals(player))
 				continue;
-			Arenas.tellPlayer(p.get(), msg);
+			Arenas.tellPlayer(p.get(), msg, arena);
 		}
 	}
 
@@ -491,7 +491,7 @@ public class Players {
 			if (classperms) {
 				db.i("checking class perms");
 				if (!(PVPArena.hasPerms(player, "pvparena.class." + className))) {
-					Arenas.tellPlayer(player, Language.parse("classperms"));
+					Arenas.tellPlayer(player, Language.parse("classperms"), arena);
 					return; // class permission desired and failed =>
 							// announce and OUT
 				}
@@ -507,7 +507,7 @@ public class Players {
 				}
 				arena.paSigns.add(as);
 				if (!as.add(player)) {
-					Arenas.tellPlayer(player, Language.parse("classfull"));
+					Arenas.tellPlayer(player, Language.parse("classfull"), arena);
 					return;
 				}
 			}
@@ -538,7 +538,7 @@ public class Players {
 					Language.parse("playerleave", team.colorizePlayer(player)
 							+ ChatColor.YELLOW));
 
-			Arenas.tellPlayer(player, Language.parse("youleave"));
+			Arenas.tellPlayer(player, Language.parse("youleave"), arena);
 		}
 		arena.removePlayer(player, arena.cfg.getString("tp.exit", "exit"));
 

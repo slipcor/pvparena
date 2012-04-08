@@ -143,12 +143,12 @@ public class ArenaBoard {
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			ab.sortBy = Statistics.type.next(ab.sortBy);
 			Arenas.tellPlayer(player,
-					Language.parse("sortingby", ab.sortBy.toString()));
+					Language.parse("sortingby", ab.sortBy.toString()), ab.arena);
 			return true;
 		} else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			ab.sortBy = Statistics.type.last(ab.sortBy);
 			Arenas.tellPlayer(player,
-					Language.parse("sortingby", ab.sortBy.toString()));
+					Language.parse("sortingby", ab.sortBy.toString()), ab.arena);
 			return true;
 		}
 

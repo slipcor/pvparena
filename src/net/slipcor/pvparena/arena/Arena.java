@@ -94,6 +94,7 @@ public class Arena {
 	public Powerups pum;
 	public Settings sm;
 	public String name = "default";
+	public String prefix = "PVP Arena";
 	public String owner = "%server%";
 
 	public int powerupDiff; // powerup trigger cap
@@ -684,7 +685,7 @@ public class Arena {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
-										PVPArena.economy.format(amount)));
+										PVPArena.economy.format(amount)), this);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -718,7 +719,7 @@ public class Arena {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
-										PVPArena.eco.format(amount)));
+										PVPArena.eco.format(amount)), this);
 					} catch (Exception e) {
 						// nothing
 					}
@@ -731,12 +732,12 @@ public class Arena {
 				PVPArena.economy.depositPlayer(player.getName(),
 						cfg.getInt("money.reward", 0));
 				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.economy.format(cfg.getInt("money.reward", 0))));
+						PVPArena.economy.format(cfg.getInt("money.reward", 0))), this);
 			} else if (PVPArena.eco != null) {
 				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
 				ma.add(cfg.getInt("money.reward", 0));
 				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.eco.format(cfg.getInt("money.reward", 0))));
+						PVPArena.eco.format(cfg.getInt("money.reward", 0))), this);
 			}
 		}
 		String sItems = cfg.getString("general.item-rewards", "none");
@@ -759,7 +760,7 @@ public class Arena {
 				player.getInventory().setItem(
 						player.getInventory().firstEmpty(), stack);
 			} catch (Exception e) {
-				Arenas.tellPlayer(player, Language.parse("invfull"));
+				Arenas.tellPlayer(player, Language.parse("invfull"), this);
 				return;
 			}
 		}
