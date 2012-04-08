@@ -770,7 +770,7 @@ public class Arena {
 						Arenas.tellPlayer(
 								Bukkit.getPlayer(nSplit[0]),
 								Language.parse("youwon",
-										PVPArena.eco.format(amount)), this.name);
+										PVPArena.eco.format(amount)), this.prefix);
 					} catch (Exception e) {
 						// nothing
 					}

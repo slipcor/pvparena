@@ -176,7 +176,7 @@ public class Commands {
 			Announcement.announce(
 					arena,
 					type.START,
-					Language.parse("joinarena", arena.prefix));
+					Language.parse("joinarena", arena.name));
 		}
 		Arenas.tellPlayer(player,
 				Language.parse("youjoined", arena.colorizeTeam(sTeam)), arena.prefix);
@@ -632,7 +632,7 @@ public class Commands {
 				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
-							Language.parse("regionnotbeingset"), arena.prefix);
+							Language.parse("regionnotbeingset", arena.name), arena.prefix);
 					return true;
 				}
 				
