@@ -72,11 +72,6 @@ public class Settings {
 		types.put("general.signs", "boolean");
 
 		types.put("arenatype.randomSpawn", "boolean");
-		types.put("arenatype.teams", "boolean");
-		types.put("arenatype.flags", "boolean");
-		types.put("arenatype.pumpkin", "boolean");
-		types.put("arenatype.deathmatch", "boolean");
-		types.put("arenatype.domination", "boolean");
 
 		types.put("goal.timed", "int");
 

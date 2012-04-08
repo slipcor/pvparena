@@ -41,7 +41,7 @@ public class Teams {
 
 		db.i("calculating player team");
 
-		boolean free = !arena.cfg.getBoolean("arenatype.teams");
+		boolean free = arena.type().getName().equals("free");
 		ArenaPlayer ap = Players.parsePlayer(player);
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
@@ -52,9 +52,12 @@ public class Teams {
 		
 
 		String sTeam = free ? "free" : calcFreeTeam(arena);
-
+		
+		db.i(sTeam);
+		
 		ArenaTeam aTeam = arena.getTeam(sTeam);
 		
+		aTeam.add(ap);
 
 		if (free) {
 			arena.tpPlayerToCoordName(player, "lounge");

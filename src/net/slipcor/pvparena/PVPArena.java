@@ -243,7 +243,6 @@ public class PVPArena extends JavaPlugin {
 			getConfig().set("debug", "none"); // 0.3.15 correction
 			getServer().getLogger().info("[PA-debug] 0.3.15 correction");
 		}
-		getConfig().addDefault("general.prefix", "PVP Arena");
 
 		getConfig().options().copyDefaults(true);
 		saveConfig();

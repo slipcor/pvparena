@@ -20,7 +20,8 @@ public class ArenaTypeManager {
 	
 	public ArenaType getType(String tName) {
 		for (ArenaType type : types) {
-			if (type.getName().equals(type)) {
+			System.out.print("type: " +type.getName() );
+			if (type.getName().equals(tName)) {
 				return type;
 			}
 		}

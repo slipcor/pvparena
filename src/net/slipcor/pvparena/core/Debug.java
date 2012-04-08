@@ -108,6 +108,7 @@ public class Debug {
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
 				System.out.print("debugging EVERYTHING");
+				level = (byte) 3;
 			} else {
 				String[] sIds = debugs.split(",");
 				for (String s : sIds) {

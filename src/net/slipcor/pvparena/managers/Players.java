@@ -574,6 +574,8 @@ public class Players {
 		ArenaPlayer ap = null;
 		ArenaTeam team = null;
 
+		db.i("damager: " + damager);
+		
 		if (damager instanceof Player) {
 			ap = parsePlayer((Player) damager);
 			team = arena.getTeam(ap);

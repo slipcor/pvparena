@@ -66,9 +66,12 @@ public class PlayerListener implements Listener {
 
 		Arena arena = Arenas.getArenaByPlayer(player);
 		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
 
-		if (arena == null || team == null) {
+		if (arena == null) {
+			return; // no fighting player => OUT
+		}
+		ArenaTeam team = arena.getTeam(ap);
+		if (team == null) {
 			return; // no fighting player => OUT
 		}
 		db.i("fighting player chatting!");

@@ -72,7 +72,7 @@ public class Arena {
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
 
-	private final ArenaType type;
+	private ArenaType type;
 
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
@@ -133,10 +133,6 @@ public class Arena {
 	public Arena(String name, String type) {
 		this.name = name;
 
-		ArenaType aType = PVPArena.instance.getAtm().getType(type);
-
-		this.type = aType.cloneThis();
-
 		db.i("loading Arena " + name);
 		File file = new File("plugins/pvparena/config_" + name + ".yml");
 		if (!file.exists()) {
@@ -176,7 +172,7 @@ public class Arena {
 			}
 		}
 
-		type.init();
+		type.initiate();
 
 		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
@@ -643,7 +639,13 @@ public class Arena {
 			return;
 		}
 		ArenaTeam team = this.getTeam(Players.parsePlayer(player));
-		String n = team.getColorString() + player.getName();
+		String n;
+		if (team == null) {
+			db.w("player has no team and should be colorized: " + player.getName());
+			n = player.getName();
+		} else {
+			n = team.getColorString() + player.getName();
+		}
 		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
 		if (PVPArena.spoutHandler != null)
 			SpoutManager.getAppearanceManager().setGlobalTitle(player,
@@ -992,5 +994,9 @@ public class Arena {
 				Players.playerLeave(this, ap.get());
 			}
 		}
+	}
+
+	public void setType(ArenaType clone) {
+		this.type = clone;
 	}
 }

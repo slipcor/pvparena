@@ -88,23 +88,25 @@ public class EntityListener implements Listener {
 	 *            the event triggering the death
 	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
-
+		EntityDamageEvent cause = null;
+		
+		if (eEvent instanceof EntityDeathEvent) {
+			cause = player.getLastDamageCause();
+		} else if (eEvent instanceof EntityDamageEvent) {
+			cause = ((EntityDamageEvent) eEvent);
+		}
 		EntityListener.addBurningPlayer(player);
 		ArenaPlayer ap = Players.parsePlayer(player);
 		ArenaTeam team = arena.getTeam(ap);
 		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
-				player.getName(), Players.parseDeathCause(arena, player, player
-						.getLastDamageCause().getCause(), Players
-						.getLastDamagingPlayer(player.getLastDamageCause()))));
+				player.getName(), Players.parseDeathCause(arena, player, cause.getCause(), Players
+						.getLastDamagingPlayer(cause))));
 		Players.tellEveryone(arena, Language.parse("killedby",
 				team.colorizePlayer(player) + ChatColor.YELLOW, Players
-						.parseDeathCause(arena, player, player
-								.getLastDamageCause().getCause(), Players
-								.getLastDamagingPlayer(player
-										.getLastDamageCause()))));
+						.parseDeathCause(arena, player, cause.getCause(), Players
+								.getLastDamagingPlayer(cause))));
 
 		ap.losses++;
-		arena.removeTeam(ap);
 
 		if (arena.isCustomClassActive()
 				&& arena.cfg.getBoolean("game.allowDrops")) {
@@ -115,6 +117,8 @@ public class EntityListener implements Listener {
 		arena.tpPlayerToCoordName(player, "spectator");
 		
 		arena.type().checkEntityDeath(player);
+		
+		arena.removeTeam(ap);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");
@@ -414,6 +418,10 @@ public class EntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDamage(EntityDamageEvent event) {
+		if (event instanceof EntityDamageEvent) {
+			return;
+		}
+		
 		if (event.isCancelled()) {
 			return; // respect other plugins
 		}

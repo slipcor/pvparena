@@ -73,6 +73,7 @@ public class ArenaPlayer {
 		this.name = p.getName();
 		this.setArena(a);
 		this.effects = new ArrayList<Effect>();
+		this.player = p;
 
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
@@ -158,7 +159,13 @@ public class ArenaPlayer {
 		
 		spectator = false;
 		ready = false;
-
+		if (arena != null) {
+			ArenaTeam team = arena.getTeam(this);
+			if (team != null) {
+				team.remove(this);
+			}
+			arena.removePlayer(this);
+		}
 		arena = null;
 	}
 
@@ -188,6 +195,7 @@ public class ArenaPlayer {
 	
 	public void createState(Player player) {
 		state = new PlayerState(player);
+		location = player.getLocation();
 	}
 
 	public List<Effect> getEffects() {

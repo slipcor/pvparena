@@ -31,18 +31,6 @@ import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
-/*
-
- import java.lang.reflect.*;
-
- Param1Type param1;
- Param2Type param2;
- String className = "Class1";
- Class cl = Class.forName(className);
- Constructor con = cl.getConstructor(Param1Type.class, Param2Type.class);
- Object xyz = con.newInstance(param1, param2);
-
- */
 public class ArenaType extends Loadable {
 	protected Arena arena;
 	protected final static Debug db = new Debug(45);
@@ -51,7 +39,7 @@ public class ArenaType extends Loadable {
 		super(sName);
 	}
 	
-	protected void setArena(Arena arena) {
+	public void setArena(Arena arena) {
 		this.arena = arena;
 	}
 
@@ -287,7 +275,7 @@ public class ArenaType extends Loadable {
 		arena.paLives.put(respawnPlayer.getName(), lives);
 	}
 
-	public void init() {
+	public void initiate() {
 		return;
 	}
 
@@ -481,13 +469,15 @@ public class ArenaType extends Loadable {
 		return;
 	}
 
-	public ArenaType cloneThis() {
+	public Object clone() {
 		try {
-			return (ArenaType) this.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
+			ArenaType at = (ArenaType)super.clone();
+			at.arena = this.arena;
+			return at;
+		} catch(CloneNotSupportedException e){
+			System.out.println(e);
+			return null;
 		}
-		return null;
 	}
 	
 	public boolean isRegionCommand(String s) {

@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
@@ -18,6 +19,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaType;
 
 /**
  * config manager class
@@ -52,6 +54,10 @@ public class Configs {
 			// opening existing arena
 			type = cfg.getString("general.type", "teams");
 		}
+		ArenaType aType = PVPArena.instance.getAtm().getType(type);
+
+		arena.setType((ArenaType)aType.clone());
+		arena.type().setArena(arena);
 
 		if (config.get("classitems") == null) {
 			config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
@@ -99,7 +105,7 @@ public class Configs {
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
 		config.addDefault("join.inbattle", Boolean.valueOf(false));
 
-		config.addDefault("arenatype.randomSpawn", !type.equals("free"));
+		config.addDefault("arenatype.randomSpawn", type.equals("free"));
 		config.addDefault("goal.timed", Integer.valueOf(0));
 
 		config.addDefault("join.range", Integer.valueOf(0));

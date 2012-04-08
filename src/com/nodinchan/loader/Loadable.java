@@ -6,7 +6,7 @@ package com.nodinchan.loader;
  * @author NodinChan
  *
  */
-public class Loadable {
+public class Loadable implements Cloneable {
 	
 	private final String name;
 	
