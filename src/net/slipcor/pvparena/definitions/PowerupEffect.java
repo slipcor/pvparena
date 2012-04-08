@@ -376,16 +376,16 @@ public class PowerupEffect {
 				}
 			}
 		}
-
-		for (PotionEffectType pet : PotionEffectType.values()) {
-			db.i("parsing PET " + pet.toString());
-			if (pet.getName() == null) {
-				db.s("pet.getName == null");
-				continue;
+		
+		int i = 0;
+		
+		while (PotionEffectType.getById(i) != null) {
+			db.i("parsing PET " + PotionEffectType.getById(i).toString());
+			
+			if (PotionEffectType.getById(i).getName().equals(eClass)) {
+				return new PotionEffect(PotionEffectType.getById(i), duration, amplifyer);
 			}
-			if (pet.getName().equals(eClass)) {
-				return new PotionEffect(pet, duration, amplifyer);
-			}
+			i++;
 		}
 		return null;
 	}

@@ -227,7 +227,7 @@ public class Arenas {
 	 */
 	public static void tellPlayer(Player player, String msg, String prefix) {
 		db.i("@" + player.getName() + ": " + msg);
-		player.sendMessage(ChatColor.YELLOW + "[" + prefix + "]" + ChatColor.WHITE
+		player.sendMessage(ChatColor.YELLOW + "[" + prefix + "] " + ChatColor.WHITE
 				+ msg);
 	}
 
