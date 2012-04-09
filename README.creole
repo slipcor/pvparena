@@ -51,87 +51,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v0.6.41.1 - fix the Potion Type NPE
-* v0.6.41.0 - possibility to customize the Arena prefix
-* v0.6.40.26 - fix NPE when not selecting a region before trying to save the selection
-* v0.6.40.25 - fix inventory protection
-* v0.6.40.24 - fix region protection issues
-* v0.6.40.20 - fix dead players still wearing their armor
-* v0.6.40.19 - set debug ingame /pa debug [value]
-* v0.6.40.18 - recognize players running outside of the arena
-* v0.6.40.17 - fix woolhead removal for flag arenas
-* v0.6.40.16 - fix ready block hit while countdown teleporting ppl inside the arena. Bad, bad players!
-* v0.6.40.15 - hackfix Potion Effects not vanishing. Bad, bad API!
-* v0.6.40.14 - fix resetting of player stats -.-
-* v0.6.40.13 - fix abusing the spectator state
-* v0.6.40.11 - fix a random NPE; fix WoolHead enforcement
-* v0.6.40.10 - fix powerup type REPAIR and a NPE in flag arenas
-* v0.6.40.9 - fix another issue with the startup countdown
-* v0.6.40.8 - Backend organising by NodinChan, has NO effect on the plugin atm
-* v0.6.40.7 - Fix NPE and fix LeaderBoards
-* v0.6.40.6 - Tries to fix mcMMO damage messing up the arena ;)
-* v0.6.40 - Multiple flags for CTF
-* v0.6.39 - Enchantments
-* v0.6.38 - Arena chat
-* v0.6.37 - Item reward random
-* v0.6.36.11 - fix a bug where players were able to start alone / with just one team
-* v0.6.36.8 - fix various bugs
-* v0.6.36.4 - add a proper arena start message ; add a PAKillEvent
-* v0.6.36.3 - fix bet placing NPE
-* v0.6.36.2 - add Vault support
-* v0.6.36 - fix for every arena start bug caused by leaving / quitting players
-* v0.6.35.3 - taught talking to DOM arena
-* v0.6.35.2 - fix the CTF issues
-* v0.6.35 - fix the death issues, finally
-* v0.6.29.9 - fix the fire bug, finally
-* v0.6.29.8 - create custom events properly
-* v0.6.29.7 - reset team flags on arena startup to be colored
-* v0.6.29.6 - fixed CTF NPE
-* v0.6.29.5 - added config setting protection.restore to stop block restoring
-* v0.6.29.4 - added teleport ignoring INSIDE the battlefield
-* v0.6.29.3 - fixed countdown join bug, for real :D
-* v0.6.29.2 - fixed sign restoring bug
-* v0.6.29.1 - fixed inventory hack bug
-* v0.6.29 - join teams with sign. Line 2: teamname
-* v0.6.28.6 - cancel 5s countdown if player joins
-* v0.6.28.5 - spawn camping just for battlefield & fighting players
-* v0.6.28.4 - add config: protection.punish (default false)
-* v0.6.28.3 - fix 2 NPEs happening when spawn camping or using /pa leave
-* v0.6.28.2 - fix a very bad bug occurring after fixing an NPE
-* v0.6.28.1 - fix various NPEs
-* v0.6.28 - potion effects for PowerUps
-* v0.6.27 - join range possible without set region
-* v0.6.26.2 - fixed NPE
-* v0.6.26.1 - added proper join event calling
-* v0.6.26 - add custom events for other plugins to listen to
-* v0.6.25 - get stats with /pa {name} stats [stattype]
-* v0.6.24 - sort arena board by click
-* v0.6.23 - config "hideName": remove names over head
-* v0.6.22 - punish spawn camping
-* v0.6.21 - [PUMPKIN|CTF|DOM] join arenas ingame
-* v0.6.20 - arena start runnable (5s, if readycount > x%), interrupted by player join
-* v0.6.19 - fixed players joining from vehicles
-* v0.6.18 - added entry fee "pay" message
-* v0.6.17 - force joining from a special region, if one arena has set "join" region
-* v0.6.16 - "explicitPermission" to enable need of "pvparena.join.[arenaname]"
-* v0.6.15 - new debug system
-* v0.6.14 - main config: onlyPVPinArena -> cancel all damage except arena!
-* v0.6.13.2 - quitting ingame does not break anything
-* v0.6.13.1 - fixed block destruction being possible
-* v0.6.13 - EDIT mode /pa {name} edit
-* v0.6.12 - "[player] killed" + " by [player/cause]"
-* v0.6.11 - config: betWinFactor [2], betTeamWinFactor [1], betPlayerWinFactor [2]
-* v0.6.10 - config: allowDrops [true]
-* v0.6.9 - config: flagColors: set flag (head) colors
-* v0.6.8 - config: woolFlagHead: change/set woolhead on flag grabbing
-* v0.6.7 - config: autoclass: [classname]
-* v0.6.6 - team chat: add player name
-* v0.6.5 - [Spout] wool lock (inv change cancel)
-* v0.6.4 - [Spout] color name over head
-* v0.6.3 - game mode: death match, spheric regions, block repair, powerup spawn
-* v0.6.2 - leaderboards RELOADED, spawn protection, flag coloring/whitening, inv drops
-* v0.6.1 - sign update/check, announcements, death!, arena end timer
-* v0.6.0 - huge rewrite
+* v0.7 - another huge rewrite, modules that provide Arena Types
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -152,6 +72,6 @@ A PVP experience enhancing plugin.
 * Bradley Hilton for the fork until version v0.0.3
 * Carbon131 for adding features until version v0.0.5
 * Drehverschluss for great support during the v0.6 rewrite
-* NodinChan for helping me cleaning up my code
+* NodinChan for helping me cleaning up my code and for his loader!
 
 -----------------------------------------------------------------------------------------------------------------------

@@ -246,6 +246,12 @@ public class PVPArena extends JavaPlugin {
 
 		getConfig().options().copyDefaults(true);
 		saveConfig();
+		
+		File arenaDir = new File(getDataFolder().getPath() + "/arenas");
+		
+		if (!arenaDir.exists()) {
+			arenaDir.mkdir();
+		}
 
 		File players = new File(getDataFolder(), "players.yml");
 		if (!players.exists()) {
