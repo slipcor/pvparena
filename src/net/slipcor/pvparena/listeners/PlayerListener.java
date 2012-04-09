@@ -36,6 +36,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -109,7 +110,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = Arenas.getArenaByPlayer(player);
-		if (arena == null) {
+		if (arena == null || player.isOp()) {
 			return; // no fighting player => OUT
 		}
 
@@ -178,6 +179,10 @@ public class PlayerListener implements Listener {
 		ArenaPlayer ap = Players.parsePlayer(player);
 		ArenaTeam team = arena.getTeam(ap);
 
+		if (team == null) {
+			return;
+		}
+		
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
 			db.i("player team: " + team.getName());
@@ -381,6 +386,15 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player => OUT
+		Players.playerLeave(arena, player);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerKicked(PlayerKickEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)

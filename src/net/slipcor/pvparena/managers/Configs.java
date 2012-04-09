@@ -94,6 +94,7 @@ public class Configs {
 		config.addDefault("general.type", type);
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
+		config.addDefault("general.restoreChests", Boolean.valueOf(false));
 		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));

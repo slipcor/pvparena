@@ -69,6 +69,7 @@ public class Settings {
 		types.put("general.world", "string");
 		types.put("general.item-rewards", "items");
 		types.put("general.random-reward", "boolean");
+		types.put("general.restoreChests", "boolean");
 		types.put("general.signs", "boolean");
 
 		types.put("arenatype.randomSpawn", "boolean");

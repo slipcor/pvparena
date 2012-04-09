@@ -173,6 +173,7 @@ public class Arena {
 		}
 
 		type.initiate();
+		Arenas.saveChests(this);
 
 		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
@@ -781,6 +782,7 @@ public class Arena {
 			return;
 		}
 		regions.get("battlefield").restore();
+		Arenas.restoreChests(this);
 	}
 
 	/**

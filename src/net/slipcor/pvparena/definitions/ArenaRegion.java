@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.definitions;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import net.slipcor.pvparena.PVPArena;
@@ -8,6 +9,8 @@ import net.slipcor.pvparena.core.Debug;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -36,6 +39,7 @@ public class ArenaRegion {
 	protected World world;
 	public String name;
 	private regionType type;
+	private HashMap<Location, ItemStack[]> invs = new HashMap<Location, ItemStack[]>();
 
 	public static enum regionType {
 		CUBOID, SPHERIC
@@ -325,5 +329,63 @@ public class ArenaRegion {
 
 	public regionType getType() {
 		return type;
+	}
+
+	public void saveChests() {
+		invs.clear();
+		int x;
+		int y;
+		int z;
+		if (type.equals(regionType.CUBOID)) {
+
+			for (x = min.getBlockX(); x <= max.getBlockX(); x++) {
+				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
+					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+						Block b = world.getBlockAt(x, y, z);
+						if (b.getType() != Material.CHEST) {
+							continue;
+						}
+						Chest c = (Chest) b.getState();
+
+						invs.put(b.getLocation(), c.getInventory()
+								.getContents().clone());
+					}
+				}
+
+			}
+		} else if (type.equals(regionType.SPHERIC)) {
+			for (x = min.getBlockX(); x <= max.getBlockX(); x++) {
+				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
+					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
+						Block b = world.getBlockAt(x, y, z);
+						if (b.getType() != Material.CHEST) {
+							continue;
+						}
+						if (!contains(b.getLocation())) {
+							continue;
+						}
+						Chest c = (Chest) b.getState();
+
+						invs.put(b.getLocation(), c.getInventory()
+								.getContents().clone());
+					}
+				}
+
+			}
+		}
+	}
+
+	public void restoreChests() {
+		db.i("restoring chests");
+		for (Location loc : invs.keySet()) {
+			try {
+				db.i("trying to restore chest: " + loc.toString());
+				((Chest) world.getBlockAt(loc).getState()).getInventory()
+						.setContents(invs.get(loc));
+				db.i("success!");
+			} catch (Exception e) {
+				//
+			}
+		}
 	}
 }

@@ -10,6 +10,7 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.definitions.ArenaBoard;
+import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.ChatColor;
@@ -334,5 +335,37 @@ public class Arenas {
 		}
 
 		return arena.type().checkAndCommit();
+	}
+
+	public static void saveChests(Arena arena) {
+		ArenaRegion bfRegion = arena.regions.get("battlefield");
+		
+		if (bfRegion == null) {
+			db.i("no battlefield region, skipping saveChests");
+			return;
+		}
+		
+		if (!arena.cfg.getBoolean("general.restoreChests")) {
+			db.i("not restoring chests, skipping saveChests");
+			return;
+		}
+		
+		bfRegion.saveChests();
+	}
+	
+	public static void restoreChests(Arena arena) {
+		ArenaRegion bfRegion = arena.regions.get("battlefield");
+		
+		if (bfRegion == null) {
+			db.i("no battlefield region, skipping restoreChests");
+			return;
+		}
+		
+		if (!arena.cfg.getBoolean("general.restoreChests")) {
+			db.i("not restoring chests, skipping restoreChests");
+			return;
+		}
+		
+		bfRegion.restoreChests();
 	}
 }

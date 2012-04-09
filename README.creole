@@ -51,6 +51,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.0.3 - Kick leads to arena leave
+* v0.7.0.2 - Chest restoring
 * v0.7 - another huge rewrite, modules that provide Arena Types
 
 -----------------------------------------------------------------------------------------------------------------------

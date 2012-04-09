@@ -221,6 +221,7 @@ public class Players {
 		db.i("resetting player manager");
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer p : players.values()) {
+			db.i("player: " + p.getName());
 			if (p.getArena() == null || !p.getArena().equals(arena)) {
 				continue;
 			}
@@ -546,8 +547,8 @@ public class Players {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			arena.START_ID = -1;
 		}
-
 		ap.destroy();
+		arena.removePlayer(ap);
 
 		if (!spectator && arena.fightInProgress) {
 			Arenas.checkAndCommit(arena);
