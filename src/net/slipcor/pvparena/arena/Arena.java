@@ -2,37 +2,27 @@ package net.slipcor.pvparena.arena;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.definitions.ArenaRegion;
-import net.slipcor.pvparena.definitions.Powerup;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.listeners.EntityListener;
-import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Players;
-import net.slipcor.pvparena.managers.Powerups;
 import net.slipcor.pvparena.managers.Settings;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.neworder.ArenaType;
-import net.slipcor.pvparena.register.payment.Method.MethodAccount;
-import net.slipcor.pvparena.runnables.BoardRunnable;
-import net.slipcor.pvparena.runnables.DominationRunnable;
-import net.slipcor.pvparena.runnables.PowerupRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
@@ -40,18 +30,14 @@ import net.slipcor.pvparena.runnables.TimedEndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
-import org.getspout.spoutapi.SpoutManager;
 
 /**
  * arena class
@@ -71,34 +57,22 @@ public class Arena {
 	private final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
+	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
 
 	private ArenaType type;
 
 	// global statics: region modify blocks all child arenas
 	public static String regionmodify = "";
 
-	public HashMap<String, Integer> paLives = new HashMap<String, Integer>(); // flags
-	/**
-	 * TeamName => PlayerName
-	 */
-	public HashMap<String, String> paTeamFlags = null;
-	public HashMap<Location, String> paFlags = null;
-	public HashMap<Location, DominationRunnable> paRuns = new HashMap<Location, DominationRunnable>();
-	public HashMap<String, ItemStack> paHeadGears = null;
-
 	// regions an arena has defined: RegionName => Region
 	public final HashMap<String, ArenaRegion> regions = new HashMap<String, ArenaRegion>();
 	public final HashSet<String> paChat = new HashSet<String>();
 	public final HashSet<ArenaClassSign> paSigns = new HashSet<ArenaClassSign>();
 
-	public Powerups pum;
 	public Settings sm;
 	public String name = "default";
 	public String prefix = "PVP Arena";
 	public String owner = "%server%";
-
-	public int powerupDiff; // powerup trigger cap
-	public int powerupDiffI = 0; // powerup trigger count
 
 	public Location pos1; // temporary position 1 (region select)
 	public Location pos2; // temporary position 2 (region select)
@@ -107,13 +81,8 @@ public class Arena {
 	public boolean fightInProgress = false;
 	public boolean edit = false;
 
-	// arena settings
-	public boolean usesPowerups;
-
 	// Runnable IDs
-	public int SPAWN_ID = -1;
 	public int END_ID = -1;
-	public int BOARD_ID = -1;
 	public int START_ID = -1;
 	public int SPAWNCAMP_ID = -1;
 
@@ -167,7 +136,6 @@ public class Arena {
 				} else {
 					tpPlayerToCoordName(ap.get(), "spawn");
 				}
-				setPermissions(ap.get());
 				playerCount++;
 			}
 		}
@@ -185,88 +153,17 @@ public class Arena {
 					.scheduleSyncDelayedTask(PVPArena.instance,
 							new TimedEndRunnable(this), timed * 20);
 		}
-		this.BOARD_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, new BoardRunnable(this), 100L, 100L);
+		
+
+		Players.tellEveryone(this, Language.parse("begin"));
+		
+		PVPArena.instance.getAmm().teleportAllToSpawn(this);
+		
 		db.i("teleported everyone!");
-		if (usesPowerups) {
-			db.i("using powerups : " + cfg.getString("game.powerups", "off")
-					+ " : " + powerupDiff);
-			if (cfg.getString("game.powerups", "off").startsWith("time")
-					&& powerupDiff > 0) {
-				db.i("powerup time trigger!");
-				powerupDiff = powerupDiff * 20; // calculate ticks to seconds
-				// initiate autosave timer
-				SPAWN_ID = Bukkit
-						.getServer()
-						.getScheduler()
-						.scheduleSyncRepeatingTask(PVPArena.instance,
-								new PowerupRunnable(this), powerupDiff,
-								powerupDiff);
-			}
-		}
+		
 		teamCount = countActiveTeams();
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
-	}
-
-	/**
-	 * set temporary permissions for a player
-	 * 
-	 * @param p
-	 *            the player to set
-	 */
-	public void setPermissions(Player p) {
-		HashMap<String, Boolean> perms = getTempPerms();
-		if (perms == null || perms.isEmpty())
-			return;
-
-		ArenaPlayer player = Players.parsePlayer(p);
-		PermissionAttachment pa = p.addAttachment(PVPArena.instance);
-
-		for (String entry : perms.keySet()) {
-			pa.setPermission(entry, perms.get(entry));
-		}
-		p.recalculatePermissions();
-		player.tempPermissions.add(pa);
-	}
-
-	/**
-	 * remove temporary permissions from a player
-	 * 
-	 * @param p
-	 *            the player to reset
-	 */
-	private void removePermissions(Player p) {
-		ArenaPlayer player = Players.parsePlayer(p);
-		if (player == null || player.tempPermissions == null) {
-			return;
-		}
-		for (PermissionAttachment pa : player.tempPermissions) {
-			if (pa != null) {
-				pa.remove();
-			}
-		}
-		p.recalculatePermissions();
-	}
-
-	/**
-	 * get the permissions map
-	 * 
-	 * @return the temporary permissions map
-	 */
-	private HashMap<String, Boolean> getTempPerms() {
-		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
-
-		if (cfg.getYamlConfiguration().getConfigurationSection("perms.default") != null) {
-			List<String> list = cfg.getStringList("perms.default",
-					new ArrayList<String>());
-			for (String key : list) {
-				result.put(key.replace("-", "").replace("^", ""),
-						(key.startsWith("^") || key.startsWith("-")));
-			}
-		}
-
-		return result;
 	}
 
 	/**
@@ -368,8 +265,8 @@ public class Arena {
 			}
 		}
 
-		if (cfg.getBoolean("messages.colorNick", true))
-			colorizePlayer(player, "a");
+		PVPArena.instance.getAmm().tpPlayerToCoordName(this, player, place);
+		
 		if (place.equals("spectator")) {
 			ArenaPlayer ap = Players.parsePlayer(player);
 			ap.setSpectator(true);
@@ -466,11 +363,11 @@ public class Arena {
 			return;
 		}
 
-		removePermissions(player);
 		ArenaPlayer ap = Players.parsePlayer(player);
 
 		ap.getState().unload();
-
+		PVPArena.instance.getAmm().resetPlayer(this, player);
+		
 		db.i("string = " + string);
 		Players.setTelePass(player, true);
 		if (string.equalsIgnoreCase("old")) {
@@ -500,65 +397,6 @@ public class Arena {
 			p.setSpectator(true);
 		}
 		reset(true);
-	}
-
-	/**
-	 * calculate a powerup and commit it
-	 */
-	public void calcPowerupSpawn() {
-		db.i("powerups?");
-		if (this.pum == null)
-			return;
-
-		db.i("pm is not null");
-		if (this.pum.puTotal.size() <= 0)
-			return;
-
-		db.i("totals are filled");
-		Random r = new Random();
-		int i = r.nextInt(this.pum.puTotal.size());
-
-		for (Powerup p : this.pum.puTotal) {
-			if (--i > 0)
-				continue;
-			commitPowerupItemSpawn(p.item);
-			Players.tellEveryone(this, Language.parse("serverpowerup", p.name));
-			return;
-		}
-
-	}
-
-	/**
-	 * commit the powerup item spawn
-	 * 
-	 * @param item
-	 *            the material to spawn
-	 */
-	private void commitPowerupItemSpawn(Material item) {
-		db.i("dropping item?");
-		if (regions.get("battlefield") == null)
-			return;
-		if (cfg.getBoolean("game.dropSpawn")) {
-			dropItemOnSpawn(item);
-		} else {
-			regions.get("battlefield").dropItemRandom(item);
-		}
-	}
-
-	/**
-	 * drop an item at a powerup spawn point
-	 * 
-	 * @param item
-	 *            the item to drop
-	 */
-	private void dropItemOnSpawn(Material item) {
-		db.i("calculating item spawn location");
-		Location aim = Spawns.getCoords(this, "powerup").getBlock()
-				.getRelative(BlockFace.UP).getLocation();
-
-		db.i("dropping item on spawn: " + aim.toString());
-		Bukkit.getWorld(this.getWorld()).dropItem(aim, new ItemStack(item, 1));
-
 	}
 
 	/**
@@ -615,45 +453,6 @@ public class Arena {
 	}
 
 	/**
-	 * add a team color to a player name
-	 * 
-	 * @param player
-	 *            the player to colorize
-	 * @param color
-	 *            the color string to parse
-	 */
-	public void colorizePlayer(Player player, String color) {
-		db.i("colorizing player " + player.getName() + "; color " + color);
-
-		if (color != null && color.equals("")) {
-			player.setDisplayName(player.getName());
-
-			if (PVPArena.spoutHandler != null)
-				SpoutManager.getAppearanceManager().setGlobalTitle(player,
-						player.getName());
-
-			return;
-		} else if (color == null) {
-			if (PVPArena.spoutHandler != null)
-				SpoutManager.getAppearanceManager().setGlobalTitle(player, " ");
-
-			return;
-		}
-		ArenaTeam team = this.getTeam(Players.parsePlayer(player));
-		String n;
-		if (team == null) {
-			db.w("player has no team and should be colorized: " + player.getName());
-			n = player.getName();
-		} else {
-			n = team.getColorString() + player.getName();
-		}
-		player.setDisplayName(n.replaceAll("(&([a-f0-9]))", "§$2"));
-		if (PVPArena.spoutHandler != null)
-			SpoutManager.getAppearanceManager().setGlobalTitle(player,
-					n.replaceAll("(&([a-f0-9]))", "§$2"));
-	}
-
-	/**
 	 * give customized rewards to players
 	 * 
 	 * @param player
@@ -661,88 +460,7 @@ public class Arena {
 	 */
 	public void giveRewards(Player player) {
 		db.i("giving rewards to " + player.getName());
-		if (PVPArena.economy != null) {
-			for (String nKey : Players.paPlayersBetAmount.keySet()) {
-				String[] nSplit = nKey.split(":");
-
-				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double playerFactor = playerCount
-							* cfg.getDouble("money.betPlayerWinFactor");
-
-					if (playerFactor <= 0) {
-						playerFactor = 1;
-					}
-
-					playerFactor *= cfg.getDouble("money.betWinFactor");
-
-					double amount = Players.paPlayersBetAmount.get(nKey)
-							* playerFactor;
-
-					PVPArena.economy.depositPlayer(nSplit[0], amount);
-					try {
-						Announcement.announce(
-								this,
-								Announcement.type.PRIZE,
-								Language.parse("awarded",
-										PVPArena.economy.format(amount)));
-						Arenas.tellPlayer(
-								Bukkit.getPlayer(nSplit[0]),
-								Language.parse("youwon",
-										PVPArena.economy.format(amount)), this);
-					} catch (Exception e) {
-						// nothing
-					}
-				}
-			}
-		} else if (PVPArena.eco != null) {
-			for (String nKey : Players.paPlayersBetAmount.keySet()) {
-				String[] nSplit = nKey.split(":");
-
-				if (nSplit[1].equalsIgnoreCase(player.getName())) {
-					double playerFactor = playerCount
-							* cfg.getDouble("money.betPlayerWinFactor");
-
-					if (playerFactor <= 0) {
-						playerFactor = 1;
-					}
-
-					playerFactor *= cfg.getDouble("money.betWinFactor");
-
-					double amount = Players.paPlayersBetAmount.get(nKey)
-							* playerFactor;
-
-					MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
-					ma.add(amount);
-					try {
-						Announcement.announce(
-								this,
-								Announcement.type.PRIZE,
-								Language.parse("awarded",
-										PVPArena.eco.format(amount)));
-						Arenas.tellPlayer(
-								Bukkit.getPlayer(nSplit[0]),
-								Language.parse("youwon",
-										PVPArena.eco.format(amount)), this);
-					} catch (Exception e) {
-						// nothing
-					}
-				}
-			}
-		}
-
-		if (cfg.getInt("money.reward", 0) > 0) {
-			if (PVPArena.economy != null) {
-				PVPArena.economy.depositPlayer(player.getName(),
-						cfg.getInt("money.reward", 0));
-				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.economy.format(cfg.getInt("money.reward", 0))), this);
-			} else if (PVPArena.eco != null) {
-				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-				ma.add(cfg.getInt("money.reward", 0));
-				Arenas.tellPlayer(player, Language.parse("awarded",
-						PVPArena.eco.format(cfg.getInt("money.reward", 0))), this);
-			}
-		}
+		PVPArena.instance.getAmm().giveRewards(this, player);
 		String sItems = cfg.getString("general.item-rewards", "none");
 		if (sItems.equals("none"))
 			return;
@@ -800,34 +518,15 @@ public class Arena {
 			as.clear();
 		}
 		paSigns.clear();
-		if (paTeamFlags != null) {
-			paTeamFlags.clear();
-		}
-		if (paHeadGears != null) {
-			paHeadGears.clear();
-		}
 		Players.reset(this, force);
 		fightInProgress = false;
-		if (SPAWN_ID > -1)
-			Bukkit.getScheduler().cancelTask(SPAWN_ID);
-		SPAWN_ID = -1;
 		if (END_ID > -1)
 			Bukkit.getScheduler().cancelTask(END_ID);
 		END_ID = -1;
-		if (BOARD_ID > -1)
-			Bukkit.getScheduler().cancelTask(BOARD_ID);
-		BOARD_ID = -1;
+		
+		PVPArena.instance.getAmm().reset(this, force);
+		type.reset(force);
 
-		Blocks.resetBlocks(this);
-
-		if (paRuns == null || paRuns.size() < 1) {
-			return;
-		}
-
-		for (DominationRunnable run : paRuns.values()) {
-			Bukkit.getScheduler().cancelTask(run.ID);
-		}
-		paRuns.clear();
 		this.playerCount = 0;
 		this.teamCount = 0;
 	}
@@ -886,9 +585,6 @@ public class Arena {
 
 		teleportAllToSpawn();
 		fightInProgress = true;
-		Players.tellEveryone(this, Language.parse("begin"));
-		Announcement.announce(this, Announcement.type.START,
-				Language.parse("begin"));
 	}
 
 	public void spawnCampPunish() {

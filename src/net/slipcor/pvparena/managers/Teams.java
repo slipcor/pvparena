@@ -7,13 +7,12 @@ import java.util.Set;
 
 import org.bukkit.entity.Player;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
 
 /**
  * teams manager class
@@ -69,12 +68,7 @@ public class Teams {
 				player,
 				Language.parse("youjoined" + (free ? "free" : ""),
 						coloredTeam), arena);
-		Announcement.announce(
-				arena,
-				type.JOIN,
-				Language.parse("playerjoined" + (free ? "free" : ""),
-						player.getName(),
-						coloredTeam));
+		PVPArena.instance.getAmm().choosePlayerTeam(arena, player, coloredTeam);
 		Players.tellEveryoneExcept(
 				arena,
 				player,

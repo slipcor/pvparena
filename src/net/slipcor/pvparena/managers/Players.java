@@ -22,9 +22,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.events.PALeaveEvent;
 
 /**
@@ -530,8 +528,7 @@ public class Players {
 
 		if (!spectator) {
 			ArenaTeam team = arena.getTeam(ap);
-			Announcement.announce(arena, type.LOSER,
-					Language.parse("playerleave", team.colorizePlayer(player)));
+			PVPArena.instance.getAmm().playerLeave(arena, player, team);
 
 			Players.tellEveryoneExcept(
 					arena,

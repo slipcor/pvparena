@@ -8,12 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
-import net.slipcor.pvparena.definitions.Powerup;
-import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
@@ -21,7 +16,6 @@ import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -98,9 +92,7 @@ public class EntityListener implements Listener {
 		EntityListener.addBurningPlayer(player);
 		ArenaPlayer ap = Players.parsePlayer(player);
 		ArenaTeam team = arena.getTeam(ap);
-		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
-				player.getName(), Players.parseDeathCause(arena, player, cause.getCause(), Players
-						.getLastDamagingPlayer(cause))));
+		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
 		Players.tellEveryone(arena, Language.parse("killedby",
 				team.colorizePlayer(player) + ChatColor.YELLOW, Players
 						.parseDeathCause(arena, player, cause.getCause(), Players
@@ -174,15 +166,6 @@ public class EntityListener implements Listener {
 				arena.betPossible = false;
 			}
 		}
-		if (arena.usesPowerups) {
-			if (arena.cfg.getString("game.powerups", "off").startsWith("death")) {
-				db.i("calculating powerup trigger death");
-				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
-				if (arena.powerupDiffI == 0) {
-					arena.calcPowerupSpawn();
-				}
-			}
-		}
 
 		if (Arenas.checkAndCommit(arena))
 			return;
@@ -240,13 +223,7 @@ public class EntityListener implements Listener {
 
 			db.i("processing damage!");
 
-			if (arena.pum != null) {
-				db.i("committing powerup triggers");
-				Powerup p = arena.pum.puActive.get(defender);
-				if ((p != null) && (p.canBeTriggered()))
-					p.commit(null, defender, event);
-
-			}
+			PVPArena.instance.getAmm().onEntityDamageByBlockDamage(arena, defender, event);
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
@@ -378,17 +355,8 @@ public class EntityListener implements Listener {
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
-		if (arena.pum != null) {
-			db.i("committing powerup triggers");
-			Powerup p = arena.pum.puActive.get(attacker);
-			if ((p != null) && (p.canBeTriggered()))
-				p.commit(attacker, defender, event);
 
-			p = arena.pum.puActive.get(defender);
-			if ((p != null) && (p.canBeTriggered()))
-				p.commit(attacker, defender, event);
-
-		}
+		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker, defender, event);
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
 
@@ -514,18 +482,8 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (arena.pum != null) {
-			Powerup p = arena.pum.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.HEAL)) {
-						event.setCancelled(true);
-						p.commit(event);
-					}
-				}
-			}
-
-		}
+		PVPArena.instance.getAmm().onEntityRegainHealth(arena, event);
+		
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -540,11 +498,7 @@ public class EntityListener implements Listener {
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			if (arena.fightInProgress) {
-				for (Block b : event.blockList()) {
-					Blocks.saveBlock(b);
-				}
-			}
+			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;
 		}
 

@@ -23,12 +23,9 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.register.payment.Method.MethodAccount;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 public class ArenaType extends Loadable {
@@ -198,69 +195,19 @@ public class ArenaType extends Loadable {
 		}
 
 		if (aTeam != null) {
-			Announcement.announce(arena, type.WINNER,
+			PVPArena.instance.getAmm().announceWinner(arena,
 					Language.parse("teamhaswon", "Team " + aTeam.getName()));
+
 			Players.tellEveryone(
 					arena,
 					Language.parse("teamhaswon", aTeam.getColor() + "Team "
 							+ aTeam.getName()));
 		}
-
-		if (PVPArena.eco != null || PVPArena.economy != null) {
-			db.i("eConomy set, parse bets");
-			for (String nKey : Players.paPlayersBetAmount.keySet()) {
-				db.i("bet: " + nKey);
-				String[] nSplit = nKey.split(":");
-
-				if (arena.getTeam(nSplit[1]) == null
-						|| arena.getTeam(nSplit[1]).getName().equals("free"))
-					continue;
-
-				if (nSplit[1].equalsIgnoreCase(aTeam.getName())) {
-					double teamFactor = arena.cfg
-							.getDouble("money.betTeamWinFactor")
-							* arena.teamCount;
-					if (teamFactor <= 0) {
-						teamFactor = 1;
-					}
-					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
-
-					double amount = Players.paPlayersBetAmount.get(nKey)
-							* teamFactor;
-
-					if (PVPArena.economy == null && PVPArena.eco != null) {
-						MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
-						if (ma == null) {
-							db.s("Account not found: " + nSplit[0]);
-							return true;
-						}
-						ma.add(amount);
-						try {
-							Arenas.tellPlayer(
-									Bukkit.getPlayer(nSplit[0]),
-									Language.parse("youwon",
-											PVPArena.eco.format(amount)), arena);
-						} catch (Exception e) {
-							// nothing
-						}
-					} else {
-						if (!PVPArena.economy.hasAccount(nSplit[0])) {
-							db.s("Account not found: " + nSplit[0]);
-							return true;
-						}
-						PVPArena.economy.depositPlayer(nSplit[0], amount);
-						try {
-							Arenas.tellPlayer(
-									Bukkit.getPlayer(nSplit[0]),
-									Language.parse("youwon",
-											PVPArena.economy.format(amount)), arena);
-						} catch (Exception e) {
-							// nothing
-						}
-					}
-				}
-			}
+		
+		if (PVPArena.instance.getAmm().checkAndCommit(arena, aTeam)) {
+			return true;
 		}
+		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 		return true;
@@ -268,11 +215,7 @@ public class ArenaType extends Loadable {
 
 	public void parseRespawn(Player respawnPlayer,
 			ArenaTeam respawnTeam, int lives, DamageCause cause, Entity damager) {
-		Players.tellEveryone(arena, Language.parse("killedbylives",
-				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-				Players.parseDeathCause(arena, respawnPlayer, cause, damager),
-				String.valueOf(lives)));
-		arena.paLives.put(respawnPlayer.getName(), lives);
+		return;
 	}
 
 	public void initiate() {
@@ -386,7 +329,7 @@ public class ArenaType extends Loadable {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			if (result.contains(team.getName())) {
-				Announcement.announce(arena, type.WINNER,
+				PVPArena.instance.getAmm().announceWinner(arena,
 						Language.parse("teamhaswon", "Team " + team.getName()));
 				Players.tellEveryone(
 						arena,
@@ -404,67 +347,12 @@ public class ArenaType extends Loadable {
 			}
 		}
 
-		pay(result);
+		PVPArena.instance.getAmm().timedEnd(arena, result);
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 	}
 	
-	protected void pay(HashSet<String> result) {
-		if (PVPArena.eco != null) {
-			for (String nKey : Players.paPlayersBetAmount.keySet()) {
-				String[] nSplit = nKey.split(":");
-				ArenaTeam team = arena.getTeam(nSplit[1]);
-				if (team == null || team.getName().equals("free"))
-					continue;
-
-				if (result.contains(nSplit[1])) {
-					double teamFactor = arena.cfg
-							.getDouble("money.betTeamWinFactor")
-							* arena.teamCount;
-					if (teamFactor <= 0) {
-						teamFactor = 1;
-					}
-					teamFactor *= arena.cfg.getDouble("money.betWinFactor");
-
-					double amount = Players.paPlayersBetAmount.get(nKey)
-							* teamFactor;
-
-					if (PVPArena.economy == null && PVPArena.eco != null) {
-						MethodAccount ma = PVPArena.eco.getAccount(nSplit[0]);
-						if (ma == null) {
-							db.s("Account not found: " + nSplit[0]);
-							continue;
-						}
-						ma.add(amount);
-						try {
-							Arenas.tellPlayer(
-									Bukkit.getPlayer(nSplit[0]),
-									Language.parse("youwon",
-											PVPArena.eco.format(amount)), arena);
-						} catch (Exception e) {
-							// nothing
-						}
-					} else {
-						if (!PVPArena.economy.hasAccount(nSplit[0])) {
-							db.s("Account not found: " + nSplit[0]);
-							continue;
-						}
-						PVPArena.economy.depositPlayer(nSplit[0], amount);
-						try {
-							Arenas.tellPlayer(
-									Bukkit.getPlayer(nSplit[0]),
-									Language.parse("youwon",
-											PVPArena.economy.format(amount)), arena);
-						} catch (Exception e) {
-							// nothing
-						}
-					}
-				}
-			}
-		}
-	}
-
 	public void parseMove(Player player) {
 		return;
 	}
@@ -493,5 +381,9 @@ public class ArenaType extends Loadable {
 			}
 		}
 		return false;
+	}
+
+	public void reset(boolean force) {
+		return;
 	}
 }

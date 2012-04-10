@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.managers;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +15,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
@@ -184,60 +181,10 @@ public class Configs {
 			arena.addClass(className, items);
 			db.i("adding class items to class " + className);
 		}
-
-		HashMap<String, Object> powerups = new HashMap<String, Object>();
-		if (config.getConfigurationSection("powerups") != null) {
-			HashMap<String, Object> map = (HashMap<String, Object>) config
-					.getConfigurationSection("powerups").getValues(false);
-			HashMap<String, Object> map2 = new HashMap<String, Object>();
-			HashMap<String, Object> map3 = new HashMap<String, Object>();
-			db.i("parsing powerups");
-			for (String key : map.keySet()) {
-				// key e.g. "OneUp"
-				map2 = (HashMap<String, Object>) config
-						.getConfigurationSection("powerups." + key).getValues(
-								false);
-				HashMap<String, Object> temp_map = new HashMap<String, Object>();
-				for (String kkey : map2.keySet()) {
-					// kkey e.g. "dmg_receive"
-					if (kkey.equals("item")) {
-						temp_map.put(kkey, String.valueOf(map2.get(kkey)));
-						db.i(key + " => " + kkey + " => "
-								+ String.valueOf(map2.get(kkey)));
-					} else {
-						db.i(key + " => " + kkey + " => "
-								+ parseList(map3.values()));
-						map3 = (HashMap<String, Object>) config
-								.getConfigurationSection(
-										"powerups." + key + "." + kkey)
-								.getValues(false);
-						temp_map.put(kkey, map3);
-					}
-				}
-				powerups.put(key, temp_map);
-			}
-
-			arena.pum = new Powerups(powerups);
-
-		}
 		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
 			arena.owner = cfg.getString("general.owner");
 		}
-		String pu = config.getString("game.powerups", "off");
-
-		arena.usesPowerups = true;
-		String[] ss = pu.split(":");
-		if (pu.startsWith("death")) {
-			// arena.powerupTrigger = "death";
-			arena.powerupDiff = Integer.parseInt(ss[1]);
-		} else if (pu.startsWith("time")) {
-			// arena.powerupTrigger = "time";
-			arena.powerupDiff = Integer.parseInt(ss[1]);
-		} else {
-			arena.usesPowerups = false;
-		}
-
 		if (config.getConfigurationSection("regions") != null) {
 			Map<String, Object> regs = config
 					.getConfigurationSection("regions").getValues(false);
@@ -260,43 +207,9 @@ public class Configs {
 
 		arena.type().configParse();
 
-		if (config.get("spawns") != null) {
-			db.i("checking for leaderboard");
-			if (config.get("spawns.leaderboard") != null) {
-				db.i("leaderboard exists");
-				Location loc = Config.parseLocation(
-						Bukkit.getWorld(arena.getWorld()),
-						config.getString("spawns.leaderboard"));
-
-				Arenas.boards.put(loc, new ArenaBoard(loc, arena));
-			}
-		}
+		PVPArena.instance.getAmm().configParse(arena, config, type);
 		
 		arena.prefix = cfg.getString("general.prefix", "PVP Arena");
-	}
-
-	/**
-	 * turn a collection of objects into a comma separated string
-	 * 
-	 * @param values
-	 *            the collection
-	 * @return the comma separated string
-	 */
-	private static String parseList(Collection<Object> values) {
-		String s = "";
-		for (Object o : values) {
-			if (!s.equals("")) {
-				s += ",";
-			}
-			try {
-				s += String.valueOf(o);
-				db.i("a");
-			} catch (Exception e) {
-				db.i("b");
-				s += o.toString();
-			}
-		}
-		return s;
 	}
 
 	/**

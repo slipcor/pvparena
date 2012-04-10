@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.listeners;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
@@ -10,9 +9,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.definitions.ArenaBoard;
-import net.slipcor.pvparena.definitions.Powerup;
-import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Regions;
@@ -148,7 +144,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
-		if (ArenaBoard.checkInteract(event, player)) {
+		if (PVPArena.instance.getAmm().onPlayerInteract(event)) {
 			return;
 		}
 		
@@ -294,7 +290,7 @@ public class PlayerListener implements Listener {
 				} else {
 					arena.tpPlayerToCoordName(player, "spawn");
 				}
-				arena.setPermissions(player);
+				PVPArena.instance.getAmm().lateJoin(arena, player);
 				arena.playerCount++;
 
 				arena.teamCount = arena.countActiveTeams();
@@ -328,26 +324,7 @@ public class PlayerListener implements Listener {
 		}
 		
 		arena.type().parseMove(player);
-
-		// db.i("onPlayerMove: fighting player!");
-		if (arena.pum != null) {
-			Powerup p = arena.pum.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.FREEZE)) {
-						db.i("freeze in effect, cancelling!");
-						event.setCancelled(true);
-					}
-					if (p.isEffectActive(PowerupEffect.classes.SPRINT)) {
-						db.i("sprint in effect, sprinting!");
-						event.getPlayer().setSprinting(true);
-					}
-					if (p.isEffectActive(PowerupEffect.classes.SLIP)) {
-						//
-					}
-				}
-			}
-		}
+		PVPArena.instance.getAmm().parseMove(event, arena);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -358,30 +335,10 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = Arenas.getArenaByPlayer(player);
-		if ((arena == null) || (arena.pum == null)
-				|| (arena.pum.puTotal.size() < 1))
+		if (arena == null)
 			return; // no fighting player or no powerups => OUT
-
-		db.i("onPlayerPickupItem: fighting player");
-		Iterator<Powerup> pi = arena.pum.puTotal.iterator();
-		while (pi.hasNext()) {
-			Powerup p = pi.next();
-			if (event.getItem().getItemStack().getType().equals(p.item)) {
-				Powerup newP = new Powerup(p);
-				if (arena.pum.puActive.containsKey(player)) {
-					arena.pum.puActive.get(player).disable();
-				}
-				arena.pum.puActive.put(player, newP);
-				Players.tellEveryone(arena, Language.parse("playerpowerup",
-						player.getName(), newP.name));
-				event.setCancelled(true);
-				event.getItem().remove();
-				if (newP.canBeTriggered())
-					newP.activate(player); // activate for the first time
-
-				return;
-			}
-		}
+		
+		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -459,10 +416,7 @@ public class PlayerListener implements Listener {
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
-		if (arena.cfg.getBoolean("game.hideName")) {
-			player.setSneaking(true);
-			arena.colorizePlayer(player, null);
-		}
+		PVPArena.instance.getAmm().onPlayerTeleport(arena, event);
 
 		if (Players.getTelePass(player)
 				|| PVPArena.hasPerms(player, "pvparena.telepass"))
@@ -491,17 +445,7 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
 
-		db.i("inPlayerVelocity: fighting player");
-		if (arena.pum != null) {
-			Powerup p = arena.pum.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.JUMP)) {
-						p.commit(event);
-					}
-				}
-			}
-		}
+		PVPArena.instance.getAmm().onPlayerVelocity(arena, event);
 	}
 
 }

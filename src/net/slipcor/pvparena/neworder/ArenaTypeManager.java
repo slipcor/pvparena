@@ -6,6 +6,7 @@ import java.util.List;
 import com.nodinchan.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arenas.teams.TeamArena;
 
 public class ArenaTypeManager {
 	private final List<ArenaType> types;
@@ -16,6 +17,7 @@ public class ArenaTypeManager {
 			path.mkdir();
 		}
 		types = new Loader<ArenaType>(instance, path, new Object[] {}).load();
+		types.add(new TeamArena());
 	}
 	
 	public ArenaType getType(String tName) {

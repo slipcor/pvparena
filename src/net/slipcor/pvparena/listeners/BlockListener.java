@@ -3,13 +3,8 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Blocks;
 import net.slipcor.pvparena.managers.Players;
-import net.slipcor.pvparena.managers.Spawns;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -45,10 +40,7 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
-			if (arena.fightInProgress
-					&& arena.cfg.getBoolean("protection.restore")) {
-				Blocks.saveBlock(event.getBlock());
-			}
+			PVPArena.instance.getAmm().onBlockBreak(arena, event);
 			return; // we don't need protection => OUT!
 		}
 
@@ -106,11 +98,7 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			if (arena.fightInProgress
-					&& arena.cfg.getBoolean("protection.restore")) {
-				Blocks.saveBlock(event.getBlock(), event
-						.getBlockReplacedState().getType());
-			}
+			PVPArena.instance.getAmm().onBlockPlace(arena, event);
 			// if not an event happend that we would like to block => OUT
 			return;
 		}
@@ -118,8 +106,7 @@ public class BlockListener implements Listener {
 		if (!arena.cfg.getBoolean("protection.tnt", true)
 				&& event.getBlock().getTypeId() == 46) {
 			if (arena.fightInProgress) {
-				Blocks.saveBlock(event.getBlock(), event
-						.getBlockReplacedState().getType());
+				PVPArena.instance.getAmm().onBlockPlace(arena, event);
 			}
 			return; // we do not block TNT, so just return if it is TNT
 		}
@@ -129,41 +116,6 @@ public class BlockListener implements Listener {
 
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
-		String headline = event.getLine(0);
-		if ((headline == null) || (headline.equals(""))) {
-			return;
-		}
-
-		if (!headline.startsWith("[PAA]")) {
-			return;
-		}
-
-		headline = headline.replace("[PAA]", "");
-
-		Arena a = Arenas.getArenaByName(headline);
-		if (a == null) {
-			return;
-		}
-
-		// trying to create an arena leaderboard
-
-		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
-			Arenas.tellPlayer(event.getPlayer(), Language.parse("boardexists"), a);
-			return;
-		}
-
-		if (!PVPArena.hasAdminPerms(event.getPlayer())
-				&& !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
-			Arenas.tellPlayer(
-					event.getPlayer(),
-					Language.parse("nopermto",
-							Language.parse("createleaderboard")), a);
-			return;
-		}
-
-		event.setLine(0, headline);
-		Arenas.boards.put(event.getBlock().getLocation(), new ArenaBoard(event
-				.getBlock().getLocation(), a));
-		Spawns.setCoords(a, event.getBlock().getLocation(), "leaderboard");
+		PVPArena.instance.getAmm().onSignChange(event);
 	}
 }

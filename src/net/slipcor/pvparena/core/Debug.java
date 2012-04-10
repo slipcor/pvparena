@@ -176,4 +176,6 @@ public class Debug {
 // 42 - TimedEndRunnable
 // 43 - StartRunnable
 // 44 - SpawnCampRunnable
+// 45 - ArenaType
+// 46 - ArenaModule
 

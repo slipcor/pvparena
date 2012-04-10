@@ -37,7 +37,6 @@ A PVP experience enhancing plugin.
 * Vault
 * a SuperPerms compatible Permissions system
 * iConomy 5/6
-* Spout
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -51,6 +50,14 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.8 - ArenaModule: Announcements
+* v0.7.7 - ArenaModule: TempPerms
+* v0.7.6 - ArenaModule: PowerUps
+* v0.7.5 - ArenaModule: VaultSupport 
+* v0.7.4 - ArenaModule: Economy
+* v0.7.3 - ArenaModule: BlockRestore
+* v0.7.2 - ArenaModule: ColorTeams
+* v0.7.1 - ArenaModule: ArenaBoards
 * v0.7.0.3 - Kick leads to arena leave
 * v0.7.0.2 - Chest restoring
 * v0.7 - another huge rewrite, modules that provide Arena Types

@@ -8,11 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
 import net.slipcor.pvparena.definitions.ArenaRegion;
-import net.slipcor.pvparena.register.payment.Method.MethodAccount;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -74,7 +70,6 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("selectteam"), arena);
 			return true;
 		}
-		int entryfee = arena.cfg.getInt("money.entry", 0);
 
 		if (Teams.calcFreeTeam(arena) == null
 				|| ((arena.cfg.getInt("ready.max") > 0) && (arena.cfg
@@ -88,24 +83,11 @@ public class Commands {
 		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
-		if (entryfee > 0) {
-			if (PVPArena.economy != null) {
-				PVPArena.economy.withdrawPlayer(player.getName(), entryfee);
-				Arenas.tellPlayer(
-						player,
-						Language.parse("joinpay",
-								PVPArena.economy.format(entryfee)), arena);
-			} else if (PVPArena.eco != null) {
-				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-				ma.subtract(entryfee);
-				Arenas.tellPlayer(player, Language.parse("joinpay",
-						PVPArena.eco.format(entryfee)), arena);
-			}
-		}
 
 		Teams.choosePlayerTeam(arena, player);
 		Inventories.prepareInventory(arena, player);
 
+		PVPArena.instance.getAmm().parseJoin(arena, player, arena.getTeam(Players.parsePlayer(player)).colorize());
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
 		if (autoClass != null && !autoClass.equals("none")) {
@@ -141,7 +123,6 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("notselectteam"), arena);
 			return true;
 		}
-		int entryfee = arena.cfg.getInt("money.entry", 0);
 
 		if (arena.cfg.getInt("ready.max") > 0
 				&& arena.cfg.getInt("ready.max") <= Players
@@ -155,20 +136,6 @@ public class Commands {
 		arena.prepare(player, false);
 		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
-		if (entryfee > 0) {
-			if (PVPArena.economy != null) {
-				PVPArena.economy.withdrawPlayer(player.getName(), entryfee);
-				Arenas.tellPlayer(
-						player,
-						Language.parse("joinpay",
-								PVPArena.economy.format(entryfee)), arena);
-			} else if (PVPArena.eco != null) {
-				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-				ma.subtract(entryfee);
-				Arenas.tellPlayer(player, Language.parse("joinpay",
-						PVPArena.eco.format(entryfee)), arena);
-			}
-		}
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
 
@@ -177,15 +144,12 @@ public class Commands {
 
 		team.add(ap);
 
+		
 		Inventories.prepareInventory(arena, player);
-		if (Players.countPlayersInTeams(arena) < 2) {
-			Announcement.announce(arena, type.START,
-					Language.parse("joinarena", arena.name));
-		}
 		String coloredTeam = team.colorize();
-		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam), arena);
-		Announcement.announce(arena, type.JOIN,
-				Language.parse("playerjoined", player.getName(), coloredTeam));
+		
+		PVPArena.instance.getAmm().parseJoin(arena, player, coloredTeam);
+		
 		Players.tellEveryoneExcept(arena, player,
 				Language.parse("playerjoined", player.getName(), coloredTeam));
 
@@ -251,34 +215,8 @@ public class Commands {
 			return false;
 		}
 
-		if (arena.cfg.getInt("money.entry", 0) > 0) {
-			if (PVPArena.economy != null) {
-				if (!PVPArena.economy.hasAccount(player.getName())) {
-					db.s("Account not found: " + player.getName());
-					return false;
-				}
-				if (!PVPArena.economy.has(player.getName(),
-						arena.cfg.getInt("money.entry", 0))) {
-					// no money, no entry!
-					Arenas.tellPlayer(player, Language.parse("notenough",
-							PVPArena.economy.format(arena.cfg.getInt(
-									"money.entry", 0))), arena);
-					return false;
-				}
-			} else if (PVPArena.eco != null) {
-				MethodAccount ma = PVPArena.eco.getAccount(player.getName());
-				if (ma == null) {
-					db.s("Account not found: " + player.getName());
-					return false;
-				}
-				if (!ma.hasEnough(arena.cfg.getInt("money.entry", 0))) {
-					// no money, no entry!
-					Arenas.tellPlayer(player, Language.parse("notenough",
-							PVPArena.eco.format(arena.cfg.getInt("money.entry",
-									0))), arena);
-					return false;
-				}
-			}
+		if (!PVPArena.instance.getAmm().checkJoin(arena, player)) {
+			return false;
 		}
 
 		if (arena.START_ID != -1) {
@@ -525,7 +463,7 @@ public class Commands {
 		if (!arena.cfg.getBoolean("general.enabled")
 				&& !PVPArena.hasAdminPerms(player)
 				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			Language.parse("arenadisabled");
+			Arenas.tellPlayer(player, Language.parse("arenadisabled"), arena);
 			return true;
 		}
 		db.i("parsing command: " + db.formatStringArray(args));
@@ -564,8 +502,6 @@ public class Commands {
 			} else {
 				return parseJoin(arena, player);
 			}
-		} else if (args.length == 3 && args[0].equalsIgnoreCase("bet")) {
-			return parseBetCommand(arena, player, args);
 		} else if ((args.length == 2 || args.length == 3)
 				&& args[0].equalsIgnoreCase("stats")) {
 			return parseStats(arena, player, args);
@@ -589,6 +525,10 @@ public class Commands {
 				// nothing
 			}
 			arena.sm.list(player, i);
+			return true;
+		}
+		
+		if (PVPArena.instance.getAmm().parseCommand(arena, player, args)) {
 			return true;
 		}
 
@@ -752,101 +692,6 @@ public class Commands {
 	}
 
 	/**
-	 * check and commit bet command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @param args
-	 *            an array of [better],[bet]
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseBetCommand(Arena arena, Player player,
-			String[] args) {
-		ArenaPlayer ap = Players.parsePlayer(player);
-
-		// /pa bet [name] [amount]
-		if (arena.getTeam(ap) != null) {
-			Arenas.tellPlayer(player, Language.parse("betnotyours"), arena);
-			return true;
-		}
-
-		if (PVPArena.economy == null && PVPArena.eco == null)
-			return true;
-
-		Player p = Bukkit.getPlayer(args[1]);
-		ap = Players.parsePlayer(p);
-		if ((arena.getTeam(args[1]) == null) && (arena.getTeam(ap) == null)) {
-			Arenas.tellPlayer(player, Language.parse("betoptions"), arena);
-			return true;
-		}
-
-		double amount = 0;
-
-		try {
-			amount = Double.parseDouble(args[2]);
-		} catch (Exception e) {
-			Arenas.tellPlayer(player, Language.parse("invalidamount", args[2]), arena);
-			return true;
-		}
-		MethodAccount ma = null;
-		if (PVPArena.economy != null) {
-			if (!PVPArena.economy.hasAccount(player.getName())) {
-				db.s("Account not found: " + player.getName());
-				return true;
-			}
-			if (!PVPArena.economy.has(player.getName(), amount)) {
-				// no money, no entry!
-				Arenas.tellPlayer(
-						player,
-						Language.parse("notenough",
-								PVPArena.economy.format(amount)), arena);
-				return true;
-			}
-		} else {
-			ma = PVPArena.eco.getAccount(player.getName());
-			if (ma == null) {
-				db.s("Account not found: " + player.getName());
-				return true;
-			}
-			if (!ma.hasEnough(amount)) {
-				// no money, no entry!
-				Arenas.tellPlayer(player, Language.parse("notenough",
-						PVPArena.eco.format(amount)), arena);
-				return true;
-			}
-		}
-
-		if (amount < arena.cfg.getDouble("money.minbet")
-				|| (amount > arena.cfg.getDouble("money.maxbet"))) {
-			// wrong amount!
-			if (PVPArena.economy != null) {
-				Arenas.tellPlayer(player, Language.parse("wrongamount",
-						PVPArena.economy.format(arena.cfg
-								.getDouble("money.minbet")), PVPArena.economy
-								.format(arena.cfg.getDouble("money.maxbet"))), arena);
-			} else {
-				Arenas.tellPlayer(player, Language
-						.parse("wrongamount", PVPArena.eco.format(arena.cfg
-								.getDouble("money.minbet")), PVPArena.eco
-								.format(arena.cfg.getDouble("money.maxbet"))), arena);
-			}
-			return true;
-		}
-
-		if (PVPArena.economy != null) {
-			PVPArena.economy.withdrawPlayer(player.getName(), amount);
-		} else {
-			ma.subtract(amount);
-		}
-		Arenas.tellPlayer(player, Language.parse("betplaced", args[1]), arena);
-		Players.paPlayersBetAmount
-				.put(player.getName() + ":" + args[1], amount);
-		return true;
-	}
-
-	/**
 	 * turn a hashmap into a pipe separated string
 	 * 
 	 * @param arena
@@ -891,7 +736,7 @@ public class Commands {
 	 *            true:green, false:red
 	 * @return a colored string
 	 */
-	private static String colorVar(String s, boolean b) {
+	public static String colorVar(String s, boolean b) {
 		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
 				+ ChatColor.WHITE;
 	}
@@ -903,7 +748,7 @@ public class Commands {
 	 *            the string to color
 	 * @return a colored string
 	 */
-	private static String colorVar(String s) {
+	public static String colorVar(String s) {
 		if (s == null || s.equals("")) {
 			return colorVar("null", false);
 		}
@@ -917,7 +762,7 @@ public class Commands {
 	 *            the integer to color
 	 * @return a colored string
 	 */
-	private static String colorVar(int timed) {
+	public static String colorVar(int timed) {
 		return colorVar(String.valueOf(timed), timed > 0);
 	}
 
@@ -928,7 +773,7 @@ public class Commands {
 	 *            the boolean to color
 	 * @return a colored string
 	 */
-	private static String colorVar(boolean b) {
+	public static String colorVar(boolean b) {
 		return colorVar(String.valueOf(b), b);
 	}
 
@@ -987,15 +832,7 @@ public class Commands {
 				+ colorVar(arena.cfg.getString("tp.death", "spectator"))
 				+ " | win: " + colorVar(arena.cfg.getString("tp.win", "old"))
 				+ " | lose: " + colorVar(arena.cfg.getString("tp.lose", "old")));
-		player.sendMessage(colorVar("Powerups", arena.usesPowerups)
-				+ "("
-				+ colorVar(arena.cfg.getString("game.powerups"))
-				+ ")"
-				+ " | "
-				+ colorVar("randomSpawn", arena.type().allowsRandomSpawns())
-				+ " | "
-				+ colorVar("refill",
-						arena.cfg.getBoolean("game.refillInventory", false)));
+		PVPArena.instance.getAmm().parseInfo(arena, player);
 		player.sendMessage(colorVar("Protection",
 				arena.cfg.getBoolean("protection.enabled", true))
 				+ ": "
@@ -1031,7 +868,10 @@ public class Commands {
 				+ colorVar(arena.cfg.getInt("join.range", 0))
 				+ " || Entry Fee: "
 				+ colorVar(arena.cfg.getInt("money.entry", 0)) + " || Reward: "
-				+ colorVar(arena.cfg.getInt("money.reward", 0)));
+				+ colorVar(arena.cfg.getInt("money.reward", 0))
+				+ " || "
+				+ colorVar("refill",
+						arena.cfg.getBoolean("game.refillInventory", false)));
 
 		return true;
 	}

@@ -9,7 +9,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
@@ -37,7 +36,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	public static HashMap<Location, ArenaBoard> boards = new HashMap<Location, ArenaBoard>();
 	private static Debug db = new Debug(23);
 
 	/**
@@ -192,18 +190,6 @@ public class Arenas {
 			result += (result.equals("") ? "" : ", ") + sName;
 		db.i("arenas: " + result);
 		return result;
-	}
-
-	/**
-	 * powerup tick, tick each arena that uses powerups
-	 */
-	public static void powerupTick() {
-		for (Arena arena : arenas.values()) {
-			if (arena.pum == null)
-				continue;
-			db.i("ticking: arena " + arena.name);
-			arena.pum.tick();
-		}
 	}
 
 	/**
