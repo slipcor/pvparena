@@ -1,14 +1,10 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaBoard;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Blocks;
-import net.slipcor.pvparena.managers.Players;
-import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.managers.Teams;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -28,7 +24,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.29
+ * @version v0.7.9
  * 
  */
 
@@ -37,6 +33,9 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -45,10 +44,7 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
-			if (arena.fightInProgress
-					&& arena.cfg.getBoolean("protection.restore")) {
-				Blocks.saveBlock(event.getBlock());
-			}
+			PVPArena.instance.getAmm().onBlockBreak(arena, event);
 			return; // we don't need protection => OUT!
 		}
 
@@ -57,30 +53,10 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockIgnite(BlockIgniteEvent event) {
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
-		if (arena == null)
-			return; // no arena => out
-
-		db.i("block ignite inside the arena");
-
-		if (Players.getPlayers(arena).size() < 1)
-			return; // no players, no game, no protection!
-
-		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.cfg.getBoolean("protection.enabled", true))
-				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.cfg
-								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
-						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
-			// if an event happened that we would like to block
-			event.setCancelled(true); // ->cancel!
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBurn(BlockBurnEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -97,7 +73,33 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockIgnite(BlockIgniteEvent event) {
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
+				.getLocation());
+		if (arena == null)
+			return; // no arena => out
+
+		db.i("block ignite inside the arena");
+
+		if (Teams.countPlayersInTeams(arena) < 1)
+			return; // no players, no game, no protection!
+
+		BlockIgniteEvent.IgniteCause cause = event.getCause();
+		if ((arena.cfg.getBoolean("protection.enabled", true))
+				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+						|| ((arena.cfg
+								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
+						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
+			// if an event happened that we would like to block
+			event.setCancelled(true); // ->cancel!
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -106,11 +108,7 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			if (arena.fightInProgress
-					&& arena.cfg.getBoolean("protection.restore")) {
-				Blocks.saveBlock(event.getBlock(), event
-						.getBlockReplacedState().getType());
-			}
+			PVPArena.instance.getAmm().onBlockPlace(arena, event);
 			// if not an event happend that we would like to block => OUT
 			return;
 		}
@@ -118,8 +116,7 @@ public class BlockListener implements Listener {
 		if (!arena.cfg.getBoolean("protection.tnt", true)
 				&& event.getBlock().getTypeId() == 46) {
 			if (arena.fightInProgress) {
-				Blocks.saveBlock(event.getBlock(), event
-						.getBlockReplacedState().getType());
+				PVPArena.instance.getAmm().onBlockPlace(arena, event);
 			}
 			return; // we do not block TNT, so just return if it is TNT
 		}
@@ -129,41 +126,6 @@ public class BlockListener implements Listener {
 
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
-		String headline = event.getLine(0);
-		if ((headline == null) || (headline.equals(""))) {
-			return;
-		}
-
-		if (!headline.startsWith("[PAA]")) {
-			return;
-		}
-
-		headline = headline.replace("[PAA]", "");
-
-		Arena a = Arenas.getArenaByName(headline);
-		if (a == null) {
-			return;
-		}
-
-		// trying to create an arena leaderboard
-
-		if (Arenas.boards.containsKey(event.getBlock().getLocation())) {
-			Arenas.tellPlayer(event.getPlayer(), Language.parse("boardexists"));
-			return;
-		}
-
-		if (!PVPArena.hasAdminPerms(event.getPlayer())
-				&& !PVPArena.hasCreatePerms(event.getPlayer(), a)) {
-			Arenas.tellPlayer(
-					event.getPlayer(),
-					Language.parse("nopermto",
-							Language.parse("createleaderboard")));
-			return;
-		}
-
-		event.setLine(0, headline);
-		Arenas.boards.put(event.getBlock().getLocation(), new ArenaBoard(event
-				.getBlock().getLocation(), a));
-		Spawns.setCoords(a, event.getBlock().getLocation(), "leaderboard");
+		PVPArena.instance.getAmm().onSignChange(event);
 	}
 }

@@ -3,25 +3,19 @@ package net.slipcor.pvparena.listeners;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Announcement;
-import net.slipcor.pvparena.definitions.Announcement.type;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.Powerup;
-import net.slipcor.pvparena.definitions.PowerupEffect;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Blocks;
-import net.slipcor.pvparena.managers.Ends;
-import net.slipcor.pvparena.managers.Flags;
 import net.slipcor.pvparena.managers.Inventories;
-import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
+import net.slipcor.pvparena.managers.Teams;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -47,7 +41,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.9
  * 
  */
 
@@ -56,25 +50,8 @@ public class EntityListener implements Listener {
 
 	static HashSet<Player> burningPlayers = new HashSet<Player>();
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onEntityDeath(EntityDeathEvent event) {
-		Entity e = event.getEntity();
-		if (e instanceof Player) {
-			Player player = (Player) e;
-
-			Arena arena = Arenas.getArenaByPlayer(player);
-			if (arena == null)
-				return;
-
-			db.i("onEntityDeath: fighting player");
-			if (!arena.isCustomClassActive()
-					|| !arena.cfg.getBoolean("game.allowDrops")) {
-				db.i("clearing drops");
-				event.getDrops().clear();
-			}
-
-			commitPlayerDeath(arena, player, event);
-		}
+	public static void addBurningPlayer(Player player) {
+		burningPlayers.add(player);
 	}
 
 	/**
@@ -88,20 +65,24 @@ public class EntityListener implements Listener {
 	 *            the event triggering the death
 	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
+		EntityDamageEvent cause = null;
 
+		if (eEvent instanceof EntityDeathEvent) {
+			cause = player.getLastDamageCause();
+		} else if (eEvent instanceof EntityDamageEvent) {
+			cause = ((EntityDamageEvent) eEvent);
+		}
 		EntityListener.addBurningPlayer(player);
-		String sTeam = Players.getTeam(player);
-		Announcement.announce(arena, type.LOSER, Language.parse("killedby",
-				player.getName(), Players.parseDeathCause(arena, player, player
-						.getLastDamageCause().getCause(), Players.getLastDamagingPlayer(player.getLastDamageCause()))));
-		Players.tellEveryone(arena, Language.parse("killedby",
-				arena.colorizePlayerByTeam(player, sTeam) + ChatColor.YELLOW,
-				Players.parseDeathCause(arena, player, player
-						.getLastDamageCause().getCause(), Players.getLastDamagingPlayer(player.getLastDamageCause()))));
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
+		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
+		arena.tellEveryone(Language.parse(
+				"killedby",
+				team.colorizePlayer(player) + ChatColor.YELLOW,
+				arena.parseDeathCause(player, cause.getCause(),
+						ArenaPlayer.getLastDamagingPlayer(cause))));
 
-		Players.parsePlayer(player).losses++;
-		Players.setTeam(player, ""); // needed so player does not
-										// get found when dead
+		ap.losses++;
 
 		if (arena.isCustomClassActive()
 				&& arena.cfg.getBoolean("game.allowDrops")) {
@@ -111,9 +92,9 @@ public class EntityListener implements Listener {
 
 		arena.tpPlayerToCoordName(player, "spectator");
 
-		if (arena.cfg.getBoolean("arenatype.flags")) {
-			Flags.checkEntityDeath(arena, player);
-		}
+		arena.type().checkEntityDeath(player);
+
+		Teams.removeTeam(arena, ap);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");
@@ -141,46 +122,105 @@ public class EntityListener implements Listener {
 				}
 			}
 			String sKiller = "";
-			String sKilled = "";
 
 			db.i("timed ctf/pumpkin arena");
-			sKilled = player.getName();
 			if (damager != null) {
 				sKiller = damager.getName();
 				db.i("killer: " + sKiller);
 			}
-			
+
 			if (damager != null) {
-				if (Players.getKills(sKiller) > 0) {
+				ArenaPlayer apd = ArenaPlayer.parsePlayer(damager);
+				if (apd.getKills() > 0) {
 					db.i("killer killed already");
-					Players.addKill(sKiller);
+					apd.addKill();
 				} else {
 					db.i("first kill");
-					Players.addKill(sKiller);
+					apd.addKill();
 				}
 			}
 
-			if (Players.getDeaths(sKilled) > 0) {
+			ArenaPlayer apk = ArenaPlayer.parsePlayer(damager);
+			if (apk.getDeaths() > 0) {
 				db.i("already died");
-				Players.addDeath(sKilled);
+				apk.addDeath();
 			} else {
 				db.i("first death");
-				Players.addDeath(sKilled);
+				apk.addDeath();
 				arena.betPossible = false;
 			}
 		}
-		if (arena.usesPowerups) {
-			if (arena.cfg.getString("game.powerups", "off").startsWith("death")) {
-				db.i("calculating powerup trigger death");
-				arena.powerupDiffI = ++arena.powerupDiffI % arena.powerupDiff;
-				if (arena.powerupDiffI == 0) {
-					arena.calcPowerupSpawn();
-				}
-			}
+
+		if (Arenas.checkAndCommit(arena))
+			return;
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamage(EntityDamageEvent event) {
+		if (event instanceof EntityDamageByEntityEvent) {
+			return;
 		}
 
-		if (Ends.checkAndCommit(arena))
+		if (event.isCancelled()) {
+			return; // respect other plugins
+		}
+
+		Entity p1 = event.getEntity();
+
+		if ((p1 == null) || (!(p1 instanceof Player)))
+			return; // no player
+
+		Arena arena = Arenas.getArenaByPlayer((Player) p1);
+		if (arena == null)
 			return;
+
+		db.i("onEntityDamage: fighting player");
+		if (!arena.fightInProgress) {
+			return;
+		}
+
+		Player player = (Player) p1;
+
+		if (burningPlayers.contains(player)
+				&& (event.getCause().equals(DamageCause.FIRE_TICK))) {
+			player.setFireTicks(0);
+			event.setCancelled(true);
+			burningPlayers.remove(player);
+			return;
+		}
+
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
+
+		if (team == null || ap.isSpectator()) {
+			event.setCancelled(true);
+			return;
+		}
+
+		Statistics.damage(arena, null, player, event.getDamage());
+
+		// TODO calculate damage and armor
+		// here it comes, process the damage!
+		if (event.getDamage() >= player.getHealth()) {
+			db.i("damage >= health => death");
+			int lives = 3;
+
+			Statistics.kill(arena, null, player, (lives > 0));
+			lives = arena.type().reduceLives(player, lives);
+			if (lives < 1) {
+				if (!arena.cfg.getBoolean("game.preventDeath")) {
+					return; // player died => commit death!
+				}
+				db.i("faking player death");
+
+				commitPlayerDeath(arena, player, event);
+			} else {
+				lives--;
+				arena.respawnPlayer(player, lives, event.getCause(), null);
+			}
+			event.setCancelled(true);
+		}
+
 	}
 
 	/**
@@ -199,7 +239,9 @@ public class EntityListener implements Listener {
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
-		db.i("onEntityDamageByEntity: cause: " + event.getCause().name() + " : " + event.getDamager().toString() + " => " + event.getEntity().toString());
+		db.i("onEntityDamageByEntity: cause: " + event.getCause().name()
+				+ " : " + event.getDamager().toString() + " => "
+				+ event.getEntity().toString());
 
 		if (event.getCause() == DamageCause.BLOCK_EXPLOSION) {
 
@@ -215,7 +257,17 @@ public class EntityListener implements Listener {
 
 			db.i("onEntityDamageByBLOCKDAMAGE: arena player");
 
-			if (Players.getPlayerTeamMap(arena).get(defender.getName()) == null) {
+			boolean inTeam = false;
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(defender);
+
+			for (ArenaTeam team : arena.getTeams()) {
+				if (team.getTeamMembers().contains(ap)) {
+					inTeam = true;
+					break;
+				}
+			}
+
+			if (!inTeam) {
 				return;
 			}
 
@@ -223,19 +275,14 @@ public class EntityListener implements Listener {
 
 			db.i("processing damage!");
 
-			if (arena.pum != null) {
-				db.i("committing powerup triggers");
-				Powerup p = arena.pum.puActive.get(defender);
-				if ((p != null) && (p.canBeTriggered()))
-					p.commit(null, defender, event);
-
-			}
+			PVPArena.instance.getAmm().onEntityDamageByBlockDamage(arena,
+					defender, event);
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
 				int lives = 3;
 
-				lives = arena.paLives.get(defender.getName());
+				lives = arena.lives.get(defender.getName());
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
 					if (!arena.cfg.getBoolean("game.preventDeath")) {
@@ -299,8 +346,19 @@ public class EntityListener implements Listener {
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
 
-		if (Players.getTeam(defender).equals("")
-				|| Players.parsePlayer(attacker) == null) {
+		boolean defTeam = false;
+		boolean attTeam = false;
+		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender);
+		ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker);
+
+		for (ArenaTeam team : arena.getTeams()) {
+			defTeam = defTeam ? true : team.getTeamMembers().contains(
+					apDefender);
+			attTeam = attTeam ? true : team.getTeamMembers().contains(
+					apAttacker);
+		}
+
+		if (!defTeam || !attTeam) {
 			event.setCancelled(true);
 			return;
 		}
@@ -313,8 +371,8 @@ public class EntityListener implements Listener {
 		}
 
 		if ((!arena.cfg.getBoolean("game.teamKill", false))
-				&& (Players.getTeam(attacker))
-						.equals(Players.getTeam(defender))) {
+				&& (Teams.getTeam(arena, apAttacker)).equals(Teams.getTeam(
+						arena, apDefender))) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
@@ -350,17 +408,9 @@ public class EntityListener implements Listener {
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
-		if (arena.pum != null) {
-			db.i("committing powerup triggers");
-			Powerup p = arena.pum.puActive.get(attacker);
-			if ((p != null) && (p.canBeTriggered()))
-				p.commit(attacker, defender, event);
 
-			p = arena.pum.puActive.get(defender);
-			if ((p != null) && (p.canBeTriggered()))
-				p.commit(attacker, defender, event);
-
-		}
+		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker,
+				defender, event);
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
 
@@ -370,7 +420,7 @@ public class EntityListener implements Listener {
 
 			Statistics.kill(arena, attacker, defender, (lives > 0));
 
-			lives = arena.paLives.get(defender.getName());
+			lives = arena.lives.get(defender.getName());
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.cfg.getBoolean("game.preventDeath")) {
@@ -381,7 +431,6 @@ public class EntityListener implements Listener {
 				commitPlayerDeath(arena, defender, event);
 			} else {
 				lives--;
-				arena.deathMatch(attacker);
 				arena.respawnPlayer(defender, lives, event.getCause(), attacker);
 			}
 			event.setCancelled(true);
@@ -389,69 +438,44 @@ public class EntityListener implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityDamage(EntityDamageEvent event) {
-		if (event.isCancelled()) {
-			return; // respect other plugins
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onEntityDeath(EntityDeathEvent event) {
+		Entity e = event.getEntity();
+		if (e instanceof Player) {
+			Player player = (Player) e;
+
+			Arena arena = Arenas.getArenaByPlayer(player);
+			if (arena == null)
+				return;
+
+			db.i("onEntityDeath: fighting player");
+			if (!arena.isCustomClassActive()
+					|| !arena.cfg.getBoolean("game.allowDrops")) {
+				db.i("clearing drops");
+				event.getDrops().clear();
+			}
+
+			commitPlayerDeath(arena, player, event);
 		}
+	}
 
-		Entity p1 = event.getEntity();
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityExplode(EntityExplodeEvent event) {
+		db.i("explosion");
 
-		if ((p1 == null) || (!(p1 instanceof Player)))
-			return; // no player
-
-		Arena arena = Arenas.getArenaByPlayer((Player) p1);
+		Arena arena = Arenas.getArenaByRegionLocation(event.getLocation());
 		if (arena == null)
-			return;
+			return; // no arena => out
 
-		db.i("onEntityDamage: fighting player");
-		if (!arena.fightInProgress) {
-			return;
-		}
-
-		Player player = (Player) p1;
-
-		if (burningPlayers.contains(player)
-				&& (event.getCause().equals(DamageCause.FIRE_TICK))) {
-			player.setFireTicks(0);
-			event.setCancelled(true);
-			burningPlayers.remove(player);
+		db.i("explosion inside an arena");
+		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
+				|| (!(event.getEntity() instanceof TNTPrimed))) {
+			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;
 		}
 
-		if (Players.getTeam(player).equals("")
-				|| Players.parsePlayer(player).spectator) {
-			event.setCancelled(true);
-			return;
-		}
-
-		Statistics.damage(arena, null, player, event.getDamage());
-
-		// TODO calculate damage and armor
-		// here it comes, process the damage!
-		if (event.getDamage() >= player.getHealth()) {
-			db.i("damage >= health => death");
-			int lives = 3;
-
-			Statistics.kill(arena, null, player, (lives > 0));
-			if (!arena.cfg.getBoolean("arenatype.flags")) {
-				lives = arena.paLives.get(player.getName());
-				db.i("lives before death: " + lives);
-			}
-			if (lives < 1) {
-				if (!arena.cfg.getBoolean("game.preventDeath")) {
-					return; // player died => commit death!
-				}
-				db.i("faking player death");
-
-				commitPlayerDeath(arena, player, event);
-			} else {
-				lives--;
-				arena.respawnPlayer(player, lives, event.getCause(), null);
-			}
-			event.setCancelled(true);
-		}
-
+		event.setCancelled(true); // ELSE => cancel event
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -476,47 +500,15 @@ public class EntityListener implements Listener {
 		}
 
 		Player player = (Player) p1;
-		if (Players.getTeam(player).equals(""))
-			return;
 
-		if (arena.pum != null) {
-			Powerup p = arena.pum.puActive.get(player);
-			if (p != null) {
-				if (p.canBeTriggered()) {
-					if (p.isEffectActive(PowerupEffect.classes.HEAL)) {
-						event.setCancelled(true);
-						p.commit(event);
-					}
-				}
-			}
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
 
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityExplode(EntityExplodeEvent event) {
-		db.i("explosion");
-
-		Arena arena = Arenas.getArenaByRegionLocation(event.getLocation());
-		if (arena == null)
-			return; // no arena => out
-
-		db.i("explosion inside an arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
-				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			if (arena.fightInProgress) {
-				for (Block b : event.blockList()) {
-					Blocks.saveBlock(b);
-				}
-			}
+		if (team == null) {
 			return;
 		}
 
-		event.setCancelled(true); // ELSE => cancel event
-	}
+		PVPArena.instance.getAmm().onEntityRegainHealth(arena, event);
 
-	public static void addBurningPlayer(Player player) {
-		burningPlayers.add(player);
 	}
 }

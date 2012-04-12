@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.events;
 
-import net.slipcor.pvparena.definitions.Arena;
+import net.slipcor.pvparena.arena.Arena;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player joins the arena
  * 
- * @version 0.6.29
+ * @version v0.7.8
  * 
  * @author slipcor
  * 
@@ -52,6 +52,14 @@ public class PAJoinEvent extends Event {
 		return arena;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
 	/**
 	 * hand over the player
 	 * 
@@ -68,13 +76,5 @@ public class PAJoinEvent extends Event {
 	 */
 	public boolean getSpectate() {
 		return spectator;
-	}
-
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 }

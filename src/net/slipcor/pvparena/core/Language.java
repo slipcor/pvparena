@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.Bukkit;
@@ -20,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.9
  * 
  */
 public class Language {
@@ -54,15 +55,15 @@ public class Language {
 		}
 
 		config.addDefault("log.matnotfound", "Unrecognized material: %1%");
-		config.addDefault("log.iconomyon", "<3 eConomy");
-		config.addDefault("log.iconomyoff", "</3 eConomy");
 		config.addDefault("log.enabled", "enabled (version %1%)");
 		config.addDefault("log.disabled", "disabled (version %1%)");
-		config.addDefault("log.noperms",
-				"Permissions plugin not found, defaulting to OP.");
-		config.addDefault("log.nospout",
-				"Spout not found, you are missing some features ;)");
-		config.addDefault("log.spout", "Hooking into Spout!");
+		config.addDefault("log.startTracker",
+				"Plugin tracking enabled. Set stats: false inside the main config to disable.");
+		config.addDefault("log.stopTracker",
+				"Plugin tracking disabled. See you soon?");
+		config.addDefault("log.notupdating",
+				"Updates deactivated. Please check dev.bukkit for updates.");
+		config.addDefault("log.updating", "Checking for updates...");
 		config.addDefault("log.warn", "%1%");
 
 		config.addDefault("lang.playerleave", "%1% has left the fight!");
@@ -78,7 +79,6 @@ public class Language {
 				"Waiting for the teams to have equal player number!");
 		config.addDefault("lang.ready", "%1% team is ready!");
 		config.addDefault("lang.begin", "Let the fight begin!");
-		config.addDefault("lang.killedby", "%1% has been killed by %2%!");
 		config.addDefault("lang.killedbylives",
 				"%1% has been killed by %2%! %3% lives remaining.");
 		config.addDefault("lang.onlyplayers",
@@ -92,7 +92,6 @@ public class Language {
 		config.addDefault("lang.alreadyjoined", "You already joined!");
 		config.addDefault("lang.fightinprogress",
 				"A fight is already in progress!");
-		config.addDefault("lang.notenough", "You don't have %1%.");
 		config.addDefault("lang.youjoined", "Welcome! You are on team %1%");
 		config.addDefault("lang.playerjoined", "%1% has joined team %2%");
 		config.addDefault("lang.nopermto", "You don't have permission to %1%");
@@ -114,19 +113,9 @@ public class Language {
 				"You have forced the fight to stop.");
 		config.addDefault("lang.nofight", "There is no fight in progress.");
 		config.addDefault("lang.invalidcmd", "Invalid command (%1%)");
-		config.addDefault("lang.betnotyours",
-				"Cannot place bets on your own match!");
-		config.addDefault("lang.betoptions",
-				"You can only bet on team name or arena player!");
-		config.addDefault("lang.wrongamount",
-				"Bet amount must be between %1% and %2%!");
-		config.addDefault("lang.invalidamount", "Invalid amount: %1%");
-		config.addDefault("lang.betplaced", "Your bet on %1% has been placed.");
 		config.addDefault("lang.regionset", "Setting region enabled.");
 		config.addDefault("lang.regionsaved", "Region saved.");
-		config.addDefault("lang.regionremoved", "Region removed.");
 		config.addDefault("lang.regionnotremoved", "There is no region setup.");
-		config.addDefault("lang.youwon", "You won %1%");
 		config.addDefault("lang.awarded", "You have been awarded %1%");
 		config.addDefault("lang.invfull",
 				"Your inventory was full. You did not receive all rewards!");
@@ -143,12 +132,7 @@ public class Language {
 		config.addDefault("lang.created", "arena '%1%' created!");
 		config.addDefault("lang.remove", "remove an arena");
 		config.addDefault("lang.removed", "arena '%1%' removed!");
-		config.addDefault("lang.youjoinedfree",
-				"Welcome to the FreeFight Arena");
-		config.addDefault("lang.playerjoinedfree",
-				"%1% has joined the FreeFight Arena");
 		config.addDefault("lang.setspawn", "Spawn set: %1%");
-		config.addDefault("lang.setflag", "Flag set: %1%");
 		config.addDefault("lang.setlounge", "Lounge set.");
 		config.addDefault("lang.selectteam",
 				"You must select a team to join! /pa [arenaname] [team]");
@@ -156,15 +140,6 @@ public class Language {
 				"You cannot select a team to join! /pa [arenaname]");
 		config.addDefault("lang.joinrange",
 				"You are too far away to join this arena!");
-		config.addDefault("lang.playerpowerup",
-				"Player %1% receives powerup %2%!");
-		config.addDefault("lang.serverpowerup", "Powerup %1% deployed!");
-		config.addDefault("lang.flaggrab",
-				"Player %1% grabbed the flag of team %2%!");
-		config.addDefault("lang.flaghomeleft",
-				"Player %1% brought home the flag of team %2%! Lives left: %3%");
-		config.addDefault("lang.flagsave",
-				"Player %1% dropped the flag of team %2%!");
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
 		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
 		config.addDefault("lang.notsameworld",
@@ -172,16 +147,6 @@ public class Language {
 
 		config.addDefault("lang.checkregionerror",
 				"Waiting for a running arena to finish!");
-
-		config.addDefault("lang.pumpkinhomeleft",
-				"Player %1% brought home the pumpkin of team %2%! Lives left: %3%");
-		config.addDefault("lang.pumpkingrab",
-				"Player %1% grabbed the pumpkin of team %2%!");
-		config.addDefault("lang.pumpkinsave",
-				"Player %1% dropped the pumpkin of team %2%!");
-		config.addDefault("lang.setpumpkin", "Pumpkin set: %1%");
-		config.addDefault("lang.tosetpumpkin", "Pumpkin to set: %1%");
-		config.addDefault("lang.tosetflag", "Flag to set: %1%");
 
 		config.addDefault("lang.notready", "At least one player is not ready!");
 		config.addDefault("lang.notready1", "You are alone in the arena!");
@@ -204,16 +169,6 @@ public class Language {
 		config.addDefault("lang.errorloungefree",
 				"Error! Arena is not of type free. Use '[teamname]lounge'");
 
-		config.addDefault("lang.createleaderboard", "create a leaderboard");
-		config.addDefault("lang.boardexists", "Leaderboard already exists!'");
-
-		config.addDefault("lang.flagnotsafe",
-				"Your flag is taken! Cannot bring back an enemy flag!'");
-		config.addDefault("lang.pumpkinnotsafe",
-				"Your pumpkin is taken! Cannot bring back an enemy pumpkin!'");
-
-		config.addDefault("lang.frag",
-				"%1% killed another player! Total frags: %2%.");
 		config.addDefault("lang.notjoinregion",
 				"You are not in the join region! Move there to join!");
 
@@ -221,15 +176,16 @@ public class Language {
 		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
 
-		config.addDefault("lang.joinpay", "You paid %1% to join the arena!");
 		config.addDefault("lang.insidevehicle",
 				"You cannot join while on a vehicle!");
 		config.addDefault("lang.starting",
 				"Enough players ready. Starting in 5 seconds!");
 
-		config.addDefault("lang.sortingby", "Arena Board now sorted by %1%");
 		config.addDefault("lang.invalidstattype",
 				"Invalid statistics type: %1%");
+
+		config.addDefault("lang.arenatypeunknown",
+				"Arena Type '%1%' unknown. Please add the corresponding arena jar file!");
 
 		for (Statistics.type t : Statistics.type.values()) {
 			config.addDefault("lang." + t, t.getName());
@@ -258,23 +214,18 @@ public class Language {
 		config.addDefault("lang.SUICIDE".toLowerCase(), "self");
 		config.addDefault("lang.VOID".toLowerCase(), "the Void");
 
-
-		config.addDefault("lang.domscore",
-				"Team %1% scored a point by holding a flag!");
-		config.addDefault("lang.domclaiming",
-				"Team %1% is claiming a flag!");
-		config.addDefault("lang.domunclaiming",
-				"A flag claimed by Team %1% is being unclaimed!");
-		config.addDefault("lang.domunclaimingby",
-				"A flag claimed by Team %1% is being unclaimed by %2%!");
 		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
 		config.addDefault("lang.regionremoved", "Region removed: %1%");
 
-		config.addDefault("lang.select2", "Select two points before trying to save.");
+		config.addDefault("lang.select2",
+				"Select two points before trying to save.");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");
-		
+
+		PVPArena.instance.getAmm().initLanguage(config);
+		PVPArena.instance.getAtm().initLanguage(config);
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

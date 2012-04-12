@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,18 +10,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 /**
- * custom listener class
+ * inventory listener class
  * 
  * -
  * 
- * PVP Arena Custom Listener
+ * PVP Arena Inventory Listener
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.8
  * 
  */
-public class CustomListener implements Listener {
+public class InventoryListener implements Listener {
 	private Debug db = new Debug(19);
 
 	@EventHandler
@@ -33,27 +33,30 @@ public class CustomListener implements Listener {
 		if (arena == null) {
 			return;
 		}
-		
+
 		if (event.isShiftClick()) {
 			event.setCancelled(true);
 			return;
 		}
-		
+
 		db.i("InventoryClick: arena player");
-		
+
 		if (!arena.cfg.getBoolean("arenatype.flags")) {
 			return;
 		}
+
 		if (!arena.cfg.getBoolean("protection.inventory")) {
+
 			if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
 				if (event.getRawSlot() != 5) {
 					return;
 				}
 			}
-		} else if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
+		} else if (event.getInventory().getType()
+				.equals(InventoryType.CRAFTING)) {
 			return;
 		}
-		
+
 		db.i("cancelling!");
 		// player is carrying a flag
 		event.setCancelled(true);

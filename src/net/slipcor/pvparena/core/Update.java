@@ -23,11 +23,11 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.7.9
  * 
  */
 
-public class Update {
+public class Update extends Thread {
 
 	public static boolean msg = false;
 	public static boolean outdated = false;
@@ -38,51 +38,8 @@ public class Update {
 	private static Plugin plugin;
 	private static Debug db = new Debug(6);
 
-	/**
-	 * check for updates, update variables
-	 */
-	public static void updateCheck(Plugin instance) {
-		db.i("checking for updates");
-		plugin = instance;
-		if (!plugin.getConfig().getBoolean("updatecheck")) {
-			return;
-		}
-
-		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
-		try {
-			URL url = new URL(pluginUrlString);
-			Document doc = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder()
-					.parse(url.openConnection().getInputStream());
-			doc.getDocumentElement().normalize();
-			NodeList nodes = doc.getElementsByTagName("item");
-			Node firstNode = nodes.item(0);
-			if (firstNode.getNodeType() == 1) {
-				Element firstElement = (Element) firstNode;
-				NodeList firstElementTagName = firstElement
-						.getElementsByTagName("title");
-				Element firstNameElement = (Element) firstElementTagName
-						.item(0);
-				NodeList firstNodes = firstNameElement.getChildNodes();
-
-				String sOnlineVersion = firstNodes.item(0).getNodeValue();
-				String sThisVersion = plugin.getDescription().getVersion();
-
-				while (sOnlineVersion.contains(" ")) {
-					sOnlineVersion = sOnlineVersion.substring(sOnlineVersion
-							.indexOf(" ") + 1);
-				}
-
-				vOnline = sOnlineVersion.replace("v", "");
-				vThis = sThisVersion.replace("v", "");
-				db.i("online version: " + vOnline);
-				db.i("local version: " + vThis);
-
-				calculateVersions();
-				return;
-			}
-		} catch (Exception localException) {
-		}
+	public Update(Plugin p) {
+		plugin = p;
 	}
 
 	/**
@@ -141,6 +98,28 @@ public class Update {
 	}
 
 	/**
+	 * colorize a given string based on a char
+	 * 
+	 * @param s
+	 *            the string to colorize
+	 * @return a colorized string
+	 */
+	private static String colorize(String s) {
+		if (v == 0) {
+			s = ChatColor.RED + s + ChatColor.WHITE;
+		} else if (v == 1) {
+			s = ChatColor.GOLD + s + ChatColor.WHITE;
+		} else if (v == 2) {
+			s = ChatColor.YELLOW + s + ChatColor.WHITE;
+		} else if (v == 3) {
+			s = ChatColor.BLUE + s + ChatColor.WHITE;
+		} else {
+			s = ChatColor.GREEN + s + ChatColor.WHITE;
+		}
+		return s;
+	}
+
+	/**
 	 * message a player if the version is different
 	 * 
 	 * @param player
@@ -182,25 +161,53 @@ public class Update {
 		}
 	}
 
-	/**
-	 * colorize a given string based on a char
-	 * 
-	 * @param s
-	 *            the string to colorize
-	 * @return a colorized string
-	 */
-	private static String colorize(String s) {
-		if (v == 0) {
-			s = ChatColor.RED + s + ChatColor.WHITE;
-		} else if (v == 1) {
-			s = ChatColor.GOLD + s + ChatColor.WHITE;
-		} else if (v == 2) {
-			s = ChatColor.YELLOW + s + ChatColor.WHITE;
-		} else if (v == 3) {
-			s = ChatColor.BLUE + s + ChatColor.WHITE;
-		} else {
-			s = ChatColor.GREEN + s + ChatColor.WHITE;
+	@Override
+	public void run() {
+		db.i("checking for updates");
+		if (!plugin.getConfig().getBoolean("updatecheck")) {
+			Language.log_info("notupdating");
+			return;
 		}
-		return s;
+		Language.log_info("updating");
+
+		new Thread() {
+
+		}.start();
+
+		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
+		try {
+			URL url = new URL(pluginUrlString);
+			Document doc = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder()
+					.parse(url.openConnection().getInputStream());
+			doc.getDocumentElement().normalize();
+			NodeList nodes = doc.getElementsByTagName("item");
+			Node firstNode = nodes.item(0);
+			if (firstNode.getNodeType() == 1) {
+				Element firstElement = (Element) firstNode;
+				NodeList firstElementTagName = firstElement
+						.getElementsByTagName("title");
+				Element firstNameElement = (Element) firstElementTagName
+						.item(0);
+				NodeList firstNodes = firstNameElement.getChildNodes();
+
+				String sOnlineVersion = firstNodes.item(0).getNodeValue();
+				String sThisVersion = plugin.getDescription().getVersion();
+
+				while (sOnlineVersion.contains(" ")) {
+					sOnlineVersion = sOnlineVersion.substring(sOnlineVersion
+							.indexOf(" ") + 1);
+				}
+
+				vOnline = sOnlineVersion.replace("v", "");
+				vThis = sThisVersion.replace("v", "");
+				db.i("online version: " + vOnline);
+				db.i("local version: " + vThis);
+
+				calculateVersions();
+				return;
+			}
+		} catch (Exception localException) {
+		}
 	}
 }

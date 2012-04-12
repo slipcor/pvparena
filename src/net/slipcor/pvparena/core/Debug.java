@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.0
  * 
  */
 
@@ -108,6 +108,7 @@ public class Debug {
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
 				System.out.print("debugging EVERYTHING");
+				level = (byte) 3;
 			} else {
 				String[] sIds = debugs.split(",");
 				for (String s : sIds) {
@@ -175,4 +176,6 @@ public class Debug {
 // 42 - TimedEndRunnable
 // 43 - StartRunnable
 // 44 - SpawnCampRunnable
+// 45 - ArenaType
+// 46 - ArenaModule
 

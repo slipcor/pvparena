@@ -5,9 +5,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * region manager class
@@ -18,7 +18,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.41
+ * @version v0.7.0
  * 
  */
 
@@ -60,24 +60,6 @@ public class Regions {
 	}
 
 	/**
-	 * is a player to far away to join?
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return true if the player is too far away, false otherwise
-	 */
-	public static boolean tooFarAway(Arena arena, Player player) {
-		int joinRange = arena.cfg.getInt("join.range", 0);
-		if (joinRange < 1)
-			return false;
-		if (arena.regions.get("battlefield") == null) {
-			return Spawns.getRegionCenter(arena).distance(player.getLocation()) > joinRange;
-		}
-		return arena.regions.get("battlefield").tooFarAway(joinRange,
-				player.getLocation());
-	}
-
-	/**
 	 * check if an admin tries to set an arena position
 	 * 
 	 * @param event
@@ -101,17 +83,35 @@ public class Regions {
 			db.i("modify&adminperms&wand");
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				arena.pos1 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos1"), arena.prefix);
+				Arenas.tellPlayer(player, Language.parse("pos1"), arena);
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				arena.pos2 = event.getClickedBlock().getLocation();
-				Arenas.tellPlayer(player, Language.parse("pos2"), arena.prefix);
+				Arenas.tellPlayer(player, Language.parse("pos2"), arena);
 				return true; // right click => pos2
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * is a player to far away to join?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the player is too far away, false otherwise
+	 */
+	public static boolean tooFarAway(Arena arena, Player player) {
+		int joinRange = arena.cfg.getInt("join.range", 0);
+		if (joinRange < 1)
+			return false;
+		if (arena.regions.get("battlefield") == null) {
+			return Spawns.getRegionCenter(arena).distance(player.getLocation()) > joinRange;
+		}
+		return arena.regions.get("battlefield").tooFarAway(joinRange,
+				player.getLocation());
 	}
 }

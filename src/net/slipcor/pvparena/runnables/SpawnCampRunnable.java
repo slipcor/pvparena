@@ -2,8 +2,8 @@ package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Arena;
 
 /**
  * spawn camp runnable class
@@ -14,7 +14,7 @@ import net.slipcor.pvparena.definitions.Arena;
  * 
  * @author slipcor
  * 
- * @version v0.6.28
+ * @version v0.7.0
  * 
  */
 

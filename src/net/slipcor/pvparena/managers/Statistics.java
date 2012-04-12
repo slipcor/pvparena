@@ -4,9 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaPlayer;
 import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 
@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.9
  * 
  */
 
@@ -38,28 +38,52 @@ public class Statistics {
 			fullName = s;
 		}
 
-		public static type next(type sortBy) {
+		/**
+		 * return the next stat type
+		 * 
+		 * @param tType
+		 *            the type
+		 * @return the next type
+		 */
+		public static type next(type tType) {
 			type[] types = type.values();
-			int ord = sortBy.ordinal();
+			int ord = tType.ordinal();
 			if (ord >= types.length - 2) {
 				return types[0];
 			}
 			return types[ord + 1];
 		}
 
-		public static type last(type sortBy) {
+		/**
+		 * return the previous stat type
+		 * 
+		 * @param tType
+		 *            the type
+		 * @return the previous type
+		 */
+		public static type last(type tType) {
 			type[] types = type.values();
-			int ord = sortBy.ordinal();
+			int ord = tType.ordinal();
 			if (ord <= 0) {
 				return types[types.length - 2];
 			}
 			return types[ord - 1];
 		}
 
+		/**
+		 * return the full stat name
+		 */
 		public String getName() {
 			return this.fullName;
 		}
 
+		/**
+		 * get the stat type by name
+		 * 
+		 * @param string
+		 *            the name to find
+		 * @return the type if found, null otherwise
+		 */
 		public static type getByString(String string) {
 			for (type t : type.values()) {
 				if (t.name().equals(string.toUpperCase())) {
@@ -71,73 +95,34 @@ public class Statistics {
 	}
 
 	/**
-	 * get a set of arena players sorted by type
+	 * commit damage
 	 * 
-	 * @param a
-	 *            the arena to check
-	 * @param sortBy
-	 *            the type to sort
-	 * @return an array of ArenaPlayer
+	 * @param arena
+	 *            the arena where that happens
+	 * @param e
+	 *            an eventual attacker
+	 * @param defender
+	 *            the attacked player
+	 * @param dmg
+	 *            the damage value
 	 */
-	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
-		return getStats(a, sortBy, true);
-	}
+	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
 
-	/**
-	 * get a set of arena players sorted by type
-	 * 
-	 * @param a
-	 *            the arena to check
-	 * @param sortBy
-	 *            the type to sort
-	 * @param desc
-	 *            should it be sorted descending?
-	 * @return an array of ArenaPlayer
-	 */
-	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
-		db.i("getting stats: " + a.name + " sorted by " + sortBy + " "
-				+ (desc ? "desc" : "asc"));
-		ArenaPlayer[] aps = new ArenaPlayer[Players.getPlayers(a).size()];
-		int i = 0;
-		for (ArenaPlayer p : Players.getPlayers(a)) {
+		db.i("adding damage to player " + defender.getName());
 
-			if (p.arena == null || !p.arena.equals(a)) {
-				continue;
-			}
-			aps[i++] = p;
-		}
-
-		sortBy(aps, sortBy, desc);
-
-		return aps;
-	}
-
-	/**
-	 * bubble sort an ArenaPlayer array by type
-	 * 
-	 * @param aps
-	 *            the ArenaPlayer array
-	 * @param sortBy
-	 *            the type to sort by
-	 * @param desc
-	 *            descending order?
-	 */
-	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc) {
-		int n = aps.length;
-		boolean doMore = true;
-		while (doMore) {
-			n--;
-			doMore = false; // assume this is our last pass over the array
-			for (int i = 0; i < n; i++) {
-				if (decide(aps, i, sortBy, desc)) {
-					// exchange elements
-					ArenaPlayer temp = aps[i];
-					aps[i] = aps[i + 1];
-					aps[i + 1] = temp;
-					doMore = true; // after an exchange, must look again
-				}
+		if ((e != null) && (e instanceof Player)) {
+			Player attacker = (Player) e;
+			db.i("attacker is player: " + attacker.getName());
+			if (arena.isPartOf(attacker)) {
+				db.i("attacker is in the arena, adding damage!");
+				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
+				p.damage += dmg;
+				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
 			}
 		}
+		ArenaPlayer p = ArenaPlayer.parsePlayer(defender);
+		p.damagetake += dmg;
+		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
 	}
 
 	/**
@@ -187,6 +172,44 @@ public class Statistics {
 	}
 
 	/**
+	 * get a set of arena players sorted by type
+	 * 
+	 * @param a
+	 *            the arena to check
+	 * @param sortBy
+	 *            the type to sort
+	 * @return an array of ArenaPlayer
+	 */
+	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
+		return getStats(a, sortBy, true);
+	}
+
+	/**
+	 * get a set of arena players sorted by type
+	 * 
+	 * @param a
+	 *            the arena to check
+	 * @param sortBy
+	 *            the type to sort
+	 * @param desc
+	 *            should it be sorted descending?
+	 * @return an array of ArenaPlayer
+	 */
+	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
+		db.i("getting stats: " + a.name + " sorted by " + sortBy + " "
+				+ (desc ? "desc" : "asc"));
+		ArenaPlayer[] aps = new ArenaPlayer[Teams.countPlayersInTeams(a)];
+		int i = 0;
+		for (ArenaPlayer p : a.getPlayers()) {
+			aps[i++] = p;
+		}
+
+		sortBy(aps, sortBy, desc);
+
+		return aps;
+	}
+
+	/**
 	 * get the type by the sign headline
 	 * 
 	 * @param line
@@ -205,6 +228,35 @@ public class Statistics {
 			}
 		}
 		return type.NULL;
+	}
+
+	/**
+	 * commit a kill
+	 * 
+	 * @param arena
+	 *            the arena where that happens
+	 * @param e
+	 *            an eventual attacker
+	 * @param defender
+	 *            the attacked player
+	 */
+	public static void kill(Arena arena, Entity e, Player defender,
+			boolean willRespawn) {
+		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
+		Bukkit.getPluginManager().callEvent(dEvent);
+
+		if ((e != null) && (e instanceof Player)) {
+			Player attacker = (Player) e;
+			if (arena.isPartOf(attacker)) {
+				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
+				Bukkit.getPluginManager().callEvent(kEvent);
+
+				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
+				p.kills++;
+			}
+		}
+		ArenaPlayer p = ArenaPlayer.parsePlayer(defender);
+		p.deaths++;
 	}
 
 	/**
@@ -247,63 +299,30 @@ public class Statistics {
 	}
 
 	/**
-	 * commit damage
+	 * bubble sort an ArenaPlayer array by type
 	 * 
-	 * @param arena
-	 *            the arena where that happens
-	 * @param e
-	 *            an eventual attacker
-	 * @param defender
-	 *            the attacked player
-	 * @param dmg
-	 *            the damage value
+	 * @param aps
+	 *            the ArenaPlayer array
+	 * @param sortBy
+	 *            the type to sort by
+	 * @param desc
+	 *            descending order?
 	 */
-	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
-
-		db.i("adding damage to player " + defender.getName());
-
-		if ((e != null) && (e instanceof Player)) {
-			Player attacker = (Player) e;
-			db.i("attacker is player: " + attacker.getName());
-			if (Players.isPartOf(arena, attacker)) {
-				db.i("attacker is in the arena, adding damage!");
-				ArenaPlayer p = Players.parsePlayer(attacker);
-				p.damage += dmg;
-				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
+	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc) {
+		int n = aps.length;
+		boolean doMore = true;
+		while (doMore) {
+			n--;
+			doMore = false; // assume this is our last pass over the array
+			for (int i = 0; i < n; i++) {
+				if (decide(aps, i, sortBy, desc)) {
+					// exchange elements
+					ArenaPlayer temp = aps[i];
+					aps[i] = aps[i + 1];
+					aps[i + 1] = temp;
+					doMore = true; // after an exchange, must look again
+				}
 			}
 		}
-		ArenaPlayer p = Players.parsePlayer(defender);
-		p.damagetake += dmg;
-		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
-	}
-
-	/**
-	 * commit a kill
-	 * 
-	 * @param arena
-	 *            the arena where that happens
-	 * @param e
-	 *            an eventual attacker
-	 * @param defender
-	 *            the attacked player
-	 */
-	public static void kill(Arena arena, Entity e, Player defender,
-			boolean willRespawn) {
-		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
-		Bukkit.getPluginManager().callEvent(dEvent);
-		
-
-		if ((e != null) && (e instanceof Player)) {
-			Player attacker = (Player) e;
-			if (Players.isPartOf(arena, attacker)) {
-				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
-				Bukkit.getPluginManager().callEvent(kEvent);
-				
-				ArenaPlayer p = Players.parsePlayer(attacker);
-				p.kills++;
-			}
-		}
-		ArenaPlayer p = Players.parsePlayer(defender);
-		p.deaths++;
 	}
 }

@@ -3,32 +3,25 @@ package net.slipcor.pvparena;
 import java.io.File;
 import java.io.IOException;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.definitions.Arena;
 import net.slipcor.pvparena.listeners.BlockListener;
-import net.slipcor.pvparena.listeners.CustomListener;
+import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.listeners.ServerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
-import net.slipcor.pvparena.managers.Players;
-import net.slipcor.pvparena.register.payment.Method;
-
-import org.bukkit.Bukkit;
+import net.slipcor.pvparena.neworder.ArenaModuleManager;
+import net.slipcor.pvparena.neworder.ArenaTypeManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spoutapi.SpoutManager;
 
 /**
  * main class
@@ -39,25 +32,22 @@ import org.getspout.spoutapi.SpoutManager;
  * 
  * @author slipcor
  * 
- * @version v0.6.36
+ * @version v0.7.9
  * 
  */
 
 public class PVPArena extends JavaPlugin {
 
 	public static final EntityListener entityListener = new EntityListener();
-	public static Method eco = null;
 	public static PVPArena instance = null;
-	public static String spoutHandler = null;
-
-	public static Permission permission = null;
-    public static Economy economy = null;
 
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
-	private final ServerListener serverListener = new ServerListener();
-	private final CustomListener customListener = new CustomListener();
+	private final InventoryListener customListener = new InventoryListener();
 	private final static Debug db = new Debug(1);
+
+	private ArenaTypeManager atm = null;
+	private ArenaModuleManager amm = null;
 
 	/**
 	 * Command handling
@@ -99,8 +89,20 @@ public class PVPArena extends JavaPlugin {
 			}
 			Arena a = null;
 			if (args.length > 2) {
+				if (atm.getType(args[2]) == null) {
+					Arenas.tellPlayer(player,
+							Language.parse("arenatypeunknown", args[2]));
+					return true;
+				}
+
 				a = Arenas.loadArena(args[0], args[2]);
 			} else {
+				if (atm.getType("teams") == null) {
+					Arenas.tellPlayer(player,
+							Language.parse("arenatypeunknown", "teams"));
+					return true;
+				}
+
 				a = Arenas.loadArena(args[0], "teams");
 			}
 			a.setWorld(player.getWorld().getName());
@@ -129,7 +131,9 @@ public class PVPArena extends JavaPlugin {
 			Arenas.tellPlayer(player, Language.parse("removed", args[0]));
 			return true;
 		} else if (args[0].equalsIgnoreCase("debug")) {
+
 			Arena arena = Arenas.getArenaByPlayer(player);
+
 			if (arena != null) {
 				getConfig().set("debug", args[1]);
 			}
@@ -154,7 +158,7 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
-				Players.playerLeave(arena, player);
+				arena.playerLeave(player);
 			} else {
 				Arenas.tellPlayer(player, Language.parse("notinarena"));
 			}
@@ -202,23 +206,18 @@ public class PVPArena extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 
+		getDataFolder().mkdir();
+		new File(getDataFolder().getPath() + "/arenas").mkdir();
+		new File(getDataFolder().getPath() + "/modules").mkdir();
+
+		atm = new ArenaTypeManager(this);
+		amm = new ArenaModuleManager(this);
+
 		Language.init(getConfig().getString("language", "en"));
-
-		if (getServer().getPluginManager().getPlugin("Spout") != null) {
-			spoutHandler = SpoutManager.getInstance().toString();
-		}
-
-		Language.log_info((spoutHandler == null) ? "nospout" : "spout");
-		
-		if (getServer().getPluginManager().getPlugin("Vault") != null) {
-			setupPermissions();
-			setupEconomy();
-		}
 
 		getServer().getPluginManager().registerEvents(blockListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(serverListener, this);
 		getServer().getPluginManager().registerEvents(customListener, this);
 
 		if (getConfig().get("language") != null
@@ -245,10 +244,13 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.load(this);
 		Arenas.load_arenas();
-		Update.updateCheck(this);
+		Update u = new Update(this);
+		u.start();
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
+
+		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
 	}
@@ -298,7 +300,8 @@ public class PVPArena extends JavaPlugin {
 			db.i(String.valueOf(hasPerms(player, "pvparena.user")));
 		}
 
-		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(player, "pvparena.join." + arena.name.toLowerCase())
+		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(
+				player, "pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
 	}
 
@@ -312,25 +315,24 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if the player has the permission, false otherwise
 	 */
 	public static boolean hasPerms(Player player, String perms) {
-		return permission == null ? player.hasPermission(perms) : permission.has(player, perms);
+		return instance.amm.hasPerms(player, perms);
 	}
 
-    private boolean setupPermissions()
-    {
-        RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
-        if (permissionProvider != null) {
-            permission = permissionProvider.getProvider();
-        }
-        return (permission != null);
-    }
-    
-    private boolean setupEconomy()
-    {
-        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
-        if (economyProvider != null) {
-            economy = economyProvider.getProvider();
-        }
+	/**
+	 * Hand over the ArenaTypeManager instance
+	 * 
+	 * @return the ArenaTypeManager instance
+	 */
+	public ArenaTypeManager getAtm() {
+		return atm;
+	}
 
-        return (economy != null);
-    }
+	/**
+	 * Hand over the ArenaModuleManager instance
+	 * 
+	 * @return the ArenaModuleManager instance
+	 */
+	public ArenaModuleManager getAmm() {
+		return amm;
+	}
 }

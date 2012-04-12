@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.7.8
  * 
  */
 
@@ -79,7 +79,7 @@ public class Help {
 						+ "/pa help setup spawn" + ChatColor.WHITE
 						+ " | for help with spawns");
 				Arenas.tellPlayer(player, ChatColor.GREEN
-						+ "/pa help setup regionset" + ChatColor.WHITE
+						+ "/pa help setup region" + ChatColor.WHITE
 						+ " | for help with setting a region");
 				Arenas.tellPlayer(player, ChatColor.GREEN
 						+ "/pa help setup regionsave" + ChatColor.WHITE
@@ -242,7 +242,7 @@ public class Help {
 							+ ChatColor.WHITE + " | Save selection to region");
 					Arenas.tellPlayer(player, "Valid region names are:");
 					Arenas.tellPlayer(player,
-							"All Arena types: spectator, exit");
+							"All Arena types: battlefield, spectator, exit");
 					Arenas.tellPlayer(player, "CTF, Team: [teamname]lounge");
 					Arenas.tellPlayer(player, "Free: freelounge");
 
@@ -253,7 +253,7 @@ public class Help {
 							+ ChatColor.WHITE + " | Remove a region");
 					Arenas.tellPlayer(player, "Valid region names are:");
 					Arenas.tellPlayer(player,
-							"All Arena types: spectator, exit");
+							"All Arena types: battlefield, spectator, exit");
 					Arenas.tellPlayer(player, "CTF, Team: [teamname]lounge");
 					Arenas.tellPlayer(player, "Free: freelounge");
 

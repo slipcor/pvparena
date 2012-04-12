@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.Arena;
-import net.slipcor.pvparena.definitions.ArenaBoard;
+import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -27,66 +30,86 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.6.41
+ * @version v0.7.9
  * 
  */
 
 public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	public static HashMap<Location, ArenaBoard> boards = new HashMap<Location, ArenaBoard>();
 	private static Debug db = new Debug(23);
 
 	/**
-	 * load all configs in the PVP Arena folder
+	 * check for arena end and commit it, if true
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @return true if the arena ends
 	 */
-	public static void load_arenas() {
-		db.i("loading arenas...");
-		try {
-			File path = new File("plugins/pvparena");
-			File[] f = path.listFiles();
-			int i;
-			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
-					String sName = f[i].getName().replace("config_", "");
-					sName = sName.replace(".yml", "");
-					db.i("standard arena: " + sName);
-					loadArena(sName, null);
+	public static boolean checkAndCommit(Arena arena) {
+		db.i("checking for arena end");
+		if (!arena.fightInProgress) {
+			db.i("no fight, no end ^^");
+			return false;
+		}
+
+		return arena.type().checkAndCommit();
+	}
+
+	/**
+	 * check if join region is set and if player is inside, if so
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if not set or player inside, false otherwise
+	 */
+	public static boolean checkJoin(Player player) {
+		for (Arena a : arenas.values()) {
+			for (String rName : a.regions.keySet()) {
+				if (rName.equals("join")) {
+					return a.regions.get(rName).contains(player.getLocation());
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
 		}
+		return true; // no join region set
 	}
 
 	/**
-	 * load a specific arena
+	 * check if an arena has interfering regions with other arenas
 	 * 
-	 * @param configFile
-	 *            the file to load
-	 * @param type
-	 *            the arena type
+	 * @param arena
+	 *            the arena to check
+	 * @return true if no running arena interfering, false otherwise
 	 */
-	public static Arena loadArena(String configFile, String type) {
-		db.i("loading arena " + configFile + " (" + type + ")");
-		Arena arena = new Arena(configFile, type);
-		arenas.put(arena.name, arena);
-		return arena;
+	public static boolean checkRegions(Arena arena) {
+		for (Arena a : arenas.values()) {
+			if (a.equals(arena))
+				continue;
+
+			if ((a.fightInProgress) && !Regions.checkRegion(a, arena)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
-	 * search the arenas by player
+	 * count the arenas
 	 * 
-	 * @param pPlayer
-	 *            the player to find
-	 * @return the arena name if found, null otherwise
+	 * @return the arena count
 	 */
-	public static String getArenaNameByPlayer(Player pPlayer) {
-		for (Arena arena : arenas.values()) {
-			if (Players.isPartOf(arena, pPlayer))
-				return arena.name;
-		}
-		return null;
+	public static int count() {
+		return arenas.size();
+	}
+
+	/**
+	 * search the arenas by arena name
+	 * 
+	 * @param sName
+	 *            the arena name
+	 * @return an arena instance if found, null otherwise
+	 */
+	public static Arena getArenaByName(String sName) {
+		return arenas.get(sName);
 	}
 
 	/**
@@ -98,7 +121,7 @@ public class Arenas {
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
-			if (Players.isPartOf(arena, pPlayer))
+			if (arena.isPartOf(pPlayer))
 				return arena;
 		}
 		return null;
@@ -120,23 +143,18 @@ public class Arenas {
 	}
 
 	/**
-	 * search the arenas by arena name
+	 * search the arenas by player
 	 * 
-	 * @param sName
-	 *            the arena name
-	 * @return an arena instance if found, null otherwise
+	 * @param pPlayer
+	 *            the player to find
+	 * @return the arena name if found, null otherwise
 	 */
-	public static Arena getArenaByName(String sName) {
-		return arenas.get(sName);
-	}
-
-	/**
-	 * count the arenas
-	 * 
-	 * @return the arena count
-	 */
-	public static int count() {
-		return arenas.size();
+	public static String getArenaNameByPlayer(Player pPlayer) {
+		for (Arena arena : arenas.values()) {
+			if (arena.isPartOf(pPlayer))
+				return arena.name;
+		}
+		return null;
 	}
 
 	/**
@@ -165,34 +183,96 @@ public class Arenas {
 	}
 
 	/**
-	 * powerup tick, tick each arena that uses powerups
+	 * load all configs in the PVP Arena folder
 	 */
-	public static void powerupTick() {
-		for (Arena arena : arenas.values()) {
-			if (arena.pum == null)
-				continue;
-			db.i("ticking: arena " + arena.name);
-			arena.pum.tick();
+	public static void load_arenas() {
+		db.i("loading arenas...");
+		try {
+			File path = PVPArena.instance.getDataFolder();
+			File[] f = path.listFiles();
+			int i;
+			for (i = 0; i < f.length; i++) {
+				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
+					String sName = f[i].getName().replace("config_", "");
+					sName = sName.replace(".yml", "");
+					String arenaType = preParse(sName);
+					if (arenaType == null) {
+						db.i("arena: " + sName);
+						loadArena(sName, arenaType);
+						// this is on purpose, I want to call with NULL :p
+					} else {
+						System.out
+								.print("[PVP Arena] "
+										+ Language.parse("arenatypeunknown",
+												arenaType));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
 		}
 	}
 
 	/**
-	 * check if an arena has interfering regions with other arenas
+	 * load a specific arena
+	 * 
+	 * @param configFile
+	 *            the file to load
+	 * @param type
+	 *            the arena type
+	 */
+	public static Arena loadArena(String configFile, String type) {
+		db.i("loading arena " + configFile + " (" + type + ")");
+		Arena arena = new Arena(configFile, type);
+		arenas.put(arena.name, arena);
+		return arena;
+	}
+
+	/**
+	 * try loading an arena
+	 * 
+	 * @param name
+	 *            the arena name to load
+	 * @return the arena type name if successful, null otherwise
+	 */
+	private static String preParse(String name) {
+		db.i("pre-Parsing Arena " + name);
+		File file = new File(PVPArena.instance.getDataFolder() + "/config_"
+				+ name + ".yml");
+		if (!file.exists()) {
+			return "file does not exist";
+		}
+		Config cfg = new Config(file);
+		cfg.load();
+		String arenaType = cfg.getString("general.type",
+				"please redo your arena");
+
+		ArenaType type = PVPArena.instance.getAtm().getType(arenaType);
+
+		return type == null ? arenaType : null;
+	}
+
+	/**
+	 * restore chests, if wanted and possible
 	 * 
 	 * @param arena
-	 *            the arena to check
-	 * @return true if no running arena interfering, false otherwise
+	 *            the arena to restore
 	 */
-	public static boolean checkRegions(Arena arena) {
-		for (Arena a : arenas.values()) {
-			if (a.equals(arena))
-				continue;
+	public static void restoreChests(Arena arena) {
+		ArenaRegion bfRegion = arena.regions.get("battlefield");
 
-			if ((a.fightInProgress) && !Regions.checkRegion(a, arena)) {
-				return false;
-			}
+		if (bfRegion == null) {
+			db.i("no battlefield region, skipping restoreChests");
+			return;
 		}
-		return true;
+
+		if (!arena.cfg.getBoolean("general.restoreChests")) {
+			db.i("not restoring chests, skipping restoreChests");
+			return;
+		}
+
+		bfRegion.restoreChests();
 	}
 
 	/**
@@ -206,15 +286,41 @@ public class Arenas {
 	}
 
 	/**
+	 * save arena chest, if wanted and possible
+	 * 
+	 * @param arena
+	 *            the arena to save
+	 */
+	public static void saveChests(Arena arena) {
+		ArenaRegion bfRegion = arena.regions.get("battlefield");
+
+		if (bfRegion == null) {
+			db.i("no battlefield region, skipping saveChests");
+			return;
+		}
+
+		if (!arena.cfg.getBoolean("general.restoreChests")) {
+			db.i("not restoring chests, skipping saveChests");
+			return;
+		}
+
+		bfRegion.saveChests();
+	}
+
+	/**
 	 * send a message to a single player
 	 * 
 	 * @param player
 	 *            the player to send to
 	 * @param msg
 	 *            the message to send
+	 * @param a
+	 *            the arena sending this message
 	 */
-	public static void tellPlayer(Player player, String msg) {
-		tellPlayer(player, msg, "PVP Arena");
+	public static void tellPlayer(Player player, String msg, Arena a) {
+		db.i("@" + player.getName() + ": " + msg);
+		player.sendMessage(ChatColor.YELLOW + "[" + a.prefix + "] "
+				+ ChatColor.WHITE + msg);
 	}
 
 	/**
@@ -225,10 +331,44 @@ public class Arenas {
 	 * @param msg
 	 *            the message to send
 	 */
-	public static void tellPlayer(Player player, String msg, String prefix) {
-		db.i("@" + player.getName() + ": " + msg);
-		player.sendMessage(ChatColor.YELLOW + "[" + prefix + "] " + ChatColor.WHITE
+	public static void tellPlayer(Player player, String msg) {
+		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
 				+ msg);
+	}
+
+	/**
+	 * try to join an arena via sign click
+	 * 
+	 * @param event
+	 *            the PlayerInteractEvent
+	 * @param player
+	 *            the player trying to join
+	 */
+	public static void trySignJoin(PlayerInteractEvent event, Player player) {
+		db.i("onInteract: sign check");
+		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+			Block block = event.getClickedBlock();
+			if (block.getState() instanceof Sign) {
+				Sign sign = (Sign) block.getState();
+				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
+					String sName = sign.getLine(1);
+					String[] newArgs = null;
+					Arena a = arenas.get(sName);
+					if (sign.getLine(2) != null
+							&& Teams.getTeam(a, sign.getLine(2)) != null) {
+						newArgs = new String[1];
+						newArgs[0] = sign.getLine(2);
+					}
+					if (a == null) {
+						Arenas.tellPlayer(player,
+								Language.parse("arenanotexists", sName));
+						return;
+					}
+					Commands.parseCommand(a, player, newArgs);
+					return;
+				}
+			}
+		}
 	}
 
 	/**
@@ -247,49 +387,5 @@ public class Arenas {
 		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
 		a = null;
-	}
-
-	/**
-	 * check if join region is set and if player is inside, if so
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return true if not set or player inside, false otherwise
-	 */
-	public static boolean checkJoin(Player player) {
-		for (Arena a : arenas.values()) {
-			for (String rName : a.regions.keySet()) {
-				if (rName.equals("join")) {
-					return a.regions.get(rName).contains(player.getLocation());
-				}
-			}
-		}
-		return true; // no join region set
-	}
-
-	public static void tryJoin(PlayerInteractEvent event, Player player) {
-		db.i("onInteract: sign check");
-		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-			Block block = event.getClickedBlock();
-			if (block.getState() instanceof Sign) {
-				Sign sign = (Sign) block.getState();
-				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
-					String sName = sign.getLine(1);
-					String[] newArgs = null;
-					Arena a = arenas.get(sName);
-					if (sign.getLine(2) != null && a.paTeams.containsKey(sign.getLine(2))) {
-						newArgs = new String[1];
-						newArgs[0] = sign.getLine(2);
-					}
-					if (a == null) {
-						Arenas.tellPlayer(player,
-								Language.parse("arenanotexists", sName));
-						return;
-					}
-					Commands.parseCommand(a, player, newArgs);
-					return;
-				}
-			}
-		}
 	}
 }

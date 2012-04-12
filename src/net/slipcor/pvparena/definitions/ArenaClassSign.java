@@ -35,6 +35,17 @@ public class ArenaClassSign {
 	}
 
 	/**
+	 * add a player name to a sign
+	 * 
+	 * @param player
+	 *            the player name to add
+	 * @return true if successful, false otherwise
+	 */
+	public boolean add(Player player) {
+		return setFreeLine(player.getName());
+	}
+
+	/**
 	 * clear the sign contents
 	 */
 	public void clear() {
@@ -64,68 +75,6 @@ public class ArenaClassSign {
 		} catch (Exception e) {
 			return;
 		}
-	}
-
-	/**
-	 * check if a location already is reserved by a class sign
-	 * 
-	 * @param loc
-	 *            the location to check
-	 * @param paSigns
-	 *            the set of signs to check against
-	 * @return the sign instance if reserved, null otherwise
-	 */
-	public static ArenaClassSign used(Location loc,
-			HashSet<ArenaClassSign> paSigns) {
-		for (ArenaClassSign sign : paSigns) {
-			if (sign.location.equals(loc)) {
-				return sign;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * add a player name to a sign
-	 * 
-	 * @param player
-	 *            the player name to add
-	 * @return true if successful, false otherwise
-	 */
-	public boolean add(Player player) {
-		return setFreeLine(player.getName());
-	}
-
-	/**
-	 * add a player name to the first free line on a sign group
-	 * 
-	 * @param name
-	 *            the name to set
-	 * @return true if successful, false otherwise
-	 */
-	private boolean setFreeLine(String name) {
-		try {
-			Sign s = (Sign) location.getBlock().getState();
-			for (int i = 2; i < 4; i++) {
-				if (s.getLine(i) == null || s.getLine(i).equals("")) {
-					s.setLine(i, name);
-					s.update();
-					return true;
-				}
-			}
-			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
-					.getState();
-			for (int i = 0; i < 4; i++) {
-				if (s.getLine(i) == null || s.getLine(i).equals("")) {
-					s.setLine(i, name);
-					s.update();
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			return false;
-		}
-		return false;
 	}
 
 	/**
@@ -168,5 +117,56 @@ public class ArenaClassSign {
 		} catch (Exception e) {
 			return;
 		}
+	}
+
+	/**
+	 * add a player name to the first free line on a sign group
+	 * 
+	 * @param name
+	 *            the name to set
+	 * @return true if successful, false otherwise
+	 */
+	private boolean setFreeLine(String name) {
+		try {
+			Sign s = (Sign) location.getBlock().getState();
+			for (int i = 2; i < 4; i++) {
+				if (s.getLine(i) == null || s.getLine(i).equals("")) {
+					s.setLine(i, name);
+					s.update();
+					return true;
+				}
+			}
+			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+					.getState();
+			for (int i = 0; i < 4; i++) {
+				if (s.getLine(i) == null || s.getLine(i).equals("")) {
+					s.setLine(i, name);
+					s.update();
+					return true;
+				}
+			}
+		} catch (Exception e) {
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * check if a location already is reserved by a class sign
+	 * 
+	 * @param loc
+	 *            the location to check
+	 * @param paSigns
+	 *            the set of signs to check against
+	 * @return the sign instance if reserved, null otherwise
+	 */
+	public static ArenaClassSign used(Location loc,
+			HashSet<ArenaClassSign> paSigns) {
+		for (ArenaClassSign sign : paSigns) {
+			if (sign.location.equals(loc)) {
+				return sign;
+			}
+		}
+		return null;
 	}
 }
