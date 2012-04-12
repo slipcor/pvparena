@@ -19,16 +19,18 @@ import net.slipcor.pvparena.arenas.teams.TeamArena;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
 public class ArenaTypeManager {
 	private final List<ArenaType> types;
-	
+
 	/**
 	 * create an arena type instance
-	 * @param plugin the plugin instance
+	 * 
+	 * @param plugin
+	 *            the plugin instance
 	 */
 	public ArenaTypeManager(PVPArena plugin) {
 		File path = new File(plugin.getDataFolder().toString() + "/arenas");
@@ -37,15 +39,18 @@ public class ArenaTypeManager {
 		}
 		types = new Loader<ArenaType>(plugin, path, new Object[] {}).load();
 		types.add(new TeamArena());
-		
+
 		for (ArenaType type : types) {
-			System.out.print("[PVP Arena] module ArenaType loaded: " + type.getName());
+			System.out.print("[PVP Arena] module ArenaType loaded: "
+					+ type.getName());
 		}
 	}
-	
+
 	/**
 	 * find an arena type by arena type name
-	 * @param tName the type name to find
+	 * 
+	 * @param tName
+	 *            the type name to find
 	 * @return the arena type if found, null otherwise
 	 */
 	public ArenaType getType(String tName) {
@@ -57,6 +62,12 @@ public class ArenaTypeManager {
 		return null;
 	}
 
+	/**
+	 * hook into language initialisation
+	 * 
+	 * @param config
+	 *            the arena config
+	 */
 	public void initLanguage(YamlConfiguration config) {
 		for (ArenaType type : types) {
 			type.initLanguage(config);

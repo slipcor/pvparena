@@ -27,7 +27,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -53,7 +53,7 @@ public class Configs {
 		}
 		ArenaType aType = PVPArena.instance.getAtm().getType(type);
 
-		arena.setType((ArenaType)aType.clone());
+		arena.setType((ArenaType) aType.clone());
 		arena.type().setArena(arena);
 
 		if (config.get("classitems") == null) {
@@ -121,7 +121,7 @@ public class Configs {
 		config.addDefault("start.foodLevel", Integer.valueOf(20));
 		config.addDefault("start.saturation", Integer.valueOf(20));
 		config.addDefault("start.exhaustion", Float.valueOf(0));
-		
+
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
@@ -185,7 +185,7 @@ public class Configs {
 		arena.type().configParse();
 
 		PVPArena.instance.getAmm().configParse(arena, config, type);
-		
+
 		arena.prefix = cfg.getString("general.prefix", "PVP Arena");
 	}
 

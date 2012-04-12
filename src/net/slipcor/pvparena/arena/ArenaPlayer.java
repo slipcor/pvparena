@@ -34,7 +34,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -328,7 +328,7 @@ public class ArenaPlayer {
 			cfg.set(player.getName() + ".maxdamage", maxdamage);
 			cfg.set(player.getName() + ".damagetake", damagetake);
 			cfg.set(player.getName() + ".maxdamagetake", maxdamagetake);
-			
+
 			cfg.save(file);
 
 		} catch (Exception e) {
@@ -349,7 +349,7 @@ public class ArenaPlayer {
 
 		spectator = false;
 		ready = false;
-		
+
 		if (arena != null) {
 			ArenaTeam team = Teams.getTeam(arena, this);
 			if (team != null) {

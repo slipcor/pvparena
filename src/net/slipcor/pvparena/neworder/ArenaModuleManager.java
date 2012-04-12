@@ -35,7 +35,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -54,15 +54,18 @@ public class ArenaModuleManager {
 			path.mkdir();
 		}
 		modules = new Loader<ArenaModule>(plugin, path, new Object[] {}).load();
-		
+
 		for (ArenaModule mod : modules) {
-			System.out.print("[PVP Arena] module ArenaModule loaded: " + mod.getName());
+			System.out.print("[PVP Arena] module ArenaModule loaded: "
+					+ mod.getName());
 		}
 	}
 
 	/**
 	 * hook into settings adding
-	 * @param types the settings map
+	 * 
+	 * @param types
+	 *            the settings map
 	 */
 	public void addSettings(HashMap<String, String> types) {
 		for (ArenaModule mod : modules) {
@@ -253,7 +256,8 @@ public class ArenaModuleManager {
 	/**
 	 * hook into the language initialisation
 	 * 
-	 * @param config the language configuration
+	 * @param config
+	 *            the language configuration
 	 */
 	public void initLanguage(YamlConfiguration config) {
 		for (ArenaModule mod : modules) {

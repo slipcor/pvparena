@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.9
  * 
  */
 
@@ -596,8 +596,11 @@ public class Commands {
 		Teams.choosePlayerTeam(arena, player);
 		Inventories.prepareInventory(arena, player);
 
-		PVPArena.instance.getAmm().parseJoin(arena, player,
-				Teams.getTeam(arena, ArenaPlayer.parsePlayer(player)).colorize());
+		PVPArena.instance.getAmm().parseJoin(
+				arena,
+				player,
+				Teams.getTeam(arena, ArenaPlayer.parsePlayer(player))
+						.colorize());
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
 		if (autoClass != null && !autoClass.equals("none")) {
@@ -635,12 +638,11 @@ public class Commands {
 		}
 
 		if (arena.cfg.getInt("ready.max") > 0
-				&& arena.cfg.getInt("ready.max") <= Teams.countPlayersInTeams(arena)) {
+				&& arena.cfg.getInt("ready.max") <= Teams
+						.countPlayersInTeams(arena)) {
 
-			Arenas.tellPlayer(
-					player,
-					Language.parse("teamfull", Teams.getTeam(arena, sTeam).colorize()),
-					arena);
+			Arenas.tellPlayer(player, Language.parse("teamfull",
+					Teams.getTeam(arena, sTeam).colorize()), arena);
 			return true;
 		}
 
@@ -659,8 +661,8 @@ public class Commands {
 
 		PVPArena.instance.getAmm().parseJoin(arena, player, coloredTeam);
 
-
-		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam), arena);
+		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam),
+				arena);
 		arena.tellEveryoneExcept(player,
 				Language.parse("playerjoined", player.getName(), coloredTeam));
 

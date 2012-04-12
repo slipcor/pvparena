@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -37,10 +37,12 @@ public class Statistics {
 		type(String s) {
 			fullName = s;
 		}
-		
+
 		/**
 		 * return the next stat type
-		 * @param tType the type
+		 * 
+		 * @param tType
+		 *            the type
 		 * @return the next type
 		 */
 		public static type next(type tType) {
@@ -54,7 +56,9 @@ public class Statistics {
 
 		/**
 		 * return the previous stat type
-		 * @param tType the type
+		 * 
+		 * @param tType
+		 *            the type
 		 * @return the previous type
 		 */
 		public static type last(type tType) {
@@ -75,7 +79,9 @@ public class Statistics {
 
 		/**
 		 * get the stat type by name
-		 * @param string the name to find
+		 * 
+		 * @param string
+		 *            the name to find
 		 * @return the type if found, null otherwise
 		 */
 		public static type getByString(String string) {
@@ -107,7 +113,7 @@ public class Statistics {
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			db.i("attacker is player: " + attacker.getName());
-			if (arena.isPartOf( attacker)) {
+			if (arena.isPartOf(attacker)) {
 				db.i("attacker is in the arena, adding damage!");
 				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
 				p.damage += dmg;
@@ -238,14 +244,13 @@ public class Statistics {
 			boolean willRespawn) {
 		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
 		Bukkit.getPluginManager().callEvent(dEvent);
-		
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			if (arena.isPartOf(attacker)) {
 				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
 				Bukkit.getPluginManager().callEvent(kEvent);
-				
+
 				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
 				p.kills++;
 			}

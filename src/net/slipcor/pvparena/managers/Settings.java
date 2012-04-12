@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -174,7 +174,8 @@ public class Settings {
 		Arenas.tellPlayer(player, ChatColor.GRAY + "------ config list ["
 				+ page + "] ------", arena);
 		for (String node : keys) {
-			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)), arena);
+			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)),
+					arena);
 		}
 
 	}
@@ -221,22 +222,26 @@ public class Settings {
 						player,
 						node
 								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")), arena);
+								+ String.valueOf(value.equalsIgnoreCase("true")),
+						arena);
 			} else if (value.equalsIgnoreCase("false")) {
 				arena.cfg.set(node, Boolean.valueOf(false));
 				Arenas.tellPlayer(
 						player,
 						node
 								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")), arena);
+								+ String.valueOf(value.equalsIgnoreCase("true")),
+						arena);
 			} else {
-				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!", arena);
+				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!",
+						arena);
 				Arenas.tellPlayer(player, "Valid values: true | false", arena);
 				return;
 			}
 		} else if (type.equals("string")) {
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena);
+			Arenas.tellPlayer(player,
+					node + " set to " + String.valueOf(value), arena);
 		} else if (type.equals("int")) {
 			int i = 0;
 
@@ -248,7 +253,8 @@ public class Settings {
 				return;
 			}
 			arena.cfg.set(node, i);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(i), arena);
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(i),
+					arena);
 		} else if (type.equals("double")) {
 			double d = 0;
 
@@ -260,7 +266,8 @@ public class Settings {
 				return;
 			}
 			arena.cfg.set(node, d);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(d), arena);
+			Arenas.tellPlayer(player, node + " set to " + String.valueOf(d),
+					arena);
 		} else if (type.equals("tp")) {
 			if (!value.equals("exit") && !value.equals("old")
 					&& !value.equals("spectator")) {
@@ -270,7 +277,8 @@ public class Settings {
 				return;
 			}
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena);
+			Arenas.tellPlayer(player,
+					node + " set to " + String.valueOf(value), arena);
 		} else if (type.equals("item")) {
 			try {
 				try {
@@ -278,14 +286,16 @@ public class Settings {
 					if (!mat.equals(Material.AIR)) {
 						arena.cfg.set(node, mat.name());
 						Arenas.tellPlayer(player,
-								node + " set to " + String.valueOf(mat.name()), arena);
+								node + " set to " + String.valueOf(mat.name()),
+								arena);
 					}
 				} catch (Exception e2) {
 					Material mat = Material
 							.getMaterial(Integer.parseInt(value));
 					arena.cfg.set(node, mat.name());
 					Arenas.tellPlayer(player,
-							node + " set to " + String.valueOf(mat.name()), arena);
+							node + " set to " + String.valueOf(mat.name()),
+							arena);
 				}
 				arena.cfg.save();
 				return;
@@ -302,13 +312,15 @@ public class Settings {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					Arenas.tellPlayer(player, "unrecognized item: " + items[i], arena);
+					Arenas.tellPlayer(player, "unrecognized item: " + items[i],
+							arena);
 					return;
 				}
 			}
 
 			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(value), arena);
+			Arenas.tellPlayer(player,
+					node + " set to " + String.valueOf(value), arena);
 		} else {
 			Arenas.tellPlayer(player, "Unknown node: " + node, arena);
 			Arenas.tellPlayer(player,

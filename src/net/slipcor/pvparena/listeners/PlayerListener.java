@@ -49,7 +49,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -147,7 +147,7 @@ public class PlayerListener implements Listener {
 		if (PVPArena.instance.getAmm().onPlayerInteract(event)) {
 			return;
 		}
-		
+
 		if (Regions.checkRegionSetPosition(event, player)) {
 			return;
 		}
@@ -163,7 +163,7 @@ public class PlayerListener implements Listener {
 		}
 
 		arena.type().checkInteract(player, event.getClickedBlock());
-		
+
 		if (arena.fightInProgress && !arena.type().allowsJoinInBattle()) {
 			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!");
 			return;
@@ -171,14 +171,14 @@ public class PlayerListener implements Listener {
 
 		// fighting player inside the lobby!
 		event.setCancelled(true);
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
 		if (team == null) {
 			return;
 		}
-		
+
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
 			db.i("player team: " + team.getName());
@@ -186,8 +186,8 @@ public class PlayerListener implements Listener {
 				db.i("sign click!");
 				Sign sign = (Sign) block.getState();
 
-				if ((sign.getLine(0).equalsIgnoreCase("custom")) || arena.classExists(sign.getLine(0))
-						&& (team != null)) {
+				if ((sign.getLine(0).equalsIgnoreCase("custom"))
+						|| arena.classExists(sign.getLine(0)) && (team != null)) {
 
 					arena.forceChooseClass(player, sign, sign.getLine(0));
 				}
@@ -227,7 +227,7 @@ public class PlayerListener implements Listener {
 				if (arena.START_ID != -1) {
 					return; // counting down => OUT
 				}
-				
+
 				db.i("===============");
 				db.i("===== class: " + ap.getClass() + " =====");
 				db.i("===============");
@@ -247,7 +247,7 @@ public class PlayerListener implements Listener {
 								Language.parse("checkregionerror"), arena);
 						return;
 					}
-					
+
 					ArenaPlayer.parsePlayer(player).ready = true;
 
 					int ready = arena.ready();
@@ -255,24 +255,30 @@ public class PlayerListener implements Listener {
 					db.i("===============");
 					db.i("===== ready: " + ready + " =====");
 					db.i("===============");
-					
+
 					if (ready == 0) {
-						Arenas.tellPlayer(player, Language.parse("notready"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready"),
+								arena);
 						return; // team not ready => announce
 					} else if (ready == -1) {
-						Arenas.tellPlayer(player, Language.parse("notready1"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready1"),
+								arena);
 						return; // team not ready => announce
 					} else if (ready == -2) {
-						Arenas.tellPlayer(player, Language.parse("notready2"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready2"),
+								arena);
 						return; // team not ready => announce
 					} else if (ready == -3) {
-						Arenas.tellPlayer(player, Language.parse("notready3"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready3"),
+								arena);
 						return; // team not ready => announce
 					} else if (ready == -4) {
-						Arenas.tellPlayer(player, Language.parse("notready4"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready4"),
+								arena);
 						return; // arena not ready => announce
 					} else if (ready == -5) {
-						Arenas.tellPlayer(player, Language.parse("notready5"), arena);
+						Arenas.tellPlayer(player, Language.parse("notready5"),
+								arena);
 						return; // arena not ready => announce
 					} else if (ready == -6) {
 						arena.countDown();
@@ -283,10 +289,7 @@ public class PlayerListener implements Listener {
 				}
 
 				if (!arena.type().allowsRandomSpawns()) {
-					arena.tpPlayerToCoordName(
-							player,
-							team.getName()
-									+ "spawn");
+					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				} else {
 					arena.tpPlayerToCoordName(player, "spawn");
 				}
@@ -329,7 +332,7 @@ public class PlayerListener implements Listener {
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		
+
 		arena.type().parseMove(player);
 		PVPArena.instance.getAmm().parseMove(arena, event);
 	}
@@ -344,7 +347,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
-		
+
 		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);
 	}
 

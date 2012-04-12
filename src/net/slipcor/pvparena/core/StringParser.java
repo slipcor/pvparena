@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.6.39
+ * @version v0.7.9
  * 
  */
 
@@ -56,7 +56,7 @@ public class StringParser {
 		db.i("parsing itemstack string: " + s);
 
 		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
-		
+
 		short dmg = 0;
 		byte data = 0;
 		int amount = 1;
@@ -74,9 +74,9 @@ public class StringParser {
 			String[] temp2 = temp[0].split("\\|");
 			db.i("temp2 length: " + temp2.length);
 			temp[0] = temp2[0];
-			
+
 			db.i("correcting item temp to " + temp[0]);
-			
+
 			String strEnch = temp2[1];
 			if (strEnch.contains("~")) {
 				db.i("we have a level");
@@ -85,14 +85,14 @@ public class StringParser {
 				enchLevel = Integer.parseInt(arrEnch[1]);
 			}
 		}
-		
+
 		temp = temp[0].split("~");
 
 		mat = parseMat(temp[0]);
 		if (mat != null) {
 			if (temp.length == 1) {
 				// [itemid/name]:[amount]
-				
+
 				ItemStack is = new ItemStack(mat, amount);
 				if (ench != null)
 					is.addUnsafeEnchantment(ench, enchLevel);

@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -40,7 +40,9 @@ public class Arenas {
 
 	/**
 	 * check for arena end and commit it, if true
-	 * @param arena the arena to check
+	 * 
+	 * @param arena
+	 *            the arena to check
 	 * @return true if the arena ends
 	 */
 	public static boolean checkAndCommit(Arena arena) {
@@ -229,7 +231,9 @@ public class Arenas {
 
 	/**
 	 * try loading an arena
-	 * @param name the arena name to load
+	 * 
+	 * @param name
+	 *            the arena name to load
 	 * @return the arena type name if successful, null otherwise
 	 */
 	private static String preParse(String name) {
@@ -248,24 +252,26 @@ public class Arenas {
 
 		return type == null ? arenaType : null;
 	}
-	
+
 	/**
 	 * restore chests, if wanted and possible
-	 * @param arena the arena to restore
+	 * 
+	 * @param arena
+	 *            the arena to restore
 	 */
 	public static void restoreChests(Arena arena) {
 		ArenaRegion bfRegion = arena.regions.get("battlefield");
-		
+
 		if (bfRegion == null) {
 			db.i("no battlefield region, skipping restoreChests");
 			return;
 		}
-		
+
 		if (!arena.cfg.getBoolean("general.restoreChests")) {
 			db.i("not restoring chests, skipping restoreChests");
 			return;
 		}
-		
+
 		bfRegion.restoreChests();
 	}
 
@@ -281,21 +287,23 @@ public class Arenas {
 
 	/**
 	 * save arena chest, if wanted and possible
-	 * @param arena the arena to save
+	 * 
+	 * @param arena
+	 *            the arena to save
 	 */
 	public static void saveChests(Arena arena) {
 		ArenaRegion bfRegion = arena.regions.get("battlefield");
-		
+
 		if (bfRegion == null) {
 			db.i("no battlefield region, skipping saveChests");
 			return;
 		}
-		
+
 		if (!arena.cfg.getBoolean("general.restoreChests")) {
 			db.i("not restoring chests, skipping saveChests");
 			return;
 		}
-		
+
 		bfRegion.saveChests();
 	}
 
@@ -330,8 +338,11 @@ public class Arenas {
 
 	/**
 	 * try to join an arena via sign click
-	 * @param event the PlayerInteractEvent
-	 * @param player the player trying to join
+	 * 
+	 * @param event
+	 *            the PlayerInteractEvent
+	 * @param player
+	 *            the player trying to join
 	 */
 	public static void trySignJoin(PlayerInteractEvent event, Player player) {
 		db.i("onInteract: sign check");

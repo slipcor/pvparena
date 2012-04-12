@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -41,7 +41,7 @@ public class Update extends Thread {
 	public Update(Plugin p) {
 		plugin = p;
 	}
-	
+
 	/**
 	 * calculate the message variables based on the versions
 	 */
@@ -160,7 +160,7 @@ public class Update extends Thread {
 					+ vOnline);
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		db.i("checking for updates");
@@ -171,9 +171,9 @@ public class Update extends Thread {
 		Language.log_info("updating");
 
 		new Thread() {
-			
+
 		}.start();
-		
+
 		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
 		try {
 			URL url = new URL(pluginUrlString);

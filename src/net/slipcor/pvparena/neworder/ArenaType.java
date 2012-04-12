@@ -37,7 +37,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -47,7 +47,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * create an arena type instance
-	 * @param sName the arena type name
+	 * 
+	 * @param sName
+	 *            the arena type name
 	 */
 	public ArenaType(String sName) {
 		super(sName);
@@ -58,10 +60,10 @@ public class ArenaType extends Loadable {
 	 */
 	public Object clone() {
 		try {
-			ArenaType at = (ArenaType)super.clone();
+			ArenaType at = (ArenaType) super.clone();
 			at.arena = this.arena;
 			return at;
-		} catch(CloneNotSupportedException e){
+		} catch (CloneNotSupportedException e) {
 			System.out.println(e);
 			return null;
 		}
@@ -69,7 +71,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * add default teams
-	 * @param config the config to add the teams to
+	 * 
+	 * @param config
+	 *            the config to add the teams to
 	 */
 	public void addDefaultTeams(YamlConfiguration config) {
 		if (arena.cfg.get("teams") == null) {
@@ -89,7 +93,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into adding the settings
-	 * @param types the settings map
+	 * 
+	 * @param types
+	 *            the settings map
 	 */
 	public void addSettings(HashMap<String, String> types) {
 	}
@@ -110,6 +116,7 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * check if the arena match is over
+	 * 
 	 * @return true if the match is over
 	 */
 	public boolean checkAndCommit() {
@@ -134,15 +141,14 @@ public class ArenaType extends Loadable {
 			PVPArena.instance.getAmm().announceWinner(arena,
 					Language.parse("teamhaswon", "Team " + aTeam.getName()));
 
-			arena.tellEveryone(
-					Language.parse("teamhaswon", aTeam.getColor() + "Team "
-							+ aTeam.getName()));
+			arena.tellEveryone(Language.parse("teamhaswon", aTeam.getColor()
+					+ "Team " + aTeam.getName()));
 		}
-		
+
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
 			return true;
 		}
-		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 				new EndRunnable(arena), 15 * 20L);
 		return true;
@@ -150,7 +156,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into a player death
-	 * @param player the dying player
+	 * 
+	 * @param player
+	 *            the dying player
 	 */
 	public void checkEntityDeath(Player player) {
 		return;
@@ -158,8 +166,11 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into an interacting player
-	 * @param player the interacting player
-	 * @param clickedBlock the block being clicked
+	 * 
+	 * @param player
+	 *            the interacting player
+	 * @param clickedBlock
+	 *            the block being clicked
 	 */
 	public void checkInteract(Player player, Block clickedBlock) {
 		return;
@@ -167,8 +178,11 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into a set flag check
-	 * @param block the clicked block
-	 * @param player the player clicking
+	 * 
+	 * @param block
+	 *            the clicked block
+	 * @param player
+	 *            the player clicking
 	 * @return true if a flag was set
 	 */
 	public static boolean checkSetFlag(Block block, Player player) {
@@ -193,8 +207,11 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into a set flag check
-	 * @param player the player clicking
-	 * @param block the block being clicked
+	 * 
+	 * @param player
+	 *            the player clicking
+	 * @param block
+	 *            the block being clicked
 	 * @return true if a flag was set
 	 */
 	protected boolean checkSetFlag(Player player, Block block) {
@@ -203,7 +220,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * check if all necessary spawns are set
-	 * @param list the list of all set spawns
+	 * 
+	 * @param list
+	 *            the list of all set spawns
 	 * @return null if ready, error message otherwise
 	 */
 	public String checkSpawns(Set<String> list) {
@@ -239,8 +258,8 @@ public class ArenaType extends Loadable {
 			return null;
 		}
 
-		return spawns + "/" + arena.getTeams().size() + "x spawn ; "
-				+ lounges + "/" + arena.getTeams().size() + "x lounge";
+		return spawns + "/" + arena.getTeams().size() + "x spawn ; " + lounges
+				+ "/" + arena.getTeams().size() + "x lounge";
 	}
 
 	/**
@@ -252,7 +271,9 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * guess the spawn name from a given string
-	 * @param place the string to check
+	 * 
+	 * @param place
+	 *            the string to check
 	 * @return the proper spawn name
 	 */
 	public String guessSpawn(String place) {
@@ -295,15 +316,20 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into the language initialisation
-	 * @param config the language config
+	 * 
+	 * @param config
+	 *            the language config
 	 */
 	public void initLanguage(YamlConfiguration config) {
 	}
 
 	/**
 	 * is the given command a failed custom command?
-	 * @param player the player committing the command
-	 * @param cmd the command
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 * @param cmd
+	 *            the command
 	 * @return true if an error occured
 	 */
 	public boolean isCustomCommand(Player player, String cmd) {
@@ -312,8 +338,11 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * is the given command a failed lounge command?
-	 * @param player the player committing the command
-	 * @param cmd the command
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 * @param cmd
+	 *            the command
 	 * @return true if an error occured
 	 */
 	public boolean isLoungeCommand(Player player, String cmd) {
@@ -333,18 +362,22 @@ public class ArenaType extends Loadable {
 			String sTeam = cmd.replace("lounge", "");
 			if (Teams.getTeam(arena, sTeam) != null) {
 				Spawns.setCoords(arena, player, cmd);
-				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam), arena);
+				Arenas.tellPlayer(player, Language.parse("setlounge", sTeam),
+						arena);
 				return true;
 			}
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"), arena);
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "506"),
+					arena);
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * check if a string is a valid region command
-	 * @param s the string to check
+	 * 
+	 * @param s
+	 *            the string to check
 	 * @return true if the region name is valid
 	 */
 	public boolean isRegionCommand(String s) {
@@ -364,8 +397,11 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * is the given command a failed spawn command?
-	 * @param player the player committing the command
-	 * @param cmd the command
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 * @param cmd
+	 *            the command
 	 * @return true if an error occured
 	 */
 	public boolean isSpawnCommand(Player player, String cmd) {
@@ -376,7 +412,8 @@ public class ArenaType extends Loadable {
 		}
 
 		if (cmd.startsWith("spawn") || cmd.equals("spawn")) {
-			Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd), arena);
+			Arenas.tellPlayer(player, Language.parse("errorspawnfree", cmd),
+					arena);
 			return true;
 		}
 
@@ -399,20 +436,25 @@ public class ArenaType extends Loadable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * check if the arena is ready
-	 * @param arena the arena to check
+	 * 
+	 * @param arena
+	 *            the arena to check
 	 * @return 0 if ready, negative result otherwise
 	 */
 	public int ready(Arena arena) {
 		return 0;
 	}
-	
+
 	/**
 	 * hook into a player losing lives
-	 * @param player the player losing lives
-	 * @param lives the remaining lives
+	 * 
+	 * @param player
+	 *            the player losing lives
+	 * @param lives
+	 *            the remaining lives
 	 * @return the remaining lives
 	 */
 	public int reduceLives(Player player, int lives) {
@@ -423,16 +465,20 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * hook into a team losing lives
-	 * @param team the team losing lives
+	 * 
+	 * @param team
+	 *            the team losing lives
 	 * @return true if the arena is over
 	 */
 	public boolean reduceLivesCheckEndAndCommit(String team) {
 		return false;
 	}
-	
+
 	/**
 	 * hook into moving
-	 * @param player the moving player
+	 * 
+	 * @param player
+	 *            the moving player
 	 */
 	public void parseMove(Player player) {
 		return;
@@ -440,28 +486,38 @@ public class ArenaType extends Loadable {
 
 	/**
 	 * parse a player respawn
-	 * @param respawnPlayer the respawning player
-	 * @param respawnTeam the team the player belongs to
-	 * @param lives the lives left
-	 * @param cause the last damage cause
-	 * @param damager the player dealing the damage
+	 * 
+	 * @param respawnPlayer
+	 *            the respawning player
+	 * @param respawnTeam
+	 *            the team the player belongs to
+	 * @param lives
+	 *            the lives left
+	 * @param cause
+	 *            the last damage cause
+	 * @param damager
+	 *            the player dealing the damage
 	 */
-	public void parseRespawn(Player respawnPlayer,
-			ArenaTeam respawnTeam, int lives, DamageCause cause, Entity damager) {
+	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
+			int lives, DamageCause cause, Entity damager) {
 		return;
 	}
 
 	/**
 	 * hook into an arena reset
-	 * @param force is the resetting forced?
+	 * 
+	 * @param force
+	 *            is the resetting forced?
 	 */
 	public void reset(boolean force) {
 		return;
 	}
-	
+
 	/**
 	 * set the arena
-	 * @param arena the arena to set
+	 * 
+	 * @param arena
+	 *            the arena to set
 	 */
 	public void setArena(Arena arena) {
 		this.arena = arena;
@@ -494,9 +550,8 @@ public class ArenaType extends Loadable {
 			if (result.contains(team.getName())) {
 				PVPArena.instance.getAmm().announceWinner(arena,
 						Language.parse("teamhaswon", "Team " + team.getName()));
-				arena.tellEveryone(
-						Language.parse("teamhaswon", team.getColor() + "Team "
-								+ team.getName()));
+				arena.tellEveryone(Language.parse("teamhaswon", team.getColor()
+						+ "Team " + team.getName()));
 			}
 			for (ArenaPlayer p : arena.getPlayers()) {
 				if (p.isSpectator()) {

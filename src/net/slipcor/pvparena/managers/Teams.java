@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.Language;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -40,7 +40,7 @@ public class Teams {
 	public static void addTeam(Arena arena, ArenaTeam arenaTeam) {
 		arena.getTeams().add(arenaTeam);
 	}
-	
+
 	/**
 	 * calculate the team that needs players the most
 	 * 
@@ -51,16 +51,16 @@ public class Teams {
 		HashMap<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
-		
+
 		for (ArenaTeam team : arena.getTeams()) {
 			int count = team.getTeamMembers().size();
-			
+
 			if (count > 0) {
 				counts.put(team.getName(), count);
 				db.i("team " + team.getName() + " contains " + count);
 			}
 		}
-		
+
 		// counts contains TEAMNAME => PLAYERCOUNT
 
 		if (counts.size() < arena.getTeams().size()) {
@@ -170,18 +170,18 @@ public class Teams {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena);
+				Arenas.tellPlayer(player, Language.parse("alreadyjoined"),
+						arena);
 				return;
 			}
 		}
-		
 
 		String sTeam = free ? "free" : calcFreeTeam(arena);
-		
+
 		db.i(sTeam);
-		
+
 		ArenaTeam aTeam = getTeam(arena, sTeam);
-		
+
 		aTeam.add(ap);
 
 		if (free) {
@@ -192,14 +192,13 @@ public class Teams {
 		String coloredTeam = aTeam.colorize();
 		Arenas.tellPlayer(
 				player,
-				Language.parse("youjoined" + (free ? "free" : ""),
-						coloredTeam), arena);
+				Language.parse("youjoined" + (free ? "free" : ""), coloredTeam),
+				arena);
 		PVPArena.instance.getAmm().choosePlayerTeam(arena, player, coloredTeam);
 		arena.tellEveryoneExcept(
 				player,
 				Language.parse("playerjoined" + (free ? "free" : ""),
-						player.getName(),
-						coloredTeam));
+						player.getName(), coloredTeam));
 	}
 
 	/**

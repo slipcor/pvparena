@@ -41,7 +41,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -66,7 +66,7 @@ public class EntityListener implements Listener {
 	 */
 	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
 		EntityDamageEvent cause = null;
-		
+
 		if (eEvent instanceof EntityDeathEvent) {
 			cause = player.getLastDamageCause();
 		} else if (eEvent instanceof EntityDamageEvent) {
@@ -76,10 +76,11 @@ public class EntityListener implements Listener {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
-		arena.tellEveryone(Language.parse("killedby",
-				team.colorizePlayer(player) + ChatColor.YELLOW, arena
-						.parseDeathCause( player, cause.getCause(), ArenaPlayer
-								.getLastDamagingPlayer(cause))));
+		arena.tellEveryone(Language.parse(
+				"killedby",
+				team.colorizePlayer(player) + ChatColor.YELLOW,
+				arena.parseDeathCause(player, cause.getCause(),
+						ArenaPlayer.getLastDamagingPlayer(cause))));
 
 		ap.losses++;
 
@@ -90,9 +91,9 @@ public class EntityListener implements Listener {
 		Inventories.clearInventory(player);
 
 		arena.tpPlayerToCoordName(player, "spectator");
-		
+
 		arena.type().checkEntityDeath(player);
-		
+
 		Teams.removeTeam(arena, ap);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
@@ -159,7 +160,7 @@ public class EntityListener implements Listener {
 		if (event instanceof EntityDamageByEntityEvent) {
 			return;
 		}
-		
+
 		if (event.isCancelled()) {
 			return; // respect other plugins
 		}
@@ -274,7 +275,8 @@ public class EntityListener implements Listener {
 
 			db.i("processing damage!");
 
-			PVPArena.instance.getAmm().onEntityDamageByBlockDamage(arena, defender, event);
+			PVPArena.instance.getAmm().onEntityDamageByBlockDamage(arena,
+					defender, event);
 
 			if (event.getDamage() >= defender.getHealth()) {
 				db.i("damage >= health => death");
@@ -369,8 +371,8 @@ public class EntityListener implements Listener {
 		}
 
 		if ((!arena.cfg.getBoolean("game.teamKill", false))
-				&& (Teams.getTeam(arena, apAttacker))
-						.equals(Teams.getTeam(arena, apDefender))) {
+				&& (Teams.getTeam(arena, apAttacker)).equals(Teams.getTeam(
+						arena, apDefender))) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
@@ -407,7 +409,8 @@ public class EntityListener implements Listener {
 
 		db.i("processing damage!");
 
-		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker, defender, event);
+		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker,
+				defender, event);
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
 
@@ -500,12 +503,12 @@ public class EntityListener implements Listener {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
-		
+
 		if (team == null) {
 			return;
 		}
 
 		PVPArena.instance.getAmm().onEntityRegainHealth(arena, event);
-		
+
 	}
 }

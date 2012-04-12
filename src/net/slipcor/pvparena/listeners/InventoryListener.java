@@ -14,7 +14,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * -
  * 
- * PVP Arena Custom Listener
+ * PVP Arena Inventory Listener
  * 
  * @author slipcor
  * 

@@ -33,7 +33,7 @@ import com.nodinchan.loader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -49,34 +49,45 @@ public class ArenaModule extends Loadable {
 	public ArenaModule(String name) {
 		super(name);
 	}
-	
+
 	/**
 	 * hook into settings adding
-	 * @param types the settings map
+	 * 
+	 * @param types
+	 *            the settings map
 	 */
 	public void addSettings(HashMap<String, String> types) {
 	}
 
 	/**
 	 * hook into announcement of a loser
-	 * @param arena the arena where this happens
-	 * @param message the message to display
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param message
+	 *            the message to display
 	 */
 	public void announceLoser(Arena arena, String message) {
 	}
 
 	/**
 	 * hook into announcement of a reward
-	 * @param arena the arena where this happens
-	 * @param message the message to display
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param message
+	 *            the message to display
 	 */
 	public void announcePrize(Arena arena, String message) {
 	}
 
 	/**
 	 * hook into announcement of a winner
-	 * @param arena the arena where this happens
-	 * @param message the message to display
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param message
+	 *            the message to display
 	 */
 	public void announceWinner(Arena arena, String message) {
 	}
@@ -96,9 +107,13 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into a player choosing a team
-	 * @param arena the arena where this happens
-	 * @param player the choosing player
-	 * @param coloredTeam the colored team name being chosen
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param player
+	 *            the choosing player
+	 * @param coloredTeam
+	 *            the colored team name being chosen
 	 */
 	public void choosePlayerTeam(Arena arena, Player player, String coloredTeam) {
 	}
@@ -118,9 +133,13 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into death of a player
-	 * @param arena the arena where this happens
-	 * @param player the dying player
-	 * @param cause the EntityDamageEvent leading to death
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param player
+	 *            the dying player
+	 * @param cause
+	 *            the EntityDamageEvent leading to death
 	 */
 	public void commitPlayerDeath(Arena arena, Player player,
 			EntityDamageEvent cause) {
@@ -167,31 +186,41 @@ public class ArenaModule extends Loadable {
 	/**
 	 * hook into the language initialisation
 	 * 
-	 * @param config the language configuration
+	 * @param config
+	 *            the language configuration
 	 */
 	public void initLanguage(YamlConfiguration config) {
 	}
 
 	/**
 	 * hook into joining of a player while the fight is running
-	 * @param arena the arena where this happens
-	 * @param player the joining player
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param player
+	 *            the joining player
 	 */
 	public void lateJoin(Arena arena, Player player) {
 	}
 
 	/**
 	 * hook into an arena BlockBreakEvent
-	 * @param arena the arena where this happens
-	 * @param event the BlockBreakEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the BlockBreakEvent
 	 */
 	public void onBlockBreak(Arena arena, BlockBreakEvent event) {
 	}
 
 	/**
 	 * hook into an arena BlockPlaceEvent
-	 * @param arena the arena where this happens
-	 * @param event the BlockPlaceEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the BlockPlaceEvent
 	 */
 	public void onBlockPlace(Arena arena, BlockPlaceEvent event) {
 	}
@@ -234,8 +263,11 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into an arena EntityExplodeEvent
-	 * @param arena the arena where this happens
-	 * @param event the EntityExplodeEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the EntityExplodeEvent
 	 */
 	public void onEntityExplode(Arena arena, EntityExplodeEvent event) {
 	}
@@ -265,8 +297,11 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into an arena PlayerPickupItemEvent
-	 * @param arena the arena where this happens
-	 * @param event the PlayerPickupItemEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the PlayerPickupItemEvent
 	 */
 	public void onPlayerPickupItem(Arena arena, PlayerPickupItemEvent event) {
 	}
@@ -284,8 +319,11 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into an arena PlayerVelocityEvent
-	 * @param arena the arena where this happens
-	 * @param event the PlayerVelocityEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the PlayerVelocityEvent
 	 */
 	public void onPlayerVelocity(Arena arena, PlayerVelocityEvent event) {
 	}
@@ -316,8 +354,11 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into the display of the arena information
-	 * @param arena the arena being displayed
-	 * @param player the player being messaged
+	 * 
+	 * @param arena
+	 *            the arena being displayed
+	 * @param player
+	 *            the player being messaged
 	 */
 	public void parseInfo(Arena arena, Player player) {
 	}
@@ -337,17 +378,24 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into an arena PlayerMoveEvent
-	 * @param arena the arena where this happens
-	 * @param event the PlayerMoveEvent
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param event
+	 *            the PlayerMoveEvent
 	 */
 	public void parseMove(Arena arena, PlayerMoveEvent event) {
 	}
 
 	/**
 	 * hook into a player leaving the arena
-	 * @param arena the arena being left
-	 * @param player the leaving player
-	 * @param team the team the player was in before
+	 * 
+	 * @param arena
+	 *            the arena being left
+	 * @param player
+	 *            the leaving player
+	 * @param team
+	 *            the team the player was in before
 	 */
 	public void playerLeave(Arena arena, Player player, ArenaTeam team) {
 	}
@@ -365,8 +413,11 @@ public class ArenaModule extends Loadable {
 
 	/**
 	 * hook into the reset of a player
-	 * @param arena the arena where this happens
-	 * @param player the player being reset
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param player
+	 *            the player being reset
 	 */
 	public void resetPlayer(Arena arena, Player player) {
 	}

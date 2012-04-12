@@ -19,7 +19,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -76,13 +76,13 @@ public class Inventories {
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		
+
 		ArenaClass playerClass = ap.getaClass();
 		db.i("giving items to player '" + player.getName() + "', class '"
 				+ playerClass.getName() + "'");
 
 		playerClass.load(player);
-		
+
 		if (arena.cfg.getBoolean("game.woolHead", false)) {
 			ArenaTeam aTeam = Teams.getTeam(arena, ap);
 			String color = aTeam.getColor().name();
@@ -115,7 +115,7 @@ public class Inventories {
 		player.getInventory().setContents(p.savedInventory);
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
-	
+
 	/**
 	 * prepare a player's inventory, back it up and clear it
 	 * 

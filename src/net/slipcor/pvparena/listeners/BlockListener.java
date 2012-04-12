@@ -24,7 +24,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -123,6 +123,7 @@ public class BlockListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
+
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
 		PVPArena.instance.getAmm().onSignChange(event);

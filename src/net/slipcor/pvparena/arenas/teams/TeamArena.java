@@ -20,7 +20,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 
@@ -31,11 +31,11 @@ public class TeamArena extends ArenaType {
 
 	@Override
 	public Object clone() {
-		ArenaType at = (ArenaType)super.clone();
+		ArenaType at = (ArenaType) super.clone();
 		at.setArena(this.arena);
 		return at;
 	}
-	
+
 	@Override
 	public String checkSpawns(Set<String> list) {
 		if (allowsRandomSpawns()) {
@@ -51,7 +51,7 @@ public class TeamArena extends ArenaType {
 				String s = iter.next();
 				db.i("parsing '" + s + "'");
 				if (s.equals("lounge"))
-					continue; // skip 
+					continue; // skip
 				if (s.startsWith("spawn"))
 					spawns++;
 				if (s.endsWith("lounge"))
@@ -100,9 +100,9 @@ public class TeamArena extends ArenaType {
 					+ lounges + "/" + arena.getTeams().size() + "x lounge";
 		}
 	}
-	
-	public void parseRespawn(Player respawnPlayer,
-			ArenaTeam respawnTeam, int lives, DamageCause cause, Entity damager) {
+
+	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
+			int lives, DamageCause cause, Entity damager) {
 
 		arena.tellEveryone(Language.parse("killedbylives",
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,

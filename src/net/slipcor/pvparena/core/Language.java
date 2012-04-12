@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 public class Language {
@@ -57,9 +57,12 @@ public class Language {
 		config.addDefault("log.matnotfound", "Unrecognized material: %1%");
 		config.addDefault("log.enabled", "enabled (version %1%)");
 		config.addDefault("log.disabled", "disabled (version %1%)");
-		config.addDefault("log.startTracker", "Plugin tracking enabled. Set stats: false inside the main config to disable.");
-		config.addDefault("log.stopTracker", "Plugin tracking disabled. See you soon?");
-		config.addDefault("log.notupdating", "Updates deactivated. Please check dev.bukkit for updates.");
+		config.addDefault("log.startTracker",
+				"Plugin tracking enabled. Set stats: false inside the main config to disable.");
+		config.addDefault("log.stopTracker",
+				"Plugin tracking disabled. See you soon?");
+		config.addDefault("log.notupdating",
+				"Updates deactivated. Please check dev.bukkit for updates.");
 		config.addDefault("log.updating", "Checking for updates...");
 		config.addDefault("log.warn", "%1%");
 
@@ -180,8 +183,9 @@ public class Language {
 
 		config.addDefault("lang.invalidstattype",
 				"Invalid statistics type: %1%");
-		
-		config.addDefault("lang.arenatypeunknown", "Arena Type '%1%' unknown. Please add the corresponding arena jar file!");
+
+		config.addDefault("lang.arenatypeunknown",
+				"Arena Type '%1%' unknown. Please add the corresponding arena jar file!");
 
 		for (Statistics.type t : Statistics.type.values()) {
 			config.addDefault("lang." + t, t.getName());
@@ -212,15 +216,16 @@ public class Language {
 
 		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
 		config.addDefault("lang.regionremoved", "Region removed: %1%");
-		
-		config.addDefault("lang.select2", "Select two points before trying to save.");
+
+		config.addDefault("lang.select2",
+				"Select two points before trying to save.");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");
-		
+
 		PVPArena.instance.getAmm().initLanguage(config);
 		PVPArena.instance.getAtm().initLanguage(config);
-		
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);

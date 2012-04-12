@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.9
  * 
  */
 
@@ -76,20 +76,24 @@ public class Spawns {
 
 	/**
 	 * get the nearest spawn location from a location
-	 * @param spawns the spawns to check
-	 * @param location the location to check
+	 * 
+	 * @param spawns
+	 *            the spawns to check
+	 * @param location
+	 *            the location to check
 	 * @return the spawn location next to the location
 	 */
 	public static Location getNearest(HashSet<Location> spawns,
 			Location location) {
 		Location result = null;
-		
+
 		for (Location loc : spawns) {
-			if (result == null || result.distance(location) > loc.distance(location)) {
+			if (result == null
+					|| result.distance(location) > loc.distance(location)) {
 				result = loc;
 			}
 		}
-		
+
 		return result;
 	}
 
