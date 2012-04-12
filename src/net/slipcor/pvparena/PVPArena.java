@@ -11,12 +11,11 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.listeners.BlockListener;
-import net.slipcor.pvparena.listeners.CustomListener;
+import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
-import net.slipcor.pvparena.managers.Players;
 import net.slipcor.pvparena.neworder.ArenaModuleManager;
 import net.slipcor.pvparena.neworder.ArenaTypeManager;
 import org.bukkit.command.Command;
@@ -33,7 +32,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
@@ -44,7 +43,7 @@ public class PVPArena extends JavaPlugin {
 
 	private final BlockListener blockListener = new BlockListener();
 	private final PlayerListener playerListener = new PlayerListener();
-	private final CustomListener customListener = new CustomListener();
+	private final InventoryListener customListener = new InventoryListener();
 	private final static Debug db = new Debug(1);
 
 	private ArenaTypeManager atm = null;
@@ -91,17 +90,19 @@ public class PVPArena extends JavaPlugin {
 			Arena a = null;
 			if (args.length > 2) {
 				if (atm.getType(args[2]) == null) {
-					Arenas.tellPlayer(player,  Language.parse("arenatypeunknown", args[2]));
+					Arenas.tellPlayer(player,
+							Language.parse("arenatypeunknown", args[2]));
 					return true;
 				}
-				
+
 				a = Arenas.loadArena(args[0], args[2]);
 			} else {
 				if (atm.getType("teams") == null) {
-					Arenas.tellPlayer(player,  Language.parse("arenatypeunknown", "teams"));
+					Arenas.tellPlayer(player,
+							Language.parse("arenatypeunknown", "teams"));
 					return true;
 				}
-				
+
 				a = Arenas.loadArena(args[0], "teams");
 			}
 			a.setWorld(player.getWorld().getName());
@@ -157,7 +158,7 @@ public class PVPArena extends JavaPlugin {
 		} else if (args[0].equalsIgnoreCase("leave")) {
 			Arena arena = Arenas.getArenaByPlayer(player);
 			if (arena != null) {
-				Players.playerLeave(arena, player);
+				arena.playerLeave(player);
 			} else {
 				Arenas.tellPlayer(player, Language.parse("notinarena"));
 			}
@@ -208,7 +209,7 @@ public class PVPArena extends JavaPlugin {
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
-		
+
 		atm = new ArenaTypeManager(this);
 		amm = new ArenaModuleManager(this);
 
@@ -227,8 +228,6 @@ public class PVPArena extends JavaPlugin {
 
 		getConfig().options().copyDefaults(true);
 		saveConfig();
-		
-		
 
 		File players = new File(getDataFolder(), "players.yml");
 		if (!players.exists()) {
@@ -245,11 +244,12 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.load(this);
 		Arenas.load_arenas();
-		Update.updateCheck(this);
+		Update u = new Update(this);
+		u.start();
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
-		
+
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
@@ -300,7 +300,8 @@ public class PVPArena extends JavaPlugin {
 			db.i(String.valueOf(hasPerms(player, "pvparena.user")));
 		}
 
-		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(player, "pvparena.join." + arena.name.toLowerCase())
+		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(
+				player, "pvparena.join." + arena.name.toLowerCase())
 				: hasPerms(player, "pvparena.user");
 	}
 
@@ -317,10 +318,20 @@ public class PVPArena extends JavaPlugin {
 		return instance.amm.hasPerms(player, perms);
 	}
 
+	/**
+	 * Hand over the ArenaTypeManager instance
+	 * 
+	 * @return the ArenaTypeManager instance
+	 */
 	public ArenaTypeManager getAtm() {
 		return atm;
 	}
-	
+
+	/**
+	 * Hand over the ArenaModuleManager instance
+	 * 
+	 * @return the ArenaModuleManager instance
+	 */
 	public ArenaModuleManager getAmm() {
 		return amm;
 	}

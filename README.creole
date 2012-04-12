@@ -50,6 +50,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.9.4 - fix more beta bugs
+* v0.7.9.2 - fix various bugs
+* v0.7.9 - rewrite concerning ArenaPlayer / Players
 * v0.7.8 - ArenaModule: Announcements
 * v0.7.7 - ArenaModule: TempPerms
 * v0.7.6 - ArenaModule: PowerUps
@@ -73,6 +76,8 @@ A PVP experience enhancing plugin.
 ** MAP support: Player location, flag/spawn location
 ** RUSH mode - Base defend vs Conquer base
 ** Spout: Adding "skin" key to classes, MobDisguise hooking
+* Modulisation
+** Regions
 
 -----------------------------------------------------------------------------------------------------------------------
 

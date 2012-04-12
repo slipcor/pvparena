@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player dies in the arena
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  * @author slipcor
  * 
@@ -52,6 +52,14 @@ public class PADeathEvent extends Event {
 		return arena;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
 	/**
 	 * hand over the player
 	 * 
@@ -68,13 +76,5 @@ public class PADeathEvent extends Event {
 	 */
 	public boolean getRespawn() {
 		return respawn;
-	}
-
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 }

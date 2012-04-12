@@ -14,51 +14,103 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
 public class ArenaTeam {
-	
+
 	private final HashSet<ArenaPlayer> players;
 	private final ChatColor color;
 	private final String name;
-	
+
+	/**
+	 * create an arena team instance
+	 * 
+	 * @param name
+	 *            the arena team name
+	 * @param color
+	 *            the arena team color string
+	 */
 	public ArenaTeam(String name, String color) {
 		this.players = new HashSet<ArenaPlayer>();
 		this.color = ChatColor.valueOf(color);
 		this.name = name;
 	}
-	
-	public HashSet<ArenaPlayer> getTeamMembers() {
-		return players;
-	}
 
-	public void remove(ArenaPlayer player) {
-		this.players.remove(player);
-	}
-	
+	/**
+	 * add an arena player to the arena team
+	 * 
+	 * @param player
+	 *            the player to add
+	 */
 	public void add(ArenaPlayer player) {
 		this.players.add(player);
 	}
 
-	public ChatColor getColor() {
-		return color;
-	}
-
+	/**
+	 * colorize the team name
+	 * 
+	 * @return the colorized team name
+	 */
 	public String colorize() {
 		return color + name;
 	}
 
+	/**
+	 * colorize a player name
+	 * 
+	 * @param player
+	 *            the player to colorize
+	 * @return the colorized player name
+	 */
 	public String colorizePlayer(Player player) {
 		return color + player.getName();
 	}
 
+	/**
+	 * return the team color
+	 * 
+	 * @return the team color
+	 */
+	public ChatColor getColor() {
+		return color;
+	}
+
+	/**
+	 * return the team color code
+	 * 
+	 * @return the team color code
+	 */
+	public String getColorString() {
+		return "&" + Integer.toHexString(color.ordinal());
+	}
+
+	/**
+	 * return the team name
+	 * 
+	 * @return the team name
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public String getColorString() {
-		return "&"+Integer.toHexString(color.ordinal());
+	/**
+	 * return the team members
+	 * 
+	 * @return a HashSet of all arena players
+	 */
+	public HashSet<ArenaPlayer> getTeamMembers() {
+		return players;
+	}
+
+	/**
+	 * remove a player from the team
+	 * 
+	 * @param player
+	 *            the player to remove
+	 */
+	public void remove(ArenaPlayer player) {
+		this.players.remove(player);
 	}
 }

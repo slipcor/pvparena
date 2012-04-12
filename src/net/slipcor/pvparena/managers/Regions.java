@@ -60,24 +60,6 @@ public class Regions {
 	}
 
 	/**
-	 * is a player to far away to join?
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return true if the player is too far away, false otherwise
-	 */
-	public static boolean tooFarAway(Arena arena, Player player) {
-		int joinRange = arena.cfg.getInt("join.range", 0);
-		if (joinRange < 1)
-			return false;
-		if (arena.regions.get("battlefield") == null) {
-			return Spawns.getRegionCenter(arena).distance(player.getLocation()) > joinRange;
-		}
-		return arena.regions.get("battlefield").tooFarAway(joinRange,
-				player.getLocation());
-	}
-
-	/**
 	 * check if an admin tries to set an arena position
 	 * 
 	 * @param event
@@ -113,5 +95,23 @@ public class Regions {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * is a player to far away to join?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the player is too far away, false otherwise
+	 */
+	public static boolean tooFarAway(Arena arena, Player player) {
+		int joinRange = arena.cfg.getInt("join.range", 0);
+		if (joinRange < 1)
+			return false;
+		if (arena.regions.get("battlefield") == null) {
+			return Spawns.getRegionCenter(arena).distance(player.getLocation()) > joinRange;
+		}
+		return arena.regions.get("battlefield").tooFarAway(joinRange,
+				player.getLocation());
 	}
 }

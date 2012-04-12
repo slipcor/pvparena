@@ -75,93 +75,22 @@ public class Spawns {
 	}
 
 	/**
-	 * set an arena coord to a player's position
-	 * 
-	 * @param player
-	 *            the player saving the coord
-	 * @param place
-	 *            the coord name to save the location to
+	 * get the nearest spawn location from a location
+	 * @param spawns the spawns to check
+	 * @param location the location to check
+	 * @return the spawn location next to the location
 	 */
-	public static void setCoords(Arena arena, Player player, String place) {
-		// "x,y,z,yaw,pitch"
-
-		Location location = player.getLocation();
-
-		Integer x = location.getBlockX();
-		Integer y = location.getBlockY();
-		Integer z = location.getBlockZ();
-		Float yaw = location.getYaw();
-		Float pitch = location.getPitch();
-
-		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
-				+ yaw.toString() + "," + pitch.toString();
-
-		db.i("setting spawn " + place + " to " + s.toString());
-
-		arena.cfg.set("spawns." + place, s);
-
-		arena.cfg.save();
-	}
-
-	/**
-	 * set an arena coord to a given location
-	 * 
-	 * @param loc
-	 *            the location to save
-	 * @param place
-	 *            the coord name to save the location to
-	 */
-	public static void setCoords(Arena arena, Location loc, String place) {
-		// "x,y,z,yaw,pitch"
-
-		Integer x = loc.getBlockX();
-		Integer y = loc.getBlockY();
-		Integer z = loc.getBlockZ();
-		Float yaw = loc.getYaw();
-		Float pitch = loc.getPitch();
-
-		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
-				+ yaw.toString() + "," + pitch.toString();
-
-		db.i("setting spawn " + place + " to " + s.toString());
-
-		arena.cfg.set("spawns." + place, s);
-
-		arena.cfg.save();
-	}
-
-	/**
-	 * is a player near a spawn?
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player to check
-	 * @param diff
-	 *            the distance to check
-	 * @return true if the player is near, false otherwise
-	 */
-	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
-		db.i("checking if arena is near a spawn");
-		if (!Players.isPartOf(arena, player)) {
-			return false;
-		}
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
-		if (team == null) {
-			return false;
-		}
-
-		HashSet<Location> spawns = getSpawns(arena, team.getName());
-
+	public static Location getNearest(HashSet<Location> spawns,
+			Location location) {
+		Location result = null;
+		
 		for (Location loc : spawns) {
-			if (loc.distance(player.getLocation()) <= diff) {
-				db.i("found near spawn: " + loc.toString());
-				return true;
+			if (result == null || result.distance(location) > loc.distance(location)) {
+				result = loc;
 			}
 		}
-
-		return false;
+		
+		return result;
 	}
 
 	/**
@@ -235,16 +164,93 @@ public class Spawns {
 		return v.toLocation(Bukkit.getWorld(arena.getWorld()));
 	}
 
-	public static Location getNearest(HashSet<Location> spawns,
-			Location location) {
-		Location result = null;
-		
+	/**
+	 * is a player near a spawn?
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player to check
+	 * @param diff
+	 *            the distance to check
+	 * @return true if the player is near, false otherwise
+	 */
+	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
+		db.i("checking if arena is near a spawn");
+		if (!arena.isPartOf(player)) {
+			return false;
+		}
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
+		if (team == null) {
+			return false;
+		}
+
+		HashSet<Location> spawns = getSpawns(arena, team.getName());
+
 		for (Location loc : spawns) {
-			if (result == null || result.distance(location) > loc.distance(location)) {
-				result = loc;
+			if (loc.distance(player.getLocation()) <= diff) {
+				db.i("found near spawn: " + loc.toString());
+				return true;
 			}
 		}
-		
-		return result;
+
+		return false;
+	}
+
+	/**
+	 * set an arena coord to a player's position
+	 * 
+	 * @param player
+	 *            the player saving the coord
+	 * @param place
+	 *            the coord name to save the location to
+	 */
+	public static void setCoords(Arena arena, Player player, String place) {
+		// "x,y,z,yaw,pitch"
+
+		Location location = player.getLocation();
+
+		Integer x = location.getBlockX();
+		Integer y = location.getBlockY();
+		Integer z = location.getBlockZ();
+		Float yaw = location.getYaw();
+		Float pitch = location.getPitch();
+
+		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
+				+ yaw.toString() + "," + pitch.toString();
+
+		db.i("setting spawn " + place + " to " + s.toString());
+
+		arena.cfg.set("spawns." + place, s);
+
+		arena.cfg.save();
+	}
+
+	/**
+	 * set an arena coord to a given location
+	 * 
+	 * @param loc
+	 *            the location to save
+	 * @param place
+	 *            the coord name to save the location to
+	 */
+	public static void setCoords(Arena arena, Location loc, String place) {
+		// "x,y,z,yaw,pitch"
+
+		Integer x = loc.getBlockX();
+		Integer y = loc.getBlockY();
+		Integer z = loc.getBlockZ();
+		Float yaw = loc.getYaw();
+		Float pitch = loc.getPitch();
+
+		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
+				+ yaw.toString() + "," + pitch.toString();
+
+		db.i("setting spawn " + place + " to " + s.toString());
+
+		arena.cfg.set("spawns." + place, s);
+
+		arena.cfg.save();
 	}
 }

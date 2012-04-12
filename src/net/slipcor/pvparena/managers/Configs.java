@@ -27,7 +27,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
@@ -71,19 +71,13 @@ public class Configs {
 
 		config.addDefault("game.allowDrops", Boolean.valueOf(true));
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
-		config.addDefault("game.hideName", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
-		config.addDefault("game.mustbesafe", Boolean.valueOf(true));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
-		config.addDefault("game.powerups", "off");
 		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
-		config.addDefault("game.woolHead", Boolean.valueOf(false));
-		config.addDefault("game.woolFlagHead", Boolean.valueOf(false));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
 
 		config.addDefault("messages.language", "en");
-		config.addDefault("messages.colorNick", Boolean.valueOf(true));
 		config.addDefault("messages.chat", Boolean.valueOf(true));
 		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
 		config.addDefault("messages.onlyChat", Boolean.valueOf(false));
@@ -108,14 +102,6 @@ public class Configs {
 
 		config.addDefault("join.range", Integer.valueOf(0));
 		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
-
-		config.addDefault("money.entry", Integer.valueOf(0));
-		config.addDefault("money.reward", Integer.valueOf(0));
-		config.addDefault("money.minbet", Double.valueOf(0));
-		config.addDefault("money.maxbet", Double.valueOf(0));
-		config.addDefault("money.betWinFactor", Double.valueOf(1));
-		config.addDefault("money.betTeamWinFactor", Double.valueOf(1));
-		config.addDefault("money.betPlayerWinFactor", Double.valueOf(1));
 
 		config.addDefault("protection.spawn", Integer.valueOf(3));
 		config.addDefault("protection.restore", Boolean.valueOf(true));
@@ -146,20 +132,11 @@ public class Configs {
 		config.addDefault("ready.autoclass", "none");
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 
-		config.addDefault("announcements.join", Boolean.valueOf(false));
-		config.addDefault("announcements.start", Boolean.valueOf(false));
-		config.addDefault("announcements.end", Boolean.valueOf(false));
-		config.addDefault("announcements.winner", Boolean.valueOf(false));
-		config.addDefault("announcements.loser", Boolean.valueOf(false));
-		config.addDefault("announcements.prize", Boolean.valueOf(false));
-		config.addDefault("announcements.radius", Integer.valueOf(0));
-		config.addDefault("announcements.color", "AQUA");;
-
 		arena.type().addDefaultTeams(config);
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.7.0.0");
+		cfg.set("cfgver", "0.7.8.0");
 		cfg.save();
 		cfg.load();
 
@@ -200,7 +177,7 @@ public class Configs {
 
 		for (String sTeam : tempMap.keySet()) {
 			ArenaTeam team = new ArenaTeam(sTeam, (String) tempMap.get(sTeam));
-			arena.addTeam(team);
+			Teams.addTeam(arena, team);
 			db.i("added team " + team.getName() + " => "
 					+ team.getColorString());
 		}

@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version v0.6.15
+ * @version v0.7.8
  * 
  */
 
@@ -35,23 +35,6 @@ public class Tracker implements Runnable {
 	 */
 	public Tracker(Plugin p) {
 		plugin = p;
-	}
-
-	/**
-	 * start tracking
-	 */
-	public void start() {
-		db.i("starting tracker runnable");
-		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
-				0L, 72000L);
-	}
-
-	/**
-	 * stop tracking
-	 */
-	public static void stop() {
-		db.i("stopping tracker runnable");
-		Bukkit.getScheduler().cancelTask(taskID);
 	}
 
 	/**
@@ -90,5 +73,22 @@ public class Tracker implements Runnable {
 	@Override
 	public void run() {
 		callHome();
+	}
+
+	/**
+	 * start tracking
+	 */
+	public void start() {
+		Language.log_info("startTracker");
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
+				0L, 72000L);
+	}
+
+	/**
+	 * stop tracking
+	 */
+	public static void stop() {
+		Language.log_info("stopTracker");
+		Bukkit.getScheduler().cancelTask(taskID);
 	}
 }

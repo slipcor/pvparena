@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.arenas.teams;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -9,19 +8,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.inventory.ItemStack;
-
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Players;
+import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaType;
 
+/**
+ * team arena type class
+ * 
+ * contains >general< arena methods and variables
+ * 
+ * @author slipcor
+ * 
+ * @version v0.7.8
+ * 
+ */
+
 public class TeamArena extends ArenaType {
-	/**
-	 * TeamName => PlayerName
-	 */
-	public HashMap<String, ItemStack> paHeadGears = null;
-	
 	public TeamArena() {
 		super("teams");
 	}
@@ -77,7 +80,7 @@ public class TeamArena extends ArenaType {
 					lounges++;
 				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
 					String[] temp = s.split("spawn");
-					if (arena.getTeam(temp[0]) != null) {
+					if (Teams.getTeam(arena, temp[0]) != null) {
 						if (setTeams.contains(temp[0])) {
 							db.i("team already set");
 							continue;
@@ -101,10 +104,10 @@ public class TeamArena extends ArenaType {
 	public void parseRespawn(Player respawnPlayer,
 			ArenaTeam respawnTeam, int lives, DamageCause cause, Entity damager) {
 
-		Players.tellEveryone(arena, Language.parse("killedbylives",
+		arena.tellEveryone(Language.parse("killedbylives",
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-				Players.parseDeathCause(arena, respawnPlayer, cause, damager),
+				arena.parseDeathCause(respawnPlayer, cause, damager),
 				String.valueOf(lives)));
-		arena.paLives.put(respawnPlayer.getName(), lives);
+		arena.lives.put(respawnPlayer.getName(), lives);
 	}
 }

@@ -16,15 +16,14 @@ import org.bukkit.inventory.PlayerInventory;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
 public final class ArenaClass {
-	
+
 	private final String name;
 	private final ItemStack[] items;
-	
 
 	// private statics: item definitions
 	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
@@ -64,28 +63,6 @@ public final class ArenaClass {
 		ARMORS_TYPE.addAll(LEGGINGS_TYPE);
 		ARMORS_TYPE.addAll(BOOTS_TYPE);
 	}
-	
-	public ArenaClass(String className, ItemStack[] classItems) {
-		this.name = className;
-		this.items = classItems.clone();
-	}
-
-	public String getName() {
-		return name;
-	}
-	
-	public void load(Player player) {
-		for (int i = 0; i < items.length; ++i) {
-			ItemStack stack = items[i];
-			if (ARMORS_TYPE.contains(stack.getType())) {
-				equipArmorPiece(stack, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { stack });
-			}
-		}
-	}
-	
-
 
 	/**
 	 * equip an armor item to the respective slot
@@ -95,7 +72,7 @@ public final class ArenaClass {
 	 * @param inv
 	 *            the player's inventory
 	 */
-	private static void equipArmorPiece(ItemStack stack, PlayerInventory inv) {
+	private static void equipArmor(ItemStack stack, PlayerInventory inv) {
 		Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
 			inv.setHelmet(stack);
@@ -105,6 +82,26 @@ public final class ArenaClass {
 			inv.setLeggings(stack);
 		} else if (BOOTS_TYPE.contains(type)) {
 			inv.setBoots(stack);
+		}
+	}
+
+	public ArenaClass(String className, ItemStack[] classItems) {
+		this.name = className;
+		this.items = classItems.clone();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void load(Player player) {
+		for (int i = 0; i < items.length; ++i) {
+			ItemStack stack = items[i];
+			if (ARMORS_TYPE.contains(stack.getType())) {
+				equipArmor(stack, player.getInventory());
+			} else {
+				player.getInventory().addItem(new ItemStack[] { stack });
+			}
 		}
 	}
 }

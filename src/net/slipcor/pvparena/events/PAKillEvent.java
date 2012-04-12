@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player kills in the arena
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  * @author slipcor
  * 
@@ -48,6 +48,14 @@ public class PAKillEvent extends Event {
 		return arena;
 	}
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
 	/**
 	 * hand over the player
 	 * 
@@ -55,13 +63,5 @@ public class PAKillEvent extends Event {
 	 */
 	public Player getPlayer() {
 		return player;
-	}
-
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 }

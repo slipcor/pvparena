@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 /**
- * custom listener class
+ * inventory listener class
  * 
  * -
  * 
@@ -18,10 +18,10 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.8
  * 
  */
-public class CustomListener implements Listener {
+public class InventoryListener implements Listener {
 	private Debug db = new Debug(19);
 
 	@EventHandler

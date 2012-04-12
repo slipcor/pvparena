@@ -4,7 +4,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Players;
+import net.slipcor.pvparena.managers.Teams;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,7 +24,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
@@ -32,6 +33,9 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -49,30 +53,10 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockIgnite(BlockIgniteEvent event) {
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
-		if (arena == null)
-			return; // no arena => out
-
-		db.i("block ignite inside the arena");
-
-		if (Players.getPlayers(arena).size() < 1)
-			return; // no players, no game, no protection!
-
-		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.cfg.getBoolean("protection.enabled", true))
-				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.cfg
-								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
-						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
-			// if an event happened that we would like to block
-			event.setCancelled(true); // ->cancel!
-		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBurn(BlockBurnEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -89,7 +73,33 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockIgnite(BlockIgniteEvent event) {
+		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
+				.getLocation());
+		if (arena == null)
+			return; // no arena => out
+
+		db.i("block ignite inside the arena");
+
+		if (Teams.countPlayersInTeams(arena) < 1)
+			return; // no players, no game, no protection!
+
+		BlockIgniteEvent.IgniteCause cause = event.getCause();
+		if ((arena.cfg.getBoolean("protection.enabled", true))
+				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+						|| ((arena.cfg
+								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
+						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
+			// if an event happened that we would like to block
+			event.setCancelled(true); // ->cancel!
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
 		if (arena == null)
@@ -113,7 +123,6 @@ public class BlockListener implements Listener {
 		event.setCancelled(true);
 		return;
 	}
-
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
 		PVPArena.instance.getAmm().onSignChange(event);

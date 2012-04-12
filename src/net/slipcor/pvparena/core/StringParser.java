@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.core;
 
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -124,7 +125,7 @@ public class StringParser {
 	 *            the string to parse
 	 * @return the material
 	 */
-	public static Material parseMat(String string) {
+	private static Material parseMat(String string) {
 		db.i("parsing material: " + string);
 		Material mat;
 		try {
@@ -147,5 +148,55 @@ public class StringParser {
 			result += " " + s;
 		}
 		return result;
+	}
+
+	/**
+	 * color a string based on a given boolean
+	 * 
+	 * @param s
+	 *            the string to color
+	 * @param b
+	 *            true:green, false:red
+	 * @return a colored string
+	 */
+	public static String colorVar(String s, boolean b) {
+		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
+				+ ChatColor.WHITE;
+	}
+
+	/**
+	 * color a string if set
+	 * 
+	 * @param s
+	 *            the string to color
+	 * @return a colored string
+	 */
+	public static String colorVar(String s) {
+		if (s == null || s.equals("")) {
+			return colorVar("null", false);
+		}
+		return colorVar(s, true);
+	}
+
+	/**
+	 * color an integer if bigger than 0
+	 * 
+	 * @param timed
+	 *            the integer to color
+	 * @return a colored string
+	 */
+	public static String colorVar(int timed) {
+		return colorVar(String.valueOf(timed), timed > 0);
+	}
+
+	/**
+	 * color a boolean based on value
+	 * 
+	 * @param b
+	 *            the boolean to color
+	 * @return a colored string
+	 */
+	public static String colorVar(boolean b) {
+		return colorVar(String.valueOf(b), b);
 	}
 }

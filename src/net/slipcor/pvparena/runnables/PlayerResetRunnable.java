@@ -37,6 +37,6 @@ public class PlayerResetRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("PlayerResetRunnable commiting");
-		p.destroy();
+		p.reset();
 	}
 }

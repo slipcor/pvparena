@@ -1,4 +1,5 @@
 debug: none
+stats: true
 updatecheck: true
 language: en
 onlyPVPinArena: false

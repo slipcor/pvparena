@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.7.8
  * 
  */
 
@@ -45,16 +45,11 @@ public class Settings {
 
 		types.put("game.allowDrops", "boolean");
 		types.put("game.dropSpawn", "boolean");
-		types.put("game.hideName", "boolean");
 		types.put("game.lives", "int");
-		types.put("game.mustbesafe", "boolean");
 		types.put("game.preventDeath", "boolean");
 		types.put("game.powerups", "string");
 		types.put("game.refillInventory", "boolean");
 		types.put("game.teamKill", "boolean");
-		types.put("game.woolHead", "boolean");
-		types.put("game.woolFlagHead", "boolean");
-		types.put("game.colorNick", "boolean");
 		types.put("game.weaponDamage", "boolean");
 
 		types.put("messages.chat", "boolean");
@@ -86,14 +81,6 @@ public class Settings {
 
 		types.put("periphery.checkRegions", "boolean");
 
-		types.put("money.entry", "int");
-		types.put("money.reward", "int");
-		types.put("money.minbet", "double");
-		types.put("money.maxbet", "double");
-		types.put("money.betWinFactor", "double");
-		types.put("money.betTeamWinFactor", "double");
-		types.put("money.betPlayerWinFactor", "double");
-
 		types.put("protection.spawn", "int");
 		types.put("protection.enabled", "boolean");
 		types.put("protection.restore", "boolean");
@@ -121,15 +108,6 @@ public class Settings {
 		types.put("ready.maxTeam", "int");
 		types.put("ready.autoclass", "string");
 		types.put("ready.startRatio", "double");
-
-		types.put("announcements.join", "boolean");
-		types.put("announcements.start", "boolean");
-		types.put("announcements.end", "boolean");
-		types.put("announcements.winner", "boolean");
-		types.put("announcements.loser", "boolean");
-		types.put("announcements.prize", "boolean");
-		types.put("announcements.radius", "int");
-		types.put("announcements.color", "string");
 	}
 
 	/**
@@ -140,6 +118,29 @@ public class Settings {
 	 */
 	public Settings(Arena a) {
 		arena = a;
+		PVPArena.instance.getAmm().addSettings(types);
+		a.type().addSettings(types);
+	}
+
+	/**
+	 * hand over a config node
+	 * 
+	 * @param node
+	 *            the key to search
+	 * @return the full path to the node
+	 */
+	private String getNode(String node) {
+		for (String s : arena.cfg.getYamlConfiguration().getKeys(true)) {
+
+			if (types.get(s) == null) {
+				continue;
+			}
+
+			if (s.endsWith("." + node)) {
+				return s;
+			}
+		}
+		return "null";
 	}
 
 	/**
@@ -176,27 +177,6 @@ public class Settings {
 			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)), arena);
 		}
 
-	}
-
-	/**
-	 * hand over a config node
-	 * 
-	 * @param node
-	 *            the key to search
-	 * @return the full path to the node
-	 */
-	private String getNode(String node) {
-		for (String s : arena.cfg.getYamlConfiguration().getKeys(true)) {
-
-			if (types.get(s) == null) {
-				continue;
-			}
-
-			if (s.endsWith("." + node)) {
-				return s;
-			}
-		}
-		return "null";
 	}
 
 	/**

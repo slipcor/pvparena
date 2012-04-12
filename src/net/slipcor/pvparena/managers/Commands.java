@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,141 +33,6 @@ public class Commands {
 	private static Debug db = new Debug(25);
 
 	/**
-	 * check and commit chat command
-	 * 
-	 * @param arena
-	 *            the arena to join
-	 * @param player
-	 *            the player who joins
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseChat(Arena arena, Player player) {
-		if (arena.paChat.contains(player.getName())) {
-			arena.paChat.remove(player.getName());
-			Arenas.tellPlayer(player, "You now talk to the public!", arena);
-		} else {
-			arena.paChat.add(player.getName());
-			Arenas.tellPlayer(player, "You now talk to your team!", arena);
-		}
-		return true;
-	}
-
-	/**
-	 * check and commit join command
-	 * 
-	 * @param arena
-	 *            the arena to join
-	 * @param player
-	 *            the player who joins
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseJoin(Arena arena, Player player) {
-		// just /pa or /pvparena
-
-		if (!checkJoin(arena, player)) {
-			return true;
-		}
-		if (!arena.cfg.getBoolean("join.random", true)) {
-			Arenas.tellPlayer(player, Language.parse("selectteam"), arena);
-			return true;
-		}
-
-		if (Teams.calcFreeTeam(arena) == null
-				|| ((arena.cfg.getInt("ready.max") > 0) && (arena.cfg
-						.getInt("ready.max") <= Players
-						.countPlayersInTeams(arena)))) {
-
-			Arenas.tellPlayer(player, Language.parse("arenafull"), arena);
-			return true;
-		}
-
-		arena.prepare(player, false);
-		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
-
-
-		Teams.choosePlayerTeam(arena, player);
-		Inventories.prepareInventory(arena, player);
-
-		PVPArena.instance.getAmm().parseJoin(arena, player, arena.getTeam(Players.parsePlayer(player)).colorize());
-		// process auto classing
-		String autoClass = arena.cfg.getString("ready.autoclass");
-		if (autoClass != null && !autoClass.equals("none")) {
-			if (arena.classExists(autoClass)) {
-				Players.chooseClass(arena, player, null, autoClass);
-			} else {
-				db.w("autoclass selected that does not exist: " + autoClass);
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * check and commit team join command
-	 * 
-	 * @param arena
-	 *            the arena to join
-	 * @param player
-	 *            the player that joins
-	 * @param sTeam
-	 *            the team to join
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseJoinTeam(Arena arena, Player player, String sTeam) {
-
-		// /pa [team] or /pvparena [team]
-
-		if (!checkJoin(arena, player)) {
-			return true;
-		}
-
-		if (!(arena.cfg.getBoolean("join.manual", true))) {
-			Arenas.tellPlayer(player, Language.parse("notselectteam"), arena);
-			return true;
-		}
-
-		if (arena.cfg.getInt("ready.max") > 0
-				&& arena.cfg.getInt("ready.max") <= Players
-						.countPlayersInTeams(arena)) {
-
-			Arenas.tellPlayer(player,
-					Language.parse("teamfull", arena.getTeam(sTeam).colorize()), arena);
-			return true;
-		}
-
-		arena.prepare(player, false);
-		arena.paLives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
-
-
-		arena.tpPlayerToCoordName(player, sTeam + "lounge");
-
-		ArenaTeam team = arena.getTeam(sTeam);
-		ArenaPlayer ap = Players.parsePlayer(player);
-
-		team.add(ap);
-
-		
-		Inventories.prepareInventory(arena, player);
-		String coloredTeam = team.colorize();
-		
-		PVPArena.instance.getAmm().parseJoin(arena, player, coloredTeam);
-		
-		Players.tellEveryoneExcept(arena, player,
-				Language.parse("playerjoined", player.getName(), coloredTeam));
-
-		// process auto classing
-		String autoClass = arena.cfg.getString("ready.autoclass");
-		if (autoClass != null && !autoClass.equals("none")) {
-			if (arena.classExists(autoClass)) {
-				Players.chooseClass(arena, player, null, autoClass);
-			} else {
-				db.w("autoclass selected that does not exist: " + autoClass);
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * check various methods to see if the player may join the arena
 	 * 
 	 * @param arena
@@ -178,7 +44,8 @@ public class Commands {
 	private static boolean checkJoin(Arena arena, Player player) {
 		String error = Configs.isSetup(arena);
 		if (error != null) {
-			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error), arena);
+			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error),
+					arena);
 			return false;
 		}
 
@@ -223,7 +90,8 @@ public class Commands {
 			Bukkit.getScheduler().cancelTask(arena.START_ID);
 			db.i("player joining, cancelling start timer");
 			if (!arena.cfg.getBoolean("join.onCountdown")) {
-				Arenas.tellPlayer(player, Language.parse("fightinprogress"), arena);
+				Arenas.tellPlayer(player, Language.parse("fightinprogress"),
+						arena);
 				return false;
 			}
 		}
@@ -232,159 +100,39 @@ public class Commands {
 	}
 
 	/**
-	 * check and commit enable/disable toggle command
+	 * turn a hashmap into a pipe separated string
 	 * 
 	 * @param arena
-	 *            the arena to toggle
-	 * @param player
-	 *            the player committing the command
-	 * @param string
-	 *            to commit (enabled/disabled)
-	 * @return false if the command help should be displayed, true otherwise
+	 *            the input team map
+	 * @return the joined and colored string
 	 */
-	public static boolean parseToggle(Arena arena, Player player, String string) {
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse(string)), arena);
-			return true;
-		}
-		arena.cfg.set("general.enabled", string.equals("enabled"));
-		arena.cfg.save();
-		Arenas.tellPlayer(player, Language.parse(string), arena);
-		return true;
-	}
-
-	/**
-	 * check and commit reload command
-	 * 
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseReload(Player player) {
-
-		if (!PVPArena.hasAdminPerms(player)) {
-			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("reload")));
-			return true;
-		}
-		Arenas.load_arenas();
-		Arenas.tellPlayer(player, Language.parse("reloaded"));
-		return true;
-	}
-
-	/**
-	 * send a list of active players
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseList(Arena arena, Player player) {
-		if (Players.countPlayersInTeams(arena) < 1) {
-			Arenas.tellPlayer(player, Language.parse("noplayer"), arena);
-			return true;
-		}
-		String plrs = Players.getTeamStringList(arena);
-		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs, arena);
-		return true;
-	}
-
-	/**
-	 * check and commit watch command
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseSpectate(Arena arena, Player player) {
-		String error = Configs.isSetup(arena);
-		if (error != null) {
-			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error), arena);
-			return true;
-		}
-		ArenaPlayer ap = Players.parsePlayer(player);
-		ArenaTeam team = arena.getTeam(ap);
-		if (team != null) {
-			Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena);
-			return true;
-		}
-		if (Regions.tooFarAway(arena, player)) {
-			Arenas.tellPlayer(player, Language.parse("joinrange"), arena);
-			return true;
-		}
-		arena.prepare(player, true);
-		arena.tpPlayerToCoordName(player, "spectator");
-		Inventories.prepareInventory(arena, player);
-		Arenas.tellPlayer(player, Language.parse("specwelcome"), arena);
-		return true;
-	}
-
-	/**
-	 * display player stats
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseUsers(Arena arena, Player player) {
-		// wins are suffixed with "_"
-		ArenaPlayer[] players = Statistics
-				.getStats(arena, Statistics.type.WINS);
-
-		Arenas.tellPlayer(player, Language.parse("top5win"), arena);
-
-		int limit = 5;
-
-		for (ArenaPlayer ap : players) {
-			if (limit-- < 1) {
-				break;
+	private static String colorTeams(Arena arena) {
+		String s = "";
+		for (ArenaTeam team : arena.getTeams()) {
+			if (!s.equals("")) {
+				s += " | ";
 			}
-			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.wins + " "
-					+ Language.parse("wins"), arena);
+			s += team.colorize() + ChatColor.WHITE;
 		}
-
-		Arenas.tellPlayer(player, "------------", arena);
-		Arenas.tellPlayer(player, Language.parse("top5lose"), arena);
-
-		players = Statistics.getStats(arena, Statistics.type.LOSSES);
-		for (ArenaPlayer ap : players) {
-			if (limit-- < 1) {
-				break;
-			}
-			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.losses
-					+ " " + Language.parse("losses"), arena);
-		}
-
-		return true;
+		return s;
 	}
 
 	/**
-	 * enable region modifying
+	 * turn a hashmap into a pipe separated strong
 	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
+	 * @param paRegions
+	 *            the hashmap of regionname=>region
+	 * @return the joined string
 	 */
-	public static boolean parseRegion(Arena arena, Player player) {
-		// /pa [name] region
-		if (!Arena.regionmodify.equals("")) {
-			Arenas.tellPlayer(player,
-					Language.parse("regionalreadybeingset", Arena.regionmodify), arena);
-			return true;
+	private static String listRegions(HashMap<String, ArenaRegion> paRegions) {
+		String s = "";
+		for (ArenaRegion p : paRegions.values()) {
+			if (!s.equals("")) {
+				s += " | ";
+			}
+			s += p.name + " (" + p.getType().name().charAt(0) + ")";
 		}
-		Arena.regionmodify = arena.name;
-		Arenas.tellPlayer(player, Language.parse("regionset"), arena);
-		return true;
+		return s;
 	}
 
 	/**
@@ -449,6 +197,53 @@ public class Commands {
 	}
 
 	/**
+	 * check and commit chat command
+	 * 
+	 * @param arena
+	 *            the arena to join
+	 * @param player
+	 *            the player who joins
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseChat(Arena arena, Player player) {
+		if (arena.chatters.contains(player.getName())) {
+			arena.chatters.remove(player.getName());
+			Arenas.tellPlayer(player, "You now talk to the public!", arena);
+		} else {
+			arena.chatters.add(player.getName());
+			Arenas.tellPlayer(player, "You now talk to your team!", arena);
+		}
+		return true;
+	}
+
+	/**
+	 * check the arena config
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseCheck(Arena arena, Player player) {
+
+		Debug.override = true;
+
+		db.i("-------------------------------");
+		db.i("Debug parsing Arena config for arena: " + arena);
+		db.i("-------------------------------");
+
+		Arenas.loadArena(arena.name, arena.type().getName());
+
+		db.i("-------------------------------");
+		db.i("Debug parsing finished!");
+		db.i("-------------------------------");
+
+		Debug.override = false;
+		return true;
+	}
+
+	/**
 	 * parse commands
 	 * 
 	 * @param arena
@@ -494,7 +289,7 @@ public class Commands {
 				return parseUsers(arena, player);
 			} else if (args[0].equalsIgnoreCase("region")) {
 				return parseRegion(arena, player);
-			} else if (arena.getTeam(args[0]) != null) {
+			} else if (Teams.getTeam(arena, args[0]) != null) {
 				return parseJoinTeam(arena, player, args[0]);
 			} else if (PVPArena.hasAdminPerms(player)
 					|| (PVPArena.hasCreatePerms(player, arena))) {
@@ -527,7 +322,7 @@ public class Commands {
 			arena.sm.list(player, i);
 			return true;
 		}
-		
+
 		if (PVPArena.instance.getAmm().parseCommand(arena, player, args)) {
 			return true;
 		}
@@ -540,7 +335,8 @@ public class Commands {
 		}
 
 		if (!arena.type().isRegionCommand(args[1])) {
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"), arena);
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"),
+					arena);
 			return false;
 		}
 
@@ -566,7 +362,8 @@ public class Commands {
 				// pa [name] region [regionname] {cuboid/sphere}
 				if (Arena.regionmodify.equals("")) {
 					Arenas.tellPlayer(player,
-							Language.parse("regionnotbeingset", arena.name), arena);
+							Language.parse("regionnotbeingset", arena.name),
+							arena);
 					return true;
 				}
 
@@ -627,9 +424,351 @@ public class Commands {
 		}
 
 		if (args.length != 3) {
-			Arenas.tellPlayer(player, Language.parse("invalidcmd", "505"), arena);
+			Arenas.tellPlayer(player, Language.parse("invalidcmd", "505"),
+					arena);
 			return false;
 		}
+		return true;
+	}
+
+	/**
+	 * check and commit edit command
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player to check
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	private static boolean parseEdit(Arena arena, Player player) {
+		if (!PVPArena.hasAdminPerms(player)) {
+			Arenas.tellPlayer(player,
+					Language.parse("nopermto", Language.parse("edit")), arena);
+			return true;
+		}
+
+		arena.edit = !arena.edit;
+		Arenas.tellPlayer(
+				player,
+				Language.parse("edit" + String.valueOf(arena.edit), arena.name),
+				arena);
+		return true;
+	}
+
+	/**
+	 * display detailed arena information
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseInfo(Arena arena, Player player) {
+		// TODO reorganize and update
+		String type = arena.type().getName();
+		player.sendMessage("-----------------------------------------------------");
+		player.sendMessage("       Arena Information about [" + ChatColor.AQUA
+				+ arena.name + ChatColor.WHITE + "]");
+		player.sendMessage("-----------------------------------------------------");
+		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE
+				+ " || " + "Teams: " + colorTeams(arena));
+		player.sendMessage(StringParser.colorVar("Enabled",
+				arena.cfg.getBoolean("general.enabled"))
+				+ " || "
+				+ StringParser.colorVar("Fighting", arena.fightInProgress)
+				+ " || "
+				+ "Wand: "
+				+ Material.getMaterial(arena.cfg.getInt("setup.wand", 280))
+						.toString()
+				+ " || "
+				+ "Timing: "
+				+ StringParser.colorVar(arena.cfg.getInt("goal.timed"))
+				+ " || "
+				+ "MaxLives: "
+				+ StringParser.colorVar(arena.cfg.getInt("game.lives", 3)));
+		player.sendMessage("Regionset: "
+				+ StringParser.colorVar(arena.name.equals(Arena.regionmodify))
+				+ " || No Death: "
+				+ StringParser.colorVar(arena.cfg
+						.getBoolean("game.preventDeath"))
+				+ " || "
+				+ "Force: "
+				+ StringParser.colorVar("Even",
+						arena.cfg.getBoolean("join.forceEven", false))
+				+ " | "
+				+ StringParser.colorVar("Woolhead",
+						arena.cfg.getBoolean("game.woolHead", false)));
+		player.sendMessage(StringParser.colorVar("TeamKill",
+				arena.cfg.getBoolean("game.teamKill", false))
+				+ " || Team Select: "
+				+ StringParser.colorVar("manual",
+						arena.cfg.getBoolean("join.manual", true))
+				+ " | "
+				+ StringParser.colorVar("random",
+						arena.cfg.getBoolean("join.random", true)));
+		player.sendMessage("Regions: " + listRegions(arena.regions));
+		player.sendMessage("TPs: exit: "
+				+ StringParser.colorVar(arena.cfg.getString("tp.exit", "exit"))
+				+ " | death: "
+				+ StringParser.colorVar(arena.cfg.getString("tp.death",
+						"spectator")) + " | win: "
+				+ StringParser.colorVar(arena.cfg.getString("tp.win", "old"))
+				+ " | lose: "
+				+ StringParser.colorVar(arena.cfg.getString("tp.lose", "old")));
+		PVPArena.instance.getAmm().parseInfo(arena, player);
+		player.sendMessage(StringParser.colorVar("Protection",
+				arena.cfg.getBoolean("protection.enabled", true))
+				+ ": "
+				+ StringParser.colorVar("Fire",
+						arena.cfg.getBoolean("protection.firespread", true))
+				+ " | "
+				+ StringParser.colorVar("Destroy",
+						arena.cfg.getBoolean("protection.blockdamage", true))
+				+ " | "
+				+ StringParser.colorVar("Place",
+						arena.cfg.getBoolean("protection.blockplace", true))
+				+ " | "
+				+ StringParser.colorVar("Ignite",
+						arena.cfg.getBoolean("protection.lighter", true))
+				+ " | "
+				+ StringParser.colorVar("Lava",
+						arena.cfg.getBoolean("protection.lavafirespread", true))
+				+ " | "
+				+ StringParser.colorVar("Explode",
+						arena.cfg.getBoolean("protection.tnt", true)));
+		player.sendMessage(StringParser.colorVar("Check Regions",
+				arena.cfg.getBoolean("periphery.checkRegions", false))
+				+ ": "
+				+ StringParser.colorVar("Exit",
+						arena.cfg.getBoolean("protection.checkExit", false))
+				+ " | "
+				+ StringParser.colorVar("Lounges",
+						arena.cfg.getBoolean("protection.checkLounges", false))
+				+ " | "
+				+ StringParser.colorVar("Spectator", arena.cfg.getBoolean(
+						"protection.checkSpectator", false)));
+		player.sendMessage("JoinRange: "
+				+ StringParser.colorVar(arena.cfg.getInt("join.range", 0))
+				+ " || Entry Fee: "
+				+ StringParser.colorVar(arena.cfg.getInt("money.entry", 0))
+				+ " || Reward: "
+				+ StringParser.colorVar(arena.cfg.getInt("money.reward", 0))
+				+ " || "
+				+ StringParser.colorVar("refill",
+						arena.cfg.getBoolean("game.refillInventory", false)));
+
+		return true;
+	}
+
+	/**
+	 * check and commit join command
+	 * 
+	 * @param arena
+	 *            the arena to join
+	 * @param player
+	 *            the player who joins
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseJoin(Arena arena, Player player) {
+		// just /pa or /pvparena
+
+		if (!checkJoin(arena, player)) {
+			return true;
+		}
+		if (!arena.cfg.getBoolean("join.random", true)) {
+			Arenas.tellPlayer(player, Language.parse("selectteam"), arena);
+			return true;
+		}
+
+		if (Teams.calcFreeTeam(arena) == null
+				|| ((arena.cfg.getInt("ready.max") > 0) && (arena.cfg
+						.getInt("ready.max") <= Teams
+						.countPlayersInTeams(arena)))) {
+
+			Arenas.tellPlayer(player, Language.parse("arenafull"), arena);
+			return true;
+		}
+
+		arena.prepare(player, false);
+		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
+
+		Teams.choosePlayerTeam(arena, player);
+		Inventories.prepareInventory(arena, player);
+
+		PVPArena.instance.getAmm().parseJoin(arena, player,
+				Teams.getTeam(arena, ArenaPlayer.parsePlayer(player)).colorize());
+		// process auto classing
+		String autoClass = arena.cfg.getString("ready.autoclass");
+		if (autoClass != null && !autoClass.equals("none")) {
+			if (arena.classExists(autoClass)) {
+				arena.forceChooseClass(player, null, autoClass);
+			} else {
+				db.w("autoclass selected that does not exist: " + autoClass);
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * check and commit team join command
+	 * 
+	 * @param arena
+	 *            the arena to join
+	 * @param player
+	 *            the player that joins
+	 * @param sTeam
+	 *            the team to join
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseJoinTeam(Arena arena, Player player, String sTeam) {
+
+		// /pa [team] or /pvparena [team]
+
+		if (!checkJoin(arena, player)) {
+			return true;
+		}
+
+		if (!(arena.cfg.getBoolean("join.manual", true))) {
+			Arenas.tellPlayer(player, Language.parse("notselectteam"), arena);
+			return true;
+		}
+
+		if (arena.cfg.getInt("ready.max") > 0
+				&& arena.cfg.getInt("ready.max") <= Teams.countPlayersInTeams(arena)) {
+
+			Arenas.tellPlayer(
+					player,
+					Language.parse("teamfull", Teams.getTeam(arena, sTeam).colorize()),
+					arena);
+			return true;
+		}
+
+		arena.prepare(player, false);
+		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
+
+		arena.tpPlayerToCoordName(player, sTeam + "lounge");
+
+		ArenaTeam team = Teams.getTeam(arena, sTeam);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+
+		team.add(ap);
+
+		Inventories.prepareInventory(arena, player);
+		String coloredTeam = team.colorize();
+
+		PVPArena.instance.getAmm().parseJoin(arena, player, coloredTeam);
+
+
+		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam), arena);
+		arena.tellEveryoneExcept(player,
+				Language.parse("playerjoined", player.getName(), coloredTeam));
+
+		// process auto classing
+		String autoClass = arena.cfg.getString("ready.autoclass");
+		if (autoClass != null && !autoClass.equals("none")) {
+			if (arena.classExists(autoClass)) {
+				arena.forceChooseClass(player, null, autoClass);
+			} else {
+				db.w("autoclass selected that does not exist: " + autoClass);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * send a list of active players
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseList(Arena arena, Player player) {
+		if (Teams.countPlayersInTeams(arena) < 1) {
+			Arenas.tellPlayer(player, Language.parse("noplayer"), arena);
+			return true;
+		}
+		String plrs = Teams.getTeamStringList(arena);
+		Arenas.tellPlayer(player, Language.parse("players") + ": " + plrs,
+				arena);
+		return true;
+	}
+
+	/**
+	 * enable region modifying
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseRegion(Arena arena, Player player) {
+		// /pa [name] region
+		if (!Arena.regionmodify.equals("")) {
+			Arenas.tellPlayer(
+					player,
+					Language.parse("regionalreadybeingset", Arena.regionmodify),
+					arena);
+			return true;
+		}
+		Arena.regionmodify = arena.name;
+		Arenas.tellPlayer(player, Language.parse("regionset"), arena);
+		return true;
+	}
+
+	/**
+	 * check and commit reload command
+	 * 
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseReload(Player player) {
+
+		if (!PVPArena.hasAdminPerms(player)) {
+			Arenas.tellPlayer(player,
+					Language.parse("nopermto", Language.parse("reload")));
+			return true;
+		}
+		Arenas.load_arenas();
+		Arenas.tellPlayer(player, Language.parse("reloaded"));
+		return true;
+	}
+
+	/**
+	 * check and commit watch command
+	 * 
+	 * @param arena
+	 *            the arena to check
+	 * @param player
+	 *            the player committing the command
+	 * @return false if the command help should be displayed, true otherwise
+	 */
+	public static boolean parseSpectate(Arena arena, Player player) {
+		String error = Configs.isSetup(arena);
+		if (error != null) {
+			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error),
+					arena);
+			return true;
+		}
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
+		if (team != null) {
+			Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena);
+			return true;
+		}
+		if (Regions.tooFarAway(arena, player)) {
+			Arenas.tellPlayer(player, Language.parse("joinrange"), arena);
+			return true;
+		}
+		arena.prepare(player, true);
+		arena.tpPlayerToCoordName(player, "spectator");
+		Inventories.prepareInventory(arena, player);
+		Arenas.tellPlayer(player, Language.parse("specwelcome"), arena);
 		return true;
 	}
 
@@ -670,115 +809,31 @@ public class Commands {
 	}
 
 	/**
-	 * check and commit edit command
+	 * check and commit enable/disable toggle command
 	 * 
 	 * @param arena
-	 *            the arena to check
+	 *            the arena to toggle
 	 * @param player
-	 *            the player to check
+	 *            the player committing the command
+	 * @param string
+	 *            to commit (enabled/disabled)
 	 * @return false if the command help should be displayed, true otherwise
 	 */
-	private static boolean parseEdit(Arena arena, Player player) {
-		if (!PVPArena.hasAdminPerms(player)) {
+	public static boolean parseToggle(Arena arena, Player player, String string) {
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("edit")), arena);
+					Language.parse("nopermto", Language.parse(string)), arena);
 			return true;
 		}
-
-		arena.edit = !arena.edit;
-		Arenas.tellPlayer(player,
-				Language.parse("edit" + String.valueOf(arena.edit), arena.name), arena);
+		arena.cfg.set("general.enabled", string.equals("enabled"));
+		arena.cfg.save();
+		Arenas.tellPlayer(player, Language.parse(string), arena);
 		return true;
 	}
 
 	/**
-	 * turn a hashmap into a pipe separated string
-	 * 
-	 * @param arena
-	 *            the input team map
-	 * @return the joined and colored string
-	 */
-	private static String colorTeams(Arena arena) {
-		String s = "";
-		for (ArenaTeam team : arena.getTeams()) {
-			if (!s.equals("")) {
-				s += " | ";
-			}
-			s += team.colorize() + ChatColor.WHITE;
-		}
-		return s;
-	}
-
-	/**
-	 * turn a hashmap into a pipe separated strong
-	 * 
-	 * @param paRegions
-	 *            the hashmap of regionname=>region
-	 * @return the joined string
-	 */
-	private static String listRegions(HashMap<String, ArenaRegion> paRegions) {
-		String s = "";
-		for (ArenaRegion p : paRegions.values()) {
-			if (!s.equals("")) {
-				s += " | ";
-			}
-			s += p.name + " ("+p.getType().name().charAt(0)+")";
-		}
-		return s;
-	}
-
-	/**
-	 * color a string based on a given boolean
-	 * 
-	 * @param s
-	 *            the string to color
-	 * @param b
-	 *            true:green, false:red
-	 * @return a colored string
-	 */
-	public static String colorVar(String s, boolean b) {
-		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
-				+ ChatColor.WHITE;
-	}
-
-	/**
-	 * color a string if set
-	 * 
-	 * @param s
-	 *            the string to color
-	 * @return a colored string
-	 */
-	public static String colorVar(String s) {
-		if (s == null || s.equals("")) {
-			return colorVar("null", false);
-		}
-		return colorVar(s, true);
-	}
-
-	/**
-	 * color an integer if bigger than 0
-	 * 
-	 * @param timed
-	 *            the integer to color
-	 * @return a colored string
-	 */
-	public static String colorVar(int timed) {
-		return colorVar(String.valueOf(timed), timed > 0);
-	}
-
-	/**
-	 * color a boolean based on value
-	 * 
-	 * @param b
-	 *            the boolean to color
-	 * @return a colored string
-	 */
-	public static String colorVar(boolean b) {
-		return colorVar(String.valueOf(b), b);
-	}
-
-	/**
-	 * display detailed arena information
+	 * display player stats
 	 * 
 	 * @param arena
 	 *            the arena to check
@@ -786,120 +841,35 @@ public class Commands {
 	 *            the player committing the command
 	 * @return false if the command help should be displayed, true otherwise
 	 */
-	public static boolean parseInfo(Arena arena, Player player) {
-		// TODO reorganize and update
-		String type = arena.type().getName();
-		player.sendMessage("-----------------------------------------------------");
-		player.sendMessage("       Arena Information about [" + ChatColor.AQUA
-				+ arena.name + ChatColor.WHITE + "]");
-		player.sendMessage("-----------------------------------------------------");
-		player.sendMessage("Type: " + ChatColor.AQUA + type + ChatColor.WHITE
-				+ " || " + "Teams: " + colorTeams(arena));
-		player.sendMessage(colorVar("Enabled",
-				arena.cfg.getBoolean("general.enabled"))
-				+ " || "
-				+ colorVar("Fighting", arena.fightInProgress)
-				+ " || "
-				+ "Wand: "
-				+ Material.getMaterial(arena.cfg.getInt("setup.wand", 280))
-						.toString()
-				+ " || "
-				+ "Timing: "
-				+ colorVar(arena.cfg.getInt("goal.timed"))
-				+ " || "
-				+ "MaxLives: " + colorVar(arena.cfg.getInt("game.lives", 3)));
-		player.sendMessage("Regionset: "
-				+ colorVar(arena.name.equals(Arena.regionmodify))
-				+ " || No Death: "
-				+ colorVar(arena.cfg.getBoolean("game.preventDeath"))
-				+ " || "
-				+ "Force: "
-				+ colorVar("Even",
-						arena.cfg.getBoolean("join.forceEven", false))
-				+ " | "
-				+ colorVar("Woolhead",
-						arena.cfg.getBoolean("game.woolHead", false)));
-		player.sendMessage(colorVar("TeamKill",
-				arena.cfg.getBoolean("game.teamKill", false))
-				+ " || Team Select: "
-				+ colorVar("manual", arena.cfg.getBoolean("join.manual", true))
-				+ " | "
-				+ colorVar("random", arena.cfg.getBoolean("join.random", true)));
-		player.sendMessage("Regions: " + listRegions(arena.regions));
-		player.sendMessage("TPs: exit: "
-				+ colorVar(arena.cfg.getString("tp.exit", "exit"))
-				+ " | death: "
-				+ colorVar(arena.cfg.getString("tp.death", "spectator"))
-				+ " | win: " + colorVar(arena.cfg.getString("tp.win", "old"))
-				+ " | lose: " + colorVar(arena.cfg.getString("tp.lose", "old")));
-		PVPArena.instance.getAmm().parseInfo(arena, player);
-		player.sendMessage(colorVar("Protection",
-				arena.cfg.getBoolean("protection.enabled", true))
-				+ ": "
-				+ colorVar("Fire",
-						arena.cfg.getBoolean("protection.firespread", true))
-				+ " | "
-				+ colorVar("Destroy",
-						arena.cfg.getBoolean("protection.blockdamage", true))
-				+ " | "
-				+ colorVar("Place",
-						arena.cfg.getBoolean("protection.blockplace", true))
-				+ " | "
-				+ colorVar("Ignite",
-						arena.cfg.getBoolean("protection.lighter", true))
-				+ " | "
-				+ colorVar("Lava",
-						arena.cfg.getBoolean("protection.lavafirespread", true))
-				+ " | "
-				+ colorVar("Explode",
-						arena.cfg.getBoolean("protection.tnt", true)));
-		player.sendMessage(colorVar("Check Regions",
-				arena.cfg.getBoolean("periphery.checkRegions", false))
-				+ ": "
-				+ colorVar("Exit",
-						arena.cfg.getBoolean("protection.checkExit", false))
-				+ " | "
-				+ colorVar("Lounges",
-						arena.cfg.getBoolean("protection.checkLounges", false))
-				+ " | "
-				+ colorVar("Spectator", arena.cfg.getBoolean(
-						"protection.checkSpectator", false)));
-		player.sendMessage("JoinRange: "
-				+ colorVar(arena.cfg.getInt("join.range", 0))
-				+ " || Entry Fee: "
-				+ colorVar(arena.cfg.getInt("money.entry", 0)) + " || Reward: "
-				+ colorVar(arena.cfg.getInt("money.reward", 0))
-				+ " || "
-				+ colorVar("refill",
-						arena.cfg.getBoolean("game.refillInventory", false)));
+	public static boolean parseUsers(Arena arena, Player player) {
+		// wins are suffixed with "_"
+		ArenaPlayer[] players = Statistics
+				.getStats(arena, Statistics.type.WINS);
 
-		return true;
-	}
+		Arenas.tellPlayer(player, Language.parse("top5win"), arena);
 
-	/**
-	 * check the arena config
-	 * 
-	 * @param arena
-	 *            the arena to check
-	 * @param player
-	 *            the player committing the command
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseCheck(Arena arena, Player player) {
+		int limit = 5;
 
-		Debug.override = true;
+		for (ArenaPlayer ap : players) {
+			if (limit-- < 1) {
+				break;
+			}
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.wins + " "
+					+ Language.parse("wins"), arena);
+		}
 
-		db.i("-------------------------------");
-		db.i("Debug parsing Arena config for arena: " + arena);
-		db.i("-------------------------------");
+		Arenas.tellPlayer(player, "------------", arena);
+		Arenas.tellPlayer(player, Language.parse("top5lose"), arena);
 
-		Arenas.loadArena(arena.name, arena.type().getName());
+		players = Statistics.getStats(arena, Statistics.type.LOSSES);
+		for (ArenaPlayer ap : players) {
+			if (limit-- < 1) {
+				break;
+			}
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + ap.losses
+					+ " " + Language.parse("losses"), arena);
+		}
 
-		db.i("-------------------------------");
-		db.i("Debug parsing finished!");
-		db.i("-------------------------------");
-
-		Debug.override = false;
 		return true;
 	}
 }
