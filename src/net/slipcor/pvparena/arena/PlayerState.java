@@ -77,7 +77,7 @@ public final class PlayerState {
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
-		if (ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
+		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(displayname);
 		}
 
