@@ -201,6 +201,9 @@ public class Statistics {
 		ArenaPlayer[] aps = new ArenaPlayer[Teams.countPlayersInTeams(a)];
 		int i = 0;
 		for (ArenaPlayer p : a.getPlayers()) {
+			if (p.isSpectator()) {
+				continue;
+			}
 			aps[i++] = p;
 		}
 

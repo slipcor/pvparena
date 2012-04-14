@@ -50,6 +50,16 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.9.14 - fix ColorTeams
+* v0.7.9.13 - fix CTF/Pumpkin arena returning "Flag set:" on many occasions ^^
+* v0.7.9.12 - fix mobs messing up the game. bad, bad mobs!
+* v0.7.9.11 - fix an NPE with activated quit check
+* v0.7.9.10 - fix ArenaBoards not working if spectators are present
+* v0.7.9.9 - fix many issues with invisible armor, players etc by disabling the team coloring function
+* v0.7.9.8 - fix team chat doubling
+* v0.7.9.7 - add customisable end timer, add damage cancelling
+* v0.7.9.6 - fix an NPE with /pa bet [player]
+* v0.7.9.5 - fix an NPE possible on arena end
 * v0.7.9.4 - fix more beta bugs
 * v0.7.9.2 - fix various bugs
 * v0.7.9 - rewrite concerning ArenaPlayer / Players

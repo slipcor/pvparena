@@ -150,7 +150,7 @@ public class ArenaType extends Loadable {
 		}
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new EndRunnable(arena), 15 * 20L);
+				new EndRunnable(arena), arena.cfg.getInt("goal.endtimer") * 20L);
 		return true;
 	}
 
@@ -567,7 +567,7 @@ public class ArenaType extends Loadable {
 		PVPArena.instance.getAmm().timedEnd(arena, result);
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new EndRunnable(arena), 15 * 20L);
+				new EndRunnable(arena), arena.cfg.getInt("goal.endtimer") * 20L);
 	}
 
 	/**

@@ -86,6 +86,7 @@ public class PlayerListener implements Listener {
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
 					event.getPlayer());
 			event.setCancelled(true);
+			return;
 		}
 
 		if (arena.cfg.getBoolean("messages.chat")
@@ -372,8 +373,17 @@ public class PlayerListener implements Listener {
 
 		if (ap.isDead()) {
 			db.i("respawning dead player");
-
-			event.setRespawnLocation(arena.getDeadLocation(player));
+			arena = ap.getArena();
+			if (arena == null) {
+				System.out.print("Dead player without proper Arena: " + ap.getName());
+			} else {
+				Location loc = arena.getDeadLocation(player);
+				if (loc != null) {
+					event.setRespawnLocation(loc);
+				} else {
+					event.setRespawnLocation(Spawns.getCoords(arena, "exit"));
+				}
+			}
 			arena.removeDeadPlayer(player);
 			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance,
 					new PlayerResetRunnable(ap), 20L);

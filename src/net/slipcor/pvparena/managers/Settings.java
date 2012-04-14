@@ -70,6 +70,7 @@ public class Settings {
 		types.put("arenatype.randomSpawn", "boolean");
 
 		types.put("goal.timed", "int");
+		types.put("goal.endtimer", "int");
 
 		types.put("join.explicitPermission", "boolean");
 		types.put("join.forceEven", "boolean");

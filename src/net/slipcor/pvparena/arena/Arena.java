@@ -505,7 +505,12 @@ public class Arena {
 			db.i("region spectator not set, aborting quit check");
 			return;
 		}
+		HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
 		for (ArenaPlayer ap : getPlayers()) {
+			plyrs.add(ap);
+		}
+
+		for (ArenaPlayer ap : plyrs) {
 			if (!this.contains(ap.get().getLocation())) {
 				playerLeave(ap.get());
 			}
@@ -707,11 +712,12 @@ public class Arena {
 	 *            the player to remove
 	 */
 	public void remove(Player player) {
-		PALeaveEvent event = new PALeaveEvent(this, player, ArenaPlayer
-				.parsePlayer(player).isSpectator());
+		ArenaPlayer ap = ArenaPlayer
+				.parsePlayer(player);
+		PALeaveEvent event = new PALeaveEvent(this, player, ap.isSpectator());
 		Bukkit.getPluginManager().callEvent(event);
-
-		ArenaPlayer.parsePlayer(player).setArena(null);
+		if (!ap.isDead())
+			ArenaPlayer.parsePlayer(player).setArena(null);
 	}
 
 	/**

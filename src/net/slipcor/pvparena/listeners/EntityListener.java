@@ -192,7 +192,7 @@ public class EntityListener implements Listener {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
-		if (team == null || ap.isSpectator()) {
+		if (team == null || ap.isSpectator() || arena.END_ID != -1) {
 			event.setCancelled(true);
 			return;
 		}
@@ -339,7 +339,7 @@ public class EntityListener implements Listener {
 
 		if ((p1 == null) || (!(p1 instanceof Player))) {
 			// attacker no player => out!
-			// event.setCancelled(true);
+			commit(arena, p1, (Player) p2, event);
 			return;
 		}
 		db.i("both entities are players");
@@ -358,7 +358,7 @@ public class EntityListener implements Listener {
 					apAttacker);
 		}
 
-		if (!defTeam || !attTeam) {
+		if (!defTeam || !attTeam || arena.END_ID != -1) {
 			event.setCancelled(true);
 			return;
 		}
@@ -436,6 +436,37 @@ public class EntityListener implements Listener {
 			event.setCancelled(true);
 		}
 
+	}
+
+	private void commit(Arena arena, Entity attacker, Player defender, EntityDamageByEntityEvent event) {
+		db.i("processing damage!");
+
+		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, null,
+				defender, event);
+
+		Statistics.damage(arena, attacker, defender, event.getDamage());
+
+		if (event.getDamage() >= defender.getHealth()) {
+			db.i("damage >= health => death");
+			int lives = 3;
+
+			Statistics.kill(arena, attacker, defender, (lives > 0));
+
+			lives = arena.lives.get(defender.getName());
+			db.i("lives before death: " + lives);
+			if (lives < 1) {
+				if (!arena.cfg.getBoolean("game.preventDeath")) {
+					return; // player died => commit death!
+				}
+				db.i("faking player death");
+
+				commitPlayerDeath(arena, defender, event);
+			} else {
+				lives--;
+				arena.respawnPlayer(defender, lives, event.getCause(), attacker);
+			}
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
