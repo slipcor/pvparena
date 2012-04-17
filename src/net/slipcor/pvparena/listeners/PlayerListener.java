@@ -144,21 +144,26 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
+		db.i("onPlayerInteract");
 
 		if (PVPArena.instance.getAmm().onPlayerInteract(event)) {
+			db.i("returning: #1");
 			return;
 		}
 
 		if (Regions.checkRegionSetPosition(event, player)) {
+			db.i("returning: #2");
 			return;
 		}
 
 		if (ArenaType.checkSetFlag(event.getClickedBlock(), player)) {
+			db.i("returning: #3");
 			return;
 		}
 
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null) {
+			db.i("returning: #4");
 			Arenas.trySignJoin(event, player);
 			return;
 		}
@@ -170,13 +175,18 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		// fighting player inside the lobby!
-		event.setCancelled(true);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
+		if (ap.getaClass() == null) {
+			db.i("returning: no class");
+			// fighting player inside the lobby!
+			event.setCancelled(true);
+		}
+		
 		if (team == null) {
+			db.i("returning: no team");
 			return;
 		}
 

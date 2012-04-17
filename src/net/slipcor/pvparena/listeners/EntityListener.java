@@ -85,7 +85,7 @@ public class EntityListener implements Listener {
 		ap.losses++;
 
 		if (arena.isCustomClassActive()
-				&& arena.cfg.getBoolean("game.allowDrops")) {
+				|| arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
 		}
 		Inventories.clearInventory(player);
@@ -192,7 +192,7 @@ public class EntityListener implements Listener {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
-		if (team == null || ap.isSpectator() || arena.END_ID != -1) {
+		if (team == null || ap.isSpectator() || arena.REALEND_ID != -1) {
 			event.setCancelled(true);
 			return;
 		}
@@ -358,7 +358,7 @@ public class EntityListener implements Listener {
 					apAttacker);
 		}
 
-		if (!defTeam || !attTeam || arena.END_ID != -1) {
+		if (!defTeam || !attTeam || arena.REALEND_ID != -1) {
 			event.setCancelled(true);
 			return;
 		}
@@ -481,7 +481,7 @@ public class EntityListener implements Listener {
 
 			db.i("onEntityDeath: fighting player");
 			if (!arena.isCustomClassActive()
-					|| !arena.cfg.getBoolean("game.allowDrops")) {
+					&& !arena.cfg.getBoolean("game.allowDrops")) {
 				db.i("clearing drops");
 				event.getDrops().clear();
 			}

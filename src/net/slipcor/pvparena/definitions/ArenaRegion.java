@@ -11,6 +11,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -27,7 +29,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.6.40
+ * @version v0.7.10
  * 
  */
 
@@ -39,7 +41,9 @@ public class ArenaRegion {
 	protected World world;
 	public String name;
 	private regionType type;
-	private HashMap<Location, ItemStack[]> invs = new HashMap<Location, ItemStack[]>();
+	private HashMap<Location, ItemStack[]> chests = new HashMap<Location, ItemStack[]>();
+	private HashMap<Location, ItemStack[]> furnaces = new HashMap<Location, ItemStack[]>();
+	private HashMap<Location, ItemStack[]> dispensers = new HashMap<Location, ItemStack[]>();
 
 	public static enum regionType {
 		CUBOID, SPHERIC
@@ -332,7 +336,9 @@ public class ArenaRegion {
 	}
 
 	public void saveChests() {
-		invs.clear();
+		chests.clear();
+		furnaces.clear();
+		dispensers.clear();
 		int x;
 		int y;
 		int z;
@@ -342,13 +348,23 @@ public class ArenaRegion {
 				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
 					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
 						Block b = world.getBlockAt(x, y, z);
-						if (b.getType() != Material.CHEST) {
-							continue;
-						}
-						Chest c = (Chest) b.getState();
+						if (b.getType() == Material.CHEST) {
+							Chest c = (Chest) b.getState();
 
-						invs.put(b.getLocation(), c.getInventory()
-								.getContents().clone());
+							chests.put(b.getLocation(), c.getInventory()
+									.getContents().clone());
+						} else if (b.getType() == Material.FURNACE) {
+							Furnace c = (Furnace) b.getState();
+
+							furnaces.put(b.getLocation(), c.getInventory()
+									.getContents().clone());
+						} else if (b.getType() == Material.DISPENSER) {
+							Dispenser c = (Dispenser) b.getState();
+
+							dispensers.put(b.getLocation(), c.getInventory()
+									.getContents().clone());
+						}
+						
 					}
 				}
 
@@ -358,16 +374,30 @@ public class ArenaRegion {
 				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
 					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
 						Block b = world.getBlockAt(x, y, z);
-						if (b.getType() != Material.CHEST) {
+						if ((b.getType() != Material.CHEST) &&
+								(b.getType() != Material.FURNACE) &&
+								(b.getType() != Material.DISPENSER)) {
 							continue;
 						}
 						if (!contains(b.getLocation())) {
 							continue;
 						}
-						Chest c = (Chest) b.getState();
+						if ((b.getType() != Material.CHEST)) {
+							Chest c = (Chest) b.getState();
 
-						invs.put(b.getLocation(), c.getInventory()
-								.getContents().clone());
+							chests.put(b.getLocation(), c.getInventory()
+									.getContents().clone());
+						} else if (b.getType() != Material.FURNACE) {
+							Furnace f = (Furnace) b.getState();
+							
+							furnaces.put(b.getLocation(), f.getInventory()
+									.getContents().clone());
+						} else if (b.getType() != Material.DISPENSER) {
+							Dispenser d = (Dispenser) b.getState();
+							
+							dispensers.put(b.getLocation(), d.getInventory()
+									.getContents().clone());
+						}
 					}
 				}
 
@@ -377,11 +407,31 @@ public class ArenaRegion {
 
 	public void restoreChests() {
 		db.i("restoring chests");
-		for (Location loc : invs.keySet()) {
+		for (Location loc : chests.keySet()) {
 			try {
 				db.i("trying to restore chest: " + loc.toString());
 				((Chest) world.getBlockAt(loc).getState()).getInventory()
-						.setContents(invs.get(loc));
+						.setContents(chests.get(loc));
+				db.i("success!");
+			} catch (Exception e) {
+				//
+			}
+		}
+		for (Location loc : dispensers.keySet()) {
+			try {
+				db.i("trying to restore dispenser: " + loc.toString());
+				((Dispenser) world.getBlockAt(loc).getState()).getInventory()
+						.setContents(dispensers.get(loc));
+				db.i("success!");
+			} catch (Exception e) {
+				//
+			}
+		}
+		for (Location loc : furnaces.keySet()) {
+			try {
+				db.i("trying to restore furnace: " + loc.toString());
+				((Furnace) world.getBlockAt(loc).getState()).getInventory()
+						.setContents(furnaces.get(loc));
 				db.i("success!");
 			} catch (Exception e) {
 				//

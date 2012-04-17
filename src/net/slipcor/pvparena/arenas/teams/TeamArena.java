@@ -28,12 +28,10 @@ public class TeamArena extends ArenaType {
 	public TeamArena() {
 		super("teams");
 	}
-
+	
 	@Override
-	public Object clone() {
-		ArenaType at = (ArenaType) super.clone();
-		at.setArena(this.arena);
-		return at;
+	public String version() {
+		return "v0.7.10.1";
 	}
 
 	@Override
@@ -98,6 +96,7 @@ public class TeamArena extends ArenaType {
 
 			return spawns + "/" + arena.getTeams().size() + "x spawn ; "
 					+ lounges + "/" + arena.getTeams().size() + "x lounge";
+			
 		}
 	}
 

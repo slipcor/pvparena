@@ -2,6 +2,7 @@ package net.slipcor.pvparena.managers;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
@@ -155,6 +156,18 @@ public class Arenas {
 				return arena.name;
 		}
 		return null;
+	}
+	
+	/**
+	 * return the arenas
+	 * @return
+	 */
+	public static HashSet<Arena> getArenas() {
+		HashSet<Arena> as = new HashSet<Arena>();
+		for (Arena a : arenas.values()) {
+			as.add(a);
+		}
+		return as;
 	}
 
 	/**

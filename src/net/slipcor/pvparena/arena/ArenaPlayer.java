@@ -355,7 +355,6 @@ public class ArenaPlayer {
 			if (team != null) {
 				team.remove(this);
 			}
-			arena.removePlayer(this);
 		}
 		arena = null;
 		aClass = null;

@@ -57,7 +57,7 @@ public class ArenaModuleManager {
 
 		for (ArenaModule mod : modules) {
 			System.out.print("[PVP Arena] module ArenaModule loaded: "
-					+ mod.getName());
+					+ mod.getName() + " (version " + mod.version() +")");
 		}
 	}
 
@@ -598,6 +598,17 @@ public class ArenaModuleManager {
 	public void tpPlayerToCoordName(Arena arena, Player player, String place) {
 		for (ArenaModule mod : modules) {
 			mod.tpPlayerToCoordName(arena, player, place);
+		}
+	}
+
+	/**
+	 * hook into arena player unloading
+	 * 
+	 * @param player the player to unload
+	 */
+	public void unload(Player player) {
+		for (ArenaModule mod : modules) {
+			mod.unload(player);
 		}
 	}
 }

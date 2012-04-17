@@ -442,10 +442,10 @@ public class ArenaType extends Loadable {
 	 * 
 	 * @param arena
 	 *            the arena to check
-	 * @return 0 if ready, negative result otherwise
+	 * @return 1 if ready, negative result otherwise
 	 */
 	public int ready(Arena arena) {
-		return 0;
+		return 1;
 	}
 
 	/**
@@ -530,41 +530,70 @@ public class ArenaType extends Loadable {
 		int i;
 
 		int max = -1;
-		HashSet<String> result = new HashSet<String>();
+		
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		db.i("timed end!");
 
-		for (String sTeam : arena.lives.keySet()) {
-			i = arena.lives.get(sTeam);
+		HashSet<String> modresult = new HashSet<String>();
+		for (ArenaPlayer ap : arena.getPlayers()) {
+			if (ap.isSpectator() || ap.isDead()) {
+				continue;
+			}
+			
+			ArenaTeam team = Teams.getTeam(arena, ap);
+			
+			if (team == null) {
+				continue;
+			}
+			
+			modresult.add(ap.getName());
+			int sum = 0;
+			if (result.get(team.getName()) != null) {
+				sum += result.get(team.getName());
+			}
+			
+			sum += arena.lives.get(ap.getName());
+			
+			result.put(team.getName(), sum);
+		}
+		
+
+		HashSet<String> realresult = new HashSet<String>();
+		db.i("timed end!");
+		
+		for (String sTeam : result.keySet()) {
+			i = result.get(sTeam);
 
 			if (i > max) {
-				result = new HashSet<String>();
-				result.add(sTeam);
+				realresult = new HashSet<String>();
+				realresult.add(sTeam);
 				max = i;
 			} else if (i == max) {
-				result.add(sTeam);
+				realresult.add(sTeam);
 			}
 
 		}
 
 		for (ArenaTeam team : arena.getTeams()) {
-			if (result.contains(team.getName())) {
+			if (realresult.contains(team.getName())) {
 				PVPArena.instance.getAmm().announceWinner(arena,
 						Language.parse("teamhaswon", "Team " + team.getName()));
 				arena.tellEveryone(Language.parse("teamhaswon", team.getColor()
 						+ "Team " + team.getName()));
 			}
 			for (ArenaPlayer p : arena.getPlayers()) {
-				if (p.isSpectator()) {
+				if (p.isSpectator() || p.isDead()) {
 					continue;
 				}
-				if (!result.contains(team.getName())) {
+				if (!realresult.contains(team.getName())) {
 					p.losses++;
 					arena.tpPlayerToCoordName(p.get(), "spectator");
+					modresult.remove(p.getName());
 				}
 			}
 		}
 
-		PVPArena.instance.getAmm().timedEnd(arena, result);
+		PVPArena.instance.getAmm().timedEnd(arena, modresult);
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
 				new EndRunnable(arena), arena.cfg.getInt("goal.endtimer") * 20L);
@@ -575,5 +604,17 @@ public class ArenaType extends Loadable {
 	 */
 	public boolean usesFlags() {
 		return false;
+	}
+	
+	public String version() {
+		return "outdated";
+	}
+	
+	/**
+	 * hook into arena player unloading
+	 * 
+	 * @param player the player to unload
+	 */
+	public void unload(Player player) {
 	}
 }

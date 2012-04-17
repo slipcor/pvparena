@@ -210,7 +210,7 @@ public class Help {
 							+ "/pa [arenaname] create [type]" + ChatColor.WHITE
 							+ " | Create an arena");
 					Arenas.tellPlayer(player,
-							"Note: valid types are: team, ctf, free ; all other types fall back to team");
+							"Note: valid types are: teams, ctf, free ; all other types fall back to team");
 
 				} else if (args[2].equalsIgnoreCase("spawn")) {
 

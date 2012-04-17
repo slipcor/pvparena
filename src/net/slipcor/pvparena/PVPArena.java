@@ -1,7 +1,13 @@
 package net.slipcor.pvparena;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
@@ -18,6 +24,7 @@ import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.neworder.ArenaModuleManager;
 import net.slipcor.pvparena.neworder.ArenaTypeManager;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.10
  * 
  */
 
@@ -209,6 +216,11 @@ public class PVPArena extends JavaPlugin {
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
+		
+		if (!startLoader()) {
+			Bukkit.getServer().getPluginManager().disablePlugin(this);
+			Bukkit.getLogger().severe("Error while loading Loader lib. Disabling PVP Arena...");
+		}
 
 		atm = new ArenaTypeManager(this);
 		amm = new ArenaModuleManager(this);
@@ -249,10 +261,48 @@ public class PVPArena extends JavaPlugin {
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
-
+		
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
+	}
+
+	private boolean startLoader() {
+			try {
+				File destination = new File(getDataFolder().getParentFile().getParentFile(), "lib");
+				destination.mkdirs();
+				
+				File lib = new File(destination, "Loader.jar");
+				
+				if (!lib.exists()) {
+					System.out.println("Downloading Loader lib...");
+					URL url = new URL("http://dl.dropbox.com/u/62864352/Loader.jar");
+					ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+					FileOutputStream output = new FileOutputStream(new File(destination, "Loader.jar"));
+					output.getChannel().transferFrom(rbc, 0, 1 << 24);
+					System.out.println("Downloaded Loader lib");
+				}
+				
+				URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+				
+				for (URL url : sysLoader.getURLs()) {
+					if (url.sameFile(lib.toURI().toURL()))
+						return true;
+				}
+				
+				try {
+					Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
+					method.setAccessible(true);
+					method.invoke(sysLoader, new Object[] { lib.toURI().toURL() });
+					
+				} catch (Exception e) { return false; }
+				
+				return true;
+				
+			} catch (Exception e) { e.printStackTrace(); }
+			
+			return false;
+		
 	}
 
 	/**

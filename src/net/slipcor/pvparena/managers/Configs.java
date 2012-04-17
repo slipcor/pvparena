@@ -99,6 +99,7 @@ public class Configs {
 
 		config.addDefault("arenatype.randomSpawn", type.equals("free"));
 		config.addDefault("goal.timed", Integer.valueOf(0));
+		config.addDefault("goal.endtimer", Integer.valueOf(20));
 
 		config.addDefault("join.range", Integer.valueOf(0));
 		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
@@ -116,6 +117,7 @@ public class Configs {
 		config.addDefault("protection.checkExit", Boolean.valueOf(false));
 		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
+		config.addDefault("protection.inventory", Boolean.valueOf(false));
 
 		config.addDefault("start.health", Integer.valueOf(20));
 		config.addDefault("start.foodLevel", Integer.valueOf(20));

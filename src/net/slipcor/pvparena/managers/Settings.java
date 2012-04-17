@@ -95,6 +95,7 @@ public class Settings {
 		types.put("protection.checkExit", "boolean");
 		types.put("protection.checkSpectator", "boolean");
 		types.put("protection.checkLounges", "boolean");
+		types.put("protection.inventory", "boolean");
 
 		types.put("start.health", "int");
 		types.put("start.foodLevel", "int");

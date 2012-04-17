@@ -31,9 +31,10 @@ import org.bukkit.event.block.SignChangeEvent;
 public class BlockListener implements Listener {
 	private Debug db = new Debug(18);
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (event.isCancelled()) {
+			db.i("oBBE cancelled");
 			return;
 		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
@@ -52,7 +53,7 @@ public class BlockListener implements Listener {
 		return;
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBurn(BlockBurnEvent event) {
 		if (event.isCancelled()) {
 			return;
@@ -95,9 +96,10 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled()) {
+			db.i("oBPE cancelled");
 			return;
 		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()

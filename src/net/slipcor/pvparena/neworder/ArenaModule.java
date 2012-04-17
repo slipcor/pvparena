@@ -454,4 +454,16 @@ public class ArenaModule extends Loadable {
 	 */
 	public void tpPlayerToCoordName(Arena arena, Player player, String place) {
 	}
+	
+	public String version() {
+		return "outdated";
+	}
+
+	/**
+	 * hook into arena player unloading
+	 * 
+	 * @param player the player to unload
+	 */
+	public void unload(Player player) {
+	}
 }

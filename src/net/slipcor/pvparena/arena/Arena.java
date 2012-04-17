@@ -58,7 +58,6 @@ import org.bukkit.util.Vector;
 
 public class Arena {
 	private Debug db = new Debug(8);
-	private final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
 
@@ -86,6 +85,7 @@ public class Arena {
 
 	// Runnable IDs
 	public int END_ID = -1;
+	public int REALEND_ID = -1;
 	public int START_ID = -1;
 	public int SPAWNCAMP_ID = -1;
 
@@ -134,16 +134,6 @@ public class Arena {
 	 */
 	public void addClass(String className, ItemStack[] items) {
 		classes.add(new ArenaClass(className, items));
-	}
-
-	/**
-	 * add a player to the arena
-	 * 
-	 * @param player
-	 *            the player to add
-	 */
-	public void addPlayer(ArenaPlayer player) {
-		this.players.add(player);
 	}
 
 	/**
@@ -408,6 +398,15 @@ public class Arena {
 	 * @return all players
 	 */
 	public HashSet<ArenaPlayer> getPlayers() {
+		
+
+		HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+
+		for (ArenaTeam team : getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				players.add(ap);
+			}
+		}
 		return players;
 	}
 
@@ -589,7 +588,6 @@ public class Arena {
 			START_ID = -1;
 		}
 		ap.reset();
-		removePlayer(ap);
 
 		if (!spectator && fightInProgress) {
 			Arenas.checkAndCommit(this);
@@ -631,7 +629,6 @@ public class Arena {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
 		ap.setArena(this);
-		this.addPlayer(ap);
 
 		saveMisc(player); // save player health, fire tick, hunger etc
 		playersetHealth(player, cfg.getInt("start.health", 0));
@@ -677,7 +674,7 @@ public class Arena {
 		}
 
 		int arenaTypeCheck = type.ready(this);
-		if (arenaTypeCheck != 0) {
+		if (arenaTypeCheck != 1) {
 			return arenaTypeCheck;
 		}
 
@@ -692,15 +689,19 @@ public class Arena {
 				}
 			}
 		}
+		int readyPlayers = countReadyPlayers();
 
-		if (cfg.getDouble("ready.startRatio") > 0) {
-			double ratio = cfg.getDouble("ready.startRatio");
+		if (players > readyPlayers) {
+			if (cfg.getDouble("ready.startRatio") > 0) {
+				double ratio = cfg.getDouble("ready.startRatio");
 
-			int readyPlayers = countReadyPlayers();
-
-			if (players > 0 && readyPlayers / players >= ratio) {
-				return -6;
+				
+				if (players > 0 && readyPlayers / players >= ratio) {
+			
+					return -6;
+				}
 			}
+			return 0;
 		}
 		return 1;
 	}
@@ -749,16 +750,6 @@ public class Arena {
 	}
 
 	/**
-	 * remove player from arena
-	 * 
-	 * @param player
-	 *            the player to remove
-	 */
-	public void removePlayer(ArenaPlayer player) {
-		this.players.remove(player);
-	}
-
-	/**
 	 * remove a player from the arena
 	 * 
 	 * @param player
@@ -786,12 +777,14 @@ public class Arena {
 	public void reset_players(boolean force) {
 		db.i("resetting player manager");
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
-		for (ArenaPlayer p : players) {
-			db.i("player: " + p.getName());
-			if (p.getArena() == null || !p.getArena().equals(this)) {
-				continue;
+		for (ArenaTeam team : this.getTeams()) {
+			for (ArenaPlayer p : team.getTeamMembers()) {
+				db.i("player: " + p.getName());
+				if (p.getArena() == null || !p.getArena().equals(this)) {
+					continue;
+				}
+				pa.add(p);
 			}
-			pa.add(p);
 		}
 
 		for (ArenaPlayer p : pa) {
@@ -828,6 +821,9 @@ public class Arena {
 		if (END_ID > -1)
 			Bukkit.getScheduler().cancelTask(END_ID);
 		END_ID = -1;
+		if (REALEND_ID > -1)
+			Bukkit.getScheduler().cancelTask(REALEND_ID);
+		REALEND_ID = -1;
 
 		PVPArena.instance.getAmm().reset(this, force);
 		type.reset(force);
@@ -1040,6 +1036,7 @@ public class Arena {
 	 */
 	public void tellEveryone(String msg) {
 		db.i("@all: " + msg);
+		HashSet<ArenaPlayer> players = getPlayers();
 		for (ArenaPlayer p : players) {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
 				continue;
@@ -1071,6 +1068,7 @@ public class Arena {
 	 */
 	public void tellEveryoneExcept(Player player, String msg) {
 		db.i("@all/" + player.getName() + ": " + msg);
+		HashSet<ArenaPlayer> players = getPlayers();
 		for (ArenaPlayer p : players) {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
 				continue;

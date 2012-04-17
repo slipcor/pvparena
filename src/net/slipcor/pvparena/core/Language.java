@@ -183,6 +183,8 @@ public class Language {
 
 		config.addDefault("lang.invalidstattype",
 				"Invalid statistics type: %1%");
+		config.addDefault("lang.set",
+				"set a config node");
 
 		config.addDefault("lang.arenatypeunknown",
 				"Arena Type '%1%' unknown. Please add the corresponding arena jar file!");

@@ -32,17 +32,13 @@ A PVP experience enhancing plugin.
 
 * CraftBukkit Beta 1.2.3-R0.2
 
-==== Optional
-
-* Vault
-* a SuperPerms compatible Permissions system
-* iConomy 5/6
-
 -----------------------------------------------------------------------------------------------------------------------
 
 === How to install
 
 * Place in plugins folder
+* Place arena types in /pvparena/arenas
+* Place arena modules in /pvparena/modules
 * Configure if you wish to
 * Done!
 
@@ -50,6 +46,20 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.10.5 - fix watching players not belonging to the arena
+* v0.7.10.4 - fix restoring of the team nameplate
+* v0.7.10.3 - fix timed (team) arenas giving no rewards
+* v0.7.10.2 - fix timed arenas totally f up
+* v0.7.10.1 - fix CraftBukkitUpToDate compatibility
+* v0.7.10.0 - add restoring of dispensers and furnaces
+* v0.7.9.22 - change game.allowDrops priority. Custom class not needed!
+* v0.7.9.21 - fix module loading
+* v0.7.9.20 - fix modules not containing version
+* v0.7.9.19 - fix player recognition -.-
+* v0.7.9.18 - fix spheric regions not being saved properly
+* v0.7.9.17 - fix all arena type ready methods
+* v0.7.9.16 - fix CTF/Pumpkin interact cancelling
+* v0.7.9.15 - hook inv shift click to protection.inventory
 * v0.7.9.14 - fix ColorTeams
 * v0.7.9.13 - fix CTF/Pumpkin arena returning "Flag set:" on many occasions ^^
 * v0.7.9.12 - fix mobs messing up the game. bad, bad mobs!
@@ -81,8 +91,8 @@ A PVP experience enhancing plugin.
 
 * Fixes
 ** DOM arena fixing
+** multiple enchantments
 * Features
-** Chest/Dispenser refill
 ** MAP support: Player location, flag/spawn location
 ** RUSH mode - Base defend vs Conquer base
 ** Spout: Adding "skin" key to classes, MobDisguise hooking

@@ -343,7 +343,7 @@ public class Config {
 	 * @param world
 	 *            the World in which the Locations exists
 	 * @param coords
-	 *            a string of the form "x1,y1,z1,x2,y2,z2"
+	 *            a string of the form "x1,y1,z1,x2,y2,z2,spheric"
 	 * @return a Location array in the given world with the given coordinates
 	 */
 	public static Location[] parseShere(World world, String coords) {
@@ -353,6 +353,9 @@ public class Config {
 					"Input string must contain only x1, y1, z1, x2, y2, and z2");
 
 		if (parts.length < 7) {
+			return null;
+		}
+		if (!parts[6].equals("spheric")) {
 			return null;
 		}
 		

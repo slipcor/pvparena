@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.10
  * 
  */
 
@@ -283,7 +283,7 @@ public class Commands {
 				return parseInfo(arena, player);
 			} else if (args[0].equalsIgnoreCase("list")) {
 				return parseList(arena, player);
-			} else if (args[0].equalsIgnoreCase("watch")) {
+			} else if (args[0].equalsIgnoreCase("watch") || args[0].equalsIgnoreCase("spectate")) {
 				return parseSpectate(arena, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return parseUsers(arena, player);
@@ -395,6 +395,7 @@ public class Commands {
 						type = ArenaRegion.regionType.CUBOID;
 					} else if (args[2].startsWith("s")) {
 						type = ArenaRegion.regionType.SPHERIC;
+						s += ",spheric";
 					} else {
 						type = ArenaRegion.regionType.CUBOID;
 					}
@@ -768,6 +769,7 @@ public class Commands {
 			return true;
 		}
 		arena.prepare(player, true);
+		ap.setArena(arena);
 		arena.tpPlayerToCoordName(player, "spectator");
 		Inventories.prepareInventory(arena, player);
 		Arenas.tellPlayer(player, Language.parse("specwelcome"), arena);

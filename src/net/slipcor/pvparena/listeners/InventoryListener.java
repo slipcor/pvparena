@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.9
  * 
  */
 public class InventoryListener implements Listener {
@@ -31,11 +31,6 @@ public class InventoryListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(p);
 
 		if (arena == null) {
-			return;
-		}
-
-		if (event.isShiftClick()) {
-			event.setCancelled(true);
 			return;
 		}
 
@@ -52,9 +47,16 @@ public class InventoryListener implements Listener {
 					return;
 				}
 			}
-		} else if (event.getInventory().getType()
+		} else {
+			if (event.isShiftClick()) {
+				event.setCancelled(true);
+				return;
+			}
+			if (event.getInventory().getType()
+		
 				.equals(InventoryType.CRAFTING)) {
 			return;
+			}
 		}
 
 		db.i("cancelling!");

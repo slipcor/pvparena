@@ -2,6 +2,7 @@ package net.slipcor.pvparena.arena;
 
 import java.util.Collection;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.listeners.EntityListener;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -80,6 +81,12 @@ public final class PlayerState {
 		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(displayname);
 		}
+		
+		if (ap.getArena() != null) {
+			PVPArena.instance.getAmm().unload(player);
+			ap.getArena().type().unload(player);
+		}
+		
 
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));

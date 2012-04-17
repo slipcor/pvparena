@@ -42,7 +42,7 @@ public class ArenaTypeManager {
 
 		for (ArenaType type : types) {
 			System.out.print("[PVP Arena] module ArenaType loaded: "
-					+ type.getName());
+					+ type.getName() + " (version " + type.version() +")");
 		}
 	}
 
