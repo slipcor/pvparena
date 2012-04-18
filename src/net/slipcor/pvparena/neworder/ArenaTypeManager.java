@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.nodinchan.loader.Loader;
+import com.nodinchan.ncloader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.teams.TeamArena;

@@ -413,7 +413,7 @@ public class PlayerListener implements Listener {
 		}
 		event.setRespawnLocation(l);
 
-		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"));
+		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"), false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

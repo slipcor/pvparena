@@ -20,7 +20,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.10
  * 
  */
 
@@ -31,7 +31,7 @@ public class TeamArena extends ArenaType {
 	
 	@Override
 	public String version() {
-		return "v0.7.10.1";
+		return "v0.7.10.6";
 	}
 
 	@Override

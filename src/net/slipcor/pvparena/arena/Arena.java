@@ -321,7 +321,7 @@ public class Arena {
 	public void forcestop() {
 		db.i("forcing arena to stop");
 		for (ArenaPlayer p : getPlayers()) {
-			removePlayer(p.get(), "spectator");
+			removePlayer(p.get(), "spectator", false);
 			p.setSpectator(true);
 		}
 		reset(true);
@@ -581,7 +581,7 @@ public class Arena {
 
 			Arenas.tellPlayer(player, Language.parse("youleave"), this);
 		}
-		removePlayer(player, cfg.getString("tp.exit", "exit"));
+		removePlayer(player, cfg.getString("tp.exit", "exit"), false);
 
 		if (START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(START_ID);
@@ -728,7 +728,7 @@ public class Arena {
 	 *            the player to remove
 	 */
 	public void removeDeadPlayer(Player player) {
-		resetPlayer(player, cfg.getString("tp.death", "spectator"));
+		resetPlayer(player, cfg.getString("tp.death", "spectator"), false);
 		ArenaPlayer tempAP = null;
 		for (ArenaPlayer ap : ArenaPlayer.deadPlayers.keySet()) {
 			if (ap.get().equals(player)) {
@@ -737,7 +737,7 @@ public class Arena {
 					ap.getArena().resetPlayer(
 							player,
 							ap.getArena().cfg
-									.getString("tp.death", "spectator"));
+									.getString("tp.death", "spectator"), false);
 					ap.setArena(null);
 				} else {
 					System.out.print("[PA-debug] Arena NULL: "
@@ -757,12 +757,14 @@ public class Arena {
 	 * @param tploc
 	 *            the coord string to teleport the player to
 	 */
-	public void removePlayer(Player player, String tploc) {
-		db.i("removing player " + player.getName() + " (soft), tp to " + tploc);
-		resetPlayer(player, tploc);
+	public void removePlayer(Player player, String tploc, boolean soft) {
+		db.i("removing player " + player.getName() + (soft?" (soft)":"")+", tp to " + tploc);
+		resetPlayer(player, tploc, soft);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		Teams.removeTeam(this, ap);
+		if (!soft) {
+			Teams.removeTeam(this, ap);
+		}
 		remove(player);
 		if (cfg.getBoolean("general.signs")) {
 			ArenaClassSign.remove(signs, player);
@@ -781,9 +783,25 @@ public class Arena {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("player: " + p.getName());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
-					continue;
+					if (p.getaClass() == null) {
+						Player z = p.get();
+						resetPlayer(z, cfg.getString("tp.exit", "old"), false);
+						p.reset();
+					} else {
+						Player z = p.get();
+						if (!force) {
+							p.losses++;
+						}
+						resetPlayer(z, cfg.getString("tp.win", "old"), false);
+						if (!force && !p.isSpectator() && fightInProgress) {
+							giveRewards(z); // if we are the winning team, give
+											// reward!
+						}
+						p.reset();
+					}
+				} else {
+					pa.add(p);
 				}
-				pa.add(p);
 			}
 		}
 
@@ -792,7 +810,7 @@ public class Arena {
 			if (!force) {
 				p.wins++;
 			}
-			resetPlayer(z, cfg.getString("tp.win", "old"));
+			resetPlayer(z, cfg.getString("tp.win", "old"), false);
 			if (!force && !p.isSpectator() && fightInProgress) {
 				giveRewards(z); // if we are the winning team, give
 								// reward!
@@ -837,9 +855,10 @@ public class Arena {
 	 * 
 	 * @param player
 	 * @param string
+	 * @param soft 
 	 */
-	public void resetPlayer(Player player, String string) {
-		db.i("resetting player: " + player.getName());
+	private void resetPlayer(Player player, String string, boolean soft) {
+		db.i("resetting player: " + player.getName() + (soft?"(soft)":""));
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (player.isDead() && !ap.isDead()) {
@@ -847,7 +866,6 @@ public class Arena {
 			ap.addDeadPlayer(string);
 			return;
 		}
-
 		ap.getState().unload();
 		PVPArena.instance.getAmm().resetPlayer(this, player);
 
