@@ -7,6 +7,7 @@ import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -121,11 +122,7 @@ public class Arenas {
 	 * @return the arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByPlayer(Player pPlayer) {
-		for (Arena arena : arenas.values()) {
-			if (arena.isPartOf(pPlayer))
-				return arena;
-		}
-		return null;
+		return ArenaPlayer.parsePlayer(pPlayer).getArena();
 	}
 
 	/**

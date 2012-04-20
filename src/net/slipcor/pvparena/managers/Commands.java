@@ -591,7 +591,7 @@ public class Commands {
 			return true;
 		}
 
-		arena.prepare(player, false);
+		arena.prepare(player, false, false);
 		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		Teams.choosePlayerTeam(arena, player);
@@ -647,7 +647,7 @@ public class Commands {
 			return true;
 		}
 
-		arena.prepare(player, false);
+		arena.prepare(player, false, false);
 		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
@@ -768,7 +768,7 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("joinrange"), arena);
 			return true;
 		}
-		arena.prepare(player, true);
+		arena.prepare(player, true, false);
 		ap.setArena(arena);
 		arena.tpPlayerToCoordName(player, "spectator");
 		Inventories.prepareInventory(arena, player);

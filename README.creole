@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.11.2 - fix the player handling / inventory issue
 * v0.7.10.6 - fix the Loader
 * v0.7.10.5 - fix watching players not belonging to the arena
 * v0.7.10.4 - fix restoring of the team nameplate
@@ -99,6 +100,7 @@ A PVP experience enhancing plugin.
 ** Spout: Adding "skin" key to classes, MobDisguise hooking
 * Modulisation
 ** Regions
+** Command system
 
 -----------------------------------------------------------------------------------------------------------------------
 

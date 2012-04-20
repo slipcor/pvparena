@@ -21,6 +21,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
@@ -130,7 +131,7 @@ public class ArenaType extends Loadable {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.isSpectator()) {
+				if (ap.getStatus().equals(Status.FIGHT)) {
 					aTeam = team;
 					break;
 				}
@@ -535,26 +536,22 @@ public class ArenaType extends Loadable {
 		db.i("timed end!");
 
 		HashSet<String> modresult = new HashSet<String>();
-		for (ArenaPlayer ap : arena.getPlayers()) {
-			if (ap.isSpectator() || ap.isDead()) {
-				continue;
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (!ap.getStatus().equals(Status.FIGHT)) {
+					continue;
+				}
+				
+				modresult.add(ap.getName());
+				int sum = 0;
+				if (result.get(team.getName()) != null) {
+					sum += result.get(team.getName());
+				}
+				
+				sum += arena.lives.get(ap.getName());
+				
+				result.put(team.getName(), sum);
 			}
-			
-			ArenaTeam team = Teams.getTeam(arena, ap);
-			
-			if (team == null) {
-				continue;
-			}
-			
-			modresult.add(ap.getName());
-			int sum = 0;
-			if (result.get(team.getName()) != null) {
-				sum += result.get(team.getName());
-			}
-			
-			sum += arena.lives.get(ap.getName());
-			
-			result.put(team.getName(), sum);
 		}
 		
 
@@ -581,14 +578,15 @@ public class ArenaType extends Loadable {
 				arena.tellEveryone(Language.parse("teamhaswon", team.getColor()
 						+ "Team " + team.getName()));
 			}
-			for (ArenaPlayer p : arena.getPlayers()) {
-				if (p.isSpectator() || p.isDead()) {
-					continue;
-				}
-				if (!realresult.contains(team.getName())) {
+			if (!realresult.contains(team.getName())) {
+				for (ArenaPlayer p : team.getTeamMembers()) {
+					if (!p.getStatus().equals(Status.FIGHT)) {
+						continue;
+					}
 					p.losses++;
 					arena.tpPlayerToCoordName(p.get(), "spectator");
 					modresult.remove(p.getName());
+				
 				}
 			}
 		}

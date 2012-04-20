@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -201,9 +201,6 @@ public class Statistics {
 		ArenaPlayer[] aps = new ArenaPlayer[Teams.countPlayersInTeams(a)];
 		int i = 0;
 		for (ArenaPlayer p : a.getPlayers()) {
-			if (p.isSpectator()) {
-				continue;
-			}
 			aps[i++] = p;
 		}
 

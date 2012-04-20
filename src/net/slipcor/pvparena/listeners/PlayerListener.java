@@ -5,6 +5,7 @@ import java.util.List;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -49,7 +50,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -175,16 +176,15 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
-		if (ap.getaClass() == null) {
+		if (!ap.getStatus().equals(Status.FIGHT)) {
 			db.i("returning: no class");
 			// fighting player inside the lobby!
 			event.setCancelled(true);
 		}
-		
+
 		if (team == null) {
 			db.i("returning: no team");
 			return;
@@ -259,7 +259,7 @@ public class PlayerListener implements Listener {
 						return;
 					}
 
-					ArenaPlayer.parsePlayer(player).ready = true;
+					ArenaPlayer.parsePlayer(player).setStatus(Status.READY);
 
 					int ready = arena.ready();
 
@@ -385,7 +385,8 @@ public class PlayerListener implements Listener {
 			db.i("respawning dead player");
 			arena = ap.getArena();
 			if (arena == null) {
-				System.out.print("Dead player without proper Arena: " + ap.getName());
+				System.out.print("Dead player without proper Arena: "
+						+ ap.getName());
 			} else {
 				Location loc = arena.getDeadLocation(player);
 				if (loc != null) {
@@ -413,7 +414,8 @@ public class PlayerListener implements Listener {
 		}
 		event.setRespawnLocation(l);
 
-		arena.removePlayer(player, arena.cfg.getString("tp.death", "spectator"), false);
+		arena.removePlayer(player,
+				arena.cfg.getString("tp.death", "spectator"), false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

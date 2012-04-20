@@ -34,7 +34,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -58,8 +58,19 @@ public class ArenaPlayer {
 	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
 	private static HashMap<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
 
-	private boolean spectator = false;
-	public boolean ready = false;
+	private Status status = Status.EMPTY;
+	
+	/**
+	 *  - EMPTY = not part of an arena
+	 *  - LOBBY = inside an arena lobby mode
+	 *  - READY = inside an arena lobby mode, readied up
+	 *  - FIGHT = fighting inside an arena
+	 *  - WATCH = watching a fight from the spectator area
+	 *  - DEATH = dead and soon respawning
+	 *  - LOSES = lost and thus spectating 
+	 * @author slipcor
+	 */
+	public static enum Status {EMPTY, LOBBY, READY, FIGHT, WATCH, DEATH, LOSES}
 
 	public int losses = 0;
 	public int wins = 0;
@@ -268,6 +279,10 @@ public class ArenaPlayer {
 		return state;
 	}
 
+	public Status getStatus() {
+		return status;
+	}
+
 	/**
 	 * hand over a player's tele pass
 	 * 
@@ -284,15 +299,6 @@ public class ArenaPlayer {
 	 */
 	public boolean isDead() {
 		return deadPlayers.containsKey(this);
-	}
-
-	/**
-	 * is the player spectating?
-	 * 
-	 * @return true if the player is spectating
-	 */
-	public boolean isSpectator() {
-		return spectator;
 	}
 
 	/**
@@ -347,8 +353,7 @@ public class ArenaPlayer {
 		savedInventory = null;
 		savedArmor = null;
 
-		spectator = false;
-		ready = false;
+		setStatus(Status.EMPTY);
 
 		if (arena != null) {
 			ArenaTeam team = Teams.getTeam(arena, this);
@@ -398,14 +403,8 @@ public class ArenaPlayer {
 				+ " to player " + name);
 	}
 
-	/**
-	 * set the spectator state
-	 * 
-	 * @param spectator
-	 *            the state to set
-	 */
-	public void setSpectator(boolean spectator) {
-		this.spectator = spectator;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -52,7 +53,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -242,7 +243,7 @@ public class Arena {
 		int sum = 0;
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				if (p.ready) {
+				if (p.getStatus() == Status.READY) {
 					sum++;
 				}
 			}
@@ -322,7 +323,7 @@ public class Arena {
 		db.i("forcing arena to stop");
 		for (ArenaPlayer p : getPlayers()) {
 			removePlayer(p.get(), "spectator", false);
-			p.setSpectator(true);
+			p.setStatus(Status.WATCH);
 		}
 		reset(true);
 	}
@@ -470,7 +471,7 @@ public class Arena {
 	 */
 	public boolean isCustomClassActive() {
 		for (ArenaPlayer p : getPlayers()) {
-			if (!p.isSpectator() && p.getClass().equals("custom")) {
+			if (p.getStatus().equals(Status.FIGHT) && p.getClass().equals("custom")) {
 				db.i("custom class active: true");
 				return true;
 			}
@@ -568,9 +569,10 @@ public class Arena {
 	public void playerLeave(Player player) {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		boolean spectator = ap.isSpectator();
-
-		if (!spectator) {
+		
+		boolean fighter = ap.getStatus().equals(Status.FIGHT);
+		
+		if (fighter) {
 			ArenaTeam team = Teams.getTeam(this, ap);
 			PVPArena.instance.getAmm().playerLeave(this, player, team);
 
@@ -589,7 +591,7 @@ public class Arena {
 		}
 		ap.reset();
 
-		if (!spectator && fightInProgress) {
+		if (fighter && fightInProgress) {
 			Arenas.checkAndCommit(this);
 		}
 	}
@@ -619,18 +621,23 @@ public class Arena {
 	 * prepare a player for fighting. Setting all values to start value
 	 * 
 	 * @param player
+	 * @param ending 
 	 */
-	public void prepare(Player player, boolean spectate) {
-		PAJoinEvent event = new PAJoinEvent(this, player, spectate);
-		Bukkit.getPluginManager().callEvent(event);
+	public void prepare(Player player, boolean spectate, boolean ending) {
+		if (ending) {
+			db.i("putting a player to the spectator spawn");
+		} else {
+			PAJoinEvent event = new PAJoinEvent(this, player, spectate);
+			Bukkit.getPluginManager().callEvent(event);
+			db.i("preparing player: " + player.getName());
+	
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+	
+			ap.setArena(this);
 
-		db.i("preparing player: " + player.getName());
+			saveMisc(player); // save player health, fire tick, hunger etc
+		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-
-		ap.setArena(this);
-
-		saveMisc(player); // save player health, fire tick, hunger etc
 		playersetHealth(player, cfg.getInt("start.health", 0));
 		player.setFireTicks(0);
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
@@ -667,7 +674,7 @@ public class Arena {
 		if (cfg.getBoolean("ready.checkEach")) {
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
-					if (!ap.ready) {
+					if (!ap.getStatus().equals(Status.READY)) {
 						return 0;
 					}
 			}
@@ -715,7 +722,7 @@ public class Arena {
 	public void remove(Player player) {
 		ArenaPlayer ap = ArenaPlayer
 				.parsePlayer(player);
-		PALeaveEvent event = new PALeaveEvent(this, player, ap.isSpectator());
+		PALeaveEvent event = new PALeaveEvent(this, player, ap.getStatus().equals(Status.FIGHT));
 		Bukkit.getPluginManager().callEvent(event);
 		if (!ap.isDead())
 			ArenaPlayer.parsePlayer(player).setArena(null);
@@ -783,22 +790,7 @@ public class Arena {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("player: " + p.getName());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
-					if (p.getaClass() == null) {
-						Player z = p.get();
-						resetPlayer(z, cfg.getString("tp.exit", "old"), false);
-						p.reset();
-					} else {
-						Player z = p.get();
-						if (!force) {
-							p.losses++;
-						}
-						resetPlayer(z, cfg.getString("tp.win", "old"), false);
-						if (!force && !p.isSpectator() && fightInProgress) {
-							giveRewards(z); // if we are the winning team, give
-											// reward!
-						}
-						p.reset();
-					}
+					continue;
 				} else {
 					pa.add(p);
 				}
@@ -811,7 +803,7 @@ public class Arena {
 				p.wins++;
 			}
 			resetPlayer(z, cfg.getString("tp.win", "old"), false);
-			if (!force && !p.isSpectator() && fightInProgress) {
+			if (!force && p.getStatus().equals(Status.FIGHT) && fightInProgress) {
 				giveRewards(z); // if we are the winning team, give
 								// reward!
 			}
@@ -969,7 +961,7 @@ public class Arena {
 		HashMap<Location, ArenaPlayer> players = new HashMap<Location, ArenaPlayer>();
 
 		for (ArenaPlayer ap : getPlayers()) {
-			if (ap.isSpectator()) {
+			if (!ap.getStatus().equals(Status.FIGHT)) {
 				continue;
 			}
 			players.put(ap.get().getLocation(), ap);
@@ -1017,6 +1009,7 @@ public class Arena {
 				} else {
 					tpPlayerToCoordName(ap.get(), "spawn");
 				}
+				ap.setStatus(Status.FIGHT);
 				playerCount++;
 			}
 		}
@@ -1142,7 +1135,11 @@ public class Arena {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (place.equals("spectator")) {
-			ap.setSpectator(true);
+			if (getPlayers().contains(ap)) {
+				ap.setStatus(Status.LOSES);
+			} else {
+				ap.setStatus(Status.WATCH);
+			}
 		}
 		Location loc = Spawns.getCoords(this, place);
 		if (loc == null) {

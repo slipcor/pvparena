@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -24,7 +25,7 @@ import net.slipcor.pvparena.core.Language;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -212,7 +213,7 @@ public class Teams {
 		HashSet<String> activeteams = new HashSet<String>();
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.isSpectator()) {
+				if (ap.getStatus().equals(Status.FIGHT)) {
 					activeteams.add(team.getName());
 					break;
 				}
@@ -230,11 +231,7 @@ public class Teams {
 	public static int countPlayersInTeams(Arena arena) {
 		int result = 0;
 		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.isSpectator()) {
-					result += 1;
-				}
-			}
+			result += team.getTeamMembers().size();
 		}
 		db.i("players having a team: " + result);
 		return result;

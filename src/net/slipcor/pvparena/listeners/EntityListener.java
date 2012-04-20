@@ -5,6 +5,7 @@ import java.util.HashSet;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -41,7 +42,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -54,6 +55,7 @@ public class EntityListener implements Listener {
 		burningPlayers.add(player);
 	}
 
+ 
 	/**
 	 * pretend a player death
 	 * 
@@ -82,8 +84,6 @@ public class EntityListener implements Listener {
 				arena.parseDeathCause(player, cause.getCause(),
 						ArenaPlayer.getLastDamagingPlayer(cause))));
 
-		ap.losses++;
-
 		if (arena.isCustomClassActive()
 				|| arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
@@ -91,10 +91,12 @@ public class EntityListener implements Listener {
 		Inventories.clearInventory(player);
 
 		arena.tpPlayerToCoordName(player, "spectator");
-
+		
+		ap.setStatus(Status.LOSES);
+		
+		arena.prepare(player, true, true);
+		
 		arena.type().checkEntityDeath(player);
-
-		Teams.removeTeam(arena, ap);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");
@@ -191,8 +193,12 @@ public class EntityListener implements Listener {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
-
-		if (team == null || ap.isSpectator() || arena.REALEND_ID != -1) {
+		/*
+		db.i("team: " + team);
+		db.i("status: " + ap.getStatus().name());
+		db.i("REALEND: " + arena.REALEND_ID);
+		*/
+		if (team == null || ap.getStatus().equals(Status.LOSES) || arena.REALEND_ID != -1) {
 			event.setCancelled(true);
 			return;
 		}
