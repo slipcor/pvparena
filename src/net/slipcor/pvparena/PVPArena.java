@@ -36,6 +36,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.nodinchan.ncloader.metrics.Metrics;
+
 /**
  * main class
  * 
@@ -45,7 +47,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.7.10
+ * @version v0.7.12
  * 
  */
 
@@ -267,6 +269,14 @@ public class PVPArena extends JavaPlugin {
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
+		
+		Metrics metrics;
+		try {
+			metrics = new Metrics(this);
+			metrics.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		amm.onEnable();
 

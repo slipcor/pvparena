@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.core;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -15,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.11
  * 
  */
 
@@ -67,8 +69,7 @@ public class StringParser {
 		if (temp.length > 1) {
 			amount = Integer.parseInt(temp[1]);
 		}
-		Enchantment ench = null;
-		Integer enchLevel = 0;
+		HashMap<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 		if (temp[0].contains("|")) {
 			db.i("trying to add enchantment");
 			String[] temp2 = temp[0].split("\\|");
@@ -76,13 +77,17 @@ public class StringParser {
 			temp[0] = temp2[0];
 
 			db.i("correcting item temp to " + temp[0]);
-
-			String strEnch = temp2[1];
-			if (strEnch.contains("~")) {
-				db.i("we have a level");
-				String[] arrEnch = strEnch.split("~");
-				ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
-				enchLevel = Integer.parseInt(arrEnch[1]);
+			
+			for (int i = 1; i < temp2.length; i++) {
+			
+				String strEnch = temp2[1];
+				if (strEnch.contains("~")) {
+					db.i("we have a level");
+					String[] arrEnch = strEnch.split("~");
+					Enchantment ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
+					Integer enchLevel = Integer.parseInt(arrEnch[1]);
+					enchants.put(ench, enchLevel);
+				}
 			}
 		}
 
@@ -94,24 +99,27 @@ public class StringParser {
 				// [itemid/name]:[amount]
 
 				ItemStack is = new ItemStack(mat, amount);
-				if (ench != null)
-					is.addUnsafeEnchantment(ench, enchLevel);
+				for (Enchantment e : enchants.keySet()) {
+					is.addUnsafeEnchantment(e, enchants.get(e));
+				}
 				return is;
 			}
 			dmg = Short.parseShort(temp[1]);
 			if (temp.length == 2) {
 				// [itemid/name]~[dmg]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg);
-				if (ench != null)
-					is.addUnsafeEnchantment(ench, enchLevel);
+				for (Enchantment e : enchants.keySet()) {
+					is.addUnsafeEnchantment(e, enchants.get(e));
+				}
 				return is;
 			}
 			data = Byte.parseByte(temp[2]);
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg, data);
-				if (ench != null)
-					is.addUnsafeEnchantment(ench, enchLevel);
+				for (Enchantment e : enchants.keySet()) {
+					is.addUnsafeEnchantment(e, enchants.get(e));
+				}
 				return is;
 			}
 		}

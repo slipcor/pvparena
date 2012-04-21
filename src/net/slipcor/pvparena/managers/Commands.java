@@ -333,13 +333,21 @@ public class Commands {
 					Language.parse("nopermto", Language.parse("admin")), arena);
 			return false;
 		}
-
+		
+		if (args[0].equalsIgnoreCase("remove")) {
+			// pa [name] remove [spawnname]
+			arena.cfg.set("spawns." + args[1], null);
+			arena.cfg.save();
+			Arenas.tellPlayer(player,
+					Language.parse("spawnremoved", args[1]), arena);
+			return true;
+		}
+		
 		if (!arena.type().isRegionCommand(args[1])) {
 			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"),
 					arena);
 			return false;
 		}
-
 		if ((args.length == 2) || (args.length == 3)) {
 
 			if (args[0].equalsIgnoreCase("region")) {
@@ -414,13 +422,6 @@ public class Commands {
 				Arenas.tellPlayer(player, Language.parse("regionsaved"), arena);
 				return true;
 
-			} else if (args[0].equalsIgnoreCase("remove")) {
-				// pa [name] remove [spawnname]
-				arena.cfg.set("spawns." + args[1], null);
-				arena.cfg.save();
-				Arenas.tellPlayer(player,
-						Language.parse("spawnremoved", args[1]), arena);
-				return true;
 			}
 		}
 
