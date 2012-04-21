@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.13
  * 
  */
 
@@ -79,6 +79,7 @@ public class Settings {
 		types.put("join.onCountdown", "boolean");
 		types.put("join.random", "boolean");
 		types.put("join.range", "int");
+		types.put("join.warmup", "int");
 
 		types.put("periphery.checkRegions", "boolean");
 

@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.13.1 - FIRST restore blocks, then restore inventories!
+* v0.7.13.0 - add config setting to force warming up on /pa join | /pa spectate
 * v0.7.12.1 - fix /pa [name] remove [spawnname]
 * v0.7.12.0 - multiple Enchantments
 * v0.7.11.3 - add a different tracker

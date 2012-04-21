@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.13
  * 
  */
 public class Language {

@@ -27,7 +27,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.13
  * 
  */
 
@@ -96,12 +96,13 @@ public class Configs {
 		config.addDefault("join.onCountdown", Boolean.valueOf(false));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
 		config.addDefault("join.inbattle", Boolean.valueOf(false));
-
+		config.addDefault("join.range", Integer.valueOf(0));
+		config.addDefault("join.warmup", Integer.valueOf(0));
+		
 		config.addDefault("arenatype.randomSpawn", type.equals("free"));
 		config.addDefault("goal.timed", Integer.valueOf(0));
 		config.addDefault("goal.endtimer", Integer.valueOf(20));
 
-		config.addDefault("join.range", Integer.valueOf(0));
 		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
 
 		config.addDefault("protection.spawn", Integer.valueOf(3));
@@ -138,7 +139,7 @@ public class Configs {
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.7.8.0");
+		cfg.set("cfgver", "0.7.13.0");
 		cfg.save();
 		cfg.load();
 

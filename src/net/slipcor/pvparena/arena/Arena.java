@@ -53,7 +53,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.13
  * 
  */
 
@@ -820,7 +820,6 @@ public class Arena {
 		Bukkit.getPluginManager().callEvent(event);
 
 		db.i("resetting arena; force: " + String.valueOf(force));
-		clearArena();
 		chatters.clear();
 		for (ArenaClassSign as : signs) {
 			as.clear();
@@ -836,6 +835,7 @@ public class Arena {
 		REALEND_ID = -1;
 
 		PVPArena.instance.getAmm().reset(this, force);
+		clearArena();
 		type.reset(force);
 
 		this.playerCount = 0;

@@ -62,6 +62,7 @@ public class ArenaPlayer {
 	
 	/**
 	 *  - EMPTY = not part of an arena
+	 *  - WARM = not part of an arena, warmed up
 	 *  - LOBBY = inside an arena lobby mode
 	 *  - READY = inside an arena lobby mode, readied up
 	 *  - FIGHT = fighting inside an arena
@@ -70,7 +71,7 @@ public class ArenaPlayer {
 	 *  - LOSES = lost and thus spectating 
 	 * @author slipcor
 	 */
-	public static enum Status {EMPTY, LOBBY, READY, FIGHT, WATCH, DEATH, LOSES}
+	public static enum Status {EMPTY, WARM, LOBBY, READY, FIGHT, WATCH, DEATH, LOSES}
 
 	public int losses = 0;
 	public int wins = 0;

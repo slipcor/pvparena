@@ -5,11 +5,14 @@ import java.util.HashMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.runnables.ArenaWarmupRunnable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -283,7 +286,8 @@ public class Commands {
 				return parseInfo(arena, player);
 			} else if (args[0].equalsIgnoreCase("list")) {
 				return parseList(arena, player);
-			} else if (args[0].equalsIgnoreCase("watch") || args[0].equalsIgnoreCase("spectate")) {
+			} else if (args[0].equalsIgnoreCase("watch")
+					|| args[0].equalsIgnoreCase("spectate")) {
 				return parseSpectate(arena, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return parseUsers(arena, player);
@@ -333,16 +337,16 @@ public class Commands {
 					Language.parse("nopermto", Language.parse("admin")), arena);
 			return false;
 		}
-		
+
 		if (args[0].equalsIgnoreCase("remove")) {
 			// pa [name] remove [spawnname]
 			arena.cfg.set("spawns." + args[1], null);
 			arena.cfg.save();
-			Arenas.tellPlayer(player,
-					Language.parse("spawnremoved", args[1]), arena);
+			Arenas.tellPlayer(player, Language.parse("spawnremoved", args[1]),
+					arena);
 			return true;
 		}
-		
+
 		if (!arena.type().isRegionCommand(args[1])) {
 			Arenas.tellPlayer(player, Language.parse("invalidcmd", "504"),
 					arena);
@@ -591,7 +595,19 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("arenafull"), arena);
 			return true;
 		}
-
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		
+		if (arena.cfg.getInt("join.warmup")>0) {
+			if (ap.getStatus().equals(Status.EMPTY)) {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
+						new ArenaWarmupRunnable(arena, ap, null, false),
+						20L * arena.cfg.getInt("join.warmup"));
+				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				return true;
+			}
+		}
+		
 		arena.prepare(player, false, false);
 		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
@@ -601,7 +617,7 @@ public class Commands {
 		PVPArena.instance.getAmm().parseJoin(
 				arena,
 				player,
-				Teams.getTeam(arena, ArenaPlayer.parsePlayer(player))
+				Teams.getTeam(arena, ap)
 						.colorize());
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
@@ -647,6 +663,18 @@ public class Commands {
 					Teams.getTeam(arena, sTeam).colorize()), arena);
 			return true;
 		}
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		
+		if (arena.cfg.getInt("join.warmup")>0) {
+			if (ap.getStatus().equals(Status.EMPTY)) {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
+						new ArenaWarmupRunnable(arena, ap, sTeam, false),
+						20L * arena.cfg.getInt("join.warmup"));
+				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				return true;
+			}
+		}
 
 		arena.prepare(player, false, false);
 		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
@@ -654,7 +682,6 @@ public class Commands {
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
 
 		ArenaTeam team = Teams.getTeam(arena, sTeam);
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
 		team.add(ap);
 
@@ -769,6 +796,17 @@ public class Commands {
 			Arenas.tellPlayer(player, Language.parse("joinrange"), arena);
 			return true;
 		}
+		
+		if (arena.cfg.getInt("join.warmup")>0) {
+			if (ap.getStatus().equals(Status.EMPTY)) {
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
+						new ArenaWarmupRunnable(arena, ap, null, true),
+						20L * arena.cfg.getInt("join.warmup"));
+				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				return true;
+			}
+		}
+		
 		arena.prepare(player, true, false);
 		ap.setArena(arena);
 		arena.tpPlayerToCoordName(player, "spectator");
