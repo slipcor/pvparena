@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.7.13
+ * @version v0.7.15
  * 
  */
 public class Language {
@@ -104,6 +104,7 @@ public class Language {
 		config.addDefault("lang.reloaded", "Config reloaded!");
 		config.addDefault("lang.noplayer", "No player in the PVP arena.");
 		config.addDefault("lang.players", "Players");
+		config.addDefault("lang.notreadyplayers", "Players not ready");
 		config.addDefault(
 				"lang.specwelcome",
 				"Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
@@ -173,6 +174,7 @@ public class Language {
 				"You are not in the join region! Move there to join!");
 
 		config.addDefault("lang.edit", "edit an arena");
+		config.addDefault("lang.teleport", "teleport to an arena spawn");
 		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
 
@@ -224,6 +226,8 @@ public class Language {
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");
+		config.addDefault("lang.warmingup",
+				"Warming up... stand by...");
 
 		PVPArena.instance.getAmm().initLanguage(config);
 		PVPArena.instance.getAtm().initLanguage(config);

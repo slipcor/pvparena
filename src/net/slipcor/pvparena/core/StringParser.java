@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.16
  * 
  */
 
@@ -33,7 +33,12 @@ public class StringParser {
 	 * @return the color short
 	 */
 	public static byte getColorDataFromENUM(String color) {
-
+		
+		String wool = getWoolEnumFromChatColorEnum(color);
+		
+		if (wool != null) {
+			color = wool;
+		}
 		/*
 		 * DyeColor supports: WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
 		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
@@ -45,6 +50,59 @@ public class StringParser {
 		db.w("unknown color enum: " + color);
 
 		return (short) 0;
+	}
+
+	public static ChatColor getChatColorFromWoolEnum(String color) {
+		return ChatColor.valueOf(parseDyeColorToChatColor(color, true));
+	}
+
+	public static String getWoolEnumFromChatColorEnum(String color) {
+		return parseDyeColorToChatColor(color, false);
+	}
+	
+	private static String parseDyeColorToChatColor(String color, boolean forward) {
+		
+		/**
+		 * wool colors:
+		 * ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY,
+		 * SILVER, PURPLE, BLUE, GREEN, RED, CYAN;
+		 * 
+		 * chat colors:
+		 * GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY,
+		 * GRAY, DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
+		 * 
+		 *     
+		 * 
+		 * both colors (ignore):
+		 * WHITE, YELLOW, BLACK
+		 * 
+		 * colors not being able to parse:
+		 * 
+		 * chat-AQUA, wool-brown
+		 */
+		String[] wool = new String[] {"ORANGE","MAGENTA","LIGHT_BLUE","LIME",
+				"PINK","GRAY","SILVER","PURPLE",
+				"BLUE","GREEN","RED","CYAN"};
+		String[] chat = new String[] {"GOLD","LIGHT_PURPLE","BLUE","GREEN",
+				"RED","DARK_GRAY","GRAY","DARK_PURPLE",
+				"DARK_BLUE","DARK_GREEN","DARK_RED","DARK_AQUA"};
+		
+		if (forward) {
+			for (int i = 0; i<wool.length; i++) {
+				if (color.equals(wool[i])) {
+					return chat[i];
+				}
+			}
+		} else {
+
+			for (int i = 0; i<chat.length; i++) {
+				if (color.equals(chat[i])) {
+					return wool[i];
+				}
+			}
+		}
+		
+		return null;
 	}
 
 	/**

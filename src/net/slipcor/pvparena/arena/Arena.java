@@ -53,7 +53,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.13
+ * @version v0.7.14
  * 
  */
 
@@ -1003,7 +1003,11 @@ public class Arena {
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-
+				try {
+					wait(30);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				if (!type.allowsRandomSpawns()) {
 					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 				} else {
@@ -1121,7 +1125,7 @@ public class Arena {
 	 * @param place
 	 *            the coord string
 	 */
-	public void tpPlayerToCoordName(Player player, String place) {
+	public synchronized void tpPlayerToCoordName(Player player, String place) {
 		db.i("teleporting " + player + " to coord " + place);
 		if (place.endsWith("lounge")) {
 			// at the start of the match

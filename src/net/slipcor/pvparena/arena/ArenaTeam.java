@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import net.slipcor.pvparena.core.StringParser;
 
 /**
  * arena team class
@@ -14,7 +15,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.16
  * 
  */
 
@@ -34,7 +35,7 @@ public class ArenaTeam {
 	 */
 	public ArenaTeam(String name, String color) {
 		this.players = new HashSet<ArenaPlayer>();
-		this.color = ChatColor.valueOf(color);
+		this.color = StringParser.getChatColorFromWoolEnum(color);
 		this.name = name;
 	}
 

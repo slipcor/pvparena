@@ -46,6 +46,10 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.16.0 - more colors!
+* v0.7.15.0 - /pa readylist - to see people not being flagged as ready
+* v0.7.14.1 - add a delay to teleporting, making the player teleporting thread safe
+* v0.7.14.0 - teleport to spawns with /pa tp [spawnname]
 * v0.7.13.1 - FIRST restore blocks, then restore inventories!
 * v0.7.13.0 - add config setting to force warming up on /pa join | /pa spectate
 * v0.7.12.1 - fix /pa [name] remove [spawnname]

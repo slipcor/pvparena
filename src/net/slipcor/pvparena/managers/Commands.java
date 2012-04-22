@@ -28,7 +28,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.10
+ * @version v0.7.15
  * 
  */
 
@@ -291,6 +291,8 @@ public class Commands {
 				return parseSpectate(arena, player);
 			} else if (args[0].equalsIgnoreCase("users")) {
 				return parseUsers(arena, player);
+			} else if (args[0].equalsIgnoreCase("readylist")) {
+				return parseReadyList(arena, player);
 			} else if (args[0].equalsIgnoreCase("region")) {
 				return parseRegion(arena, player);
 			} else if (Teams.getTeam(arena, args[0]) != null) {
@@ -304,6 +306,9 @@ public class Commands {
 		} else if ((args.length == 2 || args.length == 3)
 				&& args[0].equalsIgnoreCase("stats")) {
 			return parseStats(arena, player, args);
+		} else if ((args.length == 2)
+				&& args[0].equalsIgnoreCase("tp")) {
+			return parseTeleport(arena, player, args);
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("borders")) {
 			ArenaRegion region = arena.regions.get(args[1]);
 			if (region == null) {
@@ -434,6 +439,29 @@ public class Commands {
 					arena);
 			return false;
 		}
+		return true;
+	}
+
+	private static boolean parseReadyList(Arena arena, Player player) {
+		if (Teams.countPlayersInTeams(arena) < 1) {
+			Arenas.tellPlayer(player, Language.parse("noplayer"), arena);
+			return true;
+		}
+		String plrs = Teams.getNotReadyTeamStringList(arena);
+		Arenas.tellPlayer(player, Language.parse("notreadyplayers") + ": " + plrs,
+				arena);
+		return true;
+	}
+
+	private static boolean parseTeleport(Arena arena, Player player,
+			String[] args) {
+		if (!PVPArena.hasAdminPerms(player)) {
+			Arenas.tellPlayer(player,
+					Language.parse("nopermto", Language.parse("teleport")), arena);
+			return true;
+		}
+		
+		arena.tpPlayerToCoordName(player, args[1]);
 		return true;
 	}
 
@@ -603,7 +631,7 @@ public class Commands {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
 						new ArenaWarmupRunnable(arena, ap, null, false),
 						20L * arena.cfg.getInt("join.warmup"));
-				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return true;
 			}
 		}
@@ -613,6 +641,7 @@ public class Commands {
 
 		Teams.choosePlayerTeam(arena, player);
 		Inventories.prepareInventory(arena, player);
+		ap.setStatus(Status.LOBBY);
 
 		PVPArena.instance.getAmm().parseJoin(
 				arena,
@@ -671,7 +700,7 @@ public class Commands {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
 						new ArenaWarmupRunnable(arena, ap, sTeam, false),
 						20L * arena.cfg.getInt("join.warmup"));
-				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return true;
 			}
 		}
@@ -680,6 +709,7 @@ public class Commands {
 		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		arena.tpPlayerToCoordName(player, sTeam + "lounge");
+		ap.setStatus(Status.LOBBY);
 
 		ArenaTeam team = Teams.getTeam(arena, sTeam);
 
@@ -802,7 +832,7 @@ public class Commands {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
 						new ArenaWarmupRunnable(arena, ap, null, true),
 						20L * arena.cfg.getInt("join.warmup"));
-				Arenas.tellPlayer(player, Language.parse("Warming up... stand by..."));
+				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return true;
 			}
 		}

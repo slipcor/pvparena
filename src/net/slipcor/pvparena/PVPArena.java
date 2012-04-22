@@ -47,7 +47,7 @@ import com.nodinchan.ncloader.metrics.Metrics;
  * 
  * @author slipcor
  * 
- * @version v0.7.12
+ * @version v0.7.14
  * 
  */
 
@@ -300,33 +300,33 @@ public class PVPArena extends JavaPlugin {
 				JarFile jarFile = new JarFile(lib);
 				Enumeration<JarEntry> entries = jarFile.entries();
 				
-				String version = "";
+				double version = 0;
 				
 				while (entries.hasMoreElements()) {
 					JarEntry element = entries.nextElement();
 					
 					if (element.getName().equals("version.yml")) {
 						BufferedReader reader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(element)));
-						version = reader.readLine().substring(9);
+						version = Double.parseDouble(reader.readLine().substring(9).trim());
 					}
 				}
 				
-				if (version.equals("")) {
+				if (version == 0) {
 					System.out.println("NC-Loader lib outdated");
 					download = true;
 					
 				} else {
-					HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://www.nodinchan.com/ncloaderlibVersion.yml").openConnection();
+					HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://www.nodinchan.com/NC-LoaderLib/version.yml").openConnection();
 					BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 					
-					if (!reader.readLine().substring(9).equals(version))
+					if (Double.parseDouble(reader.readLine().replace("NC-LoaderLib Version ", "").trim()) > version)
 						download = true;
 				}
 			}
 			
 			if (download) {
 				System.out.println("Downloading NC-Loader lib...");
-				URL url = new URL("http://www.nodinchan.com/NC-LoaderLib.jar");
+				URL url = new URL("http://www.nodinchan.com/NC-LoaderLib/NC-LoaderLib.jar");
 				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 				FileOutputStream output = new FileOutputStream(lib);
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);

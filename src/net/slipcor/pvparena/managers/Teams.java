@@ -25,7 +25,7 @@ import net.slipcor.pvparena.core.Language;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.15
  * 
  */
 
@@ -234,6 +234,30 @@ public class Teams {
 			result += team.getTeamMembers().size();
 		}
 		db.i("players having a team: " + result);
+		return result;
+	}
+
+	public static String getNotReadyTeamStringList(Arena arena) {
+		String result = "";
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getTeamMembers().size() < 1) {
+				continue;
+			}
+
+			if (!result.equals(""))
+				result += ", ";
+
+			for (ArenaPlayer p : team.getTeamMembers()) {
+				if (p.getStatus().equals(Status.LOBBY)) {
+					if (!result.equals(""))
+						result += ", ";
+					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
+				} else {
+					db.i("player state: " + p.getStatus().name());
+				}
+			}
+		}
+		db.i("notreadyteamstringlist: " + result);
 		return result;
 	}
 
