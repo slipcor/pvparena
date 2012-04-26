@@ -32,6 +32,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * entity listener class
@@ -204,10 +205,11 @@ public class EntityListener implements Listener {
 		}
 
 		Statistics.damage(arena, null, player, event.getDamage());
-
-		// TODO calculate damage and armor
+		
+		int reduction = calcArmorDamageReduction(event, player);
+		
 		// here it comes, process the damage!
-		if (event.getDamage() >= player.getHealth()) {
+		if (event.getDamage() - reduction >= player.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
 
@@ -228,6 +230,155 @@ public class EntityListener implements Listener {
 		}
 
 	}
+
+	private int calcArmorDamageReduction(EntityDamageEvent event, Player player) {
+		/**
+		 * full damage reduction:
+		 * 
+		 * CHAIN
+		 * 7=>3
+		 * 11=>10
+		 * => 9%
+		 * 
+		 * 
+		 * GOLD
+		 * 11->6
+		 *  9->5
+		 *  7->4
+		 *  7->3
+		 * => 42%
+		 *  
+		 * 
+		 * LEATHER
+		 * 7->6
+		 * => 14%
+		 * 
+		 * IRON
+		 * 11->4
+		 * 10->4
+		 *  8->3
+		 * 	7->3
+		 * => 50%
+		 *  
+		 * DIAMOND
+		 * 10->2
+		 *  9->2
+		 *  8->2
+		 *  7->2
+		 *  => 75%
+		 * 
+		 * -------------------------
+		 * full reduction: 5/7 ~ 70%
+		 * -------------------------
+		 * 
+		 * 
+		 * HELMET
+		 * 
+		 * 7->6
+		 * 11->10
+		 * =>10% ==> [ 1/7 % ]
+		 * 
+		 * CHEST
+		 * 
+		 * 7->5
+		 * 8->5
+		 * 11->8
+		 * =>25% ==> [ 25/70 % ]
+		 * 
+		 * LEGS
+		 * 
+		 * 7->5
+		 * 11->8
+		 * 10->8
+		 * =>20% => [ 2/7 % ]
+		 * 
+		 * BOOTS
+		 * 
+		 * 7->6
+		 * 8->7
+		 * 9->8
+		 * 11->9
+		 * =>10% ==> [ 1/7 % ]
+		 * 
+		 */
+		
+		int chainfull = 9;
+		int goldfull = 42;
+		int leatherfull = 14;
+		int ironfull = 50;
+		int diamondfull = 75;
+
+		float helmfactor = 1/7;
+		float chestfactor = 25/70;
+		float legfactor = 2/7;
+		float bootfactor = 1/7;
+		
+		float reduction = 0.0f;
+
+		if (player.getInventory().getHelmet() != null) {
+			ItemStack item = player.getInventory().getHelmet();
+			float adding = helmfactor;
+			if (item.getType().toString().startsWith("CHAIN")) {
+				reduction += adding * chainfull;
+			} else if (item.getType().toString().startsWith("GOLD")) {
+				reduction += adding * goldfull;
+			} else if (item.getType().toString().startsWith("LEATHER")) {
+				reduction += adding * leatherfull;
+			} else if (item.getType().toString().startsWith("IRON")) {
+				reduction += adding * ironfull;
+			} else if (item.getType().toString().startsWith("DIAMOND")) {
+				reduction += adding * diamondfull;
+			}
+		}
+		if (player.getInventory().getChestplate() != null) {
+			ItemStack item = player.getInventory().getChestplate();
+			float adding = chestfactor;
+			if (item.getType().toString().startsWith("CHAIN")) {
+				reduction += adding * chainfull;
+			} else if (item.getType().toString().startsWith("GOLD")) {
+				reduction += adding * goldfull;
+			} else if (item.getType().toString().startsWith("LEATHER")) {
+				reduction += adding * leatherfull;
+			} else if (item.getType().toString().startsWith("IRON")) {
+				reduction += adding * ironfull;
+			} else if (item.getType().toString().startsWith("DIAMOND")) {
+				reduction += adding * diamondfull;
+			}
+		}
+		if (player.getInventory().getLeggings() != null) {
+			ItemStack item = player.getInventory().getLeggings();
+			float adding = legfactor;
+			if (item.getType().toString().startsWith("CHAIN")) {
+				reduction += adding * chainfull;
+			} else if (item.getType().toString().startsWith("GOLD")) {
+				reduction += adding * goldfull;
+			} else if (item.getType().toString().startsWith("LEATHER")) {
+				reduction += adding * leatherfull;
+			} else if (item.getType().toString().startsWith("IRON")) {
+				reduction += adding * ironfull;
+			} else if (item.getType().toString().startsWith("DIAMOND")) {
+				reduction += adding * diamondfull;
+			}
+		}
+		if (player.getInventory().getBoots() != null) {
+			ItemStack item = player.getInventory().getBoots();
+			float adding = bootfactor;
+			if (item.getType().toString().startsWith("CHAIN")) {
+				reduction += adding * chainfull;
+			} else if (item.getType().toString().startsWith("GOLD")) {
+				reduction += adding * goldfull;
+			} else if (item.getType().toString().startsWith("LEATHER")) {
+				reduction += adding * leatherfull;
+			} else if (item.getType().toString().startsWith("IRON")) {
+				reduction += adding * ironfull;
+			} else if (item.getType().toString().startsWith("DIAMOND")) {
+				reduction += adding * diamondfull;
+			}
+		}
+		
+		return (int) reduction;
+	}
+
 
 	/**
 	 * parsing of damage: Entity vs Entity
@@ -409,8 +560,6 @@ public class EntityListener implements Listener {
 			}
 		}
 
-		// TODO calculate armor
-
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
@@ -419,8 +568,11 @@ public class EntityListener implements Listener {
 				defender, event);
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
-
-		if (event.getDamage() >= defender.getHealth()) {
+		
+		int reduction = calcArmorDamageReduction(event, defender);
+		
+		// here it comes, process the damage!
+		if (event.getDamage() - reduction >= defender.getHealth()) {
 			db.i("damage >= health => death");
 			int lives = 3;
 

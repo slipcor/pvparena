@@ -8,14 +8,14 @@ A PVP experience enhancing plugin.
 
 * Multiple arenas
 * Battlefield regions
-* Customisable classes
+* Customizable classes
 * Player-state saving
 * Arena regions
-* In-game config access
-* Arena temp-disable
-* Leaderboards
+* In-game configuration access
+* Arena disable
+* Leader boards
 * Spawn protection
-* Flag colouring
+* Flag coloring
 * Inventory drops
 * Announcements
 * Arena end timer
@@ -28,7 +28,7 @@ A PVP experience enhancing plugin.
 
 -----------------------------------------------------------------------------------------------------------------------
 
-=== Dependecies
+=== Dependencies
 
 * CraftBukkit Beta 1.2.3-R0.2
 
@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.17.0 - (more) correctly calculate armor in order to detect death
+* v0.7.16.1 - fix when teleporting players
 * v0.7.16.0 - more colors!
 * v0.7.15.0 - /pa readylist - to see people not being flagged as ready
 * v0.7.14.1 - add a delay to teleporting, making the player teleporting thread safe
@@ -103,6 +105,8 @@ A PVP experience enhancing plugin.
 * Fixes
 ** DOM arena fixing
 * Features
+** join: /pa {name} [amount] - win amount : winFactor 
+** CHEST powerup placement
 ** MAP support: Player location, flag/spawn location
 ** RUSH mode - Base defend vs Conquer base
 ** Spout: Adding "skin" key to classes, MobDisguise hooking
@@ -111,6 +115,8 @@ A PVP experience enhancing plugin.
 ** Command system
 * API
 ** improvements
+* Code cleanups/updates
+** Commands.java
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -118,7 +124,7 @@ A PVP experience enhancing plugin.
 * Deminetix for the very root, the Fight plugin
 * Bradley Hilton for the fork until version v0.0.3
 * Carbon131 for adding features until version v0.0.5
-* Drehverschluss for great support during the v0.6 rewrite
+* Drehverschluss for great support during the v0.6+v0.7 rewrite
 * NodinChan for helping me cleaning up my code and for his loader!
 
 -----------------------------------------------------------------------------------------------------------------------

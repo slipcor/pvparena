@@ -102,7 +102,7 @@ public class StringParser {
 			}
 		}
 		
-		return null;
+		return color;
 	}
 
 	/**
