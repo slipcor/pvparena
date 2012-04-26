@@ -7,10 +7,10 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -211,7 +211,10 @@ public class ArenaModule extends Loadable {
 	 * @param event
 	 *            the BlockBreakEvent
 	 */
-	public void onBlockBreak(Arena arena, BlockBreakEvent event) {
+	public void onBlockBreak(Arena arena, Block block) {
+	}
+
+	public void onBlockPiston(Arena arena, Block block) {
 	}
 
 	/**
@@ -222,7 +225,7 @@ public class ArenaModule extends Loadable {
 	 * @param event
 	 *            the BlockPlaceEvent
 	 */
-	public void onBlockPlace(Arena arena, BlockPlaceEvent event) {
+	public void onBlockPlace(Arena arena, Block block, Material mat) {
 	}
 
 	/**

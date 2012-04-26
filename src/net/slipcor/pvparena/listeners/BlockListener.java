@@ -6,12 +6,16 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Teams;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
@@ -24,7 +28,7 @@ import org.bukkit.event.block.SignChangeEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.17
  * 
  */
 
@@ -45,7 +49,7 @@ public class BlockListener implements Listener {
 		db.i("block break inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
-			PVPArena.instance.getAmm().onBlockBreak(arena, event);
+			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 			return; // we don't need protection => OUT!
 		}
 
@@ -65,11 +69,37 @@ public class BlockListener implements Listener {
 
 		db.i("block burn inside the arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.fire.firespread", true))))
-			// if not an event happend that we would like to block => OUT
+				|| (!(arena.cfg.getBoolean("protection.fire.firespread", true)))) {
+			// if not an event happened that we would like to block => OUT
+			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 			return;
+		}
 
 		event.setCancelled(true); // else->cancel!
+		return;
+	}
+	
+	public void onBlockFromTo(BlockFromToEvent event) {
+		Block block = event.getToBlock();
+		
+		if (event.isCancelled()) {
+			db.i("oBFTE cancelled");
+			return;
+		}
+		Arena arena = Arenas.getArenaByRegionLocation(block
+				.getLocation());
+		if (arena == null)
+			return; // no arena => out
+
+		db.i("block fluids inside the arena");
+		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.fluids", true)))) {
+			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
+			PVPArena.instance.getAmm().onBlockPlace(arena, block, Material.AIR);
+			return; // we don't need protection => OUT!
+		}
+
+		event.setCancelled(true);
 		return;
 	}
 
@@ -96,6 +126,39 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	@EventHandler
+	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
+		if (event.isCancelled()) {
+			db.i("oBPEE cancelled");
+			return;
+		}
+		
+		Arena arena = null;
+		
+		for (Block block : event.getBlocks()) {
+			arena = Arenas.getArenaByRegionLocation(block.getLocation());
+			if (arena != null) {
+				break;
+			}
+		}
+		
+		if (arena == null)
+			return; // no arena => out
+
+		db.i("block piston extend inside the arena");
+		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
+				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
+
+			for (Block block : event.getBlocks()) {
+				PVPArena.instance.getAmm().onBlockPiston(arena, block);
+			}
+			// if not an event happened that we would like to block => OUT
+			return;
+		}
+		event.setCancelled(true);
+		return;
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.isCancelled()) {
@@ -110,15 +173,17 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			PVPArena.instance.getAmm().onBlockPlace(arena, event);
-			// if not an event happend that we would like to block => OUT
+			PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(), event
+					.getBlockReplacedState().getType());
+			// if not an event happened that we would like to block => OUT
 			return;
 		}
 
 		if (!arena.cfg.getBoolean("protection.tnt", true)
 				&& event.getBlock().getTypeId() == 46) {
 			if (arena.fightInProgress) {
-				PVPArena.instance.getAmm().onBlockPlace(arena, event);
+				PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(), event
+						.getBlockReplacedState().getType());
 			}
 			return; // we do not block TNT, so just return if it is TNT
 		}

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -287,9 +287,15 @@ public class ArenaModuleManager {
 	 * @param event
 	 *            the BlockBreakEvent
 	 */
-	public void onBlockBreak(Arena arena, BlockBreakEvent event) {
+	public void onBlockBreak(Arena arena, Block block) {
 		for (ArenaModule mod : modules) {
-			mod.onBlockBreak(arena, event);
+			mod.onBlockBreak(arena, block);
+		}
+	}
+
+	public void onBlockPiston(Arena arena, Block block) {
+		for (ArenaModule mod : modules) {
+			mod.onBlockPiston(arena, block);
 		}
 	}
 
@@ -301,9 +307,9 @@ public class ArenaModuleManager {
 	 * @param event
 	 *            the BlockPlaceEvent
 	 */
-	public void onBlockPlace(Arena arena, BlockPlaceEvent event) {
+	public void onBlockPlace(Arena arena, Block block, Material mat) {
 		for (ArenaModule mod : modules) {
-			mod.onBlockPlace(arena, event);
+			mod.onBlockPlace(arena, block, mat);
 		}
 	}
 

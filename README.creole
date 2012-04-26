@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.17.1 - fix fluids and block burning not being cancellable/replaced properly
 * v0.7.17.0 - (more) correctly calculate armor in order to detect death
 * v0.7.16.1 - fix when teleporting players
 * v0.7.16.0 - more colors!
