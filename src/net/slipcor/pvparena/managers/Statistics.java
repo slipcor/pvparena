@@ -19,7 +19,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.17
  * 
  */
 
@@ -136,12 +136,14 @@ public class Statistics {
 	 *            the type to sort by
 	 * @param desc
 	 *            descending order?
+	 * @param global 
 	 * @return true if pair has to be sorted, false otherwise
 	 */
 	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy,
-			boolean desc) {
+			boolean desc, boolean global) {
 		int a = 0;
 		int b = 0;
+		
 		if (sortBy.equals(type.MAXDAMAGE)) {
 			a = aps[pos].maxdamage;
 			b = aps[pos + 1].maxdamage;
@@ -166,6 +168,34 @@ public class Statistics {
 		} else if (sortBy.equals(type.WINS)) {
 			a = aps[pos].wins;
 			b = aps[pos + 1].wins;
+		}
+
+		if (global) {
+			if (sortBy.equals(type.MAXDAMAGE)) {
+				a += aps[pos].totmaxdamage;
+				b += aps[pos + 1].totmaxdamage;
+			} else if (sortBy.equals(type.MAXDAMAGETAKE)) {
+				a += aps[pos].totmaxdamagetake;
+				b += aps[pos + 1].totmaxdamagetake;
+			} else if (sortBy.equals(type.DEATHS)) {
+				a += aps[pos].totdeaths;
+				b += aps[pos + 1].totdeaths;
+			} else if (sortBy.equals(type.DAMAGE)) {
+				a += aps[pos].totdamage;
+				b += aps[pos + 1].totdamage;
+			} else if (sortBy.equals(type.DAMAGETAKE)) {
+				a += aps[pos].totdamagetake;
+				b += aps[pos + 1].totdamagetake;
+			} else if (sortBy.equals(type.KILLS)) {
+				a += aps[pos].totkills;
+				b += aps[pos + 1].totkills;
+			} else if (sortBy.equals(type.LOSSES)) {
+				a += aps[pos].totlosses;
+				b += aps[pos + 1].totlosses;
+			} else if (sortBy.equals(type.WINS)) {
+				a += aps[pos].totwins;
+				b += aps[pos + 1].totwins;
+			}
 		}
 
 		return desc ? (a < b) : (a > b);
@@ -196,15 +226,25 @@ public class Statistics {
 	 * @return an array of ArenaPlayer
 	 */
 	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
-		db.i("getting stats: " + a.name + " sorted by " + sortBy + " "
+		db.i("getting stats: " + (a == null?"global":a.name) + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
-		ArenaPlayer[] aps = new ArenaPlayer[Teams.countPlayersInTeams(a)];
+		
+		int count = (a == null)?ArenaPlayer.countPlayers():Teams.countPlayersInTeams(a);
+		
+		ArenaPlayer[] aps = new ArenaPlayer[count];
+		
 		int i = 0;
-		for (ArenaPlayer p : a.getPlayers()) {
-			aps[i++] = p;
+		if (a == null) {
+			for (ArenaPlayer p : ArenaPlayer.getPlayers()) {
+				aps[i++] = p;
+			}
+		} else {
+			for (ArenaPlayer p : a.getPlayers()) {
+				aps[i++] = p;
+			}
 		}
 
-		sortBy(aps, sortBy, desc);
+		sortBy(aps, sortBy, desc, a == null);
 
 		return aps;
 	}
@@ -268,28 +308,52 @@ public class Statistics {
 	 *            the type to read
 	 * @return an Array of String
 	 */
-	public static String[] read(ArenaPlayer[] players, type t) {
+	public static String[] read(ArenaPlayer[] players, type t, boolean global) {
 		String[] result = new String[players.length < 8 ? 8 : players.length];
 		int i = 0;
-		for (ArenaPlayer p : players) {
-			if (t.equals(type.MAXDAMAGE)) {
-				result[i++] = String.valueOf(p.maxdamage);
-			} else if (t.equals(type.MAXDAMAGETAKE)) {
-				result[i++] = String.valueOf(p.maxdamagetake);
-			} else if (t.equals(type.DEATHS)) {
-				result[i++] = String.valueOf(p.deaths);
-			} else if (t.equals(type.DAMAGE)) {
-				result[i++] = String.valueOf(p.damage);
-			} else if (t.equals(type.DAMAGETAKE)) {
-				result[i++] = String.valueOf(p.damagetake);
-			} else if (t.equals(type.KILLS)) {
-				result[i++] = String.valueOf(p.kills);
-			} else if (t.equals(type.LOSSES)) {
-				result[i++] = String.valueOf(p.losses);
-			} else if (t.equals(type.WINS)) {
-				result[i++] = String.valueOf(p.wins);
-			} else {
-				result[i++] = p.get().getName();
+		if (global) {
+			for (ArenaPlayer p : players) {
+				if (t.equals(type.MAXDAMAGE)) {
+					result[i++] = String.valueOf(p.maxdamage+p.totmaxdamage);
+				} else if (t.equals(type.MAXDAMAGETAKE)) {
+					result[i++] = String.valueOf(p.maxdamagetake+p.totmaxdamagetake);
+				} else if (t.equals(type.DEATHS)) {
+					result[i++] = String.valueOf(p.deaths+p.totdeaths);
+				} else if (t.equals(type.DAMAGE)) {
+					result[i++] = String.valueOf(p.damage+p.totdamage);
+				} else if (t.equals(type.DAMAGETAKE)) {
+					result[i++] = String.valueOf(p.damagetake+p.totdamagetake);
+				} else if (t.equals(type.KILLS)) {
+					result[i++] = String.valueOf(p.kills+p.totkills);
+				} else if (t.equals(type.LOSSES)) {
+					result[i++] = String.valueOf(p.losses+p.totlosses);
+				} else if (t.equals(type.WINS)) {
+					result[i++] = String.valueOf(p.wins+p.totwins);
+				} else {
+					result[i++] = p.get().getName();
+				}
+			}
+		} else {
+			for (ArenaPlayer p : players) {
+				if (t.equals(type.MAXDAMAGE)) {
+					result[i++] = String.valueOf(p.maxdamage);
+				} else if (t.equals(type.MAXDAMAGETAKE)) {
+					result[i++] = String.valueOf(p.maxdamagetake);
+				} else if (t.equals(type.DEATHS)) {
+					result[i++] = String.valueOf(p.deaths);
+				} else if (t.equals(type.DAMAGE)) {
+					result[i++] = String.valueOf(p.damage);
+				} else if (t.equals(type.DAMAGETAKE)) {
+					result[i++] = String.valueOf(p.damagetake);
+				} else if (t.equals(type.KILLS)) {
+					result[i++] = String.valueOf(p.kills);
+				} else if (t.equals(type.LOSSES)) {
+					result[i++] = String.valueOf(p.losses);
+				} else if (t.equals(type.WINS)) {
+					result[i++] = String.valueOf(p.wins);
+				} else {
+					result[i++] = p.get().getName();
+				}
 			}
 		}
 		while (i < 8) {
@@ -307,15 +371,16 @@ public class Statistics {
 	 *            the type to sort by
 	 * @param desc
 	 *            descending order?
+	 * @param global 
 	 */
-	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc) {
+	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc, boolean global) {
 		int n = aps.length;
 		boolean doMore = true;
 		while (doMore) {
 			n--;
 			doMore = false; // assume this is our last pass over the array
 			for (int i = 0; i < n; i++) {
-				if (decide(aps, i, sortBy, desc)) {
+				if (decide(aps, i, sortBy, desc, global)) {
 					// exchange elements
 					ArenaPlayer temp = aps[i];
 					aps[i] = aps[i + 1];

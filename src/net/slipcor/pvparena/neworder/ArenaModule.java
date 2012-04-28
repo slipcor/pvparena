@@ -469,4 +469,7 @@ public class ArenaModule extends Loadable {
 	 */
 	public void unload(Player player) {
 	}
+
+	public void load_arenas() {
+	}
 }

@@ -617,4 +617,10 @@ public class ArenaModuleManager {
 			mod.unload(player);
 		}
 	}
+
+	public void load_arenas() {
+		for (ArenaModule mod : modules) {
+			mod.load_arenas();
+		}
+	}
 }

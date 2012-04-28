@@ -222,6 +222,7 @@ public class Arenas {
 			e.printStackTrace();
 			return;
 		}
+		PVPArena.instance.getAmm().load_arenas();
 	}
 
 	/**

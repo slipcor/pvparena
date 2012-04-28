@@ -43,12 +43,10 @@ public class BlockListener implements Listener {
 		}
 		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
 				.getLocation());
-		if (arena == null)
-			return; // no arena => out
-
-		db.i("block break inside the arena");
-		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
+		if (arena == null
+				|| arena.edit
+						|| (!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg
+							.getBoolean("protection.blockdamage", true)))) {
 			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 			return; // we don't need protection => OUT!
 		}
@@ -78,16 +76,15 @@ public class BlockListener implements Listener {
 		event.setCancelled(true); // else->cancel!
 		return;
 	}
-	
+
 	public void onBlockFromTo(BlockFromToEvent event) {
 		Block block = event.getToBlock();
-		
+
 		if (event.isCancelled()) {
 			db.i("oBFTE cancelled");
 			return;
 		}
-		Arena arena = Arenas.getArenaByRegionLocation(block
-				.getLocation());
+		Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
 		if (arena == null)
 			return; // no arena => out
 
@@ -132,16 +129,16 @@ public class BlockListener implements Listener {
 			db.i("oBPEE cancelled");
 			return;
 		}
-		
+
 		Arena arena = null;
-		
+
 		for (Block block : event.getBlocks()) {
 			arena = Arenas.getArenaByRegionLocation(block.getLocation());
 			if (arena != null) {
 				break;
 			}
 		}
-		
+
 		if (arena == null)
 			return; // no arena => out
 
@@ -173,8 +170,8 @@ public class BlockListener implements Listener {
 		db.i("block place inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockplace", true)))) {
-			PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(), event
-					.getBlockReplacedState().getType());
+			PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(),
+					event.getBlockReplacedState().getType());
 			// if not an event happened that we would like to block => OUT
 			return;
 		}
@@ -182,8 +179,9 @@ public class BlockListener implements Listener {
 		if (!arena.cfg.getBoolean("protection.tnt", true)
 				&& event.getBlock().getTypeId() == 46) {
 			if (arena.fightInProgress) {
-				PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(), event
-						.getBlockReplacedState().getType());
+				PVPArena.instance.getAmm().onBlockPlace(arena,
+						event.getBlock(),
+						event.getBlockReplacedState().getType());
 			}
 			return; // we do not block TNT, so just return if it is TNT
 		}

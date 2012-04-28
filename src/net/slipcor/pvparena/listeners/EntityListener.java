@@ -12,8 +12,8 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

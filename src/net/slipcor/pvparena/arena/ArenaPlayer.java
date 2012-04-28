@@ -82,6 +82,15 @@ public class ArenaPlayer {
 	public int damagetake = 0;
 	public int maxdamagetake = 0;
 
+	public int totlosses = 0;
+	public int totwins = 0;
+	public int totkills = 0;
+	public int totdeaths = 0;
+	public int totdamage = 0;
+	public int totmaxdamage = 0;
+	public int totdamagetake = 0;
+	public int totmaxdamagetake = 0;
+
 	public static HashMap<ArenaPlayer, String> deadPlayers = new HashMap<ArenaPlayer, String>();
 
 	/**
@@ -104,14 +113,14 @@ public class ArenaPlayer {
 		try {
 			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
 
-			losses = cfg.getInt(p.getName() + ".losses", 0);
-			wins = cfg.getInt(p.getName() + ".wins", 0);
-			kills = cfg.getInt(p.getName() + ".kills", 0);
-			deaths = cfg.getInt(p.getName() + ".deaths", 0);
-			damage = cfg.getInt(p.getName() + ".damage", 0);
-			damagetake = cfg.getInt(p.getName() + ".damagetake", 0);
-			maxdamage = cfg.getInt(p.getName() + ".maxdamage", 0);
-			maxdamagetake = cfg.getInt(p.getName() + ".maxdamagetake", 0);
+			totlosses = cfg.getInt(p.getName() + ".losses", 0);
+			totwins = cfg.getInt(p.getName() + ".wins", 0);
+			totkills = cfg.getInt(p.getName() + ".kills", 0);
+			totdeaths = cfg.getInt(p.getName() + ".deaths", 0);
+			totdamage = cfg.getInt(p.getName() + ".damage", 0);
+			totdamagetake = cfg.getInt(p.getName() + ".damagetake", 0);
+			totmaxdamage = cfg.getInt(p.getName() + ".maxdamage", 0);
+			totmaxdamagetake = cfg.getInt(p.getName() + ".maxdamagetake", 0);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -315,6 +324,18 @@ public class ArenaPlayer {
 		}
 		return totalPlayers.get(player.getName());
 	}
+	
+	public static int countPlayers() {
+		return totalPlayers.size();
+	}
+	
+	public static HashSet<ArenaPlayer> getPlayers() {
+		HashSet<ArenaPlayer> ps = new HashSet<ArenaPlayer>();
+		for (ArenaPlayer ap : totalPlayers.values()) {
+			ps.add(ap);
+		}
+		return ps;
+	}
 
 	/**
 	 * save and reset a player instance
@@ -327,14 +348,14 @@ public class ArenaPlayer {
 					+ "/players.yml";
 			cfg.load(file);
 
-			cfg.set(player.getName() + ".losses", losses);
-			cfg.set(player.getName() + ".wins", wins);
-			cfg.set(player.getName() + ".kills", kills);
-			cfg.set(player.getName() + ".deaths", deaths);
-			cfg.set(player.getName() + ".damage", damage);
-			cfg.set(player.getName() + ".maxdamage", maxdamage);
-			cfg.set(player.getName() + ".damagetake", damagetake);
-			cfg.set(player.getName() + ".maxdamagetake", maxdamagetake);
+			cfg.set(player.getName() + ".losses", losses + totlosses);
+			cfg.set(player.getName() + ".wins", wins + totwins);
+			cfg.set(player.getName() + ".kills", kills + totkills);
+			cfg.set(player.getName() + ".deaths", deaths + totdeaths);
+			cfg.set(player.getName() + ".damage", damage + totdamage);
+			cfg.set(player.getName() + ".maxdamage", maxdamage + totmaxdamage);
+			cfg.set(player.getName() + ".damagetake", damagetake + totdamagetake);
+			cfg.set(player.getName() + ".maxdamagetake", maxdamagetake + totmaxdamagetake);
 
 			cfg.save(file);
 

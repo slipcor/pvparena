@@ -867,7 +867,7 @@ public class Commands {
 		}
 
 		ArenaPlayer[] aps = Statistics.getStats(arena, type);
-		String[] s = Statistics.read(aps, type);
+		String[] s = Statistics.read(aps, type, arena == null);
 
 		int i = 0;
 

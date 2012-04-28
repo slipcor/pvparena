@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -435,6 +436,25 @@ public class Config {
 					"Some of the parsed values are null!");
 
 		return new Location(world, x, y, z);
+	}
+
+	public static Location parseWorldLocation(String coords) {
+		String[] parts = coords.split(",");
+		if (parts.length != 6)
+			throw new IllegalArgumentException(
+					"Input string must contain world, x, y, z, yaw and pitch: " + coords);
+		World w = Bukkit.getServer().getWorld(parts[0]);
+		Integer x = parseInteger(parts[1]);
+		Integer y = parseInteger(parts[2]);
+		Integer z = parseInteger(parts[3]);
+		Float yaw = parseFloat(parts[4]);
+		Float pitch = parseFloat(parts[5]);
+
+		if (x == null || y == null || z == null || yaw == null || pitch == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+
+		return new Location(w, x, y, z, yaw, pitch);
 	}
 
 	/**
