@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.17.4 - fix chest restoring
 * v0.7.17.3 - make the countdown timer configurable
 * v0.7.17.2 - fix arenaboards displaying the global stats for players during a match
 * v0.7.17.1 - fix fluids and block burning not being cancellable/replaced properly

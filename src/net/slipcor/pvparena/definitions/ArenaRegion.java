@@ -13,10 +13,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -351,18 +353,24 @@ public class ArenaRegion {
 						if (b.getType() == Material.CHEST) {
 							Chest c = (Chest) b.getState();
 
-							chests.put(b.getLocation(), c.getInventory()
-									.getContents().clone());
+							chests.put(b.getLocation(), cloneIS(c.getInventory()
+									.getContents()));
+							
+							for (ItemStack is : chests.get(b.getLocation())) {
+								if (is != null) {
+									System.out.print(is.getAmount() + " x " + is.getType().name() + " : " + is.getDurability());
+								}
+							}
 						} else if (b.getType() == Material.FURNACE) {
 							Furnace c = (Furnace) b.getState();
 
-							furnaces.put(b.getLocation(), c.getInventory()
-									.getContents().clone());
+							furnaces.put(b.getLocation(), cloneIS(c.getInventory()
+									.getContents()));
 						} else if (b.getType() == Material.DISPENSER) {
 							Dispenser c = (Dispenser) b.getState();
 
-							dispensers.put(b.getLocation(), c.getInventory()
-									.getContents().clone());
+							dispensers.put(b.getLocation(), cloneIS(c.getInventory()
+									.getContents()));
 						}
 						
 					}
@@ -385,18 +393,18 @@ public class ArenaRegion {
 						if ((b.getType() != Material.CHEST)) {
 							Chest c = (Chest) b.getState();
 
-							chests.put(b.getLocation(), c.getInventory()
-									.getContents().clone());
+							chests.put(b.getLocation(), cloneIS(c.getInventory()
+									.getContents()));
 						} else if (b.getType() != Material.FURNACE) {
 							Furnace f = (Furnace) b.getState();
 							
-							furnaces.put(b.getLocation(), f.getInventory()
-									.getContents().clone());
+							furnaces.put(b.getLocation(), cloneIS(f.getInventory()
+									.getContents()));
 						} else if (b.getType() != Material.DISPENSER) {
 							Dispenser d = (Dispenser) b.getState();
 							
-							dispensers.put(b.getLocation(), d.getInventory()
-									.getContents().clone());
+							dispensers.put(b.getLocation(), cloneIS(d.getInventory()
+									.getContents()));
 						}
 					}
 				}
@@ -405,13 +413,43 @@ public class ArenaRegion {
 		}
 	}
 
+	private ItemStack[] cloneIS(ItemStack[] contents) {
+		ItemStack[] result = new ItemStack[contents.length];
+		
+		for (int i=0; i<result.length; i++) {
+			if (contents[i] == null) {
+				continue;
+			}
+			ItemStack is = contents[i];
+			result[i] = new ItemStack(is.getType(), is.getAmount(), is.getDurability(), is.getData().getData());
+			
+			for (Enchantment ench : is.getEnchantments().keySet()) {
+				result[i].addUnsafeEnchantment(ench, is.getEnchantments().get(ench));
+			}
+		}
+		
+		return result;
+	}
+
+	private ItemStack cloneIS(ItemStack is) {
+		return is.clone();
+	}
+
 	public void restoreChests() {
 		db.i("restoring chests");
 		for (Location loc : chests.keySet()) {
 			try {
 				db.i("trying to restore chest: " + loc.toString());
-				((Chest) world.getBlockAt(loc).getState()).getInventory()
-						.setContents(chests.get(loc));
+				Inventory inv = ((Chest) world.getBlockAt(loc).getState()).getInventory();
+				inv.clear();
+				/*
+				for (ItemStack is : chests.get(loc)) {
+					if (is != null) {
+						System.out.print(is.getAmount() + " x " + is.getType().name() + " : " + is.getDurability());
+						inv.addItem(cloneIS(is));
+					}
+				}*/
+				inv.setContents(chests.get(loc));
 				db.i("success!");
 			} catch (Exception e) {
 				//
@@ -420,8 +458,15 @@ public class ArenaRegion {
 		for (Location loc : dispensers.keySet()) {
 			try {
 				db.i("trying to restore dispenser: " + loc.toString());
-				((Dispenser) world.getBlockAt(loc).getState()).getInventory()
-						.setContents(dispensers.get(loc));
+				
+				Inventory inv = ((Dispenser) world.getBlockAt(loc).getState()).getInventory();
+				inv.clear();
+				for (ItemStack is : chests.get(loc)) {
+					if (is != null) {
+						System.out.print(is.getAmount() + " x " + is.getType().name() + " : " + is.getDurability());
+						inv.addItem(cloneIS(is));
+					}
+				}
 				db.i("success!");
 			} catch (Exception e) {
 				//
@@ -431,7 +476,7 @@ public class ArenaRegion {
 			try {
 				db.i("trying to restore furnace: " + loc.toString());
 				((Furnace) world.getBlockAt(loc).getState()).getInventory()
-						.setContents(furnaces.get(loc));
+						.setContents(cloneIS(furnaces.get(loc)));
 				db.i("success!");
 			} catch (Exception e) {
 				//
