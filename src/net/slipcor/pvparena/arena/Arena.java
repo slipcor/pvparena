@@ -226,7 +226,7 @@ public class Arena {
 			return;
 		}
 
-		long duration = 20L * 5;
+		long duration = 20L * cfg.getInt("start.countdown");
 		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(
 				PVPArena.instance, new StartRunnable(this), duration);
 		tellEveryone(Language.parse("starting"));

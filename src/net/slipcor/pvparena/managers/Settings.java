@@ -99,6 +99,7 @@ public class Settings {
 		types.put("protection.checkLounges", "boolean");
 		types.put("protection.inventory", "boolean");
 
+		types.put("start.countdown", "int");
 		types.put("start.health", "int");
 		types.put("start.foodLevel", "int");
 		types.put("start.saturation", "int");

@@ -121,6 +121,7 @@ public class Configs {
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
 		config.addDefault("protection.inventory", Boolean.valueOf(false));
 
+		config.addDefault("start.countdown", Integer.valueOf(5));
 		config.addDefault("start.health", Integer.valueOf(20));
 		config.addDefault("start.foodLevel", Integer.valueOf(20));
 		config.addDefault("start.saturation", Integer.valueOf(20));

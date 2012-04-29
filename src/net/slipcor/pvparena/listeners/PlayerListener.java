@@ -395,6 +395,10 @@ public class PlayerListener implements Listener {
 					event.setRespawnLocation(Spawns.getCoords(arena, "exit"));
 				}
 			}
+			if (arena == null) {
+				return;
+			}
+			
 			arena.removeDeadPlayer(player);
 			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance,
 					new PlayerResetRunnable(ap), 20L);

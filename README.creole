@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.17.3 - make the countdown timer configurable
 * v0.7.17.2 - fix arenaboards displaying the global stats for players during a match
 * v0.7.17.1 - fix fluids and block burning not being cancellable/replaced properly
 * v0.7.17.0 - (more) correctly calculate armor in order to detect death
@@ -108,7 +109,8 @@ A PVP experience enhancing plugin.
 ** DOM arena fixing
 ** respawn: check for near players, sort by near player count, asc
 * Features
-** join: /pa {name} [amount] - win amount : winFactor 
+** join: /pa {name} [amount] - win amount : winFactor
+** distribute players intelligently at the spawns (randomSpawn)
 ** CHEST powerup placement
 ** MAP support: Player location, flag/spawn location
 ** RUSH mode - Base defend vs Conquer base
