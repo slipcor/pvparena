@@ -1,0 +1,84 @@
+package net.slipcor.pvparena.command;
+
+import java.util.HashSet;
+
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Spawns;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class PAASpawn extends PAA_Command {	
+	@Override
+	public void commit(Arena arena, CommandSender sender, String[] args) {
+
+		if (!checkArgs(sender, args, 1, 2)) {
+			return;
+		}
+
+		if (args.length > 1) {
+			// pa [spawnname] remove
+			arena.cfg.set("spawns." + args[1], null);
+			arena.cfg.save();
+			Arenas.tellPlayer(sender, Language.parse("spawnremoved", args[1]),
+					arena);
+			return;
+		}
+
+		if (!(sender instanceof Player)) {
+			Language.parse("onlyplayers");
+			return;
+		}
+		
+		Player player = (Player) sender;
+		
+		if (!player.getWorld().getName().equals(arena.getWorld())) {
+			Arenas.tellPlayer(player,
+					Language.parse("notsameworld", arena.getWorld()), arena);
+			return;
+		}
+		
+		if (args[0].equalsIgnoreCase("spectator")) {
+			Spawns.setCoords(arena, player, "spectator");
+			Arenas.tellPlayer(player, Language.parse("setspectator"), arena);
+		} else if (args[0].equalsIgnoreCase("exit")) {
+			Spawns.setCoords(arena, player, "exit");
+			Arenas.tellPlayer(player, Language.parse("setexit"), arena);
+		} else if (arena.type().allowsRandomSpawns()
+				&& (args[0].startsWith("spawn"))) {
+			Spawns.setCoords(arena, player, args[0]);
+			Arenas.tellPlayer(player, Language.parse("setspawn", args[0]), arena);
+		} else {
+			/*
+			// no random or not trying to set custom spawn
+			if ((!arena.type().isLoungeCommand(player, args[0]))
+					&& (!arena.type().isSpawnCommand(player, args[0]))
+					&& (!arena.type().isCustomCommand(player, args[0]))) {
+				return parseJoin(arena, player);
+			}*/
+			// else: command lounge or spawn :)
+		}
+	}
+
+	protected static HashSet<String> correctSpawns(Arena arena,
+			HashSet<String> spawns) {
+		HashSet<String> result = new HashSet<String>();
+		
+		for (String s : spawns) {
+			if (s.contains("%team%")) {
+				s = s.replace("%team%", "");
+				for (ArenaTeam team : arena.getTeams()) {
+					result.add(team.getName() + s);
+				}
+			} else {
+				result.add(s);
+			}
+		}
+		
+		return result;
+	}
+
+}

@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.7.16
+ * @version v0.7.18
  * 
  */
 
@@ -138,12 +138,12 @@ public class StringParser {
 			
 			for (int i = 1; i < temp2.length; i++) {
 			
-				String strEnch = temp2[1];
+				String strEnch = temp2[i];
 				if (strEnch.contains("~")) {
-					db.i("we have a level");
 					String[] arrEnch = strEnch.split("~");
 					Enchantment ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
 					Integer enchLevel = Integer.parseInt(arrEnch[1]);
+					db.i("adding enchantment " + ench.getName() + " lvl " + enchLevel);
 					enchants.put(ench, enchLevel);
 				}
 			}
@@ -158,6 +158,7 @@ public class StringParser {
 
 				ItemStack is = new ItemStack(mat, amount);
 				for (Enchantment e : enchants.keySet()) {
+					db.i("processing enchantment " + e.getName());
 					is.addUnsafeEnchantment(e, enchants.get(e));
 				}
 				return is;

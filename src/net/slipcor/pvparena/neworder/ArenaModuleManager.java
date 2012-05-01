@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -35,7 +36,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.18
  * 
  */
 
@@ -241,7 +242,7 @@ public class ArenaModuleManager {
 	 * @return true if permission is found and further processing should be
 	 *         avoided
 	 */
-	public boolean hasPerms(Player player, String perms) {
+	public boolean hasPerms(CommandSender player, String perms) {
 		if (player.hasPermission(perms)) {
 			return true;
 		}
@@ -458,26 +459,6 @@ public class ArenaModuleManager {
 	}
 
 	/**
-	 * hook into command parsing
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param player
-	 *            the placer committing the command
-	 * @param args
-	 *            the command arguments
-	 * @return true if a command was identified, regardless of valid entries
-	 */
-	public boolean parseCommand(Arena arena, Player player, String[] args) {
-		for (ArenaModule mod : modules) {
-			if (mod.parseCommand(arena, player, args)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * hook into the display of the arena information
 	 * 
 	 * @param arena
@@ -485,7 +466,7 @@ public class ArenaModuleManager {
 	 * @param player
 	 *            the player being messaged
 	 */
-	public void parseInfo(Arena arena, Player player) {
+	public void parseInfo(Arena arena, CommandSender player) {
 		for (ArenaModule mod : modules) {
 			mod.parseInfo(arena, player);
 		}
@@ -622,5 +603,31 @@ public class ArenaModuleManager {
 		for (ArenaModule mod : modules) {
 			mod.load_arenas();
 		}
+	}
+
+	public List<ArenaModule> getModules() {
+		return modules;
+	}
+
+	public HashSet<String> getAddedSpawns() {
+		HashSet<String> result = new HashSet<String>();
+		
+		for (ArenaModule mod : modules) {
+			HashSet<String> add = mod.getAddedSpawns();
+			for (String s : add) {
+				result.add(s);
+			}
+		}
+		
+		return result;
+	}
+
+	public boolean parseCommand(String s) {
+		for (ArenaModule mod : modules) {
+			if (mod.parseCommand(s)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

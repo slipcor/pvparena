@@ -3,9 +3,6 @@ package net.slipcor.pvparena.managers;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,7 +12,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
 /**
@@ -27,7 +24,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.17
+ * @version v0.7.18
  * 
  */
 
@@ -89,7 +86,11 @@ public class Configs {
 		config.addDefault("general.signs", Boolean.valueOf(true));
 		config.addDefault("general.item-rewards", "none");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
+		config.addDefault("general.prefix", "PVP Arena");
 
+		config.addDefault("region.spawncampdamage", Integer.valueOf(5));
+		config.addDefault("region.timer", Integer.valueOf(20));
+		
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
 		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
 		config.addDefault("join.random", Boolean.valueOf(true));
@@ -171,8 +172,13 @@ public class Configs {
 			Map<String, Object> regs = config
 					.getConfigurationSection("regions").getValues(false);
 			for (String rName : regs.keySet()) {
-				arena.regions.put(rName,
-						getRegionFromConfigNode(rName, config, arena));
+				ArenaRegion region = PVPArena.instance.getArm().readRegionFromConfig(rName, config, arena);
+				
+				if (region == null) {
+					System.out.print("Error while loading arena");
+				}
+				
+				arena.regions.put(rName, region);
 			}
 		}
 
@@ -192,34 +198,6 @@ public class Configs {
 		PVPArena.instance.getAmm().configParse(arena, config, type);
 
 		arena.prefix = cfg.getString("general.prefix", "PVP Arena");
-	}
-
-	/**
-	 * region creation
-	 * 
-	 * @param string
-	 *            the region node name
-	 * @param config
-	 *            the config to check
-	 * @param arena
-	 *            the arena to check
-	 * @return an error string if a node is missing, null otherwise
-	 */
-	private static ArenaRegion getRegionFromConfigNode(String string,
-			YamlConfiguration config, Arena arena) {
-		db.i("reading config region: " + arena.name + "=>" + string);
-		String coords = config.getString("regions." + string);
-		World world = Bukkit.getWorld(arena.getWorld());
-		Location[] l = Config.parseShere(world, coords);
-
-		ArenaRegion.regionType type = ArenaRegion.regionType.SPHERIC;
-
-		if (l == null) {
-			l = Config.parseCuboid(world, coords);
-			type = ArenaRegion.regionType.CUBOID;
-		}
-
-		return new ArenaRegion(string, l[0], l[1], type);
 	}
 
 	/**

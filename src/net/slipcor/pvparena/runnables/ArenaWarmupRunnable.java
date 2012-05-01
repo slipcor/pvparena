@@ -3,8 +3,10 @@ package net.slipcor.pvparena.runnables;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.command.PAAJoin;
+import net.slipcor.pvparena.command.PAAJoinTeam;
+import net.slipcor.pvparena.command.PAASpectate;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Commands;
 
 /**
  * player reset runnable class
@@ -15,7 +17,7 @@ import net.slipcor.pvparena.managers.Commands;
  * 
  * @author slipcor
  * 
- * @version v0.7.13
+ * @version v0.7.18
  * 
  */
 
@@ -48,11 +50,13 @@ public class ArenaWarmupRunnable implements Runnable {
 		db.i("ArenaWarmupRunnable commiting");
 		player.setStatus(Status.WARM);
 		if (spectator) {
-			Commands.parseSpectate(arena, player.get());
+			(new PAASpectate()).commit(arena, player.get(), null);
 		} else if (teamName == null) {
-			Commands.parseJoin(arena, player.get());
+			(new PAAJoin()).commit(arena, player.get(), null);
 		} else {
-			Commands.parseJoinTeam(arena, player.get(), teamName);
+			String[] args = new String[1];
+			args[0] = teamName;
+			(new PAAJoinTeam()).commit(arena, player.get(), args);
 		}
 	}
 }

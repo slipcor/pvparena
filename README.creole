@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.19.0 - command handling rewrite
+* v0.7.18.0 - region modules
 * v0.7.17.4 - fix chest restoring
 * v0.7.17.3 - make the countdown timer configurable
 * v0.7.17.2 - fix arenaboards displaying the global stats for players during a match
@@ -108,7 +110,6 @@ A PVP experience enhancing plugin.
 
 * Fixes
 ** DOM arena fixing
-** respawn: check for near players, sort by near player count, asc
 * Features
 ** join: /pa {name} [amount] - win amount : winFactor
 ** distribute players intelligently at the spawns (randomSpawn)
@@ -117,7 +118,6 @@ A PVP experience enhancing plugin.
 ** RUSH mode - Base defend vs Conquer base
 ** Spout: Adding "skin" key to classes, MobDisguise hooking
 * Modulisation
-** Regions
 ** Command system
 * API
 ** improvements

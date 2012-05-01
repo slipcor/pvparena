@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.7.15
+ * @version v0.7.18
  * 
  */
 public class Language {
@@ -220,6 +220,13 @@ public class Language {
 
 		config.addDefault("lang.spawnremoved", "Spawn removed: %1%");
 		config.addDefault("lang.regionremoved", "Region removed: %1%");
+		config.addDefault("lang.nocampregion", "You are in a NOCAMP region. Move!");
+		config.addDefault("lang.deathregion", "You entered a DEATH region. Goodbye!");
+
+		config.addDefault("lang.args", "Wrong number of arguments (%1% instead of %2%)");
+
+		config.addDefault("lang.chatteam", "You now talk to your team!");
+		config.addDefault("lang.chatpublic", "You now talk to the public!");
 
 		config.addDefault("lang.select2",
 				"Select two points before trying to save.");

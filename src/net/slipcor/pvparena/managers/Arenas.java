@@ -8,16 +8,19 @@ import java.util.Map;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.command.PAAJoin;
+import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.definitions.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -32,7 +35,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.18
  * 
  */
 
@@ -321,16 +324,16 @@ public class Arenas {
 	/**
 	 * send a message to a single player
 	 * 
-	 * @param player
+	 * @param sender
 	 *            the player to send to
 	 * @param msg
 	 *            the message to send
 	 * @param a
 	 *            the arena sending this message
 	 */
-	public static void tellPlayer(Player player, String msg, Arena a) {
-		db.i("@" + player.getName() + ": " + msg);
-		player.sendMessage(ChatColor.YELLOW + "[" + a.prefix + "] "
+	public static void tellPlayer(CommandSender sender, String msg, Arena a) {
+		db.i("@" + sender.getName() + ": " + msg);
+		sender.sendMessage(ChatColor.YELLOW + "[" + a.prefix + "] "
 				+ ChatColor.WHITE + msg);
 	}
 
@@ -342,7 +345,7 @@ public class Arenas {
 	 * @param msg
 	 *            the message to send
 	 */
-	public static void tellPlayer(Player player, String msg) {
+	public static void tellPlayer(CommandSender player, String msg) {
 		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
 				+ msg);
 	}
@@ -375,7 +378,8 @@ public class Arenas {
 								Language.parse("arenanotexists", sName));
 						return;
 					}
-					Commands.parseCommand(a, player, newArgs);
+					PAA_Command command = new PAAJoin();
+					command.commit(a, player, newArgs);
 					return;
 				}
 			}

@@ -12,7 +12,6 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
-import net.slipcor.pvparena.definitions.ArenaRegion;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
@@ -24,6 +23,8 @@ import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Settings;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
 import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
@@ -53,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.14
+ * @version v0.7.18
  * 
  */
 
@@ -1041,6 +1042,14 @@ public class Arena {
 		teamCount = Teams.countActiveTeams(this);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
+		
+		for (ArenaRegion region : regions.values()) {
+			if (region.getType().equals(RegionType.DEATH)) {
+				region.initTimer();
+			} else if (region.getType().equals(RegionType.NOCAMP)) {
+				region.initTimer();
+			}
+		}
 	}
 
 	/**

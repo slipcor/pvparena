@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.17
+ * @version v0.7.18
  * 
  */
 
@@ -66,6 +66,9 @@ public class Settings {
 		types.put("general.random-reward", "boolean");
 		types.put("general.restoreChests", "boolean");
 		types.put("general.signs", "boolean");
+
+		types.put("region.spawncampdamage", "int");
+		types.put("region.timer", "int");
 
 		types.put("arenatype.randomSpawn", "boolean");
 
@@ -156,7 +159,7 @@ public class Settings {
 	 * @param page
 	 *            the settings page to send
 	 */
-	public void list(Player player, int page) {
+	public void list(CommandSender player, int page) {
 		if (page < 1) {
 			page = 1;
 		}
@@ -195,7 +198,7 @@ public class Settings {
 	 * @param value
 	 *            the value to set
 	 */
-	public void set(Player player, String node, String value) {
+	public void set(CommandSender player, String node, String value) {
 		db.i("player '" + player.getName() + "' tries to set node '" + node
 				+ "' to '" + value + "'");
 

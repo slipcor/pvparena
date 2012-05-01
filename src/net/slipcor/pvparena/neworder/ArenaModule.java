@@ -9,6 +9,7 @@ import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
@@ -33,7 +34,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.18
  * 
  */
 
@@ -118,6 +119,9 @@ public class ArenaModule extends Loadable {
 	public void choosePlayerTeam(Arena arena, Player player, String coloredTeam) {
 	}
 
+	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
+	}
+
 	/**
 	 * hook into the arena end
 	 * 
@@ -158,6 +162,10 @@ public class ArenaModule extends Loadable {
 	public void configParse(Arena arena, YamlConfiguration config, String type) {
 	}
 
+	public HashSet<String> getAddedSpawns() {
+		return new HashSet<String>();
+	}
+	
 	/**
 	 * hook into giving players the rewards
 	 * 
@@ -179,7 +187,7 @@ public class ArenaModule extends Loadable {
 	 * @return true if permission is found and further processing should be
 	 *         avoided
 	 */
-	public boolean hasPerms(Player player, String perms) {
+	public boolean hasPerms(CommandSender player, String perms) {
 		return false;
 	}
 
@@ -340,18 +348,7 @@ public class ArenaModule extends Loadable {
 	public void onSignChange(SignChangeEvent event) {
 	}
 
-	/**
-	 * hook into command parsing
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param player
-	 *            the placer committing the command
-	 * @param args
-	 *            the command arguments
-	 * @return true if a command was identified, regardless of valid entries
-	 */
-	public boolean parseCommand(Arena arena, Player player, String[] args) {
+	public boolean parseCommand(String s) {
 		return false;
 	}
 
@@ -363,7 +360,7 @@ public class ArenaModule extends Loadable {
 	 * @param player
 	 *            the player being messaged
 	 */
-	public void parseInfo(Arena arena, Player player) {
+	public void parseInfo(Arena arena, CommandSender player) {
 	}
 
 	/**

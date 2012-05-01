@@ -1,36 +1,26 @@
-package net.slipcor.pvparena.core;
+package net.slipcor.pvparena.command;
 
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 /**
- * help manager class
- * 
- * -
- * 
- * provides command parsing to help players get along with PVP Arena
+ * help command class
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.18
  * 
  */
 
-public class Help {
+public class PAHelp extends PA_Command {
 	private static Debug db = new Debug(3);
 
-	/**
-	 * display detailed help
-	 * 
-	 * @param player
-	 *            the player committing the command
-	 * @param args
-	 *            the command arguments
-	 * @return false if the command help should be displayed, true otherwise
-	 */
-	public static boolean parseCommand(Player player, String[] args) {
+	@Override
+	public void commit(CommandSender player, String[] args) {
 		db.i("parsing help command of player " + player.getName()
 				+ StringParser.parseArray(args));
 		Arenas.tellPlayer(player, ChatColor.AQUA + "---  PVP Arena Help  ---");
@@ -335,7 +325,6 @@ public class Help {
 				helpList(player);
 			}
 		}
-		return true;
 	}
 
 	/**
@@ -344,7 +333,7 @@ public class Help {
 	 * @param player
 	 *            the player committing the command
 	 */
-	private static void helpList(Player player) {
+	private static void helpList(CommandSender player) {
 
 		Arenas.tellPlayer(player, ChatColor.YELLOW + "/pa help general"
 				+ ChatColor.WHITE + " | for general commands");

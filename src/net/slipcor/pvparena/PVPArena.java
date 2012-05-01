@@ -16,8 +16,9 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.command.PAA_Command;
+import net.slipcor.pvparena.command.PA_Command;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
@@ -27,8 +28,8 @@ import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Commands;
 import net.slipcor.pvparena.neworder.ArenaModuleManager;
+import net.slipcor.pvparena.neworder.ArenaRegionManager;
 import net.slipcor.pvparena.neworder.ArenaTypeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -47,7 +48,7 @@ import com.nodinchan.ncloader.metrics.Metrics;
  * 
  * @author slipcor
  * 
- * @version v0.7.14
+ * @version v0.7.18
  * 
  */
 
@@ -61,6 +62,7 @@ public class PVPArena extends JavaPlugin {
 	private final InventoryListener customListener = new InventoryListener();
 	private final static Debug db = new Debug(1);
 
+	private ArenaRegionManager arm = null;
 	private ArenaTypeManager atm = null;
 	private ArenaModuleManager amm = null;
 
@@ -70,138 +72,72 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
-		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
-			return true;
-		}
-
-		Player player = (Player) sender;
-
-		db.i("onCommand: player " + player.getName() + ": /" + commandLabel
-				+ StringParser.parseArray(args));
-
+		
 		if (args == null || args.length < 1) {
 			return false;
 		}
-
-		if (args[0].equals("help")) {
-			return Help.parseCommand(player, args);
-		}
-
-		if ((args.length > 1) && args[1].equals("create")) {
-			// /pa [name] create {type} {...}
-			if (!hasAdminPerms(player) && !(hasCreatePerms(player, null))) {
-				Arenas.tellPlayer(player,
-						Language.parse("nopermto", Language.parse("create")));
-				return true;
-			}
-
-			Arena arena = Arenas.getArenaByName(args[0]);
-
-			if (arena != null) {
-				Arenas.tellPlayer(player, Language.parse("arenaexists"));
-				return true;
-			}
-			Arena a = null;
-			if (args.length > 2) {
-				if (atm.getType(args[2]) == null) {
-					Arenas.tellPlayer(player,
-							Language.parse("arenatypeunknown", args[2]));
-					return true;
-				}
-
-				a = Arenas.loadArena(args[0], args[2]);
-			} else {
-				if (atm.getType("teams") == null) {
-					Arenas.tellPlayer(player,
-							Language.parse("arenatypeunknown", "teams"));
-					return true;
-				}
-
-				a = Arenas.loadArena(args[0], "teams");
-			}
-			a.setWorld(player.getWorld().getName());
-			if (!hasAdminPerms(player)) {
-				a.owner = player.getName();
-			}
-			a.cfg.set("general.owner", a.owner);
-			a.cfg.save();
-			Arenas.tellPlayer(player, Language.parse("created", args[0]));
-			return true;
-		} else if (args.length == 2 && args[1].equals("remove")) {
-			// /pa [name] remove
-			if (!hasAdminPerms(player)
-					&& !(hasCreatePerms(player, Arenas.getArenaByName(args[0])))) {
-				Arenas.tellPlayer(player,
-						Language.parse("nopermto", Language.parse("remove")));
-				return true;
-			}
-			Arena arena = Arenas.getArenaByName(args[0]);
-			if (arena == null) {
-				Arenas.tellPlayer(player,
-						Language.parse("arenanotexists", args[0]));
-				return true;
-			}
-			Arenas.unload(args[0]);
-			Arenas.tellPlayer(player, Language.parse("removed", args[0]));
-			return true;
-		} else if (args[0].equalsIgnoreCase("debug")) {
-
-			Arena arena = Arenas.getArenaByPlayer(player);
-
-			if (arena != null) {
-				getConfig().set("debug", args[1]);
-			}
-		} else if (args[0].equalsIgnoreCase("chat")) {
-			Arena arena = Arenas.getArenaByPlayer(player);
-			if (arena != null) {
-				return Commands.parseChat(arena, player);
-			}
-		} else if (args[0].equalsIgnoreCase("reload")) {
-			if (!hasAdminPerms(player)) {
-				Arenas.tellPlayer(player,
-						Language.parse("nopermto", Language.parse("reload")));
-				return true;
-			}
-			Arenas.load_arenas();
-			Arenas.tellPlayer(player, Language.parse("reloaded"));
-			return true;
-		} else if (args[0].equalsIgnoreCase("list")) {
-			Arenas.tellPlayer(player,
-					Language.parse("arenas", Arenas.getNames()));
-			return true;
-		} else if (args[0].equalsIgnoreCase("leave")) {
-			Arena arena = Arenas.getArenaByPlayer(player);
-			if (arena != null) {
-				arena.playerLeave(player);
-			} else {
-				Arenas.tellPlayer(player, Language.parse("notinarena"));
-			}
+		
+		db.i("onCommand: player " + sender.getName() + ": /" + commandLabel
+				+ StringParser.parseArray(args));
+		
+		PA_Command command = PA_Command.parseCommand(args[0]);
+		if (command != null) {
+			command.commit(sender, args);
 			return true;
 		}
-
+		
 		String sName = args[0];
 
 		Arena arena = Arenas.getArenaByName(sName);
 		if (arena == null) {
 			db.i("arena not found, searching...");
-			if (Arenas.count() == 1) {
+			if (sender instanceof Player) {
+				arena = Arenas.getArenaByPlayer((Player)sender);
+			}
+			if (arena != null) {
+				db.i("found arena by player: " + arena.name);
+			} else if (Arenas.count() == 1) {
 				arena = Arenas.getFirst();
 				db.i("found 1 arena: " + arena.name);
 			} else if (Arenas.getArenaByName("default") != null) {
 				arena = Arenas.getArenaByName("default");
 				db.i("found default arena!");
 			} else {
-				Arenas.tellPlayer(player,
+				if (sender instanceof Player) {
+				Arenas.tellPlayer((Player) sender,
 						Language.parse("arenanotexists", sName));
+				} else {
+					System.out.print(Language.parse("arenanotexists", sName));
+				}
 				return true;
 			}
-			return Commands.parseCommand(arena, player, args);
-		}
+			
+		} else {
 
-		String[] newArgs = new String[args.length - 1];
-		System.arraycopy(args, 1, newArgs, 0, args.length - 1);
-		return Commands.parseCommand(arena, player, newArgs);
+			String[] newArgs = new String[args.length - 1];
+			System.arraycopy(args, 1, newArgs, 0, args.length - 1);
+			args = newArgs;
+		}
+		
+		PAA_Command arenaCommand;
+		
+		if (args.length < 2) {
+			arenaCommand = PAA_Command.parseCommand(null, arena);
+		} else {
+			arenaCommand = PAA_Command.parseCommand(args[0], arena);
+		}
+		if (arenaCommand != null) {
+			if (!arena.cfg.getBoolean("general.enabled")
+					&& !PVPArena.hasAdminPerms(sender)
+					&& !(PVPArena.hasCreatePerms(sender, arena))) {
+				Arenas.tellPlayer(sender, Language.parse("arenadisabled"), arena);
+				return true;
+			}
+			db.i("committing arena command: " + db.formatStringArray(args) + " in arena " + arena.name);
+			arenaCommand.commit(arena, sender, args);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -224,6 +160,7 @@ public class PVPArena extends JavaPlugin {
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
+		new File(getDataFolder().getPath() + "/regions").mkdir();
 		
 		if (!startLoader()) {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
@@ -232,6 +169,7 @@ public class PVPArena extends JavaPlugin {
 
 		atm = new ArenaTypeManager(this);
 		amm = new ArenaModuleManager(this);
+		arm = new ArenaRegionManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
 
@@ -362,7 +300,7 @@ public class PVPArena extends JavaPlugin {
 	 *            the player to check
 	 * @return true if the player has admin permissions, false otherwise
 	 */
-	public static boolean hasAdminPerms(Player player) {
+	public static boolean hasAdminPerms(CommandSender player) {
 		return hasPerms(player, "pvparena.admin");
 	}
 
@@ -375,7 +313,7 @@ public class PVPArena extends JavaPlugin {
 	 *            the arena to check
 	 * @return true if the player has creation permissions, false otherwise
 	 */
-	public static boolean hasCreatePerms(Player player, Arena arena) {
+	public static boolean hasCreatePerms(CommandSender player, Arena arena) {
 		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
 				.equals(player.getName())));
 	}
@@ -390,7 +328,7 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if explicit permission not needed or granted, false
 	 *         otherwise
 	 */
-	public static boolean hasPerms(Player player, Arena arena) {
+	public static boolean hasPerms(CommandSender player, Arena arena) {
 		db.i("perm check.");
 		if (arena.cfg.getBoolean("join.explicitPermission")) {
 			db.i(" - explicit: "
@@ -414,8 +352,17 @@ public class PVPArena extends JavaPlugin {
 	 *            a permission node to check
 	 * @return true if the player has the permission, false otherwise
 	 */
-	public static boolean hasPerms(Player player, String perms) {
+	public static boolean hasPerms(CommandSender player, String perms) {
 		return instance.amm.hasPerms(player, perms);
+	}
+
+	/**
+	 * Hand over the ArenaRegionManager instance
+	 * 
+	 * @return the ArenaRegionManager instance
+	 */
+	public ArenaRegionManager getArm() {
+		return arm;
 	}
 
 	/**

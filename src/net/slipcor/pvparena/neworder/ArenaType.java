@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -263,6 +264,9 @@ public class ArenaType extends Loadable {
 				+ "/" + arena.getTeams().size() + "x lounge";
 	}
 
+	public void commitCommand(Arena arena2, CommandSender sender, String[] args) {
+	}
+
 	/**
 	 * hook into the config parsing
 	 */
@@ -333,7 +337,7 @@ public class ArenaType extends Loadable {
 	 *            the command
 	 * @return true if an error occured
 	 */
-	public boolean isCustomCommand(Player player, String cmd) {
+	public boolean isCustomsCommand(Player player, String cmd) {
 		return false;
 	}
 
@@ -346,7 +350,7 @@ public class ArenaType extends Loadable {
 	 *            the command
 	 * @return true if an error occured
 	 */
-	public boolean isLoungeCommand(Player player, String cmd) {
+	public boolean isLoungesCommand(Player player, String cmd) {
 
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
@@ -375,28 +379,6 @@ public class ArenaType extends Loadable {
 	}
 
 	/**
-	 * check if a string is a valid region command
-	 * 
-	 * @param s
-	 *            the string to check
-	 * @return true if the region name is valid
-	 */
-	public boolean isRegionCommand(String s) {
-		db.i("checking region command: " + s);
-		if (s.equals("exit") || s.equals("spectator")
-				|| s.equals("battlefield") || s.equals("join")) {
-			return true;
-		}
-		for (ArenaTeam team : arena.getTeams()) {
-			String sName = team.getName();
-			if (s.equals(sName + "lounge")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * is the given command a failed spawn command?
 	 * 
 	 * @param player
@@ -405,7 +387,7 @@ public class ArenaType extends Loadable {
 	 *            the command
 	 * @return true if an error occured
 	 */
-	public boolean isSpawnCommand(Player player, String cmd) {
+	public boolean isSpawnsCommand(Player player, String cmd) {
 		if (!player.getWorld().getName().equals(arena.getWorld())) {
 			Arenas.tellPlayer(player,
 					Language.parse("notsameworld", arena.getWorld()), arena);
@@ -614,5 +596,18 @@ public class ArenaType extends Loadable {
 	 * @param player the player to unload
 	 */
 	public void unload(Player player) {
+	}
+
+	public HashSet<String> getAddedSpawns() {
+		HashSet<String> result = new HashSet<String>();
+
+		result.add("%team%spawn");
+		result.add("%team%lounge");
+		
+		return result;
+	}
+
+	public boolean parseCommand(String s) {
+		return false;
 	}
 }

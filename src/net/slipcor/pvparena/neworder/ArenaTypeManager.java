@@ -73,4 +73,8 @@ public class ArenaTypeManager {
 			type.initLanguage(config);
 		}
 	}
+
+	public List<ArenaType> getTypes() {
+		return types;
+	}
 }
