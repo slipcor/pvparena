@@ -7,15 +7,6 @@ import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-/**
- * help command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PAHelp extends PA_Command {
 	private static Debug db = new Debug(3);
 

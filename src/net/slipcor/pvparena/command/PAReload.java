@@ -6,15 +6,6 @@ import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.command.CommandSender;
 
-/**
- * reload command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PAReload extends PA_Command {
 
 	@Override

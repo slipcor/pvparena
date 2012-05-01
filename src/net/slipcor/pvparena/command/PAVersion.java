@@ -8,15 +8,6 @@ import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.command.CommandSender;
 
-/**
- * list command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PAVersion extends PA_Command {
 
 	@Override

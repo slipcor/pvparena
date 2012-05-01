@@ -7,15 +7,6 @@ import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.command.CommandSender;
 
-/**
- * debug command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PADebug extends PA_Command {
 
 	@Override

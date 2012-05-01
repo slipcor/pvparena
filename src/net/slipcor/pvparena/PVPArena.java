@@ -48,7 +48,7 @@ import com.nodinchan.ncloader.metrics.Metrics;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.19
  * 
  */
 

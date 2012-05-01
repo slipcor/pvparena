@@ -36,7 +36,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.19
  * 
  */
 

@@ -39,7 +39,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.19
  * 
  */
 
@@ -326,19 +326,6 @@ public class ArenaType extends Loadable {
 	 *            the language config
 	 */
 	public void initLanguage(YamlConfiguration config) {
-	}
-
-	/**
-	 * is the given command a failed custom command?
-	 * 
-	 * @param player
-	 *            the player committing the command
-	 * @param cmd
-	 *            the command
-	 * @return true if an error occured
-	 */
-	public boolean isCustomsCommand(Player player, String cmd) {
-		return false;
 	}
 
 	/**

@@ -34,7 +34,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.19
  * 
  */
 

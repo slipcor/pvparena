@@ -7,15 +7,6 @@ import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.command.CommandSender;
 
-/**
- * remove command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PAARemove extends PAA_Command {
 
 	@Override

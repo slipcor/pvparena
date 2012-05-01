@@ -10,15 +10,6 @@ import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- * create command class
- * 
- * @author slipcor
- * 
- * @version v0.7.18
- * 
- */
-
 public class PACreate extends PA_Command {
 	private static Debug db = new Debug(3);
 

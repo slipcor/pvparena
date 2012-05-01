@@ -113,9 +113,7 @@ public class ArenaRegionManager {
 	}
 	
 	public ArenaRegion newRegion(String name, RegionShape shape) {
-		System.out.print("new Region (load)");
 		for (ArenaRegion region : regions) {
-			System.out.print("compare: " + region.getShape() + " == " + shape);
 			if (region.getShape().equals(shape)) {
 				ArenaRegion result = region.clone();
 				result.name = name;
@@ -131,8 +129,6 @@ public class ArenaRegionManager {
 		String coords = config.getString("regions." + regionName);
 		
 		ArenaRegion.RegionShape shape = ArenaRegionManager.getShapeByCoords(coords);
-		
-		System.out.print("shape: " + shape);
 		
 		ArenaRegion region = PVPArena.instance.getArm().newRegion(regionName, shape);
 		

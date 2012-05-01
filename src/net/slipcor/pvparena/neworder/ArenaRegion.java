@@ -74,7 +74,6 @@ public class ArenaRegion extends Loadable {
 		try {
 			ArenaRegion at = (ArenaRegion) super.clone();
 			at.setShape(getShape());
-			System.out.print("shape: " + getShape().name());
 			return at; 
 		} catch (CloneNotSupportedException e) {
 			System.out.println(e);
