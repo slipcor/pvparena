@@ -1,4 +1,4 @@
-== PVP-Arena v6 Changelog
+== PVP-Arena v0.6 Changelog
 
 * v0.6.41.1 - fix the Potion Type NPE
 * v0.6.41.0 - possibility to customize the Arena prefix

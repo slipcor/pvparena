@@ -1,4 +1,4 @@
-== PVP-Arena v3 Changelog
+== PVP-Arena v0.3 Changelog
 
 * v0.3.14 - timed arena modes
 * v0.3.13 - Telepass via Permission

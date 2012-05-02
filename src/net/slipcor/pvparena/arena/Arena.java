@@ -911,11 +911,6 @@ public class Arena {
 
 		type.parseRespawn(player, team, lives, cause, damager);
 
-		if (!type.allowsRandomSpawns() && !team.getName().equals("free")) {
-			tpPlayerToCoordName(player, team.getName() + "spawn");
-		} else {
-			tpPlayerToCoordName(player, "spawn");
-		}
 		player.setFireTicks(0);
 		player.setNoDamageTicks(60);
 		EntityListener.addBurningPlayer(player);
@@ -1004,15 +999,10 @@ public class Arena {
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				if (!type.allowsRandomSpawns()) {
-					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
-				} else {
+				if (team.getName().equals("free")) {
 					tpPlayerToCoordName(ap.get(), "spawn");
+				} else {
+					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 				}
 				ap.setStatus(Status.FIGHT);
 				playerCount++;

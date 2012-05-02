@@ -48,10 +48,6 @@ public class PAASpawn extends PAA_Command {
 		} else if (args[0].equalsIgnoreCase("exit")) {
 			Spawns.setCoords(arena, player, "exit");
 			Arenas.tellPlayer(player, Language.parse("setexit"), arena);
-		} else if (arena.type().allowsRandomSpawns()
-				&& (args[0].startsWith("spawn"))) {
-			Spawns.setCoords(arena, player, args[0]);
-			Arenas.tellPlayer(player, Language.parse("setspawn", args[0]), arena);
 		} else {
 			HashSet<String> spawns = new HashSet<String>();
 			

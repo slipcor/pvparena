@@ -1,4 +1,4 @@
-== PVP-Arena v5 Changelog
+== PVP-Arena v0.5 Changelog
 
 * v0.5.11 - CTF flag bug, command error msg improvement
 * v0.5.10 - fight temp perms, custom class drops, spectate fix

@@ -28,7 +28,7 @@ public class TeamArena extends ArenaType {
 	public TeamArena() {
 		super("teams");
 	}
-	
+
 	@Override
 	public String version() {
 		return "v0.7.10.6";
@@ -36,68 +36,41 @@ public class TeamArena extends ArenaType {
 
 	@Override
 	public String checkSpawns(Set<String> list) {
-		if (allowsRandomSpawns()) {
-
-			// now we need 1 spawn and a lounge for every team
-
-			db.i("parsing random");
-
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				if (s.equals("lounge"))
-					continue; // skip
-				if (s.startsWith("spawn"))
-					spawns++;
-				if (s.endsWith("lounge"))
-					lounges++;
-			}
-			if (spawns > 3 && lounges >= arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + 4 + "x spawn ; " + lounges + "/"
-					+ arena.getTeams().size() + "x lounge";
-		} else {
-			// not random! we need teams * 2 (lounge + spawn) + exit + spectator
-			db.i("parsing not random");
-			Iterator<String> iter = list.iterator();
-			int spawns = 0;
-			int lounges = 0;
-			HashSet<String> setTeams = new HashSet<String>();
-			while (iter.hasNext()) {
-				String s = iter.next();
-				db.i("parsing '" + s + "'");
-				db.i("spawns: " + spawns + "; lounges: " + lounges);
-				if (s.endsWith("spawn") && (!s.equals("spawn"))) {
-					spawns++;
-				} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
-					lounges++;
-				} else if (s.contains("spawn") && (!s.equals("spawn"))) {
-					String[] temp = s.split("spawn");
-					if (Teams.getTeam(arena, temp[0]) != null) {
-						if (setTeams.contains(temp[0])) {
-							db.i("team already set");
-							continue;
-						}
-						db.i("adding team");
-						setTeams.add(temp[0]);
-						spawns++;
+		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
+		db.i("parsing not random");
+		Iterator<String> iter = list.iterator();
+		int spawns = 0;
+		int lounges = 0;
+		HashSet<String> setTeams = new HashSet<String>();
+		while (iter.hasNext()) {
+			String s = iter.next();
+			db.i("parsing '" + s + "'");
+			db.i("spawns: " + spawns + "; lounges: " + lounges);
+			if (s.endsWith("spawn") && (!s.equals("spawn"))) {
+				spawns++;
+			} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
+				lounges++;
+			} else if (s.contains("spawn") && (!s.equals("spawn"))) {
+				String[] temp = s.split("spawn");
+				if (Teams.getTeam(arena, temp[0]) != null) {
+					if (setTeams.contains(temp[0])) {
+						db.i("team already set");
+						continue;
 					}
+					db.i("adding team");
+					setTeams.add(temp[0]);
+					spawns++;
 				}
 			}
-			if (spawns == arena.getTeams().size()
-					&& lounges == arena.getTeams().size()) {
-				return null;
-			}
-
-			return spawns + "/" + arena.getTeams().size() + "x spawn ; "
-					+ lounges + "/" + arena.getTeams().size() + "x lounge";
-			
 		}
+		if (spawns == arena.getTeams().size()
+				&& lounges == arena.getTeams().size()) {
+			return null;
+		}
+
+		return spawns + "/" + arena.getTeams().size() + "x spawn ; " + lounges
+				+ "/" + arena.getTeams().size() + "x lounge";
+
 	}
 
 	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
@@ -108,5 +81,7 @@ public class TeamArena extends ArenaType {
 				arena.parseDeathCause(respawnPlayer, cause, damager),
 				String.valueOf(lives)));
 		arena.lives.put(respawnPlayer.getName(), lives);
+		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
+				+ "spawn");
 	}
 }

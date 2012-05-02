@@ -1,4 +1,4 @@
-== PVP-Arena v4 Changelog
+== PVP-Arena v0.4 Changelog
 
 * v0.4.4 - Random spawns per team, not shared
 * v0.4.3 - max / min bet

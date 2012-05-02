@@ -111,13 +111,6 @@ public class ArenaType extends Loadable {
 	}
 
 	/**
-	 * does the arena type allow random spawns?
-	 */
-	public boolean allowsRandomSpawns() {
-		return arena.cfg.getBoolean("arenatype.randomSpawn", false);
-	}
-
-	/**
 	 * check if the arena match is over
 	 * 
 	 * @return true if the match is over
@@ -503,6 +496,7 @@ public class ArenaType extends Loadable {
 	 */
 	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
 			int lives, DamageCause cause, Entity damager) {
+		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName() + "spawn");
 		return;
 	}
 

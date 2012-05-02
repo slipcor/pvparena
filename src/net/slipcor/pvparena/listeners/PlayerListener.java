@@ -50,7 +50,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.19
  * 
  */
 
@@ -300,10 +300,10 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				if (!arena.type().allowsRandomSpawns()) {
-					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
-				} else {
+				if (team.getName().equals("free")) {
 					arena.tpPlayerToCoordName(player, "spawn");
+				} else {
+					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
 				arena.playerCount++;
 				PVPArena.instance.getAmm().lateJoin(arena, player);
