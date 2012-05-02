@@ -20,4 +20,8 @@ public class PAAList extends PAA_Command {
 				arena);
 	}
 
+	@Override
+	public String getName() {
+		return "PAAList";
+	}
 }

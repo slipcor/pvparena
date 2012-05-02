@@ -22,4 +22,8 @@ public class PAARemove extends PAA_Command {
 		Arenas.tellPlayer(player, Language.parse("removed", name));
 	}
 
+	@Override
+	public String getName() {
+		return "PAARemove";
+	}
 }

@@ -9,6 +9,7 @@ import com.nodinchan.ncloader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.teams.TeamArena;
+import net.slipcor.pvparena.core.Debug;
 
 /**
  * arena type manager class
@@ -25,7 +26,7 @@ import net.slipcor.pvparena.arenas.teams.TeamArena;
 
 public class ArenaTypeManager {
 	private final List<ArenaType> types;
-
+	protected Debug db = new Debug(52);
 	/**
 	 * create an arena type instance
 	 * 
@@ -41,7 +42,7 @@ public class ArenaTypeManager {
 		types.add(new TeamArena());
 
 		for (ArenaType type : types) {
-			System.out.print("[PVP Arena] module ArenaType loaded: "
+			db.i("module ArenaType loaded: "
 					+ type.getName() + " (version " + type.version() +")");
 		}
 	}

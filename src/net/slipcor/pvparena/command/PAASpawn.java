@@ -2,6 +2,7 @@ package net.slipcor.pvparena.command;
 
 import java.util.HashSet;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Language;
@@ -29,7 +30,7 @@ public class PAASpawn extends PAA_Command {
 		}
 
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
 			return;
 		}
 		
@@ -52,14 +53,32 @@ public class PAASpawn extends PAA_Command {
 			Spawns.setCoords(arena, player, args[0]);
 			Arenas.tellPlayer(player, Language.parse("setspawn", args[0]), arena);
 		} else {
-			/*
-			// no random or not trying to set custom spawn
-			if ((!arena.type().isLoungeCommand(player, args[0]))
-					&& (!arena.type().isSpawnCommand(player, args[0]))
-					&& (!arena.type().isCustomCommand(player, args[0]))) {
-				return parseJoin(arena, player);
-			}*/
-			// else: command lounge or spawn :)
+			HashSet<String> spawns = new HashSet<String>();
+			
+			spawns = PVPArena.instance.getAmm().getAddedSpawns();
+			for (String s : spawns) {
+				spawns.add(s);
+			}
+			spawns = PAASpawn.correctSpawns(arena, spawns);
+			
+			for (String s : spawns) {
+				if (s.startsWith(args[0])) {
+					//PVPArena.instance.getAmm().c
+					return;
+				}
+			}
+			
+			spawns = arena.type().getAddedSpawns();
+			for (String s : spawns) {
+				spawns.add(s);
+			}
+			spawns = PAASpawn.correctSpawns(arena, spawns);
+			
+			for (String s : spawns) {
+				if (s.startsWith(args[0])) {
+					arena.type().commitCommand(arena, player, args);
+				}
+			}
 		}
 	}
 
@@ -81,4 +100,8 @@ public class PAASpawn extends PAA_Command {
 		return result;
 	}
 
+	@Override
+	public String getName() {
+		return "PAASpawn";
+	}
 }

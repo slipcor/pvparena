@@ -22,4 +22,8 @@ public class PAAEnable extends PAA_Command {
 		Arenas.tellPlayer(player, Language.parse("enabled"), arena);
 	}
 
+	@Override
+	public String getName() {
+		return "PAAEnable";
+	}
 }

@@ -20,7 +20,7 @@ public class PAAJoinTeam extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
 			return;
 		}
 		
@@ -57,7 +57,6 @@ public class PAAJoinTeam extends PAA_Command {
 		}
 
 		arena.prepare(player, false, false);
-		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		arena.tpPlayerToCoordName(player, args[0] + "lounge");
 		ap.setStatus(Status.LOBBY);
@@ -87,4 +86,8 @@ public class PAAJoinTeam extends PAA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAAJoinTeam";
+	}
 }

@@ -25,6 +25,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
@@ -151,8 +152,10 @@ public class ArenaType extends Loadable {
 			return true;
 		}
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new EndRunnable(arena), arena.cfg.getInt("goal.endtimer") * 20L);
+		Bukkit.getScheduler()
+				.scheduleSyncDelayedTask(PVPArena.instance,
+						new EndRunnable(arena),
+						arena.cfg.getInt("goal.endtimer") * 20L);
 		return true;
 	}
 
@@ -264,7 +267,33 @@ public class ArenaType extends Loadable {
 				+ "/" + arena.getTeams().size() + "x lounge";
 	}
 
-	public void commitCommand(Arena arena2, CommandSender sender, String[] args) {
+	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
+		if (!(sender instanceof Player)) {
+			Language.parse("onlyplayers");
+			return;
+		}
+		
+		System.out.print(StringParser.parseArray(args));
+		
+		Player player = (Player) sender;
+		
+		if (args[0].startsWith("spawn") || args[0].equals("spawn")) {
+			Arenas.tellPlayer(sender, Language.parse("errorspawnfree", args[0]),
+					arena);
+			return;
+		}
+
+		if (args[0].contains("spawn")) {
+			String[] split = args[0].split("spawn");
+			String sName = split[0];
+			if (Teams.getTeam(arena, sName) == null) {
+				Arenas.tellPlayer(sender, Language.parse("arenateamunknown", sName), arena);
+				return;
+			}
+
+			Spawns.setCoords(arena, player, args[0]);
+			Arenas.tellPlayer(player, Language.parse("setspawn", sName), arena);
+		}
 	}
 
 	/**
@@ -272,6 +301,10 @@ public class ArenaType extends Loadable {
 	 */
 	public void configParse() {
 		return;
+	}
+
+	public int getLives(Player defender) {
+		return arena.lives.get(defender.getName());
 	}
 
 	/**
@@ -500,7 +533,7 @@ public class ArenaType extends Loadable {
 		int i;
 
 		int max = -1;
-		
+
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		db.i("timed end!");
 
@@ -510,23 +543,22 @@ public class ArenaType extends Loadable {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
 				}
-				
+
 				modresult.add(ap.getName());
 				int sum = 0;
 				if (result.get(team.getName()) != null) {
 					sum += result.get(team.getName());
 				}
-				
+
 				sum += arena.lives.get(ap.getName());
-				
+
 				result.put(team.getName(), sum);
 			}
 		}
-		
 
 		HashSet<String> realresult = new HashSet<String>();
 		db.i("timed end!");
-		
+
 		for (String sTeam : result.keySet()) {
 			i = result.get(sTeam);
 
@@ -555,15 +587,17 @@ public class ArenaType extends Loadable {
 					p.losses++;
 					arena.tpPlayerToCoordName(p.get(), "spectator");
 					modresult.remove(p.getName());
-				
+
 				}
 			}
 		}
 
 		PVPArena.instance.getAmm().timedEnd(arena, modresult);
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new EndRunnable(arena), arena.cfg.getInt("goal.endtimer") * 20L);
+		Bukkit.getScheduler()
+				.scheduleSyncDelayedTask(PVPArena.instance,
+						new EndRunnable(arena),
+						arena.cfg.getInt("goal.endtimer") * 20L);
 	}
 
 	/**
@@ -572,15 +606,16 @@ public class ArenaType extends Loadable {
 	public boolean usesFlags() {
 		return false;
 	}
-	
+
 	public String version() {
 		return "outdated";
 	}
-	
+
 	/**
 	 * hook into arena player unloading
 	 * 
-	 * @param player the player to unload
+	 * @param player
+	 *            the player to unload
 	 */
 	public void unload(Player player) {
 	}
@@ -590,11 +625,19 @@ public class ArenaType extends Loadable {
 
 		result.add("%team%spawn");
 		result.add("%team%lounge");
-		
+
 		return result;
 	}
 
 	public boolean parseCommand(String s) {
+		if (s.contains("spawn")) {
+			String[] split = s.split("spawn");
+			String sName = split[0];
+			if (Teams.getTeam(arena, sName) == null) {
+				return false;
+			}
+			return true;
+		}
 		return false;
 	}
 }

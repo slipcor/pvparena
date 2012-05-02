@@ -25,7 +25,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.19
  * 
  */
 
@@ -71,7 +71,7 @@ public class Spawns {
 
 		String sLoc = arena.cfg.getString("spawns." + place, null);
 		db.i("parsing location: " + sLoc);
-		return Config.parseLocation(world, sLoc);
+		return Config.parseLocation(world, sLoc).add(0.5, 0, 0.5);
 	}
 
 	/**

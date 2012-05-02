@@ -13,4 +13,8 @@ public class PAList extends PA_Command {
 				Language.parse("arenas", Arenas.getNames()));
 	}
 
+	@Override
+	public String getName() {
+		return "PAList";
+	}
 }

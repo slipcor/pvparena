@@ -26,6 +26,7 @@ import com.nodinchan.ncloader.Loader;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.core.Debug;
 
 /**
  * arena module manager class
@@ -41,6 +42,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
  */
 
 public class ArenaModuleManager {
+	protected Debug db = new Debug(51);
 	private final List<ArenaModule> modules;
 
 	/**
@@ -57,7 +59,7 @@ public class ArenaModuleManager {
 		modules = new Loader<ArenaModule>(plugin, path, new Object[] {}).load();
 
 		for (ArenaModule mod : modules) {
-			System.out.print("[PVP Arena] module ArenaModule loaded: "
+			db.i("module ArenaModule loaded: "
 					+ mod.getName() + " (version " + mod.version() +")");
 		}
 	}

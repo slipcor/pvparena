@@ -20,4 +20,8 @@ public class PAAReload extends PAA_Command {
 		Arenas.tellPlayer(player, Language.parse("reloaded"));
 	}
 
+	@Override
+	public String getName() {
+		return "PAAReload";
+	}
 }

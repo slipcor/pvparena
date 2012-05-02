@@ -20,4 +20,8 @@ public class PAAReadyList extends PAA_Command {
 				arena);
 	}
 
+	@Override
+	public String getName() {
+		return "PAAReadyList";
+	}
 }

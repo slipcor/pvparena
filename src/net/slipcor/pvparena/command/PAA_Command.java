@@ -35,13 +35,13 @@ public abstract class PAA_Command {
 			return new PAACheck();
 		} else if (s.equalsIgnoreCase("info")) {
 			return new PAAInfo();
+		} else if (s.equalsIgnoreCase("leave")) {
+			return new PAALeave();
 		} else if (s.equalsIgnoreCase("list")) {
 			return new PAAList();
 		} else if (s.equalsIgnoreCase("watch")
 				|| s.equalsIgnoreCase("spectate")) {
 			return new PAASpectate();
-		} else if (s.equalsIgnoreCase("users")) {
-			return new PAAUsers();
 		} else if (s.equalsIgnoreCase("readylist")) {
 			return new PAAReadyList();
 		} else if (s.equalsIgnoreCase("region")) {
@@ -77,12 +77,12 @@ public abstract class PAA_Command {
 		spawns.add("spectator");
 		spawns.add("exit");
 		
-		spawns = PVPArena.instance.getAmm().getAddedSpawns();
-		for (String s : spawns) {
+		HashSet<String> otherSpawns = PVPArena.instance.getAmm().getAddedSpawns();
+		for (String s : otherSpawns) {
 			spawns.add(s);
 		}
-		spawns = arena.type().getAddedSpawns();
-		for (String s : spawns) {
+		otherSpawns = arena.type().getAddedSpawns();
+		for (String s : otherSpawns) {
 			spawns.add(s);
 		}
 		
@@ -124,6 +124,7 @@ public abstract class PAA_Command {
 	}
 
 	public abstract void commit(Arena arena, CommandSender sender, String[] args);
+	public abstract String getName();
 
 	/**
 	 * check various methods to see if the player may join the arena

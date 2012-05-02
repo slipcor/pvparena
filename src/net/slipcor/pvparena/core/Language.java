@@ -190,6 +190,8 @@ public class Language {
 
 		config.addDefault("lang.arenatypeunknown",
 				"Arena Type '%1%' unknown. Please add the corresponding arena jar file!");
+		config.addDefault("lang.arenateamunknown",
+				"Arena Team '%1%' unknown!");
 
 		for (Statistics.type t : Statistics.type.values()) {
 			config.addDefault("lang." + t, t.getName());

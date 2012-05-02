@@ -14,7 +14,11 @@ public class PAABorders extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
+			return;
+		}
+		
+		if (!checkArgs(sender, args, 2)) {
 			return;
 		}
 		
@@ -32,14 +36,11 @@ public class PAABorders extends PAA_Command {
 			return;
 		}
 		
-		/*
-		 
-		if (!checkArgs(player, args, 2)) {
-			return;
-		}
-		
-		 */
 		region.showBorder(player);
 	}
 
+	@Override
+	public String getName() {
+		return "PAABorders";
+	}
 }

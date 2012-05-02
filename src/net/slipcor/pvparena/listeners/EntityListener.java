@@ -43,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.7.19
  * 
  */
 
@@ -439,7 +439,7 @@ public class EntityListener implements Listener {
 				db.i("damage >= health => death");
 				int lives = 3;
 
-				lives = arena.lives.get(defender.getName());
+				lives = arena.type().getLives(defender);
 				db.i("lives before death: " + lives);
 				if (lives < 1) {
 					if (!arena.cfg.getBoolean("game.preventDeath")) {
@@ -578,7 +578,7 @@ public class EntityListener implements Listener {
 
 			Statistics.kill(arena, attacker, defender, (lives > 0));
 
-			lives = arena.lives.get(defender.getName());
+			lives = arena.type().getLives(defender);
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.cfg.getBoolean("game.preventDeath")) {
@@ -610,7 +610,7 @@ public class EntityListener implements Listener {
 
 			Statistics.kill(arena, attacker, defender, (lives > 0));
 
-			lives = arena.lives.get(defender.getName());
+			lives = arena.type().getLives(defender);
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.cfg.getBoolean("game.preventDeath")) {

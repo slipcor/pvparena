@@ -26,4 +26,8 @@ public class PAAForceStop extends PAA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAAForceStop";
+	}
 }

@@ -54,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.19
  * 
  */
 

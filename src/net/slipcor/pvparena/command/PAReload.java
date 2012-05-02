@@ -19,4 +19,9 @@ public class PAReload extends PA_Command {
 		Arenas.load_arenas();
 		Arenas.tellPlayer(player, Language.parse("reloaded"));
 	}
+
+	@Override
+	public String getName() {
+		return "PAReload";
+	}
 }

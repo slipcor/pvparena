@@ -31,4 +31,9 @@ public class PAVersion extends PA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAVersion";
+	}
+
 }

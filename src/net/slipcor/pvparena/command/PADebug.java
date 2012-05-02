@@ -25,4 +25,9 @@ public class PADebug extends PA_Command {
 		Debug.load(PVPArena.instance);
 	}
 
+	@Override
+	public String getName() {
+		return "PADebug";
+	}
+
 }

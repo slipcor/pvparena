@@ -24,4 +24,8 @@ public class PAAEdit extends PAA_Command {
 				arena);
 	}
 
+	@Override
+	public String getName() {
+		return "PAAEdit";
+	}
 }

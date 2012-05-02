@@ -25,7 +25,7 @@ import net.slipcor.pvparena.regions.Cuboid;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.19
  * 
  */
 
@@ -48,7 +48,7 @@ public class ArenaRegionManager {
 		regions.add(new Cuboid());
 
 		for (ArenaRegion mod : regions) {
-			System.out.print("[PVP Arena] module ArenaRegion loaded: "
+			db.i("module ArenaRegion loaded: "
 					+ mod.getName() + " (version " + mod.version() +")");
 		}
 	}
@@ -88,35 +88,20 @@ public class ArenaRegionManager {
 				result.max = pos2.toVector();
 				result.arena = arena;
 				result.world = pos1.getWorld();
-				
-				if (name.equals("battlefield")) {
-					result.setType(RegionType.BATTLEFIELD);
-				} else if (name.equals("spectator")) {
-					result.setType(RegionType.SPECTATOR);
-				} else if (name.equals("exit")) {
-					result.setType(RegionType.EXIT);
-				} else if (name.endsWith("lounge")) {
-					result.setType(RegionType.LOUNGE);
-				} else if (name.equals("join")) {
-					result.setType(RegionType.JOIN);
-				} else if (name.startsWith("death")) {
-					result.setType(RegionType.DEATH);
-				} else if (name.startsWith("nocamp")) {
-					result.setType(RegionType.NOCAMP);
-				} else {
-					result.setType(RegionType.CUSTOM);
-				}
+
+				setRegionTypeByName(result, name);
 				return result;
 			}
 		}
 		return null;
 	}
-	
+
 	public ArenaRegion newRegion(String name, RegionShape shape) {
 		for (ArenaRegion region : regions) {
 			if (region.getShape().equals(shape)) {
 				ArenaRegion result = region.clone();
 				result.name = name;
+				setRegionTypeByName(result, name);
 				return result;
 			}
 		}
@@ -151,5 +136,25 @@ public class ArenaRegionManager {
 
 	public List<ArenaRegion> getRegions() {
 		return regions;
+	}
+	
+	private void setRegionTypeByName(ArenaRegion r, String s) {
+		if (s.equals("battlefield")) {
+			r.setType(RegionType.BATTLEFIELD);
+		} else if (s.equals("spectator")) {
+			r.setType(RegionType.SPECTATOR);
+		} else if (s.equals("exit")) {
+			r.setType(RegionType.EXIT);
+		} else if (s.endsWith("lounge")) {
+			r.setType(RegionType.LOUNGE);
+		} else if (s.equals("join")) {
+			r.setType(RegionType.JOIN);
+		} else if (s.startsWith("death")) {
+			r.setType(RegionType.DEATH);
+		} else if (s.startsWith("nocamp")) {
+			r.setType(RegionType.NOCAMP);
+		} else {
+			r.setType(RegionType.CUSTOM);
+		}
 	}
 }

@@ -25,4 +25,8 @@ public class PAACheck extends PAA_Command {
 		Debug.override = false;
 	}
 
+	@Override
+	public String getName() {
+		return "PAACheck";
+	}
 }

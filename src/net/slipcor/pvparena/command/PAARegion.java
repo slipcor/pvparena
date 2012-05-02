@@ -6,6 +6,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaRegionManager;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class PAARegion extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
 			return;
 		}
 		
@@ -47,12 +48,13 @@ public class PAARegion extends PAA_Command {
 			return;
 		} else if (args.length == 3 && args[1].equalsIgnoreCase("remove")) {
 			// pa region remove [regionname]
-			if (arena.cfg.get("regions." + args[1]) != null) {
-				arena.cfg.set("regions." + args[1], null);
+			if (arena.cfg.get("regions." + args[2]) != null) {
+				arena.regions.remove(args[2]);
+				arena.cfg.set("regions." + args[2], null);
 				arena.cfg.save();
 				Arena.regionmodify = "";
 				Arenas.tellPlayer(player,
-						Language.parse("regionremoved"), arena);
+						Language.parse("regionremoved", args[2]), arena);
 			} else {
 				Arenas.tellPlayer(player,
 						Language.parse("regionnotremoved"), arena);
@@ -103,6 +105,10 @@ public class PAARegion extends PAA_Command {
 			System.out.print("Error while creating arena region!");
 		}
 		
+		if (region.getShape() != RegionShape.CUBOID) {
+			s += "," + region.getName();
+		}
+		
 		arena.cfg.set("regions." + args[1], s);
 		arena.regions.put(args[1], region);
 		arena.pos1 = null;
@@ -114,4 +120,8 @@ public class PAARegion extends PAA_Command {
 		Arenas.tellPlayer(player, Language.parse("regionsaved"), arena);
 	}
 
+	@Override
+	public String getName() {
+		return "PAARegion";
+	}
 }

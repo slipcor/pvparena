@@ -16,13 +16,17 @@ public class PACreate extends PA_Command {
 	@Override
 	public void commit(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
+			return;
+		}
+		
+		if (!checkArgs(sender, args, 2, 3)) {
 			return;
 		}
 		
 		Player player = (Player) sender;
 		
-		db.i("parsing help command of player " + player.getName()
+		db.i("parsing create command of player " + player.getName()
 				+ StringParser.parseArray(args));
 		
 		if (!PVPArena.hasAdminPerms(player)
@@ -32,7 +36,7 @@ public class PACreate extends PA_Command {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByName(args[0]);
+		Arena arena = Arenas.getArenaByName(args[1]);
 
 		if (arena != null) {
 			Arenas.tellPlayer(player, Language.parse("arenaexists"));
@@ -46,7 +50,7 @@ public class PACreate extends PA_Command {
 				return;
 			}
 
-			a = Arenas.loadArena(args[0], args[2]);
+			a = Arenas.loadArena(args[1], args[2]);
 		} else {
 			if (PVPArena.instance.getAtm().getType("teams") == null) {
 				Arenas.tellPlayer(player,
@@ -54,7 +58,7 @@ public class PACreate extends PA_Command {
 				return;
 			}
 
-			a = Arenas.loadArena(args[0], "teams");
+			a = Arenas.loadArena(args[1], "teams");
 		}
 		a.setWorld(player.getWorld().getName());
 		if (!PVPArena.hasAdminPerms(player)) {
@@ -62,6 +66,11 @@ public class PACreate extends PA_Command {
 		}
 		a.cfg.set("general.owner", a.owner);
 		a.cfg.save();
-		Arenas.tellPlayer(player, Language.parse("created", args[0]));
+		Arenas.tellPlayer(player, Language.parse("created", args[1]));
+	}
+
+	@Override
+	public String getName() {
+		return "PACreate";
 	}
 }

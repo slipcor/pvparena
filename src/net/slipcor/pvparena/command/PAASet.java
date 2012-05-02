@@ -35,4 +35,8 @@ public class PAASet extends PAA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAASet";
+	}
 }

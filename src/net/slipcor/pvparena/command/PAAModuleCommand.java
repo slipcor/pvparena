@@ -15,4 +15,8 @@ public class PAAModuleCommand extends PAA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAAModuleCommand";
+	}
 }

@@ -20,7 +20,7 @@ public class PAAJoin extends PAA_Command {
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		// just /pa or /pvparena
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
 			return;
 		}
 
@@ -59,7 +59,6 @@ public class PAAJoin extends PAA_Command {
 		}
 
 		arena.prepare(player, false, false);
-		arena.lives.put(player.getName(), arena.cfg.getInt("game.lives", 3));
 
 		Teams.choosePlayerTeam(arena, player);
 		Inventories.prepareInventory(arena, player);
@@ -79,4 +78,8 @@ public class PAAJoin extends PAA_Command {
 		return;
 	}
 
+	@Override
+	public String getName() {
+		return "PAAJoin";
+	}
 }

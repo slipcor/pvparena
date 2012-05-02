@@ -336,4 +336,9 @@ public class PAHelp extends PA_Command {
 				+ ChatColor.WHITE + " | for administration commands");
 
 	}
+
+	@Override
+	public String getName() {
+		return "PAHelp";
+	}
 }

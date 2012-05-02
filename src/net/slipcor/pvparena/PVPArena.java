@@ -82,6 +82,7 @@ public class PVPArena extends JavaPlugin {
 		
 		PA_Command command = PA_Command.parseCommand(args[0]);
 		if (command != null) {
+			db.i("command: " + command.getName());
 			command.commit(sender, args);
 			return true;
 		}
@@ -121,12 +122,13 @@ public class PVPArena extends JavaPlugin {
 		
 		PAA_Command arenaCommand;
 		
-		if (args.length < 2) {
+		if (args.length < 1) {
 			arenaCommand = PAA_Command.parseCommand(null, arena);
 		} else {
 			arenaCommand = PAA_Command.parseCommand(args[0], arena);
 		}
 		if (arenaCommand != null) {
+			db.i("arena command: " + arenaCommand.getName());
 			if (!arena.cfg.getBoolean("general.enabled")
 					&& !PVPArena.hasAdminPerms(sender)
 					&& !(PVPArena.hasCreatePerms(sender, arena))) {

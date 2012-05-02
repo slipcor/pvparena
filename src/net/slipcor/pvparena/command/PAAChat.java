@@ -12,7 +12,7 @@ public class PAAChat extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
 			return;
 		}
 		
@@ -27,4 +27,8 @@ public class PAAChat extends PAA_Command {
 		}
 	}
 
+	@Override
+	public String getName() {
+		return "PAAChat";
+	}
 }

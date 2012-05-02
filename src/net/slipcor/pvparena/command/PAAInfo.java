@@ -145,4 +145,9 @@ public class PAAInfo extends PAA_Command {
 		}
 		return s;
 	}
+
+	@Override
+	public String getName() {
+		return "PAAInfo";
+	}
 }

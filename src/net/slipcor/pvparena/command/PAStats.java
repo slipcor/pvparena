@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.command;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
@@ -8,10 +7,10 @@ import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.command.CommandSender;
 
-public class PAAStats extends PAA_Command {
+public class PAStats extends PA_Command {
 
 	@Override
-	public void commit(Arena arena, CommandSender player, String[] args) {
+	public void commit(CommandSender player, String[] args) {
 		
 		if (!checkArgs(player, args, 2, 3)) {
 			return;
@@ -21,17 +20,17 @@ public class PAAStats extends PAA_Command {
 
 		if (type == null) {
 			Arenas.tellPlayer(player,
-					Language.parse("invalidstattype", args[1]), arena);
+					Language.parse("invalidstattype", args[1]));
 			return;
 		}
 
-		ArenaPlayer[] aps = Statistics.getStats(arena, type);
-		String[] s = Statistics.read(aps, type, arena == null);
+		ArenaPlayer[] aps = Statistics.getStats(null, type);
+		String[] s = Statistics.read(aps, type, true);
 
 		int i = 0;
 
 		for (ArenaPlayer ap : aps) {
-			Arenas.tellPlayer(player, ap.get().getName() + ": " + s[i++], arena);
+			Arenas.tellPlayer(player, ap.get().getName() + ": " + s[i++]);
 			if (i > 9) {
 				return;
 			}

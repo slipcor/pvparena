@@ -183,6 +183,7 @@ public class PlayerListener implements Listener {
 			db.i("returning: no class");
 			// fighting player inside the lobby!
 			event.setCancelled(true);
+			return;
 		}
 
 		if (team == null) {
