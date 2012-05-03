@@ -114,17 +114,7 @@ A PVP experience enhancing plugin.
 
 === Todo
 
-* Fixes
-** DOM arena fixing
-* Features
-** join: /pa {name} [amount] - win amount : winFactor
-** distribute players intelligently at the spawns (randomSpawn)
-** CHEST powerup placement
-** MAP support: Player location, flag/spawn location
-** RUSH mode - Base defend vs Conquer base
-** Spout: Adding "skin" key to classes, MobDisguise hooking
-* API
-** improvements
+* PAExitEvent (called on leave, win, lose, end, death etc)
 
 -----------------------------------------------------------------------------------------------------------------------
 

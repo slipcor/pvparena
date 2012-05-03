@@ -72,28 +72,28 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
-		
+
 		if (args == null || args.length < 1) {
 			return false;
 		}
-		
+
 		db.i("onCommand: player " + sender.getName() + ": /" + commandLabel
 				+ StringParser.parseArray(args));
-		
+
 		PA_Command command = PA_Command.parseCommand(args[0]);
 		if (command != null) {
 			db.i("command: " + command.getName());
 			command.commit(sender, args);
 			return true;
 		}
-		
+
 		String sName = args[0];
 
 		Arena arena = Arenas.getArenaByName(sName);
 		if (arena == null) {
 			db.i("arena not found, searching...");
 			if (sender instanceof Player) {
-				arena = Arenas.getArenaByPlayer((Player)sender);
+				arena = Arenas.getArenaByPlayer((Player) sender);
 			}
 			if (arena != null) {
 				db.i("found arena by player: " + arena.name);
@@ -105,23 +105,23 @@ public class PVPArena extends JavaPlugin {
 				db.i("found default arena!");
 			} else {
 				if (sender instanceof Player) {
-				Arenas.tellPlayer((Player) sender,
-						Language.parse("arenanotexists", sName));
+					Arenas.tellPlayer((Player) sender,
+							Language.parse("arenanotexists", sName));
 				} else {
 					System.out.print(Language.parse("arenanotexists", sName));
 				}
 				return true;
 			}
-			
+
 		} else {
 
 			String[] newArgs = new String[args.length - 1];
 			System.arraycopy(args, 1, newArgs, 0, args.length - 1);
 			args = newArgs;
 		}
-		
+
 		PAA_Command arenaCommand;
-		
+
 		if (args.length < 1) {
 			arenaCommand = PAA_Command.parseCommand(null, arena);
 		} else {
@@ -132,10 +132,12 @@ public class PVPArena extends JavaPlugin {
 			if (!arena.cfg.getBoolean("general.enabled")
 					&& !PVPArena.hasAdminPerms(sender)
 					&& !(PVPArena.hasCreatePerms(sender, arena))) {
-				Arenas.tellPlayer(sender, Language.parse("arenadisabled"), arena);
+				Arenas.tellPlayer(sender, Language.parse("arenadisabled"),
+						arena);
 				return true;
 			}
-			db.i("committing arena command: " + db.formatStringArray(args) + " in arena " + arena.name);
+			db.i("committing arena command: " + db.formatStringArray(args)
+					+ " in arena " + arena.name);
 			arenaCommand.commit(arena, sender, args);
 			return true;
 		}
@@ -163,10 +165,11 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
 		new File(getDataFolder().getPath() + "/regions").mkdir();
-		
+
 		if (!startLoader()) {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);
-			Bukkit.getLogger().severe("Error while loading Loader lib. Disabling PVP Arena...");
+			Bukkit.getLogger().severe(
+					"Error while loading Loader lib. Disabling PVP Arena...");
 		}
 
 		atm = new ArenaTypeManager(this);
@@ -209,7 +212,7 @@ public class PVPArena extends JavaPlugin {
 
 		Tracker trackMe = new Tracker(this);
 		trackMe.start();
-		
+
 		Metrics metrics;
 		try {
 			metrics = new Metrics(this);
@@ -217,7 +220,7 @@ public class PVPArena extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
@@ -225,74 +228,90 @@ public class PVPArena extends JavaPlugin {
 
 	private boolean startLoader() {
 		try {
-			File destination = new File(getDataFolder().getParentFile().getParentFile(), "lib");
+			File destination = new File(getDataFolder().getParentFile()
+					.getParentFile(), "lib");
 			destination.mkdirs();
-			
+
 			File lib = new File(destination, "NC-LoaderLib.jar");
-			
+
 			boolean download = false;
-			
+
 			if (!lib.exists()) {
 				System.out.println("Missing NC-Loader lib");
 				download = true;
-				
+
 			} else {
 				JarFile jarFile = new JarFile(lib);
 				Enumeration<JarEntry> entries = jarFile.entries();
-				
+
 				double version = 0;
-				
+
 				while (entries.hasMoreElements()) {
 					JarEntry element = entries.nextElement();
-					
+
 					if (element.getName().equals("version.yml")) {
-						BufferedReader reader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(element)));
-						version = Double.parseDouble(reader.readLine().substring(9).trim());
+						BufferedReader reader = new BufferedReader(
+								new InputStreamReader(
+										jarFile.getInputStream(element)));
+						version = Double.parseDouble(reader.readLine()
+								.substring(9).trim());
 					}
 				}
-				
+
 				if (version == 0) {
 					System.out.println("NC-Loader lib outdated");
 					download = true;
-					
+
 				} else {
-					HttpURLConnection urlConnection = (HttpURLConnection) new URL("http://www.nodinchan.com/NC-LoaderLib/version.yml").openConnection();
-					BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-					
-					if (Double.parseDouble(reader.readLine().replace("NC-LoaderLib Version ", "").trim()) > version)
+					HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+							"http://www.nodinchan.com/NC-LoaderLib/version.yml")
+							.openConnection();
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(
+									urlConnection.getInputStream()));
+
+					if (Double.parseDouble(reader.readLine()
+							.replace("NC-LoaderLib Version ", "").trim()) > version)
 						download = true;
 				}
 			}
-			
+
 			if (download) {
 				System.out.println("Downloading NC-Loader lib...");
-				URL url = new URL("http://www.nodinchan.com/NC-LoaderLib/NC-LoaderLib.jar");
+				URL url = new URL(
+						"http://www.nodinchan.com/NC-LoaderLib/NC-LoaderLib.jar");
 				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 				FileOutputStream output = new FileOutputStream(lib);
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
 				System.out.println("Downloaded NC-Loader lib");
 			}
-			
-			URLClassLoader sysLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-			
+
+			URLClassLoader sysLoader = (URLClassLoader) ClassLoader
+					.getSystemClassLoader();
+
 			for (URL url : sysLoader.getURLs()) {
 				if (url.sameFile(lib.toURI().toURL()))
 					return true;
 			}
-			
+
 			try {
-				Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
+				Method method = URLClassLoader.class.getDeclaredMethod(
+						"addURL", new Class[] { URL.class });
 				method.setAccessible(true);
 				method.invoke(sysLoader, new Object[] { lib.toURI().toURL() });
-				
-			} catch (Exception e) { return false; }
-			
+
+			} catch (Exception e) {
+				return false;
+			}
+
 			return true;
-			
-		} catch (Exception e) { e.printStackTrace(); }
-		
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return false;
-		
+
 	}
 
 	/**

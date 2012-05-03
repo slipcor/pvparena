@@ -13,6 +13,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.events.PAEndEvent;
+import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
@@ -725,6 +726,8 @@ public class Arena {
 				.parsePlayer(player);
 		PALeaveEvent event = new PALeaveEvent(this, player, ap.getStatus().equals(Status.FIGHT));
 		Bukkit.getPluginManager().callEvent(event);
+		PAExitEvent exitEvent = new PAExitEvent(this, player);
+		Bukkit.getPluginManager().callEvent(exitEvent);
 		if (!ap.isDead())
 			ArenaPlayer.parsePlayer(player).setArena(null);
 	}

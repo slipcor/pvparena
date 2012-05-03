@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.events.PADeathEvent;
+import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 
 /**
@@ -284,6 +285,10 @@ public class Statistics {
 			boolean willRespawn) {
 		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
 		Bukkit.getPluginManager().callEvent(dEvent);
+		if (!willRespawn) {
+			PAExitEvent exitEvent = new PAExitEvent(arena, defender);
+			Bukkit.getPluginManager().callEvent(exitEvent);
+		}
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
