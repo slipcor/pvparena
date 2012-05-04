@@ -37,7 +37,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.20
  * 
  */
 
@@ -258,17 +258,17 @@ public class ArenaRegion extends Loadable {
 						if (!contains(b.getLocation())) {
 							continue;
 						}
-						if ((b.getType() != Material.CHEST)) {
+						if ((b.getType() == Material.CHEST)) {
 							Chest c = (Chest) b.getState();
 
 							chests.put(b.getLocation(), cloneIS(c.getInventory()
 									.getContents()));
-						} else if (b.getType() != Material.FURNACE) {
+						} else if (b.getType() == Material.FURNACE) {
 							Furnace f = (Furnace) b.getState();
 							
 							furnaces.put(b.getLocation(), cloneIS(f.getInventory()
 									.getContents()));
-						} else if (b.getType() != Material.DISPENSER) {
+						} else if (b.getType() == Material.DISPENSER) {
 							Dispenser d = (Dispenser) b.getState();
 							
 							dispensers.put(b.getLocation(), cloneIS(d.getInventory()
@@ -356,5 +356,9 @@ public class ArenaRegion extends Loadable {
 				}
 			}
 		}
+	}
+
+	public void reset() {
+		Bukkit.getScheduler().cancelTask(TICK_ID);
 	}
 }

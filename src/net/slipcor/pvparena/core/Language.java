@@ -134,7 +134,7 @@ public class Language {
 		config.addDefault("lang.remove", "remove an arena");
 		config.addDefault("lang.removed", "arena '%1%' removed!");
 		config.addDefault("lang.setspawn", "Spawn set: %1%");
-		config.addDefault("lang.setlounge", "Lounge set.");
+		config.addDefault("lang.loungeset", "Lounge set: %1%");
 		config.addDefault("lang.selectteam",
 				"You must select a team to join! /pa [arenaname] [team]");
 		config.addDefault("lang.notselectteam",
@@ -142,7 +142,6 @@ public class Language {
 		config.addDefault("lang.joinrange",
 				"You are too far away to join this arena!");
 		config.addDefault("lang.teamhaswon", "%1% are the Champions!");
-		config.addDefault("lang.playerhaswon", "%1% is the Champion!");
 		config.addDefault("lang.notsameworld",
 				"Not in the same world as the arena (%1%)!");
 

@@ -180,10 +180,9 @@ public class PlayerListener implements Listener {
 		ArenaTeam team = Teams.getTeam(arena, ap);
 
 		if (!ap.getStatus().equals(Status.FIGHT)) {
-			db.i("returning: no class");
+			db.i("cancelling: no class");
 			// fighting player inside the lobby!
 			event.setCancelled(true);
-			return;
 		}
 
 		if (team == null) {

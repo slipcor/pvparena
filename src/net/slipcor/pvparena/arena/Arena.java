@@ -55,7 +55,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.7.20
  * 
  */
 
@@ -168,6 +168,9 @@ public class Arena {
 			return;
 		}
 		regions.get("battlefield").restore();
+		for (ArenaRegion region : regions.values()) {
+			region.reset();
+		}
 		Arenas.restoreChests(this);
 	}
 
@@ -672,7 +675,7 @@ public class Arena {
 		if (players < cfg.getInt("ready.min")) {
 			return -4;
 		}
-
+		
 		if (cfg.getBoolean("ready.checkEach")) {
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
@@ -681,7 +684,7 @@ public class Arena {
 					}
 			}
 		}
-
+		
 		int arenaTypeCheck = type.ready(this);
 		if (arenaTypeCheck != 1) {
 			return arenaTypeCheck;
@@ -862,7 +865,9 @@ public class Arena {
 			ap.addDeadPlayer(string);
 			return;
 		}
-		ap.getState().unload();
+		if (ap.getState() != null) {
+			ap.getState().unload();
+		}
 		PVPArena.instance.getAmm().resetPlayer(this, player);
 
 		db.i("string = " + string);
@@ -1002,9 +1007,7 @@ public class Arena {
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (team.getName().equals("free")) {
-					tpPlayerToCoordName(ap.get(), "spawn");
-				} else {
+				if (!team.getName().equals("free")) {
 					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 				}
 				ap.setStatus(Status.FIGHT);

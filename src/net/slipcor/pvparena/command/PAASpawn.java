@@ -51,9 +51,12 @@ public class PAASpawn extends PAA_Command {
 		} else {
 			HashSet<String> spawns = new HashSet<String>();
 			
+			db.i("adding module spawns");
+			
 			spawns = PVPArena.instance.getAmm().getAddedSpawns();
 			for (String s : spawns) {
 				spawns.add(s);
+				db.i("adding spawn " + s);
 			}
 			spawns = PAASpawn.correctSpawns(arena, spawns);
 			
@@ -63,15 +66,18 @@ public class PAASpawn extends PAA_Command {
 					return;
 				}
 			}
+
+			db.i("adding type spawns ");
 			
 			spawns = arena.type().getAddedSpawns();
 			for (String s : spawns) {
 				spawns.add(s);
+				db.i("adding spawn " + s);
 			}
 			spawns = PAASpawn.correctSpawns(arena, spawns);
 			
 			for (String s : spawns) {
-				if (s.startsWith(args[0])) {
+				if (args[0].startsWith(s)) {
 					arena.type().commitCommand(arena, player, args);
 				}
 			}

@@ -265,14 +265,14 @@ public class ArenaType extends Loadable {
 			Language.parse("onlyplayers");
 			return;
 		}
-		
+
 		System.out.print(StringParser.parseArray(args));
-		
+
 		Player player = (Player) sender;
-		
+
 		if (args[0].startsWith("spawn") || args[0].equals("spawn")) {
-			Arenas.tellPlayer(sender, Language.parse("errorspawnfree", args[0]),
-					arena);
+			Arenas.tellPlayer(sender,
+					Language.parse("errorspawnfree", args[0]), arena);
 			return;
 		}
 
@@ -280,12 +280,32 @@ public class ArenaType extends Loadable {
 			String[] split = args[0].split("spawn");
 			String sName = split[0];
 			if (Teams.getTeam(arena, sName) == null) {
-				Arenas.tellPlayer(sender, Language.parse("arenateamunknown", sName), arena);
+				Arenas.tellPlayer(sender,
+						Language.parse("arenateamunknown", sName), arena);
 				return;
 			}
 
 			Spawns.setCoords(arena, player, args[0]);
 			Arenas.tellPlayer(player, Language.parse("setspawn", sName), arena);
+		}
+
+		if (args[0].equals("lounge")) {
+			Arenas.tellPlayer(sender,
+					Language.parse("errorloungefree", args[0]), arena);
+			return;
+		}
+
+		if (args[0].contains("lounge")) {
+			String[] split = args[0].split("lounge");
+			String sName = split[0];
+			if (Teams.getTeam(arena, sName) == null) {
+				Arenas.tellPlayer(sender,
+						Language.parse("arenateamunknown", sName), arena);
+				return;
+			}
+
+			Spawns.setCoords(arena, player, args[0]);
+			Arenas.tellPlayer(player, Language.parse("loungeset", sName), arena);
 		}
 	}
 
@@ -294,6 +314,15 @@ public class ArenaType extends Loadable {
 	 */
 	public void configParse() {
 		return;
+	}
+
+	public HashSet<String> getAddedSpawns() {
+		HashSet<String> result = new HashSet<String>();
+
+		result.add("%team%spawn");
+		result.add("%team%lounge");
+
+		return result;
 	}
 
 	public int getLives(Player defender) {
@@ -342,7 +371,12 @@ public class ArenaType extends Loadable {
 	 * initiate an arena
 	 */
 	public void initiate() {
-		return;
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				arena.lives
+						.put(ap.getName(), arena.cfg.getInt("game.lives", 3));
+			}
+		}
 	}
 
 	/**
@@ -441,6 +475,19 @@ public class ArenaType extends Loadable {
 	 * @return 1 if ready, negative result otherwise
 	 */
 	public int ready(Arena arena) {
+		HashSet<String> activeTeams = new HashSet<String>();
+
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers())
+				if (ap.getStatus().equals(Status.READY)) {
+					activeTeams.add(team.getName());
+				}
+		}
+
+		if (activeTeams.size() < 2) {
+			return -2;
+		}
+		
 		return 1;
 	}
 
@@ -470,6 +517,26 @@ public class ArenaType extends Loadable {
 		return false;
 	}
 
+	public boolean parseCommand(String s) {
+		if (s.contains("spawn")) {
+			String[] split = s.split("spawn");
+			String sName = split[0];
+			if (Teams.getTeam(arena, sName) == null) {
+				return false;
+			}
+			return true;
+		}
+		if (s.contains("lounge")) {
+			String[] split = s.split("lounge");
+			String sName = split[0];
+			if (Teams.getTeam(arena, sName) == null) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * hook into moving
 	 * 
@@ -496,7 +563,8 @@ public class ArenaType extends Loadable {
 	 */
 	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
 			int lives, DamageCause cause, Entity damager) {
-		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName() + "spawn");
+		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
+				+ "spawn");
 		return;
 	}
 
@@ -612,26 +680,5 @@ public class ArenaType extends Loadable {
 	 *            the player to unload
 	 */
 	public void unload(Player player) {
-	}
-
-	public HashSet<String> getAddedSpawns() {
-		HashSet<String> result = new HashSet<String>();
-
-		result.add("%team%spawn");
-		result.add("%team%lounge");
-
-		return result;
-	}
-
-	public boolean parseCommand(String s) {
-		if (s.contains("spawn")) {
-			String[] split = s.split("spawn");
-			String sName = split[0];
-			if (Teams.getTeam(arena, sName) == null) {
-				return false;
-			}
-			return true;
-		}
-		return false;
 	}
 }

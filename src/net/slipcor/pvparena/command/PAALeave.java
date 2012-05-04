@@ -18,6 +18,11 @@ public class PAALeave extends PAA_Command {
 		
 		Player player = (Player) sender;
 		
+		if (Arenas.getArenaByPlayer(player) == null) {
+			Arenas.tellPlayer(player, Language.parse("notinarena"));
+			return;
+		}
+		
 		arena.playerLeave(player);
 	}
 
