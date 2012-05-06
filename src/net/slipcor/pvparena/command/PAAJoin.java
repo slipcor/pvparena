@@ -75,7 +75,6 @@ public class PAAJoin extends PAA_Command {
 				db.w("autoclass selected that does not exist: " + autoClass);
 			}
 		}
-		return;
 	}
 
 	@Override

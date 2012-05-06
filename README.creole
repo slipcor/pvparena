@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.20.3 - fix various bugs
 * v0.7.20.2 - fix various bugs
 * v0.7.20.1 - fix teams/ctf/pumpkin lounge setting not working
 * v0.7.20.0 - feature freeze, future updates will just add/update modules or fix bugs

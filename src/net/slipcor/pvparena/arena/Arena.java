@@ -404,7 +404,6 @@ public class Arena {
 	 * @return all players
 	 */
 	public HashSet<ArenaPlayer> getPlayers() {
-		
 
 		HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
@@ -476,7 +475,8 @@ public class Arena {
 	 */
 	public boolean isCustomClassActive() {
 		for (ArenaPlayer p : getPlayers()) {
-			if (p.getStatus().equals(Status.FIGHT) && p.getClass().equals("custom")) {
+			if (p.getStatus().equals(Status.FIGHT)
+					&& p.getClass().equals("custom")) {
 				db.i("custom class active: true");
 				return true;
 			}
@@ -574,18 +574,19 @@ public class Arena {
 	public void playerLeave(Player player) {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		
+
 		boolean fighter = ap.getStatus().equals(Status.FIGHT);
-		
+
 		if (fighter) {
 			ArenaTeam team = Teams.getTeam(this, ap);
-			PVPArena.instance.getAmm().playerLeave(this, player, team);
-
-			tellEveryoneExcept(
-					player,
-					Language.parse("playerleave", team.colorizePlayer(player)
-							+ ChatColor.YELLOW));
-
+			if (team != null) {
+				PVPArena.instance.getAmm().playerLeave(this, player, team);
+	
+				tellEveryoneExcept(
+						player,
+						Language.parse("playerleave", team.colorizePlayer(player)
+								+ ChatColor.YELLOW));
+			}
 			Arenas.tellPlayer(player, Language.parse("youleave"), this);
 		}
 		removePlayer(player, cfg.getString("tp.exit", "exit"), false);
@@ -626,7 +627,7 @@ public class Arena {
 	 * prepare a player for fighting. Setting all values to start value
 	 * 
 	 * @param player
-	 * @param ending 
+	 * @param ending
 	 */
 	public void prepare(Player player, boolean spectate, boolean ending) {
 		if (ending) {
@@ -635,9 +636,9 @@ public class Arena {
 			PAJoinEvent event = new PAJoinEvent(this, player, spectate);
 			Bukkit.getPluginManager().callEvent(event);
 			db.i("preparing player: " + player.getName());
-	
+
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-	
+
 			ap.setArena(this);
 
 			saveMisc(player); // save player health, fire tick, hunger etc
@@ -675,7 +676,7 @@ public class Arena {
 		if (players < cfg.getInt("ready.min")) {
 			return -4;
 		}
-		
+
 		if (cfg.getBoolean("ready.checkEach")) {
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
@@ -684,7 +685,7 @@ public class Arena {
 					}
 			}
 		}
-		
+
 		int arenaTypeCheck = type.ready(this);
 		if (arenaTypeCheck != 1) {
 			return arenaTypeCheck;
@@ -707,9 +708,8 @@ public class Arena {
 			if (cfg.getDouble("ready.startRatio") > 0) {
 				double ratio = cfg.getDouble("ready.startRatio");
 
-				
 				if (players > 0 && readyPlayers / players >= ratio) {
-			
+
 					return -6;
 				}
 			}
@@ -725,9 +725,9 @@ public class Arena {
 	 *            the player to remove
 	 */
 	public void remove(Player player) {
-		ArenaPlayer ap = ArenaPlayer
-				.parsePlayer(player);
-		PALeaveEvent event = new PALeaveEvent(this, player, ap.getStatus().equals(Status.FIGHT));
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		PALeaveEvent event = new PALeaveEvent(this, player, ap.getStatus()
+				.equals(Status.FIGHT));
 		Bukkit.getPluginManager().callEvent(event);
 		PAExitEvent exitEvent = new PAExitEvent(this, player);
 		Bukkit.getPluginManager().callEvent(exitEvent);
@@ -772,7 +772,8 @@ public class Arena {
 	 *            the coord string to teleport the player to
 	 */
 	public void removePlayer(Player player, String tploc, boolean soft) {
-		db.i("removing player " + player.getName() + (soft?" (soft)":"")+", tp to " + tploc);
+		db.i("removing player " + player.getName() + (soft ? " (soft)" : "")
+				+ ", tp to " + tploc);
 		resetPlayer(player, tploc, soft);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
@@ -854,10 +855,10 @@ public class Arena {
 	 * 
 	 * @param player
 	 * @param string
-	 * @param soft 
+	 * @param soft
 	 */
 	private void resetPlayer(Player player, String string, boolean soft) {
-		db.i("resetting player: " + player.getName() + (soft?"(soft)":""));
+		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""));
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (player.isDead() && !ap.isDead()) {
@@ -1006,12 +1007,12 @@ public class Arena {
 
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!team.getName().equals("free")) {
+			if (!team.getName().equals("free")) {
+				for (ArenaPlayer ap : team.getTeamMembers()) {
 					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+					ap.setStatus(Status.FIGHT);
+					playerCount++;
 				}
-				ap.setStatus(Status.FIGHT);
-				playerCount++;
 			}
 		}
 
@@ -1038,7 +1039,7 @@ public class Arena {
 		teamCount = Teams.countActiveTeams(this);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
-		
+
 		for (ArenaRegion region : regions.values()) {
 			if (region.getType().equals(RegionType.DEATH)) {
 				region.initTimer();
@@ -1130,7 +1131,7 @@ public class Arena {
 	 * @param place
 	 *            the coord string
 	 */
-	public synchronized void tpPlayerToCoordName(Player player, String place) {
+	public void tpPlayerToCoordName(Player player, String place) {
 		db.i("teleporting " + player + " to coord " + place);
 		if (place.endsWith("lounge")) {
 			// at the start of the match
