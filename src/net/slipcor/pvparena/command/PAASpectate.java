@@ -28,6 +28,11 @@ public class PAASpectate extends PAA_Command {
 		
 		Player player = (Player) sender;
 		
+		if (!PVPArena.hasPerms(player, arena)) {
+			Arenas.tellPlayer(player, Language.parse("nopermto", Language.parse("join")));
+			return;
+		}
+		
 		String error = Configs.isSetup(arena);
 		if (error != null) {
 			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error),

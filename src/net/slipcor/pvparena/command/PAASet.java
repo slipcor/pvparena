@@ -12,7 +12,7 @@ public class PAASet extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender player, String[] args) {
 		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, null))) {
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
 					Language.parse("nopermto", Language.parse("set")));
 			return;

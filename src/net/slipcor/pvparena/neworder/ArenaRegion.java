@@ -13,17 +13,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import com.nodinchan.ncloader.Loadable;
@@ -56,9 +49,6 @@ public class ArenaRegion extends Loadable {
 	
 	private int TICK_ID = -1;
 	
-	private HashMap<Location, ItemStack[]> chests = new HashMap<Location, ItemStack[]>();
-	private HashMap<Location, ItemStack[]> furnaces = new HashMap<Location, ItemStack[]>();
-	private HashMap<Location, ItemStack[]> dispensers = new HashMap<Location, ItemStack[]>();
 
 	private HashMap<Player, Location> playerLocations = new HashMap<Player, Location>();
 	
@@ -111,28 +101,6 @@ public class ArenaRegion extends Loadable {
 	 */
 	public boolean contains(Location loc) {
 		return false;
-	}
-
-	private ItemStack[] cloneIS(ItemStack[] contents) {
-		ItemStack[] result = new ItemStack[contents.length];
-		
-		for (int i=0; i<result.length; i++) {
-			if (contents[i] == null) {
-				continue;
-			}
-			ItemStack is = contents[i];
-			result[i] = new ItemStack(is.getType(), is.getAmount(), is.getDurability(), is.getData().getData());
-			
-			for (Enchantment ench : is.getEnchantments().keySet()) {
-				result[i].addUnsafeEnchantment(ench, is.getEnchantments().get(ench));
-			}
-		}
-		
-		return result;
-	}
-
-	private ItemStack cloneIS(ItemStack is) {
-		return is.clone();
 	}
 
 	/**
@@ -198,6 +166,14 @@ public class ArenaRegion extends Loadable {
 
 	public void showBorder(Player player) {
 	}
+	
+	public Location getAbsoluteMinimum() {
+		return null;
+	}
+	
+	public Location getAbsoluteMaximum() {
+		return null;
+	}
 
 	public RegionShape getShape() {
 		return shape;
@@ -209,117 +185,6 @@ public class ArenaRegion extends Loadable {
 	
 	public void initTimer() {
 		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(PVPArena.instance, new RegionRunnable(this), arena.cfg.getInt("region.spawncampdamage") * 1L, arena.cfg.getInt("region.spawncampdamage") * 1L);
-	}
-
-	public void saveChests() {
-		chests.clear();
-		furnaces.clear();
-		dispensers.clear();
-		int x;
-		int y;
-		int z;
-		if (shape.equals(RegionShape.CUBOID)) {
-
-			for (x = min.getBlockX(); x <= max.getBlockX(); x++) {
-				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
-					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-						Block b = world.getBlockAt(x, y, z);
-						if (b.getType() == Material.CHEST) {
-							Chest c = (Chest) b.getState();
-
-							chests.put(b.getLocation(), cloneIS(c.getInventory()
-									.getContents()));
-						} else if (b.getType() == Material.FURNACE) {
-							Furnace c = (Furnace) b.getState();
-
-							furnaces.put(b.getLocation(), cloneIS(c.getInventory()
-									.getContents()));
-						} else if (b.getType() == Material.DISPENSER) {
-							Dispenser c = (Dispenser) b.getState();
-
-							dispensers.put(b.getLocation(), cloneIS(c.getInventory()
-									.getContents()));
-						}
-						
-					}
-				}
-
-			}
-		} else if (shape.equals(RegionShape.SPHERIC)) {
-			for (x = min.getBlockX(); x <= max.getBlockX(); x++) {
-				for (y = min.getBlockY(); y <= max.getBlockY(); y++) {
-					for (z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-						Block b = world.getBlockAt(x, y, z);
-						if ((b.getType() != Material.CHEST) &&
-								(b.getType() != Material.FURNACE) &&
-								(b.getType() != Material.DISPENSER)) {
-							continue;
-						}
-						if (!contains(b.getLocation())) {
-							continue;
-						}
-						if ((b.getType() == Material.CHEST)) {
-							Chest c = (Chest) b.getState();
-
-							chests.put(b.getLocation(), cloneIS(c.getInventory()
-									.getContents()));
-						} else if (b.getType() == Material.FURNACE) {
-							Furnace f = (Furnace) b.getState();
-							
-							furnaces.put(b.getLocation(), cloneIS(f.getInventory()
-									.getContents()));
-						} else if (b.getType() == Material.DISPENSER) {
-							Dispenser d = (Dispenser) b.getState();
-							
-							dispensers.put(b.getLocation(), cloneIS(d.getInventory()
-									.getContents()));
-						}
-					}
-				}
-
-			}
-		}
-	}
-
-	public void restoreChests() {
-		db.i("restoring chests");
-		for (Location loc : chests.keySet()) {
-			try {
-				db.i("trying to restore chest: " + loc.toString());
-				Inventory inv = ((Chest) world.getBlockAt(loc).getState()).getInventory();
-				inv.clear();
-				inv.setContents(chests.get(loc));
-				db.i("success!");
-			} catch (Exception e) {
-				//
-			}
-		}
-		for (Location loc : dispensers.keySet()) {
-			try {
-				db.i("trying to restore dispenser: " + loc.toString());
-				
-				Inventory inv = ((Dispenser) world.getBlockAt(loc).getState()).getInventory();
-				inv.clear();
-				for (ItemStack is : chests.get(loc)) {
-					if (is != null) {
-						inv.addItem(cloneIS(is));
-					}
-				}
-				db.i("success!");
-			} catch (Exception e) {
-				//
-			}
-		}
-		for (Location loc : furnaces.keySet()) {
-			try {
-				db.i("trying to restore furnace: " + loc.toString());
-				((Furnace) world.getBlockAt(loc).getState()).getInventory()
-						.setContents(cloneIS(furnaces.get(loc)));
-				db.i("success!");
-			} catch (Exception e) {
-				//
-			}
-		}
 	}
 
 	public void set(World world, String coords) {

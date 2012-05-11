@@ -63,6 +63,16 @@ public final class ArenaClass {
 		ARMORS_TYPE.addAll(LEGGINGS_TYPE);
 		ARMORS_TYPE.addAll(BOOTS_TYPE);
 	}
+	
+	public static void equip(Player player, ItemStack[] items) {
+		for (ItemStack item : items) {
+			if (ARMORS_TYPE.contains(item.getType())) {
+				equipArmor(item, player.getInventory());
+			} else {
+				player.getInventory().addItem(new ItemStack[] { item });
+			}
+		}
+	}
 
 	/**
 	 * equip an armor item to the respective slot
@@ -104,4 +114,6 @@ public final class ArenaClass {
 			}
 		}
 	}
+	
+	
 }

@@ -164,7 +164,7 @@ public abstract class PAA_Command {
 		}
 	
 		if (arena.fightInProgress) {
-			if (arena.type().allowsJoinInBattle()) {
+			if (arena.cfg.getBoolean("join.inbattle")) {
 				return true;
 			}
 			Arenas.tellPlayer(player, Language.parse("fightinprogress"), arena);

@@ -25,7 +25,7 @@ public class PAABorders extends PAA_Command {
 		Player player = (Player) sender;
 		
 		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, null))) {
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
 					Language.parse("nopermto", Language.parse("admin")));
 			return;

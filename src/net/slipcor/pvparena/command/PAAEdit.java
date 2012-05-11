@@ -11,9 +11,10 @@ public class PAAEdit extends PAA_Command {
 
 	@Override
 	public void commit(Arena arena, CommandSender player, String[] args) {
-		if (!PVPArena.hasAdminPerms(player)) {
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("edit")), arena);
+					Language.parse("nopermto", Language.parse("edit")));
 			return;
 		}
 

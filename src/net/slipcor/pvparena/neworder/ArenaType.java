@@ -40,7 +40,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.7.20
  * 
  */
 
@@ -145,7 +145,7 @@ public class ArenaType extends Loadable {
 			return true;
 		}
 
-		Bukkit.getScheduler()
+		arena.REALEND_ID = Bukkit.getScheduler()
 				.scheduleSyncDelayedTask(PVPArena.instance,
 						new EndRunnable(arena),
 						arena.cfg.getInt("goal.endtimer") * 20L);
@@ -656,7 +656,7 @@ public class ArenaType extends Loadable {
 
 		PVPArena.instance.getAmm().timedEnd(arena, modresult);
 
-		Bukkit.getScheduler()
+		arena.REALEND_ID = Bukkit.getScheduler()
 				.scheduleSyncDelayedTask(PVPArena.instance,
 						new EndRunnable(arena),
 						arena.cfg.getInt("goal.endtimer") * 20L);

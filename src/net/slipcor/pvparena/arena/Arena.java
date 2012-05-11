@@ -171,7 +171,6 @@ public class Arena {
 		for (ArenaRegion region : regions.values()) {
 			region.reset();
 		}
-		Arenas.restoreChests(this);
 	}
 
 	/**
@@ -234,7 +233,7 @@ public class Arena {
 		long duration = 20L * cfg.getInt("start.countdown");
 		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(
 				PVPArena.instance, new StartRunnable(this), duration);
-		tellEveryone(Language.parse("starting"));
+		tellEveryone(Language.parse("startingin", String.valueOf(cfg.getInt("start.countdown"))));
 	}
 
 	/**
@@ -253,7 +252,7 @@ public class Arena {
 				}
 			}
 		}
-		db.i("ready players: " + sum);
+		db.i("counting ready players: " + sum);
 		return sum;
 	}
 
@@ -705,11 +704,11 @@ public class Arena {
 		int readyPlayers = countReadyPlayers();
 
 		if (players > readyPlayers) {
-			if (cfg.getDouble("ready.startRatio") > 0) {
-				double ratio = cfg.getDouble("ready.startRatio");
-
-				if (players > 0 && readyPlayers / players >= ratio) {
-
+			double ratio = cfg.getDouble("ready.startRatio");
+			db.i("ratio: " + String.valueOf(ratio));
+			if (ratio > 0) {
+				double aRatio = Float.valueOf(readyPlayers) / Float.valueOf(players);
+				if ((players > 0) && (aRatio >= ratio)) {
 					return -6;
 				}
 			}
@@ -980,7 +979,8 @@ public class Arena {
 			for (Location spawnLoc : Spawns.getSpawns(this, sTeam)) {
 				for (Location playerLoc : players.keySet()) {
 					if (spawnLoc.distance(playerLoc) < 3) {
-						players.get(playerLoc).get().damage(1);
+						players.get(playerLoc).get().damage(
+								cfg.getInt("region.spawncampdamage"));
 					}
 				}
 			}
@@ -1017,7 +1017,6 @@ public class Arena {
 		}
 
 		type.initiate();
-		Arenas.saveChests(this);
 
 		int timed = cfg.getInt("goal.timed");
 		if (timed > 0) {
@@ -1037,8 +1036,8 @@ public class Arena {
 		db.i("teleported everyone!");
 
 		teamCount = Teams.countActiveTeams(this);
-		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, new SpawnCampRunnable(this), 100L, 20L);
+		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
+				PVPArena.instance, new SpawnCampRunnable(this), 100L, cfg.getInt("region.timer")*1L);
 
 		for (ArenaRegion region : regions.values()) {
 			if (region.getType().equals(RegionType.DEATH)) {

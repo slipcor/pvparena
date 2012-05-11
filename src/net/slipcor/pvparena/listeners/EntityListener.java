@@ -48,7 +48,7 @@ import org.bukkit.inventory.ItemStack;
  */
 
 public class EntityListener implements Listener {
-	private Debug db = new Debug(20);
+	private static Debug db = new Debug(20);
 
 	static HashSet<Player> burningPlayers = new HashSet<Player>();
 
@@ -67,7 +67,7 @@ public class EntityListener implements Listener {
 	 * @param eEvent
 	 *            the event triggering the death
 	 */
-	private void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
+	public static void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
 		EntityDamageEvent cause = null;
 
 		if (eEvent instanceof EntityDeathEvent) {

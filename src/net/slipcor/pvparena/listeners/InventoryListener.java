@@ -36,10 +36,6 @@ public class InventoryListener implements Listener {
 
 		db.i("InventoryClick: arena player");
 
-		if (!arena.cfg.getBoolean("arenatype.flags")) {
-			return;
-		}
-
 		if (!arena.cfg.getBoolean("protection.inventory")) {
 
 			if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {

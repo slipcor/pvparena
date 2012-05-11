@@ -20,7 +20,7 @@ public class Cuboid extends ArenaRegion {
 
 	@Override
 	public String version() {
-		return "v0.7.18.0";
+		return "v0.7.19.0";
 	}
 	
 	@Override
@@ -77,6 +77,15 @@ public class Cuboid extends ArenaRegion {
 		return vec.isInAABB(min, max);
 	}
 	
+	@Override
+	public Location getAbsoluteMinimum() {
+		return this.min.toLocation(world);
+	}
+	
+	@Override
+	public Location getAbsoluteMaximum() {
+		return this.max.toLocation(world);
+	}
 
 	@Override
 	public boolean overlapsWith(ArenaRegion paRegion) {

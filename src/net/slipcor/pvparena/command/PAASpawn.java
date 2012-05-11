@@ -16,6 +16,13 @@ public class PAASpawn extends PAA_Command {
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 
+		if (!PVPArena.hasAdminPerms(sender)
+				&& !(PVPArena.hasCreatePerms(sender, null))) {
+			Arenas.tellPlayer(sender,
+					Language.parse("nopermto", Language.parse("admin")));
+			return;
+		}
+		
 		if (!checkArgs(sender, args, 1, 2)) {
 			return;
 		}

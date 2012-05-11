@@ -13,7 +13,6 @@ import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
 import org.bukkit.ChatColor;
@@ -268,28 +267,6 @@ public class Arenas {
 	}
 
 	/**
-	 * restore chests, if wanted and possible
-	 * 
-	 * @param arena
-	 *            the arena to restore
-	 */
-	public static void restoreChests(Arena arena) {
-		ArenaRegion bfRegion = arena.regions.get("battlefield");
-
-		if (bfRegion == null) {
-			db.i("no battlefield region, skipping restoreChests");
-			return;
-		}
-
-		if (!arena.cfg.getBoolean("general.restoreChests")) {
-			db.i("not restoring chests, skipping restoreChests");
-			return;
-		}
-
-		bfRegion.restoreChests();
-	}
-
-	/**
 	 * reset all arenas
 	 */
 	public static void reset(boolean force) {
@@ -297,28 +274,6 @@ public class Arenas {
 			db.i("resetting arena " + arena.name);
 			arena.reset(force);
 		}
-	}
-
-	/**
-	 * save arena chest, if wanted and possible
-	 * 
-	 * @param arena
-	 *            the arena to save
-	 */
-	public static void saveChests(Arena arena) {
-		ArenaRegion bfRegion = arena.regions.get("battlefield");
-
-		if (bfRegion == null) {
-			db.i("no battlefield region, skipping saveChests");
-			return;
-		}
-
-		if (!arena.cfg.getBoolean("general.restoreChests")) {
-			db.i("not restoring chests, skipping saveChests");
-			return;
-		}
-
-		bfRegion.saveChests();
 	}
 
 	/**

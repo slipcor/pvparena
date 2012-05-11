@@ -184,6 +184,20 @@ public class StringParser {
 		}
 		return null;
 	}
+	
+	public static ItemStack[] getItemStacksFromString(String string) {
+		String[] args = string.split(",");
+		
+		ItemStack[] result = new ItemStack[args.length];
+		
+		int i = 0;
+		
+		for (String s : args) {
+			result[i++] = getItemStackFromString(s);
+		}
+		
+		return result;
+	}
 
 	/**
 	 * retrieve a material from a string

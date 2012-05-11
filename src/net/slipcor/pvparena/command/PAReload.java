@@ -10,8 +10,7 @@ public class PAReload extends PA_Command {
 
 	@Override
 	public void commit(CommandSender player, String[] args) {
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, null))) {
+		if (!PVPArena.hasAdminPerms(player)) {
 			Arenas.tellPlayer(player,
 					Language.parse("nopermto", Language.parse("reload")));
 			return;

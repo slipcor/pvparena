@@ -97,6 +97,7 @@ public class Language {
 		config.addDefault("lang.nopermto", "You don't have permission to %1%");
 		config.addDefault("lang.enable", "enable");
 		config.addDefault("lang.disable", "disable");
+		config.addDefault("lang.join", "join");
 		config.addDefault("lang.reload", "reload");
 		config.addDefault("lang.enabled", "Enabled!");
 		config.addDefault("lang.disabled", "Disabled!");
@@ -179,8 +180,8 @@ public class Language {
 
 		config.addDefault("lang.insidevehicle",
 				"You cannot join while on a vehicle!");
-		config.addDefault("lang.starting",
-				"Enough players ready. Starting in 5 seconds!");
+		config.addDefault("lang.startingin",
+				"Enough players ready. Starting in %1% seconds!");
 
 		config.addDefault("lang.invalidstattype",
 				"Invalid statistics type: %1%");

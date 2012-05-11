@@ -26,10 +26,15 @@ public class PAAJoinTeam extends PAA_Command {
 		
 		Player player = (Player) sender;
 		
+		if (!PVPArena.hasPerms(player, arena)) {
+			Arenas.tellPlayer(player, Language.parse("nopermto", Language.parse("join")));
+			return;
+		}
+		
 		if (!checkJoin(arena, player)) {
 			return;
 		}
-
+		
 		if (!(arena.cfg.getBoolean("join.manual", true))) {
 			Arenas.tellPlayer(player, Language.parse("notselectteam"), arena);
 			return;

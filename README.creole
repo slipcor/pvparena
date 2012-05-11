@@ -46,6 +46,12 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.20.10 - fix the end timer not deactivating PVP for losers
+* v0.7.20.8 - fix issues....
+* v0.7.20.7 - fix stuff and update for tank arena mode
+* v0.7.20.6 - fix alot of permissions issues oO
+* v0.7.20.5 - fix the wool head not being correctly secured
+* v0.7.20.4 - fix the ready up bug
 * v0.7.20.3 - fix various bugs
 * v0.7.20.2 - fix various bugs
 * v0.7.20.1 - fix teams/ctf/pumpkin lounge setting not working
