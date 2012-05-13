@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* CraftBukkit Beta 1.2.5-R1.0
+* CraftBukkit Beta 1.2.5-R1.3
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -46,6 +46,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.20.13 - fix an NPE on non pvp death
+* v0.7.20.12 - add cylindric arena region shape
+* v0.7.20.11 - fix custom class not working
 * v0.7.20.10 - fix the end timer not deactivating PVP for losers
 * v0.7.20.8 - fix issues....
 * v0.7.20.7 - fix stuff and update for tank arena mode

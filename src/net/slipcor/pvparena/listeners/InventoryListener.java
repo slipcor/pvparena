@@ -43,6 +43,7 @@ public class InventoryListener implements Listener {
 					return;
 				}
 			}
+			return;
 		} else {
 			if (event.isShiftClick()) {
 				event.setCancelled(true);

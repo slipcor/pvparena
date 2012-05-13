@@ -53,7 +53,7 @@ public class ArenaRegion extends Loadable {
 	private HashMap<Player, Location> playerLocations = new HashMap<Player, Location>();
 	
 	public static enum RegionShape {
-		CUBOID, SPHERIC;
+		CUBOID, SPHERIC, CYLINDRIC;
 	}
 	
 	public static enum RegionType {

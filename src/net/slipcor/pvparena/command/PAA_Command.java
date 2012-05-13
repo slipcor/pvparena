@@ -181,13 +181,14 @@ public abstract class PAA_Command {
 		}
 	
 		if (arena.START_ID != -1) {
-			Bukkit.getScheduler().cancelTask(arena.START_ID);
-			db.i("player joining, cancelling start timer");
 			if (!arena.cfg.getBoolean("join.onCountdown")) {
 				Arenas.tellPlayer(player, Language.parse("fightinprogress"),
 						arena);
 				return false;
 			}
+			Bukkit.getScheduler().cancelTask(arena.START_ID);
+			db.i("player joining, cancelling start timer");
+			arena.START_ID = -1;
 		}
 	
 		return true;

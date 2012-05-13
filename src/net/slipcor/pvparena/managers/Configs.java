@@ -164,6 +164,7 @@ public class Configs {
 			arena.addClass(className, items);
 			db.i("adding class items to class " + className);
 		}
+		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
 		arena.sm = new Settings(arena);
 		if (cfg.getString("general.owner") != null) {
 			arena.owner = cfg.getString("general.owner");

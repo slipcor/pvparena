@@ -130,9 +130,7 @@ public class EntityListener implements Listener {
 			if (damager != null) {
 				sKiller = damager.getName();
 				db.i("killer: " + sKiller);
-			}
-
-			if (damager != null) {
+				
 				ArenaPlayer apd = ArenaPlayer.parsePlayer(damager);
 				if (apd.getKills() > 0) {
 					db.i("killer killed already");
@@ -141,16 +139,16 @@ public class EntityListener implements Listener {
 					db.i("first kill");
 					apd.addKill();
 				}
-			}
 
-			ArenaPlayer apk = ArenaPlayer.parsePlayer(damager);
-			if (apk.getDeaths() > 0) {
-				db.i("already died");
-				apk.addDeath();
-			} else {
-				db.i("first death");
-				apk.addDeath();
-				arena.betPossible = false;
+				ArenaPlayer apk = ArenaPlayer.parsePlayer(damager);
+				if (apk.getDeaths() > 0) {
+					db.i("already died");
+					apk.addDeath();
+				} else {
+					db.i("first death");
+					apk.addDeath();
+					arena.betPossible = false;
+				}
 			}
 		}
 

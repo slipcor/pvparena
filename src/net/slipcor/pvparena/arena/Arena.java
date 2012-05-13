@@ -1037,7 +1037,7 @@ public class Arena {
 
 		teamCount = Teams.countActiveTeams(this);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
-				PVPArena.instance, new SpawnCampRunnable(this), 100L, cfg.getInt("region.timer")*1L);
+				PVPArena.instance, new SpawnCampRunnable(this), 100L, cfg.getInt("region.timer")*20L);
 
 		for (ArenaRegion region : regions.values()) {
 			if (region.getType().equals(RegionType.DEATH)) {

@@ -124,6 +124,32 @@ public class Cuboid extends ArenaRegion {
 															// from that to this
 			db.i("checking calculated vector");
 			return this.contains(diff.normalize().toLocation(world));
+		} else if (paRegion.getShape().equals(RegionShape.CYLINDRIC)) {
+			// we are cube and search for intersecting cylinder
+
+			db.i("compare local cube to other cylinder");
+
+			Vector thisCenter = this.max.getMidpoint(this.min);
+			Vector thatCenter = paRegion.max.getMidpoint(paRegion.min);
+			
+			if (this.max.getY() < paRegion.getAbsoluteMinimum().getY()) {
+				return false;
+			}
+			if (this.min.getY() > paRegion.getAbsoluteMaximum().getY()) {
+				return false;
+			}
+			
+			thisCenter.setY(thatCenter.getY());
+
+			if (contains(thatCenter.toLocation(world))) {
+				db.i("cuboid is INSIDE sphere");
+				return true; // the sphere is inside!
+			}
+
+			Vector diff = thatCenter.subtract(thisCenter); // diff is pointing
+															// from that to this
+			db.i("checking calculated vector");
+			return this.contains(diff.normalize().toLocation(world));
 		} else {
 			System.out.print("Region Shape not supported: " + paRegion.getShape().name());
 		}
