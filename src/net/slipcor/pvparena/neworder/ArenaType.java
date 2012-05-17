@@ -40,7 +40,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.20
+ * @version v0.7.22
  * 
  */
 
@@ -479,7 +479,7 @@ public class ArenaType extends Loadable {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers())
-				if (ap.getStatus().equals(Status.READY)) {
+				if (!arena.cfg.getBoolean("ready.checkEachTeam") || ap.getStatus().equals(Status.READY)) {
 					activeTeams.add(team.getName());
 				}
 		}

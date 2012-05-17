@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.21
  * 
  */
 
@@ -63,9 +63,12 @@ public class Tracker implements Runnable {
 		try {
 			new URL(url).openConnection().getInputStream();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out
+					.print("[PVP Arena] error while connecting to www.slipcor.net");
+			return;
 		}
 		db.i("successfully called home!");
 	}

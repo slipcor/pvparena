@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.7.22
  * 
  */
 
@@ -110,6 +110,7 @@ public class Settings {
 
 		types.put("ready.block", "item");
 		types.put("ready.checkEach", "boolean");
+		types.put("ready.checkEachTeam", "boolean");
 		types.put("ready.min", "int");
 		types.put("ready.max", "int");
 		types.put("ready.minTeam", "int");

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.22.0	- add readying of all teams with checkEachTeam: false
 * v0.7.21.0	- fix many issues inside modules
 * v0.7.20.13 - fix an NPE on non pvp death
 * v0.7.20.12 - add cylindric arena region shape

@@ -226,4 +226,8 @@ public class ArenaRegion extends Loadable {
 	public void reset() {
 		Bukkit.getScheduler().cancelTask(TICK_ID);
 	}
+
+	public World getWorld() {
+		return world;
+	}
 }

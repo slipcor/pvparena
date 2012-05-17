@@ -24,7 +24,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.7.22
  * 
  */
 
@@ -79,11 +79,11 @@ public class Configs {
 		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
 		config.addDefault("messages.onlyChat", Boolean.valueOf(false));
 
-		config.addDefault("general.type", type);
 		config.addDefault("general.classperms", Boolean.valueOf(false));
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.restoreChests", Boolean.valueOf(false));
 		config.addDefault("general.signs", Boolean.valueOf(true));
+		config.addDefault("general.type", type);
 		config.addDefault("general.item-rewards", "none");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
 		config.addDefault("general.prefix", "PVP Arena");
@@ -131,6 +131,7 @@ public class Configs {
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 		config.addDefault("ready.block", "IRON_BLOCK");
 		config.addDefault("ready.checkEach", Boolean.valueOf(true));
+		config.addDefault("ready.checkEachTeam", Boolean.valueOf(true));
 		config.addDefault("ready.min", Integer.valueOf(2));
 		config.addDefault("ready.max", Integer.valueOf(0));
 		config.addDefault("ready.minTeam", Integer.valueOf(1));
@@ -176,10 +177,12 @@ public class Configs {
 				ArenaRegion region = PVPArena.instance.getArm().readRegionFromConfig(rName, config, arena);
 				
 				if (region == null) {
-					System.out.print("Error while loading arena");
+					System.out.print("[SEVERE] Error while loading arena, region null: " + rName);
+				} else if (region.getWorld() == null) {
+					System.out.print("[SEVERE] Error while loading arena, world null: " + rName);
+				} else {
+					arena.regions.put(rName, region);
 				}
-				
-				arena.regions.put(rName, region);
 			}
 		}
 
