@@ -89,7 +89,8 @@ public final class PlayerState {
 		
 
 		for (PotionEffect pe : player.getActivePotionEffects()) {
-			player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
+			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
+			player.removePotionEffect(pe.getType());
 		}
 
 		player.addPotionEffects(potionEffects);

@@ -652,7 +652,8 @@ public class Arena {
 		player.setExp(0);
 		player.setGameMode(GameMode.getByValue(0));
 		for (PotionEffect pe : player.getActivePotionEffects()) {
-			player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
+			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
+			player.removePotionEffect(pe.getType());
 		}
 
 	}

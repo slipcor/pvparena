@@ -188,7 +188,7 @@ public class PAHelp extends PA_Command {
 				if (args[2].equalsIgnoreCase("create")) {
 
 					Arenas.tellPlayer(player, ChatColor.GREEN
-							+ "/pa [arenaname] create [type]" + ChatColor.WHITE
+							+ "/pa create [arenaname] [type]" + ChatColor.WHITE
 							+ " | Create an arena");
 					Arenas.tellPlayer(player,
 							"Note: valid types are: teams, ctf, free ; all other types fall back to team");
@@ -328,13 +328,59 @@ public class PAHelp extends PA_Command {
 
 		Arenas.tellPlayer(player, ChatColor.YELLOW + "/pa help general"
 				+ ChatColor.WHITE + " | for general commands");
+		Arenas.tellPlayer(player, ChatColor.YELLOW
+				+ "/pa help general join" + ChatColor.WHITE
+				+ " | for help with joining");
+		Arenas.tellPlayer(player, ChatColor.YELLOW
+				+ "/pa help general watch" + ChatColor.WHITE
+				+ " | for help with watching");
+		Arenas.tellPlayer(player, ChatColor.YELLOW
+				+ "/pa help general bet" + ChatColor.WHITE
+				+ " | for help with bets");
+		Arenas.tellPlayer(player, ChatColor.YELLOW
+				+ "/pa help general leave" + ChatColor.WHITE
+				+ " | for help with leaving");
 		Arenas.tellPlayer(player, ChatColor.BLUE + "/pa help info"
+				
 				+ ChatColor.WHITE + " | for information commands");
+		Arenas.tellPlayer(player, ChatColor.BLUE + "/pa help info list"
+				+ ChatColor.WHITE + " | for information commands");
+		Arenas.tellPlayer(player, ChatColor.BLUE
+				+ "/pa help info stats" + ChatColor.WHITE
+				+ " | for information commands");
+		
 		Arenas.tellPlayer(player, ChatColor.GREEN + "/pa help setup"
 				+ ChatColor.WHITE + " | for setup commands");
+		Arenas.tellPlayer(player, ChatColor.GREEN
+				+ "/pa help setup create" + ChatColor.WHITE
+				+ " | for help with creating an arena");
+		Arenas.tellPlayer(player, ChatColor.GREEN
+				+ "/pa help setup spawn" + ChatColor.WHITE
+				+ " | for help with spawns");
+		Arenas.tellPlayer(player, ChatColor.GREEN
+				+ "/pa help setup region" + ChatColor.WHITE
+				+ " | for help with setting a region");
+		Arenas.tellPlayer(player, ChatColor.GREEN
+				+ "/pa help setup regionsave" + ChatColor.WHITE
+				+ " | for help with saving a region");
+		Arenas.tellPlayer(player, ChatColor.GREEN
+				+ "/pa help setup regionremove" + ChatColor.WHITE
+				+ " | for help with removing a region");
+		
 		Arenas.tellPlayer(player, ChatColor.RED + "/pa help admin"
 				+ ChatColor.WHITE + " | for administration commands");
-
+		Arenas.tellPlayer(player, ChatColor.RED
+				+ "/pa help admin reload" + ChatColor.WHITE
+				+ " | reloading");
+		Arenas.tellPlayer(player, ChatColor.RED
+				+ "/pa help admin remove" + ChatColor.WHITE
+				+ " | removing");
+		Arenas.tellPlayer(player, ChatColor.RED
+				+ "/pa help admin disable" + ChatColor.WHITE
+				+ " | disabling");
+		Arenas.tellPlayer(player, ChatColor.RED
+				+ "/pa help admin forcestop" + ChatColor.WHITE
+				+ " | force-stopping");
 	}
 
 	@Override

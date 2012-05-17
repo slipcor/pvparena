@@ -25,6 +25,8 @@ public abstract class PAA_Command {
 			return new PAAEnable();
 		} else if (s.equalsIgnoreCase("disable")) {
 			return new PAADisable();
+		} else if (s.equalsIgnoreCase("alive")) {
+			return new PAAAlive();
 		} else if (s.equalsIgnoreCase("reload")) {
 			return new PAAReload();
 		} else if (s.equalsIgnoreCase("edit")) {
@@ -96,7 +98,7 @@ public abstract class PAA_Command {
 		return false;
 	}
 
-	protected boolean checkArgs(CommandSender sender, String[] args, int required) {
+	public static boolean checkArgs(CommandSender sender, String[] args, int required) {
 		int check = args.length;
 		if (check == required) {
 			return true;
@@ -105,7 +107,7 @@ public abstract class PAA_Command {
 		return false;
 	}
 	
-	protected boolean checkArgs(CommandSender sender, String[] args, int required1, int required2) {
+	public static boolean checkArgs(CommandSender sender, String[] args, int required1, int required2) {
 		int check = args.length;
 		if (check == required1 || check == required2) {
 			return true;
@@ -114,7 +116,7 @@ public abstract class PAA_Command {
 		return false;
 	}
 	
-	protected boolean checkArgs(CommandSender sender, String[] args, int required1, int required2, int required3) {
+	public static boolean checkArgs(CommandSender sender, String[] args, int required1, int required2, int required3) {
 		int check = args.length;
 		if (check == required1 || check == required2 || check == required3) {
 			return true;
