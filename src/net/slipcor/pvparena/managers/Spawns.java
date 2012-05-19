@@ -130,7 +130,7 @@ public class Spawns {
 				if (!name.startsWith("spawn")) {
 					continue;
 				}
-			} else if (name.contains("lounge") || !name.contains(sTeam)) {
+			} else if (name.contains("lounge")) {
 				continue;
 			}
 			db.i(" - " + name);

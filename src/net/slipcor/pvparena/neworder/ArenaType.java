@@ -387,6 +387,10 @@ public class ArenaType extends Loadable {
 	 */
 	public void initLanguage(YamlConfiguration config) {
 	}
+	
+	public boolean isFreeForAll() {
+		return false;
+	}
 
 	/**
 	 * is the given command a failed lounge command?

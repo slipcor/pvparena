@@ -299,7 +299,7 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				if (team.getName().equals("free")) {
+				if (arena.type().isFreeForAll()) {
 					arena.tpPlayerToCoordName(player, "spawn");
 				} else {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
@@ -429,16 +429,20 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player => OUT
 
-		db.i("onPlayerTeleport: fighting player (uncancel)");
+		db.i("onPlayerTeleport: fighting player '"+event.getPlayer().getName()+"' (uncancel)");
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
 		PVPArena.instance.getAmm().onPlayerTeleport(arena, event);
 
+		db.i("aimed location: " + event.getTo().toString());
+		
 		if (ArenaPlayer.parsePlayer(player).getTelePass()
 				|| PVPArena.hasPerms(player, "pvparena.telepass"))
 			return; // if allowed => OUT
-
+		
+		db.i("telepass: no!!");
+		
 		if (arena.regions.containsKey("battlefield")) {
 			if (arena.regions.get("battlefield").contains(event.getFrom())
 					&& arena.regions.get("battlefield").contains(event.getTo())) {

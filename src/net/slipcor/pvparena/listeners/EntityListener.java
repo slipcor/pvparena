@@ -230,6 +230,7 @@ public class EntityListener implements Listener {
 	}
 
 	private int calcArmorDamageReduction(EntityDamageEvent event, Player player) {
+		
 		/**
 		 * full damage reduction:
 		 * 
@@ -297,7 +298,7 @@ public class EntityListener implements Listener {
 		 * 9->8
 		 * 11->9
 		 * =>10% ==> [ 1/7 % ]
-		 * 
+		 *
 		 */
 		
 		int chainfull = 9;
@@ -375,6 +376,7 @@ public class EntityListener implements Listener {
 		}
 		
 		return (int) reduction;
+		
 	}
 
 
@@ -390,7 +392,7 @@ public class EntityListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-
+		
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
@@ -497,9 +499,14 @@ public class EntityListener implements Listener {
 			commit(arena, p1, (Player) p2, event);
 			return;
 		}
+		
 		db.i("both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
+		
+		//TODO UNTIL HERE NO LAG
+		
+		int lives = arena.type().getLives(defender);
 
 		boolean defTeam = false;
 		boolean attTeam = false;
@@ -547,6 +554,9 @@ public class EntityListener implements Listener {
 				attacker.getItemInHand().setDurability((byte) 0);
 			}
 		}
+		
+
+		//TODO NOT LAGGING
 
 		if (arena.cfg.getInt("protection.spawn") > 0) {
 			if (Spawns.isNearSpawn(arena, defender,
@@ -561,6 +571,8 @@ public class EntityListener implements Listener {
 		// here it comes, process the damage!
 
 		db.i("processing damage!");
+		
+		//TODO NO LAG
 
 		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker,
 				defender, event);
@@ -568,15 +580,15 @@ public class EntityListener implements Listener {
 		Statistics.damage(arena, attacker, defender, event.getDamage());
 		
 		int reduction = calcArmorDamageReduction(event, defender);
-		
+		if (lives < 1) {
+			//return;
+		}
 		// here it comes, process the damage!
 		if (event.getDamage() - reduction >= defender.getHealth()) {
 			db.i("damage >= health => death");
-			int lives = 3;
+						Statistics.kill(arena, attacker, defender, (lives > 0));
 
-			Statistics.kill(arena, attacker, defender, (lives > 0));
-
-			lives = arena.type().getLives(defender);
+			
 			db.i("lives before death: " + lives);
 			if (lives < 1) {
 				if (!arena.cfg.getBoolean("game.preventDeath")) {

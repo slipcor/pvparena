@@ -3,6 +3,7 @@ package net.slipcor.pvparena.managers;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +71,7 @@ public class Configs {
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
-		config.addDefault("game.teamKill", Boolean.valueOf(type.equals("free")));
+		config.addDefault("game.teamKill", Boolean.valueOf(arena.type().isFreeForAll()));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
 
@@ -92,7 +93,7 @@ public class Configs {
 		config.addDefault("region.timer", Integer.valueOf(20));
 		
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
-		config.addDefault("join.manual", Boolean.valueOf(!type.equals("free")));
+		config.addDefault("join.manual", Boolean.valueOf(!arena.type().isFreeForAll()));
 		config.addDefault("join.random", Boolean.valueOf(true));
 		config.addDefault("join.onCountdown", Boolean.valueOf(false));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
@@ -100,7 +101,7 @@ public class Configs {
 		config.addDefault("join.range", Integer.valueOf(0));
 		config.addDefault("join.warmup", Integer.valueOf(0));
 		
-		config.addDefault("arenatype.randomSpawn", type.equals("free"));
+		config.addDefault("arenatype.randomSpawn", arena.type().isFreeForAll());
 		config.addDefault("goal.timed", Integer.valueOf(0));
 		config.addDefault("goal.endtimer", Integer.valueOf(20));
 
@@ -152,7 +153,14 @@ public class Configs {
 		arena.getClasses().clear();
 		db.i("reading class items");
 		for (String className : classes.keySet()) {
-			String s = (String) classes.get(className);
+			String s = "";
+			
+			try {
+				s = (String) classes.get(className);
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("[PVP Arena] Error while parsing class, skipping: " + className);
+				continue;
+			}
 			String[] ss = s.split(",");
 			ItemStack[] items = new ItemStack[ss.length];
 

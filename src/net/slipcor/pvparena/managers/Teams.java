@@ -167,7 +167,7 @@ public class Teams {
 
 		db.i("calculating player team");
 
-		boolean free = arena.type().getName().equals("free") || arena.type().getName().equals("tank");
+		boolean free = arena.type().isFreeForAll();
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {

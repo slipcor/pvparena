@@ -1008,7 +1008,7 @@ public class Arena {
 
 		db.i("teleporting all players to their spawns");
 		for (ArenaTeam team : teams) {
-			if (!team.getName().equals("free")) {
+			if (!type.isFreeForAll()) {
 				for (ArenaPlayer ap : team.getTeamMembers()) {
 					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 					ap.setStatus(Status.FIGHT);
