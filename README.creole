@@ -46,6 +46,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.23.3 - fix an issue with death events
+* v0.7.23.2 - fix late joining
+* v0.7.23.1 - fix freefight type issues, fix classitems messing causing NPEs
 * v0.7.23.0 - /pa [name] alive - list alive players
 * v0.7.22.2 - fix PotionEffects not being removed properly
 * v0.7.22.1	- more intelligent and extroverted help system

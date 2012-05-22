@@ -304,6 +304,7 @@ public class PlayerListener implements Listener {
 				} else {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
+				ArenaPlayer.parsePlayer(player).setStatus(Status.FIGHT);
 				arena.playerCount++;
 				PVPArena.instance.getAmm().lateJoin(arena, player);
 			}

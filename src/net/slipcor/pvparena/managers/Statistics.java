@@ -283,7 +283,7 @@ public class Statistics {
 	 */
 	public static void kill(Arena arena, Entity e, Player defender,
 			boolean willRespawn) {
-		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn);
+		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, (e != null && e instanceof Player));
 		Bukkit.getPluginManager().callEvent(dEvent);
 		if (!willRespawn) {
 			PAExitEvent exitEvent = new PAExitEvent(arena, defender);

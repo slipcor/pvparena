@@ -14,7 +14,7 @@ import org.bukkit.event.HandlerList;
  * 
  * is thrown when a player dies in the arena
  * 
- * @version v0.7.8
+ * @version v0.7.23
  * 
  * @author slipcor
  * 
@@ -26,6 +26,7 @@ public class PADeathEvent extends Event {
 	private Arena arena;
 	private Player player;
 	private boolean respawn;
+	private boolean pvp;
 
 	/**
 	 * create an arena death event
@@ -36,11 +37,13 @@ public class PADeathEvent extends Event {
 	 *            the dying player
 	 * @param willRespawn
 	 *            true if the player will respawn, false otherwise
+	 * @param pvp 
 	 */
-	public PADeathEvent(Arena a, Player p, boolean willRespawn) {
+	public PADeathEvent(Arena a, Player p, boolean willRespawn, boolean pv) {
 		arena = a;
 		player = p;
 		respawn = willRespawn;
+		pvp = pv;
 	}
 
 	/**
@@ -76,5 +79,14 @@ public class PADeathEvent extends Event {
 	 */
 	public boolean getRespawn() {
 		return respawn;
+	}
+
+	/**
+	 * hand over the pvp state
+	 * 
+	 * @return true if the kill was due to pvp
+	 */
+	public boolean isPVP() {
+		return pvp;
 	}
 }
