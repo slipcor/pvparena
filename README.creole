@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.25.0 - rewrite of /pa {arenaname} info
 * v0.7.24.0 - attempt to improve the statistics usage
 * v0.7.23.4 - fixed the woolhead removal - again
 * v0.7.23.3 - fix an issue with death events

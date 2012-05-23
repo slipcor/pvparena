@@ -253,7 +253,7 @@ public class StringParser {
 	 * @return a colored string
 	 */
 	public static String colorVar(String s) {
-		if (s == null || s.equals("")) {
+		if (s == null || s.equals("") || s.equals("none")) {
 			return colorVar("null", false);
 		}
 		return colorVar(s, true);
@@ -279,5 +279,9 @@ public class StringParser {
 	 */
 	public static String colorVar(boolean b) {
 		return colorVar(String.valueOf(b), b);
+	}
+
+	public static String colorVar(double timed) {
+		return colorVar(String.valueOf(timed), timed > 0);
 	}
 }
