@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.7.23.4 - fixed the woolhead removal - again
 * v0.7.23.3 - fix an issue with death events
 * v0.7.23.2 - fix late joining
 * v0.7.23.1 - fix freefight type issues, fix classitems messing causing NPEs

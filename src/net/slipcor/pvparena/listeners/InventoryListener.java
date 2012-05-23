@@ -37,23 +37,23 @@ public class InventoryListener implements Listener {
 		db.i("InventoryClick: arena player");
 
 		if (!arena.cfg.getBoolean("protection.inventory")) {
-
-			if (event.getInventory().getType().equals(InventoryType.CRAFTING)) {
-				if (event.getRawSlot() != 5) {
-					return;
-				}
-			}
+			// we don't need no protection => out!
 			return;
-		} else {
-			if (event.isShiftClick()) {
-				event.setCancelled(true);
+		}
+		
+		if (event.isShiftClick()) {
+			// we never want shift clicking!
+			event.setCancelled(true);
+			return;
+		}
+		if (event.getInventory().getType()
+			.equals(InventoryType.CRAFTING)) {
+			// we are inside the standard 
+			if (event.getRawSlot() != 5) {
 				return;
 			}
-			if (event.getInventory().getType()
-		
-				.equals(InventoryType.CRAFTING)) {
+			event.setCancelled(true);
 			return;
-			}
 		}
 
 		db.i("cancelling!");
