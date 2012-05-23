@@ -28,16 +28,18 @@ import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.metrics.Metrics;
+import net.slipcor.pvparena.neworder.ArenaModule;
 import net.slipcor.pvparena.neworder.ArenaModuleManager;
+import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaRegionManager;
+import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.neworder.ArenaTypeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.nodinchan.ncloader.metrics.Metrics;
 
 /**
  * main class
@@ -48,7 +50,7 @@ import com.nodinchan.ncloader.metrics.Metrics;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.7.24
  * 
  */
 
@@ -216,6 +218,18 @@ public class PVPArena extends JavaPlugin {
 		Metrics metrics;
 		try {
 			metrics = new Metrics(this);
+			Metrics.Graph atg = metrics.createGraph("Game modes installed");
+			for (ArenaType at : atm.getTypes()) {
+				atg.addPlotter(new WrapPlotter(at.getName()));
+			}
+			Metrics.Graph amg = metrics.createGraph("Enhancement modules installed");
+			for (ArenaModule am : amm.getModules()) {
+				amg.addPlotter(new WrapPlotter(am.getName()));
+			}
+			Metrics.Graph arg = metrics.createGraph("Region shapes installed");
+			for (ArenaRegion ar : arm.getRegions()) {
+				arg.addPlotter(new WrapPlotter(ar.getName()));
+			}
 			metrics.start();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -402,5 +416,15 @@ public class PVPArena extends JavaPlugin {
 	 */
 	public ArenaModuleManager getAmm() {
 		return amm;
+	}
+	
+	private class WrapPlotter extends Metrics.Plotter {
+		public WrapPlotter(String name) {
+			super();
+		}
+
+		public int getValue() {
+			return 1;
+		}
 	}
 }
