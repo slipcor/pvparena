@@ -39,6 +39,7 @@ public final class ArenaClass {
 		HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
 		HELMETS_TYPE.add(Material.IRON_HELMET);
 		HELMETS_TYPE.add(Material.DIAMOND_HELMET);
+		HELMETS_TYPE.add(Material.WOOL);
 
 		CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
 		CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);

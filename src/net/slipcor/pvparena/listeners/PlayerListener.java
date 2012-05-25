@@ -11,23 +11,27 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Regions;
-import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaType;
-import net.slipcor.pvparena.runnables.PlayerResetRunnable;
+import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -37,7 +41,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
@@ -55,7 +58,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  */
 
 public class PlayerListener implements Listener {
-	private Debug db = new Debug(21);
+	private static Debug db = new Debug(21);
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event) {
@@ -141,12 +144,141 @@ public class PlayerListener implements Listener {
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
+	
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		Player player = event.getEntity();
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return;
+	
+		int lives = arena.type().getLives(player);
+		db.i("lives before death: " + lives);
+		if (lives < 1) {
+			if (!arena.cfg.getBoolean("game.preventDeath")) {
+				return; // stop
+				//player died => commit death!
+			}
+			db.i("faking player death");
+
+			commitPlayerDeath(arena, player, event);
+		} else {
+			lives--;
+			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventoryRestoreRunnable(arena, player, event.getDrops()), 1L);
+			event.getDrops().clear();
+			arena.respawnPlayer(player, lives, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+		}
+		event.setDeathMessage(null);
+	}
+	/**
+	 * pretend a player death
+	 * 
+	 * @param arena
+	 *            the arena the player is playing in
+	 * @param player
+	 *            the player to kill
+	 * @param eEvent
+	 *            the event triggering the death
+	 */
+	public static void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
+		EntityDamageEvent cause = null;
+
+		if (eEvent instanceof EntityDeathEvent) {
+			cause = player.getLastDamageCause();
+		} else if (eEvent instanceof EntityDamageEvent) {
+			cause = ((EntityDamageEvent) eEvent);
+		}
+		//EntityListener.addBurningPlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaTeam team = Teams.getTeam(arena, ap);
+		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
+		arena.tellEveryone(Language.parse(
+				"killedby",
+				team.colorizePlayer(player) + ChatColor.YELLOW,
+				arena.parseDeathCause(player, cause.getCause(),
+						ArenaPlayer.getLastDamagingPlayer(cause))));
+
+		if (arena.isCustomClassActive()
+				|| arena.cfg.getBoolean("game.allowDrops")) {
+			Inventories.drop(player);
+		}
+		Inventories.clearInventory(player);
+
+		arena.tpPlayerToCoordName(player, "spectator");
+		
+		ap.setStatus(Status.LOSES);
+		
+		arena.prepare(player, true, true);
+		
+		arena.type().checkEntityDeath(player);
+
+		if (arena.cfg.getInt("goal.timed") > 0) {
+			db.i("timed arena!");
+			Player damager = null;
+
+			if (eEvent instanceof EntityDeathEvent) {
+				EntityDeathEvent event = (EntityDeathEvent) eEvent;
+				if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+					try {
+						EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) event
+								.getEntity().getLastDamageCause();
+						damager = (Player) ee.getDamager();
+						db.i("damager found in arg 2");
+					} catch (Exception ex) {
+
+					}
+				}
+			} else if (eEvent instanceof EntityDamageByEntityEvent) {
+				EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
+				try {
+					damager = (Player) event.getDamager();
+					db.i("damager found in arg 3");
+				} catch (Exception ex) {
+
+				}
+			}
+			String sKiller = "";
+
+			db.i("timed ctf/pumpkin arena");
+			if (damager != null) {
+				sKiller = damager.getName();
+				db.i("killer: " + sKiller);
+				
+				ArenaPlayer apd = ArenaPlayer.parsePlayer(damager);
+				if (apd.getKills() > 0) {
+					db.i("killer killed already");
+					apd.addKill();
+				} else {
+					db.i("first kill");
+					apd.addKill();
+				}
+
+				ArenaPlayer apk = ArenaPlayer.parsePlayer(damager);
+				if (apk.getDeaths() > 0) {
+					db.i("already died");
+					apk.addDeath();
+				} else {
+					db.i("first death");
+					apk.addDeath();
+					arena.betPossible = false;
+				}
+			}
+		}
+
+		if (Arenas.checkAndCommit(arena))
+			return;
+	}
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		db.i("onPlayerInteract");
-
+		
+		if (event.getAction().equals(Action.PHYSICAL)) {
+			db.i("returning: physical");
+			return;
+		}
+		
 		if (PVPArena.instance.getAmm().onPlayerInteract(event)) {
 			db.i("returning: #1");
 			return;
@@ -370,57 +502,6 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player => OUT
 		arena.playerLeave(player);
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		Arena arena = Arenas.getArenaByPlayer(player);
-		if (arena == null && !ap.isDead()) {
-			return; // no fighting player => OUT
-		}
-		db.i("onPlayerRespawn: fighting player");
-
-		if (ap.isDead()) {
-			db.i("respawning dead player");
-			arena = ap.getArena();
-			if (arena == null) {
-				System.out.print("Dead player without proper Arena: "
-						+ ap.getName());
-			} else {
-				Location loc = arena.getDeadLocation(player);
-				if (loc != null) {
-					event.setRespawnLocation(loc);
-				} else {
-					event.setRespawnLocation(Spawns.getCoords(arena, "exit"));
-				}
-			}
-			if (arena == null) {
-				return;
-			}
-			
-			arena.removeDeadPlayer(player);
-			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance,
-					new PlayerResetRunnable(ap), 20L);
-			return;
-		}
-
-		db.i("respawning player");
-		Location l;
-
-		if (arena.cfg.getString("tp.death", "spectator").equals("old")) {
-			db.i("=> old location");
-			l = arena.getPlayerOldLocation(player);
-		} else {
-			db.i("=> 'config=>death' location");
-			l = Spawns.getCoords(arena,
-					arena.cfg.getString("tp.death", "spectator"));
-		}
-		event.setRespawnLocation(l);
-
-		arena.removePlayer(player,
-				arena.cfg.getString("tp.death", "spectator"), false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

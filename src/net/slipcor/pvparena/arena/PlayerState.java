@@ -3,7 +3,6 @@ package net.slipcor.pvparena.arena;
 import java.util.Collection;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.listeners.EntityListener;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -96,7 +95,7 @@ public final class PlayerState {
 		player.addPotionEffects(potionEffects);
 
 		ArenaPlayer.parsePlayer(player).setTelePass(false);
-		EntityListener.addBurningPlayer(player);
+		//EntityListener.addBurningPlayer(player);
 		player.setFireTicks(fireticks);
 		player.setNoDamageTicks(60);
 	}

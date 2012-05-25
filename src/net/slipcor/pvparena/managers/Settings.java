@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.22
+ * @version v0.7.25
  * 
  */
 
@@ -95,6 +95,7 @@ public class Settings {
 		types.put("protection.firespread", "boolean");
 		types.put("protection.lavafirespread", "boolean");
 		types.put("protection.punish", "boolean");
+		types.put("protection.piston", "boolean");
 		types.put("protection.tnt", "boolean");
 		types.put("protection.lighter", "boolean");
 		types.put("protection.checkExit", "boolean");

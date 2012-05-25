@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.7.25
  * 
  */
 public class InventoryListener implements Listener {
@@ -52,7 +52,7 @@ public class InventoryListener implements Listener {
 			if (event.getRawSlot() != 5) {
 				return;
 			}
-			event.setCancelled(true);
+			event.setCancelled(arena.cfg.getBoolean("game.woolhead", false));
 			return;
 		}
 

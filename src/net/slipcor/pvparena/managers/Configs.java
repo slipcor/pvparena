@@ -117,6 +117,7 @@ public class Configs {
 		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
 		config.addDefault("protection.tnt", Boolean.valueOf(true));
 		config.addDefault("protection.lighter", Boolean.valueOf(true));
+		config.addDefault("protection.piston", Boolean.valueOf(true));
 		config.addDefault("protection.punish", Boolean.valueOf(false));
 		config.addDefault("protection.checkExit", Boolean.valueOf(false));
 		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));

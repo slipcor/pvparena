@@ -117,16 +117,19 @@ public class PAAInfo extends PAA_Command {
 		player.sendMessage("");
 		
 		player.sendMessage(StringParser.colorVar("Protection",
-				arena.cfg.getBoolean("protection.enabled", true))
-				+ ": "
-				+ StringParser.colorVar("firespread",
-						arena.cfg.getBoolean("protection.firespread", true))
+				arena.cfg.getBoolean("protection.enabled", true)));
+		
+		player.sendMessage(StringParser.colorVar("firespread",
+				arena.cfg.getBoolean("protection.firespread", true))
 				+ " | "
 				+ StringParser.colorVar("blockdamage",
 						arena.cfg.getBoolean("protection.blockdamage", true))
 				+ " | "
 				+ StringParser.colorVar("blockplace",
 						arena.cfg.getBoolean("protection.blockplace", true))
+				+ " | "
+				+ StringParser.colorVar("piston",
+						arena.cfg.getBoolean("protection.piston", true))
 				+ " | "
 				+ StringParser.colorVar("lighter",
 						arena.cfg.getBoolean("protection.lighter", true))

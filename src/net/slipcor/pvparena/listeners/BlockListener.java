@@ -144,7 +144,7 @@ public class BlockListener implements Listener {
 
 		db.i("block piston extend inside the arena");
 		if (arena.edit || (!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))) {
+				|| (!(arena.cfg.getBoolean("protection.piston", true)))) {
 
 			for (Block block : event.getBlocks()) {
 				PVPArena.instance.getAmm().onBlockPiston(arena, block);

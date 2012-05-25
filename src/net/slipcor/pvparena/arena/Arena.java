@@ -17,7 +17,6 @@ import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
-import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
@@ -907,11 +906,6 @@ public class Arena {
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		if (cfg.getBoolean("game.refillInventory")
-				&& !ap.getClass().equals("custom")) {
-			Inventories.clearInventory(player);
-			Inventories.givePlayerFightItems(this, player);
-		}
 		ArenaTeam team = Teams.getTeam(this, ap);
 
 		if (team == null) {
@@ -922,7 +916,7 @@ public class Arena {
 
 		player.setFireTicks(0);
 		player.setNoDamageTicks(60);
-		EntityListener.addBurningPlayer(player);
+		//EntityListener.addBurningPlayer(player);
 	}
 
 	/**

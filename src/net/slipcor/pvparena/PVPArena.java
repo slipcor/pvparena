@@ -420,7 +420,7 @@ public class PVPArena extends JavaPlugin {
 	
 	private class WrapPlotter extends Metrics.Plotter {
 		public WrapPlotter(String name) {
-			super();
+			super(name);
 		}
 
 		public int getValue() {
