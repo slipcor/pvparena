@@ -50,7 +50,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.7.24
+ * @version v0.8.2
  * 
  */
 
@@ -106,12 +106,8 @@ public class PVPArena extends JavaPlugin {
 				arena = Arenas.getArenaByName("default");
 				db.i("found default arena!");
 			} else {
-				if (sender instanceof Player) {
-					Arenas.tellPlayer((Player) sender,
-							Language.parse("arenanotexists", sName));
-				} else {
-					System.out.print(Language.parse("arenanotexists", sName));
-				}
+				Arenas.tellPlayer(sender,
+						Language.parse("arenanotexists", sName));
 				return true;
 			}
 

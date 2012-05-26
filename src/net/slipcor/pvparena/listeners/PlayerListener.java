@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
@@ -53,7 +54,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.2
  * 
  */
 
@@ -118,6 +119,7 @@ public class PlayerListener implements Listener {
 		List<String> list = PVPArena.instance.getConfig().getStringList(
 				"whitelist");
 		list.add("pa");
+		list.add("pvparena");
 		db.i("checking command whitelist");
 
 		for (String s : list) {
@@ -126,6 +128,28 @@ public class PlayerListener implements Listener {
 				return;
 			}
 		}
+		
+		list = arena.cfg.getYamlConfiguration().getStringList(
+				"whitelist");
+		
+		if (list == null || list.size() < 1) {
+			list = new ArrayList<String>();
+			list.add("ungod");
+			arena.cfg.getYamlConfiguration().set("whitelist", list);
+			arena.cfg.save();
+		}
+		
+		list.add("pa");
+		list.add("pvparena");
+		db.i("checking command whitelist");
+
+		for (String s : list) {
+			if (event.getMessage().startsWith("/" + s)) {
+				db.i("command allowed: " + s);
+				return;
+			}
+		}
+		
 		db.i("command blocked: " + event.getMessage());
 		Arenas.tellPlayer(player, ChatColor.RED + event.getMessage(), arena);
 		event.setCancelled(true);

@@ -12,6 +12,7 @@ import net.slipcor.pvparena.classes.Effect;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Teams;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -40,7 +41,7 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class ArenaPlayer {
 	private static Debug db = new Debug(14);
-	private Player player = null;
+	private String sPlayer = null;
 	private final String name;
 	private Arena arena;
 	private ArenaClass aClass;
@@ -107,7 +108,7 @@ public class ArenaPlayer {
 		this.name = p.getName();
 		this.setArena(a);
 		this.effects = new ArrayList<Effect>();
-		this.player = p;
+		this.sPlayer = p.getName();
 
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
@@ -181,7 +182,7 @@ public class ArenaPlayer {
 	 * @return the bukkit player instance
 	 */
 	public Player get() {
-		return player;
+		return Bukkit.getPlayerExact(sPlayer);
 	}
 
 	/**
@@ -341,28 +342,28 @@ public class ArenaPlayer {
 	 * save and reset a player instance
 	 */
 	public void reset() {
-		db.i("destroying arena player " + player.getName());
+		db.i("destroying arena player " + sPlayer);
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			String file = PVPArena.instance.getDataFolder().toString()
 					+ "/players.yml";
 			cfg.load(file);
 
-			cfg.set(player.getName() + ".losses", losses + totlosses);
-			cfg.set(player.getName() + ".wins", wins + totwins);
-			cfg.set(player.getName() + ".kills", kills + totkills);
-			cfg.set(player.getName() + ".deaths", deaths + totdeaths);
-			cfg.set(player.getName() + ".damage", damage + totdamage);
-			cfg.set(player.getName() + ".maxdamage", maxdamage + totmaxdamage);
-			cfg.set(player.getName() + ".damagetake", damagetake + totdamagetake);
-			cfg.set(player.getName() + ".maxdamagetake", maxdamagetake + totmaxdamagetake);
+			cfg.set(sPlayer + ".losses", losses + totlosses);
+			cfg.set(sPlayer + ".wins", wins + totwins);
+			cfg.set(sPlayer + ".kills", kills + totkills);
+			cfg.set(sPlayer + ".deaths", deaths + totdeaths);
+			cfg.set(sPlayer + ".damage", damage + totdamage);
+			cfg.set(sPlayer + ".maxdamage", maxdamage + totmaxdamage);
+			cfg.set(sPlayer + ".damagetake", damagetake + totdamagetake);
+			cfg.set(sPlayer + ".maxdamagetake", maxdamagetake + totmaxdamagetake);
 
 			cfg.save(file);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (player.isDead()) {
+		if (get().isDead()) {
 			return;
 		}
 

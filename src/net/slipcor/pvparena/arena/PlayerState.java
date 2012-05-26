@@ -3,6 +3,8 @@ package net.slipcor.pvparena.arena;
 import java.util.Collection;
 
 import net.slipcor.pvparena.PVPArena;
+
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -17,13 +19,13 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.8.2
  * 
  */
 
 public final class PlayerState {
 
-	private Player player;
+	private String sPlayer;
 
 	private int fireticks;
 	private int foodlevel;
@@ -38,7 +40,7 @@ public final class PlayerState {
 	private Collection<PotionEffect> potionEffects;
 
 	public PlayerState(Player player) {
-		this.player = player;
+		this.sPlayer = player.getName();
 
 		this.fireticks = player.getFireTicks();
 		this.foodlevel = player.getFoodLevel();
@@ -64,6 +66,7 @@ public final class PlayerState {
 	}
 
 	public void unload() {
+		Player player = Bukkit.getPlayerExact(sPlayer);
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));

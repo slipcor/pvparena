@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* CraftBukkit Beta 1.2.5-R1.3
+* CraftBukkit Beta 1.2.5-R3.0
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -46,13 +46,16 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.2.1 - add arena wide command whitelist
+* v0.8.2.0 - rewrite in order to fix the player teleporting / ghosting issue
+* v0.8.1.0 - major fix - more to come, but this is a severe bug fix
 * v0.8.0.0 - major rewrite of player death handling, fixes many things
 
 -----------------------------------------------------------------------------------------------------------------------
 
 === Todo
 
-* 
+* add block white/blacklists
 
 -----------------------------------------------------------------------------------------------------------------------
 

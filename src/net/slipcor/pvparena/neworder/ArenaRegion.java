@@ -30,7 +30,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.20
+ * @version v0.8.2
  * 
  */
 
@@ -50,7 +50,7 @@ public class ArenaRegion extends Loadable {
 	private int TICK_ID = -1;
 	
 
-	private HashMap<Player, Location> playerLocations = new HashMap<Player, Location>();
+	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
 	
 	public static enum RegionShape {
 		CUBOID, SPHERIC, CYLINDRIC;
@@ -207,7 +207,7 @@ public class ArenaRegion extends Loadable {
 				}
 			} else if (type.equals(RegionType.NOCAMP)) {
 				if (this.contains(ap.get().getLocation())) {
-					Location loc = playerLocations.get(ap.get());
+					Location loc = playerNameLocations.get(ap.getName());
 					if (loc == null) {
 						Arenas.tellPlayer(ap.get(), Language.parse("nocampregion"));
 					} else {
@@ -215,9 +215,9 @@ public class ArenaRegion extends Loadable {
 							ap.get().damage(arena.cfg.getInt("region.spawncampdamage"));
 						}
 					}
-					playerLocations.put(ap.get(), ap.get().getLocation().getBlock().getLocation());
+					playerNameLocations.put(ap.getName(), ap.get().getLocation().getBlock().getLocation());
 				} else {
-					playerLocations.remove(ap.get());
+					playerNameLocations.remove(ap.getName());
 				}
 			}
 		}
