@@ -25,7 +25,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.7.22
+ * @version v0.8.4
  * 
  */
 
@@ -55,10 +55,16 @@ public class Configs {
 		arena.type().setArena(arena);
 
 		if (config.get("classitems") == null) {
-			config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
-			config.addDefault("classitems.Swordsman", "276,306,307,308,309");
-			config.addDefault("classitems.Tank", "272,310,311,312,313");
-			config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
+			if (PVPArena.instance.getConfig().get("classitems") != null) {
+				for (String key : PVPArena.instance.getConfig().getKeys(false)) {
+					config.addDefault("classitems."+key, PVPArena.instance.getConfig().get("classitems."+key));
+				}
+			} else {
+				config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
+				config.addDefault("classitems.Swordsman", "276,306,307,308,309");
+				config.addDefault("classitems.Tank", "272,310,311,312,313");
+				config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
+			}
 		}
 		config.addDefault("tp.win", "old");
 		config.addDefault("tp.lose", "old");
