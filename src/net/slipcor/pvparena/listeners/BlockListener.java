@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
@@ -47,6 +50,33 @@ public class BlockListener implements Listener {
 				|| arena.edit
 						|| (!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg
 							.getBoolean("protection.blockdamage", true)))) {
+			if (arena == null || arena.edit ) {
+				return;
+			}
+			
+			List<String> list = new ArrayList<String>();
+			
+			list = arena.cfg.getStringList("blocks.whitelist", list);
+			
+			if (list.size() > 0) {
+				// WHITELIST!!!!!!!!!
+				
+				if (!list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+					// not on whitelist. DENY!
+					event.setCancelled(true);
+					return;
+				}
+			} else {
+			
+				list = arena.cfg.getStringList("blocks.blacklist", list);
+				
+				if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+					// on blacklist. DENY!
+					event.setCancelled(true);
+					return;
+				}
+			
+			}
 			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 			return; // we don't need protection => OUT!
 		}

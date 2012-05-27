@@ -14,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 /**
  * spawn manager class
@@ -25,7 +24,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.2
  * 
  */
 
@@ -157,15 +156,19 @@ public class Spawns {
 			}
 		}
 
-		Vector v = new Vector(0, 0, 0);
+		long x = 0;
+		long y = 0;
+		long z = 0;
 
 		for (Location loc : locs) {
-			v.add(loc.toVector());
+			x += loc.getBlockX();
+			y += loc.getBlockY();
+			z += loc.getBlockZ();
 		}
 
-		v.multiply(1 / locs.size());
+		
 
-		return v.toLocation(Bukkit.getWorld(arena.getWorld()));
+		return new Location(Bukkit.getWorld(arena.getWorld()), x / locs.size(), y / locs.size(), z / locs.size());
 	}
 
 	/**

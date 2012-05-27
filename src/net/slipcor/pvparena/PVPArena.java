@@ -207,30 +207,34 @@ public class PVPArena extends JavaPlugin {
 		Arenas.load_arenas();
 		Update u = new Update(this);
 		u.start();
+		
+		if (Arenas.count() > 0) {
 
-		Tracker trackMe = new Tracker(this);
-		trackMe.start();
+			Tracker trackMe = new Tracker(this);
+			trackMe.start();
+			
+			Metrics metrics;
+			try {
+				metrics = new Metrics(this);
+				Metrics.Graph atg = metrics.createGraph("Game modes installed");
+				for (ArenaType at : atm.getTypes()) {
+					atg.addPlotter(new WrapPlotter(at.getName()));
+				}
+				Metrics.Graph amg = metrics.createGraph("Enhancement modules installed");
+				for (ArenaModule am : amm.getModules()) {
+					amg.addPlotter(new WrapPlotter(am.getName()));
+				}
+				Metrics.Graph arg = metrics.createGraph("Region shapes installed");
+				for (ArenaRegion ar : arm.getRegions()) {
+					arg.addPlotter(new WrapPlotter(ar.getName()));
+				}
+				metrics.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-		Metrics metrics;
-		try {
-			metrics = new Metrics(this);
-			Metrics.Graph atg = metrics.createGraph("Game modes installed");
-			for (ArenaType at : atm.getTypes()) {
-				atg.addPlotter(new WrapPlotter(at.getName()));
-			}
-			Metrics.Graph amg = metrics.createGraph("Enhancement modules installed");
-			for (ArenaModule am : amm.getModules()) {
-				amg.addPlotter(new WrapPlotter(am.getName()));
-			}
-			Metrics.Graph arg = metrics.createGraph("Region shapes installed");
-			for (ArenaRegion ar : arm.getRegions()) {
-				arg.addPlotter(new WrapPlotter(ar.getName()));
-			}
-			metrics.start();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-
+		
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());

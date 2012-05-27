@@ -60,6 +60,10 @@ public abstract class PAA_Command {
 			return new PAASet();
 		} else if (s.equalsIgnoreCase("forcestop")) {
 			return new PAAForceStop();
+		} else if (s.equalsIgnoreCase("blacklist")) {
+			return new PAABlackList();
+		} else if (s.equalsIgnoreCase("whitelist")) {
+			return new PAAWhiteList();
 		} else if (isSpawnCommand(arena, s)) {
 			return new PAASpawn();
 		} else if (Teams.getTeam(arena, s) != null) {

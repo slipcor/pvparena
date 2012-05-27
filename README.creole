@@ -46,6 +46,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.3.0 - add blacklist/whitelist for block breaking
+* v0.8.2.3 - fix droppings inside the spectator area
+* v0.8.2.2 - only track plugin if used (if arenas defined)
 * v0.8.2.1 - add arena wide command whitelist
 * v0.8.2.0 - rewrite in order to fix the player teleporting / ghosting issue
 * v0.8.1.0 - major fix - more to come, but this is a severe bug fix

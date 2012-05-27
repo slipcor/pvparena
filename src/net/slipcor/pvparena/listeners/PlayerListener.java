@@ -189,9 +189,10 @@ public class PlayerListener implements Listener {
 		} else {
 			lives--;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventoryRestoreRunnable(arena, player, event.getDrops()), 1L);
-			event.getDrops().clear();
 			arena.respawnPlayer(player, lives, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 		}
+		
+		event.getDrops().clear();
 		event.setDeathMessage(null);
 	}
 	/**
