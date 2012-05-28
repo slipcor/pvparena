@@ -232,6 +232,22 @@ public class Language {
 
 		config.addDefault("lang.select2",
 				"Select two points before trying to save.");
+		config.addDefault("lang.whitelist",
+				"Whitelist");
+		config.addDefault("lang.whitelistclear",
+				"Whitelist cleared.");
+		config.addDefault("lang.whitelistadd",
+				"Added to whitelist: %1%");
+		config.addDefault("lang.whitelistremove",
+				"Removed from whitelist: %1%");
+		config.addDefault("lang.blacklist",
+				"Blacklist");
+		config.addDefault("lang.blacklistclear",
+				"Blacklist cleared.");
+		config.addDefault("lang.blacklistadd",
+				"Added to blacklist: %1%");
+		config.addDefault("lang.blacklistremove",
+				"Removed from blacklist: %1%");
 
 		config.addDefault("lang.joinarena",
 				"Arena is starting! Type /pa %1% to join!");

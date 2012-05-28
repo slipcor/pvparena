@@ -62,6 +62,7 @@ public class BlockListener implements Listener {
 				// WHITELIST!!!!!!!!!
 				
 				if (!list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+					event.getPlayer().sendMessage("not contained, out!");
 					// not on whitelist. DENY!
 					event.setCancelled(true);
 					return;
@@ -71,11 +72,12 @@ public class BlockListener implements Listener {
 				list = arena.cfg.getStringList("blocks.blacklist", list);
 				
 				if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+					event.getPlayer().sendMessage("blacklist contains");
 					// on blacklist. DENY!
 					event.setCancelled(true);
 					return;
 				}
-			
+
 			}
 			PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 			return; // we don't need protection => OUT!

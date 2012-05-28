@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.4.1 - add hook for sabotage arena, ArenaType.onEntityExplode
 * v0.8.4.0 - read default classes from config.yml, if set
 * v0.8.3.0 - add blacklist/whitelist for block breaking
 * v0.8.2.3 - fix droppings inside the spectator area
