@@ -17,6 +17,7 @@ import net.slipcor.pvparena.managers.Regions;
 import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
+import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,7 +55,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.8.2
+ * @version v0.8.4
  * 
  */
 
@@ -236,6 +237,7 @@ public class PlayerListener implements Listener {
 		arena.prepare(player, true, true);
 		
 		arena.type().checkEntityDeath(player);
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerResetRunnable(ap), 20L);
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");

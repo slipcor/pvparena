@@ -54,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.7.20
+ * @version v0.8.4
  * 
  */
 
@@ -904,6 +904,7 @@ public class Arena {
 		player.setFoodLevel(cfg.getInt("start.foodLevel", 20));
 		player.setSaturation(cfg.getInt("start.saturation", 20));
 		player.setExhaustion((float) cfg.getDouble("start.exhaustion", 0.0));
+		player.setVelocity(new Vector());
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(this, ap);

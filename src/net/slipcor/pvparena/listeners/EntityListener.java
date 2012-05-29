@@ -51,7 +51,6 @@ public class EntityListener implements Listener {
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
 				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			arena.type().onEntityExplode(arena, event);
 			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;
 		}

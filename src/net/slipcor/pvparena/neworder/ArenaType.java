@@ -15,8 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-
 import com.nodinchan.ncloader.Loadable;
 
 import net.slipcor.pvparena.PVPArena;
@@ -41,7 +39,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.22
+ * @version v0.8.4
  * 
  */
 
@@ -520,10 +518,6 @@ public class ArenaType extends Loadable {
 	 */
 	public boolean reduceLivesCheckEndAndCommit(String team) {
 		return false;
-	}
-
-	public void onEntityExplode(Arena arena2, EntityExplodeEvent event) {
-		return;
 	}
 
 	public boolean parseCommand(String s) {

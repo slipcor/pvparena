@@ -246,7 +246,10 @@ public class Configs {
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-
+		String error = PVPArena.instance.getAmm().checkSpawns(list);
+		if (error != null) {
+			return error;
+		}
 		return arena.type().checkSpawns(list);
 	}
 }

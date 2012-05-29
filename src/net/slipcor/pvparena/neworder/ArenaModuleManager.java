@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -37,7 +38,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.4
  * 
  */
 
@@ -134,6 +135,17 @@ public class ArenaModuleManager {
 			}
 		}
 		return true;
+	}
+
+	public String checkSpawns(Set<String> list) {
+		String error = null;
+		for (ArenaModule mod : modules) {
+			error = mod.checkSpawns(list);
+			if (error != null) {
+				return error;
+			}
+		}
+		return null;
 	}
 
 	/**

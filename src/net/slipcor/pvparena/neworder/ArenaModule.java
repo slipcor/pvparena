@@ -2,6 +2,7 @@ package net.slipcor.pvparena.neworder;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -104,6 +105,10 @@ public class ArenaModule extends Loadable {
 	 */
 	public boolean checkJoin(Arena arena, Player player) {
 		return true;
+	}
+
+	public String checkSpawns(Set<String> list) {
+		return null;
 	}
 
 	/**

@@ -56,8 +56,8 @@ public class PAAJoin extends PAA_Command {
 						.getScheduler()
 						.scheduleSyncDelayedTask(
 								PVPArena.instance,
-								new ArenaWarmupRunnable(arena, ap, null, false),
-								20L * arena.cfg.getInt("join.warmup"));
+								new ArenaWarmupRunnable(arena, ap, null, false, arena.cfg.getInt("join.warmup")),
+								20L);
 				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return;
 			}
