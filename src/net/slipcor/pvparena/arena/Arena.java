@@ -226,12 +226,15 @@ public class Arena {
 		if (START_ID != -1 || this.fightInProgress) {
 			Bukkit.getScheduler().cancelTask(START_ID);
 			START_ID = -1;
+			if (!this.fightInProgress) {
+				tellEveryone(Language.parse("countdowninterrupt"));
+			}
 			return;
 		}
 
-		long duration = 20L * cfg.getInt("start.countdown");
-		START_ID = Bukkit.getScheduler().scheduleSyncDelayedTask(
-				PVPArena.instance, new StartRunnable(this), duration);
+		int duration = cfg.getInt("start.countdown");
+		START_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, new StartRunnable(this, duration), 20L, 20L);
 		tellEveryone(Language.parse("startingin", String.valueOf(cfg.getInt("start.countdown"))));
 	}
 
@@ -591,6 +594,7 @@ public class Arena {
 
 		if (START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(START_ID);
+			tellEveryone(Language.parse("countdowninterrupt"));
 			START_ID = -1;
 		}
 		ap.reset();
@@ -1021,8 +1025,8 @@ public class Arena {
 			END_ID = Bukkit
 					.getServer()
 					.getScheduler()
-					.scheduleSyncDelayedTask(PVPArena.instance,
-							new TimedEndRunnable(this), timed * 20);
+					.scheduleSyncRepeatingTask(PVPArena.instance,
+							new TimedEndRunnable(this, timed), 20, 20);
 		}
 
 		tellEveryone(Language.parse("begin"));

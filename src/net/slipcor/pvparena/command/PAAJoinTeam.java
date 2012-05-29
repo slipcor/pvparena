@@ -55,7 +55,7 @@ public class PAAJoinTeam extends PAA_Command {
 			if (ap.getStatus().equals(Status.EMPTY)) {
 				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
 						new ArenaWarmupRunnable(arena, ap, args[0], false, arena.cfg.getInt("join.warmup")),
-						20L);
+						20);
 				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return;
 			}

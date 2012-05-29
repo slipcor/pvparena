@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import java.util.HashMap;
-
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.PVPArena;
@@ -12,7 +10,6 @@ import net.slipcor.pvparena.command.PAAJoin;
 import net.slipcor.pvparena.command.PAAJoinTeam;
 import net.slipcor.pvparena.command.PAASpectate;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Arenas;
 
 /**
  * player reset runnable class
@@ -23,7 +20,7 @@ import net.slipcor.pvparena.managers.Arenas;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.4
  * 
  */
 
@@ -35,24 +32,7 @@ public class ArenaWarmupRunnable implements Runnable {
 	private Debug db = new Debug(40);
 	
 	private int count = 0;
-	private static HashMap<Integer, String> messages = new HashMap<Integer, String>();
 	
-	static {
-		messages.put(1, "1...");
-		messages.put(2, "2...");
-		messages.put(3, "3...");
-		messages.put(4, "4...");
-		messages.put(5, "5...");
-		messages.put(6, "6...");
-		messages.put(7, "7...");
-		messages.put(8, "8...");
-		messages.put(9, "9...");
-		messages.put(10, "10...");
-		messages.put(20, "20...");
-		messages.put(30, "30...");
-		messages.put(60, "60...");
-	}
-
 	/**
 	 * create a timed arena runnable
 	 * 
@@ -73,14 +53,11 @@ public class ArenaWarmupRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		String msg = messages.get(--count);
-		if (msg != null) {
-			Arenas.tellPlayer(player.get(), msg, arena);
-		}
+		TimerInfo.spam("warmingupexact", --count, player.get(), null, false);
 		if (count <= 0) {
 			commit();
 		} else {
-			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, this);
+			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, this, 20L);
 		}
 	}
 	

@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.4
  * 
  */
 public class Language {
@@ -253,7 +253,22 @@ public class Language {
 				"Arena is starting! Type /pa %1% to join!");
 		config.addDefault("lang.warmingup",
 				"Warming up... stand by...");
+		config.addDefault("lang.countdowninterrupt",
+				"Countdown interrupted! Hit the ready block!");
 
+		config.addDefault("lang.startinginexact",
+				"Starting in %1%!");
+		config.addDefault("lang.warmingupexact",
+				"Warming up... %1%!");
+		config.addDefault("lang.resetexact",
+				"The arena will reset in %1%!");
+		config.addDefault("lang.endingexact",
+				"The match will end in %1%!");
+		config.addDefault("lang.seconds",
+				"seconds");
+		config.addDefault("lang.minutes",
+				"minutes");
+		
 		PVPArena.instance.getAmm().initLanguage(config);
 		PVPArena.instance.getAtm().initLanguage(config);
 

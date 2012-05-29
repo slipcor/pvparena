@@ -22,14 +22,16 @@ public class TimedEndRunnable implements Runnable {
 	private final Arena a;
 	private Debug db = new Debug(42);
 
+	private int count = 0;
 	/**
 	 * create a timed arena runnable
 	 * 
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public TimedEndRunnable(Arena a) {
+	public TimedEndRunnable(Arena a, int i) {
 		this.a = a;
+		count = i;
 		db.i("TimedEndRunnable constructor");
 	}
 
@@ -38,6 +40,15 @@ public class TimedEndRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
+		TimerInfo.spam("endingexact", --count, null, a, false);
+		if (count <= 0) {
+			commit();
+			Bukkit.getScheduler().cancelTask(a.END_ID);
+			a.END_ID = -1;
+		}
+	}
+	
+	private void commit() {
 		db.i("TimedEndRunnable commiting");
 		if (a.fightInProgress)
 			a.type().timed();
