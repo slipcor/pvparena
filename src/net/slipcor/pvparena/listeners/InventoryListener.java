@@ -52,7 +52,7 @@ public class InventoryListener implements Listener {
 			if (event.getRawSlot() != 5) {
 				return;
 			}
-			event.setCancelled(arena.cfg.getBoolean("game.woolhead", false));
+			event.setCancelled(arena.cfg.getBoolean("game.woolHead", false));
 			return;
 		}
 

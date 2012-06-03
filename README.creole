@@ -46,6 +46,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.6.9 - fix spawn access (players taking the enemy flag at other positions)
+* v0.8.4.8 - add hook parseRespawn to Modules
+* v0.8.4.7 - fix woolHead support
 * v0.8.4.6 - teach the countdowns to talk! (continued)
 * v0.8.4.5 - fix the player not being reset properly after a fight
 * v0.8.4.4 - teach the countdowns to talk!

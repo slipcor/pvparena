@@ -918,6 +918,8 @@ public class Arena {
 		}
 
 		type.parseRespawn(player, team, lives, cause, damager);
+		
+		PVPArena.instance.getAmm().parseRespawn(this, player, team, lives, cause, damager);
 
 		player.setFireTicks(0);
 		player.setNoDamageTicks(60);

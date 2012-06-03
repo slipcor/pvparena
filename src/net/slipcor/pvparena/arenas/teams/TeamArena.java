@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.arenas.teams;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -26,7 +27,19 @@ public class TeamArena extends ArenaType {
 
 	@Override
 	public String version() {
-		return "v0.7.10.6";
+		return "v0.8.4.6";
+	}
+	
+	@Override
+	public void addDefaultTeams(YamlConfiguration config) {
+		config.addDefault("game.woolHead", Boolean.valueOf(false));
+		if (arena.cfg.get("teams") == null) {
+			db.i("no teams defined, adding custom red and blue!");
+			arena.cfg.getYamlConfiguration().addDefault("teams.red",
+					ChatColor.RED.name());
+			arena.cfg.getYamlConfiguration().addDefault("teams.blue",
+					ChatColor.BLUE.name());
+		}
 	}
 
 	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,

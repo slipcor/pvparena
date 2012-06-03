@@ -10,10 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -643,5 +645,12 @@ public class ArenaModuleManager {
 			}
 		}
 		return false;
+	}
+
+	public void parseRespawn(Arena arena, Player player, ArenaTeam team, int lives,
+			DamageCause cause, Entity damager) {
+		for (ArenaModule mod : modules) {
+			mod.parseRespawn(arena, player, team, lives, cause, damager);
+		}
 	}
 }

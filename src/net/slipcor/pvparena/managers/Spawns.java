@@ -131,6 +131,8 @@ public class Spawns {
 				}
 			} else if (name.contains("lounge")) {
 				continue;
+			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
+				continue;
 			}
 			db.i(" - " + name);
 			String sLoc = arena.cfg.getString("spawns." + name, null);
