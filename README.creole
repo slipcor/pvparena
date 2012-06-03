@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.6.11 - distinguish tnt block damage from player block damage
+* v0.8.6.10 - remove mobs and animals on region reset
 * v0.8.6.9 - fix spawn access (players taking the enemy flag at other positions)
 * v0.8.4.8 - add hook parseRespawn to Modules
 * v0.8.4.7 - fix woolHead support

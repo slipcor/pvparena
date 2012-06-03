@@ -32,7 +32,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.6
  * 
  */
 
@@ -49,7 +49,7 @@ public class EntityListener implements Listener {
 
 		db.i("explosion inside an arena");
 		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blockdamage", true)))
+				|| (!(arena.cfg.getBoolean("protection.blocktntdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
 			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;

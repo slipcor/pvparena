@@ -125,6 +125,9 @@ public class PAAInfo extends PAA_Command {
 				+ StringParser.colorVar("blockdamage",
 						arena.cfg.getBoolean("protection.blockdamage", true))
 				+ " | "
+				+ StringParser.colorVar("tntblockdamage",
+						arena.cfg.getBoolean("protection.tntblockdamage", true))
+				+ " | "
 				+ StringParser.colorVar("blockplace",
 						arena.cfg.getBoolean("protection.blockplace", true))
 				+ " | "

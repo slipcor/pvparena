@@ -13,7 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -30,41 +32,40 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.8.2
+ * @version v0.8.6
  * 
  */
 
 public class ArenaRegion extends Loadable {
 	protected Debug db = new Debug(15);
-	
+
 	public Vector min;
 	public Vector max;
-	
+
 	public Arena arena;
-	
+
 	protected World world;
 	public String name;
 	private RegionShape shape;
 	private RegionType type;
-	
+
 	private int TICK_ID = -1;
-	
 
 	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
-	
+
 	public static enum RegionShape {
 		CUBOID, SPHERIC, CYLINDRIC;
 	}
-	
+
 	public static enum RegionType {
-		CUSTOM, JOIN, SPECTATOR, LOUNGE, BATTLEFIELD, EXIT, NOCAMP, DEATH 
+		CUSTOM, JOIN, SPECTATOR, LOUNGE, BATTLEFIELD, EXIT, NOCAMP, DEATH
 	}
-	
+
 	public ArenaRegion clone() {
 		try {
 			ArenaRegion at = (ArenaRegion) super.clone();
 			at.setShape(getShape());
-			return at; 
+			return at;
 		} catch (CloneNotSupportedException e) {
 			System.out.println(e);
 			return null;
@@ -80,14 +81,15 @@ public class ArenaRegion extends Loadable {
 	 *            the region minimum location
 	 * @param lMax
 	 *            the region maximum location
-	 
-	public ArenaRegion(String sName, Location lMin, Location lMax,
-			regionType type) {*/
-	
+	 * 
+	 *            public ArenaRegion(String sName, Location lMin, Location lMax,
+	 *            regionType type) {
+	 */
+
 	public ArenaRegion(String shape) {
 		super(shape);
 	}
-	
+
 	public String version() {
 		return "OUTDATED";
 	}
@@ -155,7 +157,8 @@ public class ArenaRegion extends Loadable {
 			return;
 		}
 		for (Entity e : world.getEntities()) {
-			if (((!(e instanceof Item)) && (!(e instanceof Arrow)))
+			if (((!(e instanceof Item)) && (!(e instanceof Arrow))
+					&& (!(e instanceof Creature)) && (!(e instanceof Animals)))
 					|| (!contains(e.getLocation())))
 				continue;
 			e.remove();
@@ -166,11 +169,11 @@ public class ArenaRegion extends Loadable {
 
 	public void showBorder(Player player) {
 	}
-	
+
 	public Location getAbsoluteMinimum() {
 		return null;
 	}
-	
+
 	public Location getAbsoluteMaximum() {
 		return null;
 	}
@@ -182,14 +185,17 @@ public class ArenaRegion extends Loadable {
 	public RegionType getType() {
 		return type;
 	}
-	
+
 	public void initTimer() {
-		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(PVPArena.instance, new RegionRunnable(this), arena.cfg.getInt("region.spawncampdamage") * 1L, arena.cfg.getInt("region.spawncampdamage") * 1L);
+		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
+				PVPArena.instance, new RegionRunnable(this),
+				arena.cfg.getInt("region.spawncampdamage") * 1L,
+				arena.cfg.getInt("region.spawncampdamage") * 1L);
 	}
 
 	public void set(World world, String coords) {
 	}
-	
+
 	protected void setShape(RegionShape shape) {
 		this.shape = shape;
 	}
@@ -197,7 +203,7 @@ public class ArenaRegion extends Loadable {
 	public void setType(RegionType type) {
 		this.type = type;
 	}
-	
+
 	public void tick() {
 		for (ArenaPlayer ap : arena.getPlayers()) {
 			if (type.equals(RegionType.DEATH)) {
@@ -209,13 +215,16 @@ public class ArenaRegion extends Loadable {
 				if (this.contains(ap.get().getLocation())) {
 					Location loc = playerNameLocations.get(ap.getName());
 					if (loc == null) {
-						Arenas.tellPlayer(ap.get(), Language.parse("nocampregion"));
+						Arenas.tellPlayer(ap.get(),
+								Language.parse("nocampregion"));
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
-							ap.get().damage(arena.cfg.getInt("region.spawncampdamage"));
+							ap.get().damage(
+									arena.cfg.getInt("region.spawncampdamage"));
 						}
 					}
-					playerNameLocations.put(ap.getName(), ap.get().getLocation().getBlock().getLocation());
+					playerNameLocations.put(ap.getName(), ap.get()
+							.getLocation().getBlock().getLocation());
 				} else {
 					playerNameLocations.remove(ap.getName());
 				}

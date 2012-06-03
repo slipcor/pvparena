@@ -118,6 +118,7 @@ public class Configs {
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
+		config.addDefault("protection.blocktntdamage", Boolean.valueOf(true));
 		config.addDefault("protection.fluids", Boolean.valueOf(true));
 		config.addDefault("protection.firespread", Boolean.valueOf(true));
 		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
