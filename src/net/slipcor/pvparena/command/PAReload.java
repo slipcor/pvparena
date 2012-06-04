@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.command;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -14,6 +15,9 @@ public class PAReload extends PA_Command {
 			Arenas.tellPlayer(player,
 					Language.parse("nopermto", Language.parse("reload")));
 			return;
+		}
+		for (Arena a : Arenas.getArenas()) {
+			a.reset(true);
 		}
 		Arenas.load_arenas();
 		Arenas.tellPlayer(player, Language.parse("reloaded"));

@@ -16,6 +16,9 @@ public class PAAReload extends PAA_Command {
 					Language.parse("nopermto", Language.parse("reload")));
 			return;
 		}
+		for (Arena a : Arenas.getArenas()) {
+			a.reset(true);
+		}
 		Arenas.load_arenas();
 		Arenas.tellPlayer(player, Language.parse("reloaded"));
 	}
