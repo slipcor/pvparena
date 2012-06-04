@@ -8,6 +8,7 @@ import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaRegionManager;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -83,6 +84,9 @@ public class PAARegion extends PAA_Command {
 				Math.max(arena.pos1.getBlockX(), arena.pos2.getBlockX()),
 				Math.max(arena.pos1.getBlockY(), arena.pos2.getBlockY()),
 				Math.max(arena.pos1.getBlockZ(), arena.pos2.getBlockZ()));
+
+		arena.pos1 = realMin.toLocation(Bukkit.getWorld(arena.getWorld()));
+		arena.pos2 = realMax.toLocation(Bukkit.getWorld(arena.getWorld()));
 
 		String s = realMin.getBlockX() + "," + realMin.getBlockY()
 				+ "," + realMin.getBlockZ() + "," + realMax.getBlockX()
