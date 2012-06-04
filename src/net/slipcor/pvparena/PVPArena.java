@@ -106,6 +106,10 @@ public class PVPArena extends JavaPlugin {
 				arena = Arenas.getArenaByName("default");
 				db.i("found default arena!");
 			} else {
+				if (args.length > 1 && args[1].equals("create")) {
+					Arenas.tellPlayer(sender, "§c/pa create [name] {type}");
+					return true;
+				}
 				Arenas.tellPlayer(sender,
 						Language.parse("arenanotexists", sName));
 				return true;
