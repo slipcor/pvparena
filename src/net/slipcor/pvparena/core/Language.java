@@ -189,7 +189,7 @@ public class Language {
 				"set a config node");
 
 		config.addDefault("lang.arenatypeunknown",
-				"Arena Type '%1%' unknown. Please add the corresponding arena jar file!");
+				"Arena Type '%1%' unknown. consult the forums: http://goo.gl/KyJzo");
 		config.addDefault("lang.arenateamunknown",
 				"Arena Team '%1%' unknown!");
 
