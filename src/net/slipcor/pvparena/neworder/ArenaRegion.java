@@ -186,6 +186,9 @@ public class ArenaRegion extends Loadable {
 		return type;
 	}
 
+	public void initialize() {
+	}
+
 	public void initTimer() {
 		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
 				PVPArena.instance, new RegionRunnable(this),

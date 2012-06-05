@@ -87,6 +87,12 @@ public class Cuboid extends ArenaRegion {
 		return this.max.toLocation(world);
 	}
 
+	public void initialize() {
+		Location[] sane = sanityCheck(this.min.toLocation(world), this.max.toLocation(world));
+		min = sane[0].clone().toVector();
+		max = sane[1].clone().toVector();
+	}
+
 	@Override
 	public boolean overlapsWith(ArenaRegion paRegion) {
 		db.i("checking if " + name + " overlaps with " + paRegion.name);

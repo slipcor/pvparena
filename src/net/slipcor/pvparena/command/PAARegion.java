@@ -88,9 +88,9 @@ public class PAARegion extends PAA_Command {
 		arena.pos1 = realMin.toLocation(Bukkit.getWorld(arena.getWorld()));
 		arena.pos2 = realMax.toLocation(Bukkit.getWorld(arena.getWorld()));
 
-		String s = realMin.getBlockX() + "," + realMin.getBlockY()
-				+ "," + realMin.getBlockZ() + "," + realMax.getBlockX()
-				+ "," + realMax.getBlockY() + "," + realMax.getBlockZ();
+		String s = arena.pos1.getBlockX() + "," + arena.pos1.getBlockY()
+				+ "," + arena.pos1.getBlockZ() + "," + arena.pos2.getBlockX()
+				+ "," + arena.pos2.getBlockY() + "," + arena.pos2.getBlockZ();
 
 		ArenaRegion.RegionShape shape;
 		

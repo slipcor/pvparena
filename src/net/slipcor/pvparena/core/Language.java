@@ -81,6 +81,8 @@ public class Language {
 		config.addDefault("lang.begin", "Let the fight begin!");
 		config.addDefault("lang.killedbylives",
 				"%1% has been killed by %2%! %3% lives remaining.");
+		config.addDefault("lang.killedby",
+				"%1% has been killed by %2%!");
 		config.addDefault("lang.onlyplayers",
 				"Only players may access this command!");
 		config.addDefault("lang.arenadisabled",

@@ -25,7 +25,7 @@ import net.slipcor.pvparena.regions.Cuboid;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.6
  * 
  */
 
@@ -90,6 +90,8 @@ public class ArenaRegionManager {
 				result.world = pos1.getWorld();
 
 				setRegionTypeByName(result, name);
+				
+				result.initialize();
 				return result;
 			}
 		}
