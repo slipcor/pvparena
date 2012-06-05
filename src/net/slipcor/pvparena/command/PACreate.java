@@ -17,6 +17,7 @@ public class PACreate extends PA_Command {
 	public void commit(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			Arenas.tellPlayer(sender, Language.parse("onlyplayers"));
+			Arenas.tellPlayer(sender, "§c/pa version gamemodes");
 			return;
 		}
 		
