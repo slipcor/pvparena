@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.6.19 - support arena name guessing
 * v0.8.6.18 - enhance /pa version flexibility
 * v0.8.6.17 - give proper error when using unsupported region types
 * v0.8.6.16 - fixed other regions not being initialized properly

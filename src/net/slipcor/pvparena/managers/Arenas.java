@@ -113,7 +113,26 @@ public class Arenas {
 	 * @return an arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByName(String sName) {
-		return arenas.get(sName);
+		Arena a = arenas.get(sName);
+		if (a != null) {
+			return a;
+		}
+		for (String s : arenas.keySet()) {
+			if (s.endsWith(sName)) {
+				return arenas.get(s);
+			}
+		}
+		for (String s : arenas.keySet()) {
+			if (s.startsWith(sName)) {
+				return arenas.get(s);
+			}
+		}
+		for (String s : arenas.keySet()) {
+			if (s.contains(sName)) {
+				return arenas.get(s);
+			}
+		}
+		return null;
 	}
 
 	/**
