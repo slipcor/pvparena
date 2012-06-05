@@ -106,7 +106,7 @@ public class PAARegion extends PAA_Command {
 				arena.pos2, shape);
 		
 		if (region == null) {
-			Arenas.tellPlayer(sender, Language.parse("arenaregionshapeunknown", args[1]));
+			Arenas.tellPlayer(sender, Language.parse("arenaregionshapeunknown", args[2]));
 			Arenas.tellPlayer(sender, "§c/pa version regions");
 			return;
 		}

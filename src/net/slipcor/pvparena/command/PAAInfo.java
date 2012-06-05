@@ -253,7 +253,7 @@ public class PAAInfo extends PAA_Command {
 			if (!s.equals("")) {
 				s += " | ";
 			}
-			s += p.name + " (" + p.getShape().name().substring(0,2) + ")";
+			s += p.name + " (" + p.getShape().name().substring(0,3) + ")";
 		}
 		return s;
 	}
