@@ -192,6 +192,8 @@ public class Language {
 
 		config.addDefault("lang.arenatypeunknown",
 				"Arena Type '%1%' unknown. consult the forums: http://goo.gl/KyJzo");
+		config.addDefault("lang.arenaregionshapeunknown",
+				"Arena Shape '%1%' unknown. consult the forums: http://goo.gl/IfLOh");
 		config.addDefault("lang.arenateamunknown",
 				"Arena Team '%1%' unknown!");
 

@@ -107,6 +107,8 @@ public class PAARegion extends PAA_Command {
 		
 		if (region == null) {
 			System.out.print("Error while creating arena region!");
+			Arenas.tellPlayer(sender, Language.parse("arenaregionshapeunknown", args[1]));
+			return;
 		}
 		
 		if (region.getShape() != RegionShape.CUBOID) {
