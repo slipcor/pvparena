@@ -45,7 +45,7 @@ public class TimerInfo {
 	 * @param i the seconds remaining
 	 * @param global the trigger to generally spam to everyone or to specific arenas/players
 	 */
-	protected static void spam(String s, Integer i, Player player, Arena arena, Boolean global) {
+	public static void spam(String s, Integer i, Player player, Arena arena, Boolean global) {
 		if (messages.get(i) == null) {
 			return;
 		}
