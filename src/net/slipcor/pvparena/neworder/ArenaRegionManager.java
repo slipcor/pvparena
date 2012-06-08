@@ -25,12 +25,13 @@ import net.slipcor.pvparena.regions.Cuboid;
  * 
  * @author slipcor
  * 
- * @version v0.8.6
+ * @version v0.8.7
  * 
  */
 
 public class ArenaRegionManager {
-	private final List<ArenaRegion> regions;
+	private List<ArenaRegion> regions;
+	private final Loader<ArenaRegion> loader;
 	Debug db = new Debug(45);
 
 	/**
@@ -44,7 +45,8 @@ public class ArenaRegionManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		regions = new Loader<ArenaRegion>(plugin, path, new Object[] {}).load();
+		loader = new Loader<ArenaRegion>(plugin, path, new Object[] {});
+		regions = loader.load();
 		regions.add(new Cuboid());
 
 		for (ArenaRegion mod : regions) {
@@ -62,11 +64,21 @@ public class ArenaRegionManager {
 	 */
 	public ArenaRegion getModule(String mName) {
 		for (ArenaRegion region : regions) {
-			if (region.getName().equals(mName)) {
+			if (region.getName().equalsIgnoreCase(mName)) {
 				return region;
 			}
 		}
 		return null;
+	}
+
+	private static RegionShape getShapeByCoords(String coords) {
+		String[] vars = coords.split(",");
+		
+		if (vars.length < 7) {
+			return RegionShape.CUBOID;
+		} else {
+			return getShapeByName(vars[vars.length-1]);
+		}
 	}
 
 	public static RegionShape getShapeByName(String string) {
@@ -76,6 +88,10 @@ public class ArenaRegionManager {
 			}
 		}
 		return null;
+	}
+
+	public List<ArenaRegion> getRegions() {
+		return regions;
 	}
 
 	public ArenaRegion newRegion(String name, Arena arena, Location pos1,
@@ -125,19 +141,15 @@ public class ArenaRegionManager {
 		}
 		return region;
 	}
+	
+	public void reload() {
+		regions = loader.reload();
+		regions.add(new Cuboid());
 
-	private static RegionShape getShapeByCoords(String coords) {
-		String[] vars = coords.split(",");
-		
-		if (vars.length < 7) {
-			return RegionShape.CUBOID;
-		} else {
-			return getShapeByName(vars[vars.length-1]);
+		for (ArenaRegion mod : regions) {
+			db.i("module ArenaRegion loaded: "
+					+ mod.getName() + " (version " + mod.version() +")");
 		}
-	}
-
-	public List<ArenaRegion> getRegions() {
-		return regions;
 	}
 	
 	private void setRegionTypeByName(ArenaRegion r, String s) {

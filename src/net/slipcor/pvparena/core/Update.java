@@ -1,8 +1,13 @@
 package net.slipcor.pvparena.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.Arenas;
 
 import org.bukkit.Bukkit;
@@ -23,7 +28,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.8.7
  * 
  */
 
@@ -125,7 +130,7 @@ public class Update extends Thread {
 	 * @param player
 	 *            the player to message
 	 */
-	public static void message(Player player) {
+	public static boolean message(Player player) {
 		if (player == null || !(player instanceof Player)) {
 			if (!msg) {
 				Bukkit.getLogger().info(
@@ -148,7 +153,7 @@ public class Update extends Thread {
 		}
 		if (!msg) {
 			db.i("version is up to date!");
-			return;
+			return false;
 		}
 
 		if (outdated) {
@@ -159,6 +164,7 @@ public class Update extends Thread {
 					+ ", an experimental version! Latest stable: §a" + "v"
 					+ vOnline);
 		}
+		return true;
 	}
 
 	@Override
@@ -208,6 +214,43 @@ public class Update extends Thread {
 				return;
 			}
 		} catch (Exception localException) {
+		}
+	}
+
+	public void init() {
+
+		try {
+			File destination = PVPArena.instance.getDataFolder();
+
+			File lib = new File(destination, "install.yml");
+
+			System.out.println("Downloading module update file...");
+			URL url = new URL(
+					"http://www.slipcor.net/public/mc/pafiles/install.yml");
+			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+			FileOutputStream output = new FileOutputStream(lib);
+			output.getChannel().transferFrom(rbc, 0, 1 << 24);
+			System.out.println("Downloaded module update file");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void message(Player p, boolean b) {
+		// b = announce update!
+		if (!message(p)) {
+			if (p != null) {
+				Arenas.tellPlayer(p, "[PVP Arena] You are on latest version!");
+			}
+			return;
+		}
+
+		if (p == null) {
+			System.out.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
+		} else {
+			Arenas.tellPlayer(p, "http://dev.bukkit.org/server-mods/pvp-arena/files/");
 		}
 	}
 }

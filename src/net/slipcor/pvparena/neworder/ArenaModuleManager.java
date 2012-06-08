@@ -40,13 +40,14 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.7
  * 
  */
 
 public class ArenaModuleManager {
 	protected Debug db = new Debug(51);
-	private final List<ArenaModule> modules;
+	private List<ArenaModule> modules;
+	private final Loader<ArenaModule> loader;
 
 	/**
 	 * create an arena module manager instance
@@ -59,7 +60,8 @@ public class ArenaModuleManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		modules = new Loader<ArenaModule>(plugin, path, new Object[] {}).load();
+		loader = new Loader<ArenaModule>(plugin, path, new Object[] {});
+		modules = loader.load();
 
 		for (ArenaModule mod : modules) {
 			db.i("module ArenaModule loaded: "
@@ -226,8 +228,7 @@ public class ArenaModuleManager {
 	 */
 	public ArenaModule getModule(String mName) {
 		for (ArenaModule mod : modules) {
-			System.out.print("type: " + mod.getName());
-			if (mod.getName().equals(mName)) {
+			if (mod.getName().equalsIgnoreCase(mName)) {
 				return mod;
 			}
 		}
@@ -293,6 +294,12 @@ public class ArenaModuleManager {
 	public void lateJoin(Arena arena, Player player) {
 		for (ArenaModule mod : modules) {
 			mod.lateJoin(arena, player);
+		}
+	}
+
+	public void load_arenas() {
+		for (ArenaModule mod : modules) {
+			mod.load_arenas();
 		}
 	}
 
@@ -533,6 +540,15 @@ public class ArenaModuleManager {
 			mod.playerLeave(arena, player, team);
 		}
 	}
+	
+	public void reload() {
+		modules = loader.reload();
+
+		for (ArenaModule mod : modules) {
+			db.i("module ArenaModule loaded: "
+					+ mod.getName() + " (version " + mod.version() +")");
+		}
+	}
 
 	/**
 	 * hook into an arena reset
@@ -603,6 +619,10 @@ public class ArenaModuleManager {
 			mod.tpPlayerToCoordName(arena, player, place);
 		}
 	}
+	
+	public void unload() {
+		loader.unload();
+	}
 
 	/**
 	 * hook into arena player unloading
@@ -612,12 +632,6 @@ public class ArenaModuleManager {
 	public void unload(Player player) {
 		for (ArenaModule mod : modules) {
 			mod.unload(player);
-		}
-	}
-
-	public void load_arenas() {
-		for (ArenaModule mod : modules) {
-			mod.load_arenas();
 		}
 	}
 

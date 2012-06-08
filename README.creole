@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.7.0 - add /pa update, /pa install and /pa uninstall 
 * v0.8.6.20 - fix TimerInfo visibility
 * v0.8.6.19 - support arena name guessing
 * v0.8.6.18 - enhance /pa version flexibility

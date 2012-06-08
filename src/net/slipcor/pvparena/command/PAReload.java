@@ -20,6 +20,9 @@ public class PAReload extends PA_Command {
 			a.reset(true);
 		}
 		Arenas.load_arenas();
+		PVPArena.instance.getAmm().reload();
+		PVPArena.instance.getArm().reload();
+		PVPArena.instance.getAtm().reload();
 		Arenas.tellPlayer(player, Language.parse("reloaded"));
 	}
 

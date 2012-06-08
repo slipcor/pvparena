@@ -20,12 +20,13 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.8.7
  * 
  */
 
 public class ArenaTypeManager {
-	private final List<ArenaType> types;
+	private List<ArenaType> types;
+	private final Loader<ArenaType> loader;
 	protected Debug db = new Debug(52);
 	/**
 	 * create an arena type instance
@@ -38,7 +39,8 @@ public class ArenaTypeManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		types = new Loader<ArenaType>(plugin, path, new Object[] {}).load();
+		loader = new Loader<ArenaType>(plugin, path, new Object[] {});
+		types = loader.load();
 		types.add(new TeamArena());
 
 		for (ArenaType type : types) {
@@ -56,11 +58,15 @@ public class ArenaTypeManager {
 	 */
 	public ArenaType getType(String tName) {
 		for (ArenaType type : types) {
-			if (type.getName().equals(tName)) {
+			if (type.getName().equalsIgnoreCase(tName)) {
 				return type;
 			}
 		}
 		return null;
+	}
+
+	public List<ArenaType> getTypes() {
+		return types;
 	}
 
 	/**
@@ -74,8 +80,14 @@ public class ArenaTypeManager {
 			type.initLanguage(config);
 		}
 	}
+	
+	public void reload() {
+		types = loader.reload();
+		types.add(new TeamArena());
 
-	public List<ArenaType> getTypes() {
-		return types;
+		for (ArenaType type : types) {
+			db.i("module ArenaType loaded: "
+					+ type.getName() + " (version " + type.version() +")");
+		}
 	}
 }

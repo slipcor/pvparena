@@ -473,7 +473,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-
+		
 		ArenaPlayer.parsePlayer(player).setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players

@@ -50,7 +50,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.8.2
+ * @version v0.8.7
  * 
  */
 
@@ -210,6 +210,7 @@ public class PVPArena extends JavaPlugin {
 		Debug.load(this);
 		Arenas.load_arenas();
 		Update u = new Update(this);
+		u.init();
 		u.start();
 		
 		if (Arenas.count() > 0) {

@@ -44,12 +44,18 @@ public abstract class PA_Command {
 			return new PADebug();
 		} else if (s.equals("help")) {
 			return new PAHelp();
+		} else if (s.equals("install")) {
+			return new PAInstall();
 		} else if (s.equals("list")) {
 			return new PAList();
 		} else if (s.equals("reload")) {
 			return new PAReload();
 		} else if (s.equals("stats")) {
 			return new PAStats();
+		} else if (s.equals("update")) {
+			return new PAUpdate();
+		} else if (s.equals("uninstall")) {
+			return new PAUninstall();
 		} else if (s.equals("version")) {
 			return new PAVersion();
 		}
