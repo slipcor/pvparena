@@ -207,7 +207,7 @@ public class PVPArena extends JavaPlugin {
 			}
 		}
 
-		Debug.load(this);
+		Debug.load(this, Bukkit.getConsoleSender());
 		Arenas.load_arenas();
 		Update u = new Update(this);
 		u.init();

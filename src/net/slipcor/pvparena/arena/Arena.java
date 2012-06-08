@@ -54,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.7
  * 
  */
 
@@ -518,7 +518,8 @@ public class Arena {
 
 		for (ArenaPlayer ap : plyrs) {
 			if (!this.contains(ap.get().getLocation())) {
-				playerLeave(ap.get());
+				Arenas.tellPlayer(ap.get(), "youescaped");
+				playerLeave(ap.get(), "exit");
 			}
 		}
 	}
@@ -572,7 +573,7 @@ public class Arena {
 	 * @param player
 	 *            the leaving player
 	 */
-	public void playerLeave(Player player) {
+	public void playerLeave(Player player, String location) {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
@@ -583,14 +584,16 @@ public class Arena {
 			if (team != null) {
 				PVPArena.instance.getAmm().playerLeave(this, player, team);
 	
+				if (!location.equals("exit")) {
 				tellEveryoneExcept(
 						player,
 						Language.parse("playerleave", team.colorizePlayer(player)
 								+ ChatColor.YELLOW));
+				} 
 			}
 			Arenas.tellPlayer(player, Language.parse("youleave"), this);
 		}
-		removePlayer(player, cfg.getString("tp.exit", "exit"), false);
+		removePlayer(player, cfg.getString("tp." + location), false);
 
 		if (START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(START_ID);

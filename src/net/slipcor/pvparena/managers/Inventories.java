@@ -97,7 +97,7 @@ public class Inventories {
 	 * reload player inventories from saved variables
 	 * 
 	 * @param player
-	 */
+	 */ 
 	public static void loadInventory(Arena arena, Player player) {
 		if (player == null) {
 			return;
@@ -114,6 +114,7 @@ public class Inventories {
 		}
 		player.getInventory().setContents(p.savedInventory);
 		player.getInventory().setArmorContents(p.savedArmor);
+		p.savedInventory = null;
 	}
 
 	/**

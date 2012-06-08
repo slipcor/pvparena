@@ -32,8 +32,10 @@ public class EndRunnable implements Runnable {
 	 */
 	public EndRunnable(Arena a, int i) {
 		this.a = a;
-		count = i;
+		count = i+1;
 		db.i("EndRunnable constructor");
+		Bukkit.getScheduler().cancelTask(a.END_ID);
+		a.END_ID = -1;
 	}
 
 	/**
@@ -46,6 +48,8 @@ public class EndRunnable implements Runnable {
 			commit();
 			Bukkit.getScheduler().cancelTask(a.REALEND_ID);
 			a.REALEND_ID = -1;
+			Bukkit.getScheduler().cancelTask(a.END_ID);
+			a.END_ID = -1;
 		}
 	}
 	

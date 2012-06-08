@@ -31,7 +31,7 @@ public class StartRunnable implements Runnable {
 	 */
 	public StartRunnable(Arena a, int i) {
 		this.a = a;
-		count = i;
+		count = i+1;
 		db.i("StartRunnable constructor");
 	}
 

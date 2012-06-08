@@ -45,7 +45,7 @@ public class ArenaWarmupRunnable implements Runnable {
 		teamName = team;
 		arena = a;
 		spectator = spec;
-		count = i;
+		count = i+1;
 	}
 
 	/**

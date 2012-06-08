@@ -340,6 +340,7 @@ public class ArenaPlayer {
 
 	/**
 	 * save and reset a player instance
+	 * @param b should
 	 */
 	public void reset() {
 		db.i("destroying arena player " + sPlayer);
@@ -371,6 +372,7 @@ public class ArenaPlayer {
 
 		if (state != null) {
 			state.reset();
+			state = null;
 		}
 		location = null;
 		savedInventory = null;

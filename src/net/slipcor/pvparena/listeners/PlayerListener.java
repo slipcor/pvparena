@@ -492,7 +492,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		arena.playerLeave(player);
+		arena.playerLeave(player, "exit");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -528,7 +528,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		arena.playerLeave(player);
+		arena.playerLeave(player, "exit");
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

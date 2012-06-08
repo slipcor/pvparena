@@ -31,7 +31,7 @@ public class TimedEndRunnable implements Runnable {
 	 */
 	public TimedEndRunnable(Arena a, int i) {
 		this.a = a;
-		count = i;
+		count = i+1;
 		db.i("TimedEndRunnable constructor");
 	}
 
@@ -45,6 +45,8 @@ public class TimedEndRunnable implements Runnable {
 			commit();
 			Bukkit.getScheduler().cancelTask(a.END_ID);
 			a.END_ID = -1;
+			Bukkit.getScheduler().cancelTask(a.REALEND_ID);
+			a.REALEND_ID = -1;
 		}
 	}
 	

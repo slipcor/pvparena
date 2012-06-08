@@ -212,7 +212,7 @@ public class ArenaRegion extends Loadable {
 			if (type.equals(RegionType.DEATH)) {
 				if (this.contains(ap.get().getLocation())) {
 					Arenas.tellPlayer(ap.get(), Language.parse("deathregion"));
-					arena.playerLeave(ap.get());
+					arena.playerLeave(ap.get(), "lose");
 				}
 			} else if (type.equals(RegionType.NOCAMP)) {
 				if (this.contains(ap.get().getLocation())) {

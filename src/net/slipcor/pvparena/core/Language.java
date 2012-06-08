@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.7
  * 
  */
 public class Language {
@@ -228,6 +228,7 @@ public class Language {
 		config.addDefault("lang.regionremoved", "Region removed: %1%");
 		config.addDefault("lang.nocampregion", "You are in a NOCAMP region. Move!");
 		config.addDefault("lang.deathregion", "You entered a DEATH region. Goodbye!");
+		config.addDefault("lang.youescaped", "You escaped the battlefield. Goodbye!");
 
 		config.addDefault("lang.args", "Wrong number of arguments (%1% instead of %2%)");
 

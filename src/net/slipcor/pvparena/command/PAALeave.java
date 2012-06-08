@@ -23,7 +23,7 @@ public class PAALeave extends PAA_Command {
 			return;
 		}
 		
-		arena.playerLeave(player);
+		arena.playerLeave(player, "exit");
 	}
 
 	@Override

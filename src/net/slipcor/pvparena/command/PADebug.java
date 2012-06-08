@@ -22,7 +22,7 @@ public class PADebug extends PA_Command {
 			return;
 		}
 		PVPArena.instance.getConfig().set("debug", args[1]);
-		Debug.load(PVPArena.instance);
+		Debug.load(PVPArena.instance, player);
 	}
 
 	@Override
