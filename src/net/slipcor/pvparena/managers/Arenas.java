@@ -34,7 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.8.7
  * 
  */
 
@@ -320,6 +320,9 @@ public class Arenas {
 	 *            the message to send
 	 */
 	public static void tellPlayer(CommandSender player, String msg) {
+		if (player == null) {
+			return;
+		}
 		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
 				+ msg);
 	}
