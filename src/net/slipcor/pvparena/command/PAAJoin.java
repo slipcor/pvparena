@@ -52,12 +52,13 @@ public class PAAJoin extends PAA_Command {
 
 		if (arena.cfg.getInt("join.warmup") > 0) {
 			if (ap.getStatus().equals(Status.EMPTY)) {
-				Bukkit.getServer()
+				ArenaWarmupRunnable awr = new ArenaWarmupRunnable(arena, ap, null, false, arena.cfg.getInt("join.warmup"),0);
+				awr.setId(Bukkit.getServer()
 						.getScheduler()
 						.scheduleSyncDelayedTask(
 								PVPArena.instance,
-								new ArenaWarmupRunnable(arena, ap, null, false, arena.cfg.getInt("join.warmup")),
-								20);
+								awr,
+								20));
 				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return;
 			}

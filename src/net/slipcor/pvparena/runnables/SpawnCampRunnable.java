@@ -14,13 +14,14 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.8.7
  * 
  */
 
 public class SpawnCampRunnable implements Runnable {
 	private final Arena a;
 	private Debug db = new Debug(44);
+	private int id;
 
 	/**
 	 * create a spawn camp runnable
@@ -28,7 +29,8 @@ public class SpawnCampRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public SpawnCampRunnable(Arena a) {
+	public SpawnCampRunnable(Arena a, int i) {
+		id = 0;
 		this.a = a;
 		db.i("SpawnCampRunnable constructor");
 	}
@@ -43,7 +45,12 @@ public class SpawnCampRunnable implements Runnable {
 			a.spawnCampPunish();
 		else {
 			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(a.SPAWNCAMP_ID);
+			Bukkit.getServer().getScheduler().cancelTask(id);
+			a.SPAWNCAMP_ID = -1;
 		}
+	}
+	
+	public void setId(int i) {
+		id = i;
 	}
 }

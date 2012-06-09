@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.managers.Inventories;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,8 +16,10 @@ public class InventoryRestoreRunnable implements Runnable {
 	private Arena arena;
 	private Player player;
 	private ItemStack[] items;
+	private int id;
 	
-	public InventoryRestoreRunnable(Arena a, Player p, List<ItemStack> isi) {
+	public InventoryRestoreRunnable(Arena a, Player p, List<ItemStack> isi, int ii) {
+		id = 0;
 		arena = a;
 		player = p;
 		items = new ItemStack[isi.size()];
@@ -38,6 +41,10 @@ public class InventoryRestoreRunnable implements Runnable {
 			}
 		}
 		player.setFireTicks(0);
+		Bukkit.getScheduler().cancelTask(id);
 	}
-
+	
+	public void setId(int i) {
+		id = i;
+	}
 }

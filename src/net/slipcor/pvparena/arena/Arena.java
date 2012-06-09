@@ -233,8 +233,10 @@ public class Arena {
 		}
 
 		int duration = cfg.getInt("start.countdown");
+		StartRunnable sr = new StartRunnable(this, duration, 0);
 		START_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, new StartRunnable(this, duration), 20L, 20L);
+				PVPArena.instance, sr, 20L, 20L);
+		sr.setId(START_ID);
 		tellEveryone(Language.parse("startingin", String.valueOf(cfg.getInt("start.countdown"))));
 	}
 
@@ -841,13 +843,14 @@ public class Arena {
 		signs.clear();
 		reset_players(force);
 		fightInProgress = false;
+		
 		if (END_ID > -1)
 			Bukkit.getScheduler().cancelTask(END_ID);
 		END_ID = -1;
 		if (REALEND_ID > -1)
 			Bukkit.getScheduler().cancelTask(REALEND_ID);
 		REALEND_ID = -1;
-
+		
 		PVPArena.instance.getAmm().reset(this, force);
 		clearArena();
 		type.reset(force);
@@ -1027,11 +1030,13 @@ public class Arena {
 		if (timed > 0) {
 			db.i("arena timing!");
 			// initiate autosave timer
+			TimedEndRunnable ter = new TimedEndRunnable(this, timed, 0);
 			END_ID = Bukkit
 					.getServer()
 					.getScheduler()
 					.scheduleSyncRepeatingTask(PVPArena.instance,
-							new TimedEndRunnable(this, timed), 20, 20);
+							ter, 20, 20);
+			ter.setId(END_ID);
 		}
 
 		tellEveryone(Language.parse("begin"));
@@ -1041,8 +1046,10 @@ public class Arena {
 		db.i("teleported everyone!");
 
 		teamCount = Teams.countActiveTeams(this);
+		SpawnCampRunnable scr = new SpawnCampRunnable(this,0);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
-				PVPArena.instance, new SpawnCampRunnable(this), 100L, cfg.getInt("region.timer")*20L);
+				PVPArena.instance, scr, 100L, cfg.getInt("region.timer")*20L);
+		scr.setId(SPAWNCAMP_ID);
 
 		for (ArenaRegion region : regions.values()) {
 			if (region.getType().equals(RegionType.DEATH)) {

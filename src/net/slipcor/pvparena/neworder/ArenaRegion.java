@@ -190,10 +190,12 @@ public class ArenaRegion extends Loadable {
 	}
 
 	public void initTimer() {
+		RegionRunnable rr = new RegionRunnable(this,0);
 		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
-				PVPArena.instance, new RegionRunnable(this),
-				arena.cfg.getInt("region.spawncampdamage") * 1L,
-				arena.cfg.getInt("region.spawncampdamage") * 1L);
+				PVPArena.instance, rr,
+				arena.cfg.getInt("region.timer") * 1L,
+				arena.cfg.getInt("region.timer") * 1L);
+		rr.setId(TICK_ID);
 	}
 
 	public void set(World world, String coords) {

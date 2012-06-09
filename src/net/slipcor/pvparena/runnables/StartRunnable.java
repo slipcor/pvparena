@@ -14,13 +14,14 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.7
  * 
  */
 
 public class StartRunnable implements Runnable {
 	private final Arena a;
 	private Debug db = new Debug(43);
+	private int id;
 
 	private int count = 0;
 	/**
@@ -29,8 +30,9 @@ public class StartRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public StartRunnable(Arena a, int i) {
+	public StartRunnable(Arena a, int i, int iid) {
 		this.a = a;
+		id = 0;
 		count = i+1;
 		db.i("StartRunnable constructor");
 	}
@@ -51,6 +53,11 @@ public class StartRunnable implements Runnable {
 
 	private void commit() {
 		db.i("StartRunnable commiting");
+		Bukkit.getScheduler().cancelTask(id);
 		a.start();
+	}
+	
+	public void setId(int i) {
+		id = i;
 	}
 }

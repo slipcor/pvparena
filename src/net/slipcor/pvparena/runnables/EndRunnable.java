@@ -14,13 +14,14 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.7
  * 
  */
 
 public class EndRunnable implements Runnable {
 	private final Arena a;
 	private Debug db = new Debug(40);
+	private int id;
 
 	private int count = 0;
 	/**
@@ -30,7 +31,8 @@ public class EndRunnable implements Runnable {
 	 *            the arena we are running in
 	 * @param i 
 	 */
-	public EndRunnable(Arena a, int i) {
+	public EndRunnable(Arena a, int i, int iid) {
+		id = 0;
 		this.a = a;
 		count = i+1;
 		db.i("EndRunnable constructor");
@@ -50,11 +52,16 @@ public class EndRunnable implements Runnable {
 			a.REALEND_ID = -1;
 			Bukkit.getScheduler().cancelTask(a.END_ID);
 			a.END_ID = -1;
+			Bukkit.getScheduler().cancelTask(id);
 		}
 	}
 	
 	private void commit() {
 		db.i("EndRunnable commiting");
 		a.reset(false);
+	}
+	
+	public void setId(int i) {
+		id = i;
 	}
 }

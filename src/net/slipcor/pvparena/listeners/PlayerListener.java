@@ -189,7 +189,8 @@ public class PlayerListener implements Listener {
 			commitPlayerDeath(arena, player, event);
 		} else {
 			lives--;
-			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventoryRestoreRunnable(arena, player, event.getDrops()), 1L);
+			InventoryRestoreRunnable irr = new InventoryRestoreRunnable(arena, player, event.getDrops(),0);
+			irr.setId(Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, irr, 1L));
 			arena.respawnPlayer(player, lives, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 		}
 		
@@ -237,7 +238,8 @@ public class PlayerListener implements Listener {
 		arena.prepare(player, true, true);
 		
 		arena.type().checkEntityDeath(player);
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerResetRunnable(ap), 20L);
+		PlayerResetRunnable prr = new PlayerResetRunnable(ap,0);
+		prr.setId(Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, prr, 20L));
 
 		if (arena.cfg.getInt("goal.timed") > 0) {
 			db.i("timed arena!");

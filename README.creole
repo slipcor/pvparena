@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.8.0 - timer rewrite to fix many issues
 * v0.8.7.2 - fix minor display bug
 * v0.8.7.1 - fix NPE when players disconnect while being told something
 * v0.8.7.0 - add /pa update, /pa install and /pa uninstall 

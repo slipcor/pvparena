@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.runnables;
 
+import org.bukkit.Bukkit;
+
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 
@@ -12,13 +14,14 @@ import net.slipcor.pvparena.neworder.ArenaRegion;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.8.7
  * 
  */
 
 public class RegionRunnable implements Runnable {
 	private final ArenaRegion r;
 	private Debug db = new Debug(49);
+	private int id;
 
 	/**
 	 * create a region runnable
@@ -26,7 +29,8 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(ArenaRegion r) {
+	public RegionRunnable(ArenaRegion r, int i) {
+		id = 0;
 		this.r = r;
 		db.i("RegionRunnable constructor");
 	}
@@ -37,7 +41,14 @@ public class RegionRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("RegionRunnable commiting");
-		if (r.arena.fightInProgress)
+		if (r.arena.fightInProgress) {
 			r.tick();
+		} else {
+			Bukkit.getScheduler().cancelTask(id);
+		}
+	}
+	
+	public void setId(int i) {
+		id = i;
 	}
 }

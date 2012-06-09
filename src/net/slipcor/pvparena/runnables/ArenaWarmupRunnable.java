@@ -29,6 +29,7 @@ public class ArenaWarmupRunnable implements Runnable {
 	private final String teamName;
 	private final Arena arena;
 	private final boolean spectator;
+	private int id;
 	private Debug db = new Debug(40);
 	
 	private int count = 0;
@@ -39,8 +40,9 @@ public class ArenaWarmupRunnable implements Runnable {
 	 * @param p
 	 *            the player to reset
 	 */
-	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i) {
+	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i, int iid) {
 		db.i("ArenaWarmupRunnable constructor");
+		id = 0;
 		player = p;
 		teamName = team;
 		arena = a;
@@ -57,7 +59,7 @@ public class ArenaWarmupRunnable implements Runnable {
 		if (count <= 0) {
 			commit();
 		} else {
-			Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, this, 20L);
+			id = Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, this, 20L);
 		}
 	}
 	
@@ -73,5 +75,10 @@ public class ArenaWarmupRunnable implements Runnable {
 			args[0] = teamName;
 			(new PAAJoinTeam()).commit(arena, player.get(), args);
 		}
+		Bukkit.getScheduler().cancelTask(id);
+	}
+	
+	public void setId(int i) {
+		id = i;
 	}
 }

@@ -52,9 +52,10 @@ public class PAASpectate extends PAA_Command {
 		
 		if (arena.cfg.getInt("join.warmup")>0) {
 			if (ap.getStatus().equals(Status.EMPTY)) {
-				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
-						new ArenaWarmupRunnable(arena, ap, null, true, arena.cfg.getInt("join.warmup")),
-						20);
+				ArenaWarmupRunnable awr = new ArenaWarmupRunnable(arena, ap, null, true, arena.cfg.getInt("join.warmup"),0);
+				awr.setId(Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
+						awr,
+						20));
 				Arenas.tellPlayer(player, Language.parse("warmingup"));
 				return;
 			}

@@ -143,10 +143,11 @@ public class ArenaType extends Loadable {
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
 			return true;
 		}
-
+		EndRunnable er = new EndRunnable(arena, arena.cfg.getInt("goal.endtimer"),0);
 		arena.REALEND_ID = Bukkit.getScheduler()
 				.scheduleSyncRepeatingTask(PVPArena.instance,
-						new EndRunnable(arena, arena.cfg.getInt("goal.endtimer")), 20L, 20L);
+						er, 20L, 20L);
+		er.setId(arena.REALEND_ID);
 		return true;
 	}
 
@@ -657,10 +658,11 @@ public class ArenaType extends Loadable {
 		}
 
 		PVPArena.instance.getAmm().timedEnd(arena, modresult);
-
+		EndRunnable er = new EndRunnable(arena, arena.cfg.getInt("goal.endtimer"),0);
 		arena.REALEND_ID = Bukkit.getScheduler()
 				.scheduleSyncRepeatingTask(PVPArena.instance,
-						new EndRunnable(arena, arena.cfg.getInt("goal.endtimer")), 20L, 20L);
+						er, 20L, 20L);
+		er.setId(arena.REALEND_ID);
 	}
 
 	/**
