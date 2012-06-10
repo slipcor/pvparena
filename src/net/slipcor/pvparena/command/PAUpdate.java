@@ -112,19 +112,19 @@ public class PAUpdate extends PA_Command {
 				}
 				if (checkTypeUpdate(config, at)) {
 					Arenas.tellPlayer(sender, "updated: " + at.getName());
-					return;
+					continue;
 				}
 				Arenas.tellPlayer(sender, "error while updating " + at.getName());
-				return;
+				continue;
 			}
 		} else if (args[1].toLowerCase().equals("modules")) {
 			for (ArenaModule am : PVPArena.instance.getAmm().getModules()) {
 				if (checkModuleUpdate(config, am)) {
 					Arenas.tellPlayer(sender, "updated: " + am.getName());
-					return;
+					continue;
 				}
 				Arenas.tellPlayer(sender, "error while updating " + am.getName());
-				return;
+				continue;
 			}
 		} else if (args[1].toLowerCase().equals("regions")) {
 			for (ArenaRegion ar : PVPArena.instance.getArm().getRegions()) {
@@ -133,10 +133,10 @@ public class PAUpdate extends PA_Command {
 				}
 				if (checkRegionUpdate(config, ar)) {
 					Arenas.tellPlayer(sender, "updated: " + ar.getName());
-					return;
+					continue;
 				}
 				Arenas.tellPlayer(sender, "error while updating " + ar.getName());
-				return;
+				continue;
 			}
 		} else if (args[1].toLowerCase().equals("plugin")) {
 			Player p = null;
