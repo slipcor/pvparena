@@ -50,7 +50,10 @@ public class BlockListener implements Listener {
 				|| arena.edit
 						|| (!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg
 							.getBoolean("protection.blockdamage", true)))) {
-			
+			if (arena == null) {
+				db.i("block break outside of the arena");
+				return;
+			}
 			List<String> list = new ArrayList<String>();
 			
 			list = arena.cfg.getStringList("blocks.whitelist", list);
