@@ -318,6 +318,9 @@ public class Statistics {
 		int i = 0;
 		if (global) {
 			for (ArenaPlayer p : players) {
+				if (p == null || p.get() == null) {
+					continue;
+				}
 				if (t.equals(type.MAXDAMAGE)) {
 					result[i++] = String.valueOf(p.maxdamage+p.totmaxdamage);
 				} else if (t.equals(type.MAXDAMAGETAKE)) {
