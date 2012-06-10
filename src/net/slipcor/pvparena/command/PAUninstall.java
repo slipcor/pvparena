@@ -65,7 +65,7 @@ public class PAUninstall extends PA_Command {
 		String name = args[1].toLowerCase();
 		ArenaType at = PVPArena.instance.getAtm().getType(name);
 		if (at != null) {
-			if (remove("pa_a_"+at.getName().toLowerCase())) {
+			if (remove("pa_a_"+at.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAtm().reload();
 				Arenas.tellPlayer(sender, "uninstalled: " + at.getName());
 				return;
@@ -75,7 +75,7 @@ public class PAUninstall extends PA_Command {
 		}
 		ArenaModule am = PVPArena.instance.getAmm().getModule(name);
 		if (am != null) {
-			if (remove("pa_m_"+am.getName().toLowerCase())) {
+			if (remove("pa_m_"+am.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAmm().reload();
 				Arenas.tellPlayer(sender, "uninstalled: " + am.getName());
 				return;
@@ -85,7 +85,7 @@ public class PAUninstall extends PA_Command {
 		}
 		ArenaRegion ar = PVPArena.instance.getArm().getModule(name);
 		if (ar != null) {
-			if (remove("pa_r_"+ar.getName().toLowerCase())) {
+			if (remove("pa_r_"+ar.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getArm().reload();
 				Arenas.tellPlayer(sender, "uninstalled: " + ar.getName());
 				return;
@@ -159,6 +159,7 @@ public class PAUninstall extends PA_Command {
 	}
 
 	private boolean remove(String file) {
+		db.i("removing file " + file);
 		String folder = null;
 		if (file.startsWith("pa_a")) {
 			folder = "/arenas/";
@@ -175,6 +176,7 @@ public class PAUninstall extends PA_Command {
 
 		File destFile = new File(destination, file);
 		if (destFile.exists()) {
+			db.i("file exists");
 			return destFile.delete();
 		}
 		return false;

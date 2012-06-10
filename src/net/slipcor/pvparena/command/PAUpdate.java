@@ -55,6 +55,8 @@ public class PAUpdate extends PA_Command {
 		if (cfg.get("arenas." + name) != null) {
 			if (!cfg.getString("arenas." + name).equals(version)) {
 				return download("pa_a_" + name + ".jar");
+			} else {
+				return true;
 			}
 		}
 		return false;
