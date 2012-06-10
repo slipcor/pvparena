@@ -50,10 +50,6 @@ public class BlockListener implements Listener {
 				|| arena.edit
 						|| (!(arena.cfg.getBoolean("protection.enabled", true))) || (!(arena.cfg
 							.getBoolean("protection.blockdamage", true)))) {
-			if (arena == null || arena.edit ) {
-				db.i(arena + " || arena.edit: " + arena.edit);
-				return;
-			}
 			
 			List<String> list = new ArrayList<String>();
 			
