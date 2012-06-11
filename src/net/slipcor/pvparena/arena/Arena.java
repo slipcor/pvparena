@@ -54,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.8.8
  * 
  */
 
@@ -520,7 +520,7 @@ public class Arena {
 
 		for (ArenaPlayer ap : plyrs) {
 			if (!this.contains(ap.get().getLocation())) {
-				Arenas.tellPlayer(ap.get(), "youescaped");
+				Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
 				playerLeave(ap.get(), "exit");
 			}
 		}
