@@ -191,7 +191,7 @@ public class ArenaRegion extends Loadable {
 
 	public void initTimer() {
 		RegionRunnable rr = new RegionRunnable(this,0);
-		TICK_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
+		TICK_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, rr,
 				arena.cfg.getInt("region.timer") * 1L,
 				arena.cfg.getInt("region.timer") * 1L);

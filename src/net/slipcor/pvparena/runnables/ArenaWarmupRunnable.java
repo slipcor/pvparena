@@ -59,7 +59,7 @@ public class ArenaWarmupRunnable implements Runnable {
 		if (count <= 0) {
 			commit();
 		} else {
-			id = Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, this, 20L);
+			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
 		}
 	}
 	

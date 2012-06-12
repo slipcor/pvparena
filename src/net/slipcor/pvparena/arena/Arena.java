@@ -1047,7 +1047,7 @@ public class Arena {
 
 		teamCount = Teams.countActiveTeams(this);
 		SpawnCampRunnable scr = new SpawnCampRunnable(this,0);
-		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleAsyncRepeatingTask(
+		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, scr, 100L, cfg.getInt("region.timer")*20L);
 		scr.setId(SPAWNCAMP_ID);
 
