@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.8.7 - add message coloring
 * v0.8.8.6 - fix synchronisation issues
 * v0.8.8.5 - fix "youescaped" bug
 * v0.8.8.4 - fix NPE in statistics handling

@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.7.18
+ * @version v0.8.8
  * 
  */
 
@@ -244,6 +244,12 @@ public class StringParser {
 		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
 				+ ChatColor.WHITE;
 	}
+	
+	public static String colorize(String toColor)
+    {
+    	// Removes color codes from a string
+        return toColor.replaceAll("&([a-zA-Z0-9])", "§$1").replace("&&", "&");
+    }
 
 	/**
 	 * color a string if set
