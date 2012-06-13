@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.8.8
  * 
  */
 public class Language {
@@ -299,7 +299,7 @@ public class Language {
 	 * @return the node string
 	 */
 	public static String parse(String s) {
-		return (String) lang.get(s); // hand over map value
+		return StringParser.colorize((String) lang.get(s)); // hand over map value
 	}
 
 	/**
@@ -313,7 +313,7 @@ public class Language {
 	 */
 	public static String parse(String s, String arg) {
 		String var = (String) lang.get(s);
-		return var.replace("%1%", arg); // hand over replaced map value
+		return StringParser.colorize(var.replace("%1%", arg)); // hand over replaced map value
 	}
 
 	/**
@@ -329,7 +329,7 @@ public class Language {
 	 */
 	public static String parse(String s, String arg1, String arg2) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
-		return var.replace("%1%", arg1); // hand over replaced map value
+		return StringParser.colorize(var.replace("%1%", arg1)); // hand over replaced map value
 	}
 
 	/**
@@ -348,7 +348,7 @@ public class Language {
 	public static String parse(String s, String arg1, String arg2, String arg3) {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
-		return var.replace("%1%", arg1); // hand over replaced map value
+		return StringParser.colorize(var.replace("%1%", arg1)); // hand over replaced map value
 	}
 
 	/**
