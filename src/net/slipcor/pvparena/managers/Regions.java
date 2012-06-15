@@ -70,6 +70,9 @@ public class Regions {
 	 */
 	public static boolean checkRegionSetPosition(PlayerInteractEvent event,
 			Player player) {
+		if (Arena.regionmodify == null || Arena.regionmodify.equals("")) {
+			return false;
+		}
 		Arena arena = Arenas.getArenaByName(Arena.regionmodify);
 		if (arena != null
 				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(

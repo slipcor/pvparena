@@ -80,7 +80,9 @@ public class TimerInfo {
 						continue;
 					}
 				}
-				Arenas.tellPlayer(ap.get(), message, arena);
+				if (ap.get() != null) {
+					Arenas.tellPlayer(ap.get(), message, arena);
+				}
 			}
 			return;
 		}
