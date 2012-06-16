@@ -245,7 +245,7 @@ public class ArenaPlayer {
 
 			Entity p1 = event.getDamager();
 
-			if (event.getCause() == DamageCause.PROJECTILE) {
+			if (event.getCause() == DamageCause.PROJECTILE && p1 instanceof Projectile) {
 				p1 = ((Projectile) p1).getShooter();
 				db.i("killed by projectile, shooter is found");
 			}
