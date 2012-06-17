@@ -69,7 +69,8 @@ public class PAASpawn extends PAA_Command {
 			
 			for (String s : spawns) {
 				if (s.startsWith(args[0])) {
-					//PVPArena.instance.getAmm().c
+					Spawns.setCoords(arena, player.getLocation(), s);
+					Arenas.tellPlayer(player, Language.parse("setspawn", s), arena);
 					return;
 				}
 			}
