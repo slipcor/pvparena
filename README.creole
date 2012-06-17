@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.10.0 - add remote arena start
 * v0.8.9.0 - finish region protection
 * v0.8.8.9 - fix Projectile Exception (Ticket 338)
 * v0.8.8.8 - fix the region selection spam
