@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.8.6
+ * @version v0.8.9
  * 
  */
 
