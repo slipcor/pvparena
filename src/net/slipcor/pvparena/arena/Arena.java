@@ -323,6 +323,25 @@ public class Arena {
 			Inventories.givePlayerFightItems(this, player);
 		}
 	}
+	
+	public void forcestart() {
+		int sum = 0;
+		for (ArenaTeam team : getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (ap.getStatus().equals(Status.LOBBY) || ap.getStatus().equals(Status.READY)) {
+					sum++;
+				}
+			}
+		}
+		if (sum < 2) {
+			for (ArenaPlayer ap : getPlayers()) {
+				playerLeave(ap.get(), "exit");
+			}
+		} else {
+			teleportAllToSpawn();
+			fightInProgress = true;
+		}
+	}
 
 	/**
 	 * force stop an arena
