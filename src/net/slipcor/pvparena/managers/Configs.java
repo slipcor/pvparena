@@ -25,7 +25,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.9
  * 
  */
 
@@ -116,16 +116,22 @@ public class Configs {
 		config.addDefault("protection.spawn", Integer.valueOf(3));
 		config.addDefault("protection.restore", Boolean.valueOf(true));
 		config.addDefault("protection.enabled", Boolean.valueOf(true));
+		
 		config.addDefault("protection.blockplace", Boolean.valueOf(true));
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
 		config.addDefault("protection.blocktntdamage", Boolean.valueOf(true));
+		config.addDefault("protection.decay", Boolean.valueOf(true));
+		config.addDefault("protection.fade", Boolean.valueOf(true));
+		config.addDefault("protection.form", Boolean.valueOf(true));
 		config.addDefault("protection.fluids", Boolean.valueOf(true));
 		config.addDefault("protection.firespread", Boolean.valueOf(true));
 		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
-		config.addDefault("protection.tnt", Boolean.valueOf(true));
 		config.addDefault("protection.lighter", Boolean.valueOf(true));
+		config.addDefault("protection.painting", Boolean.valueOf(true));
 		config.addDefault("protection.piston", Boolean.valueOf(true));
 		config.addDefault("protection.punish", Boolean.valueOf(false));
+		config.addDefault("protection.tnt", Boolean.valueOf(true));
+		
 		config.addDefault("protection.checkExit", Boolean.valueOf(false));
 		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));
 		config.addDefault("protection.checkLounges", Boolean.valueOf(false));

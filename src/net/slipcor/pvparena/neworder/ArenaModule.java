@@ -10,9 +10,12 @@ import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -229,6 +232,9 @@ public class ArenaModule extends Loadable {
 	public void onBlockBreak(Arena arena, Block block) {
 	}
 
+	public void onBlockChange(Arena arena, Block block, BlockState state) {
+	}
+
 	public void onBlockPiston(Arena arena, Block block) {
 	}
 
@@ -299,6 +305,10 @@ public class ArenaModule extends Loadable {
 	 *            the EntityRegainHealthEvent
 	 */
 	public void onEntityRegainHealth(Arena arena, EntityRegainHealthEvent event) {
+	}
+
+	public void onPaintingBreak(Arena arena, Painting painting, EntityType type) {
+		
 	}
 
 	/**

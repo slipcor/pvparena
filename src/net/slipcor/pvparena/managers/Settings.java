@@ -87,18 +87,24 @@ public class Settings {
 		types.put("periphery.checkRegions", "boolean");
 
 		types.put("protection.spawn", "int");
-		types.put("protection.enabled", "boolean");
 		types.put("protection.restore", "boolean");
+		types.put("protection.enabled", "boolean");
+		
 		types.put("protection.blockplace", "boolean");
 		types.put("protection.blockdamage", "boolean");
 		types.put("protection.blocktntdamage", "boolean");
+		types.put("protection.decay", "boolean");
+		types.put("protection.fade", "boolean");
+		types.put("protection.form", "boolean");
 		types.put("protection.fluids", "boolean");
 		types.put("protection.firespread", "boolean");
 		types.put("protection.lavafirespread", "boolean");
+		types.put("protection.lighter", "boolean");
+		types.put("protection.painting", "boolean");
 		types.put("protection.punish", "boolean");
 		types.put("protection.piston", "boolean");
 		types.put("protection.tnt", "boolean");
-		types.put("protection.lighter", "boolean");
+		
 		types.put("protection.checkExit", "boolean");
 		types.put("protection.checkSpectator", "boolean");
 		types.put("protection.checkLounges", "boolean");

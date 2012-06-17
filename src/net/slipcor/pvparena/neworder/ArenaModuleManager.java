@@ -8,9 +8,12 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -317,6 +320,12 @@ public class ArenaModuleManager {
 		}
 	}
 
+	public void onBlockChange(Arena arena, Block block, BlockState state) {
+		for (ArenaModule mod : modules) {
+			mod.onBlockChange(arena, block, state);
+		}
+	}
+
 	public void onBlockPiston(Arena arena, Block block) {
 		for (ArenaModule mod : modules) {
 			mod.onBlockPiston(arena, block);
@@ -407,6 +416,12 @@ public class ArenaModuleManager {
 	public void onEntityRegainHealth(Arena arena, EntityRegainHealthEvent event) {
 		for (ArenaModule mod : modules) {
 			mod.onEntityRegainHealth(arena, event);
+		}
+	}
+
+	public void onPaintingBreak(Arena arena, Painting painting, EntityType type) {
+		for (ArenaModule mod : modules) {
+			mod.onPaintingBreak(arena, painting, type);
 		}
 	}
 
