@@ -1065,9 +1065,14 @@ public class Arena {
 		scr.setId(SPAWNCAMP_ID);
 
 		for (ArenaRegion region : regions.values()) {
+			System.out.print(region.getType().name());
 			if (region.getType().equals(RegionType.DEATH)) {
 				region.initTimer();
 			} else if (region.getType().equals(RegionType.NOCAMP)) {
+				region.initTimer();
+			} else if (region.getType().equals(RegionType.LOSE)) {
+				region.initTimer();
+			} else if (region.getType().equals(RegionType.WIN)) {
 				region.initTimer();
 			}
 		}

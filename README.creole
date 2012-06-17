@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.10.2 - fix WIN and LOSE region not triggering timers
 * v0.8.10.1 - fix spawn setting not working for some modules
 * v0.8.10.0 - add WIN and LOSE regions
 * v0.8.9.0 - finish region protection

@@ -183,6 +183,9 @@ public class ArenaType extends Loadable {
 	 * @return true if a flag was set
 	 */
 	public static boolean checkSetFlag(Block block, Player player) {
+		if (block == null) {
+			return false;
+		}
 		if (Arena.regionmodify.contains(":")) {
 			String[] s = Arena.regionmodify.split(":");
 			Arena arena = Arenas.getArenaByName(s[0]);
