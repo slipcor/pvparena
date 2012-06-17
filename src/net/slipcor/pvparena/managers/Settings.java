@@ -98,6 +98,7 @@ public class Settings {
 		types.put("protection.form", "boolean");
 		types.put("protection.fluids", "boolean");
 		types.put("protection.firespread", "boolean");
+		types.put("protection.grow", "boolean");
 		types.put("protection.lavafirespread", "boolean");
 		types.put("protection.lighter", "boolean");
 		types.put("protection.painting", "boolean");

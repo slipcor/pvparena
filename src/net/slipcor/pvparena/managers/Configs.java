@@ -125,6 +125,7 @@ public class Configs {
 		config.addDefault("protection.form", Boolean.valueOf(true));
 		config.addDefault("protection.fluids", Boolean.valueOf(true));
 		config.addDefault("protection.firespread", Boolean.valueOf(true));
+		config.addDefault("protection.grow", Boolean.valueOf(true));
 		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
 		config.addDefault("protection.lighter", Boolean.valueOf(true));
 		config.addDefault("protection.painting", Boolean.valueOf(true));

@@ -232,7 +232,7 @@ public class BlockListener implements Listener {
 			if (arena != null) {
 				continue;
 			}
-			if (isProtected(arena, event, "painting")) {
+			if (isProtected(arena, event, "grow")) {
 				return;
 			}
 			PVPArena.instance.getAmm().onBlockChange(arena, block.getBlock(),

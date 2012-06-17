@@ -140,22 +140,39 @@ public class PAAInfo extends PAA_Command {
 				+ StringParser.colorVar("tnt",
 						arena.cfg.getBoolean("protection.tnt", true)));
 		player.sendMessage(StringParser.colorVar("restore",
-						arena.cfg.getBoolean("protection.restore", true))
-				+ " | "
-				+ StringParser.colorVar("lavafirespread",
-						arena.cfg.getBoolean("protection.lavafirespread", true))
-				+ " | "
-				+ StringParser.colorVar("fluids",
-						arena.cfg.getBoolean("protection.fluids", true))
-				+ " | "
-				+ StringParser.colorVar("punish",
-						arena.cfg.getBoolean("protection.punish", true))
-				+ " | "
-				+ StringParser.colorVar("inventory",
-						arena.cfg.getBoolean("protection.inventory", true))
-				+ " | "
-				+ "spawn: "
-				+ StringParser.colorVar(arena.cfg.getInt("protection.spawn", 0)));
+				arena.cfg.getBoolean("protection.restore", true))
+		+ " | "
+		+ StringParser.colorVar("lavafirespread",
+				arena.cfg.getBoolean("protection.lavafirespread", true))
+		+ " | "
+		+ StringParser.colorVar("fluids",
+				arena.cfg.getBoolean("protection.fluids", true))
+		+ " | "
+		+ StringParser.colorVar("punish",
+				arena.cfg.getBoolean("protection.punish", true))
+		+ " | "
+		+ StringParser.colorVar("inventory",
+				arena.cfg.getBoolean("protection.inventory", true))
+		+ " | "
+		+ "spawn: "
+		+ StringParser.colorVar(arena.cfg.getInt("protection.spawn", 0)));
+		player.sendMessage(StringParser.colorVar("decay",
+				arena.cfg.getBoolean("protection.decay", true))
+		+ " | "
+		+ StringParser.colorVar("fade",
+				arena.cfg.getBoolean("protection.fade", true))
+		+ " | "
+		+ StringParser.colorVar("form",
+				arena.cfg.getBoolean("protection.form", true))
+		+ " | "
+		+ StringParser.colorVar("grow",
+				arena.cfg.getBoolean("protection.grow", true))
+		+ " | "
+		+ StringParser.colorVar("painting",
+				arena.cfg.getBoolean("protection.painting", true))
+		+ " | "
+		+ "spawn: "
+		+ StringParser.colorVar(arena.cfg.getInt("protection.spawn", 0)));
 		player.sendMessage("");
 
 		player.sendMessage("§bStart:§f "
