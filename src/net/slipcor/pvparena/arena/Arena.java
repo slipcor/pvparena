@@ -54,7 +54,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.8.8
+ * @version v0.8.10
  * 
  */
 
@@ -321,25 +321,6 @@ public class Arena {
 			Inventories.loadInventory(this, player);
 		} else {
 			Inventories.givePlayerFightItems(this, player);
-		}
-	}
-	
-	public void forcestart() {
-		int sum = 0;
-		for (ArenaTeam team : getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (ap.getStatus().equals(Status.LOBBY) || ap.getStatus().equals(Status.READY)) {
-					sum++;
-				}
-			}
-		}
-		if (sum < 2) {
-			for (ArenaPlayer ap : getPlayers()) {
-				playerLeave(ap.get(), "exit");
-			}
-		} else {
-			teleportAllToSpawn();
-			fightInProgress = true;
 		}
 	}
 
@@ -1019,9 +1000,22 @@ public class Arena {
 	 */
 	public void start() {
 		START_ID = -1;
-
-		teleportAllToSpawn();
-		fightInProgress = true;
+		int sum = 0;
+		for (ArenaTeam team : getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (ap.getStatus().equals(Status.LOBBY) || ap.getStatus().equals(Status.READY)) {
+					sum++;
+				}
+			}
+		}
+		if (sum < 2) {
+			for (ArenaPlayer ap : getPlayers()) {
+				playerLeave(ap.get(), "exit");
+			}
+		} else {
+			teleportAllToSpawn();
+			fightInProgress = true;
+		}
 	}
 
 	/**

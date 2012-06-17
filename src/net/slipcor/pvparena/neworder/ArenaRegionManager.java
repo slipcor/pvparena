@@ -25,7 +25,7 @@ import net.slipcor.pvparena.regions.Cuboid;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.8.10
  * 
  */
 
@@ -167,6 +167,10 @@ public class ArenaRegionManager {
 			r.setType(RegionType.DEATH);
 		} else if (s.startsWith("nocamp")) {
 			r.setType(RegionType.NOCAMP);
+		} else if (s.startsWith("win")) {
+			r.setType(RegionType.WIN);
+		} else if (s.startsWith("lose")) {
+			r.setType(RegionType.LOSE);
 		} else {
 			r.setType(RegionType.CUSTOM);
 		}

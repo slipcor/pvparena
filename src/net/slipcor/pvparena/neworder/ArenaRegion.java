@@ -4,8 +4,11 @@ import java.util.HashMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 
@@ -19,6 +22,8 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
 import com.nodinchan.ncloader.Loadable;
@@ -32,7 +37,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.8.6
+ * @version v0.8.10
  * 
  */
 
@@ -58,7 +63,7 @@ public class ArenaRegion extends Loadable {
 	}
 
 	public static enum RegionType {
-		CUSTOM, JOIN, SPECTATOR, LOUNGE, BATTLEFIELD, EXIT, NOCAMP, DEATH
+		CUSTOM, JOIN, SPECTATOR, LOUNGE, BATTLEFIELD, EXIT, NOCAMP, DEATH, WIN, LOSE
 	}
 
 	public ArenaRegion clone() {
@@ -215,6 +220,40 @@ public class ArenaRegion extends Loadable {
 				if (this.contains(ap.get().getLocation())) {
 					Arenas.tellPlayer(ap.get(), Language.parse("deathregion"));
 					arena.playerLeave(ap.get(), "lose");
+				}
+			} else if (type.equals(RegionType.WIN)) {
+				if (this.contains(ap.get().getLocation())) {
+					for (ArenaTeam team : arena.getTeams()) {
+						if (team.getTeamMembers().contains(ap)) {
+							// skip winner
+							continue;
+						}
+						for (ArenaPlayer ap2 : team.getTeamMembers()) {
+							if (ap2.getStatus().equals(Status.FIGHT)) {
+								world.strikeLightningEffect(ap2.get().getLocation());
+								EntityDamageEvent e = new EntityDamageEvent(ap2.get(), DamageCause.LIGHTNING, 10);
+								PlayerListener.commitPlayerDeath(arena, ap2.get(), e);
+							}
+						}
+						return;
+					}
+				}
+			} else if (type.equals(RegionType.LOSE)) {
+				if (this.contains(ap.get().getLocation())) {
+					for (ArenaTeam team : arena.getTeams()) {
+						if (!team.getTeamMembers().contains(ap)) {
+							// skip winner
+							continue;
+						}
+						for (ArenaPlayer ap2 : team.getTeamMembers()) {
+							if (ap2.getStatus().equals(Status.FIGHT)) {
+								world.strikeLightningEffect(ap2.get().getLocation());
+								EntityDamageEvent e = new EntityDamageEvent(ap2.get(), DamageCause.LIGHTNING, 10);
+								PlayerListener.commitPlayerDeath(arena, ap2.get(), e);
+							}
+						}
+						return;
+					}
 				}
 			} else if (type.equals(RegionType.NOCAMP)) {
 				if (this.contains(ap.get().getLocation())) {
