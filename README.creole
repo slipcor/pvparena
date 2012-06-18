@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.10.4 - fix inventory being removed for custom classes at the end...
+* v0.8.10.3 - properly ignore alpha and beta builds from update nag
 * v0.8.10.2 - fix WIN and LOSE region not triggering timers
 * v0.8.10.1 - fix spawn setting not working for some modules
 * v0.8.10.0 - add WIN and LOSE regions

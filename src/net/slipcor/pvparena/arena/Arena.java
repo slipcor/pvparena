@@ -330,8 +330,7 @@ public class Arena {
 	public void forcestop() {
 		db.i("forcing arena to stop");
 		for (ArenaPlayer p : getPlayers()) {
-			removePlayer(p.get(), "spectator", false);
-			p.setStatus(Status.WATCH);
+			this.playerLeave(p.get(), "exit");
 		}
 		reset(true);
 	}

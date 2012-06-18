@@ -17,6 +17,7 @@ public class PAADisable extends PAA_Command {
 					Language.parse("nopermto", Language.parse("disable")), arena);
 			return;
 		}
+		arena.forcestop();
 		arena.cfg.set("general.enabled", false);
 		arena.cfg.save();
 		Arenas.tellPlayer(player, Language.parse("disabled"), arena);

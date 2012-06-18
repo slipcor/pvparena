@@ -229,7 +229,9 @@ public class PlayerListener implements Listener {
 				|| arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
 		}
-		Inventories.clearInventory(player);
+		if (!ArenaPlayer.parsePlayer(player).getaClass().getName().equalsIgnoreCase("custom")) {
+			Inventories.clearInventory(player);
+		}
 
 		arena.tpPlayerToCoordName(player, "spectator");
 		
