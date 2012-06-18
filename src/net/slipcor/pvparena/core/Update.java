@@ -175,24 +175,32 @@ public class Update extends Thread {
 			return;
 		}
 		Language.log_info("updating");
-
-		new Thread() {
-
-		}.start();
-
+		
 		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
+		
+		NodeList nodes = null;
+		
+		
 		try {
 			URL url = new URL(pluginUrlString);
 			Document doc = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder()
 					.parse(url.openConnection().getInputStream());
 			doc.getDocumentElement().normalize();
-			NodeList nodes = doc.getElementsByTagName("item");
-			Node firstNode = nodes.item(0);
-			if (firstNode.getNodeType() == 1) {
-				Element firstElement = (Element) firstNode;
+			nodes = doc.getElementsByTagName("item");
+
+		} catch (Exception localException) {
+			return;
+		}
+		
+		for (int i = 0; i< nodes.getLength(); i++) {
+			Node selectedFile = nodes.item(i);
+		
+			if (selectedFile.getNodeType() == 1) {
+				Element firstElement = (Element) selectedFile;
 				NodeList firstElementTagName = firstElement
-						.getElementsByTagName("title");
+						.getElementsByTagName("title"); 
+				
 				Element firstNameElement = (Element) firstElementTagName
 						.item(0);
 				NodeList firstNodes = firstNameElement.getChildNodes();
@@ -200,9 +208,14 @@ public class Update extends Thread {
 				String sOnlineVersion = firstNodes.item(0).getNodeValue();
 				String sThisVersion = plugin.getDescription().getVersion();
 
+				if (sOnlineVersion.toUpperCase().contains("BETA") ||
+						sOnlineVersion.toUpperCase().contains("ALPHA")) {
+					continue;
+				}
+				
 				while (sOnlineVersion.contains(" ")) {
-					sOnlineVersion = sOnlineVersion.substring(sOnlineVersion
-							.indexOf(" ") + 1);
+					String[] s = sOnlineVersion.split(" ");
+					sOnlineVersion = s[1];
 				}
 
 				vOnline = sOnlineVersion.replace("v", "");
@@ -213,7 +226,6 @@ public class Update extends Thread {
 				calculateVersions();
 				return;
 			}
-		} catch (Exception localException) {
 		}
 	}
 
