@@ -500,32 +500,6 @@ public class Arena {
 	}
 
 	/**
-	 * check for arena region quitters, make them leave if possible and
-	 * necessary
-	 */
-	public void leaveCheck() {
-		if (!this.regions.containsKey("battlefield")) {
-			db.i("region battlefield not set, aborting quit check");
-			return;
-		}
-		if (!this.regions.containsKey("spectator")) {
-			db.i("region spectator not set, aborting quit check");
-			return;
-		}
-		HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
-		for (ArenaPlayer ap : getPlayers()) {
-			plyrs.add(ap);
-		}
-
-		for (ArenaPlayer ap : plyrs) {
-			if (!this.contains(ap.get().getLocation())) {
-				Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
-				playerLeave(ap.get(), "exit");
-			}
-		}
-	}
-
-	/**
 	 * return an understandable representation of a player's death cause
 	 * 
 	 * @param player
@@ -890,8 +864,9 @@ public class Arena {
 
 		String sClass = "";
 		if (ap.getClass() != null) {
-			sClass = ap.getClass().getName();
+			sClass = ap.getaClass().getName();
 		}
+		System.out.print("player " + ap.getName() + " class " + sClass);
 		if (!sClass.equalsIgnoreCase("custom")) {
 			Inventories.clearInventory(player);
 			Inventories.loadInventory(this, player);

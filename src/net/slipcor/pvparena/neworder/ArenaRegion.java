@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.neworder;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -271,6 +273,26 @@ public class ArenaRegion extends Loadable {
 							.getLocation().getBlock().getLocation());
 				} else {
 					playerNameLocations.remove(ap.getName());
+				}
+			} else if (type.equals(RegionType.BATTLEFIELD) || type.equals(RegionType.SPECTATOR)) {
+				if (!arena.regions.containsKey("battlefield")) {
+					db.i("region battlefield not set, aborting quit check");
+					return;
+				}
+				if (!arena.regions.containsKey("spectator")) {
+					db.i("region spectator not set, aborting quit check");
+					return;
+				}
+				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				for (ArenaPlayer ap2 : arena.getPlayers()) {
+					plyrs.add(ap2);
+				}
+
+				for (ArenaPlayer ap2 : plyrs) {
+					if (!this.contains(ap.get().getLocation())) {
+						Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+						arena.playerLeave(ap2.get(), "exit");
+					}
 				}
 			}
 		}
