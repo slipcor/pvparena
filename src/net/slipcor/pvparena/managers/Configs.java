@@ -25,7 +25,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.8.9
+ * @version v0.8.10
  * 
  */
 
@@ -94,6 +94,7 @@ public class Configs {
 		config.addDefault("general.item-rewards", "none");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
 		config.addDefault("general.prefix", "PVP Arena");
+		config.addDefault("general.cmdfailjoin", Boolean.valueOf(true));
 
 		config.addDefault("region.spawncampdamage", Integer.valueOf(1));
 		config.addDefault("region.timer", Integer.valueOf(20));

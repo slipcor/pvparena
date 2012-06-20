@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.8.8
+ * @version v0.8.10
  * 
  */
 public class Language {
@@ -179,6 +179,9 @@ public class Language {
 		config.addDefault("lang.teleport", "teleport to an arena spawn");
 		config.addDefault("lang.edittrue", "Enabled edit mode for arena: %1%");
 		config.addDefault("lang.editfalse", "Disabled edit mode for arena: %1%");
+		
+		config.addDefault("lang.unknownarena", "Unknown arena");
+		config.addDefault("lang.unknowncmd", "Unknown command");
 
 		config.addDefault("lang.insidevehicle",
 				"You cannot join while on a vehicle!");

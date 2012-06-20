@@ -72,8 +72,10 @@ public abstract class PAA_Command {
 			return new PAAModuleCommand();
 		} else if (arena.type().parseCommand(s)) {
 			return new PAATypeCommand();
-		} else {
+		} else if (arena.cfg.getBoolean("general.cmdfailjoin")){
 			return new PAAJoin();
+		} else {
+			return new PAANull();
 		}
 	}
 	

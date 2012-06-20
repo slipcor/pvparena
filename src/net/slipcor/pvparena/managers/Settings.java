@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.8.9
+ * @version v0.8.10
  * 
  */
 
@@ -59,6 +59,7 @@ public class Settings {
 		types.put("messages.language", "lang");
 
 		types.put("general.classperms", "boolean");
+		types.put("general.cmdfailjoin", "boolean");
 		types.put("general.enabled", "boolean");
 		types.put("general.owner", "string");
 		types.put("general.world", "string");

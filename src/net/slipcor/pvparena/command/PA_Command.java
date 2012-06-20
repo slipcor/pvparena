@@ -59,6 +59,6 @@ public abstract class PA_Command {
 		} else if (s.equals("version")) {
 			return new PAVersion();
 		}
-		return null;
+		return new PANull();
 	}
 }

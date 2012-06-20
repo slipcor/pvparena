@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.10.8 - fix NPE about resetPlayer
+* v0.8.10.7 - add config setting to change default command
 * v0.8.10.6 - fix custom classes inventory handling
 * v0.8.10.5 - re-activate the escape check
 * v0.8.10.4 - fix inventory being removed for custom classes at the end...

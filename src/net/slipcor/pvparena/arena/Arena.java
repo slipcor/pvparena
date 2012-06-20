@@ -863,7 +863,7 @@ public class Arena {
 		}
 
 		String sClass = "";
-		if (ap.getClass() != null) {
+		if (ap.getaClass() != null) {
 			sClass = ap.getaClass().getName();
 		}
 		System.out.print("player " + ap.getName() + " class " + sClass);

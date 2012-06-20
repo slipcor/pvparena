@@ -158,8 +158,8 @@ public class PlayerListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		event.getItemDrop();
 		Player player = event.getPlayer();
-
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
