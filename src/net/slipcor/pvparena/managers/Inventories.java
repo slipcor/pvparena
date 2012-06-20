@@ -21,7 +21,7 @@ import net.slipcor.pvparena.runnables.InventorySaveRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.7.9
+ * @version v0.8.10
  * 
  */
 
@@ -77,16 +77,18 @@ public class Inventories {
 	 *            the player to supply
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventoryGiveItemsRunnable(arena, player), 3L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
+				new InventoryGiveItemsRunnable(arena, player), arena.cfg.getInt("secret.igit", 0) * 1L);
 	}
 
 	/**
 	 * reload player inventories from saved variables
 	 * 
 	 * @param player
-	 */ 
+	 */
 	public static void loadInventory(Arena arena, Player player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventoryLoadRunnable(player), 3L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
+				new InventoryLoadRunnable(player), arena.cfg.getInt("secret.ilt", 0) * 1L);
 	}
 
 	/**
@@ -96,6 +98,7 @@ public class Inventories {
 	 *            the player to save
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new InventorySaveRunnable(player), 2L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
+				new InventorySaveRunnable(player), arena.cfg.getInt("secret.ist", 0) * 1L);
 	}
 }
