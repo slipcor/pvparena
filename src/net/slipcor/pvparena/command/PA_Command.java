@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.command;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -58,6 +59,9 @@ public abstract class PA_Command {
 			return new PAUninstall();
 		} else if (s.equals("version")) {
 			return new PAVersion();
+		}
+		if (PVPArena.instance.getConfig().getBoolean("cmdfailjoin", true)) {
+			return null;
 		}
 		return new PANull();
 	}

@@ -853,6 +853,16 @@ public class Arena {
 		}
 		PVPArena.instance.getAmm().resetPlayer(this, player);
 
+		String sClass = "";
+		if (ap.getaClass() != null) {
+			sClass = ap.getaClass().getName();
+		}
+		
+		if (!sClass.equalsIgnoreCase("custom")) {
+			Inventories.clearInventory(player);
+			Inventories.loadInventory(this, player);
+		}
+		
 		db.i("string = " + string);
 		ap.setTelePass(true);
 		if (string.equalsIgnoreCase("old")) {
@@ -860,16 +870,6 @@ public class Arena {
 		} else {
 			Location l = Spawns.getCoords(this, string);
 			player.teleport(l);
-		}
-
-		String sClass = "";
-		if (ap.getaClass() != null) {
-			sClass = ap.getaClass().getName();
-		}
-		System.out.print("player " + ap.getName() + " class " + sClass);
-		if (!sClass.equalsIgnoreCase("custom")) {
-			Inventories.clearInventory(player);
-			Inventories.loadInventory(this, player);
 		}
 	}
 

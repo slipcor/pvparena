@@ -59,8 +59,8 @@ public class BlockListener implements Listener {
 	}
 
 	private boolean isProtected(Arena arena, Cancellable event, String node) {
-		if (arena.fightInProgress) {
-			db.i("fighting. cancelling!");
+		if (!arena.fightInProgress) {
+			db.i("not fighting. cancelling!");
 			event.setCancelled(true);
 			return true;
 		}

@@ -305,6 +305,8 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		db.i("onPlayerInteract");
 		
+		
+		
 		if (event.getAction().equals(Action.PHYSICAL)) {
 			db.i("returning: physical");
 			return;
