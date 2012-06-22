@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.10.10 - reset Potion Effects on respawn
 * v0.8.10.9 - add MultiInv compatibility
 * v0.8.10.8 - fix NPE about resetPlayer
 * v0.8.10.7 - add config setting to change default command

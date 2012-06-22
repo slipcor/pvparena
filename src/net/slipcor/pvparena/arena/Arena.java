@@ -42,7 +42,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 
 /**
@@ -632,10 +631,7 @@ public class Arena {
 		player.setLevel(0);
 		player.setExp(0);
 		player.setGameMode(GameMode.getByValue(0));
-		for (PotionEffect pe : player.getActivePotionEffects()) {
-			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
-			player.removePotionEffect(pe.getType());
-		}
+		PlayerState.removeEffects(player);
 
 	}
 
@@ -898,6 +894,8 @@ public class Arena {
 		}
 
 		type.parseRespawn(player, team, lives, cause, damager);
+		
+		PlayerState.removeEffects(player);
 		
 		PVPArena.instance.getAmm().parseRespawn(this, player, team, lives, cause, damager);
 

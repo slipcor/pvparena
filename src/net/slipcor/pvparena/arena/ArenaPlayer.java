@@ -213,15 +213,6 @@ public class ArenaPlayer {
 	}
 
 	/**
-	 * return the effects
-	 * 
-	 * @return the player effects
-	 */
-	public List<Effect> getEffects() {
-		return effects;
-	}
-
-	/**
 	 * hand over a player's kills
 	 * 
 	 * @return the player's kill count
@@ -440,29 +431,5 @@ public class ArenaPlayer {
 	 */
 	public void setTelePass(boolean b) {
 		telePass = b;
-	}
-
-	/**
-	 * 
-	 * a scheduler to reset the effects if they expired
-	 * 
-	 * @author NodinChan
-	 * 
-	 */
-	public final class EffectScheduler implements Runnable {
-		// one runnable for every player.. mhh... yeah... that might improve it
-		// ^^
-		@Override
-		public void run() {
-			List<Effect> removalPending = new ArrayList<Effect>();
-
-			for (Effect effect : effects) {
-				effect.tick();
-				if (effect.expired())
-					removalPending.add(effect);
-			}
-
-			effects.removeAll(removalPending);
-		}
 	}
 }

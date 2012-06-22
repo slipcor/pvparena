@@ -90,11 +90,7 @@ public final class PlayerState {
 		}
 		
 
-		for (PotionEffect pe : player.getActivePotionEffects()) {
-			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
-			player.removePotionEffect(pe.getType());
-		}
-
+		removeEffects(player);
 		player.addPotionEffects(potionEffects);
 
 		ArenaPlayer.parsePlayer(player).setTelePass(false);
@@ -115,5 +111,13 @@ public final class PlayerState {
 		saturation = 0;
 		displayname = null;
 		potionEffects = null;
+	}
+
+	public static void removeEffects(Player player) {
+		for (PotionEffect pe : player.getActivePotionEffects()) {
+			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
+			player.removePotionEffect(pe.getType());
+		}
+
 	}
 }
