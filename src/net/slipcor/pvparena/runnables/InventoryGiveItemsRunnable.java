@@ -25,6 +25,9 @@ public class InventoryGiveItemsRunnable implements Runnable {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
 		ArenaClass playerClass = ap.getaClass();
+		if (playerClass == null) {
+			return;
+		}
 		db.i("giving items to player '" + player.getName() + "', class '"
 				+ playerClass.getName() + "'");
 

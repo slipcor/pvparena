@@ -78,7 +78,7 @@ public class Inventories {
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new InventoryGiveItemsRunnable(arena, player), arena.cfg.getInt("secret.igit", 0) * 1L);
+				new InventoryGiveItemsRunnable(arena, player), arena.cfg.getInt("delays.giveitems", 0) * 1L);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class Inventories {
 	 */
 	public static void loadInventory(Arena arena, Player player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new InventoryLoadRunnable(player), arena.cfg.getInt("secret.ilt", 0) * 1L);
+				new InventoryLoadRunnable(player), arena.cfg.getInt("delays.inventorysave") * 1L);
 	}
 
 	/**
@@ -99,6 +99,6 @@ public class Inventories {
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
-				new InventorySaveRunnable(player), arena.cfg.getInt("secret.ist", 0) * 1L);
+				new InventorySaveRunnable(player), arena.cfg.getInt("delays.inventoryprepare", 0) * 1L);
 	}
 }
