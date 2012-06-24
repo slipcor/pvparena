@@ -1,12 +1,13 @@
 package net.slipcor.pvparena.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -14,10 +15,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * update manager class
@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.8.10
  * 
  */
 
@@ -175,12 +175,69 @@ public class Update extends Thread {
 			return;
 		}
 		Language.log_info("updating");
+		try {
+			final URLConnection connection = new URL("http://bukget.org/api/plugin/pvp-arena").openConnection();
+	        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	        final StringBuffer stringBuffer = new StringBuffer();
+	        String line;
+	        while ((line = bufferedReader.readLine()) != null)
+	            stringBuffer.append(line);
+	            bufferedReader.close();
+	        JSONParser parser=new JSONParser();
+	        Object obj=parser.parse(stringBuffer.toString());
+	       
+	        JSONArray array=(JSONArray)((JSONObject) obj).get("versions");
+	        
+	        for (int i = 0 ; i < array.size(); i++) {
+	        	JSONObject value = (JSONObject)array.get(i);
+	        	String type = (String) value.get("type");
+	        	//String link = (String) value.get("dl_link");
+	        	if (!type.equalsIgnoreCase("Release")) {
+	        		continue;
+	        	}
+	        	String sOnlineVersion = (String) value.get("name");
+				String sThisVersion = plugin.getDescription().getVersion();
+
+				if (sOnlineVersion.toUpperCase().contains("BETA")
+						|| sOnlineVersion.toUpperCase().contains("ALPHA")) {
+					continue;
+				}
+
+				if (sOnlineVersion.contains(" ")) {
+					String[] s = sOnlineVersion.split(" ");
+					for (int j=0; j< s.length; j++) {
+						if (s[j].contains(".")) {
+							sOnlineVersion = s[j];
+							break;
+						}
+					}
+				}
+
+				vOnline = sOnlineVersion.replace("v", "");
+				vThis = sThisVersion.replace("v", "");
+				db.i("online version: " + vOnline);
+				db.i("local version: " + vThis);
+
+				calculateVersions();
+				return;
+	        }
+	        
 		
+		} catch (Exception e) {
+			
+		}
+		
+		return;
+		
+		/*
+		
+		
+		
+
 		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
-		
+
 		NodeList nodes = null;
-		
-		
+
 		try {
 			URL url = new URL(pluginUrlString);
 			Document doc = DocumentBuilderFactory.newInstance()
@@ -192,15 +249,15 @@ public class Update extends Thread {
 		} catch (Exception localException) {
 			return;
 		}
-		
-		for (int i = 0; i< nodes.getLength(); i++) {
+
+		for (int i = 0; i < nodes.getLength(); i++) {
 			Node selectedFile = nodes.item(i);
-		
+
 			if (selectedFile.getNodeType() == 1) {
 				Element firstElement = (Element) selectedFile;
 				NodeList firstElementTagName = firstElement
-						.getElementsByTagName("title"); 
-				
+						.getElementsByTagName("title");
+
 				Element firstNameElement = (Element) firstElementTagName
 						.item(0);
 				NodeList firstNodes = firstNameElement.getChildNodes();
@@ -208,11 +265,13 @@ public class Update extends Thread {
 				String sOnlineVersion = firstNodes.item(0).getNodeValue();
 				String sThisVersion = plugin.getDescription().getVersion();
 
-				if (sOnlineVersion.toUpperCase().contains("BETA") ||
-						sOnlineVersion.toUpperCase().contains("ALPHA")) {
+				System.out.print(((Element) firstElement.getElementsByTagName("link").item(0)).getChildNodes().item(0).getNodeValue());
+				
+				if (sOnlineVersion.toUpperCase().contains("BETA")
+						|| sOnlineVersion.toUpperCase().contains("ALPHA")) {
 					continue;
 				}
-				
+
 				while (sOnlineVersion.contains(" ")) {
 					String[] s = sOnlineVersion.split(" ");
 					sOnlineVersion = s[1];
@@ -226,28 +285,28 @@ public class Update extends Thread {
 				calculateVersions();
 				return;
 			}
-		}
+		}*/
 	}
 
 	public void init() {
+		if (PVPArena.instance.getConfig().getBoolean("modulecheck", true)) {
+			try {
+				File destination = PVPArena.instance.getDataFolder();
 
-		try {
-			File destination = PVPArena.instance.getDataFolder();
+				File lib = new File(destination, "install.yml");
 
-			File lib = new File(destination, "install.yml");
+				System.out.println("Downloading module update file...");
+				URL url = new URL(
+						"http://www.slipcor.net/public/mc/pafiles/install.yml");
+				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+				FileOutputStream output = new FileOutputStream(lib);
+				output.getChannel().transferFrom(rbc, 0, 1 << 24);
+				System.out.println("Downloaded module update file");
 
-			System.out.println("Downloading module update file...");
-			URL url = new URL(
-					"http://www.slipcor.net/public/mc/pafiles/install.yml");
-			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-			FileOutputStream output = new FileOutputStream(lib);
-			output.getChannel().transferFrom(rbc, 0, 1 << 24);
-			System.out.println("Downloaded module update file");
-
-		} catch (Exception e) {
-			e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 
 	public static void message(Player p, boolean b) {
@@ -260,9 +319,11 @@ public class Update extends Thread {
 		}
 
 		if (p == null) {
-			System.out.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
+			System.out
+					.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
 		} else {
-			Arenas.tellPlayer(p, "http://dev.bukkit.org/server-mods/pvp-arena/files/");
+			Arenas.tellPlayer(p,
+					"http://dev.bukkit.org/server-mods/pvp-arena/files/");
 		}
 	}
 }

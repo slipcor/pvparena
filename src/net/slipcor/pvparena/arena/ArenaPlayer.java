@@ -11,8 +11,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.Effect;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Teams;
-import net.slipcor.pvparena.runnables.PlayerDestroyRunnable;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -335,14 +333,6 @@ public class ArenaPlayer {
 	 * @param b should
 	 */
 	public void reset() {
-		int offset = 1;
-		if (arena != null) {
-			offset= arena.cfg.getInt("delays.playerdestroy");
-		}
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new PlayerDestroyRunnable(this), (offset * 1L));
-	}
-	
-	public void realDestroy() {
 		db.i("destroying arena player " + sPlayer);
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
