@@ -17,6 +17,7 @@ import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
+import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
@@ -449,7 +450,14 @@ public class Arena {
 		String[] items = sItems.split(",");
 		boolean random = cfg.getBoolean("general.random-reward");
 		Random r = new Random();
+		
+		PAWinEvent dEvent = new PAWinEvent(this, player, items);
+		Bukkit.getPluginManager().callEvent(dEvent);
+		
+		items = dEvent.getItems();
+		
 		int randomItem = r.nextInt(items.length);
+		
 		for (int i = 0; i < items.length; ++i) {
 			ItemStack stack = StringParser.getItemStackFromString(items[i]);
 			if (stack == null) {
