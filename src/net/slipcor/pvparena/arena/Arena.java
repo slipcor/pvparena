@@ -980,6 +980,9 @@ public class Arena {
 	 */
 	public void start() {
 		START_ID = -1;
+		if (fightInProgress) {
+			return;
+		}
 		int sum = 0;
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.1 - fix StartRunnable issues
 * v0.8.11.0 - add PAWinEvent
 * v0.8.10.14 - revert inventory handling
 * v0.8.10.13 - change and fix update check

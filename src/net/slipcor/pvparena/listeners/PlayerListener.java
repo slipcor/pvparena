@@ -177,7 +177,12 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return;
 	
-		int lives = arena.type().getLives(player);
+		int lives = 0;
+		try {
+			lives = arena.type().getLives(player);
+		} catch(Exception e) {
+			
+		}
 		db.i("lives before death: " + lives);
 		if (lives < 1) {
 			if (!arena.cfg.getBoolean("game.preventDeath")) {
