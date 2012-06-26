@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.8.10
+ * @version v0.8.11
  * 
  */
 
@@ -51,6 +51,8 @@ public class Settings {
 		types.put("game.refillInventory", "boolean");
 		types.put("game.teamKill", "boolean");
 		types.put("game.weaponDamage", "boolean");
+		types.put("game.mustbesafe", "boolean");
+		types.put("game.woolFlagHead", "boolean");
 
 		types.put("messages.chat", "boolean");
 		types.put("messages.colorNick", "boolean");

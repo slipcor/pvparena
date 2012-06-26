@@ -25,7 +25,7 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  * @author slipcor
  * 
- * @version v0.8.10
+ * @version v0.8.11
  * 
  */
 
@@ -80,6 +80,8 @@ public class Configs {
 		config.addDefault("game.teamKill", Boolean.valueOf(arena.type().isFreeForAll()));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
+		config.addDefault("game.mustbesafe", Boolean.valueOf(false));
+		config.addDefault("game.woolFlagHead", Boolean.valueOf(false));
 
 		config.addDefault("messages.language", "en");
 		config.addDefault("messages.chat", Boolean.valueOf(true));
