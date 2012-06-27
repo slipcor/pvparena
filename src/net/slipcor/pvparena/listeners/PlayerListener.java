@@ -55,7 +55,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.8.4
+ * @version v0.8.11
  * 
  */
 
@@ -223,13 +223,18 @@ public class PlayerListener implements Listener {
 		//EntityListener.addBurningPlayer(player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		ArenaTeam team = Teams.getTeam(arena, ap);
+		String playerName;
+		if (team != null) {
+			playerName = team.colorizePlayer(player);
+		} else {
+			playerName = player.getName();
+		}
 		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
 		arena.tellEveryone(Language.parse(
 				"killedby",
-				team.colorizePlayer(player) + ChatColor.YELLOW,
+				playerName + ChatColor.YELLOW,
 				arena.parseDeathCause(player, cause.getCause(),
 						ArenaPlayer.getLastDamagingPlayer(cause))));
-
 		if (arena.isCustomClassActive()
 				|| arena.cfg.getBoolean("game.allowDrops")) {
 			Inventories.drop(player);
