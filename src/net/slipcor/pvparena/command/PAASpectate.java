@@ -3,17 +3,9 @@ package net.slipcor.pvparena.command;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Configs;
 import net.slipcor.pvparena.managers.Inventories;
-import net.slipcor.pvparena.managers.Regions;
-import net.slipcor.pvparena.managers.Teams;
-import net.slipcor.pvparena.runnables.ArenaWarmupRunnable;
-
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -37,6 +29,7 @@ public class PAASpectate extends PAA_Command {
 			return;
 		}
 		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		arena.prepare(player, true, false);
 		ap.setArena(arena);
 		arena.tpPlayerToCoordName(player, "spectator");

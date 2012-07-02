@@ -1,20 +1,10 @@
 package net.slipcor.pvparena;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.command.PA_Command;
@@ -254,13 +244,13 @@ public class PVPArena extends JavaPlugin {
 
 			File lib = new File(destination, "NC-LoaderLib.jar");
 
-			boolean download = false;
+			//boolean download = false;
 
 			if (!lib.exists()) {
 				System.out.println("Missing NC-Loader lib");
 				//download = true;
 
-			} else {
+			} else {/*
 				JarFile jarFile = new JarFile(lib);
 				Enumeration<JarEntry> entries = jarFile.entries();
 
@@ -280,7 +270,7 @@ public class PVPArena extends JavaPlugin {
 
 				if (version == 0) {
 					System.out.println("NC-Loader lib outdated");
-					download = true;
+					//download = true;
 
 				} else {
 					HttpURLConnection urlConnection = (HttpURLConnection) new URL(
@@ -293,7 +283,7 @@ public class PVPArena extends JavaPlugin {
 					if (Double.parseDouble(reader.readLine()
 							.replace("NC-LoaderLib Version ", "").trim()) > version)
 						download = true;
-				}
+				}*/
 			}
 			/*
 			if (download) {
