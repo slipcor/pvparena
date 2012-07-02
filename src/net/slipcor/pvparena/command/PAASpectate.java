@@ -33,32 +33,8 @@ public class PAASpectate extends PAA_Command {
 			return;
 		}
 		
-		String error = Configs.isSetup(arena);
-		if (error != null) {
-			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error),
-					arena);
+		if (!checkJoin(arena, player, true)) {
 			return;
-		}
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		ArenaTeam team = Teams.getTeam(arena, ap);
-		if (team != null) {
-			Arenas.tellPlayer(player, Language.parse("alreadyjoined"), arena);
-			return;
-		}
-		if (Regions.tooFarAway(arena, player)) {
-			Arenas.tellPlayer(player, Language.parse("joinrange"), arena);
-			return;
-		}
-		
-		if (arena.cfg.getInt("join.warmup")>0) {
-			if (ap.getStatus().equals(Status.EMPTY)) {
-				ArenaWarmupRunnable awr = new ArenaWarmupRunnable(arena, ap, null, true, arena.cfg.getInt("join.warmup"),0);
-				awr.setId(Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(PVPArena.instance, 
-						awr,
-						20));
-				Arenas.tellPlayer(player, Language.parse("warmingup"));
-				return;
-			}
 		}
 		
 		arena.prepare(player, true, false);

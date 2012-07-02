@@ -197,6 +197,10 @@ public class ArenaRegion extends Loadable {
 	}
 
 	public void initTimer() {
+		if (!arena.fightInProgress) {
+			arena.fightInProgress = true;
+			System.out.print("[PA-debug] fight not yet in progress...");
+		}
 		RegionRunnable rr = new RegionRunnable(this,0);
 		TICK_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, rr,

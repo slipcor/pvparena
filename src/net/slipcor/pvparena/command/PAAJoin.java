@@ -31,9 +31,10 @@ public class PAAJoin extends PAA_Command {
 			return;
 		}
 
-		if (!checkJoin(arena, player)) {
+		if (!checkJoin(arena, player, false)) {
 			return;
 		}
+		
 		if (!arena.cfg.getBoolean("join.random", true)) {
 			Arenas.tellPlayer(player, Language.parse("selectteam"), arena);
 			return;

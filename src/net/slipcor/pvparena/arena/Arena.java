@@ -1057,6 +1057,10 @@ public class Arena {
 				region.initTimer();
 			} else if (region.getType().equals(RegionType.WIN)) {
 				region.initTimer();
+			} else if (region.getType().equals(RegionType.BATTLEFIELD)) {
+				region.initTimer();
+			} else if (region.getType().equals(RegionType.SPECTATOR)) {
+				region.initTimer();
 			}
 		}
 	}
@@ -1145,6 +1149,11 @@ public class Arena {
 	 */
 	public void tpPlayerToCoordName(Player player, String place) {
 		db.i("teleporting " + player + " to coord " + place);
+		
+		if (player.isInsideVehicle()) {
+			player.getVehicle().eject();
+		}
+		
 		if (place.endsWith("lounge")) {
 			// at the start of the match
 			if (cfg.getBoolean("messages.defaultChat")

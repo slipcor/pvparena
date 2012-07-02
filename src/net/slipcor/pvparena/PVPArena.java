@@ -246,6 +246,7 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	private boolean startLoader() {
+		
 		try {
 			File destination = new File(getDataFolder().getParentFile()
 					.getParentFile(), "lib");
@@ -257,7 +258,7 @@ public class PVPArena extends JavaPlugin {
 
 			if (!lib.exists()) {
 				System.out.println("Missing NC-Loader lib");
-				download = true;
+				//download = true;
 
 			} else {
 				JarFile jarFile = new JarFile(lib);
@@ -294,7 +295,7 @@ public class PVPArena extends JavaPlugin {
 						download = true;
 				}
 			}
-
+			/*
 			if (download) {
 				System.out.println("Downloading NC-Loader lib...");
 				URL url = new URL(
@@ -304,7 +305,7 @@ public class PVPArena extends JavaPlugin {
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
 				System.out.println("Downloaded NC-Loader lib");
 			}
-
+			*/
 			URLClassLoader sysLoader = (URLClassLoader) ClassLoader
 					.getSystemClassLoader();
 

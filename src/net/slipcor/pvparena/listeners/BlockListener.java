@@ -250,7 +250,7 @@ public class BlockListener implements Listener {
 				.getLocation());
 
 		db.i("block ignite inside the arena");
-		event.setCancelled(arena.fightInProgress);
+		event.setCancelled(!arena.fightInProgress);
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
 		if ((arena.cfg.getBoolean("protection.enabled", true))
 				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))

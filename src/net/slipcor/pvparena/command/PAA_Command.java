@@ -143,7 +143,7 @@ public abstract class PAA_Command {
 	 *            the player to check
 	 * @return true if the player may join, false otherwise
 	 */
-	public boolean checkJoin(Arena arena, Player player) {
+	public boolean checkJoin(Arena arena, Player player, boolean spec) {
 		String error = Configs.isSetup(arena);
 		if (error != null) {
 			Arenas.tellPlayer(player, Language.parse("arenanotsetup", error),
@@ -187,7 +187,11 @@ public abstract class PAA_Command {
 		if (!PVPArena.instance.getAmm().checkJoin(arena, player)) {
 			return false;
 		}
-	
+		
+		if (spec) {
+			return true;
+		}
+		
 		if (arena.START_ID != -1) {
 			if (!arena.cfg.getBoolean("join.onCountdown")) {
 				Arenas.tellPlayer(player, Language.parse("fightinprogress"),

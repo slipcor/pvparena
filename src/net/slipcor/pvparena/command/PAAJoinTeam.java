@@ -31,7 +31,7 @@ public class PAAJoinTeam extends PAA_Command {
 			return;
 		}
 		
-		if (!checkJoin(arena, player)) {
+		if (!checkJoin(arena, player, false)) {
 			return;
 		}
 		

@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.4 - fix spectator check
+* v0.8.11.3 - fix other issues
 * v0.8.11.2 - fix a player death NPE
 * v0.8.11.1 - fix StartRunnable issues
 * v0.8.11.0 - add PAWinEvent
@@ -111,8 +113,15 @@ A PVP experience enhancing plugin.
 
 === Todo
 
-* teleport -> 2L -> inv save
-* inv restore -> 2L -> teleport
+* rewrite (new loader, loading from dev.bukkit)
+** allow other-world-spawns
+** flatfile inventories for restoring
+** rounds - full restart to "tpalltospawns"
+** join via position / portal / etc
+** [PVP Arena] [arenaname] -> format properly
+** arena welcome message per arena
+** teleport -> 2L -> inv save
+** inv restore -> 2L -> teleport
 
 -----------------------------------------------------------------------------------------------------------------------
 

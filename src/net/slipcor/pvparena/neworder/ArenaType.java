@@ -268,8 +268,6 @@ public class ArenaType extends Loadable {
 			return;
 		}
 
-		System.out.print(StringParser.parseArray(args));
-
 		Player player = (Player) sender;
 
 		if (args[0].startsWith("spawn") || args[0].equals("spawn")) {

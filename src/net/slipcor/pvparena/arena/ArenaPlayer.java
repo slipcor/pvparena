@@ -2,13 +2,9 @@ package net.slipcor.pvparena.arena;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.classes.Effect;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Teams;
 import org.bukkit.Bukkit;
@@ -45,7 +41,6 @@ public class ArenaPlayer {
 	private Arena arena;
 	private ArenaClass aClass;
 	private PlayerState state;
-	private final List<Effect> effects;
 
 	public ItemStack[] savedInventory;
 	public ItemStack[] savedArmor;
@@ -106,7 +101,6 @@ public class ArenaPlayer {
 
 		this.name = p.getName();
 		this.setArena(a);
-		this.effects = new ArrayList<Effect>();
 		this.sPlayer = p.getName();
 
 		YamlConfiguration cfg = new YamlConfiguration();
@@ -153,15 +147,6 @@ public class ArenaPlayer {
 	 */
 	public void addDeadPlayer(String string) {
 		deadPlayers.put(this, string);
-	}
-
-	/**
-	 * add an Effect to the player
-	 * 
-	 * @param effect
-	 */
-	public void addEffect(Effect effect) {
-		effects.add(effect);
 	}
 
 	/**
