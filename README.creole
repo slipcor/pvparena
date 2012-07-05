@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.6 - add proper CUSTOM announcement implementation
+* v0.8.11.5 - zip NPE bug?
 * v0.8.11.4 - fix spectator check
 * v0.8.11.3 - fix other issues
 * v0.8.11.2 - fix a player death NPE

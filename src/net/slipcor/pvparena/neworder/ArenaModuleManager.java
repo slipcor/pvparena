@@ -127,6 +127,20 @@ public class ArenaModuleManager {
 	}
 
 	/**
+	 * hook into announcement 
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param message
+	 *            the message to display
+	 */
+	public void announceCustom(Arena arena, String message) {
+		for (ArenaModule mod : modules) {
+			mod.announceCustom(arena, message);
+		}
+	}
+
+	/**
 	 * hook into a player trying to join the arena
 	 * 
 	 * @param arena

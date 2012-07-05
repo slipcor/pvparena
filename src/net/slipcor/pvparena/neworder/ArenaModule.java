@@ -66,6 +66,10 @@ public class ArenaModule extends Loadable {
 	public void addSettings(HashMap<String, String> types) {
 	}
 
+	public void announceCustom(Arena arena, String message) {
+		
+	}
+
 	/**
 	 * hook into announcement of a loser
 	 * 
