@@ -278,11 +278,27 @@ public class ArenaRegion extends Loadable {
 				} else {
 					playerNameLocations.remove(ap.getName());
 				}
-			} else if (type.equals(RegionType.BATTLEFIELD) || type.equals(RegionType.SPECTATOR)) {
+			} else if (type.equals(RegionType.BATTLEFIELD)) {
 				if (!arena.regions.containsKey("battlefield")) {
 					db.i("region battlefield not set, aborting quit check");
 					return;
 				}
+				
+				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				for (ArenaPlayer ap2 : arena.getPlayers()) {
+					plyrs.add(ap2);
+				}
+
+				for (ArenaPlayer ap2 : plyrs) {
+					if (!ap2.getStatus().equals(Status.FIGHT)) {
+						continue;
+					}
+					if (!this.contains(ap.get().getLocation())) {
+						Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+						arena.playerLeave(ap2.get(), "exit");
+					}
+				}
+			} else if (type.equals(RegionType.SPECTATOR)) {
 				if (!arena.regions.containsKey("spectator")) {
 					db.i("region spectator not set, aborting quit check");
 					return;
@@ -293,6 +309,9 @@ public class ArenaRegion extends Loadable {
 				}
 
 				for (ArenaPlayer ap2 : plyrs) {
+					if (!ap2.getStatus().equals(Status.WATCH)) {
+						continue;
+					}
 					if (!this.contains(ap.get().getLocation())) {
 						Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
 						arena.playerLeave(ap2.get(), "exit");

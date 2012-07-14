@@ -14,6 +14,7 @@ import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Regions;
+import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaType;
 import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
@@ -183,6 +184,9 @@ public class PlayerListener implements Listener {
 		} catch(Exception e) {
 			
 		}
+		
+		Statistics.kill(arena, player.getLastDamageCause().getEntity(), player, (lives >= 1));
+		
 		db.i("lives before death: " + lives);
 		if (lives < 1) {
 			if (!arena.cfg.getBoolean("game.preventDeath")) {
