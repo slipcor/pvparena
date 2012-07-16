@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.10 - fix multiple join regions need you to be in all join regions oO
+* v0.8.11.9 - fix losing making you leave the match
 * v0.8.11.8 - fix deaths and kills not being registered
 * v0.8.11.7 - fix players being kicked from arena
 * v0.8.11.6 - add proper CUSTOM announcement implementation

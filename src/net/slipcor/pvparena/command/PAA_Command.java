@@ -166,7 +166,7 @@ public abstract class PAA_Command {
 			return false;
 		}
 	
-		if (!Arenas.checkJoin(player)) {
+		if (!Arenas.checkJoin(player, arena)) {
 			Arenas.tellPlayer(player, Language.parse("notjoinregion"), arena);
 			return false;
 		}

@@ -254,7 +254,7 @@ public class PlayerListener implements Listener {
 		arena.prepare(player, true, true);
 		
 		arena.type().checkEntityDeath(player);
-		PlayerResetRunnable prr = new PlayerResetRunnable(ap,0);
+		PlayerResetRunnable prr = new PlayerResetRunnable(ap,0, player.getLocation());
 		prr.setId(Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, prr, 20L));
 
 		if (arena.cfg.getInt("goal.timed") > 0) {

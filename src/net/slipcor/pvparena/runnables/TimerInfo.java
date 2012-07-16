@@ -12,7 +12,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 
 public class TimerInfo {
-	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();;
+	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();
 	static {
 		String s = Language.parse("seconds");
 		String m = Language.parse("minutes");
