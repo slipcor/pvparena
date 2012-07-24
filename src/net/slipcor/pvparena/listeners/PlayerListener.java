@@ -44,6 +44,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
@@ -526,6 +527,25 @@ public class PlayerListener implements Listener {
 
 		arena.type().parseMove(player);
 		PVPArena.instance.getAmm().parseMove(arena, event);
+	}
+	
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		Player player = event.getPlayer();
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		Arena arena = ap.getArena();
+		if (arena == null && !ap.isDead()) {
+			return; // no fighting player => OUT
+		}
+		db.i("onPlayerRespawn: fighting player");
+
+		if (!ap.getStatus().equals(Status.LOSES)) {
+			return;
+		}
+		arena.tpPlayerToCoordName(player, "spectator");
+		
+		ap.setStatus(Status.LOSES);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
