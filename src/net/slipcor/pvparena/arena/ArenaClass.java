@@ -16,7 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
  * 
  * @author slipcor
  * 
- * @version v0.7.8
+ * @version v0.7.11
  * 
  */
 

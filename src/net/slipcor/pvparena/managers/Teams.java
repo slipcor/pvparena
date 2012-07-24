@@ -191,14 +191,17 @@ public class Teams {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
 		}
 		String coloredTeam = aTeam.colorize();
+		
+		String type = arena.type().getName().equals("teams") ? "" : arena.type().getName();
+		
 		Arenas.tellPlayer(
 				player,
-				Language.parse("youjoined" + (free ? "free" : ""), coloredTeam),
+				Language.parse("youjoined" + type, coloredTeam),
 				arena);
 		PVPArena.instance.getAmm().choosePlayerTeam(arena, player, coloredTeam);
 		arena.tellEveryoneExcept(
 				player,
-				Language.parse("playerjoined" + (free ? "free" : ""),
+				Language.parse("playerjoined" + type,
 						player.getName(), coloredTeam));
 	}
 

@@ -76,10 +76,12 @@ public class PAAJoinTeam extends PAA_Command {
 
 		PVPArena.instance.getAmm().parseJoin(arena, player, coloredTeam);
 
-		Arenas.tellPlayer(player, Language.parse("youjoined", coloredTeam),
+		String type = arena.type().getName().equals("teams") ? "" : arena.type().getName();
+		
+		Arenas.tellPlayer(player, Language.parse("youjoined" + type, coloredTeam),
 				arena);
 		arena.tellEveryoneExcept(player,
-				Language.parse("playerjoined", player.getName(), coloredTeam));
+				Language.parse("playerjoined" + type, player.getName(), coloredTeam));
 
 		// process auto classing
 		String autoClass = arena.cfg.getString("ready.autoclass");
