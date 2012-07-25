@@ -10,6 +10,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.runnables.RegionRunnable;
@@ -226,6 +227,8 @@ public class ArenaRegion extends Loadable {
 				if (this.contains(ap.get().getLocation())) {
 					Arenas.tellPlayer(ap.get(), Language.parse("deathregion"));
 					arena.playerLeave(ap.get(), "lose");
+					PALoseEvent e = new PALoseEvent(arena, ap.get());
+					Bukkit.getPluginManager().callEvent(e);
 				}
 			} else if (type.equals(RegionType.WIN)) {
 				if (this.contains(ap.get().getLocation())) {

@@ -16,6 +16,7 @@ import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
+import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.managers.Configs;
@@ -791,16 +792,33 @@ public class Arena {
 		}
 
 		for (ArenaPlayer p : pa) {
-			Player z = p.get();
-			if (!force) {
-				p.wins++;
+			
+			
+			
+			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
+				Player z = p.get();
+				if (!force) {
+					p.wins++;
+				}
+				resetPlayer(z, cfg.getString("tp.win", "old"), false);
+				if (!force && p.getStatus().equals(Status.FIGHT) && fightInProgress) {
+					giveRewards(z); // if we are the winning team, give
+									// reward!
+				}
+				p.reset();
+			} else if (p.getStatus() != null && (p.getStatus().equals(Status.DEATH) || p.getStatus().equals(Status.LOSES))){
+
+				PALoseEvent e = new PALoseEvent(this, p.get());
+				Bukkit.getPluginManager().callEvent(e);
+				
+				Player z = p.get();
+				if (!force) {
+					p.losses++;
+				}
+				resetPlayer(z, cfg.getString("tp.lose", "old"), false);
 			}
-			resetPlayer(z, cfg.getString("tp.win", "old"), false);
-			if (!force && p.getStatus().equals(Status.FIGHT) && fightInProgress) {
-				giveRewards(z); // if we are the winning team, give
-								// reward!
-			}
-			p.reset();
+			
+			
 		}
 	}
 
