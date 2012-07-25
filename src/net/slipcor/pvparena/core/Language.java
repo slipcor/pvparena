@@ -21,7 +21,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.8.10
+ * @version v0.8.11
  * 
  */
 public class Language {
@@ -192,6 +192,16 @@ public class Language {
 				"Invalid statistics type: %1%");
 		config.addDefault("lang.set",
 				"set a config node");
+		
+
+		config.addDefault("lang.classpreview",
+				"You are now previewing the class %1%");
+		config.addDefault("lang.classsaved",
+				"Class saved: %1%");
+		config.addDefault("lang.classremoved",
+				"Class removed: %1%");
+		config.addDefault("lang.classunknown",
+				"Class unknown: %1%");
 
 		config.addDefault("lang.arenatypeunknown",
 				"Arena Type '%1%' unknown. consult the forums: http://goo.gl/KyJzo");

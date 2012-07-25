@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.core;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.8.8
+ * @version v0.8.11
  * 
  */
 
@@ -289,5 +290,32 @@ public class StringParser {
 
 	public static String colorVar(double timed) {
 		return colorVar(String.valueOf(timed), timed > 0);
+	}
+
+	public static String getStringFromItemStacks(ItemStack[] isItems) {
+		String[] s = new String[isItems.length];
+		
+		int i = 0;
+		
+		for (ItemStack is : isItems) {
+			String temp = is.getType().name();
+			if (is.getDurability() != 0) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+			Map<Enchantment, Integer> enchants = is.getEnchantments();
+			
+			if (enchants != null && enchants.size() > 0) {
+				for (Enchantment e : enchants.keySet()) {
+					temp += "|" + String.valueOf(e.getId()) + "~" + enchants.get(e);
+				}
+			}
+			
+			if (is.getAmount() > 1) {
+				temp += ":" + is.getAmount();
+			}
+			s[i++] = temp; 
+		}
+		
+		return parseArray(s);
 	}
 }

@@ -721,6 +721,15 @@ public class Arena {
 			ArenaPlayer.parsePlayer(player).setArena(null);
 	}
 
+	public void removeClass(String string) {
+		for (ArenaClass ac : classes) {
+			if (ac.equals(string)) {
+				classes.remove(ac);
+				return;
+			}
+		}
+	}
+
 	/**
 	 * remove the dead player from the map
 	 * 
