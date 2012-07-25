@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.16 - also restrict blockplace on block whitelist/blacklist
 * v0.8.11.15 - attempt to fix losers being counted as winners, adding PALoseEvent on the way
 * v0.8.11.14 - fix several issues about players logically hurting themselves (ender pearls etc)
 * v0.8.11.13 - prevent teleporting INTO an arena

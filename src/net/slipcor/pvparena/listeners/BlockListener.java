@@ -313,6 +313,33 @@ public class BlockListener implements Listener {
 			}
 			return;
 		}
+
+
+		List<String> list = new ArrayList<String>();
+
+		list = arena.cfg.getStringList("blocks.whitelist", list);
+
+		if (list.size() > 0) {
+			// WHITELIST!!!!!!!!!
+
+			if (!list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+				event.getPlayer().sendMessage("not contained, out!");
+				// not on whitelist. DENY!
+				event.setCancelled(true);
+				return;
+			}
+		} else {
+
+			list = arena.cfg.getStringList("blocks.blacklist", list);
+
+			if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+				event.getPlayer().sendMessage("blacklist contains");
+				// on blacklist. DENY!
+				event.setCancelled(true);
+				return;
+			}
+
+		}
 		PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(),
 				event.getBlockReplacedState().getType());
 	}
