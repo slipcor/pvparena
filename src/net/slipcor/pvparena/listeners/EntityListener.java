@@ -32,7 +32,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
  * 
  * @author slipcor
  * 
- * @version v0.8.6
+ * @version v0.8.11
  * 
  */
 
@@ -158,6 +158,11 @@ public class EntityListener implements Listener {
 		db.i("both entities are players");
 		Player attacker = (Player) p1;
 		Player defender = (Player) p2;
+		
+		if (attacker.equals(defender)) {
+			// player attacking himself. ignore!
+			return;
+		}
 
 		boolean defTeam = false;
 		boolean attTeam = false;
