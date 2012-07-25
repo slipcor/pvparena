@@ -41,6 +41,8 @@ public abstract class PAA_Command {
 			return new PAALeave();
 		} else if (s.equalsIgnoreCase("list")) {
 			return new PAAList();
+		} else if (s.equalsIgnoreCase("class")) {
+			return new PAAClass();
 		} else if (s.equalsIgnoreCase("watch")
 				|| s.equalsIgnoreCase("spectate")) {
 			return new PAASpectate();
