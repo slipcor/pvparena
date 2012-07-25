@@ -575,8 +575,13 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = Arenas.getArenaByPlayer(player);
-		if (arena == null)
-			return; // no fighting player => OUT
+		
+		if (arena == null) {
+			arena = Arenas.getArenaByRegionLocation(event.getTo());
+			if (arena == null) {
+				return; // no fighting player and no arena location => OUT
+			}
+		}
 
 		db.i("onPlayerTeleport: fighting player '"+event.getPlayer().getName()+"' (uncancel)");
 		event.setCancelled(false); // fighting player - first recon NOT to
