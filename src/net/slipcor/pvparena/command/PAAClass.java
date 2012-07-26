@@ -38,8 +38,17 @@ public class PAAClass extends PAA_Command {
 		
 		if (args.length < 2) {
 			// exit the class editing
-			
+			/*
 			Inventories.loadInventory(arena, player);
+			*/
+			
+			try {
+			arena.playerLeave(player, null);
+			arena.remove(player);
+			} catch (Exception e) {
+				
+			}
+			ArenaPlayer.parsePlayer(player).setArena(null);
 			
 			return;
 		}
@@ -60,10 +69,12 @@ public class PAAClass extends PAA_Command {
 			}
 			
 			arena.cfg.set("classes." + args[2], StringParser.getStringFromItemStacks(isItems));
+			arena.cfg.save();
 			arena.addClass(args[2], isItems);
 			Arenas.tellPlayer(player, Language.parse("classsaved", args[2]));
 		} else if (args[1].equals("preview")) {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+			ap.setArena(arena);
 			ap.setClass(args[2]);
 			
 			if (ap.getaClass() != null) {
@@ -77,6 +88,7 @@ public class PAAClass extends PAA_Command {
 			}
 		} else if (args[1].equals("remove")) {
 			arena.cfg.set("classes." + args[2], null);
+			arena.cfg.save();
 			arena.removeClass(args[2]);
 			Arenas.tellPlayer(player, Language.parse("classremoved", args[2]));
 		}

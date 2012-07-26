@@ -286,20 +286,14 @@ public class ArenaRegion extends Loadable {
 					db.i("region battlefield not set, aborting quit check");
 					return;
 				}
-				
-				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
-				for (ArenaPlayer ap2 : arena.getPlayers()) {
-					plyrs.add(ap2);
-				}
 
-				for (ArenaPlayer ap2 : plyrs) {
-					if (!ap2.getStatus().equals(Status.FIGHT)) {
-						continue;
-					}
-					if (!this.contains(ap.get().getLocation())) {
-						Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
-						arena.playerLeave(ap2.get(), "exit");
-					}
+				if (!ap.getStatus().equals(Status.FIGHT)) {
+					continue;
+				}
+				
+				if (!this.contains(ap.get().getLocation())) {
+					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+					arena.playerLeave(ap.get(), "exit");
 				}
 			} else if (type.equals(RegionType.SPECTATOR)) {
 				if (!arena.regions.containsKey("spectator")) {
@@ -311,14 +305,13 @@ public class ArenaRegion extends Loadable {
 					plyrs.add(ap2);
 				}
 
-				for (ArenaPlayer ap2 : plyrs) {
-					if (!ap2.getStatus().equals(Status.WATCH)) {
-						continue;
-					}
-					if (!this.contains(ap.get().getLocation())) {
-						Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
-						arena.playerLeave(ap2.get(), "exit");
-					}
+				if (!ap.getStatus().equals(Status.WATCH)) {
+					continue;
+				}
+				
+				if (!this.contains(ap.get().getLocation())) {
+					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+					arena.playerLeave(ap.get(), "exit");
 				}
 			}
 		}
