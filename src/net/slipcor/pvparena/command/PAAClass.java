@@ -68,7 +68,7 @@ public class PAAClass extends PAA_Command {
 				isItems[i++] = is;
 			}
 			
-			arena.cfg.set("classes." + args[2], StringParser.getStringFromItemStacks(isItems));
+			arena.cfg.set("classitems." + args[2], StringParser.getStringFromItemStacks(isItems));
 			arena.cfg.save();
 			arena.addClass(args[2], isItems);
 			Arenas.tellPlayer(player, Language.parse("classsaved", args[2]));
@@ -87,7 +87,7 @@ public class PAAClass extends PAA_Command {
 				Arenas.tellPlayer(player, Language.parse("classunknown", args[2]));
 			}
 		} else if (args[1].equals("remove")) {
-			arena.cfg.set("classes." + args[2], null);
+			arena.cfg.set("classitems." + args[2], null);
 			arena.cfg.save();
 			arena.removeClass(args[2]);
 			Arenas.tellPlayer(player, Language.parse("classremoved", args[2]));

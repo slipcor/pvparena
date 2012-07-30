@@ -6,11 +6,11 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.managers.Teams;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -204,10 +204,8 @@ public class EntityListener implements Listener {
 		}
 
 		if (arena.cfg.getBoolean("game.weaponDamage")) {
-			if ((attacker.getItemInHand() != null)
-					&& (attacker.getItemInHand().getType() != null)
-					&& (attacker.getItemInHand().getType() != Material.AIR)) {
-				attacker.getItemInHand().setDurability((byte) 0);
+			if (Inventories.receivesDamage(attacker.getItemInHand())) {
+				attacker.getItemInHand().setDurability((short) 0);
 			}
 		}
 

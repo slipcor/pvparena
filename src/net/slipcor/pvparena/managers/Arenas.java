@@ -9,6 +9,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.command.PAAJoin;
+import net.slipcor.pvparena.command.PAAJoinTeam;
 import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
@@ -353,7 +354,12 @@ public class Arenas {
 								Language.parse("arenanotexists", sName));
 						return;
 					}
-					PAA_Command command = new PAAJoin();
+					PAA_Command command;
+					if ( newArgs.length < 1) {
+						command = new PAAJoin();
+					} else {
+						command = new PAAJoinTeam();
+					}
 					command.commit(a, player, newArgs);
 					return;
 				}

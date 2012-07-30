@@ -46,6 +46,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.22 - fix general protection issues (greedy protection)
+* v0.8.11.21 - fix joining teams with signs
+* v0.8.11.20 - fix /pa [] class
 * v0.8.11.19 - fix some spawn settings not working
 * v0.8.11.18 - fix battlefield/arena end/win/lose issues
 * v0.8.11.17 - add ingame class preview / edit / saving / removing

@@ -136,4 +136,12 @@ public class Inventories {
 		p.savedArmor = player.getInventory().getArmorContents().clone();
 		Inventories.clearInventory(player);
 	}
+
+	public static boolean receivesDamage(ItemStack item) {
+		if (item == null || item.getType().equals(Material.AIR)) {
+			return false;
+		}
+		
+		return true; //TODO check!
+	}
 }
