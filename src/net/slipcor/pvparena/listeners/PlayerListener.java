@@ -35,7 +35,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -63,13 +63,13 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(21);
-
+/*
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(PlayerChatEvent event) {
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		Player player = event.getPlayer();
 
-		Arena arena = Arenas.getArenaByPlayer(player);
+		Arena arena = Arenas.getArenaByPlayer(player); //
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
 		if (arena == null) {
@@ -109,7 +109,7 @@ public class PlayerListener implements Listener {
 				event.getPlayer());
 		event.setCancelled(true);
 	}
-
+*/
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();

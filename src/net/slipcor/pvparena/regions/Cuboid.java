@@ -20,7 +20,7 @@ public class Cuboid extends ArenaRegion {
 
 	@Override
 	public String version() {
-		return "v0.7.19.0";
+		return "v0.8.11.25";
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class Cuboid extends ArenaRegion {
 		
 		Location[] sane = sanityCheck(pos[0], pos[1]);
 		min = sane[0].clone().toVector();
-		max = sane[1].clone().toVector();
+		max = sane[1].clone().toVector().add(new Vector(1,1,1));
 	}
 	
 	/**

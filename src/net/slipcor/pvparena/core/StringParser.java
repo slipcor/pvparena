@@ -316,6 +316,14 @@ public class StringParser {
 			s[i++] = temp; 
 		}
 		
-		return parseArray(s);
+		return joinArray(s, ",");
+	}
+
+	public static String joinArray(Object[] array, String glue) {
+		String result = "";
+		for (Object o : array) {
+			result += glue + String.valueOf(o);
+		}
+		return result.substring(glue.length());
 	}
 }

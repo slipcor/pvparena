@@ -350,8 +350,8 @@ public class ArenaPlayer {
 			state = null;
 		}
 		location = null;
-		savedInventory = null;
-		savedArmor = null;
+		//savedInventory = null;
+		//savedArmor = null;
 
 		setStatus(Status.EMPTY);
 

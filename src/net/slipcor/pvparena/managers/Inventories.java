@@ -119,7 +119,7 @@ public class Inventories {
 		}
 		player.getInventory().setContents(p.savedInventory);
 		player.getInventory().setArmorContents(p.savedArmor);
-		p.savedInventory = null;
+		//p.savedInventory = null;
 	}
 
 	/**

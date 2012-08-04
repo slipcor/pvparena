@@ -46,6 +46,11 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.11.27 - fix 1.3.1 spamming about PlayerChatEvent. real fix incoming
+* v0.8.11.26 - fix class saving
+* v0.8.11.25 - fix regions being one block too short on each side
+* v0.8.11.24 - fix non-fighters inside an arena being damaged.
+* v0.8.11.23 - fix the loser's inventory disappearing issue
 * v0.8.11.22 - fix general protection issues (greedy protection)
 * v0.8.11.21 - fix joining teams with signs
 * v0.8.11.20 - fix /pa [] class

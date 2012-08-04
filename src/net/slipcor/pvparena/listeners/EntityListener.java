@@ -3,6 +3,7 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
@@ -20,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 
@@ -230,5 +232,38 @@ public class EntityListener implements Listener {
 				defender, event);
 
 		Statistics.damage(arena, attacker, defender, event.getDamage());
+	}
+	
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onEntityDamage(EntityDamageEvent event) {
+
+		if (event.isCancelled()) {
+			return;
+		}
+
+		Entity p2 = event.getEntity();
+
+		db.i("onEntityDamage: cause: " + event.getCause().name()
+				+ " : " + event.getEntity().toString());
+
+		if ((p2 == null) || (!(p2 instanceof Player))) {
+			return;
+		}
+
+		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		if (arena == null) {
+			// defender no arena player => out
+			return;
+		}
+
+		Player defender = (Player) p2;
+
+		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender);
+
+		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.EMPTY) && !apDefender.getStatus().equals(Status.FIGHT))) {
+			event.setCancelled(true);
+			return;
+		}
 	}
 }

@@ -792,6 +792,8 @@ public class Arena {
 		for (ArenaTeam team : this.getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("player: " + p.getName());
+				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
+				
 				if (p.getArena() == null || !p.getArena().equals(this)) {
 					continue;
 				} else {
@@ -799,13 +801,15 @@ public class Arena {
 				}
 			}
 		}
+		
+		System.out.print("--- pause ---");
+		
 
 		for (ArenaPlayer p : pa) {
-			
-			
-			
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				Player z = p.get();
+				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
+				
 				if (!force) {
 					p.wins++;
 				}
@@ -816,7 +820,8 @@ public class Arena {
 				}
 				p.reset();
 			} else if (p.getStatus() != null && (p.getStatus().equals(Status.DEATH) || p.getStatus().equals(Status.LOSES))){
-
+				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
+				
 				PALoseEvent e = new PALoseEvent(this, p.get());
 				Bukkit.getPluginManager().callEvent(e);
 				
@@ -825,6 +830,10 @@ public class Arena {
 					p.losses++;
 				}
 				resetPlayer(z, cfg.getString("tp.lose", "old"), false);
+				p.reset();
+			} else {
+				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
+				resetPlayer(p.get(), cfg.getString("tp.lose", "exit"), false);
 			}
 			
 			
