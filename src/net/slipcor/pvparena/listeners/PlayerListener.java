@@ -63,13 +63,13 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(21);
-/*
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		Player player = event.getPlayer();
 
-		Arena arena = Arenas.getArenaByPlayer(player); //
+		Arena arena = Arenas.getArenaByPlayer(player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
 		if (arena == null) {
@@ -106,10 +106,10 @@ public class PlayerListener implements Listener {
 		}
 
 		arena.tellEveryoneColored(event.getMessage(), team.getColor(),
-				event.getPlayer());
+				event.getPlayer()); //
 		event.setCancelled(true);
 	}
-*/
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();

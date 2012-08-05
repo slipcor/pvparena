@@ -296,7 +296,7 @@ public class Teams {
 	 *            the player to find
 	 * @return the ArenaTeam instance if found, null otherwise
 	 */
-	public static ArenaTeam getTeam(Arena arena, ArenaPlayer player) {
+	public static synchronized ArenaTeam getTeam(Arena arena, ArenaPlayer player) {
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(player)) {
 				return team;

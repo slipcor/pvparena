@@ -294,7 +294,7 @@ public class ArenaPlayer {
 	 *            the player to get
 	 * @return an ArenaPlayer instance belonging to that player
 	 */
-	public static ArenaPlayer parsePlayer(Player player) {
+	public static synchronized ArenaPlayer parsePlayer(Player player) {
 		if (totalPlayers.get(player.getName()) == null) {
 			totalPlayers.put(player.getName(), new ArenaPlayer(player, null));
 		}

@@ -1107,7 +1107,7 @@ public class Arena {
 	 * @param msg
 	 *            the message to send
 	 */
-	public void tellEveryone(String msg) {
+	public synchronized void tellEveryone(String msg) {
 		db.i("@all: " + msg);
 		HashSet<ArenaPlayer> players = getPlayers();
 		for (ArenaPlayer p : players) {
@@ -1127,7 +1127,7 @@ public class Arena {
 	 *            the message to send
 	 * @param player
 	 */
-	public void tellEveryoneColored(String msg, ChatColor c, Player player) {
+	public synchronized void tellEveryoneColored(String msg, ChatColor c, Player player) {
 		tellEveryone(c + player.getName() + ChatColor.WHITE + ": " + msg);
 	}
 
@@ -1161,7 +1161,7 @@ public class Arena {
 	 *            the message to send
 	 * @param player
 	 */
-	public void tellTeam(String sTeam, String msg, ChatColor c, Player player) {
+	public synchronized void tellTeam(String sTeam, String msg, ChatColor c, Player player) {
 		ArenaTeam team = Teams.getTeam(this, sTeam);
 		if (team == null) {
 			return;

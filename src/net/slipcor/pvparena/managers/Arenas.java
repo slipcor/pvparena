@@ -141,7 +141,7 @@ public class Arenas {
 	 *            the player to find
 	 * @return the arena instance if found, null otherwise
 	 */
-	public static Arena getArenaByPlayer(Player pPlayer) {
+	public static synchronized Arena getArenaByPlayer(Player pPlayer) {
 		return ArenaPlayer.parsePlayer(pPlayer).getArena();
 	}
 
