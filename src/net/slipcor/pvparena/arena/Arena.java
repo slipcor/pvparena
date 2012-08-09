@@ -55,7 +55,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.8.10
+ * @version v0.8.12
  * 
  */
 
@@ -792,8 +792,6 @@ public class Arena {
 		for (ArenaTeam team : this.getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("player: " + p.getName());
-				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
-				
 				if (p.getArena() == null || !p.getArena().equals(this)) {
 					continue;
 				} else {
@@ -801,14 +799,10 @@ public class Arena {
 				}
 			}
 		}
-		
-		System.out.print("--- pause ---");
-		
 
 		for (ArenaPlayer p : pa) {
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				Player z = p.get();
-				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
 				
 				if (!force) {
 					p.wins++;
@@ -820,7 +814,6 @@ public class Arena {
 				}
 				p.reset();
 			} else if (p.getStatus() != null && (p.getStatus().equals(Status.DEATH) || p.getStatus().equals(Status.LOSES))){
-				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
 				
 				PALoseEvent e = new PALoseEvent(this, p.get());
 				Bukkit.getPluginManager().callEvent(e);
@@ -832,7 +825,6 @@ public class Arena {
 				resetPlayer(z, cfg.getString("tp.lose", "old"), false);
 				p.reset();
 			} else {
-				System.out.print(p.get().getName() + ": " + (p.getStatus() == null ? "null" : p.getStatus().name()));
 				resetPlayer(p.get(), cfg.getString("tp.lose", "exit"), false);
 			}
 			
@@ -880,16 +872,14 @@ public class Arena {
 	 * @param soft
 	 */
 	private void resetPlayer(Player player, String string, boolean soft) {
+		if (player == null) {
+			return;
+		}
 		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""));
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		if (player.isDead() && !ap.isDead()) {
-			db.i("player is dead");
-			ap.addDeadPlayer(string);
-			return;
-		}
 		if (ap.getState() != null) {
-			ap.getState().unload();
+			ap.getState().unload(player);
 		}
 		PVPArena.instance.getAmm().resetPlayer(this, player);
 
@@ -1084,7 +1074,6 @@ public class Arena {
 		scr.setId(SPAWNCAMP_ID);
 
 		for (ArenaRegion region : regions.values()) {
-			System.out.print(region.getType().name());
 			if (region.getType().equals(RegionType.DEATH)) {
 				region.initTimer();
 			} else if (region.getType().equals(RegionType.NOCAMP)) {

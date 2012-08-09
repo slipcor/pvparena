@@ -1,11 +1,15 @@
 package net.slipcor.pvparena.arena;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,7 +34,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.8.12
  * 
  */
 
@@ -415,5 +419,57 @@ public class ArenaPlayer {
 	 */
 	public void setTelePass(boolean b) {
 		telePass = b;
+	}
+
+	public void dump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath() + "/dumps/" + this.name + ".yml");
+		try {
+			f.createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		YamlConfiguration cfg = new YamlConfiguration();
+		cfg.set("arena", arena.name);
+		if (state != null) {
+			state.dump(cfg);
+		}
+
+		cfg.set("inventory", StringParser.getStringFromItemStacks(savedInventory));
+		cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
+		
+		try {
+			cfg.save(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void readDump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath() + "/dumps/" + this.name + ".yml");
+		if (!f.exists()) {
+			return;
+		}
+		
+		YamlConfiguration cfg = new YamlConfiguration();
+		try {
+			cfg.load(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		arena = Arenas.getArenaByName(cfg.getString("arena"));
+		savedInventory = StringParser.getItemStacksFromString(cfg.getString("inventory", "AIR"));
+		savedArmor = StringParser.getItemStacksFromString(cfg.getString("armor", "AIR"));
+
+		if (arena != null) {
+			location = Spawns.getCoords(arena, "exit");
+			
+			state = PlayerState.undump(cfg, name);
+		}
+		
+		f.delete();
 	}
 }

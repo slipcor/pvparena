@@ -6,6 +6,7 @@ import net.slipcor.pvparena.PVPArena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -19,7 +20,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.8.2
+ * @version v0.8.12
  * 
  */
 
@@ -66,7 +67,7 @@ public final class PlayerState {
 	}
 
 	public void unload() {
-		Player player = Bukkit.getPlayerExact(sPlayer);
+		Player player = Bukkit.getPlayer(sPlayer);
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
@@ -80,6 +81,40 @@ public final class PlayerState {
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
+		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
+			player.setDisplayName(displayname);
+		}
+		
+		if (ap.getArena() != null) {
+			PVPArena.instance.getAmm().unload(player);
+			ap.getArena().type().unload(player);
+		}
+		
+
+		removeEffects(player);
+		player.addPotionEffects(potionEffects);
+
+		ArenaPlayer.parsePlayer(player).setTelePass(false);
+		//EntityListener.addBurningPlayer(player);
+		player.setFireTicks(fireticks);
+		player.setNoDamageTicks(60);
+	}
+
+	public void unload(Player player) {
+		player.setFireTicks(fireticks);
+		player.setFoodLevel(foodlevel);
+		player.setGameMode(GameMode.getByValue(gamemode));
+		player.setHealth(health);
+
+		player.setFoodLevel(foodlevel);
+		player.setHealth(health);
+		player.setSaturation(saturation);
+		player.setGameMode(GameMode.getByValue(gamemode));
+		player.setLevel(explevel);
+		player.setExp(experience);
+		player.setExhaustion(exhaustion);
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(displayname);
 		}
@@ -119,5 +154,34 @@ public final class PlayerState {
 			player.removePotionEffect(pe.getType());
 		}
 
+	}
+
+	public void dump(YamlConfiguration cfg) {
+		cfg.set("state.fireticks", fireticks);
+		cfg.set("state.foodlevel", foodlevel);
+		cfg.set("state.gamemode", gamemode);
+		cfg.set("state.health", health);
+		cfg.set("state.exhaustion", exhaustion);
+		cfg.set("state.experience", experience);
+		cfg.set("state.explevel", explevel);
+		cfg.set("state.saturation", saturation);
+		cfg.set("state.displayname", displayname);
+	}
+
+	public static PlayerState undump(YamlConfiguration cfg, String pName) {
+		PlayerState ps = new PlayerState(Bukkit.getPlayer(pName));
+		
+
+		ps.fireticks = cfg.getInt("state.fireticks", 0);
+		ps.foodlevel = cfg.getInt("state.foodlevel", 0);
+		ps.gamemode = cfg.getInt("state.gamemode", 0);
+		ps.health = cfg.getInt("state.health", 1);
+		ps.exhaustion = (float) cfg.getDouble("state.exhaustion", 1);
+		ps.experience = (float) cfg.getDouble("state.experience", 0);
+		ps.explevel = cfg.getInt("state.explevel", 0);
+		ps.saturation = (float) cfg.getDouble("state.saturation", 0);
+		ps.displayname = cfg.getString("state.displayname", pName);
+		
+		return ps;
 	}
 }

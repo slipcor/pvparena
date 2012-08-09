@@ -35,7 +35,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -57,13 +56,13 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.8.11
+ * @version v0.8.12
  * 
  */
 
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(21);
-
+/*
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
@@ -109,7 +108,7 @@ public class PlayerListener implements Listener {
 				event.getPlayer()); //
 		event.setCancelled(true);
 	}
-
+*/
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
@@ -157,6 +156,16 @@ public class PlayerListener implements Listener {
 		Arenas.tellPlayer(player, ChatColor.RED + event.getMessage(), arena);
 		event.setCancelled(true);
 	}
+	
+/*
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerKicked(PlayerDisconnectEvent event) {
+		Player player = event.getPlayer();
+		Arena arena = Arenas.getArenaByPlayer(player);
+		if (arena == null)
+			return; // no fighting player => OUT
+		arena.playerLeave(player, "exit");
+	}*/
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
@@ -495,11 +504,20 @@ public class PlayerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		
-		ArenaPlayer.parsePlayer(player).setArena(null);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		
+		ap.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players
 		// and makes sure every player is an arenaplayer ^^
 
+		ap.readDump();
+		Arena a = ap.getArena();
+		
+		if (a != null) {
+			a.playerLeave(player, "exit");
+		}
+		
 		if (!player.isOp()) {
 			return; // no OP => OUT
 		}
@@ -568,6 +586,8 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
+		
+		ArenaPlayer.parsePlayer(player).dump();
 		arena.playerLeave(player, "exit");
 	}
 

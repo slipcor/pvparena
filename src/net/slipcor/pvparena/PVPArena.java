@@ -167,6 +167,7 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
 		new File(getDataFolder().getPath() + "/regions").mkdir();
+		new File(getDataFolder().getPath() + "/dumps").mkdir();
 
 		if (!startLoader()) {
 			Bukkit.getServer().getPluginManager().disablePlugin(this);

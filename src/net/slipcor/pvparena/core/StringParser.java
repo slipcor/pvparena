@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.8.11
+ * @version v0.8.12
  * 
  */
 
@@ -298,6 +298,10 @@ public class StringParser {
 		int i = 0;
 		
 		for (ItemStack is : isItems) {
+			if (is == null || is.getType().equals(Material.AIR)) {
+				s[i++] = "AIR";
+				continue;
+			}
 			String temp = is.getType().name();
 			if (is.getDurability() != 0) {
 				temp += "~" + String.valueOf(is.getDurability());
