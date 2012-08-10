@@ -3,7 +3,6 @@ package net.slipcor.pvparena.command;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
@@ -52,13 +51,7 @@ public class PAUninstall extends PA_Command {
 			return;
 		}
 
-		if (args.length == 1) {
-			listVersions(sender, config, null);
-			return;
-		}
-		
-		if (config.get(args[1]) != null) {
-			listVersions(sender, config, args[1]);
+		if (args.length == 1 || config.get(args[1]) != null) {
 			return;
 		}
 		
@@ -95,69 +88,6 @@ public class PAUninstall extends PA_Command {
 		}
 	}
 
-	private void listVersions(CommandSender sender, YamlConfiguration cfg,
-			String s) {
-		Arenas.tellPlayer(sender,
-				"--- PVP Arena Version Update information ---");
-		Arenas.tellPlayer(sender, "[§7uninstalled§r | §einstalled§r]");
-		Arenas.tellPlayer(sender, "[§coutdated§r | §alatest version§r]");
-		if (s == null || s.toLowerCase().equals("arenas")) {
-			Arenas.tellPlayer(sender, "§c--- Arena Game Modes ----> /arenas");
-			Set<String> entries = cfg.getConfigurationSection("arenas")
-					.getKeys(false);
-			for (String key : entries) {
-				String value = cfg.getString("arenas." + key);
-				ArenaType type = PVPArena.instance.getAtm().getType(key);
-				boolean installed = (type != null);
-				String version = null;
-				if (installed) {
-					version = type.version();
-				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
-			}
-		}
-		
-		if (s == null || s.toLowerCase().equals("modules")) {
-			Arenas.tellPlayer(sender, "§a--- Arena Modules ----> /modules");
-			Set<String> entries = cfg.getConfigurationSection("modules")
-					.getKeys(false);
-			for (String key : entries) {
-				String value = cfg.getString("modules." + key);
-				ArenaModule mod = PVPArena.instance.getAmm().getModule(key);
-				boolean installed = (mod != null);
-				String version = null;
-				if (installed) {
-					version = mod.version();
-				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
-			}
-
-		}
-		if (s == null || s.toLowerCase().equals("regions")) {
-			Arenas.tellPlayer(sender,
-					"§b--- Arena Region Shapes ----> /regions");
-			Set<String> entries = cfg.getConfigurationSection("regions")
-					.getKeys(false);
-			for (String key : entries) {
-				String value = cfg.getString("regions." + key);
-				ArenaRegion reg = PVPArena.instance.getArm().getModule(key);
-				boolean installed = (reg != null);
-				String version = null;
-				if (installed) {
-					version = reg.version();
-				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
-			}
-
-		}
-	}
-
 	private boolean remove(String file) {
 		db.i("removing file " + file);
 		String folder = null;
@@ -168,16 +98,17 @@ public class PAUninstall extends PA_Command {
 		} else if (file.startsWith("pa_r")) {
 			folder = "/regions/";
 		}
+		String fileFolder = "/files/";
 		if (folder == null) {
 			System.out.print("[SEVERE] unable to fetch file: " + file);
 			return false;
 		}
-		File destination = new File(PVPArena.instance.getDataFolder().getPath() + folder);
 
-		File destFile = new File(destination, file);
+		File destFile = new File(PVPArena.instance.getDataFolder().getPath() + folder + file);
+		File sourceFile = new File(PVPArena.instance.getDataFolder().getPath() + fileFolder + file);
 		if (destFile.exists()) {
 			db.i("file exists");
-			return destFile.delete();
+			return sourceFile.exists() ? destFile.delete() : destFile.renameTo(sourceFile);
 		}
 		return false;
 	}

@@ -1,20 +1,13 @@
 package net.slipcor.pvparena;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.command.PA_Command;
@@ -50,7 +43,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.8.12
  * 
  */
 
@@ -168,11 +161,12 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/modules").mkdir();
 		new File(getDataFolder().getPath() + "/regions").mkdir();
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
+		new File(getDataFolder().getPath() + "/files").mkdir();
 
 		if (!startLoader()) {
-			Bukkit.getServer().getPluginManager().disablePlugin(this);
 			Bukkit.getLogger().severe(
 					"Error while loading Loader lib. Disabling PVP Arena...");
+			Bukkit.getServer().getPluginManager().disablePlugin(this);
 		}
 
 		atm = new ArenaTypeManager(this);
@@ -213,12 +207,12 @@ public class PVPArena extends JavaPlugin {
 		Update u = new Update(this);
 		u.init();
 		u.start();
-		
+
 		if (Arenas.count() > 0) {
 
 			Tracker trackMe = new Tracker(this);
 			trackMe.start();
-			
+
 			Metrics metrics;
 			try {
 				metrics = new Metrics(this);
@@ -226,11 +220,13 @@ public class PVPArena extends JavaPlugin {
 				for (ArenaType at : atm.getTypes()) {
 					atg.addPlotter(new WrapPlotter(at.getName()));
 				}
-				Metrics.Graph amg = metrics.createGraph("Enhancement modules installed");
+				Metrics.Graph amg = metrics
+						.createGraph("Enhancement modules installed");
 				for (ArenaModule am : amm.getModules()) {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
-				Metrics.Graph arg = metrics.createGraph("Region shapes installed");
+				Metrics.Graph arg = metrics
+						.createGraph("Region shapes installed");
 				for (ArenaRegion ar : arm.getRegions()) {
 					arg.addPlotter(new WrapPlotter(ar.getName()));
 				}
@@ -240,14 +236,14 @@ public class PVPArena extends JavaPlugin {
 			}
 
 		}
-		
+
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
 	}
 
 	private boolean startLoader() {
-		
+
 		try {
 			File destination = new File(getDataFolder().getParentFile()
 					.getParentFile(), "lib");
@@ -255,58 +251,30 @@ public class PVPArena extends JavaPlugin {
 
 			File lib = new File(destination, "NC-LoaderLib.jar");
 
-			boolean download = false;
-
 			if (!lib.exists()) {
-				System.out.println("Missing NC-Loader lib");
-				download = true;
+				System.out.println("Missing NC-Loader lib, installing...");
 
-			} else {
-				JarFile jarFile = new JarFile(lib);
-				Enumeration<JarEntry> entries = jarFile.entries();
+				String resource = "lib/NC-LoaderLib.jar";
+				
+				InputStream resStreamIn = PVPArena.class.getClassLoader()
+						.getResourceAsStream(resource);
+				try {
+					OutputStream ostream = new FileOutputStream(lib);
 
-				double version = 0;
-
-				while (entries.hasMoreElements()) {
-					JarEntry element = entries.nextElement();
-
-					if (element.getName().equals("version.yml")) {
-						BufferedReader reader = new BufferedReader(
-								new InputStreamReader(
-										jarFile.getInputStream(element)));
-						version = Double.parseDouble(reader.readLine()
-								.substring(9).trim());
+					byte[] buffer = new byte[4096];
+					int l;
+					while ((l = resStreamIn.read(buffer)) > 0) {
+						ostream.write(buffer, 0, l);
 					}
+					ostream.close();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-
-				if (version == 0) {
-					System.out.println("NC-Loader lib outdated");
-					download = true;
-
-				} else {
-					HttpURLConnection urlConnection = (HttpURLConnection) new URL(
-							"http://www.nodinchan.com/NC-LoaderLib/version.yml")
-							.openConnection();
-					BufferedReader reader = new BufferedReader(
-							new InputStreamReader(
-									urlConnection.getInputStream()));
-
-					if (Double.parseDouble(reader.readLine()
-							.replace("NC-LoaderLib Version ", "").trim()) > version)
-						download = true;
-				}
+				System.out.println("Installed NC-Loader lib");
 			}
 			
-			if (download) {
-				System.out.println("Downloading NC-Loader lib...");
-				URL url = new URL(
-						"http://www.nodinchan.com/NC-LoaderLib/NC-LoaderLib.jar");
-				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-				FileOutputStream output = new FileOutputStream(lib);
-				output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				System.out.println("Downloaded NC-Loader lib");
-			}
-			
+			lib = new File(destination, "NC-LoaderLib.jar");
+
 			URLClassLoader sysLoader = (URLClassLoader) ClassLoader
 					.getSystemClassLoader();
 
@@ -424,7 +392,7 @@ public class PVPArena extends JavaPlugin {
 	public ArenaModuleManager getAmm() {
 		return amm;
 	}
-	
+
 	private class WrapPlotter extends Metrics.Plotter {
 		public WrapPlotter(String name) {
 			super(name);

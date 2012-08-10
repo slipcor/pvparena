@@ -2,11 +2,7 @@ package net.slipcor.pvparena.command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -62,19 +58,19 @@ public class PAInstall extends PA_Command {
 			listVersions(sender, config, null);
 			return;
 		}
-		
+
 		if (config.get(args[1]) != null) {
 			listVersions(sender, config, args[1]);
 			return;
 		}
-		
+
 		Set<String> list;
-		
+
 		list = config.getConfigurationSection("arenas").getKeys(false);
 		if (list.contains(args[1].toLowerCase())) {
 			for (String key : list) {
 				if (key.equalsIgnoreCase(args[1])) {
-					if(download("pa_a_" + key + ".jar")) {
+					if (download("pa_a_" + key + ".jar")) {
 						PVPArena.instance.getAtm().reload();
 						Arenas.tellPlayer(sender, "installed: " + key);
 						return;
@@ -84,7 +80,7 @@ public class PAInstall extends PA_Command {
 				}
 			}
 		}
-		
+
 		list = config.getConfigurationSection("modules").getKeys(false);
 		if (list.contains(args[1].toLowerCase())) {
 			for (String key : list) {
@@ -99,7 +95,7 @@ public class PAInstall extends PA_Command {
 				}
 			}
 		}
-		
+
 		list = config.getConfigurationSection("regions").getKeys(false);
 		if (list.contains(args[1].toLowerCase())) {
 			for (String key : list) {
@@ -134,9 +130,11 @@ public class PAInstall extends PA_Command {
 				if (installed) {
 					version = type.version();
 				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
+				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7")
+						+ key
+						+ "§r - "
+						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
+								: "") + value);
 			}
 		}
 		if (s == null || s.toLowerCase().equals("modules")) {
@@ -151,9 +149,11 @@ public class PAInstall extends PA_Command {
 				if (installed) {
 					version = mod.version();
 				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
+				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7")
+						+ key
+						+ "§r - "
+						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
+								: "") + value);
 			}
 
 		}
@@ -170,15 +170,30 @@ public class PAInstall extends PA_Command {
 				if (installed) {
 					version = reg.version();
 				}
-				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7") + key
-						+ "§r - " + (installed?((value.equals(version)) ? "§a" : "§c"):"")
-						+ value);
+				Arenas.tellPlayer(sender, ((installed) ? "§e" : "§7")
+						+ key
+						+ "§r - "
+						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
+								: "") + value);
 			}
 
 		}
 	}
 
 	private boolean download(String file) {
+
+		File source = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/files/" + file);
+
+		if (source == null || !source.exists()) {
+			PVPArena.instance
+					.getLogger()
+					.severe("§cFile '§r"
+							+ file
+							+ "§c' not found. Please extract the file to /files before trying to install!");
+			return false;
+		}
+
 		String folder = null;
 		if (file.startsWith("pa_a")) {
 			folder = "/arenas/";
@@ -191,27 +206,10 @@ public class PAInstall extends PA_Command {
 			System.out.print("[SEVERE] unable to fetch file: " + file);
 			return false;
 		}
-		try {
-			File destination = new File(PVPArena.instance.getDataFolder().getPath() + folder);
-
-			File destFile = new File(destination, file);
-			if (destFile.exists()) {
-				destFile.delete();
-			}
-
-			System.out.println("Downloading module '"+file+"'...");
-			URL url = new URL(
-					"http://www.slipcor.net/public/mc/pafiles/" + file);
-			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-			FileOutputStream output = new FileOutputStream(destFile);
-			output.getChannel().transferFrom(rbc, 0, 1 << 24);
-			System.out.println("Downloaded module!");
-
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return false;
+		File destination = new File(PVPArena.instance.getDataFolder().getPath()
+				+ folder + file);
+		
+		return source.renameTo(destination);
 	}
 
 	@Override

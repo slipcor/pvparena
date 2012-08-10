@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.2 - offline updating
 * v0.8.12.1 - fix several NPEs
 * v0.8.12.0 - fix disconnect exploit
 * v0.8.11.28 - maybe fix the chatting the correct way ^^
