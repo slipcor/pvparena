@@ -389,19 +389,6 @@ public class Arena {
 	}
 
 	/**
-	 * read the saved player location
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return the saved location
-	 */
-	public Location getPlayerOldLocation(Player player) {
-		db.i("reading old location of player " + player.getName());
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		return ap.location;
-	}
-
-	/**
 	 * hand over all players
 	 * 
 	 * @return all players
