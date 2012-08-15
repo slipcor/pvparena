@@ -113,6 +113,7 @@ public class Language {
 				"Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player");
 		config.addDefault("lang.setspectator", "Spectator spawn set.");
 		config.addDefault("lang.setexit", "Exit spawn set.");
+		config.addDefault("lang.settype", "Arena %1% now has type %2%.");
 		config.addDefault("lang.forcestop",
 				"You have forced the fight to stop.");
 		config.addDefault("lang.nofight", "There is no fight in progress.");

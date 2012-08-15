@@ -60,6 +60,8 @@ public abstract class PAA_Command {
 			return new PAABorders();
 		} else if (s.equalsIgnoreCase("set")) {
 			return new PAASet();
+		} else if (s.equalsIgnoreCase("settype")) {
+			return new PAASetType();
 		} else if (s.equalsIgnoreCase("forcestop")) {
 			return new PAAForceStop();
 		} else if (s.equalsIgnoreCase("blacklist")) {
