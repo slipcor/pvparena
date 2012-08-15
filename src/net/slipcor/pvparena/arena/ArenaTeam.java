@@ -4,6 +4,8 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 
 /**
@@ -15,11 +17,13 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.7.16
+ * @version v0.9.0
  * 
  */
 
 public class ArenaTeam {
+	
+	private static Debug db = new Debug(6);
 
 	private final HashSet<ArenaPlayer> players;
 	private final ChatColor color;
@@ -113,5 +117,9 @@ public class ArenaTeam {
 	 */
 	public void remove(ArenaPlayer player) {
 		this.players.remove(player);
+	}
+
+	public boolean hasPlayer(Player p) {
+		return players.contains(ArenaPlayer.parsePlayer(p));
 	}
 }

@@ -8,7 +8,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -74,9 +73,9 @@ public class Teams {
 		for (ArenaTeam team : arena.getTeams()) {
 			String s = team.getName();
 			// check if we are full
-			db.i("String s: " + s + "; max: " + arena.cfg.getInt("ready.max"));
-			if (counts.get(s) < arena.cfg.getInt("ready.max")
-					|| arena.cfg.getInt("ready.max") == 0) {
+			db.i("String s: " + s + "; max: " + arena.getArenaConfig().getInt("ready.max"));
+			if (counts.get(s) < arena.getArenaConfig().getInt("ready.max")
+					|| arena.getArenaConfig().getInt("ready.max") == 0) {
 				full = false;
 				break;
 			}
@@ -89,7 +88,7 @@ public class Teams {
 
 		HashSet<String> free = new HashSet<String>();
 
-		int max = arena.cfg.getInt("ready.maxTeam");
+		int max = arena.getArenaConfig().getInt("ready.maxTeam");
 		max = max == 0 ? Integer.MAX_VALUE : max;
 		// calculate the max value down to the minimum
 		for (String s : counts.keySet()) {
@@ -167,17 +166,15 @@ public class Teams {
 
 		db.i("calculating player team");
 
-		boolean free = arena.type().isFreeForAll();
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
-				Arenas.tellPlayer(player, Language.parse("alreadyjoined"),
-						arena);
+				arena.msg(player, Language.parse("alreadyjoined"));
 				return;
 			}
 		}
 
-		String sTeam = free ? "free" : calcFreeTeam(arena);
+		String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
 
 		db.i(sTeam);
 
@@ -185,24 +182,21 @@ public class Teams {
 
 		aTeam.add(ap);
 
-		if (free) {
+		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(player, "lounge");
 		} else {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
 		}
 		String coloredTeam = aTeam.colorize();
 		
-		String type = arena.type().getName().equals("teams") ? "" : arena.type().getName();
-		
-		Arenas.tellPlayer(
-				player,
-				Language.parse("youjoined" + type, coloredTeam),
-				arena);
-		PVPArena.instance.getAmm().choosePlayerTeam(arena, player, coloredTeam);
-		arena.tellEveryoneExcept(
-				player,
-				Language.parse("playerjoined" + type,
-						player.getName(), coloredTeam));
+		if (arena.isFreeForAll()) {
+			coloredTeam = "";
+		}
+
+		arena.msg(player, arena.getArenaConfig().getString("msg.youjoined").replace("%1%", coloredTeam));
+		arena.tellEveryoneExcept(player,
+				arena.getArenaConfig().getString("msg.playerjoined").replace("%1%",player.getName()).replace("%2%",coloredTeam));
+
 	}
 
 	/**
@@ -251,7 +245,7 @@ public class Teams {
 				result += ", ";
 
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				if (p.getStatus().equals(Status.LOBBY)) {
+				if (p.getStatus().equals(Status.LOUNGE)) {
 					if (!result.equals(""))
 						result += ", ";
 					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;

@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Material;
@@ -29,7 +31,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncloader.Loadable;
+import com.nodinchan.ncbukkit.loader.Loadable;
 
 /**
  * arena module class
@@ -40,7 +42,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.7.19
+ * @version v0.9.0
  * 
  */
 
@@ -170,10 +172,8 @@ public class ArenaModule extends Loadable {
 	 *            the arena being parsed
 	 * @param config
 	 *            the config being parsed
-	 * @param type
-	 *            the desired arena type
 	 */
-	public void configParse(Arena arena, YamlConfiguration config, String type) {
+	public void configParse(Arena arena, YamlConfiguration config) {
 	}
 
 	public HashSet<String> getAddedSpawns() {
@@ -389,12 +389,12 @@ public class ArenaModule extends Loadable {
 	 * 
 	 * @param arena
 	 *            the area where this happens
-	 * @param player
+	 * @param sender
 	 *            the joining player
-	 * @param coloredTeam
+	 * @param team
 	 *            the colored team name
 	 */
-	public void parseJoin(Arena arena, Player player, String coloredTeam) {
+	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 	}
 
 	/**
@@ -493,5 +493,39 @@ public class ArenaModule extends Loadable {
 	}
 
 	public void load_arenas() {
+	}
+
+	public boolean isActive(Arena arena) {
+		return false;
+	}
+
+	public boolean hasSpawn(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public PACheckResult checkJoin(Arena arena, CommandSender sender,
+			PACheckResult res, boolean b) {
+		return res;
+	}
+
+	public void parseLeave(Arena arena, CommandSender sender) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void parseSpectate(Arena arena, CommandSender sender) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void displayInfo(Arena arena, CommandSender sender) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public PACheckResult checkStart(Arena arena, ArenaPlayer ap,
+			PACheckResult res) {
+		return res;
 	}
 }

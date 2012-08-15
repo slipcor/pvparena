@@ -3,6 +3,7 @@ package net.slipcor.pvparena.arena;
 import java.util.Collection;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -20,11 +21,13 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.8.12
+ * @version v0.9.0
  * 
  */
 
 public final class PlayerState {
+	
+	private static Debug db = new Debug(7);
 
 	private String sPlayer;
 
@@ -57,7 +60,7 @@ public final class PlayerState {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 
-		if (ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
+		if (ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
 			this.displayname = player.getDisplayName();
 		}
 	}
@@ -81,13 +84,13 @@ public final class PlayerState {
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
-		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
+		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(displayname);
 		}
 		
 		if (ap.getArena() != null) {
 			PVPArena.instance.getAmm().unload(player);
-			ap.getArena().type().unload(player);
+			PVPArena.instance.getAtm().unload(ap.getArena(), player);
 		}
 		
 
@@ -115,13 +118,13 @@ public final class PlayerState {
 		player.setExhaustion(exhaustion);
 		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
+		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
 			player.setDisplayName(displayname);
 		}
 		
 		if (ap.getArena() != null) {
 			PVPArena.instance.getAmm().unload(player);
-			ap.getArena().type().unload(player);
+			PVPArena.instance.getAtm().unload(ap.getArena(), player);
 		}
 		
 

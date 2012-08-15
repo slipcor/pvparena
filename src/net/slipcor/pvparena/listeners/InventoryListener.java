@@ -36,7 +36,7 @@ public class InventoryListener implements Listener {
 
 		db.i("InventoryClick: arena player");
 
-		if (!arena.cfg.getBoolean("protection.inventory")) {
+		if (!arena.getArenaConfig().getBoolean("protection.inventory")) {
 			// we don't need no protection => out!
 			return;
 		}
@@ -52,7 +52,7 @@ public class InventoryListener implements Listener {
 			if (event.getRawSlot() != 5) {
 				return;
 			}
-			event.setCancelled(arena.cfg.getBoolean("game.woolHead", false));
+			event.setCancelled(arena.getArenaConfig().getBoolean("game.woolHead", false));
 			return;
 		}
 

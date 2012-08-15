@@ -46,12 +46,20 @@ A PVP experience enhancing plugin.
 === Changelog
 
 * v0.9.0.0 - major organisation rewrite
+** <<<<< changes since v0.8.12.2 >>>>>
+** use NC-BukkitLib instead of NC-LoaderLib
+** the region modules are not "Regions", they are "RegionShapes" ;)
+** attach the chatting determination to the player, not to an arena
+** remove ArenaType, add ArenaGoal (one type => multiple goals)
+** remove lives from the main plugin, attach this logic to the arena goals
+** remove positions from the arena, attach to player
+** enormous rewrite considering renaming, restructuring, improvements during 1.0 development
+** intense command rewrite
 
 -----------------------------------------------------------------------------------------------------------------------
 
 === Todo
 
-* rewrite (new loader, loading from dev.bukkit)
 ** allow other-world-spawns
 ** flatfile inventories for restoring
 ** rounds - full restart to "tpalltospawns"

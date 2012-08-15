@@ -33,11 +33,11 @@ public class InventoryRestoreRunnable implements Runnable {
 	public void run() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (ap.getStatus().equals(Status.FIGHT)) {
-			if (ap.getClass().equals("custom") || !arena.cfg.getBoolean("game.refillInventory")) {
+			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean("game.refillInventory")) {
 				ArenaClass.equip(player, items);
 			} else {
 				Inventories.clearInventory(player);
-				Inventories.givePlayerFightItems(arena, player);
+				ArenaPlayer.givePlayerFightItems(arena, player);
 			}
 		}
 		player.setFireTicks(0);

@@ -29,9 +29,9 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(ArenaRegion r, int i) {
+	public RegionRunnable(ArenaRegion paRegion, int i) {
 		id = 0;
-		this.r = r;
+		this.r = paRegion;
 		db.i("RegionRunnable constructor");
 	}
 
@@ -41,7 +41,7 @@ public class RegionRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("RegionRunnable commiting");
-		if (r.arena.fightInProgress) {
+		if (r.getArena().isFightInProgress()) {
 			r.tick();
 		} else {
 			Bukkit.getScheduler().cancelTask(id);

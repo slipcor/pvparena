@@ -45,6 +45,8 @@ public class Update extends Thread {
 
 	public Update(Plugin p) {
 		plugin = p;
+		init();
+		start();
 	}
 
 	/**

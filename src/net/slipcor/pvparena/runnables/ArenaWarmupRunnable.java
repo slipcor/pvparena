@@ -6,9 +6,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.command.PAAJoin;
-import net.slipcor.pvparena.command.PAAJoinTeam;
-import net.slipcor.pvparena.command.PAASpectate;
+import net.slipcor.pvparena.commands.PAG_Join;
+import net.slipcor.pvparena.commands.PAG_Spectate;
 import net.slipcor.pvparena.core.Debug;
 
 /**
@@ -67,13 +66,13 @@ public class ArenaWarmupRunnable implements Runnable {
 		db.i("ArenaWarmupRunnable commiting");
 		player.setStatus(Status.WARM);
 		if (spectator) {
-			(new PAASpectate()).commit(arena, player.get(), null);
+			(new PAG_Spectate()).commit(arena, player.get(), null);
 		} else if (teamName == null) {
-			(new PAAJoin()).commit(arena, player.get(), null);
+			(new PAG_Join()).commit(arena, player.get(), null);
 		} else {
 			String[] args = new String[1];
 			args[0] = teamName;
-			(new PAAJoinTeam()).commit(arena, player.get(), args);
+			(new PAG_Join()).commit(arena, player.get(), args);
 		}
 		Bukkit.getScheduler().cancelTask(id);
 	}

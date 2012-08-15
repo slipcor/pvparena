@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -324,6 +325,22 @@ public class StringParser {
 	}
 
 	public static String joinArray(Object[] array, String glue) {
+		String result = "";
+		for (Object o : array) {
+			result += glue + String.valueOf(o);
+		}
+		return result.substring(glue.length());
+	}
+
+	public static String[] shiftArrayBy(String[] args, int i) {
+		String[] newArgs = new String[args.length - i];
+		System.arraycopy(args, i, newArgs, 0, args.length - i);
+		args = newArgs;
+		
+		return args;
+	}
+
+	public static String joinSet(HashSet<?> array, String glue) {
 		String result = "";
 		for (Object o : array) {
 			result += glue + String.valueOf(o);

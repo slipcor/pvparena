@@ -227,7 +227,7 @@ public class Statistics {
 	 * @return an array of ArenaPlayer
 	 */
 	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
-		db.i("getting stats: " + (a == null?"global":a.name) + " sorted by " + sortBy + " "
+		db.i("getting stats: " + (a == null?"global":a.getName()) + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
 		
 		int count = (a == null)?ArenaPlayer.countPlayers():Teams.countPlayersInTeams(a);
@@ -240,7 +240,7 @@ public class Statistics {
 				aps[i++] = p;
 			}
 		} else {
-			for (ArenaPlayer p : a.getPlayers()) {
+			for (ArenaPlayer p : a.getFighters()) {
 				aps[i++] = p;
 			}
 		}

@@ -73,7 +73,7 @@ public class TimerInfo {
 			return;
 		}
 		if (arena != null) {
-			HashSet<ArenaPlayer> players = arena.getPlayers();
+			HashSet<ArenaPlayer> players = arena.getFighters();
 			for (ArenaPlayer ap : players) {
 				if (player != null) {
 					if (ap.getName().equals(player.getName())) {
@@ -81,7 +81,7 @@ public class TimerInfo {
 					}
 				}
 				if (ap.get() != null) {
-					Arenas.tellPlayer(ap.get(), message, arena);
+					arena.msg(ap.get(), message);
 				}
 			}
 			return;

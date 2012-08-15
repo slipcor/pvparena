@@ -2,6 +2,9 @@ package net.slipcor.pvparena.arena;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import net.slipcor.pvparena.core.Debug;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,11 +19,13 @@ import org.bukkit.inventory.PlayerInventory;
  * 
  * @author slipcor
  * 
- * @version v0.7.11
+ * @version v0.9.0
  * 
  */
 
 public final class ArenaClass {
+	
+	private static Debug db = new Debug(4);
 
 	private final String name;
 	private final ItemStack[] items;
@@ -75,6 +80,17 @@ public final class ArenaClass {
 		}
 	}
 
+	public void equip(Player player) {
+		for (int i = 0; i < items.length; ++i) {
+			ItemStack stack = items[i];
+			if (ARMORS_TYPE.contains(stack.getType())) {
+				equipArmor(stack, player.getInventory());
+			} else {
+				player.getInventory().addItem(new ItemStack[] { stack });
+			}
+		}
+	}
+
 	/**
 	 * equip an armor item to the respective slot
 	 * 
@@ -105,15 +121,8 @@ public final class ArenaClass {
 		return name;
 	}
 
-	public void load(Player player) {
-		for (int i = 0; i < items.length; ++i) {
-			ItemStack stack = items[i];
-			if (ARMORS_TYPE.contains(stack.getType())) {
-				equipArmor(stack, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { stack });
-			}
-		}
+	public ItemStack[] getItems() {
+		return items;
 	}
 	
 	

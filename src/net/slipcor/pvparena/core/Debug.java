@@ -85,23 +85,6 @@ public class Debug {
 		Bukkit.getLogger().severe(prefix + s);
 	}
 
-	/**
-	 * read a string array and return a readable string
-	 * 
-	 * @param s
-	 *            the string array
-	 * @return a string, the array elements joined with comma
-	 */
-	public String formatStringArray(String[] s) {
-		if (s == null)
-			return "NULL";
-		String result = "";
-		for (int i = 0; i < s.length; i++) {
-			result = result + (result.equals("") ? "" : ",") + s[i];
-		}
-		return result;
-	}
-
 	public static void load(PVPArena instance, CommandSender sender) {
 		Debug.check.clear();
 		//level = 0;

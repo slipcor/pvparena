@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.managers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,8 +15,8 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaRegion;
-import net.slipcor.pvparena.neworder.ArenaType;
 
 /**
  * config manager class
@@ -39,20 +41,25 @@ public class Configs {
 	 *            the arena to load
 	 * @param cfg
 	 *            the configuration
-	 * @param type
 	 */
-	public static void configParse(Arena arena, Config cfg, String type) {
+	public static void configParse(Arena arena, Config cfg) {
 		cfg.load();
 		YamlConfiguration config = cfg.getYamlConfiguration();
 
-		if (type == null) {
+		if (cfg.get("general.type") != null) {
 			// opening existing arena
-			type = cfg.getString("general.type", "teams");
-		}
-		ArenaType aType = PVPArena.instance.getAtm().getType(type);
+			arena.setFree(cfg.getString("general.type").equals("free"));
+			
+			List<String> list = cfg.getStringList("arenagoals", new ArrayList<String>());
+			for (String type : list) {
+				ArenaGoal aType = PVPArena.instance.getAtm().getType(type);
 
-		arena.setType((ArenaType) aType.clone());
-		arena.type().setArena(arena);
+				arena.addGoal((ArenaGoal) aType.clone());
+			}
+			
+		} else {
+			
+		}
 
 		if (config.get("classitems") == null) {
 			if (PVPArena.instance.getConfig().get("classitems") != null) {
@@ -77,7 +84,7 @@ public class Configs {
 		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
 		config.addDefault("game.lives", Integer.valueOf(3));
 		config.addDefault("game.preventDeath", Boolean.valueOf(true));
-		config.addDefault("game.teamKill", Boolean.valueOf(arena.type().isFreeForAll()));
+		config.addDefault("game.teamKill", Boolean.valueOf(arena.isFreeForAll()));
 		config.addDefault("game.refillInventory", Boolean.valueOf(false));
 		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
 		config.addDefault("game.mustbesafe", Boolean.valueOf(false));
@@ -92,7 +99,7 @@ public class Configs {
 		config.addDefault("general.enabled", Boolean.valueOf(true));
 		config.addDefault("general.restoreChests", Boolean.valueOf(false));
 		config.addDefault("general.signs", Boolean.valueOf(true));
-		config.addDefault("general.type", type);
+		config.addDefault("general.type", arena.isFreeForAll()?"free":"team");
 		config.addDefault("general.item-rewards", "none");
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
 		config.addDefault("general.prefix", "PVP Arena");
@@ -102,7 +109,7 @@ public class Configs {
 		config.addDefault("region.timer", Integer.valueOf(20));
 		
 		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
-		config.addDefault("join.manual", Boolean.valueOf(!arena.type().isFreeForAll()));
+		config.addDefault("join.manual", Boolean.valueOf(!arena.isFreeForAll()));
 		config.addDefault("join.random", Boolean.valueOf(true));
 		config.addDefault("join.onCountdown", Boolean.valueOf(false));
 		config.addDefault("join.forceeven", Boolean.valueOf(false));
@@ -110,7 +117,7 @@ public class Configs {
 		config.addDefault("join.range", Integer.valueOf(0));
 		config.addDefault("join.warmup", Integer.valueOf(0));
 		
-		config.addDefault("arenatype.randomSpawn", arena.type().isFreeForAll());
+		config.addDefault("arenatype.randomSpawn", arena.isFreeForAll());
 		config.addDefault("goal.timed", Integer.valueOf(0));
 		config.addDefault("goal.endtimer", Integer.valueOf(20));
 
@@ -163,7 +170,7 @@ public class Configs {
 		config.addDefault("ready.autoclass", "none");
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 
-		arena.type().addDefaultTeams(config);
+		PVPArena.instance.getAtm().addDefaultTeams(arena, config);
 
 		config.options().copyDefaults(true);
 
@@ -197,22 +204,22 @@ public class Configs {
 			db.i("adding class items to class " + className);
 		}
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
-		arena.sm = new Settings(arena);
+		arena.setSettingsManager(new Settings(arena));
 		if (cfg.getString("general.owner") != null) {
-			arena.owner = cfg.getString("general.owner");
+			arena.setOwner(cfg.getString("general.owner"));
 		}
 		if (config.getConfigurationSection("regions") != null) {
 			Map<String, Object> regs = config
 					.getConfigurationSection("regions").getValues(false);
 			for (String rName : regs.keySet()) {
-				ArenaRegion region = PVPArena.instance.getArm().readRegionFromConfig(rName, config, arena);
+				ArenaRegion region = PVPArena.instance.getArsm().readRegionFromConfig(rName, config, arena);
 				
 				if (region == null) {
 					System.out.print("[SEVERE] Error while loading arena, region null: " + rName);
 				} else if (region.getWorld() == null) {
 					System.out.print("[SEVERE] Error while loading arena, world null: " + rName);
 				} else {
-					arena.regions.put(rName, region);
+					arena.getRegions().add(region);
 				}
 			}
 		}
@@ -228,11 +235,11 @@ public class Configs {
 					+ team.getColorString());
 		}
 
-		arena.type().configParse();
+		PVPArena.instance.getAtm().configParse(arena);
 
-		PVPArena.instance.getAmm().configParse(arena, config, type);
+		PVPArena.instance.getAmm().configParse(arena, config);
 
-		arena.prefix = cfg.getString("general.prefix", "PVP Arena");
+		arena.setPrefix(cfg.getString("general.prefix", "PVP Arena"));
 	}
 
 	/**
@@ -243,17 +250,17 @@ public class Configs {
 	 * @return an error string if there is something missing, null otherwise
 	 */
 	public static String isSetup(Arena arena) {
-		arena.cfg.load();
+		arena.getArenaConfig().load();
 
-		if (arena.cfg.get("spawns") == null) {
+		if (arena.getArenaConfig().get("spawns") == null) {
 			return "no spawns set";
 		}
 
-		if (arena.edit) {
+		if (arena.isLocked()) {
 			return "edit mode!";
 		}
 
-		Set<String> list = arena.cfg.getYamlConfiguration()
+		Set<String> list = arena.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false).keySet();
 
 		// we need the 2 that every arena has
@@ -266,6 +273,6 @@ public class Configs {
 		if (error != null) {
 			return error;
 		}
-		return arena.type().checkSpawns(list);
+		return PVPArena.instance.getAtm().checkSpawns(arena, list);
 	}
 }

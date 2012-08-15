@@ -51,13 +51,4 @@ public class PAStartEvent extends Event {
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-
-	/**
-	 * return the battlefield center
-	 * 
-	 * @return the battlefield center location
-	 */
-	public Location getRegionCenter() {
-		return Spawns.getRegionCenter(arena);
-	}
 }

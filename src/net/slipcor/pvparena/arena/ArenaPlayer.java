@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
@@ -34,22 +38,22 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.8.12
+ * @version v0.9.0
  * 
  */
 
 public class ArenaPlayer {
-	private static Debug db = new Debug(14);
+	private static Debug db = new Debug(5);
 	private String sPlayer = null;
 	private final String name;
 	private Arena arena;
 	private ArenaClass aClass;
 	private PlayerState state;
 
-	public ItemStack[] savedInventory;
-	public ItemStack[] savedArmor;
+	private ItemStack[] savedInventory;
+	private ItemStack[] savedArmor;
 
-	public Location location;
+	public PALocation location;
 
 	// public String respawn = "";
 	public boolean telePass = false;
@@ -57,20 +61,20 @@ public class ArenaPlayer {
 	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
 	private static HashMap<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
 
-	private Status status = Status.EMPTY;
+	private Status status = Status.NULL;
 	
 	/**
-	 *  - EMPTY = not part of an arena
+	 *  - NULL = not part of an arena
 	 *  - WARM = not part of an arena, warmed up
-	 *  - LOBBY = inside an arena lobby mode
+	 *  - LOUNGE = inside an arena lobby mode
 	 *  - READY = inside an arena lobby mode, readied up
 	 *  - FIGHT = fighting inside an arena
 	 *  - WATCH = watching a fight from the spectator area
-	 *  - DEATH = dead and soon respawning
-	 *  - LOSES = lost and thus spectating 
+	 *  - DEAD = dead and soon respawning
+	 *  - LOST = lost and thus spectating 
 	 * @author slipcor
 	 */
-	public static enum Status {EMPTY, WARM, LOBBY, READY, FIGHT, WATCH, DEATH, LOSES}
+	public static enum Status {NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST}
 
 	public int losses = 0;
 	public int wins = 0;
@@ -89,6 +93,10 @@ public class ArenaPlayer {
 	public int totmaxdamage = 0;
 	public int totdamagetake = 0;
 	public int totmaxdamagetake = 0;
+	
+	private boolean chatting = false;
+	public Location pos1; // temporary position 1 (region select)
+	public Location pos2; // temporary position 2 (region select)
 
 	public static HashMap<ArenaPlayer, String> deadPlayers = new HashMap<ArenaPlayer, String>();
 
@@ -161,7 +169,7 @@ public class ArenaPlayer {
 	 */
 	public void createState(Player player) {
 		state = new PlayerState(player);
-		location = player.getLocation();
+		location = new PALocation(player.getLocation());
 	}
 
 	/**
@@ -282,6 +290,10 @@ public class ArenaPlayer {
 		return telePass;
 	}
 
+	public boolean isChatting() {
+		return chatting;
+	}
+
 	/**
 	 * has a player died in the arena?
 	 * 
@@ -303,6 +315,10 @@ public class ArenaPlayer {
 			totalPlayers.put(player.getName(), new ArenaPlayer(player, null));
 		}
 		return totalPlayers.get(player.getName());
+	}
+
+	public static ArenaPlayer parsePlayer(String name) {
+		return parsePlayer(Bukkit.getPlayerExact(name));
 	}
 	
 	public static int countPlayers() {
@@ -357,7 +373,7 @@ public class ArenaPlayer {
 		//savedInventory = null;
 		//savedArmor = null;
 
-		setStatus(Status.EMPTY);
+		setStatus(Status.NULL);
 
 		if (arena != null) {
 			ArenaTeam team = Teams.getTeam(arena, this);
@@ -387,6 +403,10 @@ public class ArenaPlayer {
 	 */
 	public void setArenaClass(ArenaClass aClass) {
 		this.aClass = aClass;
+	}
+
+	public void setChatting(boolean b) {
+		chatting = b;
 	}
 
 	/**
@@ -431,7 +451,7 @@ public class ArenaPlayer {
 		}
 		
 		YamlConfiguration cfg = new YamlConfiguration();
-		cfg.set("arena", arena.name);
+		cfg.set("arena", arena.getName());
 		if (state != null) {
 			state.dump(cfg);
 		}
@@ -471,5 +491,84 @@ public class ArenaPlayer {
 		}
 		
 		f.delete();
+	}
+
+	/**
+	 * supply a player with class items and eventually wool head
+	 * 
+	 * @param player
+	 *            the player to supply
+	 */
+	public static void givePlayerFightItems(Arena arena, Player player) {
+		ArenaPlayer ap = parsePlayer(player);
+	
+		ArenaClass playerClass = ap.getaClass();
+		if (playerClass == null) {
+			return;
+		}
+		Inventories.db.i("giving items to player '" + player.getName() + "', class '"
+				+ playerClass.getName() + "'");
+	
+		playerClass.equip(player);
+	
+		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
+			ArenaTeam aTeam = Teams.getTeam(arena, ap);
+			String color = aTeam.getColor().name();
+			Inventories.db.i("forcing woolhead: " + aTeam.getName() + "/" + color);
+			player.getInventory().setHelmet(
+					new ItemStack(Material.WOOL, 1, StringParser
+							.getColorDataFromENUM(color)));
+		}
+	}
+
+	/**
+	 * prepare a player's inventory, back it up and clear it
+	 * 
+	 * @param player
+	 *            the player to save
+	 */
+	public static void prepareInventory(Arena arena, Player player) {
+		Inventories.db.i("saving player inventory: " + player.getName());
+	
+		ArenaPlayer p = parsePlayer(player);
+		p.savedInventory = player.getInventory().getContents().clone();
+		p.savedArmor = player.getInventory().getArmorContents().clone();
+		Inventories.clearInventory(player);
+	}
+
+	/**
+	 * reload player inventories from saved variables
+	 * 
+	 * @param player
+	 */
+	public static void reloadInventory(Arena arena, Player player) {
+	
+		if (player == null) {
+			return;
+		}
+		Inventories.db.i("resetting inventory: " + player.getName());
+		if (player.getInventory() == null) {
+			return;
+		}
+	
+		ArenaPlayer p = parsePlayer(player);
+	
+		if (p.savedInventory == null) {
+			return;
+		}
+		player.getInventory().setContents(p.savedInventory);
+		player.getInventory().setArmorContents(p.savedArmor);
+		//p.savedInventory = null;
+	}
+
+	public boolean didValidSelection() {
+		return pos1 != null && pos2 != null;
+	}
+
+	public PABlockLocation[] getSelection() {
+		PABlockLocation[] locs = new PABlockLocation[2];
+		locs[0] = new PABlockLocation(pos1);
+		locs[0] = new PABlockLocation(pos2);
+		return locs;
 	}
 }

@@ -8,13 +8,15 @@ import java.util.Map;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.command.PAAJoin;
-import net.slipcor.pvparena.command.PAAJoinTeam;
-import net.slipcor.pvparena.command.PAA_Command;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.commands.PAA__Command;
+import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.neworder.ArenaType;
+import net.slipcor.pvparena.neworder.ArenaGoal;
+import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -41,7 +43,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Arenas {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	private static Debug db = new Debug(23);
+	public static Debug db = new Debug(23);
 
 	/**
 	 * check for arena end and commit it, if true
@@ -52,12 +54,12 @@ public class Arenas {
 	 */
 	public static boolean checkAndCommit(Arena arena) {
 		db.i("checking for arena end");
-		if (!arena.fightInProgress) {
+		if (!arena.isFightInProgress()) {
 			db.i("no fight, no end ^^");
 			return false;
 		}
 
-		return arena.type().checkAndCommit();
+		return PVPArena.instance.getAtm().checkAndCommit(arena);
 	}
 
 	/**
@@ -68,9 +70,9 @@ public class Arenas {
 	 * @return true if not set or player inside, false otherwise
 	 */
 	public static boolean checkJoin(Player player, Arena a) {
-		for (String rName : a.regions.keySet()) {
-			if (rName.equals("join")) {
-				return a.regions.get(rName).contains(player.getLocation());
+		for (ArenaRegion region : a.getRegions()) {
+			if (region.getType().equals(RegionType.JOIN)) {
+				return region.contains(new PABlockLocation(player.getLocation()));
 			}
 		}
 		return true; // no join region set
@@ -88,7 +90,7 @@ public class Arenas {
 			if (a.equals(arena))
 				continue;
 
-			if ((a.fightInProgress) && !Regions.checkRegion(a, arena)) {
+			if ((a.isFightInProgress()) && !Regions.checkRegion(a, arena)) {
 				return false;
 			}
 		}
@@ -170,7 +172,7 @@ public class Arenas {
 	public static String getArenaNameByPlayer(Player pPlayer) {
 		for (Arena arena : arenas.values()) {
 			if (arena.isPartOf(pPlayer))
-				return arena.name;
+				return arena.getName();
 		}
 		return null;
 	}
@@ -225,16 +227,15 @@ public class Arenas {
 				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
-					String arenaType = preParse(sName);
-					if (arenaType == null) {
+					String error = checkForMissingGoals(sName);
+					if (error == null) {
 						db.i("arena: " + sName);
-						loadArena(sName, arenaType);
-						// this is on purpose, I want to call with NULL :p
+						loadArena(sName);
 					} else {
 						System.out
 								.print("[PVP Arena] "
 										+ Language.parse("arenatypeunknown",
-												arenaType));
+												error));
 					}
 				}
 			}
@@ -250,13 +251,11 @@ public class Arenas {
 	 * 
 	 * @param configFile
 	 *            the file to load
-	 * @param type
-	 *            the arena type
 	 */
-	public static Arena loadArena(String configFile, String type) {
-		db.i("loading arena " + configFile + " (" + type + ")");
-		Arena arena = new Arena(configFile, type);
-		arenas.put(arena.name, arena);
+	public static Arena loadArena(String configFile) {
+		db.i("loading arena " + configFile);
+		Arena arena = new Arena(configFile);
+		arenas.put(arena.getName(), arena);
 		return arena;
 	}
 
@@ -265,9 +264,9 @@ public class Arenas {
 	 * 
 	 * @param name
 	 *            the arena name to load
-	 * @return the arena type name if successful, null otherwise
+	 * @return 
 	 */
-	private static String preParse(String name) {
+	private static String checkForMissingGoals(String name) {
 		db.i("pre-Parsing Arena " + name);
 		File file = new File(PVPArena.instance.getDataFolder() + "/config_"
 				+ name + ".yml");
@@ -275,11 +274,14 @@ public class Arenas {
 			return "file does not exist";
 		}
 		Config cfg = new Config(file);
+		
+		//TODO add reading of all Goals, return STRING if an error occured, null otherwise!
+		
 		cfg.load();
 		String arenaType = cfg.getString("general.type",
 				"please redo your arena");
 
-		ArenaType type = PVPArena.instance.getAtm().getType(arenaType);
+		ArenaGoal type = PVPArena.instance.getAtm().getType(arenaType);
 
 		return type == null ? arenaType : null;
 	}
@@ -289,25 +291,9 @@ public class Arenas {
 	 */
 	public static void reset(boolean force) {
 		for (Arena arena : arenas.values()) {
-			db.i("resetting arena " + arena.name);
+			db.i("resetting arena " + arena.getName());
 			arena.reset(force);
 		}
-	}
-
-	/**
-	 * send a message to a single player
-	 * 
-	 * @param sender
-	 *            the player to send to
-	 * @param msg
-	 *            the message to send
-	 * @param a
-	 *            the arena sending this message
-	 */
-	public static void tellPlayer(CommandSender sender, String msg, Arena a) {
-		db.i("@" + sender.getName() + ": " + msg);
-		sender.sendMessage(ChatColor.YELLOW + "[" + a.prefix + "] "
-				+ ChatColor.WHITE + msg);
 	}
 
 	/**
@@ -354,12 +340,7 @@ public class Arenas {
 								Language.parse("arenanotexists", sName));
 						return;
 					}
-					PAA_Command command;
-					if ( newArgs.length < 1) {
-						command = new PAAJoin();
-					} else {
-						command = new PAAJoinTeam();
-					}
+					PAA__Command command = new PAG_Join();
 					command.commit(a, player, newArgs);
 					return;
 				}
@@ -375,13 +356,18 @@ public class Arenas {
 	 */
 	public static void unload(String string) {
 		Arena a = arenas.get(string);
-		db.i("unloading arena " + a.name);
-		a.forcestop();
+		db.i("unloading arena " + a.getName());
+		a.stop(true);
 		arenas.remove(string);
-		a.cfg.delete();
+		a.getArenaConfig().delete();
 
 		File path = new File("plugins/pvparena/stats_" + string + ".yml");
 		path.delete();
 		a = null;
+	}
+
+	public static void removeArena(Arena arena) {
+		arena.stop(true);
+		arenas.remove(arena.getName());
 	}
 }

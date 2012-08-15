@@ -2,6 +2,7 @@ package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 
@@ -54,8 +55,8 @@ public class TimedEndRunnable implements Runnable {
 	
 	private void commit() {
 		db.i("TimedEndRunnable commiting");
-		if (arena.fightInProgress)
-			arena.type().timed();
+		if (arena.isFightInProgress())
+			PVPArena.instance.getAtm().timed(arena);
 		else {
 			// deactivate the auto saving task
 			Bukkit.getServer().getScheduler().cancelTask(id);

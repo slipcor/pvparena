@@ -50,8 +50,8 @@ public class EntityListener implements Listener {
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blocktntdamage", true)))
+		if ((!(arena.getArenaConfig().getBoolean("protection.enabled", true)))
+				|| (!(arena.getArenaConfig().getBoolean("protection.blocktntdamage", true)))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
 			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;
@@ -77,7 +77,7 @@ public class EntityListener implements Listener {
 			return;
 
 		db.i("onEntityRegainHealth => fighing player");
-		if (!arena.fightInProgress) {
+		if (!arena.isFightInProgress()) {
 			return;
 		}
 
@@ -190,7 +190,7 @@ public class EntityListener implements Listener {
 			// servers
 		}
 
-		if ((!arena.cfg.getBoolean("game.teamKill", false))
+		if ((!arena.getArenaConfig().getBoolean("game.teamKill", false))
 				&& (Teams.getTeam(arena, apAttacker)).equals(Teams.getTeam(
 						arena, apDefender))) {
 			// no team fights!
@@ -199,13 +199,13 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (!arena.fightInProgress) {
+		if (!arena.isFightInProgress()) {
 			// fight not started, cancel!
 			event.setCancelled(true);
 			return;
 		}
 
-		if (arena.cfg.getBoolean("game.weaponDamage")) {
+		if (arena.getArenaConfig().getBoolean("game.weaponDamage")) {
 			if (Inventories.receivesDamage(attacker.getItemInHand())) {
 				attacker.getItemInHand().setDurability((short) 0);
 			}
@@ -213,9 +213,9 @@ public class EntityListener implements Listener {
 
 		// TODO NOT LAGGING
 
-		if (arena.cfg.getInt("protection.spawn") > 0) {
+		if (arena.getArenaConfig().getInt("protection.spawn") > 0) {
 			if (Spawns.isNearSpawn(arena, defender,
-					arena.cfg.getInt("protection.spawn"))) {
+					arena.getArenaConfig().getInt("protection.spawn"))) {
 				// spawn protection!
 				db.i("spawn protection! damage cancelled!");
 				event.setCancelled(true);
@@ -261,7 +261,7 @@ public class EntityListener implements Listener {
 
 		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender);
 
-		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.EMPTY) && !apDefender.getStatus().equals(Status.FIGHT))) {
+		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.NULL) && !apDefender.getStatus().equals(Status.FIGHT))) {
 			event.setCancelled(true);
 			return;
 		}

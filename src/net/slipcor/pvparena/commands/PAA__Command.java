@@ -1,0 +1,118 @@
+package net.slipcor.pvparena.commands;
+
+import java.util.HashSet;
+
+
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
+
+import org.bukkit.command.CommandSender;
+
+public abstract class PAA__Command {
+	public final String[] perms;
+
+	public PAA__Command(String[] s) {
+		perms = s;
+	}
+
+	public boolean argCountValid(CommandSender sender, Arena arena,
+			String[] args, HashSet<Integer> validCounts) {
+		if (validCounts.contains(args.length)) {
+			return true;
+		}
+
+		String msg = Language.parse("error.invalid_argument_count",
+				String.valueOf(args.length),
+				StringParser.joinSet(validCounts, "|"));
+
+		if (arena == null) {
+			Arena.pmsg(sender, msg);
+			return false;
+		}
+		arena.msg(sender, msg);
+		return false;
+	}
+
+	public abstract void commit(Arena arena, CommandSender sender, String[] args);
+
+	public abstract String getName();
+
+	public boolean hasPerms(CommandSender sender, Arena arena) {
+		if (sender.hasPermission("pvparena.admin")) {
+			return true;
+		}
+
+		if (arena != null && sender.hasPermission("pvparena.create")
+				&& sender.getName().equals(arena.getOwner())) {
+			return true;
+		}
+
+		for (String perm : perms) {
+			if (sender.hasPermission(perm)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static PAA__Command getByName(String name) {
+
+		name = name.toLowerCase();
+
+		if (name.contains("blacklist") || name.equals("!bl")) {
+			return new PAA_BlackList();
+		} else if (name.contains("check") || name.equals("!ch")) {
+			return new PAA_Check();
+		} else if (name.contains("disable") || name.equals("!dis")
+				|| name.equals("!off")) {
+			return new PAA_Disable();
+		} else if (name.contains("edit") || name.equals("!e")) {
+			return new PAA_Edit();
+		} else if (name.contains("enable") || name.equals("!en")
+				|| name.equals("!on")) {
+			return new PAA_Enable();
+		} else if (name.contains("gamemode") || name.equals("!gm")) {
+			return new PAA_GameMode();
+		} else if (name.contains("goal") || name.equals("!g")) {
+			return new PAA_Goal();
+		} else if (name.contains("protect") || name.equals("!p")) {
+			return new PAA_Protection();
+		} else if (name.equals("region") || name.equals("!r")) {
+			return new PAA_Region();
+		} else if (name.equals("regionflag") || name.equals("!rf")) {
+			return new PAA_RegionFlag();
+		} else if (name.contains("reload") || name.equals("!rl")) {
+			return new PAA_Reload();
+		} else if (name.contains("remove") || name.contains("delete") || name.equals("!rem") || name.equals("!del")) {
+			return new PAA_Remove();
+		} else if (name.equals("set") || name.equals("!s")) {
+			return new PAA_Set();
+		} else if (name.equals("setowner") || name.equals("!so")) {
+			return new PAA_SetOwner();
+		} else if (name.equals("spawn") || name.equals("!sp")) {
+			return new PAA_Spawn();
+		} else if (name.equals("forcestop") || name.equals("stop") || name.equals("!st") || name.equals("!fs")) {
+			return new PAA_Stop();
+		} else if (name.contains("teleport") || name.equals("tp") || name.equals("!t")) {
+			return new PAA_Teleport();
+		} else if (name.contains("whitelist") || name.equals("!wl")) {
+			return new PAA_Teleport();
+		} else if (name.contains("chat") || name.equals("-c")) {
+			return new PAG_Chat();
+		} else if (name.contains("join") || name.equals("-j")) {
+			return new PAG_Join();
+		} else if (name.contains("leave") || name.equals("-l")) {
+			return new PAG_Leave();
+		} else if (name.contains("spec") || name.equals("-s")) {
+			return new PAG_Spectate();
+		} else if (name.equals("list") || name.equals("-ls")) {
+			return new PAI_List();
+		} else if (name.equals("ready") || name.equals("-r")) {
+			return new PAI_Ready();
+		}
+
+		return null;
+	}
+}

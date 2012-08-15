@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PALocation;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -376,46 +379,6 @@ public class Config {
 		return l;
 
 	}
-	/**
-	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
-	 * to create a Location array. This method will only accept strings of the
-	 * specified form.
-	 * 
-	 * @param world
-	 *            the World in which the Locations exists
-	 * @param coords
-	 *            a string of the form "x1,y1,z1,x2,y2,z2,spheric"
-	 * @return a Location array in the given world with the given coordinates
-	 */
-	public static Location[] parseRegion(World world, String coords, String startsWith) {
-		String[] parts = coords.split(",");
-		if (parts.length < 6)
-			throw new IllegalArgumentException(
-					"Input string must contain only x1, y1, z1, x2, y2, and z2");
-
-		if (parts.length < 7) {
-			return null;
-		}
-		if (!parts[6].startsWith(startsWith)) {
-			return null;
-		}
-		
-		Integer x1 = parseInteger(parts[0]);
-		Integer y1 = parseInteger(parts[1]);
-		Integer z1 = parseInteger(parts[2]);
-		Integer x2 = parseInteger(parts[3]);
-		Integer y2 = parseInteger(parts[4]);
-		Integer z2 = parseInteger(parts[5]);
-
-		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-		Location[] l = { new Location(world, x1, y1, z1),
-				new Location(world, x2, y2, z2) };
-		return l;
-
-	}
 
 	/**
 	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
@@ -477,8 +440,75 @@ public class Config {
 
 		return new Location(world, x, y, z);
 	}
+	
+	/**
+	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
+	 * to create a Location array. This method will only accept strings of the
+	 * specified form.
+	 * 
+	 * @param world
+	 *            the World in which the Locations exists
+	 * @param coords
+	 *            a string of the form "x1,y1,z1,x2,y2,z2,spheric"
+	 * @return a Location array in the given world with the given coordinates
+	 */
+	public static PABlockLocation[] parseRegion(World world, String coords, String startsWith) {
+		String[] parts = coords.split(",");
+		if (parts.length < 6)
+			throw new IllegalArgumentException(
+					"Input string must contain only x1, y1, z1, x2, y2, and z2");
 
-	public static Location parseWorldLocation(String coords) {
+		if (parts.length < 7) {
+			return null;
+		}
+		if (!parts[6].startsWith(startsWith)) {
+			return null;
+		}
+		
+		Integer x1 = parseInteger(parts[0]);
+		Integer y1 = parseInteger(parts[1]);
+		Integer z1 = parseInteger(parts[2]);
+		Integer x2 = parseInteger(parts[3]);
+		Integer y2 = parseInteger(parts[4]);
+		Integer z2 = parseInteger(parts[5]);
+
+		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
+				|| z2 == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		PABlockLocation[] l = { new PABlockLocation(world.getName(), x1, y1, z1),
+				new PABlockLocation(world.getName(), x2, y2, z2) };
+		return l;
+
+	}
+
+	/**
+	 * Parse an input string of the form "world,x,y,z" and an input World to create a
+	 * Location. This method will only accept strings of the specified form.
+	 * 
+	 * @param coords
+	 *            a string of the form "world,x,y,z"
+	 * @return a Location in the given world with the given coordinates
+	 */
+	public static PABlockLocation parseSimpleWorldLocation(String coords) {
+		String[] parts = coords.split(",");
+		if (parts.length != 4)
+			throw new IllegalArgumentException(
+					"Input string must contain only world, x, y, and z");
+
+		World w = Bukkit.getServer().getWorld(parts[0]);
+		Integer x = parseInteger(parts[1]);
+		Integer y = parseInteger(parts[2]);
+		Integer z = parseInteger(parts[3]);
+
+		if (x == null || y == null || z == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+
+		return new PABlockLocation(w.getName(), x, y, z);
+	}
+
+	public static PALocation parseWorldLocation(String coords) {
 		String[] parts = coords.split(",");
 		if (parts.length != 6)
 			throw new IllegalArgumentException(
@@ -490,41 +520,11 @@ public class Config {
 		Float yaw = parseFloat(parts[4]);
 		Float pitch = parseFloat(parts[5]);
 
-		if (x == null || y == null || z == null || yaw == null || pitch == null)
+		if (w == null || x == null || y == null || z == null || yaw == null || pitch == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
 
-		return new Location(w, x, y, z, yaw, pitch);
-	}
-
-	/**
-	 * Parse an input string on the form "x,y,z,yaw,pitch" and an input World to
-	 * create a Location. This method will only accept strings of the specified
-	 * form.
-	 * 
-	 * @param world
-	 *            the World in which the Location exists
-	 * @param coords
-	 *            a string of the form "x,y,z,yaw,pitch"
-	 * @return a Location in the given world with the given coordinates
-	 */
-	public static Location parseLocation(World world, String coords) {
-		String[] parts = coords.split(",");
-		if (parts.length != 5)
-			throw new IllegalArgumentException(
-					"Input string must contain x, y, z, yaw and pitch: " + coords);
-
-		Integer x = parseInteger(parts[0]);
-		Integer y = parseInteger(parts[1]);
-		Integer z = parseInteger(parts[2]);
-		Float yaw = parseFloat(parts[3]);
-		Float pitch = parseFloat(parts[4]);
-
-		if (x == null || y == null || z == null || yaw == null || pitch == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-
-		return new Location(world, x, y, z, yaw, pitch);
+		return new PALocation(w.getName(), x, y, z, yaw, pitch);
 	}
 
 	private static Integer parseInteger(String s) {
@@ -541,5 +541,17 @@ public class Config {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public static String parseToString(PALocation loc) {
+		String[] result = new String[6];
+		result[0] = String.valueOf(loc.getWorldName());
+		result[1] = String.valueOf(loc.getX());
+		result[2] = String.valueOf(loc.getY());
+		result[3] = String.valueOf(loc.getZ());
+		result[4] = String.valueOf(loc.getYaw());
+		result[5] = String.valueOf(loc.getPitch());
+		// "world,x,y,z,yaw,pitch"
+		return StringParser.joinArray(result, ",");
 	}
 }

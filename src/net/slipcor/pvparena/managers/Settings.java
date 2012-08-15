@@ -140,7 +140,7 @@ public class Settings {
 	public Settings(Arena a) {
 		arena = a;
 		PVPArena.instance.getAmm().addSettings(types);
-		a.type().addSettings(types);
+		PVPArena.instance.getAtm().addSettings(arena, types);
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class Settings {
 	 * @return the full path to the node
 	 */
 	private String getNode(String node) {
-		for (String s : arena.cfg.getYamlConfiguration().getKeys(true)) {
+		for (String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
 
 			if (types.get(s) == null) {
 				continue;
@@ -180,7 +180,7 @@ public class Settings {
 
 		int i = 0;
 
-		for (String node : arena.cfg.getYamlConfiguration().getKeys(true)) {
+		for (String node : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
 			if (types.get(node) == null) {
 				continue;
 			}
@@ -192,11 +192,10 @@ public class Settings {
 				break;
 			}
 		}
-		Arenas.tellPlayer(player, ChatColor.GRAY + "------ config list ["
-				+ page + "] ------", arena);
+		arena.msg(player, ChatColor.GRAY + "------ config list ["
+		+ page + "] ------");
 		for (String node : keys) {
-			Arenas.tellPlayer(player, node + " => " + types.get(getNode(node)),
-					arena);
+			arena.msg(player, node + " => " + types.get(getNode(node)));
 		}
 
 	}
@@ -218,12 +217,11 @@ public class Settings {
 		if (!PVPArena.hasAdminPerms(player)
 				&& !PVPArena.hasCreatePerms(player, arena)) {
 
-			Arenas.tellPlayer(player,
-					Language.parse("nopermto", Language.parse("set")), arena);
+			arena.msg(player, Language.parse("nopermto", Language.parse("set")));
 			return;
 		}
 
-		for (String s : arena.cfg.getYamlConfiguration().getKeys(true)) {
+		for (String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
 			if (s.endsWith("." + node)) {
 				set(player, s, value);
 				return;
@@ -238,93 +236,77 @@ public class Settings {
 
 		if (type.equals("boolean")) {
 			if (value.equalsIgnoreCase("true")) {
-				arena.cfg.set(node, Boolean.valueOf(true));
-				Arenas.tellPlayer(
-						player,
-						node
-								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")),
-						arena);
+				arena.getArenaConfig().set(node, Boolean.valueOf(true));
+				arena.msg(player, node
+				+ " set to "
+				+ String.valueOf(value.equalsIgnoreCase("true")));
 			} else if (value.equalsIgnoreCase("false")) {
-				arena.cfg.set(node, Boolean.valueOf(false));
-				Arenas.tellPlayer(
-						player,
-						node
-								+ " set to "
-								+ String.valueOf(value.equalsIgnoreCase("true")),
-						arena);
+				arena.getArenaConfig().set(node, Boolean.valueOf(false));
+				arena.msg(player, node
+				+ " set to "
+				+ String.valueOf(value.equalsIgnoreCase("true")));
 			} else {
-				Arenas.tellPlayer(player, "No valid boolean '" + value + "'!",
-						arena);
-				Arenas.tellPlayer(player, "Valid values: true | false", arena);
+				arena.msg(player, "No valid boolean '" + value + "'!");
+				arena.msg(player, "Valid values: true | false");
 				return;
 			}
 		} else if (type.equals("string")) {
-			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player,
-					node + " set to " + String.valueOf(value), arena);
+			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.msg(player, node + " set to " + String.valueOf(value));
 		} else if (type.equals("int")) {
 			int i = 0;
 
 			try {
 				i = Integer.parseInt(value);
 			} catch (Exception e) {
-				Arenas.tellPlayer(player, "No valid int '" + value
-						+ "'! Use numbers without decimals!", arena);
+				arena.msg(player, "No valid int '" + value
+				+ "'! Use numbers without decimals!");
 				return;
 			}
-			arena.cfg.set(node, i);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(i),
-					arena);
+			arena.getArenaConfig().set(node, i);
+			arena.msg(player, node + " set to " + String.valueOf(i));
 		} else if (type.equals("double")) {
 			double d = 0;
 
 			try {
 				d = Double.parseDouble(value);
 			} catch (Exception e) {
-				Arenas.tellPlayer(player, "No valid double '" + value
-						+ "'! Use numbers with period (.)!", arena);
+				arena.msg(player, "No valid double '" + value
+				+ "'! Use numbers with period (.)!");
 				return;
 			}
-			arena.cfg.set(node, d);
-			Arenas.tellPlayer(player, node + " set to " + String.valueOf(d),
-					arena);
+			arena.getArenaConfig().set(node, d);
+			arena.msg(player, node + " set to " + String.valueOf(d));
 		} else if (type.equals("tp")) {
 			if (!value.equals("exit") && !value.equals("old")
 					&& !value.equals("spectator")) {
-				Arenas.tellPlayer(player, "No valid tp '" + value + "'!", arena);
-				Arenas.tellPlayer(player,
-						"Valid values: exit | old | spectator", arena);
+				arena.msg(player, "No valid tp '" + value + "'!");
+				arena.msg(player, "Valid values: exit | old | spectator");
 				return;
 			}
-			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player,
-					node + " set to " + String.valueOf(value), arena);
+			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.msg(player, node + " set to " + String.valueOf(value));
 		} else if (type.equals("item")) {
 			try {
 				try {
 					Material mat = Material.valueOf(value);
 					if (!mat.equals(Material.AIR)) {
-						arena.cfg.set(node, mat.name());
-						Arenas.tellPlayer(player,
-								node + " set to " + String.valueOf(mat.name()),
-								arena);
+						arena.getArenaConfig().set(node, mat.name());
+						arena.msg(player, node + " set to " + String.valueOf(mat.name()));
 					}
 				} catch (Exception e2) {
 					Material mat = Material
 							.getMaterial(Integer.parseInt(value));
-					arena.cfg.set(node, mat.name());
-					Arenas.tellPlayer(player,
-							node + " set to " + String.valueOf(mat.name()),
-							arena);
+					arena.getArenaConfig().set(node, mat.name());
+					arena.msg(player, node + " set to " + String.valueOf(mat.name()));
 				}
-				arena.cfg.save();
+				arena.getArenaConfig().save();
 				return;
 			} catch (Exception e) {
 				// nothing
 			}
-			Arenas.tellPlayer(player, "No valid item '" + value
-					+ "'! Use valid ENUM or item id", arena);
+			arena.msg(player, "No valid item '" + value
+			+ "'! Use valid ENUM or item id");
 			return;
 		} else if (type.equals("items")) {
 			String[] ss = value.split(",");
@@ -333,22 +315,19 @@ public class Settings {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					Arenas.tellPlayer(player, "unrecognized item: " + items[i],
-							arena);
+					arena.msg(player, "unrecognized item: " + items[i]);
 					return;
 				}
 			}
 
-			arena.cfg.set(node, String.valueOf(value));
-			Arenas.tellPlayer(player,
-					node + " set to " + String.valueOf(value), arena);
+			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.msg(player, node + " set to " + String.valueOf(value));
 		} else {
-			Arenas.tellPlayer(player, "Unknown node: " + node, arena);
-			Arenas.tellPlayer(player,
-					"use /pa [name] set [page] to get a node list", arena);
+			arena.msg(player, "Unknown node: " + node);
+			arena.msg(player, "use /pa [name] set [page] to get a node list");
 			return;
 		}
-		arena.cfg.save();
+		arena.getArenaConfig().save();
 	}
 
 }

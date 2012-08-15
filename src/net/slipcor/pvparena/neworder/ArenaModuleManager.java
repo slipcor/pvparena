@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncloader.Loader;
+import com.nodinchan.ncbukkit.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -43,7 +43,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.8.7
+ * @version v0.9.0
  * 
  */
 
@@ -227,12 +227,10 @@ public class ArenaModuleManager {
 	 *            the arena being parsed
 	 * @param config
 	 *            the config being parsed
-	 * @param type
-	 *            the desired arena type
 	 */
-	public void configParse(Arena arena, YamlConfiguration config, String type) {
+	public void configParse(Arena arena, YamlConfiguration config) {
 		for (ArenaModule mod : modules) {
-			mod.configParse(arena, config, type);
+			mod.configParse(arena, config);
 		}
 	}
 
@@ -534,7 +532,7 @@ public class ArenaModuleManager {
 	 * @param coloredTeam
 	 *            the colored team name
 	 */
-	public void parseJoin(Arena arena, Player player, String coloredTeam) {
+	public void parseJoin(Arena arena, Player player, ArenaTeam coloredTeam) {
 		for (ArenaModule mod : modules) {
 			mod.parseJoin(arena, player, coloredTeam);
 		}

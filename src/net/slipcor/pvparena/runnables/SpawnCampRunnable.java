@@ -41,7 +41,7 @@ public class SpawnCampRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("SpawnCampRunnable commiting");
-		if (a.fightInProgress && a.cfg.getBoolean("protection.punish"))
+		if (a.isFightInProgress() && a.getArenaConfig().getBoolean("protection.punish"))
 			a.spawnCampPunish();
 		else {
 			// deactivate the auto saving task

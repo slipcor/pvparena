@@ -55,7 +55,7 @@ public class BlockListener implements Listener {
 			db.i("already cancelled: " + event.getEventName());
 			return true;
 		}
-		return arena.edit;
+		return arena.isLocked();
 	}
 
 	private boolean isProtected(Arena arena, Cancellable event, String node) {
@@ -66,8 +66,8 @@ public class BlockListener implements Listener {
 			return true;
 		}
 		*/
-		if (arena.cfg.getBoolean("protection.enabled")
-				&& arena.cfg.getBoolean("protection." + node)) {
+		if (arena.getArenaConfig().getBoolean("protection.enabled")
+				&& arena.getArenaConfig().getBoolean("protection." + node)) {
 			event.setCancelled(true);
 			return true;
 		}
@@ -90,7 +90,7 @@ public class BlockListener implements Listener {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.cfg.getStringList("blocks.whitelist", list);
+		list = arena.getArenaConfig().getStringList("blocks.whitelist", list);
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
@@ -103,7 +103,7 @@ public class BlockListener implements Listener {
 			}
 		} else {
 
-			list = arena.cfg.getStringList("blocks.blacklist", list);
+			list = arena.getArenaConfig().getStringList("blocks.blacklist", list);
 
 			if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
 				event.getPlayer().sendMessage("blacklist contains");
@@ -252,12 +252,12 @@ public class BlockListener implements Listener {
 				.getLocation());
 
 		db.i("block ignite inside the arena");
-		event.setCancelled(!arena.fightInProgress);
+		event.setCancelled(!arena.isFightInProgress());
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.cfg.getBoolean("protection.enabled", true))
-				&& (((arena.cfg.getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.cfg
-								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.cfg
+		if ((arena.getArenaConfig().getBoolean("protection.enabled", true))
+				&& (((arena.getArenaConfig().getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+						|| ((arena.getArenaConfig()
+								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.getArenaConfig()
 						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
 			// if an event happened that we would like to block
 			event.setCancelled(true); // ->cancel!
@@ -304,8 +304,8 @@ public class BlockListener implements Listener {
 				.getLocation());
 
 		if (isProtected(arena, event, "blockplace")) {
-			if (arena.fightInProgress &&
-					!arena.cfg.getBoolean("protection.tnt", true) &&
+			if (arena.isFightInProgress() &&
+					!arena.getArenaConfig().getBoolean("protection.tnt", true) &&
 					event.getBlock().getTypeId() == 46) {
 				PVPArena.instance.getAmm().onBlockPlace(arena,
 						event.getBlock(),
@@ -319,7 +319,7 @@ public class BlockListener implements Listener {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.cfg.getStringList("blocks.whitelist", list);
+		list = arena.getArenaConfig().getStringList("blocks.whitelist", list);
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
@@ -332,7 +332,7 @@ public class BlockListener implements Listener {
 			}
 		} else {
 
-			list = arena.cfg.getStringList("blocks.blacklist", list);
+			list = arena.getArenaConfig().getStringList("blocks.blacklist", list);
 
 			if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
 				event.getPlayer().sendMessage("blacklist contains");

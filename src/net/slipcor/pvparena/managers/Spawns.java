@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 
@@ -38,17 +41,16 @@ public class Spawns {
 	 *            the coord string
 	 * @return the location of that string
 	 */
-	public static Location getCoords(Arena arena, String place) {
+	public static PALocation getCoords(Arena arena, String place) {
 		db.i("get coords: " + place);
-		World world = Bukkit.getWorld(arena.cfg.getString("general.world",
-				Bukkit.getWorlds().get(0).getName()));
+		
 		if (place.equals("spawn") || place.equals("powerup")) {
 			HashMap<Integer, String> locs = new HashMap<Integer, String>();
 			int i = 0;
 
 			db.i("searching for spawns");
 
-			HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
+			HashMap<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
 					.getYamlConfiguration().getConfigurationSection("spawns")
 					.getValues(false);
 			for (String name : coords.keySet()) {
@@ -61,16 +63,16 @@ public class Spawns {
 			Random r = new Random();
 
 			place = locs.get(r.nextInt(locs.size()));
-		} else if (arena.cfg.get("spawns." + place) == null) {
-			place = arena.type().guessSpawn(place);
+		} else if (arena.getArenaConfig().get("spawns." + place) == null) {
+			place = PVPArena.instance.getAtm().guessSpawn(arena, place);
 			if (place == null) {
 				return null;
 			}
 		}
 
-		String sLoc = arena.cfg.getString("spawns." + place, null);
+		String sLoc = arena.getArenaConfig().getString("spawns." + place, null);
 		db.i("parsing location: " + sLoc);
-		return Config.parseLocation(world, sLoc).add(0.5, 0, 0.5);
+		return Config.parseWorldLocation(sLoc).add(0.5, 0, 0.5);
 	}
 
 	/**
@@ -105,14 +107,14 @@ public class Spawns {
 	 *            a team name or "flags" or "[team]pumpkin" or "[team]flag"
 	 * @return a set of possible spawn matches
 	 */
-	public static HashSet<Location> getSpawns(Arena arena, String sTeam) {
+	public static HashSet<PALocation> getSpawns(Arena arena, String sTeam) {
 		db.i("reading spawns of arena " + arena + " (" + sTeam + ")");
-		HashSet<Location> result = new HashSet<Location>();
+		HashSet<PALocation> result = new HashSet<PALocation>();
 
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena.cfg
+		HashMap<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
 				.getYamlConfiguration().getConfigurationSection("spawns")
 				.getValues(false);
-		World world = Bukkit.getWorld(arena.getWorld());
+
 		for (String name : coords.keySet()) {
 			if (sTeam.equals("flags")) {
 				if (!name.startsWith("flag")) {
@@ -135,8 +137,8 @@ public class Spawns {
 				continue;
 			}
 			db.i(" - " + name);
-			String sLoc = arena.cfg.getString("spawns." + name, null);
-			result.add(Config.parseLocation(world, sLoc));
+			String sLoc = arena.getArenaConfig().getString("spawns." + name, null);
+			result.add(Config.parseWorldLocation( sLoc));
 		}
 
 		return result;
@@ -148,12 +150,12 @@ public class Spawns {
 	 * @param arena
 	 * @return
 	 */
-	public static Location getRegionCenter(Arena arena) {
-		HashSet<Location> locs = new HashSet<Location>();
+	public static PABlockLocation getRegionCenter(Arena arena) {
+		HashSet<PALocation> locs = new HashSet<PALocation>();
 
 		for (ArenaTeam team : arena.getTeams()) {
 			String sTeam = team.getName();
-			for (Location loc : getSpawns(arena, sTeam)) {
+			for (PALocation loc : getSpawns(arena, sTeam)) {
 				locs.add(loc);
 			}
 		}
@@ -162,15 +164,15 @@ public class Spawns {
 		long y = 0;
 		long z = 0;
 
-		for (Location loc : locs) {
-			x += loc.getBlockX();
-			y += loc.getBlockY();
-			z += loc.getBlockZ();
+		for (PALocation loc : locs) {
+			x += loc.getX();
+			y += loc.getY();
+			z += loc.getZ();
 		}
 
 		
 
-		return new Location(Bukkit.getWorld(arena.getWorld()), x / locs.size(), y / locs.size(), z / locs.size());
+		return new PABlockLocation(arena.getWorld(),(int) x / locs.size(),(int) y / locs.size(),(int) z / locs.size());
 	}
 
 	/**
@@ -195,10 +197,10 @@ public class Spawns {
 			return false;
 		}
 
-		HashSet<Location> spawns = getSpawns(arena, team.getName());
+		HashSet<PALocation> spawns = getSpawns(arena, team.getName());
 
-		for (Location loc : spawns) {
-			if (loc.distance(player.getLocation()) <= diff) {
+		for (PALocation loc : spawns) {
+			if (loc.getDistance(new PALocation(player.getLocation())) <= diff) {
 				db.i("found near spawn: " + loc.toString());
 				return true;
 			}
@@ -231,9 +233,9 @@ public class Spawns {
 
 		db.i("setting spawn " + place + " to " + s.toString());
 
-		arena.cfg.set("spawns." + place, s);
+		arena.getArenaConfig().set("spawns." + place, s);
 
-		arena.cfg.save();
+		arena.getArenaConfig().save();
 	}
 
 	/**
@@ -258,8 +260,8 @@ public class Spawns {
 
 		db.i("setting spawn " + place + " to " + s.toString());
 
-		arena.cfg.set("spawns." + place, s);
+		arena.getArenaConfig().set("spawns." + place, s);
 
-		arena.cfg.save();
+		arena.getArenaConfig().save();
 	}
 }

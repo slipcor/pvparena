@@ -3,14 +3,15 @@ package net.slipcor.pvparena;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
+import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLClassLoader;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.command.PAA_Command;
-import net.slipcor.pvparena.command.PA_Command;
+import net.slipcor.pvparena.commands.PAA__Command;
+import net.slipcor.pvparena.commands.PAI_Stats;
+import net.slipcor.pvparena.commands.PA__Command;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -22,17 +23,22 @@ import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.metrics.Metrics;
+import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
 import net.slipcor.pvparena.neworder.ArenaModuleManager;
-import net.slipcor.pvparena.neworder.ArenaRegion;
-import net.slipcor.pvparena.neworder.ArenaRegionManager;
-import net.slipcor.pvparena.neworder.ArenaType;
-import net.slipcor.pvparena.neworder.ArenaTypeManager;
+import net.slipcor.pvparena.neworder.ArenaRegionShapeManager;
+import net.slipcor.pvparena.neworder.ArenaGoalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import com.nodinchan.ncbukkit.NCBL;
 
 /**
  * main class
@@ -43,115 +49,154 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.8.12
+ * @version v0.9.0
  * 
  */
 
 public class PVPArena extends JavaPlugin {
-
-	public static final EntityListener entityListener = new EntityListener();
 	public static PVPArena instance = null;
 
-	private final BlockListener blockListener = new BlockListener();
-	private final PlayerListener playerListener = new PlayerListener();
-	private final InventoryListener customListener = new InventoryListener();
 	private final static Debug db = new Debug(1);
 
-	private ArenaRegionManager arm = null;
-	private ArenaTypeManager atm = null;
+	private ArenaRegionShapeManager arsm = null;
+	private ArenaGoalManager atm = null;
 	private ArenaModuleManager amm = null;
 
 	/**
-	 * Command handling
+	 * Hand over the ArenaModuleManager instance
+	 * 
+	 * @return the ArenaModuleManager instance
 	 */
+	public ArenaModuleManager getAmm() {
+		return amm;
+	}
+
+	/**
+	 * Hand over the ArenaTypeManager instance
+	 * 
+	 * @return the ArenaTypeManager instance
+	 */
+	public ArenaGoalManager getAtm() {
+		return atm;
+	}
+
+	/**
+	 * Hand over the ArenaRegionShapeManager instance
+	 * 
+	 * @return the ArenaRegionShapeManager instance
+	 */
+	public ArenaRegionShapeManager getArsm() {
+		return arsm;
+	}
+
+	/**
+	 * Check if a CommandSender has admin permissions
+	 * 
+	 * @param sender
+	 *            the CommandSender to check
+	 * @return true if a CommandSender has admin permissions, false otherwise
+	 */
+	public static boolean hasAdminPerms(CommandSender sender) {
+		return hasPerms(sender, "pvparena.admin");
+	}
+
+	/**
+	 * Check if a CommandSender has creation permissions
+	 * 
+	 * @param sender
+	 *            the CommandSender to check
+	 * @param arena
+	 *            the arena to check
+	 * @return true if the CommandSender has creation permissions, false otherwise
+	 */
+	public static boolean hasCreatePerms(CommandSender sender, Arena arena) {
+		return (hasPerms(sender, "pvparena.create") && (arena == null || arena.getOwner()
+				.equals(sender.getName())));
+	}
+
+	/**
+	 * Check if a CommandSender has permission for an arena
+	 * 
+	 * @param sender
+	 *            the CommandSender to check
+	 * @param arena
+	 *            the arena to check
+	 * @return true if explicit permission not needed or granted, false
+	 *         otherwise
+	 */
+	public static boolean hasPerms(CommandSender sender, Arena arena) {
+		db.i("perm check.");
+		if (arena.getArenaConfig().getBoolean("join.explicitPermission")) {
+			db.i(" - explicit: "
+					+ String.valueOf(hasPerms(sender, "pvparena.join."
+							+ arena.getName().toLowerCase())));
+		} else {
+			db.i(String.valueOf(hasPerms(sender, "pvparena.user")));
+		}
+
+		return arena.getArenaConfig().getBoolean("join.explicitPermission") ? hasPerms(
+				sender, "pvparena.join." + arena.getName().toLowerCase())
+				: hasPerms(sender, "pvparena.user");
+	}
+
+	/**
+	 * Check if a CommandSender has a permission
+	 * 
+	 * @param sender
+	 *            the CommandSender to check
+	 * @param perms
+	 *            a permission node to check
+	 * @return true if the CommandSender has the permission, false otherwise
+	 */
+	public static boolean hasPerms(CommandSender sender, String perms) {
+		return instance.amm.hasPerms(sender, perms);
+	}
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
 
-		if (args == null || args.length < 1) {
+		if (args.length < 1) {
 			return false;
 		}
 
-		db.i("onCommand: player " + sender.getName() + ": /" + commandLabel
-				+ StringParser.parseArray(args));
+		PA__Command pacmd = PA__Command.getByName(args[0]);
 
-		PA_Command command = PA_Command.parseCommand(args[0]);
-		if (command != null) {
-			db.i("command: " + command.getName());
-			command.commit(sender, args);
+		if (pacmd != null) {
+			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
 
-		String sName = args[0];
-
-		Arena arena = Arenas.getArenaByName(sName);
-		if (arena == null) {
-			db.i("arena not found, searching...");
-			if (sender instanceof Player) {
-				arena = Arenas.getArenaByPlayer((Player) sender);
-			}
-			if (arena != null) {
-				db.i("found arena by player: " + arena.name);
-			} else if (Arenas.count() == 1) {
-				arena = Arenas.getFirst();
-				db.i("found 1 arena: " + arena.name);
-			} else if (Arenas.getArenaByName("default") != null) {
-				arena = Arenas.getArenaByName("default");
-				db.i("found default arena!");
-			} else {
-				if (args.length > 1 && args[1].equals("create")) {
-					Arenas.tellPlayer(sender, "§c/pa create [name] {type}");
-					return true;
-				}
-				Arenas.tellPlayer(sender,
-						Language.parse("arenanotexists", sName));
-				return true;
-			}
-
-		} else {
-
-			String[] newArgs = new String[args.length - 1];
-			System.arraycopy(args, 1, newArgs, 0, args.length - 1);
-			args = newArgs;
-		}
-
-		PAA_Command arenaCommand;
-
-		if (args.length < 1) {
-			arenaCommand = PAA_Command.parseCommand(null, arena);
-		} else {
-			arenaCommand = PAA_Command.parseCommand(args[0], arena);
-		}
-		if (arenaCommand != null) {
-			db.i("arena command: " + arenaCommand.getName());
-			if (!arena.cfg.getBoolean("general.enabled")
-					&& !PVPArena.hasAdminPerms(sender)
-					&& !(PVPArena.hasCreatePerms(sender, arena))) {
-				Arenas.tellPlayer(sender, Language.parse("arenadisabled"),
-						arena);
-				return true;
-			}
-			db.i("committing arena command: " + db.formatStringArray(args)
-					+ " in arena " + arena.name);
-			arenaCommand.commit(arena, sender, args);
+		if (args[0].equalsIgnoreCase("-s")
+				|| args[0].toLowerCase().contains("stats")) {
+			PAI_Stats scmd = new PAI_Stats();
+			scmd.commit(null, sender, new String[0]);
 			return true;
 		}
+
+		Arena a = Arenas.getArenaByName(args[0]);
+
+		if (a == null) {
+			Arena.pmsg(sender, Language.parse("arena.notfound", args[0]));
+			return true;
+		}
+
+		PAA__Command paacmd = PAA__Command.getByName(args[1]);
+		if (paacmd != null) {
+			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 2));
+			return true;
+		}
+
 		return false;
 	}
-
-	/**
-	 * Plugin disabling method - Reset all arenas, cancel tasks
-	 */
+	
 	@Override
 	public void onDisable() {
 		Arenas.reset(true);
 		Tracker.stop();
 		Language.log_info("disabled", getDescription().getFullName());
 	}
-
-	/**
-	 * Plugin enabling method - Register events and load the configs
-	 */
+	
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -163,31 +208,26 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
 
-		if (!startLoader()) {
-			Bukkit.getLogger().severe(
-					"Error while loading Loader lib. Disabling PVP Arena...");
-			Bukkit.getServer().getPluginManager().disablePlugin(this);
-		}
+		updateLib();
 
-		atm = new ArenaTypeManager(this);
+		atm = new ArenaGoalManager(this);
 		amm = new ArenaModuleManager(this);
-		arm = new ArenaRegionManager(this);
+		arsm = new ArenaRegionShapeManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
 
-		getServer().getPluginManager().registerEvents(blockListener, this);
-		getServer().getPluginManager().registerEvents(entityListener, this);
-		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(customListener, this);
+		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new EntityListener(), this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
-		if (getConfig().get("language") != null
-				&& getConfig().get("onlyPVPinArena") == null) {
-			getConfig().set("debug", "none"); // 0.3.15 correction
-			getServer().getLogger().info("[PA-debug] 0.3.15 correction");
+		int config_version = 1;
+		
+		if (getConfig().getInt("ver", 0) < config_version) {
+			getConfig().options().copyDefaults(true);
+			getConfig().set("ver", config_version);
+			saveConfig();
 		}
-
-		getConfig().options().copyDefaults(true);
-		saveConfig();
 
 		File players = new File(getDataFolder(), "players.yml");
 		if (!players.exists()) {
@@ -204,9 +244,7 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.load(this, Bukkit.getConsoleSender());
 		Arenas.load_arenas();
-		Update u = new Update(this);
-		u.init();
-		u.start();
+		new Update(this);
 
 		if (Arenas.count() > 0) {
 
@@ -217,7 +255,7 @@ public class PVPArena extends JavaPlugin {
 			try {
 				metrics = new Metrics(this);
 				Metrics.Graph atg = metrics.createGraph("Game modes installed");
-				for (ArenaType at : atm.getTypes()) {
+				for (ArenaGoal at : atm.getTypes()) {
 					atg.addPlotter(new WrapPlotter(at.getName()));
 				}
 				Metrics.Graph amg = metrics
@@ -225,11 +263,10 @@ public class PVPArena extends JavaPlugin {
 				for (ArenaModule am : amm.getModules()) {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
-				Metrics.Graph arg = metrics
-						.createGraph("Region shapes installed");
-				for (ArenaRegion ar : arm.getRegions()) {
-					arg.addPlotter(new WrapPlotter(ar.getName()));
-				}
+				Metrics.Graph acg = metrics
+						.createGraph("Arena count");
+				acg.addPlotter(new WrapPlotter("count", Arenas.getArenas().size()));
+				
 				metrics.start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -242,164 +279,112 @@ public class PVPArena extends JavaPlugin {
 		Language.log_info("enabled", getDescription().getFullName());
 	}
 
-	private boolean startLoader() {
+	/**
+	 * Checks for update of the library
+	 */
+	private void updateLib() {
+		PluginManager pm = getServer().getPluginManager();
+
+		NCBL libPlugin = (NCBL) pm.getPlugin("NC-BukkitLib");
+
+		File destination = new File(getDataFolder().getParentFile()
+				.getParentFile(), "lib");
+		destination.mkdirs();
+
+		File lib = new File(destination, "NC-BukkitLib.jar");
+		File pluginLib = new File(getDataFolder().getParentFile(),
+				"NC-BukkitLib.jar");
+
+		boolean inPlugins = false;
+		boolean download = false;
 
 		try {
-			File destination = new File(getDataFolder().getParentFile()
-					.getParentFile(), "lib");
-			destination.mkdirs();
+			URL url = new URL("http://bukget.org/api/plugin/nc-bukkitlib");
 
-			File lib = new File(destination, "NC-LoaderLib.jar");
+			JSONObject jsonPlugin = (JSONObject) new JSONParser()
+					.parse(new InputStreamReader(url.openStream()));
+			JSONArray versions = (JSONArray) jsonPlugin.get("versions");
 
-			if (!lib.exists()) {
-				System.out.println("Missing NC-Loader lib, installing...");
+			if (libPlugin == null) {
+				getLogger().warning("Missing NC-Bukkit lib");
+				inPlugins = true;
+				download = true;
 
-				String resource = "lib/NC-LoaderLib.jar";
-				
-				InputStream resStreamIn = PVPArena.class.getClassLoader()
-						.getResourceAsStream(resource);
-				try {
-					OutputStream ostream = new FileOutputStream(lib);
+			} else {
+				double currentVer = libPlugin.getVersion();
+				double newVer = currentVer;
 
-					byte[] buffer = new byte[4096];
-					int l;
-					while ((l = resStreamIn.read(buffer)) > 0) {
-						ostream.write(buffer, 0, l);
+				for (int ver = 0; ver < versions.size(); ver++) {
+					JSONObject version = (JSONObject) versions.get(ver);
+
+					if (version.get("type").equals("Release")) {
+						newVer = Double
+								.parseDouble(((String) version.get("name"))
+										.split(" ")[1].trim().substring(1));
+						break;
 					}
-					ostream.close();
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-				System.out.println("Installed NC-Loader lib");
-			}
-			
-			lib = new File(destination, "NC-LoaderLib.jar");
 
-			URLClassLoader sysLoader = (URLClassLoader) ClassLoader
-					.getSystemClassLoader();
-
-			for (URL url : sysLoader.getURLs()) {
-				if (url.sameFile(lib.toURI().toURL()))
-					return true;
+				if (newVer > currentVer) {
+					getLogger().warning("NC-Bukkit lib outdated");
+					download = true;
+				}
 			}
 
-			try {
-				Method method = URLClassLoader.class.getDeclaredMethod(
-						"addURL", new Class[] { URL.class });
-				method.setAccessible(true);
-				method.invoke(sysLoader, new Object[] { lib.toURI().toURL() });
+			if (download) {
+				getLogger().info("Downloading NC-Bukkit lib");
 
-			} catch (Exception e) {
-				return false;
+				String dl_link = "";
+
+				for (int ver = 0; ver < versions.size(); ver++) {
+					JSONObject version = (JSONObject) versions.get(ver);
+
+					if (version.get("type").equals("Release")) {
+						dl_link = (String) version.get("dl_link");
+						break;
+					}
+				}
+
+				if (dl_link == null)
+					throw new Exception();
+
+				URL link = new URL(dl_link);
+				ReadableByteChannel rbc = Channels
+						.newChannel(link.openStream());
+
+				if (inPlugins) {
+					FileOutputStream output = new FileOutputStream(pluginLib);
+					output.getChannel().transferFrom(rbc, 0, 1 << 24);
+					libPlugin = (NCBL) pm.loadPlugin(pluginLib);
+
+				} else {
+					FileOutputStream output = new FileOutputStream(lib);
+					output.getChannel().transferFrom(rbc, 0, 1 << 24);
+				}
+
+				libPlugin.hook(this);
+
+				getLogger().info("Downloaded NC-Bukkit lib");
 			}
-
-			return true;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			getLogger().warning("Failed to check for library update");
 		}
-
-		return false;
-
-	}
-
-	/**
-	 * Check if the player has admin permissions
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @return true if the player has admin permissions, false otherwise
-	 */
-	public static boolean hasAdminPerms(CommandSender player) {
-		return hasPerms(player, "pvparena.admin");
-	}
-
-	/**
-	 * Check if the player has creation permissions
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @param arena
-	 *            the arena to check
-	 * @return true if the player has creation permissions, false otherwise
-	 */
-	public static boolean hasCreatePerms(CommandSender player, Arena arena) {
-		return (hasPerms(player, "pvparena.create") && (arena == null || arena.owner
-				.equals(player.getName())));
-	}
-
-	/**
-	 * Check if the player has permission for an arena
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @param arena
-	 *            the arena to check
-	 * @return true if explicit permission not needed or granted, false
-	 *         otherwise
-	 */
-	public static boolean hasPerms(CommandSender player, Arena arena) {
-		db.i("perm check.");
-		if (arena.cfg.getBoolean("join.explicitPermission")) {
-			db.i(" - explicit: "
-					+ String.valueOf(hasPerms(player, "pvparena.join."
-							+ arena.name.toLowerCase())));
-		} else {
-			db.i(String.valueOf(hasPerms(player, "pvparena.user")));
-		}
-
-		return arena.cfg.getBoolean("join.explicitPermission") ? hasPerms(
-				player, "pvparena.join." + arena.name.toLowerCase())
-				: hasPerms(player, "pvparena.user");
-	}
-
-	/**
-	 * Check if a player has a permission
-	 * 
-	 * @param player
-	 *            the player to check
-	 * @param perms
-	 *            a permission node to check
-	 * @return true if the player has the permission, false otherwise
-	 */
-	public static boolean hasPerms(CommandSender player, String perms) {
-		return instance.amm.hasPerms(player, perms);
-	}
-
-	/**
-	 * Hand over the ArenaRegionManager instance
-	 * 
-	 * @return the ArenaRegionManager instance
-	 */
-	public ArenaRegionManager getArm() {
-		return arm;
-	}
-
-	/**
-	 * Hand over the ArenaTypeManager instance
-	 * 
-	 * @return the ArenaTypeManager instance
-	 */
-	public ArenaTypeManager getAtm() {
-		return atm;
-	}
-
-	/**
-	 * Hand over the ArenaModuleManager instance
-	 * 
-	 * @return the ArenaModuleManager instance
-	 */
-	public ArenaModuleManager getAmm() {
-		return amm;
 	}
 
 	private class WrapPlotter extends Metrics.Plotter {
+		int i = 1;
 		public WrapPlotter(String name) {
 			super(name);
 		}
 
+		public WrapPlotter(String name, int count) {
+			super(name);
+			i = count;
+		}
+
 		public int getValue() {
-			return 1;
+			return i;
 		}
 	}
 }

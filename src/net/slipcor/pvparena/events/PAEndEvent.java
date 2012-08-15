@@ -1,9 +1,9 @@
 package net.slipcor.pvparena.events;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.managers.Spawns;
 
-import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -50,14 +50,5 @@ public class PAEndEvent extends Event {
 
 	public HandlerList getHandlers() {
 		return handlers;
-	}
-
-	/**
-	 * return the battlefield center
-	 * 
-	 * @return the battlefield center location
-	 */
-	public Location getRegionCenter() {
-		return Spawns.getRegionCenter(arena);
 	}
 }

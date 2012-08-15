@@ -1,13 +1,18 @@
 package net.slipcor.pvparena.arenas.teams;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.neworder.ArenaType;
+import net.slipcor.pvparena.neworder.ArenaGoal;
 
 /**
  * team arena type class
@@ -20,10 +25,11 @@ import net.slipcor.pvparena.neworder.ArenaType;
  * 
  */
 
-public class TeamArena extends ArenaType {
+public class TeamArena extends ArenaGoal {
 	public TeamArena() {
 		super("teams");
 	}
+	private final HashMap<String, Integer> lives = new HashMap<String, Integer>(); // flags
 
 	@Override
 	public String version() {
@@ -31,26 +37,61 @@ public class TeamArena extends ArenaType {
 	}
 	
 	@Override
-	public void addDefaultTeams(YamlConfiguration config) {
+	public void addDefaultTeams(Arena arena, YamlConfiguration config) {
 		config.addDefault("game.woolHead", Boolean.valueOf(false));
-		if (arena.cfg.get("teams") == null) {
+		if (arena.getArenaConfig().get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			arena.cfg.getYamlConfiguration().addDefault("teams.red",
+			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.red",
 					ChatColor.RED.name());
-			arena.cfg.getYamlConfiguration().addDefault("teams.blue",
+			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.blue",
 					ChatColor.BLUE.name());
 		}
 	}
 
-	public void parseRespawn(Player respawnPlayer, ArenaTeam respawnTeam,
+	public void parseRespawn(Arena arena, Player respawnPlayer, ArenaTeam respawnTeam,
 			int lives, DamageCause cause, Entity damager) {
 
-		arena.tellEveryone(Language.parse("killedbylives",
+		arena.broadcast(Language.parse("killedbylives",
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 				arena.parseDeathCause(respawnPlayer, cause, damager),
 				String.valueOf(lives)));
-		arena.lives.put(respawnPlayer.getName(), lives);
+		this.lives.put(respawnPlayer.getName(), lives);
 		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
 				+ "spawn");
 	}
+
+
+	public int getLives(Arena arena, Player defender) {
+		return this.lives.get(defender.getName());
+	}
+
+	/**
+	 * hook into a player losing lives
+	 * 
+	 * @param player
+	 *            the player losing lives
+	 * @param lives
+	 *            the remaining lives
+	 * @return the remaining lives
+	 */
+	public int reduceLives(Arena arena, Player player, int lives) {
+		lives = this.lives.get(player.getName());
+		db.i("lives before death: " + lives);
+		return lives;
+	}
+
+	/**
+	 * initiate an arena
+	 * @param a 
+	 */
+	@Override
+	public void teleportAllToSpawn(Arena arena) {
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				this.lives
+						.put(ap.getName(), arena.getArenaConfig().getInt("game.lives", 3));
+			}
+		}
+	}
+	
 }

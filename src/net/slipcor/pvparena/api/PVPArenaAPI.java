@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.7.0
+ * @version v0.9.0
  * 
  */
 
@@ -33,7 +33,7 @@ public class PVPArenaAPI {
 	public static String getArenaName(Player player) {
 		db.i("API: get arena of player: " + player.getName());
 		Arena arena = Arenas.getArenaByPlayer(player);
-		return (arena == null) ? "" : arena.name;
+		return (arena == null) ? "" : arena.getName();
 	}
 
 	/**
@@ -46,6 +46,6 @@ public class PVPArenaAPI {
 	public static String getArenaNameByLocation(Location location) {
 		db.i("API: get arena of location: " + location.toString());
 		Arena arena = Arenas.getArenaByRegionLocation(location);
-		return (arena == null) ? "" : arena.name;
+		return (arena == null) ? "" : arena.getName();
 	}
 }

@@ -54,6 +54,8 @@ public class Language {
 			e1.printStackTrace();
 		}
 
+		//TODO UNIFY!!!
+		
 		config.addDefault("log.matnotfound", "Unrecognized material: %1%");
 		config.addDefault("log.enabled", "enabled (version %1%)");
 		config.addDefault("log.disabled", "disabled (version %1%)");
@@ -286,6 +288,178 @@ public class Language {
 				"seconds");
 		config.addDefault("lang.minutes",
 				"minutes");
+		
+		
+		
+		
+
+		// command stuff
+		config.addDefault("error.invalid_argument_count", "&cInvalid number of arguments&r (%1% instead of %2%)!");
+		config.addDefault("error.numeric", "&cArgument not numeric:&r %1%");
+		config.addDefault("error.argument", "&cArgument not recognized:&r %1% - possible arguments: &a%2%&r");
+		config.addDefault("error.argumenttype", "&cInvalid argument type:&r &e%1%&r is no proper &a%2%&r");
+		config.addDefault("command.onlyplayers", "&cThis command can only be used by players!");
+		config.addDefault("command.notpartofarena", "You are not playing right now!");
+		config.addDefault("error.valuenotfound", "Invalid value: &a%1%&r!");
+		config.addDefault("error.valuepos", "Positive values: &b%1%&r");
+		config.addDefault("error.valueneg", "Negative values: &c%1%&r");
+		config.addDefault("error.error", "&cError: %1%");
+		
+		
+		// permission stuff
+		config.addDefault("error.noperm", "&cNo permission to %1%");
+		config.addDefault("error.nopermadmin", "administrate");
+		config.addDefault("error.nopermcreate", "create an arena");
+		config.addDefault("error.nopermjoin", "join an arena");
+		
+		// autosetup stuff
+		config.addDefault("autosetup.running", "There is already an autosetup running! Player: %1%");
+		
+		// creating stuff
+		config.addDefault("create.arenaexists", "Arena already exists: %1%");
+		
+		config.addDefault("autosetup.welcome", "Welcome to the PVP Arena setup wizard!\nPlease just type the colored answers into the chat. No commands needed!");
+		config.addDefault("autosetup.automanual", "Do you want the wizard to be &a%1%&r or &a%2%&r?");
+		config.addDefault("autosetup.automatic", "automatic");
+		config.addDefault("autosetup.manual", "manual");
+		config.addDefault("autosetup.modeselected", "&a%1%&r mode selected!");
+		
+		// gamemode stuff
+		config.addDefault("gamemode.free", "Game mode &afree for all&r set for arena &a%1%&r!");
+		config.addDefault("gamemode.team", "Game mode &ateam&r set for arena &a%1%&r!");
+		
+		// setowner
+		config.addDefault("setowner.done", "&a%1%&r is now owner of arena &a%2%&r!");
+		
+		// region
+		config.addDefault("region.flagnotfound", "RegionFlag &a%1%&r unknown!");
+		config.addDefault("region.flag_added", "Region flag added: &a%1%&r");
+		config.addDefault("region.flag_removed", "Region flag removed: &a%1%&r");
+		config.addDefault("region.protectionnotfound", "RegionProtection &a%1%&r unknown!");
+		config.addDefault("region.protection_added", "RegionProtection added: &a%1%&r");
+		config.addDefault("region.protection_removed", "RegionProtection removed: &a%1%&r");
+		config.addDefault("region.notfound", "Region &a%1%&r not found!");
+		config.addDefault("region.you_already", "You are already selecting a region for an arena!");
+		config.addDefault("region.you_select", "You are now selecting a region for arena &a%1%&r!");
+		config.addDefault("region.select", "Select two points with your wand item, left click first and then right click!");
+		config.addDefault("region.radius", "Region radius set to: &a%1%&r");
+		config.addDefault("region.height", "Region height set to: &a%1%&r");
+		
+		// time
+
+		config.addDefault("time.seconds", "seconds");
+		config.addDefault("time.minutes", "minutes");
+		
+		// goals
+		config.addDefault("goal.goalnotfound", "Goal &a%1%&r unknown. Valid goals: &a%2%&r");
+		config.addDefault("goal.installing", "Install goals by command: &a/pa install [goalname]&r");
+		
+		// spawn
+
+		config.addDefault("spawn.unknown", "Unknown spawn: &a%1%&r");
+		config.addDefault("spawn.notset", "Spawn not set: &a%1%&r");
+		config.addDefault("spawn.set", "Spawn set: &a%1%&r");
+		config.addDefault("spawn.removed", "Spawn removed: &a%1%&r");
+		
+		// join
+		
+		config.addDefault("join.teamnotfound", "Team not found: &a%1%&r");
+		
+		// leave
+
+		config.addDefault("leave.youleft", "You left the arena!");
+		
+		// messaging
+
+		config.addDefault("messaging.global_on", "You are now talking to the public!");
+		config.addDefault("messaging.global_off", "You are now only talking inside the arena!");
+		
+		// info
+
+		config.addDefault("info.goal_inactive", "Goal: &b%1%&r &7== INACTIVE ==");
+		config.addDefault("info.mod_inactive", "Module: &b%1%&r &7== INACTIVE ==");
+		config.addDefault("info.head_headline", "Arena Information about: &a%1%&r | [&a%2%&r]");
+		config.addDefault("info.head_teams", "Teams: &a%1%&r");
+		
+		// list
+		config.addDefault("list.players", "Players: %1%");
+		config.addDefault("list.null", "Glitched: %1%");
+		config.addDefault("list.warm", "Warm: %1%");;
+		config.addDefault("list.lounge", "Lounge: %1%");
+		config.addDefault("list.ready", "Ready: %1%");
+		config.addDefault("list.fight", "Fighting: %1%");
+		config.addDefault("list.watch", "Watching: %1%");
+		config.addDefault("list.dead", "Dead: %1%");
+		config.addDefault("list.lost", "Lost: %1%");
+
+		// list
+		config.addDefault("ready.players", "Players: %1%");
+		config.addDefault("ready.done", "Players: %1%");
+		config.addDefault("ready.noclass", "You don't have a class!");
+		
+
+		// blacklist/whitelist
+		config.addDefault("blacklist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]");
+		config.addDefault("blacklist.unknowntype", "Unknown type. Valid types: &e%1%&r");
+		config.addDefault("blacklist.unknowncommand", "Unknown subcommand. Valid commands: &a%1%&r");
+		config.addDefault("blacklist.allcleared", "All blacklists cleared!");
+		config.addDefault("blacklist.cleared", "Blacklist &e%1%&r cleared!");
+		config.addDefault("blacklist.add", "Added &a%1%&r to &e%2%&r blacklist!");
+		config.addDefault("blacklist.remove", "Removed &a%1%&r from &e%2%&r blacklist!");
+		config.addDefault("blacklist.show", "Blacklist &e%1%&r:");
+
+		config.addDefault("whitelist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]");
+		config.addDefault("whitelist.unknowntype", "Unknown type. Valid types: &e%1%&r");
+		config.addDefault("whitelist.unknowncommand", "Unknown subcommand. Valid commands: &a%1%&r");
+		config.addDefault("whitelist.allcleared", "All whitelist cleared!");
+		config.addDefault("whitelist.cleared", "Whitelist &e%1%&r cleared!");
+		config.addDefault("whitelist.add", "Added &a%1%&r to &e%2%&r whitelist!");
+		config.addDefault("whitelist.remove", "Removed &a%1%&r from &e%2%&r whitelist!");
+		config.addDefault("whitelist.show", "Whitelist &e%1%&r:");
+		
+		// remove
+		config.addDefault("remove.done", "Arena removed: &e%1%&r");
+		
+		// stop
+		config.addDefault("stop.done", "Arena force stopped!");
+		
+		// disable
+		config.addDefault("disable.done", "Arena disabled!");
+		
+		// enable
+		config.addDefault("enable.done", "Arena enabled!");
+		
+		// set
+		config.addDefault("set.done", "&a%1%&r set to &e%2%&r!");
+		config.addDefault("set.unknown", "Unknown node: &e%1%&r!");
+		config.addDefault("set.help", "use /pa {arenaname} set [page] to get a node list");
+
+		// arenalist
+		config.addDefault("arenalist.arenalist", "Arenas: &a%1%&r");
+		
+		// reload
+		config.addDefault("reload.done", "Arena reloaded!");
+		
+		// update
+		config.addDefault("update.updating", "Checking for updates!");
+		config.addDefault("update.notupdating", "Not checking for updates!");
+
+		// install / uninstall
+		config.addDefault("install.installed", "installed: &a%1%&r");
+		config.addDefault("install.installerr", "installed: &a%1%&r");
+		config.addDefault("install.uninstalled", "uninstalled: &a%1%&r");
+		config.addDefault("install.uninstallerr", "uninstalled: &a%1%&r");
+
+		// arena stuff
+		config.addDefault("arena.notfound", "Arena not found: &a%1%&r");
+		config.addDefault("arena.alreadyplaying", "You are already part of &a%1%&r");
+		config.addDefault("warning.player_ghost", "WARNING: Player %1% is partially listed in arena!");
+
+		// class stuff
+		config.addDefault("class.notfound", "Class not found: &a%1%&r");
+		config.addDefault("class.yourclass", "Your class now is: &a%1%&r");
+		config.addDefault("class.full", "The class &a%1%&r is full!");
+		config.addDefault("error.classperms", "You do not have permission for class &a%1%&r");
 		
 		PVPArena.instance.getAmm().initLanguage(config);
 		PVPArena.instance.getAtm().initLanguage(config);
