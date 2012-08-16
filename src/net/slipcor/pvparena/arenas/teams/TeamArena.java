@@ -33,7 +33,9 @@ public class TeamArena extends ArenaType {
 	@Override
 	public void addDefaultTeams(YamlConfiguration config) {
 		config.addDefault("game.woolHead", Boolean.valueOf(false));
-		if (arena.cfg.get("teams") == null) {
+		
+		if (arena.cfg.get("teams") == null || arena.cfg.get("teams.free") != null) {
+			arena.cfg.set("teams.free", null);
 			db.i("no teams defined, adding custom red and blue!");
 			arena.cfg.getYamlConfiguration().addDefault("teams.red",
 					ChatColor.RED.name());

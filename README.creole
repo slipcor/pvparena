@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.4 - fix the team arena overriding a free arena creation
 * v0.8.12.3 - trimmed some unneeded methods, ingame gamemode change with /pa [] settype
 * v0.8.12.2 - offline updating
 * v0.8.12.1 - fix several NPEs
