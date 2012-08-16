@@ -186,7 +186,7 @@ public class ArenaGoal extends Loadable {
 			return false;
 		}
 		
-		return PVPArena.instance.getAtm().checkSetFlag(arena, player, block);
+		return PVPArena.instance.getAgm().checkSetFlag(arena, player, block);
 	}
 
 	/**

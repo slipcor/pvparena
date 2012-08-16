@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-import net.slipcor.pvparena.PA;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -63,13 +62,13 @@ public class PAA_Protection extends PAA__Command {
 			return;
 		}
 
-		if (PA.positive.contains(args[2].toLowerCase())) {
+		if (StringParser.positive.contains(args[2].toLowerCase())) {
 			region.protectionAdd(rf);
 			arena.msg(sender, Language.parse("region.protection_added", args[1]));
 			return;
 		}
 		
-		if (PA.negative.contains(args[2].toLowerCase())) {
+		if (StringParser.negative.contains(args[2].toLowerCase())) {
 			region.protectionRemove(rf);
 			arena.msg(sender, Language.parse("region.protection_removed", args[1]));
 			return;
@@ -78,8 +77,8 @@ public class PAA_Protection extends PAA__Command {
 		// usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
 
 		arena.msg(sender, Language.parse("error.valuenotfound", args[2]));
-		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(PA.positive, " | ")));
-		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(PA.negative, " | ")));
+		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(StringParser.negative, " | ")));
 		
 	}
 

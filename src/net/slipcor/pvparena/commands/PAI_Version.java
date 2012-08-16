@@ -38,7 +38,7 @@ public class PAI_Version extends PA__Command {
 		if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
 			Arena.pmsg(sender, "§7-----------------------------------");
 			Arena.pmsg(sender, "§cArena Goals:");
-			for (ArenaGoal ag : PVPArena.instance.getAtm().getTypes()) {
+			for (ArenaGoal ag : PVPArena.instance.getAgm().getTypes()) {
 				Arena.pmsg(sender,  "§c" + ag.getName() + " - " + ag.version());
 			}
 		}

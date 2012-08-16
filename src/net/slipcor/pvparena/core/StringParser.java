@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.core;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -347,4 +348,7 @@ public class StringParser {
 		}
 		return result.substring(glue.length());
 	}
+
+	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
+	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
 }

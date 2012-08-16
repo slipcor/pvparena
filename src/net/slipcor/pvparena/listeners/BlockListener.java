@@ -5,8 +5,11 @@ import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -46,8 +49,8 @@ import org.bukkit.event.world.StructureGrowEvent;
 public class BlockListener implements Listener {
 	private Debug db = new Debug(18);
 
-	private boolean willBeSkipped(boolean cancelled, Event event, Location loc) {
-		Arena arena = Arenas.getArenaByRegionLocation(loc);
+	private boolean willBeSkipped(boolean cancelled, Event event, Location loc, RegionProtection rp) {
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
 		if (arena == null) {
 			return true;
 		}
@@ -77,12 +80,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.BREAK)) {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()), RegionProtection.BREAK);
 
 		if (isProtected(arena, event, "blockdamage")) {
 			return;
@@ -121,8 +124,8 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()), RegionProtection.FIRE);
 		if (arena == null)
 			return; // no arena => out
 
@@ -138,12 +141,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockDecay(LeavesDecayEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block decaying inside the arena");
 
@@ -157,12 +160,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockFade(BlockFadeEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block fading inside the arena");
 		if (isProtected(arena, event, "fade")) {
@@ -174,12 +177,12 @@ public class BlockListener implements Listener {
 
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getToBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
 
 		Block block = event.getToBlock();
-		Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block fluids inside the arena");
 
@@ -194,12 +197,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockForm(BlockFormEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByRegionLocation(block.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block forming inside the arena");
 
@@ -220,7 +223,7 @@ public class BlockListener implements Listener {
 		Arena arena = null;
 
 		for (BlockState block : event.getBlocks()) {
-			arena = Arenas.getArenaByRegionLocation(block.getLocation());
+			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 			if (arena != null) {
 				break;
 			}
@@ -230,7 +233,7 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		for (BlockState block : event.getBlocks()) {
-			arena = Arenas.getArenaByRegionLocation(block.getLocation());
+			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 			if (arena != null) {
 				continue;
 			}
@@ -245,11 +248,11 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.FIRE)) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()), RegionProtection.FIRE);
 
 		db.i("block ignite inside the arena");
 		event.setCancelled(!arena.isFightInProgress());
@@ -274,7 +277,7 @@ public class BlockListener implements Listener {
 		Arena arena = null;
 
 		for (Block block : event.getBlocks()) {
-			arena = Arenas.getArenaByRegionLocation(block.getLocation());
+			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.PISTON);
 			if (arena != null) {
 				if (isProtected(arena, event, "piston")) {
 					return;
@@ -297,11 +300,11 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.PLACE)) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()), RegionProtection.PLACE);
 
 		if (isProtected(arena, event, "blockplace")) {
 			if (arena.isFightInProgress() &&
@@ -349,12 +352,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(PaintingPlaceEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
-				.getLocation())) {
+				.getLocation(), RegionProtection.PAINTING)) {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByRegionLocation(event.getBlock()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()), RegionProtection.PAINTING);
 
 		db.i("painting place inside the arena");
 
@@ -369,12 +372,12 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(PaintingBreakEvent event) {
 		if (willBeSkipped(event.isCancelled(), event, event.getPainting()
-				.getLocation())) {
+				.getLocation(), RegionProtection.PAINTING)) {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByRegionLocation(event.getPainting()
-				.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getPainting()
+				.getLocation()), RegionProtection.PAINTING);
 
 		if (isProtected(arena, event, "painting")) {
 			return;

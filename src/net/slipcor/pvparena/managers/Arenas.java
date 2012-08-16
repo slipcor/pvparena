@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
 
 import org.bukkit.ChatColor;
@@ -59,7 +60,7 @@ public class Arenas {
 			return false;
 		}
 
-		return PVPArena.instance.getAtm().checkAndCommit(arena);
+		return PVPArena.instance.getAgm().checkAndCommit(arena);
 	}
 
 	/**
@@ -154,12 +155,37 @@ public class Arenas {
 	 *            the location to find
 	 * @return an arena instance if found, null otherwise
 	 */
-	public static Arena getArenaByRegionLocation(Location location) {
+	public static Arena getArenaByRegionLocation(PABlockLocation location) {
 		for (Arena arena : arenas.values()) {
-			if (arena.contains(location))
-				return arena;
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.contains(location))
+					return arena;
+			}
 		}
 		return null;
+	}
+
+	public static Arena getArenaByProtectedRegionLocation(
+			PABlockLocation location, RegionProtection rp) {
+		for (Arena arena : arenas.values()) {
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.contains(location) && region.getProtections().contains(rp))
+					return arena;
+			}
+		}
+		return null;
+	}
+
+	public static HashSet<Arena> getArenasByRegionLocation(PABlockLocation location) {
+		HashSet<Arena> result = new HashSet<Arena>();
+		for (Arena arena : arenas.values()) {
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.contains(location)) {
+					result.add(arena);
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -281,7 +307,7 @@ public class Arenas {
 		String arenaType = cfg.getString("general.type",
 				"please redo your arena");
 
-		ArenaGoal type = PVPArena.instance.getAtm().getType(arenaType);
+		ArenaGoal type = PVPArena.instance.getAgm().getType(arenaType);
 
 		return type == null ? arenaType : null;
 	}
@@ -361,7 +387,7 @@ public class Arenas {
 		arenas.remove(string);
 		a.getArenaConfig().delete();
 
-		File path = new File("plugins/pvparena/stats_" + string + ".yml");
+		File path = new File(PVPArena.instance.getDataFolder().getPath() + "/stats_" + string + ".yml");
 		path.delete();
 		a = null;
 	}

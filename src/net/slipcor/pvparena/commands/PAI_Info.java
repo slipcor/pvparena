@@ -36,7 +36,7 @@ public class PAI_Info extends PAA__Command {
 			arena.msg(sender, Language.parse("info.head_teams", StringParser.joinSet(arena.getTeamNames(), ", ")));
 		}
 		
-		for (ArenaGoal goal : PVPArena.instance.getAtm().getTypes()) {
+		for (ArenaGoal goal : PVPArena.instance.getAgm().getTypes()) {
 			if (goal == null) {
 				continue;
 			}

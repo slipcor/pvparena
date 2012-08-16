@@ -265,7 +265,7 @@ public class PlayerListener implements Listener {
 		
 		arena.prepare(player, true, true);
 		
-		PVPArena.instance.getAtm().checkEntityDeath(arena, player);
+		PVPArena.instance.getAgm().checkEntityDeath(arena, player);
 		PlayerResetRunnable prr = new PlayerResetRunnable(ap,0, player.getLocation());
 		prr.setId(Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, prr, 20L));
 
@@ -359,9 +359,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAtm().checkInteract(arena, player, event.getClickedBlock());
+		PVPArena.instance.getAgm().checkInteract(arena, player, event.getClickedBlock());
 
-		if (arena.isFightInProgress() && !PVPArena.instance.getAtm().allowsJoinInBattle(arena)) {
+		if (arena.isFightInProgress() && !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
 			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!");
 			return;
 		}
@@ -576,7 +576,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		
 		if (arena == null) {
-			arena = Arenas.getArenaByRegionLocation(event.getTo());
+			arena = Arenas.getArenaByRegionLocation(new PABlockLocation(event.getTo()));
 			if (arena == null) {
 				return; // no fighting player and no arena location => OUT
 			}
@@ -591,7 +591,7 @@ public class PlayerListener implements Listener {
 		db.i("aimed location: " + event.getTo().toString());
 		
 		if (ArenaPlayer.parsePlayer(player).getTelePass()
-				|| PVPArena.hasPerms(player, "pvparena.telepass"))
+				|| player.hasPermission("pvparena.telepass"))
 			return; // if allowed => OUT
 		
 		db.i("telepass: no!!");

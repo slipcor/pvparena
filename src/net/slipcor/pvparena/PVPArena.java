@@ -22,6 +22,7 @@ import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.metrics.Metrics;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
@@ -31,7 +32,6 @@ import net.slipcor.pvparena.neworder.ArenaGoalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
@@ -58,9 +58,18 @@ public class PVPArena extends JavaPlugin {
 
 	private final static Debug db = new Debug(1);
 
-	private ArenaRegionShapeManager arsm = null;
-	private ArenaGoalManager atm = null;
+	private ArenaGoalManager agm = null;
 	private ArenaModuleManager amm = null;
+	private ArenaRegionShapeManager arsm = null;
+
+	/**
+	 * Hand over the ArenaGoalManager instance
+	 * 
+	 * @return the ArenaGoalManager instance
+	 */
+	public ArenaGoalManager getAgm() {
+		return agm;
+	}
 
 	/**
 	 * Hand over the ArenaModuleManager instance
@@ -69,15 +78,6 @@ public class PVPArena extends JavaPlugin {
 	 */
 	public ArenaModuleManager getAmm() {
 		return amm;
-	}
-
-	/**
-	 * Hand over the ArenaTypeManager instance
-	 * 
-	 * @return the ArenaTypeManager instance
-	 */
-	public ArenaGoalManager getAtm() {
-		return atm;
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if a CommandSender has admin permissions, false otherwise
 	 */
 	public static boolean hasAdminPerms(CommandSender sender) {
-		return hasPerms(sender, "pvparena.admin");
+		return sender.hasPermission("pvparena.admin");
 	}
 
 	/**
@@ -107,11 +107,12 @@ public class PVPArena extends JavaPlugin {
 	 *            the CommandSender to check
 	 * @param arena
 	 *            the arena to check
-	 * @return true if the CommandSender has creation permissions, false otherwise
+	 * @return true if the CommandSender has creation permissions, false
+	 *         otherwise
 	 */
 	public static boolean hasCreatePerms(CommandSender sender, Arena arena) {
-		return (hasPerms(sender, "pvparena.create") && (arena == null || arena.getOwner()
-				.equals(sender.getName())));
+		return (sender.hasPermission("pvparena.create") &&
+				(arena == null || arena.getOwner().equals(sender.getName())));
 	}
 
 	/**
@@ -128,30 +129,17 @@ public class PVPArena extends JavaPlugin {
 		db.i("perm check.");
 		if (arena.getArenaConfig().getBoolean("join.explicitPermission")) {
 			db.i(" - explicit: "
-					+ String.valueOf(hasPerms(sender, "pvparena.join."
+					+ String.valueOf(sender.hasPermission("pvparena.join."
 							+ arena.getName().toLowerCase())));
 		} else {
-			db.i(String.valueOf(hasPerms(sender, "pvparena.user")));
+			db.i(String.valueOf(sender.hasPermission("pvparena.user")));
 		}
 
-		return arena.getArenaConfig().getBoolean("join.explicitPermission") ? hasPerms(
-				sender, "pvparena.join." + arena.getName().toLowerCase())
-				: hasPerms(sender, "pvparena.user");
+		return arena.getArenaConfig().getBoolean("join.explicitPermission") ? sender
+				.hasPermission("pvparena.join." + arena.getName().toLowerCase())
+				: sender.hasPermission("pvparena.user");
 	}
 
-	/**
-	 * Check if a CommandSender has a permission
-	 * 
-	 * @param sender
-	 *            the CommandSender to check
-	 * @param perms
-	 *            a permission node to check
-	 * @return true if the CommandSender has the permission, false otherwise
-	 */
-	public static boolean hasPerms(CommandSender sender, String perms) {
-		return instance.amm.hasPerms(sender, perms);
-	}
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd,
 			String commandLabel, String[] args) {
@@ -189,14 +177,14 @@ public class PVPArena extends JavaPlugin {
 
 		return false;
 	}
-	
+
 	@Override
 	public void onDisable() {
 		Arenas.reset(true);
 		Tracker.stop();
 		Language.log_info("disabled", getDescription().getFullName());
 	}
-	
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -204,13 +192,13 @@ public class PVPArena extends JavaPlugin {
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
 		new File(getDataFolder().getPath() + "/modules").mkdir();
-		new File(getDataFolder().getPath() + "/regions").mkdir();
+		new File(getDataFolder().getPath() + "/regionshapes").mkdir();
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
 
 		updateLib();
 
-		atm = new ArenaGoalManager(this);
+		agm = new ArenaGoalManager(this);
 		amm = new ArenaModuleManager(this);
 		arsm = new ArenaRegionShapeManager(this);
 
@@ -222,25 +210,14 @@ public class PVPArena extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 
 		int config_version = 1;
-		
+
 		if (getConfig().getInt("ver", 0) < config_version) {
 			getConfig().options().copyDefaults(true);
 			getConfig().set("ver", config_version);
 			saveConfig();
 		}
 
-		File players = new File(getDataFolder(), "players.yml");
-		if (!players.exists()) {
-			try {
-				players.createNewFile();
-				db.i("players.yml created successfully");
-			} catch (IOException e) {
-				getServer()
-						.getLogger()
-						.severe("Could not create players.yml! More errors will be happening!");
-				e.printStackTrace();
-			}
-		}
+		Statistics.initialize();
 
 		Debug.load(this, Bukkit.getConsoleSender());
 		Arenas.load_arenas();
@@ -255,7 +232,7 @@ public class PVPArena extends JavaPlugin {
 			try {
 				metrics = new Metrics(this);
 				Metrics.Graph atg = metrics.createGraph("Game modes installed");
-				for (ArenaGoal at : atm.getTypes()) {
+				for (ArenaGoal at : agm.getTypes()) {
 					atg.addPlotter(new WrapPlotter(at.getName()));
 				}
 				Metrics.Graph amg = metrics
@@ -263,10 +240,10 @@ public class PVPArena extends JavaPlugin {
 				for (ArenaModule am : amm.getModules()) {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
-				Metrics.Graph acg = metrics
-						.createGraph("Arena count");
-				acg.addPlotter(new WrapPlotter("count", Arenas.getArenas().size()));
-				
+				Metrics.Graph acg = metrics.createGraph("Arena count");
+				acg.addPlotter(new WrapPlotter("count", Arenas.getArenas()
+						.size()));
+
 				metrics.start();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -374,6 +351,7 @@ public class PVPArena extends JavaPlugin {
 
 	private class WrapPlotter extends Metrics.Plotter {
 		int i = 1;
+
 		public WrapPlotter(String name) {
 			super(name);
 		}

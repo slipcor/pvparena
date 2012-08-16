@@ -1,12 +1,18 @@
 package net.slipcor.pvparena.managers;
 
+import java.io.File;
+
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
@@ -26,6 +32,8 @@ import net.slipcor.pvparena.events.PAKillEvent;
 
 public class Statistics {
 	public static final Debug db = new Debug(36);
+	private static File players;
+	private static YamlConfiguration config;
 
 	public static enum type {
 		WINS("matches won"), LOSSES("matches lost"), KILLS("kills"), DEATHS(
@@ -396,6 +404,27 @@ public class Statistics {
 					doMore = true; // after an exchange, must look again
 				}
 			}
+		}
+	}
+
+	public static void initialize() {
+		config = new YamlConfiguration();
+		players = new File(PVPArena.instance.getDataFolder(), "players.yml");
+		if (!players.exists()) {
+			try {
+				players.createNewFile();
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.filedone"));
+			} catch (Exception e) {
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			config.load(players);
+		} catch (Exception e) {
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+			e.printStackTrace();
 		}
 	}
 }

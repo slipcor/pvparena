@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 
-import net.slipcor.pvparena.PA;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
@@ -36,13 +35,13 @@ public class PAA_Goal extends PAA__Command {
 		ArenaGoal goal = null;
 		
 		try {
-			goal = PVPArena.instance.getAtm().getType(args[0].toLowerCase());
+			goal = PVPArena.instance.getAgm().getType(args[0].toLowerCase());
 		} catch (Exception e) {
 			// nothing
 		}
 		
 		if (goal == null) {
-			arena.msg(sender, Language.parse("goal.goalnotfound", args[0], StringParser.joinSet(PVPArena.instance.getAtm().getAllGoalNames(), " ")));
+			arena.msg(sender, Language.parse("goal.goalnotfound", args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
 			arena.msg(sender, Language.parse("goal.installing"));
 			return;
 		}
@@ -57,13 +56,13 @@ public class PAA_Goal extends PAA__Command {
 			return;
 		}
 
-		if (PA.positive.contains(args[1].toLowerCase())) {
+		if (StringParser.positive.contains(args[1].toLowerCase())) {
 			arena.goalAdd(goal);
 			arena.msg(sender, Language.parse("goal.goal_added", args[0]));
 			return;
 		}
 		
-		if (PA.negative.contains(args[1].toLowerCase())) {
+		if (StringParser.negative.contains(args[1].toLowerCase())) {
 			arena.goalRemove(goal);
 			arena.msg(sender, Language.parse("goal.goal_removed", args[0]));
 			return;
@@ -72,8 +71,8 @@ public class PAA_Goal extends PAA__Command {
 		// usage: /pa {arenaname} goal [goal] {value}
 
 		arena.msg(sender, Language.parse("error.valuenotfound", args[1]));
-		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(PA.positive, " | ")));
-		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(PA.negative, " | ")));
+		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(StringParser.negative, " | ")));
 	}
 
 	@Override

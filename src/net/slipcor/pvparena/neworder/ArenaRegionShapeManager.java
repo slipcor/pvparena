@@ -43,7 +43,7 @@ public class ArenaRegionShapeManager {
 	 *            the plugin instance
 	 */
 	public ArenaRegionShapeManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/regions");
+		File path = new File(plugin.getDataFolder().toString() + "/regionshapes");
 		if (!path.exists()) {
 			path.mkdir();
 		}

@@ -3,15 +3,17 @@ package net.slipcor.pvparena.runnables;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 
-public class TimerInfo {
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+public abstract class ArenaRunnable implements Runnable {
+
 	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();
 	static {
 		String s = Language.parse("seconds");
@@ -36,6 +38,13 @@ public class TimerInfo {
 		messages.put(3000, "50 " + m);
 		messages.put(3600, "60 " + m);
 	}
+	String message;
+	Integer count;
+	String player;
+	Arena arena;
+	Boolean global;
+	
+	int id = -1;
 	
 	/**
 	 * Spam the message of the remaining time to... someone, probably:
@@ -45,12 +54,20 @@ public class TimerInfo {
 	 * @param i the seconds remaining
 	 * @param global the trigger to generally spam to everyone or to specific arenas/players
 	 */
-	public static void spam(String s, Integer i, Player player, Arena arena, Boolean global) {
-		if (messages.get(i) == null) {
+	public ArenaRunnable(String s, Integer i, Player player, Arena arena, Boolean global) {
+		this.message = s;
+		this.count = i;
+		this.player = player.getName();
+		this.arena = arena;
+		this.global = global;
+		
+		id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this);
+	}
+	public void spam() {
+		if ((message == null) || (messages.get(count) == null)) {
 			return;
 		}
-		
-		String message = i > 5 ? Language.parse(s, messages.get(i)) : messages.get(i);
+		String message = count > 5 ? Language.parse(this.message, messages.get(count)) : messages.get(count);
 		if (global) {
 			Player[] players = Bukkit.getOnlinePlayers();
 			
@@ -62,7 +79,7 @@ public class TimerInfo {
 						}
 					}
 					if (player != null) {
-						if (player.getName().equals(p.getName())) {
+						if (player.equals(p.getName())) {
 							continue;
 						}
 					}
@@ -76,7 +93,7 @@ public class TimerInfo {
 			HashSet<ArenaPlayer> players = arena.getFighters();
 			for (ArenaPlayer ap : players) {
 				if (player != null) {
-					if (ap.getName().equals(player.getName())) {
+					if (ap.getName().equals(player)) {
 						continue;
 					}
 				}
@@ -86,10 +103,23 @@ public class TimerInfo {
 			}
 			return;
 		}
-		if (player != null) {
-			Arenas.tellPlayer(player, message);
+		if (Bukkit.getPlayer(player) != null) {
+			Arenas.tellPlayer(Bukkit.getPlayer(player), message);
 			return;
 		}
 		System.out.print("[PA-debug] " + message);
 	}
+	
+	@Override
+	public void run() {
+		spam();
+		if (count <= 0) {
+			commit();
+		} else {
+			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
+		}
+	}
+	
+	protected abstract void commit();
+
 }

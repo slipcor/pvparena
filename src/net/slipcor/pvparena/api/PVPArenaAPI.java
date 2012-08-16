@@ -1,6 +1,9 @@
 package net.slipcor.pvparena.api;
 
+import java.util.HashSet;
+
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 
@@ -37,7 +40,7 @@ public class PVPArenaAPI {
 	}
 
 	/**
-	 * get the arena a location is in (based on arena region check settings!)
+	 * get the arena a location is in
 	 * 
 	 * @param location
 	 *            the location to check
@@ -45,7 +48,27 @@ public class PVPArenaAPI {
 	 */
 	public static String getArenaNameByLocation(Location location) {
 		db.i("API: get arena of location: " + location.toString());
-		Arena arena = Arenas.getArenaByRegionLocation(location);
+		Arena arena = Arenas.getArenaByRegionLocation(new PABlockLocation(location));
 		return (arena == null) ? "" : arena.getName();
+	}
+
+	/**
+	 * get the arenas a location is in
+	 * 
+	 * @param location
+	 *            the location to check
+	 * @return the arena name if part of an arena, "" otherwise
+	 */
+	public static HashSet<String> getArenaNamesByLocation(Location location) {
+		db.i("API: get arena of location: " + location.toString());
+		HashSet<Arena> arenas = Arenas.getArenasByRegionLocation(new PABlockLocation(location));
+		
+		HashSet<String> result = new HashSet<String>();
+		
+		for (Arena a : arenas) {
+			result.add(a.getName());
+		}
+		
+		return result;
 	}
 }

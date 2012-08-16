@@ -63,7 +63,7 @@ public class PAA_Install extends PA__Command {
 			for (String key : list) {
 				if (key.equalsIgnoreCase(args[1])) {
 					if (download("pa_g_" + key + ".jar")) {
-						PVPArena.instance.getAtm().reload();
+						PVPArena.instance.getAgm().reload();
 						Arena.pmsg(sender, Language.parse("install.installed",key));
 						return;
 					}
@@ -100,7 +100,7 @@ public class PAA_Install extends PA__Command {
 					false);
 			for (String key : entries) {
 				String value = cfg.getString("goals." + key);
-				ArenaGoal goal = PVPArena.instance.getAtm().getType(key);
+				ArenaGoal goal = PVPArena.instance.getAgm().getType(key);
 				boolean installed = (goal != null);
 				String version = null;
 				if (installed) {
@@ -185,7 +185,7 @@ public class PAA_Install extends PA__Command {
 
 	private void disableModule(String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAtm().getType(file.replace("pa_g_", "").replace(".jar", ""));
+			ArenaGoal g = PVPArena.instance.getAgm().getType(file.replace("pa_g_", "").replace(".jar", ""));
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
 			ArenaModule g = PVPArena.instance.getAmm().getModule(file.replace("pa_g_", "").replace(".jar", ""));

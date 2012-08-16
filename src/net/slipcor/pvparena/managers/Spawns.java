@@ -64,7 +64,7 @@ public class Spawns {
 
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.getArenaConfig().get("spawns." + place) == null) {
-			place = PVPArena.instance.getAtm().guessSpawn(arena, place);
+			place = PVPArena.instance.getAgm().guessSpawn(arena, place);
 			if (place == null) {
 				return null;
 			}

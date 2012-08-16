@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 
-import net.slipcor.pvparena.PA;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -49,13 +48,13 @@ public class PAG_Chat extends PAA__Command {
 			return;
 		}
 
-		if (PA.positive.contains(args[0].toLowerCase())) {
+		if (StringParser.positive.contains(args[0].toLowerCase())) {
 			globalChatters.add(player);
 			arena.msg(sender, Language.parse("messaging.global_on", args[1]));
 			return;
 		}
 		
-		if (PA.negative.contains(args[0].toLowerCase())) {
+		if (StringParser.negative.contains(args[0].toLowerCase())) {
 			globalChatters.remove(player);
 			arena.msg(sender, Language.parse("messaging.global_off", args[1]));
 			return;
@@ -64,8 +63,8 @@ public class PAG_Chat extends PAA__Command {
 		// usage: /pa {arenaname} chat {value}
 
 		arena.msg(sender, Language.parse("error.valuenotfound", args[0]));
-		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(PA.positive, " | ")));
-		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(PA.negative, " | ")));
+		arena.msg(sender, Language.parse("error.valuepos", StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse("error.valueneg", StringParser.joinSet(StringParser.negative, " | ")));
 	}
 
 	@Override

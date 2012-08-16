@@ -90,7 +90,7 @@ public final class PlayerState {
 		
 		if (ap.getArena() != null) {
 			PVPArena.instance.getAmm().unload(player);
-			PVPArena.instance.getAtm().unload(ap.getArena(), player);
+			PVPArena.instance.getAgm().unload(ap.getArena(), player);
 		}
 		
 
@@ -124,7 +124,7 @@ public final class PlayerState {
 		
 		if (ap.getArena() != null) {
 			PVPArena.instance.getAmm().unload(player);
-			PVPArena.instance.getAtm().unload(ap.getArena(), player);
+			PVPArena.instance.getAgm().unload(ap.getArena(), player);
 		}
 		
 

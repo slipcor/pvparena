@@ -52,7 +52,7 @@ public class Configs {
 			
 			List<String> list = cfg.getStringList("arenagoals", new ArrayList<String>());
 			for (String type : list) {
-				ArenaGoal aType = PVPArena.instance.getAtm().getType(type);
+				ArenaGoal aType = PVPArena.instance.getAgm().getType(type);
 
 				arena.addGoal((ArenaGoal) aType.clone());
 			}
@@ -170,7 +170,7 @@ public class Configs {
 		config.addDefault("ready.autoclass", "none");
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 
-		PVPArena.instance.getAtm().addDefaultTeams(arena, config);
+		PVPArena.instance.getAgm().addDefaultTeams(arena, config);
 
 		config.options().copyDefaults(true);
 
@@ -204,7 +204,6 @@ public class Configs {
 			db.i("adding class items to class " + className);
 		}
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
-		arena.setSettingsManager(new Settings(arena));
 		if (cfg.getString("general.owner") != null) {
 			arena.setOwner(cfg.getString("general.owner"));
 		}
@@ -235,9 +234,11 @@ public class Configs {
 					+ team.getColorString());
 		}
 
-		PVPArena.instance.getAtm().configParse(arena);
+		PVPArena.instance.getAgm().configParse(arena);
 
 		PVPArena.instance.getAmm().configParse(arena, config);
+		
+		cfg.save();
 
 		arena.setPrefix(cfg.getString("general.prefix", "PVP Arena"));
 	}
@@ -273,6 +274,6 @@ public class Configs {
 		if (error != null) {
 			return error;
 		}
-		return PVPArena.instance.getAtm().checkSpawns(arena, list);
+		return PVPArena.instance.getAgm().checkSpawns(arena, list);
 	}
 }

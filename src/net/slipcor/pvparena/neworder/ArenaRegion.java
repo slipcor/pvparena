@@ -464,4 +464,8 @@ public abstract class ArenaRegion extends Loadable {
 	public PABlockLocation[] getLocs() {
 		return locs;
 	}
+
+	public HashSet<RegionProtection> getProtections() {
+		return protections;
+	}
 }

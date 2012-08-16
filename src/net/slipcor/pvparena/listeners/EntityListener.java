@@ -5,13 +5,16 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
 import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -45,7 +48,7 @@ public class EntityListener implements Listener {
 	public void onEntityExplode(EntityExplodeEvent event) {
 		db.i("explosion");
 
-		Arena arena = Arenas.getArenaByRegionLocation(event.getLocation());
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(PABlockLocation(event.getLocation()), RegionProtection.TNT);
 		if (arena == null)
 			return; // no arena => out
 
@@ -58,6 +61,11 @@ public class EntityListener implements Listener {
 		}
 
 		event.setCancelled(true); // ELSE => cancel event
+	}
+
+	private PABlockLocation PABlockLocation(Location location) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

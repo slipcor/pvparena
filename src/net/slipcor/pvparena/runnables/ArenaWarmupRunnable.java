@@ -1,8 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -23,15 +20,12 @@ import net.slipcor.pvparena.core.Debug;
  * 
  */
 
-public class ArenaWarmupRunnable implements Runnable {
+public class ArenaWarmupRunnable extends ArenaRunnable {
 	private final ArenaPlayer player;
 	private final String teamName;
 	private final Arena arena;
 	private final boolean spectator;
-	private int id;
 	private Debug db = new Debug(40);
-	
-	private int count = 0;
 	
 	/**
 	 * create a timed arena runnable
@@ -39,30 +33,18 @@ public class ArenaWarmupRunnable implements Runnable {
 	 * @param p
 	 *            the player to reset
 	 */
-	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i, int iid) {
+	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i) {
+		super("warmingupexact", i, p.get(), a, false);
 		db.i("ArenaWarmupRunnable constructor");
-		id = 0;
 		player = p;
 		teamName = team;
 		arena = a;
 		spectator = spec;
 		count = i+1;
 	}
-
-	/**
-	 * the run method, warmup the arena player
-	 */
-	@Override
-	public void run() {
-		TimerInfo.spam("warmingupexact", --count, player.get(), null, false);
-		if (count <= 0) {
-			commit();
-		} else {
-			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
-		}
-	}
 	
-	private void commit() {
+	@Override
+	protected void commit() {
 		db.i("ArenaWarmupRunnable commiting");
 		player.setStatus(Status.WARM);
 		if (spectator) {
@@ -74,10 +56,5 @@ public class ArenaWarmupRunnable implements Runnable {
 			args[0] = teamName;
 			(new PAG_Join()).commit(arena, player.get(), args);
 		}
-		Bukkit.getScheduler().cancelTask(id);
-	}
-	
-	public void setId(int i) {
-		id = i;
 	}
 }

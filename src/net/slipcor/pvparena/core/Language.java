@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.managers.Statistics;
 
 import org.bukkit.Bukkit;
@@ -32,9 +33,8 @@ public class Language {
 	 * create a language manager instance
 	 */
 	public static void init(String s) {
-		s = s.equals("en") ? "" : "_" + s;
-		new File("plugins/pvparena").mkdir();
-		File configFile = new File("plugins/pvparena/lang" + s + ".yml");
+		PVPArena.instance.getDataFolder().mkdir();
+		File configFile = new File(PVPArena.instance.getDataFolder().getPath() + "/lang_" + s + ".yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
@@ -462,7 +462,7 @@ public class Language {
 		config.addDefault("error.classperms", "You do not have permission for class &a%1%&r");
 		
 		PVPArena.instance.getAmm().initLanguage(config);
-		PVPArena.instance.getAtm().initLanguage(config);
+		PVPArena.instance.getAgm().initLanguage(config);
 
 		config.options().copyDefaults(true);
 		try {
@@ -590,5 +590,10 @@ public class Language {
 		String var = (String) log.get(s);
 		Bukkit.getLogger().info("[PVP Arena] " + var);
 		// log map value
+	}
+
+	public static String parse(Arena arena, String arg) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

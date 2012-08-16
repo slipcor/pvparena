@@ -54,10 +54,10 @@ public class PAA_Uninstall extends PA__Command {
 		}
 
 		String name = args[1].toLowerCase();
-		ArenaGoal ag = PVPArena.instance.getAtm().getType(name);
+		ArenaGoal ag = PVPArena.instance.getAgm().getType(name);
 		if (ag != null) {
 			if (remove("pa_g_" + ag.getName().toLowerCase() + ".jar")) {
-				PVPArena.instance.getAtm().reload();
+				PVPArena.instance.getAgm().reload();
 				Arena.pmsg(sender, Language.parse("install.uninstalled",ag.getName()));
 				return;
 			}
@@ -87,7 +87,7 @@ public class PAA_Uninstall extends PA__Command {
 					false);
 			for (String key : entries) {
 				String value = cfg.getString("goals." + key);
-				ArenaGoal goal = PVPArena.instance.getAtm().getType(key);
+				ArenaGoal goal = PVPArena.instance.getAgm().getType(key);
 				boolean installed = (goal != null);
 				String version = null;
 				if (installed) {
@@ -124,7 +124,7 @@ public class PAA_Uninstall extends PA__Command {
 
 	private void disableModule(String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAtm().getType(file);
+			ArenaGoal g = PVPArena.instance.getAgm().getType(file);
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
 			ArenaModule g = PVPArena.instance.getAmm().getModule(file);
