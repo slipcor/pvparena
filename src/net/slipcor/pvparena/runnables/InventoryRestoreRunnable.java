@@ -12,7 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryRestoreRunnable implements Runnable {
+public class InventoryRestoreRunnable extends Runnable {
 	private Arena arena;
 	private Player player;
 	private ItemStack[] items;

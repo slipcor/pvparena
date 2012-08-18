@@ -19,10 +19,7 @@ import net.slipcor.pvparena.core.Debug;
  */
 
 public class EndRunnable extends ArenaRunnable {
-	private final Arena a;
 	private Debug db = new Debug(40);
-
-	private int count = 0;
 
 	/**
 	 * create a timed arena runnable
@@ -33,8 +30,6 @@ public class EndRunnable extends ArenaRunnable {
 	 */
 	public EndRunnable(Arena a, int i, int iid) {
 		super("resetexact", i, null, a, false);
-		this.a = a;
-		count = i + 1;
 		db.i("EndRunnable constructor");
 		Bukkit.getScheduler().cancelTask(a.END_ID);
 		a.END_ID = -1;
@@ -43,11 +38,11 @@ public class EndRunnable extends ArenaRunnable {
 	@Override
 	protected void commit() {
 		db.i("EndRunnable commiting");
-		a.reset(false);
-		Bukkit.getScheduler().cancelTask(a.REALEND_ID);
-		a.REALEND_ID = -1;
-		Bukkit.getScheduler().cancelTask(a.END_ID);
-		a.END_ID = -1;
+		arena.reset(false);
+		Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
+		arena.REALEND_ID = -1;
+		Bukkit.getScheduler().cancelTask(arena.END_ID);
+		arena.END_ID = -1;
 		Bukkit.getScheduler().cancelTask(id);
 	}
 }

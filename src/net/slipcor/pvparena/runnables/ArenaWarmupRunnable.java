@@ -23,7 +23,6 @@ import net.slipcor.pvparena.core.Debug;
 public class ArenaWarmupRunnable extends ArenaRunnable {
 	private final ArenaPlayer player;
 	private final String teamName;
-	private final Arena arena;
 	private final boolean spectator;
 	private Debug db = new Debug(40);
 	
@@ -38,9 +37,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 		db.i("ArenaWarmupRunnable constructor");
 		player = p;
 		teamName = team;
-		arena = a;
 		spectator = spec;
-		count = i+1;
 	}
 	
 	@Override

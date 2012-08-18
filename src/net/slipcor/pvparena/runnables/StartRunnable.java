@@ -18,46 +18,25 @@ import net.slipcor.pvparena.core.Debug;
  * 
  */
 
-public class StartRunnable implements Runnable {
-	private final Arena a;
+public class StartRunnable extends ArenaRunnable {
 	private Debug db = new Debug(43);
-	private int id;
 
-	private int count = 0;
 	/**
 	 * create a timed arena start runnable
 	 * 
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public StartRunnable(Arena a, int i, int iid) {
-		this.a = a;
-		id = 0;
-		count = i+1;
+	public StartRunnable(Arena a, int i) {
+		super("startinginexact", i, null, a, false);
 		db.i("StartRunnable constructor");
 	}
 
-	/**
-	 * the run method, commit arena end
-	 */
 	@Override
-	public void run() {
-		TimerInfo.spam("startinginexact", --count, null, a, false);
-		if (count == 0) {
-			Bukkit.getScheduler().cancelTask(a.START_ID);
-			commit();
-		} if (count < 0) {
-			System.out.print("running");
-		}
-	}
-
-	private void commit() {
+	protected void commit() {
+		Bukkit.getScheduler().cancelTask(arena.START_ID);
 		db.i("StartRunnable commiting");
 		Bukkit.getScheduler().cancelTask(id);
-		a.start();
-	}
-	
-	public void setId(int i) {
-		id = i;
+		arena.start();
 	}
 }

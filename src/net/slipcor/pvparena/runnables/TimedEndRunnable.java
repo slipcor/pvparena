@@ -19,41 +19,21 @@ import net.slipcor.pvparena.core.Debug;
  * 
  */
 
-public class TimedEndRunnable implements Runnable {
-	private final Arena arena;
+public class TimedEndRunnable extends ArenaRunnable {
 	private Debug db = new Debug(42);
-	private int id;
-
-	private int count = 0;
 	/**
 	 * create a timed arena runnable
 	 * 
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public TimedEndRunnable(Arena a, int i, int iid) {
-		id = 0;
-		this.arena = a;
-		count = i+1;
+	public TimedEndRunnable(Arena a, int i) {
+		super("endingexact", i, null, a, false);
 		db.i("TimedEndRunnable constructor");
 	}
-
-	/**
-	 * the run method, commit arena end
-	 */
-	@Override
-	public void run() {
-		TimerInfo.spam("endingexact", --count, null, arena, false);
-		if (count <= 0) {
-			commit();
-			Bukkit.getScheduler().cancelTask(arena.END_ID);
-			arena.END_ID = -1;
-			Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
-			arena.REALEND_ID = -1;
-		}
-	}
 	
-	private void commit() {
+	@Override
+	protected void commit() {
 		db.i("TimedEndRunnable commiting");
 		if (arena.isFightInProgress())
 			PVPArena.instance.getAgm().timed(arena);
@@ -61,10 +41,9 @@ public class TimedEndRunnable implements Runnable {
 			// deactivate the auto saving task
 			Bukkit.getServer().getScheduler().cancelTask(id);
 		}
-		this.hashCode();
-	}
-	
-	public void setId(int i) {
-		id = i;
+		Bukkit.getScheduler().cancelTask(arena.END_ID);
+		arena.END_ID = -1;
+		Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
+		arena.REALEND_ID = -1;
 	}
 }
