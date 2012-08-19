@@ -629,6 +629,7 @@ public class Arena {
 		player.setGameMode(GameMode.getByValue(0));
 		PlayerState.removeEffects(player);
 
+		ArenaPlayer.parsePlayer(player).dump();
 	}
 
 	/**

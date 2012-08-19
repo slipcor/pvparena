@@ -551,19 +551,20 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		Arena arena = ap.getArena();
-		if (arena == null && !ap.isDead()) {
-			return; // no fighting player => OUT
-		}
-		db.i("onPlayerRespawn: fighting player");
-
-		if (!ap.getStatus().equals(Status.LOSES)) {
-			return;
-		}
-		arena.tpPlayerToCoordName(player, "spectator");
 		
-		ap.setStatus(Status.LOSES);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		
+		ap.setArena(null);
+		// instantiate and/or reset a player. This fixes issues with leaving
+		// players
+		// and makes sure every player is an arenaplayer ^^
+
+		ap.readDump();
+		Arena a = ap.getArena();
+		
+		if (a != null) {
+			a.playerLeave(player, "exit");
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -586,8 +587,7 @@ public class PlayerListener implements Listener {
 		Arena arena = Arenas.getArenaByPlayer(player);
 		if (arena == null)
 			return; // no fighting player => OUT
-		
-		ArenaPlayer.parsePlayer(player).dump();
+
 		arena.playerLeave(player, "exit");
 	}
 

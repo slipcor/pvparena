@@ -293,6 +293,9 @@ public class StringParser {
 	}
 
 	public static String getStringFromItemStacks(ItemStack[] isItems) {
+		if (isItems == null) {
+			return "AIR";
+		}
 		String[] s = new String[isItems.length];
 		
 		int i = 0;

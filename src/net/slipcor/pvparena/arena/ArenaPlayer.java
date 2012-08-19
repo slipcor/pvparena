@@ -367,6 +367,11 @@ public class ArenaPlayer {
 		}
 		arena = null;
 		aClass = null;
+		
+		if (get() == null || get().isDead() || !get().isOnline()) {
+			return;
+		}
+		clearDump();
 	}
 
 	/**
@@ -468,6 +473,15 @@ public class ArenaPlayer {
 			location = Spawns.getCoords(arena, "exit");
 			
 			state = PlayerState.undump(cfg, name);
+		}
+		
+		f.delete();
+	}
+
+	private void clearDump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath() + "/dumps/" + this.name + ".yml");
+		if (!f.exists()) {
+			return;
 		}
 		
 		f.delete();
