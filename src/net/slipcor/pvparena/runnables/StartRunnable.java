@@ -30,6 +30,7 @@ public class StartRunnable extends ArenaRunnable {
 	public StartRunnable(Arena a, int i) {
 		super("startinginexact", i, null, a, false);
 		db.i("StartRunnable constructor");
+		a.START_ID = id;
 	}
 
 	@Override

@@ -7,13 +7,12 @@ import java.util.HashSet;
 import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.definitions.ArenaClassSign;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAJoinEvent;
@@ -66,7 +65,7 @@ public class Arena {
 	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
 	private final HashSet<ArenaGoal> goals = new HashSet<ArenaGoal>();
 	private final HashSet<ArenaRegion> regions = new HashSet<ArenaRegion>();
-	private final HashSet<ArenaClassSign> signs = new HashSet<ArenaClassSign>();
+	private final HashSet<PAClassSign> signs = new HashSet<PAClassSign>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
 
 	private static String globalprefix = "PVP Arena";
@@ -111,6 +110,10 @@ public class Arena {
 		goals.add(goal);
 	}
 
+	public void addRegion(ArenaRegion region) {
+		this.regions.add(region);
+	}
+
 	public void broadcast(String msg) {
 		db.i("@all: " + msg);
 		HashSet<ArenaPlayer> players = getEveryone();
@@ -118,6 +121,41 @@ public class Arena {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
 				continue;
 			}
+			this.msg(p.get(), msg);
+		}
+	}
+
+	/**
+	 * send a message to every player, prefix player name and ChatColor
+	 * 
+	 * @param player
+	 *            the team to send to
+	 * @param msg
+	 *            the message to send
+	 * @param player
+	 */
+	public synchronized void broadcastColored(String msg, ChatColor c,
+			Player player) {
+		broadcast(c + player.getName() + ChatColor.WHITE + ": " + msg);
+	}
+
+	/**
+	 * send a message to every player except the given one
+	 * 
+	 * @param player
+	 *            the player to exclude
+	 * @param msg
+	 *            the message to send
+	 */
+	public void broadcastExcept(Player player, String msg) {
+		db.i("@all/" + player.getName() + ": " + msg);
+		HashSet<ArenaPlayer> players = getFighters();
+		for (ArenaPlayer p : players) {
+			if (p.getArena() == null || !p.getArena().equals(this)) {
+				continue;
+			}
+			if (p.get().equals(player))
+				continue;
 			this.msg(p.get(), msg);
 		}
 	}
@@ -144,12 +182,12 @@ public class Arena {
 			}
 
 			if (getArenaConfig().getBoolean("general.signs")) {
-				ArenaClassSign.remove(signs, player);
+				PAClassSign.remove(signs, player);
 				Block block = sign.getBlock();
-				ArenaClassSign as = ArenaClassSign.used(block.getLocation(),
+				PAClassSign as = PAClassSign.used(block.getLocation(),
 						signs);
 				if (as == null) {
-					as = new ArenaClassSign(block.getLocation());
+					as = new PAClassSign(block.getLocation());
 				}
 				signs.add(as);
 				if (!as.add(player)) {
@@ -165,7 +203,7 @@ public class Arena {
 					+ " to player " + player.getName());
 			return;
 		}
-		ap.setClass(className);
+		ap.setArenaClass(className);
 		if (className.equalsIgnoreCase("custom")) {
 			// if custom, give stuff back
 			ArenaPlayer.reloadInventory(this, player);
@@ -194,12 +232,8 @@ public class Arena {
 		}
 
 		int duration = getArenaConfig().getInt("start.countdown");
-		StartRunnable sr = new StartRunnable(this, duration, 0);
-		START_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, sr, 20L, 20L);
-		sr.setId(START_ID);
-		broadcast(Language.parse("startingin",
-				String.valueOf(getArenaConfig().getInt("start.countdown"))));
+		
+		new StartRunnable(this, duration);
 	}
 
 	/**
@@ -247,7 +281,7 @@ public class Arena {
 
 		HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
-		for (ArenaPlayer ap : ArenaPlayer.getPlayers()) {
+		for (ArenaPlayer ap : ArenaPlayer.getAllArenaPlayers()) {
 			if (this.equals(ap.getArena())) {
 				players.add(ap);
 			}
@@ -423,7 +457,7 @@ public class Arena {
 				return true;
 			}
 		}
-		return false;
+		return this.equals(ArenaPlayer.parsePlayer(p).getArena());
 	}
 
 	public boolean isFightInProgress() {
@@ -436,18 +470,6 @@ public class Arena {
 
 	public boolean isLocked() {
 		return locked;
-	}
-
-	/**
-	 * check if a player is known
-	 * 
-	 * @param pPlayer
-	 *            the player to find
-	 * @return true if the player is known, false otherwise
-	 */
-	public boolean isPartOf(Player pPlayer) {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(pPlayer);
-		return getFighters().contains(ap);
 	}
 
 	public void msg(CommandSender sender, String msg) {
@@ -478,7 +500,7 @@ public class Arena {
 
 		if (damager instanceof Player) {
 			ap = ArenaPlayer.parsePlayer((Player) damager);
-			team = Teams.getTeam(this, ap);
+			team = ap.getArenaTeam();
 		}
 
 		switch (cause) {
@@ -497,6 +519,12 @@ public class Arena {
 		}
 	}
 
+	public static void pmsg(CommandSender sender, String msg) {
+		Arenas.db.i("@" + sender.getName() + ": " + msg);
+		sender.sendMessage(ChatColor.YELLOW + "[" + globalprefix + "] "
+				+ ChatColor.WHITE + msg);
+	}
+
 	/**
 	 * a player leaves from the arena
 	 * 
@@ -512,12 +540,12 @@ public class Arena {
 		boolean fighter = ap.getStatus().equals(Status.FIGHT);
 
 		if (fighter) {
-			ArenaTeam team = Teams.getTeam(this, ap);
+			ArenaTeam team = ap.getArenaTeam();
 			if (team != null) {
 				PVPArena.instance.getAmm().playerLeave(this, player, team);
 
 				if (!location.equals("exit")) {
-					tellEveryoneExcept(
+					broadcastExcept(
 							player,
 							Language.parse("playerleave",
 									team.colorizePlayer(player)
@@ -580,7 +608,8 @@ public class Arena {
 
 			ap.setArena(this);
 
-			saveMisc(player); // save player health, fire tick, hunger etc
+			ap.dump();
+			ap.createState(player); // save player health, fire tick, hunger etc
 		}
 
 		playersetHealth(player, getArenaConfig().getInt("start.health", 0));
@@ -601,44 +630,55 @@ public class Arena {
 	 * 
 	 * @param arena
 	 *            the arena to check
-	 * @return 1 if the arena is ready 0 if at least one player not ready -1 if
-	 *         player is the only player -2 if only one team active -3 if not
-	 *         enough players in a team -4 if not enough players -5 if at least
-	 *         one player not selected class, -6 if counting down
+	 * @return null if ok, error message otherwise
 	 */
-	public int ready() {
-
-		// TODO return an error string or null if ok
+	public String ready() {
+		
 		int players = Teams.countPlayersInTeams(this);
 		if (players < 2) {
-			return -1;
+			return Language.parse("notready1");
 		}
 		if (players < getArenaConfig().getInt("ready.min")) {
-			return -4;
+			return Language.parse("notready4");
 		}
 
 		if (getArenaConfig().getBoolean("ready.checkEach")) {
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
 					if (!ap.getStatus().equals(Status.READY)) {
-						return 0;
+						return Language.parse("notready");
 					}
 			}
 		}
-		// TODO
-		/*
-		 * int arenaTypeCheck = type.ready(this); if (arenaTypeCheck != 1) {
-		 * return arenaTypeCheck; }
-		 */
+		
+		if (!free) {
+			HashSet<String> activeTeams = new HashSet<String>();
+
+			for (ArenaTeam team : getTeams()) {
+				for (ArenaPlayer ap : team.getTeamMembers())
+					if (!getArenaConfig().getBoolean("ready.checkEachTeam") || ap.getStatus().equals(Status.READY)) {
+						activeTeams.add(team.getName());
+					}
+			}
+
+			if (activeTeams.size() < 2) {
+				return Language.parse("notready2");
+			}
+		}
+
+		String error = PVPArena.instance.getAgm().ready(this);
+		if (error != null) {
+			return error;
+		}
 
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("checking class: " + p.get().getName());
 
-				if (p.getaClass() == null) {
+				if (p.getArenaClass() == null) {
 					db.i("player has no class");
 					// player no class!
-					return -5;
+					return Language.parse("notready5");
 				}
 			}
 		}
@@ -651,12 +691,12 @@ public class Arena {
 				double aRatio = Float.valueOf(readyPlayers)
 						/ Float.valueOf(players);
 				if ((players > 0) && (aRatio >= ratio)) {
-					return -6;
+					return "";
 				}
 			}
-			return 0;
+			return Language.parse("notready");
 		}
-		return 1;
+		return null;
 	}
 
 	/**
@@ -672,8 +712,6 @@ public class Arena {
 		Bukkit.getPluginManager().callEvent(event);
 		PAExitEvent exitEvent = new PAExitEvent(this, player);
 		Bukkit.getPluginManager().callEvent(exitEvent);
-		if (!ap.isDead())
-			ArenaPlayer.parsePlayer(player).setArena(null);
 	}
 
 	public void removeClass(String string) {
@@ -683,35 +721,6 @@ public class Arena {
 				return;
 			}
 		}
-	}
-
-	/**
-	 * remove the dead player from the map
-	 * 
-	 * @param player
-	 *            the player to remove
-	 */
-	public void removeDeadPlayer(Player player) {
-		resetPlayer(player,
-				getArenaConfig().getString("tp.death", "spectator"), false);
-		ArenaPlayer tempAP = null;
-		for (ArenaPlayer ap : ArenaPlayer.deadPlayers.keySet()) {
-			if (ap.get().equals(player)) {
-				tempAP = ap;
-				if (ap.getArena() != null) {
-					ap.getArena().resetPlayer(
-							player,
-							ap.getArena().getArenaConfig()
-									.getString("tp.death", "spectator"), false);
-					ap.setArena(null);
-				} else {
-					System.out.print("[PA-debug] Arena NULL: "
-							+ player.getName());
-				}
-				break;
-			}
-		}
-		ArenaPlayer.deadPlayers.remove(tempAP);
 	}
 
 	/**
@@ -729,11 +738,11 @@ public class Arena {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (!soft) {
-			Teams.removeTeam(this, ap);
+			ap.getArenaTeam().remove(ap);
 		}
 		remove(player);
 		if (getArenaConfig().getBoolean("general.signs")) {
-			ArenaClassSign.remove(signs, player);
+			PAClassSign.remove(signs, player);
 		}
 	}
 
@@ -761,7 +770,7 @@ public class Arena {
 				Player z = p.get();
 
 				if (!force) {
-					p.wins++;
+					p.addWins();
 				}
 				resetPlayer(z, getArenaConfig().getString("tp.win", "old"),
 						false);
@@ -780,7 +789,7 @@ public class Arena {
 
 				Player z = p.get();
 				if (!force) {
-					p.losses++;
+					p.addLosses();
 				}
 				resetPlayer(z, getArenaConfig().getString("tp.lose", "old"),
 						false);
@@ -789,7 +798,6 @@ public class Arena {
 				resetPlayer(p.get(),
 						getArenaConfig().getString("tp.lose", "exit"), false);
 			}
-
 		}
 	}
 
@@ -802,7 +810,7 @@ public class Arena {
 		Bukkit.getPluginManager().callEvent(event);
 
 		db.i("resetting arena; force: " + String.valueOf(force));
-		for (ArenaClassSign as : signs) {
+		for (PAClassSign as : signs) {
 			as.clear();
 		}
 		signs.clear();
@@ -836,27 +844,27 @@ public class Arena {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (ap.getState() != null) {
-			ap.getState().unload(player);
+			ap.getState().unload();
 		}
 		PVPArena.instance.getAmm().resetPlayer(this, player);
 
 		String sClass = "";
-		if (ap.getaClass() != null) {
-			sClass = ap.getaClass().getName();
+		if (ap.getArenaClass() != null) {
+			sClass = ap.getArenaClass().getName();
 		}
 
 		if (!sClass.equalsIgnoreCase("custom")) {
 			Inventories.clearInventory(player);
 			ArenaPlayer.reloadInventory(this, player);
 		}
-
+		
 		db.i("string = " + string);
 		ap.setTelePass(true);
 		if (string.equalsIgnoreCase("old")) {
-			player.teleport(ap.location.getLocation());
+			player.teleport(ap.getLocation().toLocation());
 		} else {
 			PALocation l = Spawns.getCoords(this, string);
-			player.teleport(l.getLocation());
+			player.teleport(l.toLocation());
 		}
 	}
 
@@ -879,7 +887,7 @@ public class Arena {
 		player.setVelocity(new Vector());
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		ArenaTeam team = Teams.getTeam(this, ap);
+		ArenaTeam team = ap.getArenaTeam();
 
 		if (team == null) {
 			return;
@@ -895,19 +903,6 @@ public class Arena {
 
 		player.setFireTicks(0);
 		player.setNoDamageTicks(60);
-		// EntityListener.addBurningPlayer(player);
-	}
-
-	/**
-	 * save player variables
-	 * 
-	 * @param player
-	 *            the player to save
-	 */
-	public void saveMisc(Player player) {
-		db.i("saving player vars: " + player.getName());
-
-		ArenaPlayer.parsePlayer(player).createState(player);
 	}
 
 	public void selectClass(ArenaPlayer ap, String cName) {
@@ -915,11 +910,10 @@ public class Arena {
 			if (c.getName().equalsIgnoreCase(cName)) {
 				ap.setArenaClass(c);
 				ArenaClass.equip(ap.get(), c.getItems());
-				msg(ap.get(), Language.parse("class.yourclass", c.getName())); // TODO
-																				// lang
+				msg(ap.get(), Language.parse("class.yourclass", c.getName()));
 			}
 		}
-		msg(ap.get(), Language.parse("class.notfound", cName)); // TODO lang
+		msg(ap.get(), Language.parse("class.notfound", cName));
 	}
 
 	public void setArenaConfig(Config cfg) {
@@ -989,6 +983,14 @@ public class Arena {
 		}
 	}
 
+	public void spawnSet(String node, PALocation paLocation) {
+		cfg.set("spawns." + node, Config.parseToString(paLocation));
+	}
+
+	public void spawnUnset(String node) {
+		cfg.set("spawns." + node, null);
+	}
+
 	/**
 	 * initiate the arena start
 	 */
@@ -1039,10 +1041,7 @@ public class Arena {
 					ap.setStatus(Status.FIGHT);
 				}
 			}
-		} else {
-
 		}
-		// TODO move to FFA-like goals
 
 		PVPArena.instance.getAgm().teleportAllToSpawn(this);
 
@@ -1050,10 +1049,7 @@ public class Arena {
 		if (timed > 0) {
 			db.i("arena timing!");
 			// initiate autosave timer
-			TimedEndRunnable ter = new TimedEndRunnable(this, timed, 0);
-			END_ID = Bukkit.getServer().getScheduler()
-					.scheduleSyncRepeatingTask(PVPArena.instance, ter, 20, 20);
-			ter.setId(END_ID);
+			new TimedEndRunnable(this, timed);
 		}
 
 		broadcast(Language.parse("begin"));
@@ -1062,7 +1058,6 @@ public class Arena {
 
 		db.i("teleported everyone!");
 
-		// TODO teamCount = Teams.countActiveTeams(this);
 		SpawnCampRunnable scr = new SpawnCampRunnable(this, 0);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, scr, 100L,
@@ -1079,41 +1074,6 @@ public class Arena {
 	}
 
 	/**
-	 * send a message to every player, prefix player name and ChatColor
-	 * 
-	 * @param player
-	 *            the team to send to
-	 * @param msg
-	 *            the message to send
-	 * @param player
-	 */
-	public synchronized void tellEveryoneColored(String msg, ChatColor c,
-			Player player) {
-		broadcast(c + player.getName() + ChatColor.WHITE + ": " + msg);
-	}
-
-	/**
-	 * send a message to every player except the given one
-	 * 
-	 * @param player
-	 *            the player to exclude
-	 * @param msg
-	 *            the message to send
-	 */
-	public void tellEveryoneExcept(Player player, String msg) {
-		db.i("@all/" + player.getName() + ": " + msg);
-		HashSet<ArenaPlayer> players = getFighters();
-		for (ArenaPlayer p : players) {
-			if (p.getArena() == null || !p.getArena().equals(this)) {
-				continue;
-			}
-			if (p.get().equals(player))
-				continue;
-			this.msg(p.get(), msg);
-		}
-	}
-
-	/**
 	 * send a message to every player of a given team
 	 * 
 	 * @param player
@@ -1124,7 +1084,7 @@ public class Arena {
 	 */
 	public synchronized void tellTeam(String sTeam, String msg, ChatColor c,
 			Player player) {
-		ArenaTeam team = Teams.getTeam(this, sTeam);
+		ArenaTeam team = this.getTeam(sTeam);
 		if (team == null) {
 			return;
 		}
@@ -1177,37 +1137,9 @@ public class Arena {
 			return;
 		}
 		ap.setTelePass(true);
-		player.teleport(loc.getLocation());
+		player.teleport(loc.toLocation());
 		ap.setTelePass(false);
-	}
-
-	public static void pmsg(CommandSender sender, String msg) {
-		Arenas.db.i("@" + sender.getName() + ": " + msg);
-		sender.sendMessage(ChatColor.YELLOW + "[" + globalprefix + "] "
-				+ ChatColor.WHITE + msg);
-	}
-
-	public void addRegion(ArenaRegion create) {
-		this.regions.add(create);
-	}
-
-	public void spawnSet(String node, PALocation paLocation) {
-		cfg.set("spawns." + node, Config.parseToString(paLocation));
-	}
-
-	public void spawnUnset(String node) {
-		cfg.set("spawns." + node, null);
-	}
-
-	public PALocation getSpawn(String string) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String getRandomTeam() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	}//TODO CONTI
 
 	public void getLegacyGoals(String string) {
 		// TODO Auto-generated method stub

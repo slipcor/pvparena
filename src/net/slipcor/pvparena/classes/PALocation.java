@@ -3,6 +3,14 @@ package net.slipcor.pvparena.classes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+/**
+ * 
+ * An own slim wrapper of the bukkit location
+ * 
+ * @author slipcor
+ *
+ */
+
 public class PALocation {
 	private String world;
 	private double x;
@@ -29,6 +37,10 @@ public class PALocation {
 		yaw = l.getYaw();
 	}
 
+	public PALocation add(double x, double y, double z) {
+		return new PALocation(world, x+this.x, y+this.y, z+this.z, pitch, yaw);
+	}
+
 	public double getDistance(PALocation o) {
 		if (o == null)
 			throw new IllegalArgumentException(
@@ -38,6 +50,10 @@ public class PALocation {
 		}
 		
 		return Math.sqrt(Math.pow(this.x - o.x, 2.0D) + Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
+	}
+
+	public double getPitch() {
+		return pitch;
 	}
 
 	public String getWorldName() {
@@ -52,16 +68,16 @@ public class PALocation {
 		return y;
 	}
 
+	public double getYaw() {
+		return yaw;
+	}
+
 	public double getZ() {
 		return z;
 	}
 
-	public double getPitch() {
-		return pitch;
-	}
-
-	public double getYaw() {
-		return yaw;
+	public void setPitch(float f) {
+		pitch = f;
 	}
 
 	public void setX(double d) {
@@ -72,23 +88,15 @@ public class PALocation {
 		y = d;
 	}
 
-	public void setZ(double d) {
-		z = d;
-	}
-
-	public void setPitch(float f) {
-		pitch = f;
-	}
-
 	public void setYaw(float f) {
 		yaw = f;
 	}
 
-	public Location getLocation() {
-		return new Location(Bukkit.getWorld(world), x, y, z, pitch, yaw);
+	public void setZ(double d) {
+		z = d;
 	}
 
-	public PALocation add(double x, double y, double z) {
-		return new PALocation(world, x+this.x, y+this.y, z+this.z, pitch, yaw);
+	public Location toLocation() {
+		return new Location(Bukkit.getWorld(world), x, y, z, pitch, yaw);
 	}
 }

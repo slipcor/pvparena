@@ -6,6 +6,8 @@ import java.util.HashSet;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.Spawns;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -33,14 +35,14 @@ public class PAA_Teleport extends PAA__Command {
 
 		// usage: /pa {arenaname} teleport [spawnname] | tp to a spawn
 		
-		PALocation loc = arena.getSpawn(args[0]);
+		PALocation loc = Spawns.getCoords(arena, args[0]);
 		
 		if (loc == null) {
 			arena.msg(sender, Language.parse("spawn.unknown", args[0]));
 			return;
 		}
 		
-		((Player) sender).teleport(loc.getLocation(), TeleportCause.PLUGIN);
+		((Player) sender).teleport(loc.toLocation(), TeleportCause.PLUGIN);
 	}
 
 	@Override

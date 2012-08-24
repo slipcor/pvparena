@@ -3,7 +3,13 @@ package net.slipcor.pvparena.classes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
-
+/**
+ * 
+ * An own slim wrapper of the bukkit location, less precise
+ * 
+ * @author slipcor
+ *
+ */
 public class PABlockLocation {
 	private final String world;
 	private int x;
@@ -35,6 +41,10 @@ public class PABlockLocation {
 		return Math.sqrt(Math.pow(this.x - o.x, 2.0D) + Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
 	}
 
+	public PABlockLocation getMidpoint(PABlockLocation l) {
+		return new PABlockLocation(world, (x + l.x)/2, (y + l.y)/2, (z + l.z)/2);
+	}
+
 	public String getWorldName() {
 		return world;
 	}
@@ -51,18 +61,6 @@ public class PABlockLocation {
 		return z;
 	}
 
-	public void setX(int i) {
-		x = i;
-	}
-
-	public void setY(int i) {
-		y = i;
-	}
-
-	public void setZ(int i) {
-		z = i;
-	}
-
 	public boolean isInAABB(PABlockLocation l1, PABlockLocation l2) {
 		if (this.getX() < l1.getX() || this.getX() > l2.getX()) {
 			return false;
@@ -76,14 +74,6 @@ public class PABlockLocation {
 		return true;
 	}
 
-	public Location toLocation() {
-		return new Location(Bukkit.getWorld(world), x, y, z);
-	}
-
-	public PABlockLocation getMidpoint(PABlockLocation l) {
-		return new PABlockLocation(world, (x + l.x)/2, (y + l.y)/2, (z + l.z)/2);
-	}
-
 	public PABlockLocation pointTo(PABlockLocation dest, Double length) {
 		Vector source = new Vector(x, y, z);
 		Vector destination = new Vector(dest.x, dest.y, dest.z);
@@ -93,5 +83,21 @@ public class PABlockLocation {
 		goal = goal.normalize().multiply(length);
 		
 		return new PABlockLocation(world, x+x+goal.getBlockX(), y+goal.getBlockY(), z+goal.getBlockZ());
+	}
+
+	public void setX(int i) {
+		x = i;
+	}
+
+	public void setY(int i) {
+		y = i;
+	}
+
+	public void setZ(int i) {
+		z = i;
+	}
+
+	public Location toLocation() {
+		return new Location(Bukkit.getWorld(world), x, y, z);
 	}
 }

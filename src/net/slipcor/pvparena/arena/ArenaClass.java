@@ -81,14 +81,7 @@ public final class ArenaClass {
 	}
 
 	public void equip(Player player) {
-		for (int i = 0; i < items.length; ++i) {
-			ItemStack stack = items[i];
-			if (ARMORS_TYPE.contains(stack.getType())) {
-				equipArmor(stack, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { stack });
-			}
-		}
+		equip(player, items);
 	}
 
 	/**

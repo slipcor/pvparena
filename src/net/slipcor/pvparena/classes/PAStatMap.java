@@ -10,6 +10,7 @@ public class PAStatMap {
 	
 	public PAStatMap(String name) {
 		playerName = name;
+		System.out.print("created player stat map for " + playerName);
 	}
 
 	public void decStat(Statistics.type type) {
@@ -30,5 +31,9 @@ public class PAStatMap {
 
 	public void incStat(Statistics.type type, int i) {
 		map.put(type, getStat(type) + i);
+	}
+
+	public void setStat(Statistics.type type, int i) {
+		map.put(type, i);
 	}
 }

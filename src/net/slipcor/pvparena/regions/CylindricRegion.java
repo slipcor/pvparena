@@ -6,20 +6,19 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 
-public class CuboidRegion extends ArenaRegion {
-	
-	public CuboidRegion() {
-		super("cuboid");
+public class CylindricRegion extends ArenaRegion {
+	public CylindricRegion() {
+		super("cylindric");
 	}
 	
-	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {
-		super(arena, name, locs, "cuboid");
-		this.setShape(RegionShape.CUBOID);
+	public CylindricRegion(Arena arena, String name, PABlockLocation[] locs) {
+		super(arena, name, locs, "cylindric");
+		this.setShape(RegionShape.CYLINDRIC);
 	}
 
 	@Override
 	public String version() {
-		return "v0.8.11.25";
+		return "v0.9.0.0";
 	}
 	
 	/**
@@ -60,20 +59,33 @@ public class CuboidRegion extends ArenaRegion {
 	@Override
 	public boolean overlapsWith(ArenaRegion paRegion) {
 		if (paRegion.getShape().equals(RegionShape.CUBOID)) {
-			// compare 2 cuboids
-			if (locs[0].getX() > paRegion.getLocs()[1].getX()
-					|| locs[0].getY() > paRegion.getLocs()[1].getY()
-					|| locs[0].getZ() > paRegion.getLocs()[1].getZ()) {
+			// we are cylinder and search for intersecting cuboid
+
+			PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			PABlockLocation thatCenter = paRegion.getLocs()[1].getMidpoint(paRegion.getLocs()[0]);
+			
+			if (locs[1].getY() < paRegion.getLocs()[0].getY()) {
 				return false;
 			}
-			if (paRegion.getLocs()[0].getX() > locs[1].getX()
-					|| paRegion.getLocs()[0].getY() > locs[1].getY()
-					|| paRegion.getLocs()[0].getZ() > locs[1].getZ()) {
+			if (locs[0].getY() > paRegion.getLocs()[1].getY()) {
 				return false;
 			}
-			return true;
+			
+			thisCenter.setY(thatCenter.getY());
+
+			if (contains(thatCenter)) {
+				return true; // the cube is inside!
+			}
+
+			Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+
+			PABlockLocation offset = thisCenter.pointTo(thatCenter, thisRadius);
+			// offset is pointing from this to that
+			
+			return paRegion.contains(offset);
+			
 		} else if (paRegion.getShape().equals(RegionShape.SPHERIC)) {
-			// we are cube and search for intersecting sphere
+			// we are cylinder and search for intersecting sphere
 
 			PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
 			PABlockLocation thatCenter = paRegion.getLocs()[1].getMidpoint(paRegion.getLocs()[0]);
@@ -89,7 +101,7 @@ public class CuboidRegion extends ArenaRegion {
 			
 			return this.contains(offset);
 		} else if (paRegion.getShape().equals(RegionShape.CYLINDRIC)) {
-			// we are cube and search for intersecting cylinder
+			// we are cylinder and search for intersecting cylinder
 
 			PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
 			PABlockLocation thatCenter = paRegion.getLocs()[1].getMidpoint(paRegion.getLocs()[0]);
@@ -104,15 +116,13 @@ public class CuboidRegion extends ArenaRegion {
 			thisCenter.setY(thatCenter.getY());
 
 			if (contains(thatCenter)) {
-				return true; // the sphere is inside!
+				return true; // the cylinder is inside!
 			}
 
 			Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion.getLocs()[1])/2;
+			Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
 
-			PABlockLocation offset = thatCenter.pointTo(thisCenter, thatRadius);
-			// offset is pointing from that to this
-			
-			return this.contains(offset);
+			return thisCenter.getDistance(thisCenter) <= (thatRadius+thisRadius);
 		} else {
 			System.out.print("Region Shape not supported: " + paRegion.getShape().name());
 		}
@@ -121,44 +131,7 @@ public class CuboidRegion extends ArenaRegion {
 
 	@Override
 	public void showBorder(Player player) {
-		/*
-		// move along exclusive x, create miny+maxy+minz+maxz
-		for (int x = min.getBlockX() + 1; x < max.getBlockX(); x++) {
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-		}
-		// move along exclusive y, create minx+maxx+minz+maxz
-		for (int y = min.getBlockY() + 1; y < max.getBlockY(); y++) {
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-		}
-		// move along inclusive z, create minx+maxx+miny+maxy
-		for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-		}
+		/*no clue
 		*/
 	}
 
@@ -167,7 +140,19 @@ public class CuboidRegion extends ArenaRegion {
 		if (this.getLocs()[0] == null || this.getLocs()[1] == null || loc == null
 				|| !loc.getWorldName().equals(world))
 			return false; // no arena, no container or not in the same world
-		return loc.isInAABB(getLocs()[0],getLocs()[1]);
+
+		if (loc.getY() > this.getLocs()[1].getY()) {
+			return false;
+		}
+		if (loc.getY() < this.getLocs()[0].getY()) {
+			return false;
+		}
+
+		PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+		thisCenter.setY(loc.getY());
+		
+		return loc.getDistance(thisCenter) <= thisRadius;
 	}
 
 	@Override
@@ -177,17 +162,27 @@ public class CuboidRegion extends ArenaRegion {
 
 	@Override
 	public PABlockLocation getMaximumLocation() {
-		return getLocs()[0];
+		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+		PABlockLocation result = getLocs()[0];
+		result.setX((int) (result.getX()-thisRadius));
+		result.setZ((int) (result.getZ()-thisRadius));
+		return result;
 	}
 
 	@Override
 	public PABlockLocation getMinimumLocation() {
-		return getLocs()[1];
+		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+		PABlockLocation result = getLocs()[1];
+		result.setX((int) (result.getX()+thisRadius));
+		result.setZ((int) (result.getZ()+thisRadius));
+		return result;
 	}
 
 	@Override
 	public boolean tooFarAway(int joinRange, Location location) {
-		PABlockLocation reach = (new PABlockLocation(location)).pointTo(getCenter(), (double) joinRange);
+		PABlockLocation cLoc = getCenter();
+		cLoc.setY(location.getBlockY());
+		PABlockLocation reach = (new PABlockLocation(location)).pointTo(cLoc, (double) joinRange);
 		
 		return contains(reach);
 	}

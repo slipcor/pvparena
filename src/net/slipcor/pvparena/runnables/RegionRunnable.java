@@ -29,8 +29,7 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(ArenaRegion paRegion, int i) {
-		id = 0;
+	public RegionRunnable(ArenaRegion paRegion) {
 		this.r = paRegion;
 		db.i("RegionRunnable constructor");
 	}

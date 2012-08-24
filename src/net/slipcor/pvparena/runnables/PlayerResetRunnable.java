@@ -19,7 +19,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  */
 
-public class PlayerResetRunnable extends Runnable {
+public class PlayerResetRunnable implements Runnable {
 	private final ArenaPlayer p;
 	private Debug db = new Debug(40);
 	private int id;

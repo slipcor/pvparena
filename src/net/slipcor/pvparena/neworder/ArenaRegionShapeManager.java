@@ -3,7 +3,6 @@ package net.slipcor.pvparena.neworder;
 import java.io.File;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -73,14 +72,8 @@ public class ArenaRegionShapeManager {
 		return null;
 	}
 
-	private static RegionShape getShapeByCoords(String coords) {
-		String[] vars = coords.split(",");
-		
-		if (vars.length < 7) {
-			return RegionShape.CUBOID;
-		} else {
-			return getShapeByName(vars[vars.length-1]);
-		}
+	private static RegionShape getShapeByCoordDefinition(String coords) {
+		return getShapeByName(coords.split(",")[0]);
 	}
 
 	public static RegionShape getShapeByName(String string) {
@@ -127,11 +120,11 @@ public class ArenaRegionShapeManager {
 	public ArenaRegion readRegionFromConfig(String regionName,
 			YamlConfiguration config, Arena arena) {
 		db.i("reading config region: " + arena.getName() + "=>" + regionName);
-		String coords = config.getString("regions." + regionName);
+		String coords = config.getString("arenaregions." + regionName);
 		
-		ArenaRegion.RegionShape shape = ArenaRegionShapeManager.getShapeByCoords(coords);
+		ArenaRegion.RegionShape shape = ArenaRegionShapeManager.getShapeByCoordDefinition(coords);
 		
-		PABlockLocation[] locs = Config.parseRegion(Bukkit.getWorld(arena.getWorld()), coords, "cub");
+		PABlockLocation[] locs = Config.parseRegion(coords);
 		
 		ArenaRegion region = ArenaRegion.create(arena, regionName, shape, locs);
 		

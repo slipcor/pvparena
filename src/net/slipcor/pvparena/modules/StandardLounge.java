@@ -19,7 +19,7 @@ public class StandardLounge extends ArenaModule {
 		super("StandardLounge");
 		// TODO Auto-generated constructor stub
 	}
-
+^check !
 	public PACheckResult checkJoin(Arena arena, CommandSender sender, PACheckResult result, boolean join) {
 		if (!join)
 			return result; // we only care about joining, ignore spectators

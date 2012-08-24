@@ -45,7 +45,7 @@ public class PAI_Ready extends PAA__Command {
 				return;
 			}
 			
-			if (ap.getaClass() == null) {
+			if (ap.getArenaClass() == null) {
 				arena.msg(sender, Language.parse("command.noclass"));
 				return;
 			}

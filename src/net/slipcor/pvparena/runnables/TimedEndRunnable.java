@@ -29,6 +29,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 	 */
 	public TimedEndRunnable(Arena a, int i) {
 		super("endingexact", i, null, a, false);
+		a.END_ID = id;
 		db.i("TimedEndRunnable constructor");
 	}
 	

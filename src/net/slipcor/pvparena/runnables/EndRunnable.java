@@ -28,11 +28,12 @@ public class EndRunnable extends ArenaRunnable {
 	 *            the arena we are running in
 	 * @param i
 	 */
-	public EndRunnable(Arena a, int i, int iid) {
+	public EndRunnable(Arena a, int i) {
 		super("resetexact", i, null, a, false);
 		db.i("EndRunnable constructor");
 		Bukkit.getScheduler().cancelTask(a.END_ID);
 		a.END_ID = -1;
+		arena.REALEND_ID = id;
 	}
 
 	@Override

@@ -45,7 +45,7 @@ public class PAG_Leave extends PAA__Command {
 
 		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 			if (mod.isActive(arena)) {
-				mod.parseLeave(arena, sender);
+				mod.parseLeave(arena, ap.get());
 			}
 		}
 		

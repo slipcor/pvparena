@@ -1,9 +1,6 @@
 package net.slipcor.pvparena.events;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.managers.Spawns;
-
-import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

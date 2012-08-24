@@ -104,22 +104,19 @@ public class ArenaModule extends Loadable {
 	 */
 	public void announceWinner(Arena arena, String message) {
 	}
-
-	/**
-	 * hook into a player trying to join the arena
-	 * 
-	 * @param arena
-	 *            the arena the player wants to join
-	 * @param player
-	 *            the trying player
-	 * @return false if a player should not be granted permission
-	 */
-	public boolean checkJoin(Arena arena, Player player) {
-		return true;
+	
+	public PACheckResult checkJoin(Arena arena, CommandSender sender,
+			PACheckResult res, boolean b) {
+		return res;
 	}
 
 	public String checkSpawns(Set<String> list) {
 		return null;
+	}
+
+	public PACheckResult checkStart(Arena arena, ArenaPlayer ap,
+			PACheckResult res) {
+		return res;
 	}
 
 	/**
@@ -176,6 +173,9 @@ public class ArenaModule extends Loadable {
 	public void configParse(Arena arena, YamlConfiguration config) {
 	}
 
+	public void displayInfo(Arena arena, CommandSender sender) {
+	}
+
 	public HashSet<String> getAddedSpawns() {
 		return new HashSet<String>();
 	}
@@ -198,10 +198,19 @@ public class ArenaModule extends Loadable {
 	 *            the player being checked
 	 * @param perms
 	 *            the node being checked
-	 * @return true if permission is found and further processing should be
-	 *         avoided
+	 * @return true or false if permission is found and further processing should be
+	 *         avoided, null if ignored
 	 */
-	public boolean hasPerms(CommandSender player, String perms) {
+	public Boolean hasPerms(CommandSender player, String perms) {
+		return null;
+	}
+
+	/**
+	 * check if a module needs a certain spawn
+	 * @param string the spawn to find
+	 * @return true if the spawn is found, false otherwise
+	 */
+	public boolean hasSpawn(String string) {
 		return false;
 	}
 
@@ -215,6 +224,17 @@ public class ArenaModule extends Loadable {
 	}
 
 	/**
+	 * check if the module is activated for that arena, this is very much needed to
+	 * ensure modules don't affect arenas where it's not wanted
+	 * @param arena the arena to check
+	 * @return true if the module is used, false otherwise
+	 */
+	public boolean isActive(Arena arena) {
+		return false;
+	}
+
+
+	/**
 	 * hook into joining of a player while the fight is running
 	 * 
 	 * @param arena
@@ -223,6 +243,12 @@ public class ArenaModule extends Loadable {
 	 *            the joining player
 	 */
 	public void lateJoin(Arena arena, Player player) {
+	}
+
+	/**
+	 * hook into loading of all arenas
+	 */
+	public void load_arenas() {
 	}
 
 	/**
@@ -397,19 +423,18 @@ public class ArenaModule extends Loadable {
 	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 	}
 
-	/**
-	 * hook into an arena PlayerMoveEvent
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param event
-	 *            the PlayerMoveEvent
-	 */
+	public void parseLeave(Arena arena, Player player) {
+		
+	}
+
 	public void parseMove(Arena arena, PlayerMoveEvent event) {
 	}
 
 	public void parseRespawn(Arena arena, Player player, ArenaTeam team,
 			int lives, DamageCause cause, Entity damager) {
+	}
+
+	public void parseSpectate(Arena arena, Player player) {
 	}
 
 	/**
@@ -479,10 +504,6 @@ public class ArenaModule extends Loadable {
 	 */
 	public void tpPlayerToCoordName(Arena arena, Player player, String place) {
 	}
-	
-	public String version() {
-		return "outdated";
-	}
 
 	/**
 	 * hook into arena player unloading
@@ -491,41 +512,8 @@ public class ArenaModule extends Loadable {
 	 */
 	public void unload(Player player) {
 	}
-
-	public void load_arenas() {
-	}
-
-	public boolean isActive(Arena arena) {
-		return false;
-	}
-
-	public boolean hasSpawn(String string) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public PACheckResult checkJoin(Arena arena, CommandSender sender,
-			PACheckResult res, boolean b) {
-		return res;
-	}
-
-	public void parseLeave(Arena arena, CommandSender sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void parseSpectate(Arena arena, CommandSender sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void displayInfo(Arena arena, CommandSender sender) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public PACheckResult checkStart(Arena arena, ArenaPlayer ap,
-			PACheckResult res) {
-		return res;
+	
+	public String version() {
+		return "outdated";
 	}
 }

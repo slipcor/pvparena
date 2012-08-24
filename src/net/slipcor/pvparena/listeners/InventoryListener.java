@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.entity.Player;
@@ -28,7 +29,7 @@ public class InventoryListener implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player p = (Player) event.getWhoClicked();
 
-		Arena arena = Arenas.getArenaByPlayer(p);
+		Arena arena = ArenaPlayer.parsePlayer(p).getArena();
 
 		if (arena == null) {
 			return;

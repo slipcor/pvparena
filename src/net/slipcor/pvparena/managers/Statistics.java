@@ -118,20 +118,28 @@ public class Statistics {
 	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
 
 		db.i("adding damage to player " + defender.getName());
+		
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
 			db.i("attacker is player: " + attacker.getName());
-			if (arena.isPartOf(attacker)) {
+			if (arena.hasPlayer(attacker)) {
 				db.i("attacker is in the arena, adding damage!");
 				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
-				p.damage += dmg;
-				p.maxdamage = (dmg > p.maxdamage) ? dmg : p.maxdamage;
+				int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGE);
+				p.getStatistics(arena).incStat(type.DAMAGE, dmg);
+				if (dmg > maxdamage) {
+					p.getStatistics(arena).setStat(type.MAXDAMAGE, dmg);
+				}
 			}
 		}
 		ArenaPlayer p = ArenaPlayer.parsePlayer(defender);
-		p.damagetake += dmg;
-		p.maxdamagetake = (dmg > p.maxdamagetake) ? dmg : p.maxdamagetake;
+
+		int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
+		p.getStatistics(arena).incStat(type.DAMAGETAKE, dmg);
+		if (dmg > maxdamage) {
+			p.getStatistics(arena).setStat(type.MAXDAMAGETAKE, dmg);
+		}
 	}
 
 	/**
@@ -153,58 +161,12 @@ public class Statistics {
 		int a = 0;
 		int b = 0;
 		
-		if (sortBy.equals(type.MAXDAMAGE)) {
-			a = aps[pos].maxdamage;
-			b = aps[pos + 1].maxdamage;
-		} else if (sortBy.equals(type.MAXDAMAGETAKE)) {
-			a = aps[pos].maxdamagetake;
-			b = aps[pos + 1].maxdamagetake;
-		} else if (sortBy.equals(type.DEATHS)) {
-			a = aps[pos].deaths;
-			b = aps[pos + 1].deaths;
-		} else if (sortBy.equals(type.DAMAGE)) {
-			a = aps[pos].damage;
-			b = aps[pos + 1].damage;
-		} else if (sortBy.equals(type.DAMAGETAKE)) {
-			a = aps[pos].damagetake;
-			b = aps[pos + 1].damagetake;
-		} else if (sortBy.equals(type.KILLS)) {
-			a = aps[pos].kills;
-			b = aps[pos + 1].kills;
-		} else if (sortBy.equals(type.LOSSES)) {
-			a = aps[pos].losses;
-			b = aps[pos + 1].losses;
-		} else if (sortBy.equals(type.WINS)) {
-			a = aps[pos].wins;
-			b = aps[pos + 1].wins;
-		}
+		a = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
+		b = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
 
 		if (global) {
-			if (sortBy.equals(type.MAXDAMAGE)) {
-				a += aps[pos].totmaxdamage;
-				b += aps[pos + 1].totmaxdamage;
-			} else if (sortBy.equals(type.MAXDAMAGETAKE)) {
-				a += aps[pos].totmaxdamagetake;
-				b += aps[pos + 1].totmaxdamagetake;
-			} else if (sortBy.equals(type.DEATHS)) {
-				a += aps[pos].totdeaths;
-				b += aps[pos + 1].totdeaths;
-			} else if (sortBy.equals(type.DAMAGE)) {
-				a += aps[pos].totdamage;
-				b += aps[pos + 1].totdamage;
-			} else if (sortBy.equals(type.DAMAGETAKE)) {
-				a += aps[pos].totdamagetake;
-				b += aps[pos + 1].totdamagetake;
-			} else if (sortBy.equals(type.KILLS)) {
-				a += aps[pos].totkills;
-				b += aps[pos + 1].totkills;
-			} else if (sortBy.equals(type.LOSSES)) {
-				a += aps[pos].totlosses;
-				b += aps[pos + 1].totlosses;
-			} else if (sortBy.equals(type.WINS)) {
-				a += aps[pos].totwins;
-				b += aps[pos + 1].totwins;
-			}
+			a = aps[pos].getTotalStatistics(sortBy);
+			b = aps[pos + 1].getTotalStatistics(sortBy);
 		}
 
 		return desc ? (a < b) : (a > b);
@@ -244,7 +206,7 @@ public class Statistics {
 		
 		int i = 0;
 		if (a == null) {
-			for (ArenaPlayer p : ArenaPlayer.getPlayers()) {
+			for (ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
 				aps[i++] = p;
 			}
 		} else {
@@ -279,6 +241,27 @@ public class Statistics {
 		return type.NULL;
 	}
 
+	public static void initialize() {
+		config = new YamlConfiguration();
+		players = new File(PVPArena.instance.getDataFolder(), "players.yml");
+		if (!players.exists()) {
+			try {
+				players.createNewFile();
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.filedone"));
+			} catch (Exception e) {
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			config.load(players);
+		} catch (Exception e) {
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * commit a kill
 	 * 
@@ -300,16 +283,14 @@ public class Statistics {
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
-			if (arena.isPartOf(attacker)) {
+			if (arena.hasPlayer(attacker)) {
 				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
 				Bukkit.getPluginManager().callEvent(kEvent);
 
-				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
-				p.kills++;
+				ArenaPlayer.parsePlayer(attacker).addKill();
 			}
 		}
-		ArenaPlayer p = ArenaPlayer.parsePlayer(defender);
-		p.deaths++;
+		ArenaPlayer.parsePlayer(defender).addDeath();
 	}
 
 	/**
@@ -329,46 +310,18 @@ public class Statistics {
 				if (p == null || p.get() == null) {
 					continue;
 				}
-				if (t.equals(type.MAXDAMAGE)) {
-					result[i++] = String.valueOf(p.maxdamage+p.totmaxdamage);
-				} else if (t.equals(type.MAXDAMAGETAKE)) {
-					result[i++] = String.valueOf(p.maxdamagetake+p.totmaxdamagetake);
-				} else if (t.equals(type.DEATHS)) {
-					result[i++] = String.valueOf(p.deaths+p.totdeaths);
-				} else if (t.equals(type.DAMAGE)) {
-					result[i++] = String.valueOf(p.damage+p.totdamage);
-				} else if (t.equals(type.DAMAGETAKE)) {
-					result[i++] = String.valueOf(p.damagetake+p.totdamagetake);
-				} else if (t.equals(type.KILLS)) {
-					result[i++] = String.valueOf(p.kills+p.totkills);
-				} else if (t.equals(type.LOSSES)) {
-					result[i++] = String.valueOf(p.losses+p.totlosses);
-				} else if (t.equals(type.WINS)) {
-					result[i++] = String.valueOf(p.wins+p.totwins);
+				if (t.equals(type.NULL)) {
+					result[i++] = p.getName();
 				} else {
-					result[i++] = p.get().getName();
+					result[i++] = String.valueOf(p.getTotalStatistics(t));
 				}
 			}
 		} else {
 			for (ArenaPlayer p : players) {
-				if (t.equals(type.MAXDAMAGE)) {
-					result[i++] = String.valueOf(p.maxdamage);
-				} else if (t.equals(type.MAXDAMAGETAKE)) {
-					result[i++] = String.valueOf(p.maxdamagetake);
-				} else if (t.equals(type.DEATHS)) {
-					result[i++] = String.valueOf(p.deaths);
-				} else if (t.equals(type.DAMAGE)) {
-					result[i++] = String.valueOf(p.damage);
-				} else if (t.equals(type.DAMAGETAKE)) {
-					result[i++] = String.valueOf(p.damagetake);
-				} else if (t.equals(type.KILLS)) {
-					result[i++] = String.valueOf(p.kills);
-				} else if (t.equals(type.LOSSES)) {
-					result[i++] = String.valueOf(p.losses);
-				} else if (t.equals(type.WINS)) {
-					result[i++] = String.valueOf(p.wins);
+				if (t.equals(type.NULL)) {
+					result[i++] = p.getName();
 				} else {
-					result[i++] = p.get().getName();
+					result[i++] = String.valueOf(p.getStatistics(p.getArena()).getStat(t));
 				}
 			}
 		}
@@ -404,27 +357,6 @@ public class Statistics {
 					doMore = true; // after an exchange, must look again
 				}
 			}
-		}
-	}
-
-	public static void initialize() {
-		config = new YamlConfiguration();
-		players = new File(PVPArena.instance.getDataFolder(), "players.yml");
-		if (!players.exists()) {
-			try {
-				players.createNewFile();
-				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.filedone"));
-			} catch (Exception e) {
-				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
-				e.printStackTrace();
-			}
-		}
-		
-		try {
-			config.load(players);
-		} catch (Exception e) {
-			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
-			e.printStackTrace();
 		}
 	}
 }

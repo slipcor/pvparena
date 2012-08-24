@@ -69,6 +69,14 @@ public class Inventories {
 			return false;
 		}
 		
-		return true; //TODO check!
+		String[] tools = {"_AXE","_PICKAXE","_SPADE","_HOE","_SWORD"};
+		
+		for (String s : tools) {
+			if (item.getType().name().endsWith(s)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

@@ -74,7 +74,7 @@ public abstract class ArenaRunnable implements Runnable {
 			for (Player p : players) {
 				try {
 					if (arena != null) {
-						if (arena.isPartOf(p)) {
+						if (arena.hasPlayer(p)) {
 							continue;
 						}
 					}

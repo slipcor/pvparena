@@ -6,20 +6,19 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 
-public class CuboidRegion extends ArenaRegion {
-	
-	public CuboidRegion() {
-		super("cuboid");
+public class SphericRegion extends ArenaRegion {
+	public SphericRegion() {
+		super("sheric");
 	}
 	
-	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {
-		super(arena, name, locs, "cuboid");
-		this.setShape(RegionShape.CUBOID);
+	public SphericRegion(Arena arena, String name, PABlockLocation[] locs) {
+		super(arena, name, locs, "spheric");
+		this.setShape(RegionShape.SPHERIC);
 	}
 
 	@Override
 	public String version() {
-		return "v0.8.11.25";
+		return "v0.9.0.0";
 	}
 	
 	/**

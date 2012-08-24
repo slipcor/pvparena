@@ -3,6 +3,7 @@ package net.slipcor.pvparena.api;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
@@ -35,7 +36,7 @@ public class PVPArenaAPI {
 	 */
 	public static String getArenaName(Player player) {
 		db.i("API: get arena of player: " + player.getName());
-		Arena arena = Arenas.getArenaByPlayer(player);
+		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
 		return (arena == null) ? "" : arena.getName();
 	}
 

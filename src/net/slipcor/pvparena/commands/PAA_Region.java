@@ -7,6 +7,7 @@ import java.util.HashSet;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
@@ -77,7 +78,10 @@ public class PAA_Region extends PAA__Command {
 				shape = ArenaRegion.RegionShape.CUBOID;
 			}
 			
-			arena.addRegion(ArenaRegion.create(arena, args[0], shape, locs));
+			ArenaRegion region = ArenaRegion.create(arena, args[0], shape, locs);
+			
+			arena.addRegion(region);
+			arena.getArenaConfig().set("arenaregion." + args[0], Config.parseToString(region));
 			return;
 		}
 		

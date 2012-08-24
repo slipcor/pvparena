@@ -9,36 +9,21 @@ import java.util.Set;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- * Wrapper class for Bukkit's Configuration classes.
  * 
- * The motivation for this class is two-fold:
+ * This Config wrapper improves access to config files by storing them in RAM
+ * and providing quick, secured, access. Thanks a lot to garbagemule for
+ * the start of this config.
  * 
- * 1) Provide a means of keeping a reference to the physical disk file in the
- * same class as the YamlConfiguration for easy load and save. 2) Speed up the
- * access times for the YamlConfiguration by loading all values into maps, as to
- * avoid local fields in certain classes.
- * 
- * The specific getters (getInteger, getBoolean, etc.) never call methods on the
- * YamlConfiguration. Instead, they interact only with the value maps, which
- * speeds up the access times 20-fold. The generic getter (get), does, however,
- * interact with the YamlConfiguration (for now).
- * 
- * The mutators (set, remove, etc.) interact with both the YamlConfiguration and
- * the value maps for consistency. This means modifications become slightly
- * slower, but the difference is neglegible.
- * 
- * @author garbagemule, slipcor
- * 
- *         Use this class however you see fit, but please leave this description
- *         in, as to not unrightfully take credit for our work :)
+ * @author slipcor
+ *
  */
 public class Config {
 	private YamlConfiguration config;
@@ -340,191 +325,92 @@ public class Config {
 	// /////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
-	 * to create a Location array. This method will only accept strings of the
-	 * specified form.
-	 * 
-	 * @param world
-	 *            the World in which the Locations exists
-	 * @param coords
-	 *            a string of the form "x1,y1,z1,x2,y2,z2,spheric"
-	 * @return a Location array in the given world with the given coordinates
-	 */
-	public static Location[] parseShere(World world, String coords) {
-		String[] parts = coords.split(",");
-		if (parts.length < 6)
-			throw new IllegalArgumentException(
-					"Input string must contain only x1, y1, z1, x2, y2, and z2");
-
-		if (parts.length < 7) {
-			return null;
-		}
-		if (!parts[6].equals("spheric")) {
-			return null;
-		}
-		
-		Integer x1 = parseInteger(parts[0]);
-		Integer y1 = parseInteger(parts[1]);
-		Integer z1 = parseInteger(parts[2]);
-		Integer x2 = parseInteger(parts[3]);
-		Integer y2 = parseInteger(parts[4]);
-		Integer z2 = parseInteger(parts[5]);
-
-		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-		Location[] l = { new Location(world, x1, y1, z1),
-				new Location(world, x2, y2, z2) };
-		return l;
-
-	}
-
-	/**
-	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
-	 * to create a Location array. This method will only accept strings of the
-	 * specified form.
-	 * 
-	 * @param world
-	 *            the World in which the Locations exists
-	 * @param coords
-	 *            a string of the form "x1,y1,z1,x2,y2,z2"
-	 * @return a Location array in the given world with the given coordinates
-	 */
-	public static Location[] parseCuboid(World world, String coords) {
-		String[] parts = coords.split(",");
-		if (parts.length != 6)
-			throw new IllegalArgumentException(
-					"Input string must contain only x1, y1, z1, x2, y2, and z2");
-
-		Integer x1 = parseInteger(parts[0]);
-		Integer y1 = parseInteger(parts[1]);
-		Integer z1 = parseInteger(parts[2]);
-		Integer x2 = parseInteger(parts[3]);
-		Integer y2 = parseInteger(parts[4]);
-		Integer z2 = parseInteger(parts[5]);
-
-		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-		Location[] l = { new Location(world, x1, y1, z1),
-				new Location(world, x2, y2, z2) };
-		return l;
-
-	}
-
-	/**
-	 * Parse an input string of the form "x,y,z" and an input World to create a
-	 * Location. This method will only accept strings of the specified form.
-	 * 
-	 * @param world
-	 *            the World in which the Location exists
-	 * @param coords
-	 *            a string of the form "x,y,z"
-	 * @return a Location in the given world with the given coordinates
-	 */
-	public static Location parseSimpleLocation(World world, String coords) {
-		String[] parts = coords.split(",");
-		if (parts.length != 3)
-			throw new IllegalArgumentException(
-					"Input string must contain only x, y, and z");
-
-		Integer x = parseInteger(parts[0]);
-		Integer y = parseInteger(parts[1]);
-		Integer z = parseInteger(parts[2]);
-
-		if (x == null || y == null || z == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-
-		return new Location(world, x, y, z);
-	}
-	
-	/**
-	 * Parse an input string of the form "x1,y1,z1,x2,y2,z2" and an input World
-	 * to create a Location array. This method will only accept strings of the
-	 * specified form.
-	 * 
-	 * @param world
-	 *            the World in which the Locations exists
-	 * @param coords
-	 *            a string of the form "x1,y1,z1,x2,y2,z2,spheric"
-	 * @return a Location array in the given world with the given coordinates
-	 */
-	public static PABlockLocation[] parseRegion(World world, String coords, String startsWith) {
-		String[] parts = coords.split(",");
-		if (parts.length < 6)
-			throw new IllegalArgumentException(
-					"Input string must contain only x1, y1, z1, x2, y2, and z2");
-
-		if (parts.length < 7) {
-			return null;
-		}
-		if (!parts[6].startsWith(startsWith)) {
-			return null;
-		}
-		
-		Integer x1 = parseInteger(parts[0]);
-		Integer y1 = parseInteger(parts[1]);
-		Integer z1 = parseInteger(parts[2]);
-		Integer x2 = parseInteger(parts[3]);
-		Integer y2 = parseInteger(parts[4]);
-		Integer z2 = parseInteger(parts[5]);
-
-		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-		PABlockLocation[] l = { new PABlockLocation(world.getName(), x1, y1, z1),
-				new PABlockLocation(world.getName(), x2, y2, z2) };
-		return l;
-
-	}
-
-	/**
-	 * Parse an input string of the form "world,x,y,z" and an input World to create a
+	 * Parse an input string of the form "world,x,y,z" to create a Block
 	 * Location. This method will only accept strings of the specified form.
 	 * 
 	 * @param coords
 	 *            a string of the form "world,x,y,z"
-	 * @return a Location in the given world with the given coordinates
+	 * @return a PABlockLocation in the given world with the given coordinates
 	 */
-	public static PABlockLocation parseSimpleWorldLocation(String coords) {
+	public static PABlockLocation parseBlockLocation(String coords) {
 		String[] parts = coords.split(",");
 		if (parts.length != 4)
 			throw new IllegalArgumentException(
-					"Input string must contain only world, x, y, and z");
+					"Input string must contain world, x, y, and z: " + coords);
 
-		World w = Bukkit.getServer().getWorld(parts[0]);
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
 		Integer z = parseInteger(parts[3]);
 
-		if (x == null || y == null || z == null)
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
 
-		return new PABlockLocation(w.getName(), x, y, z);
+		return new PABlockLocation(parts[0], x, y, z);
 	}
 
-	public static PALocation parseWorldLocation(String coords) {
+	/**
+	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a Block
+	 * Location. This method will only accept strings of the specified form.
+	 * 
+	 * @param coords
+	 *            a string of the form "world,x,y,z,yaw,pitch"
+	 * @return a PALocation in the given world with the given coordinates
+	 */
+	public static PALocation parseLocation(String coords) {
 		String[] parts = coords.split(",");
 		if (parts.length != 6)
 			throw new IllegalArgumentException(
 					"Input string must contain world, x, y, z, yaw and pitch: " + coords);
-		World w = Bukkit.getServer().getWorld(parts[0]);
+		
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
 		Integer z = parseInteger(parts[3]);
 		Float yaw = parseFloat(parts[4]);
 		Float pitch = parseFloat(parts[5]);
 
-		if (w == null || x == null || y == null || z == null || yaw == null || pitch == null)
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null || yaw == null || pitch == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
 
-		return new PALocation(w.getName(), x, y, z, yaw, pitch);
+		return new PALocation(parts[0], x, y, z, yaw, pitch);
+	}
+	
+	/**
+	 * Parse an input string of the form "world,x1,y1,z1,x2,y2,z2,shape"
+	 * to create a Location array. This method will only accept strings of the
+	 * specified form.
+	 * 
+	 * @param coords
+	 *            a string of the form "world,x1,y1,z1,x2,y2,z2,shape"
+	 * @return a Location array in the given world with the given coordinates
+	 */
+	public static PABlockLocation[] parseRegion(String coords) {
+		String[] parts = coords.split(",");
+		if (parts.length < 8)
+			throw new IllegalArgumentException(
+					"Input string must contain only world, x1, y1, z1, x2, y2, z2, and shape: " + coords);
+		
+		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
+			throw new IllegalArgumentException(
+					"Input string does not contain valid region shape: " + coords);
+		}
+		
+		Integer x1 = parseInteger(parts[1]);
+		Integer y1 = parseInteger(parts[2]);
+		Integer z1 = parseInteger(parts[3]);
+		Integer x2 = parseInteger(parts[4]);
+		Integer y2 = parseInteger(parts[5]);
+		Integer z2 = parseInteger(parts[6]);
+
+		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
+				|| z2 == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
+				new PABlockLocation(parts[0], x2, y2, z2) };
+		return l;
+
 	}
 
 	private static Integer parseInteger(String s) {
@@ -552,6 +438,30 @@ public class Config {
 		result[4] = String.valueOf(loc.getYaw());
 		result[5] = String.valueOf(loc.getPitch());
 		// "world,x,y,z,yaw,pitch"
+		return StringParser.joinArray(result, ",");
+	}
+
+	public static String parseToString(PABlockLocation loc) {
+		String[] result = new String[4];
+		result[0] = String.valueOf(loc.getWorldName());
+		result[1] = String.valueOf(loc.getX());
+		result[2] = String.valueOf(loc.getY());
+		result[3] = String.valueOf(loc.getZ());
+		// "world,x,y,z"
+		return StringParser.joinArray(result, ",");
+	}
+
+	public static String parseToString(ArenaRegion region) {
+		String[] result = new String[8];
+		result[0] = region.getWorldName();
+		result[1] = String.valueOf(region.getLocs()[0].getX());
+		result[2] = String.valueOf(region.getLocs()[0].getY());
+		result[3] = String.valueOf(region.getLocs()[0].getZ());
+		result[4] = String.valueOf(region.getLocs()[1].getX());
+		result[5] = String.valueOf(region.getLocs()[1].getY());
+		result[6] = String.valueOf(region.getLocs()[1].getZ());
+		result[7] = region.getShape().name();
+		// "world,x1,y1,z1,x2,y2,z2,shape"
 		return StringParser.joinArray(result, ",");
 	}
 }

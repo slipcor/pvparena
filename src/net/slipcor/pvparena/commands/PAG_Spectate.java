@@ -66,7 +66,7 @@ public class PAG_Spectate extends PAA__Command {
 			return;
 		}
 		
-		commit.parseSpectate(arena, sender);
+		commit.parseSpectate(arena, (Player) sender);
 	}
 
 	@Override

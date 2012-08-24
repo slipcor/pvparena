@@ -65,6 +65,8 @@ public abstract class PAA__Command {
 			return new PAA_BlackList();
 		} else if (name.contains("check") || name.equals("!ch")) {
 			return new PAA_Check();
+		} else if (name.contains("class") || name.equals("!cl")) {
+			return new PAA_Class();
 		} else if (name.contains("disable") || name.equals("!dis")
 				|| name.equals("!off")) {
 			return new PAA_Disable();

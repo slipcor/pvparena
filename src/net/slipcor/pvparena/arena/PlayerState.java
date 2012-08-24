@@ -65,12 +65,25 @@ public final class PlayerState {
 		}
 	}
 
-	public void load() {
-
+	public void dump(YamlConfiguration cfg) {
+		cfg.set("state.fireticks", fireticks);
+		cfg.set("state.foodlevel", foodlevel);
+		cfg.set("state.gamemode", gamemode);
+		cfg.set("state.health", health);
+		cfg.set("state.exhaustion", exhaustion);
+		cfg.set("state.experience", experience);
+		cfg.set("state.explevel", explevel);
+		cfg.set("state.saturation", saturation);
+		cfg.set("state.displayname", displayname);
 	}
 
 	public void unload() {
 		Player player = Bukkit.getPlayer(sPlayer);
+		
+		if (player == null) {
+			return;
+		}
+		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
@@ -97,42 +110,7 @@ public final class PlayerState {
 		removeEffects(player);
 		player.addPotionEffects(potionEffects);
 
-		ArenaPlayer.parsePlayer(player).setTelePass(false);
-		//EntityListener.addBurningPlayer(player);
-		player.setFireTicks(fireticks);
-		player.setNoDamageTicks(60);
-	}
-
-	public void unload(Player player) {
-		player.setFireTicks(fireticks);
-		player.setFoodLevel(foodlevel);
-		player.setGameMode(GameMode.getByValue(gamemode));
-		player.setHealth(health);
-
-		player.setFoodLevel(foodlevel);
-		player.setHealth(health);
-		player.setSaturation(saturation);
-		player.setGameMode(GameMode.getByValue(gamemode));
-		player.setLevel(explevel);
-		player.setExp(experience);
-		player.setExhaustion(exhaustion);
-		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
-			player.setDisplayName(displayname);
-		}
-		
-		if (ap.getArena() != null) {
-			PVPArena.instance.getAmm().unload(player);
-			PVPArena.instance.getAgm().unload(ap.getArena(), player);
-		}
-		
-
-		removeEffects(player);
-		player.addPotionEffects(potionEffects);
-
-		ArenaPlayer.parsePlayer(player).setTelePass(false);
-		//EntityListener.addBurningPlayer(player);
+		ap.setTelePass(false);
 		player.setFireTicks(fireticks);
 		player.setNoDamageTicks(60);
 	}
@@ -157,18 +135,6 @@ public final class PlayerState {
 			player.removePotionEffect(pe.getType());
 		}
 
-	}
-
-	public void dump(YamlConfiguration cfg) {
-		cfg.set("state.fireticks", fireticks);
-		cfg.set("state.foodlevel", foodlevel);
-		cfg.set("state.gamemode", gamemode);
-		cfg.set("state.health", health);
-		cfg.set("state.exhaustion", exhaustion);
-		cfg.set("state.experience", experience);
-		cfg.set("state.explevel", explevel);
-		cfg.set("state.saturation", saturation);
-		cfg.set("state.displayname", displayname);
 	}
 
 	public static PlayerState undump(YamlConfiguration cfg, String pName) {

@@ -28,7 +28,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Language {
 	static Map<String, Object> lang = null; // game language map
 	static Map<String, Object> log = null; // log language map
-
+restructure
 	/**
 	 * create a language manager instance
 	 */
@@ -479,6 +479,65 @@ public class Language {
 	}
 
 	/**
+	 * read a node from the config and log its value
+	 * 
+	 * @param s
+	 *            the node name
+	 */
+	public static void log_info(String s) {
+		String var = (String) log.get(s);
+		Bukkit.getLogger().info("[PVP Arena] " + var);
+		// log map value
+	}
+	
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
+	public static void log_info(String s, String arg) {
+		String var = (String) log.get(s);
+		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
+		// log replaced map value
+	}
+	
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
+	public static void log_error(String s, String arg) {
+		String var = (String) log.get(s);
+		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
+		// log replaced map value
+	}
+	
+	/**
+	 * read a node from the config and log its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 */
+	public static void log_warning(String s, String arg) {
+		String var = (String) log.get(s);
+		Bukkit.getLogger().warning("[PVP Arena] " + var.replace("%1%", arg));
+		// log replaced map value
+	}
+
+	public static String parse(Arena arena, String arg) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
 	 * read a node from the config and return its value
 	 * 
 	 * @param s
@@ -536,64 +595,5 @@ public class Language {
 		String var = ((String) lang.get(s)).replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
 		return StringParser.colorize(var.replace("%1%", arg1)); // hand over replaced map value
-	}
-
-	/**
-	 * read a node from the config and log its value after replacing
-	 * 
-	 * @param s
-	 *            the node name
-	 * @param arg
-	 *            a string to replace
-	 */
-	public static void log_error(String s, String arg) {
-		String var = (String) log.get(s);
-		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
-		// log replaced map value
-	}
-
-	/**
-	 * read a node from the config and log its value after replacing
-	 * 
-	 * @param s
-	 *            the node name
-	 * @param arg
-	 *            a string to replace
-	 */
-	public static void log_warning(String s, String arg) {
-		String var = (String) log.get(s);
-		Bukkit.getLogger().warning("[PVP Arena] " + var.replace("%1%", arg));
-		// log replaced map value
-	}
-
-	/**
-	 * read a node from the config and log its value after replacing
-	 * 
-	 * @param s
-	 *            the node name
-	 * @param arg
-	 *            a string to replace
-	 */
-	public static void log_info(String s, String arg) {
-		String var = (String) log.get(s);
-		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
-		// log replaced map value
-	}
-
-	/**
-	 * read a node from the config and log its value
-	 * 
-	 * @param s
-	 *            the node name
-	 */
-	public static void log_info(String s) {
-		String var = (String) log.get(s);
-		Bukkit.getLogger().info("[PVP Arena] " + var);
-		// log map value
-	}
-
-	public static String parse(Arena arena, String arg) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

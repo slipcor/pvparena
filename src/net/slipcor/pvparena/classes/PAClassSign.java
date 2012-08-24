@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.definitions;
+package net.slipcor.pvparena.classes;
 
 import java.util.HashSet;
 
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  * 
  */
 
-public class ArenaClassSign {
+public class PAClassSign {
 	Location location;
 	private Debug db = new Debug(13);
 
@@ -28,7 +28,7 @@ public class ArenaClassSign {
 	 * @param loc
 	 *            the location the sign resides
 	 */
-	public ArenaClassSign(Location loc) {
+	public PAClassSign(Location loc) {
 		location = loc;
 		db.i("adding arena class sign: " + location.toString());
 		this.clear();
@@ -85,8 +85,8 @@ public class ArenaClassSign {
 	 * @param player
 	 *            the player to remove
 	 */
-	public static void remove(HashSet<ArenaClassSign> paSigns, Player player) {
-		for (ArenaClassSign s : paSigns) {
+	public static void remove(HashSet<PAClassSign> paSigns, Player player) {
+		for (PAClassSign s : paSigns) {
 			s.remove(player.getName());
 		}
 	}
@@ -160,9 +160,9 @@ public class ArenaClassSign {
 	 *            the set of signs to check against
 	 * @return the sign instance if reserved, null otherwise
 	 */
-	public static ArenaClassSign used(Location loc,
-			HashSet<ArenaClassSign> paSigns) {
-		for (ArenaClassSign sign : paSigns) {
+	public static PAClassSign used(Location loc,
+			HashSet<PAClassSign> paSigns) {
+		for (PAClassSign sign : paSigns) {
 			if (sign.location.equals(loc)) {
 				return sign;
 			}

@@ -20,11 +20,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
+ * <pre>
  * update manager class
  * 
- * -
- * 
  * provides access to update check and methods
+ * </pre>
  * 
  * @author slipcor
  * 
@@ -169,6 +169,45 @@ public class Update extends Thread {
 		return true;
 	}
 
+	public static void message(Player p, boolean b) {
+		// b = announce update!
+		if (!message(p)) {
+			if (p != null) {
+				Arenas.tellPlayer(p, "[PVP Arena] You are on latest version!");
+			}
+			return;
+		}
+
+		if (p == null) {
+			System.out
+					.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
+		} else {
+			Arenas.tellPlayer(p,
+					"http://dev.bukkit.org/server-mods/pvp-arena/files/");
+		}
+	}
+
+	public void init() {
+		if (PVPArena.instance.getConfig().getBoolean("modulecheck", true)) {
+			try {
+				File destination = PVPArena.instance.getDataFolder();
+
+				File lib = new File(destination, "install.yml");
+
+				System.out.println("Downloading module update file...");
+				URL url = new URL(
+						"http://www.slipcor.net/public/mc/pafiles/install.yml");
+				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+				FileOutputStream output = new FileOutputStream(lib);
+				output.getChannel().transferFrom(rbc, 0, 1 << 24);
+				System.out.println("Downloaded module update file");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public void run() {
 		db.i("checking for updates");
@@ -224,108 +263,8 @@ public class Update extends Thread {
 				return;
 	        }
 	        
-		
 		} catch (Exception e) {
 			
-		}
-		
-		return;
-		
-		/*
-		
-		
-		
-
-		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
-
-		NodeList nodes = null;
-
-		try {
-			URL url = new URL(pluginUrlString);
-			Document doc = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder()
-					.parse(url.openConnection().getInputStream());
-			doc.getDocumentElement().normalize();
-			nodes = doc.getElementsByTagName("item");
-
-		} catch (Exception localException) {
-			return;
-		}
-
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node selectedFile = nodes.item(i);
-
-			if (selectedFile.getNodeType() == 1) {
-				Element firstElement = (Element) selectedFile;
-				NodeList firstElementTagName = firstElement
-						.getElementsByTagName("title");
-
-				Element firstNameElement = (Element) firstElementTagName
-						.item(0);
-				NodeList firstNodes = firstNameElement.getChildNodes();
-
-				String sOnlineVersion = firstNodes.item(0).getNodeValue();
-				String sThisVersion = plugin.getDescription().getVersion();
-
-				System.out.print(((Element) firstElement.getElementsByTagName("link").item(0)).getChildNodes().item(0).getNodeValue());
-				
-				if (sOnlineVersion.toUpperCase().contains("BETA")
-						|| sOnlineVersion.toUpperCase().contains("ALPHA")) {
-					continue;
-				}
-
-				while (sOnlineVersion.contains(" ")) {
-					String[] s = sOnlineVersion.split(" ");
-					sOnlineVersion = s[1];
-				}
-
-				vOnline = sOnlineVersion.replace("v", "");
-				vThis = sThisVersion.replace("v", "");
-				db.i("online version: " + vOnline);
-				db.i("local version: " + vThis);
-
-				calculateVersions();
-				return;
-			}
-		}*/
-	}
-
-	public void init() {
-		if (PVPArena.instance.getConfig().getBoolean("modulecheck", true)) {
-			try {
-				File destination = PVPArena.instance.getDataFolder();
-
-				File lib = new File(destination, "install.yml");
-
-				System.out.println("Downloading module update file...");
-				URL url = new URL(
-						"http://www.slipcor.net/public/mc/pafiles/install.yml");
-				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-				FileOutputStream output = new FileOutputStream(lib);
-				output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				System.out.println("Downloaded module update file");
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void message(Player p, boolean b) {
-		// b = announce update!
-		if (!message(p)) {
-			if (p != null) {
-				Arenas.tellPlayer(p, "[PVP Arena] You are on latest version!");
-			}
-			return;
-		}
-
-		if (p == null) {
-			System.out
-					.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
-		} else {
-			Arenas.tellPlayer(p,
-					"http://dev.bukkit.org/server-mods/pvp-arena/files/");
 		}
 	}
 }

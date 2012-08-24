@@ -11,10 +11,8 @@ import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Statistics;
-import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -48,7 +46,7 @@ public class EntityListener implements Listener {
 	public void onEntityExplode(EntityExplodeEvent event) {
 		db.i("explosion");
 
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(PABlockLocation(event.getLocation()), RegionProtection.TNT);
+		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getLocation()), RegionProtection.TNT);
 		if (arena == null)
 			return; // no arena => out
 
@@ -63,11 +61,6 @@ public class EntityListener implements Listener {
 		event.setCancelled(true); // ELSE => cancel event
 	}
 
-	private PABlockLocation PABlockLocation(Location location) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 
@@ -80,7 +73,7 @@ public class EntityListener implements Listener {
 		if ((p1 == null) || (!(p1 instanceof Player)))
 			return; // no player
 
-		Arena arena = Arenas.getArenaByPlayer((Player) p1);
+		Arena arena = ArenaPlayer.parsePlayer((Player) p1).getArena();
 		if (arena == null)
 			return;
 
@@ -92,7 +85,7 @@ public class EntityListener implements Listener {
 		Player player = (Player) p1;
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		ArenaTeam team = Teams.getTeam(arena, ap);
+		ArenaTeam team = ap.getArenaTeam();
 
 		if (team == null) {
 			return;
@@ -152,7 +145,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		Arena arena = ArenaPlayer.parsePlayer((Player) p2).getArena();
 		if (arena == null) {
 			// defender no arena player => out
 			return;
@@ -199,8 +192,7 @@ public class EntityListener implements Listener {
 		}
 
 		if ((!arena.getArenaConfig().getBoolean("game.teamKill", false))
-				&& (Teams.getTeam(arena, apAttacker)).equals(Teams.getTeam(
-						arena, apDefender))) {
+				&& (apAttacker.getArenaTeam()).equals(apDefender.getArenaTeam())) {
 			// no team fights!
 			db.i("team hit, cancel!");
 			event.setCancelled(true);
@@ -218,8 +210,6 @@ public class EntityListener implements Listener {
 				attacker.getItemInHand().setDurability((short) 0);
 			}
 		}
-
-		// TODO NOT LAGGING
 
 		if (arena.getArenaConfig().getInt("protection.spawn") > 0) {
 			if (Spawns.isNearSpawn(arena, defender,
@@ -259,7 +249,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		Arena arena = ArenaPlayer.parsePlayer((Player) p2).getArena();
 		if (arena == null) {
 			// defender no arena player => out
 			return;

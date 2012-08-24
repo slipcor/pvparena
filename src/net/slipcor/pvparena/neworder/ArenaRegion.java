@@ -9,37 +9,41 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
+import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.regions.CuboidRegion;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.nodinchan.ncbukkit.loader.Loadable;
 
 public abstract class ArenaRegion extends Loadable {
+	private static Debug db = new Debug(111);
 	protected String world;
 	private Arena arena;
 	private String name;
 	private RegionShape shape;
 	private RegionType type;
+	private int tickID = -1;
 	private HashSet<RegionFlag> flags;
 	private HashSet<RegionProtection> protections;
 	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
-	
+
 	protected final PABlockLocation[] locs;
 
 	public static enum RegionShape {
@@ -75,7 +79,7 @@ public abstract class ArenaRegion extends Loadable {
 	public static enum RegionFlag {
 		NOCAMP, DEATH, WIN, LOSE
 	}
-	
+
 	/**
 	 * RegionProtection
 	 * 
@@ -95,7 +99,7 @@ public abstract class ArenaRegion extends Loadable {
 	public static enum RegionProtection {
 		BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK
 	}
-	
+
 	/**
 	 * <pre>
 	 * CENTER = in the battlefield center
@@ -106,11 +110,126 @@ public abstract class ArenaRegion extends Loadable {
 	 * TOP = on top of the battlefield
 	 * BOTTOM = under the battlefield
 	 * INSIDE = inside the battlefield
-	 * OUTSIDE = around the battlefield 
+	 * OUTSIDE = around the battlefield
 	 * </pre>
 	 */
 	public static enum RegionPosition {
 		CENTER, NORTH, EAST, SOUTH, WEST, TOP, BOTTOM, INSIDE, OUTSIDE
+	}
+
+	/**
+	 * check if an arena has overlapping battlefield region with another arena
+	 * 
+	 * @param a1
+	 *            the arena to check
+	 * @param a2
+	 *            the arena to check
+	 * @return true if it does not overlap, false otherwise
+	 */
+	public static boolean checkRegion(Arena a1, Arena a2) {
+		if ((a1.getRegion("battlefield") != null)
+				&& (a2.getRegion("battlefield") != null)) {
+			db.i("checking battlefield region overlapping");
+			return !a2.getRegion("battlefield").overlapsWith(
+					a1.getRegion("battlefield"));
+		}
+		return true;
+	}
+
+	/**
+	 * check if other running arenas are interfering with this arena
+	 * 
+	 * @return true if no running arena is interfering with this arena, false
+	 *         otherwise
+	 */
+	public static boolean checkRegions(Arena arena) {
+		if (!arena.getArenaConfig().getBoolean("periphery.checkRegions", false))
+			return true;
+		db.i("checking regions");
+
+		return Arenas.checkRegions(arena);
+	}
+
+	/**
+	 * check if an admin tries to set an arena position
+	 * 
+	 * @param event
+	 *            the interact event to hand over
+	 * @param player
+	 *            the player interacting
+	 * @return true if the position is being saved, false otherwise
+	 */
+	public static boolean checkRegionSetPosition(PlayerInteractEvent event,
+			Player player) {
+		if (!PAA_Region.activeSelections.containsKey(player.getName())) {
+			return false;
+		}
+		Arena arena = PAA_Region.activeSelections.get(player.getName());
+		if (arena != null
+				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
+						player, arena)))
+				&& (player.getItemInHand() != null)
+				&& (player.getItemInHand().getTypeId() == arena
+						.getArenaConfig().getInt("setup.wand", 280))) {
+			// - modify mode is active
+			// - player has admin perms
+			// - player has wand in hand
+			db.i("modify&adminperms&wand");
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+				ap.setSelection(event.getClickedBlock().getLocation(), false);
+				arena.msg(player, Language.parse("pos1"));
+				event.setCancelled(true); // no destruction in creative mode :)
+				return true; // left click => pos1
+			}
+
+			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				ap.setSelection(event.getClickedBlock().getLocation(), true);
+				arena.msg(player, Language.parse("pos2"));
+				return true; // right click => pos2
+			}
+		}
+		return false;
+	}
+
+	public static ArenaRegion create(Arena arena, String name,
+			RegionShape shape, PABlockLocation[] locs) {
+		if (shape.equals(RegionShape.CUBOID)) {
+			return new CuboidRegion(arena, name, locs);
+		} else if (shape.equals(RegionShape.SPHERIC)) {
+			return new CuboidRegion(arena, name, locs);
+		} else if (shape.equals(RegionShape.CYLINDRIC)) {
+			return new CuboidRegion(arena, name, locs);
+		}
+		throw new UnsupportedOperationException("Arena Shape unknown: " + shape);
+	}
+
+	public static RegionShape getShapeFromShapeName(String string) {
+		for (RegionShape r : RegionShape.values()) {
+			if (r.name().startsWith(string.toUpperCase())) {
+				return r;
+			}
+		}
+		return RegionShape.CUBOID;
+	}
+
+	/**
+	 * is a player to far away to join?
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return true if the player is too far away, false otherwise
+	 */
+	public static boolean tooFarAway(Arena arena, Player player) {
+		int joinRange = arena.getArenaConfig().getInt("join.range", 0);
+		if (joinRange < 1)
+			return false;
+		if (arena.getRegion("battlefield") == null) {
+			return Spawns.getRegionCenter(arena).getDistance(
+					new PABlockLocation(player.getLocation())) > joinRange;
+		}
+		return arena.getRegion("battlefield").tooFarAway(joinRange,
+				player.getLocation());
 	}
 
 	public ArenaRegion(Arena arena, String name, PABlockLocation[] locs) {
@@ -121,7 +240,8 @@ public abstract class ArenaRegion extends Loadable {
 		this.setArena(arena);
 	}
 
-	public ArenaRegion(Arena arena, String name, PABlockLocation[] locs, String shape) {
+	public ArenaRegion(Arena arena, String name, PABlockLocation[] locs,
+			String shape) {
 		super("cuboid");
 		this.setName(name);
 		this.world = locs[0].getWorldName();
@@ -146,16 +266,14 @@ public abstract class ArenaRegion extends Loadable {
 	public abstract PABlockLocation getMinimumLocation();
 
 	public abstract boolean overlapsWith(ArenaRegion other);
-	
+
 	public abstract void showBorder(Player player);
-	
+
 	public abstract boolean tooFarAway(int joinRange, Location location);
 
 	public void displayInfo(CommandSender sender) {
-		// TODO Auto-generated method stub
-		
 	}
-	
+
 	public void flagAdd(RegionFlag rf) {
 		flags.add(rf);
 	}
@@ -168,15 +286,39 @@ public abstract class ArenaRegion extends Loadable {
 		}
 		return flags.contains(rf);
 	}
-	
+
 	public void flagRemove(RegionFlag rf) {
 		flags.remove(rf);
+	}
+
+	public Arena getArena() {
+		return arena;
 	}
 
 	public HashSet<RegionFlag> getFlags() {
 		return flags;
 	}
-	
+
+	public PABlockLocation[] getLocs() {
+		return locs;
+	}
+
+	public HashSet<RegionProtection> getProtections() {
+		return protections;
+	}
+
+	public String getRegionName() {
+		return name;
+	}
+
+	public RegionShape getShape() {
+		return shape;
+	}
+
+	public RegionType getType() {
+		return type;
+	}
+
 	public String getVersion() {
 		return "OUTDATED";
 	}
@@ -189,6 +331,19 @@ public abstract class ArenaRegion extends Loadable {
 		return world;
 	}
 
+	public void initTimer() {
+		if (!getArena().isFightInProgress()) {
+			getArena().setFightInProgress(true);
+		}
+
+		RegionRunnable rr = new RegionRunnable(this);
+		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, rr,
+				getArena().getArenaConfig().getInt("region.timer") * 1L,
+				getArena().getArenaConfig().getInt("region.timer") * 1L);
+		rr.setId(tickID);
+	}
+
 	public boolean isInRange(int offset, PABlockLocation loc) {
 		if (!world.equals(loc.getWorldName()))
 			return false;
@@ -197,7 +352,7 @@ public abstract class ArenaRegion extends Loadable {
 
 		return (offset < bvdiff.getDistance(loc));
 	}
-	
+
 	public void protectionAdd(RegionProtection rp) {
 		if (rp == null) {
 			protectionSetAll(true);
@@ -205,12 +360,13 @@ public abstract class ArenaRegion extends Loadable {
 		}
 		protections.add(rp);
 	}
-	
+
 	public boolean protectionSetAll(Boolean b) {
-		
+
 		for (RegionProtection rp : RegionProtection.values()) {
 			if (rp == null) {
-				getArena().msg(Bukkit.getConsoleSender(), "&cWarning! RegionProtection is null!");
+				getArena().msg(Bukkit.getConsoleSender(),
+						"&cWarning! RegionProtection is null!");
 				return false;
 			}
 			if (b == null) {
@@ -221,7 +377,7 @@ public abstract class ArenaRegion extends Loadable {
 				protectionRemove(rp);
 			}
 		}
-		
+
 		return b;
 	}
 
@@ -236,7 +392,7 @@ public abstract class ArenaRegion extends Loadable {
 		}
 		return protections.contains(rp);
 	}
-	
+
 	public void protectionRemove(RegionProtection rp) {
 		if (rp == null) {
 			protectionSetAll(false);
@@ -257,30 +413,16 @@ public abstract class ArenaRegion extends Loadable {
 		}
 		for (Entity e : getWorld().getEntities()) {
 			if ((e instanceof Player)
-					|| (!contains(new PABlockLocation(e.getLocation().getWorld().getName(), e.getLocation().getBlockX(), e.getLocation().getBlockY(), e.getLocation().getBlockZ())))) {
+					|| (!contains(new PABlockLocation(e.getLocation()
+							.getWorld().getName(), e.getLocation().getBlockX(),
+							e.getLocation().getBlockY(), e.getLocation()
+									.getBlockZ())))) {
 				continue;
 			}
 			e.remove();
 		}
-		// TODO cancel region timer
-	}
-	
-	public void timerStart() {
-		// TODO insert proper timer wrapper that knows when it should be off
-	}
-
-	public static RegionShape getShapeFromShapeName(String string) {
-		for (RegionShape r : RegionShape.values()) {
-			if (r.name().startsWith(string.toUpperCase())) {
-				return r;
-			}
-		}
-		return RegionShape.CUBOID;
-	}
-
-	public static ArenaRegion create(Arena arena, String name, RegionShape shape,
-			PABlockLocation[] locs) {
-		return new CuboidRegion(arena, name, locs);
+		Bukkit.getScheduler().cancelTask(tickID);
+		tickID = -1;
 	}
 
 	public String update(String key, String value) {
@@ -289,66 +431,42 @@ public abstract class ArenaRegion extends Loadable {
 			try {
 				h = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse("error.numeric", value); //TODO lang
+				return Language.parse("error.numeric", value); // TODO lang
 			}
-			
-			getLocs()[0].setY(getCenter().getY()-(h >> 1));
+
+			getLocs()[0].setY(getCenter().getY() - (h >> 1));
 			getLocs()[1].setY(getLocs()[0].getY() + h);
 
-			return Language.parse("region.height", value); //TODO lang
+			return Language.parse("region.height", value); // TODO lang
 		} else if (key.toLowerCase().equals("radius")) {
 			int r = 0;
 			try {
 				r = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse("error.numeric", value); //TODO lang
+				return Language.parse("error.numeric", value); // TODO lang
 			}
-			
+
 			PABlockLocation loc = getCenter();
 
-			getLocs()[0].setX(loc.getX()-r);
-			getLocs()[0].setY(loc.getY()-r);
-			getLocs()[0].setZ(loc.getZ()-r);
+			getLocs()[0].setX(loc.getX() - r);
+			getLocs()[0].setY(loc.getY() - r);
+			getLocs()[0].setZ(loc.getZ() - r);
 
-			getLocs()[1].setX(loc.getX()+r);
-			getLocs()[1].setY(loc.getY()+r);
-			getLocs()[1].setZ(loc.getZ()+r);
+			getLocs()[1].setX(loc.getX() + r);
+			getLocs()[1].setY(loc.getY() + r);
+			getLocs()[1].setZ(loc.getZ() + r);
 
-			return Language.parse("region.radius", value); //TODO lang
+			return Language.parse("region.radius", value); // TODO lang
 		} else if (key.toLowerCase().equals("position")) {
-			return null; //TODO FIX!
+			return null; // TODO FIX!
 		}
-		
-		return Language.parse("error.argument", key, "height | radius | position"); //TODO lang
-	}
 
-	public RegionType getType() {
-		return type;
-	}
-
-	public void initTimer() {
-		if (!getArena().isFightInProgress()) {
-			getArena().setFightInProgress(true);
-			System.out.print("[PA-debug] fight not yet in progress...");
-		}
-		RegionRunnable rr = new RegionRunnable(this,0);
-		int TICK_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, rr,
-				getArena().getArenaConfig().getInt("region.timer") * 1L,
-				getArena().getArenaConfig().getInt("region.timer") * 1L);
-		rr.setId(TICK_ID);
-	}
-
-	public Arena getArena() {
-		return arena;
+		return Language.parse("error.argument", key,
+				"height | radius | position"); // TODO lang
 	}
 
 	public void setArena(Arena arena) {
 		this.arena = arena;
-	}
-
-	public RegionShape getShape() {
-		return shape;
 	}
 
 	public void setName(String name) {
@@ -362,7 +480,6 @@ public abstract class ArenaRegion extends Loadable {
 	public void setType(RegionType type) {
 		this.type = type;
 	}
-	
 
 	public void tick() {
 		for (ArenaPlayer ap : arena.getFighters()) {
@@ -384,9 +501,12 @@ public abstract class ArenaRegion extends Loadable {
 						}
 						for (ArenaPlayer ap2 : team.getTeamMembers()) {
 							if (ap2.getStatus().equals(Status.FIGHT)) {
-								Bukkit.getWorld(world).strikeLightningEffect(ap2.get().getLocation());
-								EntityDamageEvent e = new EntityDamageEvent(ap2.get(), DamageCause.LIGHTNING, 10);
-								PlayerListener.commitPlayerDeath(arena, ap2.get(), e);
+								Bukkit.getWorld(world).strikeLightningEffect(
+										ap2.get().getLocation());
+								EntityDamageEvent e = new EntityDamageEvent(
+										ap2.get(), DamageCause.LIGHTNING, 10);
+								PlayerListener.commitPlayerDeath(arena,
+										ap2.get(), e);
 							}
 						}
 						return;
@@ -402,9 +522,12 @@ public abstract class ArenaRegion extends Loadable {
 						}
 						for (ArenaPlayer ap2 : team.getTeamMembers()) {
 							if (ap2.getStatus().equals(Status.FIGHT)) {
-								Bukkit.getWorld(world).strikeLightningEffect(ap2.get().getLocation());
-								EntityDamageEvent e = new EntityDamageEvent(ap2.get(), DamageCause.LIGHTNING, 10);
-								PlayerListener.commitPlayerDeath(arena, ap2.get(), e);
+								Bukkit.getWorld(world).strikeLightningEffect(
+										ap2.get().getLocation());
+								EntityDamageEvent e = new EntityDamageEvent(
+										ap2.get(), DamageCause.LIGHTNING, 10);
+								PlayerListener.commitPlayerDeath(arena,
+										ap2.get(), e);
 							}
 						}
 						return;
@@ -420,7 +543,8 @@ public abstract class ArenaRegion extends Loadable {
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
 							ap.get().damage(
-									arena.getArenaConfig().getInt("region.spawncampdamage"));
+									arena.getArenaConfig().getInt(
+											"region.spawncampdamage"));
 						}
 					}
 					playerNameLocations.put(ap.getName(), ap.get()
@@ -433,7 +557,7 @@ public abstract class ArenaRegion extends Loadable {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
 				}
-				
+
 				if (!this.contains(pLoc)) {
 					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
 					arena.playerLeave(ap.get(), "exit");
@@ -448,7 +572,7 @@ public abstract class ArenaRegion extends Loadable {
 				if (!ap.getStatus().equals(Status.WATCH)) {
 					continue;
 				}
-				
+
 				if (!this.contains(pLoc)) {
 					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
 					arena.playerLeave(ap.get(), "exit");
@@ -456,16 +580,8 @@ public abstract class ArenaRegion extends Loadable {
 			}
 		}
 	}
-	
+
 	public String version() {
 		return "OUTDATED";
-	}
-
-	public PABlockLocation[] getLocs() {
-		return locs;
-	}
-
-	public HashSet<RegionProtection> getProtections() {
-		return protections;
 	}
 }

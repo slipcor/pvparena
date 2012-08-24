@@ -54,15 +54,6 @@ public class ArenaTeam {
 	}
 
 	/**
-	 * colorize the team name
-	 * 
-	 * @return the colorized team name
-	 */
-	public String colorize() {
-		return color + name;
-	}
-
-	/**
 	 * colorize a player name
 	 * 
 	 * @param player
@@ -83,11 +74,20 @@ public class ArenaTeam {
 	}
 
 	/**
+	 * colorize the team name
+	 * 
+	 * @return the colorized team name
+	 */
+	public String getColoredName() {
+		return color + name;
+	}
+
+	/**
 	 * return the team color code
 	 * 
 	 * @return the team color code
 	 */
-	public String getColorString() {
+	public String getColorCodeString() {
 		return "&" + Integer.toHexString(color.ordinal());
 	}
 
@@ -109,6 +109,10 @@ public class ArenaTeam {
 		return players;
 	}
 
+	public boolean hasPlayer(Player p) {
+		return players.contains(ArenaPlayer.parsePlayer(p));
+	}
+
 	/**
 	 * remove a player from the team
 	 * 
@@ -117,9 +121,5 @@ public class ArenaTeam {
 	 */
 	public void remove(ArenaPlayer player) {
 		this.players.remove(player);
-	}
-
-	public boolean hasPlayer(Player p) {
-		return players.contains(ArenaPlayer.parsePlayer(p));
 	}
 }

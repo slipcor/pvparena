@@ -13,9 +13,7 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -72,7 +70,7 @@ public class Spawns {
 
 		String sLoc = arena.getArenaConfig().getString("spawns." + place, null);
 		db.i("parsing location: " + sLoc);
-		return Config.parseWorldLocation(sLoc).add(0.5, 0, 0.5);
+		return Config.parseLocation(sLoc).add(0.5, 0.1, 0.5);
 	}
 
 	/**
@@ -138,7 +136,7 @@ public class Spawns {
 			}
 			db.i(" - " + name);
 			String sLoc = arena.getArenaConfig().getString("spawns." + name, null);
-			result.add(Config.parseWorldLocation( sLoc));
+			result.add(Config.parseLocation( sLoc));
 		}
 
 		return result;
@@ -188,11 +186,11 @@ public class Spawns {
 	 */
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
 		db.i("checking if arena is near a spawn");
-		if (!arena.isPartOf(player)) {
+		if (!arena.hasPlayer(player)) {
 			return false;
 		}
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		ArenaTeam team = Teams.getTeam(arena, ap);
+		ArenaTeam team = ap.getArenaTeam();
 		if (team == null) {
 			return false;
 		}

@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
@@ -51,7 +52,7 @@ public class PAA_Spawn extends PAA__Command {
 			
 		} else {
 			// usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
-			PALocation loc = arena.getSpawn(args[0]);
+			PALocation loc = Spawns.getCoords(arena, args[0]);
 			if (loc == null) {
 				arena.msg(sender, Language.parse("spawn.notset", args[0]));
 			} else {

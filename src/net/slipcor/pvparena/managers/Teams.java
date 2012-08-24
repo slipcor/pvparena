@@ -32,16 +32,6 @@ public class Teams {
 	private static Debug db = new Debug(37);
 
 	/**
-	 * add a team to an arena
-	 * 
-	 * @param arenaTeam
-	 *            the team to add
-	 */
-	public static void addTeam(Arena arena, ArenaTeam arenaTeam) {
-		arena.getTeams().add(arenaTeam);
-	}
-
-	/**
 	 * calculate the team that needs players the most
 	 * 
 	 * @return the team name
@@ -178,7 +168,7 @@ public class Teams {
 
 		db.i(sTeam);
 
-		ArenaTeam aTeam = getTeam(arena, sTeam);
+		ArenaTeam aTeam = arena.getTeam(sTeam);
 
 		aTeam.add(ap);
 
@@ -187,14 +177,14 @@ public class Teams {
 		} else {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
 		}
-		String coloredTeam = aTeam.colorize();
+		String coloredTeam = aTeam.getColoredName();
 		
 		if (arena.isFreeForAll()) {
 			coloredTeam = "";
 		}
 
 		arena.msg(player, arena.getArenaConfig().getString("msg.youjoined").replace("%1%", coloredTeam));
-		arena.tellEveryoneExcept(player,
+		arena.broadcastExcept(player,
 				arena.getArenaConfig().getString("msg.playerjoined").replace("%1%",player.getName()).replace("%2%",coloredTeam));
 
 	}
@@ -281,50 +271,6 @@ public class Teams {
 		}
 		db.i("teamstringlist: " + result);
 		return result;
-	}
-
-	/**
-	 * search for an arena team by player
-	 * 
-	 * @param player
-	 *            the player to find
-	 * @return the ArenaTeam instance if found, null otherwise
-	 */
-	public static synchronized ArenaTeam getTeam(Arena arena, ArenaPlayer player) {
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().contains(player)) {
-				return team;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * search for an arena team by name
-	 * 
-	 * @param name
-	 *            the team name to find
-	 * @return the ArenaTeam instance if found, null otherwise
-	 */
-	public static ArenaTeam getTeam(Arena arena, String name) {
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getName().equalsIgnoreCase(name)) {
-				return team;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * remove a player from a team
-	 * 
-	 * @param player
-	 *            the player to remove
-	 */
-	public static void removeTeam(Arena arena, ArenaPlayer player) {
-		for (ArenaTeam team : arena.getTeams()) {
-			team.remove(player);
-		}
 	}
 
 	/**

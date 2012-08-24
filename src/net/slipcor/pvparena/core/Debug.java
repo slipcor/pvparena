@@ -26,7 +26,6 @@ public class Debug {
 
 	private static String prefix = "[PA-debug] ";
 	private static HashSet<Integer> check = new HashSet<Integer>();
-	//private static byte level = 3;
 
 	private int id = 0;
 

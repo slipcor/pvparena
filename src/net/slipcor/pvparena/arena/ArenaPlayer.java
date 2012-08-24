@@ -5,15 +5,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PAStatMap;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Inventories;
 import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.managers.Statistics;
+import net.slipcor.pvparena.managers.Statistics.type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,61 +48,45 @@ import org.bukkit.permissions.PermissionAttachment;
 
 public class ArenaPlayer {
 	private static Debug db = new Debug(5);
-	private String sPlayer = null;
+	private static HashMap<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
+
 	private final String name;
+	private boolean telePass = false;
+
 	private Arena arena;
 	private ArenaClass aClass;
 	private PlayerState state;
+	private PALocation location;
+	private Status status = Status.NULL;
 
 	private ItemStack[] savedInventory;
 	private ItemStack[] savedArmor;
+	private HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
+	private HashMap<String, PAStatMap> statistics = new HashMap<String, PAStatMap>();
 
-	public PALocation location;
-
-	// public String respawn = "";
-	public boolean telePass = false;
-
-	public HashSet<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
-	private static HashMap<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
-
-	private Status status = Status.NULL;
-	
 	/**
-	 *  - NULL = not part of an arena
-	 *  - WARM = not part of an arena, warmed up
-	 *  - LOUNGE = inside an arena lobby mode
-	 *  - READY = inside an arena lobby mode, readied up
-	 *  - FIGHT = fighting inside an arena
-	 *  - WATCH = watching a fight from the spectator area
-	 *  - DEAD = dead and soon respawning
-	 *  - LOST = lost and thus spectating 
-	 * @author slipcor
+	 * <pre>
+	 * - NULL = not part of an arena
+	 * - WARM = not part of an arena, warmed up
+	 * - LOUNGE = inside an arena lobby mode
+	 * - READY = inside an arena lobby mode, readied up
+	 * - FIGHT = fighting inside an arena
+	 * - WATCH = watching a fight from the spectator area
+	 * - DEAD = dead and soon respawning
+	 * - LOST = lost and thus spectating
+	 * </pre>
 	 */
-	public static enum Status {NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST}
+	public static enum Status {
+		NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
+	}
 
-	public int losses = 0;
-	public int wins = 0;
-	public int kills = 0;
-	public int deaths = 0;
-	public int damage = 0;
-	public int maxdamage = 0;
-	public int damagetake = 0;
-	public int maxdamagetake = 0;
-
-	public int totlosses = 0;
-	public int totwins = 0;
-	public int totkills = 0;
-	public int totdeaths = 0;
-	public int totdamage = 0;
-	public int totmaxdamage = 0;
-	public int totdamagetake = 0;
-	public int totmaxdamagetake = 0;
-	
 	private boolean chatting = false;
-	public Location pos1; // temporary position 1 (region select)
-	public Location pos2; // temporary position 2 (region select)
+	PABlockLocation[] selection = new PABlockLocation[2];
 
-	public static HashMap<ArenaPlayer, String> deadPlayers = new HashMap<ArenaPlayer, String>();
+	public ArenaPlayer(String playerName) {
+		db.i("creating offline arena player: " + playerName);
+		name = playerName;
+	}
 
 	/**
 	 * create a PVP Arena player istance
@@ -113,108 +101,18 @@ public class ArenaPlayer {
 
 		this.name = p.getName();
 		this.setArena(a);
-		this.sPlayer = p.getName();
+	}
 
-		YamlConfiguration cfg = new YamlConfiguration();
-		try {
-			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
+	public static int countPlayers() {
+		return totalPlayers.size();
+	}
 
-			totlosses = cfg.getInt(p.getName() + ".losses", 0);
-			totwins = cfg.getInt(p.getName() + ".wins", 0);
-			totkills = cfg.getInt(p.getName() + ".kills", 0);
-			totdeaths = cfg.getInt(p.getName() + ".deaths", 0);
-			totdamage = cfg.getInt(p.getName() + ".damage", 0);
-			totdamagetake = cfg.getInt(p.getName() + ".damagetake", 0);
-			totmaxdamage = cfg.getInt(p.getName() + ".maxdamage", 0);
-			totmaxdamagetake = cfg.getInt(p.getName() + ".maxdamagetake", 0);
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InvalidConfigurationException e) {
-			e.printStackTrace();
+	public static HashSet<ArenaPlayer> getAllArenaPlayers() {
+		HashSet<ArenaPlayer> ps = new HashSet<ArenaPlayer>();
+		for (ArenaPlayer ap : totalPlayers.values()) {
+			ps.add(ap);
 		}
-	}
-
-	/**
-	 * add a kill to a player
-	 */
-	public void addKill() {
-		kills++;
-	}
-
-	/**
-	 * add a death to a player
-	 */
-	public void addDeath() {
-		deaths++;
-	}
-
-	/**
-	 * add a dead player to the dead player map
-	 * 
-	 * @param location
-	 *            the location to respawn
-	 */
-	public void addDeadPlayer(String string) {
-		deadPlayers.put(this, string);
-	}
-
-	/**
-	 * save the player state
-	 * 
-	 * @param player
-	 *            the player to save
-	 */
-	public void createState(Player player) {
-		state = new PlayerState(player);
-		location = new PALocation(player.getLocation());
-	}
-
-	/**
-	 * return the PVP Arena bukkit player
-	 * 
-	 * @return the bukkit player instance
-	 */
-	public Player get() {
-		return Bukkit.getPlayerExact(sPlayer);
-	}
-
-	/**
-	 * return the arena class
-	 * 
-	 * @return the arena class
-	 */
-	public ArenaClass getaClass() {
-		return aClass;
-	}
-
-	/**
-	 * return the arena
-	 * 
-	 * @return the arena
-	 */
-	public Arena getArena() {
-		return arena;
-	}
-
-	/**
-	 * hand over a player's deaths
-	 * 
-	 * @return the player's death count
-	 */
-	public int getDeaths() {
-		return deaths;
-	}
-
-	/**
-	 * hand over a player's kills
-	 * 
-	 * @return the player's kill count
-	 */
-	public int getKills() {
-		return kills;
+		return ps;
 	}
 
 	/**
@@ -232,7 +130,8 @@ public class ArenaPlayer {
 
 			Entity p1 = event.getDamager();
 
-			if (event.getCause() == DamageCause.PROJECTILE && p1 instanceof Projectile) {
+			if (event.getCause() == DamageCause.PROJECTILE
+					&& p1 instanceof Projectile) {
 				p1 = ((Projectile) p1).getShooter();
 				db.i("killed by projectile, shooter is found");
 			}
@@ -260,47 +159,53 @@ public class ArenaPlayer {
 	}
 
 	/**
-	 * return the player name
+	 * supply a player with class items and eventually wool head
 	 * 
-	 * @return the player name
+	 * @param player
+	 *            the player to supply
 	 */
-	public String getName() {
-		return name;
+	public static void givePlayerFightItems(Arena arena, Player player) {
+		ArenaPlayer ap = parsePlayer(player);
+
+		ArenaClass playerClass = ap.getArenaClass();
+		if (playerClass == null) {
+			return;
+		}
+		Inventories.db.i("giving items to player '" + player.getName()
+				+ "', class '" + playerClass.getName() + "'");
+
+		playerClass.equip(player);
+
+		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
+			ArenaTeam aTeam = ap.getArenaTeam();
+			String color = aTeam.getColor().name();
+			Inventories.db.i("forcing woolhead: " + aTeam.getName() + "/"
+					+ color);
+			player.getInventory().setHelmet(
+					new ItemStack(Material.WOOL, 1, StringParser
+							.getColorDataFromENUM(color)));
+		}
 	}
 
-	/**
-	 * return the player state
-	 * 
-	 * @return the player state
-	 */
-	public PlayerState getState() {
-		return state;
-	}
+	public static void initiate() {
+		db.i("creating offline arena players");
 
-	public Status getStatus() {
-		return status;
-	}
+		YamlConfiguration cfg = new YamlConfiguration();
+		try {
+			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
 
-	/**
-	 * hand over a player's tele pass
-	 * 
-	 * @return true if may pass, false otherwise
-	 */
-	public boolean getTelePass() {
-		return telePass;
-	}
+			Set<String> players = cfg.getKeys(false);
+			for (String s : players) {
+				totalPlayers.put(s, new ArenaPlayer(s));
+			}
 
-	public boolean isChatting() {
-		return chatting;
-	}
-
-	/**
-	 * has a player died in the arena?
-	 * 
-	 * @return true if the player has died, false otherwise
-	 */
-	public boolean isDead() {
-		return deadPlayers.containsKey(this);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -318,41 +223,312 @@ public class ArenaPlayer {
 	}
 
 	public static ArenaPlayer parsePlayer(String name) {
-		return parsePlayer(Bukkit.getPlayerExact(name));
-	}
-	
-	public static int countPlayers() {
-		return totalPlayers.size();
-	}
-	
-	public static HashSet<ArenaPlayer> getPlayers() {
-		HashSet<ArenaPlayer> ps = new HashSet<ArenaPlayer>();
-		for (ArenaPlayer ap : totalPlayers.values()) {
-			ps.add(ap);
+		if (totalPlayers.get(name) == null) {
+			if (Bukkit.getPlayerExact(name) == null) {
+				totalPlayers.put(name, new ArenaPlayer(name));
+			} else {
+				totalPlayers.put(name, new ArenaPlayer(Bukkit.getPlayerExact(name), null));
+			}
 		}
-		return ps;
+		return totalPlayers.get(name);
+	}
+
+	/**
+	 * prepare a player's inventory, back it up and clear it
+	 * 
+	 * @param player
+	 *            the player to save
+	 */
+	public static void prepareInventory(Arena arena, Player player) {
+		Inventories.db.i("saving player inventory: " + player.getName());
+
+		ArenaPlayer p = parsePlayer(player);
+		p.savedInventory = player.getInventory().getContents().clone();
+		p.savedArmor = player.getInventory().getArmorContents().clone();
+		Inventories.clearInventory(player);
+	}
+
+	/**
+	 * reload player inventories from saved variables
+	 * 
+	 * @param player
+	 */
+	public static void reloadInventory(Arena arena, Player player) {
+
+		if (player == null) {
+			return;
+		}
+		Inventories.db.i("resetting inventory: " + player.getName());
+		if (player.getInventory() == null) {
+			return;
+		}
+
+		ArenaPlayer p = parsePlayer(player);
+
+		if (p.savedInventory == null) {
+			return;
+		}
+		player.getInventory().setContents(p.savedInventory);
+		player.getInventory().setArmorContents(p.savedArmor);
+	}
+
+	public void addDeath() {
+		this.getStatistics(arena).incStat(Statistics.type.DEATHS);
+	}
+
+	public void addKill() {
+		this.getStatistics(arena).incStat(Statistics.type.KILLS);
+	}
+
+	public void addLosses() {
+		this.getStatistics(arena).incStat(Statistics.type.LOSSES);
+	}
+
+	public void addStatistic(String arenaName, Statistics.type type, int i) {
+		if (!statistics.containsKey(arenaName)) {
+			statistics.put(arenaName, new PAStatMap(name));
+		}
+
+		statistics.get(arenaName).incStat(type, i);
+	}
+
+	public void addWins() {
+		this.getStatistics(arena).incStat(Statistics.type.WINS);
+	}
+
+	private void clearDump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/dumps/" + this.name + ".yml");
+		if (!f.exists()) {
+			return;
+		}
+		f.delete();
+	}
+
+	/**
+	 * save the player state
+	 * 
+	 * @param player
+	 *            the player to save
+	 */
+	public void createState(Player player) {
+		state = new PlayerState(player);
+		location = new PALocation(player.getLocation());
+	}
+
+	public boolean didValidSelection() {
+		return selection[0] != null && selection[1] != null;
+	}
+
+	public void dump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/dumps/" + this.name + ".yml");
+		try {
+			f.createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		YamlConfiguration cfg = new YamlConfiguration();
+		cfg.set("arena", arena.getName());
+		if (state != null) {
+			state.dump(cfg);
+		}
+
+		cfg.set("inventory",
+				StringParser.getStringFromItemStacks(savedInventory));
+		cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
+
+		try {
+			cfg.save(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * return the PVP Arena bukkit player
+	 * 
+	 * @return the bukkit player instance
+	 */
+	public Player get() {
+		return Bukkit.getPlayerExact(name);
+	}
+
+	/**
+	 * return the arena
+	 * 
+	 * @return the arena
+	 */
+	public Arena getArena() {
+		return arena;
+	}
+
+	/**
+	 * return the arena class
+	 * 
+	 * @return the arena class
+	 */
+	public ArenaClass getArenaClass() {
+		return aClass;
+	}
+
+	public ArenaTeam getArenaTeam() {
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getTeamMembers().contains(this)) {
+				return team;
+			}
+		}
+		return null;
+	}
+
+	public PALocation getLocation() {
+		return location;
+	}
+
+	/**
+	 * return the player name
+	 * 
+	 * @return the player name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	public PABlockLocation[] getSelection() {
+		return selection;
+	}
+
+	/**
+	 * return the player state
+	 * 
+	 * @return the player state
+	 */
+	public PlayerState getState() {
+		return state;
+	}
+
+	public PAStatMap getStatistics() {
+		return getStatistics(arena);
+	}
+
+	public PAStatMap getStatistics(Arena a) {
+		if (a == null) {
+			return new PAStatMap(name);
+		}
+		if (statistics.get(a.getName()) == null) {
+			statistics.put(a.getName(), new PAStatMap(name));
+		}
+		return statistics.get(a.getName());
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * hand over a player's tele pass
+	 * 
+	 * @return true if may pass, false otherwise
+	 */
+	public boolean getTelePass() {
+		return hasTelePass();
+	}
+
+	public HashSet<PermissionAttachment> getTempPermissions() {
+		return tempPermissions;
+	}
+
+	public int getTotalStatistics(type t) {
+		int sum = 0;
+
+		for (PAStatMap stat : statistics.values()) {
+			sum += stat.getStat(t);
+		}
+
+		return sum;
+	}
+
+	public boolean hasTelePass() {
+		return telePass;
+	}
+
+	public boolean isChatting() {
+		return chatting;
+	}
+
+	public void readDump() {
+		File f = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/dumps/" + this.name + ".yml");
+		if (!f.exists()) {
+			return;
+		}
+
+		YamlConfiguration cfg = new YamlConfiguration();
+		try {
+			cfg.load(f);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+
+		arena = Arenas.getArenaByName(cfg.getString("arena"));
+		savedInventory = StringParser.getItemStacksFromString(cfg.getString(
+				"inventory", "AIR"));
+		savedArmor = StringParser.getItemStacksFromString(cfg.getString(
+				"armor", "AIR"));
+
+		if (arena != null) {
+			location = Spawns.getCoords(arena, "exit");
+
+			state = PlayerState.undump(cfg, name);
+		}
+
+		f.delete();
 	}
 
 	/**
 	 * save and reset a player instance
-	 * @param b should
+	 * 
+	 * @param b
+	 *            should
 	 */
 	public void reset() {
-		db.i("destroying arena player " + sPlayer);
+		db.i("destroying arena player " + name);
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			String file = PVPArena.instance.getDataFolder().toString()
 					+ "/players.yml";
 			cfg.load(file);
 
-			cfg.set(sPlayer + ".losses", losses + totlosses);
-			cfg.set(sPlayer + ".wins", wins + totwins);
-			cfg.set(sPlayer + ".kills", kills + totkills);
-			cfg.set(sPlayer + ".deaths", deaths + totdeaths);
-			cfg.set(sPlayer + ".damage", damage + totdamage);
-			cfg.set(sPlayer + ".maxdamage", maxdamage + totmaxdamage);
-			cfg.set(sPlayer + ".damagetake", damagetake + totdamagetake);
-			cfg.set(sPlayer + ".maxdamagetake", maxdamagetake + totmaxdamagetake);
+			if (arena != null) {
+				String a = arena.getName();
+				cfg.set(a + "." + name + ".losses",
+						getStatistics().getStat(Statistics.type.LOSSES)
+								+ getTotalStatistics(Statistics.type.LOSSES));
+				cfg.set(a + "." + name + ".wins",
+						getStatistics().getStat(Statistics.type.WINS)
+								+ getTotalStatistics(Statistics.type.WINS));
+				cfg.set(a + "." + name + ".kills",
+						getStatistics().getStat(Statistics.type.KILLS)
+								+ getTotalStatistics(Statistics.type.KILLS));
+				cfg.set(a + "." + name + ".deaths",
+						getStatistics().getStat(Statistics.type.DEATHS)
+								+ getTotalStatistics(Statistics.type.DEATHS));
+				cfg.set(a + "." + name + ".damage",
+						getStatistics().getStat(Statistics.type.DAMAGE)
+								+ getTotalStatistics(Statistics.type.DAMAGE));
+				cfg.set(a + "." + name + ".maxdamage",
+						getStatistics().getStat(Statistics.type.MAXDAMAGE)
+								+ getTotalStatistics(Statistics.type.MAXDAMAGE));
+				cfg.set(a + "." + name + ".damagetake", getStatistics()
+						.getStat(Statistics.type.DAMAGETAKE)
+						+ getTotalStatistics(Statistics.type.DAMAGETAKE));
+				cfg.set(a + "." + name + ".maxdamagetake", getStatistics()
+						.getStat(Statistics.type.MAXDAMAGETAKE)
+						+ getTotalStatistics(Statistics.type.MAXDAMAGETAKE));
+			}
 
 			cfg.save(file);
 
@@ -363,26 +539,26 @@ public class ArenaPlayer {
 			return;
 		}
 
-		telePass = false;
+		setTelePass(false);
 
 		if (state != null) {
 			state.reset();
 			state = null;
 		}
 		location = null;
-		//savedInventory = null;
-		//savedArmor = null;
 
 		setStatus(Status.NULL);
 
 		if (arena != null) {
-			ArenaTeam team = Teams.getTeam(arena, this);
+			ArenaTeam team = this.getArenaTeam();
 			if (team != null) {
 				team.remove(this);
 			}
 		}
 		arena = null;
 		aClass = null;
+
+		clearDump();
 	}
 
 	/**
@@ -405,17 +581,13 @@ public class ArenaPlayer {
 		this.aClass = aClass;
 	}
 
-	public void setChatting(boolean b) {
-		chatting = b;
-	}
-
 	/**
-	 * hand over a player class name
+	 * set a player's arena class by name
 	 * 
 	 * @param s
-	 *            a player class name
+	 *            an arena class name
 	 */
-	public void setClass(String s) {
+	public void setArenaClass(String s) {
 
 		for (ArenaClass ac : getArena().getClasses()) {
 			if (ac.getName().equalsIgnoreCase(s)) {
@@ -425,6 +597,31 @@ public class ArenaPlayer {
 		}
 		System.out.print("[PA-debug] failed to set unknown class " + s
 				+ " to player " + name);
+	}
+
+	public void setChatting(boolean b) {
+		chatting = b;
+	}
+
+	public void setLocation(PALocation location) {
+		this.location = location;
+	}
+
+	public void setSelection(Location loc, boolean second) {
+		if (second) {
+			selection[1] = new PABlockLocation(loc);
+		} else {
+			selection[0] = new PABlockLocation(loc);
+		}
+	}
+
+	public void setStatistic(String arenaName, Statistics.type type, int i) {
+		if (!statistics.containsKey(arenaName)) {
+			statistics.put(arenaName, new PAStatMap(name));
+		}
+
+		PAStatMap map = statistics.get(arenaName);
+		map.setStat(type, i);
 	}
 
 	public void setStatus(Status status) {
@@ -441,134 +638,7 @@ public class ArenaPlayer {
 		telePass = b;
 	}
 
-	public void dump() {
-		File f = new File(PVPArena.instance.getDataFolder().getPath() + "/dumps/" + this.name + ".yml");
-		try {
-			f.createNewFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		YamlConfiguration cfg = new YamlConfiguration();
-		cfg.set("arena", arena.getName());
-		if (state != null) {
-			state.dump(cfg);
-		}
-
-		cfg.set("inventory", StringParser.getStringFromItemStacks(savedInventory));
-		cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
-		
-		try {
-			cfg.save(f);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void readDump() {
-		File f = new File(PVPArena.instance.getDataFolder().getPath() + "/dumps/" + this.name + ".yml");
-		if (!f.exists()) {
-			return;
-		}
-		
-		YamlConfiguration cfg = new YamlConfiguration();
-		try {
-			cfg.load(f);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		
-		arena = Arenas.getArenaByName(cfg.getString("arena"));
-		savedInventory = StringParser.getItemStacksFromString(cfg.getString("inventory", "AIR"));
-		savedArmor = StringParser.getItemStacksFromString(cfg.getString("armor", "AIR"));
-
-		if (arena != null) {
-			location = Spawns.getCoords(arena, "exit");
-			
-			state = PlayerState.undump(cfg, name);
-		}
-		
-		f.delete();
-	}
-
-	/**
-	 * supply a player with class items and eventually wool head
-	 * 
-	 * @param player
-	 *            the player to supply
-	 */
-	public static void givePlayerFightItems(Arena arena, Player player) {
-		ArenaPlayer ap = parsePlayer(player);
-	
-		ArenaClass playerClass = ap.getaClass();
-		if (playerClass == null) {
-			return;
-		}
-		Inventories.db.i("giving items to player '" + player.getName() + "', class '"
-				+ playerClass.getName() + "'");
-	
-		playerClass.equip(player);
-	
-		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
-			ArenaTeam aTeam = Teams.getTeam(arena, ap);
-			String color = aTeam.getColor().name();
-			Inventories.db.i("forcing woolhead: " + aTeam.getName() + "/" + color);
-			player.getInventory().setHelmet(
-					new ItemStack(Material.WOOL, 1, StringParser
-							.getColorDataFromENUM(color)));
-		}
-	}
-
-	/**
-	 * prepare a player's inventory, back it up and clear it
-	 * 
-	 * @param player
-	 *            the player to save
-	 */
-	public static void prepareInventory(Arena arena, Player player) {
-		Inventories.db.i("saving player inventory: " + player.getName());
-	
-		ArenaPlayer p = parsePlayer(player);
-		p.savedInventory = player.getInventory().getContents().clone();
-		p.savedArmor = player.getInventory().getArmorContents().clone();
-		Inventories.clearInventory(player);
-	}
-
-	/**
-	 * reload player inventories from saved variables
-	 * 
-	 * @param player
-	 */
-	public static void reloadInventory(Arena arena, Player player) {
-	
-		if (player == null) {
-			return;
-		}
-		Inventories.db.i("resetting inventory: " + player.getName());
-		if (player.getInventory() == null) {
-			return;
-		}
-	
-		ArenaPlayer p = parsePlayer(player);
-	
-		if (p.savedInventory == null) {
-			return;
-		}
-		player.getInventory().setContents(p.savedInventory);
-		player.getInventory().setArmorContents(p.savedArmor);
-		//p.savedInventory = null;
-	}
-
-	public boolean didValidSelection() {
-		return pos1 != null && pos2 != null;
-	}
-
-	public PABlockLocation[] getSelection() {
-		PABlockLocation[] locs = new PABlockLocation[2];
-		locs[0] = new PABlockLocation(pos1);
-		locs[0] = new PABlockLocation(pos2);
-		return locs;
+	public void setTempPermissions(HashSet<PermissionAttachment> tempPermissions) {
+		this.tempPermissions = tempPermissions;
 	}
 }

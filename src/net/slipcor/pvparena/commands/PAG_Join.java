@@ -9,6 +9,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.managers.Teams;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
@@ -63,7 +64,7 @@ public class PAG_Join extends PAA__Command {
 		if (args.length < 1) {
 			// usage: /pa {arenaname} join | join an arena
 
-			args = new String[]{arena.getRandomTeam()};
+			args = new String[]{Teams.calcFreeTeam(arena)};
 		}
 		
 		ArenaTeam team = arena.getTeam(args[0]);

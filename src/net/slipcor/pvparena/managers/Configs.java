@@ -58,7 +58,7 @@ public class Configs {
 			}
 			
 		} else {
-			
+			System.out.print("oouuups");
 		}
 
 		if (config.get("classitems") == null) {
@@ -131,6 +131,7 @@ public class Configs {
 		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
 		config.addDefault("protection.blocktntdamage", Boolean.valueOf(true));
 		config.addDefault("protection.decay", Boolean.valueOf(true));
+		config.addDefault("protection.drop", Boolean.valueOf(true));
 		config.addDefault("protection.fade", Boolean.valueOf(true));
 		config.addDefault("protection.form", Boolean.valueOf(true));
 		config.addDefault("protection.fluids", Boolean.valueOf(true));
@@ -174,7 +175,7 @@ public class Configs {
 
 		config.options().copyDefaults(true);
 
-		cfg.set("cfgver", "0.7.13.0");
+		cfg.set("cfgver", "0.9.0.0");
 		cfg.save();
 		cfg.load();
 
@@ -229,9 +230,9 @@ public class Configs {
 
 		for (String sTeam : tempMap.keySet()) {
 			ArenaTeam team = new ArenaTeam(sTeam, (String) tempMap.get(sTeam));
-			Teams.addTeam(arena, team);
+			arena.getTeams().add(team);
 			db.i("added team " + team.getName() + " => "
-					+ team.getColorString());
+					+ team.getColorCodeString());
 		}
 
 		PVPArena.instance.getAgm().configParse(arena);
@@ -270,7 +271,7 @@ public class Configs {
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-		String error = PVPArena.instance.getAmm().checkSpawns(list);
+		String error = PVPArena.instance.getAmm().checkSpawns(arena, list);
 		if (error != null) {
 			return error;
 		}

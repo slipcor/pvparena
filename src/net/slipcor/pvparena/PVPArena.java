@@ -9,6 +9,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
@@ -203,6 +204,7 @@ public class PVPArena extends JavaPlugin {
 		arsm = new ArenaRegionShapeManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
+		ArenaPlayer.initiate();
 
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);

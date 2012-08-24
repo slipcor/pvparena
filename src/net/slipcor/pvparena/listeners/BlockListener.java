@@ -62,13 +62,6 @@ public class BlockListener implements Listener {
 	}
 
 	private boolean isProtected(Arena arena, Cancellable event, String node) {
-		/*
-		if (!arena.fightInProgress) {
-			db.i("not fighting. cancelling!");
-			event.setCancelled(true);
-			return true;
-		}
-		*/
 		if (arena.getArenaConfig().getBoolean("protection.enabled")
 				&& arena.getArenaConfig().getBoolean("protection." + node)) {
 			event.setCancelled(true);
@@ -386,10 +379,5 @@ public class BlockListener implements Listener {
 		db.i("painting break inside the arena");
 		PVPArena.instance.getAmm().onPaintingBreak(arena,
 				event.getPainting(), event.getPainting().getType());
-	}
-
-	@EventHandler()
-	public void onSignChange(SignChangeEvent event) {
-		PVPArena.instance.getAmm().onSignChange(event);
 	}
 }

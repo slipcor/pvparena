@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -27,6 +28,68 @@ import org.bukkit.inventory.ItemStack;
 public class StringParser {
 
 	public static final Debug db = new Debug(4);
+
+	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
+	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
+	
+	public static String colorize(String toColor)
+    {
+    	// Removes color codes from a string
+        return toColor.replaceAll("&([a-zA-Z0-9])", "§$1").replace("&&", "&");
+    }
+	/**
+	 * color an integer if bigger than 0
+	 * 
+	 * @param timed
+	 *            the integer to color
+	 * @return a colored string
+	 */
+	public static String colorVar(int timed) {
+		return colorVar(String.valueOf(timed), timed > 0);
+	}
+
+	/**
+	 * color a boolean based on value
+	 * 
+	 * @param b
+	 *            the boolean to color
+	 * @return a colored string
+	 */
+	public static String colorVar(boolean b) {
+		return colorVar(String.valueOf(b), b);
+	}
+
+	public static String colorVar(double timed) {
+		return colorVar(String.valueOf(timed), timed > 0);
+	}
+
+	/**
+	 * color a string if set
+	 * 
+	 * @param s
+	 *            the string to color
+	 * @return a colored string
+	 */
+	public static String colorVar(String s) {
+		if (s == null || s.equals("") || s.equals("none")) {
+			return colorVar("null", false);
+		}
+		return colorVar(s, true);
+	}
+
+	/**
+	 * color a string based on a given boolean
+	 * 
+	 * @param s
+	 *            the string to color
+	 * @param b
+	 *            true:green, false:red
+	 * @return a colored string
+	 */
+	public static String colorVar(String s, boolean b) {
+		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
+				+ ChatColor.WHITE;
+	}
 
 	/**
 	 * calculate a color short from a color enum
@@ -57,55 +120,6 @@ public class StringParser {
 
 	public static ChatColor getChatColorFromWoolEnum(String color) {
 		return ChatColor.valueOf(parseDyeColorToChatColor(color, true));
-	}
-
-	public static String getWoolEnumFromChatColorEnum(String color) {
-		return parseDyeColorToChatColor(color, false);
-	}
-	
-	private static String parseDyeColorToChatColor(String color, boolean forward) {
-		
-		/**
-		 * wool colors:
-		 * ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY,
-		 * SILVER, PURPLE, BLUE, GREEN, RED, CYAN;
-		 * 
-		 * chat colors:
-		 * GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY,
-		 * GRAY, DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
-		 * 
-		 *     
-		 * 
-		 * both colors (ignore):
-		 * WHITE, YELLOW, BLACK
-		 * 
-		 * colors not being able to parse:
-		 * 
-		 * chat-AQUA, wool-brown
-		 */
-		String[] wool = new String[] {"ORANGE","MAGENTA","LIGHT_BLUE","LIME",
-				"PINK","GRAY","SILVER","PURPLE",
-				"BLUE","GREEN","RED","CYAN"};
-		String[] chat = new String[] {"GOLD","LIGHT_PURPLE","BLUE","GREEN",
-				"RED","DARK_GRAY","GRAY","DARK_PURPLE",
-				"DARK_BLUE","DARK_GREEN","DARK_RED","DARK_AQUA"};
-		
-		if (forward) {
-			for (int i = 0; i<wool.length; i++) {
-				if (color.equals(wool[i])) {
-					return chat[i];
-				}
-			}
-		} else {
-
-			for (int i = 0; i<chat.length; i++) {
-				if (color.equals(chat[i])) {
-					return wool[i];
-				}
-			}
-		}
-		
-		return color;
 	}
 
 	/**
@@ -202,99 +216,10 @@ public class StringParser {
 		return result;
 	}
 
-	/**
-	 * retrieve a material from a string
-	 * 
-	 * @param string
-	 *            the string to parse
-	 * @return the material
-	 */
-	private static Material parseMat(String string) {
-		db.i("parsing material: " + string);
-		Material mat;
-		try {
-			mat = Material.getMaterial(Integer.parseInt(string));
-			if (mat == null) {
-				mat = Material.getMaterial(string);
-			}
-		} catch (Exception e) {
-			mat = Material.getMaterial(string);
-		}
-		if (mat == null) {
-			db.w("unrecognized material: " + string);
-		}
-		return mat;
-	}
-
-	public static String parseArray(String[] args) {
-		String result = "";
-		for (String s : args) {
-			result += " " + s;
-		}
-		return result;
-	}
-
-	/**
-	 * color a string based on a given boolean
-	 * 
-	 * @param s
-	 *            the string to color
-	 * @param b
-	 *            true:green, false:red
-	 * @return a colored string
-	 */
-	public static String colorVar(String s, boolean b) {
-		return (b ? (ChatColor.GREEN + "") : (ChatColor.RED + "")) + s
-				+ ChatColor.WHITE;
-	}
-	
-	public static String colorize(String toColor)
-    {
-    	// Removes color codes from a string
-        return toColor.replaceAll("&([a-zA-Z0-9])", "§$1").replace("&&", "&");
-    }
-
-	/**
-	 * color a string if set
-	 * 
-	 * @param s
-	 *            the string to color
-	 * @return a colored string
-	 */
-	public static String colorVar(String s) {
-		if (s == null || s.equals("") || s.equals("none")) {
-			return colorVar("null", false);
-		}
-		return colorVar(s, true);
-	}
-
-	/**
-	 * color an integer if bigger than 0
-	 * 
-	 * @param timed
-	 *            the integer to color
-	 * @return a colored string
-	 */
-	public static String colorVar(int timed) {
-		return colorVar(String.valueOf(timed), timed > 0);
-	}
-
-	/**
-	 * color a boolean based on value
-	 * 
-	 * @param b
-	 *            the boolean to color
-	 * @return a colored string
-	 */
-	public static String colorVar(boolean b) {
-		return colorVar(String.valueOf(b), b);
-	}
-
-	public static String colorVar(double timed) {
-		return colorVar(String.valueOf(timed), timed > 0);
-	}
-
 	public static String getStringFromItemStacks(ItemStack[] isItems) {
+		if (isItems == null) {
+			return "AIR";
+		}
 		String[] s = new String[isItems.length];
 		
 		int i = 0;
@@ -325,12 +250,93 @@ public class StringParser {
 		return joinArray(s, ",");
 	}
 
+	public static String getWoolEnumFromChatColorEnum(String color) {
+		return parseDyeColorToChatColor(color, false);
+	}
+
 	public static String joinArray(Object[] array, String glue) {
 		String result = "";
 		for (Object o : array) {
 			result += glue + String.valueOf(o);
 		}
 		return result.substring(glue.length());
+	}
+
+	public static String joinSet(Set<?> set, String glue) {
+		String result = "";
+		for (Object o : set) {
+			result += glue + String.valueOf(o);
+		}
+		return result.substring(glue.length());
+	}
+	
+	private static String parseDyeColorToChatColor(String color, boolean forward) {
+		
+		/**
+		 * wool colors:
+		 * ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY,
+		 * SILVER, PURPLE, BLUE, GREEN, RED, CYAN;
+		 * 
+		 * chat colors:
+		 * GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY,
+		 * GRAY, DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
+		 * 
+		 *     
+		 * 
+		 * both colors (ignore):
+		 * WHITE, YELLOW, BLACK
+		 * 
+		 * colors not being able to parse:
+		 * 
+		 * chat-AQUA, wool-brown
+		 */
+		String[] wool = new String[] {"ORANGE","MAGENTA","LIGHT_BLUE","LIME",
+				"PINK","GRAY","SILVER","PURPLE",
+				"BLUE","GREEN","RED","CYAN"};
+		String[] chat = new String[] {"GOLD","LIGHT_PURPLE","BLUE","GREEN",
+				"RED","DARK_GRAY","GRAY","DARK_PURPLE",
+				"DARK_BLUE","DARK_GREEN","DARK_RED","DARK_AQUA"};
+		
+		if (forward) {
+			for (int i = 0; i<wool.length; i++) {
+				if (color.equals(wool[i])) {
+					return chat[i];
+				}
+			}
+		} else {
+
+			for (int i = 0; i<chat.length; i++) {
+				if (color.equals(chat[i])) {
+					return wool[i];
+				}
+			}
+		}
+		
+		return color;
+	}
+
+	/**
+	 * retrieve a material from a string
+	 * 
+	 * @param string
+	 *            the string to parse
+	 * @return the material
+	 */
+	private static Material parseMat(String string) {
+		db.i("parsing material: " + string);
+		Material mat;
+		try {
+			mat = Material.getMaterial(Integer.parseInt(string));
+			if (mat == null) {
+				mat = Material.getMaterial(string);
+			}
+		} catch (Exception e) {
+			mat = Material.getMaterial(string);
+		}
+		if (mat == null) {
+			db.w("unrecognized material: " + string);
+		}
+		return mat;
 	}
 
 	public static String[] shiftArrayBy(String[] args, int i) {
@@ -340,15 +346,4 @@ public class StringParser {
 		
 		return args;
 	}
-
-	public static String joinSet(HashSet<?> array, String glue) {
-		String result = "";
-		for (Object o : array) {
-			result += glue + String.valueOf(o);
-		}
-		return result.substring(glue.length());
-	}
-
-	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
-	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
 }

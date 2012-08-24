@@ -46,7 +46,7 @@ A PVP experience enhancing plugin.
 === Changelog
 
 * v0.9.0.0 - major organisation rewrite
-** <<<<< changes since v0.8.12.2 >>>>>
+** <<<<< changes since v0.8.12.5 >>>>>
 ** use NC-BukkitLib instead of NC-LoaderLib
 ** the region modules are not "Regions", they are "RegionShapes" ;)
 ** attach the chatting determination to the player, not to an arena
@@ -55,6 +55,7 @@ A PVP experience enhancing plugin.
 ** remove positions from the arena, attach to player
 ** enormous rewrite considering renaming, restructuring, improvements during 1.0 development
 ** intense command rewrite
+** <<<<< updated commits of v0.8.12.5 >>>>>
 
 -----------------------------------------------------------------------------------------------------------------------
 

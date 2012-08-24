@@ -7,20 +7,19 @@ import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -91,7 +90,7 @@ public class Arenas {
 			if (a.equals(arena))
 				continue;
 
-			if ((a.isFightInProgress()) && !Regions.checkRegion(a, arena)) {
+			if ((a.isFightInProgress()) && !ArenaRegion.checkRegion(a, arena)) {
 				return false;
 			}
 		}
@@ -115,6 +114,9 @@ public class Arenas {
 	 * @return an arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByName(String sName) {
+		if (sName == null || sName.equals("")) {
+			return null;
+		}
 		Arena a = arenas.get(sName);
 		if (a != null) {
 			return a;
@@ -135,17 +137,6 @@ public class Arenas {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * search the arenas by player
-	 * 
-	 * @param pPlayer
-	 *            the player to find
-	 * @return the arena instance if found, null otherwise
-	 */
-	public static synchronized Arena getArenaByPlayer(Player pPlayer) {
-		return ArenaPlayer.parsePlayer(pPlayer).getArena();
 	}
 
 	/**
@@ -189,21 +180,6 @@ public class Arenas {
 	}
 
 	/**
-	 * search the arenas by player
-	 * 
-	 * @param pPlayer
-	 *            the player to find
-	 * @return the arena name if found, null otherwise
-	 */
-	public static String getArenaNameByPlayer(Player pPlayer) {
-		for (Arena arena : arenas.values()) {
-			if (arena.isPartOf(pPlayer))
-				return arena.getName();
-		}
-		return null;
-	}
-	
-	/**
 	 * return the arenas
 	 * @return
 	 */
@@ -233,11 +209,7 @@ public class Arenas {
 	 * @return a string with all arena names joined with comma
 	 */
 	public static String getNames() {
-		String result = "";
-		for (String sName : arenas.keySet())
-			result += (result.equals("") ? "" : ", ") + sName;
-		db.i("arenas: " + result);
-		return result;
+		return StringParser.joinSet(arenas.keySet(), ", ");
 	}
 
 	/**
@@ -301,8 +273,6 @@ public class Arenas {
 		}
 		Config cfg = new Config(file);
 		
-		//TODO add reading of all Goals, return STRING if an error occured, null otherwise!
-		
 		cfg.load();
 		String arenaType = cfg.getString("general.type",
 				"please redo your arena");
@@ -357,7 +327,7 @@ public class Arenas {
 					String[] newArgs = null;
 					Arena a = arenas.get(sName);
 					if (sign.getLine(2) != null
-							&& Teams.getTeam(a, sign.getLine(2)) != null) {
+							&& a.getTeam(sign.getLine(2)) != null) {
 						newArgs = new String[1];
 						newArgs[0] = sign.getLine(2);
 					}
