@@ -6,11 +6,21 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena VERSION Command class</pre>
+ * 
+ * A command to display the plugin and module versions
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_Version extends PA__Command {
 
@@ -29,7 +39,7 @@ public class PAI_Version extends PA__Command {
 		}
 		HashSet<String> names = new HashSet<String>();
 		
-		for (Arena a : Arenas.getArenas()) {
+		for (Arena a : ArenaManager.getArenas()) {
 			names.add(a.getName());
 		}
 

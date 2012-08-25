@@ -9,11 +9,22 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.neworder.ArenaRegion;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
+import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionShape;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena REGION Command class</pre>
+ * 
+ * A command to manage arena regions
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Region extends PAA__Command {
 	
@@ -34,7 +45,7 @@ public class PAA_Region extends PAA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -43,19 +54,19 @@ public class PAA_Region extends PAA__Command {
 			
 			if (activeSelections.get(sender.getName()) != null) {
 				// already selecting!
-				arena.msg(sender, Language.parse("region.you_already", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.ERROR_REGION_YOUSELECT, arena.getName()));
 				return;
 			}
 			// selecting now!
-			arena.msg(sender, Language.parse("region.you_select", arena.getName()));
-			arena.msg(sender, Language.parse("region.select", arena.getName()));
+			arena.msg(sender, Language.parse(MSG.REGION_YOUSELECT, arena.getName()));
+			arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
 			return;
 		} else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
 			// usage: /pa {arenaname} region [regionname] border | check a region border
-			ArenaRegion region = arena.getRegion(args[0]);
+			ArenaRegionShape region = arena.getRegion(args[0]);
 			
 			if (region == null) {
-				arena.msg(sender, Language.parse("region.notfound", args[0]));
+				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
 				return;
 			}
 			region.showBorder((Player) sender);
@@ -65,7 +76,7 @@ public class PAA_Region extends PAA__Command {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 			
 			if (!ap.didValidSelection()) {
-				arena.msg(sender, Language.parse("region.select", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
 				return;
 			}
 			
@@ -73,22 +84,22 @@ public class PAA_Region extends PAA__Command {
 			RegionShape shape;
 			
 			if (args.length == 2) {
-				shape = ArenaRegion.getShapeFromShapeName(args[1]);
+				shape = ArenaRegionShape.getShapeFromShapeName(args[1]);
 			} else {
-				shape = ArenaRegion.RegionShape.CUBOID;
+				shape = ArenaRegionShape.RegionShape.CUBOID;
 			}
 			
-			ArenaRegion region = ArenaRegion.create(arena, args[0], shape, locs);
+			ArenaRegionShape region = ArenaRegionShape.create(arena, args[0], shape, locs);
 			
 			arena.addRegion(region);
 			arena.getArenaConfig().set("arenaregion." + args[0], Config.parseToString(region));
 			return;
 		}
 		
-		ArenaRegion region = arena.getRegion(args[0]);
+		ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
-			arena.msg(sender, Language.parse("region.notfound", args[0]));
+			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		

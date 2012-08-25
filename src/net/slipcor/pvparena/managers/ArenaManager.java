@@ -13,11 +13,12 @@ import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegion;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
+import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -28,22 +29,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
- * arena manager class
+ * <pre>Arena Manager class</pre>
  * 
- * -
- * 
- * provides access to the arenas, search them, trigger events, communication
- * etc.
+ * Provides static methods to manage Arenas
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.9.0
  */
 
-public class Arenas {
+public class ArenaManager {
 	private static Map<String, Arena> arenas = new HashMap<String, Arena>();
-	public static Debug db = new Debug(23);
+	public static Debug db = new Debug(24);
 
 	/**
 	 * check for arena end and commit it, if true
@@ -70,7 +67,7 @@ public class Arenas {
 	 * @return true if not set or player inside, false otherwise
 	 */
 	public static boolean checkJoin(Player player, Arena a) {
-		for (ArenaRegion region : a.getRegions()) {
+		for (ArenaRegionShape region : a.getRegions()) {
 			if (region.getType().equals(RegionType.JOIN)) {
 				return region.contains(new PABlockLocation(player.getLocation()));
 			}
@@ -90,7 +87,7 @@ public class Arenas {
 			if (a.equals(arena))
 				continue;
 
-			if ((a.isFightInProgress()) && !ArenaRegion.checkRegion(a, arena)) {
+			if ((a.isFightInProgress()) && !ArenaRegionShape.checkRegion(a, arena)) {
 				return false;
 			}
 		}
@@ -148,7 +145,7 @@ public class Arenas {
 	 */
 	public static Arena getArenaByRegionLocation(PABlockLocation location) {
 		for (Arena arena : arenas.values()) {
-			for (ArenaRegion region : arena.getRegions()) {
+			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location))
 					return arena;
 			}
@@ -159,7 +156,7 @@ public class Arenas {
 	public static Arena getArenaByProtectedRegionLocation(
 			PABlockLocation location, RegionProtection rp) {
 		for (Arena arena : arenas.values()) {
-			for (ArenaRegion region : arena.getRegions()) {
+			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location) && region.getProtections().contains(rp))
 					return arena;
 			}
@@ -170,7 +167,7 @@ public class Arenas {
 	public static HashSet<Arena> getArenasByRegionLocation(PABlockLocation location) {
 		HashSet<Arena> result = new HashSet<Arena>();
 		for (Arena arena : arenas.values()) {
-			for (ArenaRegion region : arena.getRegions()) {
+			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location)) {
 					result.add(arena);
 				}
@@ -232,7 +229,11 @@ public class Arenas {
 					} else {
 						System.out
 								.print("[PVP Arena] "
-										+ Language.parse("arenatypeunknown",
+										+ Language.parse(MSG.ERROR_GOAL_NOTFOUND,
+												error));
+						System.out
+								.print("[PVP Arena] "
+										+ Language.parse(MSG.GOAL_INSTALLING,
 												error));
 					}
 				}
@@ -332,8 +333,8 @@ public class Arenas {
 						newArgs[0] = sign.getLine(2);
 					}
 					if (a == null) {
-						Arenas.tellPlayer(player,
-								Language.parse("arenanotexists", sName));
+						ArenaManager.tellPlayer(player,
+								Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
 						return;
 					}
 					PAA__Command command = new PAG_Join();

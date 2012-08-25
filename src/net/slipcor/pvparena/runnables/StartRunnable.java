@@ -6,16 +6,13 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * arena start runnable class
+ * <pre>Arena Runnable class "Start"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to start the arena it belongs to
+ * An arena timer to start the arena
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.0
  */
 
 public class StartRunnable extends ArenaRunnable {

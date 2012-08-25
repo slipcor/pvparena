@@ -3,13 +3,17 @@ package net.slipcor.pvparena.classes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
+
 /**
+ * <pre>PVP Arena Location class</pre>
  * 
- * An own slim wrapper of the bukkit location, less precise
+ * A simple wrapper of the Bukkit Location, only calculating blocks
  * 
  * @author slipcor
- *
+ * 
+ * @version v0.9.0
  */
+
 public class PABlockLocation {
 	private final String world;
 	private int x;

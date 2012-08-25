@@ -12,13 +12,14 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Update;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Inventories;
-import net.slipcor.pvparena.managers.Statistics;
-import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.InventoriyManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
 import org.bukkit.ChatColor;
@@ -48,28 +49,23 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 /**
- * player listener class
- * 
- * -
- * 
- * PVP Arena Player Listener
+ * <pre>Player Listener class</pre>
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class PlayerListener implements Listener {
-	private static Debug db = new Debug(21);
+	private static Debug db = new Debug(23);
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
 		if (arena == null) {
 			return; // no fighting player => OUT
@@ -113,7 +109,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null || player.isOp()) {
 			return; // no fighting player => OUT
 		}
@@ -160,7 +156,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
 		if (!arena.getArenaConfig().getBoolean("protection.drop")) {
@@ -168,7 +164,7 @@ public class PlayerListener implements Listener {
 		}
 
 		db.i("onPlayerDropItem: fighting player");
-		arena.msg(player, (Language.parse("dropitem")));
+		arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
@@ -176,7 +172,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return;
 	
@@ -211,9 +207,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		commit.commitPlayerDeath(arena, player, doesRespawn, res.getError());
+		commit.commitPlayerDeath(arena, player, doesRespawn, res.getError(), event);
 		
-		Statistics.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
+		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
 		
 		if (!arena.getArenaConfig().getBoolean("allowDrops")) {
 			event.getDrops().clear();
@@ -239,7 +235,7 @@ public class PlayerListener implements Listener {
 			cause = ((EntityDamageEvent) eEvent);
 		}
 		//EntityListener.addBurningPlayer(player);
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
 		String playerName;
 		if (team != null) {
@@ -249,16 +245,16 @@ public class PlayerListener implements Listener {
 		}
 		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
-				"killedby",
+				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,
 				arena.parseDeathCause(player, cause.getCause(),
 						ArenaPlayer.getLastDamagingPlayer(cause))));
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean("game.allowDrops")) {
-			Inventories.drop(player);
+			InventoriyManager.drop(player);
 		}
-		if (ArenaPlayer.parsePlayer(player).getArenaClass() == null || !ArenaPlayer.parsePlayer(player).getArenaClass().getName().equalsIgnoreCase("custom")) {
-			Inventories.clearInventory(player);
+		if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null || !ArenaPlayer.parsePlayer(player.getName()).getArenaClass().getName().equalsIgnoreCase("custom")) {
+			InventoriyManager.clearInventory(player);
 		}
 
 		arena.tpPlayerToCoordName(player, "spectator");
@@ -304,11 +300,11 @@ public class PlayerListener implements Listener {
 				sKiller = damager.getName();
 				db.i("killer: " + sKiller);
 				
-				ArenaPlayer.parsePlayer(damager).addKill();
+				ArenaPlayer.parsePlayer(damager.getName()).addKill();
 			}
 		}
 
-		if (Arenas.checkAndCommit(arena))
+		if (ArenaManager.checkAndCommit(arena))
 			return;
 	}
 
@@ -327,7 +323,7 @@ public class PlayerListener implements Listener {
 		Arena arena = null;
 		
 		if (event.hasBlock()) {
-			arena = Arenas.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
+			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
 		}
 		
 		if (arena != null && PVPArena.instance.getAmm().onPlayerInteract(arena, event)) {
@@ -335,7 +331,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (ArenaRegion.checkRegionSetPosition(event, player)) {
+		if (ArenaRegionShape.checkRegionSetPosition(event, player)) {
 			db.i("returning: #2");
 			return;
 		}
@@ -345,10 +341,10 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		arena = ArenaPlayer.parsePlayer(player).getArena();
+		arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			db.i("returning: #4");
-			Arenas.trySignJoin(event, player);
+			ArenaManager.trySignJoin(event, player);
 			return;
 		}
 
@@ -359,7 +355,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
 
 		if (!ap.getStatus().equals(Status.FIGHT)) {
@@ -407,7 +403,7 @@ public class PlayerListener implements Listener {
 						mMat = Material.getMaterial(sMat);
 						db.i("mMat now is " + mMat.name());
 					} catch (Exception e2) {
-						Language.log_warning("matnotfound", sMat);
+						Language.log_warning(MSG.ERROR_MAT_NOT_FOUND, sMat);
 					}
 				}
 			}
@@ -429,18 +425,18 @@ public class PlayerListener implements Listener {
 				if (!arena.isFightInProgress() && arena.START_ID == -1) {
 
 					if (arena.getArenaConfig().getBoolean("join.forceEven", false)) {
-						if (!Teams.checkEven(arena)) {
-							arena.msg(player, Language.parse("waitequal"));
+						if (!TeamManager.checkEven(arena)) {
+							arena.msg(player, Language.parse(MSG.NOTICE_WAITING_EQUAL));
 							return; // even teams desired, not done => announce
 						}
 					}
 
-					if (!ArenaRegion.checkRegions(arena)) {
-						arena.msg(player, Language.parse("checkregionerror"));
+					if (!ArenaRegionShape.checkRegions(arena)) {
+						arena.msg(player, Language.parse(MSG.NOTICE_WAITING_FOR_ARENA));
 						return;
 					}
 
-					ArenaPlayer.parsePlayer(player).setStatus(Status.READY);
+					ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
 
 					String error = arena.ready();
 
@@ -460,7 +456,7 @@ public class PlayerListener implements Listener {
 				} else {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
-				ArenaPlayer.parsePlayer(player).setStatus(Status.FIGHT);
+				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.FIGHT);
 				PVPArena.instance.getAmm().lateJoin(arena, player);
 			}
 		}
@@ -474,7 +470,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		
 		ap.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
@@ -498,7 +494,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerKicked(PlayerKickEvent event) {
 		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
 		arena.playerLeave(player, "exit");
@@ -508,7 +504,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ap.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players and makes sure every player is an arenaplayer ^^
@@ -527,7 +523,7 @@ public class PlayerListener implements Listener {
 
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
 
@@ -537,7 +533,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
 		
@@ -547,10 +543,10 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		
 		if (arena == null) {
-			arena = Arenas.getArenaByRegionLocation(new PABlockLocation(event.getTo()));
+			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getTo()));
 			if (arena == null) {
 				return; // no fighting player and no arena location => OUT
 			}
@@ -564,7 +560,7 @@ public class PlayerListener implements Listener {
 
 		db.i("aimed location: " + event.getTo().toString());
 		
-		if (ArenaPlayer.parsePlayer(player).getTelePass()
+		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass()
 				|| player.hasPermission("pvparena.telepass"))
 			return; // if allowed => OUT
 		
@@ -579,7 +575,7 @@ public class PlayerListener implements Listener {
 
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
 		event.setCancelled(true); // cancel and tell
-		arena.msg(player, Language.parse("usepatoexit"));
+		arena.msg(player, Language.parse(MSG.NOTICE_NO_TELEPORT));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -589,7 +585,7 @@ public class PlayerListener implements Listener {
 
 		Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
 

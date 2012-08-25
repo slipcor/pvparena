@@ -24,6 +24,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 
+/**
+ * <pre>Metrics class</pre>
+ * 
+ * Accesses Hidendras Metrics
+ * 
+ * @author Hidendra
+ * 
+ * @version v0.9.0
+ */
+
 public class Metrics {
 	private static final int REVISION = 5;
 	private static final String BASE_URL = "http://mcstats.org";

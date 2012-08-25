@@ -6,33 +6,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import net.slipcor.pvparena.core.Language.MSG;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 /**
- * tracker class
+ * <pre>Tracker class</pre>
  * 
- * -
- * 
- * tracks plugin version
+ * phones home to www.slipcor.net, saving server IP and PVP Arena version
  * 
  * @author slipcor
  * 
- * @version v0.7.21
- * 
+ * @version v0.9.0
  */
 
 public class Tracker implements Runnable {
 	private static Plugin plugin;
 	private static int taskID = -1;
-	private static Debug db = new Debug(5);
+	private static Debug db = new Debug(18);
 
-	/**
-	 * construct a tracker instance
-	 * 
-	 * @param p
-	 *            the main plugin instance
-	 */
 	public Tracker(Plugin p) {
 		plugin = p;
 	}
@@ -82,7 +75,7 @@ public class Tracker implements Runnable {
 	 * start tracking
 	 */
 	public void start() {
-		Language.log_info("startTracker");
+		Language.log_info(MSG.LOG_TRACKER_ENABLED);
 		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this,
 				0L, 72000L);
 	}
@@ -91,7 +84,7 @@ public class Tracker implements Runnable {
 	 * stop tracking
 	 */
 	public static void stop() {
-		Language.log_info("stopTracker");
+		Language.log_info(MSG.LOG_TRACKER_DISABLED);
 		Bukkit.getScheduler().cancelTask(taskID);
 	}
 }

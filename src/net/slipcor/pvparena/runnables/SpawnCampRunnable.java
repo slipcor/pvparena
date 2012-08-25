@@ -6,16 +6,13 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * spawn camp runnable class
+ * <pre>Arena Runnable class "SpawnCamp"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to punish spawn camping
+ * An arena timer to punish spawn campers
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.0
  */
 
 public class SpawnCampRunnable implements Runnable {

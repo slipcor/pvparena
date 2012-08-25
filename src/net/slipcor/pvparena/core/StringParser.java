@@ -13,21 +13,18 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * string parser class
+ * <pre>String Parser class</pre>
  * 
- * -
- * 
- * parses strings to other objects
+ * provides methods to parse Objects to String and back
  * 
  * @author slipcor
  * 
- * @version v0.8.12
- * 
+ * @version v0.9.0
  */
 
 public class StringParser {
 
-	public static final Debug db = new Debug(4);
+	public static final Debug db = new Debug(17);
 
 	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
 	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
@@ -225,29 +222,31 @@ public class StringParser {
 		int i = 0;
 		
 		for (ItemStack is : isItems) {
-			if (is == null || is.getType().equals(Material.AIR)) {
-				s[i++] = "AIR";
-				continue;
-			}
-			String temp = is.getType().name();
-			if (is.getDurability() != 0) {
-				temp += "~" + String.valueOf(is.getDurability());
-			}
-			Map<Enchantment, Integer> enchants = is.getEnchantments();
-			
-			if (enchants != null && enchants.size() > 0) {
-				for (Enchantment e : enchants.keySet()) {
-					temp += "|" + String.valueOf(e.getId()) + "~" + enchants.get(e);
-				}
-			}
-			
-			if (is.getAmount() > 1) {
-				temp += ":" + is.getAmount();
-			}
-			s[i++] = temp; 
+			s[i++] = getStringFromItemStack(is); 
 		}
 		
 		return joinArray(s, ",");
+	}
+	public static String getStringFromItemStack(ItemStack is) {
+		if (is == null || is.getType().equals(Material.AIR)) {
+			return "AIR";
+		}
+		String temp = is.getType().name();
+		if (is.getDurability() != 0) {
+			temp += "~" + String.valueOf(is.getDurability());
+		}
+		Map<Enchantment, Integer> enchants = is.getEnchantments();
+		
+		if (enchants != null && enchants.size() > 0) {
+			for (Enchantment e : enchants.keySet()) {
+				temp += "|" + String.valueOf(e.getId()) + "~" + enchants.get(e);
+			}
+		}
+		
+		if (is.getAmount() > 1) {
+			temp += ":" + is.getAmount();
+		}
+		return temp;
 	}
 
 	public static String getWoolEnumFromChatColorEnum(String color) {

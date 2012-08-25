@@ -7,6 +7,16 @@ import java.util.HashSet;
 import net.slipcor.pvparena.arena.Arena;
 import org.bukkit.command.CommandSender;
 
+/**
+ * <pre>PVP Arena EDIT Command class</pre>
+ * 
+ * A command to toggle an arena's edit mode
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
 public class PAA_Edit extends PAA__Command {
 	
 	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();

@@ -7,21 +7,18 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * inventory manager class
+ * <pre>Inventory Manager class</pre>
  * 
- * -
- * 
- * provides commands to save win/lose stats to a yml file
+ * Provides static methods to manage Inventories
  * 
  * @author slipcor
  * 
- * @version v0.8.10
- * 
+ * @version v0.9.0
  */
 
-public class Inventories {
+public class InventoriyManager {
 
-	public static final Debug db = new Debug(30);
+	public static final Debug db = new Debug(26);
 
 	/**
 	 * fully clear a player's inventory

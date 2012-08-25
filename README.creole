@@ -75,11 +75,8 @@ A PVP experience enhancing plugin.
 * Map switch via WorldEdit (someone told me this would be damn quick .. :) )
 * intelligent and case insensitive arena guessing
 * rounds (best of X | X)
-* "Settings" => "PASet" (developer notice, ignore it :D )
 * commands when joining / leaving (console and/or by player)
 * new loader
-* allow other-world-spawns
-* flatfile inventories for restoring
 * join via position / portal / etc
 * [PVP Arena] [arenaname] -> format properly
 * arena welcome message per arena
@@ -93,6 +90,7 @@ A PVP experience enhancing plugin.
 * tournament arenas ; rounds switch through arenas
 * king of the hill -> FFAEN
 * IRC (announcements)
+* player relay (stick players into a dark room while: joining / being dead / having lost)
 
 -----------------------------------------------------------------------------------------------------------------------
 

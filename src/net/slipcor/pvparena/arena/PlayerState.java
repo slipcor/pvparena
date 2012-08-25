@@ -12,17 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 /**
- * player state class
+ * <pre>Arena Player State class</pre>
  * 
- * -
- * 
- * contains player state methods and variables in order to save and load a
- * player state
+ * Saves and loads player data before and after the match, respectively
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public final class PlayerState {
@@ -35,37 +31,40 @@ public final class PlayerState {
 	private int foodlevel;
 	private int gamemode;
 	private int health;
+	private int explevel;
 
 	private float exhaustion;
 	private float experience;
-	private int explevel;
 	private float saturation;
+	
 	private String displayname;
 	private Collection<PotionEffect> potionEffects;
 
 	public PlayerState(Player player) {
-		this.sPlayer = player.getName();
+		sPlayer = player.getName();
+		db.i("creating PlayerState of " + sPlayer);
 
-		this.fireticks = player.getFireTicks();
-		this.foodlevel = player.getFoodLevel();
-		this.gamemode = player.getGameMode().getValue();
-		this.health = player.getHealth();
+		fireticks = player.getFireTicks();
+		foodlevel = player.getFoodLevel();
+		gamemode = player.getGameMode().getValue();
+		health = player.getHealth();
 
-		this.exhaustion = player.getExhaustion();
-		this.experience = player.getExp();
-		this.explevel = player.getLevel();
-		this.saturation = player.getSaturation();
+		exhaustion = player.getExhaustion();
+		experience = player.getExp();
+		explevel = player.getLevel();
+		saturation = player.getSaturation();
 
-		this.potionEffects = player.getActivePotionEffects();
+		potionEffects = player.getActivePotionEffects();
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
 		if (ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
-			this.displayname = player.getDisplayName();
+			displayname = player.getDisplayName();
 		}
 	}
 
 	public void dump(YamlConfiguration cfg) {
+		db.i("backing up PlayerState of " + sPlayer);
 		cfg.set("state.fireticks", fireticks);
 		cfg.set("state.foodlevel", foodlevel);
 		cfg.set("state.gamemode", gamemode);
@@ -78,18 +77,19 @@ public final class PlayerState {
 	}
 
 	public void unload() {
-		Player player = Bukkit.getPlayer(sPlayer);
+		Player player = Bukkit.getPlayerExact(sPlayer);
 		
 		if (player == null) {
 			return;
 		}
+		db.i("restoring PlayerState of " + sPlayer);
 		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setHealth(health);
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
 		player.setHealth(health);
 		player.setSaturation(saturation);
@@ -116,6 +116,7 @@ public final class PlayerState {
 	}
 
 	public void reset() {
+		db.i("clearing PlayerState of " + sPlayer);
 		fireticks = 0;
 		foodlevel = 0;
 		gamemode = 0;
@@ -131,16 +132,15 @@ public final class PlayerState {
 
 	public static void removeEffects(Player player) {
 		for (PotionEffect pe : player.getActivePotionEffects()) {
-			//player.addPotionEffect(new PotionEffect(pe.getType(), 0, 0));
 			player.removePotionEffect(pe.getType());
 		}
 
 	}
 
 	public static PlayerState undump(YamlConfiguration cfg, String pName) {
+		db.i("restoring backed up PlayerState of " + pName);
 		PlayerState ps = new PlayerState(Bukkit.getPlayer(pName));
 		
-
 		ps.fireticks = cfg.getInt("state.fireticks", 0);
 		ps.foodlevel = cfg.getInt("state.foodlevel", 0);
 		ps.gamemode = cfg.getInt("state.gamemode", 0);

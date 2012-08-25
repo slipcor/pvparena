@@ -7,15 +7,25 @@ import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * <pre>PVP Arena SET Command class</pre>
+ * 
+ * A command to set config values
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
 public class PAA_Set extends PAA__Command {
 	private static HashMap<String, String> types = new HashMap<String, String>();
-
 
 	static {
 
@@ -162,7 +172,7 @@ public class PAA_Set extends PAA__Command {
 				}
 
 			} catch (Exception e) {
-				arena.msg(sender, Language.parse("error.numeric", args[0]));
+				arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[0]));
 			}
 			return;
 		}
@@ -206,16 +216,16 @@ public class PAA_Set extends PAA__Command {
 				arena.getArenaConfig().set(node, Boolean.valueOf(true));
 				arena.msg(
 						player,
-						Language.parse("set.done", node,
+						Language.parse(MSG.SET_DONE, node,
 								String.valueOf(value.equalsIgnoreCase("true"))));
 			} else if (value.equalsIgnoreCase("false")) {
 				arena.getArenaConfig().set(node, Boolean.valueOf(false));
 				arena.msg(
 						player,
-						Language.parse("set.done", node,
+						Language.parse(MSG.SET_DONE, node,
 								String.valueOf(value.equalsIgnoreCase("true"))));
 			} else {
-				arena.msg(player, Language.parse("error.argumenttype", value,
+				arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value,
 						"boolean (true|false)"));
 				return;
 			}
@@ -223,7 +233,7 @@ public class PAA_Set extends PAA__Command {
 			arena.getArenaConfig().set(node, String.valueOf(value));
 			arena.msg(
 					player,
-					Language.parse("set.done", node,
+					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(value)));
 		} else if (type.equals("int")) {
 			int i = 0;
@@ -231,13 +241,13 @@ public class PAA_Set extends PAA__Command {
 			try {
 				i = Integer.parseInt(value);
 			} catch (Exception e) {
-				arena.msg(player, Language.parse("error.numeric", value));
+				arena.msg(player, Language.parse(MSG.ERROR_NOT_NUMERIC, value));
 				return;
 			}
 			arena.getArenaConfig().set(node, i);
 			arena.msg(
 					player,
-					Language.parse("set.done", node,
+					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(i)));
 		} else if (type.equals("double")) {
 			double d = 0;
@@ -245,26 +255,26 @@ public class PAA_Set extends PAA__Command {
 			try {
 				d = Double.parseDouble(value);
 			} catch (Exception e) {
-				arena.msg(player, Language.parse("error.argumenttype", value,
+				arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value,
 						"double (e.g. 12.00)"));
 				return;
 			}
 			arena.getArenaConfig().set(node, d);
 			arena.msg(
 					player,
-					Language.parse("set.done", node,
+					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(d)));
 		} else if (type.equals("tp")) {
 			if (!value.equals("exit") && !value.equals("old")
 					&& !value.equals("spectator")) {
-				arena.msg(player, Language.parse("error.argumenttype", value,
+				arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value,
 						"tp (exit|old|spectator|...)"));
 				return;
 			}
 			arena.getArenaConfig().set(node, String.valueOf(value));
 			arena.msg(
 					player,
-					Language.parse("set.done", node,
+					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(value)));
 		} else if (type.equals("item")) {
 			try {
@@ -274,7 +284,7 @@ public class PAA_Set extends PAA__Command {
 						arena.getArenaConfig().set(node, mat.name());
 						arena.msg(
 								player,
-								Language.parse("set.done", node,
+								Language.parse(MSG.SET_DONE, node,
 										String.valueOf(mat.name())));
 					}
 				} catch (Exception e2) {
@@ -283,7 +293,7 @@ public class PAA_Set extends PAA__Command {
 					arena.getArenaConfig().set(node, mat.name());
 					arena.msg(
 							player,
-							Language.parse("set.done", node,
+							Language.parse(MSG.SET_DONE, node,
 									String.valueOf(mat.name())));
 				}
 				arena.getArenaConfig().save();
@@ -291,7 +301,7 @@ public class PAA_Set extends PAA__Command {
 			} catch (Exception e) {
 				// nothing
 			}
-			arena.msg(player, Language.parse("error.argumenttype", value,
+			arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, value,
 					"valid ENUM or item ID"));
 			return;
 		} else if (type.equals("items")) {
@@ -301,7 +311,7 @@ public class PAA_Set extends PAA__Command {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					arena.msg(player, Language.parse("error.argumenttype", String.valueOf(items[i]),
+					arena.msg(player, Language.parse(MSG.ERROR_ARGUMENT_TYPE, String.valueOf(items[i]),
 							"item"));
 					return;
 				}
@@ -310,16 +320,16 @@ public class PAA_Set extends PAA__Command {
 			arena.getArenaConfig().set(node, String.valueOf(value));
 			arena.msg(
 					player,
-					Language.parse("set.done", node,
+					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(value)));
 		} else {
 			arena.msg(
 					player,
-					Language.parse("set.unknown", node,
+					Language.parse(MSG.SET_UNKNOWN, node,
 							String.valueOf(value)));
 			arena.msg(
 					player,
-					Language.parse("set.help", node,
+					Language.parse(MSG.SET_HELP, node,
 							String.valueOf(value)));
 			return;
 		}

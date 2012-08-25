@@ -6,11 +6,21 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.managers.Inventories;
+import net.slipcor.pvparena.managers.InventoriyManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+/**
+ * <pre>Arena Runnable class "Inventory"</pre>
+ * 
+ * An arena timer to restore a player's inventory
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class InventoryRestoreRunnable implements Runnable {
 	private Arena arena;
@@ -31,12 +41,12 @@ public class InventoryRestoreRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getStatus().equals(Status.FIGHT)) {
 			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean("game.refillInventory")) {
 				ArenaClass.equip(player, items);
 			} else {
-				Inventories.clearInventory(player);
+				InventoriyManager.clearInventory(player);
 				ArenaPlayer.givePlayerFightItems(arena, player);
 			}
 		}

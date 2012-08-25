@@ -7,16 +7,13 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * player reset runnable class
+ * <pre>Arena Runnable class "PlayerReset"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to reset a player
+ * An arena timer to reset a player
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.9.0
  */
 
 public class PlayerResetRunnable implements Runnable {

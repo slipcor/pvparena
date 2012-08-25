@@ -13,25 +13,23 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 
 /**
- * statistics manager class
+ * <pre>Statistics Manager class</pre>
  * 
- * -
- * 
- * provides commands to save win/lose stats to a yml file
+ * Provides static methods to manage Statistics
  * 
  * @author slipcor
  * 
- * @version v0.7.17
- * 
+ * @version v0.9.0
  */
 
-public class Statistics {
-	public static final Debug db = new Debug(36);
+public class StatisticsManager {
+	public static final Debug db = new Debug(28);
 	private static File players;
 	private static YamlConfiguration config;
 
@@ -125,7 +123,7 @@ public class Statistics {
 			db.i("attacker is player: " + attacker.getName());
 			if (arena.hasPlayer(attacker)) {
 				db.i("attacker is in the arena, adding damage!");
-				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker);
+				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker.getName());
 				int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGE);
 				p.getStatistics(arena).incStat(type.DAMAGE, dmg);
 				if (dmg > maxdamage) {
@@ -133,7 +131,7 @@ public class Statistics {
 				}
 			}
 		}
-		ArenaPlayer p = ArenaPlayer.parsePlayer(defender);
+		ArenaPlayer p = ArenaPlayer.parsePlayer(defender.getName());
 
 		int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
 		p.getStatistics(arena).incStat(type.DAMAGETAKE, dmg);
@@ -200,7 +198,7 @@ public class Statistics {
 		db.i("getting stats: " + (a == null?"global":a.getName()) + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
 		
-		int count = (a == null)?ArenaPlayer.countPlayers():Teams.countPlayersInTeams(a);
+		int count = (a == null)?ArenaPlayer.countPlayers():TeamManager.countPlayersInTeams(a);
 		
 		ArenaPlayer[] aps = new ArenaPlayer[count];
 		
@@ -247,9 +245,9 @@ public class Statistics {
 		if (!players.exists()) {
 			try {
 				players.createNewFile();
-				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.filedone"));
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.STATS_FILE_DONE));
 			} catch (Exception e) {
-				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+				Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
 				e.printStackTrace();
 			}
 		}
@@ -257,7 +255,7 @@ public class Statistics {
 		try {
 			config.load(players);
 		} catch (Exception e) {
-			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse("stats.fileerror"));
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
 			e.printStackTrace();
 		}
 	}
@@ -287,10 +285,10 @@ public class Statistics {
 				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
 				Bukkit.getPluginManager().callEvent(kEvent);
 
-				ArenaPlayer.parsePlayer(attacker).addKill();
+				ArenaPlayer.parsePlayer(attacker.getName()).addKill();
 			}
 		}
-		ArenaPlayer.parsePlayer(defender).addDeath();
+		ArenaPlayer.parsePlayer(defender.getName()).addDeath();
 	}
 
 	/**

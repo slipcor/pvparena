@@ -10,10 +10,21 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+/**
+ * <pre>PVP Arena CLASS Command class</pre>
+ * 
+ * A command to manage arena classes
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Class extends PAA__Command {
 
@@ -34,7 +45,7 @@ public class PAA_Class extends PAA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 
@@ -49,7 +60,7 @@ public class PAA_Class extends PAA__Command {
 				} catch (Exception e) {
 
 				}
-				ArenaPlayer.parsePlayer(player).setArena(null);
+				ArenaPlayer.parsePlayer(player.getName()).setArena(null);
 				return;
 		}
 		
@@ -72,7 +83,7 @@ public class PAA_Class extends PAA__Command {
 			arena.getArenaConfig().set("classitems." + args[2], StringParser.getStringFromItemStacks(isItems));
 			arena.getArenaConfig().save();
 			arena.addClass(args[2], isItems);
-			Arena.pmsg(player, Language.parse("classsaved", args[2]));
+			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));
 		} else if (args[0].equalsIgnoreCase("load")) {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 			arena.selectClass(ap, args[1]);
@@ -81,7 +92,7 @@ public class PAA_Class extends PAA__Command {
 			arena.getArenaConfig().set("classitems." + args[2], null);
 			arena.getArenaConfig().save();
 			arena.removeClass(args[2]);
-			Arena.pmsg(player, Language.parse("classremoved", args[2]));
+			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));
 		}
 	}
 

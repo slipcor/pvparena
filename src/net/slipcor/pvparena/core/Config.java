@@ -9,7 +9,7 @@ import java.util.Set;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 import net.slipcor.pvparena.neworder.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
@@ -17,14 +17,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
+ * <pre>Configuration class</pre>
  * 
  * This Config wrapper improves access to config files by storing them in RAM
  * and providing quick, secured, access. Thanks a lot to garbagemule for
  * the start of this config.
  * 
  * @author slipcor
- *
+ * 
+ * @version v0.9.0
  */
+
 public class Config {
 	private YamlConfiguration config;
 	private File configFile;
@@ -451,7 +454,7 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(ArenaRegion region) {
+	public static String parseToString(ArenaRegionShape region) {
 		String[] result = new String[8];
 		result[0] = region.getWorldName();
 		result[1] = String.valueOf(region.getLocs()[0].getX());

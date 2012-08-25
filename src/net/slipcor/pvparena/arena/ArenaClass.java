@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,16 +12,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
- * arena class class
+ * <pre>Arena Class class</pre>
  * 
- * -
- * 
- * contains arena class methods and variables for quicker access
+ * contains Arena Class methods and variables for quicker access
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public final class ArenaClass {
@@ -71,11 +69,13 @@ public final class ArenaClass {
 	}
 	
 	public static void equip(Player player, ItemStack[] items) {
+		db.i("Equipping player " + player.getName() + " with items!");
 		for (ItemStack item : items) {
 			if (ARMORS_TYPE.contains(item.getType())) {
 				equipArmor(item, player.getInventory());
 			} else {
 				player.getInventory().addItem(new ItemStack[] { item });
+				db.i("- " + StringParser.getStringFromItemStack(item));
 			}
 		}
 	}
@@ -84,15 +84,8 @@ public final class ArenaClass {
 		equip(player, items);
 	}
 
-	/**
-	 * equip an armor item to the respective slot
-	 * 
-	 * @param stack
-	 *            the item to equip
-	 * @param inv
-	 *            the player's inventory
-	 */
 	private static void equipArmor(ItemStack stack, PlayerInventory inv) {
+		db.i("- " + StringParser.getStringFromItemStack(stack));
 		Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
 			inv.setHelmet(stack);
@@ -117,6 +110,4 @@ public final class ArenaClass {
 	public ItemStack[] getItems() {
 		return items;
 	}
-	
-	
 }

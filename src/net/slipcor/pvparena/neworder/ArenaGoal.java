@@ -26,25 +26,23 @@ import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * arena goal class
+ * <pre>Arena Goal class</pre>
  * 
- * -
- * 
- * defines a new arena goal for PVP Arena
+ * The framework for adding goals to an arena
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaGoal extends Loadable {
-	protected final static Debug db = new Debug(45);
+	protected static Debug db = new Debug(30);
 
 	/**
 	 * create an arena type instance
@@ -104,7 +102,7 @@ public class ArenaGoal extends Loadable {
 
 		ArenaTeam aTeam = null;
 
-		if (Teams.countActiveTeams(arena) > 1) {
+		if (TeamManager.countActiveTeams(arena) > 1) {
 			return false;
 		}
 
@@ -119,9 +117,9 @@ public class ArenaGoal extends Loadable {
 
 		if (aTeam != null) {
 			PVPArena.instance.getAmm().announceWinner(arena,
-					Language.parse("teamhaswon", "Team " + aTeam.getName()));
+					Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()));
 
-			arena.broadcast(Language.parse("teamhaswon", aTeam.getColor()
+			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ "Team " + aTeam.getName()));
 		}
 
@@ -240,14 +238,14 @@ public class ArenaGoal extends Loadable {
 
 	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
-			Language.parse("onlyplayers");
+			Language.parse(MSG.ERROR_ONLY_PLAYERS);
 			return;
 		}
 
 		Player player = (Player) sender;
 
 		if (args[0].startsWith("spawn") || args[0].equals("spawn")) {
-			arena.msg(sender, Language.parse("errorspawnfree", args[0]));
+			arena.msg(sender, Language.parse(MSG.ERROR_SPAWNFREE, args[0]));
 			return;
 		}
 
@@ -255,16 +253,16 @@ public class ArenaGoal extends Loadable {
 			String[] split = args[0].split("spawn");
 			String sName = split[0];
 			if (arena.getTeam(sName) == null) {
-				arena.msg(sender, Language.parse("arenateamunknown", sName));
+				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, sName));
 				return;
 			}
 
-			Spawns.setCoords(arena, player, args[0]);
-			arena.msg(player, Language.parse("setspawn", sName));
+			SpawnManager.setCoords(arena, player, args[0]);
+			arena.msg(player, Language.parse(MSG.SPAWN_SET, sName));
 		}
 
 		if (args[0].equals("lounge")) {
-			arena.msg(sender, Language.parse("errorloungefree", args[0]));
+			arena.msg(sender, Language.parse(MSG.ERROR_LOUNGEFREE, args[0]));
 			return;
 		}
 
@@ -272,12 +270,12 @@ public class ArenaGoal extends Loadable {
 			String[] split = args[0].split("lounge");
 			String sName = split[0];
 			if (arena.getTeam(sName) == null) {
-				arena.msg(sender, Language.parse("arenateamunknown", sName));
+				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, sName));
 				return;
 			}
 
-			Spawns.setCoords(arena, player, args[0]);
-			arena.msg(player, Language.parse("loungeset", sName));
+			SpawnManager.setCoords(arena, player, args[0]);
+			arena.msg(player, Language.parse(MSG.SPAWN_TEAMLOUNGE, sName));
 		}
 	}
 
@@ -363,24 +361,19 @@ public class ArenaGoal extends Loadable {
 	 */
 	public boolean isLoungesCommand(Arena arena, Player player, String cmd) {
 
-		if (!player.getWorld().getName().equals(arena.getWorld())) {
-			arena.msg(player, Language.parse("notsameworld", arena.getWorld()));
-			return true;
-		}
-
 		if (cmd.equalsIgnoreCase("lounge")) {
-			arena.msg(player, Language.parse("errorloungefree"));
+			arena.msg(player, Language.parse(MSG.ERROR_LOUNGEFREE));
 			return true;
 		}
 
 		if (cmd.endsWith("lounge")) {
 			String sTeam = cmd.replace("lounge", "");
 			if (arena.getTeam(sTeam) != null) {
-				Spawns.setCoords(arena, player, cmd);
-				arena.msg(player, Language.parse("setlounge", sTeam));
+				SpawnManager.setCoords(arena, player, cmd);
+				arena.msg(player, Language.parse(MSG.SPAWN_TEAMLOUNGE, sTeam));
 				return true;
 			}
-			arena.msg(player, Language.parse("invalidcmd", "506"));
+			arena.msg(player, Language.parse(MSG.ERROR_COMMAND_INVALID, "506"));
 			return true;
 		}
 		return false;
@@ -396,13 +389,9 @@ public class ArenaGoal extends Loadable {
 	 * @return true if an error occured
 	 */
 	public boolean isSpawnsCommand(Arena arena, Player player, String cmd) {
-		if (!player.getWorld().getName().equals(arena.getWorld())) {
-			arena.msg(player, Language.parse("notsameworld", arena.getWorld()));
-			return true;
-		}
 
 		if (cmd.startsWith("spawn") || cmd.equals("spawn")) {
-			arena.msg(player, Language.parse("errorspawnfree", cmd));
+			arena.msg(player, Language.parse(MSG.ERROR_SPAWNFREE, cmd));
 			return true;
 		}
 
@@ -413,14 +402,14 @@ public class ArenaGoal extends Loadable {
 				return false;
 			}
 
-			Spawns.setCoords(arena, player, cmd);
-			arena.msg(player, Language.parse("setspawn", sName));
+			SpawnManager.setCoords(arena, player, cmd);
+			arena.msg(player, Language.parse(MSG.SPAWN_SET, sName));
 			return true;
 		}
 
 		if (cmd.startsWith("powerup")) {
-			Spawns.setCoords(arena, player, cmd);
-			arena.msg(player, Language.parse("setspawn", cmd));
+			SpawnManager.setCoords(arena, player, cmd);
+			arena.msg(player, Language.parse(MSG.SPAWN_SET, cmd));
 			return true;
 		}
 		return false;

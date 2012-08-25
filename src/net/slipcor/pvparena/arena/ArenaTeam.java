@@ -9,16 +9,13 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 
 /**
- * arena team class
+ * <pre>Arena Team class</pre>
  * 
- * -
- * 
- * contains team methods and variables for quicker access
+ * contains Arena Team methods and variables for quicker access
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaTeam {
@@ -51,6 +48,7 @@ public class ArenaTeam {
 	 */
 	public void add(ArenaPlayer player) {
 		this.players.add(player);
+		db.i("Added player " + player.getName() + " to team " + name);
 	}
 
 	/**
@@ -110,7 +108,7 @@ public class ArenaTeam {
 	}
 
 	public boolean hasPlayer(Player p) {
-		return players.contains(ArenaPlayer.parsePlayer(p));
+		return players.contains(ArenaPlayer.parsePlayer(p.getName()));
 	}
 
 	/**

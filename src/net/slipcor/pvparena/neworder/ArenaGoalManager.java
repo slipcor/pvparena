@@ -22,26 +22,24 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * arena type manager class
+ * <pre>Arena Goal Manager class</pre>
  * 
- * -
- * 
- * loads arena types into PVP Arena
+ * Loads and manages arena goals
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaGoalManager {
 	private List<ArenaGoal> types;
 	private final Loader<ArenaGoal> loader;
-	protected Debug db = new Debug(52);
+	protected Debug db = new Debug(31);
 
 	/**
 	 * create an arena type instance
@@ -351,8 +349,8 @@ public class ArenaGoalManager {
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					if (winners.contains(p.getName())) {
 						PVPArena.instance.getAmm().announceWinner(arena,
-								Language.parse("playerhaswon", p.getName()));
-						arena.broadcast(Language.parse("playerhaswon", p.getName()));
+								Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
+						arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
 					} else {
 						if (!p.getStatus().equals(Status.FIGHT)) {
 							continue;
@@ -366,8 +364,8 @@ public class ArenaGoalManager {
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
 					PVPArena.instance.getAmm().announceWinner(arena,
-							Language.parse("teamhaswon", "Team " + team.getName()));
-					arena.broadcast(Language.parse("teamhaswon", team.getColor()
+							Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()));
+					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
 				} else {
 					for (ArenaPlayer p : team.getTeamMembers()) {

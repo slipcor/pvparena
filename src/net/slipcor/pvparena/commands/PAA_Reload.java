@@ -5,8 +5,19 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena RELOAD Command class</pre>
+ * 
+ * A command to reload an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Reload extends PAA__Command {
 
@@ -26,11 +37,11 @@ public class PAA_Reload extends PAA__Command {
 		
 		String name = arena.getName();
 		
-		Arenas.removeArena(arena);
+		ArenaManager.removeArena(arena);
 		arena = new Arena(name);
-		Arenas.loadArena(arena.getName());
+		ArenaManager.loadArena(arena.getName());
 		
-		arena.msg(sender, Language.parse("reload.done"));
+		arena.msg(sender, Language.parse(MSG.RELOAD_DONE));
 	}
 
 	@Override

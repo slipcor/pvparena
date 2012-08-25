@@ -4,9 +4,20 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 
-public class CuboidRegion extends ArenaRegion {
+/**
+ * <pre>Arena Region Shape class "cuboid"</pre>
+ * 
+ * Defines a cuboid region, including overlap checks and contain checks 
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
+public class CuboidRegion extends ArenaRegionShape {
 	
 	public CuboidRegion() {
 		super("cuboid");
@@ -14,12 +25,12 @@ public class CuboidRegion extends ArenaRegion {
 	
 	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {
 		super(arena, name, locs, "cuboid");
-		this.setShape(RegionShape.CUBOID);
+		db = new Debug(200);
 	}
 
 	@Override
 	public String version() {
-		return "v0.8.11.25";
+		return "v0.9.0.0";
 	}
 	
 	/**
@@ -58,7 +69,7 @@ public class CuboidRegion extends ArenaRegion {
 	}
 
 	@Override
-	public boolean overlapsWith(ArenaRegion paRegion) {
+	public boolean overlapsWith(ArenaRegionShape paRegion) {
 		if (paRegion.getShape().equals(RegionShape.CUBOID)) {
 			// compare 2 cuboids
 			if (locs[0].getX() > paRegion.getLocs()[1].getX()

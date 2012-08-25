@@ -9,11 +9,22 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena JOIN Command class</pre>
+ * 
+ * A command to join an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAG_Join extends PAA__Command {
 
@@ -32,7 +43,7 @@ public class PAG_Join extends PAA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -57,20 +68,20 @@ public class PAG_Join extends PAA__Command {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(sender, Language.parse("error.error", res.getError()));
+			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 			return;
 		}
 		
 		if (args.length < 1) {
 			// usage: /pa {arenaname} join | join an arena
 
-			args = new String[]{Teams.calcFreeTeam(arena)};
+			args = new String[]{TeamManager.calcFreeTeam(arena)};
 		}
 		
 		ArenaTeam team = arena.getTeam(args[0]);
 		
 		if (team == null) {
-			arena.msg(sender, Language.parse("join.teamnotfound", args[0]));
+			arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, args[0]));
 			return;
 		}
 		

@@ -9,11 +9,22 @@ import java.util.Set;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+/**
+ * <pre>PVP Arena UNINSTALL Command class</pre>
+ * 
+ * A command to uninstall modules
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Uninstall extends PA__Command {
 
@@ -58,20 +69,20 @@ public class PAA_Uninstall extends PA__Command {
 		if (ag != null) {
 			if (remove("pa_g_" + ag.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAgm().reload();
-				Arena.pmsg(sender, Language.parse("install.uninstalled",ag.getName()));
+				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,ag.getName()));
 				return;
 			}
-			Arena.pmsg(sender, Language.parse("install.uninstallerr",ag.getName()));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,ag.getName()));
 			return;
 		}
 		ArenaModule am = PVPArena.instance.getAmm().getModule(name);
 		if (am != null) {
 			if (remove("pa_m_" + am.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAmm().reload();
-				Arena.pmsg(sender, Language.parse("install.uninstalled",am.getName()));
+				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,am.getName()));
 				return;
 			}
-			Arena.pmsg(sender, Language.parse("install.uninstallerr",am.getName()));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,am.getName()));
 			return;
 		}
 	}

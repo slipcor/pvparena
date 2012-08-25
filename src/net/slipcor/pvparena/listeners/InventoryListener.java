@@ -3,7 +3,6 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Arenas;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,25 +10,21 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 /**
- * inventory listener class
- * 
- * -
- * 
- * PVP Arena Inventory Listener
+ * <pre>Inventory Listener class</pre>
  * 
  * @author slipcor
  * 
- * @version v0.7.25
- * 
+ * @version v0.9.0
  */
+
 public class InventoryListener implements Listener {
-	private Debug db = new Debug(19);
+	private Debug db = new Debug(22);
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player p = (Player) event.getWhoClicked();
 
-		Arena arena = ArenaPlayer.parsePlayer(p).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(p.getName()).getArena();
 
 		if (arena == null) {
 			return;

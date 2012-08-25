@@ -13,11 +13,11 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Inventories;
-import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.managers.Statistics;
-import net.slipcor.pvparena.managers.Statistics.type;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.InventoriyManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.StatisticsManager.type;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,16 +34,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 
 /**
- * player class
+ * <pre>Arena Player class</pre>
  * 
- * -
- * 
- * contains player methods and variables for quicker access
+ * contains Arena Player methods and variables for quicker access
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaPlayer {
@@ -81,21 +78,13 @@ public class ArenaPlayer {
 	}
 
 	private boolean chatting = false;
-	PABlockLocation[] selection = new PABlockLocation[2];
+	private PABlockLocation[] selection = new PABlockLocation[2];
 
 	public ArenaPlayer(String playerName) {
 		db.i("creating offline arena player: " + playerName);
 		name = playerName;
 	}
-
-	/**
-	 * create a PVP Arena player istance
-	 * 
-	 * @param p
-	 *            the bukkit player
-	 * @param a
-	 *            arena instance
-	 */
+	
 	public ArenaPlayer(Player p, Arena a) {
 		db.i("creating arena player: " + p.getName());
 
@@ -165,13 +154,13 @@ public class ArenaPlayer {
 	 *            the player to supply
 	 */
 	public static void givePlayerFightItems(Arena arena, Player player) {
-		ArenaPlayer ap = parsePlayer(player);
+		ArenaPlayer ap = parsePlayer(player.getName());
 
 		ArenaClass playerClass = ap.getArenaClass();
 		if (playerClass == null) {
 			return;
 		}
-		Inventories.db.i("giving items to player '" + player.getName()
+		InventoriyManager.db.i("giving items to player '" + player.getName()
 				+ "', class '" + playerClass.getName() + "'");
 
 		playerClass.equip(player);
@@ -179,7 +168,7 @@ public class ArenaPlayer {
 		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
 			ArenaTeam aTeam = ap.getArenaTeam();
 			String color = aTeam.getColor().name();
-			Inventories.db.i("forcing woolhead: " + aTeam.getName() + "/"
+			InventoriyManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
 					+ color);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
@@ -209,20 +198,13 @@ public class ArenaPlayer {
 	}
 
 	/**
-	 * get an ArenaPlayer from a player
+	 * get an ArenaPlayer from a player name
 	 * 
-	 * @param player
-	 *            the player to get
+	 * @param String
+	 *            the playername to use
 	 * @return an ArenaPlayer instance belonging to that player
 	 */
-	public static synchronized ArenaPlayer parsePlayer(Player player) {
-		if (totalPlayers.get(player.getName()) == null) {
-			totalPlayers.put(player.getName(), new ArenaPlayer(player, null));
-		}
-		return totalPlayers.get(player.getName());
-	}
-
-	public static ArenaPlayer parsePlayer(String name) {
+	public static synchronized ArenaPlayer parsePlayer(String name) {
 		if (totalPlayers.get(name) == null) {
 			if (Bukkit.getPlayerExact(name) == null) {
 				totalPlayers.put(name, new ArenaPlayer(name));
@@ -240,12 +222,12 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
-		Inventories.db.i("saving player inventory: " + player.getName());
+		InventoriyManager.db.i("saving player inventory: " + player.getName());
 
-		ArenaPlayer p = parsePlayer(player);
+		ArenaPlayer p = parsePlayer(player.getName());
 		p.savedInventory = player.getInventory().getContents().clone();
 		p.savedArmor = player.getInventory().getArmorContents().clone();
-		Inventories.clearInventory(player);
+		InventoriyManager.clearInventory(player);
 	}
 
 	/**
@@ -258,12 +240,12 @@ public class ArenaPlayer {
 		if (player == null) {
 			return;
 		}
-		Inventories.db.i("resetting inventory: " + player.getName());
+		InventoriyManager.db.i("resetting inventory: " + player.getName());
 		if (player.getInventory() == null) {
 			return;
 		}
 
-		ArenaPlayer p = parsePlayer(player);
+		ArenaPlayer p = parsePlayer(player.getName());
 
 		if (p.savedInventory == null) {
 			return;
@@ -273,18 +255,18 @@ public class ArenaPlayer {
 	}
 
 	public void addDeath() {
-		this.getStatistics(arena).incStat(Statistics.type.DEATHS);
+		this.getStatistics(arena).incStat(StatisticsManager.type.DEATHS);
 	}
 
 	public void addKill() {
-		this.getStatistics(arena).incStat(Statistics.type.KILLS);
+		this.getStatistics(arena).incStat(StatisticsManager.type.KILLS);
 	}
 
 	public void addLosses() {
-		this.getStatistics(arena).incStat(Statistics.type.LOSSES);
+		this.getStatistics(arena).incStat(StatisticsManager.type.LOSSES);
 	}
 
-	public void addStatistic(String arenaName, Statistics.type type, int i) {
+	public void addStatistic(String arenaName, StatisticsManager.type type, int i) {
 		if (!statistics.containsKey(arenaName)) {
 			statistics.put(arenaName, new PAStatMap(name));
 		}
@@ -293,7 +275,7 @@ public class ArenaPlayer {
 	}
 
 	public void addWins() {
-		this.getStatistics(arena).incStat(Statistics.type.WINS);
+		this.getStatistics(arena).incStat(StatisticsManager.type.WINS);
 	}
 
 	private void clearDump() {
@@ -473,14 +455,14 @@ public class ArenaPlayer {
 			return;
 		}
 
-		arena = Arenas.getArenaByName(cfg.getString("arena"));
+		arena = ArenaManager.getArenaByName(cfg.getString("arena"));
 		savedInventory = StringParser.getItemStacksFromString(cfg.getString(
 				"inventory", "AIR"));
 		savedArmor = StringParser.getItemStacksFromString(cfg.getString(
 				"armor", "AIR"));
 
 		if (arena != null) {
-			location = Spawns.getCoords(arena, "exit");
+			location = SpawnManager.getCoords(arena, "exit");
 
 			state = PlayerState.undump(cfg, name);
 		}
@@ -505,29 +487,29 @@ public class ArenaPlayer {
 			if (arena != null) {
 				String a = arena.getName();
 				cfg.set(a + "." + name + ".losses",
-						getStatistics().getStat(Statistics.type.LOSSES)
-								+ getTotalStatistics(Statistics.type.LOSSES));
+						getStatistics().getStat(StatisticsManager.type.LOSSES)
+								+ getTotalStatistics(StatisticsManager.type.LOSSES));
 				cfg.set(a + "." + name + ".wins",
-						getStatistics().getStat(Statistics.type.WINS)
-								+ getTotalStatistics(Statistics.type.WINS));
+						getStatistics().getStat(StatisticsManager.type.WINS)
+								+ getTotalStatistics(StatisticsManager.type.WINS));
 				cfg.set(a + "." + name + ".kills",
-						getStatistics().getStat(Statistics.type.KILLS)
-								+ getTotalStatistics(Statistics.type.KILLS));
+						getStatistics().getStat(StatisticsManager.type.KILLS)
+								+ getTotalStatistics(StatisticsManager.type.KILLS));
 				cfg.set(a + "." + name + ".deaths",
-						getStatistics().getStat(Statistics.type.DEATHS)
-								+ getTotalStatistics(Statistics.type.DEATHS));
+						getStatistics().getStat(StatisticsManager.type.DEATHS)
+								+ getTotalStatistics(StatisticsManager.type.DEATHS));
 				cfg.set(a + "." + name + ".damage",
-						getStatistics().getStat(Statistics.type.DAMAGE)
-								+ getTotalStatistics(Statistics.type.DAMAGE));
+						getStatistics().getStat(StatisticsManager.type.DAMAGE)
+								+ getTotalStatistics(StatisticsManager.type.DAMAGE));
 				cfg.set(a + "." + name + ".maxdamage",
-						getStatistics().getStat(Statistics.type.MAXDAMAGE)
-								+ getTotalStatistics(Statistics.type.MAXDAMAGE));
+						getStatistics().getStat(StatisticsManager.type.MAXDAMAGE)
+								+ getTotalStatistics(StatisticsManager.type.MAXDAMAGE));
 				cfg.set(a + "." + name + ".damagetake", getStatistics()
-						.getStat(Statistics.type.DAMAGETAKE)
-						+ getTotalStatistics(Statistics.type.DAMAGETAKE));
+						.getStat(StatisticsManager.type.DAMAGETAKE)
+						+ getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
 				cfg.set(a + "." + name + ".maxdamagetake", getStatistics()
-						.getStat(Statistics.type.MAXDAMAGETAKE)
-						+ getTotalStatistics(Statistics.type.MAXDAMAGETAKE));
+						.getStat(StatisticsManager.type.MAXDAMAGETAKE)
+						+ getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
 			}
 
 			cfg.save(file);
@@ -615,7 +597,7 @@ public class ArenaPlayer {
 		}
 	}
 
-	public void setStatistic(String arenaName, Statistics.type type, int i) {
+	public void setStatistic(String arenaName, StatisticsManager.type type, int i) {
 		if (!statistics.containsKey(arenaName)) {
 			statistics.put(arenaName, new PAStatMap(name));
 		}

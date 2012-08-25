@@ -6,7 +6,19 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena ENABLE Command class</pre>
+ * 
+ * A command to enable an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Enable extends PAA__Command {
 	
@@ -33,7 +45,7 @@ public class PAA_Enable extends PAA__Command {
 		arena.getArenaConfig().save();
 		arena.setLocked(false);
 		
-		arena.msg(sender, Language.parse("enable.done"));
+		arena.msg(sender, Language.parse(MSG.ARENA_ENABLE_DONE));
 	}
 
 	@Override

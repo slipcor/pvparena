@@ -7,12 +7,23 @@ import java.util.HashSet;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena INFO Command class</pre>
+ * 
+ * A command to display the active modules of an arena and settings
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_Info extends PAA__Command {
 
@@ -30,10 +41,10 @@ public class PAI_Info extends PAA__Command {
 			return;
 		}
 		
-		arena.msg(sender, Language.parse("info.head_headline", arena.getName(), arena.getPrefix()));
+		arena.msg(sender, Language.parse(MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix()));
 		
 		if (arena.isFreeForAll()) {
-			arena.msg(sender, Language.parse("info.head_teams", StringParser.joinSet(arena.getTeamNames(), ", ")));
+			arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNames(), ", ")));
 		}
 		
 		for (ArenaGoal goal : PVPArena.instance.getAgm().getTypes()) {
@@ -42,23 +53,23 @@ public class PAI_Info extends PAA__Command {
 			}
 			
 			if (!arena.getGoals().contains(goal)) {
-				arena.msg(sender, Language.parse("info.goal_inactive", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.INFO_GOAL_ACTIVE, arena.getName()));
 				goal.displayInfo(arena, sender);
 			} else {
-				arena.msg(sender, Language.parse("info.goal_inactive", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.INFO_GOAL_INACTIVE, arena.getName()));
 			}
 		}
 		
 		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 			if (mod.isActive(arena)) {
-				arena.msg(sender, Language.parse("info.mod_inactive", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.INFO_MOD_ACTIVE, arena.getName()));
 				mod.displayInfo(arena, sender);
 			} else {
-				arena.msg(sender, Language.parse("info.mod_inactive", arena.getName()));
+				arena.msg(sender, Language.parse(MSG.INFO_MOD_INACTIVE, arena.getName()));
 			}
 		}
 		
-		for (ArenaRegion reg : arena.getRegions()) {
+		for (ArenaRegionShape reg : arena.getRegions()) {
 			reg.displayInfo(sender);
 		}
 	}

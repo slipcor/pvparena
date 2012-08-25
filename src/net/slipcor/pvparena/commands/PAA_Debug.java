@@ -8,6 +8,16 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import org.bukkit.command.CommandSender;
 
+/**
+ * <pre>PVP Arena DEBUG Command class</pre>
+ * 
+ * A command to toggle debugging
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
 public class PAA_Debug extends PA__Command {
 
 	public PAA_Debug() {

@@ -6,16 +6,13 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * arena ending runnable class
+ * <pre>Arena Runnable class "End"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to end the arena it is running in
+ * An arena timer counting down to the end of an arena
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.9.0
  */
 
 public class EndRunnable extends ArenaRunnable {

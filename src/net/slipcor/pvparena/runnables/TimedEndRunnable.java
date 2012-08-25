@@ -7,16 +7,13 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * timed arena runnable class
+ * <pre>Arena Runnable class "TimedEnd"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to end the arena it is running in
+ * An arena timer to end the arena match after a certain amount of time
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.0
  */
 
 public class TimedEndRunnable extends ArenaRunnable {

@@ -8,16 +8,13 @@ import net.slipcor.pvparena.commands.PAG_Spectate;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * player reset runnable class
+ * <pre>Arena Runnable class "Warmup"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to warmup a player
+ * An arena timer to count down a warming up player
  * 
  * @author slipcor
  * 
- * @version v0.8.4
- * 
+ * @version v0.9.0
  */
 
 public class ArenaWarmupRunnable extends ArenaRunnable {

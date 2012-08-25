@@ -6,11 +6,22 @@ import java.util.HashSet;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.SpawnManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+
+/**
+ * <pre>PVP Arena TELEPORT Command class</pre>
+ * 
+ * A command to teleport to an arena spawn
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Teleport extends PAA__Command {
 
@@ -29,16 +40,16 @@ public class PAA_Teleport extends PAA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 
 		// usage: /pa {arenaname} teleport [spawnname] | tp to a spawn
 		
-		PALocation loc = Spawns.getCoords(arena, args[0]);
+		PALocation loc = SpawnManager.getCoords(arena, args[0]);
 		
 		if (loc == null) {
-			arena.msg(sender, Language.parse("spawn.unknown", args[0]));
+			arena.msg(sender, Language.parse(MSG.ERROR_SPAWN_UNKNOWN, args[0]));
 			return;
 		}
 		

@@ -3,23 +3,20 @@ package net.slipcor.pvparena.runnables;
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 
 /**
- * region runnable class
+ * <pre>Arena Runnable class "Region"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to commit region specific things
+ * An arena timer to commit region specific checks
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.0
  */
 
 public class RegionRunnable implements Runnable {
-	private final ArenaRegion r;
+	private final ArenaRegionShape r;
 	private Debug db = new Debug(49);
 	private int id;
 
@@ -29,7 +26,7 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(ArenaRegion paRegion) {
+	public RegionRunnable(ArenaRegionShape paRegion) {
 		this.r = paRegion;
 		db.i("RegionRunnable constructor");
 	}

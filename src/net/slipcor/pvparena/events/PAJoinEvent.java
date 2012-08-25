@@ -7,17 +7,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Join Event class</pre>
  * 
- * PVP Arena Join Event
- * 
- * -
- * 
- * is thrown when a player joins the arena
- * 
- * @version v0.7.8
+ * is called when a player joins the arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PAJoinEvent extends Event {

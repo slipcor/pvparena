@@ -7,17 +7,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Leave Event class</pre>
  * 
- * PVP Arena Leave Event
- * 
- * -
- * 
- * is thrown when a player leaves the arena
- * 
- * @version v0.7.8
+ * is called when a player leaves an arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PALeaveEvent extends Event {

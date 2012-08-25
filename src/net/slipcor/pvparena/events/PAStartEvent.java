@@ -5,17 +5,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Death Event class</pre>
  * 
- * PVP Arena Start Event
- * 
- * -
- * 
- * is thrown when an arena match starts
- * 
- * @version v0.7.8
+ * is called when an arena match starts
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PAStartEvent extends Event {

@@ -6,22 +6,19 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * api class
- * 
- * -
+ * <pre>API class</pre>
  * 
  * provides import lightweight access to PVP Arena methods
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class PVPArenaAPI {
@@ -36,7 +33,7 @@ public class PVPArenaAPI {
 	 */
 	public static String getArenaName(Player player) {
 		db.i("API: get arena of player: " + player.getName());
-		Arena arena = ArenaPlayer.parsePlayer(player).getArena();
+		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		return (arena == null) ? "" : arena.getName();
 	}
 
@@ -49,7 +46,7 @@ public class PVPArenaAPI {
 	 */
 	public static String getArenaNameByLocation(Location location) {
 		db.i("API: get arena of location: " + location.toString());
-		Arena arena = Arenas.getArenaByRegionLocation(new PABlockLocation(location));
+		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(location));
 		return (arena == null) ? "" : arena.getName();
 	}
 
@@ -62,7 +59,7 @@ public class PVPArenaAPI {
 	 */
 	public static HashSet<String> getArenaNamesByLocation(Location location) {
 		db.i("API: get arena of location: " + location.toString());
-		HashSet<Arena> arenas = Arenas.getArenasByRegionLocation(new PABlockLocation(location));
+		HashSet<Arena> arenas = ArenaManager.getArenasByRegionLocation(new PABlockLocation(location));
 		
 		HashSet<String> result = new HashSet<String>();
 		

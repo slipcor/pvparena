@@ -7,17 +7,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Kill Event class</pre>
  * 
- * PVP Arena Kill Event
- * 
- * -
- * 
- * is thrown when a player kills in the arena
- * 
- * @version v0.7.8
+ * is called when a player kills in the arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PAKillEvent extends Event {

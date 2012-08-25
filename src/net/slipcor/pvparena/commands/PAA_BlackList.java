@@ -7,10 +7,21 @@ import java.util.List;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.Material;
+
+/**
+ * <pre>PVP Arena BLACKLIST Command class</pre>
+ * 
+ * A command to toggle block blacklist entries
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_BlackList extends PAA__Command {
 	static HashSet<String> subCommands = new HashSet<String>();
@@ -45,34 +56,34 @@ public class PAA_BlackList extends PAA__Command {
 			if (args[0].equalsIgnoreCase("clear")) {
 				arena.getArenaConfig().set("blocks.blacklist", null);
 				arena.getArenaConfig().save();
-				arena.msg(sender, Language.parse("blacklist.allcleared"));
+				arena.msg(sender, Language.parse(MSG.BLACKLIST_ALLCLEARED));
 				return;
 			}
-			arena.msg(sender, Language.parse("blacklist.help"));
+			arena.msg(sender, Language.parse(MSG.BLACKLIST_HELP));
 			return;
 		} else if (args.length == 2) {
 			// usage: /pa {arenaname} blacklist [type] clear
 			if (!subTypes.contains(args[0].toLowerCase())) {
-				arena.msg(sender, Language.parse("blacklist.unknowntype", StringParser.joinSet(subTypes, "|")));
+				arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(subTypes, "|")));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("clear")) {
 				arena.getArenaConfig().set("blocks.blacklist", null);
 				arena.getArenaConfig().save();
-				arena.msg(sender, Language.parse("blacklist.allcleared"));
+				arena.msg(sender, Language.parse(MSG.BLACKLIST_ALLCLEARED));
 				return;
 			}
-			arena.msg(sender, Language.parse("blacklist.help"));
+			arena.msg(sender, Language.parse(MSG.BLACKLIST_HELP));
 			return;
 		}
 		
 		if (!subTypes.contains(args[0].toLowerCase())) {
-			arena.msg(sender, Language.parse("blacklist.unknowntype", StringParser.joinSet(subTypes, "|")));
+			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(subTypes, "|")));
 			return;
 		}
 		
 		if (!subCommands.contains(args[1].toLowerCase())) {
-			arena.msg(sender, Language.parse("blacklist.unknowncommand", StringParser.joinSet(subCommands, "|")));
+			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(subCommands, "|")));
 			return;
 		}
 		
@@ -83,9 +94,9 @@ public class PAA_BlackList extends PAA__Command {
 		
 		if (args[1].equalsIgnoreCase("add")) {
 			list.add(args[2]);
-			arena.msg(sender, Language.parse("blacklist.add", args[2], args[0].toLowerCase()));
+			arena.msg(sender, Language.parse(MSG.BLACKLIST_ADDED, args[2], args[0].toLowerCase()));
 		} else if (args[1].equalsIgnoreCase("show")) {
-			String output = Language.parse("blacklist.show", args[0].toLowerCase());
+			String output = Language.parse(MSG.BLACKLIST_SHOW, args[0].toLowerCase());
 			for (String s : list) {
 				output += ": " + Material.getMaterial(Integer.parseInt(s)).name();
 			}
@@ -95,7 +106,7 @@ public class PAA_BlackList extends PAA__Command {
 			arena.msg(sender, output);
 		} else {
 			list.remove(args[2]);
-			arena.msg(sender, Language.parse("blacklist.remove", args[2]));
+			arena.msg(sender, Language.parse(MSG.BLACKLIST_REMOVED, args[2]));
 		}
 		
 		arena.getArenaConfig().set("blocks.blacklist." + args[0].toLowerCase(), list);

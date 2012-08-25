@@ -9,6 +9,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * <pre>PVP Arena Win Event class</pre>
+ * 
+ * is called when a player wins an arena match
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
 public class PAWinEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private final Arena a;

@@ -9,7 +9,8 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,16 +21,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
- * <pre>
- * update manager class
+ * <pre>Update class</pre>
  * 
  * provides access to update check and methods
- * </pre>
  * 
  * @author slipcor
  * 
- * @version v0.8.10
- * 
+ * @version v0.9.0
  */
 
 public class Update extends Thread {
@@ -41,7 +39,7 @@ public class Update extends Thread {
 	private static String vOnline;
 	private static String vThis;
 	private static Plugin plugin;
-	private static Debug db = new Debug(6);
+	private static Debug db = new Debug(19);
 
 	public Update(Plugin p) {
 		plugin = p;
@@ -159,10 +157,10 @@ public class Update extends Thread {
 		}
 
 		if (outdated) {
-			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+			ArenaManager.tellPlayer(player, "You are using " + colorize("v" + vThis)
 					+ ", an outdated version! Latest: §a" + "v" + vOnline);
 		} else {
-			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+			ArenaManager.tellPlayer(player, "You are using " + colorize("v" + vThis)
 					+ ", an experimental version! Latest stable: §a" + "v"
 					+ vOnline);
 		}
@@ -173,17 +171,17 @@ public class Update extends Thread {
 		// b = announce update!
 		if (!message(p)) {
 			if (p != null) {
-				Arenas.tellPlayer(p, "[PVP Arena] You are on latest version!");
+				ArenaManager.tellPlayer(p, "[PVP Arena] You are on latest version!");
 			}
 			return;
 		}
 
 		if (p == null) {
 			System.out
-					.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
+					.print("http://dev.bukkit.org/server-mods/pvparena/files/");
 		} else {
-			Arenas.tellPlayer(p,
-					"http://dev.bukkit.org/server-mods/pvp-arena/files/");
+			ArenaManager.tellPlayer(p,
+					"http://dev.bukkit.org/server-mods/pvparena/files/");
 		}
 	}
 
@@ -196,7 +194,7 @@ public class Update extends Thread {
 
 				System.out.println("Downloading module update file...");
 				URL url = new URL(
-						"http://www.slipcor.net/public/mc/pafiles/install.yml");
+						"http://pa.slipcor.net/install.yml");
 				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 				FileOutputStream output = new FileOutputStream(lib);
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
@@ -212,12 +210,12 @@ public class Update extends Thread {
 	public void run() {
 		db.i("checking for updates");
 		if (!plugin.getConfig().getBoolean("updatecheck")) {
-			Language.log_info("notupdating");
+			Language.log_info(MSG.LOG_UPDATE_DISABLED);
 			return;
 		}
-		Language.log_info("updating");
+		Language.log_info(MSG.LOG_UPDATE_ENABLED);
 		try {
-			final URLConnection connection = new URL("http://bukget.org/api/plugin/pvp-arena").openConnection();
+			final URLConnection connection = new URL("http://bukget.org/api/plugin/pvparena").openConnection();
 	        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 	        final StringBuffer stringBuffer = new StringBuffer();
 	        String line;
@@ -232,7 +230,6 @@ public class Update extends Thread {
 	        for (int i = 0 ; i < array.size(); i++) {
 	        	JSONObject value = (JSONObject)array.get(i);
 	        	String type = (String) value.get("type");
-	        	//String link = (String) value.get("dl_link");
 	        	if (!type.equalsIgnoreCase("Release")) {
 	        		continue;
 	        	}

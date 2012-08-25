@@ -2,6 +2,16 @@ package net.slipcor.pvparena.commands;
 
 import org.bukkit.command.CommandSender;
 
+/**
+ * <pre>PVP Arena UPDATE Command class</pre>
+ * 
+ * A command to update modules
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
 public class PAA_Update extends PA__Command {
 
 	public PAA_Update() {

@@ -16,23 +16,20 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 
 /**
- * config manager class
+ * <pre>Configuration Manager class</pre>
  * 
- * -
- * 
- * provides access to the config file
+ * Provides static methods to manage Configurations
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.9.0
  */
 
-public class Configs {
-	private static Debug db = new Debug(26);
+public class ConfigurationManager {
+	private static Debug db = new Debug(25);
 
 	/**
 	 * create a config manager instance
@@ -212,7 +209,7 @@ public class Configs {
 			Map<String, Object> regs = config
 					.getConfigurationSection("regions").getValues(false);
 			for (String rName : regs.keySet()) {
-				ArenaRegion region = PVPArena.instance.getArsm().readRegionFromConfig(rName, config, arena);
+				ArenaRegionShape region = PVPArena.instance.getArsm().readRegionFromConfig(rName, config, arena);
 				
 				if (region == null) {
 					System.out.print("[SEVERE] Error while loading arena, region null: " + rName);

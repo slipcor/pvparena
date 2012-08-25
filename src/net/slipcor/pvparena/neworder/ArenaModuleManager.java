@@ -35,20 +35,17 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * arena module manager class
+ * <pre>Arena Module Manager class</pre>
  * 
- * -
- * 
- * loads arena modules into PVP Arena
+ * Loads and manages arena modules
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaModuleManager {
-	protected Debug db = new Debug(51);
+	protected Debug db = new Debug(33);
 	private List<ArenaModule> modules;
 	private final Loader<ArenaModule> loader;
 

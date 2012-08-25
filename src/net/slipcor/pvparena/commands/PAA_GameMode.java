@@ -5,8 +5,19 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena GAMEMODE Command class</pre>
+ * 
+ * A command to set the arena game mode
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_GameMode extends PAA__Command {
 
@@ -31,10 +42,10 @@ public class PAA_GameMode extends PAA__Command {
 		
 		if (args[0].toLowerCase().startsWith("free")) {
 			arena.setFree(true);
-			arena.msg(sender, Language.parse("gamemode.free"));
+			arena.msg(sender, Language.parse(MSG.GAMEMODE_FREE));
 		} else {
 			arena.setFree(false);
-			arena.msg(sender, Language.parse("gamemode.team"));
+			arena.msg(sender, Language.parse(MSG.GAMEMODE_TEAM));
 		}
 		
 	}

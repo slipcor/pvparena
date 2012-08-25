@@ -34,20 +34,17 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import com.nodinchan.ncbukkit.loader.Loadable;
 
 /**
- * arena module class
+ * <pre>Arena Module class</pre>
  * 
- * -
- * 
- * offers methods to hook into PVP Arena
+ * The framework for adding modules to an arena
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class ArenaModule extends Loadable {
-	protected Debug db = new Debug(46);
+	protected Debug db = new Debug(32);
 
 	/**
 	 * create an arena module instance

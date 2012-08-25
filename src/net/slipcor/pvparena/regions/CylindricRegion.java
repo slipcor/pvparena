@@ -4,16 +4,27 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.neworder.ArenaRegion;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.neworder.ArenaRegionShape;
 
-public class CylindricRegion extends ArenaRegion {
+/**
+ * <pre>Arena Region Shape class "cylindric"</pre>
+ * 
+ * Defines a cylindric region, including overlap checks and contain checks 
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
+public class CylindricRegion extends ArenaRegionShape {
 	public CylindricRegion() {
 		super("cylindric");
 	}
 	
 	public CylindricRegion(Arena arena, String name, PABlockLocation[] locs) {
 		super(arena, name, locs, "cylindric");
-		this.setShape(RegionShape.CYLINDRIC);
+		db = new Debug(201);
 	}
 
 	@Override
@@ -57,7 +68,7 @@ public class CylindricRegion extends ArenaRegion {
 	}
 
 	@Override
-	public boolean overlapsWith(ArenaRegion paRegion) {
+	public boolean overlapsWith(ArenaRegionShape paRegion) {
 		if (paRegion.getShape().equals(RegionShape.CUBOID)) {
 			// we are cylinder and search for intersecting cuboid
 

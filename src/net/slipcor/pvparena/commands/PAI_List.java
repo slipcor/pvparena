@@ -9,8 +9,19 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena LIST Command class</pre>
+ * 
+ * A command to display the players of an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_List extends PAA__Command {
 
@@ -49,7 +60,7 @@ public class PAI_List extends PAA__Command {
 			for (ArenaPlayer player : arena.getEveryone()) {
 				names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
 			}
-			arena.msg(sender, Language.parse("list.players", StringParser.joinSet(names, ", ")));
+			arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 			return;
 		}
 		
@@ -63,7 +74,7 @@ public class PAI_List extends PAA__Command {
 		}
 		
 		for (ArenaPlayer.Status stat : stats.keySet()) {
-			arena.msg(sender, Language.parse("list." + stat.name().toLowerCase(), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
+			arena.msg(sender, Language.parse(MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
 		}
 		
 	}

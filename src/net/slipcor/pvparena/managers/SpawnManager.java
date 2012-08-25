@@ -17,20 +17,17 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
- * spawn manager class
+ * <pre>Spawn Manager class</pre>
  * 
- * -
- * 
- * provides commands to deal with spawns
+ * Provides static methods to manage Spawns
  * 
  * @author slipcor
  * 
- * @version v0.8.2
- * 
+ * @version v0.9.0
  */
 
-public class Spawns {
-	private static Debug db = new Debug(35);
+public class SpawnManager {
+	private static Debug db = new Debug(27);
 
 	/**
 	 * get the location from a coord string
@@ -189,7 +186,7 @@ public class Spawns {
 		if (!arena.hasPlayer(player)) {
 			return false;
 		}
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
 		if (team == null) {
 			return false;

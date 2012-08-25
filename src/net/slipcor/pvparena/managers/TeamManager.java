@@ -14,22 +14,20 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
- * teams manager class
+ * <pre>Arena Team Manager class</pre>
  * 
- * -
- * 
- * provides commands to deal with teams
+ * Provides static methods to manage Arena Teams
  * 
  * @author slipcor
  * 
- * @version v0.7.15
- * 
+ * @version v0.9.0
  */
 
-public class Teams {
-	private static Debug db = new Debug(37);
+public class TeamManager {
+	private static Debug db = new Debug(29);
 
 	/**
 	 * calculate the team that needs players the most
@@ -156,10 +154,10 @@ public class Teams {
 
 		db.i("calculating player team");
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
-				arena.msg(player, Language.parse("alreadyjoined"));
+				arena.msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, team.getColoredName()));
 				return;
 			}
 		}

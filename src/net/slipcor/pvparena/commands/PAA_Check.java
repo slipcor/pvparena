@@ -5,8 +5,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Language;
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena CHECK Command class</pre>
+ * 
+ * A command to check an arena config
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Check extends PAA__Command {
 	
@@ -26,6 +35,7 @@ public class PAA_Check extends PAA__Command {
 			return;
 		}
 		
+		String s = "";
 		//TODO thoroughly check the config for errors
 	}
 

@@ -7,17 +7,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Death Event class</pre>
  * 
- * PVP Arena Death Event
- * 
- * -
- * 
- * is thrown when a player exits the arena any way
- * 
- * @version v0.7.19
+ * is called when a player exits the arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PAExitEvent extends Event {

@@ -5,10 +5,21 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena CREATE Command class</pre>
+ * 
+ * A command to create an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Create extends PA__Command {
 
@@ -23,7 +34,7 @@ public class PAA_Create extends PA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -33,10 +44,10 @@ public class PAA_Create extends PA__Command {
 		
 		// usage: /pa create [arenaname] {legacy_arenatype}
 		
-		Arena a = Arenas.getArenaByName(args[0]);
+		Arena a = ArenaManager.getArenaByName(args[0]);
 		
 		if (a != null) {
-			Arena.pmsg(sender, Language.parse("create.arenaexists", a.getName()));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_EXISTS, a.getName()));
 			return;
 		}
 		

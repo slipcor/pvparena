@@ -7,8 +7,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.neworder.ArenaRegion.RegionProtection;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,29 +28,23 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.painting.PaintingPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 /**
- * block listener class
- * 
- * -
- * 
- * PVP Arena Block Listener
+ * <pre>Block Listener class</pre>
  * 
  * @author slipcor
  * 
- * @version v0.8.9
- * 
+ * @version v0.9.0
  */
 
 public class BlockListener implements Listener {
-	private Debug db = new Debug(18);
+	private Debug db = new Debug(20);
 
 	private boolean willBeSkipped(boolean cancelled, Event event, Location loc, RegionProtection rp) {
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
 		if (arena == null) {
 			return true;
 		}
@@ -77,7 +71,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.BREAK);
 
 		if (isProtected(arena, event, "blockdamage")) {
@@ -117,7 +111,7 @@ public class BlockListener implements Listener {
 		if (event.isCancelled()) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.FIRE);
 		if (arena == null)
 			return; // no arena => out
@@ -139,7 +133,7 @@ public class BlockListener implements Listener {
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block decaying inside the arena");
 
@@ -158,7 +152,7 @@ public class BlockListener implements Listener {
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block fading inside the arena");
 		if (isProtected(arena, event, "fade")) {
@@ -175,7 +169,7 @@ public class BlockListener implements Listener {
 		}
 
 		Block block = event.getToBlock();
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block fluids inside the arena");
 
@@ -195,7 +189,7 @@ public class BlockListener implements Listener {
 		}
 
 		Block block = event.getBlock();
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
 		db.i("block block forming inside the arena");
 
@@ -216,7 +210,7 @@ public class BlockListener implements Listener {
 		Arena arena = null;
 
 		for (BlockState block : event.getBlocks()) {
-			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+			arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 			if (arena != null) {
 				break;
 			}
@@ -226,7 +220,7 @@ public class BlockListener implements Listener {
 			return; // no arena => out
 
 		for (BlockState block : event.getBlocks()) {
-			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
+			arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 			if (arena != null) {
 				continue;
 			}
@@ -244,7 +238,7 @@ public class BlockListener implements Listener {
 				.getLocation(), RegionProtection.FIRE)) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.FIRE);
 
 		db.i("block ignite inside the arena");
@@ -270,7 +264,7 @@ public class BlockListener implements Listener {
 		Arena arena = null;
 
 		for (Block block : event.getBlocks()) {
-			arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.PISTON);
+			arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.PISTON);
 			if (arena != null) {
 				if (isProtected(arena, event, "piston")) {
 					return;
@@ -296,7 +290,7 @@ public class BlockListener implements Listener {
 				.getLocation(), RegionProtection.PLACE)) {
 			return;
 		}
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.PLACE);
 
 		if (isProtected(arena, event, "blockplace")) {
@@ -349,7 +343,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.PAINTING);
 
 		db.i("painting place inside the arena");
@@ -369,7 +363,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByProtectedRegionLocation(new PABlockLocation(event.getPainting()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getPainting()
 				.getLocation()), RegionProtection.PAINTING);
 
 		if (isProtected(arena, event, "painting")) {

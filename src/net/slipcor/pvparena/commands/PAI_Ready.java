@@ -10,10 +10,21 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.neworder.ArenaModule;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena READY Command class</pre>
+ * 
+ * A command to ready up inside the arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_Ready extends PAA__Command {
 
@@ -35,7 +46,7 @@ public class PAI_Ready extends PAA__Command {
 		
 		if (!arena.hasPlayer(ap.get())) {
 
-			arena.msg(sender, Language.parse("command.notpartofarena"));
+			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
 		
@@ -46,11 +57,11 @@ public class PAI_Ready extends PAA__Command {
 			}
 			
 			if (ap.getArenaClass() == null) {
-				arena.msg(sender, Language.parse("command.noclass"));
+				arena.msg(sender, Language.parse(MSG.ERROR_READY_NOCLASS));
 				return;
 			}
 			ap.setStatus(Status.READY);
-			arena.msg(sender, Language.parse("ready.done"));
+			arena.msg(sender, Language.parse(MSG.READY_DONE));
 			
 			PACheckResult res = new PACheckResult();
 
@@ -74,7 +85,7 @@ public class PAI_Ready extends PAA__Command {
 			}
 			
 			if (res.hasError()) {
-				arena.msg(sender, Language.parse("error.error", res.getError()));
+				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 				return;
 			}
 			
@@ -94,7 +105,7 @@ public class PAI_Ready extends PAA__Command {
 				names.add("&a" + player.getName() + "&r");
 			}
 		}
-		arena.msg(sender, Language.parse("ready.players", StringParser.joinSet(names, ", ")));
+		arena.msg(sender, Language.parse(MSG.READY_LIST, StringParser.joinSet(names, ", ")));
 	}
 
 	@Override

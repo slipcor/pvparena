@@ -5,11 +5,17 @@ import java.util.HashSet;
 
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.core.Language;
-
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena STATS Command class</pre>
+ * 
+ * A command to display the player statistics
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_Stats extends PAA__Command {
 
@@ -29,6 +35,7 @@ public class PAI_Stats extends PAA__Command {
 		// arena can be null (general stats!)
 		
 		//TODO/// LAAAAATER
+		String s = "";
 	}
 
 	@Override

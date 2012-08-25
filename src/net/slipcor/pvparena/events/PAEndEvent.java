@@ -5,17 +5,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena End Event class</pre>
  * 
- * PVP Arena End Event
- * 
- * -
- * 
- * is thrown when an arena match ends
- * 
- * @version v0.7.8
+ * is called when an arena match ends
  * 
  * @author slipcor
  * 
+ * @version v0.9.0
  */
 
 public class PAEndEvent extends Event {

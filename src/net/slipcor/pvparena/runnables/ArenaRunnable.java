@@ -7,17 +7,28 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>Arena Runnable class</pre>
+ * 
+ * The interface for arena timers
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public abstract class ArenaRunnable implements Runnable {
 
 	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();
 	static {
-		String s = Language.parse("seconds");
-		String m = Language.parse("minutes");
+		String s = Language.parse(MSG.TIME_SECONDS);
+		String m = Language.parse(MSG.TIME_MINUTES);
 		messages.put(1, "1..");
 		messages.put(2, "2..");
 		messages.put(3, "3..");
@@ -39,8 +50,8 @@ public abstract class ArenaRunnable implements Runnable {
 		messages.put(3600, "60 " + m);
 	}
 	String message;
-	Integer count;
-	String player;
+	Integer seconds;
+	String sPlayer;
 	Arena arena;
 	Boolean global;
 	
@@ -56,18 +67,18 @@ public abstract class ArenaRunnable implements Runnable {
 	 */
 	public ArenaRunnable(String s, Integer i, Player player, Arena arena, Boolean global) {
 		this.message = s;
-		this.count = i;
-		this.player = player.getName();
+		this.seconds = i;
+		this.sPlayer = player.getName();
 		this.arena = arena;
 		this.global = global;
 		
 		id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this);
 	}
 	public void spam() {
-		if ((message == null) || (messages.get(count) == null)) {
+		if ((message == null) || (messages.get(seconds) == null)) {
 			return;
 		}
-		String message = count > 5 ? Language.parse(this.message, messages.get(count)) : messages.get(count);
+		String message = seconds > 5 ? Language.parse(MSG.getByNode(this.message), messages.get(seconds)) : messages.get(seconds);
 		if (global) {
 			Player[] players = Bukkit.getOnlinePlayers();
 			
@@ -78,12 +89,12 @@ public abstract class ArenaRunnable implements Runnable {
 							continue;
 						}
 					}
-					if (player != null) {
-						if (player.equals(p.getName())) {
+					if (sPlayer != null) {
+						if (sPlayer.equals(p.getName())) {
 							continue;
 						}
 					}
-					Arenas.tellPlayer(p, message);
+					ArenaManager.tellPlayer(p, message);
 				} catch (Exception e) {}
 			}
 			
@@ -92,8 +103,8 @@ public abstract class ArenaRunnable implements Runnable {
 		if (arena != null) {
 			HashSet<ArenaPlayer> players = arena.getFighters();
 			for (ArenaPlayer ap : players) {
-				if (player != null) {
-					if (ap.getName().equals(player)) {
+				if (sPlayer != null) {
+					if (ap.getName().equals(sPlayer)) {
 						continue;
 					}
 				}
@@ -103,8 +114,8 @@ public abstract class ArenaRunnable implements Runnable {
 			}
 			return;
 		}
-		if (Bukkit.getPlayer(player) != null) {
-			Arenas.tellPlayer(Bukkit.getPlayer(player), message);
+		if (Bukkit.getPlayer(sPlayer) != null) {
+			ArenaManager.tellPlayer(Bukkit.getPlayer(sPlayer), message);
 			return;
 		}
 		System.out.print("[PA-debug] " + message);
@@ -113,7 +124,7 @@ public abstract class ArenaRunnable implements Runnable {
 	@Override
 	public void run() {
 		spam();
-		if (count <= 0) {
+		if (seconds <= 0) {
 			commit();
 		} else {
 			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);

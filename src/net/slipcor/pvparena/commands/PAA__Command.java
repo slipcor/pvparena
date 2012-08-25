@@ -5,9 +5,20 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena ArenaCommand class</pre>
+ * 
+ * The abstract class of a command belonging to an arena, including perm check
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public abstract class PAA__Command {
 	public final String[] perms;
@@ -22,7 +33,7 @@ public abstract class PAA__Command {
 			return true;
 		}
 
-		String msg = Language.parse("error.invalid_argument_count",
+		String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
 				String.valueOf(args.length),
 				StringParser.joinSet(validCounts, "|"));
 

@@ -10,17 +10,18 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 /**
- * arena sign class
+ * <pre>PVP Arena Class Sign class</pre>
+ * 
+ * A sign displaying the players being part of the class
  * 
  * @author slipcor
  * 
- * @version v0.6.15
- * 
+ * @version v0.9.0
  */
 
 public class PAClassSign {
-	Location location;
-	private Debug db = new Debug(13);
+	PABlockLocation location;
+	private Debug db = new Debug(10);
 
 	/**
 	 * create an arena class sign instance
@@ -29,7 +30,7 @@ public class PAClassSign {
 	 *            the location the sign resides
 	 */
 	public PAClassSign(Location loc) {
-		location = loc;
+		location = new PABlockLocation(loc);
 		db.i("adding arena class sign: " + location.toString());
 		this.clear();
 	}
@@ -50,7 +51,7 @@ public class PAClassSign {
 	 */
 	public void clear() {
 		try {
-			Sign s = (Sign) location.getBlock().getState();
+			Sign s = (Sign) location.toLocation().getBlock().getState();
 			s.setLine(2, "");
 			s.setLine(3, "");
 			s.update();
@@ -65,7 +66,7 @@ public class PAClassSign {
 	 */
 	private void clearNext() {
 		try {
-			Sign s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+			Sign s = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
 					.getState();
 			s.setLine(0, "");
 			s.setLine(1, "");
@@ -99,14 +100,14 @@ public class PAClassSign {
 	 */
 	private void remove(String name) {
 		try {
-			Sign s = (Sign) location.getBlock().getState();
+			Sign s = (Sign) location.toLocation().getBlock().getState();
 			for (int i = 2; i < 4; i++) {
 				if (s.getLine(i) != null && s.getLine(i).equals(name)) {
 					s.setLine(i, "");
 				}
 			}
 			s.update();
-			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+			s = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
 					.getState();
 			for (int i = 0; i < 4; i++) {
 				if (s.getLine(i) != null && s.getLine(i).equals(name)) {
@@ -128,7 +129,7 @@ public class PAClassSign {
 	 */
 	private boolean setFreeLine(String name) {
 		try {
-			Sign s = (Sign) location.getBlock().getState();
+			Sign s = (Sign) location.toLocation().getBlock().getState();
 			for (int i = 2; i < 4; i++) {
 				if (s.getLine(i) == null || s.getLine(i).equals("")) {
 					s.setLine(i, name);
@@ -136,7 +137,7 @@ public class PAClassSign {
 					return true;
 				}
 			}
-			s = (Sign) location.getBlock().getRelative(BlockFace.DOWN)
+			s = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
 					.getState();
 			for (int i = 0; i < 4; i++) {
 				if (s.getLine(i) == null || s.getLine(i).equals("")) {

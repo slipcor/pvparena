@@ -15,6 +15,7 @@ import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Tracker;
 import net.slipcor.pvparena.core.Update;
@@ -22,8 +23,8 @@ import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Statistics;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
@@ -42,16 +43,13 @@ import org.json.simple.parser.JSONParser;
 import com.nodinchan.ncbukkit.NCBL;
 
 /**
- * main class
- * 
- * -
+ * <pre>Main Plugin class</pre>
  * 
  * contains central elements like plugin handlers and listeners
  * 
  * @author slipcor
  * 
  * @version v0.9.0
- * 
  */
 
 public class PVPArena extends JavaPlugin {
@@ -152,6 +150,7 @@ public class PVPArena extends JavaPlugin {
 		PA__Command pacmd = PA__Command.getByName(args[0]);
 
 		if (pacmd != null) {
+			db.i("committing: " + pacmd.getName());
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
@@ -159,19 +158,21 @@ public class PVPArena extends JavaPlugin {
 		if (args[0].equalsIgnoreCase("-s")
 				|| args[0].toLowerCase().contains("stats")) {
 			PAI_Stats scmd = new PAI_Stats();
+			db.i("committing: " + scmd.getName());
 			scmd.commit(null, sender, new String[0]);
 			return true;
 		}
 
-		Arena a = Arenas.getArenaByName(args[0]);
+		Arena a = ArenaManager.getArenaByName(args[0]);
 
 		if (a == null) {
-			Arena.pmsg(sender, Language.parse("arena.notfound", args[0]));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, args[0]));
 			return true;
 		}
 
 		PAA__Command paacmd = PAA__Command.getByName(args[1]);
 		if (paacmd != null) {
+			db.i("committing: " + paacmd.getName());
 			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 2));
 			return true;
 		}
@@ -181,9 +182,9 @@ public class PVPArena extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		Arenas.reset(true);
+		ArenaManager.reset(true);
 		Tracker.stop();
-		Language.log_info("disabled", getDescription().getFullName());
+		Language.log_info(MSG.LOG_PLUGIN_DISABLED, getDescription().getFullName());
 	}
 
 	@Override
@@ -219,13 +220,13 @@ public class PVPArena extends JavaPlugin {
 			saveConfig();
 		}
 
-		Statistics.initialize();
+		StatisticsManager.initialize();
 
 		Debug.load(this, Bukkit.getConsoleSender());
-		Arenas.load_arenas();
+		ArenaManager.load_arenas();
 		new Update(this);
 
-		if (Arenas.count() > 0) {
+		if (ArenaManager.count() > 0) {
 
 			Tracker trackMe = new Tracker(this);
 			trackMe.start();
@@ -243,7 +244,7 @@ public class PVPArena extends JavaPlugin {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
 				Metrics.Graph acg = metrics.createGraph("Arena count");
-				acg.addPlotter(new WrapPlotter("count", Arenas.getArenas()
+				acg.addPlotter(new WrapPlotter("count", ArenaManager.getArenas()
 						.size()));
 
 				metrics.start();
@@ -255,7 +256,7 @@ public class PVPArena extends JavaPlugin {
 
 		amm.onEnable();
 
-		Language.log_info("enabled", getDescription().getFullName());
+		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
 	}
 
 	/**

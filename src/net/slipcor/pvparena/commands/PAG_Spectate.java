@@ -8,10 +8,21 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena SPECTATE Command class</pre>
+ * 
+ * A command to join an arena as spectator
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAG_Spectate extends PAA__Command {
 
@@ -30,7 +41,7 @@ public class PAG_Spectate extends PAA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -58,7 +69,7 @@ public class PAG_Spectate extends PAA__Command {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(sender, Language.parse("error.error", res.getError()));
+			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 			return;
 		}
 		

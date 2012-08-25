@@ -11,12 +11,23 @@ import java.util.Set;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+/**
+ * <pre>PVP Arena INSTALL Command class</pre>
+ * 
+ * A command to install modules
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_Install extends PA__Command {
 
@@ -64,10 +75,10 @@ public class PAA_Install extends PA__Command {
 				if (key.equalsIgnoreCase(args[1])) {
 					if (download("pa_g_" + key + ".jar")) {
 						PVPArena.instance.getAgm().reload();
-						Arena.pmsg(sender, Language.parse("install.installed",key));
+						Arena.pmsg(sender, Language.parse(MSG.INSTALL_DONE,key));
 						return;
 					}
-					Arena.pmsg(sender, Language.parse("install.installerr",key));
+					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL,key));
 					return;
 				}
 			}
@@ -79,10 +90,10 @@ public class PAA_Install extends PA__Command {
 				if (key.equalsIgnoreCase(args[1])) {
 					if (download("pa_m_" + key + ".jar")) {
 						PVPArena.instance.getAmm().reload();
-						Arena.pmsg(sender, Language.parse("install.installed",key));
+						Arena.pmsg(sender, Language.parse(MSG.INSTALL_DONE,key));
 						return;
 					}
-					Arena.pmsg(sender, Language.parse("install.installerr",key));
+					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL,key));
 					return;
 				}
 			}

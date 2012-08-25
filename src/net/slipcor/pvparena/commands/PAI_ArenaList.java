@@ -6,10 +6,21 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
+
+/**
+ * <pre>PVP Arena ARENALIST Command class</pre>
+ * 
+ * A command to display the available arenas
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAI_ArenaList extends PA__Command {
 
@@ -28,11 +39,11 @@ public class PAI_ArenaList extends PA__Command {
 		}
 		HashSet<String> names = new HashSet<String>();
 		
-		for (Arena a : Arenas.getArenas()) {
+		for (Arena a : ArenaManager.getArenas()) {
 			names.add(a.getName());
 		}
 		
-		Arena.pmsg(sender, Language.parse("arenalist.arenalist", StringParser.joinSet(names, "&r, &a")));
+		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, "&r, &a")));
 	}
 
 	@Override

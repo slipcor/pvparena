@@ -1,12 +1,22 @@
 package net.slipcor.pvparena.commands;
 
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+/**
+ * <pre>PVP Arena AUTOSETUP Command class</pre>
+ * 
+ * A command to automatically setup an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
 
 public class PAA_AutoSetup extends PA__Command {
 	public static String active = null;
@@ -23,34 +33,34 @@ public class PAA_AutoSetup extends PA__Command {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse("command.onlyplayers"));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
 		Player player = (Player) sender;
 		
 		if (active != null && !active.equals(player.getName())) {
-			Arena.pmsg(player, Language.parse("autosetup.running", active));
+			Arena.pmsg(player, Language.parse(MSG.ERROR_AUTOSETUP_RUNNING, active));
 			return;
 		}
 		
 		// setup running, and we are the player!
 
-		String sAutomatic = Language.parse("autosetup.automatic");
-		String sManual = Language.parse("autosetup.manual");
+		String sAutomatic = Language.parse(MSG.AUTOSETUP_AUTOMATIC);
+		String sManual = Language.parse(MSG.AUTOSETUP_MANUAL);
 		
 		if (active == null) {
 			// first start. Announce welcome and first question
 			active = player.getName();
-			Arena.pmsg(player, Language.parse("autosetup.welcome"));
-			Arena.pmsg(player, Language.parse("autosetup.automanual", sAutomatic, sManual));
+			Arena.pmsg(player, Language.parse(MSG.AUTOSETUP_WELCOME));
+			Arena.pmsg(player, Language.parse(MSG.AUTOSETUP_AUTOMANUAL, sAutomatic, sManual));
 			return;
 		}
 		
 		if (manual == null) {
 			if ((args.length == 1) && (args[0].equals(sAutomatic) || args[0].equals(sManual))) {
 				manual = args[0].equals(sManual);
-				Arena.pmsg(player, Language.parse("autosetup.modeselected", args[0]));
+				Arena.pmsg(player, Language.parse(MSG.AUTOSETUP_MODESELECTED, args[0]));
 				
 				if (manual) {
 					
@@ -61,7 +71,7 @@ public class PAA_AutoSetup extends PA__Command {
 				}
 				return;
 			}
-			Arena.pmsg(player, Language.parse("autosetup.automanual", sAutomatic, sManual));
+			Arena.pmsg(player, Language.parse(MSG.AUTOSETUP_AUTOMANUAL, sAutomatic, sManual));
 			return;
 		}
 		
@@ -78,14 +88,16 @@ public class PAA_AutoSetup extends PA__Command {
 		// /pa create default
 		cmd.commit(p, new String[]{"default"});
 		
-		Arena a = Arenas.getArenaByName("default");
+		Arena a = ArenaManager.getArenaByName("default");
 		
 		PAA__Command acmd = new PAA_Region();
 		
 		// /pa default region
 		acmd.commit(a, p, new String[]{});
 		
-		//TODOsome day call all functions to setup
+		String s = "";
+		
+		//TODO some day call all functions to setup
 		// battlefield
 		//   shape: cuboid
 		//   height: 16 blocks

@@ -12,10 +12,11 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Spawns;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.regions.CuboidRegion;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 
@@ -32,8 +33,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.nodinchan.ncbukkit.loader.Loadable;
 
-public abstract class ArenaRegion extends Loadable {
-	private static Debug db = new Debug(111);
+/**
+ * <pre>Arena Region Shape class</pre>
+ * 
+ * The framework for adding region shapes to an arena
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.0
+ */
+
+public abstract class ArenaRegionShape extends Loadable {
+	protected static Debug db = new Debug(34);
 	protected String world;
 	private Arena arena;
 	private String name;
@@ -147,7 +158,7 @@ public abstract class ArenaRegion extends Loadable {
 			return true;
 		db.i("checking regions");
 
-		return Arenas.checkRegions(arena);
+		return ArenaManager.checkRegions(arena);
 	}
 
 	/**
@@ -175,24 +186,24 @@ public abstract class ArenaRegion extends Loadable {
 			// - player has admin perms
 			// - player has wand in hand
 			db.i("modify&adminperms&wand");
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				ap.setSelection(event.getClickedBlock().getLocation(), false);
-				arena.msg(player, Language.parse("pos1"));
+				arena.msg(player, Language.parse(MSG.REGION_POS1));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				ap.setSelection(event.getClickedBlock().getLocation(), true);
-				arena.msg(player, Language.parse("pos2"));
+				arena.msg(player, Language.parse(MSG.REGION_POS2));
 				return true; // right click => pos2
 			}
 		}
 		return false;
 	}
 
-	public static ArenaRegion create(Arena arena, String name,
+	public static ArenaRegionShape create(Arena arena, String name,
 			RegionShape shape, PABlockLocation[] locs) {
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
@@ -225,14 +236,14 @@ public abstract class ArenaRegion extends Loadable {
 		if (joinRange < 1)
 			return false;
 		if (arena.getRegion("battlefield") == null) {
-			return Spawns.getRegionCenter(arena).getDistance(
+			return SpawnManager.getRegionCenter(arena).getDistance(
 					new PABlockLocation(player.getLocation())) > joinRange;
 		}
 		return arena.getRegion("battlefield").tooFarAway(joinRange,
 				player.getLocation());
 	}
 
-	public ArenaRegion(Arena arena, String name, PABlockLocation[] locs) {
+	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs) {
 		super("cuboid");
 		this.setName(name);
 		this.world = locs[0].getWorldName();
@@ -240,7 +251,7 @@ public abstract class ArenaRegion extends Loadable {
 		this.setArena(arena);
 	}
 
-	public ArenaRegion(Arena arena, String name, PABlockLocation[] locs,
+	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs,
 			String shape) {
 		super("cuboid");
 		this.setName(name);
@@ -251,7 +262,7 @@ public abstract class ArenaRegion extends Loadable {
 		this.shape = ArenaRegionShapeManager.getShapeByName(shape);
 	}
 
-	public ArenaRegion(String regionShape) {
+	public ArenaRegionShape(String regionShape) {
 		super(regionShape);
 		world = null;
 		locs = new PABlockLocation[2];
@@ -265,7 +276,7 @@ public abstract class ArenaRegion extends Loadable {
 
 	public abstract PABlockLocation getMinimumLocation();
 
-	public abstract boolean overlapsWith(ArenaRegion other);
+	public abstract boolean overlapsWith(ArenaRegionShape other);
 
 	public abstract void showBorder(Player player);
 
@@ -431,19 +442,19 @@ public abstract class ArenaRegion extends Loadable {
 			try {
 				h = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse("error.numeric", value); // TODO lang
+				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
 			}
 
 			getLocs()[0].setY(getCenter().getY() - (h >> 1));
 			getLocs()[1].setY(getLocs()[0].getY() + h);
 
-			return Language.parse("region.height", value); // TODO lang
+			return Language.parse(MSG.REGION_HEIGHT, value);
 		} else if (key.toLowerCase().equals("radius")) {
 			int r = 0;
 			try {
 				r = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse("error.numeric", value); // TODO lang
+				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
 			}
 
 			PABlockLocation loc = getCenter();
@@ -456,13 +467,14 @@ public abstract class ArenaRegion extends Loadable {
 			getLocs()[1].setY(loc.getY() + r);
 			getLocs()[1].setZ(loc.getZ() + r);
 
-			return Language.parse("region.radius", value); // TODO lang
+			return Language.parse(MSG.REGION_RADIUS, value);
 		} else if (key.toLowerCase().equals("position")) {
-			return null; // TODO FIX!
+			return null; // TODO insert function to align the arena based on a position setting.
+			//TODO see SETUP.creole
 		}
 
-		return Language.parse("error.argument", key,
-				"height | radius | position"); // TODO lang
+		return Language.parse(MSG.ERROR_ARGUMENT, key,
+				"height | radius | position");
 	}
 
 	public void setArena(Arena arena) {
@@ -486,7 +498,7 @@ public abstract class ArenaRegion extends Loadable {
 			PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
 			if (flags.contains(RegionFlag.DEATH)) {
 				if (this.contains(pLoc)) {
-					Arenas.tellPlayer(ap.get(), Language.parse("deathregion"));
+					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
 					arena.playerLeave(ap.get(), "lose");
 					PALoseEvent e = new PALoseEvent(arena, ap.get());
 					Bukkit.getPluginManager().callEvent(e);
@@ -538,8 +550,8 @@ public abstract class ArenaRegion extends Loadable {
 				if (this.contains(pLoc)) {
 					Location loc = playerNameLocations.get(ap.getName());
 					if (loc == null) {
-						Arenas.tellPlayer(ap.get(),
-								Language.parse("nocampregion"));
+						ArenaManager.tellPlayer(ap.get(),
+								Language.parse(MSG.NOTICE_YOU_NOCAMP));
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
 							ap.get().damage(
@@ -559,7 +571,7 @@ public abstract class ArenaRegion extends Loadable {
 				}
 
 				if (!this.contains(pLoc)) {
-					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), "exit");
 				}
 			}
@@ -574,7 +586,7 @@ public abstract class ArenaRegion extends Loadable {
 				}
 
 				if (!this.contains(pLoc)) {
-					Arenas.tellPlayer(ap.get(), Language.parse("youescaped"));
+					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), "exit");
 				}
 			}

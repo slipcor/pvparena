@@ -4,11 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
+ * <pre>PVP Arena Location class</pre>
  * 
- * An own slim wrapper of the bukkit location
+ * A simple wrapper of the Bukkit Location
  * 
  * @author slipcor
- *
+ * 
+ * @version v0.9.0
  */
 
 public class PALocation {
