@@ -168,7 +168,7 @@ public class ConfigurationManager {
 		config.addDefault("ready.autoclass", "none");
 		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
 
-		PVPArena.instance.getAgm().addDefaultTeams(arena, config);
+		PVPArena.instance.getAgm().setDefaults(arena, config);
 
 		config.options().copyDefaults(true);
 
@@ -231,12 +231,12 @@ public class ConfigurationManager {
 			db.i("added team " + team.getName() + " => "
 					+ team.getColorCodeString());
 		}
+		cfg.save();
 
-		PVPArena.instance.getAgm().configParse(arena);
-
+		PVPArena.instance.getAgm().configParse(arena, config);
 		PVPArena.instance.getAmm().configParse(arena, config);
 		
-		cfg.save();
+		cfg.reloadMaps();
 
 		arena.setPrefix(cfg.getString("general.prefix", "PVP Arena"));
 	}
@@ -268,10 +268,10 @@ public class ConfigurationManager {
 			return "spectator not set";
 		if (!list.contains("exit"))
 			return "exit not set";
-		String error = PVPArena.instance.getAmm().checkSpawns(arena, list);
+		String error = PVPArena.instance.getAmm().checkForMissingSpawns(arena, list);
 		if (error != null) {
 			return error;
 		}
-		return PVPArena.instance.getAgm().checkSpawns(arena, list);
+		return PVPArena.instance.getAgm().checkForMissingSpawns(arena, list);
 	}
 }

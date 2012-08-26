@@ -9,16 +9,13 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.InventoriyManager;
-import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.neworder.ArenaRegionShape;
 import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
@@ -176,46 +173,9 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return;
 	
-		boolean doesRespawn = true;
-		
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkPlayerDeath(arena, player);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			// lives
-			if (res.getError().equals("0")) {
-				doesRespawn = false;
-			}
-		}
-		
-		if (commit == null) {
-			return;
-		}
-		
-		commit.commitPlayerDeath(arena, player, doesRespawn, res.getError(), event);
-		
-		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
-		
-		if (!arena.getArenaConfig().getBoolean("allowDrops")) {
-			event.getDrops().clear();
-		}
-		event.setDeathMessage(null);
+		PVPArena.instance.getAgm().onPlayerDeath(arena, player, event);
 	}
+	
 	/**
 	 * pretend a player death
 	 * 
@@ -226,7 +186,7 @@ public class PlayerListener implements Listener {
 	 * @param eEvent
 	 *            the event triggering the death
 	 */
-	public static void commitPlayerDeath(Arena arena, Player player, Event eEvent) {
+	public static void finallyKillPlayer(Arena arena, Player player, Event eEvent) {
 		EntityDamageEvent cause = null;
 
 		if (eEvent instanceof EntityDeathEvent) {
@@ -234,27 +194,26 @@ public class PlayerListener implements Listener {
 		} else if (eEvent instanceof EntityDamageEvent) {
 			cause = ((EntityDamageEvent) eEvent);
 		}
-		//EntityListener.addBurningPlayer(player);
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
-		String playerName;
-		if (team != null) {
-			playerName = team.colorizePlayer(player);
-		} else {
-			playerName = player.getName();
-		}
+		
+		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
+		
 		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,
 				arena.parseDeathCause(player, cause.getCause(),
 						ArenaPlayer.getLastDamagingPlayer(cause))));
+		
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean("game.allowDrops")) {
-			InventoriyManager.drop(player);
+			InventoryManager.drop(player);
 		}
+		
 		if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null || !ArenaPlayer.parsePlayer(player.getName()).getArenaClass().getName().equalsIgnoreCase("custom")) {
-			InventoriyManager.clearInventory(player);
+			InventoryManager.clearInventory(player);
 		}
 
 		arena.tpPlayerToCoordName(player, "spectator");
@@ -264,7 +223,6 @@ public class PlayerListener implements Listener {
 		
 		arena.prepare(player, true, true);
 		
-		PVPArena.instance.getAgm().checkEntityDeath(arena, player);
 		new PlayerResetRunnable(ap,0, player.getLocation());
 		//TODO - timer is inactive - if this works, timer can just ... die
 		
@@ -336,7 +294,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (ArenaGoal.checkSetFlag(event.getClickedBlock(), player)) {
+		if (PVPArena.instance.getAgm().checkSetFlag(player, event.getClickedBlock())) {
 			db.i("returning: #3");
 			return;
 		}

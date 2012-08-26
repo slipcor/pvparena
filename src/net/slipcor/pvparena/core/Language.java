@@ -3,6 +3,7 @@ package net.slipcor.pvparena.core;
 import java.io.File;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.StatisticsManager;
 
 import org.bukkit.Bukkit;
@@ -151,6 +152,7 @@ public class Language {
 		
 		FIGHT_BEGINS("nulang.fight.begins", "Let the fight begin!"),
 		FIGHT_KILLED_BY_REMAINING("nulang.fight.killedbyremaining", "%1% has been killed by %2%! %3% lives remaining."),
+		FIGHT_KILLED_BY_REMAINING_TEAM("nulang.fight.killedbyremaining", "%1% has been killed by %2%! %3% lives remaining for %4%."),
 		FIGHT_KILLED_BY("nulang.fight.killedby", "%1% has been killed by %2%!"),
 		FIGHT_PLAYER_LEFT("nulang.fight.playerleft", "%1% has left the fight!"),
 		
@@ -338,9 +340,6 @@ public class Language {
 			config.addDefault(m.getNode(), m.toString());
 		}
 		
-		PVPArena.instance.getAmm().initLanguage(config);
-		PVPArena.instance.getAgm().initLanguage(config);
-
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);
@@ -464,6 +463,14 @@ public class Language {
 	public static String parse(MSG m, String arg1, String arg2, String arg3) {
 		String var = m.toString().replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
+		return StringParser.colorize(var.replace("%1%", arg1));
+	}
+
+	public static String parse(MSG m, String arg1,
+			String arg2, String arg3, String arg4) {
+		String var = m.toString().replace("%2%", arg2);
+		var = var.replace("%3%", arg3);
+		var = var.replace("%4%", arg4);
 		return StringParser.colorize(var.replace("%1%", arg1));
 	}
 }

@@ -14,7 +14,7 @@ import net.slipcor.pvparena.classes.PAStatMap;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.InventoriyManager;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
@@ -160,7 +160,7 @@ public class ArenaPlayer {
 		if (playerClass == null) {
 			return;
 		}
-		InventoriyManager.db.i("giving items to player '" + player.getName()
+		InventoryManager.db.i("giving items to player '" + player.getName()
 				+ "', class '" + playerClass.getName() + "'");
 
 		playerClass.equip(player);
@@ -168,7 +168,7 @@ public class ArenaPlayer {
 		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
 			ArenaTeam aTeam = ap.getArenaTeam();
 			String color = aTeam.getColor().name();
-			InventoriyManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
+			InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
 					+ color);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
@@ -222,12 +222,12 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void prepareInventory(Arena arena, Player player) {
-		InventoriyManager.db.i("saving player inventory: " + player.getName());
+		InventoryManager.db.i("saving player inventory: " + player.getName());
 
 		ArenaPlayer p = parsePlayer(player.getName());
 		p.savedInventory = player.getInventory().getContents().clone();
 		p.savedArmor = player.getInventory().getArmorContents().clone();
-		InventoriyManager.clearInventory(player);
+		InventoryManager.clearInventory(player);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class ArenaPlayer {
 		if (player == null) {
 			return;
 		}
-		InventoriyManager.db.i("resetting inventory: " + player.getName());
+		InventoryManager.db.i("resetting inventory: " + player.getName());
 		if (player.getInventory() == null) {
 			return;
 		}

@@ -23,7 +23,7 @@ import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.InventoriyManager;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.neworder.ArenaGoal;
@@ -194,7 +194,7 @@ public class Arena {
 				}
 			}
 		}
-		InventoriyManager.clearInventory(player);
+		InventoryManager.clearInventory(player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getArena() == null) {
 			System.out.print("[PA-debug] failed to set class " + className
@@ -852,7 +852,7 @@ public class Arena {
 		}
 
 		if (!sClass.equalsIgnoreCase("custom")) {
-			InventoriyManager.clearInventory(player);
+			InventoryManager.clearInventory(player);
 			ArenaPlayer.reloadInventory(this, player);
 		}
 		
@@ -874,7 +874,7 @@ public class Arena {
 	 * @param lives
 	 *            the lives to set and display
 	 */
-	public void respawnPlayer(Player player, int lives, DamageCause cause,
+	public void respawnPlayer(Player player, DamageCause cause,
 			Entity damager) {
 		db.i("respawning player " + player.getName());
 		playersetHealth(player, getArenaConfig().getInt("start.health", 0));
@@ -891,12 +891,9 @@ public class Arena {
 			return;
 		}
 
-		PVPArena.instance.getAgm().parseRespawn(this, player, team, lives,
-				cause, damager);
-
 		PlayerState.removeEffects(player);
 
-		PVPArena.instance.getAmm().parseRespawn(this, player, team, lives,
+		PVPArena.instance.getAmm().parseRespawn(this, player, team,
 				cause, damager);
 
 		player.setFireTicks(0);
@@ -1141,6 +1138,6 @@ public class Arena {
 
 	public void getLegacyGoals(String string) {
 		// TODO Auto-generated method stub
-
+		String s = "";
 	}
 }

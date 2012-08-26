@@ -428,7 +428,7 @@ public class ArenaModule extends Loadable {
 	}
 
 	public void parseRespawn(Arena arena, Player player, ArenaTeam team,
-			int lives, DamageCause cause, Entity damager) {
+			DamageCause cause, Entity damager) {
 	}
 
 	public void parseSpectate(Arena arena, Player player) {

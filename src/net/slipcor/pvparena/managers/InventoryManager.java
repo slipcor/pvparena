@@ -16,7 +16,7 @@ import net.slipcor.pvparena.core.Debug;
  * @version v0.9.0
  */
 
-public class InventoriyManager {
+public class InventoryManager {
 
 	public static final Debug db = new Debug(26);
 

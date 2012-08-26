@@ -53,7 +53,7 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 	
 	@Override
-	public void addDefaultTeams(Arena arena, YamlConfiguration config) {
+	public void setDefaults(Arena arena, YamlConfiguration config) {
 		if (arena.getArenaConfig().get("teams.free") != null) {
 			arena.getArenaConfig().set("teams",null);
 		}
@@ -72,25 +72,32 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 	}
 
-	@Override
-	public void addSettings(Arena arena, HashMap<String, String> types) {
-	}
 
-	@Override
-	public boolean allowsJoinInBattle(Arena arena) {
-		return false;
-	}
+	public PACheckResult checkEnd(Arena arena, PACheckResult res) {
+		int priority = 2;
+		
+		if (res.getPriority() > 2) {
+			return res;
+		}
+		
+		int count = TeamManager.countActiveTeams(arena);
 
+		if (count == 1) {
+			res.setPriority(priority); // yep. only one team left. go!
+		} else if (count == 0) {
+			res.setError("No teams playing!");
+		}
+
+		return res;
+
+	}
+	
 	@Override
-	public boolean checkAndCommit(Arena arena) {
+	public void commitEnd(Arena arena) {
 		db.i("[TEAMS]");
 
 		ArenaTeam aTeam = null;
-
-		if (TeamManager.countActiveTeams(arena) > 1) {
-			return false;
-		}
-
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus().equals(Status.FIGHT)) {
@@ -109,34 +116,13 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
-			return true;
+			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
-		return true;
 	}
 
 	@Override
-	public void checkEntityDeath(Arena arena, Player player) {
-		return;
-	}
-
-	@Override
-	public void checkInteract(Arena arena, Player player, Block clickedBlock) {
-		return;
-	}
-
-	@Override
-	public PACheckResult checkPlayerDeath(Arena arena, Player player) {
-		return null;
-	}
-
-	@Override
-	protected boolean checkSetFlag(Arena arena, Player player, Block block) {
-		return false;
-	}
-
-	@Override
-	public String checkSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
 		db.i("parsing not random");
 		Iterator<String> iter = list.iterator();
@@ -218,18 +204,9 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 
 	@Override
-	public void commitPlayerDeath(Arena arena, Player player,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
-	}
-
-	@Override
-	public void configParse(Arena arena) {
-		return;
-	}
-
-	@Override
 	public void displayInfo(Arena arena, CommandSender sender) {
-		
+		sender.sendMessage("teams: " );
+		sender.sendMessage("lives: " );
 	}
 
 	@Override
@@ -358,23 +335,23 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 
 	@Override
-	public void parseRespawn(Arena arena, Player respawnPlayer, ArenaTeam respawnTeam,
-			int lives, DamageCause cause, Entity damager) {
-
-		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
+	public void commitPlayerDeath(Arena arena, Player respawnPlayer,
+			boolean doesRespawn, String error, PlayerDeathEvent event) {
+		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+		reduceLives(arena, respawnTeam);
+		
+		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-				arena.parseDeathCause(respawnPlayer, cause, damager),
-				String.valueOf(lives)));
-		this.lives.put(respawnPlayer.getName(), lives);
+				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
+				String.valueOf(lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
+	
+		
 		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
 				+ "spawn");
 	}
-
 	
-	private int reduceLives(Arena arena, Player player, int lives) {
-		lives = this.lives.get(player.getName());
-		db.i("lives before death: " + lives);
-		return lives;
+	private void reduceLives(Arena arena, ArenaTeam player) {
+		lives.put(player.getName(), this.lives.get(player.getName())-1);
 	}
 
 	@Override

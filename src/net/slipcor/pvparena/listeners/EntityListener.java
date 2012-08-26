@@ -8,7 +8,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.InventoriyManager;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
@@ -201,7 +201,7 @@ public class EntityListener implements Listener {
 		}
 
 		if (arena.getArenaConfig().getBoolean("game.weaponDamage")) {
-			if (InventoriyManager.receivesDamage(attacker.getItemInHand())) {
+			if (InventoryManager.receivesDamage(attacker.getItemInHand())) {
 				attacker.getItemInHand().setDurability((short) 0);
 			}
 		}

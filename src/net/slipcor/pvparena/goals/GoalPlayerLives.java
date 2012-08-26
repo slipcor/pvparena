@@ -2,11 +2,16 @@ package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
@@ -50,14 +55,25 @@ public class GoalPlayerLives extends ArenaGoal {
 			}
 			db.i("faking player death");
 
-			PlayerListener.commitPlayerDeath(arena, player, event);
+			PlayerListener.finallyKillPlayer(arena, player, event);
 		} else {
 			i--;
 			lives.put(player.getName(), i);
 
 			new InventoryRestoreRunnable(arena, player, event.getDrops(), 0);
-			arena.respawnPlayer(player, i, event.getEntity()
+			arena.respawnPlayer(player, event.getEntity()
 					.getLastDamageCause().getCause(), player.getKiller());
+
+			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+			
+			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
+					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+					arena.parseDeathCause(player, event.getEntity()
+							.getLastDamageCause().getCause(), player.getKiller()),
+					String.valueOf(i)));
+			this.lives.put(player.getName(), i);
+			arena.tpPlayerToCoordName(player, respawnTeam.getName()
+					+ "spawn");
 		}
 	}
 }

@@ -34,7 +34,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 	protected void commit() {
 		db.i("TimedEndRunnable commiting");
 		if (arena.isFightInProgress())
-			PVPArena.instance.getAgm().timed(arena);
+			PVPArena.instance.getAgm().timedEnd(arena);
 		else {
 			// deactivate the auto saving task
 			Bukkit.getServer().getScheduler().cancelTask(id);

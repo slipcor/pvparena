@@ -142,7 +142,7 @@ public class ArenaModuleManager {
 		}
 	}
 
-	public String checkSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		String error = null;
 		for (ArenaModule mod : modules) {
 			if (!mod.isActive(arena)) {
@@ -706,11 +706,10 @@ public class ArenaModuleManager {
 		return false;
 	}
 
-	public void parseRespawn(Arena arena, Player player, ArenaTeam team, int lives,
-			DamageCause cause, Entity damager) {
+	public void parseRespawn(Arena arena, Player player, ArenaTeam team, DamageCause cause, Entity damager) {
 		for (ArenaModule mod : modules) {
 			if (mod.isActive(arena))
-				mod.parseRespawn(arena, player, team, lives, cause, damager);
+				mod.parseRespawn(arena, player, team, cause, damager);
 		}
 	}
 }

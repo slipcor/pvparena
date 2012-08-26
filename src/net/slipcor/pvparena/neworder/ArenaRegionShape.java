@@ -517,7 +517,7 @@ public abstract class ArenaRegionShape extends Loadable {
 										ap2.get().getLocation());
 								EntityDamageEvent e = new EntityDamageEvent(
 										ap2.get(), DamageCause.LIGHTNING, 10);
-								PlayerListener.commitPlayerDeath(arena,
+								PlayerListener.finallyKillPlayer(arena,
 										ap2.get(), e);
 							}
 						}
@@ -538,7 +538,7 @@ public abstract class ArenaRegionShape extends Loadable {
 										ap2.get().getLocation());
 								EntityDamageEvent e = new EntityDamageEvent(
 										ap2.get(), DamageCause.LIGHTNING, 10);
-								PlayerListener.commitPlayerDeath(arena,
+								PlayerListener.finallyKillPlayer(arena,
 										ap2.get(), e);
 							}
 						}

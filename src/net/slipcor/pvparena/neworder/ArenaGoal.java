@@ -54,12 +54,15 @@ public class ArenaGoal extends Loadable {
 		super(sName);
 	}
 
+	/*
+	
+	
 	/**
 	 * add default teams
 	 * 
 	 * @param config
 	 *            the config to add the teams to
-	 */
+	 * /
 	public void addDefaultTeams(Arena arena, YamlConfiguration config) {
 		if (arena.getArenaConfig().get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
@@ -81,7 +84,7 @@ public class ArenaGoal extends Loadable {
 	 * 
 	 * @param types
 	 *            the settings map
-	 */
+	 * /
 	public void addSettings(Arena arena, HashMap<String, String> types) {
 	}
 
@@ -96,7 +99,7 @@ public class ArenaGoal extends Loadable {
 	 * check if the arena match is over
 	 * 
 	 * @return true if the match is over
-	 */
+	 * /
 	public boolean checkAndCommit(Arena arena) {
 		db.i("[TEAMS]");
 
@@ -129,67 +132,11 @@ public class ArenaGoal extends Loadable {
 		new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
 		return true;
 	}
+*/
 
-	/**
-	 * hook into a player death
-	 * 
-	 * @param player
-	 *            the dying player
-	 */
-	public void checkEntityDeath(Arena arena, Player player) {
-		return;
-	}
 
-	/**
-	 * hook into an interacting player
-	 * 
-	 * @param player
-	 *            the interacting player
-	 * @param clickedBlock
-	 *            the block being clicked
-	 */
-	public void checkInteract(Arena arena, Player player, Block clickedBlock) {
-		return;
-	}
-
-	public PACheckResult checkPlayerDeath(Arena arena, Player player) {
-		return null;
-	}
-
-	/**
-	 * hook into a set flag check
-	 * 
-	 * @param block
-	 *            the clicked block
-	 * @param player
-	 *            the player clicking
-	 * @return true if a flag was set
-	 */
-	public static boolean checkSetFlag(Block block, Player player) {
-		if (block == null || !PAA_Region.activeSelections.containsKey(player.getName())) {
-			return false;
-		}
-		Arena arena = PAA_Region.activeSelections.get(player.getName());
-		
-		if (arena == null) {
-			return false;
-		}
-		
-		return PVPArena.instance.getAgm().checkSetFlag(arena, player, block);
-	}
-
-	/**
-	 * hook into a set flag check
-	 * @param arena 
-	 * 
-	 * @param player
-	 *            the player clicking
-	 * @param block
-	 *            the block being clicked
-	 * @return true if a flag was set
-	 */
-	protected boolean checkSetFlag(Arena arena, Player player, Block block) {
-		return false;
+	public PACheckResult checkEnd(Arena arena, PACheckResult res) {
+		return res;
 	}
 
 	/**
@@ -199,7 +146,7 @@ public class ArenaGoal extends Loadable {
 	 *            the list of all set spawns
 	 * @return null if ready, error message otherwise
 	 */
-	public String checkSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
 		db.i("parsing not random");
 		Iterator<String> iter = list.iterator();
@@ -236,6 +183,71 @@ public class ArenaGoal extends Loadable {
 				+ "/" + arena.getTeams().size() + "x lounge";
 	}
 
+	/**
+	 * hook into an interacting player
+	 * @param res 
+	 * 
+	 * @param player
+	 *            the interacting player
+	 * @param clickedBlock
+	 *            the block being clicked
+	 * @return 
+	 */
+	public PACheckResult checkInteract(Arena arena, PACheckResult res, Player player, Block clickedBlock) {
+		return res;
+	}
+
+	/**
+	 * notify the goal of a player death, return higher priority if goal should handle the death as WIN/LOSE
+	 * @param arena the arena
+	 * @param player the dying player
+	 * @return a PACheckResult instance to hand forth for parsing
+	 */
+	public PACheckResult checkPlayerDeath(Arena arena, PACheckResult res, Player player) {
+		return res;
+	}
+
+
+	public PACheckResult checkTeleportAll(Arena arena, PACheckResult res,
+			boolean b) {
+		return res;
+	}
+	
+	
+	/**
+	 * hook into a set flag check
+	 * 
+	 * @param block
+	 *            the clicked block
+	 * @param player
+	 *            the player clicking
+	 * @return true if a flag was set
+	 * /
+	public static boolean checkSetFlag(Block block, Player player) {
+		if (block == null || !PAA_Region.activeSelections.containsKey(player.getName())) {
+			return false;
+		}
+		Arena arena = PAA_Region.activeSelections.get(player.getName());
+		
+		if (arena == null) {
+			return false;
+		}
+		
+		return PVPArena.instance.getAgm().checkSetFlag(arena, player, block);
+	}*/
+
+	/**
+	 * 
+	 * @param arena
+	 * @param res
+	 * @param player
+	 * @param block
+	 * @return
+	 */
+	protected PACheckResult checkSetFlag(Arena arena, PACheckResult res, Player player, Block block) {
+		return res;
+	}
+/*
 	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			Language.parse(MSG.ERROR_ONLY_PLAYERS);
@@ -278,22 +290,34 @@ public class ArenaGoal extends Loadable {
 			arena.msg(player, Language.parse(MSG.SPAWN_TEAMLOUNGE, sName));
 		}
 	}
+*/
 
+	public void commitEnd(Arena arena) {
+	}
+
+	public void commitInteract(Arena arena, Player player, Block clickedBlock) {
+	}
+	
 	public void commitPlayerDeath(Arena arena, Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 	}
 
+	public boolean commitSetFlag(Arena arena, Player player, Block block) {
+		return false;
+	}
+
 	/**
 	 * hook into the config parsing
+	 * @param config 
 	 */
-	public void configParse(Arena arena) {
+	public void configParse(Arena arena, YamlConfiguration config) {
 		return;
 	}
 
 	public void displayInfo(Arena arena, CommandSender sender) {
 		
 	}
-
+/*
 	public HashSet<String> getAddedSpawns() {
 		HashSet<String> result = new HashSet<String>();
 
@@ -301,7 +325,7 @@ public class ArenaGoal extends Loadable {
 		result.add("%team%lounge");
 
 		return result;
-	}
+	}*/
 
 	/**
 	 * guess the spawn name from a given string
@@ -346,7 +370,7 @@ public class ArenaGoal extends Loadable {
 	 * 
 	 * @param config
 	 *            the language config
-	 */
+	 * /
 	public void initLanguage(YamlConfiguration config) {
 	}
 
@@ -358,7 +382,7 @@ public class ArenaGoal extends Loadable {
 	 * @param cmd
 	 *            the command
 	 * @return true if an error occured
-	 */
+	 * /
 	public boolean isLoungesCommand(Arena arena, Player player, String cmd) {
 
 		if (cmd.equalsIgnoreCase("lounge")) {
@@ -387,7 +411,7 @@ public class ArenaGoal extends Loadable {
 	 * @param cmd
 	 *            the command
 	 * @return true if an error occured
-	 */
+	 * /
 	public boolean isSpawnsCommand(Arena arena, Player player, String cmd) {
 
 		if (cmd.startsWith("spawn") || cmd.equals("spawn")) {
@@ -414,6 +438,8 @@ public class ArenaGoal extends Loadable {
 		}
 		return false;
 	}
+	
+	*/
 
 	/**
 	 * check if the arena is ready
@@ -432,7 +458,7 @@ public class ArenaGoal extends Loadable {
 	 * @param team
 	 *            the team losing lives
 	 * @return true if the arena is over
-	 */
+	 * /
 	public boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
 		return false;
 	}
@@ -471,14 +497,14 @@ public class ArenaGoal extends Loadable {
 	 *            the last damage cause
 	 * @param damager
 	 *            the player dealing the damage
-	 */
+	 * /
 	public void parseRespawn(Arena arena, Player respawnPlayer, ArenaTeam respawnTeam,
 			int lives, DamageCause cause, Entity damager) {
 		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
 				+ "spawn");
 		return;
 	}
-
+*/
 	/**
 	 * hook into an arena reset
 	 * @param a the arena being reset
@@ -487,6 +513,10 @@ public class ArenaGoal extends Loadable {
 	 */
 	public void reset(Arena arena, boolean force) {
 		return;
+	}
+
+	public void setDefaults(Arena arena, YamlConfiguration config) {
+		
 	}
 
 	/**
@@ -502,6 +532,7 @@ public class ArenaGoal extends Loadable {
 		return scores;
 	}
 
+	
 	/**
 	 * hook into arena player unloading
 	 * 
