@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class PAA_BlackList extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(1,2,3)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{1,2,3})) {
 			return;
 		}
 		

@@ -15,8 +15,8 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 /**
  * <pre>Configuration Manager class</pre>
@@ -47,15 +47,16 @@ public class ConfigurationManager {
 			// opening existing arena
 			arena.setFree(cfg.getString("general.type").equals("free"));
 			
-			List<String> list = cfg.getStringList("arenagoals", new ArrayList<String>());
+			List<String> list = cfg.getStringList("goals", new ArrayList<String>());
 			for (String type : list) {
 				ArenaGoal aType = PVPArena.instance.getAgm().getType(type);
-
-				arena.addGoal((ArenaGoal) aType.clone());
+				aType = aType.clone();
+				aType.setArena(arena);
+				arena.goalAdd(aType);
 			}
 			
 		} else {
-			System.out.print("oouuups");
+			System.out.print("creating arena config: " + arena.getName());
 		}
 
 		if (config.get("classitems") == null) {
@@ -220,7 +221,24 @@ public class ConfigurationManager {
 				}
 			}
 		}
+		
+		cfg.save();
 
+		PVPArena.instance.getAgm().configParse(arena, config);
+		PVPArena.instance.getAmm().configParse(arena, config);
+		
+		if (cfg.getYamlConfiguration().getConfigurationSection("teams") == null) {
+			if (arena.isFreeForAll()) {
+				config.set("teams.free", "WHITE");
+			} else {
+				config.set("teams.red", "RED");
+				config.set("teams.blue", "BLUE");
+			}
+		}
+		
+		cfg.reloadMaps();
+
+		
 		Map<String, Object> tempMap = (Map<String, Object>) cfg
 				.getYamlConfiguration().getConfigurationSection("teams")
 				.getValues(true);
@@ -231,12 +249,6 @@ public class ConfigurationManager {
 			db.i("added team " + team.getName() + " => "
 					+ team.getColorCodeString());
 		}
-		cfg.save();
-
-		PVPArena.instance.getAgm().configParse(arena, config);
-		PVPArena.instance.getAmm().configParse(arena, config);
-		
-		cfg.reloadMaps();
 
 		arena.setPrefix(cfg.getString("general.prefix", "PVP Arena"));
 	}
@@ -262,10 +274,7 @@ public class ConfigurationManager {
 		Set<String> list = arena.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false).keySet();
 
-		// we need the 2 that every arena has
-
-		if (!list.contains("spectator"))
-			return "spectator not set";
+		
 		if (!list.contains("exit"))
 			return "exit not set";
 		String error = PVPArena.instance.getAmm().checkForMissingSpawns(arena, list);

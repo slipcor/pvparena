@@ -1,16 +1,14 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -37,7 +35,7 @@ public class PAA_Spawn extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(1,2)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
 		
@@ -53,6 +51,14 @@ public class PAA_Spawn extends PAA__Command {
 			
 			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 				if (mod.isActive(arena) && mod.hasSpawn(args[0])) {
+					arena.spawnSet(args[0].toLowerCase(), new PALocation(ap.get().getLocation()));
+					arena.msg(sender, Language.parse(MSG.SPAWN_SET, args[0]));
+					return;
+				}
+			}
+			
+			for (ArenaGoal mod : arena.getGoals()) {
+				if (mod.hasSpawn(args[0])) {
 					arena.spawnSet(args[0].toLowerCase(), new PALocation(ap.get().getLocation()));
 					arena.msg(sender, Language.parse(MSG.SPAWN_SET, args[0]));
 					return;

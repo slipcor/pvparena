@@ -104,6 +104,7 @@ public class Language {
 		ERROR_JOIN_VEHICLE("nulang.error.insidevehicle", "You cannot join while on a vehicle!"),
 		ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'"),
 		ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
+		ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
 		ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
 		ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
 		ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r"),
@@ -203,7 +204,9 @@ public class Language {
 		NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
 		NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have equal player number!"),
 		NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),
-		NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area! /pa bet [name] [amount] to bet on team or player"),
+		NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area!"),
+		//TODO
+		NOTICE_WELCOME_SPECTATOR2("nulang.notice.welcomespec2", "/pa bet [name] [amount] to bet on team or player"),
 		NOTICE_YOU_DEATH("nulang.notice.youdeath", "You entered a DEATH region. Goodbye!"),
 		NOTICE_YOU_ESCAPED("nulang.notice.youescaped", "You escaped the battlefield. Goodbye!"),
 		NOTICE_YOU_LEFT("nulang.notice.youleft", "You left the arena!"),
@@ -278,7 +281,15 @@ public class Language {
 		WHITELIST_CLEARED("nulang.whitelist.cleared", "Whitelist &e%1%&r cleared!"),
 		WHITELIST_HELP("nulang.whitelist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]"),
 		WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
-		WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:");
+		WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
+		
+		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "Player %1% brought home the flag of team %2%! Lives left: %3%"),
+		GOAL_FLAGS_DROPPED("lang.flagsave", "Player %1% dropped the flag of team %2%!"),
+		GOAL_FLAGS_GRABBED("lang.flaggrab", "Player %1% grabbed the flag of team %2%!"),
+		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
+		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
+		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%");
+		
 		
 		private String node;
 		private String value;

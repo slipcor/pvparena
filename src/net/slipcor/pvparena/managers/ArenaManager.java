@@ -1,8 +1,10 @@
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import net.slipcor.pvparena.PVPArena;
@@ -15,10 +17,10 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -114,6 +116,7 @@ public class ArenaManager {
 		if (sName == null || sName.equals("")) {
 			return null;
 		}
+		sName = sName.toLowerCase();
 		Arena a = arenas.get(sName);
 		if (a != null) {
 			return a;
@@ -254,7 +257,7 @@ public class ArenaManager {
 	public static Arena loadArena(String configFile) {
 		db.i("loading arena " + configFile);
 		Arena arena = new Arena(configFile);
-		arenas.put(arena.getName(), arena);
+		arenas.put(arena.getName().toLowerCase(), arena);
 		return arena;
 	}
 
@@ -275,12 +278,23 @@ public class ArenaManager {
 		Config cfg = new Config(file);
 		
 		cfg.load();
-		String arenaType = cfg.getString("general.type",
-				"please redo your arena");
+		List<String> list = cfg.getStringList("goals", new ArrayList<String>());
+		
+		if (list.size() < 1) {
+			return null;
+		}
+		
+		for (String goal : list) {
 
-		ArenaGoal type = PVPArena.instance.getAgm().getType(arenaType);
+			ArenaGoal type = PVPArena.instance.getAgm().getType(goal);
+			
+			if (type == null) {
+				return goal;
+			}
 
-		return type == null ? arenaType : null;
+		}
+		
+		return null;
 	}
 
 	/**

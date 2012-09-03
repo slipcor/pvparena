@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -49,7 +48,7 @@ public class PAI_List extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0, 1)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		

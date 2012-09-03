@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.neworder;
+package net.slipcor.pvparena.loadables;
 
 import java.io.File;
 import java.util.List;
@@ -14,7 +14,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
 import net.slipcor.pvparena.regions.CuboidRegion;
 
 /**

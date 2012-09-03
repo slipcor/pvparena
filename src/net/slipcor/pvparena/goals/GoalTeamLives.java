@@ -7,14 +7,10 @@ import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -24,9 +20,9 @@ import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.neworder.ArenaGoal;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -41,9 +37,9 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  */
 
 public class GoalTeamLives extends ArenaGoal {
-	public GoalTeamLives() {
-		super("teams");
-		db = new Debug(101);
+	public GoalTeamLives(Arena arena) {
+		super(arena, "TeamLives");
+		db = new Debug(102);
 	}
 	private final HashMap<String, Integer> lives = new HashMap<String, Integer>(); // flags
 
@@ -53,7 +49,16 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 	
 	@Override
-	public void setDefaults(Arena arena, YamlConfiguration config) {
+	public GoalTeamLives clone() {
+		return new GoalTeamLives(arena);
+	}
+	
+	@Override
+	public void setDefaults(YamlConfiguration config) {
+		if (arena.isFreeForAll()) {
+			return;
+		}
+		
 		if (arena.getArenaConfig().get("teams.free") != null) {
 			arena.getArenaConfig().set("teams",null);
 		}
@@ -72,8 +77,8 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 	}
 
-
-	public PACheckResult checkEnd(Arena arena, PACheckResult res) {
+	@Override
+	public PACheckResult checkEnd(PACheckResult res) {
 		int priority = 2;
 		
 		if (res.getPriority() > 2) {
@@ -91,9 +96,28 @@ public class GoalTeamLives extends ArenaGoal {
 		return res;
 
 	}
+
+	@Override
+	public String checkForMissingSpawns(Set<String> list) {
+		for (ArenaTeam team : arena.getTeams()) {
+			String sTeam = team.getName();
+			if (!list.contains(team + "spawn")) {
+				boolean found = false;
+				for (String s : list) {
+					if (s.startsWith(sTeam) && s.endsWith("spawn")) {
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					return team.getName() + "spawn not set";
+			}
+		}
+		return null;
+	}
 	
 	@Override
-	public void commitEnd(Arena arena) {
+	public void commitEnd() {
 		db.i("[TEAMS]");
 
 		ArenaTeam aTeam = null;
@@ -122,105 +146,24 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Arena arena, Set<String> list) {
-		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
-		db.i("parsing not random");
-		Iterator<String> iter = list.iterator();
-		int spawns = 0;
-		int lounges = 0;
-		HashSet<String> setTeams = new HashSet<String>();
-		while (iter.hasNext()) {
-			String s = iter.next();
-			db.i("parsing '" + s + "'");
-			db.i("spawns: " + spawns + "; lounges: " + lounges);
-			if (s.endsWith("spawn") && (!s.equals("spawn"))) {
-				spawns++;
-			} else if (s.endsWith("lounge") && (!s.equals("lounge"))) {
-				lounges++;
-			} else if (s.contains("spawn") && (!s.equals("spawn"))) {
-				String[] temp = s.split("spawn");
-				if (arena.getTeam(temp[0]) != null) {
-					if (setTeams.contains(temp[0])) {
-						db.i("team already set");
-						continue;
-					}
-					db.i("adding team");
-					setTeams.add(temp[0]);
-					spawns++;
-				}
-			}
-		}
-		if (spawns == arena.getTeams().size()
-				&& lounges == arena.getTeams().size()) {
-			return null;
-		}
+	public void configParse(YamlConfiguration config) {
+		config.addDefault("game.teamlives", 10);
 
-		return spawns + "/" + arena.getTeams().size() + "x spawn ; " + lounges
-				+ "/" + arena.getTeams().size() + "x lounge";
-	}
-
-	@Override
-	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			Language.parse(MSG.ERROR_ONLY_PLAYERS);
-			return;
-		}
-
-		Player player = (Player) sender;
-
-		if (args[0].startsWith("spawn") || args[0].equals("spawn")) {
-			arena.msg(sender, Language.parse(MSG.ERROR_SPAWNFREE, args[0]));
-			return;
-		}
-
-		if (args[0].contains("spawn")) {
-			String[] split = args[0].split("spawn");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, sName));
-				return;
-			}
-
-			SpawnManager.setCoords(arena, player, args[0]);
-			arena.msg(player, Language.parse(MSG.SPAWN_SET, sName));
-		}
-
-		if (args[0].equals("lounge")) {
-			arena.msg(sender, Language.parse(MSG.ERROR_LOUNGEFREE, args[0]));
-			return;
-		}
-
-		if (args[0].contains("lounge")) {
-			String[] split = args[0].split("lounge");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, sName));
-				return;
-			}
-
-			SpawnManager.setCoords(arena, player, args[0]);
-			arena.msg(player, Language.parse(MSG.SPAWN_TEAMLOUNGE, sName));
+		if (arena.getArenaConfig().get("flagColors") == null) {
+			db.i("no flagheads defined, adding white and black!");
+			config.addDefault("flagColors.red", "WHITE");
+			config.addDefault("flagColors.blue", "BLACK");
 		}
 	}
 
 	@Override
-	public void displayInfo(Arena arena, CommandSender sender) {
-		sender.sendMessage("teams: " );
-		sender.sendMessage("lives: " );
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("teams: " + StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
+		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.teamlives"));
 	}
 
 	@Override
-	public HashSet<String> getAddedSpawns() {
-		HashSet<String> result = new HashSet<String>();
-
-		result.add("%team%spawn");
-		result.add("%team%lounge");
-
-		return result;
-	}
-
-	@Override
-	public String guessSpawn(Arena arena, String place) {
+	public String guessSpawn(String place) {
 		if (!place.contains("spawn")) {
 			db.i("place not found!");
 			return null;
@@ -252,90 +195,22 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 
 	@Override
-	public void initLanguage(YamlConfiguration config) {
-	}
-
-	@Override
-	public boolean isLoungesCommand(Arena arena, Player player, String cmd) {
-		if (cmd.equalsIgnoreCase("lounge")) {
-			arena.msg(player, Language.parse(MSG.ERROR_LOUNGEFREE));
-			return true;
-		}
-
-		if (cmd.endsWith("lounge")) {
-			String sTeam = cmd.replace("lounge", "");
-			if (arena.getTeam(sTeam) != null) {
-				SpawnManager.setCoords(arena, player, cmd);
-				arena.msg(player, Language.parse(MSG.SPAWN_TEAMLOUNGE, sTeam));
+	public boolean hasSpawn(String string) {
+		for (String teamName : arena.getTeamNames()) {
+			if (string.toLowerCase().startsWith(teamName.toLowerCase()+"spawn")) {
 				return true;
 			}
-			arena.msg(player, Language.parse(MSG.ERROR_COMMAND_INVALID, "506"));
-			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean isSpawnsCommand(Arena arena, Player player, String cmd) {
-
-		if (cmd.startsWith("spawn") || cmd.equals("spawn")) {
-			arena.msg(player, Language.parse(MSG.ERROR_SPAWNFREE, cmd));
-			return true;
-		}
-
-		if (cmd.contains("spawn")) {
-			String[] split = cmd.split("spawn");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null) {
-				return false;
-			}
-
-			SpawnManager.setCoords(arena, player, cmd);
-			arena.msg(player, Language.parse(MSG.SPAWN_SET, sName));
-			return true;
-		}
-
-		if (cmd.startsWith("powerup")) {
-			SpawnManager.setCoords(arena, player, cmd);
-			arena.msg(player, Language.parse(MSG.SPAWN_SET, cmd));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public String ready(Arena arena) {
+	public String ready() {
 		return null;
 	}
 
 	@Override
-	public boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
-		return false;
-	}
-
-	@Override
-	public boolean parseCommand(Arena arena, String s) {
-		if (s.contains("spawn")) {
-			String[] split = s.split("spawn");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null) {
-				return false;
-			}
-			return true;
-		}
-		if (s.contains("lounge")) {
-			String[] split = s.split("lounge");
-			String sName = split[0];
-			if (arena.getTeam(sName) == null) {
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public void commitPlayerDeath(Arena arena, Player respawnPlayer,
+	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
 		reduceLives(arena, respawnTeam);
@@ -355,27 +230,26 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 
 	@Override
-	public void reset(Arena arena, boolean force) {
+	public void reset(boolean force) {
 		return;
 	}
 
 	@Override
-	public void teleportAllToSpawn(Arena arena) {
+	public void teleportAllToSpawn() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt("game.lives", 3));
+						.put(ap.getName(), arena.getArenaConfig().getInt("game.teamlives", 10));
 			}
 		}
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(Arena arena,
-			HashMap<String, Double> scores) {
+	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		return scores;
 	}
 
 	@Override
-	public void unload(Arena arena, Player player) {
+	public void unload(Player player) {
 	}
 }

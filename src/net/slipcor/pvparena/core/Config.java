@@ -9,8 +9,8 @@ import java.util.Set;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegionShapeManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

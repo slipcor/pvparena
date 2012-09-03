@@ -1,9 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import org.bukkit.command.CommandSender;
 
@@ -29,7 +25,7 @@ public class PAI_Stats extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0})) {
 			return;
 		}
 		// arena can be null (general stats!)

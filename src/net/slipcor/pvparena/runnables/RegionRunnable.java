@@ -3,7 +3,7 @@ package net.slipcor.pvparena.runnables;
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 /**
  * <pre>Arena Runnable class "Region"</pre>

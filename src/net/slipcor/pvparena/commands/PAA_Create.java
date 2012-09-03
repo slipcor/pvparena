@@ -1,8 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -38,7 +35,7 @@ public class PAA_Create extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new HashSet<Integer>(1,2))) {
+		if (!this.argCountValid(sender, args, new Integer[]{1,2})) {
 			return;
 		}
 		
@@ -61,7 +58,12 @@ public class PAA_Create extends PA__Command {
 		if (args.length > 1) {
 			// preset arena stuff based on legacy stuff
 			a.getLegacyGoals(args[1]);
+		} else if (args.length == 0) {
+			a.getLegacyGoals("teams");
 		}
+		
+		ArenaManager.loadArena(a.getName());
+		Arena.pmsg(sender, Language.parse(MSG.ARENA_CREATE_DONE, a.getName()));
 	}
 
 	@Override

@@ -1,8 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Language;
@@ -35,7 +32,7 @@ public class PAA_Teleport extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(1)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{1})) {
 			return;
 		}
 		

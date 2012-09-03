@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.neworder;
+package net.slipcor.pvparena.loadables;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,11 +8,8 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.nodinchan.ncbukkit.loader.Loader;
@@ -27,9 +24,10 @@ import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.goals.GoalFlags;
+import net.slipcor.pvparena.goals.GoalPlayerLives;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.managers.StatisticsManager;
-import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -60,29 +58,19 @@ public class ArenaGoalManager {
 		}
 		loader = new Loader<ArenaGoal>(plugin, path, new Object[] {});
 		types = loader.load();
-		types.add(new GoalTeamLives());
+		types.add(new GoalFlags(null));
+		types.add(new GoalPlayerLives(null));
+		types.add(new GoalTeamLives(null));
 
 		for (ArenaGoal type : types) {
 			db.i("module ArenaType loaded: " + type.getName() + " (version "
 					+ type.version() + ")");
 		}
 	}
-/*
-	public void addDefaultTeams(Arena arena, YamlConfiguration config) {
-		for (ArenaGoal type : arena.getGoals()) {
-			type.addDefaultTeams(arena, config);
-		}
-	}
-
-	public void addSettings(Arena arena, HashMap<String, String> types) {
-		for (ArenaGoal type : arena.getGoals()) {
-			type.addSettings(arena, types);
-		}
-	}*/
 
 	public boolean allowsJoinInBattle(Arena arena) {
 		for (ArenaGoal type : arena.getGoals()) {
-			if (!type.allowsJoinInBattle(arena)) {
+			if (!type.allowsJoinInBattle()) {
 				return false;
 			}
 		}
@@ -97,7 +85,7 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkEnd(arena, res);
+			res = mod.checkEnd(res);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -118,7 +106,7 @@ public class ArenaGoalManager {
 			return false;
 		}
 		
-		commit.commitEnd(arena);
+		commit.commitEnd();
 		return true;
 	}
 
@@ -130,7 +118,7 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkInteract(arena, res, player, clickedBlock);
+			res = mod.checkInteract(res, player, clickedBlock);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -151,7 +139,7 @@ public class ArenaGoalManager {
 			return;
 		}
 		
-		commit.commitInteract(arena, player, clickedBlock);
+		commit.commitInteract(player, clickedBlock);
 	}
 
 	public boolean checkSetFlag(Player player, Block block) {
@@ -167,7 +155,7 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkSetFlag(arena, res, player, block);
+			res = mod.checkSetFlag(res, player, block);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -188,41 +176,25 @@ public class ArenaGoalManager {
 			return false;
 		}
 		
-		return commit.commitSetFlag(arena, player, block);
+		return commit.commitSetFlag(player, block);
 	}
 
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		for (ArenaGoal type : arena.getGoals()) {
-			String error = type.checkForMissingSpawns(arena, list);
+			String error = type.checkForMissingSpawns(list);
 			if (error != null) {
 				return error;
 			}
 		}
 		return null;
 	}
-/*
-	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
-		for (ArenaGoal type : arena.getGoals()) {
-			type.commitCommand(arena, sender, args);
-		}
-	}
-*/
+
 	public void configParse(Arena arena, YamlConfiguration config) {
 		for (ArenaGoal type : arena.getGoals()) {
-			type.configParse(arena, config);
+			type.configParse(config);
 		}
 	}
-/*
-	public HashSet<String> getAddedSpawns() {
-		HashSet<String> result = new HashSet<String>();
-		for (ArenaGoal type : types) {
 
-			result.addAll(type.getAddedSpawns());
-		}
-		return result;
-	}
-
-*/
 	public HashSet<String> getAllGoalNames() {
 		HashSet<String> result = new HashSet<String>();
 
@@ -254,11 +226,9 @@ public class ArenaGoalManager {
 		return types;
 	}
 
-	
-	
 	public String guessSpawn(Arena arena, String place) {
 		for (ArenaGoal type : arena.getGoals()) {
-			String result = type.guessSpawn(arena, place);
+			String result = type.guessSpawn(place);
 			if (result != null) {
 				return result;
 			}
@@ -288,7 +258,7 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkPlayerDeath(arena, res, player);
+			res = mod.checkPlayerDeath(res, player);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -322,36 +292,13 @@ public class ArenaGoalManager {
 			return;
 		}
 		
-		commit.commitPlayerDeath(arena, player, doesRespawn, res.getError(), event);
+		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 	}
 	
-	/*
-	public boolean parseCommand(Arena arena, String s) {
-		for (ArenaGoal type : arena.getGoals()) {
-			if (type.parseCommand(arena, s)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void parseInfo(Arena arena, CommandSender player) {
-
-	}
-
-	public void parseRespawn(Arena a, Player player, ArenaTeam team, int lives,
-			DamageCause cause, Entity damager) {
-		for (ArenaGoal type : a.getGoals()) {
-			type.parseRespawn(a, player, team, lives, cause, damager);
-		}
-	}
-	
-	*/
-
 	public String ready(Arena arena) {
 		String error = null;
 		for (ArenaGoal type : arena.getGoals()) {
-			error = type.ready(arena);
+			error = type.ready();
 			if (error != null) {
 				return error;
 			}
@@ -361,7 +308,7 @@ public class ArenaGoalManager {
 	
 	public void reload() {
 		types = loader.reload();
-		types.add(new GoalTeamLives());
+		types.add(new GoalTeamLives(null));
 
 		for (ArenaGoal type : types) {
 			db.i("module ArenaType loaded: " + type.getName() + " (version "
@@ -369,15 +316,15 @@ public class ArenaGoalManager {
 		}
 	}
 	
-	public void reset(Arena a, boolean force) {
-		for (ArenaGoal type : a.getGoals()) {
-			type.reset(a, force);
+	public void reset(Arena arena, boolean force) {
+		for (ArenaGoal type : arena.getGoals()) {
+			type.reset(force);
 		}
 	}
 
 	public void setDefaults(Arena arena, YamlConfiguration config) {
 		for (ArenaGoal type : arena.getGoals()) {
-			type.setDefaults(arena, config);
+			type.setDefaults(config);
 		}
 	}
 
@@ -388,7 +335,7 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkTeleportAll(arena, res, true);
+			res = mod.checkTeleportAll(res, true);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -410,7 +357,7 @@ public class ArenaGoalManager {
 			return;
 		}
 		
-		commit.teleportAllToSpawn(arena);
+		commit.teleportAllToSpawn();
 	}
 	
 	public void timedEnd(Arena arena) {
@@ -423,7 +370,7 @@ public class ArenaGoalManager {
 		HashMap<String, Double> scores = new HashMap<String, Double>();
 
 		for (ArenaGoal type : arena.getGoals()) {
-			scores = type.timedEnd(arena, scores);
+			scores = type.timedEnd(scores);
 		}
 
 		HashSet<String> winners = new HashSet<String>();
@@ -548,7 +495,7 @@ public class ArenaGoalManager {
 
 	public void unload(Arena arena, Player player) {
 		for (ArenaGoal type : arena.getGoals()) {
-			type.unload(arena, player);
+			type.unload(player);
 		}
 	}
 }

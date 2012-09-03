@@ -1,14 +1,13 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 
@@ -34,7 +33,7 @@ public class PAI_Version extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new HashSet<Integer>(Arrays.asList(0)))) {
+		if (!this.argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
 		HashSet<String> names = new HashSet<String>();

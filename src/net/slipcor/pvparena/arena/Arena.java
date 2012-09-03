@@ -2,8 +2,10 @@ package net.slipcor.pvparena.arena;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -21,14 +23,15 @@ import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
@@ -102,10 +105,6 @@ public class Arena {
 
 	public void addClass(String className, ItemStack[] items) {
 		classes.add(new ArenaClass(className, items));
-	}
-
-	public void addGoal(ArenaGoal goal) {
-		goals.add(goal);
 	}
 
 	public void addRegion(ArenaRegionShape region) {
@@ -364,6 +363,19 @@ public class Arena {
 	}
 
 	/**
+	 * hand over all teams
+	 * 
+	 * @return the arena teams
+	 */
+	public HashSet<String> getTeamNamesColored() {
+		HashSet<String> result = new HashSet<String>();
+		for (ArenaTeam team : teams) {
+			result.add(team.getColoredName());
+		}
+		return result;
+	}
+
+	/**
 	 * return the arena world
 	 * 
 	 * @return the world name
@@ -416,20 +428,31 @@ public class Arena {
 	}
 
 	public void goalAdd(ArenaGoal goal) {
-		goals.add(goal);
+		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+		nugoal.setArena(this);
+		
+		goals.add(nugoal);
+		updateGoals();
 	}
 
 	public void goalRemove(ArenaGoal goal) {
-		goals.remove(goal);
+		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+		nugoal.setArena(this);
+		
+		goals.remove(nugoal);
+		updateGoals();
 	}
 
 	public boolean goalToggle(ArenaGoal goal) {
 		if (goals.contains(goal)) {
+			updateGoals();
 			goals.remove(goal);
+			return false;
 		} else {
 			goals.add(goal);
+			updateGoals();
 		}
-		return goals.contains(goal);
+		return true;
 	}
 
 	/**
@@ -1136,8 +1159,21 @@ public class Arena {
 		ap.setTelePass(false);
 	}
 
+	private void updateGoals() {
+		List<String> list = new ArrayList<String>();
+		
+		for (ArenaGoal goal : goals) {
+			list.add(goal.getName());
+		}
+		
+		cfg.set("goals", list);
+		cfg.save();
+	}
+
 	public void getLegacyGoals(String string) {
 		// TODO Auto-generated method stub
 		String s = "";
+
+		this.goalAdd(PVPArena.instance.getAgm().getType("TeamLives"));
 	}
 }

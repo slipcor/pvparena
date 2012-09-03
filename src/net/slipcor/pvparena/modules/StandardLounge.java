@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.modules;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -7,7 +10,7 @@ import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.neworder.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,6 +33,31 @@ public class StandardLounge extends ArenaModule {
 		super("StandardLounge");
 		db = new Debug(300);
 	}
+	
+	@Override
+	public String version() {
+		return "0.9.0.0";
+	}
+
+	@Override
+	public String checkForMissingSpawns(Arena arena, Set<String> list) {
+		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
+		db.i("parsing not random");
+		Iterator<String> iter = list.iterator();
+		int lounges = 0;
+		while (iter.hasNext()) {
+			String s = iter.next();
+			db.i("parsing '" + s + "'");
+			if (s.endsWith("lounge") && (!s.equals("lounge"))) {
+				lounges++;
+			}
+		}
+		if (lounges == arena.getTeams().size()) {
+			return null;
+		}
+
+		return lounges + "/" + arena.getTeams().size() + "x lounge";
+	}
 
 	public PACheckResult checkJoin(Arena arena, CommandSender sender, PACheckResult result, boolean join) {
 		if (!join)
@@ -48,7 +76,6 @@ public class StandardLounge extends ArenaModule {
 		result.setModName(this.getName());
 		
 		if (arena.isLocked() && !p.hasPermission("pvparena.admin") && !(p.hasPermission("pvparena.create") && arena.getOwner().equals(p.getName()))) {
-			result.setPriority(priority+1000);
 			result.setError(Language.parse(MSG.ERROR_NOPERM, Language.parse(MSG.ERROR_NOPERM_X_JOIN)));
 			return result;
 		}

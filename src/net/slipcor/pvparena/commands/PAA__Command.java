@@ -1,8 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -28,14 +25,16 @@ public abstract class PAA__Command {
 	}
 
 	public boolean argCountValid(CommandSender sender, Arena arena,
-			String[] args, HashSet<Integer> validCounts) {
-		if (validCounts.contains(args.length)) {
-			return true;
+			String[] args, Integer[] validCounts) {
+		
+		for (int i : validCounts) {
+			if (i == args.length)
+				return true;
 		}
 
 		String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
 				String.valueOf(args.length),
-				StringParser.joinSet(validCounts, "|"));
+				StringParser.joinArray(validCounts, "|"));
 
 		if (arena == null) {
 			Arena.pmsg(sender, msg);
@@ -124,6 +123,8 @@ public abstract class PAA__Command {
 			return new PAI_List();
 		} else if (name.equals("ready") || name.equals("-r")) {
 			return new PAI_Ready();
+		} else if (name.equals("info") || name.equals("-i")) {
+			return new PAI_Info();
 		}
 
 		return null;

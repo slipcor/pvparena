@@ -1,4 +1,4 @@
-package net.slipcor.pvparena.neworder;
+package net.slipcor.pvparena.loadables;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +43,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
  * @version v0.9.0
  */
 
-public abstract class ArenaRegionShape extends Loadable {
+public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	protected static Debug db = new Debug(34);
 	protected String world;
 	private Arena arena;

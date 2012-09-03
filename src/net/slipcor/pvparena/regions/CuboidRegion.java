@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 /**
  * <pre>Arena Region Shape class "cuboid"</pre>

@@ -1,8 +1,10 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -11,9 +13,10 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.neworder.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
 
 /**
@@ -28,9 +31,9 @@ import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
  */
 
 public class GoalPlayerLives extends ArenaGoal {
-	public GoalPlayerLives() {
-		super("PlayerLives");
-		db = new Debug(100);
+	public GoalPlayerLives(Arena arena) {
+		super(arena, "PlayerLives");
+		db = new Debug(101);
 	}
 
 	HashMap<String, Integer> lives = new HashMap<String, Integer>();
@@ -41,7 +44,26 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void commitPlayerDeath(Arena arena, Player player,
+	public String checkForMissingSpawns(Set<String> list) {
+		if (!arena.isFreeForAll()) {
+			return null; // teams are handled somewhere else
+		}
+		int count = 0;
+		for (String s : list) {
+			if (s.startsWith("spawn")) {
+				count++;
+			}
+		}
+		return count > 3 ? null : "need more spawns! ("+count+"/4)";
+	}
+	
+	@Override
+	public GoalPlayerLives clone() {
+		return new GoalPlayerLives(arena);
+	}
+
+	@Override
+	public void commitPlayerDeath(Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 		if (!lives.containsKey(player.getName())) {
 			return;
@@ -75,5 +97,15 @@ public class GoalPlayerLives extends ArenaGoal {
 			arena.tpPlayerToCoordName(player, respawnTeam.getName()
 					+ "spawn");
 		}
+	}
+
+	@Override
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.lives"));
+	}
+
+	@Override
+	public boolean hasSpawn(String string) {
+		return (arena.isFreeForAll() && string.toLowerCase().startsWith("spawn"));
 	}
 }

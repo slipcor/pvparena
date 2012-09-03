@@ -1,17 +1,14 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,7 +37,7 @@ public class PAA_Region extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0,1,2,3)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1,2,3})) {
 			return;
 		}
 		

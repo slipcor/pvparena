@@ -1,17 +1,15 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.neworder.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -38,7 +36,7 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0,1)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		
@@ -47,10 +45,16 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 		
+		String error = ConfigurationManager.isSetup(arena);
+		if (error != null) {
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			return;
+		}
+		
 		int priority = 0;
 		PACheckResult res = new PACheckResult();
 		
-		ArenaModule commit = null;
+		ArenaModule commModule = null;
 		
 		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 			if (mod.isActive(arena)) {
@@ -58,12 +62,32 @@ public class PAG_Join extends PAA__Command {
 				if (res.getPriority() > priority && priority >= 0) {
 					// success and higher priority
 					priority = res.getPriority();
-					commit = mod;
+					commModule = mod;
 				} else if (res.getPriority() < 0 || priority < 0) {
 					// fail
 					priority = res.getPriority();
-					commit = null;
+					commModule = null;
 				}
+			}
+		}
+		
+		if (res.hasError()) {
+			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+			return;
+		}
+		
+		ArenaGoal commGoal = null;
+		
+		for (ArenaGoal mod : PVPArena.instance.getAgm().getTypes()) {
+			res = mod.checkJoin(sender, res, true);
+			if (res.getPriority() > priority && priority >= 0) {
+				// success and higher priority
+				priority = res.getPriority();
+				commGoal = mod;
+			} else if (res.getPriority() < 0 || priority < 0) {
+				// fail
+				priority = res.getPriority();
+				commGoal = null;
 			}
 		}
 		
@@ -85,11 +109,17 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 		
-		if (commit == null) {
+		if ((commModule == null) || (commGoal == null)) {
+			if (commModule != null)
+				commModule.parseJoin(arena, sender, team);
+			
+			if (commGoal != null)
+				commGoal.parseJoin(sender, team);
 			return;
 		}
-		
-		commit.parseJoin(arena, sender, team);
+
+		commModule.parseJoin(arena, sender, team);
+		commGoal.parseJoin(sender, team);
 	}
 
 	@Override

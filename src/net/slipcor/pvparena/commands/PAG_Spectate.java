@@ -1,15 +1,12 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.neworder.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.ConfigurationManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,7 +33,7 @@ public class PAG_Spectate extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0})) {
 			return;
 		}
 		
@@ -45,6 +42,11 @@ public class PAG_Spectate extends PAA__Command {
 			return;
 		}
 		
+		String error = ConfigurationManager.isSetup(arena);
+		if (error != null) {
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			return;
+		}
 
 		int priority = 0;
 		PACheckResult res = new PACheckResult();

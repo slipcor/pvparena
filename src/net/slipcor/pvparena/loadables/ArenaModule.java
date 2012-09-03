@@ -1,10 +1,14 @@
-package net.slipcor.pvparena.neworder;
+package net.slipcor.pvparena.loadables;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,46 +31,29 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncbukkit.loader.Loader;
-
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.core.Debug;
+import com.nodinchan.ncbukkit.loader.Loadable;
 
 /**
- * <pre>Arena Module Manager class</pre>
+ * <pre>Arena Module class</pre>
  * 
- * Loads and manages arena modules
+ * The framework for adding modules to an arena
  * 
  * @author slipcor
  * 
  * @version v0.9.0
  */
 
-public class ArenaModuleManager {
-	protected Debug db = new Debug(33);
-	private List<ArenaModule> modules;
-	private final Loader<ArenaModule> loader;
+public class ArenaModule extends Loadable implements Cloneable {
+	protected Debug db = new Debug(32);
 
 	/**
-	 * create an arena module manager instance
+	 * create an arena module instance
 	 * 
-	 * @param plugin
-	 *            the plugin instance
+	 * @param name
+	 *            the module name
 	 */
-	public ArenaModuleManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/modules");
-		if (!path.exists()) {
-			path.mkdir();
-		}
-		loader = new Loader<ArenaModule>(plugin, path, new Object[] {});
-		modules = loader.load();
-
-		for (ArenaModule mod : modules) {
-			db.i("module ArenaModule loaded: "
-					+ mod.getName() + " (version " + mod.version() +")");
-		}
+	public ArenaModule(String name) {
+		super(name);
 	}
 
 	/**
@@ -75,26 +62,11 @@ public class ArenaModuleManager {
 	 * @param types
 	 *            the settings map
 	 */
-	public void addSettings(Arena arena, HashMap<String, String> types) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.addSettings(types);
-		}
+	public void addSettings(HashMap<String, String> types) {
 	}
 
-	/**
-	 * hook into announcement 
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
 	public void announceCustom(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceCustom(arena, message);
-		}
+		
 	}
 
 	/**
@@ -106,10 +78,6 @@ public class ArenaModuleManager {
 	 *            the message to display
 	 */
 	public void announceLoser(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceLoser(arena, message);
-		}
 	}
 
 	/**
@@ -121,10 +89,6 @@ public class ArenaModuleManager {
 	 *            the message to display
 	 */
 	public void announcePrize(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announcePrize(arena, message);
-		}
 	}
 
 	/**
@@ -136,24 +100,20 @@ public class ArenaModuleManager {
 	 *            the message to display
 	 */
 	public void announceWinner(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceWinner(arena, message);
-		}
+	}
+	
+	public PACheckResult checkJoin(Arena arena, CommandSender sender,
+			PACheckResult res, boolean b) {
+		return res;
 	}
 
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
-		String error = null;
-		for (ArenaModule mod : modules) {
-			if (!mod.isActive(arena)) {
-				continue;
-			}
-			error = mod.checkSpawns(list);
-			if (error != null) {
-				return error;
-			}
-		}
 		return null;
+	}
+
+	public PACheckResult checkStart(Arena arena, ArenaPlayer ap,
+			PACheckResult res) {
+		return res;
 	}
 
 	/**
@@ -167,10 +127,9 @@ public class ArenaModuleManager {
 	 *            the colored team name being chosen
 	 */
 	public void choosePlayerTeam(Arena arena, Player player, String coloredTeam) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.choosePlayerTeam(arena, player, coloredTeam);
-		}
+	}
+
+	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
 	}
 
 	/**
@@ -183,11 +142,6 @@ public class ArenaModuleManager {
 	 * @return true if an error occured and further processing should be avoided
 	 */
 	public boolean commitEnd(Arena arena, ArenaTeam aTeam) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena) && mod.commitEnd(arena, aTeam)) {
-				return true;
-			}
-		}
 		return false;
 	}
 
@@ -203,10 +157,6 @@ public class ArenaModuleManager {
 	 */
 	public void commitPlayerDeath(Arena arena, Player player,
 			EntityDamageEvent cause) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.commitPlayerDeath(arena, player, cause);
-		}
 	}
 
 	/**
@@ -218,27 +168,15 @@ public class ArenaModuleManager {
 	 *            the config being parsed
 	 */
 	public void configParse(Arena arena, YamlConfiguration config) {
-		for (ArenaModule mod : modules) {
-			mod.configParse(arena, config);
-		}
 	}
 
-	/**
-	 * search modules by module name
-	 * 
-	 * @param mName
-	 *            the module name to find
-	 * @return the module if found, null otherwise
-	 */
-	public ArenaModule getModule(String mName) {
-		for (ArenaModule mod : modules) {
-			if (mod.getName().equalsIgnoreCase(mName)) {
-				return mod;
-			}
-		}
-		return null;
+	public void displayInfo(Arena arena, CommandSender sender) {
 	}
 
+	public HashSet<String> getAddedSpawns() {
+		return new HashSet<String>();
+	}
+	
 	/**
 	 * hook into giving players the rewards
 	 * 
@@ -248,10 +186,6 @@ public class ArenaModuleManager {
 	 *            the player being rewarded
 	 */
 	public void giveRewards(Arena arena, Player player) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.giveRewards(arena, player);
-		}
 	}
 
 	/**
@@ -261,21 +195,20 @@ public class ArenaModuleManager {
 	 *            the player being checked
 	 * @param perms
 	 *            the node being checked
-	 * @return true if permission is found and further processing should be
-	 *         avoided
+	 * @return true or false if permission is found and further processing should be
+	 *         avoided, null if ignored
 	 */
-	public boolean hasPerms(Arena arena, CommandSender player, String perms) {
-		Boolean has = null;
-		for (ArenaModule mod : modules) {
-			if (!mod.isActive(arena)) {
-				continue;
-			}
-			has = mod.hasPerms(player, perms);
-			if (has != null) {
-				return has;
-			}
-		}
-		return player.hasPermission(perms);
+	public Boolean hasPerms(CommandSender player, String perms) {
+		return null;
+	}
+
+	/**
+	 * check if a module needs a certain spawn
+	 * @param string the spawn to find
+	 * @return true if the spawn is found, false otherwise
+	 */
+	public boolean hasSpawn(String string) {
+		return false;
 	}
 
 	/**
@@ -285,10 +218,18 @@ public class ArenaModuleManager {
 	 *            the language configuration
 	 */
 	public void initLanguage(YamlConfiguration config) {
-		for (ArenaModule mod : modules) {
-			mod.initLanguage(config);
-		}
 	}
+
+	/**
+	 * check if the module is activated for that arena, this is very much needed to
+	 * ensure modules don't affect arenas where it's not wanted
+	 * @param arena the arena to check
+	 * @return true if the module is used, false otherwise
+	 */
+	public boolean isActive(Arena arena) {
+		return false;
+	}
+
 
 	/**
 	 * hook into joining of a player while the fight is running
@@ -299,16 +240,12 @@ public class ArenaModuleManager {
 	 *            the joining player
 	 */
 	public void lateJoin(Arena arena, Player player) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.lateJoin(arena, player);
-		}
 	}
 
+	/**
+	 * hook into loading of all arenas
+	 */
 	public void load_arenas() {
-		for (ArenaModule mod : modules) {
-			mod.load_arenas();
-		}
 	}
 
 	/**
@@ -320,24 +257,12 @@ public class ArenaModuleManager {
 	 *            the BlockBreakEvent
 	 */
 	public void onBlockBreak(Arena arena, Block block) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onBlockBreak(arena, block);
-		}
 	}
 
 	public void onBlockChange(Arena arena, Block block, BlockState state) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onBlockChange(arena, block, state);
-		}
 	}
 
 	public void onBlockPiston(Arena arena, Block block) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onBlockPiston(arena, block);
-		}
 	}
 
 	/**
@@ -349,19 +274,26 @@ public class ArenaModuleManager {
 	 *            the BlockPlaceEvent
 	 */
 	public void onBlockPlace(Arena arena, Block block, Material mat) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onBlockPlace(arena, block, mat);
-		}
 	}
 
 	/**
 	 * hook into the plugin onEnable method
 	 */
 	public void onEnable() {
-		for (ArenaModule mod : modules) {
-			mod.onEnable();
-		}
+	}
+
+	/**
+	 * hook into an arena EntityDamageByEntityEvent (TNT)
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param defender
+	 *            the player receiving damage
+	 * @param event
+	 *            the EntityDamageByEntityEvent
+	 */
+	public void onEntityDamageByBlockDamage(Arena arena, Player defender,
+			EntityDamageByEntityEvent event) {
 	}
 
 	/**
@@ -376,30 +308,8 @@ public class ArenaModuleManager {
 	 * @param event
 	 *            the EntityDamageByEntityEvent
 	 */
-	public void onEntityDamageByBlockDamage(Arena arena, Player defender,
-			EntityDamageByEntityEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onEntityDamageByBlockDamage(arena, defender, event);
-		}
-	}
-
-	/**
-	 * hook into an arena EntityDamageByEntityEvent (TNT)
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param defender
-	 *            the player receiving damage
-	 * @param event
-	 *            the EntityDamageByEntityEvent
-	 */
 	public void onEntityDamageByEntity(Arena arena, Player attacker,
 			Player defender, EntityDamageByEntityEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onEntityDamageByEntity(arena, attacker, defender, event);
-		}
 	}
 
 	/**
@@ -411,10 +321,6 @@ public class ArenaModuleManager {
 	 *            the EntityExplodeEvent
 	 */
 	public void onEntityExplode(Arena arena, EntityExplodeEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onEntityExplode(arena, event);
-		}
 	}
 
 	/**
@@ -426,17 +332,10 @@ public class ArenaModuleManager {
 	 *            the EntityRegainHealthEvent
 	 */
 	public void onEntityRegainHealth(Arena arena, EntityRegainHealthEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onEntityRegainHealth(arena, event);
-		}
 	}
 
 	public void onPaintingBreak(Arena arena, Painting painting, EntityType type) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onPaintingBreak(arena, painting, type);
-		}
+		
 	}
 
 	/**
@@ -447,12 +346,7 @@ public class ArenaModuleManager {
 	 * @return true if a valid interaction was found and further processing
 	 *         should be aborted
 	 */
-	public boolean onPlayerInteract(Arena arena, PlayerInteractEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena) && mod.onPlayerInteract(event)) {
-				return true;
-			}
-		}
+	public boolean onPlayerInteract(PlayerInteractEvent event) {
 		return false;
 	}
 
@@ -465,10 +359,6 @@ public class ArenaModuleManager {
 	 *            the PlayerPickupItemEvent
 	 */
 	public void onPlayerPickupItem(Arena arena, PlayerPickupItemEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onPlayerPickupItem(arena, event);
-		}
 	}
 
 	/**
@@ -480,10 +370,6 @@ public class ArenaModuleManager {
 	 *            the PlayerTeleportEvent
 	 */
 	public void onPlayerTeleport(Arena arena, PlayerTeleportEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onPlayerTeleport(arena, event);
-		}
 	}
 
 	/**
@@ -495,10 +381,6 @@ public class ArenaModuleManager {
 	 *            the PlayerVelocityEvent
 	 */
 	public void onPlayerVelocity(Arena arena, PlayerVelocityEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onPlayerVelocity(arena, event);
-		}
 	}
 
 	/**
@@ -507,11 +389,11 @@ public class ArenaModuleManager {
 	 * @param event
 	 *            the SignChangeEvent
 	 */
-	public void onSignChange(Arena arena, SignChangeEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.onSignChange(event);
-		}
+	public void onSignChange(SignChangeEvent event) {
+	}
+
+	public boolean parseCommand(String s) {
+		return false;
 	}
 
 	/**
@@ -523,10 +405,6 @@ public class ArenaModuleManager {
 	 *            the player being messaged
 	 */
 	public void parseInfo(Arena arena, CommandSender player) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseInfo(arena, player);
-		}
 	}
 
 	/**
@@ -534,31 +412,26 @@ public class ArenaModuleManager {
 	 * 
 	 * @param arena
 	 *            the area where this happens
-	 * @param player
+	 * @param sender
 	 *            the joining player
-	 * @param coloredTeam
+	 * @param team
 	 *            the colored team name
 	 */
-	public void parseJoin(Arena arena, Player player, ArenaTeam coloredTeam) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseJoin(arena, player, coloredTeam);
-		}
+	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 	}
 
-	/**
-	 * hook into an arena PlayerMoveEvent
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param event
-	 *            the PlayerMoveEvent
-	 */
+	public void parseLeave(Arena arena, Player player) {
+		
+	}
+
 	public void parseMove(Arena arena, PlayerMoveEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseMove(arena, event);
-		}
+	}
+
+	public void parseRespawn(Arena arena, Player player, ArenaTeam team,
+			DamageCause cause, Entity damager) {
+	}
+
+	public void parseSpectate(Arena arena, Player player) {
 	}
 
 	/**
@@ -572,19 +445,6 @@ public class ArenaModuleManager {
 	 *            the team the player was in before
 	 */
 	public void playerLeave(Arena arena, Player player, ArenaTeam team) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.playerLeave(arena, player, team);
-		}
-	}
-	
-	public void reload() {
-		modules = loader.reload();
-
-		for (ArenaModule mod : modules) {
-			db.i("module ArenaModule loaded: "
-					+ mod.getName() + " (version " + mod.version() +")");
-		}
 	}
 
 	/**
@@ -596,10 +456,6 @@ public class ArenaModuleManager {
 	 *            true, if the arena is being forcefully reset
 	 */
 	public void reset(Arena arena, boolean force) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.reset(arena, force);
-		}
 	}
 
 	/**
@@ -611,10 +467,6 @@ public class ArenaModuleManager {
 	 *            the player being reset
 	 */
 	public void resetPlayer(Arena arena, Player player) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.resetPlayer(arena, player);
-		}
 	}
 
 	/**
@@ -624,10 +476,6 @@ public class ArenaModuleManager {
 	 *            the starting arena
 	 */
 	public void teleportAllToSpawn(Arena arena) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.teleportAllToSpawn(arena);
-		}
 	}
 
 	/**
@@ -639,10 +487,6 @@ public class ArenaModuleManager {
 	 *            the remaining players
 	 */
 	public void timedEnd(Arena arena, HashSet<String> result) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.timedEnd(arena, result);
-		}
 	}
 
 	/**
@@ -656,14 +500,6 @@ public class ArenaModuleManager {
 	 *            the place being teleported to
 	 */
 	public void tpPlayerToCoordName(Arena arena, Player player, String place) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.tpPlayerToCoordName(arena, player, place);
-		}
-	}
-	
-	public void unload() {
-		loader.unload();
 	}
 
 	/**
@@ -672,44 +508,9 @@ public class ArenaModuleManager {
 	 * @param player the player to unload
 	 */
 	public void unload(Player player) {
-		for (ArenaModule mod : modules) {
-			mod.unload(player);
-		}
 	}
-
-	public List<ArenaModule> getModules() {
-		return modules;
-	}
-
-	public HashSet<String> getAddedSpawns(Arena arena) {
-		HashSet<String> result = new HashSet<String>();
-		
-		for (ArenaModule mod : modules) {
-			if (!mod.isActive(arena)) {
-				continue;
-			}
-			HashSet<String> add = mod.getAddedSpawns();
-			for (String s : add) {
-				result.add(s);
-			}
-		}
-		
-		return result;
-	}
-
-	public boolean parseCommand(Arena arena, String s) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena) && mod.parseCommand(s)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void parseRespawn(Arena arena, Player player, ArenaTeam team, DamageCause cause, Entity damager) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseRespawn(arena, player, team, cause, damager);
-		}
+	
+	public String version() {
+		return "outdated";
 	}
 }

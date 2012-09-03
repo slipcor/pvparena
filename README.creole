@@ -56,41 +56,38 @@ A PVP experience enhancing plugin.
 ** enormous rewrite considering renaming, restructuring, improvements during 1.0 development
 ** intense command rewrite
 ** <<<<< updated commits of v0.8.12.5 >>>>>
+** allow other-world-spawns
+** flatfile inventories for restoring
+** [PVP Arena] [arenaname] -> format properly
+** arena welcome message per arena
+** check what to repair on interact / hit (dont reset every freaking block :p )
+** intelligent and case insensitive arena guessing
+** ready up with /pa ready
 
 -----------------------------------------------------------------------------------------------------------------------
 
 === Todo
 
-** allow other-world-spawns
-** flatfile inventories for restoring
-** rounds - full restart to "tpalltospawns"
-** join via position / portal / etc
-** [PVP Arena] [arenaname] -> format properly
-** arena welcome message per arena
+* plugin
+** /pa duel [arenaname] [duelplayer] --> start 1:1
+** add item spawns: [time | item | location]
+** parse configs differently (yaml is bad :) )
+** rounds - full restart to "tpalltospawns" (best of X | X)
 ** teleport -> 2L -> inv save
 ** inv restore -> 2L -> teleport
-* parse configs differently (yaml is bad :) )
-* check what to repair on interact / hit (dont reset every freaking block :p )
-* WorldEdit & WorldGuard hooking (via module)
-* Map switch via WorldEdit (someone told me this would be damn quick .. :) )
-* intelligent and case insensitive arena guessing
-* rounds (best of X | X)
-* commands when joining / leaving (console and/or by player)
-* new loader
-* join via position / portal / etc
-* [PVP Arena] [arenaname] -> format properly
-* arena welcome message per arena
-* fix inventory restoring with multiverse etc
-* /pa duel [arenaname] [duelplayer] --> start 1:1
-* /pa ready || /pa r || ready up!
+* modules
+** commands when joining / leaving (console and/or by player)
+** join via position / portal / etc
+** WorldEdit & WorldGuard hooking (via module)
+** Map switch via WorldEdit (someone told me this would be damn quick .. :) )
+** IRC (announcements)
+** player relay (stick players into a dark room while: joining / being dead / having lost)
+* goals
+** tournament arenas ; rounds switch through arenas
+** king of the hill -> FFAEN
 * add region checks to:
 ** join the lounge
 ** join a ready region
-* add item spawns: [time | item | location]
-* tournament arenas ; rounds switch through arenas
-* king of the hill -> FFAEN
-* IRC (announcements)
-* player relay (stick players into a dark room while: joining / being dead / having lost)
 
 -----------------------------------------------------------------------------------------------------------------------
 

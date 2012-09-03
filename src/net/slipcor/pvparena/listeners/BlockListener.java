@@ -7,8 +7,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

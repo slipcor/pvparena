@@ -1,7 +1,7 @@
 name: pvparena
 author: slipcor
 main: net.slipcor.pvparena.PVPArena
-version: 0.9.0.0
+version: 0.9.0.15
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena
 commands:
@@ -10,6 +10,10 @@ commands:
         aliases: ['pa']
         usage: |
             /pvparena help
+            /pvparena help admin | help administrating
+            /pvparena help setup | help setting up
+            /pvparena help game | help ingame
+            /pvparena help info | help getting information
 permissions:
     pvparena.*:
         description: Gives access to all commands

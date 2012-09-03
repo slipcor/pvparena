@@ -11,6 +11,7 @@ import java.nio.channels.ReadableByteChannel;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.commands.PAA__Command;
+import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
 import net.slipcor.pvparena.core.Debug;
@@ -23,14 +24,14 @@ import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaModule;
-import net.slipcor.pvparena.neworder.ArenaModuleManager;
-import net.slipcor.pvparena.neworder.ArenaRegionShapeManager;
-import net.slipcor.pvparena.neworder.ArenaGoalManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -164,19 +165,32 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		Arena a = ArenaManager.getArenaByName(args[0]);
-
+		
+		if (a == null) {
+			if (ArenaManager.count() == 1) {
+				a = ArenaManager.getFirst();
+				System.out.print("count==1 - " + StringParser.joinArray(args, "|"));
+			} else if (ArenaManager.count() < 1) {
+				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
+				return true;
+			}
+		}
+		
 		if (a == null) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, args[0]));
 			return true;
 		}
 
-		PAA__Command paacmd = PAA__Command.getByName(args[1]);
+		PAA__Command paacmd = PAA__Command.getByName(args[0]);
+		if (paacmd == null && a.getArenaConfig().getBoolean("general.cmdfailjoin")) {
+			paacmd = new PAG_Join();
+		}
 		if (paacmd != null) {
 			db.i("committing: " + paacmd.getName());
-			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 2));
+			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
-
+		
 		return false;
 	}
 
@@ -205,6 +219,8 @@ public class PVPArena extends JavaPlugin {
 		arsm = new ArenaRegionShapeManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
+		
+		StatisticsManager.initialize();
 		ArenaPlayer.initiate();
 
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
@@ -219,8 +235,6 @@ public class PVPArena extends JavaPlugin {
 			getConfig().set("ver", config_version);
 			saveConfig();
 		}
-
-		StatisticsManager.initialize();
 
 		Debug.load(this, Bukkit.getConsoleSender());
 		ArenaManager.load_arenas();

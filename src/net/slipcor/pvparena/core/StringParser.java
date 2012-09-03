@@ -266,7 +266,7 @@ public class StringParser {
 		for (Object o : set) {
 			result += glue + String.valueOf(o);
 		}
-		return result.substring(glue.length());
+		return result.equals("")?"":result.substring(glue.length());
 	}
 	
 	private static String parseDyeColorToChatColor(String color, boolean forward) {
@@ -341,6 +341,13 @@ public class StringParser {
 	public static String[] shiftArrayBy(String[] args, int i) {
 		String[] newArgs = new String[args.length - i];
 		System.arraycopy(args, i, newArgs, 0, args.length - i);
+		args = newArgs;
+		
+		return args;
+	}
+	public static String[] unShiftArrayBy(String[] args, int i) {
+		String[] newArgs = new String[args.length + i];
+		System.arraycopy(args, 0, newArgs, 1, args.length);
 		args = newArgs;
 		
 		return args;

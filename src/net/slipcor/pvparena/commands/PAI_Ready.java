@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
 import java.util.HashSet;
 
 
@@ -11,7 +10,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.neworder.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
@@ -38,7 +37,7 @@ public class PAI_Ready extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(0, 1)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		

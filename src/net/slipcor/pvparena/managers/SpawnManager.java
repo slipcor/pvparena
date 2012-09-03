@@ -73,19 +73,19 @@ public class SpawnManager {
 	/**
 	 * get the nearest spawn location from a location
 	 * 
-	 * @param spawns
+	 * @param hashSet
 	 *            the spawns to check
 	 * @param location
 	 *            the location to check
 	 * @return the spawn location next to the location
 	 */
-	public static Location getNearest(HashSet<Location> spawns,
-			Location location) {
-		Location result = null;
+	public static PALocation getNearest(HashSet<PALocation> hashSet,
+			PALocation location) {
+		PALocation result = null;
 
-		for (Location loc : spawns) {
+		for (PALocation loc : hashSet) {
 			if (result == null
-					|| result.distance(location) > loc.distance(location)) {
+					|| result.getDistance(location) > loc.getDistance(location)) {
 				result = loc;
 			}
 		}

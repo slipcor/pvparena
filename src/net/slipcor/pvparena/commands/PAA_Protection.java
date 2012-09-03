@@ -1,17 +1,13 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.neworder.ArenaRegionShape;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionFlag;
-import net.slipcor.pvparena.neworder.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 
 import org.bukkit.command.CommandSender;
 
@@ -39,7 +35,7 @@ public class PAA_Protection extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new HashSet<Integer>(Arrays.asList(2,3)))) {
+		if (!this.argCountValid(sender, arena, args, new Integer[]{2,3})) {
 			return;
 		}
 		

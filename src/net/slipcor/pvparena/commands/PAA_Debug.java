@@ -1,9 +1,5 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import org.bukkit.command.CommandSender;
@@ -30,7 +26,7 @@ public class PAA_Debug extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new HashSet<Integer>(Arrays.asList(0, 1)))) {
+		if (!this.argCountValid(sender, args, new Integer[]{0,1})) {
 			return;
 		}
 		

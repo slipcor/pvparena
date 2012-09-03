@@ -1,8 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -10,8 +8,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.neworder.ArenaGoal;
-import net.slipcor.pvparena.neworder.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,7 +37,7 @@ public class PAA_Uninstall extends PA__Command {
 		}
 
 		if (!this.argCountValid(sender, args,
-				new HashSet<Integer>(Arrays.asList(0, 1)))) {
+				new Integer[]{0,1})) {
 			return;
 		}
 
