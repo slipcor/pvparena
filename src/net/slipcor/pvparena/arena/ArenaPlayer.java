@@ -106,6 +106,10 @@ public class ArenaPlayer {
 		this.name = p.getName();
 		this.setArena(a);
 		this.sPlayer = p.getName();
+		
+		if (!PVPArena.instance.getConfig().getBoolean("statistics", false)) {
+			return;
+		}
 
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {

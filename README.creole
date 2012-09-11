@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.6 - fix unnecessary login lag for big servers that don't use statistics
 * v0.8.12.5 - attemt to fix inventory loss and dislocated players on server crashs
 * v0.8.12.4 - fix the team arena overriding a free arena creation
 * v0.8.12.3 - trimmed some unneeded methods, ingame gamemode change with /pa [] settype
