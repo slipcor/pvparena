@@ -289,12 +289,12 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (ArenaRegionShape.checkRegionSetPosition(event, player)) {
+		if (PVPArena.instance.getAgm().checkSetFlag(player, event.getClickedBlock())) {
 			db.i("returning: #2");
 			return;
 		}
 
-		if (PVPArena.instance.getAgm().checkSetFlag(player, event.getClickedBlock())) {
+		if (ArenaRegionShape.checkRegionSetPosition(event, player)) {
 			db.i("returning: #3");
 			return;
 		}

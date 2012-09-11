@@ -110,6 +110,31 @@ public class ArenaGoalManager {
 		return true;
 	}
 
+	public ArenaGoal checkCommand(Arena arena, String string) {
+		int priority = 0;
+		PACheckResult res = new PACheckResult();
+		
+		ArenaGoal commit = null;
+		
+		for (ArenaGoal mod : arena.getGoals()) {
+			res = mod.checkCommand(res, string);
+			if (res.getPriority() > priority && priority >= 0) {
+				// success and higher priority
+				priority = res.getPriority();
+				commit = mod;
+			} else if (res.getPriority() < 0 || priority < 0) {
+				// fail
+				priority = res.getPriority();
+				commit = null;
+			}
+		}
+		
+		if (res.hasError()) {
+			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+		}
+		return commit;
+	}
+
 	public void checkInteract(Arena arena, Player player, Block clickedBlock) {
 
 		int priority = 0;
@@ -143,11 +168,13 @@ public class ArenaGoalManager {
 	}
 
 	public boolean checkSetFlag(Player player, Block block) {
-		Arena arena = PAA_Region.activeSelections.get(player);
+		Arena arena = PAA_Region.activeSelections.get(player.getName());
+		System.out.print("checksetflag committing");
 		
 		if (arena == null) {
 			return false;
 		}
+		System.out.print("checksetflag arena found");
 		
 		int priority = 0;
 		PACheckResult res = new PACheckResult();
@@ -155,15 +182,18 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
+			System.out.print("checking: " + mod.getName());
 			res = mod.checkSetFlag(res, player, block);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
 				commit = mod;
+				System.out.print("> updating to " + priority);
 			} else if (res.getPriority() < 0 || priority < 0) {
 				// fail
 				priority = res.getPriority();
 				commit = null;
+				System.out.print("> nullifying");
 			}
 		}
 		
@@ -173,8 +203,10 @@ public class ArenaGoalManager {
 		}
 		
 		if (commit == null) {
+			System.out.print("checksetflag commit null");
 			return false;
 		}
+		System.out.print("committing: " + commit.getName());
 		
 		return commit.commitSetFlag(player, block);
 	}

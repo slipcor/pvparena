@@ -274,9 +274,22 @@ public class ConfigurationManager {
 		Set<String> list = arena.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false).keySet();
 
+		String sExit = arena.getArenaConfig().getString("tp.exit");
+		if (!sExit.equals("old") && !list.contains(sExit))
+			return "Exit Spawn ('"+sExit+"') not set!";
+
+		String sWin = arena.getArenaConfig().getString("tp.win");
+		if (!sWin.equals("old") && !list.contains(sWin))
+			return "Win Spawn ('"+sWin+"') not set!";
+
+		String sLose = arena.getArenaConfig().getString("tp.lose");
+		if (!sLose.equals("old") && !list.contains(sLose))
+			return "Lose Spawn ('"+sLose+"') not set!";
+
+		String sDeath = arena.getArenaConfig().getString("tp.death");
+		if (!sDeath.equals("old") && !list.contains(sDeath))
+			return "Death Spawn ('"+sDeath+"') not set!";
 		
-		if (!list.contains("exit"))
-			return "exit not set";
 		String error = PVPArena.instance.getAmm().checkForMissingSpawns(arena, list);
 		if (error != null) {
 			return error;

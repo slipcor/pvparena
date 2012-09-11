@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -14,12 +15,10 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
 
 /**
- * <pre>Arena Goal class "PlayerLives"</pre>
+ * <pre>Arena Goal class "PlayerDeathMatch"</pre>
  * 
  * The first Arena Goal. Players have lives. When every life is lost, the player
  * is teleported to the spectator spawn to watch the rest of the fight.
@@ -29,9 +28,9 @@ import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
  * @version v0.9.0
  */
 
-public class GoalPlayerLives extends ArenaGoal {
-	public GoalPlayerLives(Arena arena) {
-		super(arena, "PlayerLives");
+public class GoalPlayerDeathMatch extends ArenaGoal {
+	public GoalPlayerDeathMatch(Arena arena) {
+		super(arena, "PlayerDeathMatch");
 		db = new Debug(101);
 	}
 
@@ -57,50 +56,46 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 	
 	@Override
-	public GoalPlayerLives clone() {
-		return new GoalPlayerLives(arena);
+	public GoalPlayerDeathMatch clone() {
+		return new GoalPlayerDeathMatch(arena);
 	}
 
 	@Override
 	public void commitPlayerDeath(Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
-		if (!lives.containsKey(player.getName())) {
+		
+		Player ex = player;
+		
+		if (player.getKiller() == null && !lives.containsKey(player.getKiller().getName())) {
 			return;
 		}
+		player = player.getKiller();
+		
 		int i = lives.get(player.getName());
-		db.i("lives before death: " + i);
+		db.i("kills to go: " + i);
 		if (i < 1) {
-			if (!arena.getArenaConfig().getBoolean("game.preventDeath")) {
-				return; // stop
-				// player died => commit death!
-			}
-			db.i("faking player death");
-
-			PlayerListener.finallyKillPlayer(arena, player, event);
+			// player has won!
 		} else {
 			i--;
 			lives.put(player.getName(), i);
 
-			new InventoryRestoreRunnable(arena, player, event.getDrops(), 0);
-			arena.respawnPlayer(player, event.getEntity()
-					.getLastDamageCause().getCause(), player.getKiller());
-
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
-			
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
-					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-					arena.parseDeathCause(player, event.getEntity()
-							.getLastDamageCause().getCause(), player.getKiller()),
+			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
+					player.getName() + ChatColor.YELLOW,
+					arena.parseDeathCause(ex, event.getEntity()
+							.getLastDamageCause().getCause(), player),
 					String.valueOf(i)));
-			this.lives.put(player.getName(), i);
-			arena.tpPlayerToCoordName(player, respawnTeam.getName()
-					+ "spawn");
+			arena.tpPlayerToCoordName(player, "spawn");
 		}
 	}
 
 	@Override
+	public void configParse(YamlConfiguration config) {
+		config.addDefault("game.deathmatchlives", 10);
+	}
+
+	@Override
 	public void displayInfo(CommandSender sender) {
-		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.lives"));
+		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.deathmatchlives"));
 	}
 
 	@Override
@@ -113,7 +108,7 @@ public class GoalPlayerLives extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt("game.lives", 3));
+						.put(ap.getName(), arena.getArenaConfig().getInt("game.deathmatchlives", 3));
 			}
 		}
 	}

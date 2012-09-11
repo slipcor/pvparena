@@ -13,18 +13,16 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * <pre>Arena Goal class "PlayerLives"</pre>
+ * <pre>Arena Goal class "TeamDeathMatch"</pre>
  * 
  * The second Arena Goal. Arena Teams have lives. When every life is lost, the team
  * is teleported to the spectator spawn to watch the rest of the fight.
@@ -34,9 +32,9 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * @version v0.9.0
  */
 
-public class GoalTeamLives extends ArenaGoal {
-	public GoalTeamLives(Arena arena) {
-		super(arena, "TeamLives");
+public class GoalTeamDeathMatch extends ArenaGoal {
+	public GoalTeamDeathMatch(Arena arena) {
+		super(arena, "TeamDeathMatch");
 		db = new Debug(102);
 	}
 	private final HashMap<String, Integer> lives = new HashMap<String, Integer>(); // flags
@@ -47,8 +45,8 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 	
 	@Override
-	public GoalTeamLives clone() {
-		return new GoalTeamLives(arena);
+	public GoalTeamDeathMatch clone() {
+		return new GoalTeamDeathMatch(arena);
 	}
 	
 	@Override
@@ -77,18 +75,16 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public PACheckResult checkEnd(PACheckResult res) {
-		int priority = 2;
+		int priority = 3;
 		
-		if (res.getPriority() > 2) {
+		if (res.getPriority() > priority) {
 			return res;
 		}
 		
-		int count = TeamManager.countActiveTeams(arena);
-
-		if (count == 1) {
-			res.setPriority(priority); // yep. only one team left. go!
-		} else if (count == 0) {
-			res.setError("No teams playing!");
+		for (String teamName : lives.keySet()) {
+			if (lives.get(teamName) < 1) {
+				res.setPriority(priority); // yep. one has won!
+			}
 		}
 
 		return res;
@@ -120,15 +116,12 @@ public class GoalTeamLives extends ArenaGoal {
 
 		ArenaTeam aTeam = null;
 		
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (ap.getStatus().equals(Status.FIGHT)) {
-					aTeam = team;
-					break;
-				}
+		for (String teamName : lives.keySet()) {
+			if (lives.get(teamName) < 1) {
+				aTeam = arena.getTeam(teamName);
 			}
 		}
-
+		
 		if (aTeam != null) {
 			PVPArena.instance.getAmm().announceWinner(arena,
 					Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()));
@@ -145,7 +138,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public void configParse(YamlConfiguration config) {
-		config.addDefault("game.teamlives", 10);
+		config.addDefault("game.teamdmlives", 10);
 
 		if (arena.getArenaConfig().get("flagColors") == null) {
 			db.i("no flagheads defined, adding white and black!");
@@ -157,7 +150,7 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void displayInfo(CommandSender sender) {
 		sender.sendMessage("teams: " + StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
-		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.teamlives"));
+		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.teamdmlives"));
 	}
 
 	@Override
@@ -210,7 +203,12 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
-		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+		
+		if (respawnPlayer.getKiller() == null) {
+			return;
+		}
+		
+		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getKiller().getName()).getArenaTeam();
 		reduceLives(arena, respawnTeam);
 		
 		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
@@ -224,14 +222,7 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 	
 	private void reduceLives(Arena arena, ArenaTeam player) {
-		int i = this.lives.get(player.getName());
-		
-		if (i <= 1) {
-			lives.remove(player.getName());
-			return;
-		}
-		
-		lives.put(player.getName(), i-1);
+		lives.put(player.getName(), this.lives.get(player.getName())-1);
 	}
 
 	@Override
@@ -244,7 +235,7 @@ public class GoalTeamLives extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt("game.teamlives", 10));
+						.put(ap.getName(), arena.getArenaConfig().getInt("game.teamdmlives", 10));
 			}
 		}
 	}

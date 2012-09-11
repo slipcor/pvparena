@@ -1,18 +1,13 @@
 package net.slipcor.pvparena.modules;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -26,8 +21,6 @@ import org.bukkit.entity.Player;
  */
 
 public class StandardSpectate extends ArenaModule {
-	
-	private int priority = 2;
 
 	public StandardSpectate() {
 		super("StandardSpectate");

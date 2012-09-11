@@ -153,7 +153,9 @@ public class Language {
 		
 		FIGHT_BEGINS("nulang.fight.begins", "Let the fight begin!"),
 		FIGHT_KILLED_BY_REMAINING("nulang.fight.killedbyremaining", "%1% has been killed by %2%! %3% lives remaining."),
-		FIGHT_KILLED_BY_REMAINING_TEAM("nulang.fight.killedbyremaining", "%1% has been killed by %2%! %3% lives remaining for %4%."),
+		FIGHT_KILLED_BY_REMAINING_FRAGS("nulang.fight.killedbyremainingfrags", "%1% has been killed by %2%! %3% kills remaining."),
+		FIGHT_KILLED_BY_REMAINING_TEAM("nulang.fight.killedbyremainingteam", "%1% has been killed by %2%! %3% lives remaining for %4%."),
+		FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS("nulang.fight.killedbyremainingteamfrags", "%1% has been killed by %2%! %3% kills remaining for %4%."),
 		FIGHT_KILLED_BY("nulang.fight.killedby", "%1% has been killed by %2%!"),
 		FIGHT_PLAYER_LEFT("nulang.fight.playerleft", "%1% has left the fight!"),
 		
@@ -196,6 +198,8 @@ public class Language {
 		
 		MESSAGES_GLOBALOFF("nulang.messages.globaloff", "You are now only talking inside the arena!"),
 		MESSAGES_GLOBALON("nulang.messages.globalon", "You are now talking to the public!"),
+		
+		
 		
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 		

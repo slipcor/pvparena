@@ -445,8 +445,8 @@ public class Arena {
 
 	public boolean goalToggle(ArenaGoal goal) {
 		if (goals.contains(goal)) {
-			updateGoals();
 			goals.remove(goal);
+			updateGoals();
 			return false;
 		} else {
 			goals.add(goal);
@@ -817,7 +817,7 @@ public class Arena {
 				p.reset();
 			} else {
 				resetPlayer(p.get(),
-						getArenaConfig().getString("tp.lose", "exit"), false);
+						getArenaConfig().getString("tp.lose", "old"), false);
 			}
 		}
 	}
@@ -1003,10 +1003,12 @@ public class Arena {
 
 	public void spawnSet(String node, PALocation paLocation) {
 		cfg.set("spawns." + node, Config.parseToString(paLocation));
+		cfg.save();
 	}
 
 	public void spawnUnset(String node) {
 		cfg.set("spawns." + node, null);
+		cfg.save();
 	}
 
 	/**

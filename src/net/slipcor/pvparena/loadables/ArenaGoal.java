@@ -49,6 +49,10 @@ public class ArenaGoal extends Loadable implements Cloneable {
 		return false;
 	}
 
+	public PACheckResult checkCommand(PACheckResult res, String string) {
+		return res;
+	}
+
 	public PACheckResult checkEnd(PACheckResult res) {
 		return res;
 	}
@@ -114,6 +118,9 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	@Override
 	public ArenaGoal clone() {
 		return new ArenaGoal(this.arena, this.getName());
+	}
+
+	public void commitCommand(CommandSender sender, String[] args) {
 	}
 
 	public void commitEnd() {

@@ -166,7 +166,10 @@ public class PVPArena extends JavaPlugin {
 
 		Arena a = ArenaManager.getArenaByName(args[0]);
 		
+		String name = args[0];
+		
 		if (a == null) {
+			System.out.print("a==null");
 			if (ArenaManager.count() == 1) {
 				a = ArenaManager.getFirst();
 				System.out.print("count==1 - " + StringParser.joinArray(args, "|"));
@@ -174,15 +177,28 @@ public class PVPArena extends JavaPlugin {
 				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
 				return true;
 			}
+		} else {
+			if (args != null && args.length > 1)
+				args = StringParser.shiftArrayBy(args, 1);
 		}
 		
 		if (a == null) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, args[0]));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
 			return true;
 		}
+		
 
 		PAA__Command paacmd = PAA__Command.getByName(args[0]);
+		if (paacmd == null) {
+			ArenaGoal goal = PVPArena.instance.getAgm().checkCommand(a, args[0]);
+			if (goal != null) {
+				goal.commitCommand(sender, args);
+				return true;
+			}
+		}
+
 		if (paacmd == null && a.getArenaConfig().getBoolean("general.cmdfailjoin")) {
+			System.out.print("cmdfailjoin - " + StringParser.joinArray(args, "|"));
 			paacmd = new PAG_Join();
 		}
 		if (paacmd != null) {

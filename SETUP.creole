@@ -46,7 +46,7 @@ region:[regionname]:[regiontype]:[regionshape]:[radius]+[height]+[position]:[pro
 
 ------------------------------------------------------
 
-now define your spawns.
+now define your SpawnManager.
 
 #place spawns absolutely random
 spawns:random

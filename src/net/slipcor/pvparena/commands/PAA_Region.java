@@ -55,6 +55,7 @@ public class PAA_Region extends PAA__Command {
 				return;
 			}
 			// selecting now!
+			activeSelections.put(sender.getName(), arena);
 			arena.msg(sender, Language.parse(MSG.REGION_YOUSELECT, arena.getName()));
 			arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
 			return;
