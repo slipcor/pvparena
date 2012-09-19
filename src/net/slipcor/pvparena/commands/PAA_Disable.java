@@ -2,6 +2,7 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 
@@ -38,7 +39,7 @@ public class PAA_Disable extends PAA__Command {
 		PAA_Stop cmd = new PAA_Stop();
 		cmd.commit(arena, sender, new String[0]);
 		
-		arena.getArenaConfig().set("enabled", false);
+		arena.getArenaConfig().set(CFG.GENERAL_ENABLED, false);
 		arena.getArenaConfig().save();
 		arena.setLocked(true);
 		

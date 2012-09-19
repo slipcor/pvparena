@@ -2,6 +2,8 @@ package net.slipcor.pvparena.regions;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
@@ -135,7 +137,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
 			return thisCenter.getDistance(thisCenter) <= (thatRadius+thisRadius);
 		} else {
-			System.out.print("Region Shape not supported: " + paRegion.getShape().name());
+			PVPArena.instance.getLogger().warning("Region Shape not supported: " + paRegion.getShape().name());
 		}
 		return false;
 	}

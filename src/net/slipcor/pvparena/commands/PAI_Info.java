@@ -1,7 +1,10 @@
 package net.slipcor.pvparena.commands;
 
+import java.util.HashSet;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -39,8 +42,30 @@ public class PAI_Info extends PAA__Command {
 		
 		arena.msg(sender, Language.parse(MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix()));
 		
-		if (arena.isFreeForAll()) {
+		if (!arena.isFreeForAll()) {
 			arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNames(), ", ")));
+		}
+		arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
+				StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +
+				StringParser.colorVar("enabled", !arena.isLocked()));
+		
+		HashSet<String> classes = new HashSet<String>();
+		for (ArenaClass ac : arena.getClasses()) {
+			if (!ac.getName().equalsIgnoreCase("custom")) {
+				classes.add(ac.getName());
+			}
+		}
+		
+		arena.msg(sender,  Language.parse(MSG.INFO_CLASSES, StringParser.joinSet(classes, ", ")));
+		arena.msg(sender,  Language.parse(MSG.INFO_OWNER, (arena.getOwner()==null?"server":arena.getOwner())));
+		
+		if (arena.getRegions() != null) {
+			HashSet<String> regions = new HashSet<String>();
+			for (ArenaRegionShape ar : arena.getRegions()) {
+				regions.add(ar.getName());
+			}
+			
+			arena.msg(sender,  Language.parse(MSG.INFO_REGIONS, StringParser.joinSet(regions, ", ")));
 		}
 		
 		for (ArenaGoal goal : arena.getGoals()) {

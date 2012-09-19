@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -36,6 +38,232 @@ public class Config {
 	private Map<String, Double> doubles;
 	private Map<String, String> strings;
 
+	public static enum CFG {
+		
+		Z("configversion","v0.9.0.0"),
+		
+		CHAT_COLORNICK("chat.colorNick", true),
+		CHAT_DEFAULTPRIVATE("chat.defaultPrivate", false),
+		CHAT_ENABLED("chat.enabled", true),
+		CHAT_ONLYPRIVATE("chat.onlyPrivate", false),
+		
+		CMDS_DEFAULTJOIN("cmds.defaultjoin", true),
+		
+		DAMAGE_SPAWNCAMP("damage.spawncamp", 1),
+		DAMAGE_WEAPONS("game.weaponDamage", true),
+		
+		GENERAL_ENABLED("general.enabled", true),
+		GENERAL_OWNER("general.owner", "server"),
+		GENERAL_PREFIX("general.prefix", "PVP Arena"),
+		GENERAL_TYPE("general.type", "none"),
+		GENERAL_WAND("general.wand", 280),
+
+		ITEMS_REWARDS("items.rewards", "none"),
+		ITEMS_RANDOM("items.random", true),
+		
+		JOIN_RANGE("join.range", 0),
+		
+		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
+		LISTS_CMDWHITELIST("whitelist", new ArrayList<String>()),
+		LISTS_GOALS("goals", new ArrayList<String>()),
+		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
+		
+		LOCATION_WORLD("location.world", Bukkit.getWorlds().get(0).getName()),
+		
+		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
+		MSG_PLAYERJOINED("msg.playerjoined", "Player %1% joined %2%!"),
+		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1%&r to join!"),
+		MSG_YOUJOINED("msg.youjoined", "Welcome to the arena!"),
+		
+		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
+		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
+		PERMS_JOININBATTLE("perms.joinInBattle", false),
+		PERMS_TEAMKILL("perms.teamkill", false),
+
+		PLAYER_DROPSINVENTORY("player.dropsInventory", false),
+		PLAYER_EXHAUSTION("player.exhaustion", 0.0),
+		PLAYER_FOODLEVEL("player.foodLevel", 20),
+		PLAYER_HEALTH("player.health", 20),
+		PLAYER_PREVENTDEATH("player.preventDeath", true),
+		PLAYER_REFILLINVENTORY("player.refillInventory", true),
+		PLAYER_SATURATION("player.saturation", 20),
+		
+		PROTECT_ENABLED("protection.enabled", true),
+		PROTECT_PUNISH("protection.punish", true),
+		PROTECT_SPAWN("protection.spawn", 0),
+		
+		PROTECT_BLOCKPLACE("protection.blockplace", true),
+		PROTECT_BLOCKDAMAGE("protection.blockdamage", true),
+		PROTECT_DECAY("protection.decay", true),
+		PROTECT_DROP("protection.drop", true),
+		PROTECT_FADE("protection.fade", true),
+		PROTECT_FORM("protection.form", true),
+		PROTECT_FLUIDS("protection.fluids", true),
+		PROTECT_FIRESPREAD("protection.firespread", true),
+		PROTECT_GROW("protection.grow", true),
+		PROTECT_INVENTORY("protection.inventory", true),
+		PROTECT_LAVAFIRESPREAD("protection.lavafirespread", true),
+		PROTECT_LIGHTER("protection.lighter", true),
+		PROTECT_PAINTING("protection.painting", true),
+		PROTECT_PICKUP("protection.pickup", true),
+		PROTECT_PISTON("protection.piston", true),
+		PROTECT_TNT("protection.tnt", true),
+		PROTECT_TNTBLOCKDAMAGE("protection.tntblockdamage", true),
+
+		READY_AUTOCLASS("ready.autoClass", "none"),
+		READY_BLOCK("ready.block", Material.IRON_BLOCK.getId()),
+		READY_CHECKEACHPLAYER("ready.checkEachPlayer", false),
+		READY_CHECKEACHTEAM("ready.checkEachTeam", true),
+		READY_MINPLAYERS("ready.minPlayers", 2),
+		READY_MAXPLAYERS("ready.maxPlayers", 0),
+		READY_MAXTEAMPLAYERS("ready.maxTeam", 0),
+		READY_NEEDEDRATIO("ready.neededRatio", 0.5),
+		
+		TIME_ENDCOUNTDOWN("goal.endCountDown", 5),
+		TIME_STARTCOUNTDOWN("time.startCountDown", 10),
+		TIME_REGIONTIMER("time.regionTimer", 10),
+
+		TP_DEATH("tp.death", "old"),
+		TP_EXIT("tp.exit", "old"),
+		TP_LOSE("tp.lose", "old"),
+		TP_WIN("tp.win", "old"),
+		
+		USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false),
+		USES_EVENTEAMS("uses.evenTeams", false),
+		USES_OVERLAPCHECK("uses.overlapCheck", true),
+		USES_WOOLHEAD("uses.woolHead", false),
+		
+		// ----------
+		
+		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
+		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
+		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
+		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
+		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
+		GOAL_TDM_LIVES("goal.teamdm.tdlives", 10),
+		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10),
+		GOAL_TIME_END("goal.time.timedend", 0),
+		
+		// -----------
+
+		MODULES_ANNOUNCEMENTS_RADIUS("modules.announcements.radius", 0),
+		MODULES_ANNOUNCEMENTS_COLOR("modules.announcements.color", "AQUA"),
+		MODULES_ANNOUNCEMENTS_JOIN("modules.announcements.join", false),
+		MODULES_ANNOUNCEMENTS_START("modules.announcements.start", false),
+		MODULES_ANNOUNCEMENTS_END("modules.announcements.end", false),
+		MODULES_ANNOUNCEMENTS_WINNER("modules.announcements.winner", false),
+		MODULES_ANNOUNCEMENTS_LOSER("modules.announcements.loser", false),
+		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false),
+		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
+		
+		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
+
+		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", Boolean.valueOf(false)),
+		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", Boolean.valueOf(true)),
+		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", Boolean.valueOf(true)),
+		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", Boolean.valueOf(true)),
+
+		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", Boolean.valueOf(true)),
+		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
+		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
+
+		MODULES_BETTERFIGHT_ACTIVE("modules.betterfight.bfactive", false),
+		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
+		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
+
+		MODULES_BLOCKRESTORE_ACTIVE("modules.blockrestore.bractive", false),
+		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false),
+		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),
+		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false),
+
+		MODULES_COLORTEAMS_COLORNICK("modules.colorteams.colornick", false),
+		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false),
+		MODULES_COLORTEAMS_SPOUTONLY("modules.colorteams.spoutonly", false),
+		MODULES_COLORTEAMS_TAGAPI("modules.colorteams.tagapi", false),
+
+		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
+		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
+		
+		MODULES_FIXSTUCKINFLOOR_FSIF("modules.fixstuckinfloor.fsif", false),
+		
+		MODULES_LATELOUNGE_ACTIVE("modules.latelounge.llactive", false),
+
+		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
+		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
+		
+		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
+
+		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
+		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),
+		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1)),
+		MODULES_VAULT_ENTRYFEE("modules.vault.entryee", Integer.valueOf(0)),
+		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0)),
+		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0)),
+		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
+		MODULES_VAULT_USEPOT("modules.vault.usepot", false),
+		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
+		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0));
+		
+		
+		private String node;
+		private Object value;
+
+		public static CFG getByNode(String node) {
+			for (CFG m : CFG.values()) {
+				if (m.getNode().equals(node)) {
+					return m;
+				}
+			}
+			return null;
+		}
+
+		private CFG(String node, String value) {
+			this.node = node;
+			this.value = value;
+		}
+
+		private CFG(String node, Boolean value) {
+			this.node = node;
+			this.value = value;
+		}
+
+		private CFG(String node, Integer value) {
+			this.node = node;
+			this.value = value;
+		}
+
+		private CFG(String node, Double value) {
+			this.node = node;
+			this.value = value;
+		}
+
+		private CFG(String node, List<String> value) {
+			this.node = node;
+			this.value = value;
+		}
+
+		public String getNode() {
+			return node;
+		}
+
+		public void setNode(String s) {
+			node = s;
+		}
+
+		public void setValue(Object s) {
+			value = s;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(value);
+		}
+
+		public static CFG[] getValues() {
+			return values();
+		}
+	}
+
 	/**
 	 * Create a new Config instance that uses the specified file for loading and
 	 * saving.
@@ -50,8 +278,15 @@ public class Config {
 		this.ints = new HashMap<String, Integer>();
 		this.doubles = new HashMap<String, Double>();
 		this.strings = new HashMap<String, String>();
+	}
 
+	public void createDefaults() {
 		this.config.options().indent(4);
+
+		for (CFG cfg : CFG.values()) {
+			this.config.addDefault(cfg.getNode(), cfg.value);
+		}
+		save();
 	}
 
 	/**
@@ -146,12 +381,12 @@ public class Config {
 	/**
 	 * Retrieve a value from the YamlConfiguration.
 	 * 
-	 * @param path
+	 * @param string
 	 *            the path of the value
 	 * @return the value of the path
 	 */
-	public Object get(String path) {
-		return config.get(path);
+	public Object getUnsafe(String string) {
+		return config.get(string);
 	}
 
 	/**
@@ -161,8 +396,8 @@ public class Config {
 	 *            the path of the value
 	 * @return the boolean value of the path if the path exists, false otherwise
 	 */
-	public boolean getBoolean(String path) {
-		return getBoolean(path, false);
+	public boolean getBoolean(CFG cfg) {
+		return getBoolean(cfg, (Boolean) cfg.value);
 	}
 
 	/**
@@ -174,7 +409,8 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the boolean value of the path if it exists, def otherwise
 	 */
-	public boolean getBoolean(String path, boolean def) {
+	private boolean getBoolean(CFG cfg, boolean def) {
+		String path = cfg.getNode();
 		Boolean result = booleans.get(path);
 		return (result != null ? result : def);
 	}
@@ -186,8 +422,8 @@ public class Config {
 	 *            the path of the value
 	 * @return the int value of the path if the path exists, 0 otherwise
 	 */
-	public int getInt(String path) {
-		return getInt(path, 0);
+	public int getInt(CFG cfg) {
+		return getInt(cfg, (Integer) cfg.value);
 	}
 
 	/**
@@ -199,7 +435,8 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the int value of the path if it exists, def otherwise
 	 */
-	public int getInt(String path, int def) {
+	public int getInt(CFG cfg, int def) {
+		String path = cfg.getNode();
 		Integer result = ints.get(path);
 		return (result != null ? result : def);
 	}
@@ -211,8 +448,8 @@ public class Config {
 	 *            the path of the value
 	 * @return the double value of the path if the path exists, 0D otherwise
 	 */
-	public double getDouble(String path) {
-		return getDouble(path, 0D);
+	public double getDouble(CFG cfg) {
+		return getDouble(cfg, (Double) cfg.value);
 	}
 
 	/**
@@ -224,7 +461,8 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the double value of the path if it exists, def otherwise
 	 */
-	public double getDouble(String path, double def) {
+	public double getDouble(CFG cfg, double def) {
+		String path = cfg.getNode();
 		Double result = doubles.get(path);
 		return (result != null ? result : def);
 	}
@@ -236,8 +474,8 @@ public class Config {
 	 *            the path of the value
 	 * @return the string value of the path if the path exists, null otherwise
 	 */
-	public String getString(String path) {
-		return getString(path, null);
+	public String getString(CFG cfg) {
+		return getString(cfg, (String) cfg.value);
 	}
 
 	/**
@@ -249,7 +487,8 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the string value of the path if it exists, def otherwise
 	 */
-	public String getString(String path, String def) {
+	public String getString(CFG cfg, String def) {
+		String path = cfg.getNode();
 		String result = strings.get(path);
 		return (result != null ? result : def);
 	}
@@ -289,7 +528,7 @@ public class Config {
 	 * @param value
 	 *            the value to set
 	 */
-	public void set(String path, Object value) {
+	public void setManually(String path, Object value) {
 		if (value instanceof Boolean) {
 			booleans.put(path, (Boolean) value);
 		} else if (value instanceof Integer) {
@@ -310,15 +549,8 @@ public class Config {
 		config.set(path, value);
 	}
 
-	/**
-	 * Remove the node at the given path. Uses the set() method with null as the
-	 * value.
-	 * 
-	 * @param path
-	 *            the path of the node to remove
-	 */
-	public void remove(String path) {
-		this.set(path, null);
+	public void set(CFG cfg, Object value) {
+		setManually(cfg.getNode(), value);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////
@@ -376,7 +608,7 @@ public class Config {
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
 
-		return new PALocation(parts[0], x, y, z, yaw, pitch);
+		return new PALocation(parts[0], x, y, z, pitch, yaw);
 	}
 	
 	/**
@@ -416,7 +648,7 @@ public class Config {
 
 	}
 
-	private static Integer parseInteger(String s) {
+	public static Integer parseInteger(String s) {
 		try {
 			return Integer.parseInt(s.trim());
 		} catch (Exception e) {
@@ -424,7 +656,7 @@ public class Config {
 		}
 	}
 
-	private static Float parseFloat(String s) {
+	public static Float parseFloat(String s) {
 		try {
 			return Float.parseFloat(s.trim());
 		} catch (Exception e) {
@@ -435,9 +667,9 @@ public class Config {
 	public static String parseToString(PALocation loc) {
 		String[] result = new String[6];
 		result[0] = String.valueOf(loc.getWorldName());
-		result[1] = String.valueOf(loc.getX());
-		result[2] = String.valueOf(loc.getY());
-		result[3] = String.valueOf(loc.getZ());
+		result[1] = String.valueOf((int) loc.getX());
+		result[2] = String.valueOf((int) loc.getY());
+		result[3] = String.valueOf((int) loc.getZ());
 		result[4] = String.valueOf(loc.getYaw());
 		result[5] = String.valueOf(loc.getPitch());
 		// "world,x,y,z,yaw,pitch"

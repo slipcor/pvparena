@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -46,8 +47,8 @@ public class EntityListener implements Listener {
 			return; // no arena => out
 
 		db.i("explosion inside an arena");
-		if ((!(arena.getArenaConfig().getBoolean("protection.enabled", true)))
-				|| (!(arena.getArenaConfig().getBoolean("protection.blocktntdamage", true)))
+		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
+				|| (!BlockListener.isProtected(arena, event, "blocktntdamage"))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
 			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;
@@ -186,7 +187,7 @@ public class EntityListener implements Listener {
 			// servers
 		}
 
-		if ((!arena.getArenaConfig().getBoolean("game.teamKill", false))
+		if ((!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL))
 				&& (apAttacker.getArenaTeam()).equals(apDefender.getArenaTeam())) {
 			// no team fights!
 			db.i("team hit, cancel!");
@@ -200,15 +201,15 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (arena.getArenaConfig().getBoolean("game.weaponDamage")) {
+		if (arena.getArenaConfig().getBoolean(CFG.DAMAGE_WEAPONS)) {
 			if (InventoryManager.receivesDamage(attacker.getItemInHand())) {
 				attacker.getItemInHand().setDurability((short) 0);
 			}
 		}
 
-		if (arena.getArenaConfig().getInt("protection.spawn") > 0) {
+		if (arena.getArenaConfig().getInt(CFG.PROTECT_SPAWN) > 0) {
 			if (SpawnManager.isNearSpawn(arena, defender,
-					arena.getArenaConfig().getInt("protection.spawn"))) {
+					arena.getArenaConfig().getInt(CFG.PROTECT_SPAWN))) {
 				// spawn protection!
 				db.i("spawn protection! damage cancelled!");
 				event.setCancelled(true);

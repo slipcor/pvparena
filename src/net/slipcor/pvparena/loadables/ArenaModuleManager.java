@@ -33,6 +33,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.modules.StandardLounge;
 
 /**
@@ -278,18 +279,6 @@ public class ArenaModuleManager {
 			}
 		}
 		return player.hasPermission(perms);
-	}
-
-	/**
-	 * hook into the language initialisation
-	 * 
-	 * @param config
-	 *            the language configuration
-	 */
-	public void initLanguage(YamlConfiguration config) {
-		for (ArenaModule mod : modules) {
-			mod.initLanguage(config);
-		}
 	}
 
 	/**

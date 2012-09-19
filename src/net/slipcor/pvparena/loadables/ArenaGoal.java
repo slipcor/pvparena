@@ -11,6 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import com.nodinchan.ncbukkit.loader.Loadable;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
@@ -83,7 +84,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	}
 
 	public PACheckResult checkJoin(CommandSender sender,
-			PACheckResult res, boolean b) {
+			PACheckResult res) {
 		return res;
 	}
 
@@ -94,12 +95,6 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	 * @return a PACheckResult instance to hand forth for parsing
 	 */
 	public PACheckResult checkPlayerDeath(PACheckResult res, Player player) {
-		return res;
-	}
-
-
-	public PACheckResult checkTeleportAll(PACheckResult res,
-			boolean b) {
 		return res;
 	}
 
@@ -124,13 +119,16 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	}
 
 	public void commitEnd() {
+		throw new IllegalStateException();
 	}
 
 	public void commitInteract(Player player, Block clickedBlock) {
+		throw new IllegalStateException();
 	}
 	
 	public void commitPlayerDeath(Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
+		throw new IllegalStateException();
 	}
 
 	public boolean commitSetFlag(Player player, Block block) {
@@ -147,6 +145,10 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	public void displayInfo(CommandSender sender) {
 	}
 
+	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+		return res;
+	}
+
 	/**
 	 * guess the spawn name from a given string
 	 * 
@@ -160,6 +162,12 @@ public class ArenaGoal extends Loadable implements Cloneable {
 
 	public boolean hasSpawn(String string) {
 		return false;
+	}
+
+	public void initate(Player player) {
+	}
+
+	public void parseJoin(CommandSender sender, ArenaTeam team) {
 	}
 
 	/**
@@ -188,6 +196,12 @@ public class ArenaGoal extends Loadable implements Cloneable {
 
 	public void setDefaults(YamlConfiguration config) {
 	}
+	
+	public void setPlayerLives(int value) {
+	}
+
+	public void setPlayerLives(ArenaPlayer ap, int value) {
+	}
 
 	/**
 	 * initiate an arena
@@ -213,8 +227,5 @@ public class ArenaGoal extends Loadable implements Cloneable {
 
 	public String version() {
 		return "outdated";
-	}
-
-	public void parseJoin(CommandSender sender, ArenaTeam team) {
 	}
 }

@@ -12,6 +12,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -61,9 +62,9 @@ public class TeamManager {
 		for (ArenaTeam team : arena.getTeams()) {
 			String s = team.getName();
 			// check if we are full
-			db.i("String s: " + s + "; max: " + arena.getArenaConfig().getInt("ready.max"));
-			if (counts.get(s) < arena.getArenaConfig().getInt("ready.max")
-					|| arena.getArenaConfig().getInt("ready.max") == 0) {
+			db.i("String s: " + s + "; max: " + arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS));
+			if (counts.get(s) < arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS)
+					|| arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS) == 0) {
 				full = false;
 				break;
 			}
@@ -76,7 +77,7 @@ public class TeamManager {
 
 		HashSet<String> free = new HashSet<String>();
 
-		int max = arena.getArenaConfig().getInt("ready.maxTeam");
+		int max = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
 		max = max == 0 ? Integer.MAX_VALUE : max;
 		// calculate the max value down to the minimum
 		for (String s : counts.keySet()) {
@@ -181,9 +182,9 @@ public class TeamManager {
 			coloredTeam = "";
 		}
 
-		arena.msg(player, arena.getArenaConfig().getString("msg.youjoined").replace("%1%", coloredTeam));
+		arena.msg(player, arena.getArenaConfig().getString(CFG.MSG_YOUJOINED).replace("%1%", coloredTeam));
 		arena.broadcastExcept(player,
-				arena.getArenaConfig().getString("msg.playerjoined").replace("%1%",player.getName()).replace("%2%",coloredTeam));
+				arena.getArenaConfig().getString(CFG.MSG_PLAYERJOINED).replace("%1%",player.getName()).replace("%2%",coloredTeam));
 
 	}
 

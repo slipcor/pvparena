@@ -9,6 +9,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
@@ -86,7 +87,8 @@ public class StandardLounge extends ArenaModule {
 			result.setError(Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
-		
+
+		result.setModName(getName());
 		result.setPriority(priority);
 		return result;
 	}
@@ -108,7 +110,8 @@ public class StandardLounge extends ArenaModule {
 			result.setError(error);
 			return result;
 		}
-		
+
+		result.setModName(getName());
 		result.setPriority(priority);
 		return result;
 	}
@@ -119,7 +122,7 @@ public class StandardLounge extends ArenaModule {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		ArenaPlayer.prepareInventory(arena, ap.get());
 		arena.tpPlayerToCoordName(ap.get(), "lounge");
-		arena.msg(sender, Language.parse(arena, "lounge"));
+		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 		team.add(ap);
 	}
 }

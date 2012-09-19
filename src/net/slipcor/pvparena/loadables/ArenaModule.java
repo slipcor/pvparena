@@ -212,15 +212,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 	}
 
 	/**
-	 * hook into the language initialisation
-	 * 
-	 * @param config
-	 *            the language configuration
-	 */
-	public void initLanguage(YamlConfiguration config) {
-	}
-
-	/**
 	 * check if the module is activated for that arena, this is very much needed to
 	 * ensure modules don't affect arenas where it's not wanted
 	 * @param arena the arena to check

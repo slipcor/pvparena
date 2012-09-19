@@ -10,10 +10,14 @@ import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -33,8 +37,10 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
@@ -127,7 +133,7 @@ public class PVPArena extends JavaPlugin {
 	 */
 	public static boolean hasPerms(CommandSender sender, Arena arena) {
 		db.i("perm check.");
-		if (arena.getArenaConfig().getBoolean("join.explicitPermission")) {
+		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
 			db.i(" - explicit: "
 					+ String.valueOf(sender.hasPermission("pvparena.join."
 							+ arena.getName().toLowerCase())));
@@ -135,7 +141,7 @@ public class PVPArena extends JavaPlugin {
 			db.i(String.valueOf(sender.hasPermission("pvparena.user")));
 		}
 
-		return arena.getArenaConfig().getBoolean("join.explicitPermission") ? sender
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
 				.hasPermission("pvparena.join." + arena.getName().toLowerCase())
 				: sender.hasPermission("pvparena.user");
 	}
@@ -169,10 +175,10 @@ public class PVPArena extends JavaPlugin {
 		String name = args[0];
 		
 		if (a == null) {
-			System.out.print("a==null");
-			if (ArenaManager.count() == 1) {
+			if (PAA_Edit.activeSelections.containsKey(sender.getName())) {
+				a = PAA_Edit.activeSelections.get(sender.getName());
+			} else if (ArenaManager.count() == 1) {
 				a = ArenaManager.getFirst();
-				System.out.print("count==1 - " + StringParser.joinArray(args, "|"));
 			} else if (ArenaManager.count() < 1) {
 				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
 				return true;
@@ -192,13 +198,13 @@ public class PVPArena extends JavaPlugin {
 		if (paacmd == null) {
 			ArenaGoal goal = PVPArena.instance.getAgm().checkCommand(a, args[0]);
 			if (goal != null) {
+				db.i("committing: " + goal.getName());
 				goal.commitCommand(sender, args);
 				return true;
 			}
 		}
 
-		if (paacmd == null && a.getArenaConfig().getBoolean("general.cmdfailjoin")) {
-			System.out.print("cmdfailjoin - " + StringParser.joinArray(args, "|"));
+		if (paacmd == null && a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
 		}
 		if (paacmd != null) {
@@ -206,6 +212,7 @@ public class PVPArena extends JavaPlugin {
 			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
+		db.i("cmd null");
 		
 		return false;
 	}

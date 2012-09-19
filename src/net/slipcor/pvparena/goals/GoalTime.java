@@ -1,0 +1,46 @@
+package net.slipcor.pvparena.goals;
+
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.runnables.TimedEndRunnable;
+
+public class GoalTime extends ArenaGoal {
+	
+	private TimedEndRunnable ter;
+
+	public GoalTime(Arena arena) {
+		super(arena, "Time");
+		db = new Debug(106);
+	}
+	
+	@Override
+	public String version() {
+		return "v0.9.0.0";
+	}
+	
+	@Override
+	public GoalTime clone() {
+		return new GoalTime(arena);
+	}
+
+	@Override
+	public boolean allowsJoinInBattle() {
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	}
+
+	@Override
+	public void teleportAllToSpawn() {
+		int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
+		if (timed > 0) {
+			db.i("arena timing!");
+			// initiate autosave timer
+			ter = new TimedEndRunnable(arena, timed);
+		}
+	}
+	
+	public void commitEnd() {
+		ter.commit();
+	}
+}

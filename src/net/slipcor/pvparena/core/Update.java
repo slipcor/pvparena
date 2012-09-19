@@ -192,13 +192,13 @@ public class Update extends Thread {
 
 				File lib = new File(destination, "install.yml");
 
-				System.out.println("Downloading module update file...");
+				PVPArena.instance.getLogger().info("Downloading module update file...");
 				URL url = new URL(
 						"http://pa.slipcor.net/install.yml");
 				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 				FileOutputStream output = new FileOutputStream(lib);
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				System.out.println("Downloaded module update file");
+				PVPArena.instance.getLogger().info("Downloaded module update file");
 
 			} catch (Exception e) {
 				e.printStackTrace();

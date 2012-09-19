@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;
@@ -78,7 +79,7 @@ public class PAA_Class extends PAA__Command {
 			isItems[i++] = is;
 			}
 
-			arena.getArenaConfig().set("classitems." + args[2], StringParser.getStringFromItemStacks(isItems));
+			arena.getArenaConfig().setManually("classitems." + args[2], StringParser.getStringFromItemStacks(isItems));
 			arena.getArenaConfig().save();
 			arena.addClass(args[2], isItems);
 			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));
@@ -87,7 +88,7 @@ public class PAA_Class extends PAA__Command {
 			arena.selectClass(ap, args[1]);
 		} else if (args[0].equalsIgnoreCase("remove")) {
 			Player player = (Player) sender;
-			arena.getArenaConfig().set("classitems." + args[2], null);
+			arena.getArenaConfig().setManually("classitems." + args[2], null);
 			arena.getArenaConfig().save();
 			arena.removeClass(args[2]);
 			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));

@@ -13,12 +13,15 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -43,52 +46,30 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	public String version() {
 		return "v0.9.0.0";
 	}
+
+	int priority = 4;
 	
 	@Override
 	public GoalTeamDeathMatch clone() {
 		return new GoalTeamDeathMatch(arena);
 	}
-	
-	@Override
-	public void setDefaults(YamlConfiguration config) {
-		if (arena.isFreeForAll()) {
-			return;
-		}
-		
-		if (arena.getArenaConfig().get("teams.free") != null) {
-			arena.getArenaConfig().set("teams",null);
-		}
-		if (arena.getArenaConfig().get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
-			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.red",
-					ChatColor.RED.name());
-			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.blue",
-					ChatColor.BLUE.name());
-		}
-		if (arena.getArenaConfig().getBoolean("game.woolFlagHead")
-				&& (arena.getArenaConfig().get("flagColors") == null)) {
-			db.i("no flagheads defined, adding white and black!");
-			config.addDefault("flagColors.red", "WHITE");
-			config.addDefault("flagColors.blue", "BLACK");
-		}
-	}
 
 	@Override
 	public PACheckResult checkEnd(PACheckResult res) {
-		int priority = 3;
-		
 		if (res.getPriority() > priority) {
 			return res;
 		}
 		
-		for (String teamName : lives.keySet()) {
-			if (lives.get(teamName) < 1) {
-				res.setPriority(priority); // yep. one has won!
-			}
+		int count = TeamManager.countActiveTeams(arena);
+
+		if (count == 1) {
+			res.setModName(getName());
+			res.setPriority(priority); // yep. only one team left. go!
+		} else if (count == 0) {
+			res.setError(MSG.ERROR_NOTEAMFOUND.toString());
 		}
 
 		return res;
-
 	}
 
 	@Override
@@ -109,6 +90,15 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		}
 		return null;
 	}
+
+	@Override
+	public PACheckResult checkPlayerDeath(PACheckResult res, Player player) {
+		if (res.getPriority() <= priority) {
+			res.setModName(getName());
+			res.setPriority(priority);
+		}
+		return res;
+	}
 	
 	@Override
 	public void commitEnd() {
@@ -116,9 +106,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 		ArenaTeam aTeam = null;
 		
-		for (String teamName : lives.keySet()) {
-			if (lives.get(teamName) < 1) {
-				aTeam = arena.getTeam(teamName);
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (ap.getStatus().equals(Status.FIGHT)) {
+					aTeam = team;
+					break;
+				}
 			}
 		}
 		
@@ -133,14 +126,38 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
 			return;
 		}
-		new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
+		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+	}
+
+	@Override
+	public void commitPlayerDeath(Player respawnPlayer,
+			boolean doesRespawn, String error, PlayerDeathEvent event) {
+		if (respawnPlayer.getKiller() == null) {
+			return;
+		}
+		
+		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+		ArenaTeam killerTeam = ArenaPlayer.parsePlayer(respawnPlayer.getKiller().getName()).getArenaTeam();
+		reduceLives(arena, killerTeam);
+
+		if (lives.get(respawnTeam.getName()) != null) {
+			
+			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
+					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
+					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
+					String.valueOf(arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)+1-lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
+		
+			arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
+					+ "spawn");	
+			
+			arena.unKillPlayer(respawnPlayer, event.getEntity()
+					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
+		}
 	}
 
 	@Override
 	public void configParse(YamlConfiguration config) {
-		config.addDefault("game.teamdmlives", 10);
-
-		if (arena.getArenaConfig().get("flagColors") == null) {
+		if (config.get("flagColors") == null) {
 			db.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
@@ -150,7 +167,15 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public void displayInfo(CommandSender sender) {
 		sender.sendMessage("teams: " + StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
-		sender.sendMessage("lives: " + arena.getArenaConfig().getInt("game.teamdmlives"));
+		sender.sendMessage("lives: " + arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
+	}
+
+	@Override
+	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+		if (!res.hasError() && res.getPriority() <= priority) {
+			res.setError("" + (arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)-(lives.containsKey(ap.getArenaTeam().getName())?lives.get(ap.getArenaTeam().getName()):0)));
+		}
+		return res;
 	}
 
 	@Override
@@ -196,38 +221,62 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public String ready() {
-		return null;
+	public void initate(Player player) {
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		if (lives.get(ap.getArenaTeam().getName()) == null)
+			lives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
 	}
 
-	@Override
-	public void commitPlayerDeath(Player respawnPlayer,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
+	private void reduceLives(Arena arena, ArenaTeam team) {
+		int i = this.lives.get(team.getName());
 		
-		if (respawnPlayer.getKiller() == null) {
+		if (i <= 1) {
+			for (ArenaTeam otherTeam : arena.getTeams()) {
+				if (otherTeam.equals(team)) {
+					continue;
+				}
+				lives.remove(otherTeam.getName());
+				for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
+					if (ap.getStatus().equals(Status.FIGHT)) {
+						ap.setStatus(Status.LOST);
+						arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true);
+					}
+				}
+			}
+			PVPArena.instance.getAgm().checkAndCommit(arena);
 			return;
 		}
 		
-		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getKiller().getName()).getArenaTeam();
-		reduceLives(arena, respawnTeam);
-		
-		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
-				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
-				String.valueOf(lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
-	
-		
-		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
-				+ "spawn");
-	}
-	
-	private void reduceLives(Arena arena, ArenaTeam player) {
-		lives.put(player.getName(), this.lives.get(player.getName())-1);
+		lives.put(team.getName(), i-1);
 	}
 
 	@Override
 	public void reset(boolean force) {
 		return;
+	}
+	
+	@Override
+	public void setDefaults(YamlConfiguration config) {
+		if (arena.isFreeForAll()) {
+			return;
+		}
+		
+		if (config.get("teams.free") != null) {
+			config.set("teams",null);
+		}
+		if (config.get("teams") == null) {
+			db.i("no teams defined, adding custom red and blue!");
+			config.addDefault("teams.red",
+					ChatColor.RED.name());
+			config.addDefault("teams.blue",
+					ChatColor.BLUE.name());
+		}
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
+				&& (config.get("flagColors") == null)) {
+			db.i("no flagheads defined, adding white and black!");
+			config.addDefault("flagColors.red", "WHITE");
+			config.addDefault("flagColors.blue", "BLACK");
+		}
 	}
 
 	@Override
@@ -235,7 +284,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt("game.teamdmlives", 10));
+						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
 			}
 		}
 	}
@@ -243,9 +292,5 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		return scores;
-	}
-
-	@Override
-	public void unload(Player player) {
 	}
 }

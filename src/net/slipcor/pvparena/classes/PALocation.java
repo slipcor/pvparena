@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.classes;
 
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.StringParser;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -99,6 +102,18 @@ public class PALocation {
 	}
 
 	public Location toLocation() {
-		return new Location(Bukkit.getWorld(world), x, y, z, pitch, yaw);
+		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+	}
+	
+	@Override
+	public String toString() {
+		String[] aLoc = new String[6];
+		aLoc[0] = "w:" + getWorldName();
+		aLoc[1] = "x:" + getX();
+		aLoc[2] = "y:" + getY();
+		aLoc[3] = "z:" + getZ();
+		aLoc[4] = "P:" + getPitch();
+		aLoc[5] = "Y:" + getYaw();
+		return StringParser.joinArray(aLoc, "|");
 	}
 }

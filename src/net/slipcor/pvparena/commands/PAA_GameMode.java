@@ -2,8 +2,10 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -39,11 +41,17 @@ public class PAA_GameMode extends PAA__Command {
 		
 		if (args[0].toLowerCase().startsWith("free")) {
 			arena.setFree(true);
-			arena.msg(sender, Language.parse(MSG.GAMEMODE_FREE));
+			arena.msg(sender, Language.parse(MSG.GAMEMODE_FREE, arena.getName()));
+			arena.getArenaConfig().set(CFG.GENERAL_TYPE, "free");
 		} else {
 			arena.setFree(false);
-			arena.msg(sender, Language.parse(MSG.GAMEMODE_TEAM));
+			arena.msg(sender, Language.parse(MSG.GAMEMODE_TEAM, arena.getName()));
+			arena.getArenaConfig().set(CFG.GENERAL_TYPE, "none");
 		}
+
+		arena.getArenaConfig().save();
+		PAA_Reload cmd = new PAA_Reload();
+		cmd.commit(arena, Bukkit.getConsoleSender(), new String[0]);
 		
 	}
 

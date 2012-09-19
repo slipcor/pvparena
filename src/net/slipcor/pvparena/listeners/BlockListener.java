@@ -6,6 +6,7 @@ import java.util.List;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -41,7 +42,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  */
 
 public class BlockListener implements Listener {
-	private Debug db = new Debug(20);
+	private static Debug db = new Debug(20);
 
 	private boolean willBeSkipped(boolean cancelled, Event event, Location loc, RegionProtection rp) {
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
@@ -55,9 +56,10 @@ public class BlockListener implements Listener {
 		return arena.isLocked();
 	}
 
-	private boolean isProtected(Arena arena, Cancellable event, String node) {
-		if (arena.getArenaConfig().getBoolean("protection.enabled")
-				&& arena.getArenaConfig().getBoolean("protection." + node)) {
+	static boolean isProtected(Arena arena, Cancellable event, String node) {
+		if (arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
+				&& arena.getArenaConfig().getBoolean(CFG.getByNode("protection." + node))) {
+			db.i("protection " + node + " enabled and thus cancelling " + event.toString());
 			event.setCancelled(true);
 			return true;
 		}
@@ -80,7 +82,7 @@ public class BlockListener implements Listener {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.getArenaConfig().getStringList("blocks.whitelist", list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
@@ -93,7 +95,7 @@ public class BlockListener implements Listener {
 			}
 		} else {
 
-			list = arena.getArenaConfig().getStringList("blocks.blacklist", list);
+			list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
 
 			if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
 				event.getPlayer().sendMessage("blacklist contains");
@@ -244,11 +246,10 @@ public class BlockListener implements Listener {
 		db.i("block ignite inside the arena");
 		event.setCancelled(!arena.isFightInProgress());
 		BlockIgniteEvent.IgniteCause cause = event.getCause();
-		if ((arena.getArenaConfig().getBoolean("protection.enabled", true))
-				&& (((arena.getArenaConfig().getBoolean("protection.lavafirespread", true)) && (cause == BlockIgniteEvent.IgniteCause.LAVA))
-						|| ((arena.getArenaConfig()
-								.getBoolean("protection.firespread", true)) && (cause == BlockIgniteEvent.IgniteCause.SPREAD)) || ((arena.getArenaConfig()
-						.getBoolean("protection.lighter", true)) && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
+		if (arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
+				&& ((isProtected(arena, event, "lavafirespread") && (cause == BlockIgniteEvent.IgniteCause.LAVA))
+						|| (isProtected(arena, event, "firespread") && (cause == BlockIgniteEvent.IgniteCause.SPREAD))
+						|| (isProtected(arena, event, "lighter") && (cause == BlockIgniteEvent.IgniteCause.FLINT_AND_STEEL)))) {
 			// if an event happened that we would like to block
 			event.setCancelled(true); // ->cancel!
 		}
@@ -295,7 +296,7 @@ public class BlockListener implements Listener {
 
 		if (isProtected(arena, event, "blockplace")) {
 			if (arena.isFightInProgress() &&
-					!arena.getArenaConfig().getBoolean("protection.tnt", true) &&
+					!isProtected(arena, event, "tnt") &&
 					event.getBlock().getTypeId() == 46) {
 				PVPArena.instance.getAmm().onBlockPlace(arena,
 						event.getBlock(),
@@ -309,7 +310,7 @@ public class BlockListener implements Listener {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.getArenaConfig().getStringList("blocks.whitelist", list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
@@ -322,7 +323,7 @@ public class BlockListener implements Listener {
 			}
 		} else {
 
-			list = arena.getArenaConfig().getStringList("blocks.blacklist", list);
+			list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
 
 			if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
 				event.getPlayer().sendMessage("blacklist contains");

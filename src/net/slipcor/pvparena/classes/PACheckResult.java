@@ -81,3 +81,52 @@ public class PACheckResult {
 		this.priority = priority;
 	}
 }
+/*
+ * AVAILABLE PACheckResults:
+ * 
+ * ArenaGoal.checkCommand() => ArenaGoal.commitCommand()
+ * ( onCommand() )
+ * > default: nothing
+ * 
+ * 
+ * ArenaGoal.checkEnd() => ArenaGoal.commitEnd()
+ * ( ArenaGoalManager.checkEndAndCommit(arena) ) < used
+ * > 1: PlayerLives
+ * > 2: PlayerDeathMatch
+ * > 3: TeamLives
+ * > 4: TeamDeathMatch
+ * > 5: Flags
+ * 
+ * ArenaGoal.checkInteract() => ArenaGoal.commitInteract()
+ * ( PlayerListener.onPlayerInteract() )
+ * > 5: Flags
+ * 
+ * ArenaGoal.checkJoin() => ArenaGoal.commitJoin()
+ * ( PAG_Join ) < used
+ * > default: tp inside
+ * 
+ * ArenaGoal.checkPlayerDeath() => ArenaGoal.commitPlayerDeath()
+ * ( PlayerLister.onPlayerDeath() )
+ * > 1: PlayerLives
+ * > 2: PlayerDeathMatch
+ * > 3: TeamLives
+ * > 4: TeamDeathMatch
+ * > 5: Flags
+ * 
+ * ArenaGoal.checkSetFlag() => ArenaGoal.commitSetFlag()
+ * ( PlayerListener.onPlayerInteract() )
+ * > 5: Flags
+ * 
+ * =================================
+ * 
+ * ArenaModule.checkJoin()
+ * ( PAG_Join | PAG_Spectate ) < used
+ * > 1: StandardLounge
+ * > 2: BattlefieldJoin
+ * > default: nothing
+ * 
+ * ArenaModule.checkStart()
+ * ( PAI_Ready ) < used
+ * > default: nothing
+ * 
+ */

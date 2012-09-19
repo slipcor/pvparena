@@ -13,6 +13,7 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -269,7 +270,7 @@ public class ArenaManager {
 	 * @return 
 	 */
 	private static String checkForMissingGoals(String name) {
-		db.i("pre-Parsing Arena " + name);
+		db.i("check for missing goals: " + name);
 		File file = new File(PVPArena.instance.getDataFolder() + "/config_"
 				+ name + ".yml");
 		if (!file.exists()) {
@@ -278,7 +279,7 @@ public class ArenaManager {
 		Config cfg = new Config(file);
 		
 		cfg.load();
-		List<String> list = cfg.getStringList("goals", new ArrayList<String>());
+		List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
 		
 		if (list.size() < 1) {
 			return null;

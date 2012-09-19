@@ -3,12 +3,15 @@ package net.slipcor.pvparena.arena;
 import java.util.Collection;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.potion.PotionEffect;
 
 /**
@@ -55,12 +58,15 @@ public final class PlayerState {
 		saturation = player.getSaturation();
 
 		potionEffects = player.getActivePotionEffects();
-
+		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		Arena a = ap.getArena();
 
-		if (ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
+		if (a.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			displayname = player.getDisplayName();
 		}
+		
+		fullReset(a, player);
 	}
 
 	public void dump(YamlConfiguration cfg) {
@@ -74,6 +80,19 @@ public final class PlayerState {
 		cfg.set("state.explevel", explevel);
 		cfg.set("state.saturation", saturation);
 		cfg.set("state.displayname", displayname);
+	}
+
+	public static void fullReset(Arena a, Player player) {
+		playersetHealth(player, a.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
+		player.setFireTicks(0);
+		player.setFoodLevel(a.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
+		player.setSaturation(a.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
+		player.setExhaustion((float) a.getArenaConfig().getDouble(
+				CFG.PLAYER_EXHAUSTION));
+		player.setLevel(0);
+		player.setExp(0);
+		player.setGameMode(GameMode.getByValue(0));
+		PlayerState.removeEffects(player);
 	}
 
 	public void unload() {
@@ -97,7 +116,7 @@ public final class PlayerState {
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
-		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean("messages.colorNick", true)) {
+		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			player.setDisplayName(displayname);
 		}
 		
@@ -113,6 +132,27 @@ public final class PlayerState {
 		ap.setTelePass(false);
 		player.setFireTicks(fireticks);
 		player.setNoDamageTicks(60);
+	}
+
+	/**
+	 * health setting method. Implemented for heroes to work right
+	 * 
+	 * @param p
+	 *            the player to set
+	 * @param value
+	 *            the health value
+	 */
+	static void playersetHealth(Player p, int value) {
+		db.i("setting health to " + value + "/20");
+		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
+			p.setHealth(value);
+		}
+		int current = p.getHealth();
+		int regain = value - current;
+
+		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain,
+				RegainReason.CUSTOM);
+		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	public void reset() {

@@ -2,6 +2,7 @@ package net.slipcor.pvparena.listeners;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +33,7 @@ public class InventoryListener implements Listener {
 
 		db.i("InventoryClick: arena player");
 
-		if (!arena.getArenaConfig().getBoolean("protection.inventory")) {
+		if (!BlockListener.isProtected(arena, event, "inventory")) {
 			// we don't need no protection => out!
 			return;
 		}
@@ -48,7 +49,7 @@ public class InventoryListener implements Listener {
 			if (event.getRawSlot() != 5) {
 				return;
 			}
-			event.setCancelled(arena.getArenaConfig().getBoolean("game.woolHead", false));
+			event.setCancelled(arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD));
 			return;
 		}
 

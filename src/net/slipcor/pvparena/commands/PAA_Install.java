@@ -165,7 +165,7 @@ public class PAA_Install extends PA__Command {
 			folder = "/mods/";
 		}
 		if (folder == null) {
-			System.out.print("[SEVERE] unable to save file: " + file);
+			PVPArena.instance.getLogger().severe("unable to save file: " + file);
 			return false;
 		}
 		try {
@@ -184,7 +184,7 @@ public class PAA_Install extends PA__Command {
 			in.close();
 			out.close();
 
-			System.out.println("Installed module " + file);
+			PVPArena.instance.getLogger().info("Installed module " + file);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

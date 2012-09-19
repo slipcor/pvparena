@@ -19,9 +19,11 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
@@ -52,6 +54,8 @@ public class GoalFlags extends ArenaGoal {
 	public String version() {
 		return "v0.9.0.0";
 	}
+
+	int priority = 5;
 	
 	@Override
 	public GoalFlags clone() {
@@ -60,12 +64,10 @@ public class GoalFlags extends ArenaGoal {
 
 	@Override
 	public boolean allowsJoinInBattle() {
-		return arena.getArenaConfig().getBoolean("join.inbattle");
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
 	}
 
 	public PACheckResult checkCommand(PACheckResult res, String string) {
-		int priority = 1;
-		System.out.print("test");
 		if (res.getPriority() > priority) {
 			return res;
 		}
@@ -73,10 +75,30 @@ public class GoalFlags extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			String sTeam = team.getName();
 			if (string.contains(sTeam + "flag")) {
+				res.setModName(getName());
 				res.setPriority(priority);
 			}
 		}
 		
+		return res;
+	}
+	
+	@Override
+	public PACheckResult checkEnd(PACheckResult res) {
+		
+		if (res.getPriority() > priority) {
+			return res;
+		}
+		
+		int count = TeamManager.countActiveTeams(arena);
+
+		if (count == 1) {
+			res.setModName(getName());
+			res.setPriority(priority); // yep. only one team left. go!
+		} else if (count == 0) {
+			res.setError("No teams playing!");
+		}
+
 		return res;
 	}
 
@@ -98,25 +120,6 @@ public class GoalFlags extends ArenaGoal {
 		}
 		return null;
 	}
-	
-	@Override
-	public PACheckResult checkEnd(PACheckResult res) {
-		int priority = 3;
-		
-		if (res.getPriority() > 2) {
-			return res;
-		}
-		
-		int count = TeamManager.countActiveTeams(arena);
-
-		if (count == 1) {
-			res.setPriority(priority); // yep. only one team left. go!
-		} else if (count == 0) {
-			res.setError("No teams playing!");
-		}
-
-		return res;
-	}
 
 	/**
 	 * hook into an interacting player
@@ -130,7 +133,6 @@ public class GoalFlags extends ArenaGoal {
 	 */
 	@Override
 	public PACheckResult checkInteract(PACheckResult res, Player player, Block block) {
-		int priority = 1;
 		if (block == null || res.getPriority() > priority) {
 			return res;
 		}
@@ -170,7 +172,7 @@ public class GoalFlags extends ArenaGoal {
 				if (paTeamFlags.containsKey(sTeam)) {
 					db.i("the flag of the own team is taken!");
 
-					if (arena.getArenaConfig().getBoolean("game.mustbesafe")) {
+					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) {
 						db.i("cancelling");
 
 						arena.msg(player, Language.parse(MSG.GOAL_FLAGS_NOTSAFE));
@@ -198,7 +200,7 @@ public class GoalFlags extends ArenaGoal {
 
 				takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
 						SpawnManager.getCoords(arena, flagTeam + "flag"));
-				if (arena.getArenaConfig().getBoolean("game.woolFlagHead")) {
+				if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
 					player.getInventory().setHelmet(
 							paHeadGears.get(player.getName()).clone());
 					paHeadGears.remove(player.getName());
@@ -236,7 +238,7 @@ public class GoalFlags extends ArenaGoal {
 							pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 							team.getColoredName() + ChatColor.YELLOW));
 
-					if (arena.getArenaConfig().getBoolean("game.woolFlagHead")) {
+					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
 						try {
 							paHeadGears.put(player.getName(), player
 									.getInventory().getHelmet().clone());
@@ -301,13 +303,12 @@ public class GoalFlags extends ArenaGoal {
 	@Override
 	public PACheckResult checkSetFlag(PACheckResult res, Player player, Block block) {
 
-		System.out.print("checking flags");
 		int priority = 1;
 		
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
-			System.out.print("checking flags OUT");
 			return res;
 		}
+		res.setModName(getName());
 		res.setPriority(priority); // success :)
 		
 		return res;
@@ -349,7 +350,7 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		paTeamLives.clear();
-		EndRunnable er = new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
+		EndRunnable er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,
 				er, 20L, 20L);
 	}
@@ -396,14 +397,11 @@ public class GoalFlags extends ArenaGoal {
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
 			return;
 		}
-		new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
+		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
 	
 	@Override
 	public boolean commitSetFlag(Player player, Block block) {
-		
-		System.out.print("yes!");
-		
 		if (block == null || !block.getType().equals(flagMaterial)) {
 			return false;
 		}
@@ -418,7 +416,7 @@ public class GoalFlags extends ArenaGoal {
 		// command : /pa redflag1
 		// location: red1flag:
 
-		SpawnManager.setCoords(arena, block.getLocation(), flagName);
+		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()), flagName);
 
 		arena.msg(player, Language.parse(MSG.GOAL_FLAGS_SET, flagName));
 
@@ -435,13 +433,21 @@ public class GoalFlags extends ArenaGoal {
 	}
 
 	private short getFlagOverrideTeamShort(Arena arena, String team) {
-		if (arena.getArenaConfig().get("flagColors." + team) == null) {
+		if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
 
 			return StringParser.getColorDataFromENUM(arena.getTeam(team)
 					.getColor().name());
 		}
-		return StringParser.getColorDataFromENUM(arena.getArenaConfig()
-				.getString("flagColors." + team));
+		return StringParser.getColorDataFromENUM((String) arena.getArenaConfig()
+				.getUnsafe("flagColors." + team));
+	}
+
+	@Override
+	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+		if (!res.hasError() && res.getPriority() <= priority) {
+			res.setError("" + (paTeamLives.containsKey(ap.getArenaTeam().getName())?paTeamLives.get(ap.getArenaTeam().getName()):0));
+		}
+		return res;
 	}
 
 	/**
@@ -523,7 +529,7 @@ public class GoalFlags extends ArenaGoal {
 				db.i("adding team " + team.getName());
 				// team is active
 				paTeamLives.put(team.getName(),
-						arena.getArenaConfig().getInt("game.lives", 3));
+						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
 			}
 			takeFlag(team.getColor().name(), false,
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
@@ -562,18 +568,18 @@ public class GoalFlags extends ArenaGoal {
 			return;
 		}
 		
-		if (arena.getArenaConfig().get("teams.free") != null) {
-			arena.getArenaConfig().set("teams",null);
+		if (config.get("teams.free") != null) {
+			config.set("teams",null);
 		}
-		if (arena.getArenaConfig().get("teams") == null) {
+		if (config.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.red",
+			config.addDefault("teams.red",
 					ChatColor.RED.name());
-			arena.getArenaConfig().getYamlConfiguration().addDefault("teams.blue",
+			config.addDefault("teams.blue",
 					ChatColor.BLUE.name());
 		}
-		if (arena.getArenaConfig().getBoolean("game.woolFlagHead")
-				&& (arena.getArenaConfig().get("flagColors") == null)) {
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
+				&& (config.get("flagColors") == null)) {
 			db.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");

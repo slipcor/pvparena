@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
@@ -27,7 +28,7 @@ public class PAA_Set extends PAA__Command {
 	private static HashMap<String, String> types = new HashMap<String, String>();
 
 	static {
-
+/*
 		types.put("tp.win", "tp");
 		types.put("tp.lose", "tp");
 		types.put("tp.exit", "tp");
@@ -120,7 +121,8 @@ public class PAA_Set extends PAA__Command {
 		types.put("ready.minTeam", "int");
 		types.put("ready.maxTeam", "int");
 		types.put("ready.autoclass", "string");
-		types.put("ready.startRatio", "double");
+		types.put("ready.startRatio", "double"); */
+		
 	}
 
 	public PAA_Set() {
@@ -181,8 +183,10 @@ public class PAA_Set extends PAA__Command {
 	}
 
 	private String getNode(Arena arena, String node) {
-		for (String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
+		for (CFG cfg : CFG.getValues()) {
 
+			String s = cfg.getNode();
+					
 			if (types.get(s) == null) {
 				continue;
 			}
@@ -211,13 +215,13 @@ public class PAA_Set extends PAA__Command {
 
 		if (type.equals("boolean")) {
 			if (value.equalsIgnoreCase("true")) {
-				arena.getArenaConfig().set(node, Boolean.valueOf(true));
+				arena.getArenaConfig().setManually(node, Boolean.valueOf(true));
 				arena.msg(
 						player,
 						Language.parse(MSG.SET_DONE, node,
 								String.valueOf(value.equalsIgnoreCase("true"))));
 			} else if (value.equalsIgnoreCase("false")) {
-				arena.getArenaConfig().set(node, Boolean.valueOf(false));
+				arena.getArenaConfig().setManually(node, Boolean.valueOf(false));
 				arena.msg(
 						player,
 						Language.parse(MSG.SET_DONE, node,
@@ -228,7 +232,7 @@ public class PAA_Set extends PAA__Command {
 				return;
 			}
 		} else if (type.equals("string")) {
-			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.getArenaConfig().setManually(node, String.valueOf(value));
 			arena.msg(
 					player,
 					Language.parse(MSG.SET_DONE, node,
@@ -242,7 +246,7 @@ public class PAA_Set extends PAA__Command {
 				arena.msg(player, Language.parse(MSG.ERROR_NOT_NUMERIC, value));
 				return;
 			}
-			arena.getArenaConfig().set(node, i);
+			arena.getArenaConfig().setManually(node, i);
 			arena.msg(
 					player,
 					Language.parse(MSG.SET_DONE, node,
@@ -257,7 +261,7 @@ public class PAA_Set extends PAA__Command {
 						"double (e.g. 12.00)"));
 				return;
 			}
-			arena.getArenaConfig().set(node, d);
+			arena.getArenaConfig().setManually(node, d);
 			arena.msg(
 					player,
 					Language.parse(MSG.SET_DONE, node,
@@ -269,7 +273,7 @@ public class PAA_Set extends PAA__Command {
 						"tp (exit|old|spectator|...)"));
 				return;
 			}
-			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.getArenaConfig().setManually(node, String.valueOf(value));
 			arena.msg(
 					player,
 					Language.parse(MSG.SET_DONE, node,
@@ -279,7 +283,7 @@ public class PAA_Set extends PAA__Command {
 				try {
 					Material mat = Material.valueOf(value);
 					if (!mat.equals(Material.AIR)) {
-						arena.getArenaConfig().set(node, mat.name());
+						arena.getArenaConfig().setManually(node, mat.name());
 						arena.msg(
 								player,
 								Language.parse(MSG.SET_DONE, node,
@@ -288,7 +292,7 @@ public class PAA_Set extends PAA__Command {
 				} catch (Exception e2) {
 					Material mat = Material
 							.getMaterial(Integer.parseInt(value));
-					arena.getArenaConfig().set(node, mat.name());
+					arena.getArenaConfig().setManually(node, mat.name());
 					arena.msg(
 							player,
 							Language.parse(MSG.SET_DONE, node,
@@ -315,7 +319,7 @@ public class PAA_Set extends PAA__Command {
 				}
 			}
 
-			arena.getArenaConfig().set(node, String.valueOf(value));
+			arena.getArenaConfig().setManually(node, String.valueOf(value));
 			arena.msg(
 					player,
 					Language.parse(MSG.SET_DONE, node,

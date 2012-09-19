@@ -9,7 +9,9 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.nodinchan.ncbukkit.loader.Loader;
@@ -21,12 +23,16 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.GoalFlags;
+import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
 import net.slipcor.pvparena.goals.GoalPlayerLives;
+import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
+import net.slipcor.pvparena.goals.GoalTime;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
@@ -59,8 +65,11 @@ public class ArenaGoalManager {
 		loader = new Loader<ArenaGoal>(plugin, path, new Object[] {});
 		types = loader.load();
 		types.add(new GoalFlags(null));
+		types.add(new GoalPlayerDeathMatch(null));
 		types.add(new GoalPlayerLives(null));
+		types.add(new GoalTeamDeathMatch(null));
 		types.add(new GoalTeamLives(null));
+		types.add(new GoalTime(null));
 
 		for (ArenaGoal type : types) {
 			db.i("module ArenaType loaded: " + type.getName() + " (version "
@@ -169,12 +178,10 @@ public class ArenaGoalManager {
 
 	public boolean checkSetFlag(Player player, Block block) {
 		Arena arena = PAA_Region.activeSelections.get(player.getName());
-		System.out.print("checksetflag committing");
 		
 		if (arena == null) {
 			return false;
 		}
-		System.out.print("checksetflag arena found");
 		
 		int priority = 0;
 		PACheckResult res = new PACheckResult();
@@ -182,18 +189,15 @@ public class ArenaGoalManager {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			System.out.print("checking: " + mod.getName());
 			res = mod.checkSetFlag(res, player, block);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
 				commit = mod;
-				System.out.print("> updating to " + priority);
 			} else if (res.getPriority() < 0 || priority < 0) {
 				// fail
 				priority = res.getPriority();
 				commit = null;
-				System.out.print("> nullifying");
 			}
 		}
 		
@@ -203,10 +207,8 @@ public class ArenaGoalManager {
 		}
 		
 		if (commit == null) {
-			System.out.print("checksetflag commit null");
 			return false;
 		}
-		System.out.print("committing: " + commit.getName());
 		
 		return commit.commitSetFlag(player, block);
 	}
@@ -235,6 +237,25 @@ public class ArenaGoalManager {
 		}
 
 		return result;
+	}
+	public int getLives(Arena arena, ArenaPlayer ap) {
+		PACheckResult res = new PACheckResult();
+		int priority = 0;
+		for (ArenaGoal mod : arena.getGoals()) {
+			res = mod.getLives(res, ap);
+			if (res.getPriority() > priority && priority >= 0) {
+				// success and higher priority
+				priority = res.getPriority();
+			} else if (res.getPriority() < 0 || priority < 0) {
+				// fail
+				priority = res.getPriority();
+			}
+		}
+		
+		if (res.hasError()) {
+			return Integer.valueOf(res.getError());
+		}
+		return 0;
 	}
 
 	/**
@@ -268,18 +289,11 @@ public class ArenaGoalManager {
 		return null;
 	}
 
-	/**
-	 * hook into language initialisation
-	 * 
-	 * @param config
-	 *            the arena config
-	 * /
-	public void initLanguage(YamlConfiguration config) {
-		for (ArenaGoal type : types) {
-			type.initLanguage(config);
+	public void initiate(Arena arena, Player player) {
+		for (ArenaGoal type : arena.getGoals()) {
+			type.initate(player);
 		}
 	}
-*/
 
 	public void onPlayerDeath(Arena arena, Player player, PlayerDeathEvent event) {
 		boolean doesRespawn = true;
@@ -312,14 +326,14 @@ public class ArenaGoalManager {
 		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
 		event.setDeathMessage(null);
 		
-		if (!arena.getArenaConfig().getBoolean("allowDrops")) {
+		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			event.getDrops().clear();
 		}
 		
 		if (commit == null) {
 			// no mod handles player deaths, default to infinite lives. Respawn player
 			
-			arena.respawnPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			
 			return;
 		}
@@ -359,37 +373,23 @@ public class ArenaGoalManager {
 			type.setDefaults(config);
 		}
 	}
+	
+	public void setPlayerLives(Arena arena, int value) {
+		for (ArenaGoal type : arena.getGoals()) {
+			type.setPlayerLives(value);
+		}
+	}
+	
+	public void setPlayerLives(Arena arena, ArenaPlayer ap, int value) {
+		for (ArenaGoal type : arena.getGoals()) {
+			type.setPlayerLives(ap, value);
+		}
+	}
 
 	public void teleportAllToSpawn(Arena arena) {
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkTeleportAll(res, true);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
+			mod.teleportAllToSpawn();
 		}
-		
-		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
-			return;
-		}
-		
-		if (commit == null) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, "commit NULL in ArenaGoalManager.teleportAllToSpawn()"));
-			return;
-		}
-		
-		commit.teleportAllToSpawn();
 	}
 	
 	public void timedEnd(Arena arena) {
@@ -522,7 +522,7 @@ public class ArenaGoalManager {
 			}
 		}
 		
-		new EndRunnable(arena, arena.getArenaConfig().getInt("goal.endtimer"));
+		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	public void unload(Arena arena, Player player) {

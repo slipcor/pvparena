@@ -8,7 +8,9 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -29,7 +31,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -74,8 +75,8 @@ public class PlayerListener implements Listener {
 		db.i("fighting player chatting!");
 		String sTeam = team.getName();
 
-		if (!arena.getArenaConfig().getBoolean("messages.onlyChat")) {
-			if (!arena.getArenaConfig().getBoolean("messages.chat")) {
+		if (!arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
+			if (!arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)) {
 				return; // no chat editing
 			}
 
@@ -89,7 +90,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (arena.getArenaConfig().getBoolean("messages.chat")
+		if (arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)
 				&& ap.isChatting()) {
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
 					event.getPlayer());
@@ -124,13 +125,12 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
-		list = arena.getArenaConfig().getYamlConfiguration().getStringList(
-				"whitelist");
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>());
 		
 		if (list == null || list.size() < 1) {
 			list = new ArrayList<String>();
 			list.add("ungod");
-			arena.getArenaConfig().getYamlConfiguration().set("whitelist", list);
+			arena.getArenaConfig().set(CFG.LISTS_WHITELIST, list);
 			arena.getArenaConfig().save();
 		}
 		
@@ -156,7 +156,7 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
-		if (!arena.getArenaConfig().getBoolean("protection.drop")) {
+		if (!BlockListener.isProtected(arena, event, "drop")) {
 			return; // no drop protection
 		}
 
@@ -208,60 +208,24 @@ public class PlayerListener implements Listener {
 						ArenaPlayer.getLastDamagingPlayer(cause))));
 		
 		if (arena.isCustomClassAlive()
-				|| arena.getArenaConfig().getBoolean("game.allowDrops")) {
+				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			InventoryManager.drop(player);
 		}
 		
 		if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null || !ArenaPlayer.parsePlayer(player.getName()).getArenaClass().getName().equalsIgnoreCase("custom")) {
 			InventoryManager.clearInventory(player);
 		}
-
-		arena.tpPlayerToCoordName(player, "spectator");
+		
+		arena.removePlayer(player, CFG.TP_DEATH.toString(), true);
 		
 		ap.setStatus(Status.LOST);
 		ap.addDeath();
 		
-		arena.prepare(player, true, true);
+		PlayerState.fullReset(arena, player);
 		
 		new PlayerResetRunnable(ap,0, player.getLocation());
 		//TODO - timer is inactive - if this works, timer can just ... die
 		
-		if (arena.getArenaConfig().getInt("goal.timed") > 0) {
-			db.i("timed arena!");
-			Player damager = null;
-
-			if (eEvent instanceof EntityDeathEvent) {
-				EntityDeathEvent event = (EntityDeathEvent) eEvent;
-				if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
-					try {
-						EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) event
-								.getEntity().getLastDamageCause();
-						damager = (Player) ee.getDamager();
-						db.i("damager found in arg 2");
-					} catch (Exception ex) {
-
-					}
-				}
-			} else if (eEvent instanceof EntityDamageByEntityEvent) {
-				EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
-				try {
-					damager = (Player) event.getDamager();
-					db.i("damager found in arg 3");
-				} catch (Exception ex) {
-
-				}
-			}
-			String sKiller = "";
-
-			db.i("timed ctf/pumpkin arena");
-			if (damager != null) {
-				sKiller = damager.getName();
-				db.i("killer: " + sKiller);
-				
-				ArenaPlayer.parsePlayer(damager.getName()).addKill();
-			}
-		}
-
 		if (ArenaManager.checkAndCommit(arena))
 			return;
 	}
@@ -345,24 +309,22 @@ public class PlayerListener implements Listener {
 			db.i("block click!");
 
 			Material mMat = Material.IRON_BLOCK;
-			if (arena.getArenaConfig().get("ready.block") != null) {
-				db.i("reading ready block");
+			db.i("reading ready block");
+			try {
+				mMat = Material
+						.getMaterial(arena.getArenaConfig().getInt(CFG.READY_BLOCK));
+				if (mMat == Material.AIR)
+					mMat = Material.getMaterial(arena.getArenaConfig()
+							.getString(CFG.READY_BLOCK));
+				db.i("mMat now is " + mMat.name());
+			} catch (Exception e) {
+				db.i("exception reading ready block");
+				String sMat = arena.getArenaConfig().getString(CFG.READY_BLOCK);
 				try {
-					mMat = Material
-							.getMaterial(arena.getArenaConfig().getInt("ready.block"));
-					if (mMat == Material.AIR)
-						mMat = Material.getMaterial(arena.getArenaConfig()
-								.getString("ready.block"));
+					mMat = Material.getMaterial(sMat);
 					db.i("mMat now is " + mMat.name());
-				} catch (Exception e) {
-					db.i("exception reading ready block");
-					String sMat = arena.getArenaConfig().getString("ready.block");
-					try {
-						mMat = Material.getMaterial(sMat);
-						db.i("mMat now is " + mMat.name());
-					} catch (Exception e2) {
-						Language.log_warning(MSG.ERROR_MAT_NOT_FOUND, sMat);
-					}
+				} catch (Exception e2) {
+					Language.log_warning(MSG.ERROR_MAT_NOT_FOUND, sMat);
 				}
 			}
 			db.i("clicked " + block.getType().name() + ", is it " + mMat.name()
@@ -382,7 +344,7 @@ public class PlayerListener implements Listener {
 
 				if (!arena.isFightInProgress() && arena.START_ID == -1) {
 
-					if (arena.getArenaConfig().getBoolean("join.forceEven", false)) {
+					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
 							arena.msg(player, Language.parse(MSG.NOTICE_WAITING_EQUAL));
 							return; // even teams desired, not done => announce
@@ -482,7 +444,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null)
+		if (arena == null || BlockListener.isProtected(arena, event, "pickup"))
 			return; // no fighting player or no powerups => OUT
 
 		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);

@@ -4,6 +4,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -63,7 +64,8 @@ public class BattlefieldJoin extends ArenaModule {
 			result.setError(Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
-		
+
+		result.setModName(getName());
 		result.setPriority(priority);
 		return result;
 	}
@@ -76,9 +78,9 @@ public class BattlefieldJoin extends ArenaModule {
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(ap.get(), "spawn");
 		} else {
-			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
+			arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 		}
 		team.add(ap);
-		arena.msg(sender, Language.parse(arena, "lounge"));
+		arena.msg(sender, Language.parse(MSG.ANNOUNCE_ARENA_STARTING));
 	}
 }

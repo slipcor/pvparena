@@ -68,7 +68,7 @@ public abstract class ArenaRunnable implements Runnable {
 	public ArenaRunnable(String s, Integer i, Player player, Arena arena, Boolean global) {
 		this.message = s;
 		this.seconds = i;
-		this.sPlayer = player.getName();
+		this.sPlayer = player == null ? null : player.getName();
 		this.arena = arena;
 		this.global = global;
 		
@@ -118,7 +118,6 @@ public abstract class ArenaRunnable implements Runnable {
 			ArenaManager.tellPlayer(Bukkit.getPlayer(sPlayer), message);
 			return;
 		}
-		System.out.print("[PA-debug] " + message);
 	}
 	
 	@Override
@@ -129,8 +128,8 @@ public abstract class ArenaRunnable implements Runnable {
 		} else {
 			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
 		}
+		seconds--;
 	}
 	
 	protected abstract void commit();
-
 }

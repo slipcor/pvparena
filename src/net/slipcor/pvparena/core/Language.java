@@ -3,14 +3,18 @@ package net.slipcor.pvparena.core;
 import java.io.File;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- * <pre>Language class</pre>
+ * <pre>
+ * Language class
+ * </pre>
  * 
  * provides methods to display configurable texts
  * 
@@ -36,13 +40,13 @@ public class Language {
 		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1% seconds!"),
 		ARENA_STOP_DONE("nulang.arena.stop.done", "Arena force stopped!"),
 		ARENA_TEAM_UNKNOWN("nulang.arena.teamunknown", "Arena Team '%1%' unknown!"),
-		
+
 		AUTOSETUP_AUTOMANUAL("nulang.autosetup.automanual", "Do you want the wizard to be &a%1%&r or &a%2%&r?"),
 		AUTOSETUP_AUTOMATIC("nulang.autosetup.automatic", "automatic"),
 		AUTOSETUP_MANUAL("nulang.autosetup.manual", "manual"),
 		AUTOSETUP_MODESELECTED("nulang.autosetup.modeselected", "&a%1%&r mode selected!"),
 		AUTOSETUP_WELCOME("nulang.autosetup.welcome", "Welcome to the PVP Arena setup wizard!\nPlease just type the colored answers into the chat. No commands needed!"),
-		
+
 		BLACKLIST_ADDED("nulang.blacklist.added", "Added &a%1%&r to &e%2%&r blacklist!"),
 		BLACKLIST_ALLCLEARED("nulang.blacklist.allcleared", "All blacklists cleared!"),
 		BLACKLIST_CLEARED("nulang.blacklist.cleared", "Blacklist &e%1%&r cleared!"),
@@ -53,7 +57,7 @@ public class Language {
 		CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class %1%"),
 		CLASS_REMOVED("nulang.class.removed", "Class removed: %1%"),
 		CLASS_SAVED("nulang.class.saved", "Class saved: %1%"),
-		
+
 		DEATHCAUSE_BLOCK_EXPLOSION("nulang.deathcause.BLOCK_EXPLOSION", "an explosion"),
 		DEATHCAUSE_CONTACT("nulang.deathcause.CONTACT", "a cactus"),
 		DEATHCAUSE_CUSTOM("nulang.deathcause.CUSTOM", "Herobrine"),
@@ -100,7 +104,6 @@ public class Language {
 		ERROR_JOIN_RANGE("nulang.error.joinrange", "You are too far away to join this arena!"),
 		ERROR_JOIN_REGION("nulang.error.notjoinregion", "You are not in the join region! Move there to join!"),
 		ERROR_JOIN_TEAM_FULL("nulang.error.teamfull", "team %1% is full!"),
-		ERROR_TEAMNOTFOUND("nulang.error.join.teamnotfound", "Team not found: &a%1%&r"),
 		ERROR_JOIN_VEHICLE("nulang.error.insidevehicle", "You cannot join while on a vehicle!"),
 		ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'"),
 		ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
@@ -123,9 +126,11 @@ public class Language {
 		ERROR_NOPERM_X_TP("nulang.nopermto.teleport", "teleport to an arena spawn"),
 		
 		ERROR_NOPERM("nulang.error.noperm", "&cNo permission to %1%"),
+		ERROR_NOPLAYERFOUND("nulang.error.noplayerfound", "No player found!"),
 		ERROR_NOT_IN_ARENA("nulang.error.notinarena", "You are not part of an arena!"),
 		ERROR_NOT_NUMERIC("nulang.error.notnumeric", "&cArgument not numeric:&r %1%"),
 		ERROR_NOT_THE_SAME_WORLD("nulang.error.notsameworld", "Not in the same world as the arena (%1%)!"),
+		ERROR_NOTEAMFOUND("nulang.error.noteamfound", "No team found!"),
 		ERROR_ONLY_PLAYERS("nulang.error.onlyplayers", "&cThis command can only be used by players!"),
 		ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
 		ERROR_READY_0_ONE_PLAYER_NOT_READY("nulang.error.ready.notready0", "At least one player is not ready!"),
@@ -147,6 +152,7 @@ public class Language {
 		ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
 		ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!"),
 		ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
+		ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
 		ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling &a%1%&r"),
 		ERROR_WHITELIST_UNKNOWN_SUBCOMMAND("nulang.error.whitelist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_WHITELIST_UNKNOWN_TYPE("nulang.error.whitelist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
@@ -168,12 +174,15 @@ public class Language {
 		GOAL_INSTALLING("nulang.goal.installing", "Install goals by command: &a/pa install [goalname]&r"),
 		GOAL_REMOVED("nulang.goal.removed", "Goal removed: &a%1%&r"),
 
+		INFO_CLASSES("nulang.info.classes", "Classes: &a%1%&r"),
 		INFO_GOAL_ACTIVE("nulang.info.goal_active", "Goal: &a%1%&r"),
 		INFO_GOAL_INACTIVE("nulang.info.goal_inactive", "Goal: &b%1%&r &7== INACTIVE =="),
 		INFO_HEAD_HEADLINE("nulang.info.head_headlin", "Arena Information about: &a%1%&r | [&a%2%&r]"),
 		INFO_HEAD_TEAMS("nulang.info.head_teams", "Teams: &a%1%&r"),
 		INFO_MOD_ACTIVE("nulang.info.mod_active", "Module: &a%1%&r"),
 		INFO_MOD_INACTIVE("nulang.info.mod_inactive", "Module: &b%1%&r &7== INACTIVE =="),
+		INFO_OWNER("nulang.info.owner", "Owner: &a%1%&r"),
+		INFO_REGIONS("nulang.info.regions", "Regions: &a%1%&r"),
 		
 		INSTALL_DONE("nulang.install.installed", "installed: &a%1%&r"),
 		
@@ -202,10 +211,11 @@ public class Language {
 		
 		
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
-		
+
 		NOTICE_AWARDED("nulang.notice.awarded", "You have been awarded %1%"),
 		NOTICE_NO_DROP_ITEM("nulang.notice.nodropitem", "Not so fast! No Cheating!"),
 		NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
+		NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%"),
 		NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have equal player number!"),
 		NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),
 		NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area!"),
@@ -286,18 +296,93 @@ public class Language {
 		WHITELIST_HELP("nulang.whitelist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]"),
 		WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
 		WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
-		
+
+		GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "Team %1% is claiming a flag!"),
+		GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "Team %1% scored %2% point(s) by holding a flag!"),
+		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "A flag claimed by Team %1% is being unclaimed!"),
+		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "A flag claimed by Team %1% is being unclaimed by Team %2%!"),
+
 		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "Player %1% brought home the flag of team %2%! Lives left: %3%"),
 		GOAL_FLAGS_DROPPED("lang.flagsave", "Player %1% dropped the flag of team %2%!"),
 		GOAL_FLAGS_GRABBED("lang.flaggrab", "Player %1% grabbed the flag of team %2%!"),
 		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
 		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
-		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%");
-		
-		
+		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
+
+		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.settnt", "TNT to set: %1%"),
+		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.tosettnt", "TNT set: %1%"),
+		GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage materials!'"),
+
+		GOAL_TANK_TANKDOWN("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),
+		GOAL_TANK_TANKMODE("nulang.goal.tank.tankwon", "The tank has won! Congratulations to %1%!"),
+		GOAL_TANK_TANKWON("nulang.goal.tank.tankdown", "The tank is down!"),
+
+		// -----------------------------------------------
+
+		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),
+		MODULE_AFTERMATCH_SPAWNNOTSET("nulang.mod.aftermatch.spawnnotset", "Spawn 'after' not set!"),
+
+		MODULE_ARENABOARDS_CREATE("nulang.mod.arenaboards.createarenaboard", "create an ArenaBoard"),
+		MODULE_ARENABOARDS_DESTROYED("nulang.mod.arenaboards.arenaboarddestroyed", "ArenaBoard destroyed!"),
+		MODULE_ARENABOARDS_EXISTS("nulang.mod.arenaboards.boardexists", "ArenaBoard already exists!'"),
+		MODULE_ARENABOARDS_SORTINGBY("nulang.mod.arenaboards.sortingby", "ArenaBoard now sorted by %1%"),
+
+		MODULE_AUTOVOTE_ARENARUNNING("nulang.mod.autovote.arenarunning", "Arena running: %1%"),
+		MODULE_AUTOVOTE_AUTOJOIN("nulang.mod.autovote.autojoin", "Arena auto join started!"),
+		MODULE_AUTOVOTE_PLAYERVOTED("nulang.mod.autovote.playervoted", "%2% voted for arena %1%!"),
+		MODULE_AUTOVOTE_VOTENOW("lang.votenow", "Vote for your arena! %1% left!\nVote with /pa [arenaname] vote\nAvailable arenas: %2%"),
+		MODULE_AUTOVOTE_YOUVOTED("nulang.mod.autovote.youvoted", "You voted for arena %1%!"),
+
+		MODULE_BANVOTE_BANNED("nulang.banvote.lang.playerbanned", "Player banned: %1%"),
+		MODULE_BANVOTE_KICKED("nulang.banvote.lang.playerkicked", "Player kicked: %1%"),
+		MODULE_BANVOTE_NOTKICKED("nulang.banvote.lang.playernotkicked", "Player not kicked: %1%"),
+		MODULE_BANVOTE_NOTONLINE("nulang.banvote.lang.playernotonline", "Player is not online: %1%"),
+		MODULE_BANVOTE_UNBANNED("nulang.banvote.lang.playerunbanned", "Player unbanned: %1%"),
+		MODULE_BANVOTE_YOUBANNED("nulang.banvote.lang.youwerebanned", "You are banned from arena %1%"),
+		MODULE_BANVOTE_YOUKICKED("nulang.banvote.lang.youwerekicked", "You were kicked from arena %1%"),
+		MODULE_BANVOTE_YOUUNBANNED("nulang.banvote.lang.youwereunbanned", "You are unbanned from arena %1%"),
+
+		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
+		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),
+		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
+
+		MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
+		MODULE_FIXINVENTORYLOSS_INVENTORY("nulang.mod.fixinventorylos.invenory", "Empty your inventory before joining!"),
+
+		MODULE_LATELOUNGE_ANNOUNCE("nulang.mod.latelounge.llannounce", "Arena %1% is starting! Player %2% wants to start. Join with /pa %1%"),
+		MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
+		MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
+
+		MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
+		MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "Player %1% has collected PowerUp %2%!"),
+		MODULE_POWERUPS_SERVER("nulang.mod.powerups.puserver", "PowerUp deployed!"),
+
+		MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
+		MODULE_SKINS_NOMOBDISGUISE("nulang.mod.skins.nomd", "MobDisguise not found, Skins module is inactive!"),
+
+		MODULE_STARTFREEZE_ANNOUNCE("nulang.mod.startfreeze.announce", "The game will start in %1% seconds!"),
+
+		MODULE_TEMPPERMS_NOPERMS("nulang.mod.tempperms.noperms", "Permissions plugin not found, defaulting to OP."),
+
+		MODULE_VAULT_ON("nulang.mod.vault.on", "<3 eConomy"),
+		MODULE_VAULT_OFF("nulang.mod.vault.off", "</3 eConomy"),
+
+		MODULE_VAULT_NOTENOUGH("nulang.mod.vault.notenough", "You don't have %1%."),
+		MODULE_VAULT_BETNOTYOURS("nulang.mod.vault.betnotyours", "Cannot place bets on your own match!"),
+		MODULE_VAULT_BETOPTIONS("nulang.mod.vault.betoptions", "You can only bet on team name or arena player!"),
+		MODULE_VAULT_WRONGAMOUNT("nulang.mod.vault.wrongamount", "Bet amount must be between %1% and %2%!"),
+		MODULE_VAULT_INVALIDAMOUNT("nulang.mod.vault.invalidamount", "Invalid amount: %1%"),
+		MODULE_VAULT_BETPLACED("nulang.mod.vault.betplaced", "Your bet on %1% has been placed."),
+		MODULE_VAULT_YOUWON("nulang.mod.vault.youwon", "You won %1%"),
+		MODULE_VAULT_JOINPAY("nulang.mod.vault.joinpay", "You paid %1% to join the arena!"),
+		MODULE_VAULT_KILLREWARD("nulang.mod.vault.killreward", "You received %1% for killing %2%!"),
+		MODULE_VAULT_REFUNDING("nulang.mod.vault.refunding", "Refunding %1%!"),
+
+		Z("version", "0.9.0.0");
+
 		private String node;
 		private String value;
-		
+
 		public static MSG getByNode(String node) {
 			for (MSG m : MSG.values()) {
 				if (m.getNode().equals(node)) {
@@ -306,36 +391,46 @@ public class Language {
 			}
 			return null;
 		}
-		
+
 		private MSG(String node, String value) {
 			this.node = node;
 			this.value = value;
 		}
-		
+
 		public String getNode() {
 			return node;
 		}
-		
+
 		public void setNode(String s) {
 			node = s;
 		}
-		
+
 		public void setValue(String s) {
 			value = s;
 		}
-		
+
 		@Override
-	    public String toString() {
-	        return value;
-	    }
+		public String toString() {
+			return value;
+		}
+
+		public static MSG getByName(String string) {
+			for (MSG m : MSG.values()) {
+				if (m.name().equals(string)) {
+					return m;
+				}
+			}
+			return null;
+		}
 	}
-	
+
 	/**
 	 * create a language manager instance
 	 */
 	public static void init(String s) {
 		PVPArena.instance.getDataFolder().mkdir();
-		File configFile = new File(PVPArena.instance.getDataFolder().getPath() + "/lang_" + s + ".yml");
+		File configFile = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/lang_" + s + ".yml");
 		if (!(configFile.exists()))
 			try {
 				configFile.createNewFile();
@@ -354,7 +449,7 @@ public class Language {
 		for (MSG m : MSG.values()) {
 			config.addDefault(m.getNode(), m.toString());
 		}
-		
+
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);
@@ -374,7 +469,7 @@ public class Language {
 		Bukkit.getLogger().info("[PVP Arena] " + var);
 		// log map value
 	}
-	
+
 	/**
 	 * read a node from the config and log its value after replacing
 	 * 
@@ -388,7 +483,7 @@ public class Language {
 		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
-	
+
 	/**
 	 * read a node from the config and log its value after replacing
 	 * 
@@ -402,7 +497,7 @@ public class Language {
 		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
 		// log replaced map value
 	}
-	
+
 	/**
 	 * read a node from the config and log its value after replacing
 	 * 
@@ -417,8 +512,19 @@ public class Language {
 		// log replaced map value
 	}
 
-	public static String parse(Arena arena, String arg) {
-		return arena.getArenaConfig().getString(arg);
+	public static String parse(Arena arena, CFG node) {
+		return StringParser.colorize(arena.getArenaConfig().getString(node));
+	}
+
+	public static String parse(Arena arena, CFG node, String arg1) {
+		return StringParser.colorize(arena.getArenaConfig().getString(node)
+				.replace("%1%", arg1));
+	}
+
+	public static String parse(Arena arena, CFG node, String arg1,
+			String arg2) {
+		return StringParser.colorize(arena.getArenaConfig().getString(node)
+				.replace("%1%", arg1).replace("%2%", arg2));
 	}
 
 	/**
@@ -481,8 +587,8 @@ public class Language {
 		return StringParser.colorize(var.replace("%1%", arg1));
 	}
 
-	public static String parse(MSG m, String arg1,
-			String arg2, String arg3, String arg4) {
+	public static String parse(MSG m, String arg1, String arg2, String arg3,
+			String arg4) {
 		String var = m.toString().replace("%2%", arg2);
 		var = var.replace("%3%", arg3);
 		var = var.replace("%4%", arg4);

@@ -70,11 +70,14 @@ A PVP experience enhancing plugin.
 
 * plugin
 ** /pa duel [arenaname] [duelplayer] --> start 1:1
+** fix team damage/healing:
+*** splash healing should only affect own team
+*** splash damage should only affect enemy team
 ** add item spawns: [time | item | location]
 ** parse configs differently (yaml is bad :) )
 ** rounds - full restart to "tpalltospawns" (best of X | X)
-** teleport -> 2L -> inv save
 ** inv restore -> 2L -> teleport
+** rewards: "rewards-min-players"
 * modules
 ** commands when joining / leaving (console and/or by player)
 ** join via position / portal / etc

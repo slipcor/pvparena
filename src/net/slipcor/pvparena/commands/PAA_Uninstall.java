@@ -155,7 +155,7 @@ public class PAA_Uninstall extends PA__Command {
 			folder = "/mods/";
 		}
 		if (folder == null) {
-			System.out.print("[SEVERE] unable to fetch file: " + file);
+			PVPArena.instance.getLogger().severe("unable to fetch file: " + file);
 			return false;
 		}
 		File destination = new File(PVPArena.instance.getDataFolder().getPath()

@@ -31,7 +31,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 	}
 	
 	@Override
-	protected void commit() {
+	public void commit() {
 		db.i("TimedEndRunnable commiting");
 		if (arena.isFightInProgress())
 			PVPArena.instance.getAgm().timedEnd(arena);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
@@ -53,7 +54,7 @@ public class PAA_WhiteList extends PAA__Command {
 		
 		if (args.length < 2) {
 			if (args[0].equalsIgnoreCase("clear")) {
-				arena.getArenaConfig().set("blocks.whitelist", null);
+				arena.getArenaConfig().setManually("blocks.whitelist", null);
 				arena.getArenaConfig().save();
 				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
 				return;
@@ -67,7 +68,7 @@ public class PAA_WhiteList extends PAA__Command {
 				return;
 			}
 			if (args[1].equalsIgnoreCase("clear")) {
-				arena.getArenaConfig().set("blocks.whitelist", null);
+				arena.getArenaConfig().setManually("blocks.whitelist", null);
 				arena.getArenaConfig().save();
 				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
 				return;
@@ -108,7 +109,7 @@ public class PAA_WhiteList extends PAA__Command {
 			arena.msg(sender, Language.parse(MSG.WHITELIST_REMOVED, args[2]));
 		}
 		
-		arena.getArenaConfig().set("blocks.whitelist." + args[0].toLowerCase(), list);
+		arena.getArenaConfig().setManually("blocks.whitelist." + args[0].toLowerCase(), list);
 		arena.getArenaConfig().save();
 		
 	}

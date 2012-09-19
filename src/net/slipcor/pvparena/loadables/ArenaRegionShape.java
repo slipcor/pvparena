@@ -10,6 +10,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -154,7 +155,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	 *         otherwise
 	 */
 	public static boolean checkRegions(Arena arena) {
-		if (!arena.getArenaConfig().getBoolean("periphery.checkRegions", false))
+		if (!arena.getArenaConfig().getBoolean(CFG.USES_OVERLAPCHECK))
 			return true;
 		db.i("checking regions");
 
@@ -181,7 +182,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 						player, arena)))
 				&& (player.getItemInHand() != null)
 				&& (player.getItemInHand().getTypeId() == arena
-						.getArenaConfig().getInt("setup.wand", 280))) {
+						.getArenaConfig().getInt(CFG.GENERAL_WAND))) {
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
@@ -232,7 +233,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	 * @return true if the player is too far away, false otherwise
 	 */
 	public static boolean tooFarAway(Arena arena, Player player) {
-		int joinRange = arena.getArenaConfig().getInt("join.range", 0);
+		int joinRange = arena.getArenaConfig().getInt(CFG.JOIN_RANGE);
 		if (joinRange < 1)
 			return false;
 		if (arena.getRegion("battlefield") == null) {
@@ -350,8 +351,8 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		RegionRunnable rr = new RegionRunnable(this);
 		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, rr,
-				getArena().getArenaConfig().getInt("region.timer") * 1L,
-				getArena().getArenaConfig().getInt("region.timer") * 1L);
+				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
+				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
 		rr.setId(tickID);
 	}
 
@@ -556,7 +557,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 						if (loc.distance(ap.get().getLocation()) < 3) {
 							ap.get().damage(
 									arena.getArenaConfig().getInt(
-											"region.spawncampdamage"));
+											CFG.DAMAGE_SPAWNCAMP));
 						}
 					}
 					playerNameLocations.put(ap.getName(), ap.get()

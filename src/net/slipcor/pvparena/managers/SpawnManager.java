@@ -58,14 +58,14 @@ public class SpawnManager {
 			Random r = new Random();
 
 			place = locs.get(r.nextInt(locs.size()));
-		} else if (arena.getArenaConfig().get("spawns." + place) == null) {
+		} else if (arena.getArenaConfig().getUnsafe("spawns." + place) == null) {
 			place = PVPArena.instance.getAgm().guessSpawn(arena, place);
 			if (place == null) {
 				return null;
 			}
 		}
 
-		String sLoc = arena.getArenaConfig().getString("spawns." + place, null);
+		String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + place));
 		db.i("parsing location: " + sLoc);
 		return Config.parseLocation(sLoc).add(0.5, 0.1, 0.5);
 	}
@@ -132,7 +132,7 @@ public class SpawnManager {
 				continue;
 			}
 			db.i(" - " + name);
-			String sLoc = arena.getArenaConfig().getString("spawns." + name, null);
+			String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
 			result.add(Config.parseLocation( sLoc));
 		}
 
@@ -228,7 +228,7 @@ public class SpawnManager {
 
 		db.i("setting spawn " + place + " to " + s.toString());
 
-		arena.getArenaConfig().set("spawns." + place, s);
+		arena.getArenaConfig().setManually("spawns." + place, s);
 
 		arena.getArenaConfig().save();
 	}
@@ -255,7 +255,27 @@ public class SpawnManager {
 
 		db.i("setting spawn " + place + " to " + s.toString());
 
-		arena.getArenaConfig().set("spawns." + place, s);
+		arena.getArenaConfig().setManually("spawns." + place, s);
+
+		arena.getArenaConfig().save();
+	}
+
+	/**
+	 * set an arena coord to a given block
+	 * 
+	 * @param loc
+	 *            the location to save
+	 * @param place
+	 *            the coord name to save the location to
+	 */
+	public static void setBlock(Arena arena, PABlockLocation loc, String place) {
+		// "x,y,z,yaw,pitch"
+
+		String s = Config.parseToString(loc);
+
+		db.i("setting spawn " + place + " to " + s.toString());
+
+		arena.getArenaConfig().setManually("spawns." + place, s);
 
 		arena.getArenaConfig().save();
 	}

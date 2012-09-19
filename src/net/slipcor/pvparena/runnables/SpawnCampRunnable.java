@@ -3,6 +3,7 @@ package net.slipcor.pvparena.runnables;
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 
 /**
@@ -38,7 +39,7 @@ public class SpawnCampRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("SpawnCampRunnable commiting");
-		if (a.isFightInProgress() && a.getArenaConfig().getBoolean("protection.punish"))
+		if (a.isFightInProgress() && a.getArenaConfig().getBoolean(CFG.PROTECT_PUNISH))
 			a.spawnCampPunish();
 		else {
 			// deactivate the auto saving task

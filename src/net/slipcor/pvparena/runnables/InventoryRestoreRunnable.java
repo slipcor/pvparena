@@ -6,6 +6,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.InventoryManager;
 
 import org.bukkit.Bukkit;
@@ -43,7 +44,7 @@ public class InventoryRestoreRunnable implements Runnable {
 	public void run() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getStatus().equals(Status.FIGHT)) {
-			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean("game.refillInventory")) {
+			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 				ArenaClass.equip(player, items);
 			} else {
 				InventoryManager.clearInventory(player);

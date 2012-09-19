@@ -11,6 +11,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -165,7 +166,7 @@ public class ArenaPlayer {
 
 		playerClass.equip(player);
 
-		if (arena.getArenaConfig().getBoolean("game.woolHead", false)) {
+		if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
 			ArenaTeam aTeam = ap.getArenaTeam();
 			String color = aTeam.getColor().name();
 			InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
@@ -295,7 +296,6 @@ public class ArenaPlayer {
 	 */
 	public void createState(Player player) {
 		state = new PlayerState(player);
-		location = new PALocation(player.getLocation());
 	}
 
 	public boolean didValidSelection() {
@@ -577,7 +577,7 @@ public class ArenaPlayer {
 				return;
 			}
 		}
-		System.out.print("[PA-debug] failed to set unknown class " + s
+		PVPArena.instance.getLogger().warning("[PA-debug] failed to set unknown class " + s
 				+ " to player " + name);
 	}
 

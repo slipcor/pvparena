@@ -2,8 +2,10 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -51,6 +53,14 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		
+		if (ap.getArena() != null) {
+			Arena a = ap.getArena();
+			a.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, a.getName()));
+			return;
+		}
+		
 		int priority = 0;
 		PACheckResult res = new PACheckResult();
 		
@@ -79,7 +89,7 @@ public class PAG_Join extends PAA__Command {
 		ArenaGoal commGoal = null;
 		
 		for (ArenaGoal mod : PVPArena.instance.getAgm().getTypes()) {
-			res = mod.checkJoin(sender, res, true);
+			res = mod.checkJoin(sender, res);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -110,11 +120,32 @@ public class PAG_Join extends PAA__Command {
 		}
 		
 		if ((commModule == null) || (commGoal == null)) {
-			if (commModule != null)
+			if (commModule != null) {
 				commModule.parseJoin(arena, sender, team);
+				return;
+			}
 			
-			if (commGoal != null)
+			if (commGoal != null) {
 				commGoal.parseJoin(sender, team);
+				return;
+			}
+			
+			// both null, just put the joiner to some spawn
+			
+			if (!arena.tryJoin((Player) sender, team)) {
+				return;
+			}
+			
+			arena.msg(sender, Language.parse(arena, CFG.MSG_YOUJOINED, sender.getName(), args[0]));
+			arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINED, sender.getName(), args[0]));
+			
+			PVPArena.instance.getAgm().initiate(arena, (Player) sender);
+			
+			if (arena.getFighters().size() == 2) {
+				arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+				arena.setFightInProgress(true);
+			}
+			
 			return;
 		}
 
