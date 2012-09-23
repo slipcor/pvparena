@@ -21,8 +21,6 @@ import org.bukkit.command.CommandSender;
  */
 
 public class PAA_RegionFlag extends PAA__Command {
-	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	public PAA_RegionFlag() {
 		super(new String[] {});
@@ -65,17 +63,20 @@ public class PAA_RegionFlag extends PAA__Command {
 			} else {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
 			}
+			region.saveToConfig();
 			return;
 		}
 
 		if (StringParser.positive.contains(args[2].toLowerCase())) {
 			region.flagAdd(rf);
+			region.saveToConfig();
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[2].toLowerCase())) {
 			region.flagRemove(rf);
+			region.saveToConfig();
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
 			return;
 		}

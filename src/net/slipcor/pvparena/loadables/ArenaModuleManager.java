@@ -33,8 +33,10 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.modules.BattlefieldJoin;
+import net.slipcor.pvparena.modules.RegionTool;
 import net.slipcor.pvparena.modules.StandardLounge;
+import net.slipcor.pvparena.modules.StandardSpectate;
 
 /**
  * <pre>Arena Module Manager class</pre>
@@ -64,7 +66,10 @@ public class ArenaModuleManager {
 		}
 		loader = new Loader<ArenaModule>(plugin, path, new Object[] {});
 		modules = loader.load();
+		modules.add(new BattlefieldJoin());
+		modules.add(new RegionTool());
 		modules.add(new StandardLounge());
+		modules.add(new StandardSpectate());
 
 		for (ArenaModule mod : modules) {
 			db.i("module ArenaModule loaded: "

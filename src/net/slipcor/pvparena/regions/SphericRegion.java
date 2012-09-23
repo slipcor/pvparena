@@ -21,7 +21,8 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 public class SphericRegion extends ArenaRegionShape {
 	public SphericRegion() {
-		super("sheric");
+		super("spheric");
+		shape = RegionShape.SPHERIC;
 	}
 	
 	public SphericRegion(Arena arena, String name, PABlockLocation[] locs) {

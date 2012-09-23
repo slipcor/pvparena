@@ -21,9 +21,8 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "PlayerLives"</pre>
@@ -142,7 +141,7 @@ public class GoalPlayerLives extends ArenaGoal {
 			i--;
 			lives.put(player.getName(), i);
 
-			new InventoryRestoreRunnable(arena, player, event.getDrops(), 0);
+			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
 
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			

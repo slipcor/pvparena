@@ -115,14 +115,36 @@ public class StandardLounge extends ArenaModule {
 		result.setPriority(priority);
 		return result;
 	}
+	
+	@Override
+	public boolean hasSpawn(Arena arena, String s) {
+		if (arena.isFreeForAll()) {
+			return s.startsWith("lounge");
+		}
+		for (ArenaTeam team : arena.getTeams()) {
+			if (s.startsWith(team.getName() + "lounge")) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isActive(Arena arena) {
+		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDLOUNGE_ACTIVE);
+	}
 
 	@Override
 	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		ArenaPlayer.prepareInventory(arena, ap.get());
-		arena.tpPlayerToCoordName(ap.get(), "lounge");
-		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
+		if (arena.isFreeForAll()) {
+			arena.tpPlayerToCoordName(ap.get(), "lounge");
+		} else {
+			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
+		}
 		team.add(ap);
+		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 	}
 }

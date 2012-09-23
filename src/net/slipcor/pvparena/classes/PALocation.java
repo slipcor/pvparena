@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.classes;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.Bukkit;

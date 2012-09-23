@@ -8,7 +8,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;

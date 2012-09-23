@@ -91,10 +91,14 @@ public abstract class PAA__Command {
 			return new PAA_Goal();
 		} else if (name.contains("protect") || name.equals("!p")) {
 			return new PAA_Protection();
+		} else if (name.equals("regions") || name.equals("!rs")) {
+			return new PAA_Regions();
 		} else if (name.equals("region") || name.equals("!r")) {
 			return new PAA_Region();
 		} else if (name.equals("regionflag") || name.equals("!rf")) {
 			return new PAA_RegionFlag();
+		} else if (name.equals("regiontype") || name.equals("!rt")) {
+			return new PAA_RegionType();
 		} else if (name.contains("reload") || name.equals("!rl")) {
 			return new PAA_Reload();
 		} else if (name.contains("remove") || name.contains("delete") || name.equals("!rem") || name.equals("!del")) {

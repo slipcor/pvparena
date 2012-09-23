@@ -25,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
  */
 
 public class PAA_Set extends PAA__Command {
-	private static HashMap<String, String> types = new HashMap<String, String>();
+	//private static HashMap<String, String> types = new HashMap<String, String>();
 
 	static {
 /*
@@ -148,31 +148,32 @@ public class PAA_Set extends PAA__Command {
 
 				page = page < 1 ? 1 : page;
 
-				Set<String> keys = new HashSet<String>();
+				HashMap<String, String> keys = new HashMap<String, String>();
 
 				int i = 0;
 
 				for (String node : arena.getArenaConfig().getYamlConfiguration()
 						.getKeys(true)) {
-					if (types.get(node) == null) {
+					if (CFG.getByNode(node) == null) {
 						continue;
 					}
 					if (i++ >= (page - 1) * 10) {
 						String[] s = node.split("\\.");
-						keys.add(s[s.length - 1]);
+						keys.put(node, s[s.length - 1]);
 					}
 					if (keys.size() >= 10) {
 						break;
 					}
 				}
-				arena.msg(sender, "&6------ config list [" + page + "] ------");
-				for (String node : keys) {
+				arena.msg(sender, "§6------ config list [" + page + "] ------");
+				for (String node : keys.keySet()) {
 					arena.msg(sender,
-							node + " => " + types.get(getNode(arena, node)));
+							keys.get(node) + " => " + CFG.getByNode(node).getType());
 				}
 
 			} catch (Exception e) {
 				arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[0]));
+				e.printStackTrace();
 			}
 			return;
 		}
@@ -180,22 +181,6 @@ public class PAA_Set extends PAA__Command {
 		// args[0]
 		// usage: /pa {arenaname} set [node] [value]
 		set(sender, arena, args[0], args[1]);
-	}
-
-	private String getNode(Arena arena, String node) {
-		for (CFG cfg : CFG.getValues()) {
-
-			String s = cfg.getNode();
-					
-			if (types.get(s) == null) {
-				continue;
-			}
-
-			if (s.endsWith("." + node)) {
-				return s;
-			}
-		}
-		return "null";
 	}
 
 	public void set(CommandSender player, Arena arena, String node, String value) {
@@ -206,12 +191,9 @@ public class PAA_Set extends PAA__Command {
 				return;
 			}
 		}
+		
+		String type = CFG.getByNode(node) == null ? "" : CFG.getByNode(node).getType();
 
-		String type = types.get(node);
-
-		if (type == null) {
-			type = "";
-		}
 
 		if (type.equals("boolean")) {
 			if (value.equalsIgnoreCase("true")) {

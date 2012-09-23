@@ -11,6 +11,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -19,6 +20,8 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.regions.CuboidRegion;
+import net.slipcor.pvparena.regions.CylindricRegion;
+import net.slipcor.pvparena.regions.SphericRegion;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 
 import org.bukkit.Bukkit;
@@ -47,13 +50,13 @@ import com.nodinchan.ncbukkit.loader.Loadable;
 public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	protected static Debug db = new Debug(34);
 	protected String world;
+	protected RegionShape shape;
 	private Arena arena;
 	private String name;
-	private RegionShape shape;
 	private RegionType type;
 	private int tickID = -1;
-	private HashSet<RegionFlag> flags;
-	private HashSet<RegionProtection> protections;
+	private HashSet<RegionFlag> flags = new HashSet<RegionFlag>();
+	private HashSet<RegionProtection> protections = new HashSet<RegionProtection>();
 	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
 
 	protected final PABlockLocation[] locs;
@@ -113,6 +116,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	}
 
 	/**
+	 * region position for physical orientation
 	 * <pre>
 	 * CENTER = in the battlefield center
 	 * NORTH = north end of the battlefield
@@ -209,9 +213,9 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
 		} else if (shape.equals(RegionShape.SPHERIC)) {
-			return new CuboidRegion(arena, name, locs);
+			return new SphericRegion(arena, name, locs);
 		} else if (shape.equals(RegionShape.CYLINDRIC)) {
-			return new CuboidRegion(arena, name, locs);
+			return new CylindricRegion(arena, name, locs);
 		}
 		throw new UnsupportedOperationException("Arena Shape unknown: " + shape);
 	}
@@ -250,6 +254,8 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		this.world = locs[0].getWorldName();
 		this.locs = locs;
 		this.setArena(arena);
+
+		this.type = RegionType.CUSTOM;
 	}
 
 	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs,
@@ -259,14 +265,16 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		this.world = locs[0].getWorldName();
 		this.locs = locs;
 		this.setArena(arena);
-		PVPArena.instance.getArsm();
+		
 		this.shape = ArenaRegionShapeManager.getShapeByName(shape);
+		this.type = RegionType.CUSTOM;
 	}
 
 	public ArenaRegionShape(String regionShape) {
 		super(regionShape);
 		world = null;
 		locs = new PABlockLocation[2];
+		this.type = RegionType.CUSTOM;
 	}
 
 	public abstract boolean contains(PABlockLocation loc);
@@ -283,11 +291,24 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 	public abstract boolean tooFarAway(int joinRange, Location location);
 
+	public void applyFlags(int f) {
+		for (RegionFlag rf : RegionFlag.values())
+			if ((f & rf.ordinal()) != 0)
+				flags.add(rf);
+	}
+
+	public void applyProtections(int p) {
+		for (RegionProtection rp : RegionProtection.values())
+			if ((p & rp.ordinal()) != 0)
+				protections.add(rp);
+	}
+
 	public void displayInfo(CommandSender sender) {
 	}
 
 	public void flagAdd(RegionFlag rf) {
 		flags.add(rf);
+		saveToConfig();
 	}
 
 	public boolean flagToggle(RegionFlag rf) {
@@ -301,6 +322,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 	public void flagRemove(RegionFlag rf) {
 		flags.remove(rf);
+		saveToConfig();
 	}
 
 	public Arena getArena() {
@@ -371,6 +393,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 			return;
 		}
 		protections.add(rp);
+		saveToConfig();
 	}
 
 	public boolean protectionSetAll(Boolean b) {
@@ -390,6 +413,8 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 			}
 		}
 
+		saveToConfig();
+
 		return b;
 	}
 
@@ -402,6 +427,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		} else {
 			protections.add(rp);
 		}
+		saveToConfig();
 		return protections.contains(rp);
 	}
 
@@ -411,6 +437,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 			return;
 		}
 		protections.remove(rp);
+		saveToConfig();
 	}
 
 	public void reset() {
@@ -437,45 +464,9 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 		tickID = -1;
 	}
 
-	public String update(String key, String value) {
-		if (key.toLowerCase().equals("height")) {
-			int h = 0;
-			try {
-				h = Integer.parseInt(value);
-			} catch (Exception e) {
-				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
-			}
-
-			getLocs()[0].setY(getCenter().getY() - (h >> 1));
-			getLocs()[1].setY(getLocs()[0].getY() + h);
-
-			return Language.parse(MSG.REGION_HEIGHT, value);
-		} else if (key.toLowerCase().equals("radius")) {
-			int r = 0;
-			try {
-				r = Integer.parseInt(value);
-			} catch (Exception e) {
-				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
-			}
-
-			PABlockLocation loc = getCenter();
-
-			getLocs()[0].setX(loc.getX() - r);
-			getLocs()[0].setY(loc.getY() - r);
-			getLocs()[0].setZ(loc.getZ() - r);
-
-			getLocs()[1].setX(loc.getX() + r);
-			getLocs()[1].setY(loc.getY() + r);
-			getLocs()[1].setZ(loc.getZ() + r);
-
-			return Language.parse(MSG.REGION_RADIUS, value);
-		} else if (key.toLowerCase().equals("position")) {
-			return null; // TODO insert function to align the arena based on a position setting.
-			//TODO see SETUP.creole
-		}
-
-		return Language.parse(MSG.ERROR_ARGUMENT, key,
-				"height | radius | position");
+	public void saveToConfig() {
+		arena.getArenaConfig().setManually("arenaregion." + name, Config.parseToString(this, flags, protections));
+		arena.getArenaConfig().save();
 	}
 
 	public void setArena(Arena arena) {
@@ -592,6 +583,53 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 				}
 			}
 		}
+	}
+
+	public String update(String key, String value) {
+		// usage: /pa {arenaname} region [regionname] radius [number]
+		// usage: /pa {arenaname} region [regionname] height [number]
+		// usage: /pa {arenaname} region [regionname] position [position]
+		// usage: /pa {arenaname} region [regionname] flag [flag]
+		// usage: /pa {arenaname} region [regionname] type [regiontype]
+		
+		if (key.toLowerCase().equals("height")) {
+			int h = 0;
+			try {
+				h = Integer.parseInt(value);
+			} catch (Exception e) {
+				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
+			}
+
+			getLocs()[0].setY(getCenter().getY() - (h >> 1));
+			getLocs()[1].setY(getLocs()[0].getY() + h);
+
+			return Language.parse(MSG.REGION_HEIGHT, value);
+		} else if (key.toLowerCase().equals("radius")) {
+			int r = 0;
+			try {
+				r = Integer.parseInt(value);
+			} catch (Exception e) {
+				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
+			}
+
+			PABlockLocation loc = getCenter();
+
+			getLocs()[0].setX(loc.getX() - r);
+			getLocs()[0].setY(loc.getY() - r);
+			getLocs()[0].setZ(loc.getZ() - r);
+
+			getLocs()[1].setX(loc.getX() + r);
+			getLocs()[1].setY(loc.getY() + r);
+			getLocs()[1].setZ(loc.getZ() + r);
+
+			return Language.parse(MSG.REGION_RADIUS, value);
+		} else if (key.toLowerCase().equals("position")) {
+			return null; // TODO insert function to align the arena based on a position setting.
+			//TODO see SETUP.creole
+		}
+
+		return Language.parse(MSG.ERROR_ARGUMENT, key,
+				"height | radius | position");
 	}
 
 	public String version() {

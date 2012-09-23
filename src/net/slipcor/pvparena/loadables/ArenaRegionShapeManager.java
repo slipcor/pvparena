@@ -69,10 +69,6 @@ public class ArenaRegionShapeManager {
 		return null;
 	}
 
-	private static RegionShape getShapeByCoordDefinition(String coords) {
-		return getShapeByName(coords.split(",")[0]);
-	}
-
 	public static RegionShape getShapeByName(String string) {
 		for (RegionShape shape: RegionShape.values()) {
 			if (shape.name().startsWith(string.toUpperCase().substring(0,2))) {
@@ -114,21 +110,6 @@ public class ArenaRegionShapeManager {
 		return null;
 	}
 
-	public ArenaRegionShape readRegionFromConfig(String regionName,
-			YamlConfiguration config, Arena arena) {
-		db.i("reading config region: " + arena.getName() + "=>" + regionName);
-		String coords = config.getString("arenaregions." + regionName);
-		
-		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByCoordDefinition(coords);
-		
-		PABlockLocation[] locs = Config.parseRegion(coords);
-		
-		ArenaRegionShape region = ArenaRegionShape.create(arena, regionName, shape, locs);
-		
-		
-		return region;
-	}
-	
 	public void reload() {
 		regions = loader.reload();
 		regions.add(new CuboidRegion());

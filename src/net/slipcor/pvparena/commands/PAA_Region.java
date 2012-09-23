@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
@@ -69,6 +68,21 @@ public class PAA_Region extends PAA__Command {
 				return;
 			}
 			region.showBorder((Player) sender);
+			return;
+		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+			// usage: /pa {arenaname} region remove [regionname] | remove a region
+			ArenaRegionShape region = arena.getRegion(args[1]);
+			
+			if (region == null) {
+				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[1]));
+				return;
+			}
+			arena.getArenaConfig().setManually("arenaregion." + region.getRegionName(), null);
+			arena.msg(sender, Language.parse(MSG.REGION_REMOVED, region.getRegionName()));
+			
+			arena.getRegions().remove(region);
+			arena.getArenaConfig().save();
+			return;
 		} else if (args.length < 3) {
 			// usage: /pa {arenaname} region [regionname] {regionshape} | save selected region
 			
@@ -91,7 +105,11 @@ public class PAA_Region extends PAA__Command {
 			ArenaRegionShape region = ArenaRegionShape.create(arena, args[0], shape, locs);
 			
 			arena.addRegion(region);
-			arena.getArenaConfig().setManually("arenaregion." + args[0], Config.parseToString(region));
+			region.saveToConfig();
+			
+			activeSelections.remove(sender.getName());
+			
+			arena.msg(sender, Language.parse(MSG.REGION_SAVED, args[0]));
 			return;
 		}
 		
@@ -108,6 +126,7 @@ public class PAA_Region extends PAA__Command {
 		// usage: /pa {arenaname} region [regionname] height [number]
 		// usage: /pa {arenaname} region [regionname] position [position]
 		// usage: /pa {arenaname} region [regionname] flag [flag]
+		// usage: /pa {arenaname} region [regionname] type [regiontype]
 		
 		
 		

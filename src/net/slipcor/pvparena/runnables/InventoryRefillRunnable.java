@@ -23,13 +23,13 @@ import org.bukkit.inventory.ItemStack;
  * @version v0.9.0
  */
 
-public class InventoryRestoreRunnable implements Runnable {
+public class InventoryRefillRunnable implements Runnable {
 	private Arena arena;
 	private Player player;
 	private ItemStack[] items;
 	private int id;
 	
-	public InventoryRestoreRunnable(Arena a, Player p, List<ItemStack> isi, int ii) {
+	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi, int ii) {
 		id = 0;
 		arena = a;
 		player = p;

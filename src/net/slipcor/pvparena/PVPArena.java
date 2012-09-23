@@ -10,8 +10,6 @@ import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
@@ -37,10 +35,8 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
@@ -175,8 +171,8 @@ public class PVPArena extends JavaPlugin {
 		String name = args[0];
 		
 		if (a == null) {
-			if (PAA_Edit.activeSelections.containsKey(sender.getName())) {
-				a = PAA_Edit.activeSelections.get(sender.getName());
+			if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
+				a = PAA_Edit.activeEdits.get(sender.getName());
 			} else if (ArenaManager.count() == 1) {
 				a = ArenaManager.getFirst();
 			} else if (ArenaManager.count() < 1) {
@@ -335,9 +331,10 @@ public class PVPArena extends JavaPlugin {
 					JSONObject version = (JSONObject) versions.get(ver);
 
 					if (version.get("type").equals("Release")) {
+						String[] split = ((String) version.get("name"))
+								.split(" ");
 						newVer = Double
-								.parseDouble(((String) version.get("name"))
-										.split(" ")[1].trim().substring(1));
+								.parseDouble(split[split.length-1].trim().substring(1));
 						break;
 					}
 				}
@@ -386,6 +383,7 @@ public class PVPArena extends JavaPlugin {
 
 		} catch (Exception e) {
 			getLogger().warning("Failed to check for library update");
+			e.printStackTrace();
 		}
 	}
 

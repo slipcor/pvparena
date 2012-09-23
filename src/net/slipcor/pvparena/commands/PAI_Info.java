@@ -62,7 +62,7 @@ public class PAI_Info extends PAA__Command {
 		if (arena.getRegions() != null) {
 			HashSet<String> regions = new HashSet<String>();
 			for (ArenaRegionShape ar : arena.getRegions()) {
-				regions.add(ar.getName());
+				regions.add(ar.getRegionName());
 			}
 			
 			arena.msg(sender,  Language.parse(MSG.INFO_REGIONS, StringParser.joinSet(regions, ", ")));

@@ -207,7 +207,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @param string the spawn to find
 	 * @return true if the spawn is found, false otherwise
 	 */
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(Arena arena, String string) {
 		return false;
 	}
 

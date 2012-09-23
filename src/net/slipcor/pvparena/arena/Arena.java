@@ -11,7 +11,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.commands.PAA_Reload;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -20,13 +19,11 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
-import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ConfigurationManager;
@@ -37,11 +34,8 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
-import net.slipcor.pvparena.runnables.TimedEndRunnable;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -49,12 +43,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import com.avaje.ebeaninternal.server.transaction.TransactionMap.State;
 
 /**
  * <pre>Arena class</pre>
@@ -317,7 +307,7 @@ public class Arena {
 
 	public ArenaRegionShape getRegion(String name) {
 		for (ArenaRegionShape region : regions) {
-			if (region.getName().equalsIgnoreCase(name)) {
+			if (region.getRegionName().equalsIgnoreCase(name)) {
 				return region;
 			}
 		}
@@ -1146,11 +1136,39 @@ public class Arena {
 		cfg.save();
 	}
 
+	/**
+	 * Setup an arena based on legacy goals:
+	 * <pre>
+	 * teams - team lives arena
+	 * teamdm - team deathmatch arena
+	 * dm - deathmatch arena
+	 * free - deathmatch arena
+	 * ctf - capture the flag arena
+	 * ctp - capture the pumpkin arena
+	 * </pre>
+	 * @param string legacy goal
+	 */
 	public void getLegacyGoals(String string) {
 		// TODO Auto-generated method stub
 		String s = "";
-
-		this.goalAdd(PVPArena.instance.getAgm().getType("TeamLives"));
+		
+		this.setFree(false);
+		if (string.equals("teams")) {
+			goalAdd(PVPArena.instance.getAgm().getType("TeamLives"));
+		} else if (string.equals("teamdm")) {
+			goalAdd(PVPArena.instance.getAgm().getType("TeamDeathMatch"));
+		} else if (string.equals("dm")) {
+			goalAdd(PVPArena.instance.getAgm().getType("PlayerDeathMatch"));
+		} else if (string.equals("free")) {
+			goalAdd(PVPArena.instance.getAgm().getType("PlayerLives"));
+			this.setFree(true);
+		} else if (string.equals("ctf")) {
+			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
+		} else if (string.equals("ctp")) {
+			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
+		}
+		
+		updateGoals();
 	}
 
 	public HashSet<ArenaRegionShape> getRegionsByType(RegionType battle) {

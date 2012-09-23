@@ -50,7 +50,7 @@ public class PAA_Spawn extends PAA__Command {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 			
 			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-				if (mod.isActive(arena) && mod.hasSpawn(args[0])) {
+				if (mod.isActive(arena) && mod.hasSpawn(arena, args[0])) {
 					arena.spawnSet(args[0].toLowerCase(), new PALocation(ap.get().getLocation()));
 					arena.msg(sender, Language.parse(MSG.SPAWN_SET, args[0]));
 					return;

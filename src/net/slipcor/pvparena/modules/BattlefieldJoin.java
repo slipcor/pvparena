@@ -4,7 +4,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -25,7 +24,7 @@ import org.bukkit.entity.Player;
 
 public class BattlefieldJoin extends ArenaModule {
 	
-	private int priority = 2;
+	private int priority = 0;
 
 	public BattlefieldJoin() {
 		super("BattlefieldJoin");
@@ -68,6 +67,11 @@ public class BattlefieldJoin extends ArenaModule {
 		result.setModName(getName());
 		result.setPriority(priority);
 		return result;
+	}
+	
+	@Override
+	public boolean isActive(Arena arena) {
+		return true;
 	}
 
 	@Override

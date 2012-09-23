@@ -3,6 +3,7 @@ package net.slipcor.pvparena.modules;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -38,8 +39,13 @@ public class StandardSpectate extends ArenaModule {
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(Arena arena, String string) {
 		return string.equalsIgnoreCase("spectator");
+	}
+	
+	@Override
+	public boolean isActive(Arena arena) {
+		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDSPECTATE_ACTIVE);
 	}
 
 	@Override

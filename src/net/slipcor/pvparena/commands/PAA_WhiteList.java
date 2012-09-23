@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 

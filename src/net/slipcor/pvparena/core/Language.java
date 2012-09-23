@@ -4,8 +4,6 @@ import java.io.File;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 
 import org.bukkit.Bukkit;
@@ -142,12 +140,13 @@ public class Language {
 		ERROR_READY_NOCLASS("nulang.error.ready.noclass", "You don't have a class!"),
 		ERROR_READY("nulang.error.ready.error", "The arena is not ready! %1%"),
 		ERROR_REGION_BEING_CREATED("nulang.error.region.beingcreated", "A region is already being created: %1%"),
-		ERROR_REGION_FLAG_NOTFOUND("nulang.error.region.flagnotfound", "RegionFlag &a%1%&r unknown!"),
+		ERROR_REGION_FLAG_NOTFOUND("nulang.error.region.flagnotfound", "RegionFlag &a%1%&r unknown! Valid values: %2%"),
 		ERROR_REGION_NOT_BEING_CREATED("nulang.error.regionnotbeingcreated", "A region is not being created!"),
 		ERROR_REGION_NOTFOUND("nulang.error.region.notfound", "Region &a%1%&r not found!"),
 		ERROR_REGION_PROTECTION_NOTFOUND("nulang.error.region.protectionnotfound", "RegionProtection &a%1%&r unknown!"),
 		ERROR_REGION_REMOVE_NOTFOUND("nulang.error.regionnotremoved", "There is no region setup."),
 		ERROR_REGION_SELECT_2("nulang.error.select2","Select two points before trying to save."),
+		ERROR_REGION_TYPE_NOTFOUND("nulang.error.region.typenotfound", "RegionType &a%1%&r unknown! Valid values: %2%"),
 		ERROR_REGION_YOUSELECT("nulang.error.region.youselect", "You are already selecting a region for an arena!"),
 		ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
 		ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!"),
@@ -248,7 +247,11 @@ public class Language {
 		REGION_SAVED("nulang.region.saved", "Region saved."),
 		REGION_SELECT("nulang.region.select", "Select two points with your wand item, left click first and then right click!"),
 		REGION_SETTING("nulang.region.setting", "Setting region enabled."),
+		REGION_TYPE_SET("nulang.region.typeset", "Region Type set: &e%1%"),
 		REGION_YOUSELECT("nulang.region.youselect", "You are now selecting a region for arena &a%1%&r!"),
+
+		REGIONS_LISTHEAD("nulang.regions.listhead", "--- &aArena Regions&r [&e%1%&r]---"),
+		REGIONS_LISTVALUE("nulang.regions.listvalue", "&a%1%&r: %2%, %3%"),
 		
 		RELOAD_DONE("nulang.reloaded", "Config reloaded!"),
 		

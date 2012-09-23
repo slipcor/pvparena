@@ -22,6 +22,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 public class CylindricRegion extends ArenaRegionShape {
 	public CylindricRegion() {
 		super("cylindric");
+		shape = RegionShape.CYLINDRIC;
 	}
 	
 	public CylindricRegion(Arena arena, String name, PABlockLocation[] locs) {

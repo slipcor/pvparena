@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -28,11 +29,13 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 public class GoalFlags extends ArenaGoal {
 
@@ -47,8 +50,6 @@ public class GoalFlags extends ArenaGoal {
 	
 	private Material flagMaterial = Material.WOOL; //TODO set
 	private String flagName = "";
-	
-	
 	
 	@Override
 	public String version() {
@@ -70,6 +71,11 @@ public class GoalFlags extends ArenaGoal {
 	public PACheckResult checkCommand(PACheckResult res, String string) {
 		if (res.getPriority() > priority) {
 			return res;
+		}
+		
+		if (string.equalsIgnoreCase("flagtype")) {
+			res.setModName(getName());
+			res.setPriority(priority);
 		}
 		
 		for (ArenaTeam team : arena.getTeams()) {
@@ -156,10 +162,10 @@ public class GoalFlags extends ArenaGoal {
 			vLoc = block.getLocation().toVector();
 			sTeam = ap.getArenaTeam().getName();
 			db.i("block: " + vLoc.toString());
-			if (SpawnManager.getSpawns(arena, sTeam + "flag").size() > 0) {
-				vFlag = SpawnManager.getNearest(
-						SpawnManager.getSpawns(arena, sTeam + "flag"),
-						new PALocation(player.getLocation())).toLocation().toVector();
+			if (SpawnManager.getBlocks(arena, sTeam + "flag").size() > 0) {
+				vFlag = SpawnManager.getBlockNearest(
+						SpawnManager.getBlocks(arena, sTeam + "flag"),
+						new PABlockLocation(player.getLocation())).toLocation().toVector();
 			} else {
 				db.i(sTeam + "flag = null");
 			}
@@ -201,9 +207,13 @@ public class GoalFlags extends ArenaGoal {
 				takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
 						SpawnManager.getCoords(arena, flagTeam + "flag"));
 				if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-					player.getInventory().setHelmet(
-							paHeadGears.get(player.getName()).clone());
-					paHeadGears.remove(player.getName());
+					if (paHeadGears.get(player.getName()) != null) {
+						player.getInventory().setHelmet(
+								paHeadGears.get(player.getName()).clone());
+						paHeadGears.remove(player.getName());
+					} else {
+						player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
+					}
 				}
 
 				reduceLivesCheckEndAndCommit(arena, flagTeam); // TODO move to "commit" ?
@@ -226,10 +236,10 @@ public class GoalFlags extends ArenaGoal {
 				db.i("checking for flag of team " + aTeam);
 				vLoc = block.getLocation().toVector();
 				db.i("block: " + vLoc.toString());
-				if (SpawnManager.getSpawns(arena, aTeam + "flag").size() > 0) {
-					vFlag = SpawnManager.getNearest(
-							SpawnManager.getSpawns(arena, aTeam + "flag"),
-							new PALocation(player.getLocation())).toLocation().toVector();
+				if (SpawnManager.getBlocks(arena, aTeam + "flag").size() > 0) {
+					vFlag = SpawnManager.getBlockNearest(
+							SpawnManager.getBlocks(arena, aTeam + "flag"),
+							new PABlockLocation(player.getLocation())).toLocation().toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i("flag found!");
@@ -357,7 +367,26 @@ public class GoalFlags extends ArenaGoal {
 
 	@Override
 	public void commitCommand(CommandSender sender, String[] args) {
-		if (args[0].contains("flag")) {
+		if (args[0].equalsIgnoreCase("flagtype")) {
+			if (args.length < 2) {
+				arena.msg(sender, Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), "2"));
+				return;
+			}
+			
+			try {
+				int i = Integer.parseInt(args[1]);
+				flagMaterial = Material.getMaterial(i);
+			} catch (Exception e) {
+				Material mat = Material.getMaterial(args[1].toUpperCase());
+				
+				if (mat == null) {
+					arena.msg(sender, Language.parse(MSG.ERROR_MAT_NOT_FOUND, args[1]));
+					return;
+				}
+				
+				flagMaterial = mat;
+			}
+		} else if (args[0].contains("flag")) {
 			for (ArenaTeam team : arena.getTeams()) {
 				String sTeam = team.getName();
 				if (args[0].contains(sTeam + "flag")) {
@@ -398,6 +427,27 @@ public class GoalFlags extends ArenaGoal {
 			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+	}
+	
+
+	@Override
+	public void commitPlayerDeath(Player player,
+			boolean doesRespawn, String error, PlayerDeathEvent event) {
+
+			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
+
+			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+			
+			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+					arena.parseDeathCause(player, event.getEntity()
+							.getLastDamageCause().getCause(), player.getKiller())));
+			
+			arena.tpPlayerToCoordName(player, (arena.isFreeForAll()?"":respawnTeam.getName())
+					+ "spawn");
+			
+			arena.unKillPlayer(player, event.getEntity()
+					.getLastDamageCause().getCause(), player.getKiller());
 	}
 	
 	@Override
@@ -521,6 +571,18 @@ public class GoalFlags extends ArenaGoal {
 	}
 
 	@Override
+	public void initate(Player player) {
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		ArenaTeam team = ap.getArenaTeam();
+		if (!paTeamLives.containsKey(team.getName())) {
+			paTeamLives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
+
+			takeFlag(team.getColor().name(), false,
+					SpawnManager.getCoords(arena, team.getName() + "flag"));
+		}
+	}
+
+	@Override
 	public void teleportAllToSpawn() {
 		db.i("initiating arena");
 		paTeamLives.clear();
@@ -598,7 +660,11 @@ public class GoalFlags extends ArenaGoal {
 	 * @param lBlock
 	 *            the location to take/reset
 	 */
-	public static void takeFlag(String flagColor, boolean take, PALocation lBlock) {
+	public void takeFlag(String flagColor, boolean take, PALocation lBlock) {
+		if (!flagMaterial.equals(Material.WOOL)) {
+			lBlock.toLocation().getBlock().setType(take?Material.BEDROCK:flagMaterial);
+			return;
+		}
 		if (take) {
 			lBlock.toLocation().getBlock().setData(
 					StringParser.getColorDataFromENUM("WHITE"));

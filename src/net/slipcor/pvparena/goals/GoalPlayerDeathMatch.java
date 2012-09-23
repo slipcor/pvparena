@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -21,12 +20,10 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRestoreRunnable;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
 /**
@@ -170,7 +167,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			i--;
 			lives.put(killer.getName(), i);
 
-			new InventoryRestoreRunnable(arena, ex, event.getDrops(), 0);
+			new InventoryRefillRunnable(arena, ex, event.getDrops(), 0);
 			
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName()).getArenaTeam();
 

@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 
 public class PAA_Edit extends PAA__Command {
 	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
+	public static HashMap<String, Arena> activeEdits = new HashMap<String, Arena>();
 
 	public PAA_Edit() {
 		super(new String[] {});

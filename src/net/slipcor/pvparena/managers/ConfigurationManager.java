@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 /**
  * <pre>Configuration Manager class</pre>
@@ -47,6 +48,10 @@ public class ConfigurationManager {
 		if (cfg.getString(CFG.GENERAL_TYPE, "null") != null && !cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
+			
+			if (cfg.getUnsafe(CFG.MODULES_STANDARDSPECTATE_ACTIVE.getNode()) == null) {
+				cfg.createDefaults();
+			}
 			
 			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
 			for (String type : list) {
@@ -178,7 +183,7 @@ public class ConfigurationManager {
 
 		config.options().copyDefaults(true);
 
-		cfg.set(CFG.Z, "0.9.0.30");
+		cfg.set(CFG.Z, "0.9.0.65");
 		cfg.save();
 		cfg.load();
 
@@ -211,11 +216,11 @@ public class ConfigurationManager {
 		if (cfg.getString(CFG.GENERAL_OWNER) != null) {
 			arena.setOwner(CFG.GENERAL_OWNER.toString());
 		}
-		if (config.getConfigurationSection("regions") != null) {
+		if (config.getConfigurationSection("arenaregion") != null) {
 			Map<String, Object> regs = config
-					.getConfigurationSection("regions").getValues(false);
+					.getConfigurationSection("arenaregion").getValues(false);
 			for (String rName : regs.keySet()) {
-				ArenaRegionShape region = PVPArena.instance.getArsm().readRegionFromConfig(rName, config, arena);
+				ArenaRegionShape region = Config.parseRegion(arena, config, rName);
 				
 				if (region == null) {
 					PVPArena.instance.getLogger().severe("Error while loading arena, region null: " + rName);

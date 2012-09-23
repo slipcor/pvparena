@@ -3,14 +3,19 @@ package net.slipcor.pvparena.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
@@ -190,6 +195,10 @@ public class Config {
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
+
+		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", false),
+		
+		MODULES_STANDARDSPECTATE_ACTIVE("modules.standardspectate.ssactive", false),
 		
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
@@ -207,6 +216,7 @@ public class Config {
 		
 		private String node;
 		private Object value;
+		private String type;
 
 		public static CFG getByNode(String node) {
 			for (CFG m : CFG.values()) {
@@ -220,26 +230,31 @@ public class Config {
 		private CFG(String node, String value) {
 			this.node = node;
 			this.value = value;
+			this.type = "string";
 		}
 
 		private CFG(String node, Boolean value) {
 			this.node = node;
 			this.value = value;
+			this.type = "boolean";
 		}
 
 		private CFG(String node, Integer value) {
 			this.node = node;
 			this.value = value;
+			this.type = "int";
 		}
 
 		private CFG(String node, Double value) {
 			this.node = node;
 			this.value = value;
+			this.type = "double";
 		}
 
 		private CFG(String node, List<String> value) {
 			this.node = node;
 			this.value = value;
+			this.type = "list";
 		}
 
 		public String getNode() {
@@ -250,17 +265,21 @@ public class Config {
 			node = s;
 		}
 
-		public void setValue(Object s) {
-			value = s;
-		}
-
 		@Override
 		public String toString() {
 			return String.valueOf(value);
 		}
 
+		public Object getValue() {
+			return value;
+		}
+
 		public static CFG[] getValues() {
 			return values();
+		}
+
+		public String getType() {
+			return type;
 		}
 	}
 
@@ -284,7 +303,7 @@ public class Config {
 		this.config.options().indent(4);
 
 		for (CFG cfg : CFG.values()) {
-			this.config.addDefault(cfg.getNode(), cfg.value);
+			this.config.addDefault(cfg.getNode(), cfg.getValue());
 		}
 		save();
 	}
@@ -397,7 +416,7 @@ public class Config {
 	 * @return the boolean value of the path if the path exists, false otherwise
 	 */
 	public boolean getBoolean(CFG cfg) {
-		return getBoolean(cfg, (Boolean) cfg.value);
+		return getBoolean(cfg, (Boolean) cfg.getValue());
 	}
 
 	/**
@@ -423,7 +442,7 @@ public class Config {
 	 * @return the int value of the path if the path exists, 0 otherwise
 	 */
 	public int getInt(CFG cfg) {
-		return getInt(cfg, (Integer) cfg.value);
+		return getInt(cfg, (Integer) cfg.getValue());
 	}
 
 	/**
@@ -449,7 +468,7 @@ public class Config {
 	 * @return the double value of the path if the path exists, 0D otherwise
 	 */
 	public double getDouble(CFG cfg) {
-		return getDouble(cfg, (Double) cfg.value);
+		return getDouble(cfg, (Double) cfg.getValue());
 	}
 
 	/**
@@ -475,7 +494,7 @@ public class Config {
 	 * @return the string value of the path if the path exists, null otherwise
 	 */
 	public String getString(CFG cfg) {
-		return getString(cfg, (String) cfg.value);
+		return getString(cfg, (String) cfg.getValue());
 	}
 
 	/**
@@ -612,19 +631,17 @@ public class Config {
 	}
 	
 	/**
-	 * Parse an input string of the form "world,x1,y1,z1,x2,y2,z2,shape"
-	 * to create a Location array. This method will only accept strings of the
-	 * specified form.
 	 * 
-	 * @param coords
-	 *            a string of the form "world,x1,y1,z1,x2,y2,z2,shape"
-	 * @return a Location array in the given world with the given coordinates
 	 */
-	public static PABlockLocation[] parseRegion(String coords) {
-		String[] parts = coords.split(",");
-		if (parts.length < 8)
+	public static ArenaRegionShape parseRegion(Arena arena, YamlConfiguration config, String regionName) {
+		String coords = config.getString("arenaregion." + regionName);
+		String[] parts = coords.split(","); 
+		
+		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
+		
+		if (parts.length < 9)
 			throw new IllegalArgumentException(
-					"Input string must contain only world, x1, y1, z1, x2, y2, z2, and shape: " + coords);
+					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: " + coords);
 		
 		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
 			throw new IllegalArgumentException(
@@ -637,15 +654,24 @@ public class Config {
 		Integer x2 = parseInteger(parts[4]);
 		Integer y2 = parseInteger(parts[5]);
 		Integer z2 = parseInteger(parts[6]);
+		Integer flags = parseInteger(parts[8]);
+		Integer prots = parseInteger(parts[9]);
 
 		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null)
+				|| z2 == null || flags == null || prots == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
 		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };
-		return l;
+		
+		ArenaRegionShape region = ArenaRegionShape.create(arena, regionName, shape, l);
+		region.applyFlags(flags);
+		region.applyProtections(prots);
+		region.setType(RegionType.valueOf(parts[10]));
 
+		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
+		
+		return region;
 	}
 
 	public static Integer parseInteger(String s) {
@@ -686,8 +712,8 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(ArenaRegionShape region) {
-		String[] result = new String[8];
+	public static String parseToString(ArenaRegionShape region, HashSet<RegionFlag> flags, HashSet<RegionProtection> protections) {
+		String[] result = new String[11];
 		result[0] = region.getWorldName();
 		result[1] = String.valueOf(region.getLocs()[0].getX());
 		result[2] = String.valueOf(region.getLocs()[0].getY());
@@ -696,7 +722,24 @@ public class Config {
 		result[5] = String.valueOf(region.getLocs()[1].getY());
 		result[6] = String.valueOf(region.getLocs()[1].getZ());
 		result[7] = region.getShape().name();
-		// "world,x1,y1,z1,x2,y2,z2,shape"
+		result[10] = region.getType().name();
+		
+		int sum = 0;
+		
+		for (RegionFlag f : flags) {
+			sum += Math.pow(2, f.ordinal());
+		}
+		
+		result[8] = String.valueOf(sum);
+		
+		sum = 0;
+		
+		for (RegionProtection p : protections) {
+			sum += Math.pow(2, p.ordinal());
+		}
+		result[9] = String.valueOf(sum);
+		
+		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
 		return StringParser.joinArray(result, ",");
 	}
 }

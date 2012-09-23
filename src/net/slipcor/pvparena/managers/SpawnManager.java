@@ -29,6 +29,42 @@ import org.bukkit.entity.Player;
 public class SpawnManager {
 	private static Debug db = new Debug(27);
 
+	public static HashSet<PABlockLocation> getBlocks(Arena arena, String sTeam) {
+		db.i("reading blocks of arena " + arena + " (" + sTeam + ")");
+		HashSet<PABlockLocation> result = new HashSet<PABlockLocation>();
+
+		HashMap<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
+				.getYamlConfiguration().getConfigurationSection("spawns")
+				.getValues(false);
+
+		for (String name : coords.keySet()) {
+			if (sTeam.equals("flags")) {
+				if (!name.startsWith("flag")) {
+					continue;
+				}
+			} else if (name.endsWith("flag")) {
+				String sName = sTeam.replace("flag", "");
+				db.i("checking if " + name + " starts with " + sName);
+				if (!name.startsWith(sName)) {
+					continue;
+				}
+			} else if (sTeam.equals("free")) {
+				if (!name.startsWith("spawn")) {
+					continue;
+				}
+			} else if (name.contains("lounge")) {
+				continue;
+			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
+				continue;
+			}
+			db.i(" - " + name);
+			String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
+			result.add(Config.parseBlockLocation( sLoc));
+		}
+
+		return result;
+	}
+
 	/**
 	 * get the location from a coord string
 	 * 
@@ -67,6 +103,9 @@ public class SpawnManager {
 
 		String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + place));
 		db.i("parsing location: " + sLoc);
+		if (place.contains("flag")) {
+			return new PALocation(Config.parseBlockLocation(sLoc).toLocation()).add(0.5, 0.1, 0.5);
+		}
 		return Config.parseLocation(sLoc).add(0.5, 0.1, 0.5);
 	}
 
@@ -84,6 +123,20 @@ public class SpawnManager {
 		PALocation result = null;
 
 		for (PALocation loc : hashSet) {
+			if (result == null
+					|| result.getDistance(location) > loc.getDistance(location)) {
+				result = loc;
+			}
+		}
+
+		return result;
+	}
+
+	public static PABlockLocation getBlockNearest(HashSet<PABlockLocation> hashSet,
+			PABlockLocation location) {
+		PABlockLocation result = null;
+
+		for (PABlockLocation loc : hashSet) {
 			if (result == null
 					|| result.getDistance(location) > loc.getDistance(location)) {
 				result = loc;
