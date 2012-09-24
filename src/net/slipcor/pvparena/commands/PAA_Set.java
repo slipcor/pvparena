@@ -1,9 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;

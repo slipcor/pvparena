@@ -1,17 +1,10 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
-
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena REGIONS Command class</pre>

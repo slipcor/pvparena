@@ -4,7 +4,6 @@ import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;

@@ -63,6 +63,7 @@ A PVP experience enhancing plugin.
 ** check what to repair on interact / hit (dont reset every freaking block :p )
 ** intelligent and case insensitive arena guessing
 ** ready up with /pa ready
+** splash damage/healing affects teams correctly
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -70,9 +71,6 @@ A PVP experience enhancing plugin.
 
 * plugin
 ** /pa duel [arenaname] [duelplayer] --> start 1:1
-** fix team damage/healing:
-*** splash healing should only affect own team
-*** splash damage should only affect enemy team
 ** add item spawns: [time | item | location]
 ** parse configs differently (yaml is bad :) )
 ** rounds - full restart to "tpalltospawns" (best of X | X)

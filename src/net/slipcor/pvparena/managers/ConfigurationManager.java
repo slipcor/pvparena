@@ -18,7 +18,6 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 /**
  * <pre>Configuration Manager class</pre>

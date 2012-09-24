@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.Collection;
+import java.util.HashMap;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -14,7 +17,9 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 
+import org.bukkit.Effect;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
@@ -26,6 +31,10 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.ExpBottleEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * <pre>Entity Listener class</pre>
@@ -37,6 +46,27 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 public class EntityListener implements Listener {
 	private static Debug db = new Debug(21);
+	private static HashMap<PotionEffectType, Boolean> teamEffect = new HashMap<PotionEffectType, Boolean>();
+	
+	static {
+		teamEffect.put(PotionEffectType.BLINDNESS, false);
+		teamEffect.put(PotionEffectType.CONFUSION, false);
+		teamEffect.put(PotionEffectType.DAMAGE_RESISTANCE, true);
+		teamEffect.put(PotionEffectType.FAST_DIGGING, true);
+		teamEffect.put(PotionEffectType.FIRE_RESISTANCE, true);
+		teamEffect.put(PotionEffectType.HARM, false);
+		teamEffect.put(PotionEffectType.HEAL, true);
+		teamEffect.put(PotionEffectType.HUNGER, false);
+		teamEffect.put(PotionEffectType.INCREASE_DAMAGE, true);
+		teamEffect.put(PotionEffectType.JUMP, true);
+		teamEffect.put(PotionEffectType.POISON, false);
+		teamEffect.put(PotionEffectType.REGENERATION, true);
+		teamEffect.put(PotionEffectType.SLOW, false);
+		teamEffect.put(PotionEffectType.SLOW_DIGGING, false);
+		teamEffect.put(PotionEffectType.SPEED, true);
+		teamEffect.put(PotionEffectType.WATER_BREATHING, true);
+		teamEffect.put(PotionEffectType.WEAKNESS, false);
+	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityExplode(EntityExplodeEvent event) {
@@ -258,6 +288,52 @@ public class EntityListener implements Listener {
 		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.NULL) && !apDefender.getStatus().equals(Status.FIGHT))) {
 			event.setCancelled(true);
 			return;
+		}
+	}
+	
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPotionSplash(PotionSplashEvent event) {
+
+		db.i("onPotionSplash");
+		boolean affectTeam = true;
+		
+		Collection<PotionEffect> pot = event.getPotion().getEffects();
+		for (PotionEffect eff : pot) {
+			if (teamEffect.containsKey(eff.getType())) {
+				affectTeam = teamEffect.get(eff.getType());
+				break;
+			}
+		}
+		
+		ArenaPlayer ap = null;
+			
+		try {
+			ap = ArenaPlayer.parsePlayer(((Player) event.getEntity().getShooter()).getName());
+		} catch (Exception e) {
+			return;
+		}
+		
+		db.i("legit player: " + ap);
+		
+		if (ap == null || ap.getArena() == null || !ap.getStatus().equals(Status.FIGHT)) {
+			db.i("something is null!");
+			return;
+		}
+		
+		Collection<LivingEntity> entities = event.getAffectedEntities();
+		for (LivingEntity e : entities) {
+			if (!(e instanceof Player)) {
+				continue;
+			}
+			ArenaPlayer p = ArenaPlayer.parsePlayer(((Player) e).getName());
+			boolean sameTeam = p.getArenaTeam().equals(ap.getArenaTeam());
+			if (sameTeam != affectTeam) {
+				// different team and only team should be affected
+				// same team and the other team should be affected
+				// ==> cancel!
+				event.setIntensity(e, 0);
+			}
 		}
 	}
 }
