@@ -64,6 +64,8 @@ A PVP experience enhancing plugin.
 ** intelligent and case insensitive arena guessing
 ** ready up with /pa ready
 ** splash damage/healing affects teams correctly
+** inv restore -> 2L -> teleport
+** rewards: "rewards-min-players"
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -71,12 +73,10 @@ A PVP experience enhancing plugin.
 
 * plugin
 ** /pa duel [arenaname] [duelplayer] --> start 1:1
-** add item spawns: [time | item | location]
 ** parse configs differently (yaml is bad :) )
 ** rounds - full restart to "tpalltospawns" (best of X | X)
-** inv restore -> 2L -> teleport
-** rewards: "rewards-min-players"
 * modules
+** item spawns: [time | item | location]
 ** commands when joining / leaving (console and/or by player)
 ** join via position / portal / etc
 ** WorldEdit & WorldGuard hooking (via module)

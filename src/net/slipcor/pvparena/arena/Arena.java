@@ -34,6 +34,8 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
+import net.slipcor.pvparena.runnables.TeleportRunnable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -73,6 +75,7 @@ public class Arena {
 	private boolean fightInProgress = false;
 	private boolean locked = false;
 	private boolean free = false;
+	private int startCount = 0;
 
 	// Runnable IDs
 	public int END_ID = -1;
@@ -378,20 +381,26 @@ public class Arena {
 	 *            the player to give the reward
 	 */
 	public void giveRewards(Player player) {
+		
 		db.i("giving rewards to " + player.getName());
 		PVPArena.instance.getAmm().giveRewards(this, player);
 		String sItems = getArenaConfig().getString(CFG.ITEMS_REWARDS,
 				"none");
-		if (sItems.equals("none"))
-			return;
+		
 		String[] items = sItems.split(",");
+		if (sItems.equals("none")) {
+			items = null;
+		}
 		boolean random = getArenaConfig().getBoolean(CFG.ITEMS_RANDOM);
 		Random r = new Random();
 
 		PAWinEvent dEvent = new PAWinEvent(this, player, items);
 		Bukkit.getPluginManager().callEvent(dEvent);
-
 		items = dEvent.getItems();
+		
+		if (items == null || items.length < 1 || cfg.getInt(CFG.ITEMS_MINPLAYERS) > startCount) {
+			return;
+		}
 
 		int randomItem = r.nextInt(items.length);
 
@@ -482,6 +491,10 @@ public class Arena {
 		return this.equals(ArenaPlayer.parsePlayer(p.getName()).getArena());
 	}
 
+	public void increasePlayerCount() {
+		startCount++;
+	}
+
 	public boolean isFightInProgress() {
 		return fightInProgress;
 	}
@@ -556,6 +569,9 @@ public class Arena {
 	 *            the leaving player
 	 */
 	public void playerLeave(Player player, String location) {
+		if (!fightInProgress) {
+			startCount--;
+		}
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
@@ -826,13 +842,7 @@ public class Arena {
 		
 		db.i("string = " + string);
 		ap.setTelePass(true);
-		if (string.equalsIgnoreCase("old")) {
-			if (ap.getLocation() != null)
-				player.teleport(ap.getLocation().toLocation());
-		} else {
-			PALocation l = SpawnManager.getCoords(this, string);
-			player.teleport(l.toLocation());
-		}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new TeleportRunnable(this, ap, string), 2L);
 	}
 
 	/**
@@ -1149,16 +1159,15 @@ public class Arena {
 	 * @param string legacy goal
 	 */
 	public void getLegacyGoals(String string) {
-		// TODO Auto-generated method stub
-		String s = "";
+		setFree(false);
 		
-		this.setFree(false);
 		if (string.equals("teams")) {
 			goalAdd(PVPArena.instance.getAgm().getType("TeamLives"));
 		} else if (string.equals("teamdm")) {
 			goalAdd(PVPArena.instance.getAgm().getType("TeamDeathMatch"));
 		} else if (string.equals("dm")) {
 			goalAdd(PVPArena.instance.getAgm().getType("PlayerDeathMatch"));
+			this.setFree(true);
 		} else if (string.equals("free")) {
 			goalAdd(PVPArena.instance.getAgm().getType("PlayerLives"));
 			this.setFree(true);
@@ -1166,6 +1175,12 @@ public class Arena {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
 		} else if (string.equals("ctp")) {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
+			for (ArenaGoal goal : getGoals()) {
+				if (goal.getName().equals("Flags")) {
+					String[] x = {"flagtype","PUMPKIN"};
+					goal.commitCommand(Bukkit.getConsoleSender(), x);
+				}
+			}
 		}
 		
 		updateGoals();

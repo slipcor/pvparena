@@ -49,6 +49,7 @@ public class ArenaTeam {
 	public void add(ArenaPlayer player) {
 		this.players.add(player);
 		db.i("Added player " + player.getName() + " to team " + name);
+		player.getArena().increasePlayerCount();
 	}
 
 	/**
