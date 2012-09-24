@@ -65,14 +65,14 @@ public class PABlockLocation {
 		return z;
 	}
 
-	public boolean isInAABB(PABlockLocation l1, PABlockLocation l2) {
-		if (this.getX() < l1.getX() || this.getX() > l2.getX()) {
+	public boolean isInAABB(PABlockLocation min, PABlockLocation max) {
+		if (this.getX() < min.getX() || this.getX() > max.getX()) {
 			return false;
 		}
-		if (this.getY() < l1.getY() || this.getY() > l2.getY()) {
+		if (this.getY() < min.getY() || this.getY() > max.getY()) {
 			return false;
 		}
-		if (this.getZ() < l1.getZ() || this.getZ() > l2.getZ()) {
+		if (this.getZ() < min.getZ() || this.getZ() > max.getZ()) {
 			return false;
 		}
 		return true;

@@ -84,6 +84,7 @@ public class BattlefieldJoin extends ArenaModule {
 		} else {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 		}
+		ap.setArena(arena);
 		team.add(ap);
 		arena.msg(sender, Language.parse(MSG.ANNOUNCE_ARENA_STARTING));
 	}

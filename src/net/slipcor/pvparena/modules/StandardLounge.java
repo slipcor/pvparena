@@ -144,6 +144,7 @@ public class StandardLounge extends ArenaModule {
 		} else {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
 		}
+		ap.setArena(arena);
 		team.add(ap);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 	}

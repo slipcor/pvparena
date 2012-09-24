@@ -172,10 +172,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 
 	public void displayInfo(Arena arena, CommandSender sender) {
 	}
-
-	public HashSet<String> getAddedSpawns() {
-		return new HashSet<String>();
-	}
 	
 	/**
 	 * hook into giving players the rewards
@@ -385,17 +381,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 
 	public boolean parseCommand(String s) {
 		return false;
-	}
-
-	/**
-	 * hook into the display of the arena information
-	 * 
-	 * @param arena
-	 *            the arena being displayed
-	 * @param player
-	 *            the player being messaged
-	 */
-	public void parseInfo(Arena arena, CommandSender player) {
 	}
 
 	/**

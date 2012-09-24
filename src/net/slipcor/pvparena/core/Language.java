@@ -250,8 +250,13 @@ public class Language {
 		REGION_TYPE_SET("nulang.region.typeset", "Region Type set: &e%1%"),
 		REGION_YOUSELECT("nulang.region.youselect", "You are now selecting a region for arena &a%1%&r!"),
 
+		REGIONS_FLAGS("nulang.regions.flags", "Region Flags: &a%1%&r"),
+		REGIONS_HEAD("nulang.regions.head", "--- &aArena Region&r [&e%1%&r]---"),
 		REGIONS_LISTHEAD("nulang.regions.listhead", "--- &aArena Regions&r [&e%1%&r]---"),
 		REGIONS_LISTVALUE("nulang.regions.listvalue", "&a%1%&r: %2%, %3%"),
+		REGIONS_PROTECTIONS("nulang.regions.protections", "Region Protections: &a%1%&r"),
+		REGIONS_SHAPE("nulang.regions.shape", "Region Shape: &a%1%&r"),
+		REGIONS_TYPE("nulang.regions.type", "Region Type: &a%1%&r"),
 		
 		RELOAD_DONE("nulang.reloaded", "Config reloaded!"),
 		

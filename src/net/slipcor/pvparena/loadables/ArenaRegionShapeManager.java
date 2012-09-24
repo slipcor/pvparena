@@ -42,7 +42,7 @@ public class ArenaRegionShapeManager {
 		}
 		loader = new Loader<ArenaRegionShape>(plugin, path, new Object[] {});
 		regions = loader.load();
-		regions.add(new CuboidRegion());
+		//regions.add(new CuboidRegion());
 
 		for (ArenaRegionShape mod : regions) {
 			db.i("module ArenaRegion loaded: "

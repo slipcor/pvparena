@@ -168,7 +168,7 @@ public class TeamManager {
 		db.i(sTeam);
 
 		ArenaTeam aTeam = arena.getTeam(sTeam);
-
+		ap.setArena(arena);
 		aTeam.add(ap);
 
 		if (arena.isFreeForAll()) {

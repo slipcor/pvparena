@@ -28,6 +28,7 @@ public class CuboidRegion extends ArenaRegionShape {
 	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {
 		super(arena, name, locs, "cuboid");
 		db = new Debug(200);
+		initialize();
 	}
 
 	@Override
@@ -55,11 +56,13 @@ public class CuboidRegion extends ArenaRegionShape {
 		PABlockLocation l1;
 		PABlockLocation l2;
 
-		l1 = new PABlockLocation(lMin.getWorldName(), x ? lMax.getX()
-				: lMin.getX(), y ? lMax.getY() : lMin.getY(),
+		l1 = new PABlockLocation(lMin.getWorldName(),
+				x ? lMax.getX() : lMin.getX(),
+				y ? lMax.getY() : lMin.getY(),
 				z ? lMax.getZ() : lMin.getZ());
-		l2 = new PABlockLocation(lMin.getWorldName(), x ? lMin.getX()
-				: lMax.getX(), y ? lMin.getY() : lMax.getY(),
+		l2 = new PABlockLocation(lMin.getWorldName(),
+				x ? lMin.getX() : lMax.getX(),
+				y ? lMin.getY() : lMax.getY(),
 				z ? lMin.getZ() : lMax.getZ());
 		return new PABlockLocation[] { l1, l2 };
 	}

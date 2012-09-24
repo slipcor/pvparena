@@ -2,6 +2,7 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import org.bukkit.command.CommandSender;
@@ -36,12 +37,26 @@ public class PAA_Regions extends PAA__Command {
 		}
 		
 		if (args.length < 1) {
-			sender.sendMessage(Language.parse(MSG.REGIONS_LISTHEAD, arena.getName()));
+			arena.msg(sender, Language.parse(MSG.REGIONS_LISTHEAD, arena.getName()));
 			
 			for (ArenaRegionShape ars : arena.getRegions()) {
-				sender.sendMessage(Language.parse(MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().name()));
+				arena.msg(sender, Language.parse(MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().name()));
 			}
+			return;
 		}
+		
+		ArenaRegionShape region = arena.getRegion(args[0]);
+		
+		if (region == null) {
+			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+			return;
+		}
+
+		arena.msg(sender, Language.parse(MSG.REGIONS_HEAD, arena.getName()+":"+args[0]));
+		arena.msg(sender, Language.parse(MSG.REGIONS_TYPE, region.getType().name()));
+		arena.msg(sender, Language.parse(MSG.REGIONS_SHAPE, region.getShape().name()));
+		arena.msg(sender, Language.parse(MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
+		arena.msg(sender, Language.parse(MSG.REGIONS_PROTECTIONS, StringParser.joinSet(region.getProtections(), ", ")));
 		
 	}
 

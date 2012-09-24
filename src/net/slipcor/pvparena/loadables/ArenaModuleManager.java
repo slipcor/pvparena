@@ -511,21 +511,6 @@ public class ArenaModuleManager {
 	}
 
 	/**
-	 * hook into the display of the arena information
-	 * 
-	 * @param arena
-	 *            the arena being displayed
-	 * @param player
-	 *            the player being messaged
-	 */
-	public void parseInfo(Arena arena, CommandSender player) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseInfo(arena, player);
-		}
-	}
-
-	/**
 	 * hook into a player joining a team
 	 * 
 	 * @param arena
@@ -675,22 +660,6 @@ public class ArenaModuleManager {
 
 	public List<ArenaModule> getModules() {
 		return modules;
-	}
-
-	public HashSet<String> getAddedSpawns(Arena arena) {
-		HashSet<String> result = new HashSet<String>();
-		
-		for (ArenaModule mod : modules) {
-			if (!mod.isActive(arena)) {
-				continue;
-			}
-			HashSet<String> add = mod.getAddedSpawns();
-			for (String s : add) {
-				result.add(s);
-			}
-		}
-		
-		return result;
 	}
 
 	public boolean parseCommand(Arena arena, String s) {

@@ -293,13 +293,13 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 	public void applyFlags(int f) {
 		for (RegionFlag rf : RegionFlag.values())
-			if ((f & rf.ordinal()) != 0)
+			if ((f & (int)Math.pow(2, rf.ordinal())) != 0)
 				flags.add(rf);
 	}
 
 	public void applyProtections(int p) {
 		for (RegionProtection rp : RegionProtection.values())
-			if ((p & rp.ordinal()) != 0)
+			if ((p & (int)Math.pow(2, rp.ordinal())) != 0)
 				protections.add(rp);
 	}
 
