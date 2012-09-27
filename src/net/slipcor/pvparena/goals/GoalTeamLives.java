@@ -116,8 +116,7 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 
 		if (aTeam != null) {
-			PVPArena.instance.getAmm().announceWinner(arena,
-					Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()));
+			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()), "WINNER");
 
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ "Team " + aTeam.getName()));

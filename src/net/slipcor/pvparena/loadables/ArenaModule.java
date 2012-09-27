@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.loadables;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,6 +31,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import com.nodinchan.ncbukkit.loader.Loadable;
+import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
 
 /**
  * <pre>Arena Module class</pre>
@@ -55,53 +55,11 @@ public class ArenaModule extends Loadable implements Cloneable {
 	public ArenaModule(String name) {
 		super(name);
 	}
-
-	/**
-	 * hook into settings adding
-	 * 
-	 * @param types
-	 *            the settings map
-	 */
-	public void addSettings(HashMap<String, String> types) {
-	}
-
-	public void announceCustom(Arena arena, String message) {
+	
+	public void announce(Arena arena, String message, String type) {
 		
 	}
 
-	/**
-	 * hook into announcement of a loser
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announceLoser(Arena arena, String message) {
-	}
-
-	/**
-	 * hook into announcement of a reward
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announcePrize(Arena arena, String message) {
-	}
-
-	/**
-	 * hook into announcement of a winner
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announceWinner(Arena arena, String message) {
-	}
-	
 	public PACheckResult checkJoin(Arena arena, CommandSender sender,
 			PACheckResult res, boolean b) {
 		return res;
@@ -214,7 +172,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @return true if the module is used, false otherwise
 	 */
 	public boolean isActive(Arena arena) {
-		return false;
+		throw new ActionNotSupportedException("Module needs \"isActive\": " + getName());
 	}
 
 

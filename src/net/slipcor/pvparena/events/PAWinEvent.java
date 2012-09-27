@@ -29,6 +29,10 @@ public class PAWinEvent extends Event {
 		a = arena;
 		p = player;
 		items = new ArrayList<String>();
+		
+		if (arrItems == null || arrItems.length == 0)
+			return;
+		
 		for (String s : arrItems) {
 			items.add(s);
 		}

@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.loadables;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -77,79 +76,13 @@ public class ArenaModuleManager {
 		}
 	}
 
-	/**
-	 * hook into settings adding
-	 * 
-	 * @param types
-	 *            the settings map
-	 */
-	public void addSettings(Arena arena, HashMap<String, String> types) {
+	public void announce(Arena arena, String message, String type) {
 		for (ArenaModule mod : modules) {
 			if (mod.isActive(arena))
-				mod.addSettings(types);
+				mod.announce(arena, message, type);
 		}
 	}
-
-	/**
-	 * hook into announcement 
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announceCustom(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceCustom(arena, message);
-		}
-	}
-
-	/**
-	 * hook into announcement of a loser
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announceLoser(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceLoser(arena, message);
-		}
-	}
-
-	/**
-	 * hook into announcement of a reward
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announcePrize(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announcePrize(arena, message);
-		}
-	}
-
-	/**
-	 * hook into announcement of a winner
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param message
-	 *            the message to display
-	 */
-	public void announceWinner(Arena arena, String message) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.announceWinner(arena, message);
-		}
-	}
-
+	
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		String error = null;
 		for (ArenaModule mod : modules) {

@@ -1155,6 +1155,7 @@ public class Arena {
 	 * free - deathmatch arena
 	 * ctf - capture the flag arena
 	 * ctp - capture the pumpkin arena
+	 * spleef - free for all with teamkill off
 	 * </pre>
 	 * @param string legacy goal
 	 */
@@ -1171,6 +1172,10 @@ public class Arena {
 		} else if (string.equals("free")) {
 			goalAdd(PVPArena.instance.getAgm().getType("PlayerLives"));
 			this.setFree(true);
+		} else if (string.equals("spleef")) {
+			goalAdd(PVPArena.instance.getAgm().getType("PlayerLives"));
+			this.setFree(true);
+			this.getArenaConfig().set(CFG.PERMS_TEAMKILL, false);
 		} else if (string.equals("ctf")) {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
 		} else if (string.equals("ctp")) {

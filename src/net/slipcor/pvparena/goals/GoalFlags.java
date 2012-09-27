@@ -351,8 +351,7 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		if (arena.getTeam(winteam) != null) {
-			PVPArena.instance.getAmm().announceWinner(arena,
-					Language.parse(MSG.TEAM_HAS_WON, "Team " + winteam));
+			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + winteam), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + "Team "
 							+ winteam));
@@ -415,8 +414,7 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		if (aTeam != null) {
-			PVPArena.instance.getAmm().announceWinner(arena,
-					Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()));
+			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()), "WINNER");
 
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ "Team " + aTeam.getName()));

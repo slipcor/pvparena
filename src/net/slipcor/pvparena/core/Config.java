@@ -151,6 +151,8 @@ public class Config {
 		GOAL_TIME_END("goal.time.timedend", 0),
 		
 		// -----------
+		
+		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
 
 		MODULES_ANNOUNCEMENTS_RADIUS("modules.announcements.radius", 0),
 		MODULES_ANNOUNCEMENTS_COLOR("modules.announcements.color", "AQUA"),
@@ -161,17 +163,22 @@ public class Config {
 		MODULES_ANNOUNCEMENTS_LOSER("modules.announcements.loser", false),
 		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false),
 		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
-		
-		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
+		MODULES_ANNOUNCEMENTS_ACTIVE("modules.announcements.aaactive", false),
+
+		MODULES_ARENABOARDS_ACTIVE("modules.arenaboards.abactive", false),
 
 		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", Boolean.valueOf(false)),
 		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", Boolean.valueOf(true)),
 		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", Boolean.valueOf(true)),
 		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", Boolean.valueOf(true)),
+		MODULES_ARENAMAPS_ACTIVE("modules.arenamaps.amactive", false),
 
 		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", Boolean.valueOf(true)),
 		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
+		MODULES_ARENAVOTE_ACTIVE("modules.arenavote.avactive", false),
+
+		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bgactive", false),
 
 		MODULES_BETTERFIGHT_ACTIVE("modules.betterfight.bfactive", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
@@ -187,6 +194,10 @@ public class Config {
 		MODULES_COLORTEAMS_SPOUTONLY("modules.colorteams.spoutonly", false),
 		MODULES_COLORTEAMS_TAGAPI("modules.colorteams.tagapi", false),
 
+		MODULES_EVENTACTIONS_ACTIVE("modules.eventactions.eaactive", false),
+
+		MODULES_FACTIONS_ACTIVE("modules.factions.factive", false),
+		
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 		
@@ -196,6 +207,10 @@ public class Config {
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
+
+		MODULES_SPECIALJOIN_ACTIVE("modules.specialjoin.sjactive", false),
+
+		MODULES_SKINS_ACTIVE("modules.skins.sactive", false),
 
 		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", false),
 		

@@ -488,8 +488,7 @@ public class ArenaGoalManager {
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					if (winners.contains(p.getName())) {
-						PVPArena.instance.getAmm().announceWinner(arena,
-								Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
+						PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
 						arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
 					} else {
 						if (!p.getStatus().equals(Status.FIGHT)) {
@@ -503,8 +502,7 @@ public class ArenaGoalManager {
 		} else {
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					PVPArena.instance.getAmm().announceWinner(arena,
-							Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()));
+					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()), "WINNER");
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
 				} else {

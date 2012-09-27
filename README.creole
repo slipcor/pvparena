@@ -86,6 +86,7 @@ A PVP experience enhancing plugin.
 * goals
 ** tournament arenas ; rounds switch through arenas
 ** king of the hill -> FFAEN
+** furnace -> domination FoodFury
 * add region checks to:
 ** join the lounge
 ** join a ready region
