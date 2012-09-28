@@ -1,16 +1,23 @@
 package net.slipcor.pvparena.listeners;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.Arenas;
+
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -28,6 +35,7 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.painting.PaintingPlaceEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 /**
@@ -45,6 +53,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 public class BlockListener implements Listener {
 	private Debug db = new Debug(18);
+	private static HashSet<String> chunks = new HashSet<String>();
 
 	private boolean willBeSkipped(boolean cancelled, Event event, Location loc) {
 		Arena arena = Arenas.getArenaByRegionLocation(loc);
@@ -384,9 +393,31 @@ public class BlockListener implements Listener {
 		PVPArena.instance.getAmm().onPaintingBreak(arena,
 				event.getPainting(), event.getPainting().getType());
 	}
+	
+	@EventHandler()
+	public void onChunkUnload(ChunkUnloadEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		event.setCancelled(chunks.contains(toString(event.getChunk())));
+	}
+
+	private static String toString(Chunk chunk) {
+		return chunk.getWorld().getName() + ":" + chunk.getX() + "/" + chunk.getZ();
+	}
 
 	@EventHandler()
 	public void onSignChange(SignChangeEvent event) {
 		PVPArena.instance.getAmm().onSignChange(event);
+	}
+
+	public static void keepChunks(World w, YamlConfiguration config) {
+		Set<String> spawns = config.getConfigurationSection("spawns").getKeys(false);
+		
+		for (String node : spawns) {
+			Location loc = Config.parseLocation(w, config.getString("spawns." + node));
+			chunks.add(toString(loc.getChunk()));
+			loc.getChunk().load();
+		}
 	}
 }

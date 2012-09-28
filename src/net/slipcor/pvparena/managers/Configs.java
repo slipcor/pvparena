@@ -13,6 +13,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.neworder.ArenaRegion;
 import net.slipcor.pvparena.neworder.ArenaType;
 
@@ -227,6 +228,8 @@ public class Configs {
 			db.i("added team " + team.getName() + " => "
 					+ team.getColorString());
 		}
+		
+		BlockListener.keepChunks(Bukkit.getWorld(arena.getWorld()), config);
 
 		arena.type().configParse();
 

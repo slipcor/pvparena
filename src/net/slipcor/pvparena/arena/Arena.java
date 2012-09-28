@@ -1193,6 +1193,13 @@ public class Arena {
 		ap.setTelePass(true);
 		player.teleport(loc);
 		ap.setTelePass(false);
+		
+		try {
+			Thread.sleep(5L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**

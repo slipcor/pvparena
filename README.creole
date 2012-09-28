@@ -46,6 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.9 - fix regions erroring because the world is loaded after pvp arena
+* v0.8.12.8 - fix the invisibility bug (yaaaay)
 * v0.8.12.6 - fix unnecessary login lag for big servers that don't use statistics
 * v0.8.12.5 - attemt to fix inventory loss and dislocated players on server crashs
 * v0.8.12.4 - fix the team arena overriding a free arena creation
