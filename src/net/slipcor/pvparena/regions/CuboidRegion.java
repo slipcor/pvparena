@@ -23,6 +23,7 @@ public class CuboidRegion extends ArenaRegionShape {
 	
 	public CuboidRegion() {
 		super("cuboid");
+		initialize();
 	}
 	
 	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {

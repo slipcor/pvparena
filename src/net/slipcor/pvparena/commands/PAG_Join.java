@@ -81,8 +81,13 @@ public class PAG_Join extends PAA__Command {
 			}
 		}
 		
-		if (res.hasError()) {
+		if (res.hasError() && !res.getModName().equals("LateLounge")) {
 			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+			return;
+		}
+		
+		if (res.hasError()) {
+			arena.msg(sender, Language.parse(MSG.NOTICE_NOTICE, res.getError()));
 			return;
 		}
 		

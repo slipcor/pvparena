@@ -415,7 +415,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 		saveToConfig();
 
-		return b;
+		return true;
 	}
 
 	public boolean protectionToggle(RegionProtection rp) {

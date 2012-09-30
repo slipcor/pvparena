@@ -23,11 +23,13 @@ public class CylindricRegion extends ArenaRegionShape {
 	public CylindricRegion() {
 		super("cylindric");
 		shape = RegionShape.CYLINDRIC;
+		initialize();
 	}
 	
 	public CylindricRegion(Arena arena, String name, PABlockLocation[] locs) {
 		super(arena, name, locs, "cylindric");
 		db = new Debug(201);
+		initialize();
 	}
 
 	@Override
@@ -63,6 +65,7 @@ public class CylindricRegion extends ArenaRegionShape {
 				z ? lMin.getZ() : lMax.getZ());
 		return new PABlockLocation[] { l1, l2 };
 	}
+	
 
 	public void initialize() {
 		PABlockLocation[] sane = sanityCheck(getLocs()[0], getLocs()[1]);
@@ -163,7 +166,12 @@ public class CylindricRegion extends ArenaRegionShape {
 		}
 
 		PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
-		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+		
+		PABlockLocation a = new PABlockLocation(this.locs[1].toLocation());
+		a.setY(locs[0].getY());
+		
+		Double thisRadius = getLocs()[0].getDistance(a)/2;
+		System.out.print(thisRadius);
 		thisCenter.setY(loc.getY());
 		
 		return loc.getDistance(thisCenter) <= thisRadius;

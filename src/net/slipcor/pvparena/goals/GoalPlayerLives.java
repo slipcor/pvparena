@@ -184,6 +184,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void reset(boolean force) {
 		er = null;
+		lives.clear();
 	}
 	
 	@Override

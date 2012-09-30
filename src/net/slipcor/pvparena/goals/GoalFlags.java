@@ -613,12 +613,9 @@ public class GoalFlags extends ArenaGoal {
 
 	@Override
 	public void reset(boolean force) {
-		if (paTeamFlags != null) {
-			paTeamFlags.clear();
-		}
-		if (paHeadGears != null) {
-			paHeadGears.clear();
-		}
+		paTeamFlags.clear();
+		paHeadGears.clear();
+		paTeamLives.clear();
 	}
 	
 	@Override

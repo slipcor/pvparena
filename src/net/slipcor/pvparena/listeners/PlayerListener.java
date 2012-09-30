@@ -364,8 +364,9 @@ public class PlayerListener implements Listener {
 						arena.start();
 					} else if (error.equals("")) {
 						arena.countDown();
+					} else {
+						arena.msg(player, error);
 					}
-					arena.msg(player, error);
 					return;
 				}
 

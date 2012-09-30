@@ -1017,7 +1017,7 @@ public class Arena {
 
 		PVPArena.instance.getAgm().teleportAllToSpawn(this);
 
-		broadcast(Language.parse(MSG.ANNOUNCE_ARENA_STARTING));
+		broadcast(Language.parse(MSG.FIGHT_BEGINS));
 
 		PVPArena.instance.getAmm().teleportAllToSpawn(this);
 
@@ -1132,7 +1132,7 @@ public class Arena {
 		tpPlayerToCoordName(player, (isFreeForAll()?"":team.getName()) + "spawn");
 		
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, player), 2L);
-		return true;
+		return true; //TODO put this PSCR to the toher join method, after having physically entered the lobby, replace inventory
 	}
 
 	private void updateGoals() {

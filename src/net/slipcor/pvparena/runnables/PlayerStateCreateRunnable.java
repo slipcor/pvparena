@@ -14,7 +14,7 @@ public class PlayerStateCreateRunnable implements Runnable {
 	final ArenaPlayer a;
 	final Player p;
 
-	public PlayerStateCreateRunnable(ArenaPlayer ap, Player player) {
+	public PlayerStat eCreateRunnable(ArenaPlayer ap, Player player) {
 		a = ap;
 		p = player;
 	}

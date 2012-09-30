@@ -2,6 +2,9 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+
 import org.bukkit.command.CommandSender;
 
 /**
@@ -33,14 +36,20 @@ public class PAA_Edit extends PAA__Command {
 		}
 		
 		PAA__Command cmd;
+		String msg;
 		
 		if (arena.isLocked()) {
 			cmd = new PAA_Enable();
+			activeEdits.remove(sender.getName());
+			msg = Language.parse(MSG.ARENA_EDIT_DISABLED, arena.getName());
 		} else {
 			cmd = new PAA_Disable();
+			activeEdits.put(sender.getName(), arena);
+			msg = Language.parse(MSG.ARENA_EDIT_ENABLED, arena.getName());
 		}
 		
 		cmd.commit(arena, sender, args);
+		arena.msg(sender, msg);
 	}
 
 	@Override

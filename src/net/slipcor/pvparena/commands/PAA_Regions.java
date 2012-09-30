@@ -57,7 +57,8 @@ public class PAA_Regions extends PAA__Command {
 		arena.msg(sender, Language.parse(MSG.REGIONS_SHAPE, region.getShape().name()));
 		arena.msg(sender, Language.parse(MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
 		arena.msg(sender, Language.parse(MSG.REGIONS_PROTECTIONS, StringParser.joinSet(region.getProtections(), ", ")));
-		
+		arena.msg(sender, "0: " + region.getLocs()[0].toString());
+		arena.msg(sender, "1: " + region.getLocs()[1].toString());
 	}
 
 	@Override

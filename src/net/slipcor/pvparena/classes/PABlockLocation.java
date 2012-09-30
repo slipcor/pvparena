@@ -104,4 +104,9 @@ public class PABlockLocation {
 	public Location toLocation() {
 		return new Location(Bukkit.getWorld(world), x, y, z);
 	}
+	
+	@Override
+	public String toString() {
+		return world + ":" + x + "," + y + "," + z;
+	}
 }

@@ -222,7 +222,7 @@ public class ArenaPlayer {
 	 * @param player
 	 *            the player to save
 	 */
-	public static void prepareInventory(Arena arena, Player player) {
+	public static void prepare Inventory(Arena arena, Player player) {
 		InventoryManager.db.i("saving player inventory: " + player.getName());
 
 		ArenaPlayer p = parsePlayer(player.getName());
@@ -357,6 +357,9 @@ public class ArenaPlayer {
 	}
 
 	public ArenaTeam getArenaTeam() {
+		if (arena == null) {
+			return null;
+		}
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(this)) {
 				return team;
@@ -463,7 +466,7 @@ public class ArenaPlayer {
 
 		if (arena != null) {
 			location = SpawnManager.getCoords(arena, "exit");
-
+			
 			state = PlayerState.undump(cfg, name);
 		}
 
@@ -585,7 +588,7 @@ public class ArenaPlayer {
 		chatting = b;
 	}
 
-	public void setLocation(PALocation location) {
+	public void set Location(PALocation location) {
 		this.location = location;
 	}
 

@@ -43,4 +43,10 @@ public class GoalTime extends ArenaGoal {
 	public void commitEnd() {
 		ter.commit();
 	}
+	
+	@Override
+	public void reset(boolean force) {
+		ter.commit();
+		ter = null;
+	}
 }

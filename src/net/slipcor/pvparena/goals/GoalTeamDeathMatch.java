@@ -251,7 +251,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public void reset(boolean force) {
-		return;
+		lives.clear();
 	}
 	
 	@Override

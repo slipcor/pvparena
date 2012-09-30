@@ -180,7 +180,8 @@ public class SphericRegion extends ArenaRegionShape {
 		if (this.getLocs()[0] == null || this.getLocs()[1] == null || loc == null
 				|| !loc.getWorldName().equals(world))
 			return false; // no arena, no container or not in the same world
-		return loc.isInAABB(getLocs()[0],getLocs()[1]);
+		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
+		return loc.getDistance(this.getCenter()) <= thisRadius;
 	}
 
 	@Override

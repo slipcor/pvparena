@@ -214,6 +214,7 @@ public class Language {
 		NOTICE_AWARDED("nulang.notice.awarded", "You have been awarded %1%"),
 		NOTICE_NO_DROP_ITEM("nulang.notice.nodropitem", "Not so fast! No Cheating!"),
 		NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
+		NOTICE_NOTICE("nulang.notice.notice", "Notice: %1%"),
 		NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%"),
 		NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have equal player number!"),
 		NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),

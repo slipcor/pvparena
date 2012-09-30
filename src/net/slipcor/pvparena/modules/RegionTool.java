@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -16,6 +17,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 public class RegionTool extends ArenaModule {
 	public RegionTool() {
 		super("RegionTool");
+		db = new Debug(19);
 	}
 
 	@Override
@@ -61,7 +63,7 @@ public class RegionTool extends ArenaModule {
 						if (region.contains(loc)) {
 							ArenaManager.tellPlayer(event.getPlayer(), "§fArena §b"
 									+ arena.getName() + "§f: region §b"
-									+ region.getName());
+									+ region.getRegionName());
 						}
 					}
 				}

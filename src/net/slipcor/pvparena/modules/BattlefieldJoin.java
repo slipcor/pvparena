@@ -86,6 +86,6 @@ public class BattlefieldJoin extends ArenaModule {
 		}
 		ap.setArena(arena);
 		team.add(ap);
-		arena.msg(sender, Language.parse(MSG.ANNOUNCE_ARENA_STARTING));
+		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 	}
 }

@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -87,6 +88,16 @@ public class StandardLounge extends ArenaModule {
 			result.setError(Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
+		
+		if (ap.getArenaClass() == null) {
+			String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+			if (autoClass != null && !autoClass.equals("none")) {
+				if (arena.getClass(autoClass) == null) {
+					result.setError(Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					return result;
+				}
+			}
+		}
 
 		result.setModName(getName());
 		result.setPriority(priority);
@@ -138,14 +149,17 @@ public class StandardLounge extends ArenaModule {
 	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		ap.setLocation(new PALocation(ap.get().getLocation()));
+		
+		
 		ArenaPlayer.prepareInventory(arena, ap.get());
+		ap.setArena(arena);
+		team.add(ap);
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(ap.get(), "lounge");
 		} else {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
 		}
-		ap.setArena(arena);
-		team.add(ap);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 	}
 }
