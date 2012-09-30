@@ -14,8 +14,10 @@ import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.neworder.ArenaType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -228,7 +230,8 @@ public class Arenas {
 					String arenaType = preParse(sName);
 					if (arenaType == null) {
 						db.i("arena: " + sName);
-						loadArena(sName, arenaType);
+						Arena a = loadArena(sName, arenaType);
+						BlockListener.keepChunks(Bukkit.getWorld(a.getWorld()), a.cfg.getYamlConfiguration());
 						// this is on purpose, I want to call with NULL :p
 					} else {
 						System.out

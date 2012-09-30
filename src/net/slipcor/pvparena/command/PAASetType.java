@@ -3,9 +3,11 @@ package net.slipcor.pvparena.command;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.neworder.ArenaType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 public class PAASetType extends PAA_Command {

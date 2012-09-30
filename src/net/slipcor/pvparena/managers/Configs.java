@@ -228,8 +228,6 @@ public class Configs {
 			db.i("added team " + team.getName() + " => "
 					+ team.getColorString());
 		}
-		
-		BlockListener.keepChunks(Bukkit.getWorld(arena.getWorld()), config);
 
 		arena.type().configParse();
 

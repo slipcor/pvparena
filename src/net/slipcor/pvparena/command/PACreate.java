@@ -5,8 +5,10 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.managers.Arenas;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -62,6 +64,7 @@ public class PACreate extends PA_Command {
 			a = Arenas.loadArena(args[1], "teams");
 		}
 		a.setWorld(player.getWorld().getName());
+		BlockListener.keepChunks(Bukkit.getWorld(a.getWorld()), a.cfg.getYamlConfiguration());
 		if (!PVPArena.hasAdminPerms(player)) {
 			a.owner = player.getName();
 		}

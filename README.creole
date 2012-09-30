@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.10 - fix region NPE introduced in .9
 * v0.8.12.9 - fix regions erroring because the world is loaded after pvp arena
 * v0.8.12.8 - fix the invisibility bug (yaaaay)
 * v0.8.12.6 - fix unnecessary login lag for big servers that don't use statistics
