@@ -317,6 +317,7 @@ public class Language {
 		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
 		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
+		GOAL_FLAGS_TYPESET("lang.typeset", "Flag type set to: &e%1%"),
 
 		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.settnt", "TNT to set: %1%"),
 		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.tosettnt", "TNT set: %1%"),

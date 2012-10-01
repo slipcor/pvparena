@@ -384,6 +384,8 @@ public class GoalFlags extends ArenaGoal {
 				
 				flagMaterial = mat;
 			}
+			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TYPESET, flagMaterial.name()));
+			
 		} else if (args[0].contains("flag")) {
 			for (ArenaTeam team : arena.getTeams()) {
 				String sTeam = team.getName();
