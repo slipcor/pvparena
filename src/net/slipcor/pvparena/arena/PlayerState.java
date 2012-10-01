@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public final class PlayerState {

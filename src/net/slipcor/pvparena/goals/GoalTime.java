@@ -6,6 +6,16 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
+/**
+ * <pre>Arena Goal class "Time"</pre>
+ * 
+ * Time is ticking ^^
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
+
 public class GoalTime extends ArenaGoal {
 	
 	private TimedEndRunnable ter;
@@ -17,7 +27,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.0.0";
+		return "v0.9.1.0";
 	}
 	
 	@Override

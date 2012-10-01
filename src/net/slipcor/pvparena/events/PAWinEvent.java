@@ -16,7 +16,7 @@ import org.bukkit.event.HandlerList;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class PAWinEvent extends Event {

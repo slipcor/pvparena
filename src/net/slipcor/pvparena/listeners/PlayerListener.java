@@ -19,8 +19,6 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.PlayerResetRunnable;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -51,7 +49,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class PlayerListener implements Listener {
@@ -222,9 +220,6 @@ public class PlayerListener implements Listener {
 		ap.addDeath();
 		
 		PlayerState.fullReset(arena, player);
-		
-		new PlayerResetRunnable(ap,0, player.getLocation());
-		//TODO - timer is inactive - if this works, timer can just ... die
 		
 		if (ArenaManager.checkAndCommit(arena))
 			return;

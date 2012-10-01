@@ -6,6 +6,16 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.managers.SpawnManager;
 
+/**
+ * <pre>Arena Runnable class "Teleport"</pre>
+ * 
+ * An arena timer to teleport a player back
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
+
 public class TeleportRunnable implements Runnable {
 	final String string;
 	final String player;
@@ -25,8 +35,11 @@ public class TeleportRunnable implements Runnable {
 			return;
 		}
 		if (string.equalsIgnoreCase("old")) {
-			if (ap.getLocation() != null)
-				ap.get().teleport(ap.getLocation().toLocation());
+			if (ap.getLocation() != null) {
+				PALocation loc = ap.getLocation();
+				System.out.print("=>" + loc.toString());
+				ap.get().teleport(loc.toLocation());
+			}
 		} else {
 			PALocation l = SpawnManager.getCoords(arena, string);
 			ap.get().teleport(l.toLocation());

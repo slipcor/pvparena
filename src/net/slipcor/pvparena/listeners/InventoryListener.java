@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class InventoryListener implements Listener {

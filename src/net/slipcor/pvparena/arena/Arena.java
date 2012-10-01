@@ -11,6 +11,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PARoundMap;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -31,6 +32,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.PlayerDestroyRunnable;
 import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
@@ -42,6 +44,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -55,7 +58,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class Arena {
@@ -65,6 +68,7 @@ public class Arena {
 	private final HashSet<ArenaRegionShape> regions = new HashSet<ArenaRegionShape>();
 	private final HashSet<PAClassSign> signs = new HashSet<PAClassSign>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
+	private PARoundMap rounds;
 
 	private static String globalprefix = "PVP Arena";
 	private String name = "default";
@@ -76,6 +80,7 @@ public class Arena {
 	private boolean locked = false;
 	private boolean free = false;
 	private int startCount = 0;
+	private int round = 0;
 
 	// Runnable IDs
 	public int END_ID = -1;
@@ -89,7 +94,7 @@ public class Arena {
 		this.name = name;
 
 		db.i("loading Arena " + name);
-		File file = new File(PVPArena.instance.getDataFolder().getPath() + "/config_" + name + ".yml");
+		File file = new File(PVPArena.instance.getDataFolder().getPath() + "/arenas/" + name + ".yml");
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
@@ -293,7 +298,7 @@ public class Arena {
 	}
 
 	public HashSet<ArenaGoal> getGoals() {
-		return goals;
+		return round == 0 ? goals : rounds.getGoals(round);
 	}
 
 	public String getName() {
@@ -600,7 +605,9 @@ public class Arena {
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			START_ID = -1;
 		}
-		ap.reset();
+		PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(ap);
+		int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
+		pdr.setId(i);
 
 		if (fighter && isFightInProgress()) {
 			ArenaManager.checkAndCommit(this);
@@ -761,7 +768,9 @@ public class Arena {
 					giveRewards(z); // if we are the winning team, give
 									// reward!
 				}
-				p.reset();
+				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
+				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
+				pdr.setId(i);
 			} else if (p.getStatus() != null
 					&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
 							.equals(Status.LOST))) {
@@ -775,7 +784,9 @@ public class Arena {
 				}
 				resetPlayer(z, getArenaConfig().getString(CFG.TP_LOSE, "old"),
 						false);
-				p.reset();
+				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
+				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
+				pdr.setId(i);
 			} else {
 				resetPlayer(p.get(),
 						getArenaConfig().getString(CFG.TP_LOSE, "old"), false);
@@ -1132,7 +1143,7 @@ public class Arena {
 		tpPlayerToCoordName(player, (isFreeForAll()?"":team.getName()) + "spawn");
 		
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, player), 2L);
-		return true; //TODO put this PSCR to the toher join method, after having physically entered the lobby, replace inventory
+		return true;
 	}
 
 	private void updateGoals() {
@@ -1198,5 +1209,15 @@ public class Arena {
 				result.add(rs);
 		}
 		return result;
+	}
+
+	public void setRoundMap(ConfigurationSection cs) {
+		// TODO Auto-generated method stub
+		String seriously = "fix this";
+		rounds = new PARoundMap(this, new HashSet<HashSet<String>>());
+	}
+
+	public void setRound(int i) {
+		round = i;
 	}
 }

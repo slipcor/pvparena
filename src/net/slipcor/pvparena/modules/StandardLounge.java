@@ -3,6 +3,7 @@ package net.slipcor.pvparena.modules;
 import java.util.Iterator;
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -13,7 +14,9 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,7 +27,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class StandardLounge extends ArenaModule {
@@ -38,7 +41,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "0.9.0.0";
+		return "0.9.1.0";
 	}
 
 	@Override
@@ -149,10 +152,9 @@ public class StandardLounge extends ArenaModule {
 	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-		ap.setLocation(new PALocation(ap.get().getLocation()));
-		
-		
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
 		ArenaPlayer.prepareInventory(arena, ap.get());
+		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
 		team.add(ap);
 		if (arena.isFreeForAll()) {

@@ -38,7 +38,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class ArenaManager {
@@ -219,11 +219,11 @@ public class ArenaManager {
 	public static void load_arenas() {
 		db.i("loading arenas...");
 		try {
-			File path = PVPArena.instance.getDataFolder();
+			File path = new File(PVPArena.instance.getDataFolder().getPath(),"arenas");
 			File[] f = path.listFiles();
 			int i;
 			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
+				if (!f[i].isDirectory() && f[i].getName().contains(".yml")) {
 					String sName = f[i].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
 					String error = checkForMissingGoals(sName);
@@ -271,7 +271,7 @@ public class ArenaManager {
 	 */
 	private static String checkForMissingGoals(String name) {
 		db.i("check for missing goals: " + name);
-		File file = new File(PVPArena.instance.getDataFolder() + "/config_"
+		File file = new File(PVPArena.instance.getDataFolder() + "/arenas/"
 				+ name + ".yml");
 		if (!file.exists()) {
 			return "file does not exist";

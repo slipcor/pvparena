@@ -26,7 +26,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class ConfigurationManager {
@@ -230,6 +230,7 @@ public class ConfigurationManager {
 				}
 			}
 		}
+		arena.setRoundMap(null);
 		
 		cfg.save();
 

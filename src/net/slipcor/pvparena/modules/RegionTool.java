@@ -14,6 +14,16 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
+/**
+ * <pre>Arena Module class "RegionTool"</pre>
+ * 
+ * Enables region debug via WAND item
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
+
 public class RegionTool extends ArenaModule {
 	public RegionTool() {
 		super("RegionTool");
@@ -22,7 +32,7 @@ public class RegionTool extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.9.0.0";
+		return "v0.9.1.0";
 	}
 
 	@Override

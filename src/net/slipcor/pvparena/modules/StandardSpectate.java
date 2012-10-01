@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class StandardSpectate extends ArenaModule {
@@ -30,7 +30,7 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "0.9.0.0";
+		return "0.9.1.0";
 	}
 
 	@Override

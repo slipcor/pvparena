@@ -24,7 +24,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
-import net.slipcor.pvparena.runnables.PlayerResetRunnable;
 
 /**
  * <pre>Arena Goal class "PlayerDeathMatch"</pre>
@@ -154,7 +153,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				
 				PlayerState.fullReset(arena, ap.get());
 				
-				new PlayerResetRunnable(ap,0, ap.get().getLocation());
+				//new PlayerResetRunnable(ap,0, ap.get().getLocation());
 				//TODO - timer is inactive - if this works, timer can just ... die
 				
 				if (ArenaManager.checkAndCommit(arena))

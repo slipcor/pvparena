@@ -32,7 +32,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class GoalPlayerLives extends ArenaGoal {
@@ -47,7 +47,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.0.0";
+		return "v0.9.1.0";
 	}
 
 	int priority = 1;

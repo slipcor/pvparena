@@ -1,14 +1,18 @@
 package net.slipcor.pvparena.modules;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -19,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class BattlefieldJoin extends ArenaModule {
@@ -33,7 +37,7 @@ public class BattlefieldJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "0.9.0.0";
+		return "0.9.1.0";
 	}
 
 	public PACheckResult checkJoin(Arena arena, CommandSender sender, PACheckResult result, boolean join) {
@@ -78,14 +82,16 @@ public class BattlefieldJoin extends ArenaModule {
 	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
 		ArenaPlayer.prepareInventory(arena, ap.get());
+		ap.setLocation(new PALocation(ap.get().getLocation()));
+		ap.setArena(arena);
+		team.add(ap);
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(ap.get(), "spawn");
 		} else {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 		}
-		ap.setArena(arena);
-		team.add(ap);
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 	}
 }

@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class TeamManager {

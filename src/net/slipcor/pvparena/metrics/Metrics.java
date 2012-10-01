@@ -31,7 +31,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
  * 
  * @author Hidendra
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class Metrics {

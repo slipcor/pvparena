@@ -44,7 +44,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public abstract class ArenaRegionShape extends Loadable implements Cloneable {

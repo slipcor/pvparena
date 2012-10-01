@@ -38,7 +38,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class BlockListener implements Listener {

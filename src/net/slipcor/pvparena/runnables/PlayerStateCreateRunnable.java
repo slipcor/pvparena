@@ -10,11 +10,21 @@ import net.slipcor.pvparena.events.PAJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+/**
+ * <pre>Arena Runnable class "PlayerReset"</pre>
+ * 
+ * An arena timer to reset a player
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
+
 public class PlayerStateCreateRunnable implements Runnable {
 	final ArenaPlayer a;
 	final Player p;
 
-	public PlayerStat eCreateRunnable(ArenaPlayer ap, Player player) {
+	public PlayerStateCreateRunnable(ArenaPlayer ap, Player player) {
 		a = ap;
 		p = player;
 	}
@@ -28,8 +38,8 @@ public class PlayerStateCreateRunnable implements Runnable {
 			PAJoinEvent event = new PAJoinEvent(arena, p, false);
 			Bukkit.getPluginManager().callEvent(event);
 
-			a.dump();
 			a.createState(p);
+			a.dump();
 			
 			ArenaPlayer.prepareInventory(arena, p);
 			

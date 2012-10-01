@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class Tracker implements Runnable {

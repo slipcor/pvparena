@@ -11,6 +11,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
@@ -41,7 +42,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class ArenaPlayer {
@@ -222,7 +223,7 @@ public class ArenaPlayer {
 	 * @param player
 	 *            the player to save
 	 */
-	public static void prepare Inventory(Arena arena, Player player) {
+	public static void prepareInventory(Arena arena, Player player) {
 		InventoryManager.db.i("saving player inventory: " + player.getName());
 
 		ArenaPlayer p = parsePlayer(player.getName());
@@ -321,6 +322,7 @@ public class ArenaPlayer {
 		cfg.set("inventory",
 				StringParser.getStringFromItemStacks(savedInventory));
 		cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
+		cfg.set("loc", Config.parseToString(location));
 
 		try {
 			cfg.save(f);
@@ -369,6 +371,9 @@ public class ArenaPlayer {
 	}
 
 	public PALocation getLocation() {
+		System.out.print("reading loc!");
+		if (location != null)
+			System.out.print(": " + location.toString());
 		return location;
 	}
 
@@ -463,7 +468,8 @@ public class ArenaPlayer {
 				"inventory", "AIR"));
 		savedArmor = StringParser.getItemStacksFromString(cfg.getString(
 				"armor", "AIR"));
-
+		location = Config.parseLocation(cfg.getString("loc"));
+		
 		if (arena != null) {
 			location = SpawnManager.getCoords(arena, "exit");
 			
@@ -588,7 +594,8 @@ public class ArenaPlayer {
 		chatting = b;
 	}
 
-	public void set Location(PALocation location) {
+	public void setLocation(PALocation location) {
+		System.out.print(location.toString());
 		this.location = location;
 	}
 

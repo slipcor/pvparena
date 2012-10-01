@@ -40,7 +40,7 @@ import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.1
  */
 
 public class ArenaModule extends Loadable implements Cloneable {
