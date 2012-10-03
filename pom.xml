@@ -12,6 +12,10 @@
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
 		</repository>
+		<repository>
+			<id>nclib-repo</id>
+			<url>https://github.com/NodinChan/NC-BukkitLib/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
