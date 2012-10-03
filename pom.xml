@@ -14,7 +14,7 @@
 		</repository>
 		<repository>
 			<id>nclib-repo</id>
-			<url>https://github.com/NodinChan/NC-BukkitLib/</url>
+			<url>http://pa.slipcor.net/depends/</url>
 		</repository>
 	</repositories>
 
