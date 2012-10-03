@@ -31,7 +31,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import com.nodinchan.ncbukkit.loader.Loadable;
-import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
 
 /**
  * <pre>Arena Module class</pre>
@@ -172,7 +171,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @return true if the module is used, false otherwise
 	 */
 	public boolean isActive(Arena arena) {
-		throw new ActionNotSupportedException("Module needs \"isActive\": " + getName());
+		throw new IllegalArgumentException("Module needs \"isActive\": " + getName());
 	}
 
 

@@ -302,6 +302,19 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 			if ((p & (int)Math.pow(2, rp.ordinal())) != 0)
 				protections.add(rp);
 	}
+	
+	@Override
+	public ArenaRegionShape clone() {
+		if (this.shape == null || this.shape.equals(RegionShape.CUBOID)) {
+			return new CuboidRegion(this.arena, this.getName(), this.locs);
+		} else if (this.shape.equals(RegionShape.CYLINDRIC)) {
+			return new CylindricRegion(this.arena, this.getName(), this.locs);
+		} else if (this.shape.equals(RegionShape.SPHERIC)) {
+			return new SphericRegion(this.arena, this.getName(), this.locs);
+		} else {
+			return new CuboidRegion(this.arena, this.getName(), this.locs);
+		}
+	}
 
 	public void displayInfo(CommandSender sender) {
 	}
