@@ -59,7 +59,7 @@ public class ArenaModuleManager {
 	 *            the plugin instance
 	 */
 	public ArenaModuleManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/modules");
+		File path = new File(plugin.getDataFolder().toString() + "/mods");
 		if (!path.exists()) {
 			path.mkdir();
 		}

@@ -226,7 +226,8 @@ public class PVPArena extends JavaPlugin {
 
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
-		new File(getDataFolder().getPath() + "/modules").mkdir();
+		new File(getDataFolder().getPath() + "/goals").mkdir();
+		new File(getDataFolder().getPath() + "/mods").mkdir();
 		new File(getDataFolder().getPath() + "/regionshapes").mkdir();
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
