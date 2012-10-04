@@ -32,7 +32,7 @@
 			<artifactId>NC-BukkitLib</artifactId>
 			<version>v2.2</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
