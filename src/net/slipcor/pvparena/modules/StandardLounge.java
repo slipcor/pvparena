@@ -7,6 +7,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
@@ -162,6 +163,7 @@ public class StandardLounge extends ArenaModule {
 		} else {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
 		}
+		ap.setStatus(Status.LOUNGE);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 	}
 }
