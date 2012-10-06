@@ -1205,7 +1205,7 @@ public class Arena {
 	public HashSet<ArenaRegionShape> getRegionsByType(RegionType battle) {
 		HashSet<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
 		for (ArenaRegionShape rs : regions) {
-			if (rs.getFlags().contains(battle))
+			if (rs.getType().equals(battle))
 				result.add(rs);
 		}
 		return result;
