@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
@@ -154,7 +155,7 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
-		if (!BlockListener.isProtected(arena, event, "drop")) {
+		if (!BlockListener.isProtected(player.getLocation(), event, RegionProtection.DROP)) {
 			return; // no drop protection
 		}
 
@@ -438,7 +439,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null || BlockListener.isProtected(arena, event, "pickup"))
+		if (arena == null || BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
 			return; // no fighting player or no powerups => OUT
 
 		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);

@@ -76,7 +76,7 @@ public class EntityListener implements Listener {
 
 		db.i("explosion inside an arena");
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
-				|| (!BlockListener.isProtected(arena, event, "blocktntdamage"))
+				|| (!BlockListener.isProtected(event.getLocation(), event, RegionProtection.TNT))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
 			PVPArena.instance.getAmm().onEntityExplode(arena, event);
 			return;

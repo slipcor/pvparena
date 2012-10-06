@@ -112,7 +112,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 	 * </pre>
 	 */
 	public static enum RegionProtection {
-		BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK
+		BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP
 	}
 
 	/**

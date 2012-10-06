@@ -4,6 +4,8 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,7 +35,7 @@ public class InventoryListener implements Listener {
 
 		db.i("InventoryClick: arena player");
 
-		if (!BlockListener.isProtected(arena, event, "inventory")) {
+		if (!BlockListener.isProtected(event.getWhoClicked().getLocation(), event, RegionProtection.INVENTORY)) {
 			// we don't need no protection => out!
 			return;
 		}

@@ -160,6 +160,9 @@ public class ArenaManager {
 	public static Arena getArenaByProtectedRegionLocation(
 			PABlockLocation location, RegionProtection rp) {
 		for (Arena arena : arenas.values()) {
+			if (!arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)) {
+				continue;
+			}
 			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location) && region.getProtections().contains(rp))
 					return arena;
