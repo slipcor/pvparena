@@ -37,6 +37,7 @@ import net.slipcor.pvparena.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
@@ -52,7 +53,7 @@ import com.nodinchan.ncbukkit.NCBL;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.2
  */
 
 public class PVPArena extends JavaPlugin {
@@ -171,7 +172,9 @@ public class PVPArena extends JavaPlugin {
 		String name = args[0];
 		
 		if (a == null) {
-			if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
+			if (sender instanceof Player && ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
+				a = ArenaPlayer.parsePlayer(sender.getName()).getArena();
+			} else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
 				a = PAA_Edit.activeEdits.get(sender.getName());
 			} else if (ArenaManager.count() == 1) {
 				a = ArenaManager.getFirst();

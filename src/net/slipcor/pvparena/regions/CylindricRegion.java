@@ -171,7 +171,6 @@ public class CylindricRegion extends ArenaRegionShape {
 		a.setY(locs[0].getY());
 		
 		Double thisRadius = getLocs()[0].getDistance(a)/2;
-		System.out.print(thisRadius);
 		thisCenter.setY(loc.getY());
 		
 		return loc.getDistance(thisCenter) <= thisRadius;

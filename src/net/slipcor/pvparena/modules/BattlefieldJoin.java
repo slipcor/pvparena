@@ -23,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.2
  */
 
 public class BattlefieldJoin extends ArenaModule {
@@ -83,7 +83,7 @@ public class BattlefieldJoin extends ArenaModule {
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
-		ArenaPlayer.prepareInventory(arena, ap.get());
+		//ArenaPlayer.prepareInventory(arena, ap.get());
 		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
 		team.add(ap);

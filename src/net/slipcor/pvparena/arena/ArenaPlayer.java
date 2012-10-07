@@ -42,7 +42,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.2
  */
 
 public class ArenaPlayer {
@@ -242,17 +242,22 @@ public class ArenaPlayer {
 		if (player == null) {
 			return;
 		}
-		InventoryManager.db.i("resetting inventory: " + player.getName());
+		db.i("resetting inventory: " + player.getName());
 		if (player.getInventory() == null) {
+			db.i("inventory null!");
 			return;
 		}
 
 		ArenaPlayer p = parsePlayer(player.getName());
 
 		if (p.savedInventory == null) {
+			db.i("saved inventory null!");
 			return;
 		}
+		// AIR AIR AIR AIR instead of contents !!!!
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedInventory));
 		player.getInventory().setContents(p.savedInventory);
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedArmor));
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
 
@@ -371,9 +376,9 @@ public class ArenaPlayer {
 	}
 
 	public PALocation getLocation() {
-		System.out.print("reading loc!");
+		db.i("reading loc!");
 		if (location != null)
-			System.out.print(": " + location.toString());
+			db.i(": " + location.toString());
 		return location;
 	}
 
@@ -595,7 +600,7 @@ public class ArenaPlayer {
 	}
 
 	public void setLocation(PALocation location) {
-		System.out.print(location.toString());
+		db.i(location.toString());
 		this.location = location;
 	}
 

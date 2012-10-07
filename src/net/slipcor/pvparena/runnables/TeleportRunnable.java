@@ -13,7 +13,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.2
  */
 
 public class TeleportRunnable implements Runnable {
@@ -37,7 +37,6 @@ public class TeleportRunnable implements Runnable {
 		if (string.equalsIgnoreCase("old")) {
 			if (ap.getLocation() != null) {
 				PALocation loc = ap.getLocation();
-				System.out.print("=>" + loc.toString());
 				ap.get().teleport(loc.toLocation());
 			}
 		} else {
