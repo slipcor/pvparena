@@ -322,7 +322,8 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-
+		arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()));
 		List<String> list = new ArrayList<String>();
 
 		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
