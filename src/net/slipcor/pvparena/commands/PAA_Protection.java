@@ -6,7 +6,6 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 
 import org.bukkit.command.CommandSender;
@@ -18,7 +17,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.2
  */
 
 public class PAA_Protection extends PAA__Command {
@@ -55,7 +54,7 @@ public class PAA_Protection extends PAA__Command {
 		}
 		
 		if (rf == null && (!args[1].equalsIgnoreCase("all"))) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionFlag.values(), " ")));
+			arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
 			return;
 		}
 		
