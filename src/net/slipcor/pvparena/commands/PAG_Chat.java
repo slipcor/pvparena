@@ -50,10 +50,10 @@ public class PAG_Chat extends PAA__Command {
 			// toggle
 			if (!globalChatters.contains(player)) {
 				globalChatters.add(player);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON, args[1]));
+				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON));
 			} else {
 				globalChatters.remove(player);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF, args[1]));
+				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF));
 			}
 			return;
 		}
