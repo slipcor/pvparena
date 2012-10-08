@@ -173,6 +173,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public boolean hasSpawn(String string) {
+		System.out.print(arena.isFreeForAll());
 		return (arena.isFreeForAll() && string.toLowerCase().startsWith("spawn"));
 	}
 

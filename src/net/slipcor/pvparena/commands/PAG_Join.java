@@ -149,6 +149,13 @@ public class PAG_Join extends PAA__Command {
 			if (arena.getFighters().size() == 2) {
 				arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 				arena.setFightInProgress(true);
+				for (ArenaPlayer p : arena.getFighters()) {
+					if (p.getName().equals(sender.getName())) {
+						continue;
+					}
+					arena.tpPlayerToCoordName(p.get(), (arena.isFreeForAll()?"":p.getArenaTeam().getName())
+							+ "spawn");
+				}
 			}
 			
 			return;

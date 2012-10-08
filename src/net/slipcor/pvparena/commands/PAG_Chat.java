@@ -1,10 +1,8 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashSet;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -23,8 +21,6 @@ import org.bukkit.entity.Player;
  */
 
 public class PAG_Chat extends PAA__Command {
-	
-	private static HashSet<String> globalChatters = new HashSet<String>();
 
 	public PAG_Chat() {
 		super(new String[] {"pvparena.user"});
@@ -51,23 +47,31 @@ public class PAG_Chat extends PAA__Command {
 			// toggle
 			if (!ap.isPublicChatting()) {
 				ap.setPublicChatting(true);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON));
+				if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
+					arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
+				} else {
+					arena.msg(sender, Language.parse(MSG.MESSAGES_TOPUBLIC));
+				}
 			} else {
 				ap.setPublicChatting(false);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF));
+				arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
 			}
 			return;
 		}
 
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
 			ap.setPublicChatting(true);
-			arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON, args[1]));
+			if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
+				arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
+			} else {
+				arena.msg(sender, Language.parse(MSG.MESSAGES_TOPUBLIC));
+			}
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
 			ap.setPublicChatting(false);
-			arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF, args[1]));
+			arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
 			return;
 		}
 			

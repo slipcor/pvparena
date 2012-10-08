@@ -50,9 +50,10 @@ public class PAA_GameMode extends PAA__Command {
 		}
 
 		arena.getArenaConfig().save();
+		/*
 		PAA_Reload cmd = new PAA_Reload();
 		cmd.commit(arena, Bukkit.getConsoleSender(), new String[0]);
-		
+		*/
 	}
 
 	@Override

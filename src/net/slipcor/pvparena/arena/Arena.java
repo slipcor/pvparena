@@ -910,6 +910,7 @@ public class Arena {
 	}
 
 	public void setFree(boolean b) {
+		System.out.print("setting free to " + String.valueOf(b));
 		free = b;
 	}
 
@@ -1093,7 +1094,7 @@ public class Arena {
 
 		if (place.endsWith("lounge")) {
 			// at the start of the match
-			if (getArenaConfig().getBoolean(CFG.CHAT_DEFAULTPRIVATE)
+			if (getArenaConfig().getBoolean(CFG.CHAT_DEFAULTTEAM)
 					&& getArenaConfig().getBoolean(CFG.CHAT_ENABLED)) {
 				ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 				ap.setPublicChatting(true);

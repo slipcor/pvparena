@@ -48,7 +48,7 @@ public class Config {
 		Z("configversion","v0.9.0.0"),
 		
 		CHAT_COLORNICK("chat.colorNick", true),
-		CHAT_DEFAULTPRIVATE("chat.defaultPrivate", false),
+		CHAT_DEFAULTTEAM("chat.defaultTeam", false),
 		CHAT_ENABLED("chat.enabled", true),
 		CHAT_ONLYPRIVATE("chat.onlyPrivate", false),
 		
@@ -182,6 +182,7 @@ public class Config {
 		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bgactive", false),
 
 		MODULES_BETTERFIGHT_ACTIVE("modules.betterfight.bfactive", false),
+		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
 		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
 
@@ -202,8 +203,6 @@ public class Config {
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 		
-		MODULES_FIXSTUCKINFLOOR_FSIF("modules.fixstuckinfloor.fsif", false),
-		
 		MODULES_LATELOUNGE_ACTIVE("modules.latelounge.llactive", false),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
@@ -213,12 +212,13 @@ public class Config {
 
 		MODULES_SKINS_ACTIVE("modules.skins.sactive", false),
 
-		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", false),
+		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", true),
 		
-		MODULES_STANDARDSPECTATE_ACTIVE("modules.standardspectate.ssactive", false),
+		MODULES_STANDARDSPECTATE_ACTIVE("modules.standardspectate.ssactive", true),
 		
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
+		MODULES_VAULT_BETPOT("modules.vault.betpot", false),
 		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1)),
@@ -226,7 +226,7 @@ public class Config {
 		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0)),
 		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0)),
 		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
-		MODULES_VAULT_USEPOT("modules.vault.usepot", false),
+		MODULES_VAULT_WINPOT("modules.vault.winPot", false),
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0));
 		

@@ -204,10 +204,9 @@ public class Language {
 		LOG_UPDATE_ENABLED("nulang.log.updateenabled", "Checking for updates..."),
 		LOG_WARNING("nulang.log.warning", "%1%"),
 		
-		MESSAGES_GLOBALOFF("nulang.messages.globaloff", "You are now only talking inside the arena!"),
-		MESSAGES_GLOBALON("nulang.messages.globalon", "You are now talking to the public!"),
-		
-		
+		MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
+		MESSAGES_TOPUBLIC("nulang.messages.toPublic", "You are now talking to the public!"),
+		MESSAGES_TOTEAM("nulang.messages.toTeam", "You are now talking to your team!"),
 		
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 

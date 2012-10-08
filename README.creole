@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.2.7 - resolve #3, #4, #5, #7, #8, #9, #18
 * v0.9.2.6 - final fix of #2,#11,#15,#16,#17
 * v0.9.2.5 - fix spam of "No arenas found!"
 * v0.9.2.4 - fix Issues #2,#11,#15,#16,#17
