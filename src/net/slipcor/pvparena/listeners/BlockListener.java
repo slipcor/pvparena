@@ -169,6 +169,11 @@ public class BlockListener implements Listener {
 		Block block = event.getBlock();
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
+		if (arena == null) {
+			db.i("not inside an arena");
+			return;
+		}
+		
 		db.i("block block fading inside the arena");
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.NATURE)) {
 			return;

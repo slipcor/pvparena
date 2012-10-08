@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.goals;
 
+import org.bukkit.command.CommandSender;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -29,15 +31,30 @@ public class GoalTime extends ArenaGoal {
 	public String version() {
 		return "v0.9.1.0";
 	}
+
+	@Override
+	public boolean allowsJoinInBattle() {
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	}
 	
 	@Override
 	public GoalTime clone() {
 		return new GoalTime(arena);
 	}
-
+	
+	public void commitEnd() {
+		ter.commit();
+	}
+	
 	@Override
-	public boolean allowsJoinInBattle() {
-		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	public void displayInfo(CommandSender sender) {
+		
+	}
+	
+	@Override
+	public void reset(boolean force) {
+		ter.commit();
+		ter = null;
 	}
 
 	@Override
@@ -48,15 +65,5 @@ public class GoalTime extends ArenaGoal {
 			// initiate autosave timer
 			ter = new TimedEndRunnable(arena, timed);
 		}
-	}
-	
-	public void commitEnd() {
-		ter.commit();
-	}
-	
-	@Override
-	public void reset(boolean force) {
-		ter.commit();
-		ter = null;
 	}
 }
