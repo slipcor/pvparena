@@ -1096,7 +1096,7 @@ public class Arena {
 			if (getArenaConfig().getBoolean(CFG.CHAT_DEFAULTPRIVATE)
 					&& getArenaConfig().getBoolean(CFG.CHAT_ENABLED)) {
 				ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-				ap.setChatting(true);
+				ap.setPublicChatting(true);
 			}
 		}
 
@@ -1175,6 +1175,7 @@ public class Arena {
 	 */
 	public void getLegacyGoals(String string) {
 		setFree(false);
+		string = string.toLowerCase();
 		
 		if (string.equals("teams")) {
 			goalAdd(PVPArena.instance.getAgm().getType("TeamLives"));
@@ -1194,12 +1195,7 @@ public class Arena {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
 		} else if (string.equals("ctp")) {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
-			for (ArenaGoal goal : getGoals()) {
-				if (goal.getName().equals("Flags")) {
-					String[] x = {"flagtype","PUMPKIN"};
-					goal.commitCommand(Bukkit.getConsoleSender(), x);
-				}
-			}
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "pvparena " + name + " flagtype PUMPKIN");
 		}
 		
 		updateGoals();

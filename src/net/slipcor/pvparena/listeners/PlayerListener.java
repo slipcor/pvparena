@@ -79,8 +79,8 @@ public class PlayerListener implements Listener {
 				return; // no chat editing
 			}
 
-			if (!ap.isChatting()) {
-				return; // player not chatting
+			if (ap.isPublicChatting()) {
+				return; // player not privately chatting
 			}
 
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
@@ -90,7 +90,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)
-				&& ap.isChatting()) {
+				&& ap.isPublicChatting()) {
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
 					event.getPlayer());
 			event.setCancelled(true);

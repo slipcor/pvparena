@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -44,28 +45,28 @@ public class PAG_Chat extends PAA__Command {
 			return;
 		}
 		
-		String player = sender.getName();
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (args.length < 1) {
 			// toggle
-			if (!globalChatters.contains(player)) {
-				globalChatters.add(player);
+			if (ap.isPublicChatting()) {
+				ap.setPublicChatting(true);
 				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON));
 			} else {
-				globalChatters.remove(player);
+				ap.setPublicChatting(false);
 				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF));
 			}
 			return;
 		}
 
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
-			globalChatters.add(player);
+			ap.setPublicChatting(true);
 			arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON, args[1]));
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
-			globalChatters.remove(player);
+			ap.setPublicChatting(false);
 			arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALOFF, args[1]));
 			return;
 		}
@@ -75,8 +76,9 @@ public class PAG_Chat extends PAA__Command {
 		arena.msg(sender, Language.parse(MSG.ERROR_INVALID_VALUE, args[0]));
 		arena.msg(sender, Language.parse(MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
 		arena.msg(sender, Language.parse(MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+		
 	}
-
+	
 	@Override
 	public String getName() {
 		return this.getClass().getName();

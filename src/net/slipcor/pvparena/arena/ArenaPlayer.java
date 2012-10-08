@@ -79,7 +79,7 @@ public class ArenaPlayer {
 		NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
 	}
 
-	private boolean chatting = false;
+	private boolean publicChatting = true;
 	private PABlockLocation[] selection = new PABlockLocation[2];
 
 	public ArenaPlayer(String playerName) {
@@ -449,8 +449,8 @@ public class ArenaPlayer {
 		return telePass;
 	}
 
-	public boolean isChatting() {
-		return chatting;
+	public boolean isPublicChatting() {
+		return publicChatting;
 	}
 
 	public void readDump() {
@@ -595,13 +595,13 @@ public class ArenaPlayer {
 				+ " to player " + name);
 	}
 
-	public void setChatting(boolean b) {
-		chatting = b;
-	}
-
 	public void setLocation(PALocation location) {
 		db.i(location.toString());
 		this.location = location;
+	}
+
+	public void setPublicChatting(boolean b) {
+		publicChatting = b;
 	}
 
 	public void setSelection(Location loc, boolean second) {

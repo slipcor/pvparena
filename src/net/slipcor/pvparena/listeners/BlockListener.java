@@ -55,7 +55,12 @@ public class BlockListener implements Listener {
 		arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
 		
 		if (arena == null) {
-			return false;
+			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(loc));
+			if (arena == null) {
+				return false;
+			}
+
+			return arena.isLocked();
 		}
 		if (cancelled) {
 			db.i("already cancelled: " + event.getEventName());
