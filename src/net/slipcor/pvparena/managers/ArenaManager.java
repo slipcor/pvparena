@@ -384,5 +384,7 @@ public class ArenaManager {
 	public static void removeArena(Arena arena) {
 		arena.stop(true);
 		arenas.remove(arena.getName());
+		arena.getArenaConfig().delete();
+		arena = null;
 	}
 }

@@ -49,7 +49,7 @@ public class PAG_Chat extends PAA__Command {
 		
 		if (args.length < 1) {
 			// toggle
-			if (ap.isPublicChatting()) {
+			if (!ap.isPublicChatting()) {
 				ap.setPublicChatting(true);
 				arena.msg(sender, Language.parse(MSG.MESSAGES_GLOBALON));
 			} else {

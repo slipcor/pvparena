@@ -47,7 +47,6 @@ public class GoalFlags extends ArenaGoal {
 	private HashMap<String, String> paTeamFlags = new HashMap<String, String>();
 	private HashMap<String, ItemStack> paHeadGears = new HashMap<String, ItemStack>();
 	
-	private Material flagMaterial = Material.WOOL; //TODO set
 	private String flagName = "";
 	
 	@Override
@@ -143,7 +142,7 @@ public class GoalFlags extends ArenaGoal {
 		}
 		db.i("checking interact");
 
-		if (!block.getType().equals(flagMaterial)) {
+		if (!block.getType().name().equals(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE))) {
 			db.i("block, but not flag");
 			return res;
 		}
@@ -373,7 +372,7 @@ public class GoalFlags extends ArenaGoal {
 			
 			try {
 				int i = Integer.parseInt(args[1]);
-				flagMaterial = Material.getMaterial(i);
+				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, Material.getMaterial(i).name());
 			} catch (Exception e) {
 				Material mat = Material.getMaterial(args[1].toUpperCase());
 				
@@ -382,9 +381,10 @@ public class GoalFlags extends ArenaGoal {
 					return;
 				}
 				
-				flagMaterial = mat;
+				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
 			}
-			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TYPESET, flagMaterial.name()));
+			arena.getArenaConfig().save();
+			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TYPESET, CFG.GOAL_FLAGS_FLAGTYPE.toString()));
 			
 		} else if (args[0].contains("flag")) {
 			for (ArenaTeam team : arena.getTeams()) {
@@ -451,7 +451,7 @@ public class GoalFlags extends ArenaGoal {
 	
 	@Override
 	public boolean commitSetFlag(Player player, Block block) {
-		if (block == null || !block.getType().equals(flagMaterial)) {
+		if (block == null || !block.getType().name().equals(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE))) {
 			return false;
 		}
 		
@@ -473,12 +473,6 @@ public class GoalFlags extends ArenaGoal {
 		this.flagName = "";
 		
 		return false;
-	}
-
-	@Override
-	public void configParse(YamlConfiguration config) {
-		config.addDefault("game.teamdmlives", 10);
-		
 	}
 
 	private short getFlagOverrideTeamShort(Arena arena, String team) {
@@ -657,8 +651,8 @@ public class GoalFlags extends ArenaGoal {
 	 *            the location to take/reset
 	 */
 	public void takeFlag(String flagColor, boolean take, PALocation lBlock) {
-		if (!flagMaterial.equals(Material.WOOL)) {
-			lBlock.toLocation().getBlock().setType(take?Material.BEDROCK:flagMaterial);
+		if (!arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE).equals("WOOL")) {
+			lBlock.toLocation().getBlock().setType(take?Material.BEDROCK:Material.valueOf(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)));
 			return;
 		}
 		if (take) {

@@ -1195,7 +1195,8 @@ public class Arena {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
 		} else if (string.equals("ctp")) {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
-			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "pvparena " + name + " flagtype PUMPKIN");
+			cfg.set(CFG.GOAL_FLAGS_FLAGTYPE, "PUMPKIN");
+			cfg.save();
 		}
 		
 		updateGoals();

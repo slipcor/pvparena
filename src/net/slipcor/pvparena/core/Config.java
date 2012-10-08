@@ -140,7 +140,8 @@ public class Config {
 		USES_WOOLHEAD("uses.woolHead", false),
 		
 		// ----------
-		
+
+		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL"),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
 		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
