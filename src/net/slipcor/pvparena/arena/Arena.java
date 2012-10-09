@@ -149,14 +149,14 @@ public class Arena {
 	 */
 	public void broadcastExcept(CommandSender sender, String msg) {
 		db.i("@all/" + sender.getName() + ": " + msg);
-		HashSet<ArenaPlayer> players = getFighters();
+		HashSet<ArenaPlayer> players = getEveryone();
 		for (ArenaPlayer p : players) {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
 				continue;
 			}
-			if (p.get().getName().equals(sender.getName()))
+			if (p.getName().equals(sender.getName()))
 				continue;
-			this.msg(p.get(), msg);
+			msg(p.get(), msg);
 		}
 	}
 

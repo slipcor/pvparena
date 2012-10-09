@@ -56,7 +56,7 @@ public class ArenaGoalManager {
 	 *            the plugin instance
 	 */
 	public ArenaGoalManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/arenas");
+		File path = new File(plugin.getDataFolder().toString() + "/goals");
 		if (!path.exists()) {
 			path.mkdir();
 		}

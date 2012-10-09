@@ -77,9 +77,11 @@ public class Config {
 		LOCATION_WORLD("location.world", Bukkit.getWorlds().get(0).getName()),
 		
 		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
-		MSG_PLAYERJOINED("msg.playerjoined", "Player %1% joined %2%!"),
+		MSG_PLAYERJOINED("msg.playerjoined", "Player %1% joined the Arena!"),
+		MSG_PLAYERJOINEDTEAM("msg.playerjoined", "Player %1% joined team %2%!"),
 		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1%&r to join!"),
-		MSG_YOUJOINED("msg.youjoined", "Welcome to the arena!"),
+		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!"),
+		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!"),
 		
 		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
 		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),

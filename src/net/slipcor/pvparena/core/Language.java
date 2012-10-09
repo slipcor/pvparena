@@ -85,6 +85,7 @@ public class Language {
 		ERROR_CHOOSE_CLASS_FULL("nulang.error.classfull", "class is full!"),
 		ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
 		ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
+		ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
 		ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command (%1%)"),
 		ERROR_COMMAND_UNKNOWN("nulang.error.unknowncmd", "Unknown command"),
 		ERROR_DISABLED("nulang.error.arenadisabled", "Arena disabled, please try again later!"),
@@ -225,7 +226,6 @@ public class Language {
 		NOTICE_YOU_LEFT("nulang.notice.youleft", "You left the arena!"),
 		NOTICE_YOU_NOCAMP("nulang.notice.younocamp", "You are in a NOCAMP region. Move!"),
 		
-		PLAYER_JOINED_TEAM("nulang.playerjoined", "%1% has joined team %2%"),
 		PLAYER_HAS_WON("nulang.playerhaswon", "%1% is the Champion!"),
 		
 		PLAYERS_NOTREADY("nulang.notreadyplayers", "Players not ready"),

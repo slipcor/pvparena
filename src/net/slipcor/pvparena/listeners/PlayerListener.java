@@ -145,7 +145,7 @@ public class PlayerListener implements Listener {
 		}
 		
 		db.i("command blocked: " + event.getMessage());
-		arena.msg(player, ChatColor.RED + event.getMessage());
+		arena.msg(player, Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
 		event.setCancelled(true);
 	}
 
