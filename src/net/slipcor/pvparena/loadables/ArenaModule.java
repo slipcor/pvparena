@@ -350,7 +350,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @param team
 	 *            the colored team name
 	 */
-	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
+	public void parseJoin(PACheckResult res, Arena arena, CommandSender sender, ArenaTeam team) {
 	}
 
 	public void parseLeave(Arena arena, Player player) {

@@ -79,7 +79,11 @@ public class BattlefieldJoin extends ArenaModule {
 	}
 
 	@Override
-	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
+	public void parseJoin(PACheckResult res, Arena arena, CommandSender sender, ArenaTeam team) {
+		if (res == null || !res.getModName().equals(getName())) {
+			return;
+		}
+		
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);

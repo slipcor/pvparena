@@ -31,6 +31,7 @@ import com.nodinchan.ncbukkit.loader.Loader;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PACheckResult;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.modules.BattlefieldJoin;
 import net.slipcor.pvparena.modules.RegionTool;
@@ -453,10 +454,10 @@ public class ArenaModuleManager {
 	 * @param coloredTeam
 	 *            the colored team name
 	 */
-	public void parseJoin(Arena arena, Player player, ArenaTeam coloredTeam) {
+	public void parseJoin(PACheckResult res, Arena arena, Player player, ArenaTeam coloredTeam) {
 		for (ArenaModule mod : modules) {
 			if (mod.isActive(arena))
-				mod.parseJoin(arena, player, coloredTeam);
+				mod.parseJoin(res, arena, player, coloredTeam);
 		}
 	}
 

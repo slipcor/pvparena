@@ -126,7 +126,7 @@ public class PAG_Join extends PAA__Command {
 		
 		if ((commModule == null) || (commGoal == null)) {
 			if (commModule != null) {
-				commModule.parseJoin(arena, sender, team);
+				PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
 				return;
 			}
 			
@@ -166,7 +166,7 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 
-		commModule.parseJoin(arena, sender, team);
+		PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
 		commGoal.parseJoin(sender, team);
 	}
 
