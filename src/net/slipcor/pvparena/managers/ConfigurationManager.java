@@ -231,7 +231,7 @@ public class ConfigurationManager {
 			}
 		}
 		arena.setRoundMap(null);
-		
+
 		cfg.save();
 
 		PVPArena.instance.getAgm().configParse(arena, config);

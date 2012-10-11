@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class Config {
@@ -224,7 +224,7 @@ public class Config {
 		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1)),
-		MODULES_VAULT_ENTRYFEE("modules.vault.entryee", Integer.valueOf(0)),
+		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", Integer.valueOf(0)),
 		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0)),
 		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0)),
 		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
