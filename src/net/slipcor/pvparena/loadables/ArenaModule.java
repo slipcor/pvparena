@@ -359,7 +359,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 	}
 
 	public void parseLeave(Arena arena, Player player) {
-		
 	}
 
 	public void parseMove(Arena arena, PlayerMoveEvent event) {

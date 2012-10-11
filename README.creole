@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.4 - and another one. aiming to fix arenas not announcing players leaving the arena
 * v0.9.3.3 - for mibby
 * v0.9.3.2 - fix /pa reload resetting configs - finally :/
 * v0.9.3.1 - fix an NPE (BlockChange), remove EDIT calling STOP, fix the command whitelist

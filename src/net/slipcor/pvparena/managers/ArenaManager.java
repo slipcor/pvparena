@@ -343,7 +343,7 @@ public class ArenaManager {
 			if (block.getState() instanceof Sign) {
 				Sign sign = (Sign) block.getState();
 				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
-					String sName = sign.getLine(1);
+					String sName = sign.getLine(1).toLowerCase();
 					String[] newArgs = null;
 					Arena a = arenas.get(sName);
 					if (sign.getLine(2) != null
@@ -371,6 +371,7 @@ public class ArenaManager {
 	 *            the arena name to unload
 	 */
 	public static void unload(String string) {
+		string = string.toLowerCase();
 		Arena a = arenas.get(string);
 		db.i("unloading arena " + a.getName());
 		a.stop(true);
@@ -384,7 +385,7 @@ public class ArenaManager {
 
 	public static void removeArena(Arena arena, boolean deleteConfig) {
 		arena.stop(true);
-		arenas.remove(arena.getName());
+		arenas.remove(arena.getName().toLowerCase());
 		if (deleteConfig)
 			arena.getArenaConfig().delete();
 		arena = null;

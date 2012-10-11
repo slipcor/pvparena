@@ -583,23 +583,26 @@ public class Arena {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-		boolean fighter = ap.getStatus().equals(Status.FIGHT);
 
-		if (fighter) {
-			ArenaTeam team = ap.getArenaTeam();
-			if (team != null) {
-				PVPArena.instance.getAmm().playerLeave(this, player, team);
+		ArenaTeam team = ap.getArenaTeam();
+		if (team != null) {
+			PVPArena.instance.getAmm().playerLeave(this, player, team);
 
-				if (!location.equals("exit")) {
-					broadcastExcept(
-							player,
-							Language.parse(MSG.FIGHT_PLAYER_LEFT,
-									team.colorizePlayer(player)
-											+ ChatColor.YELLOW));
-				}
-			}
-			this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
+
+			broadcastExcept(
+					player,
+					Language.parse(MSG.FIGHT_PLAYER_LEFT,
+							team.colorizePlayer(player)
+									+ ChatColor.YELLOW));
+		} else {
+			broadcastExcept(
+					player,
+					Language.parse(MSG.FIGHT_PLAYER_LEFT,
+							player.getName()
+									+ ChatColor.YELLOW));
 		}
+		this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
+		
 		removePlayer(player, getArenaConfig().getString(CFG.getByNode("tp." + location)),
 				false);
 
@@ -612,7 +615,7 @@ public class Arena {
 		int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
 		pdr.setId(i);
 
-		if (fighter && isFightInProgress()) {
+		if (ap.getStatus().equals(Status.FIGHT) && isFightInProgress()) {
 			ArenaManager.checkAndCommit(this);
 		}
 	}
