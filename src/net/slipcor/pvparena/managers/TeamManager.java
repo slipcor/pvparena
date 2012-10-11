@@ -123,6 +123,7 @@ public class TeamManager {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			db.i(team.getName() + ": " + team.getTeamMembers().size());
+			counts.put(team.getName(), team.getTeamMembers().size());
 		}
 
 		if (counts.size() < 1) {
