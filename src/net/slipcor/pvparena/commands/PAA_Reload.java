@@ -34,7 +34,8 @@ public class PAA_Reload extends PAA__Command {
 		
 		String name = arena.getName();
 		
-		ArenaManager.removeArena(arena);
+		arena.stop(true);
+		ArenaManager.removeArena(arena, false);
 		arena = new Arena(name);
 		ArenaManager.loadArena(arena.getName());
 		

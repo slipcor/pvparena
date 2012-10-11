@@ -381,9 +381,10 @@ public class ArenaManager {
 		a = null;
 	}
 
-	public static void removeArena(Arena arena) {
+	public static void removeArena(Arena arena, boolean deleteConfig) {
 		arena.stop(true);
-		arenas.remove(arena.getName());
+		if (deleteConfig)
+			arenas.remove(arena.getName());
 		arena.getArenaConfig().delete();
 		arena = null;
 	}

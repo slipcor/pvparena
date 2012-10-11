@@ -37,7 +37,7 @@ public class PAA_Remove extends PAA__Command {
 		
 		String name = arena.getName();
 		
-		ArenaManager.removeArena(arena);
+		ArenaManager.removeArena(arena, true);
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_REMOVE_DONE, name));
 	}
 
