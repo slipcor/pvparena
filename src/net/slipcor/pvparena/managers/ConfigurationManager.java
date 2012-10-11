@@ -46,7 +46,6 @@ public class ConfigurationManager {
 
 		if (cfg.getString(CFG.GENERAL_TYPE, "null") != null && !cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
 			// opening existing arena
-			System.out.print(cfg.getString(CFG.GENERAL_TYPE));
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 			
 			if (cfg.getUnsafe(CFG.MODULES_STANDARDSPECTATE_ACTIVE.getNode()) == null) {

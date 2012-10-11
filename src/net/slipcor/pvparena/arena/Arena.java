@@ -910,7 +910,6 @@ public class Arena {
 	}
 
 	public void setFree(boolean b) {
-		System.out.print("setting free to " + String.valueOf(b));
 		free = b;
 	}
 

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.2.10 - remove debug, fix #20
 * v0.9.2.9 - fix the startup, affecting VAULT (entryfee), announcements (join message) and more
 * v0.9.2.8 - fix several little issues
 * v0.9.2.7 - resolve #3, #4, #5, #7, #8, #9, #18

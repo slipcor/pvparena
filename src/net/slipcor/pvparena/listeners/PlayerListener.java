@@ -50,7 +50,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.2
  */
 
 public class PlayerListener implements Listener {
@@ -90,7 +90,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)
-				&& ap.isPublicChatting()) {
+				&& !ap.isPublicChatting()) {
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
 					event.getPlayer());
 			event.setCancelled(true);
