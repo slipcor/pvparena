@@ -339,6 +339,7 @@ public class PlayerListener implements Listener {
 				db.i("===============");
 
 				if (!arena.isFightInProgress() && arena.START_ID == -1) {
+					ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
@@ -352,7 +353,6 @@ public class PlayerListener implements Listener {
 						return;
 					}
 
-					ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
 
 					String error = arena.ready();
 
