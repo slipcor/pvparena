@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.3
  */
 
 public class PAA_Enable extends PAA__Command {
@@ -35,9 +35,6 @@ public class PAA_Enable extends PAA__Command {
 		if (!this.argCountValid(sender, arena, args, new Integer[]{0})) {
 			return;
 		}
-		
-		PAA_Stop cmd = new PAA_Stop();
-		cmd.commit(arena, sender, new String[0]);
 		
 		arena.getArenaConfig().set(CFG.GENERAL_ENABLED, true);
 		arena.getArenaConfig().save();

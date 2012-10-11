@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.1 - fix an NPE (BlockChange), remove EDIT calling STOP, fix the command whitelist
 * v0.9.3.0 - PACheckResult -> rewrite -> PACheck | new check, commit, parse system
 * v0.9.2.12 - fix the even check, ticket #28
 * v0.9.2.11 - fix people not being able to ready themselves up in special cases

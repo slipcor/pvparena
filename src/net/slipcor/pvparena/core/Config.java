@@ -70,7 +70,7 @@ public class Config {
 		JOIN_RANGE("join.range", 0),
 		
 		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
-		LISTS_CMDWHITELIST("whitelist", new ArrayList<String>()),
+		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
 		LISTS_GOALS("goals", new ArrayList<String>()),
 		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
 		

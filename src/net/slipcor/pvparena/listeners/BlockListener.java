@@ -38,7 +38,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class BlockListener implements Listener {
@@ -215,7 +215,10 @@ public class BlockListener implements Listener {
 
 		Block block = event.getBlock();
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
-
+		if (arena == null) {
+			db.i("block forming not inside the arena");
+			return;
+		}
 		db.i("block block forming inside the arena");
 
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.NATURE)) {

@@ -130,7 +130,7 @@ public class PlayerListener implements Listener {
 		if (list == null || list.size() < 1) {
 			list = new ArrayList<String>();
 			list.add("ungod");
-			arena.getArenaConfig().set(CFG.LISTS_WHITELIST, list);
+			arena.getArenaConfig().set(CFG.LISTS_CMDWHITELIST, list);
 			arena.getArenaConfig().save();
 		}
 		
