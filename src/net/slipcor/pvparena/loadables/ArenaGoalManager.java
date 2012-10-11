@@ -6,12 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
 import com.nodinchan.ncbukkit.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
@@ -19,8 +15,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PACheckResult;
-import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -31,7 +25,6 @@ import net.slipcor.pvparena.goals.GoalPlayerLives;
 import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.goals.GoalTime;
-import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -41,7 +34,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.2
+ * @version v0.9.3
  */
 
 public class ArenaGoalManager {
@@ -84,133 +77,6 @@ public class ArenaGoalManager {
 		return true;
 	}
 
-	public boolean checkAndCommit(Arena arena) {
-		
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkEnd(res);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
-			return false;
-		}
-		
-		if (commit == null) {
-			return false;
-		}
-		
-		commit.commitEnd();
-		return true;
-	}
-
-	public ArenaGoal checkCommand(Arena arena, String string) {
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkCommand(res, string);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
-		}
-		return commit;
-	}
-
-	public void checkInteract(Arena arena, Player player, Block clickedBlock) {
-
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkInteract(res, player, clickedBlock);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
-			return;
-		}
-		
-		if (commit == null) {
-			return;
-		}
-		
-		commit.commitInteract(player, clickedBlock);
-	}
-
-	public boolean checkSetFlag(Player player, Block block) {
-		Arena arena = PAA_Region.activeSelections.get(player.getName());
-		
-		if (arena == null) {
-			return false;
-		}
-		
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkSetFlag(res, player, block);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
-			return false;
-		}
-		
-		if (commit == null) {
-			return false;
-		}
-		
-		return commit.commitSetFlag(player, block);
-	}
-
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		for (ArenaGoal type : arena.getGoals()) {
 			String error = type.checkForMissingSpawns(list);
@@ -235,25 +101,6 @@ public class ArenaGoalManager {
 		}
 
 		return result;
-	}
-	public int getLives(Arena arena, ArenaPlayer ap) {
-		PACheckResult res = new PACheckResult();
-		int priority = 0;
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.getLives(res, ap);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-			}
-		}
-		
-		if (res.hasError()) {
-			return Integer.valueOf(res.getError());
-		}
-		return 0;
 	}
 
 	/**
@@ -292,52 +139,6 @@ public class ArenaGoalManager {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.initate(player);
 		}
-	}
-
-	public void onPlayerDeath(Arena arena, Player player, PlayerDeathEvent event) {
-		boolean doesRespawn = true;
-		
-		int priority = 0;
-		PACheckResult res = new PACheckResult();
-		
-		ArenaGoal commit = null;
-		
-		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkPlayerDeath(res, player);
-			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
-				priority = res.getPriority();
-				commit = mod;
-			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
-				priority = res.getPriority();
-				commit = null;
-			}
-		}
-		
-		if (res.hasError()) {
-			// lives
-			if (res.getError().equals("0")) {
-				doesRespawn = false;
-			}
-		}
-
-		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
-		event.setDeathMessage(null);
-		
-		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			event.getDrops().clear();
-		}
-		
-		if (commit == null) {
-			// no mod handles player deaths, default to infinite lives. Respawn player
-			
-			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
-			
-			return;
-		}
-		
-		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 	}
 	
 	public String ready(Arena arena) {
@@ -527,4 +328,5 @@ public class ArenaGoalManager {
 			type.unload(player);
 		}
 	}
+
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
@@ -38,7 +39,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class ArenaManager {
@@ -59,7 +60,7 @@ public class ArenaManager {
 			return false;
 		}
 
-		return PVPArena.instance.getAgm().checkAndCommit(arena);
+		return PACheck.handleEnd(arena);
 	}
 
 	/**

@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class StandardSpectate extends ArenaModule {
@@ -30,7 +30,7 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "0.9.1.0";
+		return "v0.9.3.0";
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class StandardSpectate extends ArenaModule {
 	}
 
 	@Override
-	public void parseSpectate(Arena arena, Player player) {
+	public void commitSpectate(Arena arena, Player player) {
 		arena.tpPlayerToCoordName(player, "spectator");
 		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}

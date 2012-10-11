@@ -15,7 +15,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -33,7 +33,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.3
  */
 
 public class GoalPlayerDeathMatch extends ArenaGoal {
@@ -48,13 +48,13 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.0.0";
+		return "v0.9.3.0";
 	}
 
 	int priority = 2;
 	
 	@Override
-	public PACheckResult checkEnd(PACheckResult res) {
+	public PACheck checkEnd(PACheck res) {
 		if (res.getPriority() > priority) {
 			return res;
 		}
@@ -62,10 +62,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		int count = lives.size();
 
 		if (count == 1) {
-			res.setModName(getName());
-			res.setPriority(priority); // yep. only one player left. go!
+			res.setPriority(this, priority); // yep. only one player left. go!
 		} else if (count == 0) {
-			res.setError(MSG.ERROR_NOPLAYERFOUND.toString());
+			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
 
 		return res;
@@ -86,10 +85,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheckResult checkPlayerDeath(PACheckResult res, Player player) {
+	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		if (res.getPriority() <= priority) {
-			res.setModName(getName());
-			res.setPriority(priority);
+			res.setPriority(this, priority);
 		}
 		return res;
 	}
@@ -153,14 +151,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				
 				PlayerState.fullReset(arena, ap.get());
 				
-				//new PlayerResetRunnable(ap,0, ap.get().getLocation());
-				//TODO - timer is inactive - if this works, timer can just ... die
-				
 				if (ArenaManager.checkAndCommit(arena))
 					return;
 			}
 			
-			PVPArena.instance.getAgm().checkAndCommit(arena);
+			PACheck.handleEnd(arena);
 		} else {
 			i--;
 			lives.put(killer.getName(), i);
@@ -189,9 +184,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+	public PACheck getLives(PACheck res, ArenaPlayer ap) {
 		if (!res.hasError() && res.getPriority() <= priority) {
-			res.setError("" + (arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)-(lives.containsKey(ap.getName())?lives.get(ap.getName()):0)));
+			res.setError(this, "" + (arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)-(lives.containsKey(ap.getName())?lives.get(ap.getName()):0)));
 		}
 		return res;
 	}

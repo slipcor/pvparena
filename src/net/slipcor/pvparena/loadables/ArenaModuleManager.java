@@ -21,7 +21,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
@@ -31,7 +30,7 @@ import com.nodinchan.ncbukkit.loader.Loader;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.modules.BattlefieldJoin;
 import net.slipcor.pvparena.modules.RegionTool;
@@ -45,7 +44,7 @@ import net.slipcor.pvparena.modules.StandardSpectate;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class ArenaModuleManager {
@@ -445,38 +444,6 @@ public class ArenaModuleManager {
 	}
 
 	/**
-	 * hook into a player joining a team
-	 * 
-	 * @param arena
-	 *            the area where this happens
-	 * @param player
-	 *            the joining player
-	 * @param coloredTeam
-	 *            the colored team name
-	 */
-	public void parseJoin(PACheckResult res, Arena arena, Player player, ArenaTeam coloredTeam) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseJoin(res, arena, player, coloredTeam);
-		}
-	}
-
-	/**
-	 * hook into an arena PlayerMoveEvent
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param event
-	 *            the PlayerMoveEvent
-	 */
-	public void parseMove(Arena arena, PlayerMoveEvent event) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseMove(arena, event);
-		}
-	}
-
-	/**
 	 * hook into a player leaving the arena
 	 * 
 	 * @param arena
@@ -609,6 +576,14 @@ public class ArenaModuleManager {
 		for (ArenaModule mod : modules) {
 			if (mod.isActive(arena))
 				mod.parseRespawn(arena, player, team, cause, damager);
+		}
+	}
+
+	public void parseJoin(PACheck res, Arena arena, Player sender,
+			ArenaTeam team) {
+		for (ArenaModule mod : modules) {
+			if (mod.isActive(arena))
+				mod.parseJoin(arena, sender, team);
 		}
 	}
 }

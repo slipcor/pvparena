@@ -3,14 +3,12 @@ package net.slipcor.pvparena.commands;
 import java.util.HashSet;
 
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
@@ -22,7 +20,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.3
  */
 
 public class PAI_Ready extends PAA__Command {
@@ -62,37 +60,9 @@ public class PAI_Ready extends PAA__Command {
 			ap.setStatus(Status.READY);
 			arena.msg(sender, Language.parse(MSG.READY_DONE));
 			
-			PACheckResult res = new PACheckResult();
-
-			ArenaModule commit = null;
-			int priority = 0;
+			PACheck.handleStart(arena, ap, sender);
 			
-			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-				if (mod.isActive(arena)) {
-					res = mod.checkStart(arena, ap, res);
-				}
-				
-				if (res.getPriority() > priority && priority >= 0) {
-					// success and higher priority
-					priority = res.getPriority();
-					commit = mod;
-				} else if (res.getPriority() < 0 || priority < 0) {
-					// fail
-					priority = res.getPriority();
-					commit = null;
-				}
-			}
-			
-			if (res.hasError()) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
-				return;
-			}
-			
-			if (commit == null) {
-				return;
-			}
-			
-			arena.teleportAllToSpawn();
+			return;
 		}
 		
 		HashSet<String> names = new HashSet<String>();

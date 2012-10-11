@@ -21,7 +21,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -51,7 +51,7 @@ public class GoalFlags extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.1.0";
+		return "v0.9.3.0";
 	}
 
 	int priority = 5;
@@ -66,21 +66,19 @@ public class GoalFlags extends ArenaGoal {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
 	}
 
-	public PACheckResult checkCommand(PACheckResult res, String string) {
+	public PACheck checkCommand(PACheck res, String string) {
 		if (res.getPriority() > priority) {
 			return res;
 		}
 		
 		if (string.equalsIgnoreCase("flagtype")) {
-			res.setModName(getName());
-			res.setPriority(priority);
+			res.setPriority(this, priority);
 		}
 		
 		for (ArenaTeam team : arena.getTeams()) {
 			String sTeam = team.getName();
 			if (string.contains(sTeam + "flag")) {
-				res.setModName(getName());
-				res.setPriority(priority);
+				res.setPriority(this, priority);
 			}
 		}
 		
@@ -88,7 +86,7 @@ public class GoalFlags extends ArenaGoal {
 	}
 	
 	@Override
-	public PACheckResult checkEnd(PACheckResult res) {
+	public PACheck checkEnd(PACheck res) {
 		
 		if (res.getPriority() > priority) {
 			return res;
@@ -97,10 +95,9 @@ public class GoalFlags extends ArenaGoal {
 		int count = TeamManager.countActiveTeams(arena);
 
 		if (count == 1) {
-			res.setModName(getName());
-			res.setPriority(priority); // yep. only one team left. go!
+			res.setPriority(this, priority); // yep. only one team left. go!
 		} else if (count == 0) {
-			res.setError("No teams playing!");
+			res.setError(this, "No teams playing!");
 		}
 
 		return res;
@@ -136,7 +133,7 @@ public class GoalFlags extends ArenaGoal {
 	 * @return 
 	 */
 	@Override
-	public PACheckResult checkInteract(PACheckResult res, Player player, Block block) {
+	public PACheck checkInteract(PACheck res, Player player, Block block) {
 		if (block == null || res.getPriority() > priority) {
 			return res;
 		}
@@ -277,12 +274,12 @@ public class GoalFlags extends ArenaGoal {
 	 * @return a PACheckResult instance to hand forth for parsing
 	 */
 	@Override
-	public PACheckResult checkPlayerDeath(PACheckResult res, Player player) {
+	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		
 		if (paTeamFlags == null) {
 			return res;
 		}
-
+		// TODO remove to a new parsePlayerDeath ?
 		ArenaTeam flagTeam = arena.getTeam(
 				getHeldFlagTeam(arena, player.getName()));
 		if (flagTeam != null) {
@@ -309,15 +306,14 @@ public class GoalFlags extends ArenaGoal {
 	}
 	
 	@Override
-	public PACheckResult checkSetFlag(PACheckResult res, Player player, Block block) {
+	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
 
 		int priority = 1;
 		
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
-		res.setModName(getName());
-		res.setPriority(priority); // success :)
+		res.setPriority(this, priority); // success :)
 		
 		return res;
 	}
@@ -486,9 +482,9 @@ public class GoalFlags extends ArenaGoal {
 	}
 
 	@Override
-	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+	public PACheck getLives(PACheck res, ArenaPlayer ap) {
 		if (!res.hasError() && res.getPriority() <= priority) {
-			res.setError("" + (paTeamLives.containsKey(ap.getArenaTeam().getName())?paTeamLives.get(ap.getArenaTeam().getName()):0));
+			res.setError(this, "" + (paTeamLives.containsKey(ap.getArenaTeam().getName())?paTeamLives.get(ap.getArenaTeam().getName()):0));
 		}
 		return res;
 	}

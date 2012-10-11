@@ -10,6 +10,7 @@ import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
@@ -53,7 +54,7 @@ import com.nodinchan.ncbukkit.NCBL;
  * 
  * @author slipcor
  * 
- * @version v0.9.2
+ * @version v0.9.3
  */
 
 public class PVPArena extends JavaPlugin {
@@ -194,13 +195,8 @@ public class PVPArena extends JavaPlugin {
 		
 
 		PAA__Command paacmd = PAA__Command.getByName(args[0]);
-		if (paacmd == null) {
-			ArenaGoal goal = PVPArena.instance.getAgm().checkCommand(a, args[0]);
-			if (goal != null) {
-				db.i("committing: " + goal.getName());
-				goal.commitCommand(sender, args);
-				return true;
-			}
+		if (paacmd == null && (PACheck.handleCommand(a, sender, args))) {
+			return true;
 		}
 
 		if (paacmd == null && a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {

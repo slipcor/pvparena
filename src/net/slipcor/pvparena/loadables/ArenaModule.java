@@ -6,7 +6,7 @@ import java.util.Set;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 
 import org.bukkit.Material;
@@ -39,7 +39,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class ArenaModule extends Loadable implements Cloneable {
@@ -59,8 +59,8 @@ public class ArenaModule extends Loadable implements Cloneable {
 		
 	}
 
-	public PACheckResult checkJoin(Arena arena, CommandSender sender,
-			PACheckResult res, boolean b) {
+	public PACheck checkJoin(Arena arena, CommandSender sender,
+			PACheck res, boolean b) {
 		return res;
 	}
 
@@ -68,8 +68,8 @@ public class ArenaModule extends Loadable implements Cloneable {
 		return null;
 	}
 
-	public PACheckResult checkStart(Arena arena, ArenaPlayer ap,
-			PACheckResult res) {
+	public PACheck checkStart(Arena arena, ArenaPlayer ap,
+			PACheck res) {
 		return res;
 	}
 
@@ -100,6 +100,11 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 */
 	public boolean commitEnd(Arena arena, ArenaTeam aTeam) {
 		return false;
+	}
+
+	public void commitJoin(Arena arena, Player sender,
+			ArenaTeam team) {
+		return;
 	}
 
 	/**
@@ -350,7 +355,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @param team
 	 *            the colored team name
 	 */
-	public void parseJoin(PACheckResult res, Arena arena, CommandSender sender, ArenaTeam team) {
+	public void parseJoin(Arena arena, CommandSender sender, ArenaTeam team) {
 	}
 
 	public void parseLeave(Arena arena, Player player) {
@@ -364,7 +369,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 			DamageCause cause, Entity damager) {
 	}
 
-	public void parseSpectate(Arena arena, Player player) {
+	public void commitSpectate(Arena arena, Player player) {
 	}
 
 	/**

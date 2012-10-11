@@ -13,7 +13,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PACheckResult;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 
 /**
@@ -23,7 +23,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class ArenaGoal extends Loadable implements Cloneable {
@@ -50,11 +50,11 @@ public class ArenaGoal extends Loadable implements Cloneable {
 		return false;
 	}
 
-	public PACheckResult checkCommand(PACheckResult res, String string) {
+	public PACheck checkCommand(PACheck res, String string) {
 		return res;
 	}
 
-	public PACheckResult checkEnd(PACheckResult res) {
+	public PACheck checkEnd(PACheck res) {
 		return res;
 	}
 
@@ -79,12 +79,11 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	 *            the block being clicked
 	 * @return 
 	 */
-	public PACheckResult checkInteract(PACheckResult res, Player player, Block clickedBlock) {
+	public PACheck checkInteract(PACheck res, Player player, Block clickedBlock) {
 		return res;
 	}
 
-	public PACheckResult checkJoin(CommandSender sender,
-			PACheckResult res) {
+	public PACheck checkJoin(CommandSender sender, PACheck res) {
 		return res;
 	}
 
@@ -94,7 +93,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	 * @param player the dying player
 	 * @return a PACheckResult instance to hand forth for parsing
 	 */
-	public PACheckResult checkPlayerDeath(PACheckResult res, Player player) {
+	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		return res;
 	}
 
@@ -106,7 +105,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	 * @param block
 	 * @return
 	 */
-	public PACheckResult checkSetFlag(PACheckResult res, Player player, Block block) {
+	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
 		return res;
 	}
 	
@@ -145,7 +144,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	public void displayInfo(CommandSender sender) {
 	}
 
-	public PACheckResult getLives(PACheckResult res, ArenaPlayer ap) {
+	public PACheck getLives(PACheck res, ArenaPlayer ap) {
 		return res;
 	}
 
@@ -167,7 +166,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	public void initate(Player player) {
 	}
 
-	public void parseJoin(CommandSender sender, ArenaTeam team) {
+	public void commitJoin(CommandSender sender, ArenaTeam team) {
 	}
 
 	/**

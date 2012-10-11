@@ -10,6 +10,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -50,7 +51,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.2
+ * @version v0.9.3
  */
 
 public class PlayerListener implements Listener {
@@ -172,7 +173,7 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return;
 	
-		PVPArena.instance.getAgm().onPlayerDeath(arena, player, event);
+		PACheck.handlePlayerDeath(arena, player, event);
 	}
 	
 	/**
@@ -249,7 +250,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (PVPArena.instance.getAgm().checkSetFlag(player, event.getClickedBlock())) {
+		if (PACheck.handleSetFlag(player, event.getClickedBlock())) {
 			db.i("returning: #2");
 			return;
 		}
@@ -266,7 +267,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAgm().checkInteract(arena, player, event.getClickedBlock());
+		PACheck.handleInteract(arena, player, event.getClickedBlock());
 
 		if (arena.isFightInProgress() && !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
 			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!");
