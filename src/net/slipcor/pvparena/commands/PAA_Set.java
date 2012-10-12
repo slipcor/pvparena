@@ -170,7 +170,6 @@ public class PAA_Set extends PAA__Command {
 
 			} catch (Exception e) {
 				arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[0]));
-				e.printStackTrace();
 			}
 			return;
 		}

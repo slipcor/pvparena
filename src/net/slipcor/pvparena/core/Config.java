@@ -632,6 +632,12 @@ public class Config {
 	 */
 	public static PALocation parseLocation(String coords) {
 		String[] parts = coords.split(",");
+		
+		if (parts.length == 4) {
+			coords += ",0.0,0.0";
+			parts = coords.split(",");
+		}
+		
 		if (parts.length != 6)
 			throw new IllegalArgumentException(
 					"Input string must contain world, x, y, z, yaw and pitch: " + coords);

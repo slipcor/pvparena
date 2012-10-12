@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.10 - fix the SpawnManager choking on block locations
 * v0.9.3.9 - fix IllegalStateException for configParse
 * v0.9.3.8 - aim to fix ticket #31
 * v0.9.3.7 - fix tickets #25, #32

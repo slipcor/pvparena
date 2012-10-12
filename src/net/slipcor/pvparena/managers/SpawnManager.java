@@ -186,7 +186,7 @@ public class SpawnManager {
 			}
 			db.i(" - " + name);
 			String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
-			result.add(Config.parseLocation( sLoc));
+			result.add(Config.parseLocation(sLoc));
 		}
 
 		return result;
