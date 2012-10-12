@@ -397,7 +397,7 @@ public class PlayerListener implements Listener {
 		Arena a = ap.getArena();
 		
 		if (a != null) {
-			a.playerLeave(player, a.getArenaConfig().getString(CFG.TP_EXIT), false);
+			a.playerLeave(player, a.getArenaConfig().getString(CFG.TP_EXIT), true);
 		}
 		
 		if (!player.isOp()) {
