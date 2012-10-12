@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
@@ -13,7 +12,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.2
+ * @version v0.9.3
  */
 
 public class TeleportRunnable implements Runnable {
@@ -31,7 +30,7 @@ public class TeleportRunnable implements Runnable {
 	public void run() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (ap == null || ap.get() == null) {
-			PVPArena.instance.getLogger().warning("ArenaPlayer NULL: " + player);
+			// db.i("ArenaPlayer NULL: " + player);
 			return;
 		}
 		if (string.equalsIgnoreCase("old")) {

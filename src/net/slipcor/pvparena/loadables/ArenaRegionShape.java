@@ -504,7 +504,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 			if (flags.contains(RegionFlag.DEATH)) {
 				if (this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
-					arena.playerLeave(ap.get(), "lose");
+					arena.playerLeave(ap.get(), "lose", false);
 					PALoseEvent e = new PALoseEvent(arena, ap.get());
 					Bukkit.getPluginManager().callEvent(e);
 				}
@@ -577,7 +577,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 				if (!this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
-					arena.playerLeave(ap.get(), "exit");
+					arena.playerLeave(ap.get(), "exit", false);
 				}
 			}
 			if (type.equals(RegionType.WATCH)) {
@@ -592,7 +592,7 @@ public abstract class ArenaRegionShape extends Loadable implements Cloneable {
 
 				if (!this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
-					arena.playerLeave(ap.get(), "exit");
+					arena.playerLeave(ap.get(), "exit", false);
 				}
 			}
 		}

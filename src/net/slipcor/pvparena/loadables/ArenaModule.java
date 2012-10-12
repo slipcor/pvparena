@@ -104,7 +104,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 
 	public void commitJoin(Arena arena, Player sender,
 			ArenaTeam team) {
-		return;
+		throw new IllegalStateException();
 	}
 
 	/**
@@ -119,6 +119,11 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 */
 	public void commitPlayerDeath(Arena arena, Player player,
 			EntityDamageEvent cause) {
+		throw new IllegalStateException();
+	}
+
+	public void commitSpectate(Arena arena, Player player) {
+		throw new IllegalStateException();
 	}
 
 	/**
@@ -130,6 +135,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 *            the config being parsed
 	 */
 	public void configParse(Arena arena, YamlConfiguration config) {
+		throw new IllegalStateException();
 	}
 
 	public void displayInfo(Arena arena, CommandSender sender) {
@@ -366,9 +372,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 
 	public void parseRespawn(Arena arena, Player player, ArenaTeam team,
 			DamageCause cause, Entity damager) {
-	}
-
-	public void commitSpectate(Arena arena, Player player) {
 	}
 
 	/**

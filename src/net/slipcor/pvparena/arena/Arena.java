@@ -575,8 +575,9 @@ public class Arena {
 	 *            the arena where this happens
 	 * @param player
 	 *            the leaving player
+	 * @param b 
 	 */
-	public void playerLeave(Player player, String location) {
+	public void playerLeave(Player player, String location, boolean silent) {
 		
 		Exception e = new Exception();
 		e.fillInStackTrace();
@@ -588,25 +589,26 @@ public class Arena {
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-
-		ArenaTeam team = ap.getArenaTeam();
-		if (team != null) {
-			PVPArena.instance.getAmm().playerLeave(this, player, team);
-
-
-			broadcastExcept(
-					player,
-					Language.parse(MSG.FIGHT_PLAYER_LEFT,
-							team.colorizePlayer(player)
-									+ ChatColor.YELLOW));
-		} else {
-			broadcastExcept(
-					player,
-					Language.parse(MSG.FIGHT_PLAYER_LEFT,
-							player.getName()
-									+ ChatColor.YELLOW));
+		if (!silent) {
+		
+			ArenaTeam team = ap.getArenaTeam();
+			if (team != null) {
+				PVPArena.instance.getAmm().playerLeave(this, player, team);
+	
+				broadcastExcept(
+						player,
+						Language.parse(MSG.FIGHT_PLAYER_LEFT,
+								team.colorizePlayer(player)
+										+ ChatColor.YELLOW));
+			} else {
+				broadcastExcept(
+						player,
+						Language.parse(MSG.FIGHT_PLAYER_LEFT,
+								player.getName()
+										+ ChatColor.YELLOW));
+			}
+			this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
 		}
-		this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
 		
 		removePlayer(player, getArenaConfig().getString(CFG.getByNode("tp." + location)),
 				false);
@@ -1004,7 +1006,7 @@ public class Arena {
 		}
 		if (sum < 2) {
 			for (ArenaPlayer ap : getFighters()) {
-				playerLeave(ap.get(), "exit");
+				playerLeave(ap.get(), "exit", false);
 			}
 		} else {
 			teleportAllToSpawn();
@@ -1014,7 +1016,7 @@ public class Arena {
 
 	public void stop(boolean force) {
 		for (ArenaPlayer p : getFighters()) {
-			this.playerLeave(p.get(), "exit");
+			this.playerLeave(p.get(), "exit", true);
 		}
 		reset(force);
 	}

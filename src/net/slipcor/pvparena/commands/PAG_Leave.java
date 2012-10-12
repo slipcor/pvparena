@@ -56,7 +56,7 @@ public class PAG_Leave extends PAA__Command {
 			}
 		}
 		
-		arena.playerLeave(ap.get(), "exit");
+		arena.playerLeave(ap.get(), "exit", false);
 	}
 
 	@Override

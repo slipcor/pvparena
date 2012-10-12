@@ -53,7 +53,7 @@ public class PAA_Class extends PAA__Command {
 		if (args.length == 1) {
 			Player player = (Player) sender;
 			try {
-				arena.playerLeave(player, null);
+				arena.playerLeave(player, null, true);
 				arena.remove(player);
 				} catch (Exception e) {
 

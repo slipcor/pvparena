@@ -115,6 +115,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	}
 
 	public void commitCommand(CommandSender sender, String[] args) {
+		throw new IllegalStateException();
 	}
 
 	public void commitEnd() {
@@ -131,7 +132,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 	}
 
 	public boolean commitSetFlag(Player player, Block block) {
-		return false;
+		throw new IllegalStateException();
 	}
 
 	/**
