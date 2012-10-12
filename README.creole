@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.12 - fix playerLeave
 * v0.9.3.11 - remove debug StackTrace for ticket #32
 * v0.9.3.10 - fix the SpawnManager choking on block locations
 * v0.9.3.9 - fix IllegalStateException for configParse

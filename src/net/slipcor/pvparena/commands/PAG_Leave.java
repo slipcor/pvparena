@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
@@ -56,7 +57,7 @@ public class PAG_Leave extends PAA__Command {
 			}
 		}
 		
-		arena.playerLeave(ap.get(), "exit", false);
+		arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 	}
 
 	@Override

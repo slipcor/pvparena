@@ -577,7 +577,7 @@ public class Arena {
 	 *            the leaving player
 	 * @param b 
 	 */
-	public void playerLeave(Player player, String location, boolean silent) {
+	public void playerLeave(Player player, CFG location, boolean silent) {
 		
 		if (!fightInProgress) {
 			startCount--;
@@ -606,7 +606,7 @@ public class Arena {
 			this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
 		}
 		
-		removePlayer(player, getArenaConfig().getString(CFG.getByNode("tp." + location)),
+		removePlayer(player, getArenaConfig().getString(location),
 				false);
 
 		if (START_ID != -1) {
@@ -1002,7 +1002,7 @@ public class Arena {
 		}
 		if (sum < 2) {
 			for (ArenaPlayer ap : getFighters()) {
-				playerLeave(ap.get(), "exit", false);
+				playerLeave(ap.get(), CFG.TP_EXIT, false);
 			}
 		} else {
 			teleportAllToSpawn();
@@ -1012,7 +1012,7 @@ public class Arena {
 
 	public void stop(boolean force) {
 		for (ArenaPlayer p : getFighters()) {
-			this.playerLeave(p.get(), "exit", true);
+			this.playerLeave(p.get(), CFG.TP_EXIT, true);
 		}
 		reset(force);
 	}
