@@ -310,9 +310,9 @@ public class Language {
 		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "A flag claimed by Team %1% is being unclaimed!"),
 		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "A flag claimed by Team %1% is being unclaimed by Team %2%!"),
 
-		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "Player %1% brought home the flag of team %2%! Lives left: %3%"),
-		GOAL_FLAGS_DROPPED("lang.flagsave", "Player %1% dropped the flag of team %2%!"),
-		GOAL_FLAGS_GRABBED("lang.flaggrab", "Player %1% grabbed the flag of team %2%!"),
+		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Lives left: %3%"),
+		GOAL_FLAGS_DROPPED("lang.flagsave", "%1% dropped the flag of team %2%!"),
+		GOAL_FLAGS_GRABBED("lang.flaggrab", "%1% grabbed the flag of team %2%!"),
 		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
 		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
@@ -363,7 +363,7 @@ public class Language {
 		MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
 
 		MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
-		MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "Player %1% has collected PowerUp %2%!"),
+		MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp %2%!"),
 		MODULE_POWERUPS_SERVER("nulang.mod.powerups.puserver", "PowerUp deployed!"),
 
 		MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),

@@ -178,8 +178,8 @@ public class TeamManager {
 			arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINED, player.getName()));
 		} else {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
-			arena.msg(player, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", aTeam.getColoredName()));
-			arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, player.getName(), aTeam.getColoredName()));
+			arena.msg(player, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", aTeam.getColoredName() + "§r"));
+			arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, player.getName(), aTeam.getColoredName() + "§r"));
 		}
 	}
 
