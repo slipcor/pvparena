@@ -139,7 +139,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 *            the config being parsed
 	 */
 	public void configParse(Arena arena, YamlConfiguration config) {
-		throw new IllegalStateException();
 	}
 
 	public void displayInfo(Arena arena, CommandSender sender) {
