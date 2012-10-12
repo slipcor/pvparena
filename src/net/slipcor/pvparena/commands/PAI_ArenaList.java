@@ -39,10 +39,10 @@ public class PAI_ArenaList extends PA__Command {
 		HashSet<String> names = new HashSet<String>();
 		
 		for (Arena a : ArenaManager.getArenas()) {
-			names.add(a.getName());
+			names.add((a.isLocked()?"&c":"&a") + a.getName() + "&r");
 		}
 		
-		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, "&r, &a")));
+		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, ", ")));
 	}
 
 	@Override

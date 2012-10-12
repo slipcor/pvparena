@@ -577,6 +577,11 @@ public class Arena {
 	 *            the leaving player
 	 */
 	public void playerLeave(Player player, String location) {
+		
+		Exception e = new Exception();
+		e.fillInStackTrace();
+		e.printStackTrace();
+		
 		if (!fightInProgress) {
 			startCount--;
 		}
