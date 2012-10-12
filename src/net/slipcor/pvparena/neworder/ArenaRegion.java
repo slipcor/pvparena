@@ -25,6 +25,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
@@ -166,7 +167,7 @@ public class ArenaRegion extends Loadable {
 		}
 		for (Entity e : world.getEntities()) {
 			if (((!(e instanceof Item)) && (!(e instanceof Arrow))
-					&& (!(e instanceof Creature)) && (!(e instanceof Animals)))
+					&& (!(e instanceof Creature)) && (!(e instanceof Animals)) && (!(e instanceof TNTPrimed)))
 					|| (!contains(e.getLocation())))
 				continue;
 			e.remove();
