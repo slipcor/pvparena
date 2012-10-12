@@ -565,7 +565,7 @@ public class ArenaModuleManager {
 
 	public boolean parseCommand(Arena arena, String s) {
 		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena) && mod.parseCommand(s)) {
+			if (mod.isActive(arena) && mod.checkCommand(s)) {
 				return true;
 			}
 		}

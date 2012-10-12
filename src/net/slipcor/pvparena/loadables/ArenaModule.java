@@ -59,6 +59,10 @@ public class ArenaModule extends Loadable implements Cloneable {
 		
 	}
 
+	public boolean checkCommand(String s) {
+		return false;
+	}
+
 	public PACheck checkJoin(Arena arena, CommandSender sender,
 			PACheck res, boolean b) {
 		return res;
@@ -345,10 +349,6 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 *            the SignChangeEvent
 	 */
 	public void onSignChange(SignChangeEvent event) {
-	}
-
-	public boolean parseCommand(String s) {
-		return false;
 	}
 
 	/**

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.8 - aim to fix ticket #31
 * v0.9.3.7 - fix tickets #25, #32
 * v0.9.3.6 - fix tickets #33, #34, add debug StackTrace for Ticket #32
 * v0.9.3.5 - language fixes
