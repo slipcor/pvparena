@@ -843,9 +843,9 @@ public class Arena {
 		if (REALEND_ID > -1)
 			Bukkit.getScheduler().cancelTask(REALEND_ID);
 		REALEND_ID = -1;
-		
-		PVPArena.instance.getAmm().reset(this, force);
+
 		clearArena();
+		PVPArena.instance.getAmm().reset(this, force);
 		type.reset(force);
 
 		this.playerCount = 0;
