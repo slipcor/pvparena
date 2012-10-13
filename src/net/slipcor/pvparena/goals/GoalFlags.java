@@ -285,7 +285,7 @@ public class GoalFlags extends ArenaGoal {
 		if (flagTeam != null) {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
-					ap.getArenaTeam().colorizePlayer(player), flagTeam.getName() + ChatColor.YELLOW));
+					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getColoredName() + ChatColor.YELLOW));
 			paTeamFlags.remove(flagTeam.getName());
 			if (paHeadGears != null
 					&& paHeadGears.get(player.getName()) != null) {
@@ -346,10 +346,13 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		if (arena.getTeam(winteam) != null) {
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + winteam), "WINNER");
+			
+			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+					arena.getTeam(winteam).getColor() + "Team "
+							+ winteam + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + "Team "
-							+ winteam));
+							+ winteam + ChatColor.YELLOW));
 		}
 
 		paTeamLives.clear();
@@ -412,10 +415,12 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		if (aTeam != null) {
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + aTeam.getName()), "WINNER");
-
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ "Team " + aTeam.getName()));
+			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+					aTeam.getColor() + "Team "
+							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
+			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+					aTeam.getColor() + "Team "
+							+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
 		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
