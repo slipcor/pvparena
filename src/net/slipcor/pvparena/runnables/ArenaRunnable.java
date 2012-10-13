@@ -78,7 +78,12 @@ public abstract class ArenaRunnable implements Runnable {
 		if ((message == null) || (messages.get(seconds) == null)) {
 			return;
 		}
-		String message = seconds > 5 ? Language.parse(MSG.getByNode(this.message), messages.get(seconds)) : messages.get(seconds);
+		MSG msg = MSG.getByNode(this.message);
+		if (msg == null) {
+			PVPArena.instance.getLogger().warning("MSG not found: " + this.message);
+			return;
+		}
+		String message = seconds > 5 ? Language.parse(msg, messages.get(seconds)) : messages.get(seconds);
 		if (global) {
 			Player[] players = Bukkit.getOnlinePlayers();
 			

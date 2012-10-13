@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * <pre>Arena Runnable class "Start"</pre>
@@ -12,7 +13,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
 public class StartRunnable extends ArenaRunnable {
@@ -25,7 +26,7 @@ public class StartRunnable extends ArenaRunnable {
 	 *            the arena we are running in
 	 */
 	public StartRunnable(Arena a, int i) {
-		super("startinginexact", i, null, a, false);
+		super(MSG.ARENA_STARTING_IN.getNode(), i, null, a, false);
 		db.i("StartRunnable constructor");
 		a.START_ID = id;
 	}
