@@ -691,7 +691,7 @@ public class GoalFlags extends ArenaGoal {
 		if (flagTeam != null) {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
-					ap.getArenaTeam().colorizePlayer(player), flagTeam.getName() + ChatColor.YELLOW));
+					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
 			paTeamFlags.remove(flagTeam.getName());
 			if (paHeadGears != null
 					&& paHeadGears.get(player.getName()) != null) {

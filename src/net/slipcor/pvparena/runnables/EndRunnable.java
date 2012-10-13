@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * <pre>Arena Runnable class "End"</pre>
@@ -26,7 +27,7 @@ public class EndRunnable extends ArenaRunnable {
 	 * @param i
 	 */
 	public EndRunnable(Arena a, int i) {
-		super("resetexact", i, null, a, false);
+		super(MSG.TIMER_RESETTING_IN.getNode(), i, null, a, false);
 		db.i("EndRunnable constructor");
 		Bukkit.getScheduler().cancelTask(a.END_ID);
 		a.END_ID = -1;

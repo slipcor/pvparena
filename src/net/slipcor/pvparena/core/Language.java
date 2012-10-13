@@ -35,7 +35,7 @@ public class Language {
 		ARENA_REGION_SHAPE_UNKNOWN("nulang.arena.regionshapeunknown", "Arena Shape '%1%' unknown. consult the forums: http://goo.gl/IfLOh"),
 		ARENA_RELOAD_DONE("nulang.arena.reload.done", "Arena reloaded!"),
 		ARENA_REMOVE_DONE("nulang.arena.remove.done", "Arena removed: &e%1%&r"),
-		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1% seconds!"),
+		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1%!"),
 		ARENA_STOP_DONE("nulang.arena.stop.done", "Arena force stopped!"),
 		ARENA_TEAM_UNKNOWN("nulang.arena.teamunknown", "Arena Team '%1%' unknown!"),
 

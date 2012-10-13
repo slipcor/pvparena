@@ -57,8 +57,9 @@ public class PAI_Ready extends PAA__Command {
 				arena.msg(sender, Language.parse(MSG.ERROR_READY_NOCLASS));
 				return;
 			}
+			if (!ap.getStatus().equals(Status.READY))
+				arena.msg(sender, Language.parse(MSG.READY_DONE));
 			ap.setStatus(Status.READY);
-			arena.msg(sender, Language.parse(MSG.READY_DONE));
 			
 			PACheck.handleStart(arena, ap, sender);
 			

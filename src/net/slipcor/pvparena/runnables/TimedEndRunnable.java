@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * <pre>Arena Runnable class "TimedEnd"</pre>
@@ -25,7 +26,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 	 *            the arena we are running in
 	 */
 	public TimedEndRunnable(Arena a, int i) {
-		super("endingexact", i, null, a, false);
+		super(MSG.TIMER_ENDING_IN.getNode(), i, null, a, false);
 		a.END_ID = id;
 		db.i("TimedEndRunnable constructor");
 	}

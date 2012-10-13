@@ -6,6 +6,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAG_Spectate;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * <pre>Arena Runnable class "Warmup"</pre>
@@ -30,7 +31,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	 *            the player to reset
 	 */
 	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i) {
-		super("warmingupexact", i, p.get(), a, false);
+		super(MSG.TIMER_WARMINGUP.getNode(), i, p.get(), a, false);
 		db.i("ArenaWarmupRunnable constructor");
 		player = p;
 		teamName = team;

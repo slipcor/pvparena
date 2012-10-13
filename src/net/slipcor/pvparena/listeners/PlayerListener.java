@@ -346,8 +346,9 @@ public class PlayerListener implements Listener {
 				db.i("===============");
 
 				if (!arena.isFightInProgress() && arena.START_ID == -1) {
-					ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
-					arena.msg(player, Language.parse(MSG.READY_DONE));
+					if (!ap.getStatus().equals(Status.READY))
+						arena.msg(player, Language.parse(MSG.READY_DONE));
+					ap.setStatus(Status.READY);
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
