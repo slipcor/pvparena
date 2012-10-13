@@ -35,20 +35,15 @@ public class PAA_Edit extends PAA__Command {
 			return;
 		}
 		
-		PAA__Command cmd;
 		String msg;
 		
-		if (arena.isLocked()) {
-			cmd = new PAA_Enable();
+		if (PAA_Edit.activeEdits.containsValue(arena)) {
 			activeEdits.remove(sender.getName());
 			msg = Language.parse(MSG.ARENA_EDIT_DISABLED, arena.getName());
 		} else {
-			cmd = new PAA_Disable();
 			activeEdits.put(sender.getName(), arena);
 			msg = Language.parse(MSG.ARENA_EDIT_ENABLED, arena.getName());
 		}
-		
-		cmd.commit(arena, sender, args);
 		arena.msg(sender, msg);
 	}
 

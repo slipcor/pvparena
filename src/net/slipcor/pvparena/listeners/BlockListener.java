@@ -6,6 +6,7 @@ import java.util.List;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
@@ -60,14 +61,14 @@ public class BlockListener implements Listener {
 				return false;
 			}
 
-			return arena.isLocked();
+			return PAA_Edit.activeEdits.containsValue(arena);
 		}
 		if (cancelled) {
 			db.i("already cancelled: " + event.getEventName());
 			return true;
 		}
 		
-		return arena.isLocked();
+		return PAA_Edit.activeEdits.containsValue(arena);
 	}
 
 	static boolean isProtected(Location loc, Cancellable event, RegionProtection node) {

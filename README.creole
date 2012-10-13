@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.15 - separate edit mode and arena lock state
 * v0.9.3.14 - fix the start countdown
 * v0.9.3.13 - fix a NPE about player chatting, language tweaks
 * v0.9.3.12 - fix playerLeave

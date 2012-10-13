@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -283,7 +284,7 @@ public class ConfigurationManager {
 			return "no spawns set";
 		}
 
-		if (arena.isLocked()) {
+		if (PAA_Edit.activeEdits.containsValue(arena)) {
 			return "edit mode!";
 		}
 
