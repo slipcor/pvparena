@@ -154,7 +154,7 @@ public class PVPArena extends JavaPlugin {
 
 		PA__Command pacmd = PA__Command.getByName(args[0]);
 
-		if (pacmd != null && ArenaPlayer.parsePlayer(sender.getName()).getArena() == null) {
+		if (pacmd != null && !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd.getName().contains("PAI_ArenaList")))) {
 			db.i("committing: " + pacmd.getName());
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;

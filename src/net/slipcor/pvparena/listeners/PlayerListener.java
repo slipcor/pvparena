@@ -153,9 +153,15 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		Arena arena = ap.getArena();
 		if (arena == null)
 			return; // no fighting player => OUT
+		if (ap.getStatus().equals(Status.READY) || ap.getStatus().equals(Status.LOUNGE)) {
+			event.setCancelled(true);
+			arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
+			return;
+		}
 		if (!BlockListener.isProtected(player.getLocation(), event, RegionProtection.DROP)) {
 			return; // no drop protection
 		}
@@ -341,6 +347,7 @@ public class PlayerListener implements Listener {
 
 				if (!arena.isFightInProgress() && arena.START_ID == -1) {
 					ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
+					arena.msg(player, Language.parse(MSG.READY_DONE));
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
