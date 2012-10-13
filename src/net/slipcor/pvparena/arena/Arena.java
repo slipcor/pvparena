@@ -1046,7 +1046,7 @@ public class Arena {
 		SpawnCampRunnable scr = new SpawnCampRunnable(this, 0);
 		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, scr, 100L,
-				getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 20L);
+				getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
 		scr.setId(SPAWNCAMP_ID);
 
 		for (ArenaRegionShape region : regions) {

@@ -84,6 +84,11 @@ public class StandardLounge extends ArenaModule {
 			return result;
 		}
 		
+		if (arena.isFightInProgress() && !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+			result.setError(this, Language.parse(MSG.ERROR_FIGHT_IN_PROGRESS));
+			return result;
+		}
+		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (ap.getArena() != null) {

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.23 - fix tickets #48, #52
 * v0.9.3.22 - a new attempt to fix the spawn bug
 * v0.9.3.21 - fix several small things
 * v0.9.3.20 - aims to fix the spawn issues

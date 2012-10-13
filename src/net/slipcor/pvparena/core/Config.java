@@ -97,7 +97,7 @@ public class Config {
 		PLAYER_SATURATION("player.saturation", 20),
 		
 		PROTECT_ENABLED("protection.enabled", true),
-		PROTECT_PUNISH("protection.punish", true),
+		PROTECT_PUNISH("protection.punish", false),
 		PROTECT_SPAWN("protection.spawn", 0),
 		
 		PROTECT_BLOCKPLACE("protection.blockplace", true),
