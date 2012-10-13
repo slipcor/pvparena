@@ -434,7 +434,6 @@ public class GoalFlags extends ArenaGoal {
 	public void commitPlayerDeath(Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 
-			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
 
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			
@@ -448,6 +447,8 @@ public class GoalFlags extends ArenaGoal {
 			
 			arena.unKillPlayer(player, event.getEntity()
 					.getLastDamageCause().getCause(), player.getKiller());
+
+			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
 	}
 	
 	@Override

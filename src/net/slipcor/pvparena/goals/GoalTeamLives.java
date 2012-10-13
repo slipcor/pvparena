@@ -23,6 +23,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "PlayerLives"</pre>
@@ -147,6 +148,8 @@ public class GoalTeamLives extends ArenaGoal {
 			
 			arena.unKillPlayer(respawnPlayer, event.getEntity()
 					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
+			
+			new InventoryRefillRunnable(arena, event.getEntity(), event.getDrops(), 0);
 		}
 	}
 

@@ -159,8 +159,6 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		} else {
 			i--;
 			lives.put(killer.getName(), i);
-
-			new InventoryRefillRunnable(arena, ex, event.getDrops(), 0);
 			
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName()).getArenaTeam();
 
@@ -175,6 +173,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			
 			arena.unKillPlayer(ex, event.getEntity()
 					.getLastDamageCause().getCause(), ex.getKiller());
+			
+			new InventoryRefillRunnable(arena, ex, event.getDrops(), 0);
 		}
 	}
 

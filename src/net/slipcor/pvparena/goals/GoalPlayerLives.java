@@ -138,8 +138,6 @@ public class GoalPlayerLives extends ArenaGoal {
 			i--;
 			lives.put(player.getName(), i);
 
-			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
-
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			
 			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
@@ -153,6 +151,8 @@ public class GoalPlayerLives extends ArenaGoal {
 			
 			arena.unKillPlayer(player, event.getEntity()
 					.getLastDamageCause().getCause(), player.getKiller());
+
+			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
 		}
 	}
 

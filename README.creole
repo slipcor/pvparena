@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.20 - aims to fix the spawn issues
 * v0.9.3.19 - fix some more color issues
 * v0.9.3.18 - fix bug #41
 * v0.9.3.17 - fix players not always getting told they are ready
