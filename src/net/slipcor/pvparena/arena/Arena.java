@@ -514,7 +514,7 @@ public class Arena {
 
 	public void msg(CommandSender sender, String msg) {
 		if (sender == null) {
-			PVPArena.instance.getLogger().warning("Player null!");
+			return;
 		}
 		db.i("@" + sender.getName() + ": " + msg);
 		sender.sendMessage(ChatColor.YELLOW + "[" + prefix + "] "
