@@ -214,7 +214,7 @@ public class ConfigurationManager {
 		}
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
 		arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
-		arena.setLocked(cfg.getString(CFG.GENERAL_ENABLED).equalsIgnoreCase("false"));
+		arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
 		if (config.getConfigurationSection("arenaregion") != null) {
 			Map<String, Object> regs = config
 					.getConfigurationSection("arenaregion").getValues(false);
