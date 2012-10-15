@@ -213,9 +213,8 @@ public class ConfigurationManager {
 			db.i("adding class items to class " + className);
 		}
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
-		if (cfg.getString(CFG.GENERAL_OWNER) != null) {
-			arena.setOwner(CFG.GENERAL_OWNER.toString());
-		}
+		arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
+		arena.setLocked(cfg.getString(CFG.GENERAL_ENABLED).equalsIgnoreCase("false"));
 		if (config.getConfigurationSection("arenaregion") != null) {
 			Map<String, Object> regs = config
 					.getConfigurationSection("arenaregion").getValues(false);

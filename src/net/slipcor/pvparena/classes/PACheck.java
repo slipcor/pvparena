@@ -368,7 +368,15 @@ public class PACheck {
 		}
 		
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
-		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, player.getLastDamageCause());
+		for (ArenaGoal g : arena.getGoals()) {
+			g.parsePlayerDeath(player, player.getLastDamageCause());
+		}
+				
+		for (ArenaModule m : PVPArena.instance.getAmm().getModules()) {
+			if (m.isActive(arena)) {
+				m.parsePlayerDeath(arena, player, player.getLastDamageCause());
+			}
+		}
 	}
 
 	public static boolean handleSetFlag(Player player, Block block) {

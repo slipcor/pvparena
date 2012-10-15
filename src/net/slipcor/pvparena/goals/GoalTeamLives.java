@@ -48,7 +48,7 @@ public class GoalTeamLives extends ArenaGoal {
 		return "v0.9.3.0";
 	}
 
-	int priority = 3;
+	int priority = 4;
 	
 	@Override
 	public GoalTeamLives clone() {

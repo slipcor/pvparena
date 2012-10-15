@@ -51,7 +51,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		return "v0.9.3.0";
 	}
 
-	int priority = 2;
+	int priority = 3;
 	
 	@Override
 	public PACheck checkEnd(PACheck res) {

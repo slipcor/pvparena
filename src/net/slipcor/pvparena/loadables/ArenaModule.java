@@ -369,6 +369,10 @@ public class ArenaModule extends Loadable implements Cloneable {
 	public void parseMove(Arena arena, PlayerMoveEvent event) {
 	}
 
+	public void parsePlayerDeath(Arena arena, Player player,
+			EntityDamageEvent lastDamageCause) {
+	}
+
 	public void parseRespawn(Arena arena, Player player, ArenaTeam team,
 			DamageCause cause, Entity damager) {
 	}

@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import com.nodinchan.ncbukkit.loader.Loadable;
 
@@ -122,6 +123,10 @@ public class ArenaGoal extends Loadable implements Cloneable {
 		throw new IllegalStateException();
 	}
 
+	public void commitJoin(CommandSender sender, ArenaTeam team) {
+		throw new IllegalStateException();
+	}
+
 	public void commitInteract(Player player, Block clickedBlock) {
 		throw new IllegalStateException();
 	}
@@ -166,8 +171,9 @@ public class ArenaGoal extends Loadable implements Cloneable {
 
 	public void initate(Player player) {
 	}
-
-	public void commitJoin(CommandSender sender, ArenaTeam team) {
+	
+	public void parsePlayerDeath(Player player,
+			EntityDamageEvent lastDamageCause) {
 	}
 
 	/**

@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -54,7 +55,8 @@ public class GoalFlags extends ArenaGoal {
 		return "v0.9.3.0";
 	}
 
-	int priority = 5;
+	int priority = 6;
+	int killpriority = 1;
 	
 	@Override
 	public GoalFlags clone() {
@@ -266,42 +268,12 @@ public class GoalFlags extends ArenaGoal {
 		
 		return res;
 	}
-	
-	/**
-	 * notify the goal of a player death, return higher priority if goal should handle the death as WIN/LOSE
-	 * @param arena the arena
-	 * @param player the dying player
-	 * @return a PACheckResult instance to hand forth for parsing
-	 */
+
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		
-		if (paTeamFlags == null) {
-			return res;
+		if (res.getPriority() <= killpriority) {
+			res.setPriority(this, killpriority);
 		}
-		// TODO remove to a new parsePlayerDeath ?
-		ArenaTeam flagTeam = arena.getTeam(
-				getHeldFlagTeam(arena, player.getName()));
-		if (flagTeam != null) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
-					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getColoredName() + ChatColor.YELLOW));
-			paTeamFlags.remove(flagTeam.getName());
-			if (paHeadGears != null
-					&& paHeadGears.get(player.getName()) != null) {
-				player.getInventory().setHelmet(
-						paHeadGears.get(player.getName()).clone());
-				paHeadGears.remove(player.getName());
-			}
-
-			takeFlag(flagTeam.getColor().name(), false,
-					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
-			
-		}
-		
-		
-		// don't take priority in handling the death, just, react to it! 
-		
 		return res;
 	}
 	
@@ -428,27 +400,27 @@ public class GoalFlags extends ArenaGoal {
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
-	
 
 	@Override
-	public void commitPlayerDeath(Player player,
+	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
+		if (respawnPlayer.getKiller() == null) {
+			return;
+		}
+		
+		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+		
+		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
+				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
+	
+		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
+				+ "spawn");	
+		
+		arena.unKillPlayer(respawnPlayer, event.getEntity()
+				.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 
-
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
-			
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
-					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-					arena.parseDeathCause(player, event.getEntity()
-							.getLastDamageCause().getCause(), player.getKiller())));
-			
-			arena.tpPlayerToCoordName(player, (arena.isFreeForAll()?"":respawnTeam.getName())
-					+ "spawn");
-			
-			arena.unKillPlayer(player, event.getEntity()
-					.getLastDamageCause().getCause(), player.getKiller());
-
-			new InventoryRefillRunnable(arena, player, event.getDrops(), 0);
+		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops(), 0);
 	}
 	
 	@Override
@@ -576,20 +548,31 @@ public class GoalFlags extends ArenaGoal {
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
 		}
 	}
-
+	
 	@Override
-	public void teleportAllToSpawn() {
-		db.i("initiating arena");
-		paTeamLives.clear();
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().size() > 0) {
-				db.i("adding team " + team.getName());
-				// team is active
-				paTeamLives.put(team.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
+	public void parsePlayerDeath(Player player,
+			EntityDamageEvent lastDamageCause) {
+		
+		if (paTeamFlags == null) {
+			db.i("no flags set!!");
+			return;
+		}
+		ArenaTeam flagTeam = arena.getTeam(
+				getHeldFlagTeam(arena, player.getName()));
+		if (flagTeam != null) {
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
+					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getColoredName() + ChatColor.YELLOW));
+			paTeamFlags.remove(flagTeam.getName());
+			if (paHeadGears != null
+					&& paHeadGears.get(player.getName()) != null) {
+				player.getInventory().setHelmet(
+						paHeadGears.get(player.getName()).clone());
+				paHeadGears.remove(player.getName());
 			}
-			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
+
+			takeFlag(flagTeam.getColor().name(), false,
+					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
 		}
 	}
 	
@@ -678,6 +661,22 @@ public class GoalFlags extends ArenaGoal {
 		}
 		
 		return scores;
+	}
+
+	@Override
+	public void teleportAllToSpawn() {
+		db.i("initiating arena");
+		paTeamLives.clear();
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getTeamMembers().size() > 0) {
+				db.i("adding team " + team.getName());
+				// team is active
+				paTeamLives.put(team.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
+			}
+			takeFlag(team.getColor().name(), false,
+					SpawnManager.getCoords(arena, team.getName() + "flag"));
+		}
 	}
 	
 	@Override

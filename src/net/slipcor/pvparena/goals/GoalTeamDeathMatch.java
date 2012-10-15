@@ -48,7 +48,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		return "v0.9.3.0";
 	}
 
-	int priority = 4;
+	int priority = 5;
 	
 	@Override
 	public GoalTeamDeathMatch clone() {
