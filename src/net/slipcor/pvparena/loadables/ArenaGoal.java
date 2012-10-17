@@ -84,7 +84,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 		return res;
 	}
 
-	public PACheck checkJoin(CommandSender sender, PACheck res) {
+	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
 		return res;
 	}
 

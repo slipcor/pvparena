@@ -90,6 +90,36 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 		return null;
 	}
+	
+	@Override
+	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
+		if (res.getPriority() >= priority) {
+			return res;
+		}
+
+		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
+		
+		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
+			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			return res;
+		}
+		
+		if (args != null && !arena.isFreeForAll()) {
+			ArenaTeam team = arena.getTeam(args[0]);
+			
+			if (team != null) {
+			
+				if (maxTeamPlayers > 0 && team.getTeamMembers().size() >= maxTeamPlayers) {
+					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+					return res;
+				}
+			}
+		}
+		
+		res.setPriority(this, priority);
+		return res;
+	}
 
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
