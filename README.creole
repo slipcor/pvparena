@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.28 - hopefully fix ticket #58 - NPE while joining when the arena is full
 * v0.9.3.27 - fix ticket #59 - Bug -- Champion team is announced numerous times 
 * v0.9.3.26 - startup error fix
 * v0.9.3.25 - fix bug #56

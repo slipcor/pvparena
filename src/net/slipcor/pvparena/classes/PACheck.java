@@ -268,9 +268,11 @@ public class PACheck {
 			
 			ArenaTeam team = arena.getTeam(args[0]);
 			
-			if (team == null) {
+			if (team == null && args != null) {
 				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, args[0]));
 				return;
+			} else if (team == null) {
+				arena.msg(sender, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
 			}
 			
 			if ((commModule == null) || (commGoal == null)) {
