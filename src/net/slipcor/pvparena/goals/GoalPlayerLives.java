@@ -97,7 +97,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void commitEnd() {
+	public void commitEnd(boolean force) {
 		if (er != null) {
 			return;
 		}
@@ -133,7 +133,7 @@ public class GoalPlayerLives extends ArenaGoal {
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
-			PACheck.handleEnd(arena);
+			PACheck.handleEnd(arena, false);
 		} else {
 			i--;
 			lives.put(player.getName(), i);

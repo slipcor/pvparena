@@ -229,7 +229,7 @@ public class PlayerListener implements Listener {
 		
 		PlayerState.fullReset(arena, player);
 		
-		if (ArenaManager.checkAndCommit(arena))
+		if (ArenaManager.checkAndCommit(arena, false))
 			return;
 	}
 

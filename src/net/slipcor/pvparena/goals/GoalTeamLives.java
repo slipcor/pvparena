@@ -100,7 +100,7 @@ public class GoalTeamLives extends ArenaGoal {
 	}
 	
 	@Override
-	public void commitEnd() {
+	public void commitEnd(boolean force) {
 		db.i("[TEAMS]");
 
 		ArenaTeam aTeam = null;
@@ -114,7 +114,7 @@ public class GoalTeamLives extends ArenaGoal {
 			}
 		}
 
-		if (aTeam != null) {
+		if (aTeam != null && !force) {
 			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
@@ -236,7 +236,7 @@ public class GoalTeamLives extends ArenaGoal {
 					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true);
 				}
 			}
-			PACheck.handleEnd(arena);
+			PACheck.handleEnd(arena, false);
 			return;
 		}
 		

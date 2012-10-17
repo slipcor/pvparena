@@ -119,7 +119,7 @@ public class ArenaGoal extends Loadable implements Cloneable {
 		throw new IllegalStateException();
 	}
 
-	public void commitEnd() {
+	public void commitEnd(boolean force) {
 		throw new IllegalStateException();
 	}
 

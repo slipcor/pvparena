@@ -53,14 +53,14 @@ public class ArenaManager {
 	 *            the arena to check
 	 * @return true if the arena ends
 	 */
-	public static boolean checkAndCommit(Arena arena) {
+	public static boolean checkAndCommit(Arena arena, boolean force) {
 		db.i("checking for arena end");
 		if (!arena.isFightInProgress()) {
 			db.i("no fight, no end ^^");
 			return false;
 		}
 
-		return PACheck.handleEnd(arena);
+		return PACheck.handleEnd(arena, force);
 	}
 
 	/**

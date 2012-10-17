@@ -619,7 +619,7 @@ public class Arena {
 		pdr.setId(i);
 
 		if (ap.getStatus().equals(Status.FIGHT) && isFightInProgress()) {
-			ArenaManager.checkAndCommit(this);
+			ArenaManager.checkAndCommit(this, silent);
 		}
 	}
 

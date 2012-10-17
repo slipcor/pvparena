@@ -125,7 +125,7 @@ public class PACheck {
 		return true;
 	}
 	
-	public static boolean handleEnd(Arena arena) {
+	public static boolean handleEnd(Arena arena, boolean force) {
 		int priority = 0;
 		PACheck res = new PACheck();
 		
@@ -153,7 +153,7 @@ public class PACheck {
 			return false;
 		}
 		
-		commit.commitEnd();
+		commit.commitEnd(force);
 		return true;
 	}
 	

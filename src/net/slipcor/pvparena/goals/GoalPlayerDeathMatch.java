@@ -98,7 +98,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void commitEnd() {
+	public void commitEnd(boolean force) {
 		if (er != null) {
 			return;
 		}
@@ -151,11 +151,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				
 				PlayerState.fullReset(arena, ap.get());
 				
-				if (ArenaManager.checkAndCommit(arena))
+				if (ArenaManager.checkAndCommit(arena, false))
 					return;
 			}
 			
-			PACheck.handleEnd(arena);
+			PACheck.handleEnd(arena, false);
 		} else {
 			i--;
 			lives.put(killer.getName(), i);
