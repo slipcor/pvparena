@@ -96,8 +96,12 @@ public class GoalPlayerLives extends ArenaGoal {
 			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
-		
-		if (args != null && !arena.isFreeForAll()) {
+
+		if (args == null || args.length < 1) {
+			return res;
+		}
+
+		if (!arena.isFreeForAll()) {
 			ArenaTeam team = arena.getTeam(args[0]);
 			
 			if (team != null) {

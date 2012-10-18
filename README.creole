@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.32 - fix the next NPE ^^
 * v0.9.3.31 - quick fix for a sleeping NPE
 * v0.9.3.30 - possibly resolve #46 - Bug -- Stuck in the floor?
 * v0.9.3.29 - try to fix ticket #55 - Bug -- Min/Max player limit not working
