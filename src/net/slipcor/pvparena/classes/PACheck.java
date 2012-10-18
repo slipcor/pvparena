@@ -242,7 +242,7 @@ public class PACheck {
 			
 			ArenaGoal commGoal = null;
 			
-			for (ArenaGoal mod : PVPArena.instance.getAgm().getTypes()) {
+			for (ArenaGoal mod : arena.getGoals()) {
 				res = mod.checkJoin(sender, res, args);
 				if (res.getPriority() > priority && priority >= 0) {
 					// success and higher priority
