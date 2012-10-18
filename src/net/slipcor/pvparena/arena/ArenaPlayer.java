@@ -286,6 +286,7 @@ public class ArenaPlayer {
 	}
 
 	private void clearDump() {
+		db.i("clearing dump of " + name);
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		if (!f.exists()) {
@@ -532,6 +533,7 @@ public class ArenaPlayer {
 			e.printStackTrace();
 		}
 		if (get() == null || get().isDead()) {
+			db.i("reset() ; out! null or dead");
 			return;
 		}
 
