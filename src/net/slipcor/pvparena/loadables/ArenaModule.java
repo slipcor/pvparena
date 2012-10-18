@@ -409,7 +409,7 @@ public class ArenaModule extends Loadable implements Cloneable {
 	 * @param player
 	 *            the player being reset
 	 */
-	public void resetPlayer(Arena arena, Player player) {
+	public void resetPlayer(Arena arena, Player player, boolean force) {
 	}
 
 	/**

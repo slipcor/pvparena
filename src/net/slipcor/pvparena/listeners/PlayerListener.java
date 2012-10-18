@@ -222,7 +222,7 @@ public class PlayerListener implements Listener {
 			InventoryManager.clearInventory(player);
 		}
 		
-		arena.removePlayer(player, CFG.TP_DEATH.toString(), true);
+		arena.removePlayer(player, CFG.TP_DEATH.toString(), true, false);
 		
 		ap.setStatus(Status.LOST);
 		ap.addDeath();

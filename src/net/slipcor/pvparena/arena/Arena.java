@@ -607,7 +607,7 @@ public class Arena {
 		}
 		
 		removePlayer(player, getArenaConfig().getString(location),
-				false);
+				false, silent);
 
 		if (START_ID != -1) {
 			Bukkit.getScheduler().cancelTask(START_ID);
@@ -729,10 +729,10 @@ public class Arena {
 	 * @param tploc
 	 *            the coord string to teleport the player to
 	 */
-	public void removePlayer(Player player, String tploc, boolean soft) {
+	public void removePlayer(Player player, String tploc, boolean soft, boolean force) {
 		db.i("removing player " + player.getName() + (soft ? " (soft)" : "")
 				+ ", tp to " + tploc);
-		resetPlayer(player, tploc, soft);
+		resetPlayer(player, tploc, soft, force);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (!soft && ap.getArenaTeam() != null) {
@@ -771,7 +771,7 @@ public class Arena {
 					p.addWins();
 				}
 				resetPlayer(z, getArenaConfig().getString(CFG.TP_WIN, "old"),
-						false);
+						false, force);
 				if (!force && p.getStatus().equals(Status.FIGHT)
 						&& isFightInProgress()) {
 					giveRewards(z); // if we are the winning team, give
@@ -792,13 +792,13 @@ public class Arena {
 					p.addLosses();
 				}
 				resetPlayer(z, getArenaConfig().getString(CFG.TP_LOSE, "old"),
-						false);
+						false, force);
 				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
 				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
 				pdr.setId(i);
 			} else {
 				resetPlayer(p.get(),
-						getArenaConfig().getString(CFG.TP_LOSE, "old"), false);
+						getArenaConfig().getString(CFG.TP_LOSE, "old"), false, force);
 			}
 		}
 	}
@@ -838,7 +838,7 @@ public class Arena {
 	 * @param string
 	 * @param soft
 	 */
-	private void resetPlayer(Player player, String string, boolean soft) {
+	private void resetPlayer(Player player, String string, boolean soft, boolean force) {
 		if (player == null) {
 			return;
 		}
@@ -848,7 +848,7 @@ public class Arena {
 		if (ap.getState() != null) {
 			ap.getState().unload();
 		}
-		PVPArena.instance.getAmm().resetPlayer(this, player);
+		PVPArena.instance.getAmm().resetPlayer(this, player, force);
 
 		String sClass = "";
 		if (ap.getArenaClass() != null) {

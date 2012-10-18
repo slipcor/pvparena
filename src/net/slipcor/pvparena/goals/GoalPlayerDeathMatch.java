@@ -178,7 +178,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			for (ArenaPlayer ap : plrs) {
 				lives.remove(ap.getName());
 				db.i("faking player death");
-				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true);
+				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true, false);
 				
 				ap.setStatus(Status.LOST);
 				ap.addLosses();

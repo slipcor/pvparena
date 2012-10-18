@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.34 - aim to fix #57 and #46
+* v0.9.3.33 - fix players DCing / being kicked getting double refund (and other things)
 * v0.9.3.32 - fix the next NPE ^^
 * v0.9.3.31 - quick fix for a sleeping NPE
 * v0.9.3.30 - possibly resolve #46 - Bug -- Stuck in the floor?

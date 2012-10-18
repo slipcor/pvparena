@@ -267,7 +267,7 @@ public class GoalTeamLives extends ArenaGoal {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus().equals(Status.FIGHT)) {
 					ap.setStatus(Status.LOST);
-					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true);
+					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true, false);
 				}
 			}
 			PACheck.handleEnd(arena, false);

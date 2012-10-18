@@ -275,7 +275,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
 					if (ap.getStatus().equals(Status.FIGHT)) {
 						ap.setStatus(Status.LOST);
-						arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true);
+						arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true, false);
 					}
 				}
 			}
