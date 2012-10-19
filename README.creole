@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.36 - fix a bug about timers ^^
 * v0.9.3.35 - add a tiny bit more debug
 * v0.9.3.34 - aim to fix #57 and #46
 * v0.9.3.33 - fix players DCing / being kicked getting double refund (and other things)

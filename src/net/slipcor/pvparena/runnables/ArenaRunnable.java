@@ -72,7 +72,7 @@ public abstract class ArenaRunnable implements Runnable {
 		this.arena = arena;
 		this.global = global;
 		
-		id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this);
+		id = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, this, 20L, 20L);
 	}
 	public void spam() {
 		if ((message == null) || (messages.get(seconds) == null)) {

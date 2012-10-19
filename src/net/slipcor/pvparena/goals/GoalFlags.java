@@ -363,8 +363,6 @@ public class GoalFlags extends ArenaGoal {
 
 		paTeamLives.clear();
 		EndRunnable er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance,
-				er, 20L, 20L);
 	}
 
 	@Override
