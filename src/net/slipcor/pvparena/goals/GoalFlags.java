@@ -362,7 +362,7 @@ public class GoalFlags extends ArenaGoal {
 		}
 
 		paTeamLives.clear();
-		EndRunnable er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
@@ -563,6 +563,9 @@ public class GoalFlags extends ArenaGoal {
 	public boolean hasSpawn(String string) {
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().equals(teamName.toLowerCase()+"flag")) {
+				return true;
+			}
+			if (string.toLowerCase().startsWith(teamName.toLowerCase()+"spawn")) {
 				return true;
 			}
 		}
