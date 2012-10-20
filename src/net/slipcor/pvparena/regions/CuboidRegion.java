@@ -194,12 +194,12 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	@Override
 	public PABlockLocation getMaximumLocation() {
-		return getLocs()[0];
+		return getLocs()[1];
 	}
 
 	@Override
 	public PABlockLocation getMinimumLocation() {
-		return getLocs()[1];
+		return getLocs()[0];
 	}
 
 	@Override

@@ -455,9 +455,11 @@ public class ArenaPlayer {
 	}
 
 	public void readDump() {
+		db.i("reading dump: " + name);
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		if (!f.exists()) {
+			db.i("no dump!");
 			return;
 		}
 

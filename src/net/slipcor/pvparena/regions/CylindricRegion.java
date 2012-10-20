@@ -184,7 +184,7 @@ public class CylindricRegion extends ArenaRegionShape {
 	@Override
 	public PABlockLocation getMaximumLocation() {
 		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
-		PABlockLocation result = getLocs()[0];
+		PABlockLocation result = getLocs()[1];
 		result.setX((int) (result.getX()-thisRadius));
 		result.setZ((int) (result.getZ()-thisRadius));
 		return result;
@@ -193,7 +193,7 @@ public class CylindricRegion extends ArenaRegionShape {
 	@Override
 	public PABlockLocation getMinimumLocation() {
 		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
-		PABlockLocation result = getLocs()[1];
+		PABlockLocation result = getLocs()[0];
 		result.setX((int) (result.getX()+thisRadius));
 		result.setZ((int) (result.getZ()+thisRadius));
 		return result;

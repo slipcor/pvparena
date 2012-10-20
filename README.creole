@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.48 - fix a blockrestore bug about regions
 * v0.9.3.47 - fix joining not cancelling the start countdown, finally
 * v0.9.3.46 - reanimate StandardSpectator
 * v0.9.3.45 - fix two language issues

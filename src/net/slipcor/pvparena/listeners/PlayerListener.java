@@ -448,7 +448,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null || BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
+		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
 			return; // no fighting player or no powerups => OUT
 
 		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);
