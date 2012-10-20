@@ -3,12 +3,14 @@ package net.slipcor.pvparena.modules;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -28,14 +30,34 @@ public class StandardSpectate extends ArenaModule {
 		db = new Debug(301);
 	}
 	
+	int priority = 1;
+	
 	@Override
 	public String version() {
-		return "v0.9.3.0";
+		return "v0.9.3.45";
 	}
 
 	@Override
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		return list.contains("spectator")?null:"spectator not set";
+	}
+
+	@Override
+	public PACheck checkJoin(Arena arena, CommandSender sender,
+			PACheck res, boolean join) {
+		if (join)
+			return res;
+		
+		if (res.getPriority() < priority) {
+			res.setPriority(this, priority);
+		}
+		return res;
+	}
+
+	@Override
+	public void commitSpectate(Arena arena, Player player) {
+		arena.tpPlayerToCoordName(player, "spectator");
+		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}
 
 	@Override
@@ -46,11 +68,5 @@ public class StandardSpectate extends ArenaModule {
 	@Override
 	public boolean isActive(Arena arena) {
 		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDSPECTATE_ACTIVE);
-	}
-
-	@Override
-	public void commitSpectate(Arena arena, Player player) {
-		arena.tpPlayerToCoordName(player, "spectator");
-		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}
 }
