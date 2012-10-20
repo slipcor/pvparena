@@ -1123,6 +1123,7 @@ public class Arena {
 		}
 		ap.setTelePass(true);
 		player.teleport(loc.toLocation());
+		player.setNoDamageTicks(60);
 		ap.setTelePass(false);
 	}
 

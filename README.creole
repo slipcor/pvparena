@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* CraftBukkit Beta 1.3.1-R1.0
+* CraftBukkit Beta 1.3.2-R2.0
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.42 - correctly display /pa list - depending on game mode, fix player damage on teleport
 * v0.9.3.41 - use BukkitRunnables instead of Runnables
 * v0.9.3.40 - fix respawning players not being restored under certain circumstances
 * v0.9.3.39 - fix the Timers

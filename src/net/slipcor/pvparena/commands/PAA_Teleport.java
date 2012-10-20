@@ -51,6 +51,7 @@ public class PAA_Teleport extends PAA__Command {
 		}
 		
 		((Player) sender).teleport(loc.toLocation(), TeleportCause.PLUGIN);
+		((Player) sender).setNoDamageTicks(60);
 	}
 
 	@Override

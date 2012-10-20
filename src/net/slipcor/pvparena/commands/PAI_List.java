@@ -61,8 +61,12 @@ public class PAI_List extends PAA__Command {
 				
 				for (ArenaPlayer player : teams.getTeamMembers())
 					names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
-						
-				arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, teams.getColoredName() + "&f: " + StringParser.joinSet(names, ", ")));
+				
+				if (arena.isFreeForAll()) {
+					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
+				} else {
+					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, teams.getColoredName() + "&f: ", StringParser.joinSet(names, ", ")));
+				}
 			}
 			return;
 		}

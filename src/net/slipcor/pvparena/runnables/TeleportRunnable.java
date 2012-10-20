@@ -37,10 +37,12 @@ public class TeleportRunnable implements Runnable {
 			if (ap.getLocation() != null) {
 				PALocation loc = ap.getLocation();
 				ap.get().teleport(loc.toLocation());
+				ap.get().setNoDamageTicks(60);
 			}
 		} else {
 			PALocation l = SpawnManager.getCoords(arena, string);
 			ap.get().teleport(l.toLocation());
+			ap.get().setNoDamageTicks(60);
 		}
 	}
 

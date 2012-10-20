@@ -195,6 +195,7 @@ public class Language {
 		LIST_LOUNGE("nulang.list.lounge", "Lounge: %1%"),
 		LIST_NULL("nulang.list.null", "Glitched: %1%"),
 		LIST_PLAYERS("nulang.list.players", "Players: %1%"),
+		LIST_TEAM("nulang.list.team", "Team %1%: %2%"),
 		LIST_READY("nulang.list.ready", "Ready: %1%"),
 		LIST_WARM("nulang.list.warm", "Warm: %1%"),
 		LIST_WATCHING("nulang.list.watching", "Watching: %1%"),
@@ -214,7 +215,7 @@ public class Language {
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 
 		NOTICE_AWARDED("nulang.notice.awarded", "You have been awarded %1%"),
-		NOTICE_NO_DROP_ITEM("nulang.notice.nodropitem", "Not so fast! No Cheating!"),
+		NOTICE_NO_DROP_ITEM("nulang.notice.nodropitem", "Not so fast! No cheating!"),
 		NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
 		NOTICE_NOTICE("nulang.notice.notice", "Notice: %1%"),
 		NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%"),
