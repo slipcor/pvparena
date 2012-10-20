@@ -631,6 +631,7 @@ public class Arena {
 	 * @return null if ok, error message otherwise
 	 */
 	public String ready() {
+		db.i("ready check !!");
 		
 		int players = TeamManager.countPlayersInTeams(this);
 		if (players < 2) {

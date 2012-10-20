@@ -345,7 +345,7 @@ public class PlayerListener implements Listener {
 				db.i("===== class: " + ap.getClass() + " =====");
 				db.i("===============");
 
-				if (!arena.isFightInProgress() && arena.START_ID == -1) {
+				if (!arena.isFightInProgress()) {
 					if (!ap.getStatus().equals(Status.READY))
 						arena.msg(player, Language.parse(MSG.READY_DONE));
 					ap.setStatus(Status.READY);

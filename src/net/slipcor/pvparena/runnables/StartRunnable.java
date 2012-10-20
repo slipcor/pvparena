@@ -35,7 +35,6 @@ public class StartRunnable extends ArenaRunnable {
 	protected void commit() {
 		Bukkit.getScheduler().cancelTask(arena.START_ID);
 		db.i("StartRunnable commiting");
-		Bukkit.getScheduler().cancelTask(id);
 		arena.start();
 	}
 }

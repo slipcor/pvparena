@@ -172,4 +172,10 @@ public class StandardLounge extends ArenaModule {
 			arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, sender.getName(), team.getColoredName() + "§r"));
 		}
 	}
+	
+	@Override
+	public void parseJoin(Arena arena, CommandSender player, ArenaTeam team) {
+		if (arena.START_ID != -1)
+			arena.countDown();
+	}
 }
