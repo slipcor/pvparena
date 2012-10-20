@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -54,12 +55,15 @@ public class PAI_List extends PAA__Command {
 		
 		if (args.length < 1) {
 		
-			HashSet<String> names = new HashSet<String>();
 			
-			for (ArenaPlayer player : arena.getEveryone()) {
-				names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
+			for (ArenaTeam teams : arena.getTeams()) {
+				HashSet<String> names = new HashSet<String>();
+				
+				for (ArenaPlayer player : teams.getTeamMembers())
+					names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
+						
+				arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, teams.getColoredName() + "&f: " + StringParser.joinSet(names, ", ")));
 			}
-			arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 			return;
 		}
 		

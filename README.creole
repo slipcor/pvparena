@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.41 - use BukkitRunnables instead of Runnables
 * v0.9.3.40 - fix respawning players not being restored under certain circumstances
 * v0.9.3.39 - fix the Timers
 * v0.9.3.38 - fix #29 - Inventory not being restored on respawn. Hilarious collateral damage!

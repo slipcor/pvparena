@@ -12,6 +12,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * <pre>Arena Runnable class</pre>
@@ -23,7 +24,7 @@ import org.bukkit.entity.Player;
  * @version v0.9.1
  */
 
-public abstract class ArenaRunnable implements Runnable {
+public abstract class ArenaRunnable extends BukkitRunnable {
 
 	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();
 	static {
@@ -130,6 +131,7 @@ public abstract class ArenaRunnable implements Runnable {
 		spam();
 		if (seconds <= 0) {
 			commit();
+			cancel();
 		}
 		seconds--;
 	}
