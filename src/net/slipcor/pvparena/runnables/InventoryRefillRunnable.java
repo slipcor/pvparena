@@ -2,6 +2,7 @@ package net.slipcor.pvparena.runnables;
 
 import java.util.List;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -20,17 +21,19 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.3
  */
 
-public class InventoryRefillRunnable extends ArenaRunnable {
+public class InventoryRefillRunnable implements Runnable {
 	private Player player;
 	private ItemStack[] items;
+	private Arena arena;
 	
 	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi) {
-		super(null, 1, null, a, false);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 3L);
 		player = p;
 		items = new ItemStack[isi.size()];
+		arena = a;
 		int i = 0;
 		for (ItemStack item : isi) {
 			items[i++] = item.clone();
@@ -38,7 +41,7 @@ public class InventoryRefillRunnable extends ArenaRunnable {
 	}
 
 	@Override
-	public void commit() {
+	public void run() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getStatus().equals(Status.FIGHT)) {
 			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
@@ -49,10 +52,5 @@ public class InventoryRefillRunnable extends ArenaRunnable {
 			}
 		}
 		player.setFireTicks(0);
-		Bukkit.getScheduler().cancelTask(id);
-	}
-	
-	public void setId(int i) {
-		id = i;
 	}
 }
