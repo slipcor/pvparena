@@ -21,6 +21,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>PVP Arena Check class</pre>
@@ -365,6 +366,8 @@ public class PACheck {
 			// no mod handles player deaths, default to infinite lives. Respawn player
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+
+			new InventoryRefillRunnable(arena, player, event.getDrops());
 			
 			return;
 		}
