@@ -183,7 +183,7 @@ public class GoalTeamLives extends ArenaGoal {
 			arena.unKillPlayer(respawnPlayer, event.getEntity()
 					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 			
-			new InventoryRefillRunnable(arena, event.getEntity(), event.getDrops(), 0);
+			new InventoryRefillRunnable(arena, event.getEntity(), event.getDrops());
 		}
 	}
 

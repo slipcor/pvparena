@@ -23,15 +23,12 @@ import org.bukkit.inventory.ItemStack;
  * @version v0.9.1
  */
 
-public class InventoryRefillRunnable implements Runnable {
-	private Arena arena;
+public class InventoryRefillRunnable extends ArenaRunnable {
 	private Player player;
 	private ItemStack[] items;
-	private int id;
 	
-	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi, int ii) {
-		id = 0;
-		arena = a;
+	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi) {
+		super(null, 1, null, a, false);
 		player = p;
 		items = new ItemStack[isi.size()];
 		int i = 0;
@@ -41,7 +38,7 @@ public class InventoryRefillRunnable implements Runnable {
 	}
 
 	@Override
-	public void run() {
+	public void commit() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getStatus().equals(Status.FIGHT)) {
 			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {

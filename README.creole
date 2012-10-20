@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.39 - fix the Timers
+* v0.9.3.38 - fix #29 - Inventory not being restored on respawn. Hilarious collateral damage!
 * v0.9.3.37 - fix the Flag goal not activating spawn setting
 * v0.9.3.36 - fix a bug about timers ^^
 * v0.9.3.35 - add a tiny bit more debug

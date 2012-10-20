@@ -52,6 +52,8 @@ public class Language {
 		BLACKLIST_REMOVED("nulang.blacklist.removed", "Removed &a%1%&r from &e%2%&r blacklist!"),
 		BLACKLIST_SHOW("nulang.blacklist.show", "Blacklist &e%1%&r:"),
 		
+		CHECK_DONE("nulang.check.done", "Check done! No errors!"),
+		
 		CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class %1%"),
 		CLASS_REMOVED("nulang.class.removed", "Class removed: %1%"),
 		CLASS_SAVED("nulang.class.saved", "Class saved: %1%"),

@@ -130,8 +130,6 @@ public abstract class ArenaRunnable implements Runnable {
 		spam();
 		if (seconds <= 0) {
 			commit();
-		} else {
-			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
 		}
 		seconds--;
 	}

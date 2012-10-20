@@ -2,6 +2,10 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+
 import org.bukkit.command.CommandSender;
 
 /**
@@ -22,6 +26,7 @@ public class PAA_Check extends PAA__Command {
 		super(new String[] {});
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!this.hasPerms(sender, arena)) {
@@ -32,8 +37,35 @@ public class PAA_Check extends PAA__Command {
 			return;
 		}
 		
-		String s = "";
-		//TODO thoroughly check the config for errors
+		boolean hasError = false;
+		
+		for (CFG c : CFG.values()) {
+			if (c == null || c.getNode() == null) {
+				continue;
+			}
+			try {
+				if (c.getType().equals("string")) {
+					String s = arena.getArenaConfig().getString(c);
+					arena.msg(sender, "correct " + c.getType() + String.valueOf(s));
+				} else if (c.getType().equals("boolean")) {
+					boolean b = arena.getArenaConfig().getBoolean(c);
+					arena.msg(sender, "correct " + c.getType() + String.valueOf(b));
+				} else if (c.getType().equals("int")) {
+					int i = arena.getArenaConfig().getInt(c);
+					arena.msg(sender, "correct " + c.getType() + String.valueOf(i));
+				} else if (c.getType().equals("double")) {
+					double d = arena.getArenaConfig().getDouble(c);
+					arena.msg(sender, "correct " + c.getType() + String.valueOf(d));
+				}
+			} catch (Exception e) {
+				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, c.getNode()));
+				hasError = true;
+			}
+		}
+		
+		if (!hasError) {
+			arena.msg(sender, Language.parse(MSG.CHECK_DONE));
+		}
 	}
 
 	@Override

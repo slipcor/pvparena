@@ -76,7 +76,7 @@ public class GoalTime extends ArenaGoal {
 		arena.unKillPlayer(respawnPlayer, event.getEntity()
 				.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 
-		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops(), 0);
+		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
 	}
 
 	@Override

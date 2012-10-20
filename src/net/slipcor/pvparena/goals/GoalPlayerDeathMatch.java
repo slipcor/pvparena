@@ -208,7 +208,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			arena.unKillPlayer(ex, event.getEntity()
 					.getLastDamageCause().getCause(), ex.getKiller());
 			
-			new InventoryRefillRunnable(arena, ex, event.getDrops(), 0);
+			new InventoryRefillRunnable(arena, ex, event.getDrops());
 		}
 	}
 
