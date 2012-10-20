@@ -27,7 +27,7 @@ public class StartRunnable extends ArenaRunnable {
 	 */
 	public StartRunnable(Arena a, int i) {
 		super(MSG.ARENA_STARTING_IN.getNode(), i, null, a, false);
-		db.i("StartRunnable constructor");
+		db.i("StartRunnable constructor: " + id);
 		a.START_ID = id;
 	}
 

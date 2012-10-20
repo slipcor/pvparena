@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.44 - add some little debug to StartRunnable
 * v0.9.3.43 - revert InventoryRefillRunnable to be a simple Runnable
 * v0.9.3.42 - correctly display /pa list - depending on game mode, fix player damage on teleport
 * v0.9.3.41 - use BukkitRunnables instead of Runnables
