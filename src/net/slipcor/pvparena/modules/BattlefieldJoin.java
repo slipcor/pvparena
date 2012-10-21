@@ -55,7 +55,7 @@ public class BattlefieldJoin extends ArenaModule {
 		}
 		
 		if (arena.isLocked() && !p.hasPermission("pvparena.admin") && !(p.hasPermission("pvparena.create") && arena.getOwner().equals(p.getName()))) {
-			result.setError(this, Language.parse(MSG.ERROR_NOPERM, Language.parse(MSG.ERROR_NOPERM_X_JOIN)));
+			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
 			return result;
 		}
 		
