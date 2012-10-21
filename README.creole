@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.3.52 - add language and config for the duel module
 * v0.9.3.51 - properly tell a player that an arena is disabled
 * v0.9.3.50 - don't ask...
 * v0.9.3.48 - fix a blockrestore bug about regions

@@ -49,7 +49,7 @@ public class PAI_Ready extends PAA__Command {
 		
 		if (args.length < 1) {
 			
-			if (ap.getStatus().equals(Status.LOUNGE)) {
+			if (!ap.getStatus().equals(Status.LOUNGE)) {
 				return;
 			}
 			

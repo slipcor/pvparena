@@ -133,6 +133,7 @@ public class Language {
 		ERROR_NOT_THE_SAME_WORLD("nulang.error.notsameworld", "Not in the same world as the arena (%1%)!"),
 		ERROR_NOTEAMFOUND("nulang.error.noteamfound", "No team found!"),
 		ERROR_ONLY_PLAYERS("nulang.error.onlyplayers", "&cThis command can only be used by players!"),
+		ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &f%1%&c!"),
 		ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
 		ERROR_READY_0_ONE_PLAYER_NOT_READY("nulang.error.ready.notready0", "At least one player is not ready!"),
 		ERROR_READY_1_ALONE("nulang.error.ready.notready1", "You are alone in the arena!"),
@@ -357,6 +358,9 @@ public class Language {
 		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
 		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
+
+		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &f/pa %2% accept"),
+		MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
 
 		MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
 		MODULE_FIXINVENTORYLOSS_INVENTORY("nulang.mod.fixinventorylos.invenory", "Empty your inventory before joining!"),

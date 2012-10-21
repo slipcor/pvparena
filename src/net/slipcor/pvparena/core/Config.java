@@ -198,6 +198,8 @@ public class Config {
 		MODULES_COLORTEAMS_SPOUTONLY("modules.colorteams.spoutonly", false),
 		MODULES_COLORTEAMS_TAGAPI("modules.colorteams.tagapi", false),
 
+		MODULES_DUEL_ACTIVE("modules.duel.adactive", false),
+
 		MODULES_EVENTACTIONS_ACTIVE("modules.eventactions.eaactive", false),
 
 		MODULES_FACTIONS_ACTIVE("modules.factions.factive", false),
