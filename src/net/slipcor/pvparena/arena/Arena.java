@@ -800,6 +800,9 @@ public class Arena {
 			} else {
 				resetPlayer(p.get(),
 						getArenaConfig().getString(CFG.TP_LOSE, "old"), false, force);
+				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
+				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
+				pdr.setId(i);
 			}
 		}
 	}
