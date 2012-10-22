@@ -5,8 +5,11 @@ import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.command.CommandSender;
@@ -18,7 +21,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAI_Version extends PA__Command {
@@ -58,6 +61,13 @@ public class PAI_Version extends PA__Command {
 				Arena.pmsg(sender,  "§a" + am.getName() + " - " + am.version());
 			}
 		}
+		if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
+			Arena.pmsg(sender, "§7-----------------------------------");
+			Arena.pmsg(sender, "§aRegionshapes:");
+			for (ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
+				Arena.pmsg(sender,  "§a" + ars.getName() + " - " + ars.version());
+			}
+		}
 	}
 
 	@Override
@@ -65,4 +75,8 @@ public class PAI_Version extends PA__Command {
 		return this.getClass().getName();
 	}
 
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.VERSION));
+	}
 }

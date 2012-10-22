@@ -2,8 +2,10 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
@@ -18,109 +20,10 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Set extends PAA__Command {
-	//private static HashMap<String, String> types = new HashMap<String, String>();
-
-	static {
-/*
-		types.put("tp.win", "tp");
-		types.put("tp.lose", "tp");
-		types.put("tp.exit", "tp");
-		types.put("tp.death", "tp");
-
-		types.put("setup.wand", "int");
-
-		types.put("game.allowDrops", "boolean");
-		types.put("game.dropSpawn", "boolean");
-		types.put("game.lives", "int");
-		types.put("game.preventDeath", "boolean");
-		types.put("game.powerups", "string");
-		types.put("game.refillInventory", "boolean");
-		types.put("game.teamKill", "boolean");
-		types.put("game.weaponDamage", "boolean");
-		types.put("game.mustbesafe", "boolean");
-		types.put("game.woolFlagHead", "boolean");
-
-		types.put("messages.chat", "boolean");
-		types.put("messages.colorNick", "boolean");
-		types.put("messages.defaultChat", "boolean");
-		types.put("messages.onlyChat", "boolean");
-		types.put("messages.language", "lang");
-
-		types.put("general.classperms", "boolean");
-		types.put("general.cmdfailjoin", "boolean");
-		types.put("general.enabled", "boolean");
-		types.put("general.owner", "string");
-		types.put("general.world", "string");
-		types.put("general.item-rewards", "items");
-		types.put("general.random-reward", "boolean");
-		types.put("general.restoreChests", "boolean");
-		types.put("general.signs", "boolean");
-
-		types.put("region.spawncampdamage", "int");
-		types.put("region.timer", "int");
-
-		types.put("arenatype.randomSpawn", "boolean");
-
-		types.put("goal.timed", "int");
-		types.put("goal.endtimer", "int");
-
-		types.put("join.explicitPermission", "boolean");
-		types.put("join.forceEven", "boolean");
-		types.put("join.inbattle", "boolean");
-		types.put("join.manual", "boolean");
-		types.put("join.onCountdown", "boolean");
-		types.put("join.random", "boolean");
-		types.put("join.range", "int");
-		types.put("join.warmup", "int");
-
-		types.put("periphery.checkRegions", "boolean");
-
-		types.put("protection.spawn", "int");
-		types.put("protection.restore", "boolean");
-		types.put("protection.enabled", "boolean");
-		
-		types.put("protection.blockplace", "boolean");
-		types.put("protection.blockdamage", "boolean");
-		types.put("protection.blocktntdamage", "boolean");
-		types.put("protection.decay", "boolean");
-		types.put("protection.fade", "boolean");
-		types.put("protection.form", "boolean");
-		types.put("protection.fluids", "boolean");
-		types.put("protection.firespread", "boolean");
-		types.put("protection.grow", "boolean");
-		types.put("protection.lavafirespread", "boolean");
-		types.put("protection.lighter", "boolean");
-		types.put("protection.painting", "boolean");
-		types.put("protection.punish", "boolean");
-		types.put("protection.piston", "boolean");
-		types.put("protection.tnt", "boolean");
-		
-		types.put("protection.checkExit", "boolean");
-		types.put("protection.checkSpectator", "boolean");
-		types.put("protection.checkLounges", "boolean");
-		types.put("protection.inventory", "boolean");
-
-		types.put("start.countdown", "int");
-		types.put("start.health", "int");
-		types.put("start.foodLevel", "int");
-		types.put("start.saturation", "int");
-		types.put("start.exhaustion", "double");
-
-		types.put("ready.block", "item");
-		types.put("ready.checkEach", "boolean");
-		types.put("ready.checkEachTeam", "boolean");
-		types.put("ready.min", "int");
-		types.put("ready.max", "int");
-		types.put("ready.minTeam", "int");
-		types.put("ready.maxTeam", "int");
-		types.put("ready.autoclass", "string");
-		types.put("ready.startRatio", "double"); */
-		
-	}
 
 	public PAA_Set() {
 		super(new String[] {});
@@ -319,5 +222,10 @@ public class PAA_Set extends PAA__Command {
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.SET));
 	}
 }

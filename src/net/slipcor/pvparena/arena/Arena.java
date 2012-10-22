@@ -1231,4 +1231,10 @@ public class Arena {
 	public void setRound(int i) {
 		round = i;
 	}
+
+	public static void pmsg(CommandSender sender, String[] msgs) {
+		for (String s : msgs) {
+			pmsg(sender, s);
+		}
+	}
 }

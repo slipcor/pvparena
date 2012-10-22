@@ -18,6 +18,7 @@ import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -238,6 +239,7 @@ public class PVPArena extends JavaPlugin {
 		arsm = new ArenaRegionShapeManager(this);
 
 		Language.init(getConfig().getString("language", "en"));
+		Help.init(getConfig().getString("language", "en"));
 		
 		StatisticsManager.initialize();
 		ArenaPlayer.initiate();

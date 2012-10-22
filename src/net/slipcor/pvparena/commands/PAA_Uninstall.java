@@ -6,7 +6,9 @@ import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -21,7 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Uninstall extends PA__Command {
@@ -166,5 +168,10 @@ public class PAA_Uninstall extends PA__Command {
 			return destFile.delete();
 		}
 		return false;
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.UNINSTALL));
 	}
 }

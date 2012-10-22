@@ -4,7 +4,9 @@ import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
@@ -19,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Region extends PAA__Command {
@@ -124,8 +126,6 @@ public class PAA_Region extends PAA__Command {
 		// usage: /pa {arenaname} region [regionname] radius [number]
 		// usage: /pa {arenaname} region [regionname] height [number]
 		// usage: /pa {arenaname} region [regionname] position [position]
-		// usage: /pa {arenaname} region [regionname] flag [flag]
-		// usage: /pa {arenaname} region [regionname] type [regiontype]
 		
 		
 		
@@ -138,5 +138,10 @@ public class PAA_Region extends PAA__Command {
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.REGION));
 	}
 }

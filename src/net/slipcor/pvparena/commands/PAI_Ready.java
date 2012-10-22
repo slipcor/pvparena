@@ -7,7 +7,9 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
@@ -20,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.4
  */
 
 public class PAI_Ready extends PAA__Command {
@@ -83,4 +85,8 @@ public class PAI_Ready extends PAA__Command {
 		return this.getClass().getName();
 	}
 
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.READY));
+	}
 }

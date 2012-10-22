@@ -8,7 +8,9 @@ import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -24,7 +26,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Install extends PA__Command {
@@ -103,7 +105,7 @@ public class PAA_Install extends PA__Command {
 		Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
 		Arena.pmsg(sender, "[§7uninstalled§r | §einstalled§r]");
 		Arena.pmsg(sender, "[§coutdated§r | §alatest version§r]");
-		if (s == null || s.toLowerCase().equals("arenas")) {
+		if (s == null || s.toLowerCase().equals("goals")) {
 			Arena.pmsg(sender, "§c--- Arena Goals ----> /goals");
 			Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
@@ -197,7 +199,7 @@ public class PAA_Install extends PA__Command {
 			ArenaGoal g = PVPArena.instance.getAgm().getType(file.replace("pa_g_", "").replace(".jar", ""));
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModule(file.replace("pa_g_", "").replace(".jar", ""));
+			ArenaModule g = PVPArena.instance.getAmm().getModule(file.replace("pa_m_", "").replace(".jar", ""));
 			g.unload();
 		}
 	}
@@ -205,5 +207,10 @@ public class PAA_Install extends PA__Command {
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.INSTALL));
 	}
 }

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.4.0 - add /pa help
 * v0.9.3.52 - add language and config for the duel module
 * v0.9.3.51 - properly tell a player that an arena is disabled
 * v0.9.3.50 - don't ask...
@@ -139,12 +140,10 @@ A PVP experience enhancing plugin.
 === Todo
 
 * plugin
-** /pa duel [arenaname] [duelplayer] --> start 1:1
 ** parse configs differently (yaml is bad :) )
 ** rounds - full restart to "tpalltospawns" (best of X | X)
 * modules
 ** item spawns: [time | item | location]
-** commands when joining / leaving (console and/or by player)
 ** join via position / portal / etc
 ** WorldEdit & WorldGuard hooking (via module)
 ** Map switch via WorldEdit (someone told me this would be damn quick .. :) )

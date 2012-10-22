@@ -1,9 +1,10 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 
 import org.bukkit.command.CommandSender;
@@ -15,18 +16,15 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Check extends PAA__Command {
-	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	public PAA_Check() {
 		super(new String[] {});
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public void commit(Arena arena, CommandSender sender, String[] args) {
 		if (!this.hasPerms(sender, arena)) {
@@ -71,5 +69,10 @@ public class PAA_Check extends PAA__Command {
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.CHECK));
 	}
 }

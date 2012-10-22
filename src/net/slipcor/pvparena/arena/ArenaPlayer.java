@@ -481,6 +481,10 @@ public class ArenaPlayer {
 		if (arena != null) {
 			location = SpawnManager.getCoords(arena, "exit");
 			
+			if (Bukkit.getPlayer(name) == null) {
+				db.i("player offline, OUT!");
+				return;
+			}
 			state = PlayerState.undump(cfg, name);
 		}
 

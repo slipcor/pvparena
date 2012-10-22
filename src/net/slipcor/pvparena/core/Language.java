@@ -177,6 +177,12 @@ public class Language {
 		GOAL_INSTALLING("nulang.goal.installing", "Install goals by command: &a/pa install [goalname]&r"),
 		GOAL_REMOVED("nulang.goal.removed", "Goal removed: &a%1%&r"),
 
+		HELP_HEADLINE("nulang.help.head", "&e--- &aPVP Arena Help&e %1% &e---"),
+		HELP_ADMIN("nulang.help.admin", "&c%1% - help administrating"),
+		HELP_SETUP("nulang.help.setup", "&e%1% - help setting up"),
+		HELP_GAME("nulang.help.game", "&a%1% - help ingame"),
+		HELP_INFO("nulang.help.info", "&9%1% - help getting information"),
+		
 		INFO_CLASSES("nulang.info.classes", "Classes: &a%1%&r"),
 		INFO_GOAL_ACTIVE("nulang.info.goal_active", "Goal: &a%1%&r"),
 		INFO_GOAL_INACTIVE("nulang.info.goal_inactive", "Goal: &b%1%&r &7== INACTIVE =="),

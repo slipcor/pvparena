@@ -2,7 +2,9 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
@@ -14,7 +16,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_Remove extends PAA__Command {
@@ -44,5 +46,10 @@ public class PAA_Remove extends PAA__Command {
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.REMOVE));
 	}
 }

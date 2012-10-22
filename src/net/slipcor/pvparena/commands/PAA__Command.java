@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public abstract class PAA__Command {
@@ -133,4 +133,6 @@ public abstract class PAA__Command {
 
 		return null;
 	}
+
+	public abstract void displayHelp(CommandSender sender);
 }

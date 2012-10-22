@@ -1,11 +1,12 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -15,7 +16,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.0
+ * @version v0.9.4
  */
 
 public class PAA_GameMode extends PAA__Command {
@@ -50,14 +51,15 @@ public class PAA_GameMode extends PAA__Command {
 		}
 
 		arena.getArenaConfig().save();
-		/*
-		PAA_Reload cmd = new PAA_Reload();
-		cmd.commit(arena, Bukkit.getConsoleSender(), new String[0]);
-		*/
 	}
 
 	@Override
 	public String getName() {
 		return this.getClass().getName();
+	}
+
+	@Override
+	public void displayHelp(CommandSender sender) {
+		Arena.pmsg(sender, Help.parse(HELP.GAMEMODE));
 	}
 }

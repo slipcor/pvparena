@@ -3,6 +3,7 @@ package net.slipcor.pvparena.core;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +35,15 @@ public class StringParser {
     	// Removes color codes from a string
         return toColor.replaceAll("&([a-zA-Z0-9])", "§$1").replace("&&", "&");
     }
+
+	public static String[] colorize(List<String> stringList) {
+		String[] result = new String[stringList.size()];
+		
+		for (int i = 0; i < stringList.size(); i++) {
+			result[i] = colorize(stringList.get(i));
+		}
+		return result;
+	}
 	/**
 	 * color an integer if bigger than 0
 	 * 
