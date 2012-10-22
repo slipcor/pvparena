@@ -283,6 +283,8 @@ public class Language {
 		SPAWN_SET("nulang.spawn.set", "Spawn set: &a%1%&r"),
 
 		STATS_FILE_DONE("nulang.stats.filedone", "Statistics file loaded!"),
+		STATS_HEAD("nulang.stats.head", "Statistics TOP %1% (%2%)"),
+		STATS_TYPENOTFOUND("nulang.stats.typenotfound", "Statistics type not found! Valid values: &e%1%&r"),
 		
 		STATTYPE_DAMAGE("nulang.stattype.DAMAGE", StatisticsManager.type.DAMAGE.getName()),
 		STATTYPE_DAMAGETAKE("nulang.stattype.DAMAGETAKE", StatisticsManager.type.DAMAGETAKE.getName()),

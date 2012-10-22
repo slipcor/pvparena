@@ -8,8 +8,6 @@ import java.util.Set;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-
 import com.nodinchan.ncbukkit.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
