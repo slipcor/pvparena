@@ -1,8 +1,13 @@
 package net.slipcor.pvparena.runnables;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
@@ -13,7 +18,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class EndRunnable extends ArenaRunnable {
@@ -38,11 +43,45 @@ public class EndRunnable extends ArenaRunnable {
 	@Override
 	protected void commit() {
 		db.i("EndRunnable commiting");
-		arena.reset(false);
-		Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
-		arena.REALEND_ID = -1;
-		Bukkit.getScheduler().cancelTask(arena.END_ID);
-		arena.END_ID = -1;
-		Bukkit.getScheduler().cancelTask(id);
+		
+		arena.setRound(arena.getRound()+1);
+		
+		if (arena.getRound() >= arena.getRoundCount()) {
+			db.i("rounds done!");
+		
+			arena.reset(false);
+			Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
+			arena.REALEND_ID = -1;
+			Bukkit.getScheduler().cancelTask(arena.END_ID);
+			arena.END_ID = -1;
+			Bukkit.getScheduler().cancelTask(id);
+		} else {
+			db.i("Starting round #" + arena.getRound());
+			
+			Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
+			arena.REALEND_ID = -1;
+			Bukkit.getScheduler().cancelTask(arena.END_ID);
+			arena.END_ID = -1;
+			Bukkit.getScheduler().cancelTask(id);
+			
+			arena.teleportAllToSpawn();
+			
+			for (ArenaPlayer ap : arena.getFighters()) {
+				arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),
+						ap.get().getLastDamageCause().getEntity());
+				
+				List<ItemStack> items = new ArrayList<ItemStack>();
+
+				for (ItemStack is : ap.get().getInventory().getArmorContents()) {
+					items.add(is);
+				}
+
+				for (ItemStack is : ap.get().getInventory().getContents()) {
+					items.add(is);
+				}
+				
+				new InventoryRefillRunnable(arena, ap.get(), items);
+			}
+		}
 	}
 }

@@ -55,7 +55,7 @@ import com.nodinchan.ncbukkit.NCBL;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.5
  */
 
 public class PVPArena extends JavaPlugin {

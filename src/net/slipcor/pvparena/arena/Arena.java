@@ -44,7 +44,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -324,6 +323,18 @@ public class Arena {
 
 	public HashSet<ArenaRegionShape> getRegions() {
 		return regions;
+	}
+	
+	public int getRound() {
+		return round;
+	}
+	
+	public int getRoundCount() {
+		return rounds.getCount();
+	}
+	
+	public PARoundMap getRounds() {
+		return rounds;
 	}
 
 	public ArenaTeam getTeam(String name) {
@@ -614,9 +625,7 @@ public class Arena {
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			START_ID = -1;
 		}
-		PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(ap);
-		int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
-		pdr.setId(i);
+		new PlayerDestroyRunnable(ap);
 
 		if (ap.getStatus().equals(Status.FIGHT) && isFightInProgress()) {
 			ArenaManager.checkAndCommit(this, silent);
@@ -778,9 +787,6 @@ public class Arena {
 					giveRewards(z); // if we are the winning team, give
 									// reward!
 				}
-				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
-				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
-				pdr.setId(i);
 			} else if (p.getStatus() != null
 					&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
 							.equals(Status.LOST))) {
@@ -794,16 +800,11 @@ public class Arena {
 				}
 				resetPlayer(z, getArenaConfig().getString(CFG.TP_LOSE, "old"),
 						false, force);
-				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
-				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
-				pdr.setId(i);
 			} else {
 				resetPlayer(p.get(),
 						getArenaConfig().getString(CFG.TP_LOSE, "old"), false, force);
-				PlayerDestroyRunnable pdr = new PlayerDestroyRunnable(p);
-				int i = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, pdr, 5L, 5L);
-				pdr.setId(i);
 			}
+			new PlayerDestroyRunnable(p);
 		}
 	}
 
@@ -833,6 +834,8 @@ public class Arena {
 		PVPArena.instance.getAmm().reset(this, force);
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
+		
+		round = 0;
 	}
 
 	/**
@@ -866,7 +869,7 @@ public class Arena {
 		
 		db.i("string = " + string);
 		ap.setTelePass(true);
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new TeleportRunnable(this, ap, string), 2L);
+		new TeleportRunnable(this, ap, string);
 	}
 
 	/**
@@ -1222,10 +1225,21 @@ public class Arena {
 		return result;
 	}
 
-	public void setRoundMap(ConfigurationSection cs) {
-		// TODO Auto-generated method stub
-		String seriously = "fix this";
-		rounds = new PARoundMap(this, new HashSet<HashSet<String>>());
+	public void setRoundMap(List<String> list) {
+		if (list == null) {
+			rounds = new PARoundMap(this, new ArrayList<HashSet<String>>());
+		} else {
+			List<HashSet<String>> outer = new ArrayList<HashSet<String>>();
+			for (String round : list) {
+				String[] split = round.split("|");
+				HashSet<String> inner = new HashSet<String>();
+				for (String s : split) {
+					inner.add(s);
+				}
+				outer.add(inner);
+			}
+			rounds = new PARoundMap(this, outer);
+		}
 	}
 
 	public void setRound(int i) {
@@ -1236,5 +1250,15 @@ public class Arena {
 		for (String s : msgs) {
 			pmsg(sender, s);
 		}
+	}
+
+	public void updateRounds() {
+		List<String> result = new ArrayList<String>();
+		
+		for (int i=0; i<rounds.getCount(); i++) {
+			result.add(StringParser.joinSet(rounds.getGoals(i), "|"));
+		}
+		
+		cfg.setManually("rounds", result);
 	}
 }

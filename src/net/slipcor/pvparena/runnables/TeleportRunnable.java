@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.runnables;
 
+import org.bukkit.Bukkit;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
@@ -12,7 +15,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.4
  */
 
 public class TeleportRunnable implements Runnable {
@@ -24,6 +27,7 @@ public class TeleportRunnable implements Runnable {
 		string = s;
 		player = ap.getName();
 		arena = a;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 10L);
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
 
@@ -11,13 +13,12 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.4
  */
 
 public class PlayerDestroyRunnable implements Runnable {
 	private final ArenaPlayer p;
 	private Debug db = new Debug(40);
-	private int id;
 
 	/**
 	 * create a timed arena runnable
@@ -26,8 +27,8 @@ public class PlayerDestroyRunnable implements Runnable {
 	 *            the player to reset
 	 */
 	public PlayerDestroyRunnable(ArenaPlayer p) {
-		id = 0;
 		this.p = p;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 5L);
 		db.i("PlayerDestroyRunnable constructor");
 	}
 
@@ -37,11 +38,6 @@ public class PlayerDestroyRunnable implements Runnable {
 	@Override
 	public void run() {
 		db.i("PlayerDestroyRunnable commiting");
-		Bukkit.getScheduler().cancelTask(id);
 		p.reset();
-	}
-	
-	public void setId(int i) {
-		id = i;
 	}
 }

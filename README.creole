@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.1 - fix player reset (first restore, then teleport)
+* v0.9.5.0 - add /pa round
 * v0.9.4.1 - add /pa stats
 * v0.9.4.0 - add /pa help
 * v0.9.3.52 - add language and config for the duel module

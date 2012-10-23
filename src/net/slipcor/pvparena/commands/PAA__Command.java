@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.5
  */
 
 public abstract class PAA__Command {
@@ -103,6 +103,8 @@ public abstract class PAA__Command {
 			return new PAA_Reload();
 		} else if (name.contains("remove") || name.contains("delete") || name.equals("!rem") || name.equals("!del")) {
 			return new PAA_Remove();
+		} else if (name.contains("round") || name.equals("!rd")) {
+			return new PAA_Round();
 		} else if (name.equals("set") || name.equals("!s")) {
 			return new PAA_Set();
 		} else if (name.equals("setowner") || name.equals("!so")) {

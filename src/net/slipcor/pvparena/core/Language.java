@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class Language {
@@ -269,6 +269,10 @@ public class Language {
 		REGIONS_TYPE("nulang.regions.type", "Region Type: &a%1%&r"),
 		
 		RELOAD_DONE("nulang.reloaded", "Config reloaded!"),
+		
+		ROUND_DISPLAY("nulang.round.display", "Round #%1%: %2%"),
+		ROUND_ADDED("nulang.round.added", "Added goal to round: &e%1%"),
+		ROUND_REMOVED("nulang.round.removed", "Removed goal from round: &e%1%"),
 		
 		SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
 		SET_HELP("nulang.set.help", "use /pa {arenaname} set [page] to get a node list"),

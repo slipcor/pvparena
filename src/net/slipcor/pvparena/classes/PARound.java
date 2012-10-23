@@ -2,6 +2,7 @@ package net.slipcor.pvparena.classes;
 
 import java.util.HashSet;
 
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 
 /**
@@ -23,5 +24,31 @@ public class PARound {
 	
 	public HashSet<ArenaGoal> getGoals() {
 		return goals;
+	}
+
+	public boolean toggle(Arena arena, ArenaGoal goal) {
+		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+		nugoal.setArena(arena);
+		
+		boolean contains = false;
+		ArenaGoal removeGoal = nugoal;
+		
+		for (ArenaGoal g : goals) {
+			if (g.getName().equals(goal.getName())) {
+				contains = true;
+				removeGoal = g;
+				break;
+			}
+		}
+		
+		if (contains) {
+			goals.remove(removeGoal);
+			arena.updateRounds();
+			return false;
+		} else {
+			goals.add(nugoal);
+			arena.updateRounds();
+			return true;
+		}
 	}
 }

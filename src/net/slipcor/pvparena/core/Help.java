@@ -137,8 +137,16 @@ public class Help {
 				"/pa [arenaname] reload"}),
 		REMOVE("nulang.help.msg.remove", new String[]{
 				"Remove an arena",
+				"-------------------------------------------"}),
+		ROUND("nulang.help.msg.round", new String[]{
+				"Manage arena rounds",
 				"-------------------------------------------",
-				"/pa [arenaname] remove"}),
+				"/pa [arenaname] round",
+				"    - list rounds",
+				"/pa [arenaname] round [number]",
+				"    - list round goals",
+				"/pa [arenaname] round [number] [goal]",
+				"    - toggle round goal"}),
 		SET("nulang.help.msg.set", new String[]{
 				"Set an arena config setting",
 				"-------------------------------------------",
@@ -235,6 +243,7 @@ public class Help {
 				"Show detailed version information",
 				"-------------------------------------------",
 				"/pa version"});
+		
 
 		private String node;
 		private List<String> value;
