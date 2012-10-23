@@ -18,7 +18,7 @@ import org.bukkit.plugin.Plugin;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class Tracker implements Runnable {
@@ -34,7 +34,7 @@ public class Tracker implements Runnable {
 	 * call home to save the server/plugin state
 	 */
 	private void callHome() {
-		if (!plugin.getConfig().getBoolean("stats", true)) {
+		if (!plugin.getConfig().getBoolean("tracker", true)) {
 			stop();
 			return;
 		}

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.2 - fix tracker / stats deactivation derpyness
 * v0.9.5.1 - fix player reset (first restore, then teleport)
 * v0.9.5.0 - add /pa round
 * v0.9.4.1 - add /pa stats

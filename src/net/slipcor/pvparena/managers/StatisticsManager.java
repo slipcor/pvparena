@@ -25,7 +25,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class StatisticsManager {
@@ -240,6 +240,9 @@ public class StatisticsManager {
 	}
 
 	public static void initialize() {
+		if (!PVPArena.instance.getConfig().getBoolean("stats")) {
+			return;
+		}
 		config = new YamlConfiguration();
 		players = new File(PVPArena.instance.getDataFolder(), "players.yml");
 		if (!players.exists()) {

@@ -180,6 +180,10 @@ public class ArenaPlayer {
 
 	public static void initiate() {
 		db.i("creating offline arena players");
+		
+		if (!PVPArena.instance.getConfig().getBoolean("stats")) {
+			return;
+		}
 
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
@@ -501,40 +505,42 @@ public class ArenaPlayer {
 		db.i("destroying arena player " + name);
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
-			String file = PVPArena.instance.getDataFolder().toString()
-					+ "/players.yml";
-			cfg.load(file);
-
-			if (arena != null) {
-				String a = arena.getName();
-				cfg.set(a + "." + name + ".losses",
-						getStatistics().getStat(StatisticsManager.type.LOSSES)
-								+ getTotalStatistics(StatisticsManager.type.LOSSES));
-				cfg.set(a + "." + name + ".wins",
-						getStatistics().getStat(StatisticsManager.type.WINS)
-								+ getTotalStatistics(StatisticsManager.type.WINS));
-				cfg.set(a + "." + name + ".kills",
-						getStatistics().getStat(StatisticsManager.type.KILLS)
-								+ getTotalStatistics(StatisticsManager.type.KILLS));
-				cfg.set(a + "." + name + ".deaths",
-						getStatistics().getStat(StatisticsManager.type.DEATHS)
-								+ getTotalStatistics(StatisticsManager.type.DEATHS));
-				cfg.set(a + "." + name + ".damage",
-						getStatistics().getStat(StatisticsManager.type.DAMAGE)
-								+ getTotalStatistics(StatisticsManager.type.DAMAGE));
-				cfg.set(a + "." + name + ".maxdamage",
-						getStatistics().getStat(StatisticsManager.type.MAXDAMAGE)
-								+ getTotalStatistics(StatisticsManager.type.MAXDAMAGE));
-				cfg.set(a + "." + name + ".damagetake", getStatistics()
-						.getStat(StatisticsManager.type.DAMAGETAKE)
-						+ getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
-				cfg.set(a + "." + name + ".maxdamagetake", getStatistics()
-						.getStat(StatisticsManager.type.MAXDAMAGETAKE)
-						+ getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
+			if (PVPArena.instance.getConfig().getBoolean("stats")) {
+				
+				String file = PVPArena.instance.getDataFolder().toString()
+						+ "/players.yml";
+				cfg.load(file);
+	
+				if (arena != null) {
+					String a = arena.getName();
+					cfg.set(a + "." + name + ".losses",
+							getStatistics().getStat(StatisticsManager.type.LOSSES)
+									+ getTotalStatistics(StatisticsManager.type.LOSSES));
+					cfg.set(a + "." + name + ".wins",
+							getStatistics().getStat(StatisticsManager.type.WINS)
+									+ getTotalStatistics(StatisticsManager.type.WINS));
+					cfg.set(a + "." + name + ".kills",
+							getStatistics().getStat(StatisticsManager.type.KILLS)
+									+ getTotalStatistics(StatisticsManager.type.KILLS));
+					cfg.set(a + "." + name + ".deaths",
+							getStatistics().getStat(StatisticsManager.type.DEATHS)
+									+ getTotalStatistics(StatisticsManager.type.DEATHS));
+					cfg.set(a + "." + name + ".damage",
+							getStatistics().getStat(StatisticsManager.type.DAMAGE)
+									+ getTotalStatistics(StatisticsManager.type.DAMAGE));
+					cfg.set(a + "." + name + ".maxdamage",
+							getStatistics().getStat(StatisticsManager.type.MAXDAMAGE)
+									+ getTotalStatistics(StatisticsManager.type.MAXDAMAGE));
+					cfg.set(a + "." + name + ".damagetake", getStatistics()
+							.getStat(StatisticsManager.type.DAMAGETAKE)
+							+ getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
+					cfg.set(a + "." + name + ".maxdamagetake", getStatistics()
+							.getStat(StatisticsManager.type.MAXDAMAGETAKE)
+							+ getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
+				}
+	
+				cfg.save(file);
 			}
-
-			cfg.save(file);
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
