@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.runnables;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -51,5 +52,10 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 			args[0] = teamName;
 			(new PAG_Join()).commit(arena, player.get(), args);
 		}
+	}
+	
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("ArenaWarmupRunnable not scheduled yet!");
 	}
 }

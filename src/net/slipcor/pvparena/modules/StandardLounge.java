@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.5
  */
 
 public class StandardLounge extends ArenaModule {
@@ -42,7 +42,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.3.0";
+		return "v0.9.5.0";
 	}
 
 	@Override
@@ -54,9 +54,16 @@ public class StandardLounge extends ArenaModule {
 		while (iter.hasNext()) {
 			String s = iter.next();
 			db.i("parsing '" + s + "'");
-			if (s.endsWith("lounge") && (!s.equals("lounge"))) {
-				lounges++;
+			if (arena.isFreeForAll()) {
+				if (s.equals("lounge")) {
+					lounges++;
+				}
+			} else {
+				if (s.endsWith("lounge") && (!s.equals("lounge"))) {
+					lounges++;
+				}
 			}
+			
 		}
 		if (lounges == arena.getTeams().size()) {
 			return null;

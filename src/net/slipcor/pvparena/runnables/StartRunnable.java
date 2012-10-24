@@ -2,6 +2,7 @@ package net.slipcor.pvparena.runnables;
 
 import org.bukkit.Bukkit;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -36,5 +37,10 @@ public class StartRunnable extends ArenaRunnable {
 		Bukkit.getScheduler().cancelTask(arena.START_ID);
 		db.i("StartRunnable commiting");
 		arena.start();
+	}
+	
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("StartRunnable not scheduled yet!");
 	}
 }

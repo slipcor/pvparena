@@ -45,4 +45,9 @@ public class TimedEndRunnable extends ArenaRunnable {
 		Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
 		arena.REALEND_ID = -1;
 	}
+	
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("TimedEndRunnable not scheduled yet!");
+	}
 }

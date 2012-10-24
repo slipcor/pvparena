@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Debug;
@@ -83,5 +84,10 @@ public class EndRunnable extends ArenaRunnable {
 				new InventoryRefillRunnable(arena, ap.get(), items);
 			}
 		}
+	}
+	
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("EndRunnable not scheduled yet!");
 	}
 }

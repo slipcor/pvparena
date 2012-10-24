@@ -131,10 +131,15 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		spam();
 		if (seconds <= 0) {
 			commit();
-			cancel();
+			try {
+				cancel();
+			} catch (IllegalStateException e) {
+				warn();
+			}
 		}
 		seconds--;
 	}
 	
+	protected abstract void warn();
 	protected abstract void commit();
 }

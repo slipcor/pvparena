@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.4 - fix StandardLounge + FreeForAll
+* v0.9.5.3 - fix Runnables being cancelled when not being running
 * v0.9.5.2 - fix tracker / stats deactivation derpyness
 * v0.9.5.1 - fix player reset (first restore, then teleport)
 * v0.9.5.0 - add /pa round
