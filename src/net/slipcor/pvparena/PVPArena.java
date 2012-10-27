@@ -1,12 +1,7 @@
 package net.slipcor.pvparena;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -40,13 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import com.nodinchan.ncbukkit.NCBL;
 
 /**
  * <pre>Main Plugin class</pre>
@@ -232,8 +221,6 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
 
-		updateLib();
-
 		agm = new ArenaGoalManager(this);
 		amm = new ArenaModuleManager(this);
 		arsm = new ArenaRegionShapeManager(this);
@@ -292,101 +279,6 @@ public class PVPArena extends JavaPlugin {
 		amm.onEnable();
 
 		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
-	}
-
-	/**
-	 * Checks for update of the library
-	 */
-	private void updateLib() {
-		PluginManager pm = getServer().getPluginManager();
-
-		NCBL libPlugin = (NCBL) pm.getPlugin("NC-BukkitLib");
-
-		File destination = new File(getDataFolder().getParentFile()
-				.getParentFile(), "lib");
-		destination.mkdirs();
-
-		File lib = new File(destination, "NC-BukkitLib.jar");
-		File pluginLib = new File(getDataFolder().getParentFile(),
-				"NC-BukkitLib.jar");
-
-		boolean inPlugins = false;
-		boolean download = false;
-
-		try {
-			URL url = new URL("http://bukget.org/api/plugin/nc-bukkitlib");
-
-			JSONObject jsonPlugin = (JSONObject) new JSONParser()
-					.parse(new InputStreamReader(url.openStream()));
-			JSONArray versions = (JSONArray) jsonPlugin.get("versions");
-
-			if (libPlugin == null) {
-				getLogger().warning("Missing NC-Bukkit lib");
-				inPlugins = true;
-				download = true;
-
-			} else {
-				double currentVer = libPlugin.getVersion();
-				double newVer = currentVer;
-
-				for (int ver = 0; ver < versions.size(); ver++) {
-					JSONObject version = (JSONObject) versions.get(ver);
-
-					if (version.get("type").equals("Release")) {
-						String[] split = ((String) version.get("name"))
-								.split(" ");
-						newVer = Double
-								.parseDouble(split[split.length-1].trim().substring(1));
-						break;
-					}
-				}
-
-				if (newVer > currentVer) {
-					getLogger().warning("NC-Bukkit lib outdated");
-					download = true;
-				}
-			}
-
-			if (download) {
-				getLogger().info("Downloading NC-Bukkit lib");
-
-				String dl_link = "";
-
-				for (int ver = 0; ver < versions.size(); ver++) {
-					JSONObject version = (JSONObject) versions.get(ver);
-
-					if (version.get("type").equals("Release")) {
-						dl_link = (String) version.get("dl_link");
-						break;
-					}
-				}
-
-				if (dl_link == null)
-					throw new Exception();
-
-				URL link = new URL(dl_link);
-				ReadableByteChannel rbc = Channels
-						.newChannel(link.openStream());
-
-				if (inPlugins) {
-					FileOutputStream output = new FileOutputStream(pluginLib);
-					output.getChannel().transferFrom(rbc, 0, 1 << 24);
-					libPlugin = (NCBL) pm.loadPlugin(pluginLib);
-
-				} else {
-					FileOutputStream output = new FileOutputStream(lib);
-					output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				}
-
-				libPlugin.hook(this);
-
-				getLogger().info("Downloaded NC-Bukkit lib");
-			}
-
-		} catch (Exception e) {
-			getLogger().warning("Failed to check for library update");
-			e.printStackTrace();
-		}
 	}
 
 	private class WrapPlotter extends Metrics.Plotter {

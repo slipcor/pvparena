@@ -19,6 +19,7 @@ import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.ncloader.NCBLoadable;
 import net.slipcor.pvparena.regions.CuboidRegion;
 import net.slipcor.pvparena.regions.CylindricRegion;
 import net.slipcor.pvparena.regions.SphericRegion;
@@ -35,7 +36,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.nodinchan.ncbukkit.loader.Loadable;
 
 /**
  * <pre>Arena Region Shape class</pre>
@@ -47,7 +47,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
  * @version v0.9.1
  */
 
-public abstract class ArenaRegionShape extends Loadable implements Cloneable {
+public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
 	protected static Debug db = new Debug(34);
 	protected String world;
 	protected RegionShape shape;

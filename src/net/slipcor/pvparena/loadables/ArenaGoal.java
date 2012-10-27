@@ -9,13 +9,13 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import com.nodinchan.ncbukkit.loader.Loadable;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCBLoadable;
 
 /**
  * <pre>Arena Goal class</pre>
@@ -27,7 +27,7 @@ import net.slipcor.pvparena.core.Debug;
  * @version v0.9.3
  */
 
-public class ArenaGoal extends Loadable implements Cloneable {
+public class ArenaGoal extends NCBLoadable implements Cloneable {
 	protected static Debug db = new Debug(30);
 	protected Arena arena;
 

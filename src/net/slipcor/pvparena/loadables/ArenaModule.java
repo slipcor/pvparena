@@ -8,6 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCBLoadable;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,7 +31,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncbukkit.loader.Loadable;
 
 /**
  * <pre>Arena Module class</pre>
@@ -42,7 +42,7 @@ import com.nodinchan.ncbukkit.loader.Loadable;
  * @version v0.9.3
  */
 
-public class ArenaModule extends Loadable implements Cloneable {
+public class ArenaModule extends NCBLoadable implements Cloneable {
 	protected Debug db = new Debug(32);
 
 	/**

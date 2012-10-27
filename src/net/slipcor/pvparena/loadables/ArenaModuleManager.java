@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncbukkit.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -36,6 +35,7 @@ import net.slipcor.pvparena.modules.BattlefieldJoin;
 import net.slipcor.pvparena.modules.RegionTool;
 import net.slipcor.pvparena.modules.StandardLounge;
 import net.slipcor.pvparena.modules.StandardSpectate;
+import net.slipcor.pvparena.ncloader.NCBLoader;
 
 /**
  * <pre>Arena Module Manager class</pre>
@@ -50,7 +50,7 @@ import net.slipcor.pvparena.modules.StandardSpectate;
 public class ArenaModuleManager {
 	protected Debug db = new Debug(33);
 	private List<ArenaModule> modules;
-	private final Loader<ArenaModule> loader;
+	private final NCBLoader<ArenaModule> loader;
 
 	/**
 	 * create an arena module manager instance
@@ -63,7 +63,7 @@ public class ArenaModuleManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		loader = new Loader<ArenaModule>(plugin, path, new Object[] {});
+		loader = new NCBLoader<ArenaModule>(plugin, path, new Object[] {});
 		modules = loader.load();
 		modules.add(new BattlefieldJoin());
 		modules.add(new RegionTool());

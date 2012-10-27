@@ -6,7 +6,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import com.nodinchan.ncbukkit.loader.Loadable;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -21,6 +20,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.ncloader.NCBLoadable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
@@ -79,7 +79,7 @@ public class PACheck {
 	 * set the error message
 	 * @param error the error message
 	 */
-	public void setError(Loadable loadable, String error) {
+	public void setError(NCBLoadable loadable, String error) {
 		modName = loadable.getName();
 		db.i(modName + " is setting error to: " + error);
 		this.error = error;
@@ -90,7 +90,7 @@ public class PACheck {
 	 * set the priority
 	 * @param priority the priority
 	 */
-	public void setPriority(Loadable loadable, int priority) {
+	public void setPriority(NCBLoadable loadable, int priority) {
 		modName = loadable.getName();
 		db.i(modName + " is setting priority to: " + priority);
 		this.priority = priority;

@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import com.nodinchan.ncbukkit.loader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -25,6 +24,7 @@ import net.slipcor.pvparena.goals.GoalPlayerLives;
 import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.goals.GoalTime;
+import net.slipcor.pvparena.ncloader.NCBLoader;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -39,7 +39,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 
 public class ArenaGoalManager {
 	private List<ArenaGoal> types;
-	private final Loader<ArenaGoal> loader;
+	private final NCBLoader<ArenaGoal> loader;
 	protected Debug db = new Debug(31);
 
 	/**
@@ -53,7 +53,7 @@ public class ArenaGoalManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		loader = new Loader<ArenaGoal>(plugin, path, new Object[] {});
+		loader = new NCBLoader<ArenaGoal>(plugin, path, new Object[] {});
 		types = loader.load();
 		types.add(new GoalFlags(null));
 		types.add(new GoalPlayerDeathMatch(null));
