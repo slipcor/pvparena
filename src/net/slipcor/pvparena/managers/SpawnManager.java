@@ -95,6 +95,7 @@ public class SpawnManager {
 
 			place = locs.get(r.nextInt(locs.size()));
 		} else if (arena.getArenaConfig().getUnsafe("spawns." + place) == null) {
+			db.i("guessing spawn");
 			place = PVPArena.instance.getAgm().guessSpawn(arena, place);
 			if (place == null) {
 				return null;
