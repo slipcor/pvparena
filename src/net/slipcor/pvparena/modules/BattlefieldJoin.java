@@ -37,7 +37,7 @@ public class BattlefieldJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.3.0";
+		return "v0.9.5.5";
 	}
 
 	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {

@@ -34,7 +34,7 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.3.45";
+		return "v0.9.5.5";
 	}
 
 	@Override

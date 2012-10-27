@@ -52,7 +52,7 @@ public class GoalFlags extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.3.0";
+		return "v0.9.5.5";
 	}
 
 	int priority = 6;

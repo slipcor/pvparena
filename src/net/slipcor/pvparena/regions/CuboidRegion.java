@@ -34,7 +34,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.9.0.0";
+		return "v0.9.5.5";
 	}
 	
 	/**

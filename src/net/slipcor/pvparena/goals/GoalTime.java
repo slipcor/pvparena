@@ -40,7 +40,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.1.0";
+		return "v0.9.5.5";
 	}
 
 	@Override
