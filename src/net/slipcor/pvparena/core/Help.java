@@ -17,15 +17,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.5
  */
 
 public class Help {
 
+	private static String version = "v0.9.5.5";
+	
 	public static enum HELP {
 		//AUTOSETUP("nulang.help.msg.autosetup", new String[]{}),
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{
 				"Manages block break/place blacklist entries",
+				"-------------------------------------------",
+				"shorthand command: !bl",
 				"-------------------------------------------",
 				"/pa [arenaname] blacklist clear",
 				"/pa [arenaname] blacklist [type] clear",
@@ -37,9 +41,13 @@ public class Help {
 		CHECK("nulang.help.msg.check", new String[]{
 				"Validate an arena configuration",
 				"-------------------------------------------",
+				"shorthand command: !ch",
+				"-------------------------------------------",
 				"/pa [arenaname] check"}),
 		CLASS("nulang.help.msg.class", new String[]{
 				"Manage arena classes",
+				"-------------------------------------------",
+				"shorthand command: !cl",
 				"-------------------------------------------",
 				"/pa [arenaname] load [classname]",
 				"/pa [arenaname] save [classname]",
@@ -47,11 +55,15 @@ public class Help {
 		CREATE("nulang.help.msg.create", new String[]{
 				"Create an arena",
 				"-------------------------------------------",
+				"shorthand command: !c",
+				"-------------------------------------------",
 				"/pa create [arenaname] {legacytype}",
 				"-------------------------------------------",
 				"Valid legacy types: teams, teamdm, dm, free, ctf, ctp, spleef"}),
 		DEBUG("nulang.help.msg.debug", new String[]{
 				"Debug PVP Arena",
+				"-------------------------------------------",
+				"shorthand command: !d",
 				"-------------------------------------------",
 				"/pa debug [values]",
 				"-------------------------------------------",
@@ -59,21 +71,31 @@ public class Help {
 		DISABLE("nulang.help.msg.disable", new String[]{
 				"Disable an arena",
 				"-------------------------------------------",
+				"shorthand command: !dis",
+				"-------------------------------------------",
 				"/pa [arenaname] disable"}),
 		EDIT("nulang.help.msg.edit", new String[]{
 				"Toggle edit mode of an arena",
+				"-------------------------------------------",
+				"shorthand command: !e",
 				"-------------------------------------------",
 				"/pa [arenaname] edit"}),
 		ENABLE("nulang.help.msg.enable", new String[]{
 				"Enable an arena",
 				"-------------------------------------------",
+				"shorthand command: !en",
+				"-------------------------------------------",
 				"/pa [arenaname] enable"}),
 		GAMEMODE("nulang.help.msg.gamemode", new String[]{
 				"Set the general game mode of an arena. Teams or Free for all",
 				"-------------------------------------------",
+				"shorthand command: !gm",
+				"-------------------------------------------",
 				"/pa [arenaname] gamemode [free|teams]"}),
 		GOAL("nulang.help.msg.goal", new String[]{
 				"Manage arena goals",
+				"-------------------------------------------",
+				"shorthand command: !g",
 				"-------------------------------------------",
 				"/pa [arenaname] goal [goalname] {value}",
 				"-------------------------------------------",
@@ -83,12 +105,16 @@ public class Help {
 		INSTALL("nulang.help.msg.install", new String[]{
 				"Install modules",
 				"-------------------------------------------",
+				"shorthand command: !i",
+				"-------------------------------------------",
 				"/pa install (modules | goals)",
 				"/pa install [modulename]",
 				"-------------------------------------------",
 				"modules / arenas will list available files"}),
 		PROTECTION("nulang.help.msg.protection", new String[]{
 				"Manage arena region protections",
+				"-------------------------------------------",
+				"shorthand command: !p",
 				"-------------------------------------------",
 				"/pa [arenaname] protection [regionname] [protection] {value}",
 				"-------------------------------------------",
@@ -97,6 +123,8 @@ public class Help {
 				"Valid values: yes, on, 1, true, no, off, 0, false"}),
 		REGION("nulang.help.msg.region", new String[]{
 				"Manage arena regions",
+				"-------------------------------------------",
+				"shorthand command: !r",
 				"-------------------------------------------",
 				"/pa [arenaname] region",
 				"    - start selecting a region",
@@ -114,6 +142,8 @@ public class Help {
 		REGIONFLAG("nulang.help.msg.regionflag", new String[]{
 				"Manage arena region flags",
 				"-------------------------------------------",
+				"shorthand command: !rf",
+				"-------------------------------------------",
 				"/pa [arenaname] regionflag [regionname] [flagtype] {value}",
 				"-------------------------------------------",
 				"Entering an invalid flagtype will list available ones",
@@ -122,11 +152,15 @@ public class Help {
 		REGIONS("nulang.help.msg.regions", new String[]{
 				"Debug arena regions",
 				"-------------------------------------------",
+				"shorthand command: !rs",
+				"-------------------------------------------",
 				"/pa [arenaname] regions {regionname}",
 				"-------------------------------------------",
 				"Show all defined regions / detailed information about a region"}),
 		REGIONTYPE("nulang.help.msg.regiontype", new String[]{
 				"Manage region types",
+				"-------------------------------------------",
+				"shorthand command: !rt",
 				"-------------------------------------------",
 				"/pa [arenaname] regiontype [regionname] [type]",
 				"-------------------------------------------",
@@ -134,12 +168,19 @@ public class Help {
 		RELOAD("nulang.help.msg.reload", new String[]{
 				"Reload an arena",
 				"-------------------------------------------",
+				"shorthand command: !rl",
+				"-------------------------------------------",
 				"/pa [arenaname] reload"}),
 		REMOVE("nulang.help.msg.remove", new String[]{
 				"Remove an arena",
-				"-------------------------------------------"}),
+				"-------------------------------------------",
+				"shorthand command: !rem",
+				"-------------------------------------------",
+				"/pa [arenaname] remove"}),
 		ROUND("nulang.help.msg.round", new String[]{
 				"Manage arena rounds",
+				"-------------------------------------------",
+				"shorthand command: !rd",
 				"-------------------------------------------",
 				"/pa [arenaname] round",
 				"    - list rounds",
@@ -150,15 +191,21 @@ public class Help {
 		SET("nulang.help.msg.set", new String[]{
 				"Set an arena config setting",
 				"-------------------------------------------",
+				"shorthand command: !s",
+				"-------------------------------------------",
 				"/pa [arenaname] set [node] [value]",
 				"-------------------------------------------",
 				"Values will be explained if necessary"}),
 		SETOWNER("nulang.help.msg.setowner", new String[]{
 				"Set an arena owner",
 				"-------------------------------------------",
+				"shorthand command: !so",
+				"-------------------------------------------",
 				"/pa [arenaname] setowner [playername]"}),
 		SPAWN("nulang.help.msg.spawn", new String[]{
 				"Manage arena spawns",
+				"-------------------------------------------",
+				"shorthand command: !sp",
 				"-------------------------------------------",
 				"/pa [arenaname] spawn [spawnname]",
 				"/pa [arenaname] spawn [spawnname] remove",
@@ -166,6 +213,8 @@ public class Help {
 				"Spawn names vary based on installed/active modules!"}),
 		STOP("nulang.help.msg.stop", new String[]{
 				"Force stop an arena",
+				"-------------------------------------------",
+				"shorthand command: !st",
 				"-------------------------------------------",
 				"/pa [arenaname] stop"}),
 		TELEPORT("nulang.help.msg.teleport", new String[]{
@@ -175,13 +224,19 @@ public class Help {
 		UNINSTALL("nulang.help.msg.uninstall", new String[]{
 				"Uninstall a PVP Arena module",
 				"-------------------------------------------",
+				"shorthand command: !t",
+				"-------------------------------------------",
 				"/pa uninstall [modulename]"}),
 		UPDATE("nulang.help.msg.update", new String[]{
 				"Update a PVP Arena module",
 				"-------------------------------------------",
+				"shorthand command: !u",
+				"-------------------------------------------",
 				"/pa update [modulename]"}),
 		WHITELIST("nulang.help.msg.whitelist", new String[]{
 				"Manages block break/place whitelist entries",
+				"-------------------------------------------",
+				"shorthand command: !wl",
 				"-------------------------------------------",
 				"/pa [arenaname] whitelist clear",
 				"/pa [arenaname] whitelist [type] clear",
@@ -194,6 +249,8 @@ public class Help {
 		CHAT("nulang.help.msg.chat", new String[]{
 				"Set arena team chat mode",
 				"-------------------------------------------",
+				"shorthand command: -c",
+				"-------------------------------------------",
 				"/pa [arenaname] chat {value}",
 				"-------------------------------------------",
 				"Switch between team and global chat",
@@ -202,45 +259,65 @@ public class Help {
 		JOIN("nulang.help.msg.join", new String[]{
 				"Join an arena",
 				"-------------------------------------------",
+				"shorthand command: -j",
+				"-------------------------------------------",
 				"/pa [arenaname] join {teamname}"}),
 		LEAVE("nulang.help.msg.leave", new String[]{
 				"Leave the arena",
 				"-------------------------------------------",
+				"shorthand command: -l",
+				"-------------------------------------------",
 				"/pa leave"}),
 		SPECTATE("nulang.help.msg.spectate", new String[]{
 				"Spectate an arena",
+				"-------------------------------------------",
+				"shorthand command: -s",
 				"-------------------------------------------",
 				"/pa [arenaname] spectate"}),
 		
 		ARENALIST("nulang.help.msg.arenalist", new String[]{
 				"List available arenas",
 				"-------------------------------------------",
+				"shorthand command: -ls",
+				"-------------------------------------------",
 				"/pa list"}),
 		HELP("nulang.help.msg.help", new String[]{
 				"Receive help",
+				"-------------------------------------------",
+				"shorthand command: -h",
 				"-------------------------------------------",
 				"/pa help [topic/command]"}),
 		INFO("nulang.help.msg.info", new String[]{
 				"Detailed information about an arena",
 				"-------------------------------------------",
+				"shorthand command: -i",
+				"-------------------------------------------",
 				"/pa [arenaname] info"}),
 		LIST("nulang.help.msg.list", new String[]{
 				"List arena players",
+				"-------------------------------------------",
+				"shorthand command: -ls",
 				"-------------------------------------------",
 				"/pa {arenaname} list"}),
 		
 		READY("nulang.help.msg.ready", new String[]{
 				"Ready up / show ready players",
 				"-------------------------------------------",
+				"shorthand command: -r",
+				"-------------------------------------------",
 				"/pa {arenaname} ready {show}"}),
 		STATS("nulang.help.msg.stats", new String[]{
 				"Show arena/player statistics",
+				"-------------------------------------------",
+				"shorthand command: -s",
 				"-------------------------------------------",
 				"/pa {arenaname} stats [stattype] {amount}",
 				"-------------------------------------------",
 				"An invalid stattype will list all available ones"}),
 		VERSION("nulang.help.msg.version", new String[]{
 				"Show detailed version information",
+				"-------------------------------------------",
+				"shorthand command: -v",
 				"-------------------------------------------",
 				"/pa version"});
 		
@@ -289,17 +366,35 @@ public class Help {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating help language file.");
 			}
+		
+		boolean override = false;
 
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);
+			String ver = config.getString("version", "0");
+			
+			if (!ver.equals(version)) {
+				override = true;
+				File f = new File(configFile.getParent(), "/help_"+s+"_backup.yml");
+				if (!f.exists()) {
+					f.createNewFile();
+				}
+				config.save(f);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		for (HELP m : HELP.values()) {
-			config.addDefault(m.getNode(), m.get());
+			if (!override) {
+				config.addDefault(m.getNode(), m.get());
+			} else {
+				config.set(m.getNode(), m.get());
+			}
 		}
+		
+		config.set("version", version);
 
 		config.options().copyDefaults(true);
 		try {

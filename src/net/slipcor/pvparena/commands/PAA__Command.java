@@ -116,7 +116,7 @@ public abstract class PAA__Command {
 		} else if (name.contains("teleport") || name.equals("tp") || name.equals("!t")) {
 			return new PAA_Teleport();
 		} else if (name.contains("whitelist") || name.equals("!wl")) {
-			return new PAA_Teleport();
+			return new PAA_WhiteList();
 		} else if (name.contains("chat") || name.equals("-c")) {
 			return new PAG_Chat();
 		} else if (name.contains("join") || name.equals("-j")) {
