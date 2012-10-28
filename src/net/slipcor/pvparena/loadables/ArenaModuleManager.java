@@ -133,24 +133,6 @@ public class ArenaModuleManager {
 	}
 
 	/**
-	 * hook into death of a player
-	 * 
-	 * @param arena
-	 *            the arena where this happens
-	 * @param player
-	 *            the dying player
-	 * @param cause
-	 *            the EntityDamageEvent leading to death
-	 */
-	public void commitPlayerDeath(Arena arena, Player player,
-			EntityDamageEvent cause) {
-		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.commitPlayerDeath(arena, player, cause);
-		}
-	}
-
-	/**
 	 * hook into arena config parsing
 	 * 
 	 * @param arena
@@ -440,6 +422,24 @@ public class ArenaModuleManager {
 		for (ArenaModule mod : modules) {
 			if (mod.isActive(arena))
 				mod.onSignChange(event);
+		}
+	}
+
+	/**
+	 * hook into death of a player
+	 * 
+	 * @param arena
+	 *            the arena where this happens
+	 * @param player
+	 *            the dying player
+	 * @param cause
+	 *            the EntityDamageEvent leading to death
+	 */
+	public void parsePlayerDeath(Arena arena, Player player,
+			EntityDamageEvent cause) {
+		for (ArenaModule mod : modules) {
+			if (mod.isActive(arena))
+				mod.parsePlayerDeath(arena, player, cause);
 		}
 	}
 

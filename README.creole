@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.8 - fix wrong player death handling at the end of the arena
 * v0.9.5.7 - enhancing help messages to reflect shorthand commands
 * v0.9.5.6 - update all modules. This is information and order :p
 * v0.9.5.5 - integrate NodinChan's loader, the update is just. f.

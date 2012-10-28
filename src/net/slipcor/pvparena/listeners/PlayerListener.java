@@ -206,7 +206,7 @@ public class PlayerListener implements Listener {
 		
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
 		
-		PVPArena.instance.getAmm().commitPlayerDeath(arena, player, cause);
+		PVPArena.instance.getAmm().parsePlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,
