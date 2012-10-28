@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -16,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -39,11 +42,31 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.5
  */
 
 public class BlockListener implements Listener {
 	private static Debug db = new Debug(20);
+
+	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
+		if (player.hasPermission("pvparena.admin")) {
+			return false;
+		}
+		
+		if (arena != null && !arena.isFightInProgress()) {
+			event.setCancelled(true);
+			return true;
+		}
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		
+		if (ap.getStatus() != Status.FIGHT) {
+			event.setCancelled(true);
+			return true;
+		}
+		
+		return false;
+	}
 
 	private boolean willBeSkipped(boolean cancelled, Event event, Location loc, RegionProtection rp) {
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(loc));
@@ -97,6 +120,10 @@ public class BlockListener implements Listener {
 		List<String> list = new ArrayList<String>();
 		
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getBlock().getLocation()));
+		
+		if (checkAndCommitCancel(arena, event.getPlayer(), event)) {
+			return;
+		}
 		
 		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
 

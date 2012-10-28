@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.11 - fix players being able to mess up the lounge / spectator / battlefield before starting
 * v0.9.5.10 - attempt to fix the player status error with BattlefieldJoin (no lounges)
 * v0.9.5.9 - last player(s) teleport bug
 * v0.9.5.8 - fix wrong player death handling at the end of the arena
@@ -155,6 +156,7 @@ A PVP experience enhancing plugin.
 ** parse configs differently (yaml is bad :) )
 ** rounds - full restart to "tpalltospawns" (best of X | X)
 * modules
+** [lounge|battlefieldjoin]: BlockEvent.setCancelled(!isInProgress || Status.LOUNGE || Status.SPECTATE);
 ** item spawns: [time | item | location]
 ** join via position / portal / etc
 ** WorldEdit & WorldGuard hooking (via module)
