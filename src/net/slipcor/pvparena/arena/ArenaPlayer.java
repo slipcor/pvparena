@@ -555,7 +555,7 @@ public class ArenaPlayer {
 			state.reset();
 			state = null;
 		}
-		location = null;
+		//location = null;
 
 		setStatus(Status.NULL);
 

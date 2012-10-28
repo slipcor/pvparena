@@ -54,6 +54,7 @@ public class TeleportRunnable implements Runnable {
 			ap.get().teleport(l.toLocation());
 			ap.get().setNoDamageTicks(60);
 		}
+		ap.setLocation(null);
 	}
 
 }
