@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
@@ -37,7 +38,7 @@ public class BattlefieldJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.5.10";
 	}
 
 	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
@@ -84,6 +85,7 @@ public class BattlefieldJoin extends ArenaModule {
 		//ArenaPlayer.prepareInventory(arena, ap.get());
 		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
+		ap.setStatus(Status.LOUNGE);
 		team.add(ap);
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(ap.get(), "spawn");
