@@ -151,7 +151,7 @@ public class ArenaManager {
 	public static Arena getArenaByRegionLocation(PABlockLocation location) {
 		for (Arena arena : arenas.values()) {
 			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location))
+				if (region.contains(location) && !arena.isLocked())
 					return arena;
 			}
 		}
@@ -175,6 +175,9 @@ public class ArenaManager {
 	public static HashSet<Arena> getArenasByRegionLocation(PABlockLocation location) {
 		HashSet<Arena> result = new HashSet<Arena>();
 		for (Arena arena : arenas.values()) {
+			if (arena.isLocked()) {
+				continue;
+			}
 			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location)) {
 					result.add(arena);
