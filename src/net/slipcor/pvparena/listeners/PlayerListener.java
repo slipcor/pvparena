@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -56,6 +57,26 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(23);
+
+	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
+		if (player.hasPermission("pvparena.admin")) {
+			return false;
+		}
+		
+		if (arena != null && !arena.isFightInProgress()) {
+			event.setCancelled(true);
+			return true;
+		}
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		
+		if (ap.getStatus() != Status.FIGHT) {
+			event.setCancelled(true);
+			return true;
+		}
+		
+		return false;
+	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
@@ -238,8 +259,6 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		db.i("onPlayerInteract");
 		
-		
-		
 		if (event.getAction().equals(Action.PHYSICAL)) {
 			db.i("returning: physical");
 			return;
@@ -249,6 +268,9 @@ public class PlayerListener implements Listener {
 		
 		if (event.hasBlock()) {
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
+			if (checkAndCommitCancel(arena, event.getPlayer(), event)) {
+				return;
+			}
 		}
 		
 		if (arena != null && PVPArena.instance.getAmm().onPlayerInteract(arena, event)) {
