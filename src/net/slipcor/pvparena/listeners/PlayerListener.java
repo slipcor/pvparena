@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
 	private static Debug db = new Debug(23);
 
 	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
-		if (player.hasPermission("pvparena.admin")) {
+		if (arena == null || player.hasPermission("pvparena.admin")) {
 			return false;
 		}
 		

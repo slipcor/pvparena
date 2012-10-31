@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.14 - hotfix
 * v0.9.5.13 - finish .11
 * v0.9.5.12 - fix players being said to be in an arena when they aren't
 * v0.9.5.11 - fix players being able to mess up the lounge / spectator / battlefield before starting
