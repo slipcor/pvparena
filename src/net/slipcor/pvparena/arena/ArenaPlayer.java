@@ -610,7 +610,7 @@ public class ArenaPlayer {
 	}
 
 	public void setLocation(PALocation location) {
-		db.i(location.toString());
+		db.i(location == null ? "null" : location.toString());
 		this.location = location;
 	}
 
