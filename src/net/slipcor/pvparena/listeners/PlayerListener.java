@@ -380,7 +380,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
 			db.i("player team: " + team.getName());
 			if (block.getState() instanceof Sign) {
