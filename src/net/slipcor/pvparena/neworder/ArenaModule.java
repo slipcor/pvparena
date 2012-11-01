@@ -7,6 +7,7 @@ import java.util.Set;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCLoadable;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,7 +30,6 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncloader.Loadable;
 
 /**
  * arena module class
@@ -44,7 +44,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  */
 
-public class ArenaModule extends Loadable {
+public class ArenaModule extends NCLoadable {
 	protected Debug db = new Debug(46);
 
 	/**

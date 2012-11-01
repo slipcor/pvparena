@@ -412,6 +412,9 @@ public class BlockListener implements Listener {
 	}
 
 	public static void keepChunks(World w, YamlConfiguration config) {
+		if (config.getConfigurationSection("spawns") == null) {
+			return;
+		}
 		Set<String> spawns = config.getConfigurationSection("spawns").getKeys(false);
 		
 		for (String node : spawns) {

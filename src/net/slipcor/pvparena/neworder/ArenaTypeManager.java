@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.nodinchan.ncloader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arenas.teams.TeamArena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCLoader;
 
 /**
  * arena type manager class
@@ -26,7 +26,7 @@ import net.slipcor.pvparena.core.Debug;
 
 public class ArenaTypeManager {
 	private List<ArenaType> types;
-	private final Loader<ArenaType> loader;
+	private final NCLoader<ArenaType> loader;
 	protected Debug db = new Debug(52);
 	/**
 	 * create an arena type instance
@@ -39,7 +39,7 @@ public class ArenaTypeManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		loader = new Loader<ArenaType>(plugin, path, new Object[] {});
+		loader = new NCLoader<ArenaType>(plugin, path, new Object[] {});
 		types = loader.load();
 		types.add(new TeamArena());
 

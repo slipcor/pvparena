@@ -922,7 +922,7 @@ public class Arena {
 		PVPArena.instance.getAmm().parseRespawn(this, player, team, lives, cause, damager);
 
 		player.setFireTicks(0);
-		player.setNoDamageTicks(60);
+		player.setNoDamageTicks(cfg.getInt("general.tpnodamageseconds") * 20);
 		//EntityListener.addBurningPlayer(player);
 	}
 

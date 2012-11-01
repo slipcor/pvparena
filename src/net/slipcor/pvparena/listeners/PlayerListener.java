@@ -33,6 +33,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -195,7 +196,7 @@ public class PlayerListener implements Listener {
 			
 		}
 		
-		Statistics.kill(arena, player.getLastDamageCause().getEntity(), player, (lives >= 1));
+		Statistics.kill(arena, (player.getLastDamageCause() == null) ? player : player.getLastDamageCause().getEntity(), player, (lives >= 1));
 		
 		db.i("lives before death: " + lives);
 		if (lives < 1) {
@@ -210,7 +211,7 @@ public class PlayerListener implements Listener {
 			lives--;
 			InventoryRestoreRunnable irr = new InventoryRestoreRunnable(arena, player, event.getDrops(),0);
 			irr.setId(Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, irr, 1L));
-			arena.respawnPlayer(player, lives, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+			arena.respawnPlayer(player, lives, (player.getLastDamageCause() == null) ? DamageCause.SUICIDE : event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 		}
 		
 		event.getDrops().clear();

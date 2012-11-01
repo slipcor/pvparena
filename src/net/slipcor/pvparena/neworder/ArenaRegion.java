@@ -13,6 +13,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.Arenas;
+import net.slipcor.pvparena.ncloader.NCLoadable;
 import net.slipcor.pvparena.runnables.RegionRunnable;
 
 import org.bukkit.Bukkit;
@@ -30,7 +31,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.Vector;
 
-import com.nodinchan.ncloader.Loadable;
 
 /**
  * region class
@@ -45,7 +45,7 @@ import com.nodinchan.ncloader.Loadable;
  * 
  */
 
-public class ArenaRegion extends Loadable {
+public class ArenaRegion extends NCLoadable {
 	protected Debug db = new Debug(15);
 
 	public Vector min;

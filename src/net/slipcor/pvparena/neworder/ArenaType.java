@@ -15,7 +15,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import com.nodinchan.ncloader.Loadable;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -27,6 +26,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.managers.Arenas;
 import net.slipcor.pvparena.managers.Spawns;
 import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.ncloader.NCLoadable;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
@@ -42,7 +42,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  */
 
-public class ArenaType extends Loadable {
+public class ArenaType extends NCLoadable {
 	protected Arena arena;
 	protected final static Debug db = new Debug(45);
 

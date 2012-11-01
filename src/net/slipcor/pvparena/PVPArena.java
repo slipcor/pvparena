@@ -1,13 +1,7 @@
 package net.slipcor.pvparena;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.command.PAA_Command;
 import net.slipcor.pvparena.command.PA_Command;
@@ -163,12 +157,6 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
 
-		if (!startLoader()) {
-			Bukkit.getLogger().severe(
-					"Error while loading Loader lib. Disabling PVP Arena...");
-			Bukkit.getServer().getPluginManager().disablePlugin(this);
-		}
-
 		atm = new ArenaTypeManager(this);
 		amm = new ArenaModuleManager(this);
 		arm = new ArenaRegionManager(this);
@@ -240,67 +228,6 @@ public class PVPArena extends JavaPlugin {
 		amm.onEnable();
 
 		Language.log_info("enabled", getDescription().getFullName());
-	}
-
-	private boolean startLoader() {
-
-		try {
-			File destination = new File(getDataFolder().getParentFile()
-					.getParentFile(), "lib");
-			destination.mkdirs();
-
-			File lib = new File(destination, "NC-LoaderLib.jar");
-
-			if (!lib.exists()) {
-				System.out.println("Missing NC-Loader lib, installing...");
-
-				String resource = "lib/NC-LoaderLib.jar";
-				
-				InputStream resStreamIn = PVPArena.class.getClassLoader()
-						.getResourceAsStream(resource);
-				try {
-					OutputStream ostream = new FileOutputStream(lib);
-
-					byte[] buffer = new byte[4096];
-					int l;
-					while ((l = resStreamIn.read(buffer)) > 0) {
-						ostream.write(buffer, 0, l);
-					}
-					ostream.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				System.out.println("Installed NC-Loader lib");
-			}
-			
-			lib = new File(destination, "NC-LoaderLib.jar");
-
-			URLClassLoader sysLoader = (URLClassLoader) ClassLoader
-					.getSystemClassLoader();
-
-			for (URL url : sysLoader.getURLs()) {
-				if (url.sameFile(lib.toURI().toURL()))
-					return true;
-			}
-
-			try {
-				Method method = URLClassLoader.class.getDeclaredMethod(
-						"addURL", new Class[] { URL.class });
-				method.setAccessible(true);
-				method.invoke(sysLoader, new Object[] { lib.toURI().toURL() });
-
-			} catch (Exception e) {
-				return false;
-			}
-
-			return true;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return false;
-
 	}
 
 	/**

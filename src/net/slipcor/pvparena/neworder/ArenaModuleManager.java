@@ -27,12 +27,12 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
-import com.nodinchan.ncloader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCLoader;
 
 /**
  * arena module manager class
@@ -50,7 +50,7 @@ import net.slipcor.pvparena.core.Debug;
 public class ArenaModuleManager {
 	protected Debug db = new Debug(51);
 	private List<ArenaModule> modules;
-	private final Loader<ArenaModule> loader;
+	private final NCLoader<ArenaModule> loader;
 
 	/**
 	 * create an arena module manager instance
@@ -63,7 +63,7 @@ public class ArenaModuleManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		loader = new Loader<ArenaModule>(plugin, path, new Object[] {});
+		loader = new NCLoader<ArenaModule>(plugin, path, new Object[] {});
 		modules = loader.load();
 
 		for (ArenaModule mod : modules) {

@@ -69,6 +69,7 @@ public class Settings {
 		types.put("general.random-reward", "boolean");
 		types.put("general.restoreChests", "boolean");
 		types.put("general.signs", "boolean");
+		types.put("general.tpnodamageseconds", "int");
 
 		types.put("region.spawncampdamage", "int");
 		types.put("region.timer", "int");

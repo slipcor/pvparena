@@ -7,11 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.nodinchan.ncloader.Loader;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCLoader;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionShape;
 import net.slipcor.pvparena.neworder.ArenaRegion.RegionType;
 import net.slipcor.pvparena.regions.Cuboid;
@@ -31,7 +31,7 @@ import net.slipcor.pvparena.regions.Cuboid;
 
 public class ArenaRegionManager {
 	private List<ArenaRegion> regions;
-	private final Loader<ArenaRegion> loader;
+	private final NCLoader<ArenaRegion> loader;
 	Debug db = new Debug(45);
 
 	/**
@@ -45,7 +45,7 @@ public class ArenaRegionManager {
 		if (!path.exists()) {
 			path.mkdir();
 		}
-		loader = new Loader<ArenaRegion>(plugin, path, new Object[] {});
+		loader = new NCLoader<ArenaRegion>(plugin, path, new Object[] {});
 		regions = loader.load();
 		regions.add(new Cuboid());
 

@@ -98,6 +98,7 @@ public class Configs {
 		config.addDefault("general.random-reward", Boolean.valueOf(false));
 		config.addDefault("general.prefix", "PVP Arena");
 		config.addDefault("general.cmdfailjoin", Boolean.valueOf(true));
+		config.addDefault("general.tpnodamageseconds", Integer.valueOf(3));
 
 		config.addDefault("region.spawncampdamage", Integer.valueOf(1));
 		config.addDefault("region.timer", Integer.valueOf(20));
