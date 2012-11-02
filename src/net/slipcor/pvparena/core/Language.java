@@ -180,6 +180,7 @@ public class Language {
 		HELP_HEADLINE("nulang.help.head", "&e--- &aPVP Arena Help&e %1% &e---"),
 		HELP_ADMIN("nulang.help.admin", "&c%1% - help administrating"),
 		HELP_SETUP("nulang.help.setup", "&e%1% - help setting up"),
+		HELP_CUSTOM("nulang.help.custom", "&e%1% - help customizing"),
 		HELP_GAME("nulang.help.game", "&a%1% - help ingame"),
 		HELP_INFO("nulang.help.info", "&9%1% - help getting information"),
 		

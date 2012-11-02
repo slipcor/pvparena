@@ -80,7 +80,6 @@ public class EndRunnable extends ArenaRunnable {
 				for (ItemStack is : ap.get().getInventory().getContents()) {
 					items.add(is);
 				}
-				
 				new InventoryRefillRunnable(arena, ap.get(), items);
 			}
 		}
