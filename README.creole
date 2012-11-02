@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.8.12.17 - finish .14 implementation
 * v0.8.12.16 - allow class selection with both mouse buttons (sryously? ^^)
 * v0.8.12.15 - fix dying due to punishment messing up
 * v0.8.12.14 - make the respawn nodamage configurable (general.tpnodamageseconds)

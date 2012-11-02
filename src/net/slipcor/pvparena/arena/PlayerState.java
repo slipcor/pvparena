@@ -68,36 +68,7 @@ public final class PlayerState {
 
 	public void unload() {
 		Player player = Bukkit.getPlayer(sPlayer);
-		player.setFireTicks(fireticks);
-		player.setFoodLevel(foodlevel);
-		player.setGameMode(GameMode.getByValue(gamemode));
-		player.setHealth(health);
-
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		player.setFoodLevel(foodlevel);
-		player.setHealth(health);
-		player.setSaturation(saturation);
-		player.setGameMode(GameMode.getByValue(gamemode));
-		player.setLevel(explevel);
-		player.setExp(experience);
-		player.setExhaustion(exhaustion);
-		if (ap.getArena() != null && ap.getArena().cfg.getBoolean("messages.colorNick", true)) {
-			player.setDisplayName(displayname);
-		}
-		
-		if (ap.getArena() != null) {
-			PVPArena.instance.getAmm().unload(player);
-			ap.getArena().type().unload(player);
-		}
-		
-
-		removeEffects(player);
-		player.addPotionEffects(potionEffects);
-
-		ArenaPlayer.parsePlayer(player).setTelePass(false);
-		//EntityListener.addBurningPlayer(player);
-		player.setFireTicks(fireticks);
-		player.setNoDamageTicks(60);
+		unload(player);
 	}
 
 	public void unload(Player player) {
@@ -106,10 +77,7 @@ public final class PlayerState {
 		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setHealth(health);
 
-		player.setFoodLevel(foodlevel);
-		player.setHealth(health);
 		player.setSaturation(saturation);
-		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
@@ -131,7 +99,11 @@ public final class PlayerState {
 		ArenaPlayer.parsePlayer(player).setTelePass(false);
 		//EntityListener.addBurningPlayer(player);
 		player.setFireTicks(fireticks);
-		player.setNoDamageTicks(60);
+		int ticks = 60;
+		if (ap.getArena() != null) {
+			ticks = ap.getArena().cfg.getInt("general.tpnodamageseconds") * 20;
+		}
+		player.setNoDamageTicks(ticks);
 	}
 
 	public void reset() {
