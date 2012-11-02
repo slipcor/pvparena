@@ -23,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class SpawnManager {
@@ -104,10 +104,13 @@ public class SpawnManager {
 
 		String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + place));
 		db.i("parsing location: " + sLoc);
+		PALocation result;
 		if (place.contains("flag")) {
-			return new PALocation(Config.parseBlockLocation(sLoc).toLocation()).add(0.5, 0.5, 0.5);
+			result = new PALocation(Config.parseBlockLocation(sLoc).toLocation());
+		} else {
+			result = Config.parseLocation(sLoc);
 		}
-		return Config.parseLocation(sLoc).add(0.5, 0.5, 0.5);
+		return result.add(0.5, 0.5, 0.5);
 	}
 
 	/**

@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.5
  */
 
 public class Config {
@@ -720,9 +720,9 @@ public class Config {
 	public static String parseToString(PALocation loc) {
 		String[] result = new String[6];
 		result[0] = String.valueOf(loc.getWorldName());
-		result[1] = String.valueOf((int) loc.getX());
-		result[2] = String.valueOf((int) loc.getY());
-		result[3] = String.valueOf((int) loc.getZ());
+		result[1] = String.valueOf(loc.getBlockX());
+		result[2] = String.valueOf(loc.getBlockY());
+		result[3] = String.valueOf(loc.getBlockZ());
 		result[4] = String.valueOf(loc.getYaw());
 		result[5] = String.valueOf(loc.getPitch());
 		// "world,x,y,z,yaw,pitch"

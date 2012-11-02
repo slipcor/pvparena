@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.16 - fix issue #72.1 | block offset in negative X/Z ranges 
 * v0.9.5.15 - fix issue #71
 * v0.9.5.14 - hotfix
 * v0.9.5.13 - finish .11

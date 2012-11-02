@@ -12,7 +12,7 @@ import org.bukkit.Location;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.5
  */
 
 public class PALocation {
@@ -43,6 +43,18 @@ public class PALocation {
 
 	public PALocation add(double x, double y, double z) {
 		return new PALocation(world, x+this.x, y+this.y, z+this.z, pitch, yaw);
+	}
+
+	public int getBlockX() {
+		return (int) Math.floor(x + 0.5);
+	}
+
+	public int getBlockY() {
+		return (int) Math.floor(y + 0.5);
+	}
+
+	public int getBlockZ() {
+		return (int) Math.floor(z + 0.5);
 	}
 
 	public double getDistance(PALocation o) {
