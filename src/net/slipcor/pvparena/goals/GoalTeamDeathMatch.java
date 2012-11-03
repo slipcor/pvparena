@@ -179,7 +179,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
 					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
-					String.valueOf(1-lives.get(respawnTeam.getName())), killerTeam.getColoredName()));
+					String.valueOf(lives.get(killerTeam.getName())), killerTeam.getColoredName()));
 		
 			arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
 					+ "spawn");	
