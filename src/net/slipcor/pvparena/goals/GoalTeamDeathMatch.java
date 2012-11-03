@@ -33,7 +33,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.5
  */
 
 public class GoalTeamDeathMatch extends ArenaGoal {
@@ -45,7 +45,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.5.20";
 	}
 
 	int priority = 5;
@@ -174,12 +174,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		ArenaTeam killerTeam = ArenaPlayer.parsePlayer(respawnPlayer.getKiller().getName()).getArenaTeam();
 		reduceLives(arena, killerTeam);
 
-		if (lives.get(respawnTeam.getName()) != null) {
+		if (lives.get(killerTeam.getName()) != null) {
 			
 			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
 					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
-					String.valueOf(arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)+1-lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
+					String.valueOf(1-lives.get(respawnTeam.getName())), killerTeam.getColoredName()));
 		
 			arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
 					+ "spawn");	
