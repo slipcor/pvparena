@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.5.19 - add default spawn "exit" to possible spawns
 * v0.9.5.18 - reactivate /pa reload
 * v0.9.5.17 - enhance and finish the help system
 * v0.9.5.16 - fix issue #72.1 | block offset in negative X/Z ranges - fix issue #72.1 | block offset in negative X/Z ranges 

@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.commands;
 
+import java.util.HashSet;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -22,10 +24,14 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.5
  */
 
 public class PAA_Spawn extends PAA__Command {
+	static HashSet<String> spawns = new HashSet<String>();
+	static {
+		spawns.add("exit");
+	}
 
 	public PAA_Spawn() {
 		super(new String[] {});
@@ -51,18 +57,21 @@ public class PAA_Spawn extends PAA__Command {
 
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 			
+			if (spawns.contains(args[0])) {
+				commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
+				return;
+			}
+			
 			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 				if (mod.isActive(arena) && mod.hasSpawn(arena, args[0])) {
-					arena.spawnSet(args[0].toLowerCase(), new PALocation(ap.get().getLocation()));
-					arena.msg(sender, Language.parse(MSG.SPAWN_SET, args[0]));
+					commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
 					return;
 				}
 			}
 			
 			for (ArenaGoal mod : arena.getGoals()) {
 				if (mod.hasSpawn(args[0])) {
-					arena.spawnSet(args[0].toLowerCase(), new PALocation(ap.get().getLocation()));
-					arena.msg(sender, Language.parse(MSG.SPAWN_SET, args[0]));
+					commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
 					return;
 				}
 			}
@@ -79,6 +88,12 @@ public class PAA_Spawn extends PAA__Command {
 				arena.spawnUnset(args[0]);
 			}
 		}
+	}
+	
+	void commitSet(Arena arena, CommandSender sender, PALocation loc, String name) {
+		arena.spawnSet(name.toLowerCase(), loc);
+		arena.msg(sender, Language.parse(MSG.SPAWN_SET, name));
+		return;
 	}
 
 	@Override
