@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
+import net.slipcor.pvparena.commands.PAA_Reload;
 import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
@@ -155,6 +156,14 @@ public class PVPArena extends JavaPlugin {
 			PAI_Stats scmd = new PAI_Stats();
 			db.i("committing: " + scmd.getName());
 			scmd.commit(null, sender, new String[0]);
+			return true;
+		} else if (args[0].equalsIgnoreCase("!r")
+				|| args[0].toLowerCase().contains("reload")) {
+			PAA_Reload scmd = new PAA_Reload();
+			db.i("committing: " + scmd.getName());
+			for (Arena a : ArenaManager.getArenas()) {
+				scmd.commit(a, sender, new String[0]);
+			}
 			return true;
 		}
 
