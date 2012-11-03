@@ -4,6 +4,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -19,7 +20,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.6
  */
 
 public class PAA_Teleport extends PAA__Command {
@@ -53,7 +54,7 @@ public class PAA_Teleport extends PAA__Command {
 		}
 		
 		((Player) sender).teleport(loc.toLocation(), TeleportCause.PLUGIN);
-		((Player) sender).setNoDamageTicks(60);
+		((Player) sender).setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 	}
 
 	@Override

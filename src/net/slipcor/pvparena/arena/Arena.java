@@ -57,7 +57,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.6
  */
 
 public class Arena {
@@ -441,6 +441,13 @@ public class Arena {
 
 	public void goalAdd(ArenaGoal goal) {
 		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+		
+		for (ArenaGoal g : goals) {
+			if (goal.getName().equals(g.getName())) {
+				return;
+			}
+		}
+		
 		nugoal.setArena(this);
 		
 		goals.add(nugoal);
@@ -900,7 +907,7 @@ public class Arena {
 				cause, damager);
 
 		player.setFireTicks(0);
-		player.setNoDamageTicks(60);
+		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 	}
 
 	public void selectClass(ArenaPlayer ap, String cName) {
@@ -1130,7 +1137,7 @@ public class Arena {
 		}
 		ap.setTelePass(true);
 		player.teleport(loc.toLocation());
-		player.setNoDamageTicks(60);
+		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		ap.setTelePass(false);
 	}
 

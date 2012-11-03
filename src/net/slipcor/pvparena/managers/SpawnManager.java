@@ -13,7 +13,6 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
@@ -23,7 +22,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class SpawnManager {
@@ -259,62 +258,6 @@ public class SpawnManager {
 		}
 
 		return false;
-	}
-
-	/**
-	 * set an arena coord to a player's position
-	 * 
-	 * @param player
-	 *            the player saving the coord
-	 * @param place
-	 *            the coord name to save the location to
-	 */
-	public static void setCoords(Arena arena, Player player, String place) {
-		// "x,y,z,yaw,pitch"
-
-		Location location = player.getLocation();
-
-		Integer x = location.getBlockX();
-		Integer y = location.getBlockY();
-		Integer z = location.getBlockZ();
-		Float yaw = location.getYaw();
-		Float pitch = location.getPitch();
-
-		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
-				+ yaw.toString() + "," + pitch.toString();
-
-		db.i("setting spawn " + place + " to " + s.toString());
-
-		arena.getArenaConfig().setManually("spawns." + place, s);
-
-		arena.getArenaConfig().save();
-	}
-
-	/**
-	 * set an arena coord to a given location
-	 * 
-	 * @param loc
-	 *            the location to save
-	 * @param place
-	 *            the coord name to save the location to
-	 */
-	public static void setCoords(Arena arena, Location loc, String place) {
-		// "x,y,z,yaw,pitch"
-
-		Integer x = loc.getBlockX();
-		Integer y = loc.getBlockY();
-		Integer z = loc.getBlockZ();
-		Float yaw = loc.getYaw();
-		Float pitch = loc.getPitch();
-
-		String s = x.toString() + "," + y.toString() + "," + z.toString() + ","
-				+ yaw.toString() + "," + pitch.toString();
-
-		db.i("setting spawn " + place + " to " + s.toString());
-
-		arena.getArenaConfig().setManually("spawns." + place, s);
-
-		arena.getArenaConfig().save();
 	}
 
 	/**

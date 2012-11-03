@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class PAI_Help extends PA__Command {
@@ -69,6 +69,7 @@ public class PAI_Help extends PA__Command {
 				Arena.pmsg(sender, "/pa help blacklist");
 				Arena.pmsg(sender, "/pa help edit");
 				Arena.pmsg(sender, "/pa help install");
+				Arena.pmsg(sender, "/pa help import");
 				Arena.pmsg(sender, "/pa help protection");
 				Arena.pmsg(sender, "/pa help region");
 				Arena.pmsg(sender, "/pa help regionflag");

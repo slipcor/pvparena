@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class Help {
@@ -102,6 +102,13 @@ public class Help {
 				"Entering an invalid goal will list available goals",
 				"No value will toggle and display the result",
 				"Valid values: yes, on, 1, true, no, off, 0, false"}),
+		IMPORT("nulang.help.msg.import", new String[]{
+				"Import v0.8 arenas",
+				"-------------------------------------------",
+				"shorthand command: !imp",
+				"-------------------------------------------",
+				"/pa import | import all arenas",
+				"/pa import [arenaname] | import an arena"}),
 		INSTALL("nulang.help.msg.install", new String[]{
 				"Install modules",
 				"-------------------------------------------",

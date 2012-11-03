@@ -16,6 +16,8 @@ import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -27,7 +29,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class ConfigurationManager {
@@ -77,108 +79,7 @@ public class ConfigurationManager {
 				config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
 			}
 		}
-		/*
-		config.addDefault("tp.win", "old");
-		config.addDefault("tp.lose", "old");
-		config.addDefault("tp.exit", "exit");
-		config.addDefault("tp.death", "spectator");
-
-		config.addDefault("setup.wand", Integer.valueOf(280));
-
-		config.addDefault("game.allowDrops", Boolean.valueOf(true));
-		config.addDefault("game.dropSpawn", Boolean.valueOf(false));
-		config.addDefault("game.lives", Integer.valueOf(3));
-		config.addDefault("game.preventDeath", Boolean.valueOf(true));
-		config.addDefault("game.teamKill", Boolean.valueOf(arena.isFreeForAll()));
-		config.addDefault("game.refillInventory", Boolean.valueOf(false));
-		config.addDefault("game.weaponDamage", Boolean.valueOf(true));
-		config.addDefault("game.mustbesafe", Boolean.valueOf(false));
-		config.addDefault("game.woolFlagHead", Boolean.valueOf(false));
-
-		config.addDefault("messages.language", "en");
-		config.addDefault("messages.chat", Boolean.valueOf(true));
-		config.addDefault("messages.defaultChat", Boolean.valueOf(false));
-		config.addDefault("messages.onlyChat", Boolean.valueOf(false));
-
-		config.addDefault("general.classperms", Boolean.valueOf(false));
-		config.addDefault("general.enabled", Boolean.valueOf(true));
-		config.addDefault("general.restoreChests", Boolean.valueOf(false));
-		config.addDefault("general.signs", Boolean.valueOf(true));
-		config.addDefault("general.type", arena.isFreeForAll()?"free":"team");
-		config.addDefault("general.item-rewards", "none");
-		config.addDefault("general.random-reward", Boolean.valueOf(false));
-		config.addDefault("general.prefix", "PVP Arena");
-		config.addDefault("general.cmdfailjoin", Boolean.valueOf(true));
-
-		config.addDefault("region.spawncampdamage", Integer.valueOf(1));
-		config.addDefault("region.timer", Integer.valueOf(20));
 		
-		config.addDefault("join.explicitPermission", Boolean.valueOf(false));
-		config.addDefault("join.manual", Boolean.valueOf(!arena.isFreeForAll()));
-		config.addDefault("join.random", Boolean.valueOf(true));
-		config.addDefault("join.onCountdown", Boolean.valueOf(false));
-		config.addDefault("join.forceeven", Boolean.valueOf(false));
-		config.addDefault("join.inbattle", Boolean.valueOf(false));
-		config.addDefault("join.range", Integer.valueOf(0));
-		config.addDefault("join.warmup", Integer.valueOf(0));
-		
-		config.addDefault("arenatype.randomSpawn", arena.isFreeForAll());
-		config.addDefault("goal.timed", Integer.valueOf(0));
-		config.addDefault("goal.endtimer", Integer.valueOf(20));
-
-		config.addDefault("periphery.checkRegions", Boolean.valueOf(false));
-
-		config.addDefault("protection.spawn", Integer.valueOf(3));
-		config.addDefault("protection.restore", Boolean.valueOf(true));
-		config.addDefault("protection.enabled", Boolean.valueOf(true));
-		
-		config.addDefault("protection.blockplace", Boolean.valueOf(true));
-		config.addDefault("protection.blockdamage", Boolean.valueOf(true));
-		config.addDefault("protection.blocktntdamage", Boolean.valueOf(true));
-		config.addDefault("protection.decay", Boolean.valueOf(true));
-		config.addDefault("protection.drop", Boolean.valueOf(true));
-		config.addDefault("protection.fade", Boolean.valueOf(true));
-		config.addDefault("protection.form", Boolean.valueOf(true));
-		config.addDefault("protection.fluids", Boolean.valueOf(true));
-		config.addDefault("protection.firespread", Boolean.valueOf(true));
-		config.addDefault("protection.grow", Boolean.valueOf(true));
-		config.addDefault("protection.lavafirespread", Boolean.valueOf(true));
-		config.addDefault("protection.lighter", Boolean.valueOf(true));
-		config.addDefault("protection.painting", Boolean.valueOf(true));
-		config.addDefault("protection.piston", Boolean.valueOf(true));
-		config.addDefault("protection.punish", Boolean.valueOf(false));
-		config.addDefault("protection.tnt", Boolean.valueOf(true));
-		
-		config.addDefault("protection.checkExit", Boolean.valueOf(false));
-		config.addDefault("protection.checkSpectator", Boolean.valueOf(false));
-		config.addDefault("protection.checkLounges", Boolean.valueOf(false));
-		config.addDefault("protection.inventory", Boolean.valueOf(false));
-
-		config.addDefault("delays.giveitems", Integer.valueOf(0));
-		config.addDefault("delays.inventorysave", Integer.valueOf(0));
-		config.addDefault("delays.inventoryprepare", Integer.valueOf(0));
-		config.addDefault("delays.playerdestroy", Integer.valueOf(0));
-
-		config.addDefault("start.countdown", Integer.valueOf(5));
-		config.addDefault("start.health", Integer.valueOf(20));
-		config.addDefault("start.foodLevel", Integer.valueOf(20));
-		config.addDefault("start.saturation", Integer.valueOf(20));
-		config.addDefault("start.exhaustion", Float.valueOf(0));
-
-		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
-		config.addDefault("ready.block", "IRON_BLOCK");
-		config.addDefault("ready.checkEach", Boolean.valueOf(true));
-		config.addDefault("ready.checkEachTeam", Boolean.valueOf(true));
-		config.addDefault("ready.min", Integer.valueOf(2));
-		config.addDefault("ready.max", Integer.valueOf(0));
-		config.addDefault("ready.minTeam", Integer.valueOf(1));
-		config.addDefault("ready.maxTeam", Integer.valueOf(0));
-		config.addDefault("ready.autoclass", "none");
-		config.addDefault("ready.startRatio", Float.valueOf((float) 0.5));
-
-		config.addDefault("lang.youjoin", "Welcome to the Arena!");
-		config.addDefault("lang.playerjoin", "Player %1% joined team %2%");
-		*/
 		PVPArena.instance.getAgm().setDefaults(arena, config);
 
 		config.options().copyDefaults(true);
@@ -308,8 +209,12 @@ public class ConfigurationManager {
 		
 		String error = PVPArena.instance.getAmm().checkForMissingSpawns(arena, list);
 		if (error != null) {
-			return error;
+			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);
 		}
-		return PVPArena.instance.getAgm().checkForMissingSpawns(arena, list);
+		error = PVPArena.instance.getAgm().checkForMissingSpawns(arena, list);
+		if (error != null) {
+			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);
+		}
+		return null;
 	}
 }

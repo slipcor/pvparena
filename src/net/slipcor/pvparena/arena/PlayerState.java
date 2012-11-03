@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.6
  */
 
 public final class PlayerState {
@@ -131,7 +131,10 @@ public final class PlayerState {
 
 		ap.setTelePass(false);
 		player.setFireTicks(fireticks);
-		player.setNoDamageTicks(60);
+		
+		if (ap.getArena() != null) {
+			player.setNoDamageTicks(ap.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+		}
 	}
 
 	/**

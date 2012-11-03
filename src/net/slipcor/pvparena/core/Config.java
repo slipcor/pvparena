@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class Config {
@@ -63,6 +63,8 @@ public class Config {
 		GENERAL_TYPE("general.type", "none"),
 		GENERAL_WAND("general.wand", 280),
 
+		GOAL_ADDLIVESPERPLAYER("goal.addLivesPerPlayer", true),
+		
 		ITEMS_MINPLAYERS("items.minplayers", 2),
 		ITEMS_REWARDS("items.rewards", "none"),
 		ITEMS_RANDOM("items.random", true),
@@ -130,6 +132,8 @@ public class Config {
 		TIME_ENDCOUNTDOWN("goal.endCountDown", 5),
 		TIME_STARTCOUNTDOWN("time.startCountDown", 10),
 		TIME_REGIONTIMER("time.regionTimer", 10),
+		TIME_TELEPORTPROTECT("time.teleportProtect", 3),
+		TIME_WARMUPCOUNTDOWN("time.warmupCountDown", 0),
 
 		TP_DEATH("tp.death", "old"),
 		TP_EXIT("tp.exit", "old"),
@@ -655,6 +659,40 @@ public class Config {
 					"Some of the parsed values are null!");
 
 		return new PALocation(parts[0], x, y, z, pitch, yaw);
+	}
+
+	/**
+	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a Block
+	 * Location. This method will only accept strings of the specified form.
+	 * 
+	 * @param coords
+	 *            a string of the form "world,x,y,z,yaw,pitch"
+	 * @return a PALocation in the given world with the given coordinates
+	 */
+	@Deprecated
+	public static PALocation parseOldLocation(String coords, String world) {
+		String[] parts = coords.split(",");
+		// 245,45,-88,90.7486,2.5499942
+		if (parts.length == 3) {
+			coords += ",0.0,0.0";
+			parts = coords.split(",");
+		}
+		
+		if (parts.length != 5)
+			throw new IllegalArgumentException(
+					"Input string must contain x, y, z, yaw and pitch: " + coords);
+		
+		Integer x = parseInteger(parts[0]);
+		Integer y = parseInteger(parts[1]);
+		Integer z = parseInteger(parts[2]);
+		Float yaw = parseFloat(parts[3]);
+		Float pitch = parseFloat(parts[4]);
+
+		if (Bukkit.getWorld(world) == null || x == null || y == null || z == null || yaw == null || pitch == null)
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+
+		return new PALocation(world, x, y, z, pitch, yaw);
 	}
 	
 	/**

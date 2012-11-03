@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.SpawnManager;
 
 /**
@@ -16,7 +17,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.6
  */
 
 public class TeleportRunnable implements Runnable {
@@ -47,12 +48,12 @@ public class TeleportRunnable implements Runnable {
 				db.i("location is fine");
 				PALocation loc = ap.getLocation();
 				ap.get().teleport(loc.toLocation());
-				ap.get().setNoDamageTicks(60);
+				ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 			}
 		} else {
 			PALocation l = SpawnManager.getCoords(arena, string);
 			ap.get().teleport(l.toLocation());
-			ap.get().setNoDamageTicks(60);
+			ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 		ap.setLocation(null);
 	}

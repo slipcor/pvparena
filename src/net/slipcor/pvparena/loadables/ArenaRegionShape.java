@@ -44,7 +44,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.6
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
@@ -78,7 +78,17 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * </pre>
 	 */
 	public static enum RegionType {
-		CUSTOM, WATCH, LOUNGE, BATTLE, EXIT, JOIN
+		CUSTOM, WATCH, LOUNGE, BATTLE, EXIT, JOIN;
+
+		public static RegionType guessFromName(String name) {
+			name = name.toUpperCase();
+			for (RegionType rt : values()) {
+				if (name.endsWith(rt.name()) || name.startsWith(rt.name())) {
+					return rt;
+				}
+			}
+			return CUSTOM;
+		}
 	}
 
 	/**
@@ -496,6 +506,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void setType(RegionType type) {
 		this.type = type;
+		if (type.equals(RegionType.BATTLE)) {
+			protectionSetAll(true);
+		}
 	}
 
 	public void tick() {

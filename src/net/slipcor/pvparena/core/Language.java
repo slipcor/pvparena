@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.6
  */
 
 public class Language {
@@ -108,6 +108,7 @@ public class Language {
 		ERROR_JOIN_VEHICLE("nulang.error.insidevehicle", "You cannot join while on a vehicle!"),
 		ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'"),
 		ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
+		ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &f%1%"),
 		ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
 		ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
 		ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
@@ -183,6 +184,8 @@ public class Language {
 		HELP_CUSTOM("nulang.help.custom", "&e%1% - help customizing"),
 		HELP_GAME("nulang.help.game", "&a%1% - help ingame"),
 		HELP_INFO("nulang.help.info", "&9%1% - help getting information"),
+		
+		IMPORT_DONE("nulang.import.done", "Successfully imported arena &e%1%&r!"),
 		
 		INFO_CLASSES("nulang.info.classes", "Classes: &a%1%&r"),
 		INFO_GOAL_ACTIVE("nulang.info.goal_active", "Goal: &a%1%&r"),
