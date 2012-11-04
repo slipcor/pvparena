@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.1 - fix the Location->Block calculation
 * v0.9.6.0 - add /pa import [arenaname] - v0.8 import!
 * v0.9.5.21 - fix TeamDeathMatch kill announcement #2
 * v0.9.5.20 - fix TeamDeathMatch kill announcement
