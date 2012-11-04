@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -362,11 +363,18 @@ public class PACheck {
 			event.getDrops().clear();
 		}
 		
+
+		if (arena.isCustomClassAlive()
+				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+			InventoryManager.drop(player);
+			event.getDrops().clear();
+		}
+		
 		if (commit == null) {
 			// no mod handles player deaths, default to infinite lives. Respawn player
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
-
+			
 			new InventoryRefillRunnable(arena, player, event.getDrops());
 			
 			return;

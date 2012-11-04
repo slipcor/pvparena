@@ -902,6 +902,7 @@ public class Arena {
 		}
 
 		PlayerState.removeEffects(player);
+
 		
 		PVPArena.instance.getAmm().parseRespawn(this, player, team,
 				cause, damager);
