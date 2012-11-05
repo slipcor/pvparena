@@ -544,8 +544,9 @@ public class ArenaPlayer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (get() == null || get().isDead()) {
-			db.i("reset() ; out! null or dead");
+		
+		if (get() == null ) {
+			db.i("reset() ; out! null");
 			return;
 		}
 
