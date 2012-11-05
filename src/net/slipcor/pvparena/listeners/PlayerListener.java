@@ -295,7 +295,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		PACheck.handleInteract(arena, player, event.getClickedBlock());
+		PACheck.handleInteract(arena, player, event, event.getClickedBlock());
 
 		if (arena.isFightInProgress() && !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
 			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!");

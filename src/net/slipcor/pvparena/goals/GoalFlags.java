@@ -152,8 +152,6 @@ public class GoalFlags extends ArenaGoal {
 		Vector vFlag = null;
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-		
-		
 		if (paTeamFlags.containsValue(player.getName())) {
 			db.i("player " + player.getName() + " has got a flag");
 			vLoc = block.getLocation().toVector();

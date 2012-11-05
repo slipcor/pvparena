@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 
 import net.slipcor.pvparena.PVPArena;
@@ -179,7 +181,7 @@ public class PACheck {
 		return 0;
 	}
 
-	public static void handleInteract(Arena arena, Player player, Block clickedBlock) {
+	public static void handleInteract(Arena arena, Player player, Cancellable event, Block clickedBlock) {
 
 		int priority = 0;
 		PACheck res = new PACheck();
@@ -207,6 +209,8 @@ public class PACheck {
 		if (commit == null) {
 			return;
 		}
+		
+		event.setCancelled(true);
 		
 		commit.commitInteract(player, clickedBlock);
 	}
