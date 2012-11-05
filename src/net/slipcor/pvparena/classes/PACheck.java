@@ -35,7 +35,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.6
  */
 
 public class PACheck {
@@ -363,20 +363,18 @@ public class PACheck {
 			event.getDrops().clear();
 		}
 		
-
-		if (arena.isCustomClassAlive()
-				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			InventoryManager.drop(player);
-			event.getDrops().clear();
-		}
-		
 		if (commit == null) {
 			// no mod handles player deaths, default to infinite lives. Respawn player
 			
-			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
-			
 			new InventoryRefillRunnable(arena, player, event.getDrops());
+
+			if (arena.isCustomClassAlive()
+					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+				InventoryManager.drop(player);
+				event.getDrops().clear();
+			}
 			
+			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			return;
 		}
 		

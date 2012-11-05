@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.6
  */
 
 public class InventoryRefillRunnable implements Runnable {
@@ -30,7 +30,7 @@ public class InventoryRefillRunnable implements Runnable {
 	private Arena arena;
 	
 	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi) {
-		if (arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 			return;
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 3L);
