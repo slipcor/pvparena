@@ -41,6 +41,7 @@ import net.slipcor.pvparena.runnables.TeleportRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -1268,5 +1269,28 @@ public class Arena {
 		}
 		
 		cfg.setManually("rounds", result);
+	}
+
+	public Material getReadyBlock() {
+		Material mMat = Material.IRON_BLOCK;
+		db.i("reading ready block");
+		try {
+			mMat = Material
+					.getMaterial(getArenaConfig().getInt(CFG.READY_BLOCK));
+			if (mMat == Material.AIR)
+				mMat = Material.getMaterial(getArenaConfig()
+						.getString(CFG.READY_BLOCK));
+			db.i("mMat now is " + mMat.name());
+		} catch (Exception e) {
+			db.i("exception reading ready block");
+			String sMat = getArenaConfig().getString(CFG.READY_BLOCK);
+			try {
+				mMat = Material.getMaterial(sMat);
+				db.i("mMat now is " + mMat.name());
+			} catch (Exception e2) {
+				Language.log_warning(MSG.ERROR_MAT_NOT_FOUND, sMat);
+			}
+		}
+		return mMat;
 	}
 }

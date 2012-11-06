@@ -52,13 +52,25 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.6
  */
 
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(23);
 
 	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
+		if (!(event instanceof PlayerInteractEvent)) {
+			return false;
+		}
+		PlayerInteractEvent e = (PlayerInteractEvent) event;
+		Material mat = e.getClickedBlock().getType();
+		Material check = arena == null ? Material.IRON_BLOCK : arena.getReadyBlock();
+		if (mat == Material.SIGN || mat == check) {
+			db.i("signs and ready blocks allowed!");
+			db.i("> false");
+			return false;
+		}
+		
 		db.i("checkAndCommitCancel");
 		if (arena == null || player.hasPermission("pvparena.admin")) {
 			db.i("no arena or admin");
@@ -341,25 +353,7 @@ public class PlayerListener implements Listener {
 
 			db.i("block click!");
 
-			Material mMat = Material.IRON_BLOCK;
-			db.i("reading ready block");
-			try {
-				mMat = Material
-						.getMaterial(arena.getArenaConfig().getInt(CFG.READY_BLOCK));
-				if (mMat == Material.AIR)
-					mMat = Material.getMaterial(arena.getArenaConfig()
-							.getString(CFG.READY_BLOCK));
-				db.i("mMat now is " + mMat.name());
-			} catch (Exception e) {
-				db.i("exception reading ready block");
-				String sMat = arena.getArenaConfig().getString(CFG.READY_BLOCK);
-				try {
-					mMat = Material.getMaterial(sMat);
-					db.i("mMat now is " + mMat.name());
-				} catch (Exception e2) {
-					Language.log_warning(MSG.ERROR_MAT_NOT_FOUND, sMat);
-				}
-			}
+			Material mMat = arena.getReadyBlock();
 			db.i("clicked " + block.getType().name() + ", is it " + mMat.name()
 					+ "?");
 			if (block.getTypeId() == mMat.getId()) {
