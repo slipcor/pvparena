@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
 		PlayerInteractEvent e = (PlayerInteractEvent) event;
 		Material mat = e.getClickedBlock().getType();
 		Material check = arena == null ? Material.IRON_BLOCK : arena.getReadyBlock();
-		if (mat == Material.SIGN || mat == check) {
+		if (mat == Material.SIGN || mat == Material.SIGN_POST || mat == Material.WALL_SIGN || mat == check) {
 			db.i("signs and ready blocks allowed!");
 			db.i("> false");
 			return false;

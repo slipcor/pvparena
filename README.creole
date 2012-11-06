@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.8 - there are more signs!
 * v0.9.6.7 - allow readying up and using signs in the lounge
 * v0.9.6.6 - add a bit more of debug
 * v0.9.6.5 - fix an NPE in the InventoryRefillRunnable
