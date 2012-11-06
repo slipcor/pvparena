@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.6 - add a bit more of debug
 * v0.9.6.5 - fix an NPE in the InventoryRefillRunnable
 * v0.9.6.4 - fix issue #81
 * v0.9.6.3 - fix the last commit which in fact broke more than it should fix

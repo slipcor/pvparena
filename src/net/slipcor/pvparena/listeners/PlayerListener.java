@@ -59,11 +59,16 @@ public class PlayerListener implements Listener {
 	private static Debug db = new Debug(23);
 
 	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
+		db.i("checkAndCommitCancel");
 		if (arena == null || player.hasPermission("pvparena.admin")) {
+			db.i("no arena or admin");
+			db.i("> false");
 			return false;
 		}
 		
 		if (arena != null && !arena.isFightInProgress()) {
+			db.i("arena != null and fight in progress => cancel");
+			db.i("> true");
 			event.setCancelled(true);
 			return true;
 		}
@@ -71,10 +76,13 @@ public class PlayerListener implements Listener {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		
 		if (ap.getStatus() != Status.FIGHT) {
+			db.i("not fighting => cancel");
+			db.i("> true");
 			event.setCancelled(true);
 			return true;
 		}
-		
+
+		db.i("> false");
 		return false;
 	}
 
