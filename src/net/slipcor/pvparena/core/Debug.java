@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.6
  */
 
 public class Debug {
@@ -86,7 +86,7 @@ public class Debug {
 		String debugs = instance.getConfig().getString("debug");
 		if (!debugs.equals("none")) {
 			if (debugs.equals("all") || debugs.equals("full")) {
-				Debug.check.add(666);
+				Debug.check.add(666);override = true;
 				ArenaManager.tellPlayer(sender, "debugging EVERYTHING");
 			} else {
 				String[] sIds = debugs.split(",");

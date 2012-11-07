@@ -313,6 +313,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				protections.add(rp);
 	}
 	
+	
 	@Override
 	public ArenaRegionShape clone() {
 		if (this.shape == null || this.shape.equals(RegionShape.CUBOID)) {
