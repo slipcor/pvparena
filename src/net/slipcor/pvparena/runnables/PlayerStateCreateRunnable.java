@@ -39,9 +39,9 @@ public class PlayerStateCreateRunnable implements Runnable {
 			Bukkit.getPluginManager().callEvent(event);
 
 			a.createState(p);
+			ArenaPlayer.backupAndClearInventory(arena, p);
 			a.dump();
 			
-			ArenaPlayer.prepareInventory(arena, p);
 			
 			if (a.getArenaClass() == null) {
 				String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);

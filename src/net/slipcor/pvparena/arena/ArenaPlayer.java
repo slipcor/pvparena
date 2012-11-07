@@ -227,7 +227,7 @@ public class ArenaPlayer {
 	 * @param player
 	 *            the player to save
 	 */
-	public static void prepareInventory(Arena arena, Player player) {
+	public static void backupAndClearInventory(Arena arena, Player player) {
 		InventoryManager.db.i("saving player inventory: " + player.getName());
 
 		ArenaPlayer p = parsePlayer(player.getName());
@@ -291,6 +291,7 @@ public class ArenaPlayer {
 
 	private void clearDump() {
 		db.i("clearing dump of " + name);
+		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		if (!f.exists()) {
@@ -312,8 +313,30 @@ public class ArenaPlayer {
 	public boolean didValidSelection() {
 		return selection[0] != null && selection[1] != null;
 	}
+	
+	public void debugPrint() {
+		if (!Debug.override || status == null) {
+			return;
+		}
+		db.i("------------------");
+		db.i("Player: " + name);
+		db.i("telepass: " + String.valueOf(telePass) + " | chatting: "+ String.valueOf(publicChatting)  );
+		db.i("arena: " + (arena == null ? "null" : arena.getName()));
+		db.i("aClass: " + (aClass == null ? "null" : aClass.getName()));
+		db.i("location: " + ((PALocation) location).toString());
+		db.i("status: " + status.name());
+		db.i("savedInventory: " + StringParser.getStringFromItemStacks(savedInventory));
+		db.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor));
+		db.i("tempPermissions:");
+		for (PermissionAttachment pa : tempPermissions) {
+			db.i("> " + pa.toString());
+		}
+		db.i("------------------");
+	}
 
 	public void dump() {
+		db.i("dumping...");
+		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		try {
@@ -460,6 +483,7 @@ public class ArenaPlayer {
 
 	public void readDump() {
 		db.i("reading dump: " + name);
+		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		if (!f.exists()) {
@@ -503,6 +527,7 @@ public class ArenaPlayer {
 	 */
 	public void reset() {
 		db.i("destroying arena player " + name);
+		debugPrint();
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			if (PVPArena.instance.getConfig().getBoolean("stats")) {
@@ -611,7 +636,6 @@ public class ArenaPlayer {
 	}
 
 	public void setLocation(PALocation location) {
-		db.i(location == null ? "null" : location.toString());
 		this.location = location;
 	}
 

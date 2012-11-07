@@ -276,6 +276,7 @@ public class PACheck {
 				return;
 			} else if (team == null) {
 				arena.msg(sender, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+				return;
 			}
 			
 			if ((commModule == null) || (commGoal == null)) {
