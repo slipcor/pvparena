@@ -42,7 +42,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.2
+ * @version v0.9.6
  */
 
 public class ArenaPlayer {
@@ -507,7 +507,10 @@ public class ArenaPlayer {
 		location = Config.parseLocation(cfg.getString("loc"));
 		
 		if (arena != null) {
-			location = SpawnManager.getCoords(arena, "exit");
+			String goTo = arena.getArenaConfig().getString(CFG.TP_EXIT);
+			if (!goTo.equals("old")) {
+				location = SpawnManager.getCoords(arena, "exit");
+			}
 			
 			if (Bukkit.getPlayer(name) == null) {
 				db.i("player offline, OUT!");
@@ -517,6 +520,7 @@ public class ArenaPlayer {
 		}
 
 		f.delete();
+		debugPrint();
 	}
 
 	/**

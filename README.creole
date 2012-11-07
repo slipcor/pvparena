@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.12 - fix saved players not being physically reset
 * v0.9.6.11 - quick debug NPE fix
 * v0.9.6.10 - re-enable Debug override
 * v0.9.6.9 - fix inventory loss because of disconnect and server crash, finally
