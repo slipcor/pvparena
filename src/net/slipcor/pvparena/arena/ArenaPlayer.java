@@ -315,7 +315,7 @@ public class ArenaPlayer {
 	}
 	
 	public void debugPrint() {
-		if (!Debug.override || status == null) {
+		if (!Debug.override || status == null || location == null) {
 			return;
 		}
 		db.i("------------------");
