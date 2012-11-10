@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.15 - fix .10
 * v0.9.6.14 - fix the FFA game mode team count logic
 * v0.9.6.13 - globally activate head gear removal prevention
 * v0.9.6.12 - fix saved players not being physically reset

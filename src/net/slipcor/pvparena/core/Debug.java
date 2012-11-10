@@ -83,10 +83,12 @@ public class Debug {
 
 	public static void load(PVPArena instance, CommandSender sender) {
 		Debug.check.clear();
+		override = false;
 		String debugs = instance.getConfig().getString("debug");
 		if (!debugs.equals("none")) {
 			if (debugs.equals("all") || debugs.equals("full")) {
-				Debug.check.add(666);override = true;
+				Debug.check.add(666);
+				override = true;
 				ArenaManager.tellPlayer(sender, "debugging EVERYTHING");
 			} else {
 				String[] sIds = debugs.split(",");
