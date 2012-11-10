@@ -65,9 +65,7 @@ public abstract class PA__Command {
 		
 		name = name.toLowerCase();
 		
-		if (name.contains("autosetup") || name.equals("!as")) {
-			return new PAA_AutoSetup();
-		} else if (name.contains("create") || name.equals("!c") || name.equals("new")) {
+		if (name.contains("create") || name.equals("!c") || name.equals("new")) {
 			return new PAA_Create();
 		} else if (name.contains("debug") || name.equals("!d")) {
 			return new PAA_Debug();

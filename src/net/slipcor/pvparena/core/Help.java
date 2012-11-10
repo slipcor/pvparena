@@ -25,7 +25,6 @@ public class Help {
 	private static String version = "v0.9.5.5";
 	
 	public static enum HELP {
-		//AUTOSETUP("nulang.help.msg.autosetup", new String[]{}),
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{
 				"Manages block break/place blacklist entries",
 				"-------------------------------------------",

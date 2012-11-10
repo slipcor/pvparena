@@ -17,7 +17,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.6
  */
 
 public class InventoryListener implements Listener {
@@ -34,6 +34,18 @@ public class InventoryListener implements Listener {
 		}
 
 		db.i("InventoryClick: arena player");
+		
+		if (event.getInventory().getType()
+			.equals(InventoryType.CRAFTING)) {
+			// we are inside the standard 
+			if (event.getRawSlot() != 5) {
+				return;
+			}
+			if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
+				event.setCancelled(true);
+				return;
+			}
+		}
 
 		if (!BlockListener.isProtected(event.getWhoClicked().getLocation(), event, RegionProtection.INVENTORY)) {
 			// we don't need no protection => out!
@@ -43,15 +55,6 @@ public class InventoryListener implements Listener {
 		if (event.isShiftClick()) {
 			// we never want shift clicking!
 			event.setCancelled(true);
-			return;
-		}
-		if (event.getInventory().getType()
-			.equals(InventoryType.CRAFTING)) {
-			// we are inside the standard 
-			if (event.getRawSlot() != 5) {
-				return;
-			}
-			event.setCancelled(arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD));
 			return;
 		}
 
