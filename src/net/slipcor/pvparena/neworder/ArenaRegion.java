@@ -227,9 +227,7 @@ public class ArenaRegion extends NCLoadable {
 			if (type.equals(RegionType.DEATH)) {
 				if (this.contains(ap.get().getLocation())) {
 					Arenas.tellPlayer(ap.get(), Language.parse("deathregion"));
-					arena.playerLeave(ap.get(), "lose");
-					PALoseEvent e = new PALoseEvent(arena, ap.get());
-					Bukkit.getPluginManager().callEvent(e);
+					ap.get().damage(1000);
 				}
 			} else if (type.equals(RegionType.WIN)) {
 				if (this.contains(ap.get().getLocation())) {
