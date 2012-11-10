@@ -48,6 +48,7 @@ public class ConfigurationManager {
 		YamlConfiguration config = cfg.getYamlConfiguration();
 
 		if (cfg.getString(CFG.GENERAL_TYPE, "null") != null && !cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
+			System.out.print(cfg.getString(CFG.GENERAL_TYPE));
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 			
@@ -116,6 +117,8 @@ public class ConfigurationManager {
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
 		arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
 		arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
+		arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
+		System.out.print(cfg.getString(CFG.GENERAL_TYPE));
 		if (config.getConfigurationSection("arenaregion") != null) {
 			Map<String, Object> regs = config
 					.getConfigurationSection("arenaregion").getValues(false);
@@ -155,7 +158,7 @@ public class ConfigurationManager {
 				.getValues(true);
 
 		if (arena.isFreeForAll()) {
-			arena.getTeams().add(new ArenaTeam("free", "WHITE"));
+			//arena.getTeams().add(new ArenaTeam("free", "WHITE"));
 			arena.getArenaConfig().set(CFG.PERMS_TEAMKILL, true);
 			arena.getArenaConfig().save();
 		} else {

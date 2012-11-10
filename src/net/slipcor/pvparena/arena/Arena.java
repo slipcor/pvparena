@@ -933,6 +933,10 @@ public class Arena {
 
 	public void setFree(boolean b) {
 		free = b;
+		if (free) {
+			teams.clear();
+			teams.add(new ArenaTeam("free", "WHITE"));
+		}
 	}
 
 	public void setOwner(String owner) {

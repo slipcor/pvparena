@@ -392,6 +392,10 @@ public class Language {
 		MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
 		MODULE_SKINS_NOMOBDISGUISE("nulang.mod.skins.nomd", "MobDisguise not found, Skins module is inactive!"),
 
+		MODULE_SPECIALJOIN_DONE("nulang.mod.specialjoin.done", "Join block set here - %1%"),
+		MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),
+		MODULE_SPECIALJOIN_STOP("nulang.mod.specialjoin.stop", "Aborted join block selection!"),
+
 		MODULE_STARTFREEZE_ANNOUNCE("nulang.mod.startfreeze.announce", "The game will start in %1% seconds!"),
 
 		MODULE_TEMPPERMS_NOPERMS("nulang.mod.tempperms.noperms", "Permissions plugin not found, defaulting to OP."),

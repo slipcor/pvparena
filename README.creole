@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.14 - fix the FFA game mode team count logic
 * v0.9.6.13 - globally activate head gear removal prevention
 * v0.9.6.12 - fix saved players not being physically reset
 * v0.9.6.11 - quick debug NPE fix
@@ -180,7 +181,6 @@ A PVP experience enhancing plugin.
 **
 * modules
 ** item spawns: [time | item | location]
-** join via position / portal / etc
 ** WorldEdit & WorldGuard hooking (via module)
 ** Map switch via WorldEdit (someone told me this would be damn quick .. :) )
 ** IRC (announcements)
