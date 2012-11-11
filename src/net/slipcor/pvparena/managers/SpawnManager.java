@@ -104,7 +104,7 @@ public class SpawnManager {
 		String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + place));
 		db.i("parsing location: " + sLoc);
 		PALocation result;
-		if (place.contains("flag")) {
+		if (place.contains("flag") || place.startsWith("switch")) {
 			result = new PALocation(Config.parseBlockLocation(sLoc).toLocation());
 		} else {
 			result = Config.parseLocation(sLoc);
