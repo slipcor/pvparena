@@ -31,6 +31,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
@@ -441,13 +442,19 @@ public class GoalFlags extends ArenaGoal {
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
 	
+		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
+		
+		if (arena.isCustomClassAlive()
+				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+			InventoryManager.drop(respawnPlayer);
+			event.getDrops().clear();
+		}
+		
 		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
-				+ "spawn");	
+				+ "spawn");
 		
 		arena.unKillPlayer(respawnPlayer, event.getEntity()
 				.getLastDamageCause().getCause(), respawnPlayer.getKiller());
-
-		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
 	}
 	
 	@Override

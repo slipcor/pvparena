@@ -21,6 +21,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
@@ -176,14 +177,20 @@ public class GoalTeamLives extends ArenaGoal {
 					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
 					String.valueOf(lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
-		
-			arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
+
+			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
+			
+			if (arena.isCustomClassAlive()
+					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+				InventoryManager.drop(respawnPlayer);
+				event.getDrops().clear();
+			}
+			
+			arena.tpPlayerToCoordName(respawnPlayer, (arena.isFreeForAll()?"":respawnTeam.getName())
 					+ "spawn");
 			
 			arena.unKillPlayer(respawnPlayer, event.getEntity()
 					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
-			
-			new InventoryRefillRunnable(arena, event.getEntity(), event.getDrops());
 		}
 	}
 
