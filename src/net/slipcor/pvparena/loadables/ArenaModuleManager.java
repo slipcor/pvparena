@@ -574,8 +574,13 @@ public class ArenaModuleManager {
 
 	public void parseRespawn(Arena arena, Player player, ArenaTeam team, DamageCause cause, Entity damager) {
 		for (ArenaModule mod : modules) {
-			if (mod.isActive(arena))
-				mod.parseRespawn(arena, player, team, cause, damager);
+			if (mod.isActive(arena)) {
+				try {
+					mod.parseRespawn(arena, player, team, cause, damager);
+				} catch (Exception e) {
+					PVPArena.instance.getLogger().warning("Module had NPE on Respawn: " + mod.getName());
+				}
+			}
 		}
 	}
 

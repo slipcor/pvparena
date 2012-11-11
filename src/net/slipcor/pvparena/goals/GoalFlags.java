@@ -434,9 +434,6 @@ public class GoalFlags extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
-		if (respawnPlayer.getKiller() == null) {
-			return;
-		}
 		
 		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
 		

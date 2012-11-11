@@ -888,6 +888,7 @@ public class Arena {
 	 */
 	public void unKillPlayer(Player player, DamageCause cause,
 			Entity damager) {
+		
 		db.i("respawning player " + player.getName());
 		PlayerState.playersetHealth(player, getArenaConfig().getInt(CFG.PLAYER_HEALTH, 20));
 		player.setFoodLevel(getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL, 20));
@@ -904,7 +905,6 @@ public class Arena {
 
 		PlayerState.removeEffects(player);
 
-		
 		PVPArena.instance.getAmm().parseRespawn(this, player, team,
 				cause, damager);
 
