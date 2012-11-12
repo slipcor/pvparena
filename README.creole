@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.20 - fix regions being messed on restarting 
 * v0.9.6.19 - more debug
 * v0.9.6.18 - Items
 * v0.9.6.17 - aiming to fix the player drops being dropped at the respawn position instead of the death position
