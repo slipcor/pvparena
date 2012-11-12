@@ -707,7 +707,7 @@ public class Config {
 		
 		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
 		
-		if (parts.length < 9)
+		if (parts.length < 11)
 			throw new IllegalArgumentException(
 					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: " + coords);
 		
