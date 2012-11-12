@@ -118,9 +118,11 @@ public class ConfigurationManager {
 		arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
 		arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 		if (config.getConfigurationSection("arenaregion") != null) {
+			db.i("arenaregion not null");
 			Map<String, Object> regs = config
 					.getConfigurationSection("arenaregion").getValues(false);
 			for (String rName : regs.keySet()) {
+				db.i("arenaregion '"+rName+"'");
 				ArenaRegionShape region = Config.parseRegion(arena, config, rName);
 				
 				if (region == null) {
@@ -131,6 +133,8 @@ public class ConfigurationManager {
 					arena.getRegions().add(region);
 				}
 			}
+		} else {
+			db.i("arenaregion null");
 		}
 		arena.setRoundMap(config.getStringList("rounds"));
 

@@ -309,13 +309,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public void applyProtections(int p) {
-		db.i("applying protections: " + p);
 		for (RegionProtection rp : RegionProtection.values()) {
 			if ((p & (int)Math.pow(2, rp.ordinal())) != 0) {
 				protections.add(rp);
-				db.i(rp.name());
-			} else {
-				db.i("!" + rp.name());
 			}
 		}
 	}

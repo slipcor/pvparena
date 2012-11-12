@@ -702,6 +702,7 @@ public class Config {
 	 * 
 	 */
 	public static ArenaRegionShape parseRegion(Arena arena, YamlConfiguration config, String regionName) {
+		System.out.print("parsing region");
 		String coords = config.getString("arenaregion." + regionName);
 		String[] parts = coords.split(",");
 		
@@ -715,7 +716,6 @@ public class Config {
 			throw new IllegalArgumentException(
 					"Input string does not contain valid region shape: " + coords);
 		}
-		
 		Integer x1 = parseInteger(parts[1]);
 		Integer y1 = parseInteger(parts[2]);
 		Integer z1 = parseInteger(parts[3]);
@@ -729,6 +729,7 @@ public class Config {
 				|| z2 == null || flags == null || prots == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
+
 		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };
 		
@@ -736,6 +737,7 @@ public class Config {
 		region.applyFlags(flags);
 		region.applyProtections(prots);
 		region.setType(RegionType.valueOf(parts[10]));
+		region.saveToConfig();
 
 		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
 		
