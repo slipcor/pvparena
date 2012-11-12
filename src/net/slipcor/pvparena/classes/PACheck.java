@@ -279,6 +279,8 @@ public class PACheck {
 				return;
 			}
 			
+			arena.markPlayedPlayer(sender.getName());
+			
 			if ((commModule == null) || (commGoal == null)) {
 				if (commModule != null) {
 					commModule.commitJoin(arena, (Player) sender, team);

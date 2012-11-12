@@ -1304,4 +1304,8 @@ public class Arena {
 	public boolean hasAlreadyPlayed(String s) {
 		return playedPlayers.contains(s);
 	}
+
+	public void markPlayedPlayer(String s) {
+		playedPlayers.add(s);
+	}
 }
