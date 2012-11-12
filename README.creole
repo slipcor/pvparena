@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.18 - Items
 * v0.9.6.17 - aiming to fix the player drops being dropped at the respawn position instead of the death position
 * v0.9.6.16 - fix non-pvp deaths messing up the Flags goal
 * v0.9.6.15 - fix .10
@@ -183,18 +184,13 @@ A PVP experience enhancing plugin.
 * plugin
 **
 * modules
-** item spawns: [time | item | location]
 ** WorldEdit & WorldGuard hooking (via module)
 ** Map switch via WorldEdit (someone told me this would be damn quick .. :) )
 ** IRC (announcements)
-** player relay (stick players into a dark room while: joining / being dead / having lost)
 * goals
 ** tournament arenas ; rounds switch through arenas
 ** king of the hill -> FFAEN
-** furnace -> domination FoodFury
-* add region checks to:
-** join the lounge
-** join a ready region
+** furnace -> domination FoodFury	
 
 -----------------------------------------------------------------------------------------------------------------------
 

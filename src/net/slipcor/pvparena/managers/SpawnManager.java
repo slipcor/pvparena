@@ -184,6 +184,8 @@ public class SpawnManager {
 				}
 			} else if (name.contains("lounge")) {
 				continue;
+			} else if (sTeam.equals("item") && !name.startsWith("item")) {
+				continue;
 			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
 				continue;
 			}
