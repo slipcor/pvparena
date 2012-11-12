@@ -50,7 +50,7 @@ public class PAG_Join extends PAA__Command {
 		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
-		if (ap.getArena() != null) {
+		if (ap.getArena() != null || arena.hasAlreadyPlayed(ap.getName())) {
 			Arena a = ap.getArena();
 			a.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, a.getName()));
 			return;

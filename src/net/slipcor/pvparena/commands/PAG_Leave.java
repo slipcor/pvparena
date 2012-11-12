@@ -51,7 +51,6 @@ public class PAG_Leave extends PAA__Command {
 			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
-		
 
 		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
 			if (mod.isActive(arena)) {

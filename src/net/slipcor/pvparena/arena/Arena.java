@@ -68,6 +68,7 @@ public class Arena {
 	private final HashSet<ArenaRegionShape> regions = new HashSet<ArenaRegionShape>();
 	private final HashSet<PAClassSign> signs = new HashSet<PAClassSign>();
 	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
+	private final HashSet<String> playedPlayers = new HashSet<String>();
 	private PARoundMap rounds;
 
 	private static String globalprefix = "PVP Arena";
@@ -600,6 +601,7 @@ public class Arena {
 		
 		if (!fightInProgress) {
 			startCount--;
+			playedPlayers.remove(player.getName());
 		}
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -829,6 +831,7 @@ public class Arena {
 			as.clear();
 		}
 		signs.clear();
+		playedPlayers.clear();
 		reset_players(force);
 		setFightInProgress(false);
 
@@ -1296,5 +1299,9 @@ public class Arena {
 			}
 		}
 		return mMat;
+	}
+
+	public boolean hasAlreadyPlayed(String s) {
+		return playedPlayers.contains(s);
 	}
 }
