@@ -220,6 +220,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public static ArenaRegionShape create(Arena arena, String name,
 			RegionShape shape, PABlockLocation[] locs) {
+		db.i("public static ArenaRegionShape create");
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
 		} else if (shape.equals(RegionShape.SPHERIC)) {
@@ -322,6 +323,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	
 	@Override
 	public ArenaRegionShape clone() {
+		db.i("clone()");
 		if (this.shape == null || this.shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(this.arena, this.getName(), this.locs);
 		} else if (this.shape.equals(RegionShape.CYLINDRIC)) {

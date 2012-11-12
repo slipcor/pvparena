@@ -703,7 +703,7 @@ public class Config {
 	 */
 	public static ArenaRegionShape parseRegion(Arena arena, YamlConfiguration config, String regionName) {
 		String coords = config.getString("arenaregion." + regionName);
-		String[] parts = coords.split(","); 
+		String[] parts = coords.split(",");
 		
 		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
 		
