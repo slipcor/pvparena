@@ -718,22 +718,28 @@ public class GoalFlags extends ArenaGoal {
 	
 	@Override
 	public void unload(Player player) {
+		disconnect(ArenaPlayer.parsePlayer(player.getName()));
+	}
+	
+	@Override
+	public void disconnect(ArenaPlayer ap) {
 		if (paTeamFlags == null) {
 			return;
 		}
 		
 		ArenaTeam flagTeam = arena.getTeam(
-				getHeldFlagTeam(arena, player.getName()));
+				getHeldFlagTeam(arena, ap.getName()));
 		if (flagTeam != null) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
-					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
+					ap.getArenaTeam().getColorCodeString() + ap.getName() + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
 			paTeamFlags.remove(flagTeam.getName());
 			if (paHeadGears != null
-					&& paHeadGears.get(player.getName()) != null) {
-				player.getInventory().setHelmet(
-						paHeadGears.get(player.getName()).clone());
-				paHeadGears.remove(player.getName());
+					&& paHeadGears.get(ap.getName()) != null) {
+				if (ap.get() != null) {
+					ap.get().getInventory().setHelmet(
+						paHeadGears.get(ap.getName()).clone());
+				}
+				paHeadGears.remove(ap.getName());
 			}
 
 			takeFlag(flagTeam.getColor().name(), false,

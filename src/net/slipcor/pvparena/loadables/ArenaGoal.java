@@ -234,4 +234,9 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public String version() {
 		return "outdated";
 	}
+
+
+
+	public void disconnect(ArenaPlayer player) {
+	}
 }

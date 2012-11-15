@@ -99,6 +99,8 @@ public final class PlayerState {
 		Player player = Bukkit.getPlayerExact(sPlayer);
 		
 		if (player == null) {
+			ArenaPlayer ap = ArenaPlayer.parsePlayer(sPlayer);
+			PVPArena.instance.getAgm().disconnect(ap.getArena(), ap);
 			return;
 		}
 		db.i("restoring PlayerState of " + sPlayer);

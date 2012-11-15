@@ -329,4 +329,13 @@ public class ArenaGoalManager {
 		}
 	}
 
+	public void disconnect(Arena arena, ArenaPlayer player) {
+		if (arena == null) {
+			return;
+		}
+		for (ArenaGoal type : arena.getGoals()) {
+			type.disconnect(player);
+		}
+	}
+
 }
