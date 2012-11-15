@@ -130,7 +130,7 @@ public class ConfigurationManager {
 				} else if (region.getWorld() == null) {
 					PVPArena.instance.getLogger().severe("Error while loading arena, world null: " + rName);
 				} else {
-					arena.getRegions().add(region);
+					arena.addRegion(region);
 				}
 			}
 		} else {

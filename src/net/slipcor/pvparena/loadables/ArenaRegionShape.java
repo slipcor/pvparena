@@ -312,6 +312,8 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		for (RegionProtection rp : RegionProtection.values()) {
 			if ((p & (int)Math.pow(2, rp.ordinal())) != 0) {
 				protections.add(rp);
+			} else {
+				protections.remove(rp);
 			}
 		}
 	}
@@ -336,7 +338,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void flagAdd(RegionFlag rf) {
 		flags.add(rf);
-		saveToConfig();
 	}
 
 	public boolean flagToggle(RegionFlag rf) {
@@ -350,7 +351,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void flagRemove(RegionFlag rf) {
 		flags.remove(rf);
-		saveToConfig();
 	}
 
 	public Arena getArena() {
@@ -421,11 +421,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			return;
 		}
 		protections.add(rp);
-		saveToConfig();
 	}
 
 	public boolean protectionSetAll(Boolean b) {
-
 		for (RegionProtection rp : RegionProtection.values()) {
 			if (rp == null) {
 				getArena().msg(Bukkit.getConsoleSender(),
@@ -441,8 +439,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			}
 		}
 
-		saveToConfig();
-
 		return true;
 	}
 
@@ -455,7 +451,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		} else {
 			protections.add(rp);
 		}
-		saveToConfig();
 		return protections.contains(rp);
 	}
 
@@ -465,7 +460,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			return;
 		}
 		protections.remove(rp);
-		saveToConfig();
 	}
 
 	public void reset() {
@@ -511,9 +505,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void setType(RegionType type) {
 		this.type = type;
-		if (type.equals(RegionType.BATTLE)) {
-			protectionSetAll(true);
-		}
 	}
 
 	public void tick() {

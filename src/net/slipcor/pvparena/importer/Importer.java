@@ -185,8 +185,6 @@ public class Importer {
 			
 			a.addRegion(ars);
 			ars.saveToConfig();
-			
-			
 		}
 		a.getArenaConfig().save();
 	}
@@ -241,9 +239,13 @@ public class Importer {
 				new PABlockLocation(arena.getWorld(), x2, y2, z2) };
 		
 		ArenaRegionShape region = ArenaRegionShape.create(arena, name, rs, l);
-		region.applyFlags(flags);
-		region.applyProtections(prots);
+		//region.applyFlags(flags);
+		//region.applyProtections(prots);
 		region.setType(RegionType.guessFromName(name));
+		if (region.getType().equals(RegionType.BATTLE)) {
+			region.protectionSetAll(true);
+		}
+		region.saveToConfig();
 
 		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
 		

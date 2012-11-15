@@ -119,8 +119,21 @@ public class PACheck {
 			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
 			return false;
 		}
-		if (commit == null)
+		if (commit == null) {
+			ArenaModule mod = null;
+			
+			for (ArenaModule am : PVPArena.instance.getAmm().getModules()) {
+				if (am.isActive(arena)) {
+					if (am.checkCommand(args[0])) {
+						am.commitCommand(arena, sender, args);
+						return true;
+					}
+				}
+			}
+			
+			
 			return false;
+		}
 		
 		commit.commitCommand(sender, args);
 		return true;

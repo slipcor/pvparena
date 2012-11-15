@@ -91,6 +91,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	}
 
 	public void commitCommand(Arena arena, CommandSender sender, String[] args) {
+		throw new IllegalStateException();
 	}
 
 	/**

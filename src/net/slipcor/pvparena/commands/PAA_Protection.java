@@ -67,18 +67,21 @@ public class PAA_Protection extends PAA__Command {
 			} else {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
 			}
+			region.saveToConfig();
 			return;
 		}
 
 		if (StringParser.positive.contains(args[2].toLowerCase())) {
 			region.protectionAdd(rf);
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
+			region.saveToConfig();
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[2].toLowerCase())) {
 			region.protectionRemove(rf);
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
+			region.saveToConfig();
 			return;
 		}
 			

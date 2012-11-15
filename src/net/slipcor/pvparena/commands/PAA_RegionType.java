@@ -58,6 +58,9 @@ public class PAA_RegionType extends PAA__Command {
 		}
 		
 		region.setType(rf);
+		if (rf.equals(RegionType.BATTLE)) {
+			region.protectionSetAll(true);
+		}
 		region.saveToConfig();
 		arena.msg(sender, Language.parse(MSG.REGION_TYPE_SET, rf.name()));
 	

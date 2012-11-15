@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.24 - fix regions activating all protections on server start
 * v0.9.6.23 - fix players being able to re-join a match
 * v0.9.6.20 - fix regions being messed on restarting 
 * v0.9.6.19 - more debug
@@ -71,7 +72,7 @@ A PVP experience enhancing plugin.
 * v0.9.5.20 - fix TeamDeathMatch kill announcement
 * v0.9.5.19 - add default spawn "exit" to possible spawns
 * v0.9.5.18 - reactivate /pa reload
-* v0.9.5.17 - enhance and finish the help system
+* v0.9.5.17 - enhance and finish the help system	
 * v0.9.5.16 - fix issue #72.1 | block offset in negative X/Z ranges - fix issue #72.1 | block offset in negative X/Z ranges 
 * v0.9.5.15 - fix issue #71
 * v0.9.5.14 - hotfix

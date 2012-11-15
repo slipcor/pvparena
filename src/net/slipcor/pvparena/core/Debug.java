@@ -36,6 +36,10 @@ public class Debug {
 		id = i;
 	}
 
+	public void debug() {
+		System.out.print("debugger: " + id);
+	}
+
 	/**
 	 * does this class debug?
 	 * 
