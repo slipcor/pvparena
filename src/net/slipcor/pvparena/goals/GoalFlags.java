@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -52,12 +53,19 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	private HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>();
 	private HashMap<String, String> paTeamFlags = new HashMap<String, String>();
 	private HashMap<String, ItemStack> paHeadGears = new HashMap<String, ItemStack>();
+	private static HashSet<Material> headFlags = new HashSet<Material>();
 	
 	private String flagName = "";
 	
+	static {
+		headFlags.add(Material.PUMPKIN);
+		headFlags.add(Material.WOOL);
+		headFlags.add(Material.JACK_O_LANTERN);
+	}
+	
 	@Override
 	public String version() {
-		return "v0.9.6.27";
+		return "v0.9.6.28";
 	}
 
 	int priority = 6;
@@ -247,20 +255,18 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					arena.broadcast(Language.parse(MSG.GOAL_FLAGS_GRABBED,
 							pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 							team.getColoredName() + ChatColor.YELLOW));
-
-					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-						try {
-							paHeadGears.put(player.getName(), player
-									.getInventory().getHelmet().clone());
-						} catch (Exception e) {
-
-						}
-						ItemStack is = block.getState().getData().toItemStack()
-								.clone();
-						is.setDurability(getFlagOverrideTeamShort(arena, aTeam));
-						player.getInventory().setHelmet(is);
+					try {
+						paHeadGears.put(player.getName(), player
+								.getInventory().getHelmet().clone());
+					} catch (Exception e) {
 
 					}
+					ItemStack is = block.getState().getData().toItemStack()
+							.clone();
+					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
+						is.setDurability(getFlagOverrideTeamShort(arena, aTeam));
+					}
+					player.getInventory().setHelmet(is);
 
 					takeFlag(team.getColor().name(), true, new PALocation(block.getLocation()));
 					paTeamFlags.put(aTeam, player.getName()); // TODO move to "commit" ?
