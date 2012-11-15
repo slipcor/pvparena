@@ -6,11 +6,14 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.InventoryManager;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -49,6 +52,16 @@ public class InventoryRefillRunnable implements Runnable {
 		if (ap.getStatus().equals(Status.FIGHT)) {
 			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 				ArenaClass.equip(player, items);
+
+				if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
+					ArenaTeam aTeam = ap.getArenaTeam();
+					String color = aTeam.getColor().name();
+					InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
+							+ color);
+					player.getInventory().setHelmet(
+							new ItemStack(Material.WOOL, 1, StringParser
+									.getColorDataFromENUM(color)));
+				}
 			} else {
 				InventoryManager.clearInventory(player);
 				ArenaPlayer.givePlayerFightItems(arena, player);

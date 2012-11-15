@@ -120,8 +120,6 @@ public class PACheck {
 			return false;
 		}
 		if (commit == null) {
-			ArenaModule mod = null;
-			
 			for (ArenaModule am : PVPArena.instance.getAmm().getModules()) {
 				if (am.isActive(arena)) {
 					if (am.checkCommand(args[0])) {
@@ -130,7 +128,6 @@ public class PACheck {
 					}
 				}
 			}
-			
 			
 			return false;
 		}

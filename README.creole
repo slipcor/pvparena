@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.25 - reset WoolHeads even if inventories should not be reset 
 * v0.9.6.24 - fix regions activating all protections on server start
 * v0.9.6.23 - fix players being able to re-join a match
 * v0.9.6.20 - fix regions being messed on restarting 
