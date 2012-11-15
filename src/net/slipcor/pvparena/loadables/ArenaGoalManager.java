@@ -337,5 +337,4 @@ public class ArenaGoalManager {
 			type.disconnect(player);
 		}
 	}
-
 }

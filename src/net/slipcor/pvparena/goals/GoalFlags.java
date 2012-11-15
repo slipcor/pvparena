@@ -11,8 +11,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -38,7 +42,7 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
-public class GoalFlags extends ArenaGoal {
+public class GoalFlags extends ArenaGoal implements Listener {
 
 	public GoalFlags(Arena arena) {
 		super(arena, "Flags");
@@ -53,7 +57,7 @@ public class GoalFlags extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.6.26";
+		return "v0.9.6.27";
 	}
 
 	int priority = 6;
@@ -483,6 +487,11 @@ public class GoalFlags extends ArenaGoal {
 		return false;
 	}
 
+	@Override
+	public void configParse(YamlConfiguration config) {
+		Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
+	}
+
 	private short getFlagOverrideTeamShort(Arena arena, String team) {
 		if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
 
@@ -747,5 +756,30 @@ public class GoalFlags extends ArenaGoal {
 
 			paTeamFlags.clear();
 		}
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		Player p = (Player) event.getWhoClicked();
+
+		Arena arena = ArenaPlayer.parsePlayer(p.getName()).getArena();
+
+		if (arena == null || !arena.getName().equals(this.arena.getName())) {
+			return;
+		}
+		
+		if (event.isCancelled() || getHeldFlagTeam(this.arena, p.getName()) == null) {
+			return;
+		}
+		
+		if (event.getInventory().getType()
+			.equals(InventoryType.CRAFTING)) {
+			// we are inside the standard 
+			if (event.getRawSlot() != 5) {
+				return;
+			}
+		}
+
+		event.setCancelled(true);
 	}
 }
