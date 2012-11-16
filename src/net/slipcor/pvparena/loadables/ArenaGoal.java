@@ -123,10 +123,6 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 		throw new IllegalStateException();
 	}
 
-	public void commitJoin(CommandSender sender, ArenaTeam team) {
-		throw new IllegalStateException();
-	}
-
 	public void commitInteract(Player player, Block clickedBlock) {
 		throw new IllegalStateException();
 	}

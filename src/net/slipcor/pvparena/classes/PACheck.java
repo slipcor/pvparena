@@ -298,12 +298,6 @@ public class PACheck {
 					return;
 				}
 				
-				if (commGoal != null) {
-					commGoal.commitJoin(sender, team);
-					//PVPArena.instance.getAgm().parseJoin(sender, team);
-					return;
-				}
-				
 				// both null, just put the joiner to some spawn
 				
 				if (!arena.tryJoin((Player) sender, team)) {
@@ -337,9 +331,6 @@ public class PACheck {
 
 			commModule.commitJoin(arena, (Player) sender, team);
 			PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
-			
-			commGoal.commitJoin(sender, team);
-			//PVPArena.instance.getAgm().parseJoin(res, arena, (Player) sender, team);
 	}
 
 	public static void handlePlayerDeath(Arena arena, Player player, PlayerDeathEvent event) {
