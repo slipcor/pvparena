@@ -39,7 +39,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 public class GoalPlayerLives extends ArenaGoal {
 	public GoalPlayerLives(Arena arena) {
 		super(arena, "PlayerLives");
-		db = new Debug(101);
+		db = new Debug(102);
 	}
 	
 	EndRunnable er = null;

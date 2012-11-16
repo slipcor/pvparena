@@ -323,8 +323,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	@Override
 	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
 
-		int priority = 1;
-		
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
@@ -414,7 +412,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(boolean force) {
-		db.i("[TEAMS]");
+		db.i("[FLAGS]");
 
 		ArenaTeam aTeam = null;
 		

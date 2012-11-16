@@ -40,7 +40,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 public class GoalTeamDeathMatch extends ArenaGoal {
 	public GoalTeamDeathMatch(Arena arena) {
 		super(arena, "TeamDeathMatch");
-		db = new Debug(102);
+		db = new Debug(104);
 	}
 	private final HashMap<String, Integer> lives = new HashMap<String, Integer>(); // flags
 

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.6.29 - add soft depends to fix loading issues
 * v0.9.6.28 - place every flag block on the player's head for now
 * v0.9.6.27 - prevent removing your head gear when carrying a flag
 * v0.9.6.26 - attempt to fix disconnecting players not resetting carried flags
@@ -192,9 +193,7 @@ A PVP experience enhancing plugin.
 * plugin
 **
 * modules
-** WorldEdit & WorldGuard hooking (via module)
-** Map switch via WorldEdit (someone told me this would be damn quick .. :) )
-** IRC (announcements)
+**
 * goals
 ** tournament arenas ; rounds switch through arenas
 ** king of the hill -> FFAEN
