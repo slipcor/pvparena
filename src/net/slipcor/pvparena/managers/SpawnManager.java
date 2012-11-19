@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class SpawnManager {
@@ -41,7 +41,19 @@ public class SpawnManager {
 				if (!name.startsWith("flag")) {
 					continue;
 				}
+			} else if (sTeam.endsWith("tnt")) {
+				if (name.contains("flag") || name.contains("lounge") || name.contains("spawn")) {
+					continue;
+				}
+				String sName = sTeam.replace("tnt", "");
+				db.i("checking if " + name + " starts with " + sName);
+				if (!name.startsWith(sName)) {
+					continue;
+				}
 			} else if (name.endsWith("flag")) {
+				if (name.contains("tnt") || name.contains("lounge") || name.contains("spawn")) {
+					continue;
+				}
 				String sName = sTeam.replace("flag", "");
 				db.i("checking if " + name + " starts with " + sName);
 				if (!name.startsWith(sName)) {

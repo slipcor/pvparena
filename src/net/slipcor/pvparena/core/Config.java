@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class Config {
@@ -147,6 +147,8 @@ public class Config {
 		
 		// ----------
 
+		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
+		GOAL_DOM_LIVES("goal.dom.dlives", 10),
 		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL"),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),

@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class Language {
@@ -339,8 +339,8 @@ public class Language {
 		GOAL_FLAGS_TYPESET("lang.typeset", "Flag type set to: &e%1%"),
 		
 		GOAL_SABOTAGE_IGNITED("nulang.goal.sabotage.tntignite", "%1% ignited the TNT of team %2%!"),
-		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.settnt", "TNT to set: %1%"),
-		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.tosettnt", "TNT set: %1%"),
+		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.set", "TNT set: %1%"),
+		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.toset", "TNT to set: %1%"),
 		GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage materials!'"),
 
 		GOAL_TANK_TANKDOWN("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),

@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class PlayerListener implements Listener {
@@ -300,6 +300,7 @@ public class PlayerListener implements Listener {
 
 		if (PACheck.handleSetFlag(player, event.getClickedBlock())) {
 			db.i("returning: #2");
+			event.setCancelled(true);
 			return;
 		}
 

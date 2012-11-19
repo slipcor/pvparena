@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.7.0 - welcome back, Sabotage!
 * v0.9.6.30 - remove calling of the unused ArenaGoal.commitJoin method
 * v0.9.6.29 - add soft depends to fix loading issues
 * v0.9.6.28 - place every flag block on the player's head for now
@@ -192,7 +193,7 @@ A PVP experience enhancing plugin.
 === Todo
 
 * plugin
-**
+** mob protection
 * modules
 **
 * goals

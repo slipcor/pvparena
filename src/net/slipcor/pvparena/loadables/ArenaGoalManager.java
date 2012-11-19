@@ -18,9 +18,12 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.goals.GoalDomination;
 import net.slipcor.pvparena.goals.GoalFlags;
 import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
 import net.slipcor.pvparena.goals.GoalPlayerLives;
+import net.slipcor.pvparena.goals.GoalSabotage;
+import net.slipcor.pvparena.goals.GoalTank;
 import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.goals.GoalTime;
@@ -34,7 +37,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.7
  */
 
 public class ArenaGoalManager {
@@ -55,9 +58,12 @@ public class ArenaGoalManager {
 		}
 		loader = new NCBLoader<ArenaGoal>(plugin, path, new Object[] {});
 		types = loader.load();
+		types.add(new GoalDomination(null));
 		types.add(new GoalFlags(null));
 		types.add(new GoalPlayerDeathMatch(null));
 		types.add(new GoalPlayerLives(null));
+		types.add(new GoalSabotage(null));
+		types.add(new GoalTank(null));
 		types.add(new GoalTeamDeathMatch(null));
 		types.add(new GoalTeamLives(null));
 		types.add(new GoalTime(null));
