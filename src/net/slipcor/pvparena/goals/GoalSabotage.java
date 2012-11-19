@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -66,7 +67,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.9.6.30";
+		return "v0.9.7.1";
 	}
 
 	int priority = 7;
@@ -568,7 +569,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 	
 	@EventHandler
-	public void onTNTIgnite(EntityExplodeEvent event) {
+	public void onTNTExplode(EntityExplodeEvent event) {
 		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
@@ -584,30 +585,21 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 	}
 	
-	/*
 	@EventHandler
-	public void onInventoryClick(InventoryClickEvent event) {
-		Player p = (Player) event.getWhoClicked();
-
-		Arena arena = ArenaPlayer.parsePlayer(p.getName()).getArena();
-
-		if (arena == null || !arena.getName().equals(this.arena.getName())) {
+	public void onTNTIgnite(ExplosionPrimeEvent event) {
+		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
 		
-		if (event.isCancelled() || getHeldFlagTeam(this.arena, p.getName()) == null) {
-			return;
-		}
+		//TNTPrimed t = (TNTPrimed) event.getEntity();
+		PABlockLocation tLoc = new PABlockLocation(event.getEntity().getLocation());
 		
-		if (event.getInventory().getType()
-			.equals(InventoryType.CRAFTING)) {
-			// we are inside the standard 
-			if (event.getRawSlot() != 5) {
-				return;
-			}
+		HashSet<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");
+		
+		PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
+		
+		if (nearest.getDistance(tLoc) < 2) {
+			event.setCancelled(true);
 		}
-
-		event.setCancelled(true);
 	}
-	*/
 }
