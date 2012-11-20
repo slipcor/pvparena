@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.7.3 - fix #90 - Bug - Class signs with player names not working properly.
 * v0.9.7.2 - fix #89 - Bug - Unable to join arena on a specific team
 * v0.9.7.1 - fix Sabotage spawning a second destructive TNT
 * v0.9.7.0 - welcome back, Sabotage!

@@ -183,10 +183,10 @@ public class Arena {
 						signs);
 				if (as == null) {
 					as = new PAClassSign(block.getLocation());
+					signs.add(as);
 				}
-				signs.add(as);
 				if (!as.add(player)) {
-					this.msg(player, Language.parse(MSG.ERROR_CLASS_FULL));
+					this.msg(player, Language.parse(MSG.ERROR_CLASS_FULL, className));
 					return;
 				}
 			}

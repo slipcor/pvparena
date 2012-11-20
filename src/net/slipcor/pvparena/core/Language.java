@@ -84,7 +84,6 @@ public class Language {
 		ERROR_AUTOSETUP_RUNNING("nulang.error.autosetup.running", "There is already an autosetup running! Player: %1%"),
 		ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND("nulang.error.blacklist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_BLACKLIST_UNKNOWN_TYPE("nulang.error.blacklist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
-		ERROR_CHOOSE_CLASS_FULL("nulang.error.classfull", "class is full!"),
 		ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
 		ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
 		ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
