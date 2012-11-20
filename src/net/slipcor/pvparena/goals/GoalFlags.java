@@ -65,7 +65,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.9.6.28";
+		return "v0.9.7.5";
 	}
 
 	int priority = 6;
@@ -519,8 +519,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 			takeFlag(flagTeam.getColor().name(), false,
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
-
-			paTeamFlags.clear();
 		}
 	}
 
