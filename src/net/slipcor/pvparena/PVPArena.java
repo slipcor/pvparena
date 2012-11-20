@@ -192,6 +192,7 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 		
+		
 
 		PAA__Command paacmd = PAA__Command.getByName(args[0]);
 		if (paacmd == null && (PACheck.handleCommand(a, sender, args))) {
@@ -200,17 +201,17 @@ public class PVPArena extends JavaPlugin {
 
 		if (paacmd == null && a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
-		}
-		if (paacmd != null && (paacmd instanceof PAG_Join)) {
-			db.i("committing: " + paacmd.getName());
 			if (args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
 			}
+			db.i("committing: " + paacmd.getName());
 			paacmd.commit(a, sender, args);
 			return true;
-		} else if (pacmd != null) {
+		}
+		
+		if (paacmd != null) {
+			db.i("committing: " + paacmd.getName());
 			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
-			paacmd.commit(a, sender, args);
 			return true;
 		}
 		db.i("cmd null");
