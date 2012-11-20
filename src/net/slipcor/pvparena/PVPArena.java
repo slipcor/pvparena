@@ -203,7 +203,10 @@ public class PVPArena extends JavaPlugin {
 		}
 		if (paacmd != null) {
 			db.i("committing: " + paacmd.getName());
-			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
+			if (args.length > 1) {
+				args = StringParser.shiftArrayBy(args, 1);
+			}
+			paacmd.commit(a, sender, args);
 			return true;
 		}
 		db.i("cmd null");

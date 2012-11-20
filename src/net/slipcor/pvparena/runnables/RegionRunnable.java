@@ -36,7 +36,8 @@ public class RegionRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("RegionRunnable commiting");
+		if (!Debug.override)
+			db.i("RegionRunnable commiting");
 		if (r.getArena().isFightInProgress()) {
 			r.tick();
 		} else {
