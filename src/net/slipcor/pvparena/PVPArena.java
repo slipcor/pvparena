@@ -201,11 +201,15 @@ public class PVPArena extends JavaPlugin {
 		if (paacmd == null && a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
 		}
-		if (paacmd != null) {
+		if (paacmd != null && (paacmd instanceof PAG_Join)) {
 			db.i("committing: " + paacmd.getName());
 			if (args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
 			}
+			paacmd.commit(a, sender, args);
+			return true;
+		} else if (pacmd != null) {
+			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
 			paacmd.commit(a, sender, args);
 			return true;
 		}

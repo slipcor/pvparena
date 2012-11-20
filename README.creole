@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.7.6 - fix fixes causing broken commands
 * v0.9.7.5 - fix #84 - Bug - Disconnecting with flag does not reset flag
 * v0.9.7.4 - add missing classes
 * v0.9.7.3 - fix #90 - Bug - Class signs with player names not working properly.
