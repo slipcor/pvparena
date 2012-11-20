@@ -44,9 +44,8 @@ public class PAI_Info extends PAA__Command {
 		
 		arena.msg(sender, Language.parse(MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix()));
 		
-		if (!arena.isFreeForAll()) {
-			arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNames(), ", ")));
-		}
+		arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNames(), ", ")));
+		
 		arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
 				StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +
 				StringParser.colorVar("enabled", !arena.isLocked()));

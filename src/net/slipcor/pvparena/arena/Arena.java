@@ -936,7 +936,7 @@ public class Arena {
 
 	public void setFree(boolean b) {
 		free = b;
-		if (free) {
+		if (free && (getTeam("free") == null)) {
 			teams.clear();
 			teams.add(new ArenaTeam("free", "WHITE"));
 		}
