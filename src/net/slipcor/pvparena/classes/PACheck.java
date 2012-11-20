@@ -273,7 +273,7 @@ public class PACheck {
 				return;
 			}
 			
-			if (args.length < 1) {
+			if (args.length < 1 || (arena.getTeam(args[0]) == null)) {
 				// usage: /pa {arenaname} join | join an arena
 
 				args = new String[]{TeamManager.calcFreeTeam(arena)};
