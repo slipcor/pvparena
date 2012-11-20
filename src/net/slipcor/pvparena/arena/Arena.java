@@ -58,7 +58,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class Arena {
@@ -940,6 +940,8 @@ public class Arena {
 			teams.clear();
 			teams.add(new ArenaTeam("free", "WHITE"));
 		}
+		cfg.set(CFG.GENERAL_TYPE, b?"free":"none");
+		cfg.save();
 	}
 
 	public void setOwner(String owner) {

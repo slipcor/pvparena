@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.7.8 - properly update the gamemode when it is being set
 * v0.9.7.7 - never code when your brain is infected!
 * v0.9.7.6 - fix fixes causing broken commands
 * v0.9.7.5 - fix #84 - Bug - Disconnecting with flag does not reset flag
