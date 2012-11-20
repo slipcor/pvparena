@@ -252,6 +252,10 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	public void teleportAllToSpawn() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (arena.isFreeForAll()) {
+					arena.tpPlayerToCoordName(ap.get(), "spawn");
+					ap.setStatus(Status.FIGHT);
+				}
 				this.lives
 						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
 			}

@@ -10,6 +10,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -361,5 +362,9 @@ public class StringParser {
 		args = newArgs;
 		
 		return args;
+	}
+
+	public static String verify(Object sender) {
+		return sender == null ? "null" : sender.toString();
 	}
 }

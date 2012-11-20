@@ -255,6 +255,7 @@ public class GoalTank extends ArenaGoal {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (arena.isFreeForAll()) {
 					arena.tpPlayerToCoordName(ap.get(), "spawn");
+					ap.setStatus(Status.FIGHT);
 				}
 				this.lives
 						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));

@@ -1012,8 +1012,10 @@ public class Arena {
 	 * initiate the arena start
 	 */
 	public void start() {
+		db.i("start()");
 		START_ID = -1;
 		if (isFightInProgress()) {
+			db.i("already in progress! OUT!");
 			return;
 		}
 		int sum = 0;
@@ -1025,11 +1027,14 @@ public class Arena {
 				}
 			}
 		}
+		db.i("sum == " + sum);
 		if (sum < 2) {
 			for (ArenaPlayer ap : getFighters()) {
+				db.i("removing player " + ap.getName());
 				playerLeave(ap.get(), CFG.TP_EXIT, false);
 			}
 		} else {
+			db.i("START!");
 			teleportAllToSpawn();
 			setFightInProgress(true);
 		}
@@ -1105,6 +1110,11 @@ public class Arena {
 					c + "[" + sTeam + "] " + player.getName() + ChatColor.WHITE
 							+ ": " + msg);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 
 	/**
