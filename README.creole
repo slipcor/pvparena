@@ -229,5 +229,6 @@ A PVP experience enhancing plugin.
 * Carbon131 for adding features until version v0.0.5
 * Drehverschluss for great support during the v0.6+v0.7 rewrite
 * NodinChan for helping me cleaning up my code and for his loader!
+* zyxep for the Jenkins
 
 -----------------------------------------------------------------------------------------------------------------------
