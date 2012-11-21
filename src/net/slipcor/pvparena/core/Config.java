@@ -53,9 +53,10 @@ public class Config {
 		CHAT_ONLYPRIVATE("chat.onlyPrivate", false),
 		
 		CMDS_DEFAULTJOIN("cmds.defaultjoin", true),
-		
+
+		DAMAGE_ARMOR("damage.armor", true),
 		DAMAGE_SPAWNCAMP("damage.spawncamp", 1),
-		DAMAGE_WEAPONS("game.weaponDamage", true),
+		DAMAGE_WEAPONS("damage.weapons", true),
 		
 		GENERAL_ENABLED("general.enabled", true),
 		GENERAL_OWNER("general.owner", "server"),

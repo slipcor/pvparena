@@ -13,10 +13,11 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
-import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.runnables.DamageResetRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -39,7 +40,7 @@ import org.bukkit.potion.PotionEffectType;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.8
  */
 
 public class EntityListener implements Listener {
@@ -229,11 +230,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (arena.getArenaConfig().getBoolean(CFG.DAMAGE_WEAPONS)) {
-			if (InventoryManager.receivesDamage(attacker.getItemInHand())) {
-				attacker.getItemInHand().setDurability((short) 0);
-			}
-		}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new DamageResetRunnable(arena, attacker, defender), 1L);
 
 		if (arena.getArenaConfig().getInt(CFG.PROTECT_SPAWN) > 0) {
 			if (SpawnManager.isNearSpawn(arena, defender,

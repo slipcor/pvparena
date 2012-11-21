@@ -54,6 +54,7 @@ public class ConfigurationManager {
 			for (CFG c : CFG.values()) {
 				if (cfg.getUnsafe(c.getNode()) == null) {
 					cfg.createDefaults();
+					break;
 				}
 			}
 			
