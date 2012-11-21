@@ -43,6 +43,16 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
+/**
+ * <pre>Arena Goal class "Flags"</pre>
+ * 
+ * Well, should be clear. Capture flags, bring them home, get points, win.
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.8
+ */
+
 public class GoalFlags extends ArenaGoal implements Listener {
 
 	public GoalFlags(Arena arena) {
@@ -490,6 +500,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		
 		return false;
 	}
+	
+	@Override
+	public void commitStart() {
+		
+	}
 
 	@Override
 	public void configParse(YamlConfiguration config) {
@@ -651,6 +666,21 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
 		}
 	}
+
+	@Override
+	public void parseStart() {
+		paTeamLives.clear();
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getTeamMembers().size() > 0) {
+				db.i("adding team " + team.getName());
+				// team is active
+				paTeamLives.put(team.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
+			}
+			takeFlag(team.getColor().name(), false,
+					SpawnManager.getCoords(arena, team.getName() + "flag"));
+		}
+	}
 	
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
 
@@ -737,22 +767,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 		
 		return scores;
-	}
-
-	@Override
-	public void teleportAllToSpawn() {
-		db.i("initiating arena");
-		paTeamLives.clear();
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().size() > 0) {
-				db.i("adding team " + team.getName());
-				// team is active
-				paTeamLives.put(team.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
-			}
-			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
-		}
 	}
 	
 	@Override

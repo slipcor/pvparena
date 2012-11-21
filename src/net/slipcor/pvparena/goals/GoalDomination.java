@@ -38,6 +38,16 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
+/**
+ * <pre>Arena Goal class "Domination"</pre>
+ * 
+ * The most fast paced arena goal atm. Lighting a TNT ends the game. BOOM.
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.8
+ */
+
 public class GoalDomination extends ArenaGoal {
 
 	public GoalDomination(Arena arena) {
@@ -54,7 +64,7 @@ public class GoalDomination extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.7.1";
+		return "v0.9.8.0";
 	}
 
 	int priority = 8;
@@ -624,6 +634,25 @@ public class GoalDomination extends ArenaGoal {
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
 		}
 	}
+
+	@Override
+	public void parseStart() {
+		paTeamLives.clear();
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getTeamMembers().size() > 0) {
+				db.i("adding team " + team.getName());
+				// team is active
+				paTeamLives.put(team.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES, 3));
+			}
+			takeFlag(team.getColor().name(), false,
+					SpawnManager.getCoords(arena, team.getName() + "flag"));
+		}
+
+		DominationMainRunnable dmr = new DominationMainRunnable(arena, this);
+		dmr.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, dmr, 3*20L, 3*20L);
+	}
 	
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
 
@@ -714,26 +743,6 @@ public class GoalDomination extends ArenaGoal {
 		}
 		
 		return scores;
-	}
-
-	@Override
-	public void teleportAllToSpawn() {
-		db.i("initiating arena");
-		paTeamLives.clear();
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().size() > 0) {
-				db.i("adding team " + team.getName());
-				// team is active
-				paTeamLives.put(team.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES, 3));
-			}
-			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
-		}
-
-		DominationMainRunnable dmr = new DominationMainRunnable(arena, this);
-		dmr.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, dmr, 3*20L, 3*20L);
 	}
 	
 	protected class DominationRunnable implements Runnable {

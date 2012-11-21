@@ -10,18 +10,23 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
+import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 
 /**
  * <pre>PVP Arena Check class</pre>
@@ -34,14 +39,14 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.8
  */
 
 public class PACheck {
 	private int priority = 0;
 	private String error = null;
 	private String modName = null;
-	private Debug db = new Debug(9);
+	private static Debug db = new Debug(9);
 	
 	/**
 	 * 
@@ -473,17 +478,14 @@ public class PACheck {
 		}*/
 	}
 
-	public static void handleStart(Arena arena, ArenaPlayer ap, CommandSender sender) {
+	public static void handleStart(Arena arena, CommandSender sender) {
 		PACheck res = new PACheck();
 
-		ArenaModule commit = null;
+		ArenaGoal commit = null;
 		int priority = 0;
 		
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				res = mod.checkStart(arena, ap, res);
-			}
-			
+		for (ArenaGoal mod : arena.getGoals()) {
+			res = mod.checkStart(res);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();
@@ -496,15 +498,63 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
+			if (sender == null) {
+				sender = Bukkit.getConsoleSender();
+			}
 			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 			return;
 		}
 		
-		if (commit == null) {
-			return;
+		PAStartEvent event = new PAStartEvent(arena);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		db.i("teleporting all players to their spawns");
+
+		if (commit != null) {
+			commit.commitStart(); // override spawning
+		} else {
+		
+			if (!arena.isFreeForAll()) {
+				for (ArenaTeam team : arena.getTeams()) {
+					for (ArenaPlayer ap : team.getTeamMembers()) {
+						arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+						ap.setStatus(Status.FIGHT);
+					}
+				}
+			} else {
+				//TODO replace with better way
+				for (ArenaTeam team : arena.getTeams()) {
+					for (ArenaPlayer ap : team.getTeamMembers()) {
+						if (arena.isFreeForAll()) {
+							arena.tpPlayerToCoordName(ap.get(), "spawn");
+							ap.setStatus(Status.FIGHT);
+						}
+					}
+				}
+			}
 		}
 		
-		arena.teleportAllToSpawn();
+		for (ArenaGoal goal : arena.getGoals()) {
+			goal.parseStart();
+		}
+
+		db.i("teleported everyone!");
+
+		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+
+		SpawnCampRunnable scr = new SpawnCampRunnable(arena, 0);
+		arena.SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, scr, 100L,
+				arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
+		scr.setId(arena.SPAWNCAMP_ID);
+
+		for (ArenaRegionShape region : arena.getRegions()) {
+			if (region.getFlags().size() > 0) {
+				region.initTimer();
+			} else if (region.getType().equals(RegionType.BATTLE)) {
+				region.initTimer();
+			}
+		}
 	}
 }
 /*
@@ -552,7 +602,7 @@ public class PACheck {
  * > default: nothing
  * 
  * ArenaModule.checkStart()
- * ( PAI_Ready ) < used
- * > default: nothing
+ * ( PAI_Ready | StartRunnable.commit() ) < used
+ * > default: tp players to (team) spawns
  * 
  */

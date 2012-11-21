@@ -39,7 +39,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.8
  */
 
 public class ArenaModule extends NCBLoadable implements Cloneable {
@@ -411,15 +411,6 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	 *            the player being reset
 	 */
 	public void resetPlayer(Arena arena, Player player, boolean force) {
-	}
-
-	/**
-	 * hook into the starting game
-	 * 
-	 * @param arena
-	 *            the starting arena
-	 */
-	public void teleportAllToSpawn(Arena arena) {
 	}
 
 	/**

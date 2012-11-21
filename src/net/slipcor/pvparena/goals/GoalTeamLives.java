@@ -34,7 +34,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.8
  */
 
 public class GoalTeamLives extends ArenaGoal {
@@ -46,7 +46,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.8.0";
 	}
 
 	int priority = 4;
@@ -288,6 +288,14 @@ public class GoalTeamLives extends ArenaGoal {
 	public void reset(boolean force) {
 		lives.clear();
 	}
+
+	@Override
+	public void parseStart() {
+		for (ArenaTeam team : arena.getTeams()) {
+				this.lives
+						.put(team.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TLIVES_LIVES));
+		}
+	}
 	
 	@Override
 	public void setDefaults(YamlConfiguration config) {
@@ -310,14 +318,6 @@ public class GoalTeamLives extends ArenaGoal {
 			db.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
-		}
-	}
-
-	@Override
-	public void teleportAllToSpawn() {
-		for (ArenaTeam team : arena.getTeams()) {
-				this.lives
-						.put(team.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TLIVES_LIVES));
 		}
 	}
 

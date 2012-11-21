@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.8
  */
 
 public class PAI_Ready extends PAA__Command {
@@ -63,7 +63,7 @@ public class PAI_Ready extends PAA__Command {
 				arena.msg(sender, Language.parse(MSG.READY_DONE));
 			ap.setStatus(Status.READY);
 			
-			PACheck.handleStart(arena, ap, sender);
+			PACheck.handleStart(arena, sender);
 			
 			return;
 		}

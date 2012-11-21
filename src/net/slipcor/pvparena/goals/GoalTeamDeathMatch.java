@@ -34,7 +34,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.8
  */
 
 public class GoalTeamDeathMatch extends ArenaGoal {
@@ -46,7 +46,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.5.20";
+		return "v0.9.8.0";
 	}
 
 	int priority = 5;
@@ -323,7 +323,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void teleportAllToSpawn() {
+	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 				this.lives
 						.put(team.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));

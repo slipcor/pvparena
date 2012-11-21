@@ -12,7 +12,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -24,7 +23,7 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.8
  */
 
 public class ArenaGoal extends NCBLoadable implements Cloneable {
@@ -109,6 +108,10 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
 		return res;
 	}
+
+	public PACheck checkStart(PACheck res) {
+		return res;
+	}
 	
 	@Override
 	public ArenaGoal clone() {
@@ -135,12 +138,19 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public boolean commitSetFlag(Player player, Block block) {
 		throw new IllegalStateException();
 	}
+	
+	public void commitStart() {
+		throw new IllegalStateException();
+	}
 
 	/**
 	 * hook into the config parsing
 	 * @param config 
 	 */
 	public void configParse(YamlConfiguration config) {
+	}
+	
+	public void disconnect(ArenaPlayer player) {
 	}
 
 	public void displayInfo(CommandSender sender) {
@@ -167,9 +177,15 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 
 	public void initate(Player player) {
 	}
+
+	public void parseLeave(Player player) {
+	}
 	
 	public void parsePlayerDeath(Player player,
 			EntityDamageEvent lastDamageCause) {
+	}
+
+	public void parseStart() {
 	}
 
 	/**
@@ -205,14 +221,6 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 	}
 
-	/**
-	 * initiate an arena
-	 * @param a 
-	 */
-	public void teleportAllToSpawn() {
-		
-	}
-
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		return scores;
 	}
@@ -229,11 +237,5 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 
 	public String version() {
 		return "outdated";
-	}
-	
-	public void disconnect(ArenaPlayer player) {
-	}
-
-	public void parseLeave(Player player) {
 	}
 }

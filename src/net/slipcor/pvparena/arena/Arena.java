@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PARoundMap;
@@ -22,7 +23,6 @@ import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PALoseEvent;
-import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -34,7 +34,6 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.PlayerDestroyRunnable;
 import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
-import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TeleportRunnable;
 
@@ -58,7 +57,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class Arena {
@@ -1037,7 +1036,7 @@ public class Arena {
 			}
 		} else {
 			db.i("START!");
-			teleportAllToSpawn();
+			PACheck.handleStart(this, null);
 			setFightInProgress(true);
 		}
 	}
@@ -1047,47 +1046,6 @@ public class Arena {
 			this.playerLeave(p.get(), CFG.TP_EXIT, true);
 		}
 		reset(force);
-	}
-
-	/**
-	 * teleport all players to their respective spawn
-	 */
-	public void teleportAllToSpawn() {
-
-		PAStartEvent event = new PAStartEvent(this);
-		Bukkit.getPluginManager().callEvent(event);
-
-		db.i("teleporting all players to their spawns");
-		if (!isFreeForAll()) {
-			for (ArenaTeam team : teams) {
-				for (ArenaPlayer ap : team.getTeamMembers()) {
-					tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
-					ap.setStatus(Status.FIGHT);
-				}
-			}
-		}
-
-		PVPArena.instance.getAgm().teleportAllToSpawn(this);
-
-		broadcast(Language.parse(MSG.FIGHT_BEGINS));
-
-		PVPArena.instance.getAmm().teleportAllToSpawn(this);
-
-		db.i("teleported everyone!");
-
-		SpawnCampRunnable scr = new SpawnCampRunnable(this, 0);
-		SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, scr, 100L,
-				getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
-		scr.setId(SPAWNCAMP_ID);
-
-		for (ArenaRegionShape region : regions) {
-			if (region.getFlags().size() > 0) {
-				region.initTimer();
-			} else if (region.getType().equals(RegionType.BATTLE)) {
-				region.initTimer();
-			}
-		}
 	}
 
 	/**

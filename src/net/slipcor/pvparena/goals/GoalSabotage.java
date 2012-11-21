@@ -51,7 +51,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class GoalSabotage extends ArenaGoal implements Listener {
@@ -67,7 +67,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.9.7.1";
+		return "v0.9.8.0";
 	}
 
 	int priority = 7;
@@ -502,6 +502,20 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			distributeFlag(ap, t);
 		}
 	}
+
+	@Override
+	public void parseStart() {
+		db.i("initiating arena");
+		paTeamFlags.clear();
+		for (ArenaTeam team : arena.getTeams()) {
+			takeFlag(team.getName(), false,
+					SpawnManager.getCoords(arena, team.getName() + "tnt"));
+			if (!paTeamFlags.containsKey(team.getName())) {
+				db.i("adding team " + team.getName());
+				distributeFlag(null, team);
+			}
+		}
+	}
 	
 	@Override
 	public void reset(boolean force) {
@@ -546,20 +560,6 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		if (take) {
 			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(arena.getWorld()).spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
 			tnts.put(arena.getTeam(teamName), tnt);
-		}
-	}
-
-	@Override
-	public void teleportAllToSpawn() {
-		db.i("initiating arena");
-		paTeamFlags.clear();
-		for (ArenaTeam team : arena.getTeams()) {
-			takeFlag(team.getName(), false,
-					SpawnManager.getCoords(arena, team.getName() + "tnt"));
-			if (!paTeamFlags.containsKey(team.getName())) {
-				db.i("adding team " + team.getName());
-				distributeFlag(null, team);
-			}
 		}
 	}
 	

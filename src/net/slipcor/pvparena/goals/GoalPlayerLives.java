@@ -33,7 +33,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class GoalPlayerLives extends ArenaGoal {
@@ -48,7 +48,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.7.13";
+		return "v0.9.8.0";
 	}
 
 	int priority = 2;
@@ -230,6 +230,16 @@ public class GoalPlayerLives extends ArenaGoal {
 			lives.remove(player.getName());
 		}
 	}
+
+	@Override
+	public void parseStart() {
+		for (ArenaTeam team : arena.getTeams()) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				this.lives
+						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+			}
+		}
+	}
 	
 	@Override
 	public void reset(boolean force) {
@@ -253,20 +263,5 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 		lives.put(ap.getName(), value);
-	}
-
-	@Override
-	public void teleportAllToSpawn() {
-		
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (arena.isFreeForAll()) {
-					arena.tpPlayerToCoordName(ap.get(), "spawn");
-					ap.setStatus(Status.FIGHT);
-				}
-				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
-			}
-		}
 	}
 }

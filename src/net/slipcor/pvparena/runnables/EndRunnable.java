@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
@@ -19,7 +20,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.8
  */
 
 public class EndRunnable extends ArenaRunnable {
@@ -65,7 +66,7 @@ public class EndRunnable extends ArenaRunnable {
 			arena.END_ID = -1;
 			Bukkit.getScheduler().cancelTask(id);
 			
-			arena.teleportAllToSpawn();
+			PACheck.handleStart(arena, null);
 			
 			for (ArenaPlayer ap : arena.getFighters()) {
 				arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),

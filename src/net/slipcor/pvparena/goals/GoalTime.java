@@ -24,7 +24,7 @@ import net.slipcor.pvparena.runnables.TimedEndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.8
  */
 
 public class GoalTime extends ArenaGoal {
@@ -40,7 +40,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.8.0";
 	}
 
 	@Override
@@ -91,20 +91,20 @@ public class GoalTime extends ArenaGoal {
 	public void displayInfo(CommandSender sender) {
 		
 	}
-	
-	@Override
-	public void reset(boolean force) {
-		ter.commit();
-		ter = null;
-	}
 
 	@Override
-	public void teleportAllToSpawn() {
+	public void parseStart() {
 		int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
 		if (timed > 0) {
 			db.i("arena timing!");
 			// initiate autosave timer
 			ter = new TimedEndRunnable(arena, timed);
 		}
+	}
+	
+	@Override
+	public void reset(boolean force) {
+		ter.commit();
+		ter = null;
 	}
 }

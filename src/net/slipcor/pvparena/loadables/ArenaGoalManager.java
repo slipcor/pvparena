@@ -37,7 +37,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class ArenaGoalManager {
@@ -189,12 +189,6 @@ public class ArenaGoalManager {
 	public void setPlayerLives(Arena arena, ArenaPlayer ap, int value) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.setPlayerLives(ap, value);
-		}
-	}
-
-	public void teleportAllToSpawn(Arena arena) {
-		for (ArenaGoal mod : arena.getGoals()) {
-			mod.teleportAllToSpawn();
 		}
 	}
 	
