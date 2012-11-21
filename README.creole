@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.3 - add module hooking into class selection
 * v0.9.8.2 - add config node and langage for BetterClasses
 * v0.9.8.1 - re-add module arena start handling
 * v0.9.8.0 - rewrite the arena start. use with caution!

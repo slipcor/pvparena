@@ -59,6 +59,11 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 		
 	}
 
+	public boolean cannotSelectClass(Arena arena, Player player,
+			String className) {
+		return false;
+	}
+
 	public boolean checkCommand(String s) {
 		return false;
 	}

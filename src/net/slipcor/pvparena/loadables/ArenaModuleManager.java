@@ -82,6 +82,16 @@ public class ArenaModuleManager {
 				mod.announce(arena, message, type);
 		}
 	}
+
+	public boolean cannotSelectClass(Arena arena, Player player,
+			String className) {
+		for (ArenaModule mod : modules) {
+			if (mod.isActive(arena) && mod.cannotSelectClass(arena, player, className)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public String checkForMissingSpawns(Arena arena, Set<String> list) {
 		String error = null;

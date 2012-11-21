@@ -189,6 +189,10 @@ public class Arena {
 					return;
 				}
 			}
+			
+			if (PVPArena.instance.getAmm().cannotSelectClass(this, player, className)) {
+				return;
+			}
 		}
 		InventoryManager.clearInventory(player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
