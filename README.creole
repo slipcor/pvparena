@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.7.11 - remove debug
 * v0.9.7.10 - quick fix for players not being properly set to fighting state
 * v0.9.7.9 - more output and less team resetting
 * v0.9.7.8 - properly update the gamemode when it is being set

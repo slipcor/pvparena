@@ -665,7 +665,7 @@ public class ArenaPlayer {
 	}
 
 	public void setStatus(Status status) {
-		System.out.print(name + ">" + status.name());
+		db.i(name + ">" + status.name());
 		this.status = status;
 	}
 
