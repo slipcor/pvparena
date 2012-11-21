@@ -21,6 +21,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -42,7 +43,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class ArenaPlayer {
@@ -683,5 +684,12 @@ public class ArenaPlayer {
 
 	public void setTempPermissions(HashSet<PermissionAttachment> tempPermissions) {
 		this.tempPermissions = tempPermissions;
+	}
+	
+	@Override
+	public String toString() {
+		ArenaTeam team = getArenaTeam();
+
+		return (team == null) ? name : team.getColorCodeString() + name + ChatColor.RESET;
 	}
 }

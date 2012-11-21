@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.8
  */
 
 public class PAI_List extends PAA__Command {
@@ -67,7 +67,7 @@ public class PAI_List extends PAA__Command {
 				if (arena.isFreeForAll()) {
 					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 				} else {
-					arena.msg(sender, Language.parse(MSG.LIST_TEAM, teams.getColoredName() + "&f: ", StringParser.joinSet(names, ", ")));
+					arena.msg(sender, Language.parse(MSG.LIST_TEAM, teams.getColoredName(), StringParser.joinSet(names, ", ")));
 				}
 			}
 			return;

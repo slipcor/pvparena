@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class Language {
@@ -330,7 +330,7 @@ public class Language {
 		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "A flag claimed by Team %1% is being unclaimed!"),
 		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "A flag claimed by Team %1% is being unclaimed by Team %2%!"),
 
-		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Lives left: %3%"),
+		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Captures remaining: %3%"),
 		GOAL_FLAGS_DROPPED("lang.flagsave", "%1% dropped the flag of team %2%!"),
 		GOAL_FLAGS_GRABBED("lang.flaggrab", "%1% grabbed the flag of team %2%!"),
 		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
