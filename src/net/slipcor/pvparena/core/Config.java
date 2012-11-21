@@ -230,7 +230,7 @@ public class Config {
 		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", true),
 		
 		MODULES_STANDARDSPECTATE_ACTIVE("modules.standardspectate.ssactive", true),
-		
+
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
 		MODULES_VAULT_BETPOT("modules.vault.betpot", false),
@@ -243,7 +243,11 @@ public class Config {
 		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
 		MODULES_VAULT_WINPOT("modules.vault.winPot", false),
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
-		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0));
+		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
+
+		MODULES_WORLDEDIT_ACTIVE("modules.worldedit.weactive", true),
+		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false),
+		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false);
 		
 		
 		private String node;
