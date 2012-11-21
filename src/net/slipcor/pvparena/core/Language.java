@@ -135,6 +135,7 @@ public class Language {
 		ERROR_ONLY_PLAYERS("nulang.error.onlyplayers", "&cThis command can only be used by players!"),
 		ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &f%1%&c!"),
 		ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
+		ERROR_POTIONEFFECTTYPE_NOTFOUND("nulang.error.potioneffecttypenotfound", "PotionEffectType not found: &e%1%&r"),
 		ERROR_READY_0_ONE_PLAYER_NOT_READY("nulang.error.ready.notready0", "At least one player is not ready!"),
 		ERROR_READY_1_ALONE("nulang.error.ready.notready1", "You are alone in the arena!"),
 		ERROR_READY_2_TEAM_ALONE("nulang.error.ready.notready2", "Your team is alone in the arena!"),
@@ -371,6 +372,11 @@ public class Language {
 		MODULE_BANVOTE_YOUKICKED("nulang.banvote.lang.youwerekicked", "You were kicked from arena %1%"),
 		MODULE_BANVOTE_YOUUNBANNED("nulang.banvote.lang.youwereunbanned", "You are unbanned from arena %1%"),
 
+		MODULE_BETTERCLASSES_ADD("nulang.betterclasses.add", "PotionEffect &e%2%&r added to ArenaClass &e%1%&r!"),
+		MODULE_BETTERCLASSES_CLEAR("nulang.betterclasses.clear", "ArenaClass &e%1%&r cleared!"),
+		MODULE_BETTERCLASSES_LISTHEAD("nulang.betterclasses.listhead", "--- Potion Effects for class &e%1%&r ---"),
+		MODULE_BETTERCLASSES_REMOVE("nulang.betterclasses.remove", "PotionEffect &e%2%&r removed from ArenaClass &e%1%&r!"),
+		
 		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
 		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),

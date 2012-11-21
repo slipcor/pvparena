@@ -51,7 +51,7 @@ public class ConfigurationManager {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 			
-			if (cfg.getUnsafe(CFG.MODULES_STANDARDSPECTATE_ACTIVE.getNode()) == null) {
+			if (cfg.getUnsafe(CFG.MODULES_BETTERCLASSES_ACTIVE.getNode()) == null) {
 				cfg.createDefaults();
 			}
 			
