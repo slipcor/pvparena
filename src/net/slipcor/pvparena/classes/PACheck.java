@@ -537,6 +537,11 @@ public class PACheck {
 		for (ArenaGoal goal : arena.getGoals()) {
 			goal.parseStart();
 		}
+		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
+			if (mod.isActive(arena)) {
+				mod.teleportAllToSpawn(arena);
+			}
+		}
 
 		db.i("teleported everyone!");
 

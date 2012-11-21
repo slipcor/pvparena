@@ -413,6 +413,9 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void resetPlayer(Arena arena, Player player, boolean force) {
 	}
 
+	public void teleportAllToSpawn(Arena arena) {
+	}
+
 	/**
 	 * hook into a timed arena end
 	 * 

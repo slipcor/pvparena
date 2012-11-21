@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.1 - re-add module arena start handling
 * v0.9.8.0 - rewrite the arena start. use with caution!
 * v0.9.7.14 - fix part of #101 - free team can be colored other than WHITE
 * v0.9.7.13 - fix #103 - Bug - FFA games not ending! 
