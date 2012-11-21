@@ -30,14 +30,14 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* CraftBukkit Beta 1.3.2-R2.0
+* CraftBukkit Beta 1.4.4-R0.2
 
 -----------------------------------------------------------------------------------------------------------------------
 
 === How to install
 
 * Place in plugins folder
-* Place arena files in /pvparena/files
+* Place files in /pvparena/files
 * Configure if you wish to
 * Done!
 
