@@ -51,8 +51,10 @@ public class ConfigurationManager {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 			
-			if (cfg.getUnsafe(CFG.MODULES_BETTERCLASSES_ACTIVE.getNode()) == null) {
-				cfg.createDefaults();
+			for (CFG c : CFG.values()) {
+				if (cfg.getUnsafe(c.getNode()) == null) {
+					cfg.createDefaults();
+				}
 			}
 			
 			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());

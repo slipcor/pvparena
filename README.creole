@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.7 - properly update the config if nodes are missing
 * v0.9.8.6 - add #92 - Feature Request - List number of players per team 
 * v0.9.8.5 - fix #85 - Other - Grammar fix for capturing a flag? 
 * v0.9.8.4 - support WorldEdit auto loading and saving of BATTLE regions
