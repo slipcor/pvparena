@@ -42,7 +42,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.7
  */
 
 public class ArenaPlayer {
@@ -597,6 +597,8 @@ public class ArenaPlayer {
 		}
 		arena = null;
 		aClass = null;
+		
+		get().setFireTicks(0);
 
 		clearDump();
 	}
