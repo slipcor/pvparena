@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.9 - restructure the player removal to allow proper removement by modules
 * v0.9.8.8 - add #96 - Feature Request - Ability to disable armor durability 
 * v0.9.8.7 - properly update the config if nodes are missing
 * v0.9.8.6 - add #92 - Feature Request - List number of players per team 

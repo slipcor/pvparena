@@ -25,6 +25,7 @@ import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ConfigurationManager;
@@ -601,6 +602,16 @@ public class Arena {
 	 * @param b 
 	 */
 	public void playerLeave(Player player, CFG location, boolean silent) {
+		
+		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
+			if (mod.isActive(this)) {
+				mod.parseLeave(this, player);
+			}
+		}
+		
+		for (ArenaGoal goal : getGoals()) {
+			goal.parseLeave(player);
+		}
 		
 		if (!fightInProgress) {
 			startCount--;

@@ -53,16 +53,6 @@ public class PAG_Leave extends PAA__Command {
 			return;
 		}
 
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				mod.parseLeave(arena, ap.get());
-			}
-		}
-		
-		for (ArenaGoal goal : arena.getGoals()) {
-			goal.parseLeave(ap.get());
-		}
-		
 		arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 	}
 
