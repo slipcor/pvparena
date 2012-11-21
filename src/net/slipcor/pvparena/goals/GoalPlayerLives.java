@@ -48,7 +48,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.7.0";
+		return "v0.9.7.13";
 	}
 
 	int priority = 2;
@@ -218,6 +218,17 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void initate(Player player) {
 		lives.put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+	}
+	
+	@Override
+	public void parseLeave(Player player) {
+		if (player == null) {
+			PVPArena.instance.getLogger().warning(this.getName() + ": player NULL");
+			return;
+		}
+		if (lives.containsKey(player.getName())) {
+			lives.remove(player.getName());
+		}
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.command.CommandSender;
@@ -56,6 +57,10 @@ public class PAG_Leave extends PAA__Command {
 			if (mod.isActive(arena)) {
 				mod.parseLeave(arena, ap.get());
 			}
+		}
+		
+		for (ArenaGoal goal : arena.getGoals()) {
+			goal.parseLeave(ap.get());
 		}
 		
 		arena.playerLeave(ap.get(), CFG.TP_EXIT, false);

@@ -605,7 +605,6 @@ public class Arena {
 		}
 		db.i("fully removing player from arena");
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-
 		if (!silent) {
 		
 			ArenaTeam team = ap.getArenaTeam();
@@ -637,7 +636,7 @@ public class Arena {
 		}
 		new PlayerDestroyRunnable(ap);
 
-		if (ap.getStatus().equals(Status.FIGHT) && isFightInProgress()) {
+		if (isFightInProgress()) {
 			ArenaManager.checkAndCommit(this, silent);
 		}
 	}
@@ -936,9 +935,12 @@ public class Arena {
 
 	public void setFree(boolean b) {
 		free = b;
-		if (free && (getTeam("free") == null)) {
+		if (free && (cfg.getUnsafe("teams.free") == null)) {
 			teams.clear();
 			teams.add(new ArenaTeam("free", "WHITE"));
+		} else if (free) {
+			teams.clear();
+			teams.add(new ArenaTeam("free", (String) cfg.getUnsafe("teams.free")));
 		}
 		cfg.set(CFG.GENERAL_TYPE, b?"free":"none");
 		cfg.save();

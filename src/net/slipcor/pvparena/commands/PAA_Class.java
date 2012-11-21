@@ -81,19 +81,19 @@ public class PAA_Class extends PAA__Command {
 			isItems[i++] = is;
 			}
 
-			arena.getArenaConfig().setManually("classitems." + args[2], StringParser.getStringFromItemStacks(isItems));
+			arena.getArenaConfig().setManually("classitems." + args[1], StringParser.getStringFromItemStacks(isItems));
 			arena.getArenaConfig().save();
-			arena.addClass(args[2], isItems);
-			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));
+			arena.addClass(args[1], isItems);
+			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
 		} else if (args[0].equalsIgnoreCase("load")) {
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 			arena.selectClass(ap, args[1]);
 		} else if (args[0].equalsIgnoreCase("remove")) {
 			Player player = (Player) sender;
-			arena.getArenaConfig().setManually("classitems." + args[2], null);
+			arena.getArenaConfig().setManually("classitems." + args[1], null);
 			arena.getArenaConfig().save();
-			arena.removeClass(args[2]);
-			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[2]));
+			arena.removeClass(args[1]);
+			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
 		}
 	}
 
