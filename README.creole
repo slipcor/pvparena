@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* CraftBukkit Beta 1.4.4-R0.2
+* CraftBukkit Beta 1.4.5-R0.2
 
 -----------------------------------------------------------------------------------------------------------------------
 
