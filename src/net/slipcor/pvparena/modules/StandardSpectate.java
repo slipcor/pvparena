@@ -2,14 +2,20 @@ package net.slipcor.pvparena.modules;
 
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -20,7 +26,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.8
  */
 
 public class StandardSpectate extends ArenaModule {
@@ -34,7 +40,7 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.8.11";
 	}
 
 	@Override
@@ -56,6 +62,15 @@ public class StandardSpectate extends ArenaModule {
 
 	@Override
 	public void commitSpectate(Arena arena, Player player) {
+
+		// standard join --> lounge
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+		//ArenaPlayer.prepareInventory(arena, ap.get());
+		ap.setLocation(new PALocation(ap.get().getLocation()));
+		ap.setArena(arena);
+		ap.setStatus(Status.WATCH);
+
 		arena.tpPlayerToCoordName(player, "spectator");
 		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}

@@ -470,12 +470,6 @@ public class PACheck {
 		}
 		
 		commit.commitSpectate(arena, (Player) sender);
-		/*
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				commit.parseSpectate(arena, (Player) sender);
-			}
-		}*/
 	}
 
 	public static void handleStart(Arena arena, CommandSender sender) {

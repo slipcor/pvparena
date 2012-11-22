@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.12 - add proper functionality to /pa [arena] spectate
 * v0.9.8.11 - finally implement the SOFT version of a player leave - FIX ppl spectating after death
 * v0.9.8.10 - fix the ArenaRunnable implementation ("XXX has not been scheduled yet")
 * v0.9.8.9 - restructure the player removal to allow proper removement by modules
