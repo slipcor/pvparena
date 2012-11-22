@@ -772,6 +772,7 @@ public class Arena {
 		if (!soft && ap.getArenaTeam() != null) {
 			ap.getArenaTeam().remove(ap);
 		}
+		
 		remove(player);
 		if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
 			PAClassSign.remove(signs, player);
@@ -790,14 +791,17 @@ public class Arena {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				db.i("player: " + p.getName());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
+					db.i("> skipped");
 					continue;
 				} else {
+					db.i("> added");
 					pa.add(p);
 				}
 			}
 		}
 
 		for (ArenaPlayer p : pa) {
+			p.debugPrint();
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				Player z = p.get();
 
@@ -870,7 +874,7 @@ public class Arena {
 	 * 
 	 * @param player
 	 * @param string
-	 * @param soft
+	 * @param soft if location should be preserved (another tp incoming)
 	 */
 	private void resetPlayer(Player player, String string, boolean soft, boolean force) {
 		if (player == null) {
@@ -896,7 +900,7 @@ public class Arena {
 		
 		db.i("string = " + string);
 		ap.setTelePass(true);
-		new TeleportRunnable(this, ap, string);
+		new TeleportRunnable(this, ap, string, soft);
 	}
 
 	/**

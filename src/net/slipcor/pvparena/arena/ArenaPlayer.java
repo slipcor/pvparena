@@ -86,6 +86,8 @@ public class ArenaPlayer {
 	public ArenaPlayer(String playerName) {
 		db.i("creating offline arena player: " + playerName);
 		name = playerName;
+		
+		totalPlayers.put(name, this);
 	}
 	
 	public ArenaPlayer(Player p, Arena a) {
@@ -93,6 +95,8 @@ public class ArenaPlayer {
 
 		this.name = p.getName();
 		this.setArena(a);
+
+		totalPlayers.put(name, this);
 	}
 
 	public static int countPlayers() {
@@ -316,7 +320,11 @@ public class ArenaPlayer {
 	}
 	
 	public void debugPrint() {
-		if (!Debug.override || status == null || location == null) {
+		if (status == null || location == null) {
+			db.i("DEBUG PRINT OUT:");
+			db.i(StringParser.verify(name));
+			db.i(StringParser.verify(status));
+			db.i(StringParser.verify(location));
 			return;
 		}
 		db.i("------------------");

@@ -24,14 +24,16 @@ public class TeleportRunnable implements Runnable {
 	final String string;
 	final String player;
 	final Arena arena;
+	final boolean soft;
 	
 	Debug db = new Debug(77);
 	
-	public TeleportRunnable(Arena a, ArenaPlayer ap, String s) {
+	public TeleportRunnable(Arena a, ArenaPlayer ap, String s, boolean soft) {
 		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => " + s);
 		string = s;
 		player = ap.getName();
 		arena = a;
+		this.soft = soft;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 10L);
 	}
 
@@ -55,7 +57,8 @@ public class TeleportRunnable implements Runnable {
 			ap.get().teleport(l.toLocation());
 			ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
-		ap.setLocation(null);
+		if (!soft)
+			ap.setLocation(null);
 	}
 
 }
