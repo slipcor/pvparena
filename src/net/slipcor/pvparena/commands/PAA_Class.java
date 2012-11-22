@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.8
  */
 
 public class PAA_Class extends PAA__Command {
@@ -81,7 +81,9 @@ public class PAA_Class extends PAA__Command {
 			isItems[i++] = is;
 			}
 
-			arena.getArenaConfig().setManually("classitems." + args[1], StringParser.getStringFromItemStacks(isItems));
+			String sItems = (isItems == null || isItems.length < 1) ? "AIR" : StringParser.getStringFromItemStacks(isItems);
+			
+			arena.getArenaConfig().setManually("classitems." + args[1], sItems);
 			arena.getArenaConfig().save();
 			arena.addClass(args[1], isItems);
 			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
