@@ -216,7 +216,7 @@ public class Config {
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 
-		MODULES_ITEMS_INTERVAL("modules.items.iterval", 0),
+		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
 		MODULES_ITEMS_ITEMS("modules.items.items", "none"),
 		
 		MODULES_LATELOUNGE_ACTIVE("modules.latelounge.llactive", false),
