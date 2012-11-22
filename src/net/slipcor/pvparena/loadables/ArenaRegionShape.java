@@ -2,6 +2,7 @@ package net.slipcor.pvparena.loadables;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -467,12 +468,14 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public void removeEntities() {
-		if (getWorld() == null) {
-			return;
-		} else if (getWorld().getEntities() == null) {
+		if (getWorld() == null || getWorld().getEntities() == null) {
 			return;
 		}
-		for (Entity e : getWorld().getEntities()) {
+		
+		Iterator<Entity> ie = getWorld().getEntities().iterator();
+		
+		while (ie.hasNext()) {
+			Entity e = ie.next();
 			if ((e instanceof Player)
 					|| (!contains(new PABlockLocation(e.getLocation()
 							.getWorld().getName(), e.getLocation().getBlockX(),
