@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.8
  */
 
 public abstract class ArenaRunnable extends BukkitRunnable {
@@ -56,8 +56,6 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 	Arena arena;
 	Boolean global;
 	
-	int id = -1;
-	
 	/**
 	 * Spam the message of the remaining time to... someone, probably:
 	 * @param s the Language.parse("**") String to wrap
@@ -73,7 +71,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		this.arena = arena;
 		this.global = global;
 		
-		id = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, this, 20L, 20L);
+		runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
 	}
 	public void spam() {
 		if ((message == null) || (messages.get(seconds) == null)) {

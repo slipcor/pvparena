@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.8
  */
 
 public class StandardLounge extends ArenaModule {
@@ -42,7 +42,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.8.9";
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public void parseJoin(Arena arena, CommandSender player, ArenaTeam team) {
-		if (arena.START_ID != -1)
+		if (arena.START_ID != null)
 			arena.countDown();
 	}
 }

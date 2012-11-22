@@ -13,7 +13,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.8
  */
 
 public class SpawnCampRunnable implements Runnable {

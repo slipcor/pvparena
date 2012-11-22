@@ -52,7 +52,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class PlayerListener implements Listener {
@@ -362,7 +362,7 @@ public class PlayerListener implements Listener {
 				if (ap.getClass().equals("")) {
 					return; // not chosen class => OUT
 				}
-				if (arena.START_ID != -1) {
+				if (arena.START_ID != null) {
 					return; // counting down => OUT
 				}
 

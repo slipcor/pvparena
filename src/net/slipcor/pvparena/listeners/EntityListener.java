@@ -204,7 +204,7 @@ public class EntityListener implements Listener {
 					apAttacker);
 		}
 
-		if (!defTeam || !attTeam || arena.REALEND_ID != -1) {
+		if (!defTeam || !attTeam || arena.REALEND_ID != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -280,7 +280,7 @@ public class EntityListener implements Listener {
 
 		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
-		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.NULL) && !apDefender.getStatus().equals(Status.FIGHT))) {
+		if (arena.REALEND_ID != null || (!apDefender.getStatus().equals(Status.NULL) && !apDefender.getStatus().equals(Status.FIGHT))) {
 			event.setCancelled(true);
 			return;
 		}

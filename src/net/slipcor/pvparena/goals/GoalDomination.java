@@ -836,7 +836,7 @@ public class GoalDomination extends ArenaGoal {
 		 */
 		@Override
 		public void run() {
-			if (!arena.isFightInProgress() || arena.REALEND_ID != -1) {
+			if (!arena.isFightInProgress() || arena.REALEND_ID != null) {
 				Bukkit.getScheduler().cancelTask(ID);
 			}
 			domination.checkMove();

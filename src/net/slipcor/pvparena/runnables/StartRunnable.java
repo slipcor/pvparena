@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
@@ -14,7 +12,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.8
  */
 
 public class StartRunnable extends ArenaRunnable {
@@ -28,13 +26,13 @@ public class StartRunnable extends ArenaRunnable {
 	 */
 	public StartRunnable(Arena a, int i) {
 		super(MSG.ARENA_STARTING_IN.getNode(), i, null, a, false);
-		db.i("StartRunnable constructor: " + id);
-		a.START_ID = id;
+		db.i("StartRunnable constructor");
+		a.START_ID = this;
 	}
 
 	@Override
 	protected void commit() {
-		Bukkit.getScheduler().cancelTask(arena.START_ID);
+		arena.START_ID = null;
 		db.i("StartRunnable commiting");
 		arena.start();
 	}

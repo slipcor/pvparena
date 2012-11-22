@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
@@ -14,7 +12,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.8
  */
 
 public class TimedEndRunnable extends ArenaRunnable {
@@ -27,23 +25,21 @@ public class TimedEndRunnable extends ArenaRunnable {
 	 */
 	public TimedEndRunnable(Arena a, int i) {
 		super(MSG.TIMER_ENDING_IN.getNode(), i, null, a, false);
-		a.END_ID = id;
 		db.i("TimedEndRunnable constructor");
+		a.END_ID = this;
 	}
 	
 	@Override
 	public void commit() {
 		db.i("TimedEndRunnable commiting");
-		if (arena.isFightInProgress())
+		if (arena.isFightInProgress()) {
 			PVPArena.instance.getAgm().timedEnd(arena);
-		else {
-			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(id);
 		}
-		Bukkit.getScheduler().cancelTask(arena.END_ID);
-		arena.END_ID = -1;
-		Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
-		arena.REALEND_ID = -1;
+		arena.END_ID = null;
+		if (arena.REALEND_ID != null) {
+			arena.REALEND_ID.cancel();
+			arena.REALEND_ID = null;
+		}
 	}
 	
 	@Override

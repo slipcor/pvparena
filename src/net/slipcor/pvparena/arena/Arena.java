@@ -49,6 +49,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
@@ -84,9 +85,9 @@ public class Arena {
 	private int round = 0;
 
 	// Runnable IDs
-	public int END_ID = -1;
-	public int REALEND_ID = -1;
-	public int START_ID = -1;
+	public BukkitRunnable END_ID = null;
+	public BukkitRunnable REALEND_ID = null;
+	public BukkitRunnable START_ID = null;
 	public int SPAWNCAMP_ID = -1;
 
 	private Config cfg;
@@ -221,9 +222,9 @@ public class Arena {
 	 * initiate the arena start countdown
 	 */
 	public void countDown() {
-		if (START_ID != -1 || this.isFightInProgress()) {
-			Bukkit.getScheduler().cancelTask(START_ID);
-			START_ID = -1;
+		if (START_ID != null || this.isFightInProgress()) {
+			START_ID.cancel();
+			START_ID = null;
 			if (!this.isFightInProgress()) {
 				broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			}
@@ -643,10 +644,10 @@ public class Arena {
 		removePlayer(player, getArenaConfig().getString(location),
 				false, silent);
 
-		if (START_ID != -1) {
-			Bukkit.getScheduler().cancelTask(START_ID);
+		if (START_ID != null) {
+			START_ID.cancel();
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
-			START_ID = -1;
+			START_ID = null;
 		}
 		new PlayerDestroyRunnable(ap);
 
@@ -848,12 +849,14 @@ public class Arena {
 		reset_players(force);
 		setFightInProgress(false);
 
-		if (END_ID > -1)
-			Bukkit.getScheduler().cancelTask(END_ID);
-		END_ID = -1;
-		if (REALEND_ID > -1)
-			Bukkit.getScheduler().cancelTask(REALEND_ID);
-		REALEND_ID = -1;
+		if (END_ID != null) {
+			END_ID.cancel();
+		}
+		END_ID = null;
+		if (REALEND_ID != null) {
+			REALEND_ID.cancel();
+		}
+		REALEND_ID = null;
 
 		PVPArena.instance.getAmm().reset(this, force);
 		clearRegions();
@@ -1029,7 +1032,7 @@ public class Arena {
 	 */
 	public void start() {
 		db.i("start()");
-		START_ID = -1;
+		START_ID = null;
 		if (isFightInProgress()) {
 			db.i("already in progress! OUT!");
 			return;
