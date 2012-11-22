@@ -17,12 +17,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.8
  */
 
 public class Help {
 
-	private static String version = "v0.9.5.5";
+	private static String version = "v0.9.8.13";
 	
 	public static enum HELP {
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{
@@ -217,6 +217,12 @@ public class Help {
 				"/pa [arenaname] spawn [spawnname] remove",
 				"-------------------------------------------",
 				"Spawn names vary based on installed/active modules!"}),
+		START("nulang.help.msg.start", new String[]{
+				"Force start an arena",
+				"-------------------------------------------",
+				"shorthand command: !go",
+				"-------------------------------------------",
+				"/pa [arenaname] start"}),
 		STOP("nulang.help.msg.stop", new String[]{
 				"Force stop an arena",
 				"-------------------------------------------",

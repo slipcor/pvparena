@@ -36,6 +36,7 @@ public class Language {
 		ARENA_RELOAD_DONE("nulang.arena.reload.done", "Arena reloaded!"),
 		ARENA_REMOVE_DONE("nulang.arena.remove.done", "Arena removed: &e%1%&r"),
 		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1%!"),
+		ARENA_START_DONE("nulang.arena.start.done", "Arena force started!"),
 		ARENA_STOP_DONE("nulang.arena.stop.done", "Arena force stopped!"),
 		ARENA_TEAM_UNKNOWN("nulang.arena.teamunknown", "Arena Team '%1%' unknown!"),
 

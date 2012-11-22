@@ -247,8 +247,8 @@ public class Config {
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
 
 		MODULES_WORLDEDIT_ACTIVE("modules.worldedit.weactive", true),
-		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false),
-		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false);
+		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
+		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
 		
 		
 		private String node;

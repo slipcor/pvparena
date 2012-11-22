@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.8
  */
 
 public abstract class PAA__Command {
@@ -111,6 +111,8 @@ public abstract class PAA__Command {
 			return new PAA_SetOwner();
 		} else if (name.equals("spawn") || name.equals("!sp")) {
 			return new PAA_Spawn();
+		} else if (name.equals("start") || name.equals("!go")) {
+			return new PAA_Start();
 		} else if (name.equals("forcestop") || name.equals("stop") || name.equals("!st") || name.equals("!fs")) {
 			return new PAA_Stop();
 		} else if (name.contains("teleport") || name.equals("tp") || name.equals("!t")) {
