@@ -67,7 +67,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.9.8.0";
+		return "v0.9.8.15";
 	}
 
 	int priority = 7;
@@ -558,7 +558,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	public void takeFlag(String teamName, boolean take, PALocation lBlock) {
 		lBlock.toLocation().getBlock().setType(take?Material.AIR:Material.TNT);
 		if (take) {
-			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(arena.getWorld()).spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
+			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(SpawnManager.getRegionCenter(arena).getWorldName()).spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
 			tnts.put(arena.getTeam(teamName), tnt);
 		}
 	}

@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class Config {
@@ -76,8 +76,6 @@ public class Config {
 		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
 		LISTS_GOALS("goals", new ArrayList<String>()),
 		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
-		
-		LOCATION_WORLD("location.world", Bukkit.getWorlds().get(0).getName()),
 		
 		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
 		MSG_PLAYERJOINED("msg.playerjoined", "%1% joined the Arena!"),

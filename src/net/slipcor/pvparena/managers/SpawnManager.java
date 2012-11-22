@@ -12,7 +12,11 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,7 +26,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.7
+ * @version v0.9.8
  */
 
 public class SpawnManager {
@@ -217,7 +221,23 @@ public class SpawnManager {
 	 */
 	public static PABlockLocation getRegionCenter(Arena arena) {
 		HashSet<PALocation> locs = new HashSet<PALocation>();
+		
+		ArenaRegionShape ars = null;
+		for (ArenaRegionShape a : arena.getRegionsByType(RegionType.BATTLE)) {
+			ars = a;
+			break;
+		}
+		
+		if (ars == null) {
+			return new PABlockLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
+		}
 
+		World w = Bukkit.getWorld(ars.getWorldName());
+		
+		if (w == null) {
+			return new PABlockLocation(Bukkit.getWorlds().get(0).getSpawnLocation());
+		}
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			String sTeam = team.getName();
 			for (PALocation loc : getSpawns(arena, sTeam)) {
@@ -230,14 +250,16 @@ public class SpawnManager {
 		long z = 0;
 
 		for (PALocation loc : locs) {
+			if (!loc.getWorldName().equals(w.getName())) {
+				continue;
+			}
 			x += loc.getX();
 			y += loc.getY();
 			z += loc.getZ();
 		}
 
-		
-
-		return new PABlockLocation(arena.getWorld(),(int) x / locs.size(),(int) y / locs.size(),(int) z / locs.size());
+		return new PABlockLocation(w.getName(),
+				(int) x / locs.size(), (int) y / locs.size(), (int) z / locs.size());
 	}
 
 	/**

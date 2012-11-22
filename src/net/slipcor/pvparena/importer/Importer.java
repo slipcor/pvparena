@@ -21,7 +21,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.8
  */
 
 public class Importer {
@@ -40,7 +40,7 @@ public class Importer {
 		content.put("game.preventDeath", "player.preventDeath");
 		content.put("game.teamKill", "perms.teamkill");
 		content.put("game.refillInventory", "player.refillInventory");
-		content.put("game.weaponDamage", "game.weaponDamage");
+		content.put("game.weaponDamage", "damage.weapons");
 		content.put("game.mustbesafe", "goal.flags.mustBeSafe");
 		content.put("game.woolFlagHead", "goal.flags.woolFlagHead");
 		content.put("game.woolHead", "uses.woolHead");
@@ -167,11 +167,11 @@ public class Importer {
 		
 		HashMap<String, Object> coords = (HashMap<String, Object>) cfg.getConfigurationSection("spawns")
 				.getValues(false);
+		String world = cfg.getString("general.world");
 
 		for (String name : coords.keySet()) {
 			
 			String sLoc = String.valueOf(cfg.getString("spawns." + name));
-			String world = cfg.getString("general.world");
 			a.spawnSet(name, Config.parseOldLocation(sLoc, world));
 		}
 		
@@ -181,7 +181,7 @@ public class Importer {
 
 		for (String name : coords.keySet()) {
 
-			ArenaRegionShape ars = hackRegion(a, name, (String) coords.get(name));
+			ArenaRegionShape ars = hackRegion(a, name, (String) coords.get(name), world);
 			
 			a.addRegion(ars);
 			ars.saveToConfig();
@@ -203,7 +203,7 @@ public class Importer {
 		return null;
 	}
 	
-	static ArenaRegionShape hackRegion(Arena arena, String name, String coords) {
+	static ArenaRegionShape hackRegion(Arena arena, String name, String coords, String worldName) {
 		String[] parts = coords.split(","); 
 
 		// battlefield: 1570,53,-3608,1618,100,-3560[,sphere]
@@ -220,8 +220,6 @@ public class Importer {
 			rs = ArenaRegionShapeManager.getShapeByName(parts[6]);
 		}
 		
-		
-		
 		Integer x1 = Config.parseInteger(parts[0]);
 		Integer y1 = Config.parseInteger(parts[1]);
 		Integer z1 = Config.parseInteger(parts[2]);
@@ -235,12 +233,10 @@ public class Importer {
 				|| z2 == null || flags == null || prots == null)
 			throw new NullPointerException(
 					"Some of the parsed values are null!");
-		PABlockLocation[] l = { new PABlockLocation(arena.getWorld(), x1, y1, z1),
-				new PABlockLocation(arena.getWorld(), x2, y2, z2) };
+		PABlockLocation[] l = { new PABlockLocation(worldName, x1, y1, z1),
+				new PABlockLocation(worldName, x2, y2, z2) };
 		
 		ArenaRegionShape region = ArenaRegionShape.create(arena, name, rs, l);
-		//region.applyFlags(flags);
-		//region.applyProtections(prots);
 		region.setType(RegionType.guessFromName(name));
 		if (region.getType().equals(RegionType.BATTLE)) {
 			region.protectionSetAll(true);

@@ -389,15 +389,6 @@ public class Arena {
 	}
 
 	/**
-	 * return the arena world
-	 * 
-	 * @return the world name
-	 */
-	public String getWorld() {
-		return getArenaConfig().getString(CFG.LOCATION_WORLD);
-	}
-
-	/**
 	 * give customized rewards to players
 	 * 
 	 * @param player
@@ -977,17 +968,6 @@ public class Arena {
 
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
-	}
-
-	/**
-	 * set the arena world
-	 * 
-	 * @param sWorld
-	 *            the world name
-	 */
-	public void setWorld(String sWorld) {
-		getArenaConfig().set(CFG.LOCATION_WORLD, sWorld);
-		getArenaConfig().save();
 	}
 
 	/**
