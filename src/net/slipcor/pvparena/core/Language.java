@@ -344,10 +344,10 @@ public class Language {
 		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.toset", "TNT to set: %1%"),
 		GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage materials!'"),
 
-		GOAL_TANK_TANKDOWN("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),
-		GOAL_TANK_TANKMODE("nulang.goal.tank.tankwon", "The tank has won! Congratulations to %1%!"),
-		GOAL_TANK_TANKWON("nulang.goal.tank.tankdown", "The tank is down!"),
-
+		GOAL_TANK_TANKDOWN("nulang.goal.tank.tankdown", "The tank is down!"),
+		GOAL_TANK_TANKMODE("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),
+		GOAL_TANK_TANKWON("nulang.goal.tank.tankwon", "The tank has won! Congratulations to %1%!"),
+		
 		// -----------------------------------------------
 
 		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),

@@ -196,6 +196,10 @@ public class BlockListener implements Listener {
 		Block block = event.getToBlock();
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 
+		if (arena == null) {
+			return;
+		}
+		
 		db.i("block fluids inside the arena");
 
 		if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {

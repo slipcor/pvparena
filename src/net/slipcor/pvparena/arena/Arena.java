@@ -1189,6 +1189,8 @@ public class Arena {
 	 * ctf - capture the flag arena
 	 * ctp - capture the pumpkin arena
 	 * spleef - free for all with teamkill off
+	 * sabotage - destroy TNT inside the other team's base
+	 * tank - all vs one!
 	 * </pre>
 	 * @param string legacy goal
 	 */
@@ -1215,6 +1217,13 @@ public class Arena {
 		} else if (string.equals("ctp")) {
 			goalAdd(PVPArena.instance.getAgm().getType("Flags"));
 			cfg.set(CFG.GOAL_FLAGS_FLAGTYPE, "PUMPKIN");
+			cfg.save();
+		} else if (string.equals("tank")) {
+			goalAdd(PVPArena.instance.getAgm().getType("Tank"));
+			this.setFree(true);
+			cfg.save();
+		} else if (string.equals("sabotage")) {
+			goalAdd(PVPArena.instance.getAgm().getType("Sabotage"));
 			cfg.save();
 		}
 		

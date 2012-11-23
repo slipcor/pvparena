@@ -156,6 +156,7 @@ public class Config {
 		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
 		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
 		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
+		GOAL_TANK_LIVES("goal.tank.tlives", 1),
 		GOAL_TDM_LIVES("goal.teamdm.tdlives", 10),
 		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10),
 		GOAL_TIME_END("goal.time.timedend", 0),
