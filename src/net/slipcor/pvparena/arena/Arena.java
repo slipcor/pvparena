@@ -387,6 +387,21 @@ public class Arena {
 		}
 		return result;
 	}
+	
+	public String getWorld() {
+		ArenaRegionShape ars = null;
+		
+		for (ArenaRegionShape arss : this.getRegionsByType(RegionType.BATTLE)) {
+			ars = arss;
+			break;
+		}
+		
+		if (ars != null) {
+			return ars.getWorldName();
+		}
+		
+		return Bukkit.getWorlds().get(0).getName();
+	}
 
 	/**
 	 * give customized rewards to players
