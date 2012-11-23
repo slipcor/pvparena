@@ -57,10 +57,12 @@ public class Config {
 		DAMAGE_ARMOR("damage.armor", true),
 		DAMAGE_SPAWNCAMP("damage.spawncamp", 1),
 		DAMAGE_WEAPONS("damage.weapons", true),
-		
+
 		GENERAL_ENABLED("general.enabled", true),
 		GENERAL_OWNER("general.owner", "server"),
+		GENERAL_QUICKSPAWN("general.quickspawn", true),
 		GENERAL_PREFIX("general.prefix", "PVP Arena"),
+		GENERAL_SMARTSPAWN("general.smartspawn", false),
 		GENERAL_TYPE("general.type", "none"),
 		GENERAL_WAND("general.wand", 280),
 

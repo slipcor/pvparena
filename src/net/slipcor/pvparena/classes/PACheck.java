@@ -22,6 +22,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -510,20 +511,11 @@ public class PACheck {
 		
 			if (!arena.isFreeForAll()) {
 				for (ArenaTeam team : arena.getTeams()) {
-					for (ArenaPlayer ap : team.getTeamMembers()) {
-						arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
-						ap.setStatus(Status.FIGHT);
-					}
+					SpawnManager.distribute(arena, team);
 				}
 			} else {
-				//TODO replace with better way
 				for (ArenaTeam team : arena.getTeams()) {
-					for (ArenaPlayer ap : team.getTeamMembers()) {
-						if (arena.isFreeForAll()) {
-							arena.tpPlayerToCoordName(ap.get(), "spawn");
-							ap.setStatus(Status.FIGHT);
-						}
-					}
+					SpawnManager.distribute(arena, team.getTeamMembers());
 				}
 			}
 		}
