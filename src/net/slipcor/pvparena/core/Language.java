@@ -396,8 +396,9 @@ public class Language {
 		MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp %2%!"),
 		MODULE_POWERUPS_SERVER("nulang.mod.powerups.puserver", "PowerUp deployed!"),
 
+		MODULE_SKINS_DISGUISECRAFT("nulang.mod.skins.dc", "Hooking into DisguiseCraft!"),
 		MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
-		MODULE_SKINS_NOMOBDISGUISE("nulang.mod.skins.nomd", "MobDisguise not found, Skins module is inactive!"),
+		MODULE_SKINS_NOMOD("nulang.mod.skins.nomod", "No disguise plugin found, Skins module is inactive!"),
 
 		MODULE_SPECIALJOIN_DONE("nulang.mod.specialjoin.done", "Join block set here - %1%"),
 		MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),

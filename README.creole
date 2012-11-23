@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.18 - update Skins language
 * v0.9.8.17 - allow setting classes to have empty inventory
 * v0.9.8.16 - update importer (weapondamage), remove unnecessary WORLD node from config!
 * v0.9.8.15 - fix an ConcurrentModificationException about region restoring
