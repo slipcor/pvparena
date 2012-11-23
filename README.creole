@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.21 - split the announcing of "join the arena!" (ADVERT) and "let the fight begin" (START)
 * v0.9.8.20 - make sure PA loads after SKINS dependencies
 * v0.9.8.19 - re-introduce arena.getWorld()
 * v0.9.8.18 - update Skins language

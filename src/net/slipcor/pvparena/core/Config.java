@@ -171,6 +171,7 @@ public class Config {
 		MODULES_ANNOUNCEMENTS_LOSER("modules.announcements.loser", false),
 		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false),
 		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
+		MODULES_ANNOUNCEMENTS_ADVERT("modules.announcements.advert", false),
 		MODULES_ANNOUNCEMENTS_ACTIVE("modules.announcements.aaactive", false),
 
 		MODULES_ARENABOARDS_ACTIVE("modules.arenaboards.abactive", false),
