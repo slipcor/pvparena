@@ -1,7 +1,7 @@
 name: pvparena
 author: slipcor
 main: net.slipcor.pvparena.PVPArena
-version: 0.9.8.22
+version: 0.9.8.23
 softdepend: [Spout,MultiVerse,MultiWorld,WormholeXTreme,Vault,WorldEdit,MobDisguise,DisguiseCraft,TagAPI]
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena

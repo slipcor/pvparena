@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.23 - activate MOBS protection, and teach Listeners some RESPECT
 * v0.9.8.22 - rewrite spawning (FREE) - new config settings!
 * v0.9.8.21 - split the announcing of "join the arena!" (ADVERT) and "let the fight begin" (START)
 * v0.9.8.20 - make sure PA loads after SKINS dependencies
@@ -230,7 +231,6 @@ A PVP experience enhancing plugin.
 === Todo
 
 * plugin
-** mob protection
 * modules
 **
 * goals

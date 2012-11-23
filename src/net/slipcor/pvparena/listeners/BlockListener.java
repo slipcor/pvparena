@@ -39,13 +39,13 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.8
  */
 
 public class BlockListener implements Listener {
 	private static Debug db = new Debug(20);
 
-	private boolean willBeSkipped(boolean cancelled, Event event, Location loc, RegionProtection rp) {
+	private boolean willBeSkipped(Event event, Location loc, RegionProtection rp) {
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(loc));
 		
 		if (arena == null) {
@@ -63,10 +63,6 @@ public class BlockListener implements Listener {
 
 			return PAA_Edit.activeEdits.containsValue(arena);
 		}
-		if (cancelled) {
-			db.i("already cancelled: " + event.getEventName());
-			return true;
-		}
 		
 		return PAA_Edit.activeEdits.containsValue(arena);
 	}
@@ -81,10 +77,10 @@ public class BlockListener implements Listener {
 		return true;
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		db.i("onBlockBreak");
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.BREAK)) {
 			db.i("willbeskipped. GFYS!!!!");
 			return;
@@ -127,11 +123,8 @@ public class BlockListener implements Listener {
 		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBurn(BlockBurnEvent event) {
-		if (event.isCancelled()) {
-			return;
-		}
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.FIRE);
 		if (arena == null)
@@ -146,9 +139,9 @@ public class BlockListener implements Listener {
 		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockDecay(LeavesDecayEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
@@ -170,9 +163,9 @@ public class BlockListener implements Listener {
 		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockFade(BlockFadeEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
@@ -193,8 +186,9 @@ public class BlockListener implements Listener {
 				event.getNewState());
 	}
 
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockFromTo(BlockFromToEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getToBlock()
+		if (willBeSkipped(event, event.getToBlock()
 				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
@@ -212,9 +206,9 @@ public class BlockListener implements Listener {
 		PVPArena.instance.getAmm().onBlockPlace(arena, block, Material.AIR);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockForm(BlockFormEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.NATURE)) {
 			return;
 		}
@@ -235,12 +229,8 @@ public class BlockListener implements Listener {
 				event.getNewState());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockGrow(StructureGrowEvent event) {
-		if (event.isCancelled()) {
-			db.i("oSGE cancelled");
-			return;
-		}
 		Arena arena = null;
 
 		for (BlockState block : event.getBlocks()) {
@@ -266,9 +256,9 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.FIRE)) {
 			return;
 		}
@@ -289,13 +279,8 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
-		if (event.isCancelled()) {
-			db.i("oBPEE cancelled");
-			return;
-		}
-
 		Arena arena = null;
 
 		for (Block block : event.getBlocks()) {
@@ -319,9 +304,9 @@ public class BlockListener implements Listener {
 		
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.PLACE)) {
 			return;
 		}
@@ -372,9 +357,9 @@ public class BlockListener implements Listener {
 				event.getBlockReplacedState().getType());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(PaintingPlaceEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getBlock()
+		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.PAINTING)) {
 			return;
 		}
@@ -392,9 +377,9 @@ public class BlockListener implements Listener {
 				event.getBlock().getType());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(PaintingBreakEvent event) {
-		if (willBeSkipped(event.isCancelled(), event, event.getPainting()
+		if (willBeSkipped(event, event.getPainting()
 				.getLocation(), RegionProtection.PAINTING)) {
 			return;
 		}

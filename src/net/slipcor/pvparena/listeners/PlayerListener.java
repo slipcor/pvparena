@@ -98,7 +98,7 @@ public class PlayerListener implements Listener {
 		return false;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		Player player = event.getPlayer();
@@ -144,7 +144,7 @@ public class PlayerListener implements Listener {
 		event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 		Player player = event.getPlayer();
 
@@ -191,7 +191,7 @@ public class PlayerListener implements Listener {
 		event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		Player player = event.getPlayer();
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -411,7 +411,7 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		
@@ -465,11 +465,8 @@ public class PlayerListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		if (event.isCancelled())
-			return;
-
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
@@ -489,7 +486,7 @@ public class PlayerListener implements Listener {
 		arena.playerLeave(player, CFG.TP_EXIT, false);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
@@ -527,11 +524,8 @@ public class PlayerListener implements Listener {
 		arena.msg(player, Language.parse(MSG.NOTICE_NO_TELEPORT));
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerVelocity(PlayerVelocityEvent event) {
-		if (event.isCancelled())
-			return;
-
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();

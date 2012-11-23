@@ -2,6 +2,7 @@ package net.slipcor.pvparena.listeners;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -27,11 +28,13 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -66,8 +69,29 @@ public class EntityListener implements Listener {
 		teamEffect.put(PotionEffectType.WATER_BREATHING, true);
 		teamEffect.put(PotionEffectType.WEAKNESS, false);
 	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+		HashSet<SpawnReason> naturals = new HashSet<SpawnReason>();
+		naturals.add(SpawnReason.CHUNK_GEN);
+		naturals.add(SpawnReason.DEFAULT);
+		naturals.add(SpawnReason.NATURAL);
+		naturals.add(SpawnReason.SLIME_SPLIT);
+		naturals.add(SpawnReason.VILLAGE_INVASION);
+		
+		if (!naturals.contains(event.getSpawnReason())) {
+			// custom generation, this is not our business!
+			return;
+		}
+		
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getLocation()), RegionProtection.MOBS);
+		if (arena == null)
+			return; // no arena => out
+		
+		event.setCancelled(true);
+	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		db.i("explosion");
 
@@ -86,13 +110,8 @@ public class EntityListener implements Listener {
 		event.setCancelled(true); // ELSE => cancel event
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-
-		if (event.isCancelled()) {
-			return; // respect other plugins
-		}
-
 		Entity p1 = event.getEntity();
 
 		if ((p1 == null) || (!(p1 instanceof Player)))
@@ -126,13 +145,8 @@ public class EntityListener implements Listener {
 	 * @param event
 	 *            the triggering event
 	 */
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-
-		if (event.isCancelled()) {
-			return;
-		}
-
 		Entity p1 = event.getDamager();
 		Entity p2 = event.getEntity();
 
@@ -254,13 +268,8 @@ public class EntityListener implements Listener {
 	}
 	
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityDamage(EntityDamageEvent event) {
-
-		if (event.isCancelled()) {
-			return;
-		}
-
 		Entity p2 = event.getEntity();
 
 		db.i("onEntityDamage: cause: " + event.getCause().name()
@@ -287,7 +296,7 @@ public class EntityListener implements Listener {
 	}
 	
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPotionSplash(PotionSplashEvent event) {
 
 		db.i("onPotionSplash");
