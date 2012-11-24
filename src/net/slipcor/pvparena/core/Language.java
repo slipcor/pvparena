@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class Language {
@@ -383,6 +383,12 @@ public class Language {
 		MODULE_BETTERCLASSES_CLEAR("nulang.betterclasses.clear", "ArenaClass &e%1%&r cleared!"),
 		MODULE_BETTERCLASSES_LISTHEAD("nulang.betterclasses.listhead", "--- Potion Effects for class &e%1%&r ---"),
 		MODULE_BETTERCLASSES_REMOVE("nulang.betterclasses.remove", "PotionEffect &e%2%&r removed from ArenaClass &e%1%&r!"),
+
+		MODULE_BETTERGEARS_CLASSDONE("nulang.bettergears.classdone", "Class &e%1%&r now has Protection Level &a%2%"),
+		MODULE_BETTERGEARS_SHOWCLASS("nulang.bettergears.showclass", "Class &e%1%&r has Protection Level &a%2%"),
+		MODULE_BETTERGEARS_SHOWTEAM("nulang.bettergears.showteam", "Team %1% has Color %2%"),
+		MODULE_BETTERGEARS_TEAMDONE("nulang.bettergears.teamdone", "Team %1% now has Color %2%"),
+		
 		
 		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
 		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),

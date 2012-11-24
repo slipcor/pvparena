@@ -193,6 +193,8 @@ public class Config {
 		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bgactive", false),
 
 		MODULES_BETTERCLASSES_ACTIVE("modules.betterclasses.bcactive", false),
+		
+		MODULES_BETTERGEARS_ACTIVE("modules.bettergears.bgactive", false),
 
 		MODULES_BETTERFIGHT_ACTIVE("modules.betterfight.bfactive", false),
 		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),

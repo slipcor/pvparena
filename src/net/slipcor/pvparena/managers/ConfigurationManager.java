@@ -144,7 +144,6 @@ public class ConfigurationManager {
 		cfg.save();
 
 		PVPArena.instance.getAgm().configParse(arena, config);
-		PVPArena.instance.getAmm().configParse(arena, config);
 		
 		if (cfg.getYamlConfiguration().getConfigurationSection("teams") == null) {
 			if (arena.isFreeForAll()) {
@@ -173,6 +172,10 @@ public class ConfigurationManager {
 						+ team.getColorCodeString());
 			}
 		}
+		
+		PVPArena.instance.getAmm().configParse(arena, config);
+		cfg.save();
+		cfg.reloadMaps();
 
 		arena.setPrefix(cfg.getString(CFG.GENERAL_PREFIX));
 	}
