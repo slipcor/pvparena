@@ -1,10 +1,10 @@
 package net.slipcor.pvparena.commands;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Set;
-
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -20,13 +20,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- * <pre>PVP Arena INSTALL Command class</pre>
+ * <pre>
+ * PVP Arena INSTALL Command class
+ * </pre>
  * 
  * A command to install modules
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.9
  */
 
 public class PAA_Install extends PA__Command {
@@ -41,8 +43,7 @@ public class PAA_Install extends PA__Command {
 			return;
 		}
 
-		if (!this.argCountValid(sender, args,
-				new Integer[]{0,1})) {
+		if (!this.argCountValid(sender, args, new Integer[] { 0, 1 })) {
 			return;
 		}
 
@@ -51,18 +52,19 @@ public class PAA_Install extends PA__Command {
 
 		YamlConfiguration config = new YamlConfiguration();
 		try {
-			config.load(PVPArena.instance.getDataFolder().getPath() + "/install.yml");
+			config.load(PVPArena.instance.getDataFolder().getPath()
+					+ "/install.yml");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
 		}
 
-		if (args.length == 1) {
+		if (args.length == 0) {
 			listVersions(sender, config, null);
 			return;
 		}
 
-		if (config.get(args[1]) != null) {
+		if (config.get(args[0]) != null) {
 			listVersions(sender, config, args[1]);
 			return;
 		}
@@ -70,30 +72,32 @@ public class PAA_Install extends PA__Command {
 		Set<String> list;
 
 		list = config.getConfigurationSection("goals").getKeys(false);
-		if (list.contains(args[1].toLowerCase())) {
+		if (list.contains(args[0].toLowerCase())) {
 			for (String key : list) {
-				if (key.equalsIgnoreCase(args[1])) {
+				if (key.equalsIgnoreCase(args[0])) {
 					if (download("pa_g_" + key + ".jar")) {
 						PVPArena.instance.getAgm().reload();
-						Arena.pmsg(sender, Language.parse(MSG.INSTALL_DONE,key));
+						Arena.pmsg(sender,
+								Language.parse(MSG.INSTALL_DONE, key));
 						return;
 					}
-					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL,key));
+					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, key));
 					return;
 				}
 			}
 		}
 
-		list = config.getConfigurationSection("mod").getKeys(false);
-		if (list.contains(args[1].toLowerCase())) {
+		list = config.getConfigurationSection("mods").getKeys(false);
+		if (list.contains(args[0].toLowerCase())) {
 			for (String key : list) {
-				if (key.equalsIgnoreCase(args[1])) {
+				if (key.equalsIgnoreCase(args[0])) {
 					if (download("pa_m_" + key + ".jar")) {
 						PVPArena.instance.getAmm().reload();
-						Arena.pmsg(sender, Language.parse(MSG.INSTALL_DONE,key));
+						Arena.pmsg(sender,
+								Language.parse(MSG.INSTALL_DONE, key));
 						return;
 					}
-					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL,key));
+					Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, key));
 					return;
 				}
 			}
@@ -148,8 +152,8 @@ public class PAA_Install extends PA__Command {
 
 	private boolean download(String file) {
 
-		File source = new File(PVPArena.instance.getDataFolder().getPath() + "/files/"
-				+ file);
+		File source = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/files/" + file);
 
 		if (source == null || !source.exists()) {
 			Arena.pmsg(
@@ -167,25 +171,39 @@ public class PAA_Install extends PA__Command {
 			folder = "/mods/";
 		}
 		if (folder == null) {
-			PVPArena.instance.getLogger().severe("unable to save file: " + file);
+			PVPArena.instance.getLogger()
+					.severe("unable to save file: " + file);
 			return false;
 		}
 		try {
-			File destination = new File(PVPArena.instance.getDataFolder().getPath()
-					+ folder);
+			File destination = new File(PVPArena.instance.getDataFolder()
+					.getPath() + folder + "/" + file);
+			try {
+				disableModule(file);
+			} catch (Exception e2) {
+			}
 
-			disableModule(file);
+			FileInputStream stream = new FileInputStream(source);
 
-			FileReader in = new FileReader(source);
-			FileWriter out = new FileWriter(destination);
-			int c;
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buffer = new byte[8192];
+			int bytesRead;
+			while ((bytesRead = stream.read(buffer)) > 0) {
+				baos.write(buffer, 0, bytesRead);
+			}
 
-			while ((c = in.read()) != -1)
-				out.write(c);
+			FileOutputStream fos = new FileOutputStream(destination);
+			fos.write(baos.toByteArray());
+			fos.close();
 
-			in.close();
-			out.close();
-
+			/*
+			 * FileReader in = new FileReader(source); FileWriter out = new
+			 * FileWriter(destination); int c;
+			 * 
+			 * while ((c = in.read()) != -1) out.write(c);
+			 * 
+			 * in.close(); out.close();
+			 */
 			PVPArena.instance.getLogger().info("Installed module " + file);
 			return true;
 		} catch (Exception e) {
@@ -196,10 +214,12 @@ public class PAA_Install extends PA__Command {
 
 	private void disableModule(String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAgm().getType(file.replace("pa_g_", "").replace(".jar", ""));
+			ArenaGoal g = PVPArena.instance.getAgm().getType(
+					file.replace("pa_g_", "").replace(".jar", ""));
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModule(file.replace("pa_m_", "").replace(".jar", ""));
+			ArenaModule g = PVPArena.instance.getAmm().getModule(
+					file.replace("pa_m_", "").replace(".jar", ""));
 			g.unload();
 		}
 	}

@@ -23,7 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.9
  */
 
 public class PAA_Uninstall extends PA__Command {
@@ -54,17 +54,17 @@ public class PAA_Uninstall extends PA__Command {
 			return;
 		}
 
-		if (args.length == 1) {
+		if (args.length == 0) {
 			listVersions(sender, config, null);
 			return;
 		}
 
-		if (config.get(args[1]) != null) {
+		if (config.get(args[0]) != null) {
 			listVersions(sender, config, args[1]);
 			return;
 		}
 
-		String name = args[1].toLowerCase();
+		String name = args[0].toLowerCase();
 		ArenaGoal ag = PVPArena.instance.getAgm().getType(name);
 		if (ag != null) {
 			if (remove("pa_g_" + ag.getName().toLowerCase() + ".jar")) {
@@ -135,10 +135,12 @@ public class PAA_Uninstall extends PA__Command {
 
 	private void disableModule(String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAgm().getType(file);
+			ArenaGoal g = PVPArena.instance.getAgm().getType(
+					file.replace("pa_g_", "").replace(".jar", ""));
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModule(file);
+			ArenaModule g = PVPArena.instance.getAmm().getModule(
+					file.replace("pa_m_", "").replace(".jar", ""));
 			g.unload();
 		}
 	}
@@ -149,7 +151,12 @@ public class PAA_Uninstall extends PA__Command {
 	}
 
 	private boolean remove(String file) {
-		disableModule(file);
+		try {
+			disableModule(file);
+		} catch (Exception e) {
+			PVPArena.instance.getLogger().warning("Error while removing: " + file);
+			e.printStackTrace();
+		}
 		String folder = null;
 		if (file.startsWith("pa_g")) {
 			folder = "/goals/";

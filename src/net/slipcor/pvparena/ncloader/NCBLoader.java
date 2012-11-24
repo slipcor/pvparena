@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -60,15 +59,19 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 	private final Object[] paramTypes;
 	private final Class<?>[] ctorParams;
 	
-	private final List<File> files;
+	private final ArrayList<File> files;
 	private final List<T> loadables;
 	
 	public NCBLoader(Plugin plugin, File dir, Object... paramTypes) {
 		this.plugin = plugin;
 		this.dir = dir;
 		this.paramTypes = paramTypes;
-		this.files = Arrays.asList(dir.listFiles(new FileExtensionFilter(".jar")));
+		this.files = new ArrayList<File>();
 		this.loadables = new ArrayList<T>();
+		
+		for (File f : dir.listFiles(new FileExtensionFilter(".jar"))) {
+			files.add(f);
+		}
 		
 		List<Class<?>> constructorParams = new ArrayList<Class<?>>();
 		
@@ -169,12 +172,11 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 		unload();
 		
 		List<URL> urls = new ArrayList<URL>();
-		
+		files.clear();
 		for (String loadableFile : dir.list()) {
 			if (loadableFile.endsWith(".jar")) {
 				File file = new File(dir, loadableFile);
 				files.add(file);
-				
 				try { urls.add(file.toURI().toURL()); } catch (MalformedURLException e) { e.printStackTrace(); }
 			}
 		}
