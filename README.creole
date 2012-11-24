@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.8.25 - support TEAM based PlayerLives goal !!
 * v0.9.8.24 - support TANK gamemode - welcome back !!
 * v0.9.8.23 - activate MOBS protection, and teach Listeners some RESPECT
 * v0.9.8.22 - rewrite spawning (FREE) - new config settings!

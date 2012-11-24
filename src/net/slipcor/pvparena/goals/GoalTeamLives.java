@@ -27,7 +27,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
- * <pre>Arena Goal class "PlayerLives"</pre>
+ * <pre>Arena Goal class "TeamLives"</pre>
  * 
  * The second Arena Goal. Arena Teams have lives. When every life is lost, the team
  * is teleported to the spectator spawn to watch the rest of the fight.

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
@@ -22,6 +23,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
@@ -48,7 +50,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.8.0";
+		return "v0.9.8.25";
 	}
 
 	int priority = 2;
@@ -56,6 +58,15 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public PACheck checkEnd(PACheck res) {
 		if (res.getPriority() > priority) {
+			return res;
+		}
+		
+		if (!arena.isFreeForAll()) {
+			int count = TeamManager.countActiveTeams(arena);
+
+			if (count <= 1) {
+				res.setPriority(this, priority); // yep. only one team left. go!
+			}
 			return res;
 		}
 		
@@ -73,7 +84,22 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public String checkForMissingSpawns(Set<String> list) {
 		if (!arena.isFreeForAll()) {
-			return null; // teams are handled somewhere else
+
+			for (ArenaTeam team : arena.getTeams()) {
+				String sTeam = team.getName();
+				if (!list.contains(team + "spawn")) {
+					boolean found = false;
+					for (String s : list) {
+						if (s.startsWith(sTeam) && s.endsWith("spawn")) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						return team.getName() + "spawn not set";
+				}
+			}
+			return null;
 		}
 		int count = 0;
 		for (String s : list) {
@@ -136,14 +162,23 @@ public class GoalPlayerLives extends ArenaGoal {
 		if (er != null) {
 			return;
 		}
+		
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT))
 					continue;
-				
-				PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 
-				arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
+				if (arena.isFreeForAll()) {
+					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
+	
+					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
+				} else {
+					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()), "WINNER");
+	
+					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()));
+					break;
+				}
 			}
 			if (PVPArena.instance.getAmm().commitEnd(arena, team)) {
 				return;
@@ -212,7 +247,15 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public boolean hasSpawn(String string) {
-		return (arena.isFreeForAll() && string.toLowerCase().startsWith("spawn"));
+		if (arena.isFreeForAll()) {
+			return (string.toLowerCase().startsWith("spawn"));
+		}
+		for (String teamName : arena.getTeamNames()) {
+			if (string.toLowerCase().startsWith(teamName.toLowerCase()+"spawn")) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -245,6 +288,30 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void reset(boolean force) {
 		er = null;
 		lives.clear();
+	}
+	
+	@Override
+	public void setDefaults(YamlConfiguration config) {
+		if (arena.isFreeForAll()) {
+			return;
+		}
+		
+		if (config.get("teams.free") != null) {
+			config.set("teams",null);
+		}
+		if (config.get("teams") == null) {
+			db.i("no teams defined, adding custom red and blue!");
+			config.addDefault("teams.red",
+					ChatColor.RED.name());
+			config.addDefault("teams.blue",
+					ChatColor.BLUE.name());
+		}
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
+				&& (config.get("flagColors") == null)) {
+			db.i("no flagheads defined, adding white and black!");
+			config.addDefault("flagColors.red", "WHITE");
+			config.addDefault("flagColors.blue", "BLACK");
+		}
 	}
 	
 	@Override

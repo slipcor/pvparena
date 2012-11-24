@@ -83,6 +83,7 @@ public class Language {
 		ERROR_ARGUMENT_TYPE("nulang.error.argumenttype", "&cInvalid argument type:&r &e%1%&r is no proper &a%2%&r"),
 		ERROR_ARGUMENT("nulang.error.argument", "&cArgument not recognized:&r %1% - possible arguments: &a%2%&r"),
 		ERROR_AUTOSETUP_RUNNING("nulang.error.autosetup.running", "There is already an autosetup running! Player: %1%"),
+		ERROR_BLACKLIST_DISALLOWED("nulang.error.blacklist.disallowed", "You may not %1% this! Blacklisted!"),
 		ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND("nulang.error.blacklist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_BLACKLIST_UNKNOWN_TYPE("nulang.error.blacklist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
 		ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
@@ -159,6 +160,7 @@ public class Language {
 		ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
 		ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
 		ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling &a%1%&r"),
+		ERROR_WHITELIST_DISALLOWED("nulang.error.whitelist.disallowed", "You may not %1% this! (not whitelisted)"),
 		ERROR_WHITELIST_UNKNOWN_SUBCOMMAND("nulang.error.whitelist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_WHITELIST_UNKNOWN_TYPE("nulang.error.whitelist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
 		
@@ -175,6 +177,10 @@ public class Language {
 		GAMEMODE_FREE("nulang.gamemode.free", "Game mode &afree for all&r set for arena &a%1%&r!"),
 		GAMEMODE_TEAM("nulang.gamemode.team", "Game mode &ateam&r set for arena &a%1%&r!"),
 
+		GENERAL_BREAK("nulang.general.break", "break"),
+		GENERAL_PLACE("nulang.general.place", "place"),
+		GENERAL_USE("nulang.general.use", "use"),
+		
 		GOAL_ADDED("nulang.goal.added", "Goal added: &a%1%&r"),
 		GOAL_INSTALLING("nulang.goal.installing", "Install goals by command: &a/pa install [goalname]&r"),
 		GOAL_REMOVED("nulang.goal.removed", "Goal removed: &a%1%&r"),

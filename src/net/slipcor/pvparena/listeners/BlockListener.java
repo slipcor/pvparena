@@ -8,7 +8,9 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 
@@ -85,10 +87,6 @@ public class BlockListener implements Listener {
 			db.i("willbeskipped. GFYS!!!!");
 			return;
 		}
-		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.BREAK)) {
-			db.i("isprotected!");
-			return;
-		}
 
 		List<String> list = new ArrayList<String>();
 		
@@ -101,24 +99,29 @@ public class BlockListener implements Listener {
 
 			if (!list.contains(String.valueOf(event.getBlock().getTypeId()))) {
 				event.getPlayer().sendMessage("not contained, out!");
+				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 				// not on whitelist. DENY!
 				event.setCancelled(true);
 				db.i("whitelist out");
 				return;
 			}
-		} else {
-
-			list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
-
-			if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
-				event.getPlayer().sendMessage("blacklist contains");
-				// on blacklist. DENY!
-				event.setCancelled(true);
-				db.i("blacklist out");
-				return;
-			}
-
 		}
+
+		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.BREAK)) {
+			db.i("isprotected!");
+			return;
+		}
+
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
+
+		if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+			arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
+			// on blacklist. DENY!
+			event.setCancelled(true);
+			db.i("blacklist out");
+			return;
+		}
+
 		db.i("onBlockBreak !!!");
 		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
 	}
@@ -317,6 +320,23 @@ public class BlockListener implements Listener {
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.PLACE);
 
+		arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getBlock()
+				.getLocation()));
+		List<String> list = new ArrayList<String>();
+
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
+
+		if (list.size() > 0) {
+			// WHITELIST!!!!!!!!!
+
+			if (!list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE)));
+				// not on whitelist. DENY!
+				event.setCancelled(true);
+				return;
+			}
+		}
+
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.PLACE)) {
 			if (arena.isFightInProgress() &&
 					!isProtected(event.getBlock().getLocation(), event, RegionProtection.TNT) &&
@@ -330,33 +350,15 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getBlock()
-				.getLocation()));
-		List<String> list = new ArrayList<String>();
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
 
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
-
-		if (list.size() > 0) {
-			// WHITELIST!!!!!!!!!
-
-			if (!list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
-				event.getPlayer().sendMessage("not contained, out!");
-				// not on whitelist. DENY!
-				event.setCancelled(true);
-				return;
-			}
-		} else {
-
-			list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
-
-			if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
-				event.getPlayer().sendMessage("blacklist contains");
-				// on blacklist. DENY!
-				event.setCancelled(true);
-				return;
-			}
-
+		if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+			arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE)));
+			// on blacklist. DENY!
+			event.setCancelled(true);
+			return;
 		}
+		
 		PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(),
 				event.getBlockReplacedState().getType());
 	}
