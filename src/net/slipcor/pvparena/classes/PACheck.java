@@ -319,6 +319,7 @@ public class PACheck {
 				}
 				
 				PVPArena.instance.getAgm().initiate(arena, (Player) sender);
+				PVPArena.instance.getAmm().initiate(arena, (Player) sender);
 				
 				if (arena.getFighters().size() == 2) {
 					arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));

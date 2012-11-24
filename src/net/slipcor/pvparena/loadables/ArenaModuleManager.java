@@ -211,6 +211,13 @@ public class ArenaModuleManager {
 		return player.hasPermission(perms);
 	}
 
+	public void initiate(Arena arena, Player sender) {
+		for (ArenaModule mod : modules) {
+			if (mod.isActive(arena))
+				mod.initiate(arena, sender);
+		}
+	}
+
 	/**
 	 * hook into joining of a player while the fight is running
 	 * 

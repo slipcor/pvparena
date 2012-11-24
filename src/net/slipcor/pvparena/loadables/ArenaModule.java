@@ -184,6 +184,9 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 		return false;
 	}
 
+	public void initiate(Arena arena, Player sender) {
+	}
+
 	/**
 	 * check if the module is activated for that arena, this is very much needed to
 	 * ensure modules don't affect arenas where it's not wanted
