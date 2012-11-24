@@ -41,7 +41,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class BlockListener implements Listener {
@@ -92,12 +92,13 @@ public class BlockListener implements Listener {
 		
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getBlock().getLocation()));
 		
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + ".break", new ArrayList<String>());
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
 
-			if (!list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+			if (!list.contains(String.valueOf(event.getBlock().getTypeId()))
+					&& !list.contains(String.valueOf(event.getBlock().getType().name()))) {
 				event.getPlayer().sendMessage("not contained, out!");
 				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 				// not on whitelist. DENY!
@@ -112,9 +113,10 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode() + ".break", new ArrayList<String>());
 
-		if (list.contains(String.valueOf(event.getBlock().getTypeId()))) {
+		if (list.contains(String.valueOf(event.getBlock().getTypeId()))
+				|| list.contains(String.valueOf(event.getBlock().getType().name()))) {
 			arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 			// on blacklist. DENY!
 			event.setCancelled(true);
@@ -324,12 +326,13 @@ public class BlockListener implements Listener {
 				.getLocation()));
 		List<String> list = new ArrayList<String>();
 
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + ".place", new ArrayList<String>());
 
 		if (list.size() > 0) {
 			// WHITELIST!!!!!!!!!
 
-			if (!list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+			if (!list.contains(String.valueOf(event.getBlockPlaced().getTypeId())) &&
+					!list.contains(String.valueOf(event.getBlockPlaced().getType().name()))) {
 				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE)));
 				// not on whitelist. DENY!
 				event.setCancelled(true);
@@ -350,9 +353,10 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode() + ".place", new ArrayList<String>());
 
-		if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))) {
+		if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId())) ||
+				list.contains(String.valueOf(event.getBlockPlaced().getType().name()))) {
 			arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_PLACE)));
 			// on blacklist. DENY!
 			event.setCancelled(true);

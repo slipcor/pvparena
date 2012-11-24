@@ -7,6 +7,7 @@ import java.util.List;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -21,7 +22,7 @@ import org.bukkit.Material;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.9
  */
 
 public class PAA_WhiteList extends PAA__Command {
@@ -55,7 +56,7 @@ public class PAA_WhiteList extends PAA__Command {
 		
 		if (args.length < 2) {
 			if (args[0].equalsIgnoreCase("clear")) {
-				arena.getArenaConfig().setManually("blocks.whitelist", null);
+				arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
 				arena.getArenaConfig().save();
 				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
 				return;
@@ -69,7 +70,7 @@ public class PAA_WhiteList extends PAA__Command {
 				return;
 			}
 			if (args[1].equalsIgnoreCase("clear")) {
-				arena.getArenaConfig().setManually("blocks.whitelist", null);
+				arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
 				arena.getArenaConfig().save();
 				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
 				return;
@@ -91,7 +92,7 @@ public class PAA_WhiteList extends PAA__Command {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.getArenaConfig().getStringList("blocks.whitelist." + args[0].toLowerCase(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
 		
 		if (args[1].equalsIgnoreCase("add")) {
 			list.add(args[2]);
@@ -110,7 +111,7 @@ public class PAA_WhiteList extends PAA__Command {
 			arena.msg(sender, Language.parse(MSG.WHITELIST_REMOVED, args[2]));
 		}
 		
-		arena.getArenaConfig().setManually("blocks.whitelist." + args[0].toLowerCase(), list);
+		arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
 		arena.getArenaConfig().save();
 		
 	}

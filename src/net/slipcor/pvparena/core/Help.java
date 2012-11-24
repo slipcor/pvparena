@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class Help {
@@ -130,7 +130,7 @@ public class Help {
 		REGION("nulang.help.msg.region", new String[]{
 				"Manage arena regions",
 				"-------------------------------------------",
-				"shorthand command: !r",
+				"shorthand command: !rg",
 				"-------------------------------------------",
 				"/pa [arenaname] region",
 				"    - start selecting a region",

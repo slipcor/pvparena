@@ -22,7 +22,7 @@ import org.bukkit.Material;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.9
  */
 
 public class PAA_BlackList extends PAA__Command {
@@ -92,7 +92,7 @@ public class PAA_BlackList extends PAA__Command {
 
 		List<String> list = new ArrayList<String>();
 
-		list = arena.getArenaConfig().getStringList("blocks.blacklist." + args[0].toLowerCase(), list);
+		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), list);
 		
 		if (args[1].equalsIgnoreCase("add")) {
 			list.add(args[2]);
@@ -111,7 +111,7 @@ public class PAA_BlackList extends PAA__Command {
 			arena.msg(sender, Language.parse(MSG.BLACKLIST_REMOVED, args[2]));
 		}
 		
-		arena.getArenaConfig().setManually("blocks.blacklist." + args[0].toLowerCase(), list);
+		arena.getArenaConfig().setManually(CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), list);
 		arena.getArenaConfig().save();
 		
 	}

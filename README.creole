@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.1 - fix the place/break whitelist / blacklist !
 * v0.9.9.0 - fix /pa install | uninstall | update
 * v0.9.8.25 - support TEAM based PlayerLives goal !!
 * v0.9.8.24 - support TANK gamemode - welcome back !!
