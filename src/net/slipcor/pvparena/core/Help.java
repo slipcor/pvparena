@@ -229,6 +229,12 @@ public class Help {
 				"shorthand command: !st",
 				"-------------------------------------------",
 				"/pa [arenaname] stop"}),
+		TOGGLEMOD("nulang.help.msg.togglemod", new String[]{
+				"Toggle an arena module",
+				"-------------------------------------------",
+				"shorthand command: !tm",
+				"-------------------------------------------",
+				"/pa [arenaname] togglemod [name]"}),
 		TELEPORT("nulang.help.msg.teleport", new String[]{
 				"Teleport to an arena spawn",
 				"-------------------------------------------",

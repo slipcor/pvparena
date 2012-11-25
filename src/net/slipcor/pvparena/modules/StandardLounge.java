@@ -42,7 +42,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.8.9";
+		return "v0.9.9.9";
 	}
 
 	@Override
@@ -184,5 +184,11 @@ public class StandardLounge extends ArenaModule {
 	public void parseJoin(Arena arena, CommandSender player, ArenaTeam team) {
 		if (arena.START_ID != null)
 			arena.countDown();
+	}
+	
+	@Override
+	public void toggleActivity(Arena arena) {
+		arena.getArenaConfig().set(CFG.MODULES_STANDARDLOUNGE_ACTIVE, !isActive(arena));
+		arena.getArenaConfig().save();
 	}
 }

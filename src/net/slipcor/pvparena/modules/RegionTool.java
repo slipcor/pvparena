@@ -32,7 +32,7 @@ public class RegionTool extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.9.9";
 	}
 
 	@Override
@@ -80,5 +80,10 @@ public class RegionTool extends ArenaModule {
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public void toggleActivity(Arena arena) {
+		return;
 	}
 }

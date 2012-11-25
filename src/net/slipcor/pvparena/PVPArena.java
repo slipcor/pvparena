@@ -45,7 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.9.9
  */
 
 public class PVPArena extends JavaPlugin {
@@ -141,6 +141,22 @@ public class PVPArena extends JavaPlugin {
 
 		if (args.length < 1) {
 			return false;
+		}
+		
+		if (args.length > 1 && sender.hasPermission("pvparena.admin")) {
+			if (args[0].equalsIgnoreCase("ALL")) {
+				args = StringParser.shiftArrayBy(args, 1);
+				for (Arena arena : ArenaManager.getArenas()) {
+					try {
+						Bukkit.getServer().dispatchCommand(sender,
+								"pa " + arena.getName() + " "+ 
+								StringParser.joinArray(args, " "));
+					} catch (Exception e) {
+						
+					}
+				}
+				return true;
+			}
 		}
 
 		PA__Command pacmd = PA__Command.getByName(args[0]);

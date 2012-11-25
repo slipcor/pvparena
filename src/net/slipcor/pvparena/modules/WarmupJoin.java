@@ -34,7 +34,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.18";
+		return "v0.9.9.9";
 	}
 
 	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
@@ -78,5 +78,10 @@ public class WarmupJoin extends ArenaModule {
 	@Override
 	public void commitSpectate(Arena arena, Player sender) {
 		new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), null, true, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
+	}
+	
+	@Override
+	public void toggleActivity(Arena arena) {
+		return;
 	}
 }

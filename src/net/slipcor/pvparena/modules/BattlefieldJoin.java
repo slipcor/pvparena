@@ -38,7 +38,7 @@ public class BattlefieldJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.5.10";
+		return "v0.9.9.9";
 	}
 
 	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
@@ -93,5 +93,10 @@ public class BattlefieldJoin extends ArenaModule {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 		}
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+	}
+	
+	@Override
+	public void toggleActivity(Arena arena) {
+		return;
 	}
 }

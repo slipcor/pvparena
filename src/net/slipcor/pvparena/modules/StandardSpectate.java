@@ -40,7 +40,7 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.8.11";
+		return "v0.9.9.9";
 	}
 
 	@Override
@@ -83,5 +83,11 @@ public class StandardSpectate extends ArenaModule {
 	@Override
 	public boolean isActive(Arena arena) {
 		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDSPECTATE_ACTIVE);
+	}
+	
+	@Override
+	public void toggleActivity(Arena arena) {
+		arena.getArenaConfig().set(CFG.MODULES_STANDARDSPECTATE_ACTIVE, !isActive(arena));
+		arena.getArenaConfig().save();
 	}
 }

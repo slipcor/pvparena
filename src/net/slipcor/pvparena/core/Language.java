@@ -160,6 +160,7 @@ public class Language {
 		ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
 		ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
 		ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling &a%1%&r"),
+		ERROR_UNKNOWN_MODULE("nulang.error.unknownmodule", "Module not found: %1%"),
 		ERROR_WHITELIST_DISALLOWED("nulang.error.whitelist.disallowed", "You may not %1% this! (not whitelisted)"),
 		ERROR_WHITELIST_UNKNOWN_SUBCOMMAND("nulang.error.whitelist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_WHITELIST_UNKNOWN_TYPE("nulang.error.whitelist.unknowntype", "Unknown type. Valid types: &e%1%&r"),

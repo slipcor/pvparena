@@ -435,6 +435,10 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void timedEnd(Arena arena, HashSet<String> result) {
 	}
 
+	public void toggleActivity(Arena arena) {
+		throw new IllegalStateException("Module not up to date: " + getName());
+	}
+
 	/**
 	 * hook into teleportation of an arena player
 	 * 

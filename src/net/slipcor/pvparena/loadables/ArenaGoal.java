@@ -224,8 +224,6 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		return scores;
 	}
-
-	
 	/**
 	 * hook into arena player unloading
 	 * 

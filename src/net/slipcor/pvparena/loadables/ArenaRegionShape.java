@@ -610,6 +610,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		}
 	}
 
+	public void toggleActivity() {
+		throw new IllegalStateException("Module not up to date: " + getName());
+	}
+
 	public String update(String key, String value) {
 		// usage: /pa {arenaname} region [regionname] radius [number]
 		// usage: /pa {arenaname} region [regionname] height [number]

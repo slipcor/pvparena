@@ -117,6 +117,8 @@ public abstract class PAA__Command {
 			return new PAA_Stop();
 		} else if (name.contains("teleport") || name.equals("tp") || name.equals("!t")) {
 			return new PAA_Teleport();
+		} else if (name.contains("togglemod") || name.equals("!tm")) {
+			return new PAA_ToggleMod();
 		} else if (name.contains("whitelist") || name.equals("!wl")) {
 			return new PAA_WhiteList();
 		} else if (name.contains("chat") || name.equals("-c")) {
