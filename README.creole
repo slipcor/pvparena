@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.7 - fix node collision: battlefieldguard=> BFGACTIVE
 * v0.9.9.6 - fix spectating cause an NPE
 * v0.9.9.5 - fix internal modules vanishing on reload
 * v0.9.9.4 - fix CLASS help

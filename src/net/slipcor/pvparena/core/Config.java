@@ -190,7 +190,7 @@ public class Config {
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
 		MODULES_ARENAVOTE_ACTIVE("modules.arenavote.avactive", false),
 
-		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bgactive", false),
+		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bfgactive", false),
 
 		MODULES_BETTERCLASSES_ACTIVE("modules.betterclasses.bcactive", false),
 		
