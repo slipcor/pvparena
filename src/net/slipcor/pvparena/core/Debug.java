@@ -37,7 +37,7 @@ public class Debug {
 	}
 
 	public void debug() {
-		System.out.print("debugger: " + id);
+		PVPArena.instance.getLogger().info("debugger: " + id);
 	}
 
 	/**

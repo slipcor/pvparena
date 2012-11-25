@@ -22,7 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Help {
 
-	private static String version = "v0.9.8.13";
+	private static String version = "v0.9.9.3";
 	
 	public static enum HELP {
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{
@@ -48,9 +48,9 @@ public class Help {
 				"-------------------------------------------",
 				"shorthand command: !cl",
 				"-------------------------------------------",
-				"/pa [arenaname] load [classname]",
-				"/pa [arenaname] save [classname]",
-				"/pa [arenaname] remove [classname]"}),
+				"/pa [arenaname] class load [classname]",
+				"/pa [arenaname] class save [classname]",
+				"/pa [arenaname] class remove [classname]"}),
 		CREATE("nulang.help.msg.create", new String[]{
 				"Create an arena",
 				"-------------------------------------------",
