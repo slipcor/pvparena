@@ -43,7 +43,7 @@ public class PlayerStateCreateRunnable implements Runnable {
 			a.dump();
 			
 			
-			if (a.getArenaClass() == null) {
+			if (a.getArenaTeam() != null && a.getArenaClass() == null) {
 				String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 				if (autoClass != null && !autoClass.equals("none")) {
 					if (arena.getClass(autoClass) != null) {
