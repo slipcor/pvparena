@@ -479,6 +479,10 @@ public class ArenaModuleManager {
 	
 	public void reload() {
 		modules = loader.reload();
+		modules.add(new BattlefieldJoin());
+		modules.add(new RegionTool());
+		modules.add(new StandardLounge());
+		modules.add(new StandardSpectate());
 
 		for (ArenaModule mod : modules) {
 			db.i("module ArenaModule loaded: "

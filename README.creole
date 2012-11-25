@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.5 - fix internal modules vanishing on reload
 * v0.9.9.4 - fix CLASS help
 * v0.9.9.3 - add module hooks to BattlefieldJoin start
 * v0.9.9.2 - add BetterGears - COLORED DYES

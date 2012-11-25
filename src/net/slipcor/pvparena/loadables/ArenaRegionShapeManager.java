@@ -13,6 +13,8 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
 import net.slipcor.pvparena.ncloader.NCBLoader;
 import net.slipcor.pvparena.regions.CuboidRegion;
+import net.slipcor.pvparena.regions.CylindricRegion;
+import net.slipcor.pvparena.regions.SphericRegion;
 
 /**
  * <pre>Arena Region Shape Manager class</pre>
@@ -110,6 +112,8 @@ public class ArenaRegionShapeManager {
 	public void reload() {
 		regions = loader.reload();
 		regions.add(new CuboidRegion());
+		regions.add(new CylindricRegion());
+		regions.add(new SphericRegion());
 
 		for (ArenaRegionShape mod : regions) {
 			db.i("module ArenaRegion loaded: "
