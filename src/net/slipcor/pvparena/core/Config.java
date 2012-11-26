@@ -59,6 +59,7 @@ public class Config {
 		DAMAGE_WEAPONS("damage.weapons", true),
 
 		GENERAL_ENABLED("general.enabled", true),
+		GENERAL_LEAVEDEATH("general.leavedeath", false),
 		GENERAL_OWNER("general.owner", "server"),
 		GENERAL_QUICKSPAWN("general.quickspawn", true),
 		GENERAL_PREFIX("general.prefix", "PVP Arena"),
@@ -191,6 +192,7 @@ public class Config {
 		MODULES_ARENAVOTE_ACTIVE("modules.arenavote.avactive", false),
 
 		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bfgactive", false),
+		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
 
 		MODULES_BETTERCLASSES_ACTIVE("modules.betterclasses.bcactive", false),
 		

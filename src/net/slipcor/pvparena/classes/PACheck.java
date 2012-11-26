@@ -367,6 +367,8 @@ public class PACheck {
 				doesRespawn = false;
 			}
 		}
+		
+		
 
 		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
 		event.setDeathMessage(null);
@@ -386,7 +388,7 @@ public class PACheck {
 				event.getDrops().clear();
 			}
 			
-			arena.unKillPlayer(player, event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			return;
 		}
 		

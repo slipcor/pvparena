@@ -12,7 +12,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.9
  */
 
 public class RegionRunnable implements Runnable {

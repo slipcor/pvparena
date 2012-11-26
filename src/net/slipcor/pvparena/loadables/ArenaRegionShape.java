@@ -76,10 +76,11 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * BATTLE => the battlefield region
 	 * EXIT   => the exit region
 	 * JOIN   => the join region
+	 * SPAWN  => the spawn region
 	 * </pre>
 	 */
 	public static enum RegionType {
-		CUSTOM, WATCH, LOUNGE, BATTLE, EXIT, JOIN;
+		CUSTOM, WATCH, LOUNGE, BATTLE, EXIT, JOIN, SPAWN;
 
 		public static RegionType guessFromName(String name) {
 			name = name.toUpperCase();
@@ -571,6 +572,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 								Language.parse(MSG.NOTICE_YOU_NOCAMP));
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
+							ap.get().setLastDamageCause(new EntityDamageEvent(ap.get(), DamageCause.CUSTOM, 1000));
 							ap.get().damage(
 									arena.getArenaConfig().getInt(
 											CFG.DAMAGE_SPAWNCAMP));
@@ -589,7 +591,13 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 				if (!this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
-					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
+					if (arena.getArenaConfig().getBoolean(CFG.GENERAL_LEAVEDEATH)) {
+						ap.get().setLastDamageCause(new EntityDamageEvent(ap.get(), DamageCause.CUSTOM, 1000));
+						//ap.get().setHealth(0);
+						ap.get().damage(1000);
+					} else {
+						arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
+					}
 				}
 			}
 			if (type.equals(RegionType.WATCH)) {

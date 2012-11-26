@@ -47,6 +47,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -566,6 +567,10 @@ public class Arena {
 	public String parseDeathCause(Player player, DamageCause cause,
 			Entity damager) {
 
+		if (cause == null) {
+			return Language.parse(MSG.DEATHCAUSE_CUSTOM);
+		}
+		
 		db.i("return a damage name for : " + cause.toString());
 		ArenaPlayer ap = null;
 		ArenaTeam team = null;
@@ -1007,6 +1012,7 @@ public class Arena {
 			for (PALocation spawnLoc : SpawnManager.getSpawns(this, sTeam)) {
 				for (Location playerLoc : players.keySet()) {
 					if (spawnLoc.getDistance(new PALocation(playerLoc)) < 3) {
+						players.get(playerLoc).get().setLastDamageCause(new EntityDamageEvent(players.get(playerLoc).get(), DamageCause.CUSTOM, 1000));
 						players.get(playerLoc)
 								.get()
 								.damage(getArenaConfig().getInt(CFG.DAMAGE_SPAWNCAMP));
@@ -1129,10 +1135,14 @@ public class Arena {
 			}
 		}
 		PALocation loc = SpawnManager.getCoords(this, place);
+		if (place.equals("old")) {
+			loc = ap.getLocation();
+		}
 		if (loc == null) {
 			PVPArena.instance.getLogger().warning("Spawn null : " + place);
 			return;
 		}
+		
 		ap.setTelePass(true);
 		player.teleport(loc.toLocation());
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);

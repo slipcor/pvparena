@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.15 - enhance the battlefield quit process: add "death" instead of kick
 * v0.9.9.14 - add SPAWN regions that >enforce< random spawning
 * v0.9.9.13 - broadcast when a player / team is ready
 * v0.9.9.12 - allow data values for blacklist and whitelist
@@ -248,9 +249,7 @@ A PVP experience enhancing plugin.
 === Todo
 
 * plugin
-** spawn regions << 
 ** class items based on EXP level
-** modify LEAVE CHECK => kick|death|leave <<
 * modules
 ** modify BFG -> kick|death|leave <<
 ** spectating
