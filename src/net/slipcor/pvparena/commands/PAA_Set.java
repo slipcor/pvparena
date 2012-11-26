@@ -85,7 +85,7 @@ public class PAA_Set extends PAA__Command {
 	public void set(CommandSender player, Arena arena, String node, String value) {
 
 		for (String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
-			if (s.endsWith("." + node)) {
+			if (s.toLowerCase().endsWith("." + node.toLowerCase())) {
 				set(player, arena, s, value);
 				return;
 			}

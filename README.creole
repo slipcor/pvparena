@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.11 - SET - stop being so damn PICKY about cases!
 * v0.9.9.10 - regions are now safe when the arena is off/disabled :p
 * v0.9.9.9 - add /pa togglemodule/!tm [module] !!!
 * v0.9.9.8 - add running commands in ALL arenas /pa ALL [...]
