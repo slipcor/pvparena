@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.13 - broadcast when a player / team is ready
 * v0.9.9.12 - allow data values for blacklist and whitelist
 * v0.9.9.11 - SET - stop being so damn PICKY about cases!
 * v0.9.9.10 - regions are now safe when the arena is off/disabled :p
@@ -249,7 +250,6 @@ A PVP experience enhancing plugin.
 ** spawn regions << 
 ** class items based on EXP level
 ** modify LEAVE CHECK => kick|death|leave <<
-** brc "player %1% is ready!" [ and "team %1% is ready!" ] <<
 * modules
 ** modify BFG -> kick|death|leave <<
 ** spectating

@@ -371,9 +371,14 @@ public class PlayerListener implements Listener {
 				db.i("===============");
 
 				if (!arena.isFightInProgress()) {
-					if (!ap.getStatus().equals(Status.READY))
+					if (!ap.getStatus().equals(Status.READY)) {
 						arena.msg(player, Language.parse(MSG.READY_DONE));
+						arena.broadcast(Language.parse(MSG.PLAYER_READY, ap.getArenaTeam().colorizePlayer(ap.get())));
+					}
 					ap.setStatus(Status.READY);
+					if (TeamManager.isReady(ap.getArenaTeam())) {
+						arena.broadcast(Language.parse(MSG.TEAM_READY, ap.getArenaTeam().getColoredName()));
+					}
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
