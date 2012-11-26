@@ -51,21 +51,24 @@ public class BlockListener implements Listener {
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(loc));
 		
 		if (arena == null) {
-			//db.i("not a region: " + event.getEventName());
+			// no arena at all 
 			return true;
+		}
+		
+		if (arena.isLocked() || !arena.isFightInProgress()) {
+			if (event instanceof Cancellable) {
+				Cancellable c = (Cancellable) event;
+				c.setCancelled(!PAA_Edit.activeEdits.containsValue(arena));
+			}
+			return PAA_Edit.activeEdits.containsValue(arena);
 		}
 		
 		arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(loc), rp);
 		
 		if (arena == null) {
-			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(loc));
-			if (arena == null) {
-				return false;
-			}
-
-			return PAA_Edit.activeEdits.containsValue(arena);
+			return false;
 		}
-		
+
 		return PAA_Edit.activeEdits.containsValue(arena);
 	}
 

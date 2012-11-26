@@ -23,7 +23,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class PAA_Class extends PAA__Command {
@@ -95,7 +95,7 @@ public class PAA_Class extends PAA__Command {
 			arena.getArenaConfig().setManually("classitems." + args[1], null);
 			arena.getArenaConfig().save();
 			arena.removeClass(args[1]);
-			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
+			Arena.pmsg(player, Language.parse(MSG.CLASS_REMOVED, args[1]));
 		}
 	}
 
