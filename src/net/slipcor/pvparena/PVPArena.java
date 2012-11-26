@@ -173,7 +173,7 @@ public class PVPArena extends JavaPlugin {
 			db.i("committing: " + scmd.getName());
 			scmd.commit(null, sender, new String[0]);
 			return true;
-		} else if (args[0].equalsIgnoreCase("!r")
+		} else if (args[0].equalsIgnoreCase("!rl")
 				|| args[0].toLowerCase().contains("reload")) {
 			PAA_Reload scmd = new PAA_Reload();
 			db.i("committing: " + scmd.getName());

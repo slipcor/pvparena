@@ -325,6 +325,8 @@ public class ArenaPlayer {
 			db.i(StringParser.verify(name));
 			db.i(StringParser.verify(status));
 			db.i(StringParser.verify(location));
+			db.i(StringParser.verify(selection[0]));
+			db.i(StringParser.verify(selection[1]));
 			return;
 		}
 		db.i("------------------");

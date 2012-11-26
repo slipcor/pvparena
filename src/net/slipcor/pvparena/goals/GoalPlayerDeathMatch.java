@@ -23,6 +23,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
@@ -211,8 +212,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				event.getDrops().clear();
 			}
 			
-			arena.tpPlayerToCoordName(ex, (arena.isFreeForAll()?"":respawnTeam.getName())
-					+ "spawn");
+			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(ex.getName()));
 			
 			arena.unKillPlayer(ex, event.getEntity()
 					.getLastDamageCause().getCause(), ex.getKiller());

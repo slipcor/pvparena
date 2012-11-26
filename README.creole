@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.14 - add SPAWN regions that >enforce< random spawning
 * v0.9.9.13 - broadcast when a player / team is ready
 * v0.9.9.12 - allow data values for blacklist and whitelist
 * v0.9.9.11 - SET - stop being so damn PICKY about cases!

@@ -249,6 +249,7 @@ public class Language {
 		NOTICE_YOU_NOCAMP("nulang.notice.younocamp", "You are in a NOCAMP region. Move!"),
 		
 		PLAYER_HAS_WON("nulang.playerhaswon", "%1% is the Champion!"),
+		PLAYER_READY("nulang.playerready", "%1%&e is ready!"),
 		
 		PLAYERS_NOTREADY("nulang.notreadyplayers", "Players not ready"),
 		
@@ -313,7 +314,7 @@ public class Language {
 		STATTYPE_WINS("nulang.stattype.WINS", StatisticsManager.type.WINS.getName()),
 		
 		TEAM_HAS_WON("nulang.team.haswon", "%1% are the Champions!"),
-		TEAM_READY("nulang.team.ready", "%1% team is ready!"),
+		TEAM_READY("nulang.team.ready", "%1% is ready!"),
 		
 		TIME_MINUTES("nulang.time.minutes", "minutes"),
 		TIME_SECONDS("nulang.time.seconds", "seconds"),

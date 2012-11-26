@@ -14,6 +14,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -64,14 +65,16 @@ public class GoalTime extends ArenaGoal {
 			return;
 		}
 		
-		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(respawnPlayer.getName());
+		
+		ArenaTeam respawnTeam = ap.getArenaTeam();
 		
 		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
 				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
 				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
 	
-		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
-				+ "spawn");	
+
+		SpawnManager.distribute(arena, ap);
 		
 		arena.unKillPlayer(respawnPlayer, event.getEntity()
 				.getLastDamageCause().getCause(), respawnPlayer.getKiller());

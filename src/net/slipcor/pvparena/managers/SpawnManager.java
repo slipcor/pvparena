@@ -19,7 +19,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 /**
@@ -66,14 +68,58 @@ public class SpawnManager {
 		
 		return far;
 	}
+	
+	private static void handle(Arena arena, HashSet<ArenaPlayer> teamMembers,
+			HashSet<ArenaRegionShape> ars) {
+		if (arena.isFreeForAll()) {
+			for (ArenaPlayer ap : teamMembers) {
+				int i = (new Random()).nextInt(ars.size());
+			
+				for (ArenaRegionShape x : ars) {
+					if (i-- == 0) {
+						spawnRandomly(arena, ap, x);
+						break;
+					}
+				}
+			}
+		} else {
+			String teamName = null;
+			for (ArenaPlayer ap : teamMembers) {
+				if (teamName == null) {
+					teamName = ap.getArenaTeam().getName();
+				}
+				for (ArenaRegionShape x : ars) {
+					if (x.getRegionName().contains(teamName)) {
+						spawnRandomly(arena, ap, x);
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	public static void distribute(Arena arena, HashSet<ArenaPlayer> teamMembers) {
-		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
+		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		
+		if (ars.size() > 0) {
+
+			handle(arena, teamMembers, ars);
+			
+			return;
+		}
+		
+		ArenaTeam at = null;
+		
+		for (ArenaPlayer ap : teamMembers) {
+			at = ap.getArenaTeam();
+		}
+		
+		String t = arena.isFreeForAll()?"":at.getName();
+		
+		if (!arena.isFreeForAll() || arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
 			for (ArenaPlayer ap : teamMembers) {
-				if (arena.isFreeForAll()) {
-					arena.tpPlayerToCoordName(ap.get(), "spawn");
-					ap.setStatus(Status.FIGHT);
-				}
+				arena.tpPlayerToCoordName(ap.get(), t + "spawn");
+				ap.setStatus(Status.FIGHT);
 			}
 			return;
 		}
@@ -85,6 +131,14 @@ public class SpawnManager {
 	}
 
 	public static void distribute(Arena arena, ArenaTeam team) {
+		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		
+		if (ars.size() > 0) {
+
+			handle(arena, team.getTeamMembers(), ars);
+			
+			return;
+		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
@@ -486,5 +540,55 @@ public class SpawnManager {
 		arena.getArenaConfig().setManually("spawns." + place, s);
 
 		arena.getArenaConfig().save();
+	}
+
+	private static void spawnRandomly(Arena arena, ArenaPlayer ap,
+			ArenaRegionShape ars) {
+		int x = ars.getMinimumLocation().getX();
+		int y = ars.getMinimumLocation().getY();
+		int z = ars.getMinimumLocation().getZ();
+		Random r = new Random();
+		
+		boolean found = false;
+		int attempt = 0;
+		
+		PABlockLocation loc = null;
+		
+		while (found == false && attempt < 10) {
+		
+			x += r.nextInt(ars.getMaximumLocation().getX() - 
+				ars.getMinimumLocation().getX());
+			y += r.nextInt(ars.getMaximumLocation().getY() - 
+				ars.getMinimumLocation().getY());
+			z += r.nextInt(ars.getMaximumLocation().getZ() - 
+				ars.getMinimumLocation().getZ());
+		
+			loc = new PABlockLocation(ars.getMinimumLocation().getWorldName(), x, y, z);
+			attempt++;
+			found = ars.contains(loc);
+			
+		}
+		
+		PALocation temp = ap.getLocation();
+		
+		Location bLoc = loc.toLocation();
+		
+		while (bLoc.getBlock().getType() != Material.AIR
+				&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR
+				&& bLoc.getBlock().getRelative(BlockFace.UP, 2).getType() != Material.AIR) {
+			bLoc = bLoc.add(0, 1, 0);
+		}
+		
+		ap.setLocation(new PALocation(bLoc));
+		
+		ap.setStatus(Status.FIGHT);
+		arena.tpPlayerToCoordName(ap.get(), "old");
+		ap.setLocation(temp);
+	}
+
+	public static void distribute(Arena arena, ArenaPlayer ap) {
+		HashSet<ArenaPlayer> hap = new HashSet<ArenaPlayer>();
+		hap.add(ap);
+		distribute(arena, hap);
 	}
 }

@@ -22,7 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Help {
 
-	private static String version = "v0.9.9.3";
+	private static String version = "v0.9.9.9";
 	
 	public static enum HELP {
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{

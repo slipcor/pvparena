@@ -343,9 +343,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			InventoryManager.drop(respawnPlayer);
 			event.getDrops().clear();
 		}
-		
-		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
-				+ "spawn");
+
+		SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()));
 		
 		arena.unKillPlayer(respawnPlayer, event.getEntity()
 				.getLastDamageCause().getCause(), respawnPlayer.getKiller());

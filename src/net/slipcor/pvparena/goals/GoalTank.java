@@ -211,9 +211,8 @@ public class GoalTank extends ArenaGoal {
 				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
-			
-			arena.tpPlayerToCoordName(player, (arena.isFreeForAll()?"":respawnTeam.getName())
-					+ "spawn");
+
+			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(player.getName()));
 			
 			arena.unKillPlayer(player, event.getEntity()
 					.getLastDamageCause().getCause(), player.getKiller());

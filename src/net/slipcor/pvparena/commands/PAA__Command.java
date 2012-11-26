@@ -93,7 +93,7 @@ public abstract class PAA__Command {
 			return new PAA_Protection();
 		} else if (name.equals("regions") || name.equals("!rs")) {
 			return new PAA_Regions();
-		} else if (name.equals("region") || name.equals("!rg")) {
+		} else if (name.equals("region") || name.equals("!r")) {
 			return new PAA_Region();
 		} else if (name.equals("regionflag") || name.equals("!rf")) {
 			return new PAA_RegionFlag();
