@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 /**
  * <pre>Arena Runnable class "Region"</pre>
@@ -38,9 +39,22 @@ public class RegionRunnable implements Runnable {
 	public void run() {
 		if (!Debug.override)
 			db.i("RegionRunnable commiting");
-		if (r.getArena().isFightInProgress()) {
+		/*
+		 * J - is a join region
+		 * I - is a fight in progress?
+		 * T - should a region tick be run?
+		 * ---------------------------
+		 * JI - T
+		 * 00 - 0 : no join region, no game, no tick
+		 * 01 - 1 : no join region, game, tick for other region type
+		 * 10 - 1 : join region! no game! tick so ppl can join!
+		 * 11 - 0 : join region! game! no tick, ppl are done joining
+		 */
+		if (r.getType().equals(RegionType.JOIN)
+				!= 
+				r.getArena().isFightInProgress()) {
 			r.tick();
-		} else {
+		} else if (!r.getType().equals(RegionType.JOIN)){
 			Bukkit.getScheduler().cancelTask(id);
 		}
 	}

@@ -10,7 +10,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -21,6 +20,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
@@ -40,7 +40,7 @@ import net.slipcor.pvparena.runnables.SpawnCampRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class PACheck {
@@ -249,6 +249,12 @@ public class PACheck {
 				}
 			}
 			
+			if (commModule != null) {
+				if (!ArenaManager.checkJoin((Player) sender, arena)) {
+					res.setError(commModule, Language.parse(MSG.ERROR_JOIN_REGION));
+				}
+			}
+			
 			if (res.hasError() && !res.getModName().equals("LateLounge")) {
 				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 				return;
@@ -271,6 +277,12 @@ public class PACheck {
 					// fail
 					priority = res.getPriority();
 					commGoal = null;
+				}
+			}
+			
+			if (commGoal != null) {
+				if (!ArenaManager.checkJoin((Player) sender, arena)) {
+					res.setError(commGoal, Language.parse(MSG.ERROR_JOIN_REGION));
 				}
 			}
 			
@@ -303,7 +315,10 @@ public class PACheck {
 					PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
 					return;
 				}
-				
+				if (!ArenaManager.checkJoin((Player) sender, arena)) {
+					arena.msg(sender, Language.parse(MSG.ERROR_JOIN_REGION));
+					return;
+				}
 				// both null, just put the joiner to some spawn
 				
 				if (!arena.tryJoin((Player) sender, team)) {

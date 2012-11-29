@@ -39,7 +39,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.9.9
  */
 
 public class ArenaManager {
@@ -71,12 +71,16 @@ public class ArenaManager {
 	 * @return true if not set or player inside, false otherwise
 	 */
 	public static boolean checkJoin(Player player, Arena a) {
+		boolean found = false;
 		for (ArenaRegionShape region : a.getRegions()) {
 			if (region.getType().equals(RegionType.JOIN)) {
-				return region.contains(new PABlockLocation(player.getLocation()));
+				found = true;
+				if (region.contains(new PABlockLocation(player.getLocation()))) {
+					return true;
+				}
 			}
 		}
-		return true; // no join region set
+		return !found; // no join region set
 	}
 
 	/**

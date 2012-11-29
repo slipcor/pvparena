@@ -43,7 +43,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class ArenaPlayer {
@@ -701,5 +701,10 @@ public class ArenaPlayer {
 		ArenaTeam team = getArenaTeam();
 
 		return (team == null) ? name : team.getColorCodeString() + name + ChatColor.RESET;
+	}
+	
+	public void unsetSelection() {
+		selection[0] = null;
+		selection[1] = null;
 	}
 }

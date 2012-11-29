@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.9.9
  */
 
 public class PAA_Region extends PAA__Command {
@@ -109,6 +109,8 @@ public class PAA_Region extends PAA__Command {
 			region.saveToConfig();
 			
 			activeSelections.remove(sender.getName());
+
+			ap.unsetSelection();
 			
 			arena.msg(sender, Language.parse(MSG.REGION_SAVED, args[0]));
 			return;

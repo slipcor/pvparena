@@ -21,6 +21,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 /**
  * <pre>Configuration Manager class</pre>
@@ -29,7 +30,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.9
  */
 
 public class ConfigurationManager {
@@ -133,6 +134,9 @@ public class ConfigurationManager {
 				} else if (region.getWorld() == null) {
 					PVPArena.instance.getLogger().severe("Error while loading arena, world null: " + rName);
 				} else {
+					if (region.getType().equals(RegionType.JOIN) && arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
+						region.initTimer();
+					}
 					arena.addRegion(region);
 				}
 			}

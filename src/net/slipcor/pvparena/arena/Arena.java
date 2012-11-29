@@ -60,7 +60,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class Arena {
@@ -788,6 +788,8 @@ public class Arena {
 		if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
 			PAClassSign.remove(signs, player);
 		}
+		
+		player.setNoDamageTicks(60);
 	}
 
 	/**
@@ -936,7 +938,7 @@ public class Arena {
 		if (team == null) {
 			return;
 		}
-
+		
 		PlayerState.removeEffects(player);
 
 		PVPArena.instance.getAmm().parseRespawn(this, player, team,

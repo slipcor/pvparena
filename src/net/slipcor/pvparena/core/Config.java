@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class Config {
@@ -74,6 +74,7 @@ public class Config {
 		ITEMS_RANDOM("items.random", true),
 		
 		JOIN_RANGE("join.range", 0),
+		JOIN_FORCE("join.forceregionjoin", false),
 		
 		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
 		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),

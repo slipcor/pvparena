@@ -11,6 +11,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
@@ -45,7 +46,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.9.9
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
@@ -396,7 +397,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public void initTimer() {
-		if (!getArena().isFightInProgress()) {
+		if (!getArena().isFightInProgress() && !this.type.equals(RegionType.JOIN)) {
 			getArena().setFightInProgress(true);
 		}
 
@@ -613,6 +614,21 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				if (!this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
+				}
+			}
+		}
+		if (arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE) &&
+				type.equals(RegionType.JOIN) &&
+				!arena.isFightInProgress() &&
+				!arena.isLocked()) {
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				ArenaPlayer ap = ArenaPlayer.parsePlayer(p.getName());
+				if (ap.getArena() != null) {
+					continue;
+				}
+				if (this.contains(new PABlockLocation(p.getLocation()))) {
+					PAG_Join cmd = new PAG_Join();
+					cmd.commit(arena, p, new String[]{name.replace("-join", "")});
 				}
 			}
 		}
