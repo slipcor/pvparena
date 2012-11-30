@@ -165,6 +165,18 @@ public class SpawnManager {
 			return;
 		}
 		
+		HashSet<String> removals = new HashSet<String>();
+		
+		for (String s : locs.keySet()) {
+			if (!s.contains("spawn")) {
+				removals.add(s);
+			}
+		}
+		
+		for (String s : removals) {
+			locs.remove(s);
+		}
+		
 		for (ArenaPlayer ap : teamMembers) {
 			ap.setStatus(Status.FIGHT);
 			if (locs.size() < 1) {
@@ -191,6 +203,19 @@ public class SpawnManager {
 		
 		if (locs == null || locs.size() < 1) {
 			return;
+		}
+		
+		HashSet<String> removals = new HashSet<String>();
+		
+		for (String s : locs.keySet()) {
+			if (!s.contains("spawn")) {
+				removals.add(s);
+			}
+		}
+		
+		for (String s : removals) {
+			locs.remove(s);
+			total.remove(s);
 		}
 
 		String[] iteratings = new String[locs.size()];
