@@ -1,6 +1,12 @@
 package net.slipcor.pvparena.regions;
 
+import java.util.HashSet;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
@@ -16,10 +22,13 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.9
  */
 
 public class CylindricRegion extends ArenaRegionShape {
+	
+	HashSet<Block> border = new HashSet<Block>();
+	
 	public CylindricRegion() {
 		super("cylindric");
 		shape = RegionShape.CYLINDRIC;
@@ -34,7 +43,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.9.18";
 	}
 	
 	/**
@@ -144,12 +153,85 @@ public class CylindricRegion extends ArenaRegionShape {
 			PVPArena.instance.getLogger().warning("Region Shape not supported: " + paRegion.getShape().name());
 		}
 		return false;
+	}@Override
+	public void showBorder(final Player player) {
+
+		PABlockLocation lowercenter = new PABlockLocation(getCenter().toLocation());
+		PABlockLocation center = new PABlockLocation(lowercenter.toLocation());
+		PABlockLocation uppercenter = new PABlockLocation(lowercenter.toLocation());
+
+		lowercenter.setY(getMinimumLocation().getY());
+		uppercenter.setY(getMaximumLocation().getY());
+		
+		World w = Bukkit.getWorld(this.world);
+		
+		border.clear();
+		
+		Double radius = getRadius();
+		
+		Double radiusSquared = radius * radius;
+		
+		for (int x = 0; x <= Math.ceil(radius+1/2); x++) {
+			int z = (int) Math.abs(Math.sqrt(radiusSquared - (x*x)));
+
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() - z)).getBlock());
+
+			border.add((new Location(w, lowercenter.getX() + x, lowercenter.getY(), lowercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() - x, lowercenter.getY(), lowercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() + x, lowercenter.getY(), lowercenter.getZ() - z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() - x, lowercenter.getY(), lowercenter.getZ() - z)).getBlock());
+
+			border.add((new Location(w, uppercenter.getX() + x, uppercenter.getY(), uppercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() - x, uppercenter.getY(), uppercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() + x, uppercenter.getY(), uppercenter.getZ() - z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() - x, uppercenter.getY(), uppercenter.getZ() - z)).getBlock());
+		}
+		for (int z = 0; z <= Math.ceil(radius+1/2); z++) {
+			int x = (int) Math.abs(Math.sqrt(radiusSquared - (z*z)));
+			
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() - z)).getBlock());
+
+			border.add((new Location(w, lowercenter.getX() + x, lowercenter.getY(), lowercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() - x, lowercenter.getY(), lowercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() + x, lowercenter.getY(), lowercenter.getZ() - z)).getBlock());
+			border.add((new Location(w, lowercenter.getX() - x, lowercenter.getY(), lowercenter.getZ() - z)).getBlock());
+
+			border.add((new Location(w, uppercenter.getX() + x, uppercenter.getY(), uppercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() - x, uppercenter.getY(), uppercenter.getZ() + z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() + x, uppercenter.getY(), uppercenter.getZ() - z)).getBlock());
+			border.add((new Location(w, uppercenter.getX() - x, uppercenter.getY(), uppercenter.getZ() - z)).getBlock());
+		}
+		
+		for (Block b : border) {
+			if (!isInNoWoolSet(b)) 
+				player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
+		}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
+
+			@Override
+			public void run() {
+				for (Block b : border) {
+					player.sendBlockChange(b.getLocation(), b.getTypeId(), b.getData());
+				}
+				border.clear();
+			}
+			
+		}, 100L);
 	}
 
-	@Override
-	public void showBorder(Player player) {
-		/*no clue
-		*/
+	private Double getRadius() {
+		return (double) (
+						(getLocs()[1].getX() == getLocs()[0].getX() ) ?
+						( (getLocs()[1].getZ() - getLocs()[0].getZ() )/2) :
+						( (getLocs()[1].getX() - getLocs()[0].getX() )/2)
+				);
 	}
 
 	@Override
@@ -178,24 +260,26 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	@Override
 	public PABlockLocation getCenter() {
-		return locs[0].getMidpoint(locs[1]);
+		return new PABlockLocation(locs[0].getMidpoint(locs[1]).toLocation());
 	}
 
 	@Override
 	public PABlockLocation getMaximumLocation() {
-		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
-		PABlockLocation result = getLocs()[1];
-		result.setX((int) (result.getX()-thisRadius));
-		result.setZ((int) (result.getZ()-thisRadius));
+		Double thisRadius = getRadius();
+		PABlockLocation result = getCenter();
+		result.setX((int) (result.getX()+thisRadius));
+		result.setY(getLocs()[1].getY());
+		result.setZ((int) (result.getZ()+thisRadius));
 		return result;
 	}
 
 	@Override
 	public PABlockLocation getMinimumLocation() {
-		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
-		PABlockLocation result = getLocs()[0];
-		result.setX((int) (result.getX()+thisRadius));
-		result.setZ((int) (result.getZ()+thisRadius));
+		Double thisRadius = getRadius();
+		PABlockLocation result = getCenter();
+		result.setX((int) (result.getX()-thisRadius));
+		result.setY(getLocs()[0].getY());
+		result.setZ((int) (result.getZ()-thisRadius));
 		return result;
 	}
 

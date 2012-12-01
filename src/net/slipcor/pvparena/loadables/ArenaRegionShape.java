@@ -17,7 +17,6 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -29,7 +28,9 @@ import net.slipcor.pvparena.runnables.RegionRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -60,9 +61,15 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	private HashSet<RegionFlag> flags = new HashSet<RegionFlag>();
 	private HashSet<RegionProtection> protections = new HashSet<RegionProtection>();
 	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
+	
+	private static HashSet<Material> noWools = new HashSet<Material>();
 
 	protected final PABlockLocation[] locs;
 
+	static {
+		noWools.add(Material.CHEST);
+	}
+	
 	public static enum RegionShape {
 		CUBOID, SPHERIC, CYLINDRIC;
 	}
@@ -408,6 +415,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
 		rr.setId(tickID);
 	}
+	
+	protected boolean isInNoWoolSet(Block b) {
+		return noWools.contains(b.getType());
+	}
 
 	public boolean isInRange(int offset, PABlockLocation loc) {
 		if (!world.equals(loc.getWorldName()))
@@ -518,9 +529,8 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			if (flags.contains(RegionFlag.DEATH)) {
 				if (this.contains(pLoc)) {
 					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
-					arena.playerLeave(ap.get(), CFG.TP_LOSE, false);
-					PALoseEvent e = new PALoseEvent(arena, ap.get());
-					Bukkit.getPluginManager().callEvent(e);
+					ap.get().setLastDamageCause(new EntityDamageEvent(ap.get(), DamageCause.CUSTOM, 1000));
+					ap.get().damage(1000);
 				}
 			}
 			if (flags.contains(RegionFlag.WIN)) {

@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.9.9
  */
 
 public class StringParser {
@@ -30,11 +30,9 @@ public class StringParser {
 	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
 	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
 	
-	public static String colorize(String toColor)
-    {
-    	// Removes color codes from a string
-        return toColor.replaceAll("&([a-zA-Z0-9])", "§$1").replace("&&", "&");
-    }
+	public static String colorize(String s) {
+		return ChatColor.translateAlternateColorCodes('&', s).replace("&&", "&");
+	}
 
 	public static String[] colorize(List<String> stringList) {
 		String[] result = new String[stringList.size()];
@@ -237,6 +235,7 @@ public class StringParser {
 		
 		return joinArray(s, ",");
 	}
+	
 	public static String getStringFromItemStack(ItemStack is) {
 		if (is == null || is.getType().equals(Material.AIR)) {
 			return "AIR";

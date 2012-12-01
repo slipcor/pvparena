@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.9.9.18 - /pa [arena] region [regionname] border - YAY!
 * v0.9.9.17 - don't spawn players on flags. derp :p
 * v0.9.9.16 - activate region force join - hooray!
 * v0.9.9.15 - enhance the battlefield quit process: add "death" instead of kick

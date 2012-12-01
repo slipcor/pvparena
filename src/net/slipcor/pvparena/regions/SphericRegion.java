@@ -1,6 +1,12 @@
 package net.slipcor.pvparena.regions;
 
+import java.util.HashSet;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
@@ -16,10 +22,13 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.9
  */
 
 public class SphericRegion extends ArenaRegionShape {
+	
+	HashSet<Block> border = new HashSet<Block>();
+	
 	public SphericRegion() {
 		super("spheric");
 		shape = RegionShape.SPHERIC;
@@ -32,7 +41,7 @@ public class SphericRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.9.18";
 	}
 	
 	/**
@@ -133,46 +142,104 @@ public class SphericRegion extends ArenaRegionShape {
 	}
 
 	@Override
-	public void showBorder(Player player) {
-		/*
-		// move along exclusive x, create miny+maxy+minz+maxz
-		for (int x = min.getBlockX() + 1; x < max.getBlockX(); x++) {
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
+	public void showBorder(final Player player) {
+		PABlockLocation center = new PABlockLocation(getCenter().toLocation());
+		
+		World w = Bukkit.getWorld(this.world);
+		
+		border.clear();
+		
+		PABlockLocation a = new PABlockLocation(this.locs[1].toLocation());
+		a.setY(locs[0].getY());
+		
+		Double radius = getRadius();
+		
+		Double radiusSquared = radius * radius;
+		
+		// ------------------------------
+		// ---------- Y CIRCLE ----------
+		// ------------------------------
+		
+		for (int x = 0; x <= Math.ceil(radius+1/2); x++) {
+			int z = (int) Math.abs(Math.sqrt(radiusSquared - (x*x)));
+
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() - z)).getBlock());
 		}
-		// move along exclusive y, create minx+maxx+minz+maxz
-		for (int y = min.getBlockY() + 1; y < max.getBlockY(); y++) {
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
+		
+		for (int z = 0; z <= Math.ceil(radius+1/2); z++) {
+			int x = (int) Math.abs(Math.sqrt(radiusSquared - (z*z)));
+			
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY(), center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY(), center.getZ() - z)).getBlock());
 		}
-		// move along inclusive z, create minx+maxx+miny+maxy
-		for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
+
+		// ------------------------------
+		// ---------- Z CIRCLE ----------
+		// ------------------------------
+		
+		for (int y = 0; y <= Math.ceil(radius+1/2); y++) {
+			int x = (int) Math.abs(Math.sqrt(radiusSquared - (y*y)));
+			
+			border.add((new Location(w, center.getX() + x, center.getY() + y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY() + y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY() - y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY() - y, center.getZ())).getBlock());
+
 		}
-		*/
+		
+		for (int x = 0; x <= Math.ceil(radius+1/2); x++) {
+			int y = (int) Math.abs(Math.sqrt(radiusSquared - (x*x)));
+
+			border.add((new Location(w, center.getX() + x, center.getY() + y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY() + y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() + x, center.getY() - y, center.getZ())).getBlock());
+			border.add((new Location(w, center.getX() - x, center.getY() - y, center.getZ())).getBlock());
+
+		}
+
+		// ------------------------------
+		// ---------- X CIRCLE ----------
+		// ------------------------------
+		
+		for (int y = 0; y <= Math.ceil(radius+1/2); y++) {
+			int z = (int) Math.abs(Math.sqrt(radiusSquared - (y*y)));
+
+			border.add((new Location(w, center.getX(), center.getY() + y, center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() - y, center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() + y, center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() - y, center.getZ() - z)).getBlock());
+		}
+		
+		for (int z = 0; z <= Math.ceil(radius+1/2); z++) {
+			int y = (int) Math.abs(Math.sqrt(radiusSquared - (z*z)));
+			
+			border.add((new Location(w, center.getX(), center.getY() + y, center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() - y, center.getZ() + z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() + y, center.getZ() - z)).getBlock());
+			border.add((new Location(w, center.getX(), center.getY() - y, center.getZ() - z)).getBlock());
+		}
+		
+		for (Block b : border) {
+			if (!isInNoWoolSet(b)) 
+				player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
+		}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
+
+			@Override
+			public void run() {
+				for (Block b : border) {
+					player.sendBlockChange(b.getLocation(), b.getTypeId(), b.getData());
+				}
+				border.clear();
+			}
+			
+		}, 100L);
 	}
 
 	@Override
@@ -180,8 +247,11 @@ public class SphericRegion extends ArenaRegionShape {
 		if (this.getLocs()[0] == null || this.getLocs()[1] == null || loc == null
 				|| !loc.getWorldName().equals(world))
 			return false; // no arena, no container or not in the same world
-		Double thisRadius = getLocs()[0].getDistance(getLocs()[1])/2;
-		return loc.getDistance(this.getCenter()) <= thisRadius;
+		return loc.getDistance(this.getCenter()) <= getRadius();
+	}
+
+	private Double getRadius() {
+		return getLocs()[0].getDistance(getLocs()[1])/2;
 	}
 
 	@Override
@@ -191,12 +261,22 @@ public class SphericRegion extends ArenaRegionShape {
 
 	@Override
 	public PABlockLocation getMaximumLocation() {
-		return getLocs()[1];
+		int r = (int) Math.round(getRadius());
+		PABlockLocation result = new PABlockLocation(getCenter().toLocation());
+		result.setX(result.getX() + r);
+		result.setY(result.getY() + r);
+		result.setZ(result.getZ() + r);
+		return result;
 	}
 
 	@Override
 	public PABlockLocation getMinimumLocation() {
-		return getLocs()[0];
+		int r = (int) Math.round(getRadius());
+		PABlockLocation result = new PABlockLocation(getCenter().toLocation());
+		result.setX(result.getX() - r);
+		result.setY(result.getY() - r);
+		result.setZ(result.getZ() - r);
+		return result;
 	}
 
 	@Override

@@ -1,6 +1,12 @@
 package net.slipcor.pvparena.regions;
 
+import java.util.HashSet;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
@@ -16,10 +22,12 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.9.9
  */
 
 public class CuboidRegion extends ArenaRegionShape {
+	
+	HashSet<Block> border = new HashSet<Block>();
 	
 	public CuboidRegion() {
 		super("cuboid");
@@ -36,7 +44,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.9.5.5";
+		return "v0.9.9.18";
 	}
 	
 	/**
@@ -139,46 +147,64 @@ public class CuboidRegion extends ArenaRegionShape {
 	}
 
 	@Override
-	public void showBorder(Player player) {
-		/*
+	public void showBorder(final Player player) {
+		
+		Location min = getMinimumLocation().toLocation();
+		Location max = getMaximumLocation().toLocation();
+		World w = Bukkit.getWorld(this.world);
+		
+		border.clear();
+		
 		// move along exclusive x, create miny+maxy+minz+maxz
 		for (int x = min.getBlockX() + 1; x < max.getBlockX(); x++) {
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, min.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, x, max.getBlockY(),
-					max.getBlockZ()), Material.WOOL, (byte) 0);
+			border.add((new Location(w, x, min.getBlockY(),
+					min.getBlockZ())).getBlock());
+			border.add((new Location(w, x, min.getBlockY(),
+					max.getBlockZ())).getBlock());
+			border.add((new Location(w, x, max.getBlockY(),
+					min.getBlockZ())).getBlock());
+			border.add((new Location(w, x, max.getBlockY(),
+					max.getBlockZ())).getBlock());
 		}
 		// move along exclusive y, create minx+maxx+minz+maxz
 		for (int y = min.getBlockY() + 1; y < max.getBlockY(); y++) {
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, min.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					min.getBlockZ()), Material.WOOL, (byte) 0);
-			player.sendBlockChange(new Location(world, max.getBlockX(), y,
-					max.getBlockZ()), Material.WOOL, (byte) 0);
+			border.add((new Location(w, min.getBlockX(), y,
+					min.getBlockZ())).getBlock());
+			border.add((new Location(w, min.getBlockX(), y,
+					max.getBlockZ())).getBlock());
+			border.add((new Location(w, max.getBlockX(), y,
+					min.getBlockZ())).getBlock());
+			border.add((new Location(w, max.getBlockX(), y,
+					max.getBlockZ())).getBlock());
 		}
 		// move along inclusive z, create minx+maxx+miny+maxy
 		for (int z = min.getBlockZ(); z <= max.getBlockZ(); z++) {
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, min.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), min.getBlockY(), z),
-					Material.WOOL, (byte) 0);
-			player.sendBlockChange(
-					new Location(world, max.getBlockX(), max.getBlockY(), z),
-					Material.WOOL, (byte) 0);
+			border.add((
+					new Location(w, min.getBlockX(), min.getBlockY(), z)).getBlock());
+			border.add((
+					new Location(w, min.getBlockX(), max.getBlockY(), z)).getBlock());
+			border.add((
+					new Location(w, max.getBlockX(), min.getBlockY(), z)).getBlock());
+			border.add((
+					new Location(w, max.getBlockX(), max.getBlockY(), z)).getBlock());
 		}
-		*/
+		
+		for (Block b : border) {
+			if (!isInNoWoolSet(b)) 
+				player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
+		}
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
+
+			@Override
+			public void run() {
+				for (Block b : border) {
+					player.sendBlockChange(b.getLocation(), b.getTypeId(), b.getData());
+				}
+				border.clear();
+			}
+			
+		}, 100L);
 	}
 
 	@Override

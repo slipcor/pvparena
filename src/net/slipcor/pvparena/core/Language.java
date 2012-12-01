@@ -127,6 +127,7 @@ public class Language {
 		ERROR_NOPERM_X_SET("nulang.nopermto.set", "set a config node"),
 		ERROR_NOPERM_X_SETUP("nulang.nopermto.setup", "setup an arena"),
 		ERROR_NOPERM_X_TP("nulang.nopermto.teleport", "teleport to an arena spawn"),
+		ERROR_NOPERM_X_USER("nulang.nopermto.user", "use PVP Arena"),
 		
 		ERROR_NOPERM("nulang.error.noperm", "&cNo permission to %1%"),
 		ERROR_NOPLAYERFOUND("nulang.error.noplayerfound", "No player found!"),
