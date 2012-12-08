@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.2 - avoid NPE in Time Goal
 * v0.10.0.1 - module system rewrite
 * v0.9.9.18 - /pa [arena] region [regionname] border - YAY!
 * v0.9.9.17 - don't spawn players on flags. derp :p

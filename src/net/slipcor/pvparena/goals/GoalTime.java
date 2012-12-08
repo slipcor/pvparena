@@ -101,7 +101,9 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public void reset(boolean force) {
-		ter.commit();
-		ter = null;
+		if (ter != null) {
+			ter.commit();
+			ter = null;
+		}
 	}
 }
