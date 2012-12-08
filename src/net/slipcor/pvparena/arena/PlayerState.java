@@ -124,7 +124,7 @@ public final class PlayerState {
 		}
 		
 		if (ap.getArena() != null) {
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.unload(ap.getArena(), player);
 			PVPArena.instance.getAgm().unload(ap.getArena(), player);
 		}

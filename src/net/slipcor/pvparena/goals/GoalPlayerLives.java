@@ -166,19 +166,19 @@ public class GoalPlayerLives extends ArenaGoal {
 					continue;
 
 				if (arena.isFreeForAll()) {
-					PVPArena.instance.getAmm();
+					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 	
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
 				} else {
-					PVPArena.instance.getAmm();
+					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()), "WINNER");
 	
 					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()));
 					break;
 				}
 			}
-			PVPArena.instance.getAmm();
+			
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}

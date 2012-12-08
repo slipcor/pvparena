@@ -3,7 +3,6 @@ package net.slipcor.pvparena.listeners;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
@@ -133,7 +132,7 @@ public class BlockListener implements Listener {
 		}
 
 		db.i("onBlockBreak !!!");
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
@@ -150,7 +149,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
@@ -175,7 +174,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
@@ -198,7 +197,7 @@ public class BlockListener implements Listener {
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.NATURE)) {
 			return;
 		}
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockChange(arena, event.getBlock(),
 				event.getNewState());
 	}
@@ -223,9 +222,9 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockPlace(arena, block, Material.AIR);
 	}
 
@@ -248,7 +247,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockChange(arena, event.getBlock(),
 				event.getNewState());
 	}
@@ -275,7 +274,7 @@ public class BlockListener implements Listener {
 			if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
 				return;
 			}
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.onBlockChange(arena, block.getBlock(),
 					block);
 		}
@@ -323,7 +322,7 @@ public class BlockListener implements Listener {
 
 		db.i("block piston extend inside the arena");
 		for (Block block : event.getBlocks()) {
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.onBlockPiston(arena, block);
 		}
 		return;
@@ -363,7 +362,7 @@ public class BlockListener implements Listener {
 			if (arena.isFightInProgress() &&
 					!isProtected(event.getBlock().getLocation(), event, RegionProtection.TNT) &&
 					event.getBlock().getTypeId() == 46) {
-				PVPArena.instance.getAmm();
+				
 				ArenaModuleManager.onBlockPlace(arena,
 						event.getBlock(),
 						event.getBlockReplacedState().getType());
@@ -385,7 +384,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockPlace(arena, event.getBlock(),
 				event.getBlockReplacedState().getType());
 	}
@@ -406,7 +405,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onBlockPlace(arena, event.getBlock(),
 				event.getBlock().getType());
 	}

@@ -304,7 +304,7 @@ public class PACheck {
 				return;
 			}
 			
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.choosePlayerTeam(arena, (Player) sender, team.getColoredName());
 			
 			arena.markPlayedPlayer(sender.getName());
@@ -312,7 +312,7 @@ public class PACheck {
 			if ((commModule == null) || (commGoal == null)) {
 				if (commModule != null) {
 					commModule.commitJoin((Player) sender, team);
-					PVPArena.instance.getAmm();
+					
 					ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 					return;
 				}
@@ -361,7 +361,7 @@ public class PACheck {
 			}
 
 			commModule.commitJoin((Player) sender, team);
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 	}
 
@@ -420,7 +420,7 @@ public class PACheck {
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
 		
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
 	}
 

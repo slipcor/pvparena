@@ -138,12 +138,12 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				if (!ap.getStatus().equals(Status.FIGHT))
 					continue;
 				
-				PVPArena.instance.getAmm();
+				
 				ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 
 				arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
 			}
-			PVPArena.instance.getAmm();
+			
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}

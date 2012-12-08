@@ -187,7 +187,7 @@ public class ConfigurationManager {
 			}
 		}
 		
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.configParse(arena, config);
 		cfg.save();
 		cfg.reloadMaps();
@@ -232,7 +232,7 @@ public class ConfigurationManager {
 		if (!sDeath.equals("old") && !list.contains(sDeath))
 			return "Death Spawn ('"+sDeath+"') not set!";
 		
-		PVPArena.instance.getAmm();
+		
 		String error = ArenaModuleManager.checkForMissingSpawns(arena, list);
 		if (error != null) {
 			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);

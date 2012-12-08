@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -147,7 +146,7 @@ public class GoalTeamLives extends ArenaGoal {
 		}
 
 		if (aTeam != null && !force) {
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
@@ -156,7 +155,7 @@ public class GoalTeamLives extends ArenaGoal {
 							+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
-		PVPArena.instance.getAmm();
+		
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}

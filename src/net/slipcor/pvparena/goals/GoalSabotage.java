@@ -264,7 +264,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 		if (arena.getTeam(winteam) != null) {
 			
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + "Team "
 							+ winteam + ChatColor.YELLOW), "WINNER");
@@ -307,7 +307,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 
 		if (aTeam != null && !force) {
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
@@ -316,7 +316,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 							+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
-		PVPArena.instance.getAmm();
+		
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}

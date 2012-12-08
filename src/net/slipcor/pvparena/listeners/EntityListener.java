@@ -104,7 +104,7 @@ public class EntityListener implements Listener {
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
 				|| (!BlockListener.isProtected(event.getLocation(), event, RegionProtection.TNT))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			PVPArena.instance.getAmm();
+			
 			ArenaModuleManager.onEntityExplode(arena, event);
 			return;
 		}
@@ -137,7 +137,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onEntityRegainHealth(arena, event);
 
 	}
@@ -264,7 +264,7 @@ public class EntityListener implements Listener {
 		db.i("processing damage!");
 
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onEntityDamageByEntity(arena, attacker,
 				defender, event);
 

@@ -282,14 +282,14 @@ public class ArenaGoalManager {
 			winners = preciseWinners;
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.timedEnd(arena, winners);
 
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					if (winners.contains(p.getName())) {
-						PVPArena.instance.getAmm();
+						
 						ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
 						arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
 					} else {
@@ -304,7 +304,7 @@ public class ArenaGoalManager {
 		} else {
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					PVPArena.instance.getAmm();
+					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()), "WINNER");
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));

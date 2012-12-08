@@ -154,19 +154,19 @@ public class GoalTank extends ArenaGoal {
 					continue;
 				
 				if (tanks.containsValue(ap.getName())) {
-					PVPArena.instance.getAmm();
+					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
 
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON));
 				} else {
-					PVPArena.instance.getAmm();
+					
 					//String tank = tanks.get(arena);
 					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
 					
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKDOWN));
 				}
 			}
-			PVPArena.instance.getAmm();
+			
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}

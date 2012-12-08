@@ -195,7 +195,7 @@ public class Arena {
 				}
 			}
 			
-			PVPArena.instance.getAmm();
+			
 			if (ArenaModuleManager.cannotSelectClass(this, player, className)) {
 				return;
 			}
@@ -443,7 +443,7 @@ public class Arena {
 	public void giveRewards(Player player) {
 		
 		db.i("giving rewards to " + player.getName());
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.giveRewards(this, player);
 		String sItems = getArenaConfig().getString(CFG.ITEMS_REWARDS,
 				"none");
@@ -678,7 +678,7 @@ public class Arena {
 		
 			ArenaTeam team = ap.getArenaTeam();
 			if (team != null) {
-				PVPArena.instance.getAmm();
+				
 				ArenaModuleManager.parsePlayerLeave(this, player, team);
 	
 				broadcastExcept(
@@ -919,7 +919,7 @@ public class Arena {
 		}
 		REALEND_ID = null;
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.reset(this, force);
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
@@ -944,7 +944,7 @@ public class Arena {
 		if (ap.getState() != null) {
 			ap.getState().unload();
 		}
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.resetPlayer(this, player, force);
 
 		String sClass = "";
@@ -987,7 +987,7 @@ public class Arena {
 		
 		PlayerState.removeEffects(player);
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.parseRespawn(this, player, team,
 				cause, damager);
 
@@ -1173,7 +1173,7 @@ public class Arena {
 			}
 		}
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.tpPlayerToCoordName(this, player, place);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());

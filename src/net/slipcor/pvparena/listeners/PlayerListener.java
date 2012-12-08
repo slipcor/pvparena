@@ -248,7 +248,7 @@ public class PlayerListener implements Listener {
 		
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
 		
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.parsePlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
@@ -295,7 +295,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
-		PVPArena.instance.getAmm();
+		
 		if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
 			db.i("returning: #1");
 			return;
@@ -414,7 +414,7 @@ public class PlayerListener implements Listener {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
 				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.FIGHT);
-				PVPArena.instance.getAmm();
+				
 				ArenaModuleManager.lateJoin(arena, player);
 			}
 		}
@@ -482,7 +482,7 @@ public class PlayerListener implements Listener {
 		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
 			return; // no fighting player or no powerups => OUT
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onPlayerPickupItem(arena, event);
 	}
 
@@ -540,7 +540,7 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
 
-		PVPArena.instance.getAmm();
+		
 		ArenaModuleManager.onPlayerVelocity(arena, event);
 	}
 
