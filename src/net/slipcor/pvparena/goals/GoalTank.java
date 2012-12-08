@@ -22,6 +22,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -35,12 +36,12 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalTank extends ArenaGoal {
-	public GoalTank(Arena arena) {
-		super(arena, "Tank");
+	public GoalTank() {
+		super("Tank");
 		db = new Debug(108);
 	}
 	static HashMap<Arena, String> tanks = new HashMap<Arena, String>();
@@ -51,7 +52,7 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.8.24";
+		return "v0.10.0.24";
 	}
 
 	int priority = 8;
@@ -143,11 +144,6 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public GoalTank clone() {
-		return new GoalTank(arena);
-	}
-
-	@Override
 	public void commitEnd(boolean force) {
 		if (er != null) {
 			return;
@@ -158,17 +154,20 @@ public class GoalTank extends ArenaGoal {
 					continue;
 				
 				if (tanks.containsValue(ap.getName())) {
-					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
+					PVPArena.instance.getAmm();
+					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
 
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON));
 				} else {
+					PVPArena.instance.getAmm();
 					//String tank = tanks.get(arena);
-					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
+					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
 					
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKDOWN));
 				}
 			}
-			if (PVPArena.instance.getAmm().commitEnd(arena, team)) {
+			PVPArena.instance.getAmm();
+			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
 		}

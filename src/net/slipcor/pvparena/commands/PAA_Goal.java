@@ -19,7 +19,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAA_Goal extends PAA__Command {
@@ -36,14 +36,14 @@ public class PAA_Goal extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{1,2})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
 		
 		ArenaGoal goal = null;
 		
 		try {
-			goal = PVPArena.instance.getAgm().getType(args[0].toLowerCase());
+			goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 		} catch (Exception e) {
 			// nothing
 		}

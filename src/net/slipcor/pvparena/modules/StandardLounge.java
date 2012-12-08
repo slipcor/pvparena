@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -28,7 +27,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class StandardLounge extends ArenaModule {
@@ -42,11 +41,11 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.9.9";
+		return "v0.10.0.0";
 	}
 
 	@Override
-	public String checkForMissingSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(Set<String> list) {
 		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
 		db.i("parsing not random");
 		Iterator<String> iter = list.iterator();
@@ -72,7 +71,8 @@ public class StandardLounge extends ArenaModule {
 		return lounges + "/" + arena.getTeams().size() + "x lounge";
 	}
 
-	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
+	@Override
+	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
 		if (!join)
 			return result; // we only care about joining, ignore spectators
 		
@@ -117,7 +117,8 @@ public class StandardLounge extends ArenaModule {
 		return result;
 	}
 
-	public PACheck checkStart(Arena arena, PACheck result) {
+	@Override
+	public PACheck checkStart(ArenaPlayer ap, PACheck result) {
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}
@@ -137,7 +138,7 @@ public class StandardLounge extends ArenaModule {
 	}
 	
 	@Override
-	public boolean hasSpawn(Arena arena, String s) {
+	public boolean hasSpawn(String s) {
 		if (arena.isFreeForAll()) {
 			return s.startsWith("lounge");
 		}
@@ -148,14 +149,9 @@ public class StandardLounge extends ArenaModule {
 		}
 		return false;
 	}
-	
-	@Override
-	public boolean isActive(Arena arena) {
-		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDLOUNGE_ACTIVE);
-	}
 
 	@Override
-	public void commitJoin(Arena arena, Player sender, ArenaTeam team) {
+	public void commitJoin(Player sender, ArenaTeam team) {
 
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
@@ -181,14 +177,8 @@ public class StandardLounge extends ArenaModule {
 	}
 	
 	@Override
-	public void parseJoin(Arena arena, CommandSender player, ArenaTeam team) {
+	public void parseJoin(CommandSender player, ArenaTeam team) {
 		if (arena.START_ID != null)
 			arena.countDown();
-	}
-	
-	@Override
-	public void toggleActivity(Arena arena) {
-		arena.getArenaConfig().set(CFG.MODULES_STANDARDLOUNGE_ACTIVE, !isActive(arena));
-		arena.getArenaConfig().save();
-	}
+	}	
 }

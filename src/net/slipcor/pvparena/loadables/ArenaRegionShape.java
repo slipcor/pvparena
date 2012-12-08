@@ -47,7 +47,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
@@ -230,6 +230,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public static ArenaRegionShape create(Arena arena, String name,
 			RegionShape shape, PABlockLocation[] locs) {
+		
 		db.i("public static ArenaRegionShape create");
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
@@ -331,16 +332,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	
 	@Override
 	public ArenaRegionShape clone() {
-		db.i("clone()");
-		if (this.shape == null || this.shape.equals(RegionShape.CUBOID)) {
-			return new CuboidRegion(this.arena, this.getName(), this.locs);
-		} else if (this.shape.equals(RegionShape.CYLINDRIC)) {
-			return new CylindricRegion(this.arena, this.getName(), this.locs);
-		} else if (this.shape.equals(RegionShape.SPHERIC)) {
-			return new SphericRegion(this.arena, this.getName(), this.locs);
-		} else {
-			return new CuboidRegion(this.arena, this.getName(), this.locs);
-		}
+		return (ArenaRegionShape) super.clone();
 	}
 
 	public void displayInfo(CommandSender sender) {

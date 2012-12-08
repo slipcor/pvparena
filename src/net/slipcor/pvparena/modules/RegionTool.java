@@ -21,7 +21,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.0
  */
 
 public class RegionTool extends ArenaModule {
@@ -32,12 +32,7 @@ public class RegionTool extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.9.9.9";
-	}
-
-	@Override
-	public boolean isActive(Arena arena) {
-		return true;
+		return "v0.10.0.0";
 	}
 
 	@Override
@@ -80,10 +75,5 @@ public class RegionTool extends ArenaModule {
 			}
 		}
 		return false;
-	}
-	
-	@Override
-	public void toggleActivity(Arena arena) {
-		return;
 	}
 }

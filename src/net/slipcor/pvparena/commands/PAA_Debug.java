@@ -15,7 +15,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAA_Debug extends PA__Command {
@@ -30,7 +30,7 @@ public class PAA_Debug extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new Integer[]{0,1})) {
+		if (!argCountValid(sender, args, new Integer[]{0,1})) {
 			return;
 		}
 		

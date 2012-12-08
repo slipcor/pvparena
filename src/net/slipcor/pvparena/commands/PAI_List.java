@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class PAI_List extends PAA__Command {
@@ -51,7 +51,7 @@ public class PAI_List extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		

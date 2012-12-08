@@ -5,7 +5,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -25,15 +24,15 @@ import net.slipcor.pvparena.runnables.TimedEndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalTime extends ArenaGoal {
 	
 	private TimedEndRunnable ter;
 
-	public GoalTime(Arena arena) {
-		super(arena, "Time");
+	public GoalTime() {
+		super("Time");
 		db = new Debug(106);
 	}
 
@@ -41,17 +40,12 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.8.0";
+		return "v0.10.0.0";
 	}
 
 	@Override
 	public boolean allowsJoinInBattle() {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
-	}
-	
-	@Override
-	public GoalTime clone() {
-		return new GoalTime(arena);
 	}
 	
 	public void commitEnd() {

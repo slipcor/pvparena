@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -31,6 +30,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
@@ -45,13 +45,13 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalDomination extends ArenaGoal {
 
-	public GoalDomination(Arena arena) {
-		super(arena, "Domination");
+	public GoalDomination() {
+		super("Domination");
 		db = new Debug(99);
 	}
 
@@ -64,17 +64,12 @@ public class GoalDomination extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.9.8.0";
+		return "v0.10.0";
 	}
 
 	int priority = 8;
 	int killpriority = 1;
 	
-	@Override
-	public GoalDomination clone() {
-		return new GoalDomination(arena);
-	}
-
 	@Override
 	public boolean allowsJoinInBattle() {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
@@ -161,11 +156,11 @@ public class GoalDomination extends ArenaGoal {
 		if (flags.size() < 4) {
 			return res;
 		}
-		
+		/*
 		Vector vFlag = SpawnManager.getBlockNearest(
 				flags,
 				new PABlockLocation(player.getLocation())).toLocation().toVector();
-
+*/
 		
 		return res;
 	}
@@ -466,7 +461,8 @@ public class GoalDomination extends ArenaGoal {
 
 		if (arena.getTeam(winteam) != null) {
 			
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + "Team "
 							+ winteam + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
@@ -506,7 +502,8 @@ public class GoalDomination extends ArenaGoal {
 		}
 
 		if (aTeam != null && !force) {
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
@@ -514,7 +511,8 @@ public class GoalDomination extends ArenaGoal {
 							+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
-		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
+		PVPArena.instance.getAmm();
+		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));

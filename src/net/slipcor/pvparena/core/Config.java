@@ -32,7 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class Config {
@@ -79,6 +79,7 @@ public class Config {
 		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
 		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
 		LISTS_GOALS("goals", new ArrayList<String>()),
+		LISTS_MODS("mods", new ArrayList<String>()),
 		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
 		
 		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
@@ -177,34 +178,22 @@ public class Config {
 		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false),
 		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
 		MODULES_ANNOUNCEMENTS_ADVERT("modules.announcements.advert", false),
-		MODULES_ANNOUNCEMENTS_ACTIVE("modules.announcements.aaactive", false),
-
-		MODULES_ARENABOARDS_ACTIVE("modules.arenaboards.abactive", false),
 
 		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", Boolean.valueOf(false)),
 		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", Boolean.valueOf(true)),
 		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", Boolean.valueOf(true)),
 		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", Boolean.valueOf(true)),
-		MODULES_ARENAMAPS_ACTIVE("modules.arenamaps.amactive", false),
 
 		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", Boolean.valueOf(true)),
 		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
-		MODULES_ARENAVOTE_ACTIVE("modules.arenavote.avactive", false),
 
-		MODULES_BATTLEFIELDGUARD_ACTIVE("modules.battlefieldguard.bfgactive", false),
 		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
 
-		MODULES_BETTERCLASSES_ACTIVE("modules.betterclasses.bcactive", false),
-		
-		MODULES_BETTERGEARS_ACTIVE("modules.bettergears.bgactive", false),
-
-		MODULES_BETTERFIGHT_ACTIVE("modules.betterfight.bfactive", false),
 		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
 		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
 
-		MODULES_BLOCKRESTORE_ACTIVE("modules.blockrestore.bractive", false),
 		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false),
 		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),
 		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false),
@@ -214,30 +203,14 @@ public class Config {
 		MODULES_COLORTEAMS_SPOUTONLY("modules.colorteams.spoutonly", false),
 		MODULES_COLORTEAMS_TAGAPI("modules.colorteams.tagapi", false),
 
-		MODULES_DUEL_ACTIVE("modules.duel.adactive", false),
-
-		MODULES_EVENTACTIONS_ACTIVE("modules.eventactions.eaactive", false),
-
-		MODULES_FACTIONS_ACTIVE("modules.factions.factive", false),
-		
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 
 		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
 		MODULES_ITEMS_ITEMS("modules.items.items", "none"),
-		
-		MODULES_LATELOUNGE_ACTIVE("modules.latelounge.llactive", false),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
-
-		MODULES_SPECIALJOIN_ACTIVE("modules.specialjoin.sjactive", false),
-
-		MODULES_SKINS_ACTIVE("modules.skins.sactive", false),
-
-		MODULES_STANDARDLOUNGE_ACTIVE("modules.standardlounge.slactive", true),
-		
-		MODULES_STANDARDSPECTATE_ACTIVE("modules.standardspectate.ssactive", true),
 
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
@@ -253,7 +226,6 @@ public class Config {
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
 
-		MODULES_WORLDEDIT_ACTIVE("modules.worldedit.weactive", true),
 		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
 		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
 		

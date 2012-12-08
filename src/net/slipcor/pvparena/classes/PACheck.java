@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -40,7 +41,7 @@ import net.slipcor.pvparena.runnables.SpawnCampRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class PACheck {
@@ -126,12 +127,10 @@ public class PACheck {
 			return false;
 		}
 		if (commit == null) {
-			for (ArenaModule am : PVPArena.instance.getAmm().getModules()) {
-				if (am.isActive(arena)) {
-					if (am.checkCommand(args[0])) {
-						am.commitCommand(arena, sender, args);
-						return true;
-					}
+			for (ArenaModule am : arena.getMods()) {
+				if (am.checkCommand(args[0].toLowerCase())) {
+					am.commitCommand(sender, args);
+					return true;
 				}
 			}
 			
@@ -234,18 +233,16 @@ public class PACheck {
 				
 			ArenaModule commModule = null;
 			
-			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-				if (mod.isActive(arena)) {
-					res = mod.checkJoin(arena, sender, res, true);
-					if (res.getPriority() > priority && priority >= 0) {
-						// success and higher priority
-						priority = res.getPriority();
-						commModule = mod;
-					} else if (res.getPriority() < 0 || priority < 0) {
-						// fail
-						priority = res.getPriority();
-						commModule = null;
-					}
+			for (ArenaModule mod : arena.getMods()) {
+				res = mod.checkJoin(sender, res, true);
+				if (res.getPriority() > priority && priority >= 0) {
+					// success and higher priority
+					priority = res.getPriority();
+					commModule = mod;
+				} else if (res.getPriority() < 0 || priority < 0) {
+					// fail
+					priority = res.getPriority();
+					commModule = null;
 				}
 			}
 			
@@ -307,12 +304,16 @@ public class PACheck {
 				return;
 			}
 			
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.choosePlayerTeam(arena, (Player) sender, team.getColoredName());
+			
 			arena.markPlayedPlayer(sender.getName());
 			
 			if ((commModule == null) || (commGoal == null)) {
 				if (commModule != null) {
-					commModule.commitJoin(arena, (Player) sender, team);
-					PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
+					commModule.commitJoin((Player) sender, team);
+					PVPArena.instance.getAmm();
+					ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 					return;
 				}
 				if (!ArenaManager.checkJoin((Player) sender, arena)) {
@@ -334,9 +335,9 @@ public class PACheck {
 				}
 				
 				PVPArena.instance.getAgm().initiate(arena, (Player) sender);
-				PVPArena.instance.getAmm().initiate(arena, (Player) sender);
+				ArenaModuleManager.initiate(arena, (Player) sender);
 				
-				if (arena.getFighters().size() == 2) {
+				if (arena.getFighters().size() > 1 && arena.getFighters().size() >= arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
 					arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 					arena.setFightInProgress(true);
 					for (ArenaPlayer p : arena.getFighters()) {
@@ -346,13 +347,22 @@ public class PACheck {
 						arena.tpPlayerToCoordName(p.get(), (arena.isFreeForAll()?"":p.getArenaTeam().getName())
 								+ "spawn");
 					}
+					
+					for (ArenaGoal goal : arena.getGoals()) {
+						goal.parseStart();
+					}
+					
+					for (ArenaModule mod : arena.getMods()) {
+						mod.parseStart();
+					}
 				}
 				
 				return;
 			}
 
-			commModule.commitJoin(arena, (Player) sender, team);
-			PVPArena.instance.getAmm().parseJoin(res, arena, (Player) sender, team);
+			commModule.commitJoin((Player) sender, team);
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 	}
 
 	public static void handlePlayerDeath(Arena arena, Player player, PlayerDeathEvent event) {
@@ -382,10 +392,8 @@ public class PACheck {
 				doesRespawn = false;
 			}
 		}
-		
-		
 
-		StatisticsManager.kill(arena, player.getLastDamageCause().getEntity(), player, doesRespawn);
+		StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
 		event.setDeathMessage(null);
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -411,12 +419,9 @@ public class PACheck {
 		for (ArenaGoal g : arena.getGoals()) {
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
-				
-		for (ArenaModule m : PVPArena.instance.getAmm().getModules()) {
-			if (m.isActive(arena)) {
-				m.parsePlayerDeath(arena, player, player.getLastDamageCause());
-			}
-		}
+		
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
 	}
 
 	public static boolean handleSetFlag(Player player, Block block) {
@@ -464,18 +469,16 @@ public class PACheck {
 		
 		ArenaModule commit = null;
 		
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				res = mod.checkJoin(arena, sender, res, false);
-				if (res.getPriority() > priority && priority >= 0) {
-					// success and higher priority
-					priority = res.getPriority();
-					commit = mod;
-				} else if (res.getPriority() < 0 || priority < 0) {
-					// fail
-					priority = res.getPriority();
-					commit = null;
-				}
+		for (ArenaModule mod : arena.getMods()) {
+			res = mod.checkJoin(sender, res, false);
+			if (res.getPriority() > priority && priority >= 0) {
+				// success and higher priority
+				priority = res.getPriority();
+				commit = mod;
+			} else if (res.getPriority() < 0 || priority < 0) {
+				// fail
+				priority = res.getPriority();
+				commit = null;
 			}
 		}
 		
@@ -488,7 +491,7 @@ public class PACheck {
 			return;
 		}
 		
-		commit.commitSpectate(arena, (Player) sender);
+		commit.commitSpectate((Player) sender);
 	}
 
 	public static void handleStart(Arena arena, CommandSender sender) {
@@ -537,19 +540,18 @@ public class PACheck {
 				}
 			}
 		}
-		
-		for (ArenaGoal goal : arena.getGoals()) {
-			goal.parseStart();
-		}
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				mod.teleportAllToSpawn(arena);
-			}
-		}
 
 		db.i("teleported everyone!");
 
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+		
+		for (ArenaGoal x : arena.getGoals()) {
+			x.parseStart();
+		}
+		
+		for (ArenaModule x : arena.getMods()) {
+			x.parseStart();
+		}
 
 		SpawnCampRunnable scr = new SpawnCampRunnable(arena, 0);
 		arena.SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(

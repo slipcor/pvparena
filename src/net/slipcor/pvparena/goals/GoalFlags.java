@@ -36,6 +36,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
@@ -50,13 +51,13 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalFlags extends ArenaGoal implements Listener {
 
-	public GoalFlags(Arena arena) {
-		super(arena, "Flags");
+	public GoalFlags() {
+		super("Flags");
 		db = new Debug(100);
 	}
 	
@@ -75,16 +76,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.9.7.5";
+		return "v0.10.0.0";
 	}
 
 	int priority = 6;
 	int killpriority = 1;
-	
-	@Override
-	public GoalFlags clone() {
-		return new GoalFlags(arena);
-	}
 
 	@Override
 	public boolean allowsJoinInBattle() {
@@ -370,7 +366,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 		if (arena.getTeam(winteam) != null) {
 			
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + "Team "
 							+ winteam + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
@@ -436,7 +433,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 
 		if (aTeam != null && !force) {
-			PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON,
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
 					aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
@@ -444,7 +442,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 							+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
-		if (PVPArena.instance.getAmm().commitEnd(arena, aTeam)) {
+		PVPArena.instance.getAmm();
+		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));

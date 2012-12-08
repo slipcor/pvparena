@@ -12,6 +12,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -43,7 +44,7 @@ import org.bukkit.potion.PotionEffectType;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class EntityListener implements Listener {
@@ -103,7 +104,8 @@ public class EntityListener implements Listener {
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
 				|| (!BlockListener.isProtected(event.getLocation(), event, RegionProtection.TNT))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			PVPArena.instance.getAmm().onEntityExplode(arena, event);
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.onEntityExplode(arena, event);
 			return;
 		}
 
@@ -135,7 +137,8 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onEntityRegainHealth(arena, event);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onEntityRegainHealth(arena, event);
 
 	}
 
@@ -261,7 +264,8 @@ public class EntityListener implements Listener {
 		db.i("processing damage!");
 
 
-		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker,
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onEntityDamageByEntity(arena, attacker,
 				defender, event);
 
 		StatisticsManager.damage(arena, attacker, defender, event.getDamage());

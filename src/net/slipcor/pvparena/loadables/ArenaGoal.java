@@ -23,7 +23,7 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class ArenaGoal extends NCBLoadable implements Cloneable {
@@ -36,12 +36,9 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param sName
 	 *            the arena type name
 	 */
-	public ArenaGoal(Arena arena, String sName) {
+	public ArenaGoal(String sName) {
 		super(sName);
-		this.arena = arena;
 	}
-	
-	
 
 	/**
 	 * does the arena type allow joining in battle?
@@ -89,7 +86,6 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 
 	/**
 	 * notify the goal of a player death, return higher priority if goal should handle the death as WIN/LOSE
-	 * @param arena the arena
 	 * @param player the dying player
 	 * @return a PACheckResult instance to hand forth for parsing
 	 */
@@ -99,7 +95,6 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 
 	/**
 	 * 
-	 * @param arena
 	 * @param res
 	 * @param player
 	 * @param block
@@ -112,35 +107,30 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public PACheck checkStart(PACheck res) {
 		return res;
 	}
-	
-	@Override
-	public ArenaGoal clone() {
-		return new ArenaGoal(this.arena, this.getName());
-	}
 
 	public void commitCommand(CommandSender sender, String[] args) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 
 	public void commitEnd(boolean force) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 
 	public void commitInteract(Player player, Block clickedBlock) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 	
 	public void commitPlayerDeath(Player player,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 
 	public boolean commitSetFlag(Player player, Block block) {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 	
 	public void commitStart() {
-		throw new IllegalStateException();
+		throw new IllegalStateException(this.getName());
 	}
 
 	/**

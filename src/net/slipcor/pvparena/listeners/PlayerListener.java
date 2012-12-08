@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Update;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -52,7 +53,7 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class PlayerListener implements Listener {
@@ -247,7 +248,8 @@ public class PlayerListener implements Listener {
 		
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
 		
-		PVPArena.instance.getAmm().parsePlayerDeath(arena, player, cause);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.parsePlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,
@@ -293,7 +295,8 @@ public class PlayerListener implements Listener {
 			}
 		}
 		
-		if (arena != null && PVPArena.instance.getAmm().onPlayerInteract(arena, event)) {
+		PVPArena.instance.getAmm();
+		if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
 			db.i("returning: #1");
 			return;
 		}
@@ -411,7 +414,8 @@ public class PlayerListener implements Listener {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
 				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.FIGHT);
-				PVPArena.instance.getAmm().lateJoin(arena, player);
+				PVPArena.instance.getAmm();
+				ArenaModuleManager.lateJoin(arena, player);
 			}
 		}
 	}
@@ -478,7 +482,8 @@ public class PlayerListener implements Listener {
 		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
 			return; // no fighting player or no powerups => OUT
 
-		PVPArena.instance.getAmm().onPlayerPickupItem(arena, event);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onPlayerPickupItem(arena, event);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -506,8 +511,6 @@ public class PlayerListener implements Listener {
 		db.i("onPlayerTeleport: fighting player '"+event.getPlayer().getName()+"' (uncancel)");
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
-
-		PVPArena.instance.getAmm().onPlayerTeleport(arena, event);
 
 		db.i("aimed location: " + event.getTo().toString());
 		
@@ -537,7 +540,8 @@ public class PlayerListener implements Listener {
 		if (arena == null)
 			return; // no fighting player or no powerups => OUT
 
-		PVPArena.instance.getAmm().onPlayerVelocity(arena, event);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onPlayerVelocity(arena, event);
 	}
 
 }

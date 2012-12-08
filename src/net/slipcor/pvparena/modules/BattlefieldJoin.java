@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.modules;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -24,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.3
+ * @version v0.10.0
  */
 
 public class BattlefieldJoin extends ArenaModule {
@@ -38,10 +37,11 @@ public class BattlefieldJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.9.9";
+		return "v0.10.0.0";
 	}
 
-	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
+	@Override
+	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
 		if (!join)
 			return result; // we only care about joining, ignore spectators
 		
@@ -70,14 +70,9 @@ public class BattlefieldJoin extends ArenaModule {
 		result.setPriority(this, priority);
 		return result;
 	}
-	
-	@Override
-	public boolean isActive(Arena arena) {
-		return true;
-	}
 
 	@Override
-	public void commitJoin(Arena arena, Player sender, ArenaTeam team) {
+	public void commitJoin(Player sender, ArenaTeam team) {
 		
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
@@ -93,10 +88,5 @@ public class BattlefieldJoin extends ArenaModule {
 			arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
 		}
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
-	}
-	
-	@Override
-	public void toggleActivity(Arena arena) {
-		return;
 	}
 }

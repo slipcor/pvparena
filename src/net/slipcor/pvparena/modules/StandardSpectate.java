@@ -3,12 +3,10 @@ package net.slipcor.pvparena.modules;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -26,7 +24,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class StandardSpectate extends ArenaModule {
@@ -40,16 +38,16 @@ public class StandardSpectate extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.9.9";
+		return "v0.10.0.0";
 	}
 
 	@Override
-	public String checkForMissingSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(Set<String> list) {
 		return list.contains("spectator")?null:"spectator not set";
 	}
 
 	@Override
-	public PACheck checkJoin(Arena arena, CommandSender sender,
+	public PACheck checkJoin(CommandSender sender,
 			PACheck res, boolean join) {
 		if (join)
 			return res;
@@ -61,7 +59,7 @@ public class StandardSpectate extends ArenaModule {
 	}
 
 	@Override
-	public void commitSpectate(Arena arena, Player player) {
+	public void commitSpectate(Player player) {
 
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -76,18 +74,7 @@ public class StandardSpectate extends ArenaModule {
 	}
 
 	@Override
-	public boolean hasSpawn(Arena arena, String string) {
+	public boolean hasSpawn(String string) {
 		return string.equalsIgnoreCase("spectator");
-	}
-	
-	@Override
-	public boolean isActive(Arena arena) {
-		return arena.getArenaConfig().getBoolean(CFG.MODULES_STANDARDSPECTATE_ACTIVE);
-	}
-	
-	@Override
-	public void toggleActivity(Arena arena) {
-		arena.getArenaConfig().set(CFG.MODULES_STANDARDSPECTATE_ACTIVE, !isActive(arena));
-		arena.getArenaConfig().save();
 	}
 }

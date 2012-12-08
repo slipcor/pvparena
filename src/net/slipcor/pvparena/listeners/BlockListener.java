@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 
@@ -32,8 +33,8 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.painting.PaintingBreakEvent;
-import org.bukkit.event.painting.PaintingPlaceEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 /**
@@ -41,7 +42,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class BlockListener implements Listener {
@@ -132,7 +133,8 @@ public class BlockListener implements Listener {
 		}
 
 		db.i("onBlockBreak !!!");
-		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -148,7 +150,8 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -172,7 +175,8 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -194,7 +198,8 @@ public class BlockListener implements Listener {
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.NATURE)) {
 			return;
 		}
-		PVPArena.instance.getAmm().onBlockChange(arena, event.getBlock(),
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockChange(arena, event.getBlock(),
 				event.getNewState());
 	}
 
@@ -218,8 +223,10 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onBlockBreak(arena, event.getBlock());
-		PVPArena.instance.getAmm().onBlockPlace(arena, block, Material.AIR);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockPlace(arena, block, Material.AIR);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -241,7 +248,8 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onBlockChange(arena, event.getBlock(),
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockChange(arena, event.getBlock(),
 				event.getNewState());
 	}
 
@@ -267,7 +275,8 @@ public class BlockListener implements Listener {
 			if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
 				return;
 			}
-			PVPArena.instance.getAmm().onBlockChange(arena, block.getBlock(),
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.onBlockChange(arena, block.getBlock(),
 					block);
 		}
 	}
@@ -314,7 +323,8 @@ public class BlockListener implements Listener {
 
 		db.i("block piston extend inside the arena");
 		for (Block block : event.getBlocks()) {
-			PVPArena.instance.getAmm().onBlockPiston(arena, block);
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.onBlockPiston(arena, block);
 		}
 		return;
 		
@@ -353,7 +363,8 @@ public class BlockListener implements Listener {
 			if (arena.isFightInProgress() &&
 					!isProtected(event.getBlock().getLocation(), event, RegionProtection.TNT) &&
 					event.getBlock().getTypeId() == 46) {
-				PVPArena.instance.getAmm().onBlockPlace(arena,
+				PVPArena.instance.getAmm();
+				ArenaModuleManager.onBlockPlace(arena,
 						event.getBlock(),
 						event.getBlockReplacedState().getType());
 				event.setCancelled(false);
@@ -374,12 +385,13 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(),
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockPlace(arena, event.getBlock(),
 				event.getBlockReplacedState().getType());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onBlockPlace(PaintingPlaceEvent event) {
+	public void onBlockPlace(HangingPlaceEvent event) {
 		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.PAINTING)) {
 			return;
@@ -394,26 +406,27 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		PVPArena.instance.getAmm().onBlockPlace(arena, event.getBlock(),
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.onBlockPlace(arena, event.getBlock(),
 				event.getBlock().getType());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onBlockBreak(PaintingBreakEvent event) {
-		if (willBeSkipped(event, event.getPainting()
+	public void onBlockBreak(HangingBreakEvent event) {
+		if (willBeSkipped(event, event.getEntity()
 				.getLocation(), RegionProtection.PAINTING)) {
 			return;
 		}
 
-		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getPainting()
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getEntity()
 				.getLocation()), RegionProtection.PAINTING);
 
-		if (isProtected(event.getPainting().getLocation(), event, RegionProtection.PAINTING)) {
+		if (isProtected(event.getEntity().getLocation(), event, RegionProtection.PAINTING)) {
 			return;
 		}
 		
 		db.i("painting break inside the arena");
-		PVPArena.instance.getAmm().onPaintingBreak(arena,
-				event.getPainting(), event.getPainting().getType());
+		ArenaModuleManager.onPaintingBreak(arena,
+				event.getEntity(), event.getEntity().getType());
 	}
 }

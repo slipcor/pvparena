@@ -45,7 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class PVPArena extends JavaPlugin {
@@ -290,12 +290,12 @@ public class PVPArena extends JavaPlugin {
 			try {
 				metrics = new Metrics(this);
 				Metrics.Graph atg = metrics.createGraph("Game modes installed");
-				for (ArenaGoal at : agm.getTypes()) {
+				for (ArenaGoal at : agm.getAllGoals()) {
 					atg.addPlotter(new WrapPlotter(at.getName()));
 				}
 				Metrics.Graph amg = metrics
 						.createGraph("Enhancement modules installed");
-				for (ArenaModule am : amm.getModules()) {
+				for (ArenaModule am : amm.getAllMods()) {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
 				Metrics.Graph acg = metrics.createGraph("Arena count");
@@ -308,8 +308,9 @@ public class PVPArena extends JavaPlugin {
 			}
 
 		}
-
-		amm.onEnable();
+		for (Arena a : ArenaManager.getArenas()) {
+			ArenaModuleManager.parseEnable(a);
+		}
 
 		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
 	}

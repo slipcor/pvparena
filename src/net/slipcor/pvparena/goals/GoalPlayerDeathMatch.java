@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerState;
@@ -21,6 +20,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -35,12 +35,12 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalPlayerDeathMatch extends ArenaGoal {
-	public GoalPlayerDeathMatch(Arena arena) {
-		super(arena, "PlayerDeathMatch");
+	public GoalPlayerDeathMatch() {
+		super("PlayerDeathMatch");
 		db = new Debug(101);
 	}
 	
@@ -50,7 +50,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.8.0";
+		return "v0.10.0.0";
 	}
 
 	int priority = 3;
@@ -127,11 +127,6 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		}
 		return res;
 	}
-	
-	@Override
-	public GoalPlayerDeathMatch clone() {
-		return new GoalPlayerDeathMatch(arena);
-	}
 
 	@Override
 	public void commitEnd(boolean force) {
@@ -143,11 +138,13 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				if (!ap.getStatus().equals(Status.FIGHT))
 					continue;
 				
-				PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
+				PVPArena.instance.getAmm();
+				ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 
 				arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
 			}
-			if (PVPArena.instance.getAmm().commitEnd(arena, team)) {
+			PVPArena.instance.getAmm();
+			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
 		}

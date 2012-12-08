@@ -43,7 +43,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class ArenaPlayer {
@@ -431,7 +431,7 @@ public class ArenaPlayer {
 	}
 
 	public PABlockLocation[] getSelection() {
-		return selection;
+		return selection.clone();
 	}
 
 	/**

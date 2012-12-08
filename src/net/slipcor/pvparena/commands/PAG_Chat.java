@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAG_Chat extends PAA__Command {
@@ -34,7 +34,7 @@ public class PAG_Chat extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		

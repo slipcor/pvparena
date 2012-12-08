@@ -39,7 +39,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class ArenaManager {
@@ -257,7 +257,6 @@ public class ArenaManager {
 			e.printStackTrace();
 			return;
 		}
-		PVPArena.instance.getAmm().load_arenas();
 	}
 
 	/**
@@ -298,7 +297,7 @@ public class ArenaManager {
 		
 		for (String goal : list) {
 
-			ArenaGoal type = PVPArena.instance.getAgm().getType(goal);
+			ArenaGoal type = PVPArena.instance.getAgm().getGoalByName(goal);
 			
 			if (type == null) {
 				return goal;

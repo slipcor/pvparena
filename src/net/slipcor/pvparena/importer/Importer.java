@@ -21,7 +21,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class Importer {
@@ -154,6 +154,7 @@ public class Importer {
 	 * @param a the arena to save to
 	 * @param cfg the config to load
 	 */
+	@SuppressWarnings("deprecation")
 	public static void commitImport(String arenaName, YamlConfiguration cfg) {
 		
 		Arena a = new Arena(arenaName);

@@ -20,7 +20,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.0
  */
 
 public class PAA_Teleport extends PAA__Command {
@@ -35,7 +35,7 @@ public class PAA_Teleport extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{1})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{1})) {
 			return;
 		}
 		

@@ -21,7 +21,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAI_Version extends PA__Command {
@@ -36,7 +36,7 @@ public class PAI_Version extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new Integer[]{0})) {
+		if (!argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
 		HashSet<String> names = new HashSet<String>();
@@ -50,14 +50,14 @@ public class PAI_Version extends PA__Command {
 		if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
 			Arena.pmsg(sender, "§7-----------------------------------");
 			Arena.pmsg(sender, "§cArena Goals:");
-			for (ArenaGoal ag : PVPArena.instance.getAgm().getTypes()) {
+			for (ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
 				Arena.pmsg(sender,  "§c" + ag.getName() + " - " + ag.version());
 			}
 		}
 		if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
 			Arena.pmsg(sender, "§7-----------------------------------");
 			Arena.pmsg(sender, "§aMods:");
-			for (ArenaModule am : PVPArena.instance.getAmm().getModules()) {
+			for (ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
 				Arena.pmsg(sender,  "§a" + am.getName() + " - " + am.version());
 			}
 		}

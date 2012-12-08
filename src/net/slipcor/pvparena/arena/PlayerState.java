@@ -5,6 +5,7 @@ import java.util.Collection;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -21,7 +22,7 @@ import org.bukkit.potion.PotionEffect;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.0
  */
 
 public final class PlayerState {
@@ -123,7 +124,8 @@ public final class PlayerState {
 		}
 		
 		if (ap.getArena() != null) {
-			PVPArena.instance.getAmm().unload(player);
+			PVPArena.instance.getAmm();
+			ArenaModuleManager.unload(ap.getArena(), player);
 			PVPArena.instance.getAgm().unload(ap.getArena(), player);
 		}
 		

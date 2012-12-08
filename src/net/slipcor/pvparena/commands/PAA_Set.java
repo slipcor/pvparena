@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAA_Set extends PAA__Command {
@@ -35,7 +35,7 @@ public class PAA_Set extends PAA__Command {
 			return;
 		}
 
-		if (!this.argCountValid(sender, arena, args, new Integer[]{1,2})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
 

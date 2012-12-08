@@ -23,7 +23,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class PAA_Uninstall extends PA__Command {
@@ -38,7 +38,7 @@ public class PAA_Uninstall extends PA__Command {
 			return;
 		}
 
-		if (!this.argCountValid(sender, args,
+		if (!argCountValid(sender, args,
 				new Integer[]{0,1})) {
 			return;
 		}
@@ -65,7 +65,7 @@ public class PAA_Uninstall extends PA__Command {
 		}
 
 		String name = args[0].toLowerCase();
-		ArenaGoal ag = PVPArena.instance.getAgm().getType(name);
+		ArenaGoal ag = PVPArena.instance.getAgm().getGoalByName(name);
 		if (ag != null) {
 			if (remove("pa_g_" + ag.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAgm().reload();
@@ -75,7 +75,7 @@ public class PAA_Uninstall extends PA__Command {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,ag.getName()));
 			return;
 		}
-		ArenaModule am = PVPArena.instance.getAmm().getModule(name);
+		ArenaModule am = PVPArena.instance.getAmm().getModByName(name);
 		if (am != null) {
 			if (remove("pa_m_" + am.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAmm().reload();
@@ -98,7 +98,7 @@ public class PAA_Uninstall extends PA__Command {
 					false);
 			for (String key : entries) {
 				String value = cfg.getString("goals." + key);
-				ArenaGoal goal = PVPArena.instance.getAgm().getType(key);
+				ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
 				boolean installed = (goal != null);
 				String version = null;
 				if (installed) {
@@ -117,7 +117,7 @@ public class PAA_Uninstall extends PA__Command {
 					false);
 			for (String key : entries) {
 				String value = cfg.getString("mods." + key);
-				ArenaModule mod = PVPArena.instance.getAmm().getModule(key);
+				ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
 				boolean installed = (mod != null);
 				String version = null;
 				if (installed) {
@@ -135,11 +135,11 @@ public class PAA_Uninstall extends PA__Command {
 
 	private void disableModule(String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAgm().getType(
+			ArenaGoal g = PVPArena.instance.getAgm().getGoalByName(
 					file.replace("pa_g_", "").replace(".jar", ""));
 			g.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModule(
+			ArenaModule g = PVPArena.instance.getAmm().getModByName(
 					file.replace("pa_m_", "").replace(".jar", ""));
 			g.unload();
 		}

@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.core.Help;
@@ -23,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAI_Info extends PAA__Command {
@@ -38,7 +37,7 @@ public class PAI_Info extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{0})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0})) {
 			return;
 		}
 		
@@ -74,13 +73,9 @@ public class PAI_Info extends PAA__Command {
 			goal.displayInfo(sender);
 		}
 		
-		for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-			if (mod.isActive(arena)) {
-				arena.msg(sender, Language.parse(MSG.INFO_MOD_ACTIVE, mod.getName()));
-				mod.displayInfo(arena, sender);
-			} else {
-				arena.msg(sender, Language.parse(MSG.INFO_MOD_INACTIVE, mod.getName()));
-			}
+		for (ArenaModule mod : arena.getMods()) {
+			arena.msg(sender, Language.parse(MSG.INFO_MOD_ACTIVE, mod.getName()));
+			mod.displayInfo(sender);
 		}
 		
 		for (ArenaRegionShape reg : arena.getRegions()) {

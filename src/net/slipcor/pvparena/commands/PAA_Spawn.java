@@ -2,7 +2,6 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
 
-import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
@@ -24,7 +23,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.10.0
  */
 
 public class PAA_Spawn extends PAA__Command {
@@ -43,7 +42,7 @@ public class PAA_Spawn extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{1,2})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
 		
@@ -62,8 +61,8 @@ public class PAA_Spawn extends PAA__Command {
 				return;
 			}
 			
-			for (ArenaModule mod : PVPArena.instance.getAmm().getModules()) {
-				if (mod.isActive(arena) && mod.hasSpawn(arena, args[0])) {
+			for (ArenaModule mod : arena.getMods()) {
+				if (mod.hasSpawn(args[0])) {
 					commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
 					return;
 				}

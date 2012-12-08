@@ -18,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class Language {
@@ -360,6 +360,7 @@ public class Language {
 		// -----------------------------------------------
 
 		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),
+		MODULE_AFTERMATCH_STARTINGIN("nulang.mod.aftermatch.startingin", "AfterMatch in %1%!"),
 		MODULE_AFTERMATCH_SPAWNNOTSET("nulang.mod.aftermatch.spawnnotset", "Spawn 'after' not set!"),
 
 		MODULE_ARENABOARDS_CREATE("nulang.mod.arenaboards.createarenaboard", "create an ArenaBoard"),
@@ -392,6 +393,7 @@ public class Language {
 		MODULE_BETTERGEARS_SHOWTEAM("nulang.bettergears.showteam", "Team %1% has Color %2%"),
 		MODULE_BETTERGEARS_TEAMDONE("nulang.bettergears.teamdone", "Team %1% now has Color %2%"),
 		
+		MODULE_BLOCKRESTORE_CLEARINVDONE("nulang.blockrestore.clearinvdone", "Inventories cleared! Expect lag on next arena start!"),
 		
 		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
 		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),
@@ -414,7 +416,9 @@ public class Language {
 		MODULE_SKINS_DISGUISECRAFT("nulang.mod.skins.dc", "Hooking into DisguiseCraft!"),
 		MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
 		MODULE_SKINS_NOMOD("nulang.mod.skins.nomod", "No disguise plugin found, Skins module is inactive!"),
-
+		MODULE_SKINS_SHOWCLASS("nulang.mod.skins.showclass", "Class &e%1%&r will be disguised to &a%2%"),
+		MODULE_SKINS_SHOWTEAM("nulang.mod.skins.showteam", "Team %1% will be disguised to %2%"),
+		
 		MODULE_SPECIALJOIN_DONE("nulang.mod.specialjoin.done", "Join block set here - %1%"),
 		MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),
 		MODULE_SPECIALJOIN_STOP("nulang.mod.specialjoin.stop", "Aborted join block selection!"),
@@ -422,6 +426,9 @@ public class Language {
 		MODULE_STARTFREEZE_ANNOUNCE("nulang.mod.startfreeze.announce", "The game will start in %1% seconds!"),
 
 		MODULE_TEMPPERMS_NOPERMS("nulang.mod.tempperms.noperms", "Permissions plugin not found, defaulting to OP."),
+		MODULE_TEMPPERMS_HEAD("nulang.mod.tempperms.head", "Temporary permissions of &e%1%&r:"),
+		MODULE_TEMPPERMS_ADDED("nulang.mod.tempperms.added", "Temporary permissions &e%1%&r added to &a%2%&r"),
+		MODULE_TEMPPERMS_REMOVED("nulang.mod.tempperms.removed", "Temporary permissions &e%1%&r removed from &a%2%&r"),
 
 		MODULE_VAULT_ON("nulang.mod.vault.on", "<3 eConomy"),
 		MODULE_VAULT_OFF("nulang.mod.vault.off", "</3 eConomy"),

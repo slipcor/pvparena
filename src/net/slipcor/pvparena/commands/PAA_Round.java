@@ -22,7 +22,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.10.0
  */
 
 public class PAA_Round extends PAA__Command {
@@ -41,7 +41,7 @@ public class PAA_Round extends PAA__Command {
 		// /pa [arenaname] round [number] - list round goals
 		// /pa [arenaname] round [number] [goal] - toggle round goal
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1,2})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0,1,2})) {
 			return;
 		}
 		
@@ -73,7 +73,7 @@ public class PAA_Round extends PAA__Command {
 			ArenaGoal goal = null;
 			
 			try {
-				goal = PVPArena.instance.getAgm().getType(args[2].toLowerCase());
+				goal = PVPArena.instance.getAgm().getGoalByName(args[2].toLowerCase());
 			} catch (Exception e) {
 				// nothing
 			}

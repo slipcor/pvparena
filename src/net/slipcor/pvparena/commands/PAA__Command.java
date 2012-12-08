@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public abstract class PAA__Command {
@@ -24,7 +24,7 @@ public abstract class PAA__Command {
 		perms = s;
 	}
 
-	public boolean argCountValid(CommandSender sender, Arena arena,
+	public static boolean argCountValid(CommandSender sender, Arena arena,
 			String[] args, Integer[] validCounts) {
 		
 		for (int i : validCounts) {
@@ -123,11 +123,11 @@ public abstract class PAA__Command {
 			return new PAA_WhiteList();
 		} else if (name.contains("chat") || name.equals("-c")) {
 			return new PAG_Chat();
-		} else if (name.contains("join") || name.equals("-j")) {
+		} else if (name.equals("join") || name.equals("-j")) {
 			return new PAG_Join();
-		} else if (name.contains("leave") || name.equals("-l")) {
+		} else if (name.equals("leave") || name.equals("-l")) {
 			return new PAG_Leave();
-		} else if (name.contains("spec") || name.equals("-s")) {
+		} else if (name.startsWith("spec") || name.equals("-s")) {
 			return new PAG_Spectate();
 		} else if (name.equals("list") || name.equals("-ls")) {
 			return new PAI_List();

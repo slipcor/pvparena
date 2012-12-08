@@ -37,7 +37,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class ArenaGoalManager {
@@ -58,15 +58,19 @@ public class ArenaGoalManager {
 		}
 		loader = new NCBLoader<ArenaGoal>(plugin, path, new Object[] {});
 		types = loader.load();
-		types.add(new GoalDomination(null));
-		types.add(new GoalFlags(null));
-		types.add(new GoalPlayerDeathMatch(null));
-		types.add(new GoalPlayerLives(null));
-		types.add(new GoalSabotage(null));
-		types.add(new GoalTank(null));
-		types.add(new GoalTeamDeathMatch(null));
-		types.add(new GoalTeamLives(null));
-		types.add(new GoalTime(null));
+		fill();
+	}
+
+	private void fill() {
+		types.add(new GoalDomination());
+		types.add(new GoalFlags());
+		types.add(new GoalPlayerDeathMatch());
+		types.add(new GoalPlayerLives());
+		types.add(new GoalSabotage());
+		types.add(new GoalTank());
+		types.add(new GoalTeamDeathMatch());
+		types.add(new GoalTeamLives());
+		types.add(new GoalTime());
 
 		for (ArenaGoal type : types) {
 			db.i("module ArenaType loaded: " + type.getName() + " (version "
@@ -109,6 +113,10 @@ public class ArenaGoalManager {
 		return result;
 	}
 
+	public List<ArenaGoal> getAllGoals() {
+		return types;
+	}
+
 	/**
 	 * find an arena type by arena type name
 	 * 
@@ -116,18 +124,13 @@ public class ArenaGoalManager {
 	 *            the type name to find
 	 * @return the arena type if found, null otherwise
 	 */
-	public ArenaGoal getType(String tName) {
+	public ArenaGoal getGoalByName(String tName) {
 		for (ArenaGoal type : types) {
 			if (type.getName().equalsIgnoreCase(tName)) {
 				return type;
 			}
 		}
 		return null;
-	}
-
-
-	public List<ArenaGoal> getTypes() {
-		return types;
 	}
 
 	public String guessSpawn(Arena arena, String place) {
@@ -160,12 +163,7 @@ public class ArenaGoalManager {
 	
 	public void reload() {
 		types = loader.reload();
-		types.add(new GoalTeamLives(null));
-
-		for (ArenaGoal type : types) {
-			db.i("module ArenaType loaded: " + type.getName() + " (version "
-					+ type.version() + ")");
-		}
+		fill();
 	}
 	
 	public void reset(Arena arena, boolean force) {
@@ -284,13 +282,15 @@ public class ArenaGoalManager {
 			winners = preciseWinners;
 		}
 
-		PVPArena.instance.getAmm().timedEnd(arena, winners);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.timedEnd(arena, winners);
 
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					if (winners.contains(p.getName())) {
-						PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
+						PVPArena.instance.getAmm();
+						ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
 						arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
 					} else {
 						if (!p.getStatus().equals(Status.FIGHT)) {
@@ -304,7 +304,8 @@ public class ArenaGoalManager {
 		} else {
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()), "WINNER");
+					PVPArena.instance.getAmm();
+					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()), "WINNER");
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
 				} else {

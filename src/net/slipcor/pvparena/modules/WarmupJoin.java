@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.modules;
 
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -20,7 +19,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.10.0
  */
 
 public class WarmupJoin extends ArenaModule {
@@ -34,10 +33,11 @@ public class WarmupJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.9.9.9";
+		return "v0.10.0.0";
 	}
 
-	public PACheck checkJoin(Arena arena, CommandSender sender, PACheck result, boolean join) {
+	@Override
+	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
 		
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
@@ -64,24 +64,14 @@ public class WarmupJoin extends ArenaModule {
 		result.setPriority(this, priority);
 		return result;
 	}
-	
-	@Override
-	public boolean isActive(Arena arena) {
-		return (arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN) > 0);
-	}
 
 	@Override
-	public void commitJoin(Arena arena, Player sender, ArenaTeam team) {
+	public void commitJoin(Player sender, ArenaTeam team) {
 		new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), team.getName(), false, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
 	}
 
 	@Override
-	public void commitSpectate(Arena arena, Player sender) {
+	public void commitSpectate(Player sender) {
 		new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), null, true, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
-	}
-	
-	@Override
-	public void toggleActivity(Arena arena) {
-		return;
 	}
 }

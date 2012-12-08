@@ -20,6 +20,8 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
@@ -30,7 +32,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class ConfigurationManager {
@@ -61,10 +63,18 @@ public class ConfigurationManager {
 			
 			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
 			for (String type : list) {
-				ArenaGoal aType = PVPArena.instance.getAgm().getType(type);
-				aType = aType.clone();
+				ArenaGoal aType = PVPArena.instance.getAgm().getGoalByName(type);
+				aType = (ArenaGoal) aType.clone();
 				aType.setArena(arena);
 				arena.goalAdd(aType);
+			}
+			
+			list = cfg.getStringList(CFG.LISTS_MODS.getNode(), new ArrayList<String>());
+			for (String mod : list) {
+				ArenaModule aMod = PVPArena.instance.getAmm().getModByName(mod);
+				aMod = (ArenaModule) aMod.clone();
+				aMod.setArena(arena);
+				aMod.toggleEnabled(arena);
 			}
 			
 		} else {
@@ -177,7 +187,8 @@ public class ConfigurationManager {
 			}
 		}
 		
-		PVPArena.instance.getAmm().configParse(arena, config);
+		PVPArena.instance.getAmm();
+		ArenaModuleManager.configParse(arena, config);
 		cfg.save();
 		cfg.reloadMaps();
 
@@ -221,7 +232,8 @@ public class ConfigurationManager {
 		if (!sDeath.equals("old") && !list.contains(sDeath))
 			return "Death Spawn ('"+sDeath+"') not set!";
 		
-		String error = PVPArena.instance.getAmm().checkForMissingSpawns(arena, list);
+		PVPArena.instance.getAmm();
+		String error = ArenaModuleManager.checkForMissingSpawns(arena, list);
 		if (error != null) {
 			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);
 		}

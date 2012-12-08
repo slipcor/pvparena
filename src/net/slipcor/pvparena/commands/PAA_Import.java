@@ -19,7 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.0
  */
 
 public class PAA_Import extends PA__Command {
@@ -35,7 +35,7 @@ public class PAA_Import extends PA__Command {
 			return;
 		}
 
-		if (!this.argCountValid(sender, args,
+		if (!argCountValid(sender, args,
 				new Integer[]{0,1})) {
 			return;
 		}

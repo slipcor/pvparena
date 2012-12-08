@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -22,6 +21,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
@@ -36,12 +36,12 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0
  */
 
 public class GoalPlayerLives extends ArenaGoal {
-	public GoalPlayerLives(Arena arena) {
-		super(arena, "PlayerLives");
+	public GoalPlayerLives() {
+		super("PlayerLives");
 		db = new Debug(102);
 	}
 	
@@ -51,7 +51,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.9.8.25";
+		return "v0.10.0.0";
 	}
 
 	int priority = 2;
@@ -154,11 +154,6 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public GoalPlayerLives clone() {
-		return new GoalPlayerLives(arena);
-	}
-
-	@Override
 	public void commitEnd(boolean force) {
 		if (er != null) {
 			return;
@@ -171,17 +166,20 @@ public class GoalPlayerLives extends ArenaGoal {
 					continue;
 
 				if (arena.isFreeForAll()) {
-					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
+					PVPArena.instance.getAmm();
+					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 	
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
 				} else {
-					PVPArena.instance.getAmm().announce(arena, Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()), "WINNER");
+					PVPArena.instance.getAmm();
+					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()), "WINNER");
 	
 					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()));
 					break;
 				}
 			}
-			if (PVPArena.instance.getAmm().commitEnd(arena, team)) {
+			PVPArena.instance.getAmm();
+			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
 		}

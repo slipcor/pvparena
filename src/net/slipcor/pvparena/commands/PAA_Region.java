@@ -21,7 +21,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class PAA_Region extends PAA__Command {
@@ -38,7 +38,7 @@ public class PAA_Region extends PAA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, arena, args, new Integer[]{0,1,2,3})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0,1,2,3})) {
 			return;
 		}
 		

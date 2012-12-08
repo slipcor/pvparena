@@ -22,7 +22,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.0
  */
 
 public class CuboidRegion extends ArenaRegionShape {
@@ -44,7 +44,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.9.9.18";
+		return "v0.10.0.0";
 	}
 	
 	/**
@@ -80,8 +80,8 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	public void initialize() {
 		PABlockLocation[] sane = sanityCheck(getLocs()[0], getLocs()[1]);
-		getLocs()[0] = sane[0];
-		getLocs()[1] = sane[1];
+		locs[0] = sane[0];
+		locs[1] = sane[1];
 	}
 
 	@Override

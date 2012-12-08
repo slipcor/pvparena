@@ -20,7 +20,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.0
  */
 
 public class PAI_ArenaList extends PA__Command {
@@ -35,7 +35,7 @@ public class PAI_ArenaList extends PA__Command {
 			return;
 		}
 		
-		if (!this.argCountValid(sender, args, new Integer[]{0})) {
+		if (!argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
 		HashSet<String> names = new HashSet<String>();

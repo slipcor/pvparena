@@ -122,9 +122,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 						Constructor<? extends NCBLoadable> ctor = loadableClass.getConstructor(ctorParams);
 						T loadable = (T) ctor.newInstance(paramTypes);
 						
-						loadable.file(file);
 						loadable.jar(jarFile);
-						loadable.datafolder(new File(file.getParentFile(), loadable.getName()));
 						
 						LoadResult result = loadable.init();
 						

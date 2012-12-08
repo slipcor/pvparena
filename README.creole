@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.0 - module system rewrite
 * v0.9.9.18 - /pa [arena] region [regionname] border - YAY!
 * v0.9.9.17 - don't spawn players on flags. derp :p
 * v0.9.9.16 - activate region force join - hooray!
@@ -253,6 +254,11 @@ A PVP experience enhancing plugin.
 
 * plugin
 ** class items based on EXP level
+** debug based on player name(s)
+** confirmation for /pa remove
+** support written books data (inv saving & class items)
+** add functionality for the other region types
+** calculate a winner based on ROUND results
 * modules
 ** modify BFG -> kick|death|leave <<
 ** spectating

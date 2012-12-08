@@ -1,13 +1,9 @@
 package net.slipcor.pvparena.ncloader;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /*     Copyright (C) 2012  Nodin Chan <nodinchan@live.com>
  * 
@@ -35,12 +31,7 @@ public class NCBLoadable implements Cloneable {
 	
 	private final String name;
 	
-	private File configFile;
-	private FileConfiguration config;
-	
 	private JarFile jar;
-	private File dataFolder;
-	private File file;
 	
 	public NCBLoadable(String name) {
 		this.name = name;
@@ -48,18 +39,12 @@ public class NCBLoadable implements Cloneable {
 	
 	@Override
 	public NCBLoadable clone() {
-		NCBLoadable loadable = new NCBLoadable(name);
-		loadable.config = YamlConfiguration.loadConfiguration(configFile);
-		loadable.configFile = configFile;
-		loadable.dataFolder = dataFolder;
-		loadable.file = file;
-		loadable.jar = jar;
-		return loadable;
-	}
-	
-	File datafolder(File dataFolder) {
-		dataFolder.mkdirs();
-		return this.dataFolder = dataFolder;
+		try {
+			return (NCBLoadable) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -68,40 +53,6 @@ public class NCBLoadable implements Cloneable {
 	 * @return True if the Loadable is initialised
 	 */
 	public LoadResult init() { return new LoadResult(); }
-	
-	File file(File file) {
-		return this.file = file;
-	}
-	
-	/**
-	 * Gets the config
-	 * 
-	 * @return The config
-	 */
-	public FileConfiguration getConfig() {
-		if (config == null)
-			reloadConfig();
-		
-		return config;
-	}
-	
-	/**
-	 * Gets the data folder of this
-	 * 
-	 * @return The directory of this
-	 */
-	public File getDataFolder() {
-		return dataFolder;
-	}
-	
-	/**
-	 * Gets the file of the loadable
-	 * 
-	 * @return
-	 */
-	public File getFile() {
-		return file;
-	}
 	
 	/**
 	 * Gets the name of the Loadable
@@ -130,33 +81,6 @@ public class NCBLoadable implements Cloneable {
 	
 	JarFile jar(JarFile jar) {
 		return this.jar = jar;
-	}
-	
-	/**
-	 * Reloads the config
-	 */
-	public void reloadConfig() {
-		if (configFile == null)
-			configFile = new File(getDataFolder(), "config.yml");
-		
-		config = YamlConfiguration.loadConfiguration(configFile);
-		
-		InputStream defConfigStream = getResource("config.yml");
-		
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-			config.setDefaults(defConfig);
-		}
-	}
-	
-	/**
-	 * Saves the config
-	 */
-	public void saveConfig() {
-		if (config == null || configFile == null)
-			return;
-		
-		try { config.save(configFile); } catch (IOException e) {}
 	}
 	
 	/**

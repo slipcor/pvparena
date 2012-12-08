@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.0
  */
 
 public abstract class PA__Command {
@@ -24,7 +24,7 @@ public abstract class PA__Command {
 		perms = s;
 	}
 	
-	public boolean argCountValid(CommandSender sender, String[] args, Integer[] validCounts) {
+	public static boolean argCountValid(CommandSender sender, String[] args, Integer[] validCounts) {
 		
 		for (int i : validCounts) {
 			if (i == args.length)
@@ -52,7 +52,7 @@ public abstract class PA__Command {
 		if (perms.length > 0) {
 			String s[] = perms[0].split(".");
 
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_NOPERM, Language.parse(MSG.getByNode("nopermto." + s[1]))));
+			Arena.pmsg (sender, Language.parse(MSG.ERROR_NOPERM, Language.parse(MSG.getByNode("nopermto." + s[1]))));
 		} else {
 
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_NOPERM , MSG.ERROR_NOPERM_X_ADMIN.toString()));
