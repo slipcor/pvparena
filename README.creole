@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.3 - allow re-joining, if ppl know what they're doing
 * v0.10.0.2 - avoid NPE in Time Goal
 * v0.10.0.1 - module system rewrite
 * v0.9.9.18 - /pa [arena] region [regionname] border - YAY!

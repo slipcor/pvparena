@@ -833,6 +833,10 @@ public class Arena {
 			PAClassSign.remove(signs, player);
 		}
 		
+		if (getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+			ap.setArena(null);
+		}
+		
 		player.setNoDamageTicks(60);
 	}
 
