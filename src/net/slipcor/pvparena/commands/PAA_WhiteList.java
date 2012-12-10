@@ -108,7 +108,7 @@ public class PAA_WhiteList extends PAA__Command {
 			arena.msg(sender, output);
 		} else {
 			list.remove(args[2]);
-			arena.msg(sender, Language.parse(MSG.WHITELIST_REMOVED, args[2]));
+			arena.msg(sender, Language.parse(MSG.WHITELIST_REMOVED, args[2], args[1]));
 		}
 		
 		arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.4 - fix the blacklist/whitelist removal message
 * v0.10.0.3 - allow re-joining, if ppl know what they're doing
 * v0.10.0.2 - avoid NPE in Time Goal
 * v0.10.0.1 - module system rewrite
