@@ -21,7 +21,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.0.1
  */
 
 public abstract class ArenaRunnable extends BukkitRunnable {
@@ -71,7 +71,11 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		this.arena = arena;
 		this.global = global;
 		
-		runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
+		if (this instanceof EndRunnable) {
+			runTaskTimer(PVPArena.instance, 20L, 20L);
+		} else {
+			runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
+		}
 	}
 	public void spam() {
 		if ((message == null) || (messages.get(seconds) == null)) {
