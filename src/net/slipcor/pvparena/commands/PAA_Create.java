@@ -66,6 +66,12 @@ public class PAA_Create extends PA__Command {
 		
 		ArenaManager.loadArena(a.getName());
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_CREATE_DONE, a.getName()));
+		a = ArenaManager.getArenaByName(a.getName());
+		PAA_ToggleMod cmd = new PAA_ToggleMod();
+		cmd.commit(a, sender, new String[]{"standardspectate"});
+		cmd.commit(a, sender, new String[]{"standardlounge"});
+		cmd.commit(a, sender, new String[]{"battlefieldjoin"});
+		cmd.commit(a, sender, new String[]{"warmupjoin"});
 	}
 
 	@Override

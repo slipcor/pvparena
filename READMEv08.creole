@@ -1,50 +1,4 @@
-== PVP-Arena
-
-A PVP experience enhancing plugin.
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Features
-
-* Multiple arenas
-* Battlefield regions
-* Customizable classes
-* Player-state saving
-* Arena regions
-* In-game configuration access
-* Arena disable
-* Leader boards
-* Spawn protection
-* Flag coloring
-* Inventory drops
-* Announcements
-* Arena end timer
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Functions
-
-* Enhancing PVP experience
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Dependencies
-
-* CraftBukkit Beta 1.2.5-R3.0
-
------------------------------------------------------------------------------------------------------------------------
-
-=== How to install
-
-* Place in plugins folder
-* Place arena types in /pvparena/arenas
-* Place arena modules in /pvparena/modules
-* Configure if you wish to
-* Done!
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Changelog
+== PVP-Arena v0.8 Changelog
 
 * v0.8.12.3 - trimmed some unneeded methods
 * v0.8.12.2 - offline updating
@@ -136,28 +90,3 @@ A PVP experience enhancing plugin.
 * v0.8.2.0 - rewrite in order to fix the player teleporting / ghosting issue
 * v0.8.1.0 - major fix - more to come, but this is a severe bug fix
 * v0.8.0.0 - major rewrite of player death handling, fixes many things
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Todo
-
-* rewrite (new loader, loading from dev.bukkit)
-** allow other-world-spawns
-** flatfile inventories for restoring
-** rounds - full restart to "tpalltospawns"
-** join via position / portal / etc
-** [PVP Arena] [arenaname] -> format properly
-** arena welcome message per arena
-** teleport -> 2L -> inv save
-** inv restore -> 2L -> teleport
-
------------------------------------------------------------------------------------------------------------------------
-
-=== Credits
-* Deminetix for the very root, the Fight plugin
-* Bradley Hilton for the fork until version v0.0.3
-* Carbon131 for adding features until version v0.0.5
-* Drehverschluss for great support during the v0.6+v0.7 rewrite
-* NodinChan for helping me cleaning up my code and for his loader!
-
------------------------------------------------------------------------------------------------------------------------

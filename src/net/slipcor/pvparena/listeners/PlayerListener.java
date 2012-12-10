@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
@@ -19,6 +20,7 @@ import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
@@ -520,11 +522,23 @@ public class PlayerListener implements Listener {
 		
 		db.i("telepass: no!!");
 		
-		if (arena.getRegion("battlefield") != null) {
-			if (arena.getRegion("battlefield").contains(new PABlockLocation(event.getFrom()))
-					&& arena.getRegion("battlefield").contains(new PABlockLocation(event.getTo()))) {
-				return; // teleporting inside the arena: allowed!
-			}
+		HashSet<ArenaRegionShape> regions = arena.getRegionsByType(RegionType.BATTLE);
+		
+		if (regions == null || regions.size() < 0) {
+			return;
+		}
+		
+		boolean from = false;
+		boolean to = false;
+		
+		for (ArenaRegionShape r : regions) {
+			from = from?true:r.contains(new PABlockLocation(event.getFrom()));
+			to = to?true:r.contains(new PABlockLocation(event.getTo()));
+		}
+		
+		if (from && to) {
+			// teleport inside the arena, allow!
+			return;
 		}
 
 		db.i("onPlayerTeleport: no tele pass, cancelling!");
