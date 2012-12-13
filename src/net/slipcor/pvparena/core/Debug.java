@@ -3,8 +3,7 @@ package net.slipcor.pvparena.core;
 import java.util.HashSet;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.ArenaManager;
-
+import net.slipcor.pvparena.arena.Arena;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -15,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.0
  */
 
 public class Debug {
@@ -93,20 +92,20 @@ public class Debug {
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
 				override = true;
-				ArenaManager.tellPlayer(sender, "debugging EVERYTHING");
+				Arena.pmsg(sender, "debugging EVERYTHING");
 			} else {
 				String[] sIds = debugs.split(",");
-				ArenaManager.tellPlayer(sender, "debugging: "+debugs);
+				Arena.pmsg(sender, "debugging: "+debugs);
 				for (String s : sIds) {
 					try {
 						Debug.check.add(Integer.valueOf(s));
 					} catch (Exception e) {
-						ArenaManager.tellPlayer(sender, "debug load error: " + s);
+						Arena.pmsg(sender, "debug load error: " + s);
 					}
 				}
 			}
 		} else {
-			ArenaManager.tellPlayer(sender, "debugging: off");
+			Arena.pmsg(sender, "debugging: off");
 		}
 	}
 }

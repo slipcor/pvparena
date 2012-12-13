@@ -32,7 +32,7 @@ public class RegionTool extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.0.6";
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class RegionTool extends ArenaModule {
 					}
 					for (ArenaRegionShape region : arena.getRegions()) {
 						if (region.contains(loc)) {
-							ArenaManager.tellPlayer(event.getPlayer(), "§fArena §b"
+							Arena.pmsg(event.getPlayer(), "§fArena §b"
 									+ arena.getName() + "§f: region §b"
 									+ region.getRegionName());
 						}

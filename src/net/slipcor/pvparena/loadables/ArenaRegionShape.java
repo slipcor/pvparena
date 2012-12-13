@@ -520,7 +520,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
 			if (flags.contains(RegionFlag.DEATH)) {
 				if (this.contains(pLoc)) {
-					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
+					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
 					ap.get().setLastDamageCause(new EntityDamageEvent(ap.get(), DamageCause.CUSTOM, 1000));
 					ap.get().damage(1000);
 				}
@@ -571,7 +571,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				if (this.contains(pLoc)) {
 					Location loc = playerNameLocations.get(ap.getName());
 					if (loc == null) {
-						ArenaManager.tellPlayer(ap.get(),
+						Arena.pmsg(ap.get(),
 								Language.parse(MSG.NOTICE_YOU_NOCAMP));
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
@@ -593,7 +593,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!this.contains(pLoc)) {
-					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					if (arena.getArenaConfig().getBoolean(CFG.GENERAL_LEAVEDEATH)) {
 						ap.get().setLastDamageCause(new EntityDamageEvent(ap.get(), DamageCause.CUSTOM, 1000));
 						//ap.get().setHealth(0);
@@ -614,7 +614,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!this.contains(pLoc)) {
-					ArenaManager.tellPlayer(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
 			}

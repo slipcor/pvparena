@@ -24,10 +24,8 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -319,22 +317,6 @@ public class ArenaManager {
 	}
 
 	/**
-	 * send a message to a single player
-	 * 
-	 * @param player
-	 *            the player to send to
-	 * @param msg
-	 *            the message to send
-	 */
-	public static void tellPlayer(CommandSender player, String msg) {
-		if (player == null) {
-			return;
-		}
-		player.sendMessage(ChatColor.YELLOW + "[PVP Arena] " + ChatColor.WHITE
-				+ msg);
-	}
-
-	/**
 	 * try to join an arena via sign click
 	 * 
 	 * @param event
@@ -358,7 +340,7 @@ public class ArenaManager {
 						newArgs[0] = sign.getLine(2);
 					}
 					if (a == null) {
-						ArenaManager.tellPlayer(player,
+						Arena.pmsg(player,
 								Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
 						return;
 					}
