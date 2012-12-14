@@ -342,6 +342,7 @@ public class Update extends Thread {
 	}
 
 	private boolean incorrectJarFileLink(String link) {
+		db.i("checking link: " + link);
 		return (!link.startsWith("http://dev.bukkit.org/") || !link.endsWith(".jar"));
 	}
 }
