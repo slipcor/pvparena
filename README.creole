@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.9 - version bump for DBO
 * v0.10.0.8 - wow, what a fail. sorry guys, updater fixed :D
 * v0.10.0.7 - re-add automatic plugin update !!
 * v0.10.0.6 - EndRunnable now is Sync - thanks, TagAPI :p
