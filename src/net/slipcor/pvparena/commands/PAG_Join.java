@@ -3,6 +3,7 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -22,6 +23,8 @@ import org.bukkit.entity.Player;
  */
 
 public class PAG_Join extends PAA__Command {
+	
+	Debug db = new Debug(200);
 
 	public PAG_Join() {
 		super(new String[] {"pvparena.user"});
@@ -52,9 +55,11 @@ public class PAG_Join extends PAA__Command {
 		
 		if (ap.getArena() != null) {
 			Arena a = ap.getArena();
+			db.i("Join_1");
 			a.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, a.getName()));
 			return;
 		} else if (arena.hasAlreadyPlayed(ap.getName())) {
+			db.i("Join_2");
 			arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
 			return;
 		}

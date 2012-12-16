@@ -44,10 +44,13 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 		db.i("ArenaWarmupRunnable commiting");
 		player.setStatus(Status.WARM);
 		if (spectator) {
+			arena.hasNotPlayed(player);
 			(new PAG_Spectate()).commit(arena, player.get(), null);
 		} else if (teamName == null) {
+			arena.hasNotPlayed(player);
 			(new PAG_Join()).commit(arena, player.get(), null);
 		} else {
+			arena.hasNotPlayed(player);
 			String[] args = new String[1];
 			args[0] = teamName;
 			(new PAG_Join()).commit(arena, player.get(), args);

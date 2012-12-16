@@ -71,7 +71,7 @@ public class PAA_Create extends PA__Command {
 		cmd.commit(a, sender, new String[]{"standardspectate"});
 		cmd.commit(a, sender, new String[]{"standardlounge"});
 		cmd.commit(a, sender, new String[]{"battlefieldjoin"});
-		cmd.commit(a, sender, new String[]{"warmupjoin"});
+		//cmd.commit(a, sender, new String[]{"warmupjoin"});
 	}
 
 	@Override

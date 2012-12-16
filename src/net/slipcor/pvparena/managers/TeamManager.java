@@ -159,6 +159,7 @@ public class TeamManager {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
+				db.i("TeamManager");
 				arena.msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, team.getColoredName()));
 				return;
 			}

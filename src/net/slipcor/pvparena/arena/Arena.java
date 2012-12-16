@@ -554,6 +554,10 @@ public class Arena {
 		return playedPlayers.contains(s);
 	}
 
+	public void hasNotPlayed(ArenaPlayer player) {
+		playedPlayers.remove(player.getName());
+	}
+
 	public boolean hasPlayer(Player p) {
 		for (ArenaTeam team : teams) {
 			if (team.hasPlayer(p)) {

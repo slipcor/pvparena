@@ -57,6 +57,7 @@ public class WarmupJoin extends ArenaModule {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (ap.getArena() != null) {
+			db.i(this.getName());
 			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
