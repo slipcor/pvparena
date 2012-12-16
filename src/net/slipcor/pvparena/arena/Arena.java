@@ -981,6 +981,7 @@ public class Arena {
 		player.setSaturation(getArenaConfig().getInt(CFG.PLAYER_SATURATION, 20));
 		player.setExhaustion((float) getArenaConfig().getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
 		player.setVelocity(new Vector());
+		player.setFallDistance(0);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();

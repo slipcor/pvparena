@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.12 - reset fall distance to not kill people twice ;)
 * v0.10.0.11 - fix BetterGears
 * v0.10.0.10 - fix updating via /pa update mods | /pa update goals
 * v0.10.0.9 - version bump for DBO

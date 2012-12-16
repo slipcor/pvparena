@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 
 /**
  * <pre>Arena Player State class</pre>
@@ -86,6 +87,8 @@ public final class PlayerState {
 	public static void fullReset(Arena a, Player player) {
 		playersetHealth(player, a.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
 		player.setFireTicks(0);
+		player.setFallDistance(0);
+		player.setVelocity(new Vector());
 		player.setFoodLevel(a.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
 		player.setSaturation(a.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
 		player.setExhaustion((float) a.getArenaConfig().getDouble(
@@ -119,6 +122,8 @@ public final class PlayerState {
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
+		player.setFallDistance(0);
+		player.setVelocity(new Vector());
 		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			player.setDisplayName(displayname);
 		}
