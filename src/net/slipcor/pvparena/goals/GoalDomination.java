@@ -634,6 +634,11 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
+	public boolean isInternal() {
+		return true;
+	}
+
+	@Override
 	public void parseStart() {
 		paTeamLives.clear();
 		for (ArenaTeam team : arena.getTeams()) {

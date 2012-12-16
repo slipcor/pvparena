@@ -74,4 +74,9 @@ public class WarmupJoin extends ArenaModule {
 	public void commitSpectate(Player sender) {
 		new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), null, true, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
 	}
+
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
 }

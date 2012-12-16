@@ -489,6 +489,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			distributeFlag(null, team);
 		}
 	}
+
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
 	
 	@Override
 	public void parsePlayerDeath(Player p, EntityDamageEvent event) {

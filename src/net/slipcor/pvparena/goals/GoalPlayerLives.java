@@ -260,6 +260,11 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void initate(Player player) {
 		lives.put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
+
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
 	
 	@Override
 	public void parseLeave(Player player) {

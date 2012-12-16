@@ -263,6 +263,11 @@ public class GoalTeamLives extends ArenaGoal {
 			lives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_TLIVES_LIVES));
 	}
 
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
+
 	private void reduceLives(Arena arena, ArenaTeam team) {
 		int i = this.lives.get(team.getName());
 		

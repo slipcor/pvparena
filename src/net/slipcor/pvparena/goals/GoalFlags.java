@@ -637,6 +637,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
 		}
 	}
+
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
 	
 	@Override
 	public void parsePlayerDeath(Player player,

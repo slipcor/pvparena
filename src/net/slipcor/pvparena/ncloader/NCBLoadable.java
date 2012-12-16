@@ -54,6 +54,10 @@ public class NCBLoadable implements Cloneable {
 	 */
 	public LoadResult init() { return new LoadResult(); }
 	
+	public boolean isInternal() {
+		return false;
+	}
+	
 	/**
 	 * Gets the name of the Loadable
 	 * 

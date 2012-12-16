@@ -36,6 +36,11 @@ public class RegionTool extends ArenaModule {
 	}
 
 	@Override
+	public boolean isInternal() {
+		return true;
+	}
+
+	@Override
 	public boolean onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getPlayer().getItemInHand() == null
 				|| event.getPlayer().getItemInHand().getType() == Material.AIR) {

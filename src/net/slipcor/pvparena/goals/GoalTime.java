@@ -90,6 +90,11 @@ public class GoalTime extends ArenaGoal {
 	}
 
 	@Override
+	public boolean isInternal() {
+		return true;
+	}
+
+	@Override
 	public void parseStart() {
 		int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
 		if (timed > 0) {

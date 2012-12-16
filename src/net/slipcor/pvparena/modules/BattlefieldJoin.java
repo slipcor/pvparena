@@ -89,4 +89,9 @@ public class BattlefieldJoin extends ArenaModule {
 		}
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 	}
+
+	@Override
+	public boolean isInternal() {
+		return true;
+	}
 }

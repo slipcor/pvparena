@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.11 - fix BetterGears
+* v0.10.0.10 - fix updating via /pa update mods | /pa update goals
 * v0.10.0.9 - version bump for DBO
 * v0.10.0.8 - wow, what a fail. sorry guys, updater fixed :D
 * v0.10.0.7 - re-add automatic plugin update !!

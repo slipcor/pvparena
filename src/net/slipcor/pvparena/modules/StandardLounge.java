@@ -151,6 +151,11 @@ public class StandardLounge extends ArenaModule {
 	}
 
 	@Override
+	public boolean isInternal() {
+		return true;
+	}
+
+	@Override
 	public void commitJoin(Player sender, ArenaTeam team) {
 
 		// standard join --> lounge
