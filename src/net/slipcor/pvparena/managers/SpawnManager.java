@@ -14,6 +14,7 @@ import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
@@ -237,7 +238,11 @@ public class SpawnManager {
 		int i = 0;
 		for (ArenaPlayer ap : teamMembers) {
 			ap.setStatus(Status.FIGHT);
-			arena.tpPlayerToCoordName(ap.get(), iteratings[i++%iteratings.length]);
+			String s = iteratings[i++%iteratings.length];
+			if (s == null) {
+				PVPArena.instance.getLogger().warning("Element #"+i+" is null: [" + StringParser.joinArray(iteratings, ",") + "]");
+			}
+			arena.tpPlayerToCoordName(ap.get(), s);
 		}
 	}
 
