@@ -221,7 +221,7 @@ public class SpawnManager {
 
 		String[] iteratings = new String[locs.size()];
 		
-		for (int i = 0; i < locs.size(); i++) {
+		for (int i = 0; i < total.size(); i++) {
 			if (i == 0) {
 				String s = null;
 				for (String ss : locs.keySet()) {
@@ -229,6 +229,7 @@ public class SpawnManager {
 					break;
 				}
 				iteratings[i] = s;
+				locs.remove(s);
 				continue;
 			}
 			String s = calculateFarSpawn(iteratings, locs, total);
