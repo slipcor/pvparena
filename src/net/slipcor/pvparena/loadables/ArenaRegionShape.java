@@ -163,12 +163,22 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * @return true if it does not overlap, false otherwise
 	 */
 	public static boolean checkRegion(Arena a1, Arena a2) {
-		if ((a1.getRegion("battlefield") != null)
-				&& (a2.getRegion("battlefield") != null)) {
-			db.i("checking battlefield region overlapping");
-			return !a2.getRegion("battlefield").overlapsWith(
-					a1.getRegion("battlefield"));
+
+		HashSet<ArenaRegionShape> ars1 = a1.getRegionsByType(RegionType.BATTLE);
+		HashSet<ArenaRegionShape> ars2 = a2.getRegionsByType(RegionType.BATTLE);
+		
+		if (ars1.size() < 0 || ars2.size() < 1) {
+			return true;
 		}
+		
+		for (ArenaRegionShape ar1 : ars1) {
+			for (ArenaRegionShape ar2 : ars2) {
+				if (ar1.overlapsWith(ar2)) {
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 
@@ -262,12 +272,22 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		int joinRange = arena.getArenaConfig().getInt(CFG.JOIN_RANGE);
 		if (joinRange < 1)
 			return false;
-		if (arena.getRegion("battlefield") == null) {
+
+		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.BATTLE);
+		
+		if (ars.size() < 1) {
 			return SpawnManager.getRegionCenter(arena).getDistance(
 					new PABlockLocation(player.getLocation())) > joinRange;
 		}
-		return arena.getRegion("battlefield").tooFarAway(joinRange,
-				player.getLocation());
+		
+		for (ArenaRegionShape ar : ars) {
+			if (!ar.tooFarAway(joinRange,
+				player.getLocation())) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs) {
