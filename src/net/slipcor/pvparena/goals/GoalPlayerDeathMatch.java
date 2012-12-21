@@ -163,7 +163,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		
 		Player ex = killer;
 		
-		if (ex.getKiller() == null && !lives.containsKey(ex.getKiller().getName())) {
+		if (ex.getKiller() == null || !lives.containsKey(ex.getKiller().getName())) {
 			return;
 		}
 		killer = ex.getKiller();
