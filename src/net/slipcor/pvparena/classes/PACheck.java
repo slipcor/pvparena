@@ -370,7 +370,6 @@ public class PACheck {
 		
 		int priority = 0;
 		PACheck res = new PACheck();
-
 		db.i("handlePlayerDeath");
 		
 		ArenaGoal commit = null;

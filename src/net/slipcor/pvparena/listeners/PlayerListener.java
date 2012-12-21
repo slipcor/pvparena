@@ -252,8 +252,6 @@ public class PlayerListener implements Listener {
 		
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
 		
-		
-		//ArenaModuleManager.parsePlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.21 - once and for all, fix deathmatches!
 * v0.10.0.20 - this should work. fixed DeathMatch respawns!
 * v0.10.0.19 - hopefully fix DeathMatch respawns :)
 * v0.10.0.18 - fix NPE in DeathMatch :)

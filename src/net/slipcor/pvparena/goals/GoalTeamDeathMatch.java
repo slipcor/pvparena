@@ -47,7 +47,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.20";
+		return "v0.10.0.21";
 	}
 
 	int priority = 5;
