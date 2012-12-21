@@ -370,24 +370,29 @@ public class PACheck {
 		
 		int priority = 0;
 		PACheck res = new PACheck();
+
+		db.i("handlePlayerDeath");
 		
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
 			res = mod.checkPlayerDeath(res, player);
 			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
+				db.i("success and higher priority");
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
+				db.i("fail");
 				// fail
 				priority = res.getPriority();
 				commit = null;
+			} else {
+				db.i("else");
 			}
 		}
 		
 		if (res.hasError()) {
-			// lives
+			db.i("has error: " + res.getError());
 			if (res.getError().equals("0")) {
 				doesRespawn = false;
 			}
@@ -397,11 +402,12 @@ public class PACheck {
 		event.setDeathMessage(null);
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+			db.i("don't drop inventory");
 			event.getDrops().clear();
 		}
 		
 		if (commit == null) {
-			// no mod handles player deaths, default to infinite lives. Respawn player
+			db.i("no mod handles player deaths");
 			
 			new InventoryRefillRunnable(arena, player, event.getDrops());
 
@@ -412,14 +418,16 @@ public class PACheck {
 			}
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+			
 			return;
 		}
-		
+
+		db.i("handled by: " + commit.getName());
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
+			db.i("parsing death: " + g.getName());
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
-		
 		
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
 	}

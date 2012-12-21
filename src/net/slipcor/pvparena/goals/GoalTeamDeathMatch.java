@@ -130,11 +130,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		if (res.getPriority() <= priority && player.getKiller() != null) {
-			if (player.getKiller() != null) {
-				res.setPriority(this, priority);
-			} else {
-				res.setPriority(this, -1);
-			}
+			res.setPriority(this, priority);
 		}
 		return res;
 	}
@@ -175,6 +171,18 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 		if (respawnPlayer.getKiller() == null) {
+			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
+			
+			if (arena.isCustomClassAlive()
+					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+				InventoryManager.drop(respawnPlayer);
+				event.getDrops().clear();
+			}
+			
+			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()));
+			
+			arena.unKillPlayer(respawnPlayer, event.getEntity()
+					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 			return;
 		}
 		

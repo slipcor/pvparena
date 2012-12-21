@@ -225,6 +225,7 @@ public class PlayerListener implements Listener {
 			return;
 	
 		PACheck.handlePlayerDeath(arena, player, event);
+		ArenaModuleManager.parsePlayerDeath(arena, player, event.getEntity().getLastDamageCause());
 	}
 	
 	/**
@@ -252,7 +253,7 @@ public class PlayerListener implements Listener {
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
 		
 		
-		ArenaModuleManager.parsePlayerDeath(arena, player, cause);
+		//ArenaModuleManager.parsePlayerDeath(arena, player, cause);
 		arena.broadcast(Language.parse(
 				MSG.FIGHT_KILLED_BY,
 				playerName + ChatColor.YELLOW,

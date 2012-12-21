@@ -128,11 +128,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		if (res.getPriority() <= priority) {
-			if (player.getKiller() != null) {
-				res.setPriority(this, priority);
-			} else {
-				res.setPriority(this, -1);
-			}
+			res.setPriority(this, priority);
 		}
 		return res;
 	}
@@ -168,6 +164,18 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		Player ex = killer;
 		
 		if (ex.getKiller() == null || !lives.containsKey(ex.getKiller().getName())) {
+			new InventoryRefillRunnable(arena, ex, event.getDrops());
+			
+			if (arena.isCustomClassAlive()
+					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+				InventoryManager.drop(ex);
+				event.getDrops().clear();
+			}
+			
+			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(ex.getName()));
+			
+			arena.unKillPlayer(ex, event.getEntity()
+					.getLastDamageCause().getCause(), ex.getKiller());
 			return;
 		}
 		killer = ex.getKiller();
@@ -205,7 +213,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName()).getArenaTeam();
 
 			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
-					respawnTeam.colorizePlayer(killer) + ChatColor.YELLOW,
+					respawnTeam.colorizePlayer(ex) + ChatColor.YELLOW,
 					arena.parseDeathCause(ex, event.getEntity()
 							.getLastDamageCause().getCause(), killer),
 					String.valueOf(i)));
