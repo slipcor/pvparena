@@ -267,7 +267,7 @@ public class StringParser {
 		for (Object o : array) {
 			result += glue + String.valueOf(o);
 		}
-		return result.substring(glue.length());
+		return new String(result.substring(glue.length()));
 	}
 
 	public static String joinSet(Set<?> set, String glue) {
@@ -275,7 +275,7 @@ public class StringParser {
 		for (Object o : set) {
 			result += glue + String.valueOf(o);
 		}
-		return result.equals("")?"":result.substring(glue.length());
+		return result.equals("")?"":new String(result.substring(glue.length()));
 	}
 	
 	private static String parseDyeColorToChatColor(String color, boolean forward) {

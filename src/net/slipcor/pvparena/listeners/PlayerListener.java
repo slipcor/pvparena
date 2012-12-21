@@ -382,7 +382,7 @@ public class PlayerListener implements Listener {
 						arena.broadcast(Language.parse(MSG.PLAYER_READY, ap.getArenaTeam().colorizePlayer(ap.get())));
 					}
 					ap.setStatus(Status.READY);
-					if (TeamManager.isReady(ap.getArenaTeam())) {
+					if (ap.getArenaTeam().isEveryoneReady()) {
 						arena.broadcast(Language.parse(MSG.TEAM_READY, ap.getArenaTeam().getColoredName()));
 					}
 

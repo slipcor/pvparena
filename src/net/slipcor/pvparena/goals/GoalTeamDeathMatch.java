@@ -47,10 +47,15 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.0.16";
 	}
 
 	int priority = 5;
+
+	@Override
+	public boolean allowsJoinInBattle() {
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	}
 
 	@Override
 	public PACheck checkEnd(PACheck res) {
@@ -336,5 +341,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		return scores;
+	}
+	
+	@Override
+	public void unload(Player player) {
+		if (allowsJoinInBattle())
+			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 	}
 }

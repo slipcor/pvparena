@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 
@@ -15,7 +16,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.0
  */
 
 public class ArenaTeam {
@@ -110,6 +111,15 @@ public class ArenaTeam {
 
 	public boolean hasPlayer(Player p) {
 		return players.contains(ArenaPlayer.parsePlayer(p.getName()));
+	}
+
+	public boolean isEveryoneReady() {
+		for (ArenaPlayer ap : players) {
+			if (!ap.getStatus().equals(Status.READY)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

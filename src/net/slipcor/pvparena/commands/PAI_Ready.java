@@ -12,8 +12,6 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.managers.TeamManager;
-
 import org.bukkit.command.CommandSender;
 
 /**
@@ -65,7 +63,7 @@ public class PAI_Ready extends PAA__Command {
 				arena.broadcast(Language.parse(MSG.PLAYER_READY, ap.getArenaTeam().colorizePlayer(ap.get())));
 			}
 			ap.setStatus(Status.READY);
-			if (TeamManager.isReady(ap.getArenaTeam())) {
+			if (ap.getArenaTeam().isEveryoneReady()) {
 				arena.broadcast(Language.parse(MSG.TEAM_READY, ap.getArenaTeam().getColoredName()));
 			}
 			

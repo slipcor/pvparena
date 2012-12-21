@@ -76,7 +76,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.0.16";
 	}
 
 	int priority = 6;
@@ -775,6 +775,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	@Override
 	public void unload(Player player) {
 		disconnect(ArenaPlayer.parsePlayer(player.getName()));
+		if (allowsJoinInBattle())
+			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 	}
 	
 	@EventHandler

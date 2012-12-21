@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.0.17 - allow re-joining for Lives and all DeathMatch modules
 * v0.10.0.16 - properly check for BATTLE regions instead for "battlefield"
 * v0.10.0.15 - fix smart spawning not being implemented in a smart way
 * v0.10.0.14 - add debug for a strange bug when teleporting people

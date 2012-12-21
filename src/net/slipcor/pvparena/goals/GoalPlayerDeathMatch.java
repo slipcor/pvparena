@@ -50,10 +50,15 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.0.16";
 	}
 
 	int priority = 3;
+
+	@Override
+	public boolean allowsJoinInBattle() {
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	}
 	
 	@Override
 	public PACheck checkEnd(PACheck res) {
@@ -269,5 +274,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	public void reset(boolean force) {
 		er = null;
 		lives.clear();
+	}
+	
+	@Override
+	public void unload(Player player) {
+		if (allowsJoinInBattle())
+			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 	}
 }

@@ -304,13 +304,4 @@ public class TeamManager {
 
 		return null;
 	}
-
-	public static boolean isReady(ArenaTeam team) {
-		for (ArenaPlayer ap : team.getTeamMembers()) {
-			if (!ap.getStatus().equals(Status.READY)) {
-				return false;
-			}
-		}
-		return true;
-	}
 }

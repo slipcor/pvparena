@@ -69,34 +69,34 @@ public class SpawnManager {
 		
 		return far;
 	}
-	
-	private static void handle(Arena arena, HashSet<ArenaPlayer> teamMembers,
-			HashSet<ArenaRegionShape> ars) {
-		if (arena.isFreeForAll()) {
-			for (ArenaPlayer ap : teamMembers) {
-				int i = (new Random()).nextInt(ars.size());
+
+	public static void distribute(Arena arena, ArenaPlayer ap) {
+		HashSet<ArenaPlayer> hap = new HashSet<ArenaPlayer>();
+		hap.add(ap);
+		distribute(arena, hap);
+	}
+
+	public static void distribute(Arena arena, ArenaTeam team) {
+		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		
+		if (ars.size() > 0) {
+
+			handle(arena, team.getTeamMembers(), ars);
 			
-				for (ArenaRegionShape x : ars) {
-					if (i-- == 0) {
-						spawnRandomly(arena, ap, x);
-						break;
-					}
-				}
-			}
-		} else {
-			String teamName = null;
-			for (ArenaPlayer ap : teamMembers) {
-				if (teamName == null) {
-					teamName = ap.getArenaTeam().getName();
-				}
-				for (ArenaRegionShape x : ars) {
-					if (x.getRegionName().contains(teamName)) {
-						spawnRandomly(arena, ap, x);
-						break;
-					}
-				}
-			}
+			return;
 		}
+		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
+			for (ArenaPlayer ap : team.getTeamMembers()) {
+				arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+				ap.setStatus(Status.FIGHT);
+			}
+			return;
+		}
+		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
+			distributeSmart(arena, team.getTeamMembers(), team.getName() + "spawn");
+			return;
+		}
+		distributeByOrder(arena, team.getTeamMembers(), team.getName() + "spawn");
 	}
 
 	public static void distribute(Arena arena, HashSet<ArenaPlayer> teamMembers) {
@@ -129,29 +129,6 @@ public class SpawnManager {
 			return;
 		}
 		distributeByOrder(arena, teamMembers, "free");
-	}
-
-	public static void distribute(Arena arena, ArenaTeam team) {
-		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
-		
-		if (ars.size() > 0) {
-
-			handle(arena, team.getTeamMembers(), ars);
-			
-			return;
-		}
-		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
-				ap.setStatus(Status.FIGHT);
-			}
-			return;
-		}
-		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
-			distributeSmart(arena, team.getTeamMembers(), team.getName() + "spawn");
-			return;
-		}
-		distributeByOrder(arena, team.getTeamMembers(), team.getName() + "spawn");
 	}
 	
 	private static void distributeByOrder(Arena arena,
@@ -245,6 +222,20 @@ public class SpawnManager {
 			}
 			arena.tpPlayerToCoordName(ap.get(), s);
 		}
+	}
+
+	public static PABlockLocation getBlockNearest(HashSet<PABlockLocation> hashSet,
+			PABlockLocation location) {
+		PABlockLocation result = null;
+
+		for (PABlockLocation loc : hashSet) {
+			if (result == null
+					|| result.getDistance(location) > loc.getDistance(location)) {
+				result = loc;
+			}
+		}
+
+		return result;
 	}
 
 	public static HashSet<PABlockLocation> getBlocks(Arena arena, String sTeam) {
@@ -361,20 +352,6 @@ public class SpawnManager {
 		PALocation result = null;
 
 		for (PALocation loc : hashSet) {
-			if (result == null
-					|| result.getDistance(location) > loc.getDistance(location)) {
-				result = loc;
-			}
-		}
-
-		return result;
-	}
-
-	public static PABlockLocation getBlockNearest(HashSet<PABlockLocation> hashSet,
-			PABlockLocation location) {
-		PABlockLocation result = null;
-
-		for (PABlockLocation loc : hashSet) {
 			if (result == null
 					|| result.getDistance(location) > loc.getDistance(location)) {
 				result = loc;
@@ -518,6 +495,35 @@ public class SpawnManager {
 		return new PABlockLocation(w.getName(),
 				(int) x / locs.size(), (int) y / locs.size(), (int) z / locs.size());
 	}
+	
+	private static void handle(Arena arena, HashSet<ArenaPlayer> teamMembers,
+			HashSet<ArenaRegionShape> ars) {
+		if (arena.isFreeForAll()) {
+			for (ArenaPlayer ap : teamMembers) {
+				int i = (new Random()).nextInt(ars.size());
+			
+				for (ArenaRegionShape x : ars) {
+					if (i-- == 0) {
+						spawnRandomly(arena, ap, x);
+						break;
+					}
+				}
+			}
+		} else {
+			String teamName = null;
+			for (ArenaPlayer ap : teamMembers) {
+				if (teamName == null) {
+					teamName = ap.getArenaTeam().getName();
+				}
+				for (ArenaRegionShape x : ars) {
+					if (x.getRegionName().contains(teamName)) {
+						spawnRandomly(arena, ap, x);
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	 * is a player near a spawn?
@@ -615,11 +621,5 @@ public class SpawnManager {
 		ap.setStatus(Status.FIGHT);
 		arena.tpPlayerToCoordName(ap.get(), "old");
 		ap.setLocation(temp);
-	}
-
-	public static void distribute(Arena arena, ArenaPlayer ap) {
-		HashSet<ArenaPlayer> hap = new HashSet<ArenaPlayer>();
-		hap.add(ap);
-		distribute(arena, hap);
 	}
 }

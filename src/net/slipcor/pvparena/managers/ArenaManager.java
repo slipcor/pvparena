@@ -62,6 +62,42 @@ public class ArenaManager {
 	}
 
 	/**
+	 * try loading an arena
+	 * 
+	 * @param name
+	 *            the arena name to load
+	 * @return 
+	 */
+	private static String checkForMissingGoals(String name) {
+		db.i("check for missing goals: " + name);
+		File file = new File(PVPArena.instance.getDataFolder() + "/arenas/"
+				+ name + ".yml");
+		if (!file.exists()) {
+			return "file does not exist";
+		}
+		Config cfg = new Config(file);
+		
+		cfg.load();
+		List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
+		
+		if (list.size() < 1) {
+			return null;
+		}
+		
+		for (String goal : list) {
+
+			ArenaGoal type = PVPArena.instance.getAgm().getGoalByName(goal);
+			
+			if (type == null) {
+				return goal;
+			}
+
+		}
+		
+		return null;
+	}
+
+	/**
 	 * check if join region is set and if player is inside, if so
 	 * 
 	 * @param player
@@ -152,8 +188,11 @@ public class ArenaManager {
 	 */
 	public static Arena getArenaByRegionLocation(PABlockLocation location) {
 		for (Arena arena : arenas.values()) {
+			if (arena.isLocked()) {
+				continue;
+			}
 			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location) && !arena.isLocked())
+				if (region.contains(location))
 					return arena;
 			}
 		}
@@ -270,40 +309,14 @@ public class ArenaManager {
 		return arena;
 	}
 
-	/**
-	 * try loading an arena
-	 * 
-	 * @param name
-	 *            the arena name to load
-	 * @return 
-	 */
-	private static String checkForMissingGoals(String name) {
-		db.i("check for missing goals: " + name);
-		File file = new File(PVPArena.instance.getDataFolder() + "/arenas/"
-				+ name + ".yml");
-		if (!file.exists()) {
-			return "file does not exist";
-		}
-		Config cfg = new Config(file);
-		
-		cfg.load();
-		List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
-		
-		if (list.size() < 1) {
-			return null;
-		}
-		
-		for (String goal : list) {
-
-			ArenaGoal type = PVPArena.instance.getAgm().getGoalByName(goal);
-			
-			if (type == null) {
-				return goal;
-			}
-
-		}
-		
-		return null;
+	public static void removeArena(Arena arena, boolean deleteConfig) {
+		arena.stop(true);
+		arenas.remove(arena.getName().toLowerCase());
+		if (deleteConfig)
+			arena.getArenaConfig().delete();
+		File path = new File(PVPArena.instance.getDataFolder().getPath() + "/stats_" + arena.getName() + ".yml");
+		path.delete();
+		arena = null;
 	}
 
 	/**
@@ -350,32 +363,5 @@ public class ArenaManager {
 				}
 			}
 		}
-	}
-
-	/**
-	 * unload and delete an arena
-	 * 
-	 * @param string
-	 *            the arena name to unload
-	 */
-	public static void unload(String string) {
-		string = string.toLowerCase();
-		Arena a = arenas.get(string);
-		db.i("unloading arena " + a.getName());
-		a.stop(true);
-		arenas.remove(string);
-		a.getArenaConfig().delete();
-
-		File path = new File(PVPArena.instance.getDataFolder().getPath() + "/stats_" + string + ".yml");
-		path.delete();
-		a = null;
-	}
-
-	public static void removeArena(Arena arena, boolean deleteConfig) {
-		arena.stop(true);
-		arenas.remove(arena.getName().toLowerCase());
-		if (deleteConfig)
-			arena.getArenaConfig().delete();
-		arena = null;
 	}
 }
