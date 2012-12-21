@@ -47,7 +47,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.16";
+		return "v0.10.0.20";
 	}
 
 	int priority = 5;
@@ -130,7 +130,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
 		if (res.getPriority() <= priority && player.getKiller() != null) {
-			res.setPriority(this, priority);
+			if (player.getKiller() != null) {
+				res.setPriority(this, priority);
+			} else {
+				res.setPriority(this, -1);
+			}
 		}
 		return res;
 	}
