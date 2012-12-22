@@ -23,6 +23,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * <pre>Metrics class</pre>
@@ -51,7 +52,7 @@ public class Metrics {
 	private final String guid;
 	private final Object optOutLock = new Object();
 
-	private volatile int taskId = -1;
+	private volatile BukkitTask task = null;
 
 	public Metrics(Plugin plugin) throws IOException {
 		if (plugin == null) {
@@ -103,24 +104,21 @@ public class Metrics {
 				return false;
 			}
 
-			if (this.taskId >= 0) {
+			if (this.task != null) {
 				return true;
 			}
 
-			this.taskId = this.plugin.getServer().getScheduler()
-					.scheduleAsyncRepeatingTask(this.plugin, new Runnable() {
+			this.task = this.plugin.getServer().getScheduler()
+					.runTaskTimerAsynchronously(this.plugin, new Runnable() {
 						private boolean firstPost = true;
 
 						public void run() {
 							try {
 								synchronized (Metrics.this.optOutLock) {
 									if ((Metrics.this.isOptOut())
-											&& (Metrics.this.taskId > 0)) {
-										Metrics.this.plugin
-												.getServer()
-												.getScheduler()
-												.cancelTask(Metrics.this.taskId);
-										Metrics.this.taskId = -1;
+											&& (Metrics.this.task != null)) {
+										task.cancel();
+										task = null;
 									}
 
 								}
@@ -163,7 +161,7 @@ public class Metrics {
 				this.configuration.save(this.configurationFile);
 			}
 
-			if (this.taskId < 0)
+			if (this.task == null)
 				start();
 		}
 	}
@@ -175,9 +173,9 @@ public class Metrics {
 				this.configuration.save(this.configurationFile);
 			}
 
-			if (this.taskId > 0) {
-				this.plugin.getServer().getScheduler().cancelTask(this.taskId);
-				this.taskId = -1;
+			if (task != null) {
+				task.cancel();
+				task = null;
 			}
 		}
 	}

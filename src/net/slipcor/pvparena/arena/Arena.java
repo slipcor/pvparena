@@ -1233,7 +1233,7 @@ public class Arena {
 		ap.setStatus(Status.FIGHT);
 		tpPlayerToCoordName(player, (isFreeForAll()?"":team.getName()) + "spawn");
 		
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(PVPArena.instance, new PlayerStateCreateRunnable(ap, player), 2L);
+		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance, new PlayerStateCreateRunnable(ap, player), 2L);
 		return true;
 	}
 

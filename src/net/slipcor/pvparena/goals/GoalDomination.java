@@ -626,7 +626,7 @@ public class GoalDomination extends ArenaGoal {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
 		if (!paTeamLives.containsKey(team.getName())) {
-			paTeamLives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
+			paTeamLives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES));
 
 			takeFlag(team.getColor().name(), false,
 					SpawnManager.getCoords(arena, team.getName() + "flag"));

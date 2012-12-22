@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
+
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dye;
+import org.bukkit.material.Wool;
 
 /**
  * <pre>String Parser class</pre>
@@ -197,7 +201,20 @@ public class StringParser {
 			data = Byte.parseByte(temp[2]);
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
-				ItemStack is = new ItemStack(mat, amount, dmg, data);
+				ItemStack is = new ItemStack(mat, amount, dmg);
+				
+				if (mat == Material.INK_SACK) {
+					Dye d = (Dye) is.getData();
+					d.setData(data);
+					is.setData(d);
+				} else if (mat == Material.WOOL) {
+					Wool w = (Wool) is.getData();
+					w.setData(data);
+					is.setData(w);
+				} else {
+					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
+				}
+				
 				for (Enchantment e : enchants.keySet()) {
 					is.addUnsafeEnchantment(e, enchants.get(e));
 				}
