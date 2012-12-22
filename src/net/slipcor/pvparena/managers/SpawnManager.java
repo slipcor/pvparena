@@ -71,9 +71,58 @@ public class SpawnManager {
 	}
 
 	public static void distribute(Arena arena, ArenaPlayer ap) {
-		HashSet<ArenaPlayer> hap = new HashSet<ArenaPlayer>();
-		hap.add(ap);
-		distribute(arena, hap);
+		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		
+		if (ars.size() > 0) {
+			HashSet<ArenaPlayer> team = new HashSet<ArenaPlayer>();
+			team.add(ap);
+			handle(arena, team, ars);
+			
+			return;
+		}
+		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN) && arena.isFreeForAll()) {
+			HashSet<PALocation> pLocs = new HashSet<PALocation>();
+			
+			for (ArenaPlayer app : ap.getArenaTeam().getTeamMembers()) {
+				if (app.getName().equals(ap.getName())) {
+					continue;
+				}
+				pLocs.add(new PALocation(app.get().getLocation()));
+			}
+			
+			HashMap<String, PALocation> locs = SpawnManager.getSpawnMap(arena, "free");
+			
+			HashMap<PALocation, Double> diffs = new HashMap<PALocation, Double>();
+			
+			double max = 0;
+			
+			for (PALocation spawnLoc : locs.values()) {
+				double d = 0;
+				for (PALocation playerLoc : pLocs) {
+					d += spawnLoc.getDistance(playerLoc);
+				}
+				max = Math.max(d, max);
+				diffs.put(spawnLoc, d);
+			}
+			
+			for (PALocation loc : diffs.keySet()) {
+				if (diffs.get(loc) == max) {
+					for (String s : locs.keySet()) {
+						if (locs.get(s).equals(loc)) {
+							arena.tpPlayerToCoordName(ap.get(), s);
+							return;
+						}
+					}
+					
+				}
+			}
+			
+			return;
+		}
+		
+		arena.tpPlayerToCoordName(ap.get(), (arena.isFreeForAll()?"":ap.getArenaTeam().getName()) + "spawn");
+		ap.setStatus(Status.FIGHT);
+		return;
 	}
 
 	public static void distribute(Arena arena, ArenaTeam team) {
@@ -105,7 +154,6 @@ public class SpawnManager {
 		if (ars.size() > 0) {
 
 			handle(arena, teamMembers, ars);
-			
 			return;
 		}
 		
@@ -113,6 +161,7 @@ public class SpawnManager {
 		
 		for (ArenaPlayer ap : teamMembers) {
 			at = ap.getArenaTeam();
+			break;
 		}
 		
 		String t = arena.isFreeForAll()?"":at.getName();
