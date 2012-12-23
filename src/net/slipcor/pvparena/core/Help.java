@@ -235,14 +235,24 @@ public class Help {
 				"shorthand command: !tm",
 				"-------------------------------------------",
 				"/pa [arenaname] togglemod [name]"}),
+		TEAMS("nulang.help.msg.teams", new String[]{
+				"Manage arena teams",
+				"-------------------------------------------",
+				"shorthand command: !ts",
+				"-------------------------------------------",
+				"/pa [arenaname] teams - list teams",
+				"/pa [arenaname] teams add [name] [value]",
+				"/pa [arenaname] teams set [name] [value]",
+				"/pa [arenaname] teams remove [name]"}),
 		TELEPORT("nulang.help.msg.teleport", new String[]{
 				"Teleport to an arena spawn",
 				"-------------------------------------------",
-				"/pa [arenaname] teleport [spawnname]"}),
+				"/pa [arenaname] teleport [spawnname]",
+				"shorthand command: !t"}),
 		UNINSTALL("nulang.help.msg.uninstall", new String[]{
 				"Uninstall a PVP Arena module",
 				"-------------------------------------------",
-				"shorthand command: !t",
+				"shorthand command: !ui",
 				"-------------------------------------------",
 				"/pa uninstall [modulename]"}),
 		UPDATE("nulang.help.msg.update", new String[]{

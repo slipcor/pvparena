@@ -82,23 +82,7 @@ public class Importer {
 
 		content.put("protection.spawn", "protection.spawn");
 		content.put("protection.enabled", "protection.enabled");
-		content.put("protection.blockplace", "protection.blockplace");
-		content.put("protection.blockdamage", "protection.blockdamage");
 		content.put("protection.punish", "protection.punish");
-		content.put("protection.decay", "protection.decay");
-		content.put("protection.blocktntdamage", "protection.tntblockdamage");
-		content.put("protection.fade", "protection.fade");
-		content.put("protection.form", "protection.form");
-		content.put("protection.fluids", "protection.fluids");
-		content.put("protection.firespread", "protection.firespread");
-		content.put("protection.grow", "protection.grow");
-		content.put("protection.inventory", "protection.inventory");
-		content.put("protection.lavafirespread", "protection.lavafirespread");
-		content.put("protection.lighter", "protection.lighter");
-		content.put("protection.painting", "protection.painting");
-		content.put("protection.pickup", "protection.pickup");
-		content.put("protection.piston", "protection.piston");
-		content.put("protection.tnt", "protection.tnt");
 
 		content.put("start.countdown", "time.startCountDown");
 		content.put("start.health", "player.health");

@@ -317,6 +317,11 @@ public class Language {
 		TEAM_HAS_WON("nulang.team.haswon", "%1% are the Champions!"),
 		TEAM_READY("nulang.team.ready", "%1% is ready!"),
 		
+		TEAMS_LIST("nulang.teams.list", "Available teams: %1%"),
+		TEAMS_ADD("nulang.teams.add", "Team added: %1%"),
+		TEAMS_SET("nulang.teams.set", "Team set: %1%"),
+		TEAMS_REMOVE("nulang.teams.remove", "Team removed: %1%"),
+		
 		TIME_MINUTES("nulang.time.minutes", "minutes"),
 		TIME_SECONDS("nulang.time.seconds", "seconds"),
 		

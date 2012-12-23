@@ -202,15 +202,11 @@ public class StringParser {
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg);
-				
+				new Dye(data);
 				if (mat == Material.INK_SACK) {
-					Dye d = (Dye) is.getData();
-					d.setData(data);
-					is.setData(d);
+					is.setData(new Dye(data));
 				} else if (mat == Material.WOOL) {
-					Wool w = (Wool) is.getData();
-					w.setData(data);
-					is.setData(w);
+					is.setData(new Wool(data));
 				} else {
 					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
 				}
