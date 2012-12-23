@@ -345,7 +345,7 @@ public class ArenaManager {
 				Sign sign = (Sign) block.getState();
 				if (sign.getLine(0).equalsIgnoreCase("[arena]")) {
 					String sName = sign.getLine(1).toLowerCase();
-					String[] newArgs = null;
+					String[] newArgs = new String[0];
 					Arena a = arenas.get(sName);
 					if (sign.getLine(2) != null
 							&& a.getTeam(sign.getLine(2)) != null) {
