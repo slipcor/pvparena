@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.5 - finally fix the WarmupJoin module
 * v0.10.1.4 - fix NPE about sign joining
 * v0.10.1.3 - add /pa [arena] team!
 * v0.10.1.2 - remove unused config nodes

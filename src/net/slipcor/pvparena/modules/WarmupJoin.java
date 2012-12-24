@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.modules;
 
+import java.util.HashSet;
+
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -25,6 +27,8 @@ import org.bukkit.entity.Player;
 public class WarmupJoin extends ArenaModule {
 	
 	private int priority = 2;
+	
+	HashSet<ArenaPlayer> joiners = new HashSet<ArenaPlayer>();
 
 	public WarmupJoin() {
 		super("WarmupJoin");
@@ -49,6 +53,8 @@ public class WarmupJoin extends ArenaModule {
 			return result; // arena is null - maybe some other mod wants to handle that? ignore!
 		}
 		
+	
+	
 		if (arena.isLocked() && !p.hasPermission("pvparena.admin") && !(p.hasPermission("pvparena.create") && arena.getOwner().equals(p.getName()))) {
 			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
 			return result;
@@ -56,11 +62,16 @@ public class WarmupJoin extends ArenaModule {
 		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
+		if (joiners.contains(ap)) {
+			return result;
+		}
+		
 		if (ap.getArena() != null) {
 			db.i(this.getName());
 			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
+		joiners.add(ap);
 		
 		result.setPriority(this, priority);
 		return result;
@@ -79,5 +90,15 @@ public class WarmupJoin extends ArenaModule {
 	@Override
 	public boolean isInternal() {
 		return true;
+	}
+	
+	@Override
+	public void reset(boolean force) {
+		joiners.clear();
+	}
+	
+	@Override
+	public void parsePlayerLeave(Player player, ArenaTeam team) {
+		joiners.remove(ArenaPlayer.parsePlayer(player.getName()));
 	}
 }

@@ -25,6 +25,8 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	private final boolean spectator;
 	private Debug db = new Debug(40);
 	
+	private Arena wArena = null;
+	
 	/**
 	 * create a timed arena runnable
 	 * 
@@ -32,11 +34,12 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	 *            the player to reset
 	 */
 	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i) {
-		super(MSG.TIMER_WARMINGUP.getNode(), i, p.get(), a, false);
+		super(MSG.TIMER_WARMINGUP.getNode(), i, p.get(), null, false);
 		db.i("ArenaWarmupRunnable constructor");
 		player = p;
 		teamName = team;
 		spectator = spec;
+		wArena = a;
 	}
 	
 	@Override
@@ -44,16 +47,16 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 		db.i("ArenaWarmupRunnable commiting");
 		player.setStatus(Status.WARM);
 		if (spectator) {
-			arena.hasNotPlayed(player);
-			(new PAG_Spectate()).commit(arena, player.get(), null);
+			wArena.hasNotPlayed(player);
+			(new PAG_Spectate()).commit(wArena, player.get(), null);
 		} else if (teamName == null) {
-			arena.hasNotPlayed(player);
-			(new PAG_Join()).commit(arena, player.get(), null);
+			wArena.hasNotPlayed(player);
+			(new PAG_Join()).commit(wArena, player.get(), null);
 		} else {
-			arena.hasNotPlayed(player);
+			wArena.hasNotPlayed(player);
 			String[] args = new String[1];
 			args[0] = teamName;
-			(new PAG_Join()).commit(arena, player.get(), args);
+			(new PAG_Join()).commit(wArena, player.get(), args);
 		}
 	}
 	
