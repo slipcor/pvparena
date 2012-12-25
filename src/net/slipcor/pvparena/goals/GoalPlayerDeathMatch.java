@@ -127,7 +127,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= priority) {
+		if (res.getPriority() <= priority && player.getKiller() != null && arena.hasPlayer(player.getKiller())) {
 			res.setPriority(this, priority);
 		}
 		return res;

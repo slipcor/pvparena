@@ -48,6 +48,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
@@ -634,18 +636,42 @@ public class Arena {
 			ap = ArenaPlayer.parsePlayer(((Player) damager).getName());
 			team = ap.getArenaTeam();
 		}
+		
+		EntityDamageEvent lastDamageCause = player.getLastDamageCause();
 
 		switch (cause) {
 		case ENTITY_ATTACK:
 			if ((damager instanceof Player) && (team != null)) {
 				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
-			return Language.parse(MSG.DEATHCAUSE_CUSTOM);
+			
+			try {
+				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType());
+				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
+			} catch(Exception e) {
+
+				return Language.parse(MSG.DEATHCAUSE_CUSTOM);
+			}
+		case ENTITY_EXPLOSION:
+			try {
+				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType());
+				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
+			} catch(Exception e) {
+
+				return Language.parse(MSG.DEATHCAUSE_ENTITY_EXPLOSION);
+			}
 		case PROJECTILE:
 			if ((damager instanceof Player) && (team != null)) {
 				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
-			return Language.parse(MSG.getByName("DEATHCAUSE_" + cause.toString()));
+			try {
+				
+				db.i("last damager: " + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType());
+				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType().name()));
+			} catch(Exception e) {
+
+				return Language.parse(MSG.DEATHCAUSE_PROJECTILE);
+			}
 		default:
 			return Language.parse(MSG.getByName("DEATHCAUSE_" + cause.toString()));
 		}

@@ -62,7 +62,7 @@ public class PAA_Teams extends PAA__Command {
 				ArenaTeam newTeam = new ArenaTeam(args[1], c.name());
 				arena.getTeams().add(newTeam);
 
-				arena.msg(sender,  Language.parse(MSG.TEAMS_REMOVE, newTeam.getColoredName()));
+				arena.msg(sender,  Language.parse(MSG.TEAMS_ADD, newTeam.getColoredName()));
 			} catch (Exception e) {
 				arena.msg(sender, Language.parse(MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
 			}

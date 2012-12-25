@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.classes;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -415,6 +416,14 @@ public class PACheck {
 				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
+			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+			
+			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+					arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
+		
+			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(player.getName()));
+			
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			

@@ -13,8 +13,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -31,12 +29,10 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "Domination"</pre>
@@ -414,14 +410,6 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= killpriority) {
-			res.setPriority(this, killpriority);
-		}
-		return res;
-	}
-	
-	@Override
 	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
 
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
@@ -516,31 +504,6 @@ public class GoalDomination extends ArenaGoal {
 			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
-	}
-
-	@Override
-	public void commitPlayerDeath(Player respawnPlayer,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
-		
-		ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
-		
-		arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
-				respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-				arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
-	
-		new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
-		
-		if (arena.isCustomClassAlive()
-				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			InventoryManager.drop(respawnPlayer);
-			event.getDrops().clear();
-		}
-		
-		arena.tpPlayerToCoordName(respawnPlayer, respawnTeam.getName()
-				+ "spawn");
-		
-		arena.unKillPlayer(respawnPlayer, event.getEntity()
-				.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 	}
 	
 	@Override
