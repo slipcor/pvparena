@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.1
  */
 
 public class SpawnManager {
@@ -301,13 +301,16 @@ public class SpawnManager {
 					continue;
 				}
 			} else if (sTeam.endsWith("tnt")) {
-				if (name.contains("flag") || name.contains("lounge") || name.contains("spawn")) {
+				if (!name.contains("tnt")) {
 					continue;
 				}
-				String sName = sTeam.replace("tnt", "");
-				db.i("checking if " + name + " starts with " + sName);
-				if (!name.startsWith(sName)) {
-					continue;
+				if (!name.equals("tnt")) {
+				
+					String sName = sTeam.replace("tnt", "");
+					db.i("checking if " + name + " starts with " + sName);
+					if (!name.startsWith(sName)) {
+						continue;
+					}
 				}
 			} else if (name.endsWith("flag")) {
 				if (name.contains("tnt") || name.contains("lounge") || name.contains("spawn")) {

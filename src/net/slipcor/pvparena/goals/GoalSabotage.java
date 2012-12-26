@@ -536,14 +536,18 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@EventHandler
 	public void onTNTExplode(EntityExplodeEvent event) {
+		System.out.print("onTNTExplode");
 		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
+		System.out.print("is PRIMED TNT");
 		
 		TNTPrimed t = (TNTPrimed) event.getEntity();
 		
 		for (ArenaTeam team : tnts.keySet()) {
+			System.out.print("checking team " + team.getName());
 			if (t.getUniqueId().equals(tnts.get(team).getUniqueId())) {
+				System.out.print("uniques match!");
 				event.setCancelled(true);
 				t.remove();
 				commit(arena, team.getName(), false);
