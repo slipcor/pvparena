@@ -427,6 +427,11 @@ public class PACheck {
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			
+			for (ArenaGoal g : arena.getGoals()) {
+				db.i("parsing death: " + g.getName());
+				g.parsePlayerDeath(player, player.getLastDamageCause());
+			}
+			
 			return;
 		}
 

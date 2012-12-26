@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.9 - fix Player death parsing
 * v0.10.1.8 - fix ArenaRunnable setup
 * v0.10.1.7 - fix first smart spawn -.-
 * v0.10.1.6 - fix death announcements, clean up death handling
