@@ -18,7 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -49,7 +48,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.1
  */
 
 public class GoalSabotage extends ArenaGoal implements Listener {
@@ -65,7 +64,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.1.11";
 	}
 
 	int priority = 7;
@@ -172,6 +171,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 						team.getColoredName() + ChatColor.YELLOW));
 				
 				takeFlag(team.getName(), true, new PALocation(block.getLocation()));
+				res.setPriority(this, priority);
 				return res; 
 			}
 		}
@@ -310,6 +310,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			return;
 		}
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+	}
+	
+	@Override
+	public void commitInteract(Player player, Block clickedBlock) {
+		return;
 	}
 
 	@Override
@@ -536,32 +541,20 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	
 	@EventHandler
 	public void onTNTExplode(EntityExplodeEvent event) {
-		System.out.print("onTNTExplode");
 		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
-		System.out.print("is PRIMED TNT");
 		
 		TNTPrimed t = (TNTPrimed) event.getEntity();
 		
 		for (ArenaTeam team : tnts.keySet()) {
-			System.out.print("checking team " + team.getName());
 			if (t.getUniqueId().equals(tnts.get(team).getUniqueId())) {
-				System.out.print("uniques match!");
 				event.setCancelled(true);
 				t.remove();
 				commit(arena, team.getName(), false);
 			}
 		}
-	}
-	
-	@EventHandler
-	public void onTNTIgnite(ExplosionPrimeEvent event) {
-		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
-			return;
-		}
 		
-		//TNTPrimed t = (TNTPrimed) event.getEntity();
 		PABlockLocation tLoc = new PABlockLocation(event.getEntity().getLocation());
 		
 		HashSet<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");

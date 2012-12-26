@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.11 - fix Sabotage
 * v0.10.1.10 - fix Sabotage Spawn parsing
 * v0.10.1.9 - fix Player death parsing
 * v0.10.1.8 - fix ArenaRunnable setup
