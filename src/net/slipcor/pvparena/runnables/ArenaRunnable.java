@@ -48,11 +48,11 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		messages.put(3000, "50 " + m);
 		messages.put(3600, "60 " + m);
 	}
-	String message;
-	Integer seconds;
-	String sPlayer;
-	Arena arena;
-	Boolean global;
+	protected String message;
+	protected Integer seconds;
+	protected String sPlayer;
+	protected Arena arena;
+	protected Boolean global;
 	
 	/**
 	 * Spam the message of the remaining time to... someone, probably:
@@ -75,6 +75,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 			runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
 		}
 	}
+	
 	public void spam() {
 		if ((message == null) || (messages.get(seconds) == null)) {
 			return;
