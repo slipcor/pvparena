@@ -174,10 +174,10 @@ public class SpawnManager {
 			return;
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
-			distributeSmart(arena, teamMembers, "free");
+			distributeSmart(arena, teamMembers, at.getName());
 			return;
 		}
-		distributeByOrder(arena, teamMembers, "free");
+		distributeByOrder(arena, teamMembers, at.getName());
 	}
 	
 	private static void distributeByOrder(Arena arena,
