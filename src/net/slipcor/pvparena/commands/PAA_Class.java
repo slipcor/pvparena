@@ -17,13 +17,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * <pre>PVP Arena CLASS Command class</pre>
+ * <pre>
+ * PVP Arena CLASS Command class
+ * </pre>
  * 
  * A command to manage arena classes
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.1
  */
 
 public class PAA_Class extends PAA__Command {
@@ -39,11 +41,11 @@ public class PAA_Class extends PAA__Command {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
+
+		if (!argCountValid(sender, arena, args, new Integer[] { 1, 2 })) {
 			return;
 		}
-		
+
 		if (!(sender instanceof Player)) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
 			return;
@@ -52,37 +54,44 @@ public class PAA_Class extends PAA__Command {
 		// /pa {arenaname} class save [name]
 		// /pa {arenaname} class load [name]
 		// /pa {arenaname} class remove [name]
-		
+
 		if (args.length == 1) {
 			Player player = (Player) sender;
 			try {
 				arena.playerLeave(player, null, true);
 				arena.remove(player);
-				} catch (Exception e) {
+			} catch (Exception e) {
 
-				}
-				ArenaPlayer.parsePlayer(player.getName()).setArena(null);
-				return;
+			}
+			ArenaPlayer.parsePlayer(player.getName()).setArena(null);
+			return;
 		}
-		
+
 		if (args[0].equalsIgnoreCase("save")) {
 			Player player = (Player) sender;
 			List<ItemStack> items = new ArrayList<ItemStack>();
 
-			for (ItemStack is : player.getInventory().getContents()) {
-			if (is != null) {
-			items.add(is);
+			for (ItemStack is : player.getInventory().getArmorContents()) {
+				if (is != null) {
+					items.add(is);
+				}
 			}
+			
+			for (ItemStack is : player.getInventory().getContents()) {
+				if (is != null) {
+					items.add(is);
+				}
 			}
 
 			ItemStack[] isItems = new ItemStack[items.size()];
 			int i = 0;
 			for (ItemStack is : items) {
-			isItems[i++] = is;
+				isItems[i++] = is;
 			}
 
-			String sItems = (isItems == null || isItems.length < 1) ? "AIR" : StringParser.getStringFromItemStacks(isItems);
-			
+			String sItems = (isItems == null || isItems.length < 1) ? "AIR"
+					: StringParser.getStringFromItemStacks(isItems);
+
 			arena.getArenaConfig().setManually("classitems." + args[1], sItems);
 			arena.getArenaConfig().save();
 			arena.addClass(args[1], isItems);

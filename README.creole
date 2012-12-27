@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.17 - save armor when saving a class
 * v0.10.1.16 - added default confirmation for /pa [arena] remove
 * v0.10.1.15 - add "not enough EXP to choose class" (BetterClasses)
 * v0.10.1.14 - addresses Ticket #119
