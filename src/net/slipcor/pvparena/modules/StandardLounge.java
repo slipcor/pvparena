@@ -91,7 +91,7 @@ public class StandardLounge extends ArenaModule {
 			return result;
 		}
 		
-		if (arena.isFightInProgress() && !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+		if (join && arena.isFightInProgress() && !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
 			result.setError(this, Language.parse(MSG.ERROR_FIGHT_IN_PROGRESS));
 			return result;
 		}
@@ -104,7 +104,7 @@ public class StandardLounge extends ArenaModule {
 			return result;
 		}
 		
-		if (ap.getArenaClass() == null) {
+		if (join && ap.getArenaClass() == null) {
 			String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 			if (autoClass != null && !autoClass.equals("none")) {
 				if (arena.getClass(autoClass) == null) {

@@ -170,12 +170,12 @@ public class GoalTeamLives extends ArenaGoal {
 		reduceLives(arena, respawnTeam);
 		
 		if (lives.get(respawnTeam.getName()) != null) {
-		
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
-					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
-					String.valueOf(lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
-
+			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
+						respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
+						arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
+						String.valueOf(lives.get(respawnTeam.getName())), respawnTeam.getColoredName()));
+			}
 			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
 			
 			if (arena.isCustomClassAlive()

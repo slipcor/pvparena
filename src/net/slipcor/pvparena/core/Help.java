@@ -302,7 +302,14 @@ public class Help {
 				"shorthand command: -s",
 				"-------------------------------------------",
 				"/pa [arenaname] spectate"}),
-		
+				
+
+		ARENACLASS("nulang.help.msg.arenaclass", new String[]{
+				"Switch your arena class",
+				"-------------------------------------------",
+				"shorthand command: -ac",
+				"-------------------------------------------",
+				"/pa arenaclass [classname]"}),
 		ARENALIST("nulang.help.msg.arenalist", new String[]{
 				"List available arenas",
 				"-------------------------------------------",

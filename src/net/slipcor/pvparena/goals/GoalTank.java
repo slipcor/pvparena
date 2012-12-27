@@ -196,13 +196,13 @@ public class GoalTank extends ArenaGoal {
 			lives.put(player.getName(), i);
 
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
-			
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
-					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-					arena.parseDeathCause(player, event.getEntity()
-							.getLastDamageCause().getCause(), player.getKiller()),
-					String.valueOf(i)));
-			
+			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
+						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+						arena.parseDeathCause(player, event.getEntity()
+								.getLastDamageCause().getCause(), player.getKiller()),
+						String.valueOf(i)));
+			}
 			new InventoryRefillRunnable(arena, player, event.getDrops());
 			
 			if (arena.isCustomClassAlive()

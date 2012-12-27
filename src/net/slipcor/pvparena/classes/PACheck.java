@@ -419,9 +419,11 @@ public class PACheck {
 			}
 			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
-					respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-					arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
+			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+						arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
+			}
 		
 			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(player.getName()));
 			

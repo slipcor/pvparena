@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.14 - addresses Ticket #119
 * v0.10.1.13 - add a configurable timer to start without PVP
 * v0.10.1.12 - re-add timer scheduling (WIN,LOSE,DEATH regions)
 * v0.10.1.11 - fix Sabotage

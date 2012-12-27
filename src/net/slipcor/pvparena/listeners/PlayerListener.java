@@ -251,13 +251,13 @@ public class PlayerListener implements Listener {
 		ArenaTeam team = ap.getArenaTeam();
 		
 		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
-		
-		arena.broadcast(Language.parse(
-				MSG.FIGHT_KILLED_BY,
-				playerName + ChatColor.YELLOW,
-				arena.parseDeathCause(player, cause.getCause(),
-						ArenaPlayer.getLastDamagingPlayer(cause))));
-		
+		if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+			arena.broadcast(Language.parse(
+					MSG.FIGHT_KILLED_BY,
+					playerName + ChatColor.YELLOW,
+					arena.parseDeathCause(player, cause.getCause(),
+							ArenaPlayer.getLastDamagingPlayer(cause))));
+		}
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			InventoryManager.drop(player);

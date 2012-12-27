@@ -191,12 +191,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		reduceLives(arena, killerTeam);
 
 		if (lives.get(killerTeam.getName()) != null) {
-			
-			arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
-					respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
-					arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
-					String.valueOf(lives.get(killerTeam.getName())), killerTeam.getColoredName()));
-
+			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
+						respawnTeam.colorizePlayer(respawnPlayer) + ChatColor.YELLOW,
+						arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
+						String.valueOf(lives.get(killerTeam.getName())), killerTeam.getColoredName()));
+			}
 			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
 			
 			if (arena.isCustomClassAlive()

@@ -58,6 +58,7 @@ public class Language {
 		CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class %1%"),
 		CLASS_REMOVED("nulang.class.removed", "Class removed: %1%"),
 		CLASS_SAVED("nulang.class.saved", "Class saved: %1%"),
+		CLASS_SELECTED("nulang.class.selected", "You have switched to &e%1%&e class"),
 
 		DEATHCAUSE_BLOCK_EXPLOSION("nulang.deathcause.BLOCK_EXPLOSION", "an explosion"),
 		DEATHCAUSE_CONTACT("nulang.deathcause.CONTACT", "a cactus"),
@@ -421,8 +422,6 @@ public class Language {
 		
 		MODULE_BLOCKRESTORE_CLEARINVDONE("nulang.blockrestore.clearinvdone", "Inventories cleared! Expect lag on next arena start!"),
 		
-		MODULE_COLORTEAMS_NOSPOUT("log.nospout", "Spout not found, you are missing some features ;)"),
-		MODULE_COLORTEAMS_SPOUT("log.spout", "Hooking into Spout!"),
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
 
 		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &f/pa %2% accept"),

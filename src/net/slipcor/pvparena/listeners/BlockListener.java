@@ -104,7 +104,6 @@ public class BlockListener implements Listener {
 					&& !list.contains(String.valueOf(event.getBlock().getType().name()))
 					&& !list.contains(String.valueOf(event.getBlock().getTypeId()) + ":" + event.getBlock().getData())
 					&& !list.contains(String.valueOf(event.getBlock().getType().name()) + ":" + event.getBlock().getData())) {
-				event.getPlayer().sendMessage("not contained, out!");
 				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 				// not on whitelist. DENY!
 				event.setCancelled(true);

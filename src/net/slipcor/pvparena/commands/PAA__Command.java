@@ -135,6 +135,8 @@ public abstract class PAA__Command {
 			return new PAI_List();
 		} else if (name.equals("ready") || name.equals("-r")) {
 			return new PAI_Ready();
+		} else if (name.equals("arenaclass") || name.equals("-ac")) {
+			return new PAG_Arenaclass();
 		} else if (name.equals("info") || name.equals("-i")) {
 			return new PAI_Info();
 		}

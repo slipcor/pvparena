@@ -126,9 +126,11 @@ public class Config {
 		TP_EXIT("tp.exit", "old"),
 		TP_LOSE("tp.lose", "old"),
 		TP_WIN("tp.win", "old"),
-		
+
 		USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false),
+		USES_DEATHMESSAGES("uses.deathMessages", true),
 		USES_EVENTEAMS("uses.evenTeams", false),
+		USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false),
 		USES_OVERLAPCHECK("uses.overlapCheck", true),
 		USES_WOOLHEAD("uses.woolHead", false),
 		
@@ -183,7 +185,6 @@ public class Config {
 
 		MODULES_COLORTEAMS_COLORNICK("modules.colorteams.colornick", false),
 		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false),
-		MODULES_COLORTEAMS_SPOUTONLY("modules.colorteams.spoutonly", false),
 		MODULES_COLORTEAMS_TAGAPI("modules.colorteams.tagapi", false),
 
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
