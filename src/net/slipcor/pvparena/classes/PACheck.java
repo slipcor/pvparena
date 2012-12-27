@@ -29,6 +29,7 @@ import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
+import net.slipcor.pvparena.runnables.PVPActivateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 
 /**
@@ -586,6 +587,10 @@ public class PACheck {
 			} else if (region.getType().equals(RegionType.BATTLE)) {
 				region.initTimer();
 			}
+		}
+		
+		if (arena.getArenaConfig().getInt(CFG.TIME_PVP)>0) {
+			arena.PVP_ID = new PVPActivateRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_PVP));
 		}
 	}
 }

@@ -120,6 +120,7 @@ public class Config {
 		TIME_REGIONTIMER("time.regionTimer", 10),
 		TIME_TELEPORTPROTECT("time.teleportProtect", 3),
 		TIME_WARMUPCOUNTDOWN("time.warmupCountDown", 0),
+		TIME_PVP("time.pvp", 0),
 
 		TP_DEATH("tp.death", "old"),
 		TP_EXIT("tp.exit", "old"),

@@ -350,6 +350,7 @@ public class Language {
 		TIMER_RESETTING_IN("nulang.timer.resetting", "The arena will reset in %1%!"),
 		TIMER_STARTING_IN("nulang.timer.starting", "Starting in %1%!"),
 		TIMER_WARMINGUP("nulang.timer.warmingup", "Warming up... %1%!"),
+		TIMER_PVPACTIVATING("nulang.timer.pvpactivating", "PVP will be activated in %1%!"),
 		
 		UNINSTALL_DONE("nulang.uninstall.done", "uninstalled: &a%1%&r"),
 		

@@ -91,6 +91,7 @@ public class Arena {
 
 	// Runnable IDs
 	public BukkitRunnable END_ID = null;
+	public BukkitRunnable PVP_ID = null;
 	public BukkitRunnable REALEND_ID = null;
 	public BukkitRunnable START_ID = null;
 	public int SPAWNCAMP_ID = -1;
@@ -952,6 +953,10 @@ public class Arena {
 			REALEND_ID.cancel();
 		}
 		REALEND_ID = null;
+		if (PVP_ID != null) {
+			PVP_ID.cancel();
+		}
+		PVP_ID = null;
 
 		
 		ArenaModuleManager.reset(this, force);
