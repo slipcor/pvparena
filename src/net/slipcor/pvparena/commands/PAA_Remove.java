@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
@@ -23,6 +25,8 @@ public class PAA_Remove extends PAA__Command {
 	
 	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
 
+	private static String removal = null;
+	
 	public PAA_Remove() {
 		super(new String[] {});
 	}
@@ -38,6 +42,15 @@ public class PAA_Remove extends PAA__Command {
 		}
 		
 		String name = arena.getName();
+		
+		if (PVPArena.instance.getConfig().getBoolean("safeadmin", true)) {
+			if ((removal == null) || (!removal.equals(name))) { 
+				Arena.pmsg(sender, Language.parse(MSG.NOTICE_REMOVE, name));
+				removal = name;
+				return;
+			}
+			removal = null;
+		}
 		
 		ArenaManager.removeArena(arena, true);
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_REMOVE_DONE, name));

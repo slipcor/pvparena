@@ -6,5 +6,6 @@ language: en
 onlyPVPinArena: false
 update: both
 updatetype: beta
+safeadmin: true
 whitelist:
 - ungod
