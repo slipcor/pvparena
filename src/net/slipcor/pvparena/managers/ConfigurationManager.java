@@ -146,6 +146,8 @@ public class ConfigurationManager {
 				} else {
 					if (region.getType().equals(RegionType.JOIN) && arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
 						region.initTimer();
+					} else if (region.getFlags().size() > 0) {
+						region.initTimer();
 					}
 					arena.addRegion(region);
 				}
