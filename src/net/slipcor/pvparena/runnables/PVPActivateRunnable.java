@@ -22,7 +22,7 @@ public class PVPActivateRunnable extends ArenaRunnable {
 	 * create a pvp activate runnable
 	 */
 	public PVPActivateRunnable(Arena a, int i) {
-		super(MSG.TIMER_PVPACTIVATING.getNode(), i, null, a, true);
+		super(MSG.TIMER_PVPACTIVATING.getNode(), i, null, a, false);
 		db.i("PVPActivateRunnable constructor");
 	}
 	

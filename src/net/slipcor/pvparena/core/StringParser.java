@@ -14,6 +14,9 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
 
@@ -28,11 +31,35 @@ import org.bukkit.material.Wool;
  */
 
 public class StringParser {
+	static String SAFE_BREAK = "<oOo>";
+	static String SAFE_PAGE_BREAK = "<oXxOxXo>";
 
 	public static final Debug db = new Debug(17);
 
 	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
 	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
+
+
+	private static String codeCharacters(String string, boolean forward) {
+		HashMap<String, String> findReplace = new HashMap<String, String>();
+		if (forward) {
+			findReplace.put(":", "<<colon>>");
+			findReplace.put("~", "<<tilde>>");
+			findReplace.put("|", "<<pipe>>");
+			findReplace.put(",", "<<comma>>");
+		} else {
+			findReplace.put("<<colon>>",":");
+			findReplace.put("<<tilde>>","~");
+			findReplace.put("<<pipe>>","|");
+			findReplace.put("<<comma>>",",");
+		}
+		
+		for (String s : findReplace.keySet()) {
+			string = string.replace(s, findReplace.get(s));
+		}
+		
+		return string;
+	}
 	
 	public static String colorize(String s) {
 		return ChatColor.translateAlternateColorCodes('&', s).replace("&&", "&");
@@ -254,8 +281,40 @@ public class StringParser {
 			return "AIR";
 		}
 		String temp = is.getType().name();
+		boolean durability = false;
 		if (is.getDurability() != 0) {
 			temp += "~" + String.valueOf(is.getDurability());
+			durability = true;
+		}
+		if (is.getType() == Material.INK_SACK || is.getType() == Material.WOOL) {
+			if (!durability) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+			temp += "~" + String.valueOf(is.getData().getData());
+		} else if (is.getType() == Material.WRITTEN_BOOK || is.getType() == Material.BOOK_AND_QUILL) {
+			if (!durability) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+			BookMeta bm = (BookMeta) is.getItemMeta();
+			if (bm != null) {
+				if ((bm.getAuthor() != null) && (bm.getTitle() != null) && (bm.getPages() != null)) {
+							temp += "~" + bm.getAuthor() + SAFE_BREAK + codeCharacters(bm.getTitle(), true) +
+									SAFE_BREAK + codeCharacters(joinArray(bm.getPages().toArray(),SAFE_PAGE_BREAK), true);
+					
+				}
+			}
+		} else if (is.getType().name().startsWith("LEATHER_")) {
+			if (!durability) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+			LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
+			temp += "~" + lam.getColor().asRGB();
+		} else if (is.getType() == Material.SKULL_ITEM) {
+			if (!durability) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+			SkullMeta sm = (SkullMeta) is.getItemMeta();
+			temp += "~" + sm.getOwner();
 		}
 		Map<Enchantment, Integer> enchants = is.getEnchantments();
 		
