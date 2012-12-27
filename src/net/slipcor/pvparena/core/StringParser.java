@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 import net.slipcor.pvparena.PVPArena;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -171,7 +173,7 @@ public class StringParser {
 		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
 
 		short dmg = 0;
-		byte data = 0;
+		String data = null;
 		int amount = 1;
 		Material mat = null;
 
@@ -225,15 +227,59 @@ public class StringParser {
 				}
 				return is;
 			}
-			data = Byte.parseByte(temp[2]);
+			data = temp[2];
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg);
-				new Dye(data);
 				if (mat == Material.INK_SACK) {
-					is.setData(new Dye(data));
+					try {
+						is.setData(new Dye(Byte.parseByte(data)));
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("invalid dye data: " + data);
+						return is;
+					}
 				} else if (mat == Material.WOOL) {
-					is.setData(new Wool(data));
+					try {
+						is.setData(new Wool(Byte.parseByte(data)));
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("invalid wool data: " + data);
+						return is;
+					}
+				} else if (mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL) {
+					BookMeta bm = (BookMeta) is.getItemMeta();
+					try {
+						String[] outer = data.split(SAFE_BREAK);
+						bm.setAuthor(codeCharacters(outer[0],false));
+						bm.setTitle(codeCharacters(outer[1],false));
+						List<String> pages = new ArrayList<String>();
+						String[] inner = codeCharacters(outer[2],false).split(SAFE_PAGE_BREAK);
+						for (String ss : inner) {
+							pages.add(ss);
+						}
+						bm.setPages(pages);
+						is.setItemMeta(bm);
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("invalid book data: " + data);
+						return is;
+					}
+				} else if (is.getType().name().startsWith("LEATHER_")) {
+					try {
+						LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
+						lam.setColor(Color.fromRGB(Integer.parseInt(data)));
+						is.setItemMeta(lam);
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("invalid leather data: " + data);
+						return is;
+					}
+				} else if (is.getType() == Material.SKULL_ITEM) {
+					try {
+					SkullMeta sm = (SkullMeta) is.getItemMeta();
+					sm.setOwner(data);
+					is.setItemMeta(sm);
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning("invalid leather data: " + data);
+						return is;
+					}
 				} else {
 					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
 				}

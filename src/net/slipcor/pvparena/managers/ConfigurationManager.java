@@ -23,7 +23,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 /**
  * <pre>Configuration Manager class</pre>
@@ -144,11 +143,6 @@ public class ConfigurationManager {
 				} else if (region.getWorld() == null) {
 					PVPArena.instance.getLogger().severe("Error while loading arena, world null: " + rName);
 				} else {
-					if (region.getType().equals(RegionType.JOIN) && arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
-						region.initTimer();
-					} else if (region.getFlags().size() > 0) {
-						region.initTimer();
-					}
 					arena.addRegion(region);
 				}
 			}
