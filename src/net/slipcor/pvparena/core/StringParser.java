@@ -344,7 +344,7 @@ public class StringParser {
 			BookMeta bm = (BookMeta) is.getItemMeta();
 			if (bm != null) {
 				if ((bm.getAuthor() != null) && (bm.getTitle() != null) && (bm.getPages() != null)) {
-							temp += "~" + bm.getAuthor() + SAFE_BREAK + codeCharacters(bm.getTitle(), true) +
+							temp += "~" + codeCharacters(bm.getAuthor(), true) + SAFE_BREAK + codeCharacters(bm.getTitle(), true) +
 									SAFE_BREAK + codeCharacters(joinArray(bm.getPages().toArray(),SAFE_PAGE_BREAK), true);
 					
 				}

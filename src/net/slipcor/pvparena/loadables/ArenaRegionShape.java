@@ -82,13 +82,12 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * WATCH  => the spectator region
 	 * LOUNGE => the ready lounge region
 	 * BATTLE => the battlefield region
-	 * EXIT   => the exit region
 	 * JOIN   => the join region
 	 * SPAWN  => the spawn region
 	 * </pre>
 	 */
 	public static enum RegionType {
-		CUSTOM, WATCH, LOUNGE, BATTLE, EXIT, JOIN, SPAWN;
+		CUSTOM, WATCH, LOUNGE, BATTLE, JOIN, SPAWN;
 
 		public static RegionType guessFromName(String name) {
 			name = name.toUpperCase();
@@ -644,6 +643,21 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!ap.getStatus().equals(Status.WATCH)) {
+					continue;
+				}
+
+				if (!this.contains(pLoc)) {
+					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
+				}
+			}
+			if (type.equals(RegionType.LOUNGE)) {
+				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				for (ArenaPlayer ap2 : arena.getEveryone()) {
+					plyrs.add(ap2);
+				}
+
+				if (!ap.getStatus().equals(Status.READY) && !ap.getStatus().equals(Status.LOUNGE)) {
 					continue;
 				}
 

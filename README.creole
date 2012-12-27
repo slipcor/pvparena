@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.21 - add LOUNGE region type functionality (kick ;) )
 * v0.10.1.20 - allow FFA players to win and lose via region :p
 * v0.10.1.19 - I) fix arenas with flags being derpy II) secret. DONT use!
 * v0.10.1.18 - attempt to save more than casual items. don't try this at home! - yet
@@ -94,8 +95,6 @@ A PVP experience enhancing plugin.
 
 * plugin
 ** debug based on player name(s)
-** support written books data (inv saving & class items)
-** add functionality for the other region types
 ** calculate a winner based on ROUND results
 * modules
 ** spectating
