@@ -548,11 +548,14 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			if (flags.contains(RegionFlag.WIN)) {
 				if (this.contains(pLoc)) {
 					for (ArenaTeam team : arena.getTeams()) {
-						if (team.getTeamMembers().contains(ap)) {
-							// skip winner
+						if (!arena.isFreeForAll() && team.getTeamMembers().contains(ap)) {
+							// skip winning team
 							continue;
 						}
 						for (ArenaPlayer ap2 : team.getTeamMembers()) {
+							if (arena.isFreeForAll() && ap2.getName().equals(ap.getName())) {
+								continue;
+							}
 							if (ap2.getStatus().equals(Status.FIGHT)) {
 								Bukkit.getWorld(world).strikeLightningEffect(
 										ap2.get().getLocation());
@@ -568,22 +571,33 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			}
 			if (flags.contains(RegionFlag.LOSE)) {
 				if (this.contains(pLoc)) {
-					for (ArenaTeam team : arena.getTeams()) {
-						if (!team.getTeamMembers().contains(ap)) {
-							// skip winner
-							continue;
+					if (arena.isFreeForAll()) {
+						if (ap.getStatus().equals(Status.FIGHT)) {
+							Bukkit.getWorld(world).strikeLightningEffect(
+									ap.get().getLocation());
+							EntityDamageEvent e = new EntityDamageEvent(
+									ap.get(), DamageCause.LIGHTNING, 10);
+							PlayerListener.finallyKillPlayer(arena,
+									ap.get(), e);
 						}
-						for (ArenaPlayer ap2 : team.getTeamMembers()) {
-							if (ap2.getStatus().equals(Status.FIGHT)) {
-								Bukkit.getWorld(world).strikeLightningEffect(
-										ap2.get().getLocation());
-								EntityDamageEvent e = new EntityDamageEvent(
-										ap2.get(), DamageCause.LIGHTNING, 10);
-								PlayerListener.finallyKillPlayer(arena,
-										ap2.get(), e);
+					} else {
+						for (ArenaTeam team : arena.getTeams()) {
+							if (!team.getTeamMembers().contains(ap)) {
+								// skip winner
+								continue;
 							}
+							for (ArenaPlayer ap2 : team.getTeamMembers()) {
+								if (ap2.getStatus().equals(Status.FIGHT)) {
+									Bukkit.getWorld(world).strikeLightningEffect(
+											ap2.get().getLocation());
+									EntityDamageEvent e = new EntityDamageEvent(
+											ap2.get(), DamageCause.LIGHTNING, 10);
+									PlayerListener.finallyKillPlayer(arena,
+											ap2.get(), e);
+								}
+							}
+							return;
 						}
-						return;
 					}
 				}
 			}
