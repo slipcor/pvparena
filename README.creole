@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.1.15 - add "not enough EXP to choose class" (BetterClasses)
 * v0.10.1.14 - addresses Ticket #119
 * v0.10.1.13 - add a configurable timer to start without PVP
 * v0.10.1.12 - re-add timer scheduling (WIN,LOSE,DEATH regions)
@@ -94,7 +95,6 @@ A PVP experience enhancing plugin.
 ** add functionality for the other region types
 ** calculate a winner based on ROUND results
 * modules
-** modify BFG -> kick|death|leave <<
 ** spectating
 * goals
 ** tournament arenas ; rounds switch through arenas

@@ -108,6 +108,7 @@ public class Language {
 		ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND("nulang.error.blacklist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
 		ERROR_BLACKLIST_UNKNOWN_TYPE("nulang.error.blacklist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
 		ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
+		ERROR_CLASS_NOTENOUGHEXP("nulang.error.class.notenoughexp", "You don't have enough EXP to choose &a%1%&r!"),
 		ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
 		ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
 		ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command (%1%)"),
@@ -424,7 +425,8 @@ public class Language {
 		
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
 
-		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &f/pa %2% accept"),
+		MODULE_DUEL_ACCEPTED("nulang.mod.duel.accepted", "%1% &eaccepted the challenge! The game is starting."),
+		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &f/pa %2% accept."),
 		MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
 
 		MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
