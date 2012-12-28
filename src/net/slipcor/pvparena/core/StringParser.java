@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Dye;
@@ -227,10 +228,13 @@ public class StringParser {
 				}
 				return is;
 			}
-			data = temp[2];
+			String[] dataSplit = temp[2].split(SAFE_PAGE_BREAK);
+			data = dataSplit[0];
+			String lore = dataSplit.length > 1 ? dataSplit[1] : null;
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg);
+				
 				if (mat == Material.INK_SACK) {
 					try {
 						is.setData(new Dye(Byte.parseByte(data)));
@@ -282,6 +286,16 @@ public class StringParser {
 					}
 				} else {
 					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
+				}
+				
+				if (lore != null) {
+					List<String> lLore = new ArrayList<String>();
+					for (String line : lore.split(SAFE_BREAK)) {
+						lLore.add(codeCharacters(line, false));
+					}
+					ItemMeta im = is.getItemMeta();
+					im.setLore(lLore);
+					is.setItemMeta(im);
 				}
 				
 				for (Enchantment e : enchants.keySet()) {
@@ -362,6 +376,15 @@ public class StringParser {
 			SkullMeta sm = (SkullMeta) is.getItemMeta();
 			temp += "~" + sm.getOwner();
 		}
+		
+		if (is.hasItemMeta() && is.getItemMeta().hasLore()) {
+			if (!durability) {
+				temp += "~" + String.valueOf(is.getDurability());
+			}
+
+			temp += SAFE_PAGE_BREAK + codeCharacters(joinArray(((ItemMeta) is.getItemMeta()).getLore().toArray(), 
+					SAFE_BREAK), true);
+		}
 		Map<Enchantment, Integer> enchants = is.getEnchantments();
 		
 		if (enchants != null && enchants.size() > 0) {
@@ -370,9 +393,6 @@ public class StringParser {
 			}
 		}
 		
-		if (is.getAmount() > 1) {
-			temp += ":" + is.getAmount();
-		}
 		return temp;
 	}
 
