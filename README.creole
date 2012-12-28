@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.6 - add configurable PlayerKillRewards
 * v0.10.2.5 - add Goal "PlayerKillRewards" and fix NPE
 * v0.10.2.4 - fix book saving and loading
 * v0.10.2.3 - add lore saving and loading

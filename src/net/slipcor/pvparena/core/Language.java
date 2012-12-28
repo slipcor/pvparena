@@ -380,6 +380,9 @@ public class Language {
 		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
 		GOAL_FLAGS_TYPESET("lang.typeset", "Flag type set to: &e%1%"),
+
+		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&f->&a%2%"),
+		GOAL_KILLREWARD_REMOVED("nulang.goal.killreward.removed", "Kill reward removed: &e%1%"),
 		
 		GOAL_SABOTAGE_IGNITED("nulang.goal.sabotage.tntignite", "%1% ignited the TNT of team %2%!"),
 		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.set", "TNT set: %1%"),

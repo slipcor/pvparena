@@ -335,9 +335,25 @@ public class StringParser {
 			s[i++] = getStringFromItemStack(is); 
 		}
 		
-		return joinArray(s, ",");
+		return joinArray(trimAir(s), ",");
 	}
 	
+	private static String[] trimAir(String[] s) {
+		List<String> list = new ArrayList<String>();
+		for (String item : s) {
+			if (item.equals("AIR")) {
+				continue;
+			}
+			list.add(item);
+		}
+		String[] result = new String[list.size()];
+		int i = 0;
+		for (String item : list) {
+			result[i++] = item;
+		}
+		return result;
+	}
+
 	public static String getStringFromItemStack(ItemStack is) {
 		if (is == null || is.getType().equals(Material.AIR)) {
 			return "AIR";
