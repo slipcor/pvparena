@@ -29,7 +29,7 @@ import org.bukkit.material.Wool;
  * 
  * @author slipcor
  * 
- * @version v0.9.9
+ * @version v0.10.2
  */
 
 public class StringParser {
@@ -151,7 +151,7 @@ public class StringParser {
 			if (dc.name().equalsIgnoreCase(color))
 				return dc.getData();
 		}
-		db.w("unknown color enum: " + color);
+		PVPArena.instance.getLogger().warning("unknown color enum: " + color);
 
 		return (short) 0;
 	}
@@ -460,7 +460,7 @@ public class StringParser {
 			mat = Material.getMaterial(string);
 		}
 		if (mat == null) {
-			db.w("unrecognized material: " + string);
+			PVPArena.instance.getLogger().warning("unrecognized material: " + string);
 		}
 		return mat;
 	}

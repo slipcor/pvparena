@@ -36,7 +36,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class GoalTank extends ArenaGoal {
@@ -52,7 +52,7 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.24";
+		return "v0.10.2.0";
 	}
 
 	int priority = 8;
@@ -182,11 +182,11 @@ public class GoalTank extends ArenaGoal {
 			return;
 		}
 		int i = lives.get(player.getName());
-		db.i("lives before death: " + i);
+		db.i("lives before death: " + i, player);
 		if (i <= 1 || tanks.get(arena).equals(player.getName())) {
 			lives.remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				db.i("faking player death");
+				db.i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
@@ -271,7 +271,7 @@ public class GoalTank extends ArenaGoal {
 			int i = (new Random()).nextInt(team.getTeamMembers().size());
 			db.i("team " + team.getName() + " random " + i);
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				db.i("#" + i + ": " + ap.toString());
+				db.i("#" + i + ": " + ap.toString(), ap.getName());
 				if (i-- == 0) {
 					tank = ap;
 				}

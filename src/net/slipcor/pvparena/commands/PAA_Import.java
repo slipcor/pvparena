@@ -19,7 +19,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class PAA_Import extends PA__Command {
@@ -60,7 +60,7 @@ public class PAA_Import extends PA__Command {
 			return;
 		}
 
-		db.i("importing arenas...");
+		db.i("importing arenas...", sender);
 		try {
 			File path = PVPArena.instance.getDataFolder();
 			File[] f = path.listFiles();

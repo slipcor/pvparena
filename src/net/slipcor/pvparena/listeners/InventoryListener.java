@@ -18,7 +18,7 @@ import org.bukkit.event.inventory.InventoryType;
  * 
  * @author slipcor
  * 
- * @version v0.9.8
+ * @version v0.10.2
  */
 
 public class InventoryListener implements Listener {
@@ -34,7 +34,7 @@ public class InventoryListener implements Listener {
 			return;
 		}
 
-		db.i("InventoryClick: arena player");
+		db.i("InventoryClick: arena player", p);
 		
 		if (event.getInventory().getType()
 			.equals(InventoryType.CRAFTING)) {
@@ -59,7 +59,7 @@ public class InventoryListener implements Listener {
 			return;
 		}
 
-		db.i("cancelling!");
+		db.i("cancelling!", p);
 		// player is carrying a flag
 		event.setCancelled(true);
 	}

@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class PAG_Join extends PAA__Command {
@@ -55,11 +55,11 @@ public class PAG_Join extends PAA__Command {
 		
 		if (ap.getArena() != null) {
 			Arena a = ap.getArena();
-			db.i("Join_1");
+			db.i("Join_1", sender);
 			a.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, a.getName()));
 			return;
 		} else if (arena.hasAlreadyPlayed(ap.getName())) {
-			db.i("Join_2");
+			db.i("Join_2", sender);
 			arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
 			return;
 		}

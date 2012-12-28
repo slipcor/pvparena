@@ -48,7 +48,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class GoalFlags extends ArenaGoal implements Listener {
@@ -73,7 +73,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.0.16";
+		return "v0.10.2.0";
 	}
 
 	int priority = 6;
@@ -155,13 +155,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (block == null || res.getPriority() > priority) {
 			return res;
 		}
-		db.i("checking interact");
+		db.i("checking interact", player);
 
 		if (!block.getType().name().equals(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE))) {
-			db.i("block, but not flag");
+			db.i("block, but not flag", player);
 			return res;
 		}
-		db.i("flag click!");
+		db.i("flag click!", player);
 
 		Vector vLoc;
 		String sTeam;
@@ -169,28 +169,28 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
 		if (paTeamFlags.containsValue(player.getName())) {
-			db.i("player " + player.getName() + " has got a flag");
+			db.i("player " + player.getName() + " has got a flag", player);
 			vLoc = block.getLocation().toVector();
 			sTeam = ap.getArenaTeam().getName();
-			db.i("block: " + vLoc.toString());
+			db.i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, sTeam + "flag").size() > 0) {
 				vFlag = SpawnManager.getBlockNearest(
 						SpawnManager.getBlocks(arena, sTeam + "flag"),
 						new PABlockLocation(player.getLocation())).toLocation().toVector();
 			} else {
-				db.i(sTeam + "flag = null");
+				db.i(sTeam + "flag = null", player);
 			}
 
-			db.i("player is in the team " + sTeam);
+			db.i("player is in the team " + sTeam, player);
 			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
 
-				db.i("player is at his flag");
+				db.i("player is at his flag", player);
 
 				if (paTeamFlags.containsKey(sTeam)) {
-					db.i("the flag of the own team is taken!");
+					db.i("the flag of the own team is taken!", player);
 
 					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) {
-						db.i("cancelling");
+						db.i("cancelling", player);
 
 						arena.msg(player, Language.parse(MSG.GOAL_FLAGS_NOTSAFE));
 						return res;
@@ -199,7 +199,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 				String flagTeam = getHeldFlagTeam(arena, player.getName());
 
-				db.i("the flag belongs to team " + flagTeam);
+				db.i("the flag belongs to team " + flagTeam, player);
 
 				try {
 
@@ -244,17 +244,17 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				if (paTeamFlags != null && paTeamFlags.containsKey(aTeam)) {
 					continue; // already taken
 				}
-				db.i("checking for flag of team " + aTeam);
+				db.i("checking for flag of team " + aTeam, player);
 				vLoc = block.getLocation().toVector();
-				db.i("block: " + vLoc.toString());
+				db.i("block: " + vLoc.toString(), player);
 				if (SpawnManager.getBlocks(arena, aTeam + "flag").size() > 0) {
 					vFlag = SpawnManager.getBlockNearest(
 							SpawnManager.getBlocks(arena, aTeam + "flag"),
 							new PABlockLocation(player.getLocation())).toLocation().toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-					db.i("flag found!");
-					db.i("vFlag: " + vFlag.toString());
+					db.i("flag found!", player);
+					db.i("vFlag: " + vFlag.toString(), player);
 					arena.broadcast(Language.parse(MSG.GOAL_FLAGS_GRABBED,
 							pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 							team.getColoredName() + ChatColor.YELLOW));
@@ -449,7 +449,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		db.i("trying to set a flag");
+		db.i("trying to set a flag", player);
 
 		// command : /pa redflag1
 		// location: red1flag:
@@ -530,10 +530,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return null;
 		}
 		
-		db.i("getting held FLAG of player " + player);
+		db.i("getting held FLAG of player " + player, player);
 		for (String sTeam : paTeamFlags.keySet()) {
 			db.i("team " + sTeam + " is in " + paTeamFlags.get(sTeam)
-					+ "s hands");
+					+ "s hands", player);
 			if (player.equals(paTeamFlags.get(sTeam))) {
 				return sTeam;
 			}
@@ -613,7 +613,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			EntityDamageEvent lastDamageCause) {
 		
 		if (paTeamFlags == null) {
-			db.i("no flags set!!");
+			db.i("no flags set!!", player);
 			return;
 		}
 		ArenaTeam flagTeam = arena.getTeam(

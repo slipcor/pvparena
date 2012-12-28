@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.2
  */
 
 public class InventoryRefillRunnable implements Runnable {
@@ -57,7 +57,7 @@ public class InventoryRefillRunnable implements Runnable {
 					ArenaTeam aTeam = ap.getArenaTeam();
 					String color = aTeam.getColor().name();
 					InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
-							+ color);
+							+ color, player);
 					player.getInventory().setHelmet(
 							new ItemStack(Material.WOOL, 1, StringParser
 									.getColorDataFromENUM(color)));

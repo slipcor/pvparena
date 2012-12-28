@@ -16,7 +16,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public class ArenaWarmupRunnable extends ArenaRunnable {
@@ -35,7 +35,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	 */
 	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i) {
 		super(MSG.TIMER_WARMINGUP.getNode(), i, p.get(), null, false);
-		db.i("ArenaWarmupRunnable constructor");
+		db.i("ArenaWarmupRunnable constructor", p.getName());
 		player = p;
 		teamName = team;
 		spectator = spec;
@@ -44,7 +44,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	
 	@Override
 	protected void commit() {
-		db.i("ArenaWarmupRunnable commiting");
+		db.i("ArenaWarmupRunnable commiting", player.getName());
 		player.setStatus(Status.WARM);
 		if (spectator) {
 			wArena.hasNotPlayed(player);

@@ -35,7 +35,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class GoalPlayerDeathMatch extends ArenaGoal {
@@ -50,7 +50,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.21";
+		return "v0.10.2.0";
 	}
 
 	int priority = 3;
@@ -181,7 +181,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		killer = ex.getKiller();
 		
 		int i = lives.get(killer.getName());
-		db.i("kills to go: " + i);
+		db.i("kills to go: " + i, killer);
 		if (i <= 1) {
 			// player has won!
 			HashSet<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
@@ -193,7 +193,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			}
 			for (ArenaPlayer ap : plrs) {
 				lives.remove(ap.getName());
-				db.i("faking player death");
+				db.i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true, false);
 				
 				ap.setStatus(Status.LOST);

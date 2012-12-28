@@ -13,7 +13,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public class InventoryManager {
@@ -27,7 +27,7 @@ public class InventoryManager {
 	 *            the player to clear
 	 */
 	public static void clearInventory(Player player) {
-		db.i("fully clear player inventory: " + player.getName());
+		db.i("fully clear player inventory: " + player.getName(), player);
 
 		player.closeInventory();
 
@@ -45,7 +45,7 @@ public class InventoryManager {
 	 *            the player to empty
 	 */
 	public static void drop(Player player) {
-		db.i("dropping player inventory: " + player.getName());
+		db.i("dropping player inventory: " + player.getName(), player);
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {
 				continue;

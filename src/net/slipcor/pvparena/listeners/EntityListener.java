@@ -44,7 +44,7 @@ import org.bukkit.potion.PotionEffectType;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class EntityListener implements Listener {
@@ -123,12 +123,12 @@ public class EntityListener implements Listener {
 		if (arena == null)
 			return;
 
-		db.i("onEntityRegainHealth => fighing player");
+		Player player = (Player) p1;
+		db.i("onEntityRegainHealth => fighing player", player);
 		if (!arena.isFightInProgress()) {
 			return;
 		}
 
-		Player player = (Player) p1;
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
@@ -156,7 +156,6 @@ public class EntityListener implements Listener {
 		db.i("onEntityDamageByEntity: cause: " + event.getCause().name()
 				+ " : " + event.getDamager().toString() + " => "
 				+ event.getEntity().toString());
-
 
 		if (p1 instanceof Projectile) {
 			db.i("parsing projectile");
@@ -322,10 +321,10 @@ public class EntityListener implements Listener {
 			return;
 		}
 		
-		db.i("legit player: " + ap);
+		db.i("legit player: " + ap, ap.getName());
 		
 		if (ap == null || ap.getArena() == null || !ap.getStatus().equals(Status.FIGHT)) {
-			db.i("something is null!");
+			db.i("something is null!", ap.getName());
 			return;
 		}
 		

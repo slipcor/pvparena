@@ -43,7 +43,7 @@ import org.bukkit.permissions.PermissionAttachment;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaPlayer {
@@ -84,14 +84,14 @@ public class ArenaPlayer {
 	private PABlockLocation[] selection = new PABlockLocation[2];
 
 	public ArenaPlayer(String playerName) {
-		db.i("creating offline arena player: " + playerName);
+		db.i("creating offline arena player: " + playerName, playerName);
 		name = playerName;
 		
 		totalPlayers.put(name, this);
 	}
 	
 	public ArenaPlayer(Player p, Arena a) {
-		db.i("creating arena player: " + p.getName());
+		db.i("creating arena player: " + p.getName(), p);
 
 		this.name = p.getName();
 		this.setArena(a);
@@ -168,7 +168,7 @@ public class ArenaPlayer {
 			return;
 		}
 		InventoryManager.db.i("giving items to player '" + player.getName()
-				+ "', class '" + playerClass.getName() + "'");
+				+ "', class '" + playerClass.getName() + "'", player);
 
 		playerClass.equip(player);
 
@@ -176,7 +176,7 @@ public class ArenaPlayer {
 			ArenaTeam aTeam = ap.getArenaTeam();
 			String color = aTeam.getColor().name();
 			InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
-					+ color);
+					+ color, player);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
 							.getColorDataFromENUM(color)));
@@ -233,7 +233,7 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void backupAndClearInventory(Arena arena, Player player) {
-		InventoryManager.db.i("saving player inventory: " + player.getName());
+		InventoryManager.db.i("saving player inventory: " + player.getName(), player);
 
 		ArenaPlayer p = parsePlayer(player.getName());
 		p.savedInventory = player.getInventory().getContents().clone();
@@ -251,22 +251,22 @@ public class ArenaPlayer {
 		if (player == null) {
 			return;
 		}
-		db.i("resetting inventory: " + player.getName());
+		db.i("resetting inventory: " + player.getName(), player);
 		if (player.getInventory() == null) {
-			db.i("inventory null!");
+			db.i("inventory null!", player);
 			return;
 		}
 
 		ArenaPlayer p = parsePlayer(player.getName());
 
 		if (p.savedInventory == null) {
-			db.i("saved inventory null!");
+			db.i("saved inventory null!", player);
 			return;
 		}
 		// AIR AIR AIR AIR instead of contents !!!!
-		db.i("adding " + StringParser.getStringFromItemStacks(p.savedInventory));
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedInventory), player);
 		player.getInventory().setContents(p.savedInventory);
-		db.i("adding " + StringParser.getStringFromItemStacks(p.savedArmor));
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedArmor), player);
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
 
@@ -295,7 +295,7 @@ public class ArenaPlayer {
 	}
 
 	private void clearDump() {
-		db.i("clearing dump of " + name);
+		db.i("clearing dump of " + name, this.name);
 		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
@@ -321,32 +321,32 @@ public class ArenaPlayer {
 	
 	public void debugPrint() {
 		if (status == null || location == null) {
-			db.i("DEBUG PRINT OUT:");
-			db.i(StringParser.verify(name));
-			db.i(StringParser.verify(status));
-			db.i(StringParser.verify(location));
-			db.i(StringParser.verify(selection[0]));
-			db.i(StringParser.verify(selection[1]));
+			db.i("DEBUG PRINT OUT:", this.name);
+			db.i(StringParser.verify(name), this.name);
+			db.i(StringParser.verify(status), this.name);
+			db.i(StringParser.verify(location), this.name);
+			db.i(StringParser.verify(selection[0]), this.name);
+			db.i(StringParser.verify(selection[1]), this.name);
 			return;
 		}
-		db.i("------------------");
-		db.i("Player: " + name);
-		db.i("telepass: " + String.valueOf(telePass) + " | chatting: "+ String.valueOf(publicChatting)  );
-		db.i("arena: " + (arena == null ? "null" : arena.getName()));
-		db.i("aClass: " + (aClass == null ? "null" : aClass.getName()));
-		db.i("location: " + ((PALocation) location).toString());
-		db.i("status: " + status.name());
-		db.i("savedInventory: " + StringParser.getStringFromItemStacks(savedInventory));
-		db.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor));
-		db.i("tempPermissions:");
+		db.i("------------------", this.name);
+		db.i("Player: " + name, this.name);
+		db.i("telepass: " + String.valueOf(telePass) + " | chatting: "+ String.valueOf(publicChatting), this.name);
+		db.i("arena: " + (arena == null ? "null" : arena.getName()), this.name);
+		db.i("aClass: " + (aClass == null ? "null" : aClass.getName()), this.name);
+		db.i("location: " + ((PALocation) location).toString(), this.name);
+		db.i("status: " + status.name(), this.name);
+		db.i("savedInventory: " + StringParser.getStringFromItemStacks(savedInventory), this.name);
+		db.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor), this.name);
+		db.i("tempPermissions:", this.name);
 		for (PermissionAttachment pa : tempPermissions) {
-			db.i("> " + pa.toString());
+			db.i("> " + pa.toString(), this.name);
 		}
-		db.i("------------------");
+		db.i("------------------", this.name);
 	}
 
 	public void dump() {
-		db.i("dumping...");
+		db.i("dumping...", this.name);
 		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
@@ -415,9 +415,9 @@ public class ArenaPlayer {
 	}
 
 	public PALocation getLocation() {
-		db.i("reading loc!");
+		db.i("reading loc!", this.name);
 		if (location != null)
-			db.i(": " + location.toString());
+			db.i(": " + location.toString(), this.name);
 		return location;
 	}
 
@@ -493,12 +493,12 @@ public class ArenaPlayer {
 	}
 
 	public void readDump() {
-		db.i("reading dump: " + name);
+		db.i("reading dump: " + name, this.name);
 		debugPrint();
 		File f = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/dumps/" + this.name + ".yml");
 		if (!f.exists()) {
-			db.i("no dump!");
+			db.i("no dump!", this.name);
 			return;
 		}
 
@@ -524,7 +524,7 @@ public class ArenaPlayer {
 			}
 			
 			if (Bukkit.getPlayer(name) == null) {
-				db.i("player offline, OUT!");
+				db.i("player offline, OUT!", this.name);
 				return;
 			}
 			state = PlayerState.undump(cfg, name);
@@ -541,7 +541,7 @@ public class ArenaPlayer {
 	 *            should
 	 */
 	public void reset() {
-		db.i("destroying arena player " + name);
+		db.i("destroying arena player " + name, this.name);
 		debugPrint();
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
@@ -586,7 +586,7 @@ public class ArenaPlayer {
 		}
 		
 		if (get() == null ) {
-			db.i("reset() ; out! null");
+			db.i("reset() ; out! null", this.name);
 			return;
 		}
 
@@ -678,7 +678,7 @@ public class ArenaPlayer {
 	}
 
 	public void setStatus(Status status) {
-		db.i(name + ">" + status.name());
+		db.i(name + ">" + status.name(), this.name);
 		this.status = status;
 	}
 

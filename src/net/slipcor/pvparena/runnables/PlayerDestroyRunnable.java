@@ -13,7 +13,7 @@ import net.slipcor.pvparena.core.Debug;
  * 
  * @author slipcor
  * 
- * @version v0.9.4
+ * @version v0.10.2
  */
 
 public class PlayerDestroyRunnable implements Runnable {
@@ -29,7 +29,7 @@ public class PlayerDestroyRunnable implements Runnable {
 	public PlayerDestroyRunnable(ArenaPlayer p) {
 		this.p = p;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 5L);
-		db.i("PlayerDestroyRunnable constructor");
+		db.i("PlayerDestroyRunnable constructor", p.getName());
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class PlayerDestroyRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("PlayerDestroyRunnable commiting");
+		db.i("PlayerDestroyRunnable commiting", p.getName());
 		p.reset();
 	}
 }

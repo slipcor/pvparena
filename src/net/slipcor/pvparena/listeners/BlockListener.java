@@ -41,7 +41,7 @@ import org.bukkit.event.world.StructureGrowEvent;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class BlockListener implements Listener {
@@ -84,10 +84,10 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
-		db.i("onBlockBreak");
+		db.i("onBlockBreak", event.getPlayer());
 		if (willBeSkipped(event, event.getBlock()
 				.getLocation(), RegionProtection.BREAK)) {
-			db.i("willbeskipped. GFYS!!!!");
+			db.i("willbeskipped. GFYS!!!!", event.getPlayer());
 			return;
 		}
 
@@ -107,13 +107,13 @@ public class BlockListener implements Listener {
 				arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 				// not on whitelist. DENY!
 				event.setCancelled(true);
-				db.i("whitelist out");
+				db.i("whitelist out", event.getPlayer());
 				return;
 			}
 		}
 
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.BREAK)) {
-			db.i("isprotected!");
+			db.i("isprotected!", event.getPlayer());
 			return;
 		}
 
@@ -126,11 +126,11 @@ public class BlockListener implements Listener {
 			arena.msg(event.getPlayer(), Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(MSG.GENERAL_BREAK)));
 			// on blacklist. DENY!
 			event.setCancelled(true);
-			db.i("blacklist out");
+			db.i("blacklist out", event.getPlayer());
 			return;
 		}
 
-		db.i("onBlockBreak !!!");
+		db.i("onBlockBreak !!!", event.getPlayer());
 		
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
 	}
@@ -292,7 +292,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		db.i("block ignite inside the arena");
+		db.i("block ignite inside the arena", event.getPlayer());
 		event.setCancelled(!arena.isFightInProgress());
 		//BlockIgniteEvent.IgniteCause cause = event.getCause();
 		if (arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
@@ -398,7 +398,7 @@ public class BlockListener implements Listener {
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.PAINTING);
 
-		db.i("painting place inside the arena");
+		db.i("painting place inside the arena", event.getPlayer());
 
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.PAINTING)) {
 			return;

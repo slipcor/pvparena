@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.0 - Debugger rewrite
 * v0.10.1.21 - add LOUNGE region type functionality (kick ;) )
 * v0.10.1.20 - allow FFA players to win and lose via region :p
 * v0.10.1.19 - I) fix arenas with flags being derpy II) secret. DONT use!
@@ -94,7 +95,6 @@ A PVP experience enhancing plugin.
 === Todo
 
 * plugin
-** debug based on player name(s)
 ** calculate a winner based on ROUND results
 * modules
 ** spectating

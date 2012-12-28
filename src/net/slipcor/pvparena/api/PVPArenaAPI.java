@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public class PVPArenaAPI {
@@ -33,7 +33,7 @@ public class PVPArenaAPI {
 	 */
 	public static String getArenaName(Player player) {
 		if (!Debug.override)
-			db.i("API: get arena of player: " + player.getName());
+			db.i("API: get arena of player: " + player.getName(), player);
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		return (arena == null) ? "" : arena.getName();
 	}

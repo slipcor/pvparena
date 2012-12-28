@@ -43,7 +43,7 @@ import net.slipcor.pvparena.runnables.SpawnCampRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class PACheck {
@@ -372,28 +372,28 @@ public class PACheck {
 		
 		int priority = 0;
 		PACheck res = new PACheck();
-		db.i("handlePlayerDeath");
+		db.i("handlePlayerDeath", player);
 		
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
 			res = mod.checkPlayerDeath(res, player);
 			if (res.getPriority() > priority && priority >= 0) {
-				db.i("success and higher priority");
+				db.i("success and higher priority", player);
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				db.i("fail");
+				db.i("fail", player);
 				// fail
 				priority = res.getPriority();
 				commit = null;
 			} else {
-				db.i("else");
+				db.i("else", player);
 			}
 		}
 		
 		if (res.hasError()) {
-			db.i("has error: " + res.getError());
+			db.i("has error: " + res.getError(), player);
 			if (res.getError().equals("0")) {
 				doesRespawn = false;
 			}
@@ -403,12 +403,12 @@ public class PACheck {
 		event.setDeathMessage(null);
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			db.i("don't drop inventory");
+			db.i("don't drop inventory", player);
 			event.getDrops().clear();
 		}
 		
 		if (commit == null) {
-			db.i("no mod handles player deaths");
+			db.i("no mod handles player deaths", player);
 			
 			new InventoryRefillRunnable(arena, player, event.getDrops());
 
@@ -431,17 +431,17 @@ public class PACheck {
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			
 			for (ArenaGoal g : arena.getGoals()) {
-				db.i("parsing death: " + g.getName());
+				db.i("parsing death: " + g.getName(), player);
 				g.parsePlayerDeath(player, player.getLastDamageCause());
 			}
 			
 			return;
 		}
 
-		db.i("handled by: " + commit.getName());
+		db.i("handled by: " + commit.getName(), player);
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
-			db.i("parsing death: " + g.getName());
+			db.i("parsing death: " + g.getName(), player);
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
 		
@@ -548,7 +548,7 @@ public class PACheck {
 		PAStartEvent event = new PAStartEvent(arena);
 		Bukkit.getPluginManager().callEvent(event);
 		
-		db.i("teleporting all players to their spawns");
+		db.i("teleporting all players to their spawns", sender);
 
 		if (commit != null) {
 			commit.commitStart(); // override spawning
@@ -565,7 +565,7 @@ public class PACheck {
 			}
 		}
 
-		db.i("teleported everyone!");
+		db.i("teleported everyone!", sender);
 
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 		

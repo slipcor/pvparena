@@ -31,7 +31,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ConfigurationManager {
@@ -120,7 +120,7 @@ public class ConfigurationManager {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					db.w("unrecognized item: " + items[i]);
+					PVPArena.instance.getLogger().warning("unrecognized item: " + items[i]);
 				}
 			}
 			arena.addClass(className, items);

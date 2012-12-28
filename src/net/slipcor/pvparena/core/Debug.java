@@ -14,7 +14,7 @@ import org.bukkit.command.CommandSender;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class Debug {
@@ -22,6 +22,7 @@ public class Debug {
 
 	private static String prefix = "[PA-debug] ";
 	private static HashSet<Integer> check = new HashSet<Integer>();
+	private static HashSet<String> strings = new HashSet<String>();
 
 	private int id = 0;
 
@@ -47,6 +48,10 @@ public class Debug {
 	private boolean debugs() {
 		return override || check.contains(id) || check.contains(666);
 	}
+	
+	private boolean debugs(String s) {
+		return override || strings.contains(s) || check.contains(666);
+	}
 
 	/**
 	 * log a message as prefixed INFO
@@ -55,37 +60,26 @@ public class Debug {
 	 *            the message
 	 */
 	public void i(String s) {
-		if (!debugs())// || level < 1
+		if (!debugs())
 			return;
 		Bukkit.getLogger().info(prefix + s);
 	}
-
-	/**
-	 * log a message as prefixed WARNING
-	 * 
-	 * @param s
-	 *            the message
-	 */
-	public void w(String s) {
-		if (!debugs())// || level < 2
+	
+	public void i(String string, CommandSender sender) {
+		if (!debugs(sender.getName()))
 			return;
-		Bukkit.getLogger().warning(prefix + s);
+		Bukkit.getLogger().info(prefix + string);
 	}
-
-	/**
-	 * log a message as prefixed SEVERE
-	 * 
-	 * @param s
-	 *            the message
-	 */
-	public void s(String s) {
-		if (!debugs())// || level < 3
+	
+	public void i(String string, String filter) {
+		if (!debugs(filter))
 			return;
-		Bukkit.getLogger().severe(prefix + s);
+		Bukkit.getLogger().info(prefix + string);
 	}
 
 	public static void load(PVPArena instance, CommandSender sender) {
-		Debug.check.clear();
+		check.clear();
+		strings.clear();
 		override = false;
 		String debugs = instance.getConfig().getString("debug");
 		if (!debugs.equals("none")) {
@@ -100,7 +94,7 @@ public class Debug {
 					try {
 						Debug.check.add(Integer.valueOf(s));
 					} catch (Exception e) {
-						Arena.pmsg(sender, "debug load error: " + s);
+						strings.add(s);
 					}
 				}
 			}

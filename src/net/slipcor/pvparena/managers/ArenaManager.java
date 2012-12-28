@@ -37,7 +37,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaManager {
@@ -338,7 +338,7 @@ public class ArenaManager {
 	 *            the player trying to join
 	 */
 	public static void trySignJoin(PlayerInteractEvent event, Player player) {
-		db.i("onInteract: sign check");
+		db.i("onInteract: sign check", player);
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			Block block = event.getClickedBlock();
 			if (block.getState() instanceof Sign) {

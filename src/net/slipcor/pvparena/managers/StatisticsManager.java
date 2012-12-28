@@ -25,7 +25,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  * 
  * @author slipcor
  * 
- * @version v0.9.5
+ * @version v0.10.2
  */
 
 public class StatisticsManager {
@@ -115,14 +115,14 @@ public class StatisticsManager {
 	 */
 	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
 
-		db.i("adding damage to player " + defender.getName());
+		db.i("adding damage to player " + defender.getName(), defender);
 		
 
 		if ((e != null) && (e instanceof Player)) {
 			Player attacker = (Player) e;
-			db.i("attacker is player: " + attacker.getName());
+			db.i("attacker is player: " + attacker.getName(), defender);
 			if (arena.hasPlayer(attacker)) {
-				db.i("attacker is in the arena, adding damage!");
+				db.i("attacker is in the arena, adding damage!", defender);
 				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker.getName());
 				int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGE);
 				p.getStatistics(arena).incStat(type.DAMAGE, dmg);

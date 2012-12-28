@@ -16,7 +16,7 @@ import net.slipcor.pvparena.core.StringParser;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaTeam {
@@ -49,7 +49,7 @@ public class ArenaTeam {
 	 */
 	public void add(ArenaPlayer player) {
 		this.players.add(player);
-		db.i("Added player " + player.getName() + " to team " + name);
+		db.i("Added player " + player.getName() + " to team " + name, player.get());
 		player.getArena().increasePlayerCount();
 	}
 

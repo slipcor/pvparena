@@ -41,7 +41,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class GoalDomination extends ArenaGoal {
@@ -60,7 +60,7 @@ public class GoalDomination extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.10.0";
+		return "v0.10.2";
 	}
 
 	int priority = 8;
@@ -138,13 +138,13 @@ public class GoalDomination extends ArenaGoal {
 		 * but the method beyond can be used to retrieve all possible spawns
 		 */
 		
-		db.i("checking interact");
+		db.i("checking interact", player);
 
 		if (!block.getType().equals(Material.WOOL)) {
-			db.i("block, but not flag");
+			db.i("block, but not flag", player);
 			return res;
 		}
-		db.i("flag click!");
+		db.i("flag click!", player);
 
 		
 		HashSet<PABlockLocation> flags = SpawnManager.getBlocks(arena, "flags");

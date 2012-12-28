@@ -24,7 +24,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public class TeamManager {
@@ -154,12 +154,12 @@ public class TeamManager {
 	 */
 	public static void choosePlayerTeam(Arena arena, Player player) {
 
-		db.i("calculating player team");
+		db.i("calculating player team", player);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
-				db.i("TeamManager");
+				db.i("TeamManager", player);
 				arena.msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, team.getColoredName()));
 				return;
 			}
@@ -167,7 +167,7 @@ public class TeamManager {
 
 		String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
 
-		db.i(sTeam);
+		db.i(sTeam, player);
 
 		ArenaTeam aTeam = arena.getTeam(sTeam);
 		ap.setArena(arena);
@@ -235,7 +235,7 @@ public class TeamManager {
 						result += ", ";
 					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
 				} else {
-					db.i("player state: " + p.getStatus().name());
+					db.i("player state: " + p.getStatus().name(), p.getName());
 				}
 			}
 		}

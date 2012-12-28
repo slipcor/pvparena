@@ -17,7 +17,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.6
+ * @version v0.10.2
  */
 
 public class TeleportRunnable implements Runnable {
@@ -29,7 +29,7 @@ public class TeleportRunnable implements Runnable {
 	Debug db = new Debug(77);
 	
 	public TeleportRunnable(Arena a, ArenaPlayer ap, String s, boolean soft) {
-		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => " + s);
+		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => " + s, ap.getName());
 		string = s;
 		player = ap.getName();
 		arena = a;
@@ -41,13 +41,13 @@ public class TeleportRunnable implements Runnable {
 	public void run() {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
 		if (ap == null || ap.get() == null) {
-			db.i("ArenaPlayer NULL: " + player);
+			db.i("ArenaPlayer NULL: " + player, player);
 			return;
 		}
 		if (string.equalsIgnoreCase("old")) {
-			db.i("tping to old");
+			db.i("tping to old", player);
 			if (ap.getLocation() != null) {
-				db.i("location is fine");
+				db.i("location is fine", player);
 				PALocation loc = ap.getLocation();
 				ap.get().teleport(loc.toLocation());
 				ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);

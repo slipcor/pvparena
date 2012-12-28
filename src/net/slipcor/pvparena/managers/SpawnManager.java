@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.10.1
+ * @version v0.10.2
  */
 
 public class SpawnManager {
@@ -589,7 +589,7 @@ public class SpawnManager {
 	 * @return true if the player is near, false otherwise
 	 */
 	public static boolean isNearSpawn(Arena arena, Player player, int diff) {
-		db.i("checking if arena is near a spawn");
+		db.i("checking if arena is near a spawn", player);
 		if (!arena.hasPlayer(player)) {
 			return false;
 		}
@@ -603,7 +603,7 @@ public class SpawnManager {
 
 		for (PALocation loc : spawns) {
 			if (loc.getDistance(new PALocation(player.getLocation())) <= diff) {
-				db.i("found near spawn: " + loc.toString());
+				db.i("found near spawn: " + loc.toString(), player);
 				return true;
 			}
 		}

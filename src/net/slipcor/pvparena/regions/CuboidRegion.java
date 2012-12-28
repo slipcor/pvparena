@@ -22,7 +22,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class CuboidRegion extends ArenaRegionShape {
@@ -31,13 +31,11 @@ public class CuboidRegion extends ArenaRegionShape {
 	
 	public CuboidRegion() {
 		super("cuboid");
-		db.i("Cuboid empty");
 		initialize();
 	}
 	
 	public CuboidRegion(Arena arena, String name, PABlockLocation[] locs) {
 		super(arena, name, locs, "cuboid");
-		db.i("cuboid+");
 		db = new Debug(200);
 		initialize();
 	}

@@ -12,7 +12,7 @@ import net.slipcor.pvparena.managers.StatisticsManager;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public class PAStatMap {
@@ -22,7 +22,7 @@ public class PAStatMap {
 	
 	public PAStatMap(String name) {
 		playerName = name;
-		db.i("created player stat map for " + playerName);
+		db.i("created player stat map for " + playerName, playerName);
 	}
 
 	public void decStat(StatisticsManager.type type) {

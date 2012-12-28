@@ -23,7 +23,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public final class PlayerState {
@@ -47,7 +47,7 @@ public final class PlayerState {
 
 	public PlayerState(Player player) {
 		sPlayer = player.getName();
-		db.i("creating PlayerState of " + sPlayer);
+		db.i("creating PlayerState of " + sPlayer, player);
 
 		fireticks = player.getFireTicks();
 		foodlevel = player.getFoodLevel();
@@ -72,7 +72,7 @@ public final class PlayerState {
 	}
 
 	public void dump(YamlConfiguration cfg) {
-		db.i("backing up PlayerState of " + sPlayer);
+		db.i("backing up PlayerState of " + sPlayer, sPlayer);
 		cfg.set("state.fireticks", fireticks);
 		cfg.set("state.foodlevel", foodlevel);
 		cfg.set("state.gamemode", gamemode);
@@ -107,7 +107,7 @@ public final class PlayerState {
 			PVPArena.instance.getAgm().disconnect(ap.getArena(), ap);
 			return;
 		}
-		db.i("restoring PlayerState of " + sPlayer);
+		db.i("restoring PlayerState of " + sPlayer, player);
 		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
@@ -149,26 +149,26 @@ public final class PlayerState {
 	/**
 	 * health setting method. Implemented for heroes to work right
 	 * 
-	 * @param p
+	 * @param player
 	 *            the player to set
 	 * @param value
 	 *            the health value
 	 */
-	static void playersetHealth(Player p, int value) {
-		db.i("setting health to " + value + "/20");
+	static void playersetHealth(Player player, int value) {
+		db.i("setting health to " + value + "/20", player);
 		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
-			p.setHealth(value);
+			player.setHealth(value);
 		}
-		int current = p.getHealth();
+		int current = player.getHealth();
 		int regain = value - current;
 
-		EntityRegainHealthEvent event = new EntityRegainHealthEvent(p, regain,
+		EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain,
 				RegainReason.CUSTOM);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	public void reset() {
-		db.i("clearing PlayerState of " + sPlayer);
+		db.i("clearing PlayerState of " + sPlayer, sPlayer);
 		fireticks = 0;
 		foodlevel = 0;
 		gamemode = 0;
@@ -190,7 +190,7 @@ public final class PlayerState {
 	}
 
 	public static PlayerState undump(YamlConfiguration cfg, String pName) {
-		db.i("restoring backed up PlayerState of " + pName);
+		db.i("restoring backed up PlayerState of " + pName, pName);
 		PlayerState ps = new PlayerState(Bukkit.getPlayer(pName));
 		
 		ps.fireticks = cfg.getInt("state.fireticks", 0);

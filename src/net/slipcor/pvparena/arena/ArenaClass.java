@@ -18,7 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
  * 
  * @author slipcor
  * 
- * @version v0.9.1
+ * @version v0.10.2
  */
 
 public final class ArenaClass {
@@ -69,13 +69,13 @@ public final class ArenaClass {
 	}
 	
 	public static void equip(Player player, ItemStack[] items) {
-		db.i("Equipping player " + player.getName() + " with items!");
+		db.i("Equipping player " + player.getName() + " with items!", player);
 		for (ItemStack item : items) {
 			if (ARMORS_TYPE.contains(item.getType())) {
 				equipArmor(item, player.getInventory());
 			} else {
 				player.getInventory().addItem(new ItemStack[] { item });
-				db.i("- " + StringParser.getStringFromItemStack(item));
+				db.i("- " + StringParser.getStringFromItemStack(item), player);
 			}
 		}
 	}

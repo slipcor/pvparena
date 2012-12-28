@@ -46,7 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class PVPArena extends JavaPlugin {
@@ -122,13 +122,13 @@ public class PVPArena extends JavaPlugin {
 	 *         otherwise
 	 */
 	public static boolean hasPerms(CommandSender sender, Arena arena) {
-		db.i("perm check.");
+		db.i("perm check.", sender);
 		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
 			db.i(" - explicit: "
 					+ String.valueOf(sender.hasPermission("pvparena.join."
-							+ arena.getName().toLowerCase())));
+							+ arena.getName().toLowerCase())), sender);
 		} else {
-			db.i(String.valueOf(sender.hasPermission("pvparena.user")));
+			db.i(String.valueOf(sender.hasPermission("pvparena.user")), sender);
 		}
 
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
@@ -163,7 +163,7 @@ public class PVPArena extends JavaPlugin {
 		PA__Command pacmd = PA__Command.getByName(args[0]);
 
 		if (pacmd != null && !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd.getName().contains("PAI_ArenaList")))) {
-			db.i("committing: " + pacmd.getName());
+			db.i("committing: " + pacmd.getName(), sender);
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
@@ -171,13 +171,13 @@ public class PVPArena extends JavaPlugin {
 		if (args[0].equalsIgnoreCase("-s")
 				|| args[0].toLowerCase().contains("stats")) {
 			PAI_Stats scmd = new PAI_Stats();
-			db.i("committing: " + scmd.getName());
+			db.i("committing: " + scmd.getName(), sender);
 			scmd.commit(null, sender, new String[0]);
 			return true;
 		} else if (args[0].equalsIgnoreCase("!rl")
 				|| args[0].toLowerCase().contains("reload")) {
 			PAA_Reload scmd = new PAA_Reload();
-			db.i("committing: " + scmd.getName());
+			db.i("committing: " + scmd.getName(), sender);
 			for (Arena a : ArenaManager.getArenas()) {
 				scmd.commit(a, sender, new String[0]);
 			}
@@ -221,17 +221,17 @@ public class PVPArena extends JavaPlugin {
 			if (args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
 			}
-			db.i("committing: " + paacmd.getName());
+			db.i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(a, sender, args);
 			return true;
 		}
 		
 		if (paacmd != null) {
-			db.i("committing: " + paacmd.getName());
+			db.i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
-		db.i("cmd null");
+		db.i("cmd null", sender);
 		
 		return false;
 	}

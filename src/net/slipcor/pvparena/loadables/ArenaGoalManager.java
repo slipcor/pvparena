@@ -37,7 +37,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaGoalManager {
@@ -144,7 +144,7 @@ public class ArenaGoalManager {
 	}
 
 	public void initiate(Arena arena, Player player) {
-		db.i("initiating " + player.getName());
+		db.i("initiating " + player.getName(), player);
 		for (ArenaGoal type : arena.getGoals()) {
 			type.initate(player);
 		}

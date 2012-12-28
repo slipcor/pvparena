@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class StandardLounge extends ArenaModule {
@@ -41,7 +41,7 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.2.0";
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class StandardLounge extends ArenaModule {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (ap.getArena() != null) {
-			db.i(this.getName());
+			db.i(this.getName(), sender);
 			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}

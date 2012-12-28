@@ -27,7 +27,7 @@ import org.json.simple.parser.JSONParser;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class Update extends Thread {
@@ -188,7 +188,7 @@ public class Update extends Thread {
 	 */
 	public static boolean message(CommandSender player) {
 		if (!msg) {
-			db.i("version is up to date!");
+			db.i("version is up to date!", player);
 			return false;
 		}
 
@@ -204,7 +204,7 @@ public class Update extends Thread {
 					destination.delete();
 				}
 
-				db.i("Downloading jar file from DBO link");
+				db.i("Downloading jar file from DBO link", player);
 				try {
 					URL url = new URL(fileURL);
 					
@@ -212,7 +212,7 @@ public class Update extends Thread {
 					FileOutputStream output = new FileOutputStream(destination);
 					output.getChannel().transferFrom(rbc, 0, 1 << 24);
 					
-					db.i("Downloaded jar file from DBO link!");
+					db.i("Downloaded jar file from DBO link!", player);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

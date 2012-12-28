@@ -36,7 +36,7 @@ import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class GoalPlayerLives extends ArenaGoal {
@@ -51,7 +51,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.2.0";
 	}
 
 	int priority = 2;
@@ -194,11 +194,11 @@ public class GoalPlayerLives extends ArenaGoal {
 			return;
 		}
 		int i = lives.get(player.getName());
-		db.i("lives before death: " + i);
+		db.i("lives before death: " + i, player);
 		if (i <= 1) {
 			lives.remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				db.i("faking player death");
+				db.i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!

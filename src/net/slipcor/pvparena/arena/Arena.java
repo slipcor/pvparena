@@ -63,7 +63,7 @@ import org.bukkit.util.Vector;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class Arena {
@@ -156,7 +156,7 @@ public class Arena {
 	 *            the message to send
 	 */
 	public void broadcastExcept(CommandSender sender, String msg) {
-		db.i("@all/" + sender.getName() + ": " + msg);
+		db.i("@all/" + sender.getName() + ": " + msg, sender);
 		HashSet<ArenaPlayer> players = getEveryone();
 		for (ArenaPlayer p : players) {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
@@ -170,12 +170,12 @@ public class Arena {
 
 	public void chooseClass(Player player, Sign sign, String className) {
 
-		db.i("choosing player class");
+		db.i("choosing player class", player);
 
 		if (sign != null) {
 
 			if (getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)) {
-				db.i("checking class perms");
+				db.i("checking class perms", player);
 				if (!(player.hasPermission("pvparena.class." + className))) {
 					this.msg(player, Language.parse(MSG.ERROR_NOPERM_CLASS, className));
 					return; // class permission desired and failed =>
@@ -445,7 +445,7 @@ public class Arena {
 	 */
 	public void giveRewards(Player player) {
 		
-		db.i("giving rewards to " + player.getName());
+		db.i("giving rewards to " + player.getName(), player);
 		
 		ArenaModuleManager.giveRewards(this, player);
 		String sItems = getArenaConfig().getString(CFG.ITEMS_REWARDS,
@@ -471,7 +471,7 @@ public class Arena {
 		for (int i = 0; i < items.length; ++i) {
 			ItemStack stack = StringParser.getItemStackFromString(items[i]);
 			if (stack == null) {
-				db.w("unrecognized item: " + items[i]);
+				PVPArena.instance.getLogger().warning("unrecognized item: " + items[i]);
 				continue;
 			}
 			if (random && i != randomItem) {
@@ -627,11 +627,11 @@ public class Arena {
 			return Language.parse(MSG.DEATHCAUSE_CUSTOM);
 		}
 		
-		db.i("return a damage name for : " + cause.toString());
+		db.i("return a damage name for : " + cause.toString(), player);
 		ArenaPlayer ap = null;
 		ArenaTeam team = null;
 
-		db.i("damager: " + damager);
+		db.i("damager: " + damager, player);
 
 		if (damager instanceof Player) {
 			ap = ArenaPlayer.parsePlayer(((Player) damager).getName());
@@ -647,7 +647,7 @@ public class Arena {
 			}
 			
 			try {
-				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType());
+				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType(), player);
 				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
 			} catch(Exception e) {
 
@@ -655,7 +655,7 @@ public class Arena {
 			}
 		case ENTITY_EXPLOSION:
 			try {
-				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType());
+				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType(), player);
 				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
 			} catch(Exception e) {
 
@@ -667,7 +667,7 @@ public class Arena {
 			}
 			try {
 				
-				db.i("last damager: " + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType());
+				db.i("last damager: " + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType(), player);
 				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType().name()));
 			} catch(Exception e) {
 
@@ -679,7 +679,7 @@ public class Arena {
 	}
 
 	public static void pmsg(CommandSender sender, String msg) {
-		ArenaManager.db.i("@" + sender.getName() + ": " + msg);
+		ArenaManager.db.i("@" + sender.getName() + ": " + msg, sender);
 		sender.sendMessage(ChatColor.YELLOW + "[" + globalprefix + "] "
 				+ ChatColor.WHITE + msg);
 	}
@@ -703,7 +703,7 @@ public class Arena {
 			startCount--;
 			playedPlayers.remove(player.getName());
 		}
-		db.i("fully removing player from arena");
+		db.i("fully removing player from arena", player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (!silent) {
 		
@@ -791,10 +791,10 @@ public class Arena {
 
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				db.i("checking class: " + p.get().getName());
+				db.i("checking class: " + p.get().getName(), p.get());
 
 				if (p.getArenaClass() == null) {
-					db.i("player has no class");
+					db.i("player has no class", p.get());
 					// player no class!
 					return Language.parse(MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
 				}
@@ -851,7 +851,7 @@ public class Arena {
 	 */
 	public void removePlayer(Player player, String tploc, boolean soft, boolean force) {
 		db.i("removing player " + player.getName() + (soft ? " (soft)" : "")
-				+ ", tp to " + tploc);
+				+ ", tp to " + tploc, player);
 		resetPlayer(player, tploc, soft, force);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -881,12 +881,12 @@ public class Arena {
 		HashSet<ArenaPlayer> pa = new HashSet<ArenaPlayer>();
 		for (ArenaTeam team : this.getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				db.i("player: " + p.getName());
+				db.i("player: " + p.getName(), p.get());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
-					db.i("> skipped");
+					db.i("> skipped", p.get());
 					continue;
 				} else {
-					db.i("> added");
+					db.i("> added", p.get());
 					pa.add(p);
 				}
 			}
@@ -977,7 +977,7 @@ public class Arena {
 		if (player == null) {
 			return;
 		}
-		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""));
+		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""), player);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getState() != null) {
@@ -996,7 +996,7 @@ public class Arena {
 			ArenaPlayer.reloadInventory(this, player);
 		}
 		
-		db.i("string = " + string);
+		db.i("string = " + string, player);
 		ap.setTelePass(true);
 		new TeleportRunnable(this, ap, string, soft);
 	}
@@ -1010,7 +1010,7 @@ public class Arena {
 	public void unKillPlayer(Player player, DamageCause cause,
 			Entity damager) {
 		
-		db.i("respawning player " + player.getName());
+		db.i("respawning player " + player.getName(), player);
 		PlayerState.playersetHealth(player, getArenaConfig().getInt(CFG.PLAYER_HEALTH, 20));
 		player.setFoodLevel(getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL, 20));
 		player.setSaturation(getArenaConfig().getInt(CFG.PLAYER_SATURATION, 20));
@@ -1176,7 +1176,7 @@ public class Arena {
 			return;
 		}
 		sTeam = team.getName();
-		db.i("@" + sTeam + ": " + msg);
+		db.i("@" + sTeam + ": " + msg, player);
 		for (ArenaPlayer p : team.getTeamMembers()) {
 			p.get().sendMessage(
 					c + "[" + sTeam + "] " + player.getName() + ChatColor.WHITE
@@ -1198,7 +1198,7 @@ public class Arena {
 	 *            the coord string
 	 */
 	public void tpPlayerToCoordName(Player player, String place) {
-		db.i("teleporting " + player + " to coord " + place);
+		db.i("teleporting " + player + " to coord " + place, player);
 
 		if (player.isInsideVehicle()) {
 			player.getVehicle().eject();
@@ -1242,7 +1242,7 @@ public class Arena {
 	public boolean tryJoin(Player player, ArenaTeam team) {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-		db.i("trying to join player " + player.getName());
+		db.i("trying to join player " + player.getName(), player);
 		
 		if (ap.getStatus().equals(Status.NULL)) {
 			// joining DIRECTLY - save loc !!

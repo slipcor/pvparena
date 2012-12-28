@@ -47,7 +47,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
@@ -219,7 +219,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
-			db.i("modify&adminperms&wand");
+			db.i("modify&adminperms&wand", player);
 			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				ap.setSelection(event.getClickedBlock().getLocation(), false);
