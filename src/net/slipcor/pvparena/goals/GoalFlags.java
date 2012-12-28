@@ -54,7 +54,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  */
 
 public class GoalFlags extends ArenaGoal implements Listener {
-
+	
 	public GoalFlags() {
 		super("Flags");
 		db = new Debug(100);
@@ -71,6 +71,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		headFlags.add(Material.PUMPKIN);
 		headFlags.add(Material.WOOL);
 		headFlags.add(Material.JACK_O_LANTERN);
+		headFlags.add(Material.SKULL_ITEM);
 	}
 	
 	@Override
@@ -92,7 +93,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 		
 		if (string.equalsIgnoreCase("flagtype") || 
-				string.equalsIgnoreCase("flageffect")) {
+				string.equalsIgnoreCase("flageffect") ||
+				string.equalsIgnoreCase("touchdown")) {
 			res.setPriority(this, priority);
 		}
 		
@@ -189,10 +191,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 				db.i("player is at his flag", player);
 
-				if (paTeamFlags.containsKey(sTeam)) {
+				if (paTeamFlags.containsKey(sTeam) || paTeamFlags.containsKey("touchdown")) {
 					db.i("the flag of the own team is taken!", player);
 
-					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) {
+					if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)
+							&& !paTeamFlags.containsKey("touchdown")) {
 						db.i("cancelling", player);
 
 						arena.msg(player, Language.parse(MSG.GOAL_FLAGS_NOTSAFE));
@@ -205,21 +208,31 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				db.i("the flag belongs to team " + flagTeam, player);
 
 				try {
-
-					arena.broadcast(Language.parse(MSG.GOAL_FLAGS_BROUGHTHOME, arena
-							.getTeam(sTeam).colorizePlayer(player)
-							+ ChatColor.YELLOW, arena.getTeam(flagTeam)
-							.getColoredName() + ChatColor.YELLOW, String
-							.valueOf(paTeamLives.get(flagTeam) - 1)));
+					if (flagTeam.equals("touchdown")) {
+						arena.broadcast(Language.parse(MSG.GOAL_FLAGS_TOUCHHOME, arena
+								.getTeam(sTeam).colorizePlayer(player)
+								+ ChatColor.YELLOW, String
+								.valueOf(paTeamLives.get(ap.getArenaTeam().getName()) - 1)));
+					} else {
+						arena.broadcast(Language.parse(MSG.GOAL_FLAGS_BROUGHTHOME, arena
+								.getTeam(sTeam).colorizePlayer(player)
+								+ ChatColor.YELLOW, arena.getTeam(flagTeam)
+								.getColoredName() + ChatColor.YELLOW, String
+								.valueOf(paTeamLives.get(flagTeam) - 1)));
+					}
 					paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
 					e.printStackTrace();
 				}
-
-				takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
-						SpawnManager.getCoords(arena, flagTeam + "flag"));
+				if (flagTeam.equals("touchdown")) {
+					takeFlag(ChatColor.BLACK.name(), false,
+							SpawnManager.getCoords(arena, "touchdownflag"));
+				} else {
+					takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
+							SpawnManager.getCoords(arena, flagTeam + "flag"));
+				}
 				removeEffects(player);
 				if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
 					if (paHeadGears.get(player.getName()) != null) {
@@ -230,7 +243,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
 					}
 				}
-
+				
+				flagTeam = flagTeam.equals("touchdown")?(flagTeam+":"+ap.getArenaTeam().getName()):flagTeam;
+				
 				reduceLivesCheckEndAndCommit(arena, flagTeam); // TODO move to "commit" ?
 			}
 		} else {
@@ -238,14 +253,25 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			if (pTeam == null) {
 				return res;
 			}
+			HashSet<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
+
 			for (ArenaTeam team : arena.getTeams()) {
+				setTeam.add(team);
+			}
+			setTeam.add(new ArenaTeam("touchdown","BLACK"));
+			for (ArenaTeam team : setTeam) {
 				String aTeam = team.getName();
 
-				if (aTeam.equals(pTeam.getName()))
+				if (aTeam.equals(pTeam.getName())) {
+					db.i("equals!OUT! ", player);
 					continue;
-				if (team.getTeamMembers().size() < 1)
+				}
+				if (team.getTeamMembers().size() < 1 && !team.getName().equals("touchdown")) {
+					db.i("size!OUT! ", player);
 					continue; // dont check for inactive teams
+				}
 				if (paTeamFlags != null && paTeamFlags.containsKey(aTeam)) {
+					db.i("taken!OUT! ", player);
 					continue; // already taken
 				}
 				db.i("checking for flag of team " + aTeam, player);
@@ -259,9 +285,17 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 					db.i("flag found!", player);
 					db.i("vFlag: " + vFlag.toString(), player);
-					arena.broadcast(Language.parse(MSG.GOAL_FLAGS_GRABBED,
-							pTeam.colorizePlayer(player) + ChatColor.YELLOW,
-							team.getColoredName() + ChatColor.YELLOW));
+					
+					if (team.getName().equals("touchdown")) {
+
+						arena.broadcast(Language.parse(MSG.GOAL_FLAGS_GRABBEDTOUCH,
+								pTeam.colorizePlayer(player) + ChatColor.YELLOW));
+					} else {
+					
+						arena.broadcast(Language.parse(MSG.GOAL_FLAGS_GRABBED,
+								pTeam.colorizePlayer(player) + ChatColor.YELLOW,
+								team.getColoredName() + ChatColor.YELLOW));
+					}
 					try {
 						paHeadGears.put(player.getName(), player
 								.getInventory().getHelmet().clone());
@@ -278,6 +312,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 					takeFlag(team.getColor().name(), true, new PALocation(block.getLocation()));
 					paTeamFlags.put(aTeam, player.getName()); // TODO move to "commit" ?
+					
 					return res; 
 				}
 			}
@@ -497,6 +532,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TOSET, flagName));
 				}
 			}
+		} else if (args[0].equalsIgnoreCase("touchdown")) {
+			flagName = args[0]+"flag";
+			PAA_Region.activeSelections.put(sender.getName(), arena);
+
+			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TOSET, flagName));
 		}
 	}
 
@@ -553,14 +593,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		arena.msg(player, Language.parse(MSG.GOAL_FLAGS_SET, flagName));
 
 		PAA_Region.activeSelections.remove(player.getName());
-		this.flagName = "";
+		flagName = "";
 		
 		return false;
 	}
 	
 	@Override
 	public void commitStart() {
-		
 	}
 
 	@Override
@@ -573,9 +612,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (paTeamFlags == null) {
 			return;
 		}
-		
-		ArenaTeam flagTeam = arena.getTeam(
-				getHeldFlagTeam(arena, ap.getName()));
+		String sTeam = getHeldFlagTeam(arena, ap.getName());
+		ArenaTeam flagTeam = arena.getTeam(sTeam);
 		if (flagTeam != null) {
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
 					ap.getArenaTeam().getColorCodeString() + ap.getName() + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
@@ -591,12 +629,32 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 			takeFlag(flagTeam.getColor().name(), false,
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
+		} else if (sTeam != null) {
+			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPEDTOUCH,
+					ap.getArenaTeam().getColorCodeString() + ap.getName() + ChatColor.YELLOW));
+			
+			paTeamFlags.remove("touchdown");
+			if (paHeadGears != null
+					&& paHeadGears.get(ap.getName()) != null) {
+				if (ap.get() != null) {
+					ap.get().getInventory().setHelmet(
+						paHeadGears.get(ap.getName()).clone());
+				}
+				paHeadGears.remove(ap.getName());
+			}
+
+			takeFlag(ChatColor.BLACK.name(), false,
+					SpawnManager.getCoords(arena, "touchdownflag"));
+			
 		}
 	}
 
 	private short getFlagOverrideTeamShort(Arena arena, String team) {
 		if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
-
+			if (team.equals("touchdown")) {
+				return StringParser.getColorDataFromENUM(ChatColor.BLACK
+					.name());
+			}
 			return StringParser.getColorDataFromENUM(arena.getTeam(team)
 					.getColor().name());
 		}
@@ -694,6 +752,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 			takeFlag(team.getColor().name(), false,
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
+			takeFlag(ChatColor.BLACK.name(), false,
+					SpawnManager.getCoords(arena, "touchdownflag"));
 		}
 	}
 
@@ -710,10 +770,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			db.i("no flags set!!", player);
 			return;
 		}
-		ArenaTeam flagTeam = arena.getTeam(
-				getHeldFlagTeam(arena, player.getName()));
+		String sTeam = getHeldFlagTeam(arena, player.getName());
+		ArenaTeam flagTeam = arena.getTeam(sTeam);
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (flagTeam != null) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED,
 					ap.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW, flagTeam.getColoredName() + ChatColor.YELLOW));
 			paTeamFlags.remove(flagTeam.getName());
@@ -726,6 +786,22 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 			takeFlag(flagTeam.getColor().name(), false,
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
+		} else if (sTeam != null) {
+			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPEDTOUCH,
+					ap.getArenaTeam().getColorCodeString() + ap.getName() + ChatColor.YELLOW));
+			
+			paTeamFlags.remove("touchdown");
+			if (paHeadGears != null
+					&& paHeadGears.get(ap.getName()) != null) {
+				if (ap.get() != null) {
+					ap.get().getInventory().setHelmet(
+						paHeadGears.get(ap.getName()).clone());
+				}
+				paHeadGears.remove(ap.getName());
+			}
+
+			takeFlag(ChatColor.BLACK.name(), false,
+					SpawnManager.getCoords(arena, "touchdownflag"));
 		}
 	}
 
@@ -742,6 +818,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			takeFlag(team.getColor().name(), false,
 					SpawnManager.getCoords(arena, team.getName() + "flag"));
 		}
+		takeFlag(ChatColor.BLACK.name(), false,
+				SpawnManager.getCoords(arena, "touchdownflag"));
 	}
 	
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
@@ -754,6 +832,16 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			} else {
 				paTeamLives.remove(team);
 				commit(arena, team, false);
+				return true;
+			}
+		} else if (team.contains(":")) {
+			String realTeam = team.split(":")[1];
+			int i = paTeamLives.get(realTeam) - 1;
+			if (i > 0) {
+				paTeamLives.put(realTeam, i);
+			} else {
+				paTeamLives.remove(realTeam);
+				commit(arena, realTeam, true);
 				return true;
 			}
 		}
@@ -834,6 +922,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	 *            the location to take/reset
 	 */
 	public void takeFlag(String flagColor, boolean take, PALocation lBlock) {
+		if (lBlock == null) {
+			return;
+		}
 		if (!arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE).equals("WOOL")) {
 			lBlock.toLocation().getBlock().setType(take?Material.BEDROCK:Material.valueOf(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)));
 			return;

@@ -346,11 +346,17 @@ public class StringParser {
 			}
 			list.add(item);
 		}
+		
+		if (list.size() < 1) {
+			return new String[]{"AIR"};
+		}
+		
 		String[] result = new String[list.size()];
 		int i = 0;
 		for (String item : list) {
 			result[i++] = item;
 		}
+		
 		return result;
 	}
 

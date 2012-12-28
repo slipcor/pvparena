@@ -374,8 +374,11 @@ public class Language {
 		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "A flag claimed by Team %1% is being unclaimed by Team %2%!"),
 
 		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Captures remaining: %3%"),
+		GOAL_FLAGS_TOUCHHOME("lang.touchhomeleft", "%1% brought home the flag! Captures remaining: %2%"),
 		GOAL_FLAGS_DROPPED("lang.flagsave", "%1% dropped the flag of team %2%!"),
+		GOAL_FLAGS_DROPPEDTOUCH("lang.flagsavetouch", "%1% dropped the flag!"),
 		GOAL_FLAGS_GRABBED("lang.flaggrab", "%1% grabbed the flag of team %2%!"),
+		GOAL_FLAGS_GRABBEDTOUCH("lang.flaggrabtouch", "%1% grabbed the flag!"),
 		GOAL_FLAGS_NOTSAFE("lang.flagnotsafe", "Your flag is taken! Cannot bring back an enemy flag!'"),
 		GOAL_FLAGS_SET("lang.setflag", "Flag set: %1%"),
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),

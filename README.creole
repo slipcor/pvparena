@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.7 - add TOUCHDOWN gamemode to Flags
 * v0.10.2.6 - add configurable PlayerKillRewards
 * v0.10.2.5 - add Goal "PlayerKillRewards" and fix NPE
 * v0.10.2.4 - fix book saving and loading
@@ -106,9 +107,9 @@ A PVP experience enhancing plugin.
 ** spectating
 * goals
 ** tournament arenas ; rounds switch through arenas
-** king of the hill -> FFAEN	
 ** furnace -> domination FoodFury
 ** siege -> bring PACKET from A to B || prevent
+** pillar / physical CTF
 
 -----------------------------------------------------------------------------------------------------------------------
 
