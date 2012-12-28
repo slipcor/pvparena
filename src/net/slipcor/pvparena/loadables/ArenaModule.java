@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.loadables;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
@@ -27,6 +28,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.inventory.ItemStack;
 
 
 /**
@@ -220,7 +222,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void tpPlayerToCoordName(Player player, String place) {
 	}
 
-	public boolean tryDeathOverride(ArenaPlayer ap) {
+	public boolean tryDeathOverride(ArenaPlayer ap, List<ItemStack> list) {
 		return false;
 	}
 	

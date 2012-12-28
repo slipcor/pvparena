@@ -24,7 +24,6 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "TeamDeathMatch"</pre>
@@ -170,18 +169,14 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	public void commitPlayerDeath(Player respawnPlayer,
 			boolean doesRespawn, String error, PlayerDeathEvent event) {
 		if (respawnPlayer.getKiller() == null) {
-			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
-			
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
 			}
 			
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()), event.getDrops());
 			
-			arena.unKillPlayer(respawnPlayer, event.getEntity()
-					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 			return;
 		}
 		
@@ -196,7 +191,6 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 						arena.parseDeathCause(respawnPlayer, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller()),
 						String.valueOf(lives.get(killerTeam.getName())), killerTeam.getColoredName()));
 			}
-			new InventoryRefillRunnable(arena, respawnPlayer, event.getDrops());
 			
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -204,11 +198,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				event.getDrops().clear();
 			}
 			
-
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(respawnPlayer.getName()), event.getDrops());
 			
-			arena.unKillPlayer(respawnPlayer, event.getEntity()
-					.getLastDamageCause().getCause(), respawnPlayer.getKiller());
 		}
 	}
 

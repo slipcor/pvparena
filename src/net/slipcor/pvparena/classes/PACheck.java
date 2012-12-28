@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.classes;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -7,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -409,8 +413,6 @@ public class PACheck {
 		
 		if (commit == null) {
 			db.i("no mod handles player deaths", player);
-			
-			new InventoryRefillRunnable(arena, player, event.getDrops());
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -425,9 +427,7 @@ public class PACheck {
 						arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
 			}
 		
-			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()));
-			
-			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
+			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
 			
 			for (ArenaGoal g : arena.getGoals()) {
 				db.i("parsing death: " + g.getName(), player);
@@ -447,13 +447,18 @@ public class PACheck {
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
 	}
 
-	public static void handleRespawn(Arena arena, ArenaPlayer ap) {
+	public static void handleRespawn(Arena arena, ArenaPlayer ap, List<ItemStack> drops) {
+		
 		for (ArenaModule mod : arena.getMods()) {
-			if (mod.tryDeathOverride(ap)) {
+			if (mod.tryDeathOverride(ap, drops)) {
 				return;
 			}
 		}
+		db.i("handleRespawn!", ap.getName());
+		new InventoryRefillRunnable(arena, ap.get(), drops);
 		SpawnManager.respawn(arena,  ap);
+		arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause()==null?null:ap.get().getLastDamageCause().getCause(), ap.get().getKiller());
+		
 	}
 
 	public static boolean handleSetFlag(Player player, Block block) {

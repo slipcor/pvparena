@@ -24,7 +24,6 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "PlayerDeathMatch"</pre>
@@ -163,18 +162,22 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		Player ex = killer;
 		
 		if (ex.getKiller() == null || !lives.containsKey(ex.getKiller().getName())) {
-			new InventoryRefillRunnable(arena, ex, event.getDrops());
-			
+			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName()).getArenaTeam();
+				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+						respawnTeam.colorizePlayer(ex) + ChatColor.YELLOW,
+						arena.parseDeathCause(ex, event.getEntity()
+								.getLastDamageCause().getCause(), killer)));
+			}
+
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(ex);
 				event.getDrops().clear();
 			}
 			
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()), event.getDrops());
 			
-			arena.unKillPlayer(ex, event.getEntity()
-					.getLastDamageCause().getCause(), ex.getKiller());
 			return;
 		}
 		killer = ex.getKiller();
@@ -217,18 +220,15 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 								.getLastDamageCause().getCause(), killer),
 						String.valueOf(i)));
 			}
-			new InventoryRefillRunnable(arena, ex, event.getDrops());
-			
+
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(ex);
 				event.getDrops().clear();
 			}
 			
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()));
-			
-			arena.unKillPlayer(ex, event.getEntity()
-					.getLastDamageCause().getCause(), ex.getKiller());
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()), event.getDrops());
+
 		}
 	}
 

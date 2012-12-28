@@ -26,7 +26,6 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
 /**
  * <pre>Arena Goal class "PlayerLives"</pre>
@@ -203,7 +202,6 @@ public class GoalTank extends ArenaGoal {
 								.getLastDamageCause().getCause(), player.getKiller()),
 						String.valueOf(i)));
 			}
-			new InventoryRefillRunnable(arena, player, event.getDrops());
 			
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -211,10 +209,7 @@ public class GoalTank extends ArenaGoal {
 				event.getDrops().clear();
 			}
 
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(player.getName()));
-			
-			arena.unKillPlayer(player, event.getEntity()
-					.getLastDamageCause().getCause(), player.getKiller());
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
 		}
 	}
 	
