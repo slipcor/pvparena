@@ -21,6 +21,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.GoalDomination;
 import net.slipcor.pvparena.goals.GoalFlags;
 import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
+import net.slipcor.pvparena.goals.GoalPlayerKillReward;
 import net.slipcor.pvparena.goals.GoalPlayerLives;
 import net.slipcor.pvparena.goals.GoalSabotage;
 import net.slipcor.pvparena.goals.GoalTank;
@@ -65,6 +66,7 @@ public class ArenaGoalManager {
 		types.add(new GoalDomination());
 		types.add(new GoalFlags());
 		types.add(new GoalPlayerDeathMatch());
+		types.add(new GoalPlayerKillReward());
 		types.add(new GoalPlayerLives());
 		types.add(new GoalSabotage());
 		types.add(new GoalTank());

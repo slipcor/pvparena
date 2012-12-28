@@ -66,6 +66,10 @@ public class Debug {
 	}
 	
 	public void i(String string, CommandSender sender) {
+		if (sender == null) {
+			i(string, "null");
+			return;
+		}
 		if (!debugs(sender.getName()))
 			return;
 		Bukkit.getLogger().info(prefix + string);
