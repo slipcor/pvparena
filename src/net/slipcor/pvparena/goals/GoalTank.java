@@ -52,7 +52,7 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.0";
+		return "v0.10.2.7";
 	}
 
 	int priority = 8;
@@ -211,7 +211,7 @@ public class GoalTank extends ArenaGoal {
 				event.getDrops().clear();
 			}
 
-			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(player.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(player.getName()));
 			
 			arena.unKillPlayer(player, event.getEntity()
 					.getLastDamageCause().getCause(), player.getKiller());

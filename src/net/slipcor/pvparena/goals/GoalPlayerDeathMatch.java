@@ -23,7 +23,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
-import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 
@@ -50,7 +49,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.0";
+		return "v0.10.2.7";
 	}
 
 	int priority = 3;
@@ -172,7 +171,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				event.getDrops().clear();
 			}
 			
-			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(ex.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()));
 			
 			arena.unKillPlayer(ex, event.getEntity()
 					.getLastDamageCause().getCause(), ex.getKiller());
@@ -226,7 +225,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				event.getDrops().clear();
 			}
 			
-			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(ex.getName()));
+			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(ex.getName()));
 			
 			arena.unKillPlayer(ex, event.getEntity()
 					.getLastDamageCause().getCause(), ex.getKiller());

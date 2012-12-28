@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.8 - rewrite respawn handling
 * v0.10.2.7 - add TOUCHDOWN gamemode to Flags
 * v0.10.2.6 - add configurable PlayerKillRewards
 * v0.10.2.5 - add Goal "PlayerKillRewards" and fix NPE

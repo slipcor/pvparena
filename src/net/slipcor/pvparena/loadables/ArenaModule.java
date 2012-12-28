@@ -219,6 +219,10 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	
 	public void tpPlayerToCoordName(Player player, String place) {
 	}
+
+	public boolean tryDeathOverride(ArenaPlayer ap) {
+		return false;
+	}
 	
 	public void unload(Player player) {
 	}

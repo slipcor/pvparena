@@ -425,8 +425,7 @@ public class PACheck {
 						arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
 			}
 		
-			SpawnManager.distribute(arena,  ArenaPlayer.parsePlayer(player.getName()));
-			
+			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()));
 			
 			arena.unKillPlayer(player, event.getEntity().getLastDamageCause()==null?null:event.getEntity().getLastDamageCause().getCause(), player.getKiller());
 			
@@ -446,6 +445,15 @@ public class PACheck {
 		}
 		
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
+	}
+
+	public static void handleRespawn(Arena arena, ArenaPlayer ap) {
+		for (ArenaModule mod : arena.getMods()) {
+			if (mod.tryDeathOverride(ap)) {
+				return;
+			}
+		}
+		SpawnManager.respawn(arena,  ap);
 	}
 
 	public static boolean handleSetFlag(Player player, Block block) {
