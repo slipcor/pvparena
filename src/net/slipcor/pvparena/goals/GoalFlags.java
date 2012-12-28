@@ -18,6 +18,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
@@ -73,7 +75,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.2.0";
+		return "v0.10.2.1";
 	}
 
 	int priority = 6;
@@ -89,7 +91,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return res;
 		}
 		
-		if (string.equalsIgnoreCase("flagtype")) {
+		if (string.equalsIgnoreCase("flagtype") || 
+				string.equalsIgnoreCase("flageffect")) {
 			res.setPriority(this, priority);
 		}
 		
@@ -217,6 +220,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 				takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
 						SpawnManager.getCoords(arena, flagTeam + "flag"));
+				removeEffects(player);
 				if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
 					if (paHeadGears.get(player.getName()) != null) {
 						player.getInventory().setHelmet(
@@ -270,6 +274,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						is.setDurability(getFlagOverrideTeamShort(arena, aTeam));
 					}
 					player.getInventory().setHelmet(is);
+					applyEffects(player);
 
 					takeFlag(team.getColor().name(), true, new PALocation(block.getLocation()));
 					paTeamFlags.put(aTeam, player.getName()); // TODO move to "commit" ?
@@ -280,7 +285,46 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		
 		return res;
 	}
-	
+
+	private void applyEffects(Player player) {
+		String value = arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT);
+		
+		if (value.equalsIgnoreCase("none")) {
+			return;
+		}
+		
+		PotionEffectType pet = null;
+		
+		String[] split = value.split("x");
+		
+		int amp = 1;
+		
+		if (split.length > 1) {
+			try {
+				amp = Integer.parseInt(split[1]);
+			} catch (Exception e) {
+				
+			}
+		}
+		
+		for (PotionEffectType x : PotionEffectType.values()) {
+			if (x == null) {
+				continue;
+			}
+			if (x.getName().equalsIgnoreCase(split[0])) {
+				pet = x;
+				break;
+			}
+		}
+		
+		if (pet == null) {
+			PVPArena.instance.getLogger().warning("Invalid Potion Effect Definition: " + value);
+			return;
+		}
+		
+		player.addPotionEffect(new PotionEffect(pet, amp, 2147000));
+	}
+
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
 		if (res.getPriority() >= priority) {
@@ -391,6 +435,56 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			}
 			arena.getArenaConfig().save();
 			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TYPESET, CFG.GOAL_FLAGS_FLAGTYPE.toString()));
+			
+		} else if (args[0].equalsIgnoreCase("flageffect")) {
+			
+			// /pa [arena] flageffect SLOW 2
+			if (args.length < 2) {
+				arena.msg(sender, Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), "2"));
+				return;
+			}
+
+			
+			if (args[1].equalsIgnoreCase("none")) {
+				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGEFFECT, args[1]);
+				
+				arena.getArenaConfig().save();
+				arena.msg(sender, Language.parse(MSG.SET_DONE, CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), args[1]));
+				return;
+			}
+			
+			PotionEffectType pet = null;
+			
+			for (PotionEffectType x : PotionEffectType.values()) {
+				if (x == null) {
+					continue;
+				}
+				if (x.getName().equalsIgnoreCase(args[1])) {
+					pet = x;
+					break;
+				}
+			}
+			
+			if (pet == null) {
+				arena.msg(sender, Language.parse(MSG.ERROR_POTIONEFFECTTYPE_NOTFOUND, args[1]));
+				return;
+			}
+			
+			int amp = 1;
+			
+			if (args.length == 5) {
+				try {
+					amp = Integer.parseInt(args[2]);
+				} catch (Exception e) {
+					arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[2]));
+					return;
+				}
+			}
+			String value = args[1]+"x"+amp;
+			arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGEFFECT, value);
+			
+			arena.getArenaConfig().save();
+			arena.msg(sender, Language.parse(MSG.SET_DONE, CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), value));
 			
 		} else if (args[0].contains("flag")) {
 			for (ArenaTeam team : arena.getTeams()) {
@@ -664,6 +758,36 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			}
 		}
 		return false;
+	}
+	
+	private void removeEffects(Player player) {
+		String value = arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT);
+		
+		if (value.equalsIgnoreCase("none")) {
+			return;
+		}
+		
+		PotionEffectType pet = null;
+		
+		String[] split = value.split("x");
+		
+		for (PotionEffectType x : PotionEffectType.values()) {
+			if (x == null) {
+				continue;
+			}
+			if (x.getName().equalsIgnoreCase(split[0])) {
+				pet = x;
+				break;
+			}
+		}
+		
+		if (pet == null) {
+			PVPArena.instance.getLogger().warning("Invalid Potion Effect Definition: " + value);
+			return;
+		}
+
+		player.removePotionEffect(pet);
+		player.addPotionEffect(new PotionEffect(pet, 0, 1));
 	}
 
 	@Override

@@ -31,11 +31,11 @@ public class PAA_Update extends PA__Command {
 		
 		HashSet<NCBLoadable> modules = new HashSet<NCBLoadable>();
 		
-		if (args[0].equals("mods")) {
+		if (args.length < 1 || args[0].equals("mods")) {
 			modules.addAll(PVPArena.instance.getAmm().getAllMods());
-		} else if (args[0].equals("goals")) {
+		} else if (args.length < 1 || args[0].equals("goals")) {
 			modules.addAll(PVPArena.instance.getAgm().getAllGoals());
-		} else if (args[0].equals("regionshapes")) {
+		} else if (args.length < 1 || args[0].equals("regionshapes")) {
 			modules.addAll(PVPArena.instance.getArsm().getRegions());
 		}
 		
