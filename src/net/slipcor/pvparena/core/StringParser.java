@@ -36,6 +36,7 @@ import org.bukkit.material.Wool;
 public class StringParser {
 	static String SAFE_BREAK = "<oOo>";
 	static String SAFE_PAGE_BREAK = "<oXxOxXo>";
+	static String SAFE_LORE_BREAK = "<oxXxOxXxo>";
 
 	public static final Debug db = new Debug(17);
 
@@ -55,6 +56,7 @@ public class StringParser {
 			findReplace.put("<<tilde>>","~");
 			findReplace.put("<<pipe>>","|");
 			findReplace.put("<<comma>>",",");
+			string = ChatColor.translateAlternateColorCodes('?', string);
 		}
 		
 		for (String s : findReplace.keySet()) {
@@ -228,7 +230,7 @@ public class StringParser {
 				}
 				return is;
 			}
-			String[] dataSplit = temp[2].split(SAFE_PAGE_BREAK);
+			String[] dataSplit = temp[2].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
 			String lore = dataSplit.length > 1 ? dataSplit[1] : null;
 			if (temp.length == 3) {
@@ -288,7 +290,7 @@ public class StringParser {
 					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
 				}
 				
-				if (lore != null) {
+				if (lore != null && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
 					List<String> lLore = new ArrayList<String>();
 					for (String line : lore.split(SAFE_BREAK)) {
 						lLore.add(codeCharacters(line, false));
@@ -382,7 +384,7 @@ public class StringParser {
 				temp += "~" + String.valueOf(is.getDurability());
 			}
 
-			temp += SAFE_PAGE_BREAK + codeCharacters(joinArray(((ItemMeta) is.getItemMeta()).getLore().toArray(), 
+			temp += SAFE_LORE_BREAK + codeCharacters(joinArray(((ItemMeta) is.getItemMeta()).getLore().toArray(), 
 					SAFE_BREAK), true);
 		}
 		Map<Enchantment, Integer> enchants = is.getEnchantments();
