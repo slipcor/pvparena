@@ -178,6 +178,10 @@ public class Language {
 		ERROR_REGION_SELECT_2("nulang.error.select2","Select two points before trying to save."),
 		ERROR_REGION_TYPE_NOTFOUND("nulang.error.region.typenotfound", "RegionType &a%1%&r unknown! Valid values: %2%"),
 		ERROR_REGION_YOUSELECT("nulang.error.region.youselect", "You are already selecting a region for an arena!"),
+		ERROR_REGION_YOUSELECT2("nulang.error.region.youselect2", "Type the command again to cancel selection mode!"),
+		ERROR_REGION_YOUSELECTEXIT("nulang.error.region.youselectexit", "Region selection cancelled!"),
+		
+		
 		ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
 		ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!"),
 		ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),

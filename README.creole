@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.2 - cancel region selection by redoing /pa [arena] region
 * v0.10.2.1 - add configurable POTION EFFECT to flag carriers
 * v0.10.2.0 - Debugger rewrite
 * v0.10.1.21 - add LOUNGE region type functionality (kick ;) )

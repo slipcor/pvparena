@@ -28,6 +28,8 @@ public class PAA_Region extends PAA__Command {
 	
 	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
 
+	private static String selector = null;
+	
 	public PAA_Region() {
 		super(new String[] {});
 	}
@@ -52,7 +54,14 @@ public class PAA_Region extends PAA__Command {
 			
 			if (activeSelections.get(sender.getName()) != null) {
 				// already selecting!
-				arena.msg(sender, Language.parse(MSG.ERROR_REGION_YOUSELECT, arena.getName()));
+				if (!sender.getName().equals(selector)) {
+					arena.msg(sender, Language.parse(MSG.ERROR_REGION_YOUSELECT, arena.getName()));
+					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECT2));
+					selector = sender.getName();
+				} else {
+					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECTEXIT));
+					selector = null;
+				}
 				return;
 			}
 			// selecting now!
