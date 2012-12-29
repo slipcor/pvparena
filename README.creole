@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.11 - fix AutoVote infinity :D
 * v0.10.2.10 - /pa class display error, more debug
 * v0.10.2.9 - RelayRunnable implementation
 * v0.10.2.8 - rewrite respawn handling

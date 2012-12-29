@@ -1142,11 +1142,13 @@ public class Arena {
 			}
 		}
 		db.i("sum == " + sum);
-		if (sum < 2) {
+		if (ready() != null) {
+			PVPArena.instance.getLogger().info(ready());
 			for (ArenaPlayer ap : getFighters()) {
 				db.i("removing player " + ap.getName());
 				playerLeave(ap.get(), CFG.TP_EXIT, false);
 			}
+			reset(false);
 		} else {
 			db.i("START!");
 			PACheck.handleStart(this, null);
