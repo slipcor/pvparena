@@ -289,6 +289,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	
 	@Override
 	public void unload(Player player) {
+		lives.remove(player.getName());
 		if (allowsJoinInBattle())
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 	}

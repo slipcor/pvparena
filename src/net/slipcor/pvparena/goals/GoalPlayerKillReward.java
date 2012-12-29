@@ -431,4 +431,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		
 		arena.getArenaConfig().save();
 	}
+	
+	@Override
+	public void unload(Player player) {
+		lives.remove(player.getName());
+	}
 }

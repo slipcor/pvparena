@@ -329,4 +329,9 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 		lives.put(ap.getName(), value);
 	}
+	
+	@Override
+	public void unload(Player player) {
+		lives.remove(player.getName());
+	}
 }
