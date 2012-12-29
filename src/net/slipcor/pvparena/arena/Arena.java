@@ -1042,6 +1042,7 @@ public class Arena {
 				ArenaClass.equip(ap.get(), c.getItems());
 				msg(ap.get(), Language.parse(MSG.CLASS_PREVIEW, c.getName()));
 			}
+			return;
 		}
 		msg(ap.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, cName));
 	}

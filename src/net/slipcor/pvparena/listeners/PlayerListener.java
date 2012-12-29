@@ -353,6 +353,10 @@ public class PlayerListener implements Listener {
 						|| (arena.getClass(sign.getLine(0)) != null)) && (team != null)) {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
+				} else {
+					db.i("|"+sign.getLine(0)+"|", player);
+					db.i(String.valueOf(arena.getClass(sign.getLine(0))), player);
+					db.i(String.valueOf(team), player);
 				}
 				return;
 			}
