@@ -206,8 +206,10 @@ public class ArenaGoalManager {
 		}
 
 		HashSet<String> winners = new HashSet<String>();
-
-		if (!arena.isFreeForAll()) {
+		
+		if (!arena.isFreeForAll() && !arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
+			winners.add(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER));
+		} else if (!arena.isFreeForAll()) {
 			// check all teams
 			double maxScore = 0;
 

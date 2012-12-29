@@ -150,6 +150,7 @@ public class Config {
 		GOAL_TDM_LIVES("goal.teamdm.tdlives", 10),
 		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10),
 		GOAL_TIME_END("goal.time.timedend", 0),
+		GOAL_TIME_WINNER("goal.time.winner", "none"),
 		
 		// -----------
 		
