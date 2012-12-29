@@ -95,7 +95,7 @@ public final class PlayerState {
 				CFG.PLAYER_EXHAUSTION));
 		player.setLevel(0);
 		player.setExp(0);
-		player.setGameMode(GameMode.getByValue(0));
+		player.setGameMode(GameMode.getByValue(a.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
 		PlayerState.removeEffects(player);
 	}
 
