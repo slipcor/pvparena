@@ -181,6 +181,7 @@ public class Config {
 		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
 		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
+		MODULES_BETTERFIGHT_EXPLODEONDEATH("modules.betterfight.explodeondeath", true),
 
 		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false),
 		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),

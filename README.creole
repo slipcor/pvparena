@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.16 - BetterFight: explosions on death ^^
 * v0.10.2.15 - add region flag NODAMAGE - yay!
 * v0.10.2.14 - add "winner" config in case of timeout!
 * v0.10.2.13 - add configurable GAMEMODE :)
