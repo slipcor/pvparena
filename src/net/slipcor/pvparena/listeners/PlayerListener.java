@@ -374,6 +374,9 @@ public class PlayerListener implements Listener {
 				if (arena.START_ID != null) {
 					return; // counting down => OUT
 				}
+				if (ap.getStatus() != Status.LOUNGE) {
+					return;
+				}
 
 				db.i("===============", player);
 				db.i("===== class: " + ap.getClass() + " =====", player);
