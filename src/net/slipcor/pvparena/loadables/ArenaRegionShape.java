@@ -104,14 +104,15 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * RegionFlag for tick events
 	 * 
 	 * <pre>
-	 * NOCAMP - players not moving will be damaged
-	 * DEATH -  players being here will die
-	 * WIN -    players being here will win
-	 * LOSE -   players being here will lose
+	 * NOCAMP -   players not moving will be damaged
+	 * DEATH -    players being here will die
+	 * WIN -      players being here will win
+	 * LOSE -     players being here will lose
+	 * NODAMAGE - players being here will receive no damage
 	 * </pre>
 	 */
 	public static enum RegionFlag {
-		NOCAMP, DEATH, WIN, LOSE
+		NOCAMP, DEATH, WIN, LOSE, NODAMAGE
 	}
 
 	/**
