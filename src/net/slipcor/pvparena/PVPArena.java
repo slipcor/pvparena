@@ -141,7 +141,10 @@ public class PVPArena extends JavaPlugin {
 			String commandLabel, String[] args) {
 
 		if (args.length < 1) {
-			return false;
+			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.BOLD + "|-- PVP Arena --|");
+			sender.sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC + "By slipcor");
+			sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Do /pa help for help.");
+			return true;
 		}
 		
 		if (args.length > 1 && sender.hasPermission("pvparena.admin")) {
