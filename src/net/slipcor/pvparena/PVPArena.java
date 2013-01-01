@@ -142,7 +142,7 @@ public class PVPArena extends JavaPlugin {
 
 		if (args.length < 1) {
 			sender.sendMessage("§e§l|-- PVP Arena --|");
-			sender.sendMessage("§e§oBy slipcor");
+			sender.sendMessage("§e§o--By slipcor--");
 			sender.sendMessage("§7§oDo §e/pa help §7§ofor help.");
 			return true;
 		}
