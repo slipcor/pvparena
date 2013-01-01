@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.18 - some small fixes
 * v0.10.2.17 - ignore ready blocks unless not ready
 * v0.10.2.16 - BetterFight: explosions on death ^^
 * v0.10.2.15 - add region flag NODAMAGE - yay!

@@ -501,6 +501,8 @@ public class PACheck {
 	public static void handleSpectate(Arena arena, CommandSender sender) {
 		int priority = 0;
 		PACheck res = new PACheck();
+
+		db.i("handling spectator", sender);
 		
 		// priority will be set by flags, the max priority will be called
 		
@@ -509,11 +511,11 @@ public class PACheck {
 		for (ArenaModule mod : arena.getMods()) {
 			res = mod.checkJoin(sender, res, false);
 			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
+				db.i("success and higher priority", sender);
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
+				db.i("fail", sender);
 				priority = res.getPriority();
 				commit = null;
 			}
@@ -525,6 +527,7 @@ public class PACheck {
 		}
 		
 		if (commit == null) {
+			db.i("commit null", sender);
 			return;
 		}
 		

@@ -747,7 +747,7 @@ public class GoalDomination extends ArenaGoal {
 			if (take) {
 				// claim a flag for the team
 				if (domination.paFlags.containsKey(loc)) {
-					PVPArena.instance.getLogger().warning("wtf");
+					//PVPArena.instance.getLogger().warning("wtf");
 				} else {
 					// flag unclaimed! claim!
 					db.i("clag unclaimed. claim!");
