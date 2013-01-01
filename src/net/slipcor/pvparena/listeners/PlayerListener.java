@@ -225,7 +225,6 @@ public class PlayerListener implements Listener {
 			return;
 	
 		PACheck.handlePlayerDeath(arena, player, event);
-		ArenaModuleManager.parsePlayerDeath(arena, player, event.getEntity().getLastDamageCause());
 	}
 	
 	/**

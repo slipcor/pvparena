@@ -430,9 +430,9 @@ public class PACheck {
 			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
 			
 			for (ArenaGoal g : arena.getGoals()) {
-				db.i("parsing death: " + g.getName(), player);
 				g.parsePlayerDeath(player, player.getLastDamageCause());
 			}
+			ArenaModuleManager.parsePlayerDeath(arena, player, event.getEntity().getLastDamageCause());
 			
 			return;
 		}
@@ -443,7 +443,7 @@ public class PACheck {
 			db.i("parsing death: " + g.getName(), player);
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
-		
+
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
 	}
 
