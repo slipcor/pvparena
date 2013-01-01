@@ -417,6 +417,10 @@ public class StringParser {
 			}
 		}
 		
+		if (is.getAmount() > 1) {
+			temp += ":" + is.getAmount();
+		}
+
 		return temp;
 	}
 
