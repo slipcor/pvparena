@@ -387,6 +387,8 @@ public class Language {
 		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&f->&a%2%"),
 		GOAL_KILLREWARD_REMOVED("nulang.goal.killreward.removed", "Kill reward removed: &e%1%"),
 		
+		GOAL_PHYSICALFLAGS_HOLDFLAG("nulang.goal.physicalflags.holdflag", "You have to hold the flag to bring it back!"),
+		
 		GOAL_SABOTAGE_IGNITED("nulang.goal.sabotage.tntignite", "%1% ignited the TNT of team %2%!"),
 		GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.set", "TNT set: %1%"),
 		GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.toset", "TNT to set: %1%"),

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.20 - add goal: PhysicalFlags
 * v0.10.2.19 - Pull #4 - Don't return false!
 * v0.10.2.18 - some small fixes
 * v0.10.2.17 - ignore ready blocks unless not ready
