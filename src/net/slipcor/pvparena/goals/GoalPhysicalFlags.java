@@ -78,7 +78,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.2.18";
+		return "v0.10.2.21";
 	}
 
 	int priority = 7;
@@ -342,7 +342,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
 
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;

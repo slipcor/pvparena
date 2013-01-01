@@ -137,6 +137,8 @@ public class Config {
 		
 		// ----------
 
+		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK"),
+		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1),
 		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
 		GOAL_DOM_LIVES("goal.dom.dlives", 10),
 		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL"),

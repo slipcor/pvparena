@@ -60,7 +60,7 @@ public class GoalDomination extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.10.2";
+		return "v0.10.2.21";
 	}
 
 	int priority = 8;
@@ -109,8 +109,8 @@ public class GoalDomination extends ArenaGoal {
 				count++;
 			}
 		}
-		if (count < 4)
-			return "flags: " + count + " / 4";
+		if (count < 1)
+			return "flags: " + count + " / 1";
 		
 		return null;
 	}
@@ -410,7 +410,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
 
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;

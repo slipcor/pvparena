@@ -100,7 +100,7 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param block
 	 * @return
 	 */
-	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
 		return res;
 	}
 

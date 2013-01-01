@@ -257,11 +257,20 @@ public class SpawnManager {
 						continue;
 					}
 				}
-			} else if (name.endsWith("flag")) {
-				if (name.contains("tnt") || name.contains("lounge") || name.contains("spawn")) {
+			} else if (sTeam.endsWith("flag")) {
+				if (name.contains("tnt") || name.contains("block") || name.contains("lounge") || name.contains("spawn")) {
 					continue;
 				}
 				String sName = sTeam.replace("flag", "");
+				db.i("checking if " + name + " starts with " + sName);
+				if (!name.startsWith(sName)) {
+					continue;
+				}
+			} else if (sTeam.endsWith("block")) {
+				if (name.contains("tnt") || name.contains("flag") || name.contains("lounge") || name.contains("spawn")) {
+					continue;
+				}
+				String sName = sTeam.replace("block", "");
 				db.i("checking if " + name + " starts with " + sName);
 				if (!name.startsWith(sName)) {
 					continue;
@@ -272,7 +281,7 @@ public class SpawnManager {
 				}
 			} else if (name.contains("lounge")) {
 				continue;
-			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
+			} else if (sTeam.endsWith("flag") || sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
 				continue;
 			}
 			db.i(" - " + name);

@@ -474,7 +474,7 @@ public class PACheck {
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			res = mod.checkSetFlag(res, player, block);
+			res = mod.checkSetBlock(res, player, block);
 			if (res.getPriority() > priority && priority >= 0) {
 				// success and higher priority
 				priority = res.getPriority();

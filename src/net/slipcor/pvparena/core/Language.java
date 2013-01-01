@@ -368,6 +368,11 @@ public class Language {
 		WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
 		WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
 
+		GOAL_BLOCKDESTROY_TYPESET("nulang.goal.blockdestroy.typeset", "Blocktype set to: &e%1%"),
+		GOAL_BLOCKDESTROY_SCORE("lang.flaghomeleft", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
+		GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),
+		GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Block to set: %1%"),
+		
 		GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "Team %1% is claiming a flag!"),
 		GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "Team %1% scored %2% point(s) by holding a flag!"),
 		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "A flag claimed by Team %1% is being unclaimed!"),

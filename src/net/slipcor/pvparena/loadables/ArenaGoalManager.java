@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.goals.GoalBlockDestroy;
 import net.slipcor.pvparena.goals.GoalDomination;
 import net.slipcor.pvparena.goals.GoalFlags;
 import net.slipcor.pvparena.goals.GoalPhysicalFlags;
@@ -64,6 +65,7 @@ public class ArenaGoalManager {
 	}
 
 	private void fill() {
+		types.add(new GoalBlockDestroy());
 		types.add(new GoalDomination());
 		types.add(new GoalFlags());
 		types.add(new GoalPhysicalFlags());

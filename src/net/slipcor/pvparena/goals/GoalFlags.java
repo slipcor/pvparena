@@ -395,7 +395,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public PACheck checkSetFlag(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
 
 		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
