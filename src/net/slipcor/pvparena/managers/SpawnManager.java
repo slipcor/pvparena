@@ -565,7 +565,7 @@ public class SpawnManager {
 		return false;
 	}
 
-	public static void respawn(Arena arena, ArenaPlayer ap) {
+	public static void respawn(final Arena arena, final ArenaPlayer ap) {
 		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
 		if (ars.size() > 0) {
@@ -614,8 +614,15 @@ public class SpawnManager {
 			
 			return;
 		}
-		
-		arena.tpPlayerToCoordName(ap.get(), (arena.isFreeForAll()?"":ap.getArenaTeam().getName()) + "spawn");
+		class MiniRunnable implements Runnable {
+
+			@Override
+			public void run() {
+				arena.tpPlayerToCoordName(ap.get(), (arena.isFreeForAll()?"":ap.getArenaTeam().getName()) + "spawn");
+			}
+			
+		}
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new MiniRunnable(), 1L);
 		ap.setStatus(Status.FIGHT);
 		return;
 	}
