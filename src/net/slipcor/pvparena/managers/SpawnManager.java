@@ -17,6 +17,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.runnables.RespawnRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -614,15 +615,8 @@ public class SpawnManager {
 			
 			return;
 		}
-		class MiniRunnable implements Runnable {
-
-			@Override
-			public void run() {
-				arena.tpPlayerToCoordName(ap.get(), (arena.isFreeForAll()?"":ap.getArenaTeam().getName()) + "spawn");
-			}
-			
-		}
-		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new MiniRunnable(), 1L);
+		
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, ap), 1L);
 		ap.setStatus(Status.FIGHT);
 		return;
 	}
