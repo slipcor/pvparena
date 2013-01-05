@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.28 - stop kicking everyone on start !!!
 * v0.10.2.27 - add a debug line that might change everything
 * v0.10.2.25 - properly fix players dying. Take that, logic!!
 * v0.10.2.24 - try to hackfix the hackfix

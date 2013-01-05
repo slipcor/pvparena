@@ -157,10 +157,13 @@ public class ArenaGoalManager {
 	}
 	
 	public String ready(Arena arena) {
+		db.i("AGM ready!?!");
 		String error = null;
 		for (ArenaGoal type : arena.getGoals()) {
 			error = type.ready();
 			if (error != null) {
+
+				db.i("type error:" + type.getName());
 				return error;
 			}
 		}

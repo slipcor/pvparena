@@ -1142,8 +1142,9 @@ public class Arena {
 			}
 		}
 		db.i("sum == " + sum);
-		if (ready() != null) {
-			PVPArena.instance.getLogger().info(ready());
+		String errror = ready();
+		if (errror != null && !errror.equals("")) {
+			PVPArena.instance.getLogger().info(errror);
 			for (ArenaPlayer ap : getFighters()) {
 				db.i("removing player " + ap.getName());
 				playerLeave(ap.get(), CFG.TP_EXIT, false);
