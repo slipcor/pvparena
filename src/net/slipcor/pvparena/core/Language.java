@@ -489,6 +489,10 @@ public class Language {
 		MODULE_VAULT_KILLREWARD("nulang.mod.vault.killreward", "You received %1% for killing %2%!"),
 		MODULE_VAULT_REFUNDING("nulang.mod.vault.refunding", "Refunding %1%!"),
 
+		MODULE_WORLDEDIT_CREATED("nulang.mod.worldedit.created", "Region created: &e%1%"),
+		MODULE_WORLDEDIT_LOADED("nulang.mod.worldedit.loaded", "Region loaded: &e%1%"),
+		MODULE_WORLDEDIT_SAVED("nulang.mod.worldedit.saved", "Region saved: &e%1%"),
+		
 		Z("version", "0.9.0.0");
 
 		private String node;
