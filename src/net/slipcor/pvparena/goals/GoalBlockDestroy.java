@@ -61,7 +61,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.2.21";
+		return "v0.10.2.28";
 	}
 
 	int priority = 8;
@@ -472,14 +472,16 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(
-			HashMap<String, Double> scores) {
+	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+		double score;
 		
-		for (String s : paTeamLives.keySet()) {
-			double score = scores.containsKey(s) ? scores.get(s) : 0;
-			score += paTeamLives.get(s); // every team life is worth 1 point
-			
-			scores.put(s, score);
+		for (ArenaTeam team : arena.getTeams()) {
+			score = (paTeamLives.containsKey(team.getName())?paTeamLives.get(team.getName()):0);
+			if (scores.containsKey(team)) {
+				scores.put(team.getName(), scores.get(team.getName())+score);
+			} else {
+				scores.put(team.getName(), score);
+			}
 		}
 		
 		return scores;

@@ -329,6 +329,32 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 		lives.put(ap.getName(), value);
 	}
+
+	@Override
+	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+		double score;
+		
+		for (ArenaPlayer ap : arena.getFighters()) {
+			score = (lives.containsKey(ap.getName())?lives.get(ap.getName()):0);
+			if (arena.isFreeForAll()) {
+
+				if (scores.containsKey(ap.getName())) {
+					scores.put(ap.getName(), scores.get(ap.getName())+score);
+				} else {
+					scores.put(ap.getName(), score);
+				}
+			} else {
+
+				if (scores.containsKey(ap.getArenaTeam().getName())) {
+					scores.put(ap.getArenaTeam().getName(), scores.get(ap.getName())+score);
+				} else {
+					scores.put(ap.getArenaTeam().getName(), score);
+				}
+			}
+		}
+		
+		return scores;
+	}
 	
 	@Override
 	public void unload(Player player) {

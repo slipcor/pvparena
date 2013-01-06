@@ -45,7 +45,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.7";
+		return "v0.10.2.28";
 	}
 
 	int priority = 4;
@@ -319,6 +319,17 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+		double score;
+		
+		for (ArenaTeam team : arena.getTeams()) {
+			score = (lives.containsKey(team.getName())?lives.get(team.getName()):0);
+			if (scores.containsKey(team)) {
+				scores.put(team.getName(), scores.get(team.getName())+score);
+			} else {
+				scores.put(team.getName(), score);
+			}
+		}
+		
 		return scores;
 	}
 }

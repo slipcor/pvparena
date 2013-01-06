@@ -48,7 +48,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.7";
+		return "v0.10.2.28";
 	}
 
 	int priority = 3;
@@ -285,6 +285,22 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	public void reset(boolean force) {
 		er = null;
 		lives.clear();
+	}
+
+	@Override
+	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+		double score;
+		
+		for (ArenaPlayer ap : arena.getFighters()) {
+			score = arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES) - (lives.containsKey(ap.getName())?lives.get(ap.getName()):0);
+			if (scores.containsKey(ap)) {
+				scores.put(ap.getName(), scores.get(ap.getName())+score);
+			} else {
+				scores.put(ap.getName(), score);
+			}
+		}
+		
+		return scores;
 	}
 	
 	@Override

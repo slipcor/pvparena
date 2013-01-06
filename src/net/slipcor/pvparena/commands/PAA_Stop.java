@@ -33,11 +33,13 @@ public class PAA_Stop extends PAA__Command {
 			return;
 		}
 		
-		if (!argCountValid(sender, arena, args, new Integer[]{0})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
 		
-		arena.stop(true);
+		boolean force = args.length < 1 || !args[1].equalsIgnoreCase("soft");
+		
+		arena.stop(force);
 		arena.msg(sender, Language.parse(MSG.ARENA_STOP_DONE));
 	}
 

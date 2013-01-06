@@ -43,8 +43,10 @@ public class PAA_Edit extends PAA__Command {
 			activeEdits.remove(sender.getName());
 			msg = Language.parse(MSG.ARENA_EDIT_DISABLED, arena.getName());
 		} else {
-			PAA_Stop cmd = new PAA_Stop();
-			cmd.commit(arena, sender, new String[0]);
+			if (arena.isFightInProgress()) {
+				PAA_Stop cmd = new PAA_Stop();
+				cmd.commit(arena, sender, new String[0]);
+			}
 			activeEdits.put(sender.getName(), arena);
 			msg = Language.parse(MSG.ARENA_EDIT_ENABLED, arena.getName());
 		}

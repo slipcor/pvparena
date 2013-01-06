@@ -67,7 +67,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.6";
+		return "v0.10.2.28";
 	}
 
 	int priority = 6;
@@ -430,6 +430,22 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			arena.getArenaConfig().setManually("goal.playerkillrewards.kr"+i, StringParser.getStringFromItemStacks(items.get(i)));
 		
 		arena.getArenaConfig().save();
+	}
+
+	@Override
+	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+		double score;
+		
+		for (ArenaPlayer ap : arena.getFighters()) {
+			score = getMaxInt() - (lives.containsKey(ap.getName())?lives.get(ap.getName()):0);
+			if (scores.containsKey(ap)) {
+				scores.put(ap.getName(), scores.get(ap.getName())+score);
+			} else {
+				scores.put(ap.getName(), score);
+			}
+		}
+		
+		return scores;
 	}
 	
 	@Override
