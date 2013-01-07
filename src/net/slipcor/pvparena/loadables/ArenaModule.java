@@ -38,7 +38,7 @@ import org.bukkit.inventory.ItemStack;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaModule extends NCBLoadable implements Cloneable {
@@ -91,12 +91,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 			ArenaTeam team) {
 		throw new IllegalStateException(this.getName());
 	}
-	/*
-	public void commitPlayerDeath(Player player,
-			EntityDamageEvent cause) {
-		throw new IllegalStateException(this.getName());
-	}
-	*/
+	
 	public void commitSpectate(Player player) {
 		throw new IllegalStateException(this.getName());
 	}
@@ -113,11 +108,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	
 	public void giveRewards(Player player) {
 	}
-	/*
-	public Boolean hasPerms(CommandSender player, String perms) {
-		return null;
-	}
-	*/
+	
 	public boolean hasSpawn(String string) {
 		return false;
 	}
@@ -127,10 +118,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	
 	public void lateJoin(Player player) {
 	}
-	/*
-	public void load_arenas() {
-	}
-	*/
+	
 	public void onBlockBreak(Block block) {
 	}
 	
@@ -142,11 +130,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	
 	public void onBlockPlace(Block block, Material mat) {
 	}
-	/*
-	public void onEntityDamageByBlockDamage(Player defender,
-			EntityDamageByEntityEvent event) {
-	}
-	*/
+	
 	public void onEntityDamageByEntity(Player attacker,
 			Player defender, EntityDamageByEntityEvent event) {
 	}
@@ -170,15 +154,9 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void onPlayerVelocity(PlayerVelocityEvent event) {
 	}
 	
-	public void parseEnable() {
-	}
-	
 	public void parseJoin(CommandSender sender, ArenaTeam team) {
 	}
-	/*
-	public void parseMove(PlayerMoveEvent event) {
-	}
-	*/
+
 	public void parsePlayerDeath(Player player,
 			EntityDamageEvent lastDamageCause) {
 	}

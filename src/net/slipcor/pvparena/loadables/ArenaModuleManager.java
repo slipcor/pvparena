@@ -42,7 +42,7 @@ import net.slipcor.pvparena.ncloader.NCBLoader;
  * 
  * @author slipcor
  * 
- * @version v0.10.0
+ * @version v0.10.2
  */
 
 public class ArenaModuleManager {
@@ -212,12 +212,6 @@ public class ArenaModuleManager {
 	public static void onPlayerVelocity(Arena arena, PlayerVelocityEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onPlayerVelocity(event);
-		}
-	}
-	
-	public static void parseEnable(Arena arena) {
-		for (ArenaModule mod : arena.getMods()) {
-			mod.parseEnable();
 		}
 	}
 	

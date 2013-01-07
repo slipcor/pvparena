@@ -312,9 +312,6 @@ public class PVPArena extends JavaPlugin {
 			}
 
 		}
-		for (Arena a : ArenaManager.getArenas()) {
-			ArenaModuleManager.parseEnable(a);
-		}
 
 		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
 	}
