@@ -52,6 +52,18 @@ public class ArenaRegionShapeManager {
 		}
 	}
 
+	private void fill() {
+		regions.add(new CuboidRegion());
+		regions.add(new CylindricRegion());
+		regions.add(new SphericRegion());
+
+		for (ArenaRegionShape mod : regions) {
+			mod.onThisLoad();
+			db.i("module ArenaRegion loaded: "
+					+ mod.getName() + " (version " + mod.getVersion() +")");
+		}
+	}
+
 	/**
 	 * search modules by module name
 	 * 
@@ -111,13 +123,6 @@ public class ArenaRegionShapeManager {
 
 	public void reload() {
 		regions = loader.reload();
-		regions.add(new CuboidRegion());
-		regions.add(new CylindricRegion());
-		regions.add(new SphericRegion());
-
-		for (ArenaRegionShape mod : regions) {
-			db.i("module ArenaRegion loaded: "
-					+ mod.getName() + " (version " + mod.getVersion() +")");
-		}
+		fill();
 	}
 }

@@ -441,6 +441,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		return (offset < bvdiff.getDistance(loc));
 	}
 
+	public void onThisLoad() {
+	}
+
 	public void protectionAdd(RegionProtection rp) {
 		if (rp == null) {
 			protectionSetAll(true);

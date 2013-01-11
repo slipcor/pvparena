@@ -74,6 +74,7 @@ public class ArenaModuleManager {
 		mods.add(new WarmupJoin());
 
 		for (ArenaModule mod : mods) {
+			mod.onThisLoad();
 			db.i("module ArenaModule loaded: "
 					+ mod.getName() + " (version " + mod.version() +")");
 		}

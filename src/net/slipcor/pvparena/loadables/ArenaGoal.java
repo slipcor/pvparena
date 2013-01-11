@@ -168,6 +168,9 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	public void initate(Player player) {
 	}
 
+	public void onThisLoad() {
+	}
+
 	public void parseLeave(Player player) {
 	}
 	

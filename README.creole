@@ -45,7 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v0.10.2.31 - No more restarts! Modules shall NOT rely on server restarts!
+* v0.10.2.31 - No more restarts! Modules shall NOT rely on server restarts! - No more restarts! Modules shall NOT rely on server restarts!
 * v0.10.2.30 - WorldEdit module announcements
 * v0.10.2.29 - fix the arena end timer
 * v0.10.2.28 - stop kicking everyone on start !!!

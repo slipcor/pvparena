@@ -153,6 +153,9 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	
 	public void onPlayerVelocity(PlayerVelocityEvent event) {
 	}
+
+	public void onThisLoad() {
+	}
 	
 	public void parseJoin(CommandSender sender, ArenaTeam team) {
 	}

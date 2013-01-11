@@ -79,6 +79,7 @@ public class ArenaGoalManager {
 		types.add(new GoalTime());
 
 		for (ArenaGoal type : types) {
+			type.onThisLoad();
 			db.i("module ArenaType loaded: " + type.getName() + " (version "
 					+ type.version() + ")");
 		}
