@@ -8,10 +8,12 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -22,6 +24,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -51,7 +54,7 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.7";
+		return "v0.10.2.31";
 	}
 
 	int priority = 8;
@@ -280,6 +283,16 @@ public class GoalTank extends ArenaGoal {
 		}
 		tankTeam.add(tank);
 		tanks.put(arena, tank.getName());
+		
+		ArenaClass tankClass = arena.getClass("%tank%");
+		if (tankClass != null) {
+			tank.setArenaClass(tankClass);
+			tankClass.equip(tank.get());
+			for (ArenaModule mod : arena.getMods()) {
+				mod.parseRespawn(tank.get(), tankTeam, DamageCause.CUSTOM, tank.get());
+			}
+		}
+		
 		arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKMODE, tank.getName()));
 		arena.tpPlayerToCoordName(tank.get(), "tank");
 		arena.getTeams().add(tankTeam);
