@@ -138,8 +138,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						break;
 					}
 				}
-				if (!found)
+				if (!found) {
 					return team.getName() + "flag not set";
+                                }
 			}
 		}
 		return null;
@@ -957,8 +958,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	@Override
 	public void unload(Player player) {
 		disconnect(ArenaPlayer.parsePlayer(player.getName()));
-		if (allowsJoinInBattle())
+		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
+                }
 	}
 	
 	@EventHandler

@@ -58,9 +58,9 @@ public class PALocation {
 	}
 
 	public double getDistance(PALocation o) {
-		if (o == null)
-			throw new IllegalArgumentException(
-					"Cannot measure distance to a null location");
+		if (o == null) { 
+			throw new IllegalArgumentException("Cannot measure distance to a null location");
+                }
 		if (!o.world.equals(world)) {
 			throw new IllegalArgumentException("Cannot measure distance between " + world + " and " + o.world);
 		}

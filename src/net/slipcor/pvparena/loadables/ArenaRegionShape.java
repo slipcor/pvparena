@@ -189,8 +189,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 *         otherwise
 	 */
 	public static boolean checkRegions(Arena arena) {
-		if (!arena.getArenaConfig().getBoolean(CFG.USES_OVERLAPCHECK))
+		if (!arena.getArenaConfig().getBoolean(CFG.USES_OVERLAPCHECK)) {
 			return true;
+                }
 		db.i("checking regions");
 
 		return ArenaManager.checkRegions(arena);
@@ -270,9 +271,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 */
 	public static boolean tooFarAway(Arena arena, Player player) {
 		int joinRange = arena.getArenaConfig().getInt(CFG.JOIN_RANGE);
-		if (joinRange < 1)
+		if (joinRange < 1) {
 			return false;
-
+                }
 		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.BATTLE);
 		
 		if (ars.size() < 1) {
@@ -335,8 +336,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void applyFlags(int f) {
 		for (RegionFlag rf : RegionFlag.values())
-			if ((f & (int)Math.pow(2, rf.ordinal())) != 0)
+			if ((f & (int)Math.pow(2, rf.ordinal())) != 0) {
 				flags.add(rf);
+                        }
 	}
 
 	public void applyProtections(int p) {
@@ -433,8 +435,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public boolean isInRange(int offset, PABlockLocation loc) {
-		if (!world.equals(loc.getWorldName()))
+		if (!world.equals(loc.getWorldName())) {
 			return false;
+                }
 
 		PABlockLocation bvdiff = getCenter();
 

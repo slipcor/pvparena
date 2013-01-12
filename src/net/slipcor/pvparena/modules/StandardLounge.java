@@ -73,9 +73,9 @@ public class StandardLounge extends ArenaModule {
 
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
-		if (!join)
+		if (!join) {
 			return result; // we only care about joining, ignore spectators
-		
+                }
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}
@@ -184,7 +184,8 @@ public class StandardLounge extends ArenaModule {
 	
 	@Override
 	public void parseJoin(CommandSender player, ArenaTeam team) {
-		if (arena.START_ID != null)
+		if (arena.START_ID != null) {
 			arena.countDown();
+                }
 	}	
 }

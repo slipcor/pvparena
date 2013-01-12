@@ -77,8 +77,9 @@ public class NCBLoadable implements Cloneable {
 	public InputStream getResource(String name) {
 		ZipEntry entry = jar.getEntry(name);
 		
-		if (entry == null)
+		if (entry == null) {
 			return null;
+                }
 		
 		try { return jar.getInputStream(entry); } catch (IOException e) { return null; }
 	}

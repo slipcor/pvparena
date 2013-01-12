@@ -161,8 +161,9 @@ public class Metrics {
 				this.configuration.save(this.configurationFile);
 			}
 
-			if (this.task == null)
+			if (this.task == null) {
 				start();
+                        }
 		}
 	}
 
@@ -242,17 +243,19 @@ public class Metrics {
 			throw new IOException(response);
 		}
 
-		if (response.contains("OK This is your first update this hour"))
+		if (response.contains("OK This is your first update this hour")) {
 			synchronized (this.graphs) {
 				Iterator<Graph> iter = this.graphs.iterator();
 
 				while (iter.hasNext()) {
 					Graph graph = (Graph) iter.next();
 
-					for (Plotter plotter : graph.getPlotters())
+					for (Plotter plotter : graph.getPlotters()) {
 						plotter.reset();
+                                        }
 				}
 			}
+                }
 	}
 
 	private boolean isMineshafterPresent() {

@@ -42,9 +42,9 @@ public class BattlefieldJoin extends ArenaModule {
 
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
-		if (!join)
+		if (!join) {
 			return result; // we only care about joining, ignore spectators
-		
+                }
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}

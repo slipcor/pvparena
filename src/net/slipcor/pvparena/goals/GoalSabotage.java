@@ -102,8 +102,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 						break;
 					}
 				}
-				if (!found)
+				if (!found) {
 					return team.getName() + "tnt not set";
+                                }
 			}
 		}
 		return null;
@@ -149,11 +150,12 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		for (ArenaTeam team : arena.getTeams()) {
 			String aTeam = team.getName();
 
-			if (aTeam.equals(pTeam.getName()))
+			if (aTeam.equals(pTeam.getName())) {
 				continue;
-			if (team.getTeamMembers().size() < 1)
+                        }
+			if (team.getTeamMembers().size() < 1) {
 				continue; // dont check for inactive teams
-			
+                        }
 			db.i("checking for tnt of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
 			db.i("block: " + vLoc.toString(), player);

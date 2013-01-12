@@ -27,8 +27,9 @@ public abstract class PA__Command {
 	public static boolean argCountValid(CommandSender sender, String[] args, Integer[] validCounts) {
 		
 		for (int i : validCounts) {
-			if (i == args.length)
+			if (i == args.length) {
 				return true;
+                        }
 		}
 		
 		Arena.pmsg(sender, Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), StringParser.joinArray(validCounts, "|")));

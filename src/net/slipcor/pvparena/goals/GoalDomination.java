@@ -109,9 +109,9 @@ public class GoalDomination extends ArenaGoal {
 				count++;
 			}
 		}
-		if (count < 1)
+		if (count < 1) {
 			return "flags: " + count + " / 1";
-		
+                }
 		return null;
 	}
 

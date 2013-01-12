@@ -209,8 +209,9 @@ public class CylindricRegion extends ArenaRegionShape {
 		}
 		
 		for (Block b : border) {
-			if (!isInNoWoolSet(b)) 
+			if (!isInNoWoolSet(b)) {
 				player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
+                        }
 		}
 		
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
@@ -237,9 +238,9 @@ public class CylindricRegion extends ArenaRegionShape {
 	@Override
 	public boolean contains(PABlockLocation loc) {
 		if (this.getLocs()[0] == null || this.getLocs()[1] == null || loc == null
-				|| !loc.getWorldName().equals(world))
+				|| !loc.getWorldName().equals(world)) {
 			return false; // no arena, no container or not in the same world
-
+                }
 		if (loc.getY() > this.getLocs()[1].getY()) {
 			return false;
 		}

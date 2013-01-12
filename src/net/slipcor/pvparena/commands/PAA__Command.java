@@ -28,8 +28,9 @@ public abstract class PAA__Command {
 			String[] args, Integer[] validCounts) {
 		
 		for (int i : validCounts) {
-			if (i == args.length)
+			if (i == args.length) {
 				return true;
+                        }
 		}
 
 		String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,

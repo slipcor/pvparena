@@ -57,8 +57,9 @@ public class TeleportRunnable implements Runnable {
 			ap.get().teleport(l.toLocation());
 			ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
-		if (!soft)
+		if (!soft) {
 			ap.setLocation(null);
+                }
 	}
 
 }

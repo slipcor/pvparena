@@ -37,8 +37,9 @@ public class RegionRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		if (!Debug.override)
+		if (!Debug.override) {
 			db.i("RegionRunnable commiting");
+                }
 		/*
 		 * J - is a join region
 		 * I - is a fight in progress?

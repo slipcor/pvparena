@@ -394,14 +394,14 @@ public class Help {
 		PVPArena.instance.getDataFolder().mkdir();
 		File configFile = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/help_" + s + ".yml");
-		if (!(configFile.exists()))
+		if (!(configFile.exists())) {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating help language file.");
 			}
-		
+                }
 		boolean override = false;
 
 		YamlConfiguration config = new YamlConfiguration();

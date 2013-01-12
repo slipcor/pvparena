@@ -515,8 +515,9 @@ public class Config {
 	}
 
 	public Set<String> getKeys(String path) {
-		if (config.get(path) == null)
+		if (config.get(path) == null) {
 			return null;
+                }
 
 		ConfigurationSection section = config.getConfigurationSection(path);
 		return section.getKeys(false);
@@ -524,8 +525,9 @@ public class Config {
 
 	@SuppressWarnings("unchecked")
 	public List<String> getStringList(String path, List<String> def) {
-		if (config.get(path) == null)
+		if (config.get(path) == null) {
 			return def != null ? def : new LinkedList<String>();
+                }
 
 		List<?> list = config.getStringList(path);
 		return (List<String>) list;
@@ -590,17 +592,17 @@ public class Config {
 	 */
 	public static PABlockLocation parseBlockLocation(String coords) {
 		String[] parts = coords.split(",");
-		if (parts.length != 4)
-			throw new IllegalArgumentException(
-					"Input string must contain world, x, y, and z: " + coords);
+		if (parts.length != 4) {
+			throw new IllegalArgumentException("Input string must contain world, x, y, and z: " + coords);
+                }
 
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
 		Integer z = parseInteger(parts[3]);
 
-		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null) {
+			throw new NullPointerException("Some of the parsed values are null!");
+                }
 
 		return new PABlockLocation(parts[0], x, y, z);
 	}
@@ -621,9 +623,10 @@ public class Config {
 			parts = coords.split(",");
 		}
 		
-		if (parts.length != 6)
+		if (parts.length != 6) {
 			throw new IllegalArgumentException(
 					"Input string must contain world, x, y, z, yaw and pitch: " + coords);
+                }
 		
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
@@ -631,10 +634,9 @@ public class Config {
 		Float yaw = parseFloat(parts[4]);
 		Float pitch = parseFloat(parts[5]);
 
-		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null || yaw == null || pitch == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
-
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null || yaw == null || pitch == null) {
+			throw new NullPointerException("Some of the parsed values are null!");
+                }
 		return new PALocation(parts[0], x, y, z, pitch, yaw);
 	}
 
@@ -655,19 +657,18 @@ public class Config {
 			parts = coords.split(",");
 		}
 		
-		if (parts.length != 5)
-			throw new IllegalArgumentException(
-					"Input string must contain x, y, z, yaw and pitch: " + coords);
-		
+		if (parts.length != 5) {
+			throw new IllegalArgumentException("Input string must contain x, y, z, yaw and pitch: " + coords);
+                }
 		Integer x = parseInteger(parts[0]);
 		Integer y = parseInteger(parts[1]);
 		Integer z = parseInteger(parts[2]);
 		Float yaw = parseFloat(parts[3]);
 		Float pitch = parseFloat(parts[4]);
 
-		if (Bukkit.getWorld(world) == null || x == null || y == null || z == null || yaw == null || pitch == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
+		if (Bukkit.getWorld(world) == null || x == null || y == null || z == null || yaw == null || pitch == null) {
+			throw new NullPointerException("Some of the parsed values are null!");
+                }
 
 		return new PALocation(world, x, y, z, pitch, yaw);
 	}
@@ -682,13 +683,11 @@ public class Config {
 		
 		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
 		
-		if (parts.length < 11)
-			throw new IllegalArgumentException(
-					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: " + coords);
-		
+		if (parts.length < 11) {
+			throw new IllegalArgumentException("Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: " + coords);
+                }
 		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
-			throw new IllegalArgumentException(
-					"Input string does not contain valid region shape: " + coords);
+			throw new IllegalArgumentException("Input string does not contain valid region shape: " + coords);
 		}
 		Integer x1 = parseInteger(parts[1]);
 		Integer y1 = parseInteger(parts[2]);
@@ -700,9 +699,9 @@ public class Config {
 		Integer prots = parseInteger(parts[9]);
 
 		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null || flags == null || prots == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
+				|| z2 == null || flags == null || prots == null) {
+                        throw new NullPointerException("Some of the parsed values are null!");
+                }
 
 		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };

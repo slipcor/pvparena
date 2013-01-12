@@ -416,8 +416,9 @@ public class ArenaPlayer {
 
 	public PALocation getLocation() {
 		db.i("reading loc!", this.name);
-		if (location != null)
+		if (location != null) {
 			db.i(": " + location.toString(), this.name);
+                }
 		return location;
 	}
 
