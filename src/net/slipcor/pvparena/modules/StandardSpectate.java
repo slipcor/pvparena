@@ -49,8 +49,9 @@ public class StandardSpectate extends ArenaModule {
 	@Override
 	public PACheck checkJoin(CommandSender sender,
 			PACheck res, boolean join) {
-		if (join)
+		if (join) {
 			return res;
+                }
 		
 		if (res.getPriority() < priority) {
 			res.setPriority(this, priority);

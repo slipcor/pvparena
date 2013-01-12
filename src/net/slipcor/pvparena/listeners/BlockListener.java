@@ -139,11 +139,11 @@ public class BlockListener implements Listener {
 	public void onBlockBurn(BlockBurnEvent event) {
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getBlock()
 				.getLocation()), RegionProtection.FIRE);
-		if (arena == null)
+		if (arena == null) {
 			return; // no arena => out
 
 		//db.i("block burn inside the arena");
-
+                }
 		if (isProtected(event.getBlock().getLocation(), event, RegionProtection.FIRE)) {
 			return;
 		}
@@ -262,9 +262,9 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		if (arena == null)
+		if (arena == null) {
 			return; // no arena => out
-
+                }
 		for (BlockState block : event.getBlocks()) {
 			arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(block.getLocation()), RegionProtection.NATURE);
 			if (arena != null) {
@@ -316,9 +316,9 @@ public class BlockListener implements Listener {
 			}
 		}
 
-		if (arena == null)
+		if (arena == null) {
 			return; // no arena => out
-
+                }
 		db.i("block piston extend inside the arena");
 		for (Block block : event.getBlocks()) {
 			

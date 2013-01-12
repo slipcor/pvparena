@@ -35,9 +35,9 @@ public class PABlockLocation {
 	}
 
 	public double getDistance(PABlockLocation o) {
-		if (o == null)
-			throw new IllegalArgumentException(
-					"Cannot measure distance to a null location");
+		if (o == null) {
+			throw new IllegalArgumentException("Cannot measure distance to a null location");
+                }
 		if (!o.world.equals(world)) {
 			throw new IllegalArgumentException("Cannot measure distance between " + world + " and " + o.world);
 		}

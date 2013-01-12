@@ -84,8 +84,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 						break;
 					}
 				}
-				if (!found)
+				if (!found) {
 					return team.getName() + "spawn not set";
+                                }
 			}
 		}
 		return null;
@@ -271,8 +272,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public void initate(Player player) {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		if (lives.get(ap.getArenaTeam().getName()) == null)
+		if (lives.get(ap.getArenaTeam().getName()) == null) {
 			lives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
+                }
 	}
 
 	@Override
@@ -358,7 +360,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	
 	@Override
 	public void unload(Player player) {
-		if (allowsJoinInBattle())
+		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
+                }
 	}
 }

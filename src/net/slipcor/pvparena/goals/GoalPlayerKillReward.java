@@ -120,8 +120,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 							break;
 						}
 					}
-					if (!found)
+					if (!found) {
 						return team.getName() + "spawn not set";
+                                        }
 				}
 			}
 			return null;
@@ -214,8 +215,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT))
+				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
+                                }
 
 				if (arena.isFreeForAll()) {
 					
@@ -303,9 +305,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				PlayerState.fullReset(arena, ap.get());
 			}
 
-			if (ArenaManager.checkAndCommit(arena, false))
+			if (ArenaManager.checkAndCommit(arena, false)) {
 				return;
-			
+                        }
 			PACheck.handleEnd(arena, false);
 		} else {
 			i--;

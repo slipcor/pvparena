@@ -94,8 +94,9 @@ public class GoalPlayerLives extends ArenaGoal {
 							break;
 						}
 					}
-					if (!found)
+					if (!found) {
 						return team.getName() + "spawn not set";
+                                        }
 				}
 			}
 			return null;
@@ -160,9 +161,9 @@ public class GoalPlayerLives extends ArenaGoal {
 		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT))
+				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
-
+                                }
 				if (arena.isFreeForAll()) {
 					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");

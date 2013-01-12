@@ -152,9 +152,9 @@ public class GoalTank extends ArenaGoal {
 		}
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT))
+				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
-				
+                                }
 				if (tanks.containsValue(ap.getName())) {
 					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");

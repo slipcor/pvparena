@@ -32,8 +32,9 @@ public class PVPArenaAPI {
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
 	public static String getArenaName(Player player) {
-		if (!Debug.override)
-			db.i("API: get arena of player: " + player.getName(), player);
+		if (!Debug.override) {
+                    db.i("API: get arena of player: " + player.getName(), player);
+                }
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		return (arena == null) ? "" : arena.getName();
 	}
@@ -46,8 +47,9 @@ public class PVPArenaAPI {
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
 	public static String getArenaNameByLocation(Location location) {
-		if (!Debug.override)
+		if (!Debug.override) {
 			db.i("API: get arena of location: " + location.toString());
+                }
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(location));
 		return (arena == null) ? "" : arena.getName();
 	}
@@ -60,8 +62,9 @@ public class PVPArenaAPI {
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
 	public static HashSet<String> getArenaNamesByLocation(Location location) {
-		if (!Debug.override)
+		if (!Debug.override) {
 			db.i("API: get arena of location: " + location.toString());
+                }
 		HashSet<Arena> arenas = ArenaManager.getArenasByRegionLocation(new PABlockLocation(location));
 		
 		HashSet<String> result = new HashSet<String>();

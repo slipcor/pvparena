@@ -136,9 +136,9 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 						
 						String reason = result.getReason();
 						
-						if (reason != null && !reason.isEmpty())
+						if (reason != null && !reason.isEmpty()) {
 							getLogger().log(Level.INFO, "The JAR file " + file.getName() + " is not initialised: " + reason);
-						
+                                                }
 					} else { jarFile.close(); throw new ClassNotFoundException(); }
 					
 				} else { jarFile.close(); throw new ClassNotFoundException(); }
@@ -202,8 +202,9 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 		
 		for (String name : names) {
 			for (T t : loadables) {
-				if (t.getName().equals(name))
+				if (t.getName().equals(name)) {
 					sortedLoadables.add(t);
+                                }
 			}
 		}
 		

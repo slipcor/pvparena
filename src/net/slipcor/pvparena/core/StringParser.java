@@ -151,8 +151,9 @@ public class StringParser {
 		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
 		 */
 		for (DyeColor dc : DyeColor.values()) {
-			if (dc.name().equalsIgnoreCase(color))
+			if (dc.name().equalsIgnoreCase(color)) {
 				return dc.getData();
+                        }
 		}
 		PVPArena.instance.getLogger().warning("unknown color enum: " + color);
 
