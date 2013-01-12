@@ -287,6 +287,7 @@ public class GoalTank extends ArenaGoal {
 		ArenaClass tankClass = arena.getClass("%tank%");
 		if (tankClass != null) {
 			tank.setArenaClass(tankClass);
+			InventoryManager.clearInventory(tank.get());
 			tankClass.equip(tank.get());
 			for (ArenaModule mod : arena.getMods()) {
 				mod.parseRespawn(tank.get(), tankTeam, DamageCause.CUSTOM, tank.get());

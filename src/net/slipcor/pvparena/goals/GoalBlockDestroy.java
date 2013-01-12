@@ -405,8 +405,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				paTeamLives.put(team.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_BLOCKDESTROY_LIVES, 1));
 			}
-			takeBlock(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "block"));
+			HashMap<String, PALocation> map = SpawnManager.getSpawnMap(arena, "blocks");
+			for (String s : map.keySet()) {
+				takeBlock(team.getColor().name(), false,
+						SpawnManager.getCoords(arena, s));
+			}
 		}
 	}
 	

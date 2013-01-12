@@ -611,8 +611,11 @@ public class GoalDomination extends ArenaGoal {
 				paTeamLives.put(team.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES, 3));
 			}
-			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
+			HashMap<String, PALocation> map = SpawnManager.getSpawnMap(arena, "flags");
+			for (String s : map.keySet()) {
+				takeFlag(team.getColor().name(), false,
+						SpawnManager.getCoords(arena, s));
+			}
 		}
 
 		DominationMainRunnable dmr = new DominationMainRunnable(arena, this);

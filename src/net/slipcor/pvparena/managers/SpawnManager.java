@@ -408,6 +408,10 @@ public class SpawnManager {
 				if (!name.startsWith("flag")) {
 					continue;
 				}
+			} else if (sTeam.equals("blocks")) {
+				if (!name.contains("block")) {
+					continue;
+				}
 			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
 				String sName = sTeam.replace("flag", "");
 				sName = sName.replace("pumpkin", "");
