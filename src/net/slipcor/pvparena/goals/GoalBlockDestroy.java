@@ -61,7 +61,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	
 	@Override
 	public String version() {
-		return "v0.10.2.28";
+		return "v0.10.2.33";
 	}
 
 	int priority = 8;
@@ -522,10 +522,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		for (ArenaTeam team : arena.getTeams()) {
 			String blockTeam = team.getName();
 
-			if (blockTeam.equals(pTeam.getName())) {
-				db.i("equals!OUT! ", player);
-				continue;
-			}
 			if (team.getTeamMembers().size() < 1 && !team.getName().equals("touchdown")) {
 				db.i("size!OUT! ", player);
 				continue; // dont check for inactive teams
@@ -542,6 +538,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			if ((vBlock != null) && (vLoc.distance(vBlock) < 2)) {
 				
 				/////////
+
+				if (blockTeam.equals(pTeam.getName())) {
+					db.i("is own team! cancel and OUT! ", player);
+					event.setCancelled(true);
+					continue;
+				}
 				
 				String sTeam = pTeam.getName();
 				

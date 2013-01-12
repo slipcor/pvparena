@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.33 - stop people from destroying their own block in BlockDestroy ^^
 * v0.10.2.32 - add a special class being assigned when being the tank: %tank%
 * v0.10.2.31 - No more restarts! Modules shall NOT rely on server restarts! - No more restarts! Modules shall NOT rely on server restarts!
 * v0.10.2.30 - WorldEdit module announcements
