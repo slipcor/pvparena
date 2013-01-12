@@ -52,7 +52,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 /**
- * <pre>Player Listener class</pre>
+ * <pre>
+ * Player Listener class
+ * </pre>
  * 
  * @author slipcor
  * 
@@ -62,35 +64,38 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 public class PlayerListener implements Listener {
 	private static Debug db = new Debug(23);
 
-	private boolean checkAndCommitCancel(Arena arena, Player player, Cancellable event) {
+	private boolean checkAndCommitCancel(Arena arena, Player player,
+			Cancellable event) {
 		if (!(event instanceof PlayerInteractEvent)) {
 			return false;
 		}
 		PlayerInteractEvent e = (PlayerInteractEvent) event;
 		Material mat = e.getClickedBlock().getType();
-		Material check = arena == null ? Material.IRON_BLOCK : arena.getReadyBlock();
-		if (mat == Material.SIGN || mat == Material.SIGN_POST || mat == Material.WALL_SIGN || mat == check) {
+		Material check = arena == null ? Material.IRON_BLOCK : arena
+				.getReadyBlock();
+		if (mat == Material.SIGN || mat == Material.SIGN_POST
+				|| mat == Material.WALL_SIGN || mat == check) {
 			db.i("signs and ready blocks allowed!", player);
 			db.i("> false", player);
 			return false;
 		}
-		
+
 		db.i("checkAndCommitCancel", player);
 		if (arena == null || player.hasPermission("pvparena.admin")) {
 			db.i("no arena or admin", player);
 			db.i("> false", player);
 			return false;
 		}
-		
+
 		if (arena != null && !arena.isFightInProgress()) {
 			db.i("arena != null and fight in progress => cancel", player);
 			db.i("> true", player);
 			event.setCancelled(true);
 			return true;
 		}
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		
+
 		if (ap.getStatus() != Status.FIGHT) {
 			db.i("not fighting => cancel", player);
 			db.i("> true", player);
@@ -169,16 +174,17 @@ public class PlayerListener implements Listener {
 				return;
 			}
 		}
-		
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>());
-		
+
+		list = arena.getArenaConfig().getStringList(
+				CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>());
+
 		if (list == null || list.size() < 1) {
 			list = new ArrayList<String>();
 			list.add("ungod");
 			arena.getArenaConfig().set(CFG.LISTS_CMDWHITELIST, list);
 			arena.getArenaConfig().save();
 		}
-		
+
 		list.add("pa");
 		list.add("pvparena");
 		db.i("checking command whitelist", player);
@@ -189,9 +195,10 @@ public class PlayerListener implements Listener {
 				return;
 			}
 		}
-		
+
 		db.i("command blocked: " + event.getMessage(), player);
-		arena.msg(player, Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
+		arena.msg(player,
+				Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
 		event.setCancelled(true);
 	}
 
@@ -202,13 +209,15 @@ public class PlayerListener implements Listener {
 		Arena arena = ap.getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
-                }
-		if (ap.getStatus().equals(Status.READY) || ap.getStatus().equals(Status.LOUNGE)) {
+		}
+		if (ap.getStatus().equals(Status.READY)
+				|| ap.getStatus().equals(Status.LOUNGE)) {
 			event.setCancelled(true);
 			arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
 			return;
 		}
-		if (!BlockListener.isProtected(player.getLocation(), event, RegionProtection.DROP)) {
+		if (!BlockListener.isProtected(player.getLocation(), event,
+				RegionProtection.DROP)) {
 			return; // no drop protection
 		}
 
@@ -217,17 +226,17 @@ public class PlayerListener implements Listener {
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return;
-                }
+		}
 		PACheck.handlePlayerDeath(arena, player, event);
 	}
-	
+
 	/**
 	 * pretend a player death
 	 * 
@@ -238,7 +247,8 @@ public class PlayerListener implements Listener {
 	 * @param eEvent
 	 *            the event triggering the death
 	 */
-	public static void finallyKillPlayer(Arena arena, Player player, Event eEvent) {
+	public static void finallyKillPlayer(Arena arena, Player player,
+			Event eEvent) {
 		EntityDamageEvent cause = null;
 
 		if (eEvent instanceof EntityDeathEvent) {
@@ -249,8 +259,9 @@ public class PlayerListener implements Listener {
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		ArenaTeam team = ap.getArenaTeam();
-		
-		String playerName = (team != null) ? team.colorizePlayer(player) : player.getName();
+
+		String playerName = (team != null) ? team.colorizePlayer(player)
+				: player.getName();
 		if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 			arena.broadcast(Language.parse(
 					MSG.FIGHT_KILLED_BY,
@@ -262,45 +273,49 @@ public class PlayerListener implements Listener {
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			InventoryManager.drop(player);
 		}
-		
-		if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null || !ArenaPlayer.parsePlayer(player.getName()).getArenaClass().getName().equalsIgnoreCase("custom")) {
+
+		if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
+				|| !ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
+						.getName().equalsIgnoreCase("custom")) {
 			InventoryManager.clearInventory(player);
 		}
-		
-		arena.removePlayer(player, arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
-		
+
+		arena.removePlayer(player,
+				arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
+
 		ap.setStatus(Status.LOST);
 		ap.addDeath();
-		
+
 		PlayerState.fullReset(arena, player);
-		
+
 		if (ArenaManager.checkAndCommit(arena, false)) {
 			return;
-                }
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		db.i("onPlayerInteract", player);
-		
+
 		if (event.getAction().equals(Action.PHYSICAL)) {
 			db.i("returning: physical", player);
 			return;
 		}
-		
-		db.i("event pre cancelled: " + String.valueOf(event.isCancelled()), player);
-		
+
+		db.i("event pre cancelled: " + String.valueOf(event.isCancelled()),
+				player);
+
 		Arena arena = null;
-		
+
 		if (event.hasBlock()) {
-			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getClickedBlock().getLocation()));
+			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
+					event.getClickedBlock().getLocation()));
 			if (checkAndCommitCancel(arena, event.getPlayer(), event)) {
 				return;
 			}
 		}
-		
-		
+
 		if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
 			db.i("returning: #1", player);
 			return;
@@ -326,10 +341,13 @@ public class PlayerListener implements Listener {
 
 		PACheck.handleInteract(arena, player, event, event.getClickedBlock());
 
-		db.i("event post cancelled: " + String.valueOf(event.isCancelled()), player);
-		
-		if (arena.isFightInProgress() && !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
-			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!", player);
+		db.i("event post cancelled: " + String.valueOf(event.isCancelled()),
+				player);
+
+		if (arena.isFightInProgress()
+				&& !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
+			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!",
+					player);
 			return;
 		}
 
@@ -354,13 +372,14 @@ public class PlayerListener implements Listener {
 				db.i("sign click!", player);
 				Sign sign = (Sign) block.getState();
 
-				if (((sign.getLine(0).equalsIgnoreCase("custom"))
-						|| (arena.getClass(sign.getLine(0)) != null)) && (team != null)) {
+				if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
+						.getClass(sign.getLine(0)) != null)) && (team != null)) {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
 				} else {
-					db.i("|"+sign.getLine(0)+"|", player);
-					db.i(String.valueOf(arena.getClass(sign.getLine(0))), player);
+					db.i("|" + sign.getLine(0) + "|", player);
+					db.i(String.valueOf(arena.getClass(sign.getLine(0))),
+							player);
 					db.i(String.valueOf(team), player);
 				}
 				return;
@@ -390,25 +409,28 @@ public class PlayerListener implements Listener {
 				if (!arena.isFightInProgress()) {
 					if (!ap.getStatus().equals(Status.READY)) {
 						arena.msg(player, Language.parse(MSG.READY_DONE));
-						arena.broadcast(Language.parse(MSG.PLAYER_READY, ap.getArenaTeam().colorizePlayer(ap.get())));
+						arena.broadcast(Language.parse(MSG.PLAYER_READY, ap
+								.getArenaTeam().colorizePlayer(ap.get())));
 					}
 					ap.setStatus(Status.READY);
 					if (ap.getArenaTeam().isEveryoneReady()) {
-						arena.broadcast(Language.parse(MSG.TEAM_READY, ap.getArenaTeam().getColoredName()));
+						arena.broadcast(Language.parse(MSG.TEAM_READY, ap
+								.getArenaTeam().getColoredName()));
 					}
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
 						if (!TeamManager.checkEven(arena)) {
-							arena.msg(player, Language.parse(MSG.NOTICE_WAITING_EQUAL));
+							arena.msg(player,
+									Language.parse(MSG.NOTICE_WAITING_EQUAL));
 							return; // even teams desired, not done => announce
 						}
 					}
 
 					if (!ArenaRegionShape.checkRegions(arena)) {
-						arena.msg(player, Language.parse(MSG.NOTICE_WAITING_FOR_ARENA));
+						arena.msg(player,
+								Language.parse(MSG.NOTICE_WAITING_FOR_ARENA));
 						return;
 					}
-
 
 					String error = arena.ready();
 
@@ -427,8 +449,9 @@ public class PlayerListener implements Listener {
 				} else {
 					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
 				}
-				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.FIGHT);
-				
+				ArenaPlayer.parsePlayer(player.getName()).setStatus(
+						Status.FIGHT);
+
 				ArenaModuleManager.lateJoin(arena, player);
 			}
 		}
@@ -437,13 +460,13 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		
+
 		if (player.isDead()) {
 			return;
 		}
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		
+
 		ap.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players
@@ -451,11 +474,11 @@ public class PlayerListener implements Listener {
 
 		ap.readDump();
 		Arena a = ap.getArena();
-		
+
 		if (a != null) {
 			a.playerLeave(player, CFG.TP_EXIT, true);
 		}
-		
+
 		if (!player.isOp()) {
 			return; // no OP => OUT
 		}
@@ -469,10 +492,9 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
-                }
+		}
 		arena.playerLeave(player, CFG.TP_EXIT, false);
 	}
-	
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
@@ -494,9 +516,11 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP)) {
+		if (arena == null
+				|| !BlockListener.isProtected(player.getLocation(), event,
+						RegionProtection.PICKUP)) {
 			return; // no fighting player or no powerups => OUT
-                }
+		}
 		ArenaModuleManager.onPlayerPickupItem(arena, event);
 	}
 
@@ -506,7 +530,7 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
-                }
+		}
 		arena.playerLeave(player, CFG.TP_EXIT, false);
 	}
 
@@ -514,40 +538,44 @@ public class PlayerListener implements Listener {
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		
+
 		if (arena == null) {
-			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getTo()));
+			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
+					event.getTo()));
 			if (arena == null) {
 				return; // no fighting player and no arena location => OUT
 			}
 		}
 
-		db.i("onPlayerTeleport: fighting player '"+event.getPlayer().getName()+"' (uncancel)", player);
+		db.i("onPlayerTeleport: fighting player '"
+				+ event.getPlayer().getName() + "' (uncancel)", player);
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
 		db.i("aimed location: " + event.getTo().toString(), player);
-		
-		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass() 
+
+		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass()
 				|| player.hasPermission("pvparena.telepass")) {
 			return; // if allowed => OUT
-                }
+		}
 		db.i("telepass: no!!", player);
-		
-		HashSet<ArenaRegionShape> regions = arena.getRegionsByType(RegionType.BATTLE);
-		
+
+		HashSet<ArenaRegionShape> regions = arena
+				.getRegionsByType(RegionType.BATTLE);
+
 		if (regions == null || regions.size() < 0) {
 			return;
 		}
-		
+
 		boolean from = false;
 		boolean to = false;
-		
+
 		for (ArenaRegionShape r : regions) {
-			from = from?true:r.contains(new PABlockLocation(event.getFrom()));
-			to = to?true:r.contains(new PABlockLocation(event.getTo()));
+			from = from ? true : r
+					.contains(new PABlockLocation(event.getFrom()));
+			to = to ? true : r.contains(new PABlockLocation(event.getTo()));
 		}
-		
+
 		if (from && to) {
 			// teleport inside the arena, allow!
 			return;
@@ -565,7 +593,7 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player or no powerups => OUT
-                }
+		}
 		ArenaModuleManager.onPlayerVelocity(arena, event);
 	}
 

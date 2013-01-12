@@ -553,7 +553,7 @@ public class Language {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating language file.");
 			}
-                }
+        }
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);

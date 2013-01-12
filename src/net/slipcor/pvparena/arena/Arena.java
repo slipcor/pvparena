@@ -57,7 +57,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
- * <pre>Arena class</pre>
+ * <pre>
+ * Arena class
+ * </pre>
  * 
  * contains >general< arena methods and variables
  * 
@@ -102,7 +104,8 @@ public class Arena {
 		this.name = name;
 
 		db.i("loading Arena " + name);
-		File file = new File(PVPArena.instance.getDataFolder().getPath() + "/arenas/" + name + ".yml");
+		File file = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/arenas/" + name + ".yml");
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
@@ -164,7 +167,7 @@ public class Arena {
 			}
 			if (p.getName().equals(sender.getName())) {
 				continue;
-                        }
+			}
 			msg(p.get(), msg);
 		}
 	}
@@ -178,7 +181,8 @@ public class Arena {
 			if (getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)) {
 				db.i("checking class perms", player);
 				if (!(player.hasPermission("pvparena.class." + className))) {
-					this.msg(player, Language.parse(MSG.ERROR_NOPERM_CLASS, className));
+					this.msg(player,
+							Language.parse(MSG.ERROR_NOPERM_CLASS, className));
 					return; // class permission desired and failed =>
 							// announce and OUT
 				}
@@ -187,19 +191,18 @@ public class Arena {
 			if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
 				PAClassSign.remove(signs, player);
 				Block block = sign.getBlock();
-				PAClassSign as = PAClassSign.used(block.getLocation(),
-						signs);
+				PAClassSign as = PAClassSign.used(block.getLocation(), signs);
 				if (as == null) {
 					as = new PAClassSign(block.getLocation());
 					signs.add(as);
 				}
 				if (!as.add(player)) {
-					this.msg(player, Language.parse(MSG.ERROR_CLASS_FULL, className));
+					this.msg(player,
+							Language.parse(MSG.ERROR_CLASS_FULL, className));
 					return;
 				}
 			}
-			
-			
+
 			if (ArenaModuleManager.cannotSelectClass(this, player, className)) {
 				return;
 			}
@@ -207,8 +210,9 @@ public class Arena {
 		InventoryManager.clearInventory(player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getArena() == null) {
-			PVPArena.instance.getLogger().warning("failed to set class " + className
-					+ " to player " + player.getName());
+			PVPArena.instance.getLogger().warning(
+					"failed to set class " + className + " to player "
+							+ player.getName());
 			return;
 		}
 		ap.setArenaClass(className);
@@ -238,8 +242,9 @@ public class Arena {
 			}
 			return;
 		}
-		
-		new StartRunnable(this, getArenaConfig().getInt(CFG.TIME_STARTCOUNTDOWN));
+
+		new StartRunnable(this, getArenaConfig()
+				.getInt(CFG.TIME_STARTCOUNTDOWN));
 	}
 
 	/**
@@ -314,7 +319,7 @@ public class Arena {
 	public HashSet<ArenaGoal> getGoals() {
 		return round == 0 ? goals : rounds.getGoals(round);
 	}
-	
+
 	public HashSet<ArenaModule> getMods() {
 		return mods;
 	}
@@ -335,12 +340,12 @@ public class Arena {
 		Material mMat = Material.IRON_BLOCK;
 		db.i("reading ready block");
 		try {
-			mMat = Material
-					.getMaterial(getArenaConfig().getInt(CFG.READY_BLOCK));
+			mMat = Material.getMaterial(getArenaConfig()
+					.getInt(CFG.READY_BLOCK));
 			if (mMat == Material.AIR) {
-				mMat = Material.getMaterial(getArenaConfig()
-						.getString(CFG.READY_BLOCK));
-                        }
+				mMat = Material.getMaterial(getArenaConfig().getString(
+						CFG.READY_BLOCK));
+			}
 			db.i("mMat now is " + mMat.name());
 		} catch (Exception e) {
 			db.i("exception reading ready block");
@@ -367,15 +372,15 @@ public class Arena {
 	public HashSet<ArenaRegionShape> getRegions() {
 		return regions;
 	}
-	
+
 	public int getRound() {
 		return round;
 	}
-	
+
 	public int getRoundCount() {
 		return rounds.getCount();
 	}
-	
+
 	public PARoundMap getRounds() {
 		return rounds;
 	}
@@ -423,19 +428,19 @@ public class Arena {
 		}
 		return result;
 	}
-	
+
 	public String getWorld() {
 		ArenaRegionShape ars = null;
-		
+
 		for (ArenaRegionShape arss : this.getRegionsByType(RegionType.BATTLE)) {
 			ars = arss;
 			break;
 		}
-		
+
 		if (ars != null) {
 			return ars.getWorldName();
 		}
-		
+
 		return Bukkit.getWorlds().get(0).getName();
 	}
 
@@ -446,13 +451,12 @@ public class Arena {
 	 *            the player to give the reward
 	 */
 	public void giveRewards(Player player) {
-		
+
 		db.i("giving rewards to " + player.getName(), player);
-		
+
 		ArenaModuleManager.giveRewards(this, player);
-		String sItems = getArenaConfig().getString(CFG.ITEMS_REWARDS,
-				"none");
-		
+		String sItems = getArenaConfig().getString(CFG.ITEMS_REWARDS, "none");
+
 		String[] items = sItems.split(",");
 		if (sItems.equals("none")) {
 			items = null;
@@ -463,8 +467,9 @@ public class Arena {
 		PAWinEvent dEvent = new PAWinEvent(this, player, items);
 		Bukkit.getPluginManager().callEvent(dEvent);
 		items = dEvent.getItems();
-		
-		if (items == null || items.length < 1 || cfg.getInt(CFG.ITEMS_MINPLAYERS) > startCount) {
+
+		if (items == null || items.length < 1
+				|| cfg.getInt(CFG.ITEMS_MINPLAYERS) > startCount) {
 			return;
 		}
 
@@ -473,7 +478,8 @@ public class Arena {
 		for (int i = 0; i < items.length; ++i) {
 			ItemStack stack = StringParser.getItemStackFromString(items[i]);
 			if (stack == null) {
-				PVPArena.instance.getLogger().warning("unrecognized item: " + items[i]);
+				PVPArena.instance.getLogger().warning(
+						"unrecognized item: " + items[i]);
 				continue;
 			}
 			if (random && i != randomItem) {
@@ -491,15 +497,15 @@ public class Arena {
 
 	public void goalAdd(ArenaGoal goal) {
 		ArenaGoal nugoal = (ArenaGoal) goal.clone();
-		
+
 		for (ArenaGoal g : goals) {
 			if (goal.getName().equals(g.getName())) {
 				return;
 			}
 		}
-		
+
 		nugoal.setArena(this);
-		
+
 		goals.add(nugoal);
 		updateGoals();
 	}
@@ -507,7 +513,7 @@ public class Arena {
 	public void goalRemove(ArenaGoal goal) {
 		ArenaGoal nugoal = (ArenaGoal) goal.clone();
 		nugoal.setArena(this);
-		
+
 		goals.remove(nugoal);
 		updateGoals();
 	}
@@ -515,10 +521,10 @@ public class Arena {
 	public boolean goalToggle(ArenaGoal goal) {
 		ArenaGoal nugoal = (ArenaGoal) goal.clone();
 		nugoal.setArena(this);
-		
+
 		boolean contains = false;
 		ArenaGoal removeGoal = nugoal;
-		
+
 		for (ArenaGoal g : goals) {
 			if (g.getName().equals(goal.getName())) {
 				contains = true;
@@ -526,7 +532,7 @@ public class Arena {
 				break;
 			}
 		}
-		
+
 		if (contains) {
 			goals.remove(removeGoal);
 			updateGoals();
@@ -628,7 +634,7 @@ public class Arena {
 		if (cause == null) {
 			return Language.parse(MSG.DEATHCAUSE_CUSTOM);
 		}
-		
+
 		db.i("return a damage name for : " + cause.toString(), player);
 		ArenaPlayer ap = null;
 		ArenaTeam team = null;
@@ -639,7 +645,7 @@ public class Arena {
 			ap = ArenaPlayer.parsePlayer(((Player) damager).getName());
 			team = ap.getArenaTeam();
 		}
-		
+
 		EntityDamageEvent lastDamageCause = player.getLastDamageCause();
 
 		switch (cause) {
@@ -647,19 +653,27 @@ public class Arena {
 			if ((damager instanceof Player) && (team != null)) {
 				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
-			
+
 			try {
-				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType(), player);
-				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
-			} catch(Exception e) {
+				db.i("last damager: "
+						+ ((EntityDamageByEntityEvent) lastDamageCause)
+								.getDamager().getType(), player);
+				return Language.parse(MSG.getByName("DEATHCAUSE_"
+						+ ((EntityDamageByEntityEvent) lastDamageCause)
+								.getDamager().getType().name()));
+			} catch (Exception e) {
 
 				return Language.parse(MSG.DEATHCAUSE_CUSTOM);
 			}
 		case ENTITY_EXPLOSION:
 			try {
-				db.i("last damager: " + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType(), player);
-				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((EntityDamageByEntityEvent) lastDamageCause).getDamager().getType().name()));
-			} catch(Exception e) {
+				db.i("last damager: "
+						+ ((EntityDamageByEntityEvent) lastDamageCause)
+								.getDamager().getType(), player);
+				return Language.parse(MSG.getByName("DEATHCAUSE_"
+						+ ((EntityDamageByEntityEvent) lastDamageCause)
+								.getDamager().getType().name()));
+			} catch (Exception e) {
 
 				return Language.parse(MSG.DEATHCAUSE_ENTITY_EXPLOSION);
 			}
@@ -668,15 +682,23 @@ public class Arena {
 				return team.colorizePlayer(ap.get()) + ChatColor.YELLOW;
 			}
 			try {
-				
-				db.i("last damager: " + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType(), player);
-				return Language.parse(MSG.getByName("DEATHCAUSE_" + ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause).getDamager()).getShooter().getType().name()));
-			} catch(Exception e) {
+
+				db.i("last damager: "
+						+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
+								.getDamager()).getShooter().getType(), player);
+				return Language
+						.parse(MSG
+								.getByName("DEATHCAUSE_"
+										+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
+												.getDamager()).getShooter()
+												.getType().name()));
+			} catch (Exception e) {
 
 				return Language.parse(MSG.DEATHCAUSE_PROJECTILE);
 			}
 		default:
-			return Language.parse(MSG.getByName("DEATHCAUSE_" + cause.toString()));
+			return Language.parse(MSG.getByName("DEATHCAUSE_"
+					+ cause.toString()));
 		}
 	}
 
@@ -693,14 +715,14 @@ public class Arena {
 	 *            the arena where this happens
 	 * @param player
 	 *            the leaving player
-	 * @param b 
+	 * @param b
 	 */
 	public void playerLeave(Player player, CFG location, boolean silent) {
-		
+
 		for (ArenaGoal goal : getGoals()) {
 			goal.parseLeave(player);
 		}
-		
+
 		if (!fightInProgress) {
 			startCount--;
 			playedPlayers.remove(player.getName());
@@ -708,29 +730,27 @@ public class Arena {
 		db.i("fully removing player from arena", player);
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (!silent) {
-		
+
 			ArenaTeam team = ap.getArenaTeam();
 			if (team != null) {
-				
+
 				ArenaModuleManager.parsePlayerLeave(this, player, team);
-	
+
 				broadcastExcept(
 						player,
 						Language.parse(MSG.FIGHT_PLAYER_LEFT,
-								team.colorizePlayer(player)
-										+ ChatColor.YELLOW));
+								team.colorizePlayer(player) + ChatColor.YELLOW));
 			} else {
 				broadcastExcept(
 						player,
-						Language.parse(MSG.FIGHT_PLAYER_LEFT,
-								player.getName()
-										+ ChatColor.YELLOW));
+						Language.parse(MSG.FIGHT_PLAYER_LEFT, player.getName()
+								+ ChatColor.YELLOW));
 			}
 			this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
 		}
-		
-		removePlayer(player, getArenaConfig().getString(location),
-				false, silent);
+
+		removePlayer(player, getArenaConfig().getString(location), false,
+				silent);
 
 		if (START_ID != null) {
 			START_ID.cancel();
@@ -753,7 +773,7 @@ public class Arena {
 	 */
 	public String ready() {
 		db.i("ready check !!");
-		
+
 		int players = TeamManager.countPlayersInTeams(this);
 		if (players < 2) {
 			return Language.parse(MSG.ERROR_READY_1_ALONE);
@@ -766,17 +786,19 @@ public class Arena {
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
 					if (!ap.getStatus().equals(Status.READY)) {
-						return Language.parse(MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
+						return Language
+								.parse(MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
 					}
 			}
 		}
-		
+
 		if (!free) {
 			HashSet<String> activeTeams = new HashSet<String>();
 
 			for (ArenaTeam team : getTeams()) {
 				for (ArenaPlayer ap : team.getTeamMembers())
-					if (!getArenaConfig().getBoolean(CFG.READY_CHECKEACHTEAM) || ap.getStatus().equals(Status.READY)) {
+					if (!getArenaConfig().getBoolean(CFG.READY_CHECKEACHTEAM)
+							|| ap.getStatus().equals(Status.READY)) {
 						activeTeams.add(team.getName());
 					}
 			}
@@ -798,7 +820,8 @@ public class Arena {
 				if (p.getArenaClass() == null) {
 					db.i("player has no class", p.get());
 					// player no class!
-					return Language.parse(MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
+					return Language
+							.parse(MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
 				}
 			}
 		}
@@ -851,7 +874,8 @@ public class Arena {
 	 * @param tploc
 	 *            the coord string to teleport the player to
 	 */
-	public void removePlayer(Player player, String tploc, boolean soft, boolean force) {
+	public void removePlayer(Player player, String tploc, boolean soft,
+			boolean force) {
 		db.i("removing player " + player.getName() + (soft ? " (soft)" : "")
 				+ ", tp to " + tploc, player);
 		resetPlayer(player, tploc, soft, force);
@@ -860,16 +884,16 @@ public class Arena {
 		if (!soft && ap.getArenaTeam() != null) {
 			ap.getArenaTeam().remove(ap);
 		}
-		
+
 		remove(player);
 		if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
 			PAClassSign.remove(signs, player);
 		}
-		
+
 		if (getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
 			ap.setArena(null);
 		}
-		
+
 		player.setNoDamageTicks(60);
 	}
 
@@ -924,7 +948,8 @@ public class Arena {
 						false, force);
 			} else {
 				resetPlayer(p.get(),
-						getArenaConfig().getString(CFG.TP_LOSE, "old"), false, force);
+						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
+						force);
 			}
 			new PlayerDestroyRunnable(p);
 		}
@@ -960,11 +985,10 @@ public class Arena {
 		}
 		PVP_ID = null;
 
-		
 		ArenaModuleManager.reset(this, force);
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
-		
+
 		round = 0;
 	}
 
@@ -973,19 +997,22 @@ public class Arena {
 	 * 
 	 * @param player
 	 * @param string
-	 * @param soft if location should be preserved (another tp incoming)
+	 * @param soft
+	 *            if location should be preserved (another tp incoming)
 	 */
-	private void resetPlayer(Player player, String string, boolean soft, boolean force) {
+	private void resetPlayer(Player player, String string, boolean soft,
+			boolean force) {
 		if (player == null) {
 			return;
 		}
-		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""), player);
+		db.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""),
+				player);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		if (ap.getState() != null) {
 			ap.getState().unload();
 		}
-		
+
 		ArenaModuleManager.resetPlayer(this, player, force);
 
 		String sClass = "";
@@ -997,7 +1024,7 @@ public class Arena {
 			InventoryManager.clearInventory(player);
 			ArenaPlayer.reloadInventory(this, player);
 		}
-		
+
 		db.i("string = " + string, player);
 		ap.setTelePass(true);
 		new TeleportRunnable(this, ap, string, soft);
@@ -1009,14 +1036,15 @@ public class Arena {
 	 * @param player
 	 *            the player to access
 	 */
-	public void unKillPlayer(Player player, DamageCause cause,
-			Entity damager) {
-		
+	public void unKillPlayer(Player player, DamageCause cause, Entity damager) {
+
 		db.i("respawning player " + player.getName(), player);
-		PlayerState.playersetHealth(player, getArenaConfig().getInt(CFG.PLAYER_HEALTH, 20));
+		PlayerState.playersetHealth(player,
+				getArenaConfig().getInt(CFG.PLAYER_HEALTH, 20));
 		player.setFoodLevel(getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL, 20));
 		player.setSaturation(getArenaConfig().getInt(CFG.PLAYER_SATURATION, 20));
-		player.setExhaustion((float) getArenaConfig().getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
+		player.setExhaustion((float) getArenaConfig().getDouble(
+				CFG.PLAYER_EXHAUSTION, 0.0));
 		player.setVelocity(new Vector());
 		player.setFallDistance(0);
 
@@ -1026,12 +1054,10 @@ public class Arena {
 		if (team == null) {
 			return;
 		}
-		
+
 		PlayerState.removeEffects(player);
 
-		
-		ArenaModuleManager.parseRespawn(this, player, team,
-				cause, damager);
+		ArenaModuleManager.parseRespawn(this, player, team, cause, damager);
 
 		player.setFireTicks(0);
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
@@ -1064,9 +1090,10 @@ public class Arena {
 			teams.add(new ArenaTeam("free", "WHITE"));
 		} else if (free) {
 			teams.clear();
-			teams.add(new ArenaTeam("free", (String) cfg.getUnsafe("teams.free")));
+			teams.add(new ArenaTeam("free", (String) cfg
+					.getUnsafe("teams.free")));
 		}
-		cfg.set(CFG.GENERAL_TYPE, b?"free":"none");
+		cfg.set(CFG.GENERAL_TYPE, b ? "free" : "none");
 		cfg.save();
 	}
 
@@ -1104,10 +1131,16 @@ public class Arena {
 			for (PALocation spawnLoc : SpawnManager.getSpawns(this, sTeam)) {
 				for (Location playerLoc : players.keySet()) {
 					if (spawnLoc.getDistance(new PALocation(playerLoc)) < 3) {
-						players.get(playerLoc).get().setLastDamageCause(new EntityDamageEvent(players.get(playerLoc).get(), DamageCause.CUSTOM, 1000));
 						players.get(playerLoc)
 								.get()
-								.damage(getArenaConfig().getInt(CFG.DAMAGE_SPAWNCAMP));
+								.setLastDamageCause(
+										new EntityDamageEvent(players.get(
+												playerLoc).get(),
+												DamageCause.CUSTOM, 1000));
+						players.get(playerLoc)
+								.get()
+								.damage(getArenaConfig().getInt(
+										CFG.DAMAGE_SPAWNCAMP));
 					}
 				}
 			}
@@ -1189,7 +1222,7 @@ public class Arena {
 							+ ": " + msg);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
@@ -1219,7 +1252,6 @@ public class Arena {
 			}
 		}
 
-		
 		ArenaModuleManager.tpPlayerToCoordName(this, player, place);
 
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -1238,7 +1270,7 @@ public class Arena {
 			PVPArena.instance.getLogger().warning("Spawn null : " + place);
 			return;
 		}
-		
+
 		ap.setTelePass(true);
 		player.teleport(loc.toLocation());
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
@@ -1249,33 +1281,37 @@ public class Arena {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
 		db.i("trying to join player " + player.getName(), player);
-		
+
 		if (ap.getStatus().equals(Status.NULL)) {
 			// joining DIRECTLY - save loc !!
 			ap.setLocation(new PALocation(player.getLocation()));
 		}
-		
+
 		if (ap.getArenaClass() == null) {
 			String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
 			if (autoClass != null && !autoClass.equals("none")) {
 				if (getClass(autoClass) == null) {
-					msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND,
+							"autoClass"));
 					return false;
 				}
 			}
 		}
-		
+
 		ap.setArena(this);
 		team.add(ap);
 		ap.setStatus(Status.FIGHT);
-		tpPlayerToCoordName(player, (isFreeForAll()?"":team.getName()) + "spawn");
-		
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance, new PlayerStateCreateRunnable(ap, player), 2L);
+		tpPlayerToCoordName(player, (isFreeForAll() ? "" : team.getName())
+				+ "spawn");
+
+		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
+				new PlayerStateCreateRunnable(ap, player), 2L);
 		return true;
 	}
 
 	/**
 	 * Setup an arena based on legacy goals:
+	 * 
 	 * <pre>
 	 * teams - team lives arena
 	 * teamdm - team deathmatch arena
@@ -1287,18 +1323,21 @@ public class Arena {
 	 * sabotage - destroy TNT inside the other team's base
 	 * tank - all vs one!
 	 * </pre>
-	 * @param string legacy goal
+	 * 
+	 * @param string
+	 *            legacy goal
 	 */
 	public void getLegacyGoals(String string) {
 		setFree(false);
 		string = string.toLowerCase();
-		
+
 		if (string.equals("teams")) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("TeamLives"));
 		} else if (string.equals("teamdm")) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("TeamDeathMatch"));
 		} else if (string.equals("dm")) {
-			goalAdd(PVPArena.instance.getAgm().getGoalByName("PlayerDeathMatch"));
+			goalAdd(PVPArena.instance.getAgm()
+					.getGoalByName("PlayerDeathMatch"));
 			this.setFree(true);
 		} else if (string.equals("free")) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("PlayerLives"));
@@ -1321,7 +1360,7 @@ public class Arena {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("Sabotage"));
 			cfg.save();
 		}
-		
+
 		updateGoals();
 	}
 
@@ -1329,8 +1368,8 @@ public class Arena {
 		HashSet<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
 		for (ArenaRegionShape rs : regions) {
 			if (rs.getType().equals(battle)) {
-                            result.add(rs);
-                        }
+				result.add(rs);
+			}
 		}
 		return result;
 	}
@@ -1364,33 +1403,33 @@ public class Arena {
 
 	private void updateGoals() {
 		List<String> list = new ArrayList<String>();
-		
+
 		for (ArenaGoal goal : goals) {
 			list.add(goal.getName());
 		}
-		
+
 		cfg.set(CFG.LISTS_GOALS, list);
 		cfg.save();
 	}
 
 	private void updateMods() {
 		List<String> list = new ArrayList<String>();
-		
+
 		for (ArenaModule mod : mods) {
 			list.add(mod.getName());
 		}
-		
+
 		cfg.set(CFG.LISTS_MODS, list);
 		cfg.save();
 	}
 
 	public void updateRounds() {
 		List<String> result = new ArrayList<String>();
-		
-		for (int i=0; i<rounds.getCount(); i++) {
+
+		for (int i = 0; i < rounds.getCount(); i++) {
 			result.add(StringParser.joinSet(rounds.getGoals(i), "|"));
 		}
-		
+
 		cfg.setManually("rounds", result);
 	}
 }

@@ -18,7 +18,9 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
- * <pre>Arena Team Manager class</pre>
+ * <pre>
+ * Arena Team Manager class
+ * </pre>
  * 
  * Provides static methods to manage Arena Teams
  * 
@@ -62,8 +64,10 @@ public class TeamManager {
 		for (ArenaTeam team : arena.getTeams()) {
 			String s = team.getName();
 			// check if we are full
-			db.i("String s: " + s + "; max: " + arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS));
-			if (counts.get(s) < arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS)
+			db.i("String s: " + s + "; max: "
+					+ arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS));
+			if (counts.get(s) < arena.getArenaConfig().getInt(
+					CFG.READY_MAXPLAYERS)
 					|| arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS) == 0) {
 				full = false;
 				break;
@@ -160,7 +164,10 @@ public class TeamManager {
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(ap)) {
 				db.i("TeamManager", player);
-				arena.msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, team.getColoredName()));
+				arena.msg(
+						player,
+						Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF,
+								team.getColoredName()));
 				return;
 			}
 		}
@@ -175,12 +182,21 @@ public class TeamManager {
 
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(player, "lounge");
-			arena.msg(player, arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
-			arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINED, player.getName()));
+			arena.msg(player,
+					arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
+			arena.broadcastExcept(
+					player,
+					Language.parse(arena, CFG.MSG_PLAYERJOINED,
+							player.getName()));
 		} else {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
-			arena.msg(player, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", aTeam.getColoredName() + "§r"));
-			arena.broadcastExcept(player, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, player.getName(), aTeam.getColoredName() + "§r"));
+			arena.msg(player,
+					arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
+							.replace("%1%", aTeam.getColoredName() + "§r"));
+			arena.broadcastExcept(
+					player,
+					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
+							player.getName(), aTeam.getColoredName() + "§r"));
 		}
 	}
 
@@ -228,12 +244,12 @@ public class TeamManager {
 
 			if (!result.equals("")) {
 				result += ", ";
-                        }
+			}
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (p.getStatus().equals(Status.LOUNGE)) {
 					if (!result.equals("")) {
 						result += ", ";
-                                        }
+					}
 					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
 				} else {
 					db.i("player state: " + p.getStatus().name(), p.getName());
@@ -258,11 +274,11 @@ public class TeamManager {
 
 			if (!result.equals("")) {
 				result += ", ";
-                        }
+			}
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (!result.equals("")) {
 					result += ", ";
-                                }
+				}
 				result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
 			}
 		}

@@ -8,7 +8,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 /**
- * <pre>Debug class</pre>
+ * <pre>
+ * Debug class
+ * </pre>
  * 
  * provides methods for logging when in debug mode
  * 
@@ -48,7 +50,7 @@ public class Debug {
 	private boolean debugs() {
 		return override || check.contains(id) || check.contains(666);
 	}
-	
+
 	private boolean debugs(String s) {
 		return override || strings.contains(s) || check.contains(666);
 	}
@@ -61,11 +63,11 @@ public class Debug {
 	 */
 	public void i(String s) {
 		if (!debugs()) {
-                        return;
-                }
+			return;
+		}
 		Bukkit.getLogger().info(prefix + s);
 	}
-	
+
 	public void i(String string, CommandSender sender) {
 		if (sender == null) {
 			i(string, "null");
@@ -73,14 +75,14 @@ public class Debug {
 		}
 		if (!debugs(sender.getName())) {
 			return;
-                }
+		}
 		Bukkit.getLogger().info(prefix + string);
 	}
-	
+
 	public void i(String string, String filter) {
 		if (!debugs(filter)) {
 			return;
-                }
+		}
 		Bukkit.getLogger().info(prefix + string);
 	}
 
@@ -96,7 +98,7 @@ public class Debug {
 				Arena.pmsg(sender, "debugging EVERYTHING");
 			} else {
 				String[] sIds = debugs.split(",");
-				Arena.pmsg(sender, "debugging: "+debugs);
+				Arena.pmsg(sender, "debugging: " + debugs);
 				for (String s : sIds) {
 					try {
 						Debug.check.add(Integer.valueOf(s));

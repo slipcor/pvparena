@@ -5,7 +5,9 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 /**
- * <pre>PVP Arena Location class</pre>
+ * <pre>
+ * PVP Arena Location class
+ * </pre>
  * 
  * A simple wrapper of the Bukkit Location, only calculating blocks
  * 
@@ -19,14 +21,14 @@ public class PABlockLocation {
 	private int x;
 	private int y;
 	private int z;
-	
+
 	public PABlockLocation(String world, int x, int y, int z) {
-		this.world= world;
+		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public PABlockLocation(Location l) {
 		this.world = l.getWorld().getName();
 		this.x = l.getBlockX();
@@ -36,17 +38,22 @@ public class PABlockLocation {
 
 	public double getDistance(PABlockLocation o) {
 		if (o == null) {
-			throw new IllegalArgumentException("Cannot measure distance to a null location");
-                }
-		if (!o.world.equals(world)) {
-			throw new IllegalArgumentException("Cannot measure distance between " + world + " and " + o.world);
+			throw new IllegalArgumentException(
+					"Cannot measure distance to a null location");
 		}
-		
-		return Math.sqrt(Math.pow(this.x - o.x, 2.0D) + Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
+		if (!o.world.equals(world)) {
+			throw new IllegalArgumentException(
+					"Cannot measure distance between " + world + " and "
+							+ o.world);
+		}
+
+		return Math.sqrt(Math.pow(this.x - o.x, 2.0D)
+				+ Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
 	}
 
 	public PABlockLocation getMidpoint(PABlockLocation l) {
-		return new PABlockLocation(world, (x + l.x)/2, (y + l.y)/2, (z + l.z)/2);
+		return new PABlockLocation(world, (x + l.x) / 2, (y + l.y) / 2,
+				(z + l.z) / 2);
 	}
 
 	public String getWorldName() {
@@ -81,12 +88,13 @@ public class PABlockLocation {
 	public PABlockLocation pointTo(PABlockLocation dest, Double length) {
 		Vector source = new Vector(x, y, z);
 		Vector destination = new Vector(dest.x, dest.y, dest.z);
-		
+
 		Vector goal = source.subtract(destination);
-		
+
 		goal = goal.normalize().multiply(length);
-		
-		return new PABlockLocation(world, x+x+goal.getBlockX(), y+goal.getBlockY(), z+goal.getBlockZ());
+
+		return new PABlockLocation(world, x + x + goal.getBlockX(), y
+				+ goal.getBlockY(), z + goal.getBlockZ());
 	}
 
 	public void setX(int i) {
@@ -104,7 +112,7 @@ public class PABlockLocation {
 	public Location toLocation() {
 		return new Location(Bukkit.getWorld(world), x, y, z);
 	}
-	
+
 	@Override
 	public String toString() {
 		return world + ":" + x + "," + y + "," + z;

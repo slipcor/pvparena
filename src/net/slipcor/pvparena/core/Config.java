@@ -24,11 +24,13 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
- * <pre>Configuration class</pre>
+ * <pre>
+ * Configuration class
+ * </pre>
  * 
  * This Config wrapper improves access to config files by storing them in RAM
- * and providing quick, secured, access. Thanks a lot to garbagemule for
- * the start of this config.
+ * and providing quick, secured, access. Thanks a lot to garbagemule for the
+ * start of this config.
  * 
  * @author slipcor
  * 
@@ -44,7 +46,8 @@ public class Config {
 	private Map<String, String> strings;
 
 	public static enum CFG {
-		
+
+
 		Z("configversion","v0.9.0.0"),
 		
 		CHAT_COLORNICK("chat.colorNick", true),
@@ -214,8 +217,7 @@ public class Config {
 
 		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
 		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
-		
-		
+
 		private String node;
 		private Object value;
 		private String type;
@@ -517,7 +519,7 @@ public class Config {
 	public Set<String> getKeys(String path) {
 		if (config.get(path) == null) {
 			return null;
-                }
+		}
 
 		ConfigurationSection section = config.getConfigurationSection(path);
 		return section.getKeys(false);
@@ -527,7 +529,7 @@ public class Config {
 	public List<String> getStringList(String path, List<String> def) {
 		if (config.get(path) == null) {
 			return def != null ? def : new LinkedList<String>();
-                }
+		}
 
 		List<?> list = config.getStringList(path);
 		return (List<String>) list;
@@ -593,23 +595,27 @@ public class Config {
 	public static PABlockLocation parseBlockLocation(String coords) {
 		String[] parts = coords.split(",");
 		if (parts.length != 4) {
-			throw new IllegalArgumentException("Input string must contain world, x, y, and z: " + coords);
-                }
+			throw new IllegalArgumentException(
+					"Input string must contain world, x, y, and z: " + coords);
+		}
 
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
 		Integer z = parseInteger(parts[3]);
 
-		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null) {
-			throw new NullPointerException("Some of the parsed values are null!");
-                }
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
+				|| z == null) {
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		}
 
 		return new PABlockLocation(parts[0], x, y, z);
 	}
 
 	/**
-	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a Block
-	 * Location. This method will only accept strings of the specified form.
+	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a
+	 * Block Location. This method will only accept strings of the specified
+	 * form.
 	 * 
 	 * @param coords
 	 *            a string of the form "world,x,y,z,yaw,pitch"
@@ -617,32 +623,36 @@ public class Config {
 	 */
 	public static PALocation parseLocation(String coords) {
 		String[] parts = coords.split(",");
-		
+
 		if (parts.length == 4) {
 			coords += ",0.0,0.0";
 			parts = coords.split(",");
 		}
-		
+
 		if (parts.length != 6) {
 			throw new IllegalArgumentException(
-					"Input string must contain world, x, y, z, yaw and pitch: " + coords);
-                }
-		
+					"Input string must contain world, x, y, z, yaw and pitch: "
+							+ coords);
+		}
+
 		Integer x = parseInteger(parts[1]);
 		Integer y = parseInteger(parts[2]);
 		Integer z = parseInteger(parts[3]);
 		Float yaw = parseFloat(parts[4]);
 		Float pitch = parseFloat(parts[5]);
 
-		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null || z == null || yaw == null || pitch == null) {
-			throw new NullPointerException("Some of the parsed values are null!");
-                }
+		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
+				|| z == null || yaw == null || pitch == null) {
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		}
 		return new PALocation(parts[0], x, y, z, pitch, yaw);
 	}
 
 	/**
-	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a Block
-	 * Location. This method will only accept strings of the specified form.
+	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a
+	 * Block Location. This method will only accept strings of the specified
+	 * form.
 	 * 
 	 * @param coords
 	 *            a string of the form "world,x,y,z,yaw,pitch"
@@ -656,38 +666,48 @@ public class Config {
 			coords += ",0.0,0.0";
 			parts = coords.split(",");
 		}
-		
+
 		if (parts.length != 5) {
-			throw new IllegalArgumentException("Input string must contain x, y, z, yaw and pitch: " + coords);
-                }
+			throw new IllegalArgumentException(
+					"Input string must contain x, y, z, yaw and pitch: "
+							+ coords);
+		}
 		Integer x = parseInteger(parts[0]);
 		Integer y = parseInteger(parts[1]);
 		Integer z = parseInteger(parts[2]);
 		Float yaw = parseFloat(parts[3]);
 		Float pitch = parseFloat(parts[4]);
 
-		if (Bukkit.getWorld(world) == null || x == null || y == null || z == null || yaw == null || pitch == null) {
-			throw new NullPointerException("Some of the parsed values are null!");
-                }
+		if (Bukkit.getWorld(world) == null || x == null || y == null
+				|| z == null || yaw == null || pitch == null) {
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		}
 
 		return new PALocation(world, x, y, z, pitch, yaw);
 	}
-	
+
 	/**
 	 * 
 	 */
-	public static ArenaRegionShape parseRegion(Arena arena, YamlConfiguration config, String regionName) {
+	public static ArenaRegionShape parseRegion(Arena arena,
+			YamlConfiguration config, String regionName) {
 
 		String coords = config.getString("arenaregion." + regionName);
 		String[] parts = coords.split(",");
-		
-		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
-		
+
+		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager
+				.getShapeByName(parts[7]);
+
 		if (parts.length < 11) {
-			throw new IllegalArgumentException("Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: " + coords);
-                }
+			throw new IllegalArgumentException(
+					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: "
+							+ coords);
+		}
 		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
-			throw new IllegalArgumentException("Input string does not contain valid region shape: " + coords);
+			throw new IllegalArgumentException(
+					"Input string does not contain valid region shape: "
+							+ coords);
 		}
 		Integer x1 = parseInteger(parts[1]);
 		Integer y1 = parseInteger(parts[2]);
@@ -698,22 +718,25 @@ public class Config {
 		Integer flags = parseInteger(parts[8]);
 		Integer prots = parseInteger(parts[9]);
 
-		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null || flags == null || prots == null) {
-                        throw new NullPointerException("Some of the parsed values are null!");
-                }
+		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null
+				|| z1 == null || x2 == null || y2 == null || z2 == null
+				|| flags == null || prots == null) {
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		}
 
 		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };
-		
-		ArenaRegionShape region = ArenaRegionShape.create(arena, regionName, shape, l);
+
+		ArenaRegionShape region = ArenaRegionShape.create(arena, regionName,
+				shape, l);
 		region.applyFlags(flags);
 		region.applyProtections(prots);
 		region.setType(RegionType.valueOf(parts[10]));
 		region.saveToConfig();
 
 		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
-		
+
 		return region;
 	}
 
@@ -755,7 +778,8 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(ArenaRegionShape region, HashSet<RegionFlag> flags, HashSet<RegionProtection> protections) {
+	public static String parseToString(ArenaRegionShape region,
+			HashSet<RegionFlag> flags, HashSet<RegionProtection> protections) {
 		String[] result = new String[11];
 		result[0] = region.getWorldName();
 		result[1] = String.valueOf(region.getLocs()[0].getX());
@@ -766,22 +790,22 @@ public class Config {
 		result[6] = String.valueOf(region.getLocs()[1].getZ());
 		result[7] = region.getShape().name();
 		result[10] = region.getType().name();
-		
+
 		int sum = 0;
-		
+
 		for (RegionFlag f : flags) {
 			sum += Math.pow(2, f.ordinal());
 		}
-		
+
 		result[8] = String.valueOf(sum);
-		
+
 		sum = 0;
-		
+
 		for (RegionProtection p : protections) {
 			sum += Math.pow(2, p.ordinal());
 		}
 		result[9] = String.valueOf(sum);
-		
+
 		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
 		return StringParser.joinArray(result, ",");
 	}

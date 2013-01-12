@@ -23,7 +23,6 @@ import net.slipcor.pvparena.ncloader.NCBLoadable.LoadResult.Result;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
-
 /*     Copyright (C) 2012  Nodin Chan <nodinchan@live.com>
  * 
  *     This program is free software: you can redistribute it and/or modify
@@ -44,50 +43,56 @@ import org.bukkit.plugin.Plugin;
  * Loader - Loader base for loading Loadables
  * 
  * @author NodinChan
- *
- * @param <T> A loadable class
+ * 
+ * @param <T>
+ *            A loadable class
  */
 @SuppressWarnings("unchecked")
 public class NCBLoader<T extends NCBLoadable> implements Listener {
-	
+
 	private final Plugin plugin;
-	
+
 	private final File dir;
-	
+
 	private ClassLoader loader;
-	
+
 	private final Object[] paramTypes;
 	private final Class<?>[] ctorParams;
-	
+
 	private final ArrayList<File> files;
 	private final List<T> loadables;
-	
+
 	public NCBLoader(Plugin plugin, File dir, Object... paramTypes) {
 		this.plugin = plugin;
 		this.dir = dir;
 		this.paramTypes = paramTypes;
 		this.files = new ArrayList<File>();
 		this.loadables = new ArrayList<T>();
-		
+
 		for (File f : dir.listFiles(new FileExtensionFilter(".jar"))) {
 			files.add(f);
 		}
-		
+
 		List<Class<?>> constructorParams = new ArrayList<Class<?>>();
-		
+
 		for (Object paramType : paramTypes)
 			constructorParams.add(paramType.getClass());
-		
+
 		this.ctorParams = constructorParams.toArray(new Class<?>[0]);
-		
+
 		List<URL> urls = new ArrayList<URL>();
-		
+
 		for (File file : files)
-			try { urls.add(file.toURI().toURL()); } catch (MalformedURLException e) { e.printStackTrace(); }
-		
-		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[0]), plugin.getClass().getClassLoader());
+			try {
+				urls.add(file.toURI().toURL());
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+
+		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
+				plugin.getClass().getClassLoader());
 	}
-	
+
 	/**
 	 * Gets the Logger
 	 * 
@@ -96,7 +101,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 	public Logger getLogger() {
 		return plugin.getLogger();
 	}
-	
+
 	/**
 	 * Loads the Loadables
 	 * 
@@ -107,129 +112,157 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 			try {
 				JarFile jarFile = new JarFile(file);
 				String mainClass = null;
-				
+
 				if (jarFile.getEntry("path.yml") != null) {
 					JarEntry element = jarFile.getJarEntry("path.yml");
-					BufferedReader reader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(element)));
+					BufferedReader reader = new BufferedReader(
+							new InputStreamReader(
+									jarFile.getInputStream(element)));
 					mainClass = reader.readLine().substring(12);
 				}
-				
+
 				if (mainClass != null) {
 					Class<?> clazz = Class.forName(mainClass, true, loader);
-					
+
 					if (clazz != null) {
-						Class<? extends NCBLoadable> loadableClass = clazz.asSubclass(NCBLoadable.class);
-						Constructor<? extends NCBLoadable> ctor = loadableClass.getConstructor(ctorParams);
+						Class<? extends NCBLoadable> loadableClass = clazz
+								.asSubclass(NCBLoadable.class);
+						Constructor<? extends NCBLoadable> ctor = loadableClass
+								.getConstructor(ctorParams);
 						T loadable = (T) ctor.newInstance(paramTypes);
-						
+
 						loadable.jar(jarFile);
-						
+
 						LoadResult result = loadable.init();
-						
+
 						if (result.getResult().equals(Result.SUCCESS)) {
 							loadables.add(loadable);
-							
-							NCBLoadEvent<T> event = new NCBLoadEvent<T>(plugin, loadable, jarFile);
-							plugin.getServer().getPluginManager().callEvent(event);
+
+							NCBLoadEvent<T> event = new NCBLoadEvent<T>(plugin,
+									loadable, jarFile);
+							plugin.getServer().getPluginManager()
+									.callEvent(event);
 							continue;
 						}
-						
+
 						String reason = result.getReason();
-						
+
 						if (reason != null && !reason.isEmpty()) {
-							getLogger().log(Level.INFO, "The JAR file " + file.getName() + " is not initialised: " + reason);
-                                                }
-					} else { jarFile.close(); throw new ClassNotFoundException(); }
-					
-				} else { jarFile.close(); throw new ClassNotFoundException(); }
-				
+							getLogger().log(
+									Level.INFO,
+									"The JAR file " + file.getName()
+											+ " is not initialised: " + reason);
+						}
+					} else {
+						jarFile.close();
+						throw new ClassNotFoundException();
+					}
+
+				} else {
+					jarFile.close();
+					throw new ClassNotFoundException();
+				}
+
 			} catch (ClassCastException e) {
 				e.printStackTrace();
-				getLogger().log(Level.WARNING, "The JAR file " + file.getName() + " is in the wrong directory");
-				getLogger().log(Level.WARNING, "The JAR file " + file.getName() + " failed to load");
-				
+				getLogger().log(
+						Level.WARNING,
+						"The JAR file " + file.getName()
+								+ " is in the wrong directory");
+				getLogger().log(Level.WARNING,
+						"The JAR file " + file.getName() + " failed to load");
+
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 				getLogger().log(Level.WARNING, "Invalid path.yml");
-				getLogger().log(Level.WARNING, "The JAR file " + file.getName() + " failed to load");
-				
+				getLogger().log(Level.WARNING,
+						"The JAR file " + file.getName() + " failed to load");
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				getLogger().log(Level.WARNING, "Unknown cause");
-				getLogger().log(Level.WARNING, "The JAR file " + file.getName() + " failed to load");
+				getLogger().log(Level.WARNING,
+						"The JAR file " + file.getName() + " failed to load");
 			}
 		}
-		
+
 		return loadables;
 	}
-	
+
 	/**
 	 * Reloads the Loader
 	 */
 	public List<T> reload() {
 		unload();
-		
+
 		List<URL> urls = new ArrayList<URL>();
 		files.clear();
 		for (String loadableFile : dir.list()) {
 			if (loadableFile.endsWith(".jar")) {
 				File file = new File(dir, loadableFile);
 				files.add(file);
-				try { urls.add(file.toURI().toURL()); } catch (MalformedURLException e) { e.printStackTrace(); }
+				try {
+					urls.add(file.toURI().toURL());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		
-		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]), plugin.getClass().getClassLoader());
-		
+
+		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[urls
+				.size()]), plugin.getClass().getClassLoader());
+
 		return load();
 	}
-	
+
 	/**
 	 * Sorts a list of Loadables by name in alphabetical order
 	 * 
-	 * @param loadables The list of Loadables to sort
+	 * @param loadables
+	 *            The list of Loadables to sort
 	 * 
 	 * @return The sorted list of Loadables
 	 */
 	public List<T> sort(List<T> loadables) {
 		List<T> sortedLoadables = new ArrayList<T>();
 		List<String> names = new ArrayList<String>();
-		
+
 		for (T t : loadables)
 			names.add(t.getName());
-		
+
 		Collections.sort(names);
-		
+
 		for (String name : names) {
 			for (T t : loadables) {
 				if (t.getName().equals(name)) {
 					sortedLoadables.add(t);
-                                }
+				}
 			}
 		}
-		
+
 		return sortedLoadables;
 	}
-	
+
 	/**
 	 * Sorts a map of Loadables by name in alphabetical order
 	 * 
-	 * @param loadables The map of Loadables to sort
+	 * @param loadables
+	 *            The map of Loadables to sort
 	 * 
 	 * @return The sorted map of Loadables
 	 */
 	public Map<String, T> sort(Map<String, T> loadables) {
 		Map<String, T> sortedLoadables = new HashMap<String, T>();
 		List<String> names = new ArrayList<String>(loadables.keySet());
-		
+
 		Collections.sort(names);
-		
+
 		for (String name : names)
 			sortedLoadables.put(name, loadables.get(name));
-		
+
 		return sortedLoadables;
 	}
-	
+
 	/**
 	 * Unloads the Loader
 	 */

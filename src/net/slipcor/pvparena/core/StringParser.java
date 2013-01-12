@@ -24,7 +24,9 @@ import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
 
 /**
- * <pre>String Parser class</pre>
+ * <pre>
+ * String Parser class
+ * </pre>
  * 
  * provides methods to parse Objects to String and back
  * 
@@ -40,9 +42,10 @@ public class StringParser {
 
 	public static final Debug db = new Debug(17);
 
-	public static HashSet<String> positive = new HashSet<String>(Arrays.asList("yes", "on", "true", "1"));
-	public static HashSet<String> negative = new HashSet<String>(Arrays.asList("no", "off", "false", "0"));
-
+	public static HashSet<String> positive = new HashSet<String>(Arrays.asList(
+			"yes", "on", "true", "1"));
+	public static HashSet<String> negative = new HashSet<String>(Arrays.asList(
+			"no", "off", "false", "0"));
 
 	private static String codeCharacters(String string, boolean forward) {
 		HashMap<String, String> findReplace = new HashMap<String, String>();
@@ -52,32 +55,34 @@ public class StringParser {
 			findReplace.put("|", "<<pipe>>");
 			findReplace.put(",", "<<comma>>");
 		} else {
-			findReplace.put("<<colon>>",":");
-			findReplace.put("<<tilde>>","~");
-			findReplace.put("<<pipe>>","|");
-			findReplace.put("<<comma>>",",");
+			findReplace.put("<<colon>>", ":");
+			findReplace.put("<<tilde>>", "~");
+			findReplace.put("<<pipe>>", "|");
+			findReplace.put("<<comma>>", ",");
 			string = ChatColor.translateAlternateColorCodes('?', string);
 		}
-		
+
 		for (String s : findReplace.keySet()) {
 			string = string.replace(s, findReplace.get(s));
 		}
-		
+
 		return string;
 	}
-	
+
 	public static String colorize(String s) {
-		return ChatColor.translateAlternateColorCodes('&', s).replace("&&", "&");
+		return ChatColor.translateAlternateColorCodes('&', s)
+				.replace("&&", "&");
 	}
 
 	public static String[] colorize(List<String> stringList) {
 		String[] result = new String[stringList.size()];
-		
+
 		for (int i = 0; i < stringList.size(); i++) {
 			result[i] = colorize(stringList.get(i));
 		}
 		return result;
 	}
+
 	/**
 	 * color an integer if bigger than 0
 	 * 
@@ -140,9 +145,9 @@ public class StringParser {
 	 * @return the color short
 	 */
 	public static byte getColorDataFromENUM(String color) {
-		
+
 		String wool = getWoolEnumFromChatColorEnum(color);
-		
+
 		if (wool != null) {
 			color = wool;
 		}
@@ -153,7 +158,7 @@ public class StringParser {
 		for (DyeColor dc : DyeColor.values()) {
 			if (dc.name().equalsIgnoreCase(color)) {
 				return dc.getData();
-                        }
+			}
 		}
 		PVPArena.instance.getLogger().warning("unknown color enum: " + color);
 
@@ -194,15 +199,17 @@ public class StringParser {
 			temp[0] = temp2[0];
 
 			db.i("correcting item temp to " + temp[0]);
-			
+
 			for (int i = 1; i < temp2.length; i++) {
-			
+
 				String strEnch = temp2[i];
 				if (strEnch.contains("~")) {
 					String[] arrEnch = strEnch.split("~");
-					Enchantment ench = Enchantment.getById(Integer.parseInt(arrEnch[0]));
+					Enchantment ench = Enchantment.getById(Integer
+							.parseInt(arrEnch[0]));
 					Integer enchLevel = Integer.parseInt(arrEnch[1]);
-					db.i("adding enchantment " + ench.getName() + " lvl " + enchLevel);
+					db.i("adding enchantment " + ench.getName() + " lvl "
+							+ enchLevel);
 					enchants.put(ench, enchLevel);
 				}
 			}
@@ -237,61 +244,71 @@ public class StringParser {
 			if (temp.length == 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				ItemStack is = new ItemStack(mat, amount, dmg);
-				
+
 				if (mat == Material.INK_SACK) {
 					try {
 						is.setData(new Dye(Byte.parseByte(data)));
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("invalid dye data: " + data);
+						PVPArena.instance.getLogger().warning(
+								"invalid dye data: " + data);
 						return is;
 					}
 				} else if (mat == Material.WOOL) {
 					try {
 						is.setData(new Wool(Byte.parseByte(data)));
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("invalid wool data: " + data);
+						PVPArena.instance.getLogger().warning(
+								"invalid wool data: " + data);
 						return is;
 					}
-				} else if (mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL) {
+				} else if (mat == Material.WRITTEN_BOOK
+						|| mat == Material.BOOK_AND_QUILL) {
 					BookMeta bm = (BookMeta) is.getItemMeta();
 					try {
 						String[] outer = data.split(SAFE_BREAK);
-						bm.setAuthor(codeCharacters(outer[0],false));
-						bm.setTitle(codeCharacters(outer[1],false));
+						bm.setAuthor(codeCharacters(outer[0], false));
+						bm.setTitle(codeCharacters(outer[1], false));
 						List<String> pages = new ArrayList<String>();
-						String[] inner = codeCharacters(outer[2],false).split(SAFE_PAGE_BREAK);
+						String[] inner = codeCharacters(outer[2], false).split(
+								SAFE_PAGE_BREAK);
 						for (String ss : inner) {
 							pages.add(ss);
 						}
 						bm.setPages(pages);
 						is.setItemMeta(bm);
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("invalid book data: " + data);
+						PVPArena.instance.getLogger().warning(
+								"invalid book data: " + data);
 						return is;
 					}
 				} else if (is.getType().name().startsWith("LEATHER_")) {
 					try {
-						LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
+						LeatherArmorMeta lam = (LeatherArmorMeta) is
+								.getItemMeta();
 						lam.setColor(Color.fromRGB(Integer.parseInt(data)));
 						is.setItemMeta(lam);
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("invalid leather data: " + data);
+						PVPArena.instance.getLogger().warning(
+								"invalid leather data: " + data);
 						return is;
 					}
 				} else if (is.getType() == Material.SKULL_ITEM) {
 					try {
-					SkullMeta sm = (SkullMeta) is.getItemMeta();
-					sm.setOwner(data);
-					is.setItemMeta(sm);
+						SkullMeta sm = (SkullMeta) is.getItemMeta();
+						sm.setOwner(data);
+						is.setItemMeta(sm);
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning("invalid leather data: " + data);
+						PVPArena.instance.getLogger().warning(
+								"invalid leather data: " + data);
 						return is;
 					}
 				} else {
-					PVPArena.instance.getLogger().warning("data not available for: " + mat.name());
+					PVPArena.instance.getLogger().warning(
+							"data not available for: " + mat.name());
 				}
-				
-				if (lore != null && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
+
+				if (lore != null
+						&& !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
 					List<String> lLore = new ArrayList<String>();
 					for (String line : lore.split(SAFE_BREAK)) {
 						lLore.add(codeCharacters(line, false));
@@ -300,7 +317,7 @@ public class StringParser {
 					im.setLore(lLore);
 					is.setItemMeta(im);
 				}
-				
+
 				for (Enchantment e : enchants.keySet()) {
 					is.addUnsafeEnchantment(e, enchants.get(e));
 				}
@@ -309,18 +326,18 @@ public class StringParser {
 		}
 		return null;
 	}
-	
+
 	public static ItemStack[] getItemStacksFromString(String string) {
 		String[] args = string.split(",");
-		
+
 		ItemStack[] result = new ItemStack[args.length];
-		
+
 		int i = 0;
-		
+
 		for (String s : args) {
 			result[i++] = getItemStackFromString(s);
 		}
-		
+
 		return result;
 	}
 
@@ -329,16 +346,16 @@ public class StringParser {
 			return "AIR";
 		}
 		String[] s = new String[isItems.length];
-		
+
 		int i = 0;
-		
+
 		for (ItemStack is : isItems) {
-			s[i++] = getStringFromItemStack(is); 
+			s[i++] = getStringFromItemStack(is);
 		}
-		
+
 		return joinArray(trimAir(s), ",");
 	}
-	
+
 	private static String[] trimAir(String[] s) {
 		List<String> list = new ArrayList<String>();
 		for (String item : s) {
@@ -347,17 +364,17 @@ public class StringParser {
 			}
 			list.add(item);
 		}
-		
+
 		if (list.size() < 1) {
-			return new String[]{"AIR"};
+			return new String[] { "AIR" };
 		}
-		
+
 		String[] result = new String[list.size()];
 		int i = 0;
 		for (String item : list) {
 			result[i++] = item;
 		}
-		
+
 		return result;
 	}
 
@@ -376,16 +393,24 @@ public class StringParser {
 				temp += "~" + String.valueOf(is.getDurability());
 			}
 			temp += "~" + String.valueOf(is.getData().getData());
-		} else if (is.getType() == Material.WRITTEN_BOOK || is.getType() == Material.BOOK_AND_QUILL) {
+		} else if (is.getType() == Material.WRITTEN_BOOK
+				|| is.getType() == Material.BOOK_AND_QUILL) {
 			if (!durability) {
 				temp += "~" + String.valueOf(is.getDurability());
 			}
 			BookMeta bm = (BookMeta) is.getItemMeta();
 			if (bm != null) {
-				if ((bm.getAuthor() != null) && (bm.getTitle() != null) && (bm.getPages() != null)) {
-							temp += "~" + codeCharacters(bm.getAuthor(), true) + SAFE_BREAK + codeCharacters(bm.getTitle(), true) +
-									SAFE_BREAK + codeCharacters(joinArray(bm.getPages().toArray(),SAFE_PAGE_BREAK), true);
-					
+				if ((bm.getAuthor() != null) && (bm.getTitle() != null)
+						&& (bm.getPages() != null)) {
+					temp += "~"
+							+ codeCharacters(bm.getAuthor(), true)
+							+ SAFE_BREAK
+							+ codeCharacters(bm.getTitle(), true)
+							+ SAFE_BREAK
+							+ codeCharacters(
+									joinArray(bm.getPages().toArray(),
+											SAFE_PAGE_BREAK), true);
+
 				}
 			}
 		} else if (is.getType().name().startsWith("LEATHER_")) {
@@ -401,23 +426,25 @@ public class StringParser {
 			SkullMeta sm = (SkullMeta) is.getItemMeta();
 			temp += "~" + sm.getOwner();
 		}
-		
+
 		if (is.hasItemMeta() && is.getItemMeta().hasLore()) {
 			if (!durability) {
 				temp += "~" + String.valueOf(is.getDurability());
 			}
 
-			temp += SAFE_LORE_BREAK + codeCharacters(joinArray(((ItemMeta) is.getItemMeta()).getLore().toArray(), 
-					SAFE_BREAK), true);
+			temp += SAFE_LORE_BREAK
+					+ codeCharacters(
+							joinArray(((ItemMeta) is.getItemMeta()).getLore()
+									.toArray(), SAFE_BREAK), true);
 		}
 		Map<Enchantment, Integer> enchants = is.getEnchantments();
-		
+
 		if (enchants != null && enchants.size() > 0) {
 			for (Enchantment e : enchants.keySet()) {
 				temp += "|" + String.valueOf(e.getId()) + "~" + enchants.get(e);
 			}
 		}
-		
+
 		if (is.getAmount() > 1) {
 			temp += ":" + is.getAmount();
 		}
@@ -442,51 +469,49 @@ public class StringParser {
 		for (Object o : set) {
 			result += glue + String.valueOf(o);
 		}
-		return result.equals("")?"":new String(result.substring(glue.length()));
+		return result.equals("") ? "" : new String(result.substring(glue
+				.length()));
 	}
-	
+
 	private static String parseDyeColorToChatColor(String color, boolean forward) {
-		
+
 		/**
-		 * wool colors:
-		 * ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY,
-		 * SILVER, PURPLE, BLUE, GREEN, RED, CYAN;
+		 * wool colors: ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY, SILVER,
+		 * PURPLE, BLUE, GREEN, RED, CYAN;
 		 * 
-		 * chat colors:
-		 * GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY,
-		 * GRAY, DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
+		 * chat colors: GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY, GRAY,
+		 * DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
 		 * 
-		 *     
 		 * 
-		 * both colors (ignore):
-		 * WHITE, YELLOW, BLACK
+		 * 
+		 * both colors (ignore): WHITE, YELLOW, BLACK
 		 * 
 		 * colors not being able to parse:
 		 * 
 		 * chat-AQUA, wool-brown
 		 */
-		String[] wool = new String[] {"ORANGE","MAGENTA","LIGHT_BLUE","LIME",
-				"PINK","GRAY","SILVER","PURPLE",
-				"BLUE","GREEN","RED","CYAN"};
-		String[] chat = new String[] {"GOLD","LIGHT_PURPLE","BLUE","GREEN",
-				"RED","DARK_GRAY","GRAY","DARK_PURPLE",
-				"DARK_BLUE","DARK_GREEN","DARK_RED","DARK_AQUA"};
-		
+		String[] wool = new String[] { "ORANGE", "MAGENTA", "LIGHT_BLUE",
+				"LIME", "PINK", "GRAY", "SILVER", "PURPLE", "BLUE", "GREEN",
+				"RED", "CYAN" };
+		String[] chat = new String[] { "GOLD", "LIGHT_PURPLE", "BLUE", "GREEN",
+				"RED", "DARK_GRAY", "GRAY", "DARK_PURPLE", "DARK_BLUE",
+				"DARK_GREEN", "DARK_RED", "DARK_AQUA" };
+
 		if (forward) {
-			for (int i = 0; i<wool.length; i++) {
+			for (int i = 0; i < wool.length; i++) {
 				if (color.equals(wool[i])) {
 					return chat[i];
 				}
 			}
 		} else {
 
-			for (int i = 0; i<chat.length; i++) {
+			for (int i = 0; i < chat.length; i++) {
 				if (color.equals(chat[i])) {
 					return wool[i];
 				}
 			}
 		}
-		
+
 		return color;
 	}
 
@@ -509,7 +534,8 @@ public class StringParser {
 			mat = Material.getMaterial(string);
 		}
 		if (mat == null) {
-			PVPArena.instance.getLogger().warning("unrecognized material: " + string);
+			PVPArena.instance.getLogger().warning(
+					"unrecognized material: " + string);
 		}
 		return mat;
 	}
@@ -518,14 +544,15 @@ public class StringParser {
 		String[] newArgs = new String[args.length - i];
 		System.arraycopy(args, i, newArgs, 0, args.length - i);
 		args = newArgs;
-		
+
 		return args;
 	}
+
 	public static String[] unShiftArrayBy(String[] args, int i) {
 		String[] newArgs = new String[args.length + i];
 		System.arraycopy(args, 0, newArgs, 1, args.length);
 		args = newArgs;
-		
+
 		return args;
 	}
 

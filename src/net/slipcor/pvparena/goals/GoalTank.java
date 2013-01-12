@@ -31,7 +31,9 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * <pre>Arena Goal class "PlayerLives"</pre>
+ * <pre>
+ * Arena Goal class "PlayerLives"
+ * </pre>
  * 
  * The first Arena Goal. Players have lives. When every life is lost, the player
  * is teleported to the spectator spawn to watch the rest of the fight.
@@ -46,8 +48,9 @@ public class GoalTank extends ArenaGoal {
 		super("Tank");
 		db = new Debug(108);
 	}
+
 	static HashMap<Arena, String> tanks = new HashMap<Arena, String>();
-	
+
 	EndRunnable er = null;
 
 	HashMap<String, Integer> lives = new HashMap<String, Integer>();
@@ -58,16 +61,18 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	int priority = 8;
-	
+
 	@Override
 	public PACheck checkEnd(PACheck res) {
 		if (res.getPriority() > priority) {
 			return res;
 		}
-		
+
 		int count = lives.size();
 
-		if (count == 1 || !ArenaPlayer.parsePlayer(tanks.get(arena)).getStatus().equals(Status.FIGHT)) {
+		if (count == 1
+				|| !ArenaPlayer.parsePlayer(tanks.get(arena)).getStatus()
+						.equals(Status.FIGHT)) {
 			res.setPriority(this, priority); // yep. only one player left. go!
 		} else if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
@@ -81,20 +86,20 @@ public class GoalTank extends ArenaGoal {
 		if (!arena.isFreeForAll()) {
 			return null; // teams are handled somewhere else
 		}
-		
+
 		if (!list.contains("tank")) {
 			return "tank";
 		}
-		
+
 		int count = 0;
 		for (String s : list) {
 			if (s.startsWith("spawn")) {
 				count++;
 			}
 		}
-		return count > 3 ? null : "need more spawns! ("+count+"/4)";
+		return count > 3 ? null : "need more spawns! (" + count + "/4)";
 	}
-	
+
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
 		if (res.getPriority() >= priority) {
@@ -102,8 +107,9 @@ public class GoalTank extends ArenaGoal {
 		}
 
 		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
-		
+		int maxTeamPlayers = arena.getArenaConfig().getInt(
+				CFG.READY_MAXTEAMPLAYERS);
+
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
 			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
@@ -115,16 +121,17 @@ public class GoalTank extends ArenaGoal {
 
 		if (!arena.isFreeForAll()) {
 			ArenaTeam team = arena.getTeam(args[0]);
-			
+
 			if (team != null) {
-			
-				if (maxTeamPlayers > 0 && team.getTeamMembers().size() >= maxTeamPlayers) {
+
+				if (maxTeamPlayers > 0
+						&& team.getTeamMembers().size() >= maxTeamPlayers) {
 					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
 					return res;
 				}
 			}
 		}
-		
+
 		res.setPriority(this, priority);
 		return res;
 	}
@@ -154,32 +161,35 @@ public class GoalTank extends ArenaGoal {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
-                                }
+				}
 				if (tanks.containsValue(ap.getName())) {
-					
-					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
+
+					ArenaModuleManager.announce(arena,
+							Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
 
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON));
 				} else {
-					
-					//String tank = tanks.get(arena);
-					ArenaModuleManager.announce(arena, Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
-					
+
+					// String tank = tanks.get(arena);
+					ArenaModuleManager.announce(arena,
+							Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
+
 					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKDOWN));
 				}
 			}
-			
+
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
 		}
-		
-		er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+
+		er = new EndRunnable(arena, arena.getArenaConfig().getInt(
+				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
-	public void commitPlayerDeath(Player player,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(Player player, boolean doesRespawn,
+			String error, PlayerDeathEvent event) {
 		if (!lives.containsKey(player.getName())) {
 			return;
 		}
@@ -197,25 +207,29 @@ public class GoalTank extends ArenaGoal {
 			i--;
 			lives.put(player.getName(), i);
 
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
+				arena.broadcast(Language.parse(
+						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
-								.getLastDamageCause().getCause(), player.getKiller()),
-						String.valueOf(i)));
+								.getLastDamageCause().getCause(),
+								player.getKiller()), String.valueOf(i)));
 			}
-			
+
 			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+					|| arena.getArenaConfig().getBoolean(
+							CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
 
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+			PACheck.handleRespawn(arena,
+					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
 		}
 	}
-	
+
 	@Override
 	public void commitStart() {
 		for (ArenaTeam team : arena.getTeams()) {
@@ -225,36 +239,44 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public void displayInfo(CommandSender sender) {
-		sender.sendMessage("lives: " + arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
+		sender.sendMessage("lives: "
+				+ arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 	}
 
 	@Override
 	public PACheck getLives(PACheck res, ArenaPlayer ap) {
 		if (!res.hasError() && res.getPriority() <= priority) {
-			res.setError(this, "" + (lives.containsKey(ap.getName())?lives.get(ap.getName()):0));
+			res.setError(
+					this,
+					""
+							+ (lives.containsKey(ap.getName()) ? lives.get(ap
+									.getName()) : 0));
 		}
 		return res;
 	}
 
 	@Override
 	public boolean hasSpawn(String string) {
-		return (arena.isFreeForAll() && string.toLowerCase().startsWith("spawn")) || string.equals("tank");
+		return (arena.isFreeForAll() && string.toLowerCase()
+				.startsWith("spawn")) || string.equals("tank");
 	}
 
 	@Override
 	public void initate(Player player) {
-		lives.put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
+		lives.put(player.getName(),
+				arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 	}
 
 	@Override
 	public boolean isInternal() {
 		return true;
 	}
-	
+
 	@Override
 	public void parseLeave(Player player) {
 		if (player == null) {
-			PVPArena.instance.getLogger().warning(this.getName() + ": player NULL");
+			PVPArena.instance.getLogger().warning(
+					this.getName() + ": player NULL");
 			return;
 		}
 		if (lives.containsKey(player.getName())) {
@@ -273,32 +295,33 @@ public class GoalTank extends ArenaGoal {
 				if (i-- == 0) {
 					tank = ap;
 				}
-				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
+				this.lives.put(ap.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 			}
 		}
-		ArenaTeam tankTeam = new ArenaTeam("tank","PINK");
+		ArenaTeam tankTeam = new ArenaTeam("tank", "PINK");
 		for (ArenaTeam team : arena.getTeams()) {
 			team.remove(tank);
 		}
 		tankTeam.add(tank);
 		tanks.put(arena, tank.getName());
-		
+
 		ArenaClass tankClass = arena.getClass("%tank%");
 		if (tankClass != null) {
 			tank.setArenaClass(tankClass);
 			InventoryManager.clearInventory(tank.get());
 			tankClass.equip(tank.get());
 			for (ArenaModule mod : arena.getMods()) {
-				mod.parseRespawn(tank.get(), tankTeam, DamageCause.CUSTOM, tank.get());
+				mod.parseRespawn(tank.get(), tankTeam, DamageCause.CUSTOM,
+						tank.get());
 			}
 		}
-		
+
 		arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKMODE, tank.getName()));
 		arena.tpPlayerToCoordName(tank.get(), "tank");
 		arena.getTeams().add(tankTeam);
 	}
-	
+
 	@Override
 	public void reset(boolean force) {
 		er = null;
@@ -306,20 +329,20 @@ public class GoalTank extends ArenaGoal {
 		tanks.remove(arena);
 		arena.getTeams().remove(arena.getTeam("tank"));
 	}
-	
+
 	@Override
 	public void setPlayerLives(int value) {
 		HashSet<String> plrs = new HashSet<String>();
-		
+
 		for (String name : lives.keySet()) {
 			plrs.add(name);
 		}
-		
+
 		for (String s : plrs) {
 			lives.put(s, value);
 		}
 	}
-	
+
 	@Override
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 		lives.put(ap.getName(), value);
@@ -328,22 +351,23 @@ public class GoalTank extends ArenaGoal {
 	@Override
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		double score;
-		
+
 		for (ArenaPlayer ap : arena.getFighters()) {
-			score = (lives.containsKey(ap.getName())?lives.get(ap.getName()):0);
+			score = (lives.containsKey(ap.getName()) ? lives.get(ap.getName())
+					: 0);
 			if (tanks.containsValue(ap.getName())) {
 				score *= arena.getFighters().size();
 			}
 			if (scores.containsKey(ap)) {
-				scores.put(ap.getName(), scores.get(ap.getName())+score);
+				scores.put(ap.getName(), scores.get(ap.getName()) + score);
 			} else {
 				scores.put(ap.getName(), score);
 			}
 		}
-		
+
 		return scores;
 	}
-	
+
 	@Override
 	public void unload(Player player) {
 		lives.remove(player.getName());

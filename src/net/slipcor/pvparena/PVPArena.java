@@ -40,7 +40,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
- * <pre>Main Plugin class</pre>
+ * <pre>
+ * Main Plugin class
+ * </pre>
  * 
  * contains central elements like plugin handlers and listeners
  * 
@@ -52,7 +54,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PVPArena extends JavaPlugin {
 	public static PVPArena instance = null;
 
-	private final static Debug db = new Debug(1);
+	private final static Debug DEBUG = new Debug(1);
 
 	private ArenaGoalManager agm = null;
 	private ArenaModuleManager amm = null;
@@ -107,8 +109,8 @@ public class PVPArena extends JavaPlugin {
 	 *         otherwise
 	 */
 	public static boolean hasCreatePerms(CommandSender sender, Arena arena) {
-		return (sender.hasPermission("pvparena.create") &&
-				(arena == null || arena.getOwner().equals(sender.getName())));
+		return (sender.hasPermission("pvparena.create") && (arena == null || arena
+				.getOwner().equals(sender.getName())));
 	}
 
 	/**
@@ -122,13 +124,14 @@ public class PVPArena extends JavaPlugin {
 	 *         otherwise
 	 */
 	public static boolean hasPerms(CommandSender sender, Arena arena) {
-		db.i("perm check.", sender);
+		DEBUG.i("perm check.", sender);
 		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
-			db.i(" - explicit: "
+			DEBUG.i(" - explicit: "
 					+ String.valueOf(sender.hasPermission("pvparena.join."
 							+ arena.getName().toLowerCase())), sender);
 		} else {
-			db.i(String.valueOf(sender.hasPermission("pvparena.user")), sender);
+			DEBUG.i(String.valueOf(sender.hasPermission("pvparena.user")),
+					sender);
 		}
 
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
@@ -146,17 +149,18 @@ public class PVPArena extends JavaPlugin {
 			sender.sendMessage("§7§oDo §e/pa help §7§ofor help.");
 			return true;
 		}
-		
+
 		if (args.length > 1 && sender.hasPermission("pvparena.admin")) {
 			if (args[0].equalsIgnoreCase("ALL")) {
 				args = StringParser.shiftArrayBy(args, 1);
 				for (Arena arena : ArenaManager.getArenas()) {
 					try {
-						Bukkit.getServer().dispatchCommand(sender,
-								"pa " + arena.getName() + " "+ 
-								StringParser.joinArray(args, " "));
+						Bukkit.getServer().dispatchCommand(
+								sender,
+								"pa " + arena.getName() + " "
+										+ StringParser.joinArray(args, " "));
 					} catch (Exception e) {
-						
+
 					}
 				}
 				return true;
@@ -165,8 +169,10 @@ public class PVPArena extends JavaPlugin {
 
 		PA__Command pacmd = PA__Command.getByName(args[0]);
 
-		if (pacmd != null && !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd.getName().contains("PAI_ArenaList")))) {
-			db.i("committing: " + pacmd.getName(), sender);
+		if (pacmd != null
+				&& !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd
+						.getName().contains("PAI_ArenaList")))) {
+			DEBUG.i("committing: " + pacmd.getName(), sender);
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
@@ -174,13 +180,13 @@ public class PVPArena extends JavaPlugin {
 		if (args[0].equalsIgnoreCase("-s")
 				|| args[0].toLowerCase().contains("stats")) {
 			PAI_Stats scmd = new PAI_Stats();
-			db.i("committing: " + scmd.getName(), sender);
+			DEBUG.i("committing: " + scmd.getName(), sender);
 			scmd.commit(null, sender, new String[0]);
 			return true;
 		} else if (args[0].equalsIgnoreCase("!rl")
 				|| args[0].toLowerCase().contains("reload")) {
 			PAA_Reload scmd = new PAA_Reload();
-			db.i("committing: " + scmd.getName(), sender);
+			DEBUG.i("committing: " + scmd.getName(), sender);
 			for (Arena a : ArenaManager.getArenas()) {
 				scmd.commit(a, sender, new String[0]);
 			}
@@ -188,11 +194,12 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		Arena a = ArenaManager.getArenaByName(args[0]);
-		
+
 		String name = args[0];
-		
+
 		if (a == null) {
-			if (sender instanceof Player && ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
+			if (sender instanceof Player
+					&& ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
 				a = ArenaPlayer.parsePlayer(sender.getName()).getArena();
 			} else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
 				a = PAA_Edit.activeEdits.get(sender.getName());
@@ -205,38 +212,37 @@ public class PVPArena extends JavaPlugin {
 		} else {
 			if (args != null && args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
-                        }
+			}
 		}
-		
+
 		if (a == null) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
 			return true;
 		}
-		
-		
 
 		PAA__Command paacmd = PAA__Command.getByName(args[0]);
 		if (paacmd == null && (PACheck.handleCommand(a, sender, args))) {
 			return true;
 		}
 
-		if (paacmd == null && a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
+		if (paacmd == null
+				&& a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
 			if (args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
 			}
-			db.i("committing: " + paacmd.getName(), sender);
+			DEBUG.i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(a, sender, args);
 			return true;
 		}
-		
+
 		if (paacmd != null) {
-			db.i("committing: " + paacmd.getName(), sender);
+			DEBUG.i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
-		db.i("cmd null", sender);
-		
+		DEBUG.i("cmd null", sender);
+
 		return false;
 	}
 
@@ -244,7 +250,8 @@ public class PVPArena extends JavaPlugin {
 	public void onDisable() {
 		ArenaManager.reset(true);
 		Tracker.stop();
-		Language.log_info(MSG.LOG_PLUGIN_DISABLED, getDescription().getFullName());
+		Language.log_info(MSG.LOG_PLUGIN_DISABLED, getDescription()
+				.getFullName());
 	}
 
 	@Override
@@ -265,14 +272,18 @@ public class PVPArena extends JavaPlugin {
 
 		Language.init(getConfig().getString("language", "en"));
 		Help.init(getConfig().getString("language", "en"));
-		
+
 		StatisticsManager.initialize();
 		ArenaPlayer.initiate();
 
-		getServer().getPluginManager().registerEvents(new BlockListener(), this);
-		getServer().getPluginManager().registerEvents(new EntityListener(), this);
-		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+		getServer().getPluginManager()
+				.registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new EntityListener(),
+				this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(),
+				this);
+		getServer().getPluginManager().registerEvents(new InventoryListener(),
+				this);
 
 		int config_version = 1;
 
@@ -304,8 +315,8 @@ public class PVPArena extends JavaPlugin {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
 				Metrics.Graph acg = metrics.createGraph("Arena count");
-				acg.addPlotter(new WrapPlotter("count", ArenaManager.getArenas()
-						.size()));
+				acg.addPlotter(new WrapPlotter("count", ArenaManager
+						.getArenas().size()));
 
 				metrics.start();
 			} catch (IOException e) {
@@ -314,7 +325,8 @@ public class PVPArena extends JavaPlugin {
 
 		}
 
-		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
+		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription()
+				.getFullName());
 	}
 
 	private class WrapPlotter extends Metrics.Plotter {

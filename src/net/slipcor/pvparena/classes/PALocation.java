@@ -6,7 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
- * <pre>PVP Arena Location class</pre>
+ * <pre>
+ * PVP Arena Location class
+ * </pre>
  * 
  * A simple wrapper of the Bukkit Location
  * 
@@ -22,16 +24,17 @@ public class PALocation {
 	private double z;
 	private float pitch;
 	private float yaw;
-	
-	public PALocation(String world, double x, double y, double z, float pitch, float yaw) {
-		this.world= world;
+
+	public PALocation(String world, double x, double y, double z, float pitch,
+			float yaw) {
+		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.pitch = pitch;
 		this.yaw = yaw;
 	}
-	
+
 	public PALocation(Location l) {
 		world = l.getWorld().getName();
 		x = l.getX();
@@ -42,7 +45,8 @@ public class PALocation {
 	}
 
 	public PALocation add(double x, double y, double z) {
-		return new PALocation(world, x+this.x, y+this.y, z+this.z, pitch, yaw);
+		return new PALocation(world, x + this.x, y + this.y, z + this.z, pitch,
+				yaw);
 	}
 
 	public int getBlockX() {
@@ -58,14 +62,18 @@ public class PALocation {
 	}
 
 	public double getDistance(PALocation o) {
-		if (o == null) { 
-			throw new IllegalArgumentException("Cannot measure distance to a null location");
-                }
-		if (!o.world.equals(world)) {
-			throw new IllegalArgumentException("Cannot measure distance between " + world + " and " + o.world);
+		if (o == null) {
+			throw new IllegalArgumentException(
+					"Cannot measure distance to a null location");
 		}
-		
-		return Math.sqrt(Math.pow(this.x - o.x, 2.0D) + Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
+		if (!o.world.equals(world)) {
+			throw new IllegalArgumentException(
+					"Cannot measure distance between " + world + " and "
+							+ o.world);
+		}
+
+		return Math.sqrt(Math.pow(this.x - o.x, 2.0D)
+				+ Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
 	}
 
 	public double getPitch() {
@@ -115,7 +123,7 @@ public class PALocation {
 	public Location toLocation() {
 		return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
 	}
-	
+
 	@Override
 	public String toString() {
 		String[] aLoc = new String[6];

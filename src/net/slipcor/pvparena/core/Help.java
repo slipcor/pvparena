@@ -401,7 +401,7 @@ public class Help {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating help language file.");
 			}
-                }
+        }
 		boolean override = false;
 
 		YamlConfiguration config = new YamlConfiguration();

@@ -37,7 +37,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 
 /**
- * <pre>Arena Player class</pre>
+ * <pre>
+ * Arena Player class
+ * </pre>
  * 
  * contains Arena Player methods and variables for quicker access
  * 
@@ -86,10 +88,10 @@ public class ArenaPlayer {
 	public ArenaPlayer(String playerName) {
 		db.i("creating offline arena player: " + playerName, playerName);
 		name = playerName;
-		
+
 		totalPlayers.put(name, this);
 	}
-	
+
 	public ArenaPlayer(Player p, Arena a) {
 		db.i("creating arena player: " + p.getName(), p);
 
@@ -185,7 +187,7 @@ public class ArenaPlayer {
 
 	public static void initiate() {
 		db.i("creating offline arena players");
-		
+
 		if (!PVPArena.instance.getConfig().getBoolean("stats")) {
 			return;
 		}
@@ -220,7 +222,8 @@ public class ArenaPlayer {
 			if (Bukkit.getPlayerExact(name) == null) {
 				totalPlayers.put(name, new ArenaPlayer(name));
 			} else {
-				totalPlayers.put(name, new ArenaPlayer(Bukkit.getPlayerExact(name), null));
+				totalPlayers.put(name,
+						new ArenaPlayer(Bukkit.getPlayerExact(name), null));
 			}
 		}
 		return totalPlayers.get(name);
@@ -233,7 +236,8 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void backupAndClearInventory(Arena arena, Player player) {
-		InventoryManager.db.i("saving player inventory: " + player.getName(), player);
+		InventoryManager.db.i("saving player inventory: " + player.getName(),
+				player);
 
 		ArenaPlayer p = parsePlayer(player.getName());
 		p.savedInventory = player.getInventory().getContents().clone();
@@ -264,9 +268,11 @@ public class ArenaPlayer {
 			return;
 		}
 		// AIR AIR AIR AIR instead of contents !!!!
-		db.i("adding " + StringParser.getStringFromItemStacks(p.savedInventory), player);
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedInventory),
+				player);
 		player.getInventory().setContents(p.savedInventory);
-		db.i("adding " + StringParser.getStringFromItemStacks(p.savedArmor), player);
+		db.i("adding " + StringParser.getStringFromItemStacks(p.savedArmor),
+				player);
 		player.getInventory().setArmorContents(p.savedArmor);
 	}
 
@@ -282,7 +288,8 @@ public class ArenaPlayer {
 		this.getStatistics(arena).incStat(StatisticsManager.type.LOSSES);
 	}
 
-	public void addStatistic(String arenaName, StatisticsManager.type type, int i) {
+	public void addStatistic(String arenaName, StatisticsManager.type type,
+			int i) {
 		if (!statistics.containsKey(arenaName)) {
 			statistics.put(arenaName, new PAStatMap(name));
 		}
@@ -318,7 +325,7 @@ public class ArenaPlayer {
 	public boolean didValidSelection() {
 		return selection[0] != null && selection[1] != null;
 	}
-	
+
 	public void debugPrint() {
 		if (status == null || location == null) {
 			db.i("DEBUG PRINT OUT:", this.name);
@@ -331,13 +338,18 @@ public class ArenaPlayer {
 		}
 		db.i("------------------", this.name);
 		db.i("Player: " + name, this.name);
-		db.i("telepass: " + String.valueOf(telePass) + " | chatting: "+ String.valueOf(publicChatting), this.name);
+		db.i("telepass: " + String.valueOf(telePass) + " | chatting: "
+				+ String.valueOf(publicChatting), this.name);
 		db.i("arena: " + (arena == null ? "null" : arena.getName()), this.name);
-		db.i("aClass: " + (aClass == null ? "null" : aClass.getName()), this.name);
+		db.i("aClass: " + (aClass == null ? "null" : aClass.getName()),
+				this.name);
 		db.i("location: " + ((PALocation) location).toString(), this.name);
 		db.i("status: " + status.name(), this.name);
-		db.i("savedInventory: " + StringParser.getStringFromItemStacks(savedInventory), this.name);
-		db.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor), this.name);
+		db.i("savedInventory: "
+				+ StringParser.getStringFromItemStacks(savedInventory),
+				this.name);
+		db.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor),
+				this.name);
 		db.i("tempPermissions:", this.name);
 		for (PermissionAttachment pa : tempPermissions) {
 			db.i("> " + pa.toString(), this.name);
@@ -418,7 +430,7 @@ public class ArenaPlayer {
 		db.i("reading loc!", this.name);
 		if (location != null) {
 			db.i(": " + location.toString(), this.name);
-                }
+		}
 		return location;
 	}
 
@@ -517,13 +529,13 @@ public class ArenaPlayer {
 		savedArmor = StringParser.getItemStacksFromString(cfg.getString(
 				"armor", "AIR"));
 		location = Config.parseLocation(cfg.getString("loc"));
-		
+
 		if (arena != null) {
 			String goTo = arena.getArenaConfig().getString(CFG.TP_EXIT);
 			if (!goTo.equals("old")) {
 				location = SpawnManager.getCoords(arena, "exit");
 			}
-			
+
 			if (Bukkit.getPlayer(name) == null) {
 				db.i("player offline, OUT!", this.name);
 				return;
@@ -547,46 +559,51 @@ public class ArenaPlayer {
 		YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			if (PVPArena.instance.getConfig().getBoolean("stats")) {
-				
+
 				String file = PVPArena.instance.getDataFolder().toString()
 						+ "/players.yml";
 				cfg.load(file);
-	
+
 				if (arena != null) {
 					String a = arena.getName();
-					cfg.set(a + "." + name + ".losses",
-							getStatistics().getStat(StatisticsManager.type.LOSSES)
-									+ getTotalStatistics(StatisticsManager.type.LOSSES));
+					cfg.set(a + "." + name + ".losses", getStatistics()
+							.getStat(StatisticsManager.type.LOSSES)
+							+ getTotalStatistics(StatisticsManager.type.LOSSES));
 					cfg.set(a + "." + name + ".wins",
-							getStatistics().getStat(StatisticsManager.type.WINS)
+							getStatistics()
+									.getStat(StatisticsManager.type.WINS)
 									+ getTotalStatistics(StatisticsManager.type.WINS));
 					cfg.set(a + "." + name + ".kills",
-							getStatistics().getStat(StatisticsManager.type.KILLS)
+							getStatistics().getStat(
+									StatisticsManager.type.KILLS)
 									+ getTotalStatistics(StatisticsManager.type.KILLS));
-					cfg.set(a + "." + name + ".deaths",
-							getStatistics().getStat(StatisticsManager.type.DEATHS)
-									+ getTotalStatistics(StatisticsManager.type.DEATHS));
-					cfg.set(a + "." + name + ".damage",
-							getStatistics().getStat(StatisticsManager.type.DAMAGE)
-									+ getTotalStatistics(StatisticsManager.type.DAMAGE));
+					cfg.set(a + "." + name + ".deaths", getStatistics()
+							.getStat(StatisticsManager.type.DEATHS)
+							+ getTotalStatistics(StatisticsManager.type.DEATHS));
+					cfg.set(a + "." + name + ".damage", getStatistics()
+							.getStat(StatisticsManager.type.DAMAGE)
+							+ getTotalStatistics(StatisticsManager.type.DAMAGE));
 					cfg.set(a + "." + name + ".maxdamage",
-							getStatistics().getStat(StatisticsManager.type.MAXDAMAGE)
+							getStatistics().getStat(
+									StatisticsManager.type.MAXDAMAGE)
 									+ getTotalStatistics(StatisticsManager.type.MAXDAMAGE));
-					cfg.set(a + "." + name + ".damagetake", getStatistics()
-							.getStat(StatisticsManager.type.DAMAGETAKE)
-							+ getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
-					cfg.set(a + "." + name + ".maxdamagetake", getStatistics()
-							.getStat(StatisticsManager.type.MAXDAMAGETAKE)
-							+ getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
+					cfg.set(a + "." + name + ".damagetake",
+							getStatistics().getStat(
+									StatisticsManager.type.DAMAGETAKE)
+									+ getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
+					cfg.set(a + "." + name + ".maxdamagetake",
+							getStatistics().getStat(
+									StatisticsManager.type.MAXDAMAGETAKE)
+									+ getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
 				}
-	
+
 				cfg.save(file);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		if (get() == null ) {
+
+		if (get() == null) {
 			db.i("reset() ; out! null", this.name);
 			return;
 		}
@@ -597,7 +614,7 @@ public class ArenaPlayer {
 			state.reset();
 			state = null;
 		}
-		//location = null;
+		// location = null;
 
 		setStatus(Status.NULL);
 
@@ -609,7 +626,7 @@ public class ArenaPlayer {
 		}
 		arena = null;
 		aClass = null;
-		
+
 		get().setFireTicks(0);
 
 		clearDump();
@@ -649,8 +666,9 @@ public class ArenaPlayer {
 				return;
 			}
 		}
-		PVPArena.instance.getLogger().warning("[PA-debug] failed to set unknown class " + s
-				+ " to player " + name);
+		PVPArena.instance.getLogger().warning(
+				"[PA-debug] failed to set unknown class " + s + " to player "
+						+ name);
 	}
 
 	public void setLocation(PALocation location) {
@@ -669,7 +687,8 @@ public class ArenaPlayer {
 		}
 	}
 
-	public void setStatistic(String arenaName, StatisticsManager.type type, int i) {
+	public void setStatistic(String arenaName, StatisticsManager.type type,
+			int i) {
 		if (!statistics.containsKey(arenaName)) {
 			statistics.put(arenaName, new PAStatMap(name));
 		}
@@ -696,14 +715,15 @@ public class ArenaPlayer {
 	public void setTempPermissions(HashSet<PermissionAttachment> tempPermissions) {
 		this.tempPermissions = tempPermissions;
 	}
-	
+
 	@Override
 	public String toString() {
 		ArenaTeam team = getArenaTeam();
 
-		return (team == null) ? name : team.getColorCodeString() + name + ChatColor.RESET;
+		return (team == null) ? name : team.getColorCodeString() + name
+				+ ChatColor.RESET;
 	}
-	
+
 	public void unsetSelection() {
 		selection[0] = null;
 		selection[1] = null;

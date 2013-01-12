@@ -21,7 +21,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * <pre>Arena Module class "StandardLounge"</pre>
+ * <pre>
+ * Arena Module class "StandardLounge"
+ * </pre>
  * 
  * Enables joining to lounges instead of the battlefield
  * 
@@ -31,14 +33,14 @@ import org.bukkit.entity.Player;
  */
 
 public class StandardLounge extends ArenaModule {
-	
+
 	private int priority = 1;
 
 	public StandardLounge() {
 		super("StandardLounge");
 		db = new Debug(300);
 	}
-	
+
 	@Override
 	public String version() {
 		return "v0.10.2.0";
@@ -62,7 +64,7 @@ public class StandardLounge extends ArenaModule {
 					lounges++;
 				}
 			}
-			
+
 		}
 		if (lounges == arena.getTeams().size()) {
 			return null;
@@ -75,40 +77,48 @@ public class StandardLounge extends ArenaModule {
 	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
 		if (!join) {
 			return result; // we only care about joining, ignore spectators
-                }
+		}
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}
-		
+
 		Player p = (Player) sender;
-		
+
 		if (arena == null) {
-			return result; // arena is null - maybe some other mod wants to handle that? ignore!
+			return result; // arena is null - maybe some other mod wants to
+							// handle that? ignore!
 		}
-		
-		if (arena.isLocked() && !p.hasPermission("pvparena.admin") && !(p.hasPermission("pvparena.create") && arena.getOwner().equals(p.getName()))) {
+
+		if (arena.isLocked()
+				&& !p.hasPermission("pvparena.admin")
+				&& !(p.hasPermission("pvparena.create") && arena.getOwner()
+						.equals(p.getName()))) {
 			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
 			return result;
 		}
-		
-		if (join && arena.isFightInProgress() && !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+
+		if (join && arena.isFightInProgress()
+				&& !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
 			result.setError(this, Language.parse(MSG.ERROR_FIGHT_IN_PROGRESS));
 			return result;
 		}
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-		
+
 		if (ap.getArena() != null) {
 			db.i(this.getName(), sender);
-			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
+			result.setError(this, Language.parse(
+					MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
-		
+
 		if (join && ap.getArenaClass() == null) {
-			String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+			String autoClass = arena.getArenaConfig().getString(
+					CFG.READY_AUTOCLASS);
 			if (autoClass != null && !autoClass.equals("none")) {
 				if (arena.getClass(autoClass) == null) {
-					result.setError(this, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					result.setError(this, Language.parse(
+							MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return result;
 				}
 			}
@@ -123,13 +133,14 @@ public class StandardLounge extends ArenaModule {
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}
-		
+
 		if (arena == null) {
-			return result; // arena is null - maybe some other mod wants to handle that? ignore!
+			return result; // arena is null - maybe some other mod wants to
+							// handle that? ignore!
 		}
-		
+
 		String error = String.valueOf(arena.ready());
-		
+
 		if (error != null) {
 			result.setError(this, error);
 			return result;
@@ -137,7 +148,7 @@ public class StandardLounge extends ArenaModule {
 		result.setPriority(this, priority);
 		return result;
 	}
-	
+
 	@Override
 	public boolean hasSpawn(String s) {
 		if (arena.isFreeForAll()) {
@@ -161,8 +172,9 @@ public class StandardLounge extends ArenaModule {
 
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
-		//ArenaPlayer.prepareInventory(arena, ap.get());
+		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
+				new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+		// ArenaPlayer.prepareInventory(arena, ap.get());
 		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
 		team.add(ap);
@@ -174,18 +186,27 @@ public class StandardLounge extends ArenaModule {
 		ap.setStatus(Status.LOUNGE);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 		if (arena.isFreeForAll()) {
-			arena.msg(sender, arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
-			arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINED, sender.getName()));
+			arena.msg(sender,
+					arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
+			arena.broadcastExcept(
+					sender,
+					Language.parse(arena, CFG.MSG_PLAYERJOINED,
+							sender.getName()));
 		} else {
-			arena.msg(sender, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", team.getColoredName() + "§r"));
-			arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, sender.getName(), team.getColoredName() + "§r"));
+			arena.msg(sender,
+					arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
+							.replace("%1%", team.getColoredName() + "§r"));
+			arena.broadcastExcept(
+					sender,
+					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
+							sender.getName(), team.getColoredName() + "§r"));
 		}
 	}
-	
+
 	@Override
 	public void parseJoin(CommandSender player, ArenaTeam team) {
 		if (arena.START_ID != null) {
 			arena.countDown();
-                }
-	}	
+		}
+	}
 }

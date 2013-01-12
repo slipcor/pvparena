@@ -25,7 +25,9 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 /**
- * <pre>Configuration Manager class</pre>
+ * <pre>
+ * Configuration Manager class
+ * </pre>
  * 
  * Provides static methods to manage Configurations
  * 
@@ -49,33 +51,37 @@ public class ConfigurationManager {
 		cfg.load();
 		YamlConfiguration config = cfg.getYamlConfiguration();
 
-		if (cfg.getString(CFG.GENERAL_TYPE, "null") != null && !cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
+		if (cfg.getString(CFG.GENERAL_TYPE, "null") != null
+				&& !cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
-			
+
 			for (CFG c : CFG.values()) {
 				if (cfg.getUnsafe(c.getNode()) == null) {
 					cfg.createDefaults();
 					break;
 				}
 			}
-			
-			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
+
+			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(),
+					new ArrayList<String>());
 			for (String type : list) {
-				ArenaGoal aType = PVPArena.instance.getAgm().getGoalByName(type);
+				ArenaGoal aType = PVPArena.instance.getAgm()
+						.getGoalByName(type);
 				aType = (ArenaGoal) aType.clone();
 				aType.setArena(arena);
 				arena.goalAdd(aType);
 			}
-			
-			list = cfg.getStringList(CFG.LISTS_MODS.getNode(), new ArrayList<String>());
+
+			list = cfg.getStringList(CFG.LISTS_MODS.getNode(),
+					new ArrayList<String>());
 			for (String mod : list) {
 				ArenaModule aMod = PVPArena.instance.getAmm().getModByName(mod);
 				aMod = (ArenaModule) aMod.clone();
 				aMod.setArena(arena);
 				aMod.toggleEnabled(arena);
 			}
-			
+
 		} else {
 			cfg.createDefaults();
 		}
@@ -83,16 +89,18 @@ public class ConfigurationManager {
 		if (config.get("classitems") == null) {
 			if (PVPArena.instance.getConfig().get("classitems") != null) {
 				for (String key : PVPArena.instance.getConfig().getKeys(false)) {
-					config.addDefault("classitems."+key, PVPArena.instance.getConfig().get("classitems."+key));
+					config.addDefault("classitems." + key, PVPArena.instance
+							.getConfig().get("classitems." + key));
 				}
 			} else {
-				config.addDefault("classitems.Ranger", "261,262:64,298,299,300,301");
+				config.addDefault("classitems.Ranger",
+						"261,262:64,298,299,300,301");
 				config.addDefault("classitems.Swordsman", "276,306,307,308,309");
 				config.addDefault("classitems.Tank", "272,310,311,312,313");
 				config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
 			}
 		}
-		
+
 		PVPArena.instance.getAgm().setDefaults(arena, config);
 
 		config.options().copyDefaults(true);
@@ -107,11 +115,13 @@ public class ConfigurationManager {
 		db.i("reading class items");
 		for (String className : classes.keySet()) {
 			String s = "";
-			
+
 			try {
 				s = (String) classes.get(className);
 			} catch (Exception e) {
-				Bukkit.getLogger().severe("[PVP Arena] Error while parsing class, skipping: " + className);
+				Bukkit.getLogger().severe(
+						"[PVP Arena] Error while parsing class, skipping: "
+								+ className);
 				continue;
 			}
 			String[] ss = s.split(",");
@@ -120,7 +130,8 @@ public class ConfigurationManager {
 			for (int i = 0; i < ss.length; i++) {
 				items[i] = StringParser.getItemStackFromString(ss[i]);
 				if (items[i] == null) {
-					PVPArena.instance.getLogger().warning("unrecognized item: " + items[i]);
+					PVPArena.instance.getLogger().warning(
+							"unrecognized item: " + items[i]);
 				}
 			}
 			arena.addClass(className, items);
@@ -132,16 +143,19 @@ public class ConfigurationManager {
 		arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 		if (config.getConfigurationSection("arenaregion") != null) {
 			db.i("arenaregion not null");
-			Map<String, Object> regs = config
-					.getConfigurationSection("arenaregion").getValues(false);
+			Map<String, Object> regs = config.getConfigurationSection(
+					"arenaregion").getValues(false);
 			for (String rName : regs.keySet()) {
-				db.i("arenaregion '"+rName+"'");
-				ArenaRegionShape region = Config.parseRegion(arena, config, rName);
-				
+				db.i("arenaregion '" + rName + "'");
+				ArenaRegionShape region = Config.parseRegion(arena, config,
+						rName);
+
 				if (region == null) {
-					PVPArena.instance.getLogger().severe("Error while loading arena, region null: " + rName);
+					PVPArena.instance.getLogger().severe(
+							"Error while loading arena, region null: " + rName);
 				} else if (region.getWorld() == null) {
-					PVPArena.instance.getLogger().severe("Error while loading arena, world null: " + rName);
+					PVPArena.instance.getLogger().severe(
+							"Error while loading arena, world null: " + rName);
 				} else {
 					arena.addRegion(region);
 				}
@@ -154,7 +168,7 @@ public class ConfigurationManager {
 		cfg.save();
 
 		PVPArena.instance.getAgm().configParse(arena, config);
-		
+
 		if (cfg.getYamlConfiguration().getConfigurationSection("teams") == null) {
 			if (arena.isFreeForAll()) {
 				config.set("teams.free", "WHITE");
@@ -163,10 +177,9 @@ public class ConfigurationManager {
 				config.set("teams.blue", "BLUE");
 			}
 		}
-		
+
 		cfg.reloadMaps();
 
-		
 		Map<String, Object> tempMap = (Map<String, Object>) cfg
 				.getYamlConfiguration().getConfigurationSection("teams")
 				.getValues(true);
@@ -176,14 +189,14 @@ public class ConfigurationManager {
 			arena.getArenaConfig().save();
 		} else {
 			for (String sTeam : tempMap.keySet()) {
-				ArenaTeam team = new ArenaTeam(sTeam, (String) tempMap.get(sTeam));
+				ArenaTeam team = new ArenaTeam(sTeam,
+						(String) tempMap.get(sTeam));
 				arena.getTeams().add(team);
 				db.i("added team " + team.getName() + " => "
 						+ team.getColorCodeString());
 			}
 		}
-		
-		
+
 		ArenaModuleManager.configParse(arena, config);
 		cfg.save();
 		cfg.reloadMaps();
@@ -214,21 +227,21 @@ public class ConfigurationManager {
 
 		String sExit = arena.getArenaConfig().getString(CFG.TP_EXIT);
 		if (!sExit.equals("old") && !list.contains(sExit)) {
-			return "Exit Spawn ('"+sExit+"') not set!";
-                }
+			return "Exit Spawn ('" + sExit + "') not set!";
+		}
 		String sWin = arena.getArenaConfig().getString(CFG.TP_WIN);
 		if (!sWin.equals("old") && !list.contains(sWin)) {
-			return "Win Spawn ('"+sWin+"') not set!";
-                }
+			return "Win Spawn ('" + sWin + "') not set!";
+		}
 		String sLose = arena.getArenaConfig().getString(CFG.TP_LOSE);
 		if (!sLose.equals("old") && !list.contains(sLose)) {
-			return "Lose Spawn ('"+sLose+"') not set!";
-                }
+			return "Lose Spawn ('" + sLose + "') not set!";
+		}
 		String sDeath = arena.getArenaConfig().getString(CFG.TP_DEATH);
 		if (!sDeath.equals("old") && !list.contains(sDeath)) {
-			return "Death Spawn ('"+sDeath+"') not set!";
-                }
-		
+			return "Death Spawn ('" + sDeath + "') not set!";
+		}
+
 		String error = ArenaModuleManager.checkForMissingSpawns(arena, list);
 		if (error != null) {
 			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);

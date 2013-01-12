@@ -31,7 +31,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
- * <pre>Arena Manager class</pre>
+ * <pre>
+ * Arena Manager class
+ * </pre>
  * 
  * Provides static methods to manage Arenas
  * 
@@ -66,7 +68,7 @@ public class ArenaManager {
 	 * 
 	 * @param name
 	 *            the arena name to load
-	 * @return 
+	 * @return
 	 */
 	private static String checkForMissingGoals(String name) {
 		db.i("check for missing goals: " + name);
@@ -76,24 +78,25 @@ public class ArenaManager {
 			return "file does not exist";
 		}
 		Config cfg = new Config(file);
-		
+
 		cfg.load();
-		List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(), new ArrayList<String>());
-		
+		List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(),
+				new ArrayList<String>());
+
 		if (list.size() < 1) {
 			return null;
 		}
-		
+
 		for (String goal : list) {
 
 			ArenaGoal type = PVPArena.instance.getAgm().getGoalByName(goal);
-			
+
 			if (type == null) {
 				return goal;
 			}
 
 		}
-		
+
 		return null;
 	}
 
@@ -128,8 +131,9 @@ public class ArenaManager {
 		for (Arena a : arenas.values()) {
 			if (a.equals(arena)) {
 				continue;
-                        }
-			if ((a.isFightInProgress()) && !ArenaRegionShape.checkRegion(a, arena)) {
+			}
+			if ((a.isFightInProgress())
+					&& !ArenaRegionShape.checkRegion(a, arena)) {
 				return false;
 			}
 		}
@@ -194,7 +198,7 @@ public class ArenaManager {
 			for (ArenaRegionShape region : arena.getRegions()) {
 				if (region.contains(location)) {
 					return arena;
-                                }
+				}
 			}
 		}
 		return null;
@@ -207,15 +211,17 @@ public class ArenaManager {
 				continue;
 			}
 			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location) && region.getProtections().contains(rp)) {
+				if (region.contains(location)
+						&& region.getProtections().contains(rp)) {
 					return arena;
-                                }
+				}
 			}
 		}
 		return null;
 	}
 
-	public static HashSet<Arena> getArenasByRegionLocation(PABlockLocation location) {
+	public static HashSet<Arena> getArenasByRegionLocation(
+			PABlockLocation location) {
 		HashSet<Arena> result = new HashSet<Arena>();
 		for (Arena arena : arenas.values()) {
 			if (arena.isLocked()) {
@@ -232,6 +238,7 @@ public class ArenaManager {
 
 	/**
 	 * return the arenas
+	 * 
 	 * @return
 	 */
 	public static HashSet<Arena> getArenas() {
@@ -269,7 +276,8 @@ public class ArenaManager {
 	public static void load_arenas() {
 		db.i("loading arenas...");
 		try {
-			File path = new File(PVPArena.instance.getDataFolder().getPath(),"arenas");
+			File path = new File(PVPArena.instance.getDataFolder().getPath(),
+					"arenas");
 			File[] f = path.listFiles();
 			int i;
 			for (i = 0; i < f.length; i++) {
@@ -281,14 +289,11 @@ public class ArenaManager {
 						db.i("arena: " + sName);
 						loadArena(sName);
 					} else {
-						System.out
-								.print("[PVP Arena] "
-										+ Language.parse(MSG.ERROR_GOAL_NOTFOUND,
-												error));
-						System.out
-								.print("[PVP Arena] "
-										+ Language.parse(MSG.GOAL_INSTALLING,
-												error));
+						System.out.print("[PVP Arena] "
+								+ Language
+										.parse(MSG.ERROR_GOAL_NOTFOUND, error));
+						System.out.print("[PVP Arena] "
+								+ Language.parse(MSG.GOAL_INSTALLING, error));
 					}
 				}
 			}
@@ -316,8 +321,9 @@ public class ArenaManager {
 		arenas.remove(arena.getName().toLowerCase());
 		if (deleteConfig) {
 			arena.getArenaConfig().delete();
-                }
-		File path = new File(PVPArena.instance.getDataFolder().getPath() + "/stats_" + arena.getName() + ".yml");
+		}
+		File path = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/stats_" + arena.getName() + ".yml");
 		path.delete();
 		arena = null;
 	}

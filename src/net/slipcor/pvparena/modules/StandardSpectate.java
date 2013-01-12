@@ -18,7 +18,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * <pre>Arena Module class "StandardLounge"</pre>
+ * <pre>
+ * Arena Module class "StandardLounge"
+ * </pre>
  * 
  * Enables joining to lounges instead of the battlefield
  * 
@@ -33,9 +35,9 @@ public class StandardSpectate extends ArenaModule {
 		super("StandardSpectate");
 		db = new Debug(301);
 	}
-	
+
 	int priority = 1;
-	
+
 	@Override
 	public String version() {
 		return "v0.10.0.0";
@@ -43,16 +45,15 @@ public class StandardSpectate extends ArenaModule {
 
 	@Override
 	public String checkForMissingSpawns(Set<String> list) {
-		return list.contains("spectator")?null:"spectator not set";
+		return list.contains("spectator") ? null : "spectator not set";
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender,
-			PACheck res, boolean join) {
+	public PACheck checkJoin(CommandSender sender, PACheck res, boolean join) {
 		if (join) {
 			return res;
-                }
-		
+		}
+
 		if (res.getPriority() < priority) {
 			res.setPriority(this, priority);
 		}
@@ -64,8 +65,9 @@ public class StandardSpectate extends ArenaModule {
 
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
-		//ArenaPlayer.prepareInventory(arena, ap.get());
+		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
+				new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+		// ArenaPlayer.prepareInventory(arena, ap.get());
 		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
 		ap.setStatus(Status.WATCH);

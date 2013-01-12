@@ -10,7 +10,9 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * <pre>PVP Arena Win Event class</pre>
+ * <pre>
+ * PVP Arena Win Event class
+ * </pre>
  * 
  * is called when a player wins an arena match
  * 
@@ -29,15 +31,15 @@ public class PAWinEvent extends Event {
 		a = arena;
 		p = player;
 		items = new ArrayList<String>();
-		
+
 		if (arrItems == null || arrItems.length == 0) {
 			return;
-                }
+		}
 		for (String s : arrItems) {
 			items.add(s);
 		}
 	}
-	
+
 	public void addItemString(String s) {
 		items.add(s);
 	}

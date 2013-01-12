@@ -15,7 +15,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 
 /**
- * <pre>PVP Arena IMPORT class</pre>
+ * <pre>
+ * PVP Arena IMPORT class
+ * </pre>
  * 
  * A command to import from v0.8 to v0.9+
  * 
@@ -29,12 +31,12 @@ public class Importer {
 	 * old => new
 	 */
 	private static HashMap<String, String> content = new HashMap<String, String>();
-	
+
 	static {
 		content.put("classitems", "classitems");
 		content.put("tp", "tp");
 		content.put("setup.wand", "general.wand");
-		
+
 		content.put("game.allowDrops", "player.dropsInventory");
 		content.put("game.dropSpawn", "modules.powerups.dropspawn");
 		content.put("game.preventDeath", "player.preventDeath");
@@ -45,15 +47,16 @@ public class Importer {
 		content.put("game.woolFlagHead", "goal.flags.woolFlagHead");
 		content.put("game.woolHead", "uses.woolHead");
 		content.put("game.hideName", "modules.colorteams.hidename");
-		
+
 		content.put("messages.chat", "chat.enabled");
 		content.put("messages.defaultChat", "chat.onlyPrivate");
 		content.put("messages.onlyChat", "chat.onlyPrivate");
 		content.put("messages.colorNick", "chat.colorNick");
 		content.put("general.classperms", "perms.explicitClassNeeded");
-		
+
 		content.put("general.enabled", "general.enabled");
-		content.put("general.restoreChests", "modules.blockrestore.restorechests");
+		content.put("general.restoreChests",
+				"modules.blockrestore.restorechests");
 		content.put("general.signs", "uses.classSignsDisplay");
 		content.put("general.type", "general.type");
 		content.put("general.item-rewards", "items.rewards");
@@ -63,7 +66,7 @@ public class Importer {
 		content.put("general.tpnodamageseconds", "time.teleportProtect");
 		content.put("general.world", "location.world");
 		content.put("general.owner", "general.owner");
-		
+
 		content.put("region.spawncampdamage", "damage.spawncamp");
 		content.put("region.timer", "time.regionTimer");
 
@@ -73,11 +76,12 @@ public class Importer {
 		content.put("join.range", "join.range");
 		content.put("join.warmup", "time.warmupCountDown");
 		content.put("join.emptyInventory", "modules.fixinventoryloss.gamemode");
-		content.put("join.gamemodeSurvival", "modules.fixinventoryloss.inventory");
-		
+		content.put("join.gamemodeSurvival",
+				"modules.fixinventoryloss.inventory");
+
 		content.put("goal.timed", "goal.time.timedend");
 		content.put("goal.endtimer", "goal.endCountDown");
-		
+
 		content.put("periphery.checkRegions", "uses.overlapCheck");
 
 		content.put("protection.spawn", "protection.spawn");
@@ -98,7 +102,7 @@ public class Importer {
 		content.put("ready.max", "ready.max");
 		content.put("ready.maxTeam", "ready.maxTeam");
 		content.put("ready.startRatio", "ready.neededRatio");
-		
+
 		content.put("teams", "teams");
 
 		content.put("factions.support", "modules.factions.factive");
@@ -115,70 +119,72 @@ public class Importer {
 		content.put("money.maxbet", "modules.vault.maxbet");
 		content.put("money.betWinFactor", "modules.vault.betWinFactor");
 		content.put("money.betTeamWinFactor", "modules.vault.betWinTeamFactor");
-		content.put("money.betPlayerWinFactor", "modules.vault.betWinPlayerFactor");
+		content.put("money.betPlayerWinFactor",
+				"modules.vault.betWinPlayerFactor");
 		content.put("money.usePot", "modules.vault.winPot");
 		content.put("money.winFactor", "modules.vault.winFactor");
-		
+
 		content.put("aftermatch", "modules.aftermatch");
 
 		content.put("maps.playerPosition", "modules.arenamaps.aligntoplayer");
 		content.put("maps.showSpawns", "modules.arenamaps.showspawns");
 		content.put("maps.showPlayers", "modules.arenamaps.showplayers");
 		content.put("maps.showLives", "modules.arenamaps.showlives");
-		
+
 		content.put("latelounge.latelounge", "modules.latelounge.llactive");
 
 		content.put("colors.requireSpout", "modules.colorteams.spoutonly");
 		content.put("colors.tagapi", "modules.colorteams.tagapi");
 		content.put("whitelist", "cmds.whitelist");
 	}
-	
+
 	/**
 	 * 
-	 * @param a the arena to save to
-	 * @param cfg the config to load
+	 * @param a
+	 *            the arena to save to
+	 * @param cfg
+	 *            the config to load
 	 */
 	@SuppressWarnings("deprecation")
 	public static void commitImport(String arenaName, YamlConfiguration cfg) {
-		
+
 		Arena a = new Arena(arenaName);
 		a.getLegacyGoals(cfg.getString("general.type"));
 		ArenaManager.loadArena(a.getName());
-		
+
 		for (String node : content.keySet()) {
 			String newNode = parseToNew(node);
 			a.getArenaConfig().setManually(newNode, cfg.get(node));
 		}
-		
-		HashMap<String, Object> coords = (HashMap<String, Object>) cfg.getConfigurationSection("spawns")
-				.getValues(false);
+
+		HashMap<String, Object> coords = (HashMap<String, Object>) cfg
+				.getConfigurationSection("spawns").getValues(false);
 		String world = cfg.getString("general.world");
 
 		for (String name : coords.keySet()) {
-			
+
 			String sLoc = String.valueOf(cfg.getString("spawns." + name));
 			a.spawnSet(name, Config.parseOldLocation(sLoc, world));
 		}
-		
-		
-		coords = (HashMap<String, Object>) cfg.getConfigurationSection("regions")
-				.getValues(false);
+
+		coords = (HashMap<String, Object>) cfg.getConfigurationSection(
+				"regions").getValues(false);
 
 		for (String name : coords.keySet()) {
 
-			ArenaRegionShape ars = hackRegion(a, name, (String) coords.get(name), world);
-			
+			ArenaRegionShape ars = hackRegion(a, name,
+					(String) coords.get(name), world);
+
 			a.addRegion(ars);
 			ars.saveToConfig();
 		}
 		a.getArenaConfig().save();
 	}
-	
-	
+
 	public static String parseToNew(String oldNode) {
 		return content.get(oldNode);
 	}
-	
+
 	public static String parseToOld(String newNode) {
 		for (Entry<String, String> e : content.entrySet()) {
 			if (e.getValue().equals(newNode)) {
@@ -187,23 +193,27 @@ public class Importer {
 		}
 		return null;
 	}
-	
-	static ArenaRegionShape hackRegion(Arena arena, String name, String coords, String worldName) {
-		String[] parts = coords.split(","); 
+
+	static ArenaRegionShape hackRegion(Arena arena, String name, String coords,
+			String worldName) {
+		String[] parts = coords.split(",");
 
 		// battlefield: 1570,53,-3608,1618,100,-3560[,sphere]
-		
+
 		if (parts.length < 6) {
-			throw new IllegalArgumentException("Input string must contain only x1, y1, z1, x2, y2, z2[, shape]: " + coords);
-                }
+			throw new IllegalArgumentException(
+					"Input string must contain only x1, y1, z1, x2, y2, z2[, shape]: "
+							+ coords);
+		}
 		RegionShape rs = null;
-		
-		if (parts.length == 6 || ArenaRegionShapeManager.getShapeByName(parts[6]) == null) {
+
+		if (parts.length == 6
+				|| ArenaRegionShapeManager.getShapeByName(parts[6]) == null) {
 			rs = RegionShape.CUBOID;
 		} else if (parts.length > 6) {
 			rs = ArenaRegionShapeManager.getShapeByName(parts[6]);
 		}
-		
+
 		Integer x1 = Config.parseInteger(parts[0]);
 		Integer y1 = Config.parseInteger(parts[1]);
 		Integer z1 = Config.parseInteger(parts[2]);
@@ -215,11 +225,12 @@ public class Importer {
 
 		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
 				|| z2 == null || flags == null || prots == null) {
-			throw new NullPointerException("Some of the parsed values are null!");
-                }
+			throw new NullPointerException(
+					"Some of the parsed values are null!");
+		}
 		PABlockLocation[] l = { new PABlockLocation(worldName, x1, y1, z1),
 				new PABlockLocation(worldName, x2, y2, z2) };
-		
+
 		ArenaRegionShape region = ArenaRegionShape.create(arena, name, rs, l);
 		region.setType(RegionType.guessFromName(name));
 		if (region.getType().equals(RegionType.BATTLE)) {
@@ -228,7 +239,7 @@ public class Importer {
 		region.saveToConfig();
 
 		// "world,x1,y1,z1,x2,y2,z2,shape,FLAGS,PROTS,TYPE"
-		
+
 		return region;
 	}
 }

@@ -7,7 +7,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 /**
- * <pre>Arena Runnable class "Region"</pre>
+ * <pre>
+ * Arena Runnable class "Region"
+ * </pre>
  * 
  * An arena timer to commit region specific checks
  * 
@@ -39,27 +41,22 @@ public class RegionRunnable implements Runnable {
 	public void run() {
 		if (!Debug.override) {
 			db.i("RegionRunnable commiting");
-                }
+		}
 		/*
-		 * J - is a join region
-		 * I - is a fight in progress?
-		 * T - should a region tick be run?
-		 * ---------------------------
-		 * JI - T
-		 * 00 - 0 : no join region, no game, no tick
-		 * 01 - 1 : no join region, game, tick for other region type
-		 * 10 - 1 : join region! no game! tick so ppl can join!
-		 * 11 - 0 : join region! game! no tick, ppl are done joining
+		 * J - is a join region I - is a fight in progress? T - should a region
+		 * tick be run? --------------------------- JI - T 00 - 0 : no join
+		 * region, no game, no tick 01 - 1 : no join region, game, tick for
+		 * other region type 10 - 1 : join region! no game! tick so ppl can
+		 * join! 11 - 0 : join region! game! no tick, ppl are done joining
 		 */
-		if (r.getType().equals(RegionType.JOIN)
-				!= 
-				r.getArena().isFightInProgress()) {
+		if (r.getType().equals(RegionType.JOIN) != r.getArena()
+				.isFightInProgress()) {
 			r.tick();
-		} else if (!r.getType().equals(RegionType.JOIN)){
+		} else if (!r.getType().equals(RegionType.JOIN)) {
 			Bukkit.getScheduler().cancelTask(id);
 		}
 	}
-	
+
 	public void setId(int i) {
 		id = i;
 	}

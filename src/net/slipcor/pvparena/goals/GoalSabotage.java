@@ -41,7 +41,9 @@ import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * <pre>Arena Goal class "Sabotage"</pre>
+ * <pre>
+ * Arena Goal class "Sabotage"
+ * </pre>
  * 
  * The first advanced Arena Goal. Sneak into an other team's base and ignite
  * their TNT.
@@ -57,11 +59,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		super("Sabotage");
 		db = new Debug(103);
 	}
-	
+
 	private String flagName = "";
 	private HashMap<String, String> paTeamFlags = new HashMap<String, String>();
 	private HashMap<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>();
-	
+
 	@Override
 	public String version() {
 		return "v0.10.2.0";
@@ -79,14 +81,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		if (res.getPriority() > priority) {
 			return res;
 		}
-		
+
 		for (ArenaTeam team : arena.getTeams()) {
 			String sTeam = team.getName();
 			if (string.contains(sTeam + "tnt")) {
 				res.setPriority(this, priority);
 			}
 		}
-		
+
 		return res;
 	}
 
@@ -104,7 +106,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				}
 				if (!found) {
 					return team.getName() + "tnt not set";
-                                }
+				}
 			}
 		}
 		return null;
@@ -112,13 +114,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	/**
 	 * hook into an interacting player
-	 * @param res 
+	 * 
+	 * @param res
 	 * 
 	 * @param player
 	 *            the interacting player
 	 * @param clickedBlock
 	 *            the block being clicked
-	 * @return 
+	 * @return
 	 */
 	@Override
 	public PACheck checkInteract(PACheck res, Player player, Block block) {
@@ -132,8 +135,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			return res;
 		}
 		db.i("flag click!", player);
-		
-		if (player.getItemInHand() == null || !player.getItemInHand().getType().equals(Material.FLINT_AND_STEEL)) {
+
+		if (player.getItemInHand() == null
+				|| !player.getItemInHand().getType()
+						.equals(Material.FLINT_AND_STEEL)) {
 			db.i("block, but no sabotage items", player);
 			return res;
 		}
@@ -142,7 +147,6 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		Vector vFlag = null;
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-		
 		ArenaTeam pTeam = ap.getArenaTeam();
 		if (pTeam == null) {
 			return res;
@@ -152,35 +156,38 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 			if (aTeam.equals(pTeam.getName())) {
 				continue;
-                        }
+			}
 			if (team.getTeamMembers().size() < 1) {
 				continue; // dont check for inactive teams
-                        }
+			}
 			db.i("checking for tnt of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
 			db.i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, aTeam + "tnt").size() > 0) {
-				vFlag = SpawnManager.getBlockNearest(
-						SpawnManager.getBlocks(arena, aTeam + "tnt"),
-						new PABlockLocation(player.getLocation())).toLocation().toVector();
+				vFlag = SpawnManager
+						.getBlockNearest(
+								SpawnManager.getBlocks(arena, aTeam + "tnt"),
+								new PABlockLocation(player.getLocation()))
+						.toLocation().toVector();
 			}
-			
+
 			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 				db.i("flag found!", player);
 				db.i("vFlag: " + vFlag.toString(), player);
 				arena.broadcast(Language.parse(MSG.GOAL_SABOTAGE_IGNITED,
 						pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						team.getColoredName() + ChatColor.YELLOW));
-				
-				takeFlag(team.getName(), true, new PALocation(block.getLocation()));
+
+				takeFlag(team.getName(), true,
+						new PALocation(block.getLocation()));
 				res.setPriority(this, priority);
-				return res; 
+				return res;
 			}
 		}
-		
+
 		return res;
 	}
-	
+
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
 		if (res.getPriority() >= priority) {
@@ -188,8 +195,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 
 		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
-		
+		int maxTeamPlayers = arena.getArenaConfig().getInt(
+				CFG.READY_MAXTEAMPLAYERS);
+
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
 			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
@@ -201,16 +209,17 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 		if (!arena.isFreeForAll()) {
 			ArenaTeam team = arena.getTeam(args[0]);
-			
+
 			if (team != null) {
-			
-				if (maxTeamPlayers > 0 && team.getTeamMembers().size() >= maxTeamPlayers) {
+
+				if (maxTeamPlayers > 0
+						&& team.getTeamMembers().size() >= maxTeamPlayers) {
 					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
 					return res;
 				}
 			}
 		}
-		
+
 		res.setPriority(this, priority);
 		return res;
 	}
@@ -218,11 +227,12 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	@Override
 	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
 
-		if (res.getPriority() > priority || !PAA_Region.activeSelections.containsKey(player.getName())) {
+		if (res.getPriority() > priority
+				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
 		res.setPriority(this, priority); // success :)
-		
+
 		return res;
 	}
 
@@ -254,17 +264,21 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 
 		if (arena.getTeam(winteam) != null) {
-			
-			
-			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
-					arena.getTeam(winteam).getColor() + "Team "
-							+ winteam + ChatColor.YELLOW), "WINNER");
+
+			ArenaModuleManager
+					.announce(
+							arena,
+							Language.parse(MSG.TEAM_HAS_WON,
+									arena.getTeam(winteam).getColor() + "Team "
+											+ winteam + ChatColor.YELLOW),
+							"WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-					arena.getTeam(winteam).getColor() + "Team "
-							+ winteam + ChatColor.YELLOW));
+					arena.getTeam(winteam).getColor() + "Team " + winteam
+							+ ChatColor.YELLOW));
 		}
-		
-		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+
+		new EndRunnable(arena, arena.getArenaConfig().getInt(
+				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
@@ -276,7 +290,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 					flagName = args[0];
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
-					arena.msg(sender, Language.parse(MSG.GOAL_SABOTAGE_TOSETTNT, flagName));
+					arena.msg(sender, Language.parse(
+							MSG.GOAL_SABOTAGE_TOSETTNT, flagName));
 				}
 			}
 		}
@@ -287,7 +302,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		db.i("[SABOTAGE]");
 
 		ArenaTeam aTeam = null;
-		
+
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus().equals(Status.FIGHT)) {
@@ -298,22 +313,22 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 
 		if (aTeam != null && !force) {
-			
-			ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON,
-					aTeam.getColor() + "Team "
+
+			ArenaModuleManager.announce(
+					arena,
+					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor() + "Team "
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-					aTeam.getColor() + "Team "
-							+ aTeam.getName() + ChatColor.YELLOW));
+			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					+ "Team " + aTeam.getName() + ChatColor.YELLOW));
 		}
 
-		
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}
-		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+		new EndRunnable(arena, arena.getArenaConfig().getInt(
+				CFG.TIME_ENDCOUNTDOWN));
 	}
-	
+
 	@Override
 	public void commitInteract(Player player, Block clickedBlock) {
 		return;
@@ -324,7 +339,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		if (block == null || !block.getType().equals(Material.TNT)) {
 			return false;
 		}
-		
+
 		if (!PVPArena.hasAdminPerms(player)
 				&& !(PVPArena.hasCreatePerms(player, arena))) {
 			return false;
@@ -335,7 +350,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		// command : /pa redtnt1
 		// location: red1tnt:
 
-		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()), flagName);
+		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
+				flagName);
 
 		arena.msg(player, Language.parse(MSG.GOAL_SABOTAGE_SETTNT, flagName));
 
@@ -343,18 +359,18 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		this.flagName = "";
 		return false;
 	}
-	
+
 	@Override
 	public void configParse(YamlConfiguration cfg) {
 		Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
 	}
-	
+
 	@Override
 	public void disconnect(ArenaPlayer ap) {
 		if (paTeamFlags == null) {
 			return;
 		}
-		
+
 		String flag = this.getHeldFlagTeam(arena, ap.getName());
 		if (flag != null) {
 			ArenaTeam flagTeam = arena.getTeam(flag);
@@ -365,9 +381,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	private void distributeFlag(ArenaPlayer player, ArenaTeam team) {
 		HashSet<ArenaPlayer> players = team.getTeamMembers();
-		
+
 		int i = (new Random()).nextInt(players.size());
-		
+
 		for (ArenaPlayer ap : players) {
 			db.i("distributing sabotage: " + ap.getName(), ap.getName());
 			if (ap.equals(player)) {
@@ -375,29 +391,30 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			}
 			if (--i <= 1) {
 				paTeamFlags.put(team.getName(), ap.getName());
-				ap.get().getInventory().addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
+				ap.get().getInventory()
+						.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
 				arena.msg(ap.get(), Language.parse(MSG.GOAL_SABOTAGE_YOUTNT));
 				return;
 			}
 		}
 	}
-	
+
 	private String getHeldFlagTeam(Arena arena, String player) {
 		if (paTeamFlags.size() < 1) {
 			return null;
 		}
-		
+
 		db.i("getting held TNT of player " + player, player);
 		for (String sTeam : paTeamFlags.keySet()) {
-			db.i("team " + sTeam + "'s sabotage is carried by " + paTeamFlags.get(sTeam)
-					+ "s hands", player);
+			db.i("team " + sTeam + "'s sabotage is carried by "
+					+ paTeamFlags.get(sTeam) + "s hands", player);
 			if (player.equals(paTeamFlags.get(sTeam))) {
 				return sTeam;
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String guessSpawn(String place) {
 		// no exact match: assume we have multiple spawnpoints
@@ -405,10 +422,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		int i = 0;
 
 		db.i("searching for team spawns: " + place);
-		
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
-				.getYamlConfiguration().getConfigurationSection("spawns")
-				.getValues(false);
+
+		HashMap<String, Object> coords = (HashMap<String, Object>) arena
+				.getArenaConfig().getYamlConfiguration()
+				.getConfigurationSection("spawns").getValues(false);
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(i++, name);
@@ -438,10 +455,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	@Override
 	public boolean hasSpawn(String string) {
 		for (String teamName : arena.getTeamNames()) {
-			if (string.toLowerCase().equals(teamName.toLowerCase()+"tnt")) {
+			if (string.toLowerCase().equals(teamName.toLowerCase() + "tnt")) {
 				return true;
 			}
-			if (string.toLowerCase().startsWith(teamName.toLowerCase()+"spawn")) {
+			if (string.toLowerCase().startsWith(
+					teamName.toLowerCase() + "spawn")) {
 				return true;
 			}
 		}
@@ -464,7 +482,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	public boolean isInternal() {
 		return true;
 	}
-	
+
 	@Override
 	public void parsePlayerDeath(Player p, EntityDamageEvent event) {
 		String s = getHeldFlagTeam(arena, p.getName());
@@ -489,7 +507,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			}
 		}
 	}
-	
+
 	@Override
 	public void reset(boolean force) {
 		paTeamFlags.clear();
@@ -498,21 +516,19 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 		tnts.clear();
 	}
-	
+
 	@Override
 	public void setDefaults(YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
 		if (config.get("teams.free") != null) {
-			config.set("teams",null);
+			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.red",
-					ChatColor.RED.name());
-			config.addDefault("teams.blue",
-					ChatColor.BLUE.name());
+			config.addDefault("teams.red", ChatColor.RED.name());
+			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 	}
 
@@ -529,26 +545,29 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	 *            the location to take/reset
 	 */
 	public void takeFlag(String teamName, boolean take, PALocation lBlock) {
-		lBlock.toLocation().getBlock().setType(take?Material.AIR:Material.TNT);
+		lBlock.toLocation().getBlock()
+				.setType(take ? Material.AIR : Material.TNT);
 		if (take) {
-			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(SpawnManager.getRegionCenter(arena).getWorldName()).spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
+			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(
+					SpawnManager.getRegionCenter(arena).getWorldName())
+					.spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
 			tnts.put(arena.getTeam(teamName), tnt);
 		}
 	}
-	
+
 	@Override
 	public void unload(Player player) {
 		disconnect(ArenaPlayer.parsePlayer(player.getName()));
 	}
-	
+
 	@EventHandler
 	public void onTNTExplode(EntityExplodeEvent event) {
 		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
-		
+
 		TNTPrimed t = (TNTPrimed) event.getEntity();
-		
+
 		for (ArenaTeam team : tnts.keySet()) {
 			if (t.getUniqueId().equals(tnts.get(team).getUniqueId())) {
 				event.setCancelled(true);
@@ -556,13 +575,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				commit(arena, team.getName(), false);
 			}
 		}
-		
-		PABlockLocation tLoc = new PABlockLocation(event.getEntity().getLocation());
-		
+
+		PABlockLocation tLoc = new PABlockLocation(event.getEntity()
+				.getLocation());
+
 		HashSet<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");
-		
+
 		PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
-		
+
 		if (nearest.getDistance(tLoc) < 2) {
 			event.setCancelled(true);
 		}

@@ -27,7 +27,9 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
- * <pre>Arena Goal class "PlayerLives"</pre>
+ * <pre>
+ * Arena Goal class "PlayerLives"
+ * </pre>
  * 
  * The first Arena Goal. Players have lives. When every life is lost, the player
  * is teleported to the spectator spawn to watch the rest of the fight.
@@ -42,7 +44,7 @@ public class GoalPlayerLives extends ArenaGoal {
 		super("PlayerLives");
 		db = new Debug(102);
 	}
-	
+
 	EndRunnable er = null;
 
 	HashMap<String, Integer> lives = new HashMap<String, Integer>();
@@ -53,13 +55,13 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	int priority = 2;
-	
+
 	@Override
 	public PACheck checkEnd(PACheck res) {
 		if (res.getPriority() > priority) {
 			return res;
 		}
-		
+
 		if (!arena.isFreeForAll()) {
 			int count = TeamManager.countActiveTeams(arena);
 
@@ -68,7 +70,7 @@ public class GoalPlayerLives extends ArenaGoal {
 			}
 			return res;
 		}
-		
+
 		int count = lives.size();
 
 		if (count == 1) {
@@ -96,7 +98,7 @@ public class GoalPlayerLives extends ArenaGoal {
 					}
 					if (!found) {
 						return team.getName() + "spawn not set";
-                                        }
+					}
 				}
 			}
 			return null;
@@ -107,9 +109,9 @@ public class GoalPlayerLives extends ArenaGoal {
 				count++;
 			}
 		}
-		return count > 3 ? null : "need more spawns! ("+count+"/4)";
+		return count > 3 ? null : "need more spawns! (" + count + "/4)";
 	}
-	
+
 	@Override
 	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
 		if (res.getPriority() >= priority) {
@@ -117,8 +119,9 @@ public class GoalPlayerLives extends ArenaGoal {
 		}
 
 		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
-		
+		int maxTeamPlayers = arena.getArenaConfig().getInt(
+				CFG.READY_MAXTEAMPLAYERS);
+
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
 			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
@@ -130,16 +133,17 @@ public class GoalPlayerLives extends ArenaGoal {
 
 		if (!arena.isFreeForAll()) {
 			ArenaTeam team = arena.getTeam(args[0]);
-			
+
 			if (team != null) {
-			
-				if (maxTeamPlayers > 0 && team.getTeamMembers().size() >= maxTeamPlayers) {
+
+				if (maxTeamPlayers > 0
+						&& team.getTeamMembers().size() >= maxTeamPlayers) {
 					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
 					return res;
 				}
 			}
 		}
-		
+
 		res.setPriority(this, priority);
 		return res;
 	}
@@ -157,38 +161,45 @@ public class GoalPlayerLives extends ArenaGoal {
 		if (er != null) {
 			return;
 		}
-		
-		
+
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
-                                }
+				}
 				if (arena.isFreeForAll()) {
-					
-					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
-	
-					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
+
+					ArenaModuleManager.announce(arena,
+							Language.parse(MSG.PLAYER_HAS_WON, ap.getName()),
+							"WINNER");
+
+					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+							ap.getName()));
 				} else {
-					
-					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()), "WINNER");
-	
-					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColoredName()));
+
+					ArenaModuleManager.announce(
+							arena,
+							Language.parse(MSG.TEAM_HAS_WON,
+									team.getColoredName()), "WINNER");
+
+					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+							team.getColoredName()));
 					break;
 				}
 			}
-			
+
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
 		}
-		
-		er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+
+		er = new EndRunnable(arena, arena.getArenaConfig().getInt(
+				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
-	public void commitPlayerDeath(Player player,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(Player player, boolean doesRespawn,
+			String error, PlayerDeathEvent event) {
 		if (!lives.containsKey(player.getName())) {
 			return;
 		}
@@ -206,35 +217,44 @@ public class GoalPlayerLives extends ArenaGoal {
 			i--;
 			lives.put(player.getName(), i);
 
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY_REMAINING,
+				arena.broadcast(Language.parse(
+						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
-										.getLastDamageCause().getCause(), player.getKiller()),
-						String.valueOf(i)));
+								.getLastDamageCause().getCause(),
+								player.getKiller()), String.valueOf(i)));
 			}
-			
+
 			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+					|| arena.getArenaConfig().getBoolean(
+							CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
 
-			PACheck.handleRespawn(arena,  ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
-			
+			PACheck.handleRespawn(arena,
+					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+
 		}
 	}
 
 	@Override
 	public void displayInfo(CommandSender sender) {
-		sender.sendMessage("lives: " + arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+		sender.sendMessage("lives: "
+				+ arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
 
 	@Override
 	public PACheck getLives(PACheck res, ArenaPlayer ap) {
 		if (!res.hasError() && res.getPriority() <= priority) {
-			res.setError(this, "" + (lives.containsKey(ap.getName())?lives.get(ap.getName()):0));
+			res.setError(
+					this,
+					""
+							+ (lives.containsKey(ap.getName()) ? lives.get(ap
+									.getName()) : 0));
 		}
 		return res;
 	}
@@ -245,7 +265,8 @@ public class GoalPlayerLives extends ArenaGoal {
 			return (string.toLowerCase().startsWith("spawn"));
 		}
 		for (String teamName : arena.getTeamNames()) {
-			if (string.toLowerCase().startsWith(teamName.toLowerCase()+"spawn")) {
+			if (string.toLowerCase().startsWith(
+					teamName.toLowerCase() + "spawn")) {
 				return true;
 			}
 		}
@@ -254,18 +275,20 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public void initate(Player player) {
-		lives.put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+		lives.put(player.getName(),
+				arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
 
 	@Override
 	public boolean isInternal() {
 		return true;
 	}
-	
+
 	@Override
 	public void parseLeave(Player player) {
 		if (player == null) {
-			PVPArena.instance.getLogger().warning(this.getName() + ": player NULL");
+			PVPArena.instance.getLogger().warning(
+					this.getName() + ": player NULL");
 			return;
 		}
 		if (lives.containsKey(player.getName())) {
@@ -277,33 +300,31 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.lives
-						.put(ap.getName(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+				this.lives.put(ap.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 			}
 		}
 	}
-	
+
 	@Override
 	public void reset(boolean force) {
 		er = null;
 		lives.clear();
 	}
-	
+
 	@Override
 	public void setDefaults(YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
-		
+
 		if (config.get("teams.free") != null) {
-			config.set("teams",null);
+			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
 			db.i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.red",
-					ChatColor.RED.name());
-			config.addDefault("teams.blue",
-					ChatColor.BLUE.name());
+			config.addDefault("teams.red", ChatColor.RED.name());
+			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
@@ -312,20 +333,20 @@ public class GoalPlayerLives extends ArenaGoal {
 			config.addDefault("flagColors.blue", "BLACK");
 		}
 	}
-	
+
 	@Override
 	public void setPlayerLives(int value) {
 		HashSet<String> plrs = new HashSet<String>();
-		
+
 		for (String name : lives.keySet()) {
 			plrs.add(name);
 		}
-		
+
 		for (String s : plrs) {
 			lives.put(s, value);
 		}
 	}
-	
+
 	@Override
 	public void setPlayerLives(ArenaPlayer ap, int value) {
 		lives.put(ap.getName(), value);
@@ -334,29 +355,31 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
 		double score;
-		
+
 		for (ArenaPlayer ap : arena.getFighters()) {
-			score = (lives.containsKey(ap.getName())?lives.get(ap.getName()):0);
+			score = (lives.containsKey(ap.getName()) ? lives.get(ap.getName())
+					: 0);
 			if (arena.isFreeForAll()) {
 
 				if (scores.containsKey(ap.getName())) {
-					scores.put(ap.getName(), scores.get(ap.getName())+score);
+					scores.put(ap.getName(), scores.get(ap.getName()) + score);
 				} else {
 					scores.put(ap.getName(), score);
 				}
 			} else {
 
 				if (scores.containsKey(ap.getArenaTeam().getName())) {
-					scores.put(ap.getArenaTeam().getName(), scores.get(ap.getName())+score);
+					scores.put(ap.getArenaTeam().getName(),
+							scores.get(ap.getName()) + score);
 				} else {
 					scores.put(ap.getArenaTeam().getName(), score);
 				}
 			}
 		}
-		
+
 		return scores;
 	}
-	
+
 	@Override
 	public void unload(Player player) {
 		lives.remove(player.getName());

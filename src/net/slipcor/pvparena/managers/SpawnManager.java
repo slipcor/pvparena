@@ -638,7 +638,7 @@ public class SpawnManager {
 
 		String s = Config.parseToString(loc);
 
-		db.i("setting spawn " + place + " to " + s.toString());
+		db.i("setting spawn " + place + " to " + s);
 
 		arena.getArenaConfig().setManually("spawns." + place, s);
 

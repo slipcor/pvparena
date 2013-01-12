@@ -8,7 +8,9 @@ import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.command.CommandSender;
 
 /**
- * <pre>PVP Arena ArenaCommand class</pre>
+ * <pre>
+ * PVP Arena ArenaCommand class
+ * </pre>
  * 
  * The abstract class of a command belonging to an arena, including perm check
  * 
@@ -26,11 +28,11 @@ public abstract class PAA__Command {
 
 	public static boolean argCountValid(CommandSender sender, Arena arena,
 			String[] args, Integer[] validCounts) {
-		
+
 		for (int i : validCounts) {
 			if (i == args.length) {
 				return true;
-                        }
+			}
 		}
 
 		String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
@@ -102,7 +104,8 @@ public abstract class PAA__Command {
 			return new PAA_RegionType();
 		} else if (name.contains("reload") || name.equals("!rl")) {
 			return new PAA_Reload();
-		} else if (name.contains("remove") || name.contains("delete") || name.equals("!rem") || name.equals("!del")) {
+		} else if (name.contains("remove") || name.contains("delete")
+				|| name.equals("!rem") || name.equals("!del")) {
 			return new PAA_Remove();
 		} else if (name.contains("round") || name.equals("!rd")) {
 			return new PAA_Round();
@@ -114,11 +117,13 @@ public abstract class PAA__Command {
 			return new PAA_Spawn();
 		} else if (name.equals("start") || name.equals("!go")) {
 			return new PAA_Start();
-		} else if (name.equals("forcestop") || name.equals("stop") || name.equals("!st") || name.equals("!fs")) {
+		} else if (name.equals("forcestop") || name.equals("stop")
+				|| name.equals("!st") || name.equals("!fs")) {
 			return new PAA_Stop();
 		} else if (name.contains("teams") || name.equals("!ts")) {
 			return new PAA_Teams();
-		} else if (name.contains("teleport") || name.equals("tp") || name.equals("!t")) {
+		} else if (name.contains("teleport") || name.equals("tp")
+				|| name.equals("!t")) {
 			return new PAA_Teleport();
 		} else if (name.contains("togglemod") || name.equals("!tm")) {
 			return new PAA_ToggleMod();

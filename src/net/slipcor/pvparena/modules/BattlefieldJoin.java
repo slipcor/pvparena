@@ -17,7 +17,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * <pre>Arena Module class "BattlefieldJoin"</pre>
+ * <pre>
+ * Arena Module class "BattlefieldJoin"
+ * </pre>
  * 
  * Enables direct joining to the battlefield
  * 
@@ -27,14 +29,14 @@ import org.bukkit.entity.Player;
  */
 
 public class BattlefieldJoin extends ArenaModule {
-	
+
 	private int priority = 0;
 
 	public BattlefieldJoin() {
 		super("BattlefieldJoin");
 		db = new Debug(300);
 	}
-	
+
 	@Override
 	public String version() {
 		return "v0.10.2.0";
@@ -44,41 +46,47 @@ public class BattlefieldJoin extends ArenaModule {
 	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
 		if (!join) {
 			return result; // we only care about joining, ignore spectators
-                }
+		}
 		if (result.getPriority() > this.priority) {
 			return result; // Something already is of higher priority, ignore!
 		}
-		
+
 		Player p = (Player) sender;
-		
+
 		if (arena == null) {
-			return result; // arena is null - maybe some other mod wants to handle that? ignore!
+			return result; // arena is null - maybe some other mod wants to
+							// handle that? ignore!
 		}
-		
-		if (arena.isLocked() && !p.hasPermission("pvparena.admin") && !(p.hasPermission("pvparena.create") && arena.getOwner().equals(p.getName()))) {
+
+		if (arena.isLocked()
+				&& !p.hasPermission("pvparena.admin")
+				&& !(p.hasPermission("pvparena.create") && arena.getOwner()
+						.equals(p.getName()))) {
 			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
 			return result;
 		}
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-		
+
 		if (ap.getArena() != null) {
 			db.i(this.getName(), sender);
-			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
+			result.setError(this, Language.parse(
+					MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
 			return result;
 		}
-		
+
 		result.setPriority(this, priority);
 		return result;
 	}
 
 	@Override
 	public void commitJoin(Player sender, ArenaTeam team) {
-		
+
 		// standard join --> lounge
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance, new PlayerStateCreateRunnable(ap, ap.get()), 2L);
-		//ArenaPlayer.prepareInventory(arena, ap.get());
+		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
+				new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+		// ArenaPlayer.prepareInventory(arena, ap.get());
 		ap.setLocation(new PALocation(ap.get().getLocation()));
 		ap.setArena(arena);
 		ap.setStatus(Status.LOUNGE);

@@ -11,7 +11,9 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.SpawnManager;
 
 /**
- * <pre>Arena Runnable class "Teleport"</pre>
+ * <pre>
+ * Arena Runnable class "Teleport"
+ * </pre>
  * 
  * An arena timer to teleport a player back
  * 
@@ -25,16 +27,18 @@ public class TeleportRunnable implements Runnable {
 	final String player;
 	final Arena arena;
 	final boolean soft;
-	
+
 	Debug db = new Debug(77);
-	
+
 	public TeleportRunnable(Arena a, ArenaPlayer ap, String s, boolean soft) {
-		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => " + s, ap.getName());
+		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => "
+				+ s, ap.getName());
 		string = s;
 		player = ap.getName();
 		arena = a;
 		this.soft = soft;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 10L);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this,
+				10L);
 	}
 
 	@Override
@@ -50,16 +54,22 @@ public class TeleportRunnable implements Runnable {
 				db.i("location is fine", player);
 				PALocation loc = ap.getLocation();
 				ap.get().teleport(loc.toLocation());
-				ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+				ap.get()
+						.setNoDamageTicks(
+								arena.getArenaConfig().getInt(
+										CFG.TIME_TELEPORTPROTECT) * 20);
 			}
 		} else {
 			PALocation l = SpawnManager.getCoords(arena, string);
 			ap.get().teleport(l.toLocation());
-			ap.get().setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+			ap.get()
+					.setNoDamageTicks(
+							arena.getArenaConfig().getInt(
+									CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 		if (!soft) {
 			ap.setLocation(null);
-                }
+		}
 	}
 
 }

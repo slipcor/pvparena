@@ -25,18 +25,18 @@ import java.util.zip.ZipEntry;
  * Loadable - Base for loadable classes
  * 
  * @author NodinChan
- *
+ * 
  */
 public class NCBLoadable implements Cloneable {
-	
+
 	private final String name;
-	
+
 	private JarFile jar;
-	
+
 	public NCBLoadable(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public NCBLoadable clone() {
 		try {
@@ -46,18 +46,20 @@ public class NCBLoadable implements Cloneable {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Called when the Loadable is loaded by the Loader
 	 * 
 	 * @return True if the Loadable is initialised
 	 */
-	public LoadResult init() { return new LoadResult(); }
-	
+	public LoadResult init() {
+		return new LoadResult();
+	}
+
 	public boolean isInternal() {
 		return false;
 	}
-	
+
 	/**
 	 * Gets the name of the Loadable
 	 * 
@@ -66,60 +68,68 @@ public class NCBLoadable implements Cloneable {
 	public final String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Gets an embedded resource in this plugin
 	 * 
-	 * @param name File name of the resource
+	 * @param name
+	 *            File name of the resource
 	 * 
 	 * @return InputStream of the file if found, otherwise null
 	 */
 	public InputStream getResource(String name) {
 		ZipEntry entry = jar.getEntry(name);
-		
+
 		if (entry == null) {
 			return null;
-                }
-		
-		try { return jar.getInputStream(entry); } catch (IOException e) { return null; }
+		}
+
+		try {
+			return jar.getInputStream(entry);
+		} catch (IOException e) {
+			return null;
+		}
 	}
-	
+
 	JarFile jar(JarFile jar) {
 		return this.jar = jar;
 	}
-	
+
 	/**
 	 * Called when the Loadable is unloaded
 	 */
-	public void unload() {}
-	
+	public void unload() {
+	}
+
 	public static final class LoadResult {
-		
+
 		private final Result result;
-		
+
 		private final String reason;
-		
+
 		public LoadResult() {
 			this(Result.SUCCESS, "");
 		}
-		
+
 		public LoadResult(String failReason) {
 			this(Result.FAILURE, failReason);
 		}
-		
+
 		public LoadResult(Result result, String reason) {
 			this.result = result;
 			this.reason = reason;
 		}
-		
+
 		public String getReason() {
 			return reason;
 		}
-		
+
 		public Result getResult() {
 			return result;
 		}
-		
-		public enum Result { FAILURE, SUCCESS }
+
+		public enum Result {
+			FAILURE, SUCCESS
+		}
 	}
 }

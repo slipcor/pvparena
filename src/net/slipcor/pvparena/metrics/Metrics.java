@@ -26,7 +26,9 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
- * <pre>Metrics class</pre>
+ * <pre>
+ * Metrics class
+ * </pre>
  * 
  * Accesses Hidendras Metrics
  * 
@@ -163,7 +165,7 @@ public class Metrics {
 
 			if (this.task == null) {
 				start();
-                        }
+			}
 		}
 	}
 
@@ -252,10 +254,10 @@ public class Metrics {
 
 					for (Plotter plotter : graph.getPlotters()) {
 						plotter.reset();
-                                        }
+					}
 				}
 			}
-                }
+		}
 	}
 
 	private boolean isMineshafterPresent() {
