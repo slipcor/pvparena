@@ -162,8 +162,9 @@ public class Arena {
 			if (p.getArena() == null || !p.getArena().equals(this)) {
 				continue;
 			}
-			if (p.getName().equals(sender.getName()))
+			if (p.getName().equals(sender.getName())) {
 				continue;
+                        }
 			msg(p.get(), msg);
 		}
 	}
@@ -336,9 +337,10 @@ public class Arena {
 		try {
 			mMat = Material
 					.getMaterial(getArenaConfig().getInt(CFG.READY_BLOCK));
-			if (mMat == Material.AIR)
+			if (mMat == Material.AIR) {
 				mMat = Material.getMaterial(getArenaConfig()
 						.getString(CFG.READY_BLOCK));
+                        }
 			db.i("mMat now is " + mMat.name());
 		} catch (Exception e) {
 			db.i("exception reading ready block");
@@ -1326,8 +1328,9 @@ public class Arena {
 	public HashSet<ArenaRegionShape> getRegionsByType(RegionType battle) {
 		HashSet<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
 		for (ArenaRegionShape rs : regions) {
-			if (rs.getType().equals(battle))
-				result.add(rs);
+			if (rs.getType().equals(battle)) {
+                            result.add(rs);
+                        }
 		}
 		return result;
 	}

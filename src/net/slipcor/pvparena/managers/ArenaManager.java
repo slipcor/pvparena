@@ -126,9 +126,9 @@ public class ArenaManager {
 	 */
 	public static boolean checkRegions(Arena arena) {
 		for (Arena a : arenas.values()) {
-			if (a.equals(arena))
+			if (a.equals(arena)) {
 				continue;
-
+                        }
 			if ((a.isFightInProgress()) && !ArenaRegionShape.checkRegion(a, arena)) {
 				return false;
 			}
@@ -192,8 +192,9 @@ public class ArenaManager {
 				continue;
 			}
 			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location))
+				if (region.contains(location)) {
 					return arena;
+                                }
 			}
 		}
 		return null;
@@ -206,8 +207,9 @@ public class ArenaManager {
 				continue;
 			}
 			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location) && region.getProtections().contains(rp))
+				if (region.contains(location) && region.getProtections().contains(rp)) {
 					return arena;
+                                }
 			}
 		}
 		return null;
@@ -312,8 +314,9 @@ public class ArenaManager {
 	public static void removeArena(Arena arena, boolean deleteConfig) {
 		arena.stop(true);
 		arenas.remove(arena.getName().toLowerCase());
-		if (deleteConfig)
+		if (deleteConfig) {
 			arena.getArenaConfig().delete();
+                }
 		File path = new File(PVPArena.instance.getDataFolder().getPath() + "/stats_" + arena.getName() + ".yml");
 		path.delete();
 		arena = null;

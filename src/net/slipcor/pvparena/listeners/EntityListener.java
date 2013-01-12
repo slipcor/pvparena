@@ -88,9 +88,9 @@ public class EntityListener implements Listener {
 		}
 		
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getLocation()), RegionProtection.MOBS);
-		if (arena == null)
+		if (arena == null) {
 			return; // no arena => out
-		
+                }
 		event.setCancelled(true);
 	}
 
@@ -99,9 +99,9 @@ public class EntityListener implements Listener {
 		db.i("explosion");
 
 		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(new PABlockLocation(event.getLocation()), RegionProtection.TNT);
-		if (arena == null)
+		if (arena == null) {
 			return; // no arena => out
-
+                }
 		db.i("explosion inside an arena");
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
 				|| (!BlockListener.isProtected(event.getLocation(), event, RegionProtection.TNT))
@@ -118,13 +118,13 @@ public class EntityListener implements Listener {
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 		Entity p1 = event.getEntity();
 
-		if ((p1 == null) || (!(p1 instanceof Player)))
+		if ((p1 == null) || (!(p1 instanceof Player))) {
 			return; // no player
-
+                }
 		Arena arena = ArenaPlayer.parsePlayer(((Player) p1).getName()).getArena();
-		if (arena == null)
+		if (arena == null) {
 			return;
-
+                }
 		Player player = (Player) p1;
 		db.i("onEntityRegainHealth => fighing player", player);
 		if (!arena.isFightInProgress()) {

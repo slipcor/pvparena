@@ -193,10 +193,9 @@ public class Importer {
 
 		// battlefield: 1570,53,-3608,1618,100,-3560[,sphere]
 		
-		if (parts.length < 6)
-			throw new IllegalArgumentException(
-					"Input string must contain only x1, y1, z1, x2, y2, z2[, shape]: " + coords);
-		
+		if (parts.length < 6) {
+			throw new IllegalArgumentException("Input string must contain only x1, y1, z1, x2, y2, z2[, shape]: " + coords);
+                }
 		RegionShape rs = null;
 		
 		if (parts.length == 6 || ArenaRegionShapeManager.getShapeByName(parts[6]) == null) {
@@ -215,9 +214,9 @@ public class Importer {
 		Integer prots = 0;
 
 		if (x1 == null || y1 == null || z1 == null || x2 == null || y2 == null
-				|| z2 == null || flags == null || prots == null)
-			throw new NullPointerException(
-					"Some of the parsed values are null!");
+				|| z2 == null || flags == null || prots == null) {
+			throw new NullPointerException("Some of the parsed values are null!");
+                }
 		PABlockLocation[] l = { new PABlockLocation(worldName, x1, y1, z1),
 				new PABlockLocation(worldName, x2, y2, z2) };
 		

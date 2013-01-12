@@ -79,8 +79,9 @@ public class GoalTeamLives extends ArenaGoal {
 						break;
 					}
 				}
-				if (!found)
+				if (!found) {
 					return team.getName() + "spawn not set";
+                                }
 			}
 		}
 		return null;
@@ -253,8 +254,9 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void initate(Player player) {
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		if (lives.get(ap.getArenaTeam().getName()) == null)
+		if (lives.get(ap.getArenaTeam().getName()) == null) {
 			lives.put(ap.getArenaTeam().getName(), arena.getArenaConfig().getInt(CFG.GOAL_TLIVES_LIVES));
+                }
 	}
 
 	@Override

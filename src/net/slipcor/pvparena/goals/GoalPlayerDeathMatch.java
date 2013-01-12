@@ -138,20 +138,17 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		}
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT))
+				if (!ap.getStatus().equals(Status.FIGHT)) {
 					continue;
-				
-				
+                                }
 				ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
 
 				arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
 			}
-			
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
 			}
-		}
-		
+		}	
 		er = new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
 
@@ -203,8 +200,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				
 				PlayerState.fullReset(arena, ap.get());
 				
-				if (ArenaManager.checkAndCommit(arena, false))
+				if (ArenaManager.checkAndCommit(arena, false)) {
 					return;
+                                }
 			}
 			
 			PACheck.handleEnd(arena, false);
@@ -306,7 +304,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	@Override
 	public void unload(Player player) {
 		lives.remove(player.getName());
-		if (allowsJoinInBattle())
+		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
+                }
 	}
 }

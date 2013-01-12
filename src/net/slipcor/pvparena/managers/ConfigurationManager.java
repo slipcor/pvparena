@@ -213,21 +213,21 @@ public class ConfigurationManager {
 				.getConfigurationSection("spawns").getValues(false).keySet();
 
 		String sExit = arena.getArenaConfig().getString(CFG.TP_EXIT);
-		if (!sExit.equals("old") && !list.contains(sExit))
+		if (!sExit.equals("old") && !list.contains(sExit)) {
 			return "Exit Spawn ('"+sExit+"') not set!";
-
+                }
 		String sWin = arena.getArenaConfig().getString(CFG.TP_WIN);
-		if (!sWin.equals("old") && !list.contains(sWin))
+		if (!sWin.equals("old") && !list.contains(sWin)) {
 			return "Win Spawn ('"+sWin+"') not set!";
-
+                }
 		String sLose = arena.getArenaConfig().getString(CFG.TP_LOSE);
-		if (!sLose.equals("old") && !list.contains(sLose))
+		if (!sLose.equals("old") && !list.contains(sLose)) {
 			return "Lose Spawn ('"+sLose+"') not set!";
-
+                }
 		String sDeath = arena.getArenaConfig().getString(CFG.TP_DEATH);
-		if (!sDeath.equals("old") && !list.contains(sDeath))
+		if (!sDeath.equals("old") && !list.contains(sDeath)) {
 			return "Death Spawn ('"+sDeath+"') not set!";
-		
+                }
 		
 		String error = ArenaModuleManager.checkForMissingSpawns(arena, list);
 		if (error != null) {

@@ -203,8 +203,9 @@ public class PVPArena extends JavaPlugin {
 				return true;
 			}
 		} else {
-			if (args != null && args.length > 1)
+			if (args != null && args.length > 1) {
 				args = StringParser.shiftArrayBy(args, 1);
+                        }
 		}
 		
 		if (a == null) {

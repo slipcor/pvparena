@@ -226,13 +226,14 @@ public class TeamManager {
 				continue;
 			}
 
-			if (!result.equals(""))
+			if (!result.equals("")) {
 				result += ", ";
-
+                        }
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (p.getStatus().equals(Status.LOUNGE)) {
-					if (!result.equals(""))
+					if (!result.equals("")) {
 						result += ", ";
+                                        }
 					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
 				} else {
 					db.i("player state: " + p.getStatus().name(), p.getName());
@@ -255,12 +256,13 @@ public class TeamManager {
 				continue;
 			}
 
-			if (!result.equals(""))
+			if (!result.equals("")) {
 				result += ", ";
-
+                        }
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				if (!result.equals(""))
+				if (!result.equals("")) {
 					result += ", ";
+                                }
 				result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
 			}
 		}

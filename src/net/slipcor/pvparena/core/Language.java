@@ -546,14 +546,14 @@ public class Language {
 		PVPArena.instance.getDataFolder().mkdir();
 		File configFile = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/lang_" + s + ".yml");
-		if (!(configFile.exists()))
+		if (!(configFile.exists())) {
 			try {
 				configFile.createNewFile();
 			} catch (Exception e) {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating language file.");
 			}
-
+                }
 		YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);

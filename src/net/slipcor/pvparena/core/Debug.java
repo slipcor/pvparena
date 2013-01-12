@@ -60,8 +60,9 @@ public class Debug {
 	 *            the message
 	 */
 	public void i(String s) {
-		if (!debugs())
-			return;
+		if (!debugs()) {
+                        return;
+                }
 		Bukkit.getLogger().info(prefix + s);
 	}
 	
@@ -70,14 +71,16 @@ public class Debug {
 			i(string, "null");
 			return;
 		}
-		if (!debugs(sender.getName()))
+		if (!debugs(sender.getName())) {
 			return;
+                }
 		Bukkit.getLogger().info(prefix + string);
 	}
 	
 	public void i(String string, String filter) {
-		if (!debugs(filter))
+		if (!debugs(filter)) {
 			return;
+                }
 		Bukkit.getLogger().info(prefix + string);
 	}
 

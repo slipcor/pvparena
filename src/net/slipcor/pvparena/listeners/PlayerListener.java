@@ -200,8 +200,9 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		Arena arena = ap.getArena();
-		if (arena == null)
+		if (arena == null) {
 			return; // no fighting player => OUT
+                }
 		if (ap.getStatus().equals(Status.READY) || ap.getStatus().equals(Status.LOUNGE)) {
 			event.setCancelled(true);
 			arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
@@ -221,9 +222,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = event.getEntity();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null)
+		if (arena == null) {
 			return;
-	
+                }
 		PACheck.handlePlayerDeath(arena, player, event);
 	}
 	
@@ -273,8 +274,9 @@ public class PlayerListener implements Listener {
 		
 		PlayerState.fullReset(arena, player);
 		
-		if (ArenaManager.checkAndCommit(arena, false))
+		if (ArenaManager.checkAndCommit(arena, false)) {
 			return;
+                }
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
@@ -465,8 +467,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerKicked(PlayerKickEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null)
+		if (arena == null) {
 			return; // no fighting player => OUT
+                }
 		arena.playerLeave(player, CFG.TP_EXIT, false);
 	}
 	
@@ -491,10 +494,9 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP))
+		if (arena == null || !BlockListener.isProtected(player.getLocation(), event, RegionProtection.PICKUP)) {
 			return; // no fighting player or no powerups => OUT
-
-		
+                }
 		ArenaModuleManager.onPlayerPickupItem(arena, event);
 	}
 
@@ -502,9 +504,9 @@ public class PlayerListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null)
+		if (arena == null) {
 			return; // no fighting player => OUT
-		
+                }
 		arena.playerLeave(player, CFG.TP_EXIT, false);
 	}
 
@@ -526,10 +528,10 @@ public class PlayerListener implements Listener {
 
 		db.i("aimed location: " + event.getTo().toString(), player);
 		
-		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass()
-				|| player.hasPermission("pvparena.telepass"))
+		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass() 
+				|| player.hasPermission("pvparena.telepass")) {
 			return; // if allowed => OUT
-		
+                }
 		db.i("telepass: no!!", player);
 		
 		HashSet<ArenaRegionShape> regions = arena.getRegionsByType(RegionType.BATTLE);
@@ -561,10 +563,9 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null)
+		if (arena == null) {
 			return; // no fighting player or no powerups => OUT
-
-		
+                }
 		ArenaModuleManager.onPlayerVelocity(arena, event);
 	}
 
