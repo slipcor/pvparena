@@ -17,9 +17,9 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
  */
 
 public class PARound {
-	private Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
+	private final Set<ArenaGoal> goals;
 	
-	public PARound(Set<ArenaGoal> result) {
+	public PARound(final Set<ArenaGoal> result) {
 		goals = result;
 	}
 	
@@ -27,8 +27,8 @@ public class PARound {
 		return goals;
 	}
 
-	public boolean toggle(Arena arena, ArenaGoal goal) {
-		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+	public boolean toggle(final Arena arena, final ArenaGoal goal) {
+		final ArenaGoal nugoal = (ArenaGoal) goal.clone();
 		nugoal.setArena(arena);
 		
 		boolean contains = false;

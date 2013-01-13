@@ -283,7 +283,7 @@ public class ArenaPlayer {
 	public void addStatistic(final String arenaName, final StatisticsManager.type type,
 			final int value) {
 		if (!statistics.containsKey(arenaName)) {
-			statistics.put(arenaName, new PAStatMap(name));
+			statistics.put(arenaName, new PAStatMap());
 		}
 
 		statistics.get(arenaName).incStat(type, value);
@@ -454,10 +454,10 @@ public class ArenaPlayer {
 
 	public PAStatMap getStatistics(final Arena arena) {
 		if (arena == null) {
-			return new PAStatMap(name);
+			return new PAStatMap();
 		}
 		if (statistics.get(arena.getName()) == null) {
-			statistics.put(arena.getName(), new PAStatMap(name));
+			statistics.put(arena.getName(), new PAStatMap());
 		}
 		return statistics.get(arena.getName());
 	}
@@ -682,7 +682,7 @@ public class ArenaPlayer {
 	public void setStatistic(final String arenaName, final StatisticsManager.type type,
 			final int value) {
 		if (!statistics.containsKey(arenaName)) {
-			statistics.put(arenaName, new PAStatMap(name));
+			statistics.put(arenaName, new PAStatMap());
 		}
 
 		final PAStatMap map = statistics.get(arenaName);
