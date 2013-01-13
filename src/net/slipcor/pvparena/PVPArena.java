@@ -12,23 +12,11 @@ import net.slipcor.pvparena.commands.PAA__Command;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.PA__Command;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Tracker;
-import net.slipcor.pvparena.listeners.BlockListener;
-import net.slipcor.pvparena.listeners.InventoryListener;
-import net.slipcor.pvparena.listeners.EntityListener;
-import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaGoalManager;
-import net.slipcor.pvparena.loadables.ArenaModule;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
+import net.slipcor.pvparena.listeners.*;
+import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
@@ -94,7 +82,7 @@ public class PVPArena extends JavaPlugin {
 	 *            the CommandSender to check
 	 * @return true if a CommandSender has admin permissions, false otherwise
 	 */
-	public static boolean hasAdminPerms(CommandSender sender) {
+	public static boolean hasAdminPerms(final CommandSender sender) {
 		return sender.hasPermission("pvparena.admin");
 	}
 
@@ -108,7 +96,7 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if the CommandSender has creation permissions, false
 	 *         otherwise
 	 */
-	public static boolean hasCreatePerms(CommandSender sender, Arena arena) {
+	public static boolean hasCreatePerms(final CommandSender sender, final Arena arena) {
 		return (sender.hasPermission("pvparena.create") && (arena == null || arena
 				.getOwner().equals(sender.getName())));
 	}
@@ -123,11 +111,11 @@ public class PVPArena extends JavaPlugin {
 	 * @return true if explicit permission not needed or granted, false
 	 *         otherwise
 	 */
-	public static boolean hasPerms(CommandSender sender, Arena arena) {
+	public static boolean hasPerms(final CommandSender sender, final Arena arena) {
 		DEBUG.i("perm check.", sender);
 		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
 			DEBUG.i(" - explicit: "
-					+ String.valueOf(sender.hasPermission("pvparena.join."
+					+ (sender.hasPermission("pvparena.join."
 							+ arena.getName().toLowerCase())), sender);
 		} else {
 			DEBUG.i(String.valueOf(sender.hasPermission("pvparena.user")),
@@ -140,8 +128,8 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd,
-			String commandLabel, String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command cmd,
+			final String commandLabel, final String[] args) {
 
 		if (args.length < 1) {
 			sender.sendMessage("§e§l|-- PVP Arena --|");
@@ -149,25 +137,25 @@ public class PVPArena extends JavaPlugin {
 			sender.sendMessage("§7§oDo §e/pa help §7§ofor help.");
 			return true;
 		}
-
-		if (args.length > 1 && sender.hasPermission("pvparena.admin")) {
-			if (args[0].equalsIgnoreCase("ALL")) {
-				args = StringParser.shiftArrayBy(args, 1);
+		
+		if (args.length > 1 && sender.hasPermission("pvparena.admin")
+				&& args[0].equalsIgnoreCase("ALL")) {
+				final String [] newArgs = StringParser.shiftArrayBy(args, 1);
 				for (Arena arena : ArenaManager.getArenas()) {
 					try {
 						Bukkit.getServer().dispatchCommand(
 								sender,
 								"pa " + arena.getName() + " "
-										+ StringParser.joinArray(args, " "));
+										+ StringParser.joinArray(newArgs, " "));
 					} catch (Exception e) {
-
+						getLogger().warning("arena null!");
 					}
 				}
 				return true;
-			}
+			
 		}
 
-		PA__Command pacmd = PA__Command.getByName(args[0]);
+		final PA__Command pacmd = PA__Command.getByName(args[0]);
 
 		if (pacmd != null
 				&& !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd
@@ -179,66 +167,69 @@ public class PVPArena extends JavaPlugin {
 
 		if (args[0].equalsIgnoreCase("-s")
 				|| args[0].toLowerCase().contains("stats")) {
-			PAI_Stats scmd = new PAI_Stats();
+			final PAI_Stats scmd = new PAI_Stats();
 			DEBUG.i("committing: " + scmd.getName(), sender);
 			scmd.commit(null, sender, new String[0]);
 			return true;
 		} else if (args[0].equalsIgnoreCase("!rl")
 				|| args[0].toLowerCase().contains("reload")) {
-			PAA_Reload scmd = new PAA_Reload();
+			final PAA_Reload scmd = new PAA_Reload();
 			DEBUG.i("committing: " + scmd.getName(), sender);
+			final String[] emptyArray = new String[0];
 			for (Arena a : ArenaManager.getArenas()) {
-				scmd.commit(a, sender, new String[0]);
+				scmd.commit(a, sender, emptyArray);
 			}
 			return true;
 		}
 
-		Arena a = ArenaManager.getArenaByName(args[0]);
+		Arena tempArena = ArenaManager.getArenaByName(args[0]);
 
-		String name = args[0];
+		final String name = args[0];
+		
+		String[] newArgs = args;
 
-		if (a == null) {
+		if (tempArena == null) {
 			if (sender instanceof Player
 					&& ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
-				a = ArenaPlayer.parsePlayer(sender.getName()).getArena();
+				tempArena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
 			} else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
-				a = PAA_Edit.activeEdits.get(sender.getName());
+				tempArena = PAA_Edit.activeEdits.get(sender.getName());
 			} else if (ArenaManager.count() == 1) {
-				a = ArenaManager.getFirst();
+				tempArena = ArenaManager.getFirst();
 			} else if (ArenaManager.count() < 1) {
 				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
 				return true;
 			}
 		} else {
 			if (args != null && args.length > 1) {
-				args = StringParser.shiftArrayBy(args, 1);
+				newArgs = StringParser.shiftArrayBy(args, 1);
 			}
 		}
 
-		if (a == null) {
+		if (tempArena == null) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
 			return true;
 		}
 
 		PAA__Command paacmd = PAA__Command.getByName(args[0]);
-		if (paacmd == null && (PACheck.handleCommand(a, sender, args))) {
+		if (paacmd == null && (PACheck.handleCommand(tempArena, sender, newArgs))) {
 			return true;
 		}
 
 		if (paacmd == null
-				&& a.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
+				&& tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
-			if (args.length > 1) {
-				args = StringParser.shiftArrayBy(args, 1);
+			if (newArgs.length > 1) {
+				newArgs = StringParser.shiftArrayBy(args, 1);
 			}
 			DEBUG.i("committing: " + paacmd.getName(), sender);
-			paacmd.commit(a, sender, args);
+			paacmd.commit(tempArena, sender, newArgs);
 			return true;
 		}
 
 		if (paacmd != null) {
 			DEBUG.i("committing: " + paacmd.getName(), sender);
-			paacmd.commit(a, sender, StringParser.shiftArrayBy(args, 1));
+			paacmd.commit(tempArena, sender, StringParser.shiftArrayBy(newArgs, 1));
 			return true;
 		}
 		DEBUG.i("cmd null", sender);
@@ -285,11 +276,9 @@ public class PVPArena extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new InventoryListener(),
 				this);
 
-		int config_version = 1;
-
-		if (getConfig().getInt("ver", 0) < config_version) {
+		if (getConfig().getInt("ver", 0) < 1) {
 			getConfig().options().copyDefaults(true);
-			getConfig().set("ver", config_version);
+			getConfig().set("ver", 1);
 			saveConfig();
 		}
 
@@ -299,22 +288,22 @@ public class PVPArena extends JavaPlugin {
 
 		if (ArenaManager.count() > 0) {
 
-			Tracker trackMe = new Tracker(this);
+			final Tracker trackMe = new Tracker(this);
 			trackMe.start();
 
 			Metrics metrics;
 			try {
 				metrics = new Metrics(this);
-				Metrics.Graph atg = metrics.createGraph("Game modes installed");
+				final Metrics.Graph atg = metrics.createGraph("Game modes installed");
 				for (ArenaGoal at : agm.getAllGoals()) {
 					atg.addPlotter(new WrapPlotter(at.getName()));
 				}
-				Metrics.Graph amg = metrics
+				final Metrics.Graph amg = metrics
 						.createGraph("Enhancement modules installed");
 				for (ArenaModule am : amm.getAllMods()) {
 					amg.addPlotter(new WrapPlotter(am.getName()));
 				}
-				Metrics.Graph acg = metrics.createGraph("Arena count");
+				final Metrics.Graph acg = metrics.createGraph("Arena count");
 				acg.addPlotter(new WrapPlotter("count", ArenaManager
 						.getArenas().size()));
 
@@ -330,19 +319,20 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	private class WrapPlotter extends Metrics.Plotter {
-		int i = 1;
+		final private int arenaCount;
 
-		public WrapPlotter(String name) {
+		public WrapPlotter(final String name) {
 			super(name);
+			arenaCount = 1;
 		}
 
-		public WrapPlotter(String name, int count) {
+		public WrapPlotter(final String name, final int count) {
 			super(name);
-			i = count;
+			arenaCount = count;
 		}
 
 		public int getValue() {
-			return i;
+			return arenaCount;
 		}
 	}
 }
