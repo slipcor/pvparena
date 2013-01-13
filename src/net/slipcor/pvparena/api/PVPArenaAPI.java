@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.api;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -23,8 +24,11 @@ import org.bukkit.entity.Player;
  * @version v0.10.2
  */
 
-public class PVPArenaAPI {
-	private static Debug db = new Debug(2);
+public final class PVPArenaAPI {
+	private final static Debug DEBUG = new Debug(2);
+	
+	private PVPArenaAPI() {
+	}
 
 	/**
 	 * get the arena a player is in (fighting or spectating)
@@ -33,11 +37,11 @@ public class PVPArenaAPI {
 	 *            the player to check
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
-	public static String getArenaName(Player player) {
+	public static String getArenaName(final Player player) {
 		if (!Debug.override) {
-			db.i("API: get arena of player: " + player.getName(), player);
+			DEBUG.i("API: get arena of player: " + player.getName(), player);
 		}
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		return (arena == null) ? "" : arena.getName();
 	}
 
@@ -48,12 +52,11 @@ public class PVPArenaAPI {
 	 *            the location to check
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
-	public static String getArenaNameByLocation(Location location) {
+	public static String getArenaNameByLocation(final Location location) {
 		if (!Debug.override) {
-			db.i("API: get arena of location: " + location.toString());
+			DEBUG.i("API: get arena of location: " + location.toString());
 		}
-		Arena arena = ArenaManager
-				.getArenaByRegionLocation(new PABlockLocation(location));
+		final Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(location));
 		return (arena == null) ? "" : arena.getName();
 	}
 
@@ -64,14 +67,14 @@ public class PVPArenaAPI {
 	 *            the location to check
 	 * @return the arena name if part of an arena, "" otherwise
 	 */
-	public static HashSet<String> getArenaNamesByLocation(Location location) {
+	public static Set<String> getArenaNamesByLocation(final Location location) {
 		if (!Debug.override) {
-			db.i("API: get arena of location: " + location.toString());
+			DEBUG.i("API: get arena of location: " + location.toString());
 		}
-		HashSet<Arena> arenas = ArenaManager
+		final Set<Arena> arenas = ArenaManager
 				.getArenasByRegionLocation(new PABlockLocation(location));
 
-		HashSet<String> result = new HashSet<String>();
+		final Set<String> result = new HashSet<String>();
 
 		for (Arena a : arenas) {
 			result.add(a.getName());
