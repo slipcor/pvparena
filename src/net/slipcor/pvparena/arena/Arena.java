@@ -73,13 +73,13 @@ import org.bukkit.util.Vector;
 
 public class Arena {
 	private final Debug debug = new Debug(3);
-	private final Set<ArenaClass> classes = new HashSet<ArenaClass>();
-	private final Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
-	private final Set<ArenaModule> mods = new HashSet<ArenaModule>();
-	private final Set<ArenaRegionShape> regions = new HashSet<ArenaRegionShape>();
-	private final Set<PAClassSign> signs = new HashSet<PAClassSign>();
-	private final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
-	private final Set<String> playedPlayers = new HashSet<String>();
+	private final HashSet<ArenaClass> classes = new HashSet<ArenaClass>();
+	private final HashSet<ArenaGoal> goals = new HashSet<ArenaGoal>();
+	private final HashSet<ArenaModule> mods = new HashSet<ArenaModule>();
+	private final HashSet<ArenaRegionShape> regions = new HashSet<ArenaRegionShape>();
+	private final HashSet<PAClassSign> signs = new HashSet<PAClassSign>();
+	private final HashSet<ArenaTeam> teams = new HashSet<ArenaTeam>();
+	private final HashSet<String> playedPlayers = new HashSet<String>();
 	private PARoundMap rounds;
 
 	private static String globalprefix = "PVP Arena";
@@ -95,11 +95,11 @@ public class Arena {
 	private int round = 0;
 
 	// Runnable IDs
-	public BukkitRunnable endRunner = null;
-	public BukkitRunnable pvpRunner = null;
-	public BukkitRunnable realEndRunner = null;
-	public BukkitRunnable startRunner = null;
-	public int spawnCampRunnerID = -1;
+	public BukkitRunnable END_ID = null;
+	public BukkitRunnable PVP_ID = null;
+	public BukkitRunnable REALEND_ID = null;
+	public BukkitRunnable START_ID = null;
+	public int SPAWNCAMP_ID = -1;
 
 	private Config cfg;
 
@@ -238,10 +238,10 @@ public class Arena {
 	 * initiate the arena start countdown
 	 */
 	public void countDown() {
-		if (startRunner != null || this.isFightInProgress()) {
+		if (START_ID != null || this.isFightInProgress()) {
 			if (!this.isFightInProgress()) {
-				startRunner.cancel();
-				startRunner = null;
+				START_ID.cancel();
+				START_ID = null;
 				broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			}
 			return;
@@ -284,7 +284,7 @@ public class Arena {
 		return null;
 	}
 
-	public Set<ArenaClass> getClasses() {
+	public HashSet<ArenaClass> getClasses() {
 		return classes;
 	}
 
@@ -292,9 +292,9 @@ public class Arena {
 	 * hand over everyone being part of the arena
 	 * 
 	 */
-	public Set<ArenaPlayer> getEveryone() {
+	public HashSet<ArenaPlayer> getEveryone() {
 
-		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+		final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
 		for (ArenaPlayer ap : ArenaPlayer.getAllArenaPlayers()) {
 			if (this.equals(ap.getArena())) {
@@ -308,9 +308,9 @@ public class Arena {
 	 * hand over all players being member of a team
 	 * 
 	 */
-	public Set<ArenaPlayer> getFighters() {
+	public HashSet<ArenaPlayer> getFighters() {
 
-		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+		final HashSet<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
@@ -320,11 +320,11 @@ public class Arena {
 		return players;
 	}
 
-	public Set<ArenaGoal> getGoals() {
+	public HashSet<ArenaGoal> getGoals() {
 		return round == 0 ? goals : rounds.getGoals(round);
 	}
 
-	public Set<ArenaModule> getMods() {
+	public HashSet<ArenaModule> getMods() {
 		return mods;
 	}
 
@@ -373,7 +373,7 @@ public class Arena {
 		return null;
 	}
 
-	public Set<ArenaRegionShape> getRegions() {
+	public HashSet<ArenaRegionShape> getRegions() {
 		return regions;
 	}
 
@@ -403,7 +403,7 @@ public class Arena {
 	 * 
 	 * @return the arena teams
 	 */
-	public Set<ArenaTeam> getTeams() {
+	public HashSet<ArenaTeam> getTeams() {
 		return teams;
 	}
 
@@ -412,8 +412,8 @@ public class Arena {
 	 * 
 	 * @return the arena teams
 	 */
-	public Set<String> getTeamNames() {
-		final Set<String> result = new HashSet<String>();
+	public HashSet<String> getTeamNames() {
+		final HashSet<String> result = new HashSet<String>();
 		for (ArenaTeam team : teams) {
 			result.add(team.getName());
 		}
@@ -425,8 +425,8 @@ public class Arena {
 	 * 
 	 * @return the arena teams
 	 */
-	public Set<String> getTeamNamesColored() {
-		final Set<String> result = new HashSet<String>();
+	public HashSet<String> getTeamNamesColored() {
+		final HashSet<String> result = new HashSet<String>();
 		for (ArenaTeam team : teams) {
 			result.add(team.getColoredName());
 		}
@@ -757,10 +757,10 @@ public class Arena {
 		removePlayer(player, getArenaConfig().getString(location), false,
 				silent);
 
-		if (startRunner != null) {
-			startRunner.cancel();
+		if (START_ID != null) {
+			START_ID.cancel();
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
-			startRunner = null;
+			START_ID = null;
 		}
 		new PlayerDestroyRunnable(aPlayer);
 
@@ -980,18 +980,18 @@ public class Arena {
 		resetPlayers(force);
 		setFightInProgress(false);
 
-		if (endRunner != null) {
-			endRunner.cancel();
+		if (END_ID != null) {
+			END_ID.cancel();
 		}
-		endRunner = null;
-		if (realEndRunner != null) {
-			realEndRunner.cancel();
+		END_ID = null;
+		if (REALEND_ID != null) {
+			REALEND_ID.cancel();
 		}
-		realEndRunner = null;
-		if (pvpRunner != null) {
-			pvpRunner.cancel();
+		REALEND_ID = null;
+		if (PVP_ID != null) {
+			PVP_ID.cancel();
 		}
-		pvpRunner = null;
+		PVP_ID = null;
 
 		ArenaModuleManager.reset(this, force);
 		clearRegions();
@@ -1170,7 +1170,7 @@ public class Arena {
 	 */
 	public void start() {
 		debug.i("start()");
-		startRunner = null;
+		START_ID = null;
 		if (isFightInProgress()) {
 			debug.i("already in progress! OUT!");
 			return;
@@ -1370,8 +1370,8 @@ public class Arena {
 		updateGoals();
 	}
 
-	public Set<ArenaRegionShape> getRegionsByType(final RegionType regionType) {
-		Set<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
+	public HashSet<ArenaRegionShape> getRegionsByType(final RegionType regionType) {
+		HashSet<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
 		for (ArenaRegionShape rs : regions) {
 			if (rs.getType().equals(regionType)) {
 				result.add(rs);
@@ -1382,12 +1382,12 @@ public class Arena {
 
 	public void setRoundMap(List<String> list) {
 		if (list == null) {
-			rounds = new PARoundMap(this, new ArrayList<Set<String>>());
+			rounds = new PARoundMap(this, new ArrayList<HashSet<String>>());
 		} else {
-			List<Set<String>> outer = new ArrayList<Set<String>>();
+			List<HashSet<String>> outer = new ArrayList<HashSet<String>>();
 			for (String round : list) {
 				String[] split = round.split("|");
-				final Set<String> inner = new HashSet<String>();
+				final HashSet<String> inner = new HashSet<String>();
 				for (String s : split) {
 					inner.add(s);
 				}
