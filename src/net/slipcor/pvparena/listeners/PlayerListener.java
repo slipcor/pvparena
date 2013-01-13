@@ -3,6 +3,7 @@ package net.slipcor.pvparena.listeners;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -395,7 +396,7 @@ public class PlayerListener implements Listener {
 				if (ap.getClass().equals("")) {
 					return; // not chosen class => OUT
 				}
-				if (arena.START_ID != null) {
+				if (arena.startRunner != null) {
 					return; // counting down => OUT
 				}
 				if (ap.getStatus() != Status.LOUNGE) {
@@ -554,13 +555,13 @@ public class PlayerListener implements Listener {
 
 		db.i("aimed location: " + event.getTo().toString(), player);
 
-		if (ArenaPlayer.parsePlayer(player.getName()).getTelePass()
+		if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
 				|| player.hasPermission("pvparena.telepass")) {
 			return; // if allowed => OUT
 		}
 		db.i("telepass: no!!", player);
 
-		HashSet<ArenaRegionShape> regions = arena
+		Set<ArenaRegionShape> regions = arena
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (regions == null || regions.size() < 0) {

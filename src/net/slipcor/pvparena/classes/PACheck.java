@@ -594,10 +594,10 @@ public class PACheck {
 		}
 
 		SpawnCampRunnable scr = new SpawnCampRunnable(arena, 0);
-		arena.SPAWNCAMP_ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+		arena.spawnCampRunnerID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, scr, 100L,
 				arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
-		scr.setId(arena.SPAWNCAMP_ID);
+		scr.setId(arena.spawnCampRunnerID);
 
 		for (ArenaRegionShape region : arena.getRegions()) {
 			if (region.getFlags().size() > 0) {
@@ -610,7 +610,7 @@ public class PACheck {
 		}
 		
 		if (arena.getArenaConfig().getInt(CFG.TIME_PVP)>0) {
-			arena.PVP_ID = new PVPActivateRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_PVP));
+			arena.pvpRunner = new PVPActivateRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_PVP));
 		}
 	}
 }

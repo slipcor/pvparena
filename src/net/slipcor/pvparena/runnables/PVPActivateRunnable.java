@@ -28,7 +28,7 @@ public class PVPActivateRunnable extends ArenaRunnable {
 	
 	@Override
 	protected void commit() {
-		arena.PVP_ID = null;
+		arena.pvpRunner = null;
 	}
 	
 	@Override

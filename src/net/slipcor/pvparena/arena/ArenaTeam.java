@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.arena;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -21,9 +22,9 @@ import net.slipcor.pvparena.core.StringParser;
 
 public class ArenaTeam {
 	
-	private static Debug db = new Debug(6);
+	private static Debug debug = new Debug(6);
 
-	private final HashSet<ArenaPlayer> players;
+	private final Set<ArenaPlayer> players;
 	private final ChatColor color;
 	private final String name;
 
@@ -35,7 +36,7 @@ public class ArenaTeam {
 	 * @param color
 	 *            the arena team color string
 	 */
-	public ArenaTeam(String name, String color) {
+	public ArenaTeam(final String name, final String color) {
 		this.players = new HashSet<ArenaPlayer>();
 		this.color = StringParser.getChatColorFromWoolEnum(color);
 		this.name = name;
@@ -47,9 +48,9 @@ public class ArenaTeam {
 	 * @param player
 	 *            the player to add
 	 */
-	public void add(ArenaPlayer player) {
+	public void add(final ArenaPlayer player) {
 		this.players.add(player);
-		db.i("Added player " + player.getName() + " to team " + name, player.get());
+		debug.i("Added player " + player.getName() + " to team " + name, player.get());
 		player.getArena().increasePlayerCount();
 	}
 
@@ -60,7 +61,7 @@ public class ArenaTeam {
 	 *            the player to colorize
 	 * @return the colorized player name
 	 */
-	public String colorizePlayer(Player player) {
+	public String colorizePlayer(final Player player) {
 		return color + player.getName();
 	}
 
@@ -105,12 +106,12 @@ public class ArenaTeam {
 	 * 
 	 * @return a HashSet of all arena players
 	 */
-	public HashSet<ArenaPlayer> getTeamMembers() {
+	public Set<ArenaPlayer> getTeamMembers() {
 		return players;
 	}
 
-	public boolean hasPlayer(Player p) {
-		return players.contains(ArenaPlayer.parsePlayer(p.getName()));
+	public boolean hasPlayer(final Player player) {
+		return players.contains(ArenaPlayer.parsePlayer(player.getName()));
 	}
 
 	public boolean isEveryoneReady() {
@@ -128,7 +129,7 @@ public class ArenaTeam {
 	 * @param player
 	 *            the player to remove
 	 */
-	public void remove(ArenaPlayer player) {
+	public void remove(final ArenaPlayer player) {
 		this.players.remove(player);
 	}
 }

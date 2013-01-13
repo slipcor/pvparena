@@ -2,7 +2,9 @@ package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -72,7 +74,7 @@ public class SpawnManager {
 	}
 
 	public static void distribute(Arena arena, ArenaTeam team) {
-		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
 		if (ars.size() > 0) {
 
@@ -94,8 +96,8 @@ public class SpawnManager {
 		distributeByOrder(arena, team.getTeamMembers(), team.getName() + "spawn");
 	}
 
-	public static void distribute(Arena arena, HashSet<ArenaPlayer> teamMembers) {
-		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+	public static void distribute(Arena arena, Set<ArenaPlayer> teamMembers) {
+		Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
 		if (ars.size() > 0) {
 
@@ -127,8 +129,8 @@ public class SpawnManager {
 	}
 	
 	private static void distributeByOrder(Arena arena,
-			HashSet<ArenaPlayer> teamMembers, String string) {
-		if (teamMembers == null || teamMembers.size() < 1) {
+			Set<ArenaPlayer> set, String string) {
+		if (set == null || set.size() < 1) {
 			return;
 		}
 		
@@ -150,7 +152,7 @@ public class SpawnManager {
 			locs.remove(s);
 		}
 		
-		for (ArenaPlayer ap : teamMembers) {
+		for (ArenaPlayer ap : set) {
 			ap.setStatus(Status.FIGHT);
 			if (locs.size() < 1) {
 				arena.tpPlayerToCoordName(ap.get(), string);
@@ -166,8 +168,8 @@ public class SpawnManager {
 	}
 	
 	private static void distributeSmart(Arena arena,
-			HashSet<ArenaPlayer> teamMembers, String string) {
-		if (teamMembers == null || teamMembers.size() < 1) {
+			Set<ArenaPlayer> set, String string) {
+		if (set == null || set.size() < 1) {
 			return;
 		}
 
@@ -209,7 +211,7 @@ public class SpawnManager {
 			locs.remove(s);
 		}
 		int i = 0;
-		for (ArenaPlayer ap : teamMembers) {
+		for (ArenaPlayer ap : set) {
 			ap.setStatus(Status.FIGHT);
 			String s = iteratings[i++%iteratings.length];
 			if (s == null) {
@@ -369,8 +371,8 @@ public class SpawnManager {
 	}
 
 	private static PALocation getSmartCoord(Arena arena) {
-		HashSet<ArenaPlayer> players = arena.getFighters();
-		HashMap<String, PALocation> locs = getSpawnMap(arena, "free");
+		Set<ArenaPlayer> players = arena.getFighters();
+		Map<String, PALocation> locs = getSpawnMap(arena, "free");
 		
 		double diff = 0;
 		String spawn = null;
@@ -507,10 +509,10 @@ public class SpawnManager {
 				(int) x / locs.size(), (int) y / locs.size(), (int) z / locs.size());
 	}
 	
-	private static void handle(Arena arena, HashSet<ArenaPlayer> teamMembers,
-			HashSet<ArenaRegionShape> ars) {
+	private static void handle(Arena arena, Set<ArenaPlayer> set,
+			Set<ArenaRegionShape> ars) {
 		if (arena.isFreeForAll()) {
-			for (ArenaPlayer ap : teamMembers) {
+			for (ArenaPlayer ap : set) {
 				int i = (new Random()).nextInt(ars.size());
 			
 				for (ArenaRegionShape x : ars) {
@@ -522,7 +524,7 @@ public class SpawnManager {
 			}
 		} else {
 			String teamName = null;
-			for (ArenaPlayer ap : teamMembers) {
+			for (ArenaPlayer ap : set) {
 				if (teamName == null) {
 					teamName = ap.getArenaTeam().getName();
 				}
@@ -571,7 +573,7 @@ public class SpawnManager {
 	}
 
 	public static void respawn(final Arena arena, final ArenaPlayer ap) {
-		HashSet<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
 		if (ars.size() > 0) {
 			HashSet<ArenaPlayer> team = new HashSet<ArenaPlayer>();

@@ -27,12 +27,12 @@ public class StartRunnable extends ArenaRunnable {
 	public StartRunnable(Arena a, int i) {
 		super(MSG.ARENA_STARTING_IN.getNode(), i, null, a, false);
 		db.i("StartRunnable constructor");
-		a.START_ID = this;
+		a.startRunner = this;
 	}
 
 	@Override
 	protected void commit() {
-		arena.START_ID = null;
+		arena.startRunner = null;
 		db.i("StartRunnable commiting");
 		arena.start();
 	}

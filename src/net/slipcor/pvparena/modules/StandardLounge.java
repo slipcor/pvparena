@@ -205,7 +205,7 @@ public class StandardLounge extends ArenaModule {
 
 	@Override
 	public void parseJoin(CommandSender player, ArenaTeam team) {
-		if (arena.START_ID != null) {
+		if (arena.startRunner != null) {
 			arena.countDown();
 		}
 	}

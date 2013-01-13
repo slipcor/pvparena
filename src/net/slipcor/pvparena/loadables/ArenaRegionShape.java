@@ -3,6 +3,7 @@ package net.slipcor.pvparena.loadables;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -166,8 +167,8 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 */
 	public static boolean checkRegion(Arena a1, Arena a2) {
 
-		HashSet<ArenaRegionShape> ars1 = a1.getRegionsByType(RegionType.BATTLE);
-		HashSet<ArenaRegionShape> ars2 = a2.getRegionsByType(RegionType.BATTLE);
+		Set<ArenaRegionShape> ars1 = a1.getRegionsByType(RegionType.BATTLE);
+		Set<ArenaRegionShape> ars2 = a2.getRegionsByType(RegionType.BATTLE);
 
 		if (ars1.size() < 0 || ars2.size() < 1) {
 			return true;
@@ -276,7 +277,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		if (joinRange < 1) {
 			return false;
 		}
-		HashSet<ArenaRegionShape> ars = arena
+		Set<ArenaRegionShape> ars = arena
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (ars.size() < 1) {

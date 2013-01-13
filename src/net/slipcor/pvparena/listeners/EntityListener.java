@@ -229,7 +229,7 @@ public class EntityListener implements Listener {
 					apAttacker);
 		}
 
-		if (!defTeam || !attTeam || arena.REALEND_ID != null) {
+		if (!defTeam || !attTeam || arena.realEndRunner != null) {
 			event.setCancelled(true);
 			return;
 		}
@@ -250,7 +250,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		if (!arena.isFightInProgress() || (arena.PVP_ID != null)) {
+		if (!arena.isFightInProgress() || (arena.pvpRunner != null)) {
 			// fight not started, cancel!
 			event.setCancelled(true);
 			return;
@@ -301,7 +301,7 @@ public class EntityListener implements Listener {
 
 		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
-		if (arena.REALEND_ID != null
+		if (arena.realEndRunner != null
 				|| (!apDefender.getStatus().equals(Status.NULL) && !apDefender
 						.getStatus().equals(Status.FIGHT))) {
 			event.setCancelled(true);

@@ -26,7 +26,7 @@ public class TimedEndRunnable extends ArenaRunnable {
 	public TimedEndRunnable(Arena a, int i) {
 		super(MSG.TIMER_ENDING_IN.getNode(), i, null, a, false);
 		db.i("TimedEndRunnable constructor");
-		a.END_ID = this;
+		a.endRunner = this;
 	}
 	
 	@Override
@@ -35,10 +35,10 @@ public class TimedEndRunnable extends ArenaRunnable {
 		if (arena.isFightInProgress()) {
 			PVPArena.instance.getAgm().timedEnd(arena);
 		}
-		arena.END_ID = null;
-		if (arena.REALEND_ID != null) {
-			arena.REALEND_ID.cancel();
-			arena.REALEND_ID = null;
+		arena.endRunner = null;
+		if (arena.realEndRunner != null) {
+			arena.realEndRunner.cancel();
+			arena.realEndRunner = null;
 		}
 	}
 	

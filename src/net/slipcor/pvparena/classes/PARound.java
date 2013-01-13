@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.classes;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -16,13 +17,13 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
  */
 
 public class PARound {
-	private HashSet<ArenaGoal> goals = new HashSet<ArenaGoal>();
+	private Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
 	
-	public PARound(HashSet<ArenaGoal> arenagoals) {
-		goals = arenagoals;
+	public PARound(Set<ArenaGoal> result) {
+		goals = result;
 	}
 	
-	public HashSet<ArenaGoal> getGoals() {
+	public Set<ArenaGoal> getGoals() {
 		return goals;
 	}
 

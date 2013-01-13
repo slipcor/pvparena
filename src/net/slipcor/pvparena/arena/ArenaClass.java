@@ -23,7 +23,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 public final class ArenaClass {
 	
-	private static Debug db = new Debug(4);
+	private static Debug debug = new Debug(4);
 
 	private final String name;
 	private final ItemStack[] items;
@@ -68,25 +68,25 @@ public final class ArenaClass {
 		ARMORS_TYPE.addAll(BOOTS_TYPE);
 	}
 	
-	public static void equip(Player player, ItemStack[] items) {
-		db.i("Equipping player " + player.getName() + " with items!", player);
+	public static void equip(final Player player, final ItemStack[] items) {
+		debug.i("Equipping player " + player.getName() + " with items!", player);
 		for (ItemStack item : items) {
 			if (ARMORS_TYPE.contains(item.getType())) {
 				equipArmor(item, player.getInventory());
 			} else {
 				player.getInventory().addItem(new ItemStack[] { item });
-				db.i("- " + StringParser.getStringFromItemStack(item), player);
+				debug.i("- " + StringParser.getStringFromItemStack(item), player);
 			}
 		}
 	}
 
-	public void equip(Player player) {
+	public void equip(final Player player) {
 		equip(player, items);
 	}
 
-	private static void equipArmor(ItemStack stack, PlayerInventory inv) {
-		db.i("- " + StringParser.getStringFromItemStack(stack));
-		Material type = stack.getType();
+	private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
+		debug.i("- " + StringParser.getStringFromItemStack(stack));
+		final Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
 			inv.setHelmet(stack);
 		} else if (CHESTPLATES_TYPE.contains(type)) {
@@ -98,7 +98,7 @@ public final class ArenaClass {
 		}
 	}
 
-	public ArenaClass(String className, ItemStack[] classItems) {
+	public ArenaClass(final String className, final ItemStack[] classItems) {
 		this.name = className;
 		this.items = classItems.clone();
 	}
@@ -108,6 +108,6 @@ public final class ArenaClass {
 	}
 
 	public ItemStack[] getItems() {
-		return items;
+		return items.clone();
 	}
 }

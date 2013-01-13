@@ -2,6 +2,7 @@ package net.slipcor.pvparena.runnables;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -108,7 +109,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 			return;
 		}
 		if (arena != null) {
-			HashSet<ArenaPlayer> players = arena.getFighters();
+			Set<ArenaPlayer> players = arena.getFighters();
 			for (ArenaPlayer ap : players) {
 				if (sPlayer != null) {
 					if (ap.getName().equals(sPlayer)) {

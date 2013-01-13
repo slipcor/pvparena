@@ -35,11 +35,11 @@ public class EndRunnable extends ArenaRunnable {
 	public EndRunnable(Arena a, int i) {
 		super(MSG.TIMER_RESETTING_IN.getNode(), i, null, a, false);
 		db.i("EndRunnable constructor");
-		if (a.END_ID != null) {
-			a.END_ID.cancel();
-			a.END_ID = null;
+		if (a.endRunner != null) {
+			a.endRunner.cancel();
+			a.endRunner = null;
 		}
-		arena.REALEND_ID = this;
+		arena.realEndRunner = this;
 	}
 
 	@Override
@@ -52,22 +52,22 @@ public class EndRunnable extends ArenaRunnable {
 			db.i("rounds done!");
 		
 			arena.reset(false);
-			if (arena.REALEND_ID != null) {
-				arena.REALEND_ID = null;
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
 			}
-			if (arena.END_ID != null) {
-				arena.END_ID.cancel();
-				arena.END_ID = null;
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
 			}
 		} else {
 			db.i("Starting round #" + arena.getRound());
 			
-			if (arena.REALEND_ID != null) {
-				arena.REALEND_ID = null;
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
 			}
-			if (arena.END_ID != null) {
-				arena.END_ID.cancel();
-				arena.END_ID = null;
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
 			}
 			
 			PACheck.handleStart(arena, null);

@@ -380,7 +380,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	private void distributeFlag(ArenaPlayer player, ArenaTeam team) {
-		HashSet<ArenaPlayer> players = team.getTeamMembers();
+		Set<ArenaPlayer> players = team.getTeamMembers();
 
 		int i = (new Random()).nextInt(players.size());
 

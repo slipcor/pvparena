@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.classes;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.core.Debug;
 
@@ -81,13 +82,13 @@ public class PAClassSign {
 	/**
 	 * remove a player from all signs he may be on
 	 * 
-	 * @param paSigns
+	 * @param signs
 	 *            the signs to check
 	 * @param player
 	 *            the player to remove
 	 */
-	public static void remove(HashSet<PAClassSign> paSigns, Player player) {
-		for (PAClassSign s : paSigns) {
+	public static void remove(Set<PAClassSign> signs, Player player) {
+		for (PAClassSign s : signs) {
 			s.remove(player.getName());
 		}
 	}
@@ -157,13 +158,13 @@ public class PAClassSign {
 	 * 
 	 * @param loc
 	 *            the location to check
-	 * @param paSigns
+	 * @param signs
 	 *            the set of signs to check against
 	 * @return the sign instance if reserved, null otherwise
 	 */
 	public static PAClassSign used(Location loc,
-			HashSet<PAClassSign> paSigns) {
-		for (PAClassSign sign : paSigns) {
+			Set<PAClassSign> signs) {
+		for (PAClassSign sign : signs) {
 			if (sign.location.getDistance(new PABlockLocation(loc)) < 1) {
 				return sign;
 			}

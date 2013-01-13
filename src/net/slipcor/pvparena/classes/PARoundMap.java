@@ -3,6 +3,7 @@ package net.slipcor.pvparena.classes;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -21,11 +22,11 @@ public class PARoundMap {
 	private HashMap<Integer, PARound> rounds = new HashMap<Integer, PARound>();
 	private Arena arena;
 	
-	public PARoundMap(Arena a, List<HashSet<String>> goalmap) {
+	public PARoundMap(Arena a, List<Set<String>> outer) {
 		arena = a;
 		int i = 1;
-		for (HashSet<String> list : goalmap) {
-			HashSet<ArenaGoal> result = new HashSet<ArenaGoal>();
+		for (Set<String> list : outer) {
+			Set<ArenaGoal> result = new HashSet<ArenaGoal>();
 			for (String s : list) {
 				for (ArenaGoal goal : a.getGoals()) {
 					if (goal.getName().equals(s)) {
@@ -37,7 +38,7 @@ public class PARoundMap {
 		}
 	}
 	
-	public HashSet<ArenaGoal> getGoals(int i) {
+	public Set<ArenaGoal> getGoals(int i) {
 		try {
 			return rounds.get(i).getGoals();
 		} catch (Exception e) {

@@ -44,7 +44,7 @@ public class SpawnCampRunnable implements Runnable {
 		else {
 			// deactivate the auto saving task
 			Bukkit.getServer().getScheduler().cancelTask(id);
-			a.SPAWNCAMP_ID = -1;
+			a.spawnCampRunnerID = -1;
 		}
 	}
 	
