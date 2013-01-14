@@ -21,14 +21,14 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAG_Spectate extends PAA__Command {
+public class PAG_Spectate extends AbstractArenaCommand {
 
 	public PAG_Spectate() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -42,7 +42,7 @@ public class PAG_Spectate extends PAA__Command {
 			return;
 		}
 		
-		String error = ConfigurationManager.isSetup(arena);
+		final String error = ConfigurationManager.isSetup(arena);
 		if (error != null) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
 			return;
@@ -57,7 +57,7 @@ public class PAG_Spectate extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SPECTATE));
 	}
 }

@@ -2,6 +2,7 @@ package net.slipcor.pvparena.managers;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -30,25 +31,25 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class TeamManager {
-	private static Debug db = new Debug(29);
+	private final static Debug DEBUG = new Debug(29);
 
 	/**
 	 * calculate the team that needs players the most
 	 * 
 	 * @return the team name
 	 */
-	public static String calcFreeTeam(Arena arena) {
-		db.i("calculating free team");
-		HashMap<String, Integer> counts = new HashMap<String, Integer>();
+	public static String calcFreeTeam(final Arena arena) {
+		DEBUG.i("calculating free team");
+		final Map<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
 
 		for (ArenaTeam team : arena.getTeams()) {
-			int count = team.getTeamMembers().size();
+			final int count = team.getTeamMembers().size();
 
 			if (count > 0) {
 				counts.put(team.getName(), count);
-				db.i("team " + team.getName() + " contains " + count);
+				DEBUG.i("team " + team.getName() + " contains " + count);
 			}
 		}
 
@@ -62,11 +63,11 @@ public class TeamManager {
 		boolean full = true;
 
 		for (ArenaTeam team : arena.getTeams()) {
-			String s = team.getName();
+			final String teamName = team.getName();
 			// check if we are full
-			db.i("String s: " + s + "; max: "
+			DEBUG.i("String s: " + teamName + "; max: "
 					+ arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS));
-			if (counts.get(s) < arena.getArenaConfig().getInt(
+			if (counts.get(teamName) < arena.getArenaConfig().getInt(
 					CFG.READY_MAXPLAYERS)
 					|| arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS) == 0) {
 				full = false;
@@ -79,18 +80,18 @@ public class TeamManager {
 			return null;
 		}
 
-		HashSet<String> free = new HashSet<String>();
+		final Set<String> free = new HashSet<String>();
 
 		int max = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
 		max = max == 0 ? Integer.MAX_VALUE : max;
 		// calculate the max value down to the minimum
 		for (String s : counts.keySet()) {
-			int i = counts.get(s);
-			if (i < max) {
+			final int count = counts.get(s);
+			if (count < max) {
 				free.clear();
 				free.add(s);
-				max = i;
-			} else if (i == max) {
+				max = count;
+			} else if (count == max) {
 				free.add(s);
 			}
 		}
@@ -103,8 +104,8 @@ public class TeamManager {
 			}
 		}
 
-		Random r = new Random();
-		int rand = r.nextInt(free.size());
+		final Random random = new Random();
+		int rand = random.nextInt(free.size());
 		for (String s : free) {
 			if (rand-- == 0) {
 				return s;
@@ -119,19 +120,19 @@ public class TeamManager {
 	 * 
 	 * @return true if teams have the same amount of players, false otherwise
 	 */
-	public static boolean checkEven(Arena arena) {
-		db.i("checking if teams are even");
-		HashMap<String, Integer> counts = new HashMap<String, Integer>();
+	public static boolean checkEven(final Arena arena) {
+		DEBUG.i("checking if teams are even");
+		final Map<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
 
 		for (ArenaTeam team : arena.getTeams()) {
-			db.i(team.getName() + ": " + team.getTeamMembers().size());
+			DEBUG.i(team.getName() + ": " + team.getTeamMembers().size());
 			counts.put(team.getName(), team.getTeamMembers().size());
 		}
 
 		if (counts.size() < 1) {
-			db.i("noone in there");
+			DEBUG.i("noone in there");
 			return false; // noone there => not even
 		}
 
@@ -142,11 +143,11 @@ public class TeamManager {
 				continue;
 			}
 			if (temp != i) {
-				db.i("NOT EVEN");
+				DEBUG.i("NOT EVEN");
 				return false; // different count => not even
 			}
 		}
-		db.i("EVEN");
+		DEBUG.i("EVEN");
 		return true; // every team has the same player count!
 	}
 
@@ -156,14 +157,14 @@ public class TeamManager {
 	 * @param player
 	 *            the player to assign
 	 */
-	public static void choosePlayerTeam(Arena arena, Player player) {
+	public static void choosePlayerTeam(final Arena arena, final Player player) {
 
-		db.i("calculating player team", player);
+		DEBUG.i("calculating player team", player);
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().contains(ap)) {
-				db.i("TeamManager", player);
+			if (team.getTeamMembers().contains(aPlayer)) {
+				DEBUG.i("TeamManager", player);
 				arena.msg(
 						player,
 						Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF,
@@ -172,13 +173,13 @@ public class TeamManager {
 			}
 		}
 
-		String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
+		final String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
 
-		db.i(sTeam, player);
+		DEBUG.i(sTeam, player);
 
-		ArenaTeam aTeam = arena.getTeam(sTeam);
-		ap.setArena(arena);
-		aTeam.add(ap);
+		final ArenaTeam aTeam = arena.getTeam(sTeam);
+		aPlayer.setArena(arena);
+		aTeam.add(aPlayer);
 
 		if (arena.isFreeForAll()) {
 			arena.tpPlayerToCoordName(player, "lounge");
@@ -205,10 +206,10 @@ public class TeamManager {
 	 * 
 	 * @return the number of teams that have active players
 	 */
-	public static int countActiveTeams(Arena arena) {
-		db.i("counting active teams");
+	public static int countActiveTeams(final Arena arena) {
+		DEBUG.i("counting active teams");
 
-		HashSet<String> activeteams = new HashSet<String>();
+		final Set<String> activeteams = new HashSet<String>();
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus().equals(Status.FIGHT)) {
@@ -217,7 +218,7 @@ public class TeamManager {
 				}
 			}
 		}
-		db.i("result: " + activeteams.size());
+		DEBUG.i("result: " + activeteams.size());
 		return activeteams.size();
 	}
 
@@ -226,38 +227,39 @@ public class TeamManager {
 	 * 
 	 * @return the team player count
 	 */
-	public static int countPlayersInTeams(Arena arena) {
+	public static int countPlayersInTeams(final Arena arena) {
 		int result = 0;
 		for (ArenaTeam team : arena.getTeams()) {
 			result += team.getTeamMembers().size();
 		}
-		db.i("players having a team: " + result);
+		DEBUG.i("players having a team: " + result);
 		return result;
 	}
 
-	public static String getNotReadyTeamStringList(Arena arena) {
-		String result = "";
+	public static String getNotReadyTeamStringList(final Arena arena) {
+		final StringBuffer result = new StringBuffer("");
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() < 1) {
 				continue;
 			}
 
 			if (!result.equals("")) {
-				result += ", ";
+				result.append(", ");
 			}
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (p.getStatus().equals(Status.LOUNGE)) {
 					if (!result.equals("")) {
-						result += ", ";
+						result.append(", ");
 					}
-					result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
+					result.append(team.colorizePlayer(p.get()));
+					result.append(ChatColor.WHITE.toString());
 				} else {
-					db.i("player state: " + p.getStatus().name(), p.getName());
+					DEBUG.i("player state: " + p.getStatus().name(), p.getName());
 				}
 			}
 		}
-		db.i("notreadyteamstringlist: " + result);
-		return result;
+		DEBUG.i("notreadyteamstringlist: " + result);
+		return result.toString();
 	}
 
 	/**
@@ -265,25 +267,26 @@ public class TeamManager {
 	 * 
 	 * @return a colorized, comma separated string
 	 */
-	public static String getTeamStringList(Arena arena) {
-		String result = "";
+	public static String getTeamStringList(final Arena arena) {
+		final StringBuffer result = new StringBuffer("");
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() < 1) {
 				continue;
 			}
 
 			if (!result.equals("")) {
-				result += ", ";
+				result.append(", ");
 			}
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				if (!result.equals("")) {
-					result += ", ";
+					result.append(", ");
 				}
-				result += team.colorizePlayer(p.get()) + ChatColor.WHITE;
+				result.append(team.colorizePlayer(p.get()));
+				result.append(ChatColor.WHITE.toString());
 			}
 		}
-		db.i("teamstringlist: " + result);
-		return result;
+		DEBUG.i("teamstringlist: " + result);
+		return result.toString();
 	}
 
 	/**
@@ -293,27 +296,27 @@ public class TeamManager {
 	 *            the set to search
 	 * @return one empty team name
 	 */
-	private static String returnEmptyTeam(Arena arena, Set<String> set) {
-		db.i("choosing an empty team");
-		HashSet<String> empty = new HashSet<String>();
+	private static String returnEmptyTeam(final Arena arena, final Set<String> set) {
+		DEBUG.i("choosing an empty team");
+		final Set<String> empty = new HashSet<String>();
 		for (ArenaTeam team : arena.getTeams()) {
-			String s = team.getName();
-			db.i("team: " + s);
-			if (set.contains(s)) {
+			final String teamName = team.getName();
+			DEBUG.i("team: " + teamName);
+			if (set.contains(teamName)) {
 				continue;
 			}
-			empty.add(s);
+			empty.add(teamName);
 		}
-		db.i("empty.size: " + empty.size());
+		DEBUG.i("empty.size: " + empty.size());
 		if (empty.size() == 1) {
 			for (String s : empty) {
-				db.i("return: " + s);
+				DEBUG.i("return: " + s);
 				return s;
 			}
 		}
 
-		Random r = new Random();
-		int rand = r.nextInt(empty.size());
+		final Random random = new Random();
+		int rand = random.nextInt(empty.size());
 		for (String s : empty) {
 			if (rand-- == 0) {
 				return s;

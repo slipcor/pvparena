@@ -23,14 +23,14 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  * @version v0.10.0
  */
 
-public class PAA_Teleport extends PAA__Command {
+public class PAA_Teleport extends AbstractArenaCommand {
 
 	public PAA_Teleport() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class PAA_Teleport extends PAA__Command {
 
 		// usage: /pa {arenaname} teleport [spawnname] | tp to a spawn
 		
-		PALocation loc = SpawnManager.getCoords(arena, args[0]);
+		final PALocation loc = SpawnManager.getCoords(arena, args[0]);
 		
 		if (loc == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_SPAWN_UNKNOWN, args[0]));
@@ -63,7 +63,7 @@ public class PAA_Teleport extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TELEPORT));
 	}
 }

@@ -24,14 +24,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @version v0.10.0
  */
 
-public class PAA_Uninstall extends PA__Command {
+public class PAA_Uninstall extends AbstractGlobalCommand {
 
 	public PAA_Uninstall() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -44,7 +44,7 @@ public class PAA_Uninstall extends PA__Command {
 		// pa install
 		// pa install ctf
 
-		YamlConfiguration config = new YamlConfiguration();
+		final YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(PVPArena.instance.getDataFolder().getPath() + "/install.yml");
 		} catch (Exception e) {
@@ -62,42 +62,42 @@ public class PAA_Uninstall extends PA__Command {
 			return;
 		}
 
-		String name = args[0].toLowerCase();
-		ArenaGoal ag = PVPArena.instance.getAgm().getGoalByName(name);
-		if (ag != null) {
-			if (remove("pa_g_" + ag.getName().toLowerCase() + ".jar")) {
+		final String name = args[0].toLowerCase();
+		final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(name);
+		if (goal != null) {
+			if (remove("pa_g_" + goal.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAgm().reload();
-				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,ag.getName()));
+				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,goal.getName()));
 				return;
 			}
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,ag.getName()));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,goal.getName()));
 			return;
 		}
-		ArenaModule am = PVPArena.instance.getAmm().getModByName(name);
-		if (am != null) {
-			if (remove("pa_m_" + am.getName().toLowerCase() + ".jar")) {
+		final ArenaModule mod = PVPArena.instance.getAmm().getModByName(name);
+		if (mod != null) {
+			if (remove("pa_m_" + mod.getName().toLowerCase() + ".jar")) {
 				PVPArena.instance.getAmm().reload();
-				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,am.getName()));
+				Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE,mod.getName()));
 				return;
 			}
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,am.getName()));
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,mod.getName()));
 			return;
 		}
 	}
 
-	private void listVersions(CommandSender sender, YamlConfiguration cfg,
-			String s) {
+	private void listVersions(final CommandSender sender, final YamlConfiguration cfg,
+			final String sub) {
 		Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
 		Arena.pmsg(sender, "[§7uninstalled§r | §einstalled§r]");
 		Arena.pmsg(sender, "[§coutdated§r | §alatest version§r]");
-		if (s == null || s.toLowerCase().equals("arenas")) {
+		if (sub == null || sub.equalsIgnoreCase("arenas")) {
 			Arena.pmsg(sender, "§c--- Arena Goals ----> /goals");
-			Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
+			final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
 			for (String key : entries) {
-				String value = cfg.getString("goals." + key);
-				ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
-				boolean installed = (goal != null);
+				final String value = cfg.getString("goals." + key);
+				final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
+				final boolean installed = (goal != null);
 				String version = null;
 				if (installed) {
 					version = goal.version();
@@ -109,12 +109,12 @@ public class PAA_Uninstall extends PA__Command {
 								: "") + value);
 			}
 		}
-		if (s == null || s.toLowerCase().equals("mods")) {
+		if (sub == null || sub.equalsIgnoreCase("mods")) {
 			Arena.pmsg(sender, "§a--- Arena Mods ----> /mods");
-			Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
+			final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
 					false);
 			for (String key : entries) {
-				String value = cfg.getString("mods." + key);
+				final String value = cfg.getString("mods." + key);
 				ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
 				boolean installed = (mod != null);
 				String version = null;
@@ -131,15 +131,15 @@ public class PAA_Uninstall extends PA__Command {
 		}
 	}
 
-	private void disableModule(String file) {
+	private void disableModule(final String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAgm().getGoalByName(
+			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
 					file.replace("pa_g_", "").replace(".jar", ""));
-			g.unload();
+			goal.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModByName(
+			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
 					file.replace("pa_m_", "").replace(".jar", ""));
-			g.unload();
+			mod.unload();
 		}
 	}
 
@@ -148,7 +148,7 @@ public class PAA_Uninstall extends PA__Command {
 		return this.getClass().getName();
 	}
 
-	private boolean remove(String file) {
+	private boolean remove(final String file) {
 		try {
 			disableModule(file);
 		} catch (Exception e) {
@@ -176,7 +176,7 @@ public class PAA_Uninstall extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.UNINSTALL));
 	}
 }

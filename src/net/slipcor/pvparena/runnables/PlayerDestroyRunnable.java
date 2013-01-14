@@ -17,19 +17,19 @@ import net.slipcor.pvparena.core.Debug;
  */
 
 public class PlayerDestroyRunnable implements Runnable {
-	private final ArenaPlayer p;
-	private Debug db = new Debug(40);
+	private final ArenaPlayer player;
+	private static final Debug DEBUG = new Debug(40);
 
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param p
+	 * @param player
 	 *            the player to reset
 	 */
-	public PlayerDestroyRunnable(ArenaPlayer p) {
-		this.p = p;
+	public PlayerDestroyRunnable(final ArenaPlayer player) {
+		this.player = player;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 5L);
-		db.i("PlayerDestroyRunnable constructor", p.getName());
+		DEBUG.i("PlayerDestroyRunnable constructor", player.getName());
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class PlayerDestroyRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("PlayerDestroyRunnable commiting", p.getName());
-		p.reset();
+		DEBUG.i("PlayerDestroyRunnable commiting", player.getName());
+		player.reset();
 	}
 }

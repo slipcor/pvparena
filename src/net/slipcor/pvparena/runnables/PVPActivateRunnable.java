@@ -16,14 +16,14 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class PVPActivateRunnable extends ArenaRunnable {
-	private Debug db = new Debug(49);
+	private final static Debug DEBUG = new Debug(49);
 	
 	/**
-	 * create a pvp activate runnable
+	 * create a pvp activates runnable
 	 */
-	public PVPActivateRunnable(Arena a, int i) {
-		super(MSG.TIMER_PVPACTIVATING.getNode(), i, null, a, false);
-		db.i("PVPActivateRunnable constructor");
+	public PVPActivateRunnable(final Arena arena, final int seconds) {
+		super(MSG.TIMER_PVPACTIVATING.getNode(), seconds, null, arena, false);
+		DEBUG.i("PVPActivateRunnable constructor");
 	}
 	
 	@Override

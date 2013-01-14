@@ -3,7 +3,9 @@ package net.slipcor.pvparena.commands;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Help;
@@ -28,16 +30,16 @@ import org.bukkit.inventory.ItemStack;
  * @version v0.10.1
  */
 
-public class PAA_Class extends PAA__Command {
+public class PAA_Class extends AbstractArenaCommand {
 
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
+	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	public PAA_Class() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -56,20 +58,20 @@ public class PAA_Class extends PAA__Command {
 		// /pa {arenaname} class remove [name]
 
 		if (args.length == 1) {
-			Player player = (Player) sender;
+			final Player player = (Player) sender;
 			try {
 				arena.playerLeave(player, null, true);
 				arena.remove(player);
 			} catch (Exception e) {
-
+				PVPArena.instance.getLogger().info("Exiting edit mode: " + player.getName());
 			}
 			ArenaPlayer.parsePlayer(player.getName()).setArena(null);
 			return;
 		}
 
 		if (args[0].equalsIgnoreCase("save")) {
-			Player player = (Player) sender;
-			List<ItemStack> items = new ArrayList<ItemStack>();
+			final Player player = (Player) sender;
+			final List<ItemStack> items = new ArrayList<ItemStack>();
 
 			for (ItemStack is : player.getInventory().getArmorContents()) {
 				if (is != null) {
@@ -84,12 +86,12 @@ public class PAA_Class extends PAA__Command {
 			}
 
 			ItemStack[] isItems = new ItemStack[items.size()];
-			int i = 0;
+			int position = 0;
 			for (ItemStack is : items) {
-				isItems[i++] = is;
+				isItems[position++] = is;
 			}
 
-			String sItems = (isItems == null || isItems.length < 1) ? "AIR"
+			final String sItems = (isItems == null || isItems.length < 1) ? "AIR"
 					: StringParser.getStringFromItemStacks(isItems);
 
 			arena.getArenaConfig().setManually("classitems." + args[1], sItems);
@@ -97,10 +99,10 @@ public class PAA_Class extends PAA__Command {
 			arena.addClass(args[1], isItems);
 			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
 		} else if (args[0].equalsIgnoreCase("load")) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
-			arena.selectClass(ap, args[1]);
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+			arena.selectClass(aPlayer, args[1]);
 		} else if (args[0].equalsIgnoreCase("remove")) {
-			Player player = (Player) sender;
+			final Player player = (Player) sender;
 			arena.getArenaConfig().setManually("classitems." + args[1], null);
 			arena.getArenaConfig().save();
 			arena.removeClass(args[1]);
@@ -114,7 +116,7 @@ public class PAA_Class extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CLASS));
 	}
 }

@@ -18,14 +18,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Debug extends PA__Command {
+public class PAA_Debug extends AbstractGlobalCommand {
 
 	public PAA_Debug() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -39,7 +39,6 @@ public class PAA_Debug extends PA__Command {
 		}
 		
 		Debug.load(PVPArena.instance, sender);
-		return;
 	}
 
 	@Override
@@ -48,7 +47,7 @@ public class PAA_Debug extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.DEBUG));
 	}
 }

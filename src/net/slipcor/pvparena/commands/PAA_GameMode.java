@@ -19,14 +19,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_GameMode extends PAA__Command {
+public class PAA_GameMode extends AbstractArenaCommand {
 
 	public PAA_GameMode() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -59,7 +59,7 @@ public class PAA_GameMode extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.GAMEMODE));
 	}
 }

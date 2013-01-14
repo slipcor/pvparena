@@ -21,14 +21,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_RegionFlag extends PAA__Command {
+public class PAA_RegionFlag extends AbstractArenaCommand {
 
 	public PAA_RegionFlag() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -37,29 +37,25 @@ public class PAA_RegionFlag extends PAA__Command {
 			return;
 		}
 		
-		ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		
-		RegionFlag rf = null;
+		RegionFlag regionFlag = null;
 		
 		try {
-			rf = RegionFlag.valueOf(args[1].toUpperCase());
+			regionFlag = RegionFlag.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
-			// nothing
-		}
-		
-		if (rf == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionFlag.values(), " ")));
 			return;
 		}
 		
 		if (args.length < 3) {
 			// toggle
-			if (region.flagToggle(rf)) {
+			if (region.flagToggle(regionFlag)) {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
 			} else {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
@@ -69,14 +65,14 @@ public class PAA_RegionFlag extends PAA__Command {
 		}
 
 		if (StringParser.positive.contains(args[2].toLowerCase())) {
-			region.flagAdd(rf);
+			region.flagAdd(regionFlag);
 			region.saveToConfig();
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[2].toLowerCase())) {
-			region.flagRemove(rf);
+			region.flagRemove(regionFlag);
 			region.saveToConfig();
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
 			return;
@@ -95,7 +91,7 @@ public class PAA_RegionFlag extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGIONFLAG));
 	}
 }

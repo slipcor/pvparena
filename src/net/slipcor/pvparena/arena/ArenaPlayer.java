@@ -163,7 +163,7 @@ public class ArenaPlayer {
 		if (playerClass == null) {
 			return;
 		}
-		InventoryManager.db.i("giving items to player '" + player.getName()
+		InventoryManager.DEBUG.i("giving items to player '" + player.getName()
 				+ "', class '" + playerClass.getName() + "'", player);
 
 		playerClass.equip(player);
@@ -171,7 +171,7 @@ public class ArenaPlayer {
 		if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
 			final ArenaTeam aTeam = aPlayer.getArenaTeam();
 			final String color = aTeam.getColor().name();
-			InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
+			InventoryManager.DEBUG.i("forcing woolhead: " + aTeam.getName() + "/"
 					+ color, player);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
@@ -228,7 +228,7 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void backupAndClearInventory(final Arena arena, final Player player) {
-		InventoryManager.db.i("saving player inventory: " + player.getName(),
+		InventoryManager.DEBUG.i("saving player inventory: " + player.getName(),
 				player);
 
 		final ArenaPlayer aPlayer = parsePlayer(player.getName());
@@ -321,11 +321,11 @@ public class ArenaPlayer {
 	public void debugPrint() {
 		if (status == null || location == null) {
 			debug.i("DEBUG PRINT OUT:", this.name);
-			debug.i(StringParser.verify(name), this.name);
-			debug.i(StringParser.verify(status), this.name);
-			debug.i(StringParser.verify(location), this.name);
-			debug.i(StringParser.verify(selection[0]), this.name);
-			debug.i(StringParser.verify(selection[1]), this.name);
+			debug.i(String.valueOf(name.toString()), this.name);
+			debug.i(String.valueOf(status.toString()), this.name);
+			debug.i(String.valueOf(location.toString()), this.name);
+			debug.i(String.valueOf(selection[0].toString()), this.name);
+			debug.i(String.valueOf(selection[1].toString()), this.name);
 			return;
 		}
 		debug.i("------------------", this.name);

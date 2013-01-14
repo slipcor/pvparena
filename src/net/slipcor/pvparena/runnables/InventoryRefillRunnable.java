@@ -28,35 +28,38 @@ import org.bukkit.inventory.ItemStack;
  */
 
 public class InventoryRefillRunnable implements Runnable {
-	private Player player;
-	private ItemStack[] items;
-	private Arena arena;
+	private final Player player;
+	private final ItemStack[] items;
+	private final Arena arena;
 	
-	public InventoryRefillRunnable(Arena a, Player p, List<ItemStack> isi) {
-		if (!a.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+	public InventoryRefillRunnable(final Arena arena, final Player player, final List<ItemStack> itemList) {
+		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+			this.player = player;
+			this.arena = arena;
+			this.items = null;
 			return;
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 3L);
-		player = p;
-		items = new ItemStack[isi.size()];
-		arena = a;
-		int i = 0;
-		for (ItemStack item : isi) {
-			items[i++] = item.clone();
+		this.player = player;
+		this.items = new ItemStack[itemList.size()];
+		this.arena = arena;
+		int pos = 0;
+		for (ItemStack item : itemList) {
+			items[pos++] = item.clone();
 		}
 	}
 
 	@Override
 	public void run() {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		if (ap.getStatus().equals(Status.FIGHT)) {
-			if (ap.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		if (aPlayer.getStatus().equals(Status.FIGHT)) {
+			if (aPlayer.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 				ArenaClass.equip(player, items);
 
 				if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
-					ArenaTeam aTeam = ap.getArenaTeam();
-					String color = aTeam.getColor().name();
-					InventoryManager.db.i("forcing woolhead: " + aTeam.getName() + "/"
+					final ArenaTeam aTeam = aPlayer.getArenaTeam();
+					final String color = aTeam.getColor().name();
+					InventoryManager.DEBUG.i("forcing woolhead: " + aTeam.getName() + "/"
 							+ color, player);
 					player.getInventory().setHelmet(
 							new ItemStack(Material.WOOL, 1, StringParser

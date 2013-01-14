@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.regions;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,16 +30,16 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 public class SphericRegion extends ArenaRegionShape {
 
-	HashSet<Block> border = new HashSet<Block>();
+	private final Set<Block> border = new HashSet<Block>();
 
 	public SphericRegion() {
 		super("spheric");
 		shape = RegionShape.SPHERIC;
 	}
 
-	public SphericRegion(Arena arena, String name, PABlockLocation[] locs) {
+	public SphericRegion(final Arena arena, final String name, final PABlockLocation[] locs) {
 		super(arena, name, locs, "spheric");
-		db = new Debug(201);
+		debug = new Debug(201);
 	}
 
 	@Override
@@ -55,8 +56,8 @@ public class SphericRegion extends ArenaRegionShape {
 	 *            the maximum point
 	 * @return a recalculated pair of locations
 	 */
-	private PABlockLocation[] sanityCheck(PABlockLocation lMin,
-			PABlockLocation lMax) {
+	private PABlockLocation[] sanityCheck(final PABlockLocation lMin,
+			final PABlockLocation lMax) {
 		boolean x = (lMin.getX() > lMax.getX());
 		boolean y = (lMin.getY() > lMax.getY());
 		boolean z = (lMin.getZ() > lMax.getZ());
@@ -64,8 +65,8 @@ public class SphericRegion extends ArenaRegionShape {
 		if (!(x | y | z)) {
 			return new PABlockLocation[] { lMin, lMax };
 		}
-		PABlockLocation l1;
-		PABlockLocation l2;
+		final PABlockLocation l1;
+		final PABlockLocation l2;
 
 		l1 = new PABlockLocation(lMin.getWorldName(), x ? lMax.getX()
 				: lMin.getX(), y ? lMax.getY() : lMin.getY(), z ? lMax.getZ()
@@ -77,13 +78,13 @@ public class SphericRegion extends ArenaRegionShape {
 	}
 
 	public void initialize() {
-		PABlockLocation[] sane = sanityCheck(getLocs()[0], getLocs()[1]);
+		final PABlockLocation[] sane = sanityCheck(getLocs()[0], getLocs()[1]);
 		locs[0] = sane[0];
 		locs[1] = sane[1];
 	}
 
 	@Override
-	public boolean overlapsWith(ArenaRegionShape paRegion) {
+	public boolean overlapsWith(final ArenaRegionShape paRegion) {
 		if (paRegion.getShape().equals(RegionShape.CUBOID)) {
 			// compare 2 cuboids
 			if (locs[0].getX() > paRegion.getLocs()[1].getX()
@@ -100,26 +101,26 @@ public class SphericRegion extends ArenaRegionShape {
 		} else if (paRegion.getShape().equals(RegionShape.SPHERIC)) {
 			// we are cube and search for intersecting sphere
 
-			PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
-			PABlockLocation thatCenter = paRegion.getLocs()[1]
+			final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			final PABlockLocation thatCenter = paRegion.getLocs()[1]
 					.getMidpoint(paRegion.getLocs()[0]);
 
-			Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion
+			final Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion
 					.getLocs()[1]) / 2;
 
 			if (contains(thatCenter)) {
 				return true; // the sphere is inside!
 			}
 
-			PABlockLocation offset = thatCenter.pointTo(thisCenter, thatRadius);
+			final PABlockLocation offset = thatCenter.pointTo(thisCenter, thatRadius);
 			// offset is pointing from that to this
 
 			return this.contains(offset);
 		} else if (paRegion.getShape().equals(RegionShape.CYLINDRIC)) {
 			// we are cube and search for intersecting cylinder
 
-			PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
-			PABlockLocation thatCenter = paRegion.getLocs()[1]
+			final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			final PABlockLocation thatCenter = paRegion.getLocs()[1]
 					.getMidpoint(paRegion.getLocs()[0]);
 
 			if (locs[1].getY() < paRegion.getLocs()[0].getY()) {
@@ -135,10 +136,10 @@ public class SphericRegion extends ArenaRegionShape {
 				return true; // the sphere is inside!
 			}
 
-			Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion
+			final Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion
 					.getLocs()[1]) / 2;
 
-			PABlockLocation offset = thatCenter.pointTo(thisCenter, thatRadius);
+			final PABlockLocation offset = thatCenter.pointTo(thisCenter, thatRadius);
 			// offset is pointing from that to this
 
 			return this.contains(offset);
@@ -153,18 +154,18 @@ public class SphericRegion extends ArenaRegionShape {
 
 	@Override
 	public void showBorder(final Player player) {
-		PABlockLocation center = new PABlockLocation(getCenter().toLocation());
+		final PABlockLocation center = new PABlockLocation(getCenter().toLocation());
 
-		World w = Bukkit.getWorld(this.world);
+		final World world = Bukkit.getWorld(this.world);
 
 		border.clear();
 
-		PABlockLocation a = new PABlockLocation(this.locs[1].toLocation());
-		a.setY(locs[0].getY());
+		final PABlockLocation minimum = new PABlockLocation(this.locs[1].toLocation());
+		minimum.setY(locs[0].getY());
 
-		Double radius = getRadius();
+		final Double radius = getRadius();
 
-		Double radiusSquared = radius * radius;
+		final Double radiusSquared = radius * radius;
 
 		// ------------------------------
 		// ---------- Y CIRCLE ----------
@@ -173,27 +174,27 @@ public class SphericRegion extends ArenaRegionShape {
 		for (int x = 0; x <= Math.ceil(radius + 1 / 2); x++) {
 			int z = (int) Math.abs(Math.sqrt(radiusSquared - (x * x)));
 
-			border.add((new Location(w, center.getX() + x, center.getY(),
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY(),
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX() + x, center.getY(),
-					center.getZ() - z)).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY(),
-					center.getZ() - z)).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY(),
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY(),
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY(),
+					center.getZ() - z).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY(),
+					center.getZ() - z).getBlock());
 		}
 
 		for (int z = 0; z <= Math.ceil(radius + 1 / 2); z++) {
 			int x = (int) Math.abs(Math.sqrt(radiusSquared - (z * z)));
 
-			border.add((new Location(w, center.getX() + x, center.getY(),
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY(),
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX() + x, center.getY(),
-					center.getZ() - z)).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY(),
-					center.getZ() - z)).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY(),
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY(),
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY(),
+					center.getZ() - z).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY(),
+					center.getZ() - z).getBlock());
 		}
 
 		// ------------------------------
@@ -203,28 +204,28 @@ public class SphericRegion extends ArenaRegionShape {
 		for (int y = 0; y <= Math.ceil(radius + 1 / 2); y++) {
 			int x = (int) Math.abs(Math.sqrt(radiusSquared - (y * y)));
 
-			border.add((new Location(w, center.getX() + x, center.getY() + y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY() + y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() + x, center.getY() - y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY() - y,
-					center.getZ())).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY() + y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY() + y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY() - y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY() - y,
+					center.getZ()).getBlock());
 
 		}
 
 		for (int x = 0; x <= Math.ceil(radius + 1 / 2); x++) {
 			int y = (int) Math.abs(Math.sqrt(radiusSquared - (x * x)));
 
-			border.add((new Location(w, center.getX() + x, center.getY() + y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY() + y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() + x, center.getY() - y,
-					center.getZ())).getBlock());
-			border.add((new Location(w, center.getX() - x, center.getY() - y,
-					center.getZ())).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY() + y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY() + y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() + x, center.getY() - y,
+					center.getZ()).getBlock());
+			border.add(new Location(world, center.getX() - x, center.getY() - y,
+					center.getZ()).getBlock());
 
 		}
 
@@ -235,27 +236,27 @@ public class SphericRegion extends ArenaRegionShape {
 		for (int y = 0; y <= Math.ceil(radius + 1 / 2); y++) {
 			int z = (int) Math.abs(Math.sqrt(radiusSquared - (y * y)));
 
-			border.add((new Location(w, center.getX(), center.getY() + y,
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() - y,
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() + y,
-					center.getZ() - z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() - y,
-					center.getZ() - z)).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() + y,
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() - y,
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() + y,
+					center.getZ() - z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() - y,
+					center.getZ() - z).getBlock());
 		}
 
 		for (int z = 0; z <= Math.ceil(radius + 1 / 2); z++) {
 			int y = (int) Math.abs(Math.sqrt(radiusSquared - (z * z)));
 
-			border.add((new Location(w, center.getX(), center.getY() + y,
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() - y,
-					center.getZ() + z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() + y,
-					center.getZ() - z)).getBlock());
-			border.add((new Location(w, center.getX(), center.getY() - y,
-					center.getZ() - z)).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() + y,
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() - y,
+					center.getZ() + z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() + y,
+					center.getZ() - z).getBlock());
+			border.add(new Location(world, center.getX(), center.getY() - y,
+					center.getZ() - z).getBlock());
 		}
 
 		for (Block b : border) {
@@ -280,7 +281,7 @@ public class SphericRegion extends ArenaRegionShape {
 	}
 
 	@Override
-	public boolean contains(PABlockLocation loc) {
+	public boolean contains(final PABlockLocation loc) {
 		if (this.getLocs()[0] == null || this.getLocs()[1] == null
 				|| loc == null || !loc.getWorldName().equals(world)) {
 			return false; // no arena, no container or not in the same world
@@ -318,8 +319,8 @@ public class SphericRegion extends ArenaRegionShape {
 	}
 
 	@Override
-	public boolean tooFarAway(int joinRange, Location location) {
-		PABlockLocation reach = (new PABlockLocation(location)).pointTo(
+	public boolean tooFarAway(final int joinRange, final Location location) {
+		final PABlockLocation reach = new PABlockLocation(location).pointTo(
 				getCenter(), (double) joinRange);
 
 		return contains(reach);

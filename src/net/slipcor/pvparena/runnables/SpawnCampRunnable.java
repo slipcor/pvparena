@@ -17,20 +17,20 @@ import net.slipcor.pvparena.core.Debug;
  */
 
 public class SpawnCampRunnable implements Runnable {
-	private final Arena a;
-	private Debug db = new Debug(44);
-	private int id;
+	private final Arena arena;
+	private final static Debug DEBUG = new Debug(44);
+	private int iID;
 
 	/**
 	 * create a spawn camp runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
 	 */
-	public SpawnCampRunnable(Arena a, int i) {
-		id = 0;
-		this.a = a;
-		db.i("SpawnCampRunnable constructor");
+	public SpawnCampRunnable(final Arena arena, final int i) {
+		iID = 0;
+		this.arena = arena;
+		DEBUG.i("SpawnCampRunnable constructor");
 	}
 
 	/**
@@ -38,17 +38,17 @@ public class SpawnCampRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("SpawnCampRunnable commiting");
-		if (a.isFightInProgress() && a.getArenaConfig().getBoolean(CFG.PROTECT_PUNISH))
-			a.spawnCampPunish();
-		else {
+		DEBUG.i("SpawnCampRunnable commiting");
+		if (arena.isFightInProgress() && arena.getArenaConfig().getBoolean(CFG.PROTECT_PUNISH)) {
+			arena.spawnCampPunish();
+		} else {
 			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(id);
-			a.spawnCampRunnerID = -1;
+			Bukkit.getServer().getScheduler().cancelTask(iID);
+			arena.spawnCampRunnerID = -1;
 		}
 	}
 	
-	public void setId(int i) {
-		id = i;
+	public void setId(final int runID) {
+		iID = runID;
 	}
 }

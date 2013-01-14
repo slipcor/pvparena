@@ -15,8 +15,8 @@ import org.bukkit.event.HandlerList;
  */
 
 public class PAStartEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
 
 	/**
 	 * create a start event instance
@@ -24,8 +24,9 @@ public class PAStartEvent extends Event {
 	 * @param a
 	 *            the starting arena
 	 */
-	public PAStartEvent(Arena a) {
-		arena = a;
+	public PAStartEvent(final Arena arena) {
+		super();
+		this.arena = arena;
 	}
 
 	/**
@@ -38,10 +39,10 @@ public class PAStartEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 }

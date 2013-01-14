@@ -20,14 +20,14 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAG_Leave extends PAA__Command {
+public class PAG_Leave extends AbstractArenaCommand {
 
 	public PAG_Leave() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -41,15 +41,15 @@ public class PAG_Leave extends PAA__Command {
 			return;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
-		if (!arena.hasPlayer(ap.get())) {
+		if (!arena.hasPlayer(aPlayer.get())) {
 
 			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
 
-		arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
+		arena.playerLeave(aPlayer.get(), CFG.TP_EXIT, false);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class PAG_Leave extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.LEAVE));
 	}
 }

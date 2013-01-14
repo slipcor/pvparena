@@ -22,10 +22,8 @@ public class GoalTime extends ArenaGoal {
 
 	public GoalTime() {
 		super("Time");
-		db = new Debug(106);
+		debug = new Debug(106);
 	}
-
-	int killpriority = 1;
 	
 	@Override
 	public String version() {
@@ -42,7 +40,7 @@ public class GoalTime extends ArenaGoal {
 	}
 	
 	@Override
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 		
 	}
 
@@ -53,16 +51,16 @@ public class GoalTime extends ArenaGoal {
 
 	@Override
 	public void parseStart() {
-		int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
+		final int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
 		if (timed > 0) {
-			db.i("arena timing!");
+			debug.i("arena timing!");
 			// initiate autosave timer
 			ter = new TimedEndRunnable(arena, timed);
 		}
 	}
 	
 	@Override
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 		if (ter != null) {
 			ter.commit();
 			ter = null;

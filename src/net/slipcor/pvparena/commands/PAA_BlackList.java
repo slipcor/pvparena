@@ -3,6 +3,7 @@ package net.slipcor.pvparena.commands;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
@@ -25,16 +26,16 @@ import org.bukkit.Material;
  * @version v0.10.0
  */
 
-public class PAA_BlackList extends PAA__Command {
-	static HashSet<String> subCommands = new HashSet<String>();
-	static HashSet<String> subTypes = new HashSet<String>();
+public class PAA_BlackList extends AbstractArenaCommand {
+	private static final Set<String> SUBCOMMANDS = new HashSet<String>();
+	private static final Set<String> SUBTYPES = new HashSet<String>();
 	static {
-		subCommands.add("add");
-		subCommands.add("remove");
-		subCommands.add("show");
-		subTypes.add("break");
-		subTypes.add("place");
-		subTypes.add("use");
+		SUBCOMMANDS.add("add");
+		SUBCOMMANDS.add("remove");
+		SUBCOMMANDS.add("show");
+		SUBTYPES.add("break");
+		SUBTYPES.add("place");
+		SUBTYPES.add("use");
 	}
 	
 	public PAA_BlackList() {
@@ -42,7 +43,7 @@ public class PAA_BlackList extends PAA__Command {
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -65,8 +66,8 @@ public class PAA_BlackList extends PAA__Command {
 			return;
 		} else if (args.length == 2) {
 			// usage: /pa {arenaname} blacklist [type] clear
-			if (!subTypes.contains(args[0].toLowerCase())) {
-				arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(subTypes, "|")));
+			if (!SUBTYPES.contains(args[0].toLowerCase())) {
+				arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("clear")) {
@@ -79,33 +80,33 @@ public class PAA_BlackList extends PAA__Command {
 			return;
 		}
 		
-		if (!subTypes.contains(args[0].toLowerCase())) {
-			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(subTypes, "|")));
+		if (!SUBTYPES.contains(args[0].toLowerCase())) {
+			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
 			return;
 		}
 		
-		if (!subCommands.contains(args[1].toLowerCase())) {
-			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(subCommands, "|")));
+		if (!SUBCOMMANDS.contains(args[1].toLowerCase())) {
+			arena.msg(sender, Language.parse(MSG.ERROR_BLACKLIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(SUBCOMMANDS, "|")));
 			return;
 		}
 		
 
-		List<String> list = new ArrayList<String>();
-
-		list = arena.getArenaConfig().getStringList(CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), list);
+		final List<String> list = arena.getArenaConfig().getStringList(
+				CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), new ArrayList<String>());
 		
 		if (args[1].equalsIgnoreCase("add")) {
 			list.add(args[2]);
 			arena.msg(sender, Language.parse(MSG.BLACKLIST_ADDED, args[2], args[0].toLowerCase()));
 		} else if (args[1].equalsIgnoreCase("show")) {
-			String output = Language.parse(MSG.BLACKLIST_SHOW, args[0].toLowerCase());
+			final StringBuffer output = new StringBuffer(Language.parse(MSG.BLACKLIST_SHOW, args[0].toLowerCase()));
 			for (String s : list) {
-				output += ": " + Material.getMaterial(Integer.parseInt(s)).name();
+				output.append(": ");
+				output.append(Material.getMaterial(Integer.parseInt(s)).name());
 			}
 			if (list.size() < 1) {
-				output += ": ---------";
+				output.append(": ---------");
 			}
-			arena.msg(sender, output);
+			arena.msg(sender, output.toString());
 		} else {
 			list.remove(args[2]);
 			arena.msg(sender, Language.parse(MSG.BLACKLIST_REMOVED, args[2], args[1]));
@@ -122,7 +123,7 @@ public class PAA_BlackList extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.BLACKLIST));
 	}
 }

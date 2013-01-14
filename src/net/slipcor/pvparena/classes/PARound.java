@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.classes;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;

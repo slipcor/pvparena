@@ -22,15 +22,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @version v0.10.2
  */
 
-public class PAA_Import extends PA__Command {
-	private static Debug db = new Debug(111);
+public class PAA_Import extends AbstractGlobalCommand {
+	private static Debug debug = new Debug(111);
 
 	public PAA_Import() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -46,33 +46,32 @@ public class PAA_Import extends PA__Command {
 		
 
 		if (args.length == 1) {
-			YamlConfiguration config = new YamlConfiguration();
+			final YamlConfiguration config = new YamlConfiguration();
 			try {
 				config.load(PVPArena.instance.getDataFolder().getPath() + "/config_"+args[0]+".yml");
 				Importer.commitImport(args[0], config);
 				Arena.pmsg(sender, Language.parse(MSG.IMPORT_DONE, args[0]));
 			} catch (Exception e) {
 				Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, args[0]));
-				e.printStackTrace();
 				return;
 			}
 			
 			return;
 		}
 
-		db.i("importing arenas...", sender);
+		debug.i("importing arenas...", sender);
 		try {
-			File path = PVPArena.instance.getDataFolder();
-			File[] f = path.listFiles();
-			int i;
-			for (i = 0; i < f.length; i++) {
-				if (!f[i].isDirectory() && f[i].getName().contains("config_")) {
-					String sName = f[i].getName().replace("config_", "");
+			final File path = PVPArena.instance.getDataFolder();
+			final File[] fileArray = path.listFiles();
+			int position;
+			for (position = 0; position < fileArray.length; position++) {
+				if (!fileArray[position].isDirectory() && fileArray[position].getName().contains("config_")) {
+					String sName = fileArray[position].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
 					
-					YamlConfiguration config = new YamlConfiguration();
+					final YamlConfiguration config = new YamlConfiguration();
 					try {
-						config.load(f[i]);
+						config.load(fileArray[position]);
 						Importer.commitImport(sName, config);
 						Arena.pmsg(sender, Language.parse(MSG.IMPORT_DONE, sName));
 					} catch (Exception e) {
@@ -94,7 +93,7 @@ public class PAA_Import extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.IMPORT));
 	}
 }

@@ -27,7 +27,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 public class RegionTool extends ArenaModule {
 	public RegionTool() {
 		super("RegionTool");
-		db = new Debug(19);
+		debug = new Debug(19);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class RegionTool extends ArenaModule {
 	}
 
 	@Override
-	public boolean onPlayerInteract(PlayerInteractEvent event) {
+	public boolean onPlayerInteract(final PlayerInteractEvent event) {
 		if (event.getPlayer().getItemInHand() == null
 				|| event.getPlayer().getItemInHand().getType() == Material.AIR) {
 			return false;
@@ -54,16 +54,16 @@ public class RegionTool extends ArenaModule {
 		for (Arena arena : ArenaManager.getArenas()) {
 			Material mMat = Material.STICK;
 			if (arena.getArenaConfig().getInt(CFG.GENERAL_WAND) > 0) {
-				db.i("reading wand", event.getPlayer());
+				debug.i("reading wand", event.getPlayer());
 				try {
 					mMat = Material.getMaterial(arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
 				} catch (Exception e) {
-					db.i("exception reading ready block", event.getPlayer());
-					String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
+					debug.i("exception reading ready block", event.getPlayer());
+					final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
 					Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_MAT_NOT_FOUND, sMat));
 					return false;
 				}
-				db.i("mMat now is " + mMat.name(), event.getPlayer());
+				debug.i("mMat now is " + mMat.name(), event.getPlayer());
 				if (event.getPlayer().getItemInHand().getType() == mMat) {
 					PABlockLocation loc = new PABlockLocation(event.getPlayer().getLocation());
 					if (event.getClickedBlock() != null) {

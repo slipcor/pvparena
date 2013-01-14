@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.commands;
 
+import java.util.Locale;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -19,15 +21,15 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public abstract class PAA__Command {
+public abstract class AbstractArenaCommand {
 	public final String[] perms;
 
-	public PAA__Command(String[] s) {
-		perms = s;
+	public AbstractArenaCommand(final String[] permissions) {
+		perms = permissions.clone();
 	}
 
-	public static boolean argCountValid(CommandSender sender, Arena arena,
-			String[] args, Integer[] validCounts) {
+	public static boolean argCountValid(final CommandSender sender, final Arena arena,
+			final String[] args, final Integer[] validCounts) {
 
 		for (int i : validCounts) {
 			if (i == args.length) {
@@ -35,7 +37,7 @@ public abstract class PAA__Command {
 			}
 		}
 
-		String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+		final String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
 				String.valueOf(args.length),
 				StringParser.joinArray(validCounts, "|"));
 
@@ -51,7 +53,7 @@ public abstract class PAA__Command {
 
 	public abstract String getName();
 
-	public boolean hasPerms(CommandSender sender, Arena arena) {
+	public boolean hasPerms(final CommandSender sender, final Arena arena) {
 		if (sender.hasPermission("pvparena.admin")) {
 			return true;
 		}
@@ -70,9 +72,9 @@ public abstract class PAA__Command {
 		return false;
 	}
 
-	public static PAA__Command getByName(String name) {
+	public static AbstractArenaCommand getByName(final String commandName) {
 
-		name = name.toLowerCase();
+		final String name = commandName.toLowerCase(Locale.ENGLISH);
 
 		if (name.contains("blacklist") || name.equals("!bl")) {
 			return new PAA_BlackList();

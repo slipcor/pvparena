@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -41,17 +42,17 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class GoalTeamDeathMatch extends ArenaGoal {
 	public GoalTeamDeathMatch() {
 		super("TeamDeathMatch");
-		db = new Debug(104);
+		debug = new Debug(104);
 	}
 
-	private final HashMap<String, Integer> lives = new HashMap<String, Integer>(); // flags
+	private final Map<String, Integer> lives = new HashMap<String, Integer>(); // flags
 
 	@Override
 	public String version() {
 		return "v0.10.2.28";
 	}
 
-	int priority = 5;
+	private final static int PRIORITY = 5;
 
 	@Override
 	public boolean allowsJoinInBattle() {
@@ -59,15 +60,15 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
-		if (res.getPriority() > priority) {
+	public PACheck checkEnd(final PACheck res) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
-		int count = TeamManager.countActiveTeams(arena);
+		final int count = TeamManager.countActiveTeams(arena);
 
 		if (count == 1) {
-			res.setPriority(this, priority); // yep. only one team left. go!
+			res.setPriority(this, PRIORITY); // yep. only one team left. go!
 		} else if (count == 0) {
 			res.setError(this, MSG.ERROR_NOTEAMFOUND.toString());
 		}
@@ -76,9 +77,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+			final String sTeam = team.getName();
 			if (!list.contains(team + "spawn")) {
 				boolean found = false;
 				for (String s : list) {
@@ -96,13 +97,13 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -115,34 +116,31 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= priority && player.getKiller() != null
+	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+		if (res.getPriority() <= PRIORITY && player.getKiller() != null
 				&& arena.hasPlayer(player.getKiller())) {
-			res.setPriority(this, priority);
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		db.i("[TEAMS]");
+	public void commitEnd(final boolean force) {
+		debug.i("[TEAMS]");
 
 		ArenaTeam aTeam = null;
 
@@ -173,8 +171,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void commitPlayerDeath(Player respawnPlayer, boolean doesRespawn,
-			String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
+			final String error, final PlayerDeathEvent event) {
 		if (respawnPlayer.getKiller() == null) {
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
@@ -190,9 +188,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			return;
 		}
 
-		ArenaTeam respawnTeam = ArenaPlayer
+		final ArenaTeam respawnTeam = ArenaPlayer
 				.parsePlayer(respawnPlayer.getName()).getArenaTeam();
-		ArenaTeam killerTeam = ArenaPlayer.parsePlayer(
+		final ArenaTeam killerTeam = ArenaPlayer.parsePlayer(
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		reduceLives(arena, killerTeam);
 
@@ -224,16 +222,16 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void configParse(YamlConfiguration config) {
+	public void configParse(final YamlConfiguration config) {
 		if (config.get("flagColors") == null) {
-			db.i("no flagheads defined, adding white and black!");
+			debug.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}
 	}
 
 	@Override
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("teams: "
 				+ StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
 		sender.sendMessage("lives: "
@@ -241,53 +239,50 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (arena.getArenaConfig()
+					String.valueOf(arena.getArenaConfig()
 									.getInt(CFG.GOAL_TDM_LIVES) - (lives
-									.containsKey(ap.getArenaTeam().getName()) ? lives
-									.get(ap.getArenaTeam().getName()) : 0)));
+									.containsKey(aPlayer.getArenaTeam().getName()) ? lives
+									.get(aPlayer.getArenaTeam().getName()) : 0)));
 		}
 		return res;
 	}
 
 	@Override
-	public String guessSpawn(String place) {
+	public String guessSpawn(final String place) {
 		if (!place.contains("spawn")) {
-			db.i("place not found!");
+			debug.i("place not found!");
 			return null;
 		}
 		// no exact match: assume we have multiple spawnpoints
-		HashMap<Integer, String> locs = new HashMap<Integer, String>();
-		int i = 0;
+		final Map<Integer, String> locs = new HashMap<Integer, String>();
+		int pos = 0;
 
-		db.i("searching for team spawns");
+		debug.i("searching for team spawns");
 
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena
+		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false);
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
-				locs.put(i++, name);
-				db.i("found match: " + name);
+				locs.put(pos++, name);
+				debug.i("found match: " + name);
 			}
 		}
 
 		if (locs.size() < 1) {
 			return null;
 		}
-		Random r = new Random();
+		final Random random = new Random();
 
-		place = locs.get(r.nextInt(locs.size()));
-
-		return place;
+		return locs.get(random.nextInt(locs.size()));
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().startsWith(
 					teamName.toLowerCase() + "spawn")) {
@@ -298,10 +293,10 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void initate(Player player) {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		if (lives.get(ap.getArenaTeam().getName()) == null) {
-			lives.put(ap.getArenaTeam().getName(), arena.getArenaConfig()
+	public void initate(final Player player) {
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		if (lives.get(aPlayer.getArenaTeam().getName()) == null) {
+			lives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_TDM_LIVES));
 		}
 	}
@@ -311,10 +306,10 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		return true;
 	}
 
-	private void reduceLives(Arena arena, ArenaTeam team) {
-		int i = this.lives.get(team.getName());
+	private void reduceLives(final Arena arena, final ArenaTeam team) {
+		final int iLives = this.lives.get(team.getName());
 
-		if (i <= 1) {
+		if (iLives <= 1) {
 			for (ArenaTeam otherTeam : arena.getTeams()) {
 				if (otherTeam.equals(team)) {
 					continue;
@@ -332,16 +327,16 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			return;
 		}
 
-		lives.put(team.getName(), i - 1);
+		lives.put(team.getName(), iLives - 1);
 	}
 
 	@Override
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 		lives.clear();
 	}
 
 	@Override
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
@@ -350,13 +345,13 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
+			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
-			db.i("no flagheads defined, adding white and black!");
+			debug.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}
@@ -371,7 +366,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaTeam team : arena.getTeams()) {
@@ -389,7 +384,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 		}

@@ -21,14 +21,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_RegionType extends PAA__Command {
+public class PAA_RegionType extends AbstractArenaCommand {
 	
 	public PAA_RegionType() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -37,32 +37,28 @@ public class PAA_RegionType extends PAA__Command {
 			return;
 		}
 		
-		ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		
-		RegionType rf = null;
+		RegionType regionType = null;
 		
 		try {
-			rf = RegionType.valueOf(args[1].toUpperCase());
+			regionType = RegionType.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
-			// nothing
-		}
-		
-		if (rf == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " ")));
 			return;
 		}
 		
-		region.setType(rf);
-		if (rf.equals(RegionType.BATTLE)) {
+		region.setType(regionType);
+		if (regionType.equals(RegionType.BATTLE)) {
 			region.protectionSetAll(true);
 		}
 		region.saveToConfig();
-		arena.msg(sender, Language.parse(MSG.REGION_TYPE_SET, rf.name()));
+		arena.msg(sender, Language.parse(MSG.REGION_TYPE_SET, regionType.name()));
 	
 	}
 
@@ -72,7 +68,7 @@ public class PAA_RegionType extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGIONTYPE));
 	}
 }

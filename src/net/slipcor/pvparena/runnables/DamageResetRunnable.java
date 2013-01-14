@@ -20,11 +20,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class DamageResetRunnable implements Runnable {
 
-	final Arena arena;
-	final Player attacker;
-	final Player defender;
+	private final Arena arena;
+	private final Player attacker;
+	private final Player defender;
 	
-	public DamageResetRunnable(Arena arena, Player attacker, Player defender) {
+	public DamageResetRunnable(final Arena arena, final Player attacker, final Player defender) {
 		this.arena = arena;
 		this.attacker = attacker;
 		this.defender = defender;
@@ -45,7 +45,7 @@ public class DamageResetRunnable implements Runnable {
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.DAMAGE_ARMOR)) {
 			try {
-				ItemStack[] items = defender.getInventory().getArmorContents();
+				final ItemStack[] items = defender.getInventory().getArmorContents();
 				
 				for (ItemStack is : items) {
 					if (is == null || is.getType().equals(Material.WOOL)) {

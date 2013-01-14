@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 import net.slipcor.pvparena.arena.Arena;
@@ -24,14 +25,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_Ready extends PAA__Command {
+public class PAI_Ready extends AbstractArenaCommand {
 
 	public PAI_Ready() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -40,9 +41,9 @@ public class PAI_Ready extends PAA__Command {
 			return;
 		}
 		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
-		if (!arena.hasPlayer(ap.get())) {
+		if (!arena.hasPlayer(aPlayer.get())) {
 
 			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
 			return;
@@ -50,21 +51,21 @@ public class PAI_Ready extends PAA__Command {
 		
 		if (args.length < 1) {
 			
-			if (!ap.getStatus().equals(Status.LOUNGE)) {
+			if (!aPlayer.getStatus().equals(Status.LOUNGE)) {
 				return;
 			}
 			
-			if (ap.getArenaClass() == null) {
+			if (aPlayer.getArenaClass() == null) {
 				arena.msg(sender, Language.parse(MSG.ERROR_READY_NOCLASS));
 				return;
 			}
-			if (!ap.getStatus().equals(Status.READY)) {
+			if (!aPlayer.getStatus().equals(Status.READY)) {
 				arena.msg(sender, Language.parse(MSG.READY_DONE));
-				arena.broadcast(Language.parse(MSG.PLAYER_READY, ap.getArenaTeam().colorizePlayer(ap.get())));
+				arena.broadcast(Language.parse(MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer.get())));
 			}
-			ap.setStatus(Status.READY);
-			if (ap.getArenaTeam().isEveryoneReady()) {
-				arena.broadcast(Language.parse(MSG.TEAM_READY, ap.getArenaTeam().getColoredName()));
+			aPlayer.setStatus(Status.READY);
+			if (aPlayer.getArenaTeam().isEveryoneReady()) {
+				arena.broadcast(Language.parse(MSG.TEAM_READY, aPlayer.getArenaTeam().getColoredName()));
 			}
 			
 			PACheck.handleStart(arena, sender);
@@ -72,7 +73,7 @@ public class PAI_Ready extends PAA__Command {
 			return;
 		}
 		
-		HashSet<String> names = new HashSet<String>();
+		final Set<String> names = new HashSet<String>();
 		
 		for (ArenaPlayer player : arena.getEveryone()) {
 			if (player.getStatus().equals(Status.LOUNGE)) {
@@ -90,7 +91,7 @@ public class PAI_Ready extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.READY));
 	}
 }

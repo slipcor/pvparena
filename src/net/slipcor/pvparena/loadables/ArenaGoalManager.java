@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -46,7 +47,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class ArenaGoalManager {
 	private List<ArenaGoal> types;
 	private final NCBLoader<ArenaGoal> loader;
-	protected Debug db = new Debug(31);
+	protected static final Debug DEBUG = new Debug(31);
 
 	/**
 	 * create an arena type instance
@@ -54,8 +55,8 @@ public class ArenaGoalManager {
 	 * @param plugin
 	 *            the plugin instance
 	 */
-	public ArenaGoalManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/goals");
+	public ArenaGoalManager(final PVPArena plugin) {
+		final File path = new File(plugin.getDataFolder().toString() + "/goals");
 		if (!path.exists()) {
 			path.mkdir();
 		}
@@ -80,12 +81,12 @@ public class ArenaGoalManager {
 
 		for (ArenaGoal type : types) {
 			type.onThisLoad();
-			db.i("module ArenaType loaded: " + type.getName() + " (version "
+			DEBUG.i("module ArenaType loaded: " + type.getName() + " (version "
 					+ type.version() + ")");
 		}
 	}
 
-	public boolean allowsJoinInBattle(Arena arena) {
+	public boolean allowsJoinInBattle(final Arena arena) {
 		for (ArenaGoal type : arena.getGoals()) {
 			if (!type.allowsJoinInBattle()) {
 				return false;
@@ -94,9 +95,9 @@ public class ArenaGoalManager {
 		return true;
 	}
 
-	public String checkForMissingSpawns(Arena arena, Set<String> list) {
+	public String checkForMissingSpawns(final Arena arena, final Set<String> list) {
 		for (ArenaGoal type : arena.getGoals()) {
-			String error = type.checkForMissingSpawns(list);
+			final String error = type.checkForMissingSpawns(list);
 			if (error != null) {
 				return error;
 			}
@@ -104,14 +105,14 @@ public class ArenaGoalManager {
 		return null;
 	}
 
-	public void configParse(Arena arena, YamlConfiguration config) {
+	public void configParse(final Arena arena, final YamlConfiguration config) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.configParse(config);
 		}
 	}
 
-	public HashSet<String> getAllGoalNames() {
-		HashSet<String> result = new HashSet<String>();
+	public Set<String> getAllGoalNames() {
+		final Set<String> result = new HashSet<String>();
 
 		for (ArenaGoal goal : types) {
 			result.add(goal.getName());
@@ -131,7 +132,7 @@ public class ArenaGoalManager {
 	 *            the type name to find
 	 * @return the arena type if found, null otherwise
 	 */
-	public ArenaGoal getGoalByName(String tName) {
+	public ArenaGoal getGoalByName(final String tName) {
 		for (ArenaGoal type : types) {
 			if (type.getName().equalsIgnoreCase(tName)) {
 				return type;
@@ -140,9 +141,9 @@ public class ArenaGoalManager {
 		return null;
 	}
 
-	public String guessSpawn(Arena arena, String place) {
+	public String guessSpawn(final Arena arena, final String place) {
 		for (ArenaGoal type : arena.getGoals()) {
-			String result = type.guessSpawn(place);
+			final String result = type.guessSpawn(place);
 			if (result != null) {
 				return result;
 			}
@@ -150,21 +151,21 @@ public class ArenaGoalManager {
 		return null;
 	}
 
-	public void initiate(Arena arena, Player player) {
-		db.i("initiating " + player.getName(), player);
+	public void initiate(final Arena arena, final Player player) {
+		DEBUG.i("initiating " + player.getName(), player);
 		for (ArenaGoal type : arena.getGoals()) {
 			type.initate(player);
 		}
 	}
 	
-	public String ready(Arena arena) {
-		db.i("AGM ready!?!");
+	public String ready(final Arena arena) {
+		DEBUG.i("AGM ready!?!");
 		String error = null;
 		for (ArenaGoal type : arena.getGoals()) {
 			error = type.ready();
 			if (error != null) {
 
-				db.i("type error:" + type.getName());
+				DEBUG.i("type error:" + type.getName());
 				return error;
 			}
 		}
@@ -176,31 +177,31 @@ public class ArenaGoalManager {
 		fill();
 	}
 	
-	public void reset(Arena arena, boolean force) {
+	public void reset(final Arena arena, final boolean force) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.reset(force);
 		}
 	}
 
-	public void setDefaults(Arena arena, YamlConfiguration config) {
+	public void setDefaults(final Arena arena, final YamlConfiguration config) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.setDefaults(config);
 		}
 	}
 	
-	public void setPlayerLives(Arena arena, int value) {
+	public void setPlayerLives(final Arena arena, final int value) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.setPlayerLives(value);
 		}
 	}
 	
-	public void setPlayerLives(Arena arena, ArenaPlayer ap, int value) {
+	public void setPlayerLives(final Arena arena, final ArenaPlayer player, final int value) {
 		for (ArenaGoal type : arena.getGoals()) {
-			type.setPlayerLives(ap, value);
+			type.setPlayerLives(player, value);
 		}
 	}
 	
-	public void timedEnd(Arena arena) {
+	public void timedEnd(final Arena arena) {
 
 		/**
 		 * name/team => score points
@@ -208,49 +209,49 @@ public class ArenaGoalManager {
 		 * handed over to each module
 		 */
 
-		db.i("timed end!");
+		DEBUG.i("timed end!");
 		
-		HashMap<String, Double> scores = new HashMap<String, Double>();
+		Map<String, Double> scores = new HashMap<String, Double>();
 
 		for (ArenaGoal type : arena.getGoals()) {
-			db.i("scores: " + type.getName());
+			DEBUG.i("scores: " + type.getName());
 			scores = type.timedEnd(scores);
 		}
 
-		HashSet<String> winners = new HashSet<String>();
+		final Set<String> winners = new HashSet<String>();
 		
-		if (!arena.isFreeForAll() && !arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
-			winners.add(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER));
-			db.i("added winner!");
-		} else if (!arena.isFreeForAll()) {
+		if (arena.isFreeForAll() && arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
+			winners.add("free");
+			DEBUG.i("adding FREE");
+		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
 			// check all teams
 			double maxScore = 0;
 
 			for (String team : arena.getTeamNames()) {
 				if (scores.containsKey(team)) {
-					double teamScore = scores.get(team);
+					final double teamScore = scores.get(team);
 
 					if (teamScore > maxScore) {
 						maxScore = teamScore;
 						winners.clear();
 						winners.add(team);
-						db.i("clear and add team " + team);
+						DEBUG.i("clear and add team " + team);
 					} else if (teamScore == maxScore) {
 						winners.add(team);
-						db.i("add team "+team);
+						DEBUG.i("add team "+team);
 					}
 				}
 			}
 		} else {
-			winners.add("free");
-			db.i("adding FREE");
+			winners.add(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER));
+			DEBUG.i("added winner!");
 		}
 
 		if (winners.size() > 1) {
-			db.i("more than 1");
-			HashSet<String> preciseWinners = new HashSet<String>();
+			DEBUG.i("more than 1");
+			final Set<String> preciseWinners = new HashSet<String>();
 
-			// several teams have max score!!^
+			// several teams have max score!!
 			double maxSum = 0;
 			double sum = 0;
 			for (ArenaTeam team : arena.getTeams()) {
@@ -268,20 +269,23 @@ public class ArenaGoalManager {
 
 				if (sum == maxSum) {
 					preciseWinners.add(team.getName());
-					db.i("adddding " + team.getName());
+					DEBUG.i("adddding " + team.getName());
 				} else if (sum > maxSum) {
+					maxSum = sum;
 					preciseWinners.clear();
 					preciseWinners.add(team.getName());
-					db.i("clearing and adddding + " + team.getName());
+					DEBUG.i("clearing and adddding + " + team.getName());
 				}
 			}
-
-			winners = preciseWinners.size() > 0 ? preciseWinners : winners;
+			if (!preciseWinners.isEmpty()) {
+				winners.clear();
+				winners.addAll(preciseWinners);
+			}
 		}
 
 		if (arena.isFreeForAll()) {
-			db.i("FFAAA");
-			HashSet<String> preciseWinners = new HashSet<String>();
+			DEBUG.i("FFAAA");
+			final Set<String> preciseWinners = new HashSet<String>();
 
 			for (ArenaTeam team : arena.getTeams()) {
 				if (!winners.contains(team.getName())) {
@@ -297,15 +301,17 @@ public class ArenaGoalManager {
 					}
 					if (sum == maxSum) {
 						preciseWinners.add(ap.getName());
-						db.i("ffa adding " + ap.getName());
+						DEBUG.i("ffa adding " + ap.getName());
 					} else if (sum > maxSum) {
+						maxSum = sum;
 						preciseWinners.clear();
 						preciseWinners.add(ap.getName());
-						db.i("ffa clr & adding " + ap.getName());
+						DEBUG.i("ffa clr & adding " + ap.getName());
 					}
 				}
 			}
-			winners = preciseWinners;
+			winners.clear();
+			winners.addAll(preciseWinners);
 		}
 
 		
@@ -313,7 +319,7 @@ public class ArenaGoalManager {
 
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {
-				HashSet<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
+				final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					apSet.add(p);
 				}
@@ -339,7 +345,7 @@ public class ArenaGoalManager {
 					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
 				} else {
-					HashSet<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
+					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 					for (ArenaPlayer p : team.getTeamMembers()) {
 						apSet.add(p);
 					}
@@ -357,13 +363,13 @@ public class ArenaGoalManager {
 		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
 	}
 
-	public void unload(Arena arena, Player player) {
+	public void unload(final Arena arena, final Player player) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.unload(player);
 		}
 	}
 
-	public void disconnect(Arena arena, ArenaPlayer player) {
+	public void disconnect(final Arena arena, final ArenaPlayer player) {
 		if (arena == null) {
 			return;
 		}

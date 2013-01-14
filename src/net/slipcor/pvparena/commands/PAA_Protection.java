@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
@@ -22,16 +24,16 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Protection extends PAA__Command {
+public class PAA_Protection extends AbstractArenaCommand {
 	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
+	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	public PAA_Protection() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -40,29 +42,27 @@ public class PAA_Protection extends PAA__Command {
 			return;
 		}
 		
-		ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		
-		RegionProtection rf = null;
+		RegionProtection regionProtection = null;
 		
 		try {
-			rf = RegionProtection.valueOf(args[1].toUpperCase());
+			regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
-			// nothing
-		}
-		
-		if (rf == null && (!args[1].equalsIgnoreCase("all"))) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
-			return;
+			if (!args[1].equalsIgnoreCase("all")) {
+				arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
+				return;
+			}
 		}
 		
 		if (args.length < 3) {
 			// toggle
-			if (region.protectionToggle(rf)) {
+			if (region.protectionToggle(regionProtection)) {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
 			} else {
 				arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
@@ -72,14 +72,14 @@ public class PAA_Protection extends PAA__Command {
 		}
 
 		if (StringParser.positive.contains(args[2].toLowerCase())) {
-			region.protectionAdd(rf);
+			region.protectionAdd(regionProtection);
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
 			region.saveToConfig();
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[2].toLowerCase())) {
-			region.protectionRemove(rf);
+			region.protectionRemove(regionProtection);
 			arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
 			region.saveToConfig();
 			return;
@@ -98,7 +98,7 @@ public class PAA_Protection extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.PROTECTION));
 	}
 }

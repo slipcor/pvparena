@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -57,35 +57,34 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	public GoalSabotage() {
 		super("Sabotage");
-		db = new Debug(103);
+		debug = new Debug(103);
 	}
 
 	private String flagName = "";
-	private HashMap<String, String> paTeamFlags = new HashMap<String, String>();
-	private HashMap<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>();
+	private final Map<String, String> paTeamFlags = new HashMap<String, String>();
+	private final Map<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>();
 
 	@Override
 	public String version() {
 		return "v0.10.2.0";
 	}
 
-	int priority = 7;
-	int killpriority = 1;
+	private static final int PRIORITY = 7;
 
 	@Override
 	public boolean allowsJoinInBattle() {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
 	}
 
-	public PACheck checkCommand(PACheck res, String string) {
-		if (res.getPriority() > priority) {
+	public PACheck checkCommand(final PACheck res, final String string) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
 		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+			final String sTeam = team.getName();
 			if (string.contains(sTeam + "tnt")) {
-				res.setPriority(this, priority);
+				res.setPriority(this, PRIORITY);
 			}
 		}
 
@@ -93,9 +92,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+			final String sTeam = team.getName();
 			if (!list.contains(sTeam + "tnt")) {
 				boolean found = false;
 				for (String s : list) {
@@ -124,35 +123,35 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	 * @return
 	 */
 	@Override
-	public PACheck checkInteract(PACheck res, Player player, Block block) {
-		if (block == null || res.getPriority() > priority) {
+	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
+		if (block == null || res.getPriority() > PRIORITY) {
 			return res;
 		}
-		db.i("checking interact", player);
+		debug.i("checking interact", player);
 
 		if (!block.getType().equals(Material.TNT)) {
-			db.i("block, but not flag", player);
+			debug.i("block, but not flag", player);
 			return res;
 		}
-		db.i("flag click!", player);
+		debug.i("flag click!", player);
 
 		if (player.getItemInHand() == null
 				|| !player.getItemInHand().getType()
 						.equals(Material.FLINT_AND_STEEL)) {
-			db.i("block, but no sabotage items", player);
+			debug.i("block, but no sabotage items", player);
 			return res;
 		}
 
 		Vector vLoc;
 		Vector vFlag = null;
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-		ArenaTeam pTeam = ap.getArenaTeam();
+		final ArenaTeam pTeam = aPlayer.getArenaTeam();
 		if (pTeam == null) {
 			return res;
 		}
 		for (ArenaTeam team : arena.getTeams()) {
-			String aTeam = team.getName();
+			final String aTeam = team.getName();
 
 			if (aTeam.equals(pTeam.getName())) {
 				continue;
@@ -160,9 +159,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			if (team.getTeamMembers().size() < 1) {
 				continue; // dont check for inactive teams
 			}
-			db.i("checking for tnt of team " + aTeam, player);
+			debug.i("checking for tnt of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
-			db.i("block: " + vLoc.toString(), player);
+			debug.i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, aTeam + "tnt").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
@@ -172,15 +171,15 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			}
 
 			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-				db.i("flag found!", player);
-				db.i("vFlag: " + vFlag.toString(), player);
+				debug.i("flag found!", player);
+				debug.i("vFlag: " + vFlag.toString(), player);
 				arena.broadcast(Language.parse(MSG.GOAL_SABOTAGE_IGNITED,
 						pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						team.getColoredName() + ChatColor.YELLOW));
 
 				takeFlag(team.getName(), true,
 						new PALocation(block.getLocation()));
-				res.setPriority(this, priority);
+				res.setPriority(this, PRIORITY);
 				return res;
 			}
 		}
@@ -189,13 +188,13 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -208,37 +207,34 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(final PACheck res, Player player, final Block block) {
 
-		if (res.getPriority() > priority
+		if (res.getPriority() > PRIORITY
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
-		res.setPriority(this, priority); // success :)
+		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
 	}
 
-	private void commit(Arena arena, String sTeam, boolean win) {
-		db.i("[SABOTAGE] committing end: " + sTeam);
-		db.i("win: " + String.valueOf(win));
+	private void commit(final Arena arena, final String sTeam, final boolean win) {
+		debug.i("[SABOTAGE] committing end: " + sTeam);
+		debug.i("win: " + win);
 
 		String winteam = sTeam;
 
@@ -282,10 +278,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void commitCommand(CommandSender sender, String[] args) {
+	public void commitCommand(final CommandSender sender, final String[] args) {
 		if (args[0].contains("tnt")) {
 			for (ArenaTeam team : arena.getTeams()) {
-				String sTeam = team.getName();
+				final String sTeam = team.getName();
 				if (args[0].contains(sTeam + "tnt")) {
 					flagName = args[0];
 					PAA_Region.activeSelections.put(sender.getName(), arena);
@@ -298,8 +294,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		db.i("[SABOTAGE]");
+	public void commitEnd(final boolean force) {
+		debug.i("[SABOTAGE]");
 
 		ArenaTeam aTeam = null;
 
@@ -330,12 +326,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void commitInteract(Player player, Block clickedBlock) {
-		return;
+	public void commitInteract(final Player player, final Block clickedBlock) {
 	}
 
 	@Override
-	public boolean commitSetFlag(Player player, Block block) {
+	public boolean commitSetFlag(final Player player, final Block block) {
 		if (block == null || !block.getType().equals(Material.TNT)) {
 			return false;
 		}
@@ -345,7 +340,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		db.i("trying to set a tnt", player);
+		debug.i("trying to set a tnt", player);
 
 		// command : /pa redtnt1
 		// location: red1tnt:
@@ -361,35 +356,35 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void configParse(YamlConfiguration cfg) {
+	public void configParse(final YamlConfiguration cfg) {
 		Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
 	}
 
 	@Override
-	public void disconnect(ArenaPlayer ap) {
+	public void disconnect(final ArenaPlayer aPlayer) {
 		if (paTeamFlags == null) {
 			return;
 		}
 
-		String flag = this.getHeldFlagTeam(arena, ap.getName());
+		final String flag = this.getHeldFlagTeam(aPlayer.getName());
 		if (flag != null) {
-			ArenaTeam flagTeam = arena.getTeam(flag);
+			final ArenaTeam flagTeam = arena.getTeam(flag);
 			paTeamFlags.remove(flag);
-			distributeFlag(ap, flagTeam);
+			distributeFlag(aPlayer, flagTeam);
 		}
 	}
 
-	private void distributeFlag(ArenaPlayer player, ArenaTeam team) {
-		Set<ArenaPlayer> players = team.getTeamMembers();
+	private void distributeFlag(final ArenaPlayer player, final ArenaTeam team) {
+		final Set<ArenaPlayer> players = team.getTeamMembers();
 
-		int i = (new Random()).nextInt(players.size());
+		int pos = new Random().nextInt(players.size());
 
 		for (ArenaPlayer ap : players) {
-			db.i("distributing sabotage: " + ap.getName(), ap.getName());
+			debug.i("distributing sabotage: " + ap.getName(), ap.getName());
 			if (ap.equals(player)) {
 				continue;
 			}
-			if (--i <= 1) {
+			if (--pos <= 1) {
 				paTeamFlags.put(team.getName(), ap.getName());
 				ap.get().getInventory()
 						.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
@@ -399,14 +394,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		}
 	}
 
-	private String getHeldFlagTeam(Arena arena, String player) {
+	private String getHeldFlagTeam(final String player) {
 		if (paTeamFlags.size() < 1) {
 			return null;
 		}
 
-		db.i("getting held TNT of player " + player, player);
+		debug.i("getting held TNT of player " + player, player);
 		for (String sTeam : paTeamFlags.keySet()) {
-			db.i("team " + sTeam + "'s sabotage is carried by "
+			debug.i("team " + sTeam + "'s sabotage is carried by "
 					+ paTeamFlags.get(sTeam) + "s hands", player);
 			if (player.equals(paTeamFlags.get(sTeam))) {
 				return sTeam;
@@ -416,27 +411,27 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public String guessSpawn(String place) {
+	public String guessSpawn(final String place) {
 		// no exact match: assume we have multiple spawnpoints
-		HashMap<Integer, String> locs = new HashMap<Integer, String>();
-		int i = 0;
+		final Map<Integer, String> locs = new HashMap<Integer, String>();
+		int pos = 0;
 
-		db.i("searching for team spawns: " + place);
+		debug.i("searching for team spawns: " + place);
 
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena
+		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false);
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
-				locs.put(i++, name);
-				db.i("found match: " + name);
+				locs.put(pos++, name);
+				debug.i("found match: " + name);
 			}
 			if (name.endsWith("tnt")) {
 				for (ArenaTeam team : arena.getTeams()) {
-					String sTeam = team.getName();
+					final String sTeam = team.getName();
 					if (name.startsWith(sTeam) && place.startsWith(sTeam)) {
-						locs.put(i++, name);
-						db.i("found match: " + name);
+						locs.put(pos++, name);
+						debug.i("found match: " + name);
 					}
 				}
 			}
@@ -445,15 +440,13 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		if (locs.size() < 1) {
 			return null;
 		}
-		Random r = new Random();
-
-		place = locs.get(r.nextInt(locs.size()));
-
-		return place;
+		final Random random = new Random();
+		
+		return locs.get(random.nextInt(locs.size()));
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().equals(teamName.toLowerCase() + "tnt")) {
 				return true;
@@ -467,13 +460,13 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void initate(Player player) {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = ap.getArenaTeam();
+	public void initate(final Player player) {
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 		takeFlag(team.getName(), false,
 				SpawnManager.getCoords(arena, team.getName() + "tnt"));
 		if (!paTeamFlags.containsKey(team.getName())) {
-			db.i("adding team " + team.getName(), player);
+			debug.i("adding team " + team.getName(), player);
 			distributeFlag(null, team);
 		}
 	}
@@ -484,32 +477,32 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void parsePlayerDeath(Player p, EntityDamageEvent event) {
-		String s = getHeldFlagTeam(arena, p.getName());
-		ArenaTeam t = arena.getTeam(s);
-		if (s != null && t != null) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(p.getName());
-			paTeamFlags.remove(s);
-			distributeFlag(ap, t);
+	public void parsePlayerDeath(final Player player, final EntityDamageEvent event) {
+		final String teamName = getHeldFlagTeam(player.getName());
+		final ArenaTeam team = arena.getTeam(teamName);
+		if (teamName != null && team != null) {
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+			paTeamFlags.remove(teamName);
+			distributeFlag(aPlayer, team);
 		}
 	}
 
 	@Override
 	public void parseStart() {
-		db.i("initiating arena");
+		debug.i("initiating arena");
 		paTeamFlags.clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			takeFlag(team.getName(), false,
 					SpawnManager.getCoords(arena, team.getName() + "tnt"));
 			if (!paTeamFlags.containsKey(team.getName())) {
-				db.i("adding team " + team.getName());
+				debug.i("adding team " + team.getName());
 				distributeFlag(null, team);
 			}
 		}
 	}
 
 	@Override
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 		paTeamFlags.clear();
 		for (TNTPrimed t : tnts.values()) {
 			t.remove();
@@ -518,7 +511,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
@@ -526,7 +519,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
+			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
@@ -544,7 +537,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	 * @param lBlock
 	 *            the location to take/reset
 	 */
-	public void takeFlag(String teamName, boolean take, PALocation lBlock) {
+	public void takeFlag(final String teamName, final boolean take, final PALocation lBlock) {
 		lBlock.toLocation().getBlock()
 				.setType(take ? Material.AIR : Material.TNT);
 		if (take) {
@@ -556,32 +549,32 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		disconnect(ArenaPlayer.parsePlayer(player.getName()));
 	}
 
 	@EventHandler
-	public void onTNTExplode(EntityExplodeEvent event) {
+	public void onTNTExplode(final EntityExplodeEvent event) {
 		if (!event.getEntityType().equals(EntityType.PRIMED_TNT)) {
 			return;
 		}
 
-		TNTPrimed t = (TNTPrimed) event.getEntity();
+		final TNTPrimed tnt = (TNTPrimed) event.getEntity();
 
 		for (ArenaTeam team : tnts.keySet()) {
-			if (t.getUniqueId().equals(tnts.get(team).getUniqueId())) {
+			if (tnt.getUniqueId().equals(tnts.get(team).getUniqueId())) {
 				event.setCancelled(true);
-				t.remove();
+				tnt.remove();
 				commit(arena, team.getName(), false);
 			}
 		}
 
-		PABlockLocation tLoc = new PABlockLocation(event.getEntity()
+		final PABlockLocation tLoc = new PABlockLocation(event.getEntity()
 				.getLocation());
 
-		HashSet<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");
+		final Set<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");
 
-		PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
+		final PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
 
 		if (nearest.getDistance(tLoc) < 2) {
 			event.setCancelled(true);

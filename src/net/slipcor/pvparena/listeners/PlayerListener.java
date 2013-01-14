@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.listeners;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,75 +62,75 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  */
 
 public class PlayerListener implements Listener {
-	private static Debug db = new Debug(23);
+	private final static Debug DEBUG = new Debug(23);
 
-	private boolean checkAndCommitCancel(Arena arena, Player player,
-			Cancellable event) {
+	private boolean checkAndCommitCancel(final Arena arena, final Player player,
+			final Cancellable event) {
 		if (!(event instanceof PlayerInteractEvent)) {
 			return false;
 		}
-		PlayerInteractEvent e = (PlayerInteractEvent) event;
-		Material mat = e.getClickedBlock().getType();
-		Material check = arena == null ? Material.IRON_BLOCK : arena
+		final PlayerInteractEvent pie = (PlayerInteractEvent) event;
+		final Material mat = pie.getClickedBlock().getType();
+		final Material check = arena == null ? Material.IRON_BLOCK : arena
 				.getReadyBlock();
 		if (mat == Material.SIGN || mat == Material.SIGN_POST
 				|| mat == Material.WALL_SIGN || mat == check) {
-			db.i("signs and ready blocks allowed!", player);
-			db.i("> false", player);
+			DEBUG.i("signs and ready blocks allowed!", player);
+			DEBUG.i("> false", player);
 			return false;
 		}
 
-		db.i("checkAndCommitCancel", player);
+		DEBUG.i("checkAndCommitCancel", player);
 		if (arena == null || player.hasPermission("pvparena.admin")) {
-			db.i("no arena or admin", player);
-			db.i("> false", player);
+			DEBUG.i("no arena or admin", player);
+			DEBUG.i("> false", player);
 			return false;
 		}
 
 		if (arena != null && !arena.isFightInProgress()) {
-			db.i("arena != null and fight in progress => cancel", player);
-			db.i("> true", player);
+			DEBUG.i("arena != null and fight in progress => cancel", player);
+			DEBUG.i("> true", player);
 			event.setCancelled(true);
 			return true;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-		if (ap.getStatus() != Status.FIGHT) {
-			db.i("not fighting => cancel", player);
-			db.i("> true", player);
+		if (aPlayer.getStatus() != Status.FIGHT) {
+			DEBUG.i("not fighting => cancel", player);
+			DEBUG.i("> true", player);
 			event.setCancelled(true);
 			return true;
 		}
 
-		db.i("> false", player);
+		DEBUG.i("> false", player);
 		return false;
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
+	public void onPlayerChat(final AsyncPlayerChatEvent event) {
 
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		ArenaTeam team = ap.getArenaTeam();
+		final ArenaTeam team = aPlayer.getArenaTeam();
 		if (team == null) {
 			return; // no fighting player => OUT
 		}
-		db.i("fighting player chatting!", player);
-		String sTeam = team.getName();
+		DEBUG.i("fighting player chatting!", player);
+		final String sTeam = team.getName();
 
 		if (!arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
 			if (!arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)) {
 				return; // no chat editing
 			}
 
-			if (ap.isPublicChatting()) {
+			if (aPlayer.isPublicChatting()) {
 				return; // player not privately chatting
 			}
 
@@ -142,7 +141,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (arena.getArenaConfig().getBoolean(CFG.CHAT_ENABLED)
-				&& !ap.isPublicChatting()) {
+				&& !aPlayer.isPublicChatting()) {
 			arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
 					event.getPlayer());
 			event.setCancelled(true);
@@ -155,32 +154,33 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
+		final Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null || player.isOp()) {
 			return; // no fighting player => OUT
 		}
 
-		List<String> list = PVPArena.instance.getConfig().getStringList(
+		final List<String> list = PVPArena.instance.getConfig().getStringList(
 				"whitelist");
 		list.add("pa");
 		list.add("pvparena");
-		db.i("checking command whitelist", player);
+		DEBUG.i("checking command whitelist", player);
 
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
-				db.i("command allowed: " + s, player);
+				DEBUG.i("command allowed: " + s, player);
 				return;
 			}
 		}
 
-		list = arena.getArenaConfig().getStringList(
-				CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>());
+		list.clear();
+		list.addAll(arena.getArenaConfig().getStringList(
+				CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>()));
 
 		if (list == null || list.size() < 1) {
-			list = new ArrayList<String>();
+			list.clear();
 			list.add("ungod");
 			arena.getArenaConfig().set(CFG.LISTS_CMDWHITELIST, list);
 			arena.getArenaConfig().save();
@@ -188,33 +188,33 @@ public class PlayerListener implements Listener {
 
 		list.add("pa");
 		list.add("pvparena");
-		db.i("checking command whitelist", player);
+		DEBUG.i("checking command whitelist", player);
 
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
-				db.i("command allowed: " + s, player);
+				DEBUG.i("command allowed: " + s, player);
 				return;
 			}
 		}
 
-		db.i("command blocked: " + event.getMessage(), player);
+		DEBUG.i("command blocked: " + event.getMessage(), player);
 		arena.msg(player,
 				Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
 		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		Player player = event.getPlayer();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		Arena arena = ap.getArena();
+	public void onPlayerDropItem(final PlayerDropItemEvent event) {
+		final Player player = event.getPlayer();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final Arena arena = aPlayer.getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
-		if (ap.getStatus().equals(Status.READY)
-				|| ap.getStatus().equals(Status.LOUNGE)) {
+		if (aPlayer.getStatus().equals(Status.READY)
+				|| aPlayer.getStatus().equals(Status.LOUNGE)) {
 			event.setCancelled(true);
-			arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
+			arena.msg(player, Language.parse(MSG.NOTICE_NO_DROP_ITEM));
 			return;
 		}
 		if (!BlockListener.isProtected(player.getLocation(), event,
@@ -222,16 +222,16 @@ public class PlayerListener implements Listener {
 			return; // no drop protection
 		}
 
-		db.i("onPlayerDropItem: fighting player", player);
-		arena.msg(player, (Language.parse(MSG.NOTICE_NO_DROP_ITEM)));
+		DEBUG.i("onPlayerDropItem: fighting player", player);
+		arena.msg(player, Language.parse(MSG.NOTICE_NO_DROP_ITEM));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerDeath(PlayerDeathEvent event) {
-		Player player = event.getEntity();
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+	public void onPlayerDeath(final PlayerDeathEvent event) {
+		final Player player = event.getEntity();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return;
 		}
@@ -248,8 +248,8 @@ public class PlayerListener implements Listener {
 	 * @param eEvent
 	 *            the event triggering the death
 	 */
-	public static void finallyKillPlayer(Arena arena, Player player,
-			Event eEvent) {
+	public static void finallyKillPlayer(final Arena arena, final Player player,
+			final Event eEvent) {
 		EntityDamageEvent cause = null;
 
 		if (eEvent instanceof EntityDeathEvent) {
@@ -258,11 +258,10 @@ public class PlayerListener implements Listener {
 			cause = ((EntityDamageEvent) eEvent);
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = ap.getArenaTeam();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 
-		String playerName = (team != null) ? team.colorizePlayer(player)
-				: player.getName();
+		final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
 		if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 			arena.broadcast(Language.parse(
 					MSG.FIGHT_KILLED_BY,
@@ -284,8 +283,8 @@ public class PlayerListener implements Listener {
 		arena.removePlayer(player,
 				arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
 
-		ap.setStatus(Status.LOST);
-		ap.addDeath();
+		aPlayer.setStatus(Status.LOST);
+		aPlayer.addDeath();
 
 		PlayerState.fullReset(arena, player);
 
@@ -295,16 +294,16 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		db.i("onPlayerInteract", player);
+	public void onPlayerInteract(final PlayerInteractEvent event) {
+		final Player player = event.getPlayer();
+		DEBUG.i("onPlayerInteract", player);
 
 		if (event.getAction().equals(Action.PHYSICAL)) {
-			db.i("returning: physical", player);
+			DEBUG.i("returning: physical", player);
 			return;
 		}
 
-		db.i("event pre cancelled: " + String.valueOf(event.isCancelled()),
+		DEBUG.i("event pre cancelled: " + event.isCancelled(),
 				player);
 
 		Arena arena = null;
@@ -318,113 +317,112 @@ public class PlayerListener implements Listener {
 		}
 
 		if (arena != null && ArenaModuleManager.onPlayerInteract(arena, event)) {
-			db.i("returning: #1", player);
+			DEBUG.i("returning: #1", player);
 			return;
 		}
 
 		if (PACheck.handleSetFlag(player, event.getClickedBlock())) {
-			db.i("returning: #2", player);
+			DEBUG.i("returning: #2", player);
 			event.setCancelled(true);
 			return;
 		}
 
 		if (ArenaRegionShape.checkRegionSetPosition(event, player)) {
-			db.i("returning: #3", player);
+			DEBUG.i("returning: #3", player);
 			return;
 		}
 
 		arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
-			db.i("returning: #4", player);
+			DEBUG.i("returning: #4", player);
 			ArenaManager.trySignJoin(event, player);
 			return;
 		}
 
 		PACheck.handleInteract(arena, player, event, event.getClickedBlock());
 
-		db.i("event post cancelled: " + String.valueOf(event.isCancelled()),
+		DEBUG.i("event post cancelled: " + event.isCancelled(),
 				player);
 
 		if (arena.isFightInProgress()
 				&& !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
-			db.i("exiting! fight in progress AND no INBATTLEJOIN arena!",
+			DEBUG.i("exiting! fight in progress AND no INBATTLEJOIN arena!",
 					player);
 			return;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = ap.getArenaTeam();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 
-		if (!ap.getStatus().equals(Status.FIGHT)) {
-			db.i("cancelling: no class", player);
+		if (!aPlayer.getStatus().equals(Status.FIGHT)) {
+			DEBUG.i("cancelling: no class", player);
 			// fighting player inside the lobby!
 			event.setCancelled(true);
 		}
 
 		if (team == null) {
-			db.i("returning: no team", player);
+			DEBUG.i("returning: no team", player);
 			return;
 		}
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-			Block block = event.getClickedBlock();
-			db.i("player team: " + team.getName(), player);
+			final Block block = event.getClickedBlock();
+			DEBUG.i("player team: " + team.getName(), player);
 			if (block.getState() instanceof Sign) {
-				db.i("sign click!", player);
-				Sign sign = (Sign) block.getState();
+				DEBUG.i("sign click!", player);
+				final Sign sign = (Sign) block.getState();
 
 				if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
 						.getClass(sign.getLine(0)) != null)) && (team != null)) {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
 				} else {
-					db.i("|" + sign.getLine(0) + "|", player);
-					db.i(String.valueOf(arena.getClass(sign.getLine(0))),
+					DEBUG.i("|" + sign.getLine(0) + "|", player);
+					DEBUG.i(String.valueOf(arena.getClass(sign.getLine(0))),
 							player);
-					db.i(String.valueOf(team), player);
+					DEBUG.i(String.valueOf(team), player);
 				}
 				return;
 			}
 
-			db.i("block click!", player);
+			DEBUG.i("block click!", player);
 
-			Material mMat = arena.getReadyBlock();
-			db.i("clicked " + block.getType().name() + ", is it " + mMat.name()
+			final Material mMat = arena.getReadyBlock();
+			DEBUG.i("clicked " + block.getType().name() + ", is it " + mMat.name()
 					+ "?", player);
 			if (block.getTypeId() == mMat.getId()) {
-				db.i("clicked ready block!", player);
-				if (ap.getClass().equals("")) {
+				DEBUG.i("clicked ready block!", player);
+				if (aPlayer.getClass().equals("")) {
 					return; // not chosen class => OUT
 				}
 				if (arena.startRunner != null) {
 					return; // counting down => OUT
 				}
-				if (ap.getStatus() != Status.LOUNGE) {
+				if (aPlayer.getStatus() != Status.LOUNGE) {
 					return;
 				}
 
-				db.i("===============", player);
-				db.i("===== class: " + ap.getClass() + " =====", player);
-				db.i("===============", player);
+				DEBUG.i("===============", player);
+				DEBUG.i("===== class: " + aPlayer.getClass() + " =====", player);
+				DEBUG.i("===============", player);
 
 				if (!arena.isFightInProgress()) {
-					if (!ap.getStatus().equals(Status.READY)) {
+					if (!aPlayer.getStatus().equals(Status.READY)) {
 						arena.msg(player, Language.parse(MSG.READY_DONE));
-						arena.broadcast(Language.parse(MSG.PLAYER_READY, ap
-								.getArenaTeam().colorizePlayer(ap.get())));
+						arena.broadcast(Language.parse(MSG.PLAYER_READY, aPlayer
+								.getArenaTeam().colorizePlayer(aPlayer.get())));
 					}
-					ap.setStatus(Status.READY);
-					if (ap.getArenaTeam().isEveryoneReady()) {
-						arena.broadcast(Language.parse(MSG.TEAM_READY, ap
+					aPlayer.setStatus(Status.READY);
+					if (aPlayer.getArenaTeam().isEveryoneReady()) {
+						arena.broadcast(Language.parse(MSG.TEAM_READY, aPlayer
 								.getArenaTeam().getColoredName()));
 					}
 
-					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)) {
-						if (!TeamManager.checkEven(arena)) {
+					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)
+							&& !TeamManager.checkEven(arena)) {
 							arena.msg(player,
 									Language.parse(MSG.NOTICE_WAITING_EQUAL));
-							return; // even teams desired, not done => announce
-						}
+						return; // even teams desired, not done => announce
 					}
 
 					if (!ArenaRegionShape.checkRegions(arena)) {
@@ -433,7 +431,7 @@ public class PlayerListener implements Listener {
 						return;
 					}
 
-					String error = arena.ready();
+					final String error = arena.ready();
 
 					if (error == null) {
 						arena.start();
@@ -459,37 +457,37 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerJoin(final PlayerJoinEvent event) {
+		final Player player = event.getPlayer();
 
 		if (player.isDead()) {
 			return;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-		ap.setArena(null);
+		aPlayer.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players
 		// and makes sure every player is an arenaplayer ^^
 
-		ap.readDump();
-		Arena a = ap.getArena();
+		aPlayer.readDump();
+		final Arena arena = aPlayer.getArena();
 
-		if (a != null) {
-			a.playerLeave(player, CFG.TP_EXIT, true);
+		if (arena != null) {
+			arena.playerLeave(player, CFG.TP_EXIT, true);
 		}
 
 		if (!player.isOp()) {
 			return; // no OP => OUT
 		}
-		db.i("OP joins the game", player);
+		DEBUG.i("OP joins the game", player);
 		Update.message(player);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerKicked(PlayerKickEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerKicked(final PlayerKickEvent event) {
+		final Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
@@ -498,25 +496,25 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		Player player = event.getPlayer();
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ap.setArena(null);
+	public void onPlayerRespawn(final PlayerRespawnEvent event) {
+		final Player player = event.getPlayer();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		aPlayer.setArena(null);
 		// instantiate and/or reset a player. This fixes issues with leaving
 		// players and makes sure every player is an arenaplayer ^^
 
-		ap.readDump();
-		Arena a = ap.getArena();
-		if (a != null) {
-			a.playerLeave(player, CFG.TP_EXIT, true);
+		aPlayer.readDump();
+		final Arena arena = aPlayer.getArena();
+		if (arena != null) {
+			arena.playerLeave(player, CFG.TP_EXIT, true);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
+		final Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null
 				|| !BlockListener.isProtected(player.getLocation(), event,
 						RegionProtection.PICKUP)) {
@@ -526,9 +524,9 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		Player player = event.getPlayer();
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+	public void onPlayerQuit(final PlayerQuitEvent event) {
+		final Player player = event.getPlayer();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player => OUT
 		}
@@ -536,8 +534,8 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerTeleport(final PlayerTeleportEvent event) {
+		final Player player = event.getPlayer();
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 
 		if (arena == null) {
@@ -548,18 +546,18 @@ public class PlayerListener implements Listener {
 			}
 		}
 
-		db.i("onPlayerTeleport: fighting player '"
+		DEBUG.i("onPlayerTeleport: fighting player '"
 				+ event.getPlayer().getName() + "' (uncancel)", player);
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
-		db.i("aimed location: " + event.getTo().toString(), player);
+		DEBUG.i("aimed location: " + event.getTo().toString(), player);
 
 		if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
 				|| player.hasPermission("pvparena.telepass")) {
 			return; // if allowed => OUT
 		}
-		db.i("telepass: no!!", player);
+		DEBUG.i("telepass: no!!", player);
 
 		Set<ArenaRegionShape> regions = arena
 				.getRegionsByType(RegionType.BATTLE);
@@ -568,30 +566,30 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		boolean from = false;
-		boolean to = false;
+		boolean bFrom = false;
+		boolean bTo = false;
 
 		for (ArenaRegionShape r : regions) {
-			from = from ? true : r
+			bFrom = bFrom ? true : r
 					.contains(new PABlockLocation(event.getFrom()));
-			to = to ? true : r.contains(new PABlockLocation(event.getTo()));
+			bTo = bTo ? true : r.contains(new PABlockLocation(event.getTo()));
 		}
 
-		if (from && to) {
+		if (bFrom && bTo) {
 			// teleport inside the arena, allow!
 			return;
 		}
 
-		db.i("onPlayerTeleport: no tele pass, cancelling!", player);
+		DEBUG.i("onPlayerTeleport: no tele pass, cancelling!", player);
 		event.setCancelled(true); // cancel and tell
 		arena.msg(player, Language.parse(MSG.NOTICE_NO_TELEPORT));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerVelocity(PlayerVelocityEvent event) {
-		Player player = event.getPlayer();
+	public void onPlayerVelocity(final PlayerVelocityEvent event) {
+		final Player player = event.getPlayer();
 
-		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null) {
 			return; // no fighting player or no powerups => OUT
 		}

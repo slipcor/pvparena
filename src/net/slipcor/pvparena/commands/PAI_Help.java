@@ -17,14 +17,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_Help extends PA__Command {
+public class PAI_Help extends AbstractGlobalCommand {
 
 	public PAI_Help() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -98,7 +98,7 @@ public class PAI_Help extends PA__Command {
 				Arena.pmsg(sender, "/pa help stats");
 				Arena.pmsg(sender, "/pa help version");
 			} else {
-				PAA__Command acmd = PAA__Command.getByName(args[0]);
+				final AbstractArenaCommand acmd = AbstractArenaCommand.getByName(args[0]);
 				if (acmd != null) {
 					acmd.displayHelp(sender);
 					return;
@@ -108,7 +108,7 @@ public class PAI_Help extends PA__Command {
 					args[0] = "list";
 				}
 				
-				PA__Command cmd = PA__Command.getByName(args[0]);
+				final AbstractGlobalCommand cmd = AbstractGlobalCommand.getByName(args[0]);
 				if (cmd != null) {
 					cmd.displayHelp(sender);
 					return;
@@ -130,7 +130,7 @@ public class PAI_Help extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.HELP));
 	}
 }

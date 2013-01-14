@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -26,8 +27,8 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAA_Spawn extends PAA__Command {
-	static HashSet<String> spawns = new HashSet<String>();
+public class PAA_Spawn extends AbstractArenaCommand {
+	private static Set<String> spawns = new HashSet<String>();
 	static {
 		spawns.add("exit");
 	}
@@ -37,7 +38,7 @@ public class PAA_Spawn extends PAA__Command {
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -54,23 +55,23 @@ public class PAA_Spawn extends PAA__Command {
 		if (args.length < 2) {
 			// usage: /pa {arenaname} spawn [spawnname] | set a spawn
 
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 			
 			if (spawns.contains(args[0])) {
-				commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
+				commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
 				return;
 			}
 			
 			for (ArenaModule mod : arena.getMods()) {
 				if (mod.hasSpawn(args[0])) {
-					commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
+					commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
 					return;
 				}
 			}
 			
 			for (ArenaGoal mod : arena.getGoals()) {
 				if (mod.hasSpawn(args[0])) {
-					commitSet(arena, sender, new PALocation(ap.get().getLocation()), args[0]);
+					commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
 					return;
 				}
 			}
@@ -79,7 +80,7 @@ public class PAA_Spawn extends PAA__Command {
 			
 		} else {
 			// usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
-			PALocation loc = SpawnManager.getCoords(arena, args[0]);
+			final PALocation loc = SpawnManager.getCoords(arena, args[0]);
 			if (loc == null) {
 				arena.msg(sender, Language.parse(MSG.SPAWN_NOTSET, args[0]));
 			} else {
@@ -89,10 +90,9 @@ public class PAA_Spawn extends PAA__Command {
 		}
 	}
 	
-	void commitSet(Arena arena, CommandSender sender, PALocation loc, String name) {
+	private void commitSet(final Arena arena, final CommandSender sender, final PALocation loc, final String name) {
 		arena.spawnSet(name.toLowerCase(), loc);
 		arena.msg(sender, Language.parse(MSG.SPAWN_SET, name));
-		return;
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class PAA_Spawn extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SPAWN));
 	}
 }

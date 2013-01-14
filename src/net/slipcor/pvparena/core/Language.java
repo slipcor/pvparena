@@ -21,7 +21,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @version v0.10.0
  */
 
-public class Language {
+public final class Language {
+	private Language() {
+	}
 
 	public static enum MSG {
 		ANNOUNCE_ARENA_STARTING("nulang.announce.arena", "Arena is starting! Type /pa %1% to join!"),
@@ -498,7 +500,7 @@ public class Language {
 		private String node;
 		private String value;
 
-		public static MSG getByNode(String node) {
+		public static MSG getByNode(final String node) {
 			for (MSG m : MSG.values()) {
 				if (m.getNode().equals(node)) {
 					return m;
@@ -507,7 +509,7 @@ public class Language {
 			return null;
 		}
 
-		private MSG(String node, String value) {
+		private MSG(final String node, final String value) {
 			this.node = node;
 			this.value = value;
 		}
@@ -516,12 +518,12 @@ public class Language {
 			return node;
 		}
 
-		public void setNode(String s) {
-			node = s;
+		public void setNode(final String value) {
+			node = value;
 		}
 
-		public void setValue(String s) {
-			value = s;
+		public void setValue(final String sValue) {
+			value = sValue;
 		}
 
 		@Override
@@ -529,7 +531,7 @@ public class Language {
 			return value;
 		}
 
-		public static MSG getByName(String string) {
+		public static MSG getByName(final String string) {
 			for (MSG m : MSG.values()) {
 				if (m.name().equals(string)) {
 					return m;
@@ -542,10 +544,10 @@ public class Language {
 	/**
 	 * create a language manager instance
 	 */
-	public static void init(String s) {
+	public static void init(final String langString) {
 		PVPArena.instance.getDataFolder().mkdir();
-		File configFile = new File(PVPArena.instance.getDataFolder().getPath()
-				+ "/lang_" + s + ".yml");
+		final File configFile = new File(PVPArena.instance.getDataFolder().getPath()
+				+ "/lang_" + langString + ".yml");
 		if (!(configFile.exists())) {
 			try {
 				configFile.createNewFile();
@@ -554,7 +556,7 @@ public class Language {
 						"[PVP Arena] Error when creating language file.");
 			}
         }
-		YamlConfiguration config = new YamlConfiguration();
+		final YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);
 		} catch (Exception e) {
@@ -579,9 +581,9 @@ public class Language {
 	 * @param s
 	 *            the node name
 	 */
-	public static void log_info(MSG m) {
-		String var = m.toString();
-		Bukkit.getLogger().info("[PVP Arena] " + var);
+	public static void logInfo(final MSG message) {
+		final String var = message.toString();
+		PVPArena.instance.getLogger().info(var);
 		// log map value
 	}
 
@@ -593,9 +595,9 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public static void log_info(MSG m, String arg) {
-		String var = m.toString();
-		Bukkit.getLogger().info("[PVP Arena] " + var.replace("%1%", arg));
+	public static void logInfo(final MSG message, final String arg) {
+		final String var = message.toString();
+		PVPArena.instance.getLogger().info(var.replace("%1%", arg));
 		// log replaced map value
 	}
 
@@ -607,10 +609,9 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public static void log_error(MSG m, String arg) {
-		String var = m.toString();
-		Bukkit.getLogger().severe("[PVP Arena] " + var.replace("%1%", arg));
-		// log replaced map value
+	public static void logError(final MSG message, final String arg) {
+		final String var = message.toString();
+		PVPArena.instance.getLogger().severe(var.replace("%1%", arg));
 	}
 
 	/**
@@ -621,23 +622,22 @@ public class Language {
 	 * @param arg
 	 *            a string to replace
 	 */
-	public static void log_warning(MSG m, String arg) {
-		String var = m.toString();
-		Bukkit.getLogger().warning("[PVP Arena] " + var.replace("%1%", arg));
-		// log replaced map value
+	public static void logWarn(final MSG message, final String arg) {
+		final String var = message.toString();
+		PVPArena.instance.getLogger().warning(var.replace("%1%", arg));
 	}
 
-	public static String parse(Arena arena, CFG node) {
+	public static String parse(final Arena arena, final CFG node) {
 		return StringParser.colorize(arena.getArenaConfig().getString(node));
 	}
 
-	public static String parse(Arena arena, CFG node, String arg1) {
+	public static String parse(final Arena arena, final CFG node, final String arg1) {
 		return StringParser.colorize(arena.getArenaConfig().getString(node)
 				.replace("%1%", arg1));
 	}
 
-	public static String parse(Arena arena, CFG node, String arg1,
-			String arg2) {
+	public static String parse(final Arena arena, final CFG node, final String arg1,
+			final String arg2) {
 		return StringParser.colorize(arena.getArenaConfig().getString(node)
 				.replace("%1%", arg1).replace("%2%", arg2));
 	}
@@ -649,8 +649,8 @@ public class Language {
 	 *            the node name
 	 * @return the node string
 	 */
-	public static String parse(MSG m) {
-		return StringParser.colorize(m.toString());
+	public static String parse(final MSG message) {
+		return StringParser.colorize(message.toString());
 	}
 
 	/**
@@ -662,8 +662,8 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public static String parse(MSG m, String arg) {
-		String var = m.toString();
+	public static String parse(final MSG message, final String arg) {
+		final String var = message.toString();
 		return StringParser.colorize(var.replace("%1%", arg));
 	}
 
@@ -678,8 +678,8 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public static String parse(MSG m, String arg1, String arg2) {
-		String var = m.toString().replace("%2%", arg2);
+	public static String parse(final MSG message, final String arg1, final String arg2) {
+		final String var = message.toString().replace("%2%", arg2);
 		return StringParser.colorize(var.replace("%1%", arg1));
 	}
 
@@ -696,17 +696,14 @@ public class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public static String parse(MSG m, String arg1, String arg2, String arg3) {
-		String var = m.toString().replace("%2%", arg2);
-		var = var.replace("%3%", arg3);
+	public static String parse(final MSG message, final String arg1, final String arg2, final String arg3) {
+		final String var = message.toString().replace("%2%", arg2).replace("%3%", arg3);
 		return StringParser.colorize(var.replace("%1%", arg1));
 	}
 
-	public static String parse(MSG m, String arg1, String arg2, String arg3,
-			String arg4) {
-		String var = m.toString().replace("%2%", arg2);
-		var = var.replace("%3%", arg3);
-		var = var.replace("%4%", arg4);
+	public static String parse(final MSG message, final String arg1, final String arg2, final String arg3,
+			final String arg4) {
+		final String var = message.toString().replace("%2%", arg2).replace("%3%", arg3).replace("%4%", arg4);
 		return StringParser.colorize(var.replace("%1%", arg1));
 	}
 }

@@ -31,14 +31,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @version v0.10.0
  */
 
-public class PAA_Install extends PA__Command {
+public class PAA_Install extends AbstractGlobalCommand {
 
 	public PAA_Install() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -50,7 +50,7 @@ public class PAA_Install extends PA__Command {
 		// pa install
 		// pa install ctf
 
-		YamlConfiguration config = new YamlConfiguration();
+		final YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(PVPArena.instance.getDataFolder().getPath()
 					+ "/install.yml");
@@ -104,19 +104,19 @@ public class PAA_Install extends PA__Command {
 		}
 	}
 
-	private void listVersions(CommandSender sender, YamlConfiguration cfg,
-			String s) {
+	private void listVersions(final CommandSender sender, final YamlConfiguration cfg,
+			final String sub) {
 		Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
 		Arena.pmsg(sender, "[§7uninstalled§r | §einstalled§r]");
 		Arena.pmsg(sender, "[§coutdated§r | §alatest version§r]");
-		if (s == null || s.toLowerCase().equals("goals")) {
+		if (sub == null || sub.equalsIgnoreCase("goals")) {
 			Arena.pmsg(sender, "§c--- Arena Goals ----> /goals");
-			Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
+			final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
 			for (String key : entries) {
-				String value = cfg.getString("goals." + key);
-				ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
-				boolean installed = (goal != null);
+				final String value = cfg.getString("goals." + key);
+				final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
+				final boolean installed = (goal != null);
 				String version = null;
 				if (installed) {
 					version = goal.version();
@@ -128,14 +128,14 @@ public class PAA_Install extends PA__Command {
 								: "") + value);
 			}
 		}
-		if (s == null || s.toLowerCase().equals("mods")) {
+		if (sub == null || sub.equalsIgnoreCase("mods")) {
 			Arena.pmsg(sender, "§a--- Arena Mods ----> /mods");
-			Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
+			final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
 					false);
 			for (String key : entries) {
-				String value = cfg.getString("mods." + key);
-				ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
-				boolean installed = (mod != null);
+				final String value = cfg.getString("mods." + key);
+				final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
+				final boolean installed = (mod != null);
 				String version = null;
 				if (installed) {
 					version = mod.version();
@@ -150,9 +150,9 @@ public class PAA_Install extends PA__Command {
 		}
 	}
 
-	private boolean download(String file) {
+	private boolean download(final String file) {
 
-		File source = new File(PVPArena.instance.getDataFolder().getPath()
+		final File source = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/files/" + file);
 
 		if (source == null || !source.exists()) {
@@ -176,34 +176,27 @@ public class PAA_Install extends PA__Command {
 			return false;
 		}
 		try {
-			File destination = new File(PVPArena.instance.getDataFolder()
+			final File destination = new File(PVPArena.instance.getDataFolder()
 					.getPath() + folder + "/" + file);
 			try {
 				disableModule(file);
 			} catch (Exception e2) {
+				PVPArena.instance.getLogger().warning("Could not disable module " + file);
 			}
 
-			FileInputStream stream = new FileInputStream(source);
+			final FileInputStream stream = new FileInputStream(source);
 
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buffer = new byte[8192];
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final byte[] buffer = new byte[8192];
 			int bytesRead;
 			while ((bytesRead = stream.read(buffer)) > 0) {
 				baos.write(buffer, 0, bytesRead);
 			}
 
-			FileOutputStream fos = new FileOutputStream(destination);
+			final FileOutputStream fos = new FileOutputStream(destination);
 			fos.write(baos.toByteArray());
 			fos.close();
 
-			/*
-			 * FileReader in = new FileReader(source); FileWriter out = new
-			 * FileWriter(destination); int c;
-			 * 
-			 * while ((c = in.read()) != -1) out.write(c);
-			 * 
-			 * in.close(); out.close();
-			 */
 			PVPArena.instance.getLogger().info("Installed module " + file);
 			return true;
 		} catch (Exception e) {
@@ -212,15 +205,15 @@ public class PAA_Install extends PA__Command {
 		return false;
 	}
 
-	private void disableModule(String file) {
+	private void disableModule(final String file) {
 		if (file.startsWith("pa_g")) {
-			ArenaGoal g = PVPArena.instance.getAgm().getGoalByName(
+			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
 					file.replace("pa_g_", "").replace(".jar", ""));
-			g.unload();
+			goal.unload();
 		} else if (file.startsWith("pa_m")) {
-			ArenaModule g = PVPArena.instance.getAmm().getModByName(
+			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
 					file.replace("pa_m_", "").replace(".jar", ""));
-			g.unload();
+			mod.unload();
 		}
 	}
 
@@ -230,7 +223,7 @@ public class PAA_Install extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.INSTALL));
 	}
 }

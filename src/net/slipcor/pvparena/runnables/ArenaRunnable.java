@@ -1,7 +1,7 @@
 package net.slipcor.pvparena.runnables;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -25,29 +25,29 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class ArenaRunnable extends BukkitRunnable {
 
-	protected static HashMap<Integer, String> messages = new HashMap<Integer, String>();
+	protected final static Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
 	static {
-		String s = Language.parse(MSG.TIME_SECONDS);
-		String m = Language.parse(MSG.TIME_MINUTES);
-		messages.put(1, "1..");
-		messages.put(2, "2..");
-		messages.put(3, "3..");
-		messages.put(4, "4..");
-		messages.put(5, "5..");
-		messages.put(10, "10 " + s);
-		messages.put(20, "20 " + s);
-		messages.put(30, "30 " + s);
-		messages.put(60, "60 " + s);
-		messages.put(120, "2 " + m);
-		messages.put(180, "3 " + m);
-		messages.put(240, "4 " + m);
-		messages.put(300, "5 " + m);
-		messages.put(600, "10 " + m);
-		messages.put(1200, "20 " + m);
-		messages.put(1800, "30 " + m);
-		messages.put(2400, "40 " + m);
-		messages.put(3000, "50 " + m);
-		messages.put(3600, "60 " + m);
+		final String seconds = Language.parse(MSG.TIME_SECONDS);
+		final String minutes = Language.parse(MSG.TIME_MINUTES);
+		MESSAGES.put(1, "1..");
+		MESSAGES.put(2, "2..");
+		MESSAGES.put(3, "3..");
+		MESSAGES.put(4, "4..");
+		MESSAGES.put(5, "5..");
+		MESSAGES.put(10, "10 " + seconds);
+		MESSAGES.put(20, "20 " + seconds);
+		MESSAGES.put(30, "30 " + seconds);
+		MESSAGES.put(60, "60 " + seconds);
+		MESSAGES.put(120, "2 " + minutes);
+		MESSAGES.put(180, "3 " + minutes);
+		MESSAGES.put(240, "4 " + minutes);
+		MESSAGES.put(300, "5 " + minutes);
+		MESSAGES.put(600, "10 " + minutes);
+		MESSAGES.put(1200, "20 " + minutes);
+		MESSAGES.put(1800, "30 " + minutes);
+		MESSAGES.put(2400, "40 " + minutes);
+		MESSAGES.put(3000, "50 " + minutes);
+		MESSAGES.put(3600, "60 " + minutes);
 	}
 	protected String message;
 	protected Integer seconds;
@@ -57,15 +57,16 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 	
 	/**
 	 * Spam the message of the remaining time to... someone, probably:
-	 * @param s the Language.parse("**") String to wrap
+	 * @param message the Language.parse("**") String to wrap
 	 * @param arena the arena to spam to (!global) or to exclude (global)
 	 * @param player the player to spam to (!global && !arena) or to exclude (global || arena)
-	 * @param i the seconds remaining
+	 * @param seconds the seconds remaining
 	 * @param global the trigger to generally spam to everyone or to specific arenas/players
 	 */
-	public ArenaRunnable(String s, Integer i, Player player, Arena arena, Boolean global) {
-		this.message = s;
-		this.seconds = i;
+	public ArenaRunnable(final String message, final Integer seconds, final Player player, final Arena arena, final Boolean global) {
+		super();
+		this.message = message;
+		this.seconds = seconds;
 		this.sPlayer = player == null ? null : player.getName();
 		this.arena = arena;
 		this.global = global;
@@ -78,43 +79,38 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 	}
 	
 	public void spam() {
-		if ((message == null) || (messages.get(seconds) == null)) {
+		if ((message == null) || (MESSAGES.get(seconds) == null)) {
 			return;
 		}
-		MSG msg = MSG.getByNode(this.message);
+		final MSG msg = MSG.getByNode(this.message);
 		if (msg == null) {
 			PVPArena.instance.getLogger().warning("MSG not found: " + this.message);
 			return;
 		}
-		String message = seconds > 5 ? Language.parse(msg, messages.get(seconds)) : messages.get(seconds);
+		final String message = seconds > 5 ? Language.parse(msg, MESSAGES.get(seconds)) : MESSAGES.get(seconds);
 		if (global) {
-			Player[] players = Bukkit.getOnlinePlayers();
+			final Player[] players = Bukkit.getOnlinePlayers();
 			
 			for (Player p : players) {
 				try {
-					if (arena != null) {
-						if (arena.hasPlayer(p)) {
-							continue;
-						}
+					if (arena != null && arena.hasPlayer(p)) {
+						continue;
 					}
-					if (sPlayer != null) {
-						if (sPlayer.equals(p.getName())) {
-							continue;
-						}
+					if (p.getName().equals(sPlayer)) {
+						continue;
 					}
 					Arena.pmsg(p, message);
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 			}
 			
 			return;
 		}
 		if (arena != null) {
-			Set<ArenaPlayer> players = arena.getFighters();
+			final Set<ArenaPlayer> players = arena.getFighters();
 			for (ArenaPlayer ap : players) {
-				if (sPlayer != null) {
-					if (ap.getName().equals(sPlayer)) {
-						continue;
-					}
+				if (ap.getName().equals(sPlayer)) {
+					continue;
 				}
 				if (ap.get() != null) {
 					arena.msg(ap.get(), message);

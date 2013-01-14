@@ -16,24 +16,24 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class StartRunnable extends ArenaRunnable {
-	private Debug db = new Debug(43);
+	private final static Debug DEBUG = new Debug(43);
 
 	/**
 	 * create a timed arena start runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
 	 */
-	public StartRunnable(Arena a, int i) {
-		super(MSG.ARENA_STARTING_IN.getNode(), i, null, a, false);
-		db.i("StartRunnable constructor");
-		a.startRunner = this;
+	public StartRunnable(final Arena arena, final int seconds) {
+		super(MSG.ARENA_STARTING_IN.getNode(), seconds, null, arena, false);
+		DEBUG.i("StartRunnable constructor");
+		arena.startRunner = this;
 	}
 
 	@Override
 	protected void commit() {
 		arena.startRunner = null;
-		db.i("StartRunnable commiting");
+		DEBUG.i("StartRunnable commiting");
 		arena.start();
 	}
 	

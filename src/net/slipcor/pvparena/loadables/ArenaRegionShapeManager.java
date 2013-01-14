@@ -29,7 +29,7 @@ import net.slipcor.pvparena.regions.SphericRegion;
 public class ArenaRegionShapeManager {
 	private List<ArenaRegionShape> regions;
 	private final NCBLoader<ArenaRegionShape> loader;
-	Debug db = new Debug(35);
+	private static final Debug DEBUG = new Debug(35);
 
 	/**
 	 * create an arena region manager instance
@@ -37,8 +37,8 @@ public class ArenaRegionShapeManager {
 	 * @param plugin
 	 *            the plugin instance
 	 */
-	public ArenaRegionShapeManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/regionshapes");
+	public ArenaRegionShapeManager(final PVPArena plugin) {
+		final File path = new File(plugin.getDataFolder().toString() + "/regionshapes");
 		if (!path.exists()) {
 			path.mkdir();
 		}
@@ -47,7 +47,7 @@ public class ArenaRegionShapeManager {
 		//regions.add(new CuboidRegion());
 
 		for (ArenaRegionShape mod : regions) {
-			db.i("module ArenaRegion loaded: "
+			DEBUG.i("module ArenaRegion loaded: "
 					+ mod.getName() + " (version " + mod.getVersion() +")");
 		}
 	}
@@ -59,7 +59,7 @@ public class ArenaRegionShapeManager {
 
 		for (ArenaRegionShape mod : regions) {
 			mod.onThisLoad();
-			db.i("module ArenaRegion loaded: "
+			DEBUG.i("module ArenaRegion loaded: "
 					+ mod.getName() + " (version " + mod.getVersion() +")");
 		}
 	}
@@ -71,7 +71,7 @@ public class ArenaRegionShapeManager {
 	 *            the module name to find
 	 * @return the module if found, null otherwise
 	 */
-	public ArenaRegionShape getModule(String mName) {
+	public ArenaRegionShape getModule(final String mName) {
 		for (ArenaRegionShape region : regions) {
 			if (region.getName().equalsIgnoreCase(mName)) {
 				return region;
@@ -80,7 +80,7 @@ public class ArenaRegionShapeManager {
 		return null;
 	}
 
-	public static RegionShape getShapeByName(String string) {
+	public static RegionShape getShapeByName(final String string) {
 		for (RegionShape shape: RegionShape.values()) {
 			if (shape.name().startsWith(string.toUpperCase().substring(0,2))) {
 				return shape;
@@ -93,15 +93,15 @@ public class ArenaRegionShapeManager {
 		return regions;
 	}
 
-	public ArenaRegionShape newRegion(String name, Arena arena, Location pos1,
-			Location pos2, RegionShape shape) {
+	public ArenaRegionShape newRegion(final String name, final Arena arena, final Location pos1,
+			final Location pos2, final RegionShape shape) {
 		for (ArenaRegionShape region : regions) {
 			if (region.getShape().equals(shape)) {
-				PABlockLocation[] locs = new PABlockLocation[2];
+				final PABlockLocation[] locs = new PABlockLocation[2];
 				locs[0] = new PABlockLocation(pos1);
 				locs[1] = new PABlockLocation(pos2);
 				
-				ArenaRegionShape result = ArenaRegionShape.create(arena, name, shape, locs);
+				final ArenaRegionShape result = ArenaRegionShape.create(arena, name, shape, locs);
 				
 				return result;
 			}
@@ -109,10 +109,10 @@ public class ArenaRegionShapeManager {
 		return null;
 	}
 
-	public ArenaRegionShape newRegion(String name, RegionShape shape) {
+	public ArenaRegionShape newRegion(final String name, final RegionShape shape) {
 		for (ArenaRegionShape region : regions) {
 			if (region.getShape().equals(shape)) {
-				ArenaRegionShape result = (ArenaRegionShape) region.clone();
+				final ArenaRegionShape result = (ArenaRegionShape) region.clone();
 				result.setName(name);
 				result.setShape(shape);
 				return result;

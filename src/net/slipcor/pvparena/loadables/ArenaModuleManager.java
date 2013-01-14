@@ -1,10 +1,8 @@
 package net.slipcor.pvparena.loadables;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -21,8 +19,6 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
-
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -48,7 +44,7 @@ import net.slipcor.pvparena.ncloader.NCBLoader;
 public class ArenaModuleManager {
 	private List<ArenaModule> mods;
 	private final NCBLoader<ArenaModule> loader;
-	protected Debug db = new Debug(33);
+	protected final static Debug DEBUG = new Debug(33);
 
 	/**
 	 * create an arena module manager instance
@@ -56,8 +52,8 @@ public class ArenaModuleManager {
 	 * @param plugin
 	 *            the plugin instance
 	 */
-	public ArenaModuleManager(PVPArena plugin) {
-		File path = new File(plugin.getDataFolder().toString() + "/mods");
+	public ArenaModuleManager(final PVPArena plugin) {
+		final File path = new File(plugin.getDataFolder().toString() + "/mods");
 		if (!path.exists()) {
 			path.mkdir();
 		}
@@ -75,19 +71,19 @@ public class ArenaModuleManager {
 
 		for (ArenaModule mod : mods) {
 			mod.onThisLoad();
-			db.i("module ArenaModule loaded: "
+			DEBUG.i("module ArenaModule loaded: "
 					+ mod.getName() + " (version " + mod.version() +")");
 		}
 	}
 	
-	public static void announce(Arena arena, String message, String type) {
+	public static void announce(final Arena arena, final String message, final String type) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.announce(message, type);
 		}
 	}
 	
-	public static boolean cannotSelectClass(Arena arena, Player player,
-			String className) {
+	public static boolean cannotSelectClass(final Arena arena, final Player player,
+			final String className) {
 		for (ArenaModule mod : arena.getMods()) {
 			if (mod.cannotSelectClass(player, className)) {
 				return true;
@@ -96,7 +92,7 @@ public class ArenaModuleManager {
 		return false;
 	}
 	
-	public static String checkForMissingSpawns(Arena arena, Set<String> list) {
+	public static String checkForMissingSpawns(final Arena arena, final Set<String> list) {
 		String error = null;
 		for (ArenaModule mod : arena.getMods()) {
 			error = mod.checkForMissingSpawns(list);
@@ -107,13 +103,13 @@ public class ArenaModuleManager {
 		return null;
 	}
 	
-	public static void choosePlayerTeam(Arena arena, Player player, String coloredTeam) {
+	public static void choosePlayerTeam(final Arena arena, final Player player, final String coloredTeam) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.choosePlayerTeam(player, coloredTeam);
 		}
 	}
 	
-	public static boolean commitEnd(Arena arena, ArenaTeam aTeam) {
+	public static boolean commitEnd(final Arena arena, final ArenaTeam aTeam) {
 		for (ArenaModule mod : arena.getMods()) {
 			if (mod.commitEnd(aTeam)) {
 				return true;
@@ -122,80 +118,80 @@ public class ArenaModuleManager {
 		return false;
 	}
 	
-	public static void configParse(Arena arena, YamlConfiguration config) {
+	public static void configParse(final Arena arena, final YamlConfiguration config) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.configParse(config);
 		}
 	}
 	
-	public static void giveRewards(Arena arena, Player player) {
+	public static void giveRewards(final Arena arena, final Player player) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.giveRewards(player);
 		}
 	}
 	
-	public static void initiate(Arena arena, Player sender) {
+	public static void initiate(final Arena arena, final Player sender) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.initiate(sender);
 		}
 	}
 	
-	public static void lateJoin(Arena arena, Player player) {
+	public static void lateJoin(final Arena arena, final Player player) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.lateJoin(player);
 		}
 	}
 	
-	public static void onBlockBreak(Arena arena, Block block) {
+	public static void onBlockBreak(final Arena arena, final Block block) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onBlockBreak( block);
 		}
 	}
 	
-	public static void onBlockChange(Arena arena, Block block, BlockState state) {
+	public static void onBlockChange(final Arena arena, final Block block, final BlockState state) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onBlockChange(block, state);
 		}
 	}
 	
-	public static void onBlockPiston(Arena arena, Block block) {
+	public static void onBlockPiston(final Arena arena, final Block block) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onBlockPiston(block);
 		}
 	}
 	
-	public static void onBlockPlace(Arena arena, Block block, Material mat) {
+	public static void onBlockPlace(final Arena arena, final Block block, final Material mat) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onBlockPlace(block, mat);
 		}
 	}
 	
-	public static void onEntityDamageByEntity(Arena arena, Player attacker,
-			Player defender, EntityDamageByEntityEvent event) {
+	public static void onEntityDamageByEntity(final Arena arena, final Player attacker,
+			final Player defender, final EntityDamageByEntityEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onEntityDamageByEntity(attacker, defender, event);
 		}
 	}
 	
-	public static void onEntityExplode(Arena arena, EntityExplodeEvent event) {
+	public static void onEntityExplode(final Arena arena, final EntityExplodeEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onEntityExplode(event);
 		}
 	}
 	
-	public static void onEntityRegainHealth(Arena arena, EntityRegainHealthEvent event) {
+	public static void onEntityRegainHealth(final Arena arena, final EntityRegainHealthEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onEntityRegainHealth(event);
 		}
 	}
 	
-	public static void onPaintingBreak(Arena arena, Hanging painting, EntityType type) {
+	public static void onPaintingBreak(final Arena arena, final Hanging painting, final EntityType type) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onPaintingBreak(painting, type);
 		}
 	}
 	
-	public static boolean onPlayerInteract(Arena arena, PlayerInteractEvent event) {
+	public static boolean onPlayerInteract(final Arena arena, final PlayerInteractEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			if (mod.onPlayerInteract(event)) {
 				return true;
@@ -204,39 +200,39 @@ public class ArenaModuleManager {
 		return false;
 	}
 	
-	public static void onPlayerPickupItem(Arena arena, PlayerPickupItemEvent event) {
+	public static void onPlayerPickupItem(final Arena arena, final PlayerPickupItemEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onPlayerPickupItem(event);
 		}
 	}
 
-	public static void onPlayerVelocity(Arena arena, PlayerVelocityEvent event) {
+	public static void onPlayerVelocity(final Arena arena, final PlayerVelocityEvent event) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.onPlayerVelocity(event);
 		}
 	}
 	
-	public static void parseJoin(PACheck res, Arena arena, Player sender,
-			ArenaTeam team) {
+	public static void parseJoin(final PACheck res, final Arena arena, final Player sender,
+			final ArenaTeam team) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.parseJoin(sender, team);
 		}
 	}
 	
-	public static void parsePlayerDeath(Arena arena, Player player,
-			EntityDamageEvent cause) {
+	public static void parsePlayerDeath(final Arena arena, final Player player,
+			final EntityDamageEvent cause) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.parsePlayerDeath(player, cause);
 		}
 	}
 	
-	public static void parsePlayerLeave(Arena arena, Player player, ArenaTeam team) {
+	public static void parsePlayerLeave(final Arena arena, final Player player, final ArenaTeam team) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.parsePlayerLeave(player, team);
 		}
 	}
 	
-	public static void parseRespawn(Arena arena, Player player, ArenaTeam team, DamageCause cause, Entity damager) {
+	public static void parseRespawn(final Arena arena, final Player player, final ArenaTeam team, final DamageCause cause, final Entity damager) {
 		for (ArenaModule mod : arena.getMods()) {
 			try {
 				mod.parseRespawn(player, team, cause, damager);
@@ -246,31 +242,31 @@ public class ArenaModuleManager {
 		}
 	}
 
-	public static void reset(Arena arena, boolean force) {
+	public static void reset(final Arena arena, final boolean force) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.reset(force);
 		}
 	}
 	
-	public static void resetPlayer(Arena arena, Player player, boolean force) {
+	public static void resetPlayer(final Arena arena, final Player player, final boolean force) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.resetPlayer(player, force);
 		}
 	}
 	
-	public static void timedEnd(Arena arena, HashSet<String> result) {
+	public static void timedEnd(final Arena arena, final Set<String> result) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.timedEnd(result);
 		}
 	}
 	
-	public static void tpPlayerToCoordName(Arena arena, Player player, String place) {
+	public static void tpPlayerToCoordName(final Arena arena, final Player player, final String place) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.tpPlayerToCoordName(player, place);
 		}
 	}
 	
-	public static void unload(Arena arena, Player player) {
+	public static void unload(final Arena arena, final Player player) {
 		for (ArenaModule mod : arena.getMods()) {
 			mod.unload(player);
 		}
@@ -280,7 +276,7 @@ public class ArenaModuleManager {
 		return mods;
 	}
 	
-	public ArenaModule getModByName(String mName) {
+	public ArenaModule getModByName(final String mName) {
 		for (ArenaModule mod : mods) {
 			if (mod.getName().equalsIgnoreCase(mName)) {
 				return mod;

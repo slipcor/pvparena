@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 import net.slipcor.pvparena.arena.Arena;
@@ -23,14 +24,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_ArenaList extends PA__Command {
+public class PAI_ArenaList extends AbstractGlobalCommand {
 
 	public PAI_ArenaList() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -38,7 +39,7 @@ public class PAI_ArenaList extends PA__Command {
 		if (!argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
-		HashSet<String> names = new HashSet<String>();
+		final Set<String> names = new HashSet<String>();
 		
 		for (Arena a : ArenaManager.getArenas()) {
 			names.add((a.isLocked()?"&c":"&a") + a.getName() + "&r");
@@ -53,7 +54,7 @@ public class PAI_ArenaList extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.ARENALIST));
 	}
 }

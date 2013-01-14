@@ -20,14 +20,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Teams extends PAA__Command {
+public class PAA_Teams extends AbstractArenaCommand {
 
 	public PAA_Teams() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -46,7 +46,7 @@ public class PAA_Teams extends PAA__Command {
 			arena.msg(sender, Language.parse(MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), "§f,")));
 			return;
 		}
-		ArenaTeam team = arena.getTeam(args[1]);
+		final ArenaTeam team = arena.getTeam(args[1]);
 		
 		if (team == null && !args[0].equals("add")) {
 			arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, args[1]));
@@ -58,8 +58,8 @@ public class PAA_Teams extends PAA__Command {
 			arena.getTeams().remove(team);
 		} else if (args[0].equals("add")) {
 			try {
-				ChatColor c = ChatColor.valueOf(args[2].toUpperCase());
-				ArenaTeam newTeam = new ArenaTeam(args[1], c.name());
+				final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+				final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
 				arena.getTeams().add(newTeam);
 
 				arena.msg(sender,  Language.parse(MSG.TEAMS_ADD, newTeam.getColoredName()));
@@ -68,8 +68,8 @@ public class PAA_Teams extends PAA__Command {
 			}
 		} else if (args[0].equals("set")) {
 			try {
-				ChatColor c = ChatColor.valueOf(args[2].toUpperCase());
-				ArenaTeam newTeam = new ArenaTeam(args[1], c.name());
+				final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+				final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
 				arena.getTeams().remove(arena.getTeam(args[1]));
 				arena.getTeams().add(newTeam);
 
@@ -88,7 +88,7 @@ public class PAA_Teams extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TEAMS));
 	}
 }
