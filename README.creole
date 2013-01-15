@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.2.36 - ouch ... quick command fix!
 * v0.10.2.35 - formatting ?
 * v0.10.2.34 - correctly reset Domination and BlockDestroy on start
 * v0.10.2.33 - stop people from destroying their own block in BlockDestroy ^^
