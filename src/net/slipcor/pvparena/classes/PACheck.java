@@ -295,7 +295,7 @@ public class PACheck {
 			if (args.length < 1 || (arena.getTeam(args[0]) == null)) {
 				// usage: /pa {arenaname} join | join an arena
 
-				arena.getTeam(TeamManager.calcFreeTeam(arena));
+				team = arena.getTeam(TeamManager.calcFreeTeam(arena));
 			} else {
 				team = arena.getTeam(args[0]);
 			}

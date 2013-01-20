@@ -64,7 +64,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v0.10.2.33";
+		return "v0.10.3.0";
 	}
 
 	private static final int PRIORITY = 8;

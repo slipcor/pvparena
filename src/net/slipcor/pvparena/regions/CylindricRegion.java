@@ -46,7 +46,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.3.0";
 	}
 
 	/**

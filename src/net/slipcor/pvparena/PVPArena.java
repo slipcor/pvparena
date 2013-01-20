@@ -211,7 +211,7 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 
-		AbstractArenaCommand paacmd = AbstractArenaCommand.getByName(args[0]);
+		AbstractArenaCommand paacmd = AbstractArenaCommand.getByName(newArgs[0]);
 		if (paacmd == null && (PACheck.handleCommand(tempArena, sender, newArgs))) {
 			return true;
 		}
@@ -220,7 +220,7 @@ public class PVPArena extends JavaPlugin {
 				&& tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
 			paacmd = new PAG_Join();
 			if (newArgs.length > 1) {
-				newArgs = StringParser.shiftArrayBy(args, 1);
+				newArgs = StringParser.shiftArrayBy(newArgs, 1);
 			}
 			DEBUG.i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(tempArena, sender, newArgs);

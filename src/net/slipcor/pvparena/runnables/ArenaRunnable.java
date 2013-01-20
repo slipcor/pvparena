@@ -73,6 +73,8 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		
 		if (this instanceof EndRunnable) {
 			runTaskTimer(PVPArena.instance, 20L, 20L);
+		} else if (this instanceof StartRunnable) {
+			runTaskTimer(PVPArena.instance, 20L, 20L);
 		} else {
 			runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
 		}

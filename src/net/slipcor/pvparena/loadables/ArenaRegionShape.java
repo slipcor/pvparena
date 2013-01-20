@@ -547,6 +547,9 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public void tick() {
 		for (ArenaPlayer ap : arena.getFighters()) {
+			if (ap.get() == null) {
+				continue;
+			}
 			final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
 			if (flags.contains(RegionFlag.DEATH) && this.contains(pLoc)) {
 				Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));

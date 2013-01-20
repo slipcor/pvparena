@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -38,6 +39,8 @@ public class PAA_SetOwner extends AbstractArenaCommand {
 		// usage: /pa {arenaname} setowner [playername]
 		
 		arena.setOwner(args[0]);
+		arena.getArenaConfig().set(CFG.GENERAL_OWNER, args[0]);
+		arena.getArenaConfig().save();
 		arena.msg(sender, Language.parse(MSG.SETOWNER_DONE, args[0], arena.getName()));
 	}
 

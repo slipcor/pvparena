@@ -83,7 +83,7 @@ public class BlockListener implements Listener {
 		if (arena == null) {
 			return false;
 		}
-		// db.i("protection " + node.name() + " enabled and thus cancelling " +
+		// debug.i("protection " + node.name() + " enabled and thus cancelling " +
 		// event.toString());
 		event.setCancelled(true);
 		return true;
@@ -166,7 +166,7 @@ public class BlockListener implements Listener {
 		if (arena == null) {
 			return; // no arena => out
 
-			// db.i("block burn inside the arena");
+			// debug.i("block burn inside the arena");
 		}
 		if (isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.FIRE)) {
@@ -246,7 +246,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		// db.i("block fluids inside the arena");
+		// debug.i("block fluids inside the arena");
 
 		if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
 			return;
@@ -269,10 +269,10 @@ public class BlockListener implements Listener {
 				new PABlockLocation(block.getLocation()),
 				RegionProtection.NATURE);
 		if (arena == null) {
-			// db.i("block forming not inside the arena");
+			// debug.i("block forming not inside the arena");
 			return;
 		}
-		// db.i("block block forming inside the arena");
+		// debug.i("block block forming inside the arena");
 
 		if (isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.NATURE)) {

@@ -52,7 +52,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.7";
+		return "v0.10.3.0";
 	}
 
 	private static final int PRIORITY = 2;

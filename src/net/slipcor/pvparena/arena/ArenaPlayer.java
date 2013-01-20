@@ -322,10 +322,10 @@ public class ArenaPlayer {
 		if (status == null || location == null) {
 			debug.i("DEBUG PRINT OUT:", this.name);
 			debug.i(String.valueOf(name.toString()), this.name);
-			debug.i(String.valueOf(status.toString()), this.name);
-			debug.i(String.valueOf(location.toString()), this.name);
-			debug.i(String.valueOf(selection[0].toString()), this.name);
-			debug.i(String.valueOf(selection[1].toString()), this.name);
+			debug.i(String.valueOf(String.valueOf(status)), this.name);
+			debug.i(String.valueOf(String.valueOf(location)), this.name);
+			debug.i(String.valueOf(String.valueOf(selection[0])), this.name);
+			debug.i(String.valueOf(String.valueOf(selection[1])), this.name);
 			return;
 		}
 		debug.i("------------------", this.name);

@@ -360,7 +360,7 @@ public class ArenaGoalManager {
 			}
 		}
 		
-		new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
+		arena.reset(false);
 	}
 
 	public void unload(final Arena arena, final Player player) {

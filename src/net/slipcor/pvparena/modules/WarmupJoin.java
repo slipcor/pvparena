@@ -38,7 +38,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.10.2.0";
+		return "v0.10.3.0";
 	}
 
 	@Override

@@ -42,11 +42,9 @@ public class PAA_Goal extends AbstractArenaCommand {
 			return;
 		}
 		
-		ArenaGoal goal = null;
+		ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 		
-		try {
-			goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
-		} catch (Exception e) {
+		if (goal == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
 			arena.msg(sender, Language.parse(MSG.GOAL_INSTALLING));
 			return;

@@ -51,7 +51,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v0.10.2.28";
+		return "v0.10.3.0";
 	}
 
 	private static final int PRIORITY = 3;

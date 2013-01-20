@@ -40,7 +40,6 @@ public final class Language {
 		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1%!"),
 		ARENA_START_DONE("nulang.arena.start.done", "Arena force started!"),
 		ARENA_STOP_DONE("nulang.arena.stop.done", "Arena force stopped!"),
-		ARENA_TEAM_UNKNOWN("nulang.arena.teamunknown", "Arena Team '%1%' unknown!"),
 
 		AUTOSETUP_AUTOMANUAL("nulang.autosetup.automanual", "Do you want the wizard to be &a%1%&r or &a%2%&r?"),
 		AUTOSETUP_AUTOMATIC("nulang.autosetup.automatic", "automatic"),
@@ -374,11 +373,12 @@ public final class Language {
 		GOAL_BLOCKDESTROY_SCORE("lang.flaghomeleft", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
 		GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),
 		GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Block to set: %1%"),
-		
-		GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "Team %1% is claiming a flag!"),
-		GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "Team %1% scored %2% point(s) by holding a flag!"),
-		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "A flag claimed by Team %1% is being unclaimed!"),
-		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "A flag claimed by Team %1% is being unclaimed by Team %2%!"),
+
+		GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
+		GOAL_DOMINATION_CLAIMED("nulang.goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
+		GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),
+		GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "&eA flag claimed by Team %1% is being unclaimed!"),
+		GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "&eA flag claimed by Team %1% is being unclaimed by Team %2%!"),
 
 		GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Captures remaining: %3%"),
 		GOAL_FLAGS_TOUCHHOME("lang.touchhomeleft", "%1% brought home the flag! Captures remaining: %2%"),
@@ -572,6 +572,9 @@ public final class Language {
 			config.save(configFile);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		for (MSG m : MSG.values()) {
+			m.setValue(config.getString(m.getNode()));
 		}
 	}
 

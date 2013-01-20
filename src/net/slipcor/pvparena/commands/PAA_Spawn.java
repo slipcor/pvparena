@@ -31,6 +31,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 	private static Set<String> spawns = new HashSet<String>();
 	static {
 		spawns.add("exit");
+		spawns.add("spectator");
 	}
 
 	public PAA_Spawn() {
