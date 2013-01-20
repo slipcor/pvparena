@@ -16,9 +16,12 @@ import net.slipcor.pvparena.core.Debug;
  * @version v0.10.2
  */
 
-public class InventoryManager {
+public final class InventoryManager {
 
-	public static final Debug db = new Debug(26);
+	public static final Debug DEBUG = new Debug(26);
+	
+	private InventoryManager() {
+	}
 
 	/**
 	 * fully clear a player's inventory
@@ -26,8 +29,8 @@ public class InventoryManager {
 	 * @param player
 	 *            the player to clear
 	 */
-	public static void clearInventory(Player player) {
-		db.i("fully clear player inventory: " + player.getName(), player);
+	public static void clearInventory(final Player player) {
+		DEBUG.i("fully clear player inventory: " + player.getName(), player);
 
 		player.closeInventory();
 
@@ -44,8 +47,8 @@ public class InventoryManager {
 	 * @param player
 	 *            the player to empty
 	 */
-	public static void drop(Player player) {
-		db.i("dropping player inventory: " + player.getName(), player);
+	public static void drop(final Player player) {
+		DEBUG.i("dropping player inventory: " + player.getName(), player);
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {
 				continue;
@@ -61,14 +64,14 @@ public class InventoryManager {
 		player.getInventory().clear();
 	}
 
-	public static boolean receivesDamage(ItemStack item) {
+	public static boolean receivesDamage(final ItemStack item) {
 		if (item == null || item.getType().equals(Material.AIR)) {
 			return false;
 		}
 		
-		String[] tools = {"_AXE","_PICKAXE","_SPADE","_HOE","_SWORD"};
+		final String[] toolSuffixes = {"_AXE","_PICKAXE","_SPADE","_HOE","_SWORD"};
 		
-		for (String s : tools) {
+		for (String s : toolSuffixes) {
 			if (item.getType().name().endsWith(s)) {
 				return true;
 			}

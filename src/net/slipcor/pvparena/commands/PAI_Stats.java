@@ -21,14 +21,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_Stats extends PAA__Command {
+public class PAI_Stats extends AbstractArenaCommand {
 
 	public PAI_Stats() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -37,14 +37,15 @@ public class PAI_Stats extends PAA__Command {
 			return;
 		}
 		
-		StatisticsManager.type t = StatisticsManager.type.getByString(args[0]);
+		final StatisticsManager.type statType = StatisticsManager.type.getByString(args[0]);
 		
-		if (t == null) {
+		if (statType == null) {
 			Arena.pmsg(sender, Language.parse(MSG.STATS_TYPENOTFOUND, StringParser.joinArray(type.values(), ", ")));
+			return;
 		}
 
-		String[] values = StatisticsManager.read(StatisticsManager.getStats(arena, t), t, arena==null);
-		String[] names = StatisticsManager.read(StatisticsManager.getStats(arena, type.NULL), t, arena==null);
+		final String[] values = StatisticsManager.read(StatisticsManager.getStats(arena, statType), statType, arena==null);
+		final String[] names = StatisticsManager.read(StatisticsManager.getStats(arena, type.NULL), statType, arena==null);
 		
 		int max = 10;
 		
@@ -52,11 +53,11 @@ public class PAI_Stats extends PAA__Command {
 			try {
 				max = Integer.parseInt(args[1]);
 			} catch (Exception e) {
-				//
+				max = 10;
 			}
 		}
 		
-		Arena.pmsg(sender, Language.parse(MSG.STATS_HEAD, String.valueOf(max), Language.parse(MSG.getByName("STATTYPE_" + t.getName()))));
+		Arena.pmsg(sender, Language.parse(MSG.STATS_HEAD, String.valueOf(max), Language.parse(MSG.getByName("STATTYPE_" + statType.getName()))));
 		
 		for (int i = 0; i < max; i++) {
 			Arena.pmsg(sender, names[i] + ": " + values[i]);
@@ -69,7 +70,7 @@ public class PAI_Stats extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.STATS));
 	}
 }

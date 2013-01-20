@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -41,19 +42,19 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class GoalPlayerDeathMatch extends ArenaGoal {
 	public GoalPlayerDeathMatch() {
 		super("PlayerDeathMatch");
-		db = new Debug(101);
+		debug = new Debug(101);
 	}
 
-	EndRunnable er = null;
+	private EndRunnable endRunner = null;
 
-	HashMap<String, Integer> lives = new HashMap<String, Integer>();
+	private final Map<String, Integer> lives = new HashMap<String, Integer>();
 
 	@Override
 	public String version() {
-		return "v0.10.2.28";
+		return "v0.10.3.0";
 	}
 
-	int priority = 3;
+	private static final int PRIORITY = 3;
 
 	@Override
 	public boolean allowsJoinInBattle() {
@@ -61,15 +62,15 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
-		if (res.getPriority() > priority) {
+	public PACheck checkEnd(final PACheck res) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
-		int count = lives.size();
+		final int count = lives.size();
 
 		if (count == 1) {
-			res.setPriority(this, priority); // yep. only one player left. go!
+			res.setPriority(this, PRIORITY); // yep. only one player left. go!
 		} else if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
@@ -78,7 +79,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		if (!arena.isFreeForAll()) {
 			return null; // teams are handled somewhere else
 		}
@@ -92,13 +93,13 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -111,34 +112,31 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= priority && player.getKiller() != null
+	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+		if (res.getPriority() <= PRIORITY && player.getKiller() != null
 				&& arena.hasPlayer(player.getKiller())) {
-			res.setPriority(this, priority);
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		if (er != null) {
+	public void commitEnd(final boolean force) {
+		if (endRunner != null) {
 			return;
 		}
 		for (ArenaTeam team : arena.getTeams()) {
@@ -156,47 +154,45 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				return;
 			}
 		}
-		er = new EndRunnable(arena, arena.getArenaConfig().getInt(
+		endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
-	public void commitPlayerDeath(Player killer, boolean doesRespawn,
-			String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
+			final String error, final PlayerDeathEvent event) {
 
-		Player ex = killer;
-
-		if (ex.getKiller() == null
-				|| !lives.containsKey(ex.getKiller().getName())) {
+		if (player.getKiller() == null
+				|| !lives.containsKey(player.getKiller().getName())) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName())
+				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 						.getArenaTeam();
 				arena.broadcast(Language.parse(
 						MSG.FIGHT_KILLED_BY,
-						respawnTeam.colorizePlayer(ex) + ChatColor.YELLOW,
-						arena.parseDeathCause(ex, event.getEntity()
-								.getLastDamageCause().getCause(), killer)));
+						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+						arena.parseDeathCause(player, event.getEntity()
+								.getLastDamageCause().getCause(), player)));
 			}
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(ex);
+				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
 
-			PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(ex.getName()),
+			PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
 					event.getDrops());
 
 			return;
 		}
-		killer = ex.getKiller();
+		final Player killer = player.getKiller();
 
-		int i = lives.get(killer.getName());
-		db.i("kills to go: " + i, killer);
-		if (i <= 1) {
+		int iLives = lives.get(killer.getName());
+		debug.i("kills to go: " + iLives, killer);
+		if (iLives <= 1) {
 			// player has won!
-			HashSet<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
+			final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
 			for (ArenaPlayer ap : arena.getFighters()) {
 				if (ap.getName().equals(killer.getName())) {
 					continue;
@@ -205,7 +201,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			}
 			for (ArenaPlayer ap : plrs) {
 				lives.remove(ap.getName());
-				db.i("faking player death", ap.get());
+				debug.i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
 						false);
 
@@ -221,61 +217,60 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 			PACheck.handleEnd(arena, false);
 		} else {
-			i--;
-			lives.put(killer.getName(), i);
+			iLives--;
+			lives.put(killer.getName(), iLives);
 
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(ex.getName())
+			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				arena.broadcast(Language.parse(
 						MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
-						respawnTeam.colorizePlayer(ex) + ChatColor.YELLOW,
-						arena.parseDeathCause(ex, event.getEntity()
+						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+						arena.parseDeathCause(player, event.getEntity()
 								.getLastDamageCause().getCause(), killer),
-						String.valueOf(i)));
+						String.valueOf(iLives)));
 			}
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(ex);
+				InventoryManager.drop(player);
 				event.getDrops().clear();
 			}
 
-			PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(ex.getName()),
+			PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
 					event.getDrops());
 
 		}
 	}
 
 	@Override
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (arena.getArenaConfig()
+					String.valueOf(arena.getArenaConfig()
 									.getInt(CFG.GOAL_PDM_LIVES) - (lives
-									.containsKey(ap.getName()) ? lives.get(ap
+									.containsKey(aPlayer.getName()) ? lives.get(aPlayer
 									.getName()) : 0)));
 		}
 		return res;
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
-		return (arena.isFreeForAll() && string.toLowerCase()
-				.startsWith("spawn"));
+	public boolean hasSpawn(final String string) {
+		return arena.isFreeForAll() && string.toLowerCase()
+				.startsWith("spawn");
 	}
 
 	@Override
-	public void initate(Player player) {
+	public void initate(final Player player) {
 		lives.put(player.getName(),
 				arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
 	}
@@ -286,7 +281,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void parseLeave(Player player) {
+	public void parseLeave(final Player player) {
 		if (player == null) {
 			PVPArena.instance.getLogger().warning(
 					this.getName() + ": player NULL");
@@ -308,13 +303,13 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void reset(boolean force) {
-		er = null;
+	public void reset(final boolean force) {
+		endRunner = null;
 		lives.clear();
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaPlayer ap : arena.getFighters()) {
@@ -332,7 +327,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		lives.remove(player.getName());
 		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));

@@ -20,14 +20,14 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAA_Create extends PA__Command {
+public class PAA_Create extends AbstractGlobalCommand {
 
 	public PAA_Create() {
 		super(new String[] {"pvparena.create"});
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
@@ -43,34 +43,34 @@ public class PAA_Create extends PA__Command {
 		
 		// usage: /pa create [arenaname] {legacy_arenatype}
 		
-		Arena a = ArenaManager.getArenaByName(args[0]);
+		Arena arena = ArenaManager.getArenaByName(args[0]);
 		
-		if (a != null) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_EXISTS, a.getName()));
+		if (arena != null) {
+			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_EXISTS, arena.getName()));
 			return;
 		}
 		
-		a = new Arena(args[0]);
+		arena = new Arena(args[0]);
 		
 		if (!sender.hasPermission("pvparena.admin")) {
 			// no admin perms => create perms => set owner
-			a.setOwner(sender.getName());
+			arena.setOwner(sender.getName());
 		}
 		
 		if (args.length > 1) {
 			// preset arena stuff based on legacy stuff
-			a.getLegacyGoals(args[1]);
+			arena.getLegacyGoals(args[1]);
 		} else if (args.length == 0) {
-			a.getLegacyGoals("teams");
+			arena.getLegacyGoals("teams");
 		}
 		
-		ArenaManager.loadArena(a.getName());
-		Arena.pmsg(sender, Language.parse(MSG.ARENA_CREATE_DONE, a.getName()));
-		a = ArenaManager.getArenaByName(a.getName());
-		PAA_ToggleMod cmd = new PAA_ToggleMod();
-		cmd.commit(a, sender, new String[]{"standardspectate"});
-		cmd.commit(a, sender, new String[]{"standardlounge"});
-		cmd.commit(a, sender, new String[]{"battlefieldjoin"});
+		ArenaManager.loadArena(arena.getName());
+		Arena.pmsg(sender, Language.parse(MSG.ARENA_CREATE_DONE, arena.getName()));
+		arena = ArenaManager.getArenaByName(arena.getName());
+		final PAA_ToggleMod cmd = new PAA_ToggleMod();
+		cmd.commit(arena, sender, new String[]{"standardspectate"});
+		cmd.commit(arena, sender, new String[]{"standardlounge"});
+		cmd.commit(arena, sender, new String[]{"battlefieldjoin"});
 		//cmd.commit(a, sender, new String[]{"warmupjoin"});
 	}
 
@@ -80,7 +80,7 @@ public class PAA_Create extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CREATE));
 	}
 }

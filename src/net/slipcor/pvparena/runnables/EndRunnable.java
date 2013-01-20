@@ -23,51 +23,51 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class EndRunnable extends ArenaRunnable {
-	private Debug db = new Debug(40);
+	private final static Debug DEBUG = new Debug(40);
 
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
-	 * @param i
+	 * @param seconds
 	 */
-	public EndRunnable(Arena a, int i) {
-		super(MSG.TIMER_RESETTING_IN.getNode(), i, null, a, false);
-		db.i("EndRunnable constructor");
-		if (a.END_ID != null) {
-			a.END_ID.cancel();
-			a.END_ID = null;
+	public EndRunnable(final Arena arena, final int seconds) {
+		super(MSG.TIMER_RESETTING_IN.getNode(), seconds, null, arena, false);
+		DEBUG.i("EndRunnable constructor");
+		if (arena.endRunner != null) {
+			arena.endRunner.cancel();
+			arena.endRunner = null;
 		}
-		arena.REALEND_ID = this;
+		arena.realEndRunner = this;
 	}
 
 	@Override
 	protected void commit() {
-		db.i("EndRunnable commiting");
+		DEBUG.i("EndRunnable commiting");
 		
 		arena.setRound(arena.getRound()+1);
 		
 		if (arena.getRound() >= arena.getRoundCount()) {
-			db.i("rounds done!");
+			DEBUG.i("rounds done!");
 		
 			arena.reset(false);
-			if (arena.REALEND_ID != null) {
-				arena.REALEND_ID = null;
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
 			}
-			if (arena.END_ID != null) {
-				arena.END_ID.cancel();
-				arena.END_ID = null;
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
 			}
 		} else {
-			db.i("Starting round #" + arena.getRound());
+			DEBUG.i("Starting round #" + arena.getRound());
 			
-			if (arena.REALEND_ID != null) {
-				arena.REALEND_ID = null;
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
 			}
-			if (arena.END_ID != null) {
-				arena.END_ID.cancel();
-				arena.END_ID = null;
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
 			}
 			
 			PACheck.handleStart(arena, null);
@@ -76,7 +76,7 @@ public class EndRunnable extends ArenaRunnable {
 				arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),
 						ap.get().getLastDamageCause().getEntity());
 				
-				List<ItemStack> items = new ArrayList<ItemStack>();
+				final List<ItemStack> items = new ArrayList<ItemStack>();
 
 				for (ItemStack is : ap.get().getInventory().getArmorContents()) {
 					items.add(is);

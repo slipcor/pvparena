@@ -33,51 +33,51 @@ public class StandardSpectate extends ArenaModule {
 
 	public StandardSpectate() {
 		super("StandardSpectate");
-		db = new Debug(301);
+		debug = new Debug(301);
 	}
 
-	int priority = 1;
+	private static final int PRIORITY = 1;
 
 	@Override
 	public String version() {
-		return "v0.10.0.0";
+		return "v0.10.3.0";
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		return list.contains("spectator") ? null : "spectator not set";
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, boolean join) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final boolean join) {
 		if (join) {
 			return res;
 		}
 
-		if (res.getPriority() < priority) {
-			res.setPriority(this, priority);
+		if (res.getPriority() < PRIORITY) {
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public void commitSpectate(Player player) {
+	public void commitSpectate(final Player player) {
 
 		// standard join --> lounge
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
-				new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+				new PlayerStateCreateRunnable(aPlayer, aPlayer.get()), 2L);
 		// ArenaPlayer.prepareInventory(arena, ap.get());
-		ap.setLocation(new PALocation(ap.get().getLocation()));
-		ap.setArena(arena);
-		ap.setStatus(Status.WATCH);
+		aPlayer.setLocation(new PALocation(aPlayer.get().getLocation()));
+		aPlayer.setArena(arena);
+		aPlayer.setStatus(Status.WATCH);
 
 		arena.tpPlayerToCoordName(player, "spectator");
 		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		return string.equalsIgnoreCase("spectator");
 	}
 

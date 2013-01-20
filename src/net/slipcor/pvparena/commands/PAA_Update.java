@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -20,16 +21,16 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Update extends PA__Command {
+public class PAA_Update extends AbstractGlobalCommand {
 
 	public PAA_Update() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(CommandSender sender, String[] args) {
+	public void commit(final CommandSender sender, final String[] args) {
 		
-		HashSet<NCBLoadable> modules = new HashSet<NCBLoadable>();
+		final Set<NCBLoadable> modules = new HashSet<NCBLoadable>();
 		
 		if (args.length < 1 || args[0].equals("mods")) {
 			modules.addAll(PVPArena.instance.getAmm().getAllMods());
@@ -39,23 +40,23 @@ public class PAA_Update extends PA__Command {
 			modules.addAll(PVPArena.instance.getArsm().getRegions());
 		}
 		
-		if (modules.size() > 0) {
+		if (!modules.isEmpty()) {
 			for (NCBLoadable mod : modules) {
 				if (mod.isInternal()) {
 					continue;
 				}
-				PAA_Uninstall ui = new PAA_Uninstall();
-				ui.commit(sender, new String[]{mod.getName()});
-				PAA_Install i = new PAA_Install();
-				i.commit(sender, new String[]{mod.getName()});
+				final PAA_Uninstall uninstall = new PAA_Uninstall();
+				uninstall.commit(sender, new String[]{mod.getName()});
+				final PAA_Install install = new PAA_Install();
+				install.commit(sender, new String[]{mod.getName()});
 			}
 			return;
 		}
 		
-		PAA_Uninstall ui = new PAA_Uninstall();
-		ui.commit(sender, args);
-		PAA_Install i = new PAA_Install();
-		i.commit(sender, args);
+		final PAA_Uninstall uninstall = new PAA_Uninstall();
+		uninstall.commit(sender, args);
+		final PAA_Install install = new PAA_Install();
+		install.commit(sender, args);
 	}
 
 
@@ -65,7 +66,7 @@ public class PAA_Update extends PA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.UPDATE));
 	}
 }

@@ -15,17 +15,18 @@ import org.bukkit.event.HandlerList;
  */
 
 public class PAEndEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
 
 	/**
 	 * create an end event instance
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the ending arena
 	 */
-	public PAEndEvent(Arena a) {
-		arena = a;
+	public PAEndEvent(final Arena arena) {
+		super();
+		this.arena = arena;
 	}
 
 	/**
@@ -38,10 +39,10 @@ public class PAEndEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 }

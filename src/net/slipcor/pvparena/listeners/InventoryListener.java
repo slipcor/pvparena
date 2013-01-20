@@ -22,19 +22,19 @@ import org.bukkit.event.inventory.InventoryType;
  */
 
 public class InventoryListener implements Listener {
-	private Debug db = new Debug(22);
+	private final static Debug DEBUG = new Debug(22);
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onInventoryClick(InventoryClickEvent event) {
-		Player p = (Player) event.getWhoClicked();
+	public void onInventoryClick(final InventoryClickEvent event) {
+		final Player player = (Player) event.getWhoClicked();
 
-		Arena arena = ArenaPlayer.parsePlayer(p.getName()).getArena();
+		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 
 		if (arena == null) {
 			return;
 		}
 
-		db.i("InventoryClick: arena player", p);
+		DEBUG.i("InventoryClick: arena player", player);
 		
 		if (event.getInventory().getType()
 			.equals(InventoryType.CRAFTING)) {
@@ -59,7 +59,7 @@ public class InventoryListener implements Listener {
 			return;
 		}
 
-		db.i("cancelling!", p);
+		DEBUG.i("cancelling!", player);
 		// player is carrying a flag
 		event.setCancelled(true);
 	}

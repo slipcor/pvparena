@@ -21,37 +21,35 @@ import org.bukkit.entity.Player;
  */
 
 public class PlayerStateCreateRunnable implements Runnable {
-	final ArenaPlayer a;
-	final Player p;
+	private final ArenaPlayer aPlayer;
+	private final Player player;
 
-	public PlayerStateCreateRunnable(ArenaPlayer ap, Player player) {
-		a = ap;
-		p = player;
+	public PlayerStateCreateRunnable(final ArenaPlayer aPlayer, final Player player) {
+		this.aPlayer = aPlayer;
+		this.player = player;
 	}
 
 	@Override
 	public void run() {
-		if (a.getState() == null) {
+		if (aPlayer.getState() == null) {
 			
-			Arena arena = a.getArena();
+			final Arena arena = aPlayer.getArena();
 
-			PAJoinEvent event = new PAJoinEvent(arena, p, false);
+			final PAJoinEvent event = new PAJoinEvent(arena, player, false);
 			Bukkit.getPluginManager().callEvent(event);
 
-			a.createState(p);
-			ArenaPlayer.backupAndClearInventory(arena, p);
-			a.dump();
+			aPlayer.createState(player);
+			ArenaPlayer.backupAndClearInventory(arena, player);
+			aPlayer.dump();
 			
 			
-			if (a.getArenaTeam() != null && a.getArenaClass() == null) {
-				String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-				if (autoClass != null && !autoClass.equals("none")) {
-					if (arena.getClass(autoClass) != null) {
-						arena.chooseClass(p, null, autoClass);
-					}
+			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
+				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+					arena.chooseClass(player, null, autoClass);
 				}
 				if (autoClass == null) {
-					arena.msg(p, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					arena.msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return;
 				}
 			}

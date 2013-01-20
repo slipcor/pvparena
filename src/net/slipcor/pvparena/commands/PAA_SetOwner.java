@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -18,14 +19,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_SetOwner extends PAA__Command {
+public class PAA_SetOwner extends AbstractArenaCommand {
 
 	public PAA_SetOwner() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -38,6 +39,8 @@ public class PAA_SetOwner extends PAA__Command {
 		// usage: /pa {arenaname} setowner [playername]
 		
 		arena.setOwner(args[0]);
+		arena.getArenaConfig().set(CFG.GENERAL_OWNER, args[0]);
+		arena.getArenaConfig().save();
 		arena.msg(sender, Language.parse(MSG.SETOWNER_DONE, args[0], arena.getName()));
 	}
 
@@ -47,7 +50,7 @@ public class PAA_SetOwner extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SETOWNER));
 	}
 }

@@ -5,20 +5,20 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 
 public class RespawnRunnable implements Runnable {
 
-	final Arena a;
-	final ArenaPlayer p;
+	private final Arena arena;
+	private final ArenaPlayer player;
 	
-	public RespawnRunnable(Arena arena, ArenaPlayer ap) {
-		a = arena;
-		p = ap;
+	public RespawnRunnable(final Arena arena, final ArenaPlayer player) {
+		this.arena = arena;
+		this.player = player;
 	}
 	
 	@Override
 	public void run() {
-		if (p.get() == null || p.getArenaTeam() == null || a == null) {
+		if (player.get() == null || player.getArenaTeam() == null || arena == null) {
 			return;
 		}
-		a.tpPlayerToCoordName(p.get(), (a.isFreeForAll()?"":p.getArenaTeam().getName()) + "spawn");
+		arena.tpPlayerToCoordName(player.get(), (arena.isFreeForAll()?"":player.getArenaTeam().getName()) + "spawn");
 	}
 	
 }

@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
@@ -22,16 +24,16 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Goal extends PAA__Command {
+public class PAA_Goal extends AbstractArenaCommand {
 	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
+	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	public PAA_Goal() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -40,13 +42,7 @@ public class PAA_Goal extends PAA__Command {
 			return;
 		}
 		
-		ArenaGoal goal = null;
-		
-		try {
-			goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
-		} catch (Exception e) {
-			// nothing
-		}
+		ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 		
 		if (goal == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
@@ -89,7 +85,7 @@ public class PAA_Goal extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.GOAL));
 	}
 }

@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.core;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -23,23 +24,23 @@ public class Debug {
 	public static boolean override = false;
 
 	private static String prefix = "[PA-debug] ";
-	private static HashSet<Integer> check = new HashSet<Integer>();
-	private static HashSet<String> strings = new HashSet<String>();
+	private static Set<Integer> check = new HashSet<Integer>();
+	private static Set<String> strings = new HashSet<String>();
 
-	private int id = 0;
+	private final int debugID;
 
 	/**
 	 * Debug constructor
 	 * 
-	 * @param i
+	 * @param iID
 	 *            the debug id to check
 	 */
-	public Debug(int i) {
-		id = i;
+	public Debug(final int iID) {
+		debugID = iID;
 	}
 
 	public void debug() {
-		PVPArena.instance.getLogger().info("debugger: " + id);
+		PVPArena.instance.getLogger().info("debugger: " + debugID);
 	}
 
 	/**
@@ -48,27 +49,27 @@ public class Debug {
 	 * @return true if debugs, false otherwise
 	 */
 	private boolean debugs() {
-		return override || check.contains(id) || check.contains(666);
+		return override || check.contains(debugID) || check.contains(666);
 	}
 
-	private boolean debugs(String s) {
-		return override || strings.contains(s) || check.contains(666);
+	private boolean debugs(final String term) {
+		return override || strings.contains(term) || check.contains(666);
 	}
 
 	/**
 	 * log a message as prefixed INFO
 	 * 
-	 * @param s
+	 * @param string
 	 *            the message
 	 */
-	public void i(String s) {
+	public void i(final String string) {
 		if (!debugs()) {
 			return;
 		}
-		Bukkit.getLogger().info(prefix + s);
+		Bukkit.getLogger().info(prefix + string);
 	}
 
-	public void i(String string, CommandSender sender) {
+	public void i(final String string, final CommandSender sender) {
 		if (sender == null) {
 			i(string, "null");
 			return;
@@ -79,25 +80,27 @@ public class Debug {
 		Bukkit.getLogger().info(prefix + string);
 	}
 
-	public void i(String string, String filter) {
+	public void i(final String string, final String filter) {
 		if (!debugs(filter)) {
 			return;
 		}
 		Bukkit.getLogger().info(prefix + string);
 	}
 
-	public static void load(PVPArena instance, CommandSender sender) {
+	public static void load(final PVPArena instance, final CommandSender sender) {
 		check.clear();
 		strings.clear();
 		override = false;
-		String debugs = instance.getConfig().getString("debug");
-		if (!debugs.equals("none")) {
+		final String debugs = instance.getConfig().getString("debug");
+		if (debugs.equals("none")) {
+			Arena.pmsg(sender, "debugging: off");
+		} else {
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
 				override = true;
 				Arena.pmsg(sender, "debugging EVERYTHING");
 			} else {
-				String[] sIds = debugs.split(",");
+				final String[] sIds = debugs.split(",");
 				Arena.pmsg(sender, "debugging: " + debugs);
 				for (String s : sIds) {
 					try {
@@ -107,8 +110,6 @@ public class Debug {
 					}
 				}
 			}
-		} else {
-			Arena.pmsg(sender, "debugging: off");
 		}
 	}
 }

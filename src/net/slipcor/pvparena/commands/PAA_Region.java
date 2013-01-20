@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
@@ -24,9 +26,9 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAA_Region extends PAA__Command {
+public class PAA_Region extends AbstractArenaCommand {
 	
-	public static HashMap<String, Arena> activeSelections = new HashMap<String, Arena>();
+	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
 	private static String selector = null;
 	
@@ -35,7 +37,7 @@ public class PAA_Region extends PAA__Command {
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -54,13 +56,13 @@ public class PAA_Region extends PAA__Command {
 			
 			if (activeSelections.get(sender.getName()) != null) {
 				// already selecting!
-				if (!sender.getName().equals(selector)) {
+				if (sender.getName().equals(selector)) {
+					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECTEXIT));
+					selector = null;
+				} else {
 					arena.msg(sender, Language.parse(MSG.ERROR_REGION_YOUSELECT, arena.getName()));
 					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECT2));
 					selector = sender.getName();
-				} else {
-					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECTEXIT));
-					selector = null;
 				}
 				return;
 			}
@@ -71,7 +73,7 @@ public class PAA_Region extends PAA__Command {
 			return;
 		} else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
 			// usage: /pa {arenaname} region [regionname] border | check a region border
-			ArenaRegionShape region = arena.getRegion(args[0]);
+			final ArenaRegionShape region = arena.getRegion(args[0]);
 			
 			if (region == null) {
 				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
@@ -81,7 +83,7 @@ public class PAA_Region extends PAA__Command {
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 			// usage: /pa {arenaname} region remove [regionname] | remove a region
-			ArenaRegionShape region = arena.getRegion(args[1]);
+			final ArenaRegionShape region = arena.getRegion(args[1]);
 			
 			if (region == null) {
 				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[1]));
@@ -96,14 +98,14 @@ public class PAA_Region extends PAA__Command {
 		} else if (args.length < 3) {
 			// usage: /pa {arenaname} region [regionname] {regionshape} | save selected region
 			
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 			
-			if (!ap.didValidSelection()) {
+			if (!aPlayer.didValidSelection()) {
 				arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
 				return;
 			}
 			
-			PABlockLocation[] locs = ap.getSelection();
+			final PABlockLocation[] locs = aPlayer.getSelection();
 			RegionShape shape;
 			
 			if (args.length == 2) {
@@ -112,20 +114,20 @@ public class PAA_Region extends PAA__Command {
 				shape = ArenaRegionShape.RegionShape.CUBOID;
 			}
 			
-			ArenaRegionShape region = ArenaRegionShape.create(arena, args[0], shape, locs);
+			final ArenaRegionShape region = ArenaRegionShape.create(arena, args[0], shape, locs);
 			
 			arena.addRegion(region);
 			region.saveToConfig();
 			
 			activeSelections.remove(sender.getName());
 
-			ap.unsetSelection();
+			aPlayer.unsetSelection();
 			
 			arena.msg(sender, Language.parse(MSG.REGION_SAVED, args[0]));
 			return;
 		}
 		
-		ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
@@ -152,7 +154,7 @@ public class PAA_Region extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGION));
 	}
 }

@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
@@ -25,14 +26,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_Info extends PAA__Command {
+public class PAI_Info extends AbstractArenaCommand {
 
 	public PAI_Info() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -49,7 +50,7 @@ public class PAI_Info extends PAA__Command {
 				StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +
 				StringParser.colorVar("enabled", !arena.isLocked()));
 		
-		HashSet<String> classes = new HashSet<String>();
+		final Set<String> classes = new HashSet<String>();
 		for (ArenaClass ac : arena.getClasses()) {
 			if (!ac.getName().equalsIgnoreCase("custom")) {
 				classes.add(ac.getName());
@@ -60,7 +61,7 @@ public class PAI_Info extends PAA__Command {
 		arena.msg(sender,  Language.parse(MSG.INFO_OWNER, (arena.getOwner()==null?"server":arena.getOwner())));
 		
 		if (arena.getRegions() != null) {
-			HashSet<String> regions = new HashSet<String>();
+			final Set<String> regions = new HashSet<String>();
 			for (ArenaRegionShape ar : arena.getRegions()) {
 				regions.add(ar.getRegionName());
 			}
@@ -89,7 +90,7 @@ public class PAI_Info extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.INFO));
 	}
 }

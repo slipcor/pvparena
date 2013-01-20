@@ -34,33 +34,33 @@ import org.bukkit.entity.Player;
 
 public class StandardLounge extends ArenaModule {
 
-	private int priority = 1;
+	private static final int PRIORITY = 1;
 
 	public StandardLounge() {
 		super("StandardLounge");
-		db = new Debug(300);
+		debug = new Debug(300);
 	}
 
 	@Override
 	public String version() {
-		return "v0.10.2.0";
+		return "v0.10.3.0";
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		// not random! we need teams * 2 (lounge + spawn) + exit + spectator
-		db.i("parsing not random");
-		Iterator<String> iter = list.iterator();
+		debug.i("parsing not random");
+		final Iterator<String> iter = list.iterator();
 		int lounges = 0;
 		while (iter.hasNext()) {
-			String s = iter.next();
-			db.i("parsing '" + s + "'");
+			final String spawnName = iter.next();
+			debug.i("parsing '" + spawnName + "'");
 			if (arena.isFreeForAll()) {
-				if (s.equals("lounge")) {
+				if (spawnName.equals("lounge")) {
 					lounges++;
 				}
 			} else {
-				if (s.endsWith("lounge") && (!s.equals("lounge"))) {
+				if (spawnName.endsWith("lounge") && (!spawnName.equals("lounge"))) {
 					lounges++;
 				}
 			}
@@ -74,15 +74,15 @@ public class StandardLounge extends ArenaModule {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck result, boolean join) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck result, final boolean join) {
 		if (!join) {
 			return result; // we only care about joining, ignore spectators
 		}
-		if (result.getPriority() > this.priority) {
+		if (result.getPriority() > PRIORITY) {
 			return result; // Something already is of higher priority, ignore!
 		}
 
-		Player p = (Player) sender;
+		final Player player = (Player) sender;
 
 		if (arena == null) {
 			return result; // arena is null - maybe some other mod wants to
@@ -90,9 +90,9 @@ public class StandardLounge extends ArenaModule {
 		}
 
 		if (arena.isLocked()
-				&& !p.hasPermission("pvparena.admin")
-				&& !(p.hasPermission("pvparena.create") && arena.getOwner()
-						.equals(p.getName()))) {
+				&& !player.hasPermission("pvparena.admin")
+				&& !(player.hasPermission("pvparena.create") && arena.getOwner()
+						.equals(player.getName()))) {
 			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
 			return result;
 		}
@@ -103,34 +103,32 @@ public class StandardLounge extends ArenaModule {
 			return result;
 		}
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 
-		if (ap.getArena() != null) {
-			db.i(this.getName(), sender);
+		if (aPlayer.getArena() != null) {
+			debug.i(this.getName(), sender);
 			result.setError(this, Language.parse(
-					MSG.ERROR_ARENA_ALREADY_PART_OF, ap.getArena().getName()));
+					MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;
 		}
 
-		if (join && ap.getArenaClass() == null) {
-			String autoClass = arena.getArenaConfig().getString(
+		if (join && aPlayer.getArenaClass() == null) {
+			final String autoClass = arena.getArenaConfig().getString(
 					CFG.READY_AUTOCLASS);
-			if (autoClass != null && !autoClass.equals("none")) {
-				if (arena.getClass(autoClass) == null) {
-					result.setError(this, Language.parse(
-							MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
-					return result;
-				}
+			if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) == null) {
+				result.setError(this, Language.parse(
+						MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+				return result;
 			}
 		}
 
-		result.setPriority(this, priority);
+		result.setPriority(this, PRIORITY);
 		return result;
 	}
 
 	@Override
-	public PACheck checkStart(ArenaPlayer ap, PACheck result) {
-		if (result.getPriority() > this.priority) {
+	public PACheck checkStart(final ArenaPlayer player, final PACheck result) {
+		if (result.getPriority() > PRIORITY) {
 			return result; // Something already is of higher priority, ignore!
 		}
 
@@ -139,23 +137,23 @@ public class StandardLounge extends ArenaModule {
 							// handle that? ignore!
 		}
 
-		String error = String.valueOf(arena.ready());
+		final String error = String.valueOf(arena.ready());
 
 		if (error != null) {
 			result.setError(this, error);
 			return result;
 		}
-		result.setPriority(this, priority);
+		result.setPriority(this, PRIORITY);
 		return result;
 	}
 
 	@Override
-	public boolean hasSpawn(String s) {
+	public boolean hasSpawn(final String spawnName) {
 		if (arena.isFreeForAll()) {
-			return s.startsWith("lounge");
+			return spawnName.startsWith("lounge");
 		}
 		for (ArenaTeam team : arena.getTeams()) {
-			if (s.startsWith(team.getName() + "lounge")) {
+			if (spawnName.startsWith(team.getName() + "lounge")) {
 				return true;
 			}
 		}
@@ -168,22 +166,22 @@ public class StandardLounge extends ArenaModule {
 	}
 
 	@Override
-	public void commitJoin(Player sender, ArenaTeam team) {
+	public void commitJoin(final Player sender, final ArenaTeam team) {
 
 		// standard join --> lounge
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
-				new PlayerStateCreateRunnable(ap, ap.get()), 2L);
+				new PlayerStateCreateRunnable(player, player.get()), 2L);
 		// ArenaPlayer.prepareInventory(arena, ap.get());
-		ap.setLocation(new PALocation(ap.get().getLocation()));
-		ap.setArena(arena);
-		team.add(ap);
+		player.setLocation(new PALocation(player.get().getLocation()));
+		player.setArena(arena);
+		team.add(player);
 		if (arena.isFreeForAll()) {
-			arena.tpPlayerToCoordName(ap.get(), "lounge");
+			arena.tpPlayerToCoordName(player.get(), "lounge");
 		} else {
-			arena.tpPlayerToCoordName(ap.get(), team.getName() + "lounge");
+			arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
 		}
-		ap.setStatus(Status.LOUNGE);
+		player.setStatus(Status.LOUNGE);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 		if (arena.isFreeForAll()) {
 			arena.msg(sender,
@@ -204,8 +202,8 @@ public class StandardLounge extends ArenaModule {
 	}
 
 	@Override
-	public void parseJoin(CommandSender player, ArenaTeam team) {
-		if (arena.START_ID != null) {
+	public void parseJoin(final CommandSender player, final ArenaTeam team) {
+		if (arena.startRunner != null) {
 			arena.countDown();
 		}
 	}

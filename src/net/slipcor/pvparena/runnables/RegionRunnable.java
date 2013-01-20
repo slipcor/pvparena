@@ -19,9 +19,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
  */
 
 public class RegionRunnable implements Runnable {
-	private final ArenaRegionShape r;
-	private Debug db = new Debug(49);
-	private int id;
+	private final ArenaRegionShape region;
+	private final static Debug DEBUG = new Debug(49);
+	private int iID;
 
 	/**
 	 * create a region runnable
@@ -29,9 +29,9 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(ArenaRegionShape paRegion) {
-		this.r = paRegion;
-		db.i("RegionRunnable constructor");
+	public RegionRunnable(final ArenaRegionShape paRegion) {
+		this.region = paRegion;
+		DEBUG.i("RegionRunnable constructor");
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class RegionRunnable implements Runnable {
 	@Override
 	public void run() {
 		if (!Debug.override) {
-			db.i("RegionRunnable commiting");
+			DEBUG.i("RegionRunnable commiting");
 		}
 		/*
 		 * J - is a join region I - is a fight in progress? T - should a region
@@ -49,15 +49,15 @@ public class RegionRunnable implements Runnable {
 		 * other region type 10 - 1 : join region! no game! tick so ppl can
 		 * join! 11 - 0 : join region! game! no tick, ppl are done joining
 		 */
-		if (r.getType().equals(RegionType.JOIN) != r.getArena()
+		if (region.getType().equals(RegionType.JOIN) == region.getArena()
 				.isFightInProgress()) {
-			r.tick();
-		} else if (!r.getType().equals(RegionType.JOIN)) {
-			Bukkit.getScheduler().cancelTask(id);
+			Bukkit.getScheduler().cancelTask(iID);
+		} else if (!region.getType().equals(RegionType.JOIN)) {
+			region.tick();
 		}
 	}
 
-	public void setId(int i) {
-		id = i;
+	public void setId(final int runID) {
+		iID = runID;
 	}
 }

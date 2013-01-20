@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -42,39 +43,39 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class GoalPlayerLives extends ArenaGoal {
 	public GoalPlayerLives() {
 		super("PlayerLives");
-		db = new Debug(102);
+		debug = new Debug(102);
 	}
 
-	EndRunnable er = null;
+	private EndRunnable endRunner = null;
 
-	HashMap<String, Integer> lives = new HashMap<String, Integer>();
+	private final Map<String, Integer> lives = new HashMap<String, Integer>();
 
 	@Override
 	public String version() {
-		return "v0.10.2.7";
+		return "v0.10.3.0";
 	}
 
-	int priority = 2;
+	private static final int PRIORITY = 2;
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
-		if (res.getPriority() > priority) {
+	public PACheck checkEnd(final PACheck res) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
 		if (!arena.isFreeForAll()) {
-			int count = TeamManager.countActiveTeams(arena);
+			final int count = TeamManager.countActiveTeams(arena);
 
 			if (count <= 1) {
-				res.setPriority(this, priority); // yep. only one team left. go!
+				res.setPriority(this, PRIORITY); // yep. only one team left. go!
 			}
 			return res;
 		}
 
-		int count = lives.size();
+		final int count = lives.size();
 
 		if (count == 1) {
-			res.setPriority(this, priority); // yep. only one player left. go!
+			res.setPriority(this, PRIORITY); // yep. only one player left. go!
 		} else if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
@@ -83,11 +84,11 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		if (!arena.isFreeForAll()) {
 
 			for (ArenaTeam team : arena.getTeams()) {
-				String sTeam = team.getName();
+				final String sTeam = team.getName();
 				if (!list.contains(team + "spawn")) {
 					boolean found = false;
 					for (String s : list) {
@@ -113,13 +114,13 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -132,33 +133,30 @@ public class GoalPlayerLives extends ArenaGoal {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= priority) {
-			res.setPriority(this, priority);
+	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+		if (res.getPriority() <= PRIORITY) {
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		if (er != null) {
+	public void commitEnd(final boolean force) {
+		if (endRunner != null) {
 			return;
 		}
 
@@ -193,31 +191,31 @@ public class GoalPlayerLives extends ArenaGoal {
 			}
 		}
 
-		er = new EndRunnable(arena, arena.getArenaConfig().getInt(
+		endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
-	public void commitPlayerDeath(Player player, boolean doesRespawn,
-			String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
+			final String error, final PlayerDeathEvent event) {
 		if (!lives.containsKey(player.getName())) {
 			return;
 		}
-		int i = lives.get(player.getName());
-		db.i("lives before death: " + i, player);
-		if (i <= 1) {
+		int pos = lives.get(player.getName());
+		debug.i("lives before death: " + pos, player);
+		if (pos <= 1) {
 			lives.remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				db.i("faking player death", player);
+				debug.i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
 			PACheck.handleEnd(arena, false);
 		} else {
-			i--;
-			lives.put(player.getName(), i);
+			pos--;
+			lives.put(player.getName(), pos);
 
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				arena.broadcast(Language.parse(
@@ -225,7 +223,7 @@ public class GoalPlayerLives extends ArenaGoal {
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
 								.getLastDamageCause().getCause(),
-								player.getKiller()), String.valueOf(i)));
+								player.getKiller()), String.valueOf(pos)));
 			}
 
 			if (arena.isCustomClassAlive()
@@ -242,25 +240,24 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (lives.containsKey(ap.getName()) ? lives.get(ap
+					String.valueOf(lives.containsKey(aPlayer.getName()) ? lives.get(aPlayer
 									.getName()) : 0));
 		}
 		return res;
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		if (arena.isFreeForAll()) {
 			return (string.toLowerCase().startsWith("spawn"));
 		}
@@ -274,7 +271,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void initate(Player player) {
+	public void initate(final Player player) {
 		lives.put(player.getName(),
 				arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
@@ -285,7 +282,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void parseLeave(Player player) {
+	public void parseLeave(final Player player) {
 		if (player == null) {
 			PVPArena.instance.getLogger().warning(
 					this.getName() + ": player NULL");
@@ -307,13 +304,13 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void reset(boolean force) {
-		er = null;
+	public void reset(final boolean force) {
+		endRunner = null;
 		lives.clear();
 	}
 
 	@Override
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
@@ -322,21 +319,21 @@ public class GoalPlayerLives extends ArenaGoal {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
+			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
-			db.i("no flagheads defined, adding white and black!");
+			debug.i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}
 	}
 
 	@Override
-	public void setPlayerLives(int value) {
-		HashSet<String> plrs = new HashSet<String>();
+	public void setPlayerLives(final int value) {
+		final Set<String> plrs = new HashSet<String>();
 
 		for (String name : lives.keySet()) {
 			plrs.add(name);
@@ -348,12 +345,12 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void setPlayerLives(ArenaPlayer ap, int value) {
-		lives.put(ap.getName(), value);
+	public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
+		lives.put(aPlayer.getName(), value);
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaPlayer ap : arena.getFighters()) {
@@ -381,7 +378,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		lives.remove(player.getName());
 	}
 }

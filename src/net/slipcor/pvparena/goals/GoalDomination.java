@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -50,52 +51,51 @@ public class GoalDomination extends ArenaGoal {
 
 	public GoalDomination() {
 		super("Domination");
-		db = new Debug(99);
+		debug = new Debug(99);
 	}
 
-	protected HashMap<Location, String> paFlags = new HashMap<Location, String>();
-	protected HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>();
-	protected HashMap<String, String> paTeamFlags = new HashMap<String, String>();
-	protected HashMap<Location, DominationRunnable> paRuns = new HashMap<Location, DominationRunnable>();
+	private final Map<Location, String> paFlags = new HashMap<Location, String>();
+	private final Map<String, Integer> paTeamLives = new HashMap<String, Integer>();
+	private final Map<String, String> paTeamFlags = new HashMap<String, String>();
+	private final Map<Location, DominationRunnable> paRuns = new HashMap<Location, DominationRunnable>();
 
 	private String flagName = "";
 
 	@Override
 	public String version() {
-		return "v0.10.2.28";
+		return "v0.10.3.0";
 	}
 
-	int priority = 8;
-	int killpriority = 1;
+	private static final int PRIORITY = 8;
 
 	@Override
 	public boolean allowsJoinInBattle() {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
 	}
 
-	public PACheck checkCommand(PACheck res, String string) {
-		if (res.getPriority() > priority) {
+	public PACheck checkCommand(final PACheck res, final String string) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
 		if (string.equals("flag")) {
-			res.setPriority(this, priority);
+			res.setPriority(this, PRIORITY);
 		}
 
 		return res;
 	}
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
+	public PACheck checkEnd(final PACheck res) {
 
-		if (res.getPriority() > priority) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
-		int count = TeamManager.countActiveTeams(arena);
+		final int count = TeamManager.countActiveTeams(arena);
 
 		if (count == 1) {
-			res.setPriority(this, priority); // yep. only one team left. go!
+			res.setPriority(this, PRIORITY); // yep. only one team left. go!
 		} else if (count == 0) {
 			res.setError(this, "No teams playing!");
 		}
@@ -104,7 +104,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		int count = 0;
 		for (String s : list) {
 			if (s.startsWith("flag")) {
@@ -117,58 +117,14 @@ public class GoalDomination extends ArenaGoal {
 		return null;
 	}
 
-	/**
-	 * hook into an interacting player
-	 * 
-	 * @param res
-	 * 
-	 * @param player
-	 *            the interacting player
-	 * @param clickedBlock
-	 *            the block being clicked
-	 * @return
-	 */
 	@Override
-	public PACheck checkInteract(PACheck res, Player player, Block block) {
-		if (block == null || res.getPriority() > priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		/**
-		 * bullshit, this all needs to go, only admin flag setting in here !
-		 * 
-		 * but the method beyond can be used to retrieve all possible spawns
-		 */
-
-		db.i("checking interact", player);
-
-		if (!block.getType().equals(Material.WOOL)) {
-			db.i("block, but not flag", player);
-			return res;
-		}
-		db.i("flag click!", player);
-
-		HashSet<PABlockLocation> flags = SpawnManager.getBlocks(arena, "flags");
-
-		if (flags.size() < 4) {
-			return res;
-		}
-		/*
-		 * Vector vFlag = SpawnManager.getBlockNearest( flags, new
-		 * PABlockLocation(player.getLocation())).toLocation().toVector();
-		 */
-
-		return res;
-	}
-
-	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
-			return res;
-		}
-
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -181,19 +137,16 @@ public class GoalDomination extends ArenaGoal {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
@@ -207,8 +160,8 @@ public class GoalDomination extends ArenaGoal {
 	 *            the distance in blocks
 	 * @return a set of player names
 	 */
-	private HashSet<String> checkLocationPresentTeams(Location loc, int distance) {
-		HashSet<String> result = new HashSet<String>();
+	private Set<String> checkLocationPresentTeams(final Location loc, final int distance) {
+		final Set<String> result = new HashSet<String>();
 
 		for (ArenaPlayer p : arena.getFighters()) {
 
@@ -227,190 +180,210 @@ public class GoalDomination extends ArenaGoal {
 		/**
 		 * possible Situations
 		 * 
-		 * >>- flag is unclaimed and no one is there - flag is unclaimed and
-		 * team a is there - flag is unclaimed and multiple teams are there
+		 * >>- flag is unclaimed and no one is there
+		 * >>- flag is unclaimed and team a is there
+		 * >>- flag is unclaimed and multiple teams are there
 		 * 
-		 * >>- flag is being claimed by team a, no one is present - flag is
-		 * being claimed by team a, team a is present - flag is being claimed by
-		 * team a, multiple teams are present - flag is being claimed by team a,
-		 * team b is present
+		 * >>- flag is being claimed by team a, no one is present
+		 * >>- flag is being claimed by team a, team a is present
+		 * >>- flag is being claimed by team a, multiple teams are present
+		 * >>- flag is being claimed by team a, team b is present
 		 * 
-		 * >>- flag is claimed by team a, no one is present >>- flag is claimed
-		 * by team a, team a is present >>- flag is claimed by team a, multiple
-		 * teams are present >>- flag is claimed by team a, team b is present
+		 * >>- flag is claimed by team a, no one is present
+		 * >>- flag is claimed by team a, team a is present
+		 * >>- flag is claimed by team a, multiple teams are present
+		 * >>- flag is claimed by team a, team b is present
 		 * 
 		 * >>- flag is claimed by team a and being unclaimed, no one is present
 		 * >>- flag is claimed by team a and being unclaimed, team a is present
-		 * >>- flag is claimed by team a and being unclaimed, multiple teams are
-		 * present >>- flag is claimed by team a and being unclaimed, team b is
-		 * present
+		 * >>- flag is claimed by team a and being unclaimed, multiple teams are present
+		 * >>- flag is claimed by team a and being unclaimed, team b is present
 		 * 
 		 */
 
-		db.i("------------------");
-		db.i("   checkMove();");
-		db.i("------------------");
+		debug.i("------------------");
+		debug.i("   checkMove();");
+		debug.i("------------------");
 
-		int checkDistance = arena.getArenaConfig().getInt(
+		final int checkDistance = arena.getArenaConfig().getInt(
 				CFG.GOAL_DOM_CLAIMRANGE);
 
-		for (PALocation loc : SpawnManager.getSpawns(arena, "flags")) {
-			// db.i("checking location: " + loc.toString());
+		for (PALocation paLoc : SpawnManager.getSpawns(arena, "flags")) {
+			// debug.i("checking location: " + loc.toString());
+			
+			Location loc = paLoc.toLocation();
 
-			HashSet<String> teams = checkLocationPresentTeams(loc.toLocation(),
+			final Set<String> teams = checkLocationPresentTeams(paLoc.toLocation(),
 					checkDistance);
 
-			String sTeams = "teams: ";
-
-			for (String team : teams) {
-				sTeams += ", " + team;
-			}
-
-			db.i(sTeams);
+			debug.i("teams: " + StringParser.joinSet(teams, ", "));
 
 			// teams now contains all teams near the flag
 
 			if (teams.size() < 1) {
-				// db.i("=> noone there!");
+				// debug.i("=> noone there!");
 				// no one there
 				if (paRuns.containsKey(loc)) {
-					db.i("flag is being (un)claimed! Cancelling!");
+					debug.i("flag is being (un)claimed! Cancelling!");
 					// cancel unclaiming/claiming if noone's near
-					Bukkit.getScheduler().cancelTask(paRuns.get(loc).ID);
+					Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
 					paRuns.remove(loc);
 				}
 				if (paFlags.containsKey(loc)) {
-					String team = paFlags.get(loc);
+					final String team = paFlags.get(loc);
 
+					if (!paTeamLives.containsKey(team)) {
+						continue;
+					}
+					
 					// flag claimed! add score!
 					reduceLivesCheckEndAndCommit(arena, team);
+					
+					int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
+					int lives = this.paTeamLives.get(team);
+					
 					arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
 							arena.getTeam(team).getColoredName()
-									+ ChatColor.YELLOW));
+									+ ChatColor.YELLOW, (max-lives)+"/"+max));
 				}
 				continue;
 			}
 
 			// there are actually teams at the flag
-			db.i("=> at least one team is at the flag!");
+			debug.i("=> at least one team is at the flag!");
 
 			if (paFlags.containsKey(loc)) {
 				// flag is taken. by whom?
 				if (teams.contains(paFlags.get(loc))) {
 					// owning team is there
-					db.i("  - owning team is there");
+					debug.i("  - owning team is there");
 					if (teams.size() > 1) {
 						// another team is there
-						db.i("    - and another one");
+						debug.i("    - and another one");
 						if (paRuns.containsKey(loc)) {
 							// it is being unclaimed
-							db.i("      - being unclaimed. continue!");
+							debug.i("      - being unclaimed. continue!");
 						} else {
 							// unclaim
-							db.i("      - not being unclaimed. do it!");
-							DominationRunnable dr = new DominationRunnable(
-									arena, false, loc.toLocation(),
-									"another team", this);
-							dr.ID = Bukkit.getScheduler()
+							debug.i("      - not being unclaimed. do it!");
+							final DominationRunnable domRunner = new DominationRunnable(
+									arena, false, loc,
+									paFlags.get(loc), this);
+							domRunner.runID = Bukkit.getScheduler()
 									.scheduleSyncRepeatingTask(
-											PVPArena.instance, dr, 10 * 20L,
+											PVPArena.instance, domRunner, 10 * 20L,
 											10 * 20L);
-							paRuns.put(loc.toLocation(), dr);
+							paRuns.put(loc, domRunner);
 						}
 					} else {
 						// just the owning team is there
-						db.i("    - noone else");
+						debug.i("    - noone else");
 						if (paRuns.containsKey(loc)) {
-							db.i("      - being unclaimed. cancel!");
+							debug.i("      - being unclaimed. cancel!");
 							// it is being unclaimed
 							// cancel task!
 							Bukkit.getScheduler()
-									.cancelTask(paRuns.get(loc).ID);
+									.cancelTask(paRuns.get(loc).runID);
 							paRuns.remove(loc);
 						} else {
 
-							String team = paFlags.get(loc);
+							final String team = paFlags.get(loc);
 
+							if (!paTeamLives.containsKey(team)) {
+								continue;
+							}
+							
 							// flag claimed! add score!
 							reduceLivesCheckEndAndCommit(arena, team);
-							arena.broadcast(Language.parse(
-									MSG.GOAL_DOMINATION_SCORE,
+							
+							int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
+							int lives = this.paTeamLives.get(team);
+							
+							arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
 									arena.getTeam(team).getColoredName()
-											+ ChatColor.YELLOW));
+											+ ChatColor.YELLOW, (max-lives)+"/"+max));
 						}
 					}
 					continue;
 				}
 
-				db.i("  - owning team is not there!");
+				debug.i("  - owning team is not there!");
 				// owning team is NOT there ==> unclaim!
 
 				if (paRuns.containsKey(loc)) {
 					if (paRuns.get(loc).take) {
-						db.i("    - runnable is trying to score, abort");
+						debug.i("    - runnable is trying to score, abort");
 
-						Bukkit.getScheduler().cancelTask(paRuns.get(loc).ID);
+						Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
 						paRuns.remove(loc);
 					} else {
-						db.i("    - being unclaimed. continue.");
+						debug.i("    - being unclaimed. continue.");
 					}
 					continue;
 				}
-				db.i("    - not yet being unclaimed, do it!");
+				debug.i("    - not yet being unclaimed, do it!");
 				// create an unclaim runnable
-				DominationRunnable running = new DominationRunnable(arena,
-						false, loc.toLocation(), paFlags.get(loc), this);
-				long interval = 20L * 10;
+				final DominationRunnable running = new DominationRunnable(arena,
+						false, loc, paFlags.get(loc), this);
+				final long interval = 20L * 10;
 
-				running.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				running.runID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 						PVPArena.instance, running, interval, interval);
-				paRuns.put(loc.toLocation(), running);
+				paRuns.put(loc, running);
 			} else {
 				// flag not taken
-				db.i("- flag not taken");
+				debug.i("- flag not taken");
 
 				/*
-				 * check if a runnable yes check if only that team yes =>
-				 * continue; no => cancel no check if only that team yes =>
-				 * create runnable; no => continue
+				 * check if a runnable
+				 * 	yes
+				 * 		check if only that team
+				 * 			yes => continue;
+				 * 			no => cancel
+				 * 	no
+				 * 		check if only that team
+				 * 			yes => create runnable;
+				 * 			no => continue
 				 */
 				if (paRuns.containsKey(loc)) {
-					db.i("  - being claimed");
+
+					debug.i("  - being claimed");
+
 					if (teams.size() < 2) {
-						db.i("  - only one team present");
+						debug.i("  - only one team present");
 						if (teams.contains(paRuns.get(loc).team)) {
 							// just THE team that is claiming => NEXT
-							db.i("  - claiming team present. next!");
+							debug.i("  - claiming team present. next!");
 							continue;
 						}
 					}
-					db.i("  - more than one team. cancel claim!");
+					debug.i("  - more than one team or another team. cancel claim!");
 					// more than THE team that is claiming => cancel!
-					Bukkit.getScheduler().cancelTask(paRuns.get(loc).ID);
+					Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
 				} else {
-					db.i("  - not being claimed");
+					debug.i("  - not being claimed");
 					// not being claimed
 					if (teams.size() < 2) {
-						db.i("  - just one team present");
+						debug.i("  - just one team present");
 						for (String sName : teams) {
-							db.i("TEAM " + sName + " IS CLAIMING "
+							debug.i("TEAM " + sName + " IS CLAIMING "
 									+ loc.toString());
-							ArenaTeam team = arena.getTeam(sName);
+							final ArenaTeam team = arena.getTeam(sName);
 							arena.broadcast(Language.parse(
 									MSG.GOAL_DOMINATION_CLAIMING,
-									team.getColoredName()));
+									team.getColoredName() + ChatColor.YELLOW));
 
-							DominationRunnable running = new DominationRunnable(
-									arena, true, loc.toLocation(), sName, this);
-							long interval = 20L * 10;
-							running.ID = Bukkit.getScheduler()
+							final DominationRunnable running = new DominationRunnable(
+									arena, true, loc, sName, this);
+							final long interval = 20L * 10;
+							running.runID = Bukkit.getScheduler()
 									.scheduleSyncRepeatingTask(
 											PVPArena.instance, running,
 											interval, interval);
-							paRuns.put(loc.toLocation(), running);
+							paRuns.put(loc, running);
 						}
 					} else {
-						db.i("  - more than one team present. continue!");
+						debug.i("  - more than one team present. continue!");
 					}
 				}
 			}
@@ -418,20 +391,20 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-		if (res.getPriority() > priority
+		if (res.getPriority() > PRIORITY
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
-		res.setPriority(this, priority); // success :)
+		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
 	}
 
-	private void commit(Arena arena, String sTeam, boolean win) {
-		db.i("[CTF] committing end: " + sTeam);
-		db.i("win: " + String.valueOf(win));
+	private void commit(final Arena arena, final String sTeam, final boolean win) {
+		debug.i("[CTF] committing end: " + sTeam);
+		debug.i("win: " + win);
 
 		String winteam = sTeam;
 
@@ -476,7 +449,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public void commitCommand(CommandSender sender, String[] args) {
+	public void commitCommand(final CommandSender sender, final String[] args) {
 		if (PAA_Region.activeSelections.containsKey(sender.getName())) {
 			PAA_Region.activeSelections.remove(sender.getName());
 			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_SET, "flags"));
@@ -488,8 +461,8 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		db.i("[DOMINATION]");
+	public void commitEnd(final boolean force) {
+		debug.i("[DOMINATION]");
 
 		ArenaTeam aTeam = null;
 
@@ -520,7 +493,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public boolean commitSetFlag(Player player, Block block) {
+	public boolean commitSetFlag(final Player player, final Block block) {
 		if (block == null || !block.getType().equals(Material.WOOL)) {
 			return false;
 		}
@@ -531,7 +504,7 @@ public class GoalDomination extends ArenaGoal {
 				&& (player.getItemInHand().getTypeId() == arena
 						.getArenaConfig().getInt(CFG.GENERAL_WAND))) {
 
-			HashSet<PABlockLocation> flags = SpawnManager.getBlocks(arena,
+			final Set<PABlockLocation> flags = SpawnManager.getBlocks(arena,
 					"flags");
 
 			if (flags.contains(new PABlockLocation(block.getLocation()))) {
@@ -550,52 +523,49 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (paTeamLives.containsKey(ap.getArenaTeam()
-									.getName()) ? paTeamLives.get(ap
+					String.valueOf(paTeamLives.containsKey(aPlayer.getArenaTeam()
+									.getName()) ? paTeamLives.get(aPlayer
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
 	}
 
 	@Override
-	public String guessSpawn(String place) {
+	public String guessSpawn(final String place) {
 		// no exact match: assume we have multiple spawnpoints
-		HashMap<Integer, String> locs = new HashMap<Integer, String>();
-		int i = 0;
+		final Map<Integer, String> locs = new HashMap<Integer, String>();
+		int pos = 0;
 
-		db.i("searching for team spawns: " + place);
+		debug.i("searching for team spawns: " + place);
 
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena
+		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false);
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
-				locs.put(i++, name);
-				db.i("found match: " + name);
+				locs.put(pos++, name);
+				debug.i("found match: " + name);
 			}
 			if (name.startsWith("flag")) {
-				locs.put(i++, name);
-				db.i("found match: " + name);
+				locs.put(pos++, name);
+				debug.i("found match: " + name);
 			}
 		}
 
 		if (locs.size() < 1) {
 			return null;
 		}
-		Random r = new Random();
+		final Random random = new Random();
 
-		place = locs.get(r.nextInt(locs.size()));
-
-		return place;
+		return locs.get(random.nextInt(locs.size()));
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().startsWith(
 					teamName.toLowerCase() + "spawn")) {
@@ -606,15 +576,19 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public void initate(Player player) {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = ap.getArenaTeam();
+	public void initate(final Player player) {
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 		if (!paTeamLives.containsKey(team.getName())) {
-			paTeamLives.put(ap.getArenaTeam().getName(), arena.getArenaConfig()
+			paTeamLives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_DOM_LIVES));
 
-			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
+			final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
+					"flags");
+			for (String s : map.keySet()) {
+				takeFlag("WHITE", false,
+						SpawnManager.getCoords(arena, s));
+			}
 		}
 	}
 
@@ -628,31 +602,31 @@ public class GoalDomination extends ArenaGoal {
 		paTeamLives.clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() > 0) {
-				db.i("adding team " + team.getName());
+				debug.i("adding team " + team.getName());
 				// team is active
 				paTeamLives.put(team.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES, 3));
 			}
-			HashMap<String, PALocation> map = SpawnManager.getSpawnMap(arena,
-					"flags");
-			for (String s : map.keySet()) {
-				takeFlag(team.getColor().name(), false,
-						SpawnManager.getCoords(arena, s));
-			}
+		}
+		final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
+				"flags");
+		for (String s : map.keySet()) {
+			takeFlag("WHITE", false,
+					SpawnManager.getCoords(arena, s));
 		}
 
-		DominationMainRunnable dmr = new DominationMainRunnable(arena, this);
-		dmr.ID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, dmr, 3 * 20L, 3 * 20L);
+		final DominationMainRunnable domMainRunner = new DominationMainRunnable(arena, this);
+		domMainRunner.rID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+				PVPArena.instance, domMainRunner, 3 * 20L, 3 * 20L);
 	}
 
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
 
-		db.i("reducing lives of team " + team);
+		debug.i("reducing lives of team " + team);
 		if (paTeamLives.get(team) != null) {
-			int i = paTeamLives.get(team) - 1;
-			if (i > 0) {
-				paTeamLives.put(team, i);
+			final int iLives = paTeamLives.get(team) - 1;
+			if (iLives > 0) {
+				paTeamLives.put(team, iLives);
 			} else {
 				paTeamLives.remove(team);
 				commit(arena, team, false);
@@ -663,7 +637,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 		paTeamFlags.clear();
 		paTeamLives.clear();
 		paRuns.clear();
@@ -671,7 +645,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
@@ -680,7 +654,7 @@ public class GoalDomination extends ArenaGoal {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
+			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
@@ -698,17 +672,17 @@ public class GoalDomination extends ArenaGoal {
 	 * @param lBlock
 	 *            the location to take/reset
 	 */
-	public void takeFlag(String flagColor, boolean take, PALocation lBlock) {
+	public void takeFlag(final String flagColor, final boolean take, final PALocation lBlock) {
 		if (take) {
 			lBlock.toLocation().getBlock()
-					.setData(StringParser.getColorDataFromENUM("WHITE"));
+			.setData(StringParser.getColorDataFromENUM(flagColor));
 		} else {
 			lBlock.toLocation().getBlock()
-					.setData(StringParser.getColorDataFromENUM(flagColor));
+			.setData(StringParser.getColorDataFromENUM("WHITE"));
 		}
 	}
 
-	static void takeFlag(Arena arena, Location lBlock, String name) {
+	private static void takeFlag(final Arena arena, final Location lBlock, final String name) {
 		ArenaTeam team = null;
 		for (ArenaTeam t : arena.getTeams()) {
 			if (t.getName().equals(name)) {
@@ -725,7 +699,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaTeam team : arena.getTeams()) {
@@ -744,27 +718,27 @@ public class GoalDomination extends ArenaGoal {
 	protected class DominationRunnable implements Runnable {
 		public final boolean take;
 		public final Location loc;
-		public int ID = -1;
+		public int runID = -1;
 		private final Arena arena;
 		public final String team;
-		private Debug db = new Debug(39);
+		private final Debug debug = new Debug(39);
 		private final GoalDomination domination;
 
 		/**
 		 * create a domination runnable
 		 * 
-		 * @param a
+		 * @param arena
 		 *            the arena we are running in
 		 * @param domination
 		 */
-		public DominationRunnable(Arena a, boolean b, Location l, String s,
-				GoalDomination d) {
-			arena = a;
-			take = b;
-			team = s;
-			loc = l;
-			domination = d;
-			db.i("Domination constructor");
+		public DominationRunnable(final Arena arena, final boolean take, final Location loc2, final String teamName,
+				final GoalDomination goal) {
+			this.arena = arena;
+			this.take = take;
+			this.team = teamName;
+			this.loc = loc2;
+			this.domination = goal;
+			debug.i("Domination constructor");
 		}
 
 		/**
@@ -772,59 +746,51 @@ public class GoalDomination extends ArenaGoal {
 		 */
 		@Override
 		public void run() {
-			db.i("DominationRunnable commiting");
-			db.i("team " + team + ", take: " + String.valueOf(take));
+			debug.i("DominationRunnable commiting");
+			debug.i("team " + team + ", take: " + take);
 			if (take) {
 				// claim a flag for the team
 				if (domination.paFlags.containsKey(loc)) {
 					// PVPArena.instance.getLogger().warning("wtf");
 				} else {
 					// flag unclaimed! claim!
-					db.i("clag unclaimed. claim!");
+					debug.i("clag unclaimed. claim!");
 					domination.paFlags.put(loc, team);
 					// long interval = 20L * 5;
 
 					arena.broadcast(Language.parse(
-							MSG.GOAL_DOMINATION_CLAIMING, arena.getTeam(team)
+							MSG.GOAL_DOMINATION_CLAIMED, arena.getTeam(team)
 									.getColoredName() + ChatColor.YELLOW));
 					GoalDomination.takeFlag(arena, loc, team);
+					domination.paFlags.put(loc, team);
 
 					// claim done. end timer
-					Bukkit.getScheduler().cancelTask(ID);
+					Bukkit.getScheduler().cancelTask(runID);
 					domination.paRuns.remove(loc);
 				}
 			} else {
 				// unclaim
-				db.i("unclaim");
+				debug.i("unclaim");
 				arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_UNCLAIMING,
 						team + ChatColor.YELLOW));
 				GoalDomination.takeFlag(arena, loc, "");
-				Bukkit.getScheduler().cancelTask(ID);
+				Bukkit.getScheduler().cancelTask(runID);
 				domination.paRuns.remove(loc);
 				domination.paFlags.remove(loc);
 			}
 		}
-
-		public boolean noOneThere(int checkDistance) {
-			for (ArenaPlayer p : arena.getFighters()) {
-				if (p.get().getLocation().distance(loc) < checkDistance) {
-					return false;
-				}
-			}
-			return true;
-		}
 	}
 
 	protected class DominationMainRunnable implements Runnable {
-		public int ID = -1;
+		public int rID = -1;
 		private final Arena arena;
-		private Debug db = new Debug(39);
+		private final Debug debug = new Debug(39);
 		private final GoalDomination domination;
 
-		public DominationMainRunnable(Arena a, GoalDomination d) {
-			arena = a;
-			domination = d;
-			db.i("DominationMainRunnable constructor");
+		public DominationMainRunnable(Arena arena, GoalDomination goal) {
+			this.arena = arena;
+			this.domination = goal;
+			debug.i("DominationMainRunnable constructor");
 		}
 
 		/**
@@ -832,10 +798,19 @@ public class GoalDomination extends ArenaGoal {
 		 */
 		@Override
 		public void run() {
-			if (!arena.isFightInProgress() || arena.REALEND_ID != null) {
-				Bukkit.getScheduler().cancelTask(ID);
+			if (!arena.isFightInProgress() || arena.realEndRunner != null) {
+				Bukkit.getScheduler().cancelTask(rID);
 			}
 			domination.checkMove();
 		}
+	}
+	
+	protected <V> V get(Map<PALocation, V> map, PALocation find) {
+		for (PALocation l : map.keySet()) {
+			if (l.getDistance(find) < 1) {
+				return map.get(l);
+			}
+		}
+		return null;
 	}
 }

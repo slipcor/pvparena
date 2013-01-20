@@ -25,14 +25,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Round extends PAA__Command {
+public class PAA_Round extends AbstractArenaCommand {
 	
 	public PAA_Round() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -49,33 +49,31 @@ public class PAA_Round extends PAA__Command {
 			if (arena.getRoundCount() < 1) {
 				arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
 			} else {
-				PARoundMap rm = arena.getRounds();
-				for (int i = 0; i < rm.getCount(); i ++) {
-					arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, String.valueOf(i+1), StringParser.joinSet(rm.getGoals(i),", ")));
+				final PARoundMap roundMap = arena.getRounds();
+				for (int i = 0; i < roundMap.getCount(); i ++) {
+					arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, String.valueOf(i+1), StringParser.joinSet(roundMap.getGoals(i),", ")));
 				}
 			}
 			return;
 		}
 		
 		try {
-			int i = Integer.parseInt(args[1]);
-			PARoundMap rm = arena.getRounds();
+			int round = Integer.parseInt(args[1]);
+			final PARoundMap roundMap = arena.getRounds();
 			
-			if (i >= arena.getRoundCount()) {
-				i = arena.getRoundCount();
+			if (round >= arena.getRoundCount()) {
+				round = arena.getRoundCount();
 				
-				rm.set(i, new PARound(new HashSet<ArenaGoal>()));
+				roundMap.set(round, new PARound(new HashSet<ArenaGoal>()));
 			} else if (args.length < 3) {
-				arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, args[1], StringParser.joinSet(rm.getGoals(i),", ")));
+				arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, args[1], StringParser.joinSet(roundMap.getGoals(round),", ")));
 				return;
 			}
 			
 			ArenaGoal goal = null;
 			
-			try {
+			if (args.length > 2) {
 				goal = PVPArena.instance.getAgm().getGoalByName(args[2].toLowerCase());
-			} catch (Exception e) {
-				// nothing
 			}
 			
 			if (goal == null) {
@@ -84,9 +82,9 @@ public class PAA_Round extends PAA__Command {
 				return;
 			}
 
-			PARound r = rm.getRound(i);
+			final PARound rRound = roundMap.getRound(round);
 			
-			if (r.toggle(arena, goal)) {
+			if (rRound.toggle(arena, goal)) {
 				// added
 				arena.msg(sender, Language.parse(MSG.ROUND_ADDED, goal.getName()));
 			} else {
@@ -94,7 +92,7 @@ public class PAA_Round extends PAA__Command {
 				arena.msg(sender, Language.parse(MSG.ROUND_REMOVED, goal.getName()));
 			}
 			
-			rm.set(i, r);
+			roundMap.set(round, rRound);
 			//TODO LATER
 			
 		} catch (Exception e) {
@@ -108,7 +106,7 @@ public class PAA_Round extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.ROUND));
 	}
 }

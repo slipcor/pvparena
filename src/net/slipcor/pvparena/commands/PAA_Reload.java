@@ -18,14 +18,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Reload extends PAA__Command {
+public class PAA_Reload extends AbstractArenaCommand {
 
 	public PAA_Reload() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -34,14 +34,14 @@ public class PAA_Reload extends PAA__Command {
 			return;
 		}
 		
-		String name = arena.getName();
+		final String name = arena.getName();
 		
 		arena.stop(true);
 		ArenaManager.removeArena(arena, false);
-		arena = new Arena(name);
-		ArenaManager.loadArena(arena.getName());
+		final Arena newArena = new Arena(name);
+		ArenaManager.loadArena(newArena.getName());
 		
-		arena.msg(sender, Language.parse(MSG.RELOAD_DONE));
+		newArena.msg(sender, Language.parse(MSG.RELOAD_DONE));
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class PAA_Reload extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.RELOAD));
 	}
 }

@@ -19,14 +19,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Check extends PAA__Command {
+public class PAA_Check extends AbstractArenaCommand {
 
 	public PAA_Check() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -43,17 +43,17 @@ public class PAA_Check extends PAA__Command {
 			}
 			try {
 				if (c.getType().equals("string")) {
-					String s = arena.getArenaConfig().getString(c);
-					arena.msg(sender, "correct " + c.getType() + String.valueOf(s));
+					final String value = arena.getArenaConfig().getString(c);
+					arena.msg(sender, "correct " + c.getType() + ": " + value);
 				} else if (c.getType().equals("boolean")) {
-					boolean b = arena.getArenaConfig().getBoolean(c);
-					arena.msg(sender, "correct " + c.getType() + String.valueOf(b));
+					final boolean value = arena.getArenaConfig().getBoolean(c);
+					arena.msg(sender, "correct " + c.getType() + ": " + value);
 				} else if (c.getType().equals("int")) {
-					int i = arena.getArenaConfig().getInt(c);
-					arena.msg(sender, "correct " + c.getType() + String.valueOf(i));
+					final int value = arena.getArenaConfig().getInt(c);
+					arena.msg(sender, "correct " + c.getType() + ": " + value);
 				} else if (c.getType().equals("double")) {
-					double d = arena.getArenaConfig().getDouble(c);
-					arena.msg(sender, "correct " + c.getType() + String.valueOf(d));
+					final double value = arena.getArenaConfig().getDouble(c);
+					arena.msg(sender, "correct " + c.getType() + ": " + value);
 				}
 			} catch (Exception e) {
 				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, c.getNode()));
@@ -72,7 +72,7 @@ public class PAA_Check extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CHECK));
 	}
 }

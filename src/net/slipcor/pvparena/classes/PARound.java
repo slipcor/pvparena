@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.classes;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -16,18 +16,18 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
  */
 
 public class PARound {
-	private HashSet<ArenaGoal> goals = new HashSet<ArenaGoal>();
+	private final Set<ArenaGoal> goals;
 	
-	public PARound(HashSet<ArenaGoal> arenagoals) {
-		goals = arenagoals;
+	public PARound(final Set<ArenaGoal> result) {
+		goals = result;
 	}
 	
-	public HashSet<ArenaGoal> getGoals() {
+	public Set<ArenaGoal> getGoals() {
 		return goals;
 	}
 
-	public boolean toggle(Arena arena, ArenaGoal goal) {
-		ArenaGoal nugoal = (ArenaGoal) goal.clone();
+	public boolean toggle(final Arena arena, final ArenaGoal goal) {
+		final ArenaGoal nugoal = (ArenaGoal) goal.clone();
 		nugoal.setArena(arena);
 		
 		boolean contains = false;

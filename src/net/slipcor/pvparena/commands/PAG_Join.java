@@ -22,16 +22,16 @@ import org.bukkit.entity.Player;
  * @version v0.10.2
  */
 
-public class PAG_Join extends PAA__Command {
+public class PAG_Join extends AbstractArenaCommand {
 	
-	Debug db = new Debug(200);
+	private final Debug debug = new Debug(200);
 
 	public PAG_Join() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -45,26 +45,27 @@ public class PAG_Join extends PAA__Command {
 			return;
 		}
 		
-		String error = ConfigurationManager.isSetup(arena);
+		final String error = ConfigurationManager.isSetup(arena);
 		if (error != null) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
 			return;
 		}
 		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
-		if (ap.getArena() != null) {
-			Arena a = ap.getArena();
-			db.i("Join_1", sender);
-			a.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, a.getName()));
-			return;
-		} else if (arena.hasAlreadyPlayed(ap.getName())) {
-			db.i("Join_2", sender);
-			arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
-			return;
+		if (aPlayer.getArena() == null) {
+			if (arena.hasAlreadyPlayed(aPlayer.getName())) {
+				debug.i("Join_2", sender);
+				arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
+			} else {
+				PACheck.handleJoin(arena, sender, args);
+			}
+		} else {
+			final Arena pArena = aPlayer.getArena();
+			debug.i("Join_1", sender);
+			pArena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, pArena.getName()));
 		}
 		
-		PACheck.handleJoin(arena, sender, args);
 	}
 
 	@Override
@@ -73,7 +74,7 @@ public class PAG_Join extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.JOIN));
 	}
 }

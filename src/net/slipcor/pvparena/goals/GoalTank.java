@@ -2,6 +2,7 @@ package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -46,34 +47,34 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 public class GoalTank extends ArenaGoal {
 	public GoalTank() {
 		super("Tank");
-		db = new Debug(108);
+		debug = new Debug(108);
 	}
 
-	static HashMap<Arena, String> tanks = new HashMap<Arena, String>();
+	private static Map<Arena, String> tanks = new HashMap<Arena, String>();
 
-	EndRunnable er = null;
+	private EndRunnable endRunner = null;
 
-	HashMap<String, Integer> lives = new HashMap<String, Integer>();
+	private final Map<String, Integer> lives = new HashMap<String, Integer>();
 
 	@Override
 	public String version() {
-		return "v0.10.2.31";
+		return "v0.10.3.0";
 	}
 
-	int priority = 8;
+	private static final int PRIORITY = 8;
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
-		if (res.getPriority() > priority) {
+	public PACheck checkEnd(final PACheck res) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
-		int count = lives.size();
+		final int count = lives.size();
 
 		if (count == 1
 				|| !ArenaPlayer.parsePlayer(tanks.get(arena)).getStatus()
 						.equals(Status.FIGHT)) {
-			res.setPriority(this, priority); // yep. only one player left. go!
+			res.setPriority(this, PRIORITY); // yep. only one player left. go!
 		} else if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
@@ -82,7 +83,7 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		if (!arena.isFreeForAll()) {
 			return null; // teams are handled somewhere else
 		}
@@ -101,13 +102,13 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -120,41 +121,38 @@ public class GoalTank extends ArenaGoal {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
-		if (res.getPriority() <= priority) {
-			res.setPriority(this, priority);
+	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+		if (res.getPriority() <= PRIORITY) {
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public PACheck checkStart(PACheck res) {
-		if (res.getPriority() < priority) {
-			res.setPriority(this, priority);
+	public PACheck checkStart(final PACheck res) {
+		if (res.getPriority() < PRIORITY) {
+			res.setPriority(this, PRIORITY);
 		}
 		return res;
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		if (er != null) {
+	public void commitEnd(final boolean force) {
+		if (endRunner != null) {
 			return;
 		}
 		for (ArenaTeam team : arena.getTeams()) {
@@ -183,31 +181,31 @@ public class GoalTank extends ArenaGoal {
 			}
 		}
 
-		er = new EndRunnable(arena, arena.getArenaConfig().getInt(
+		endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
 
 	@Override
-	public void commitPlayerDeath(Player player, boolean doesRespawn,
-			String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
+			final String error, final PlayerDeathEvent event) {
 		if (!lives.containsKey(player.getName())) {
 			return;
 		}
-		int i = lives.get(player.getName());
-		db.i("lives before death: " + i, player);
-		if (i <= 1 || tanks.get(arena).equals(player.getName())) {
+		int iLives = lives.get(player.getName());
+		debug.i("lives before death: " + iLives, player);
+		if (iLives <= 1 || tanks.get(arena).equals(player.getName())) {
 			lives.remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				db.i("faking player death", player);
+				debug.i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
 			PACheck.handleEnd(arena, false);
 		} else {
-			i--;
-			lives.put(player.getName(), i);
+			iLives--;
+			lives.put(player.getName(), iLives);
 
-			ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				arena.broadcast(Language.parse(
@@ -215,7 +213,7 @@ public class GoalTank extends ArenaGoal {
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
 								.getLastDamageCause().getCause(),
-								player.getKiller()), String.valueOf(i)));
+								player.getKiller()), String.valueOf(iLives)));
 			}
 
 			if (arena.isCustomClassAlive()
@@ -238,31 +236,30 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (lives.containsKey(ap.getName()) ? lives.get(ap
+					String.valueOf(lives.containsKey(aPlayer.getName()) ? lives.get(aPlayer
 									.getName()) : 0));
 		}
 		return res;
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		return (arena.isFreeForAll() && string.toLowerCase()
 				.startsWith("spawn")) || string.equals("tank");
 	}
 
 	@Override
-	public void initate(Player player) {
+	public void initate(final Player player) {
 		lives.put(player.getName(),
 				arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 	}
@@ -273,7 +270,7 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public void parseLeave(Player player) {
+	public void parseLeave(final Player player) {
 		if (player == null) {
 			PVPArena.instance.getLogger().warning(
 					this.getName() + ": player NULL");
@@ -287,26 +284,27 @@ public class GoalTank extends ArenaGoal {
 	@Override
 	public void parseStart() {
 		ArenaPlayer tank = null;
+		final Random random = new Random();
 		for (ArenaTeam team : arena.getTeams()) {
-			int i = (new Random()).nextInt(team.getTeamMembers().size());
-			db.i("team " + team.getName() + " random " + i);
+			int pos = random.nextInt(team.getTeamMembers().size());
+			debug.i("team " + team.getName() + " random " + pos);
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				db.i("#" + i + ": " + ap.toString(), ap.getName());
-				if (i-- == 0) {
+				debug.i("#" + pos + ": " + ap.toString(), ap.getName());
+				if (pos-- == 0) {
 					tank = ap;
 				}
 				this.lives.put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_TANK_LIVES));
 			}
 		}
-		ArenaTeam tankTeam = new ArenaTeam("tank", "PINK");
+		final ArenaTeam tankTeam = new ArenaTeam("tank", "PINK");
 		for (ArenaTeam team : arena.getTeams()) {
 			team.remove(tank);
 		}
 		tankTeam.add(tank);
 		tanks.put(arena, tank.getName());
 
-		ArenaClass tankClass = arena.getClass("%tank%");
+		final ArenaClass tankClass = arena.getClass("%tank%");
 		if (tankClass != null) {
 			tank.setArenaClass(tankClass);
 			InventoryManager.clearInventory(tank.get());
@@ -323,16 +321,16 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public void reset(boolean force) {
-		er = null;
+	public void reset(final boolean force) {
+		endRunner = null;
 		lives.clear();
 		tanks.remove(arena);
 		arena.getTeams().remove(arena.getTeam("tank"));
 	}
 
 	@Override
-	public void setPlayerLives(int value) {
-		HashSet<String> plrs = new HashSet<String>();
+	public void setPlayerLives(final int value) {
+		final Set<String> plrs = new HashSet<String>();
 
 		for (String name : lives.keySet()) {
 			plrs.add(name);
@@ -344,12 +342,12 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public void setPlayerLives(ArenaPlayer ap, int value) {
-		lives.put(ap.getName(), value);
+	public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
+		lives.put(aPlayer.getName(), value);
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaPlayer ap : arena.getFighters()) {
@@ -369,7 +367,7 @@ public class GoalTank extends ArenaGoal {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		lives.remove(player.getName());
 	}
 }

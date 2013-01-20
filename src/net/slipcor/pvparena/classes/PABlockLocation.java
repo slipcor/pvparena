@@ -22,38 +22,38 @@ public class PABlockLocation {
 	private int y;
 	private int z;
 
-	public PABlockLocation(String world, int x, int y, int z) {
+	public PABlockLocation(final String world, final int x, final int y, final int z) {
 		this.world = world;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
-	public PABlockLocation(Location l) {
-		this.world = l.getWorld().getName();
-		this.x = l.getBlockX();
-		this.y = l.getBlockY();
-		this.z = l.getBlockZ();
+	public PABlockLocation(final Location bukkitLocation) {
+		this.world = bukkitLocation.getWorld().getName();
+		this.x = bukkitLocation.getBlockX();
+		this.y = bukkitLocation.getBlockY();
+		this.z = bukkitLocation.getBlockZ();
 	}
 
-	public double getDistance(PABlockLocation o) {
-		if (o == null) {
+	public double getDistance(final PABlockLocation otherLocation) {
+		if (otherLocation == null) {
 			throw new IllegalArgumentException(
 					"Cannot measure distance to a null location");
 		}
-		if (!o.world.equals(world)) {
+		if (!otherLocation.world.equals(world)) {
 			throw new IllegalArgumentException(
 					"Cannot measure distance between " + world + " and "
-							+ o.world);
+							+ otherLocation.world);
 		}
 
-		return Math.sqrt(Math.pow(this.x - o.x, 2.0D)
-				+ Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
+		return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
+				+ Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
 	}
 
-	public PABlockLocation getMidpoint(PABlockLocation l) {
-		return new PABlockLocation(world, (x + l.x) / 2, (y + l.y) / 2,
-				(z + l.z) / 2);
+	public PABlockLocation getMidpoint(final PABlockLocation location) {
+		return new PABlockLocation(world, (x + location.x) / 2, (y + location.y) / 2,
+				(z + location.z) / 2);
 	}
 
 	public String getWorldName() {
@@ -72,7 +72,7 @@ public class PABlockLocation {
 		return z;
 	}
 
-	public boolean isInAABB(PABlockLocation min, PABlockLocation max) {
+	public boolean isInAABB(final PABlockLocation min, final PABlockLocation max) {
 		if (this.getX() < min.getX() || this.getX() > max.getX()) {
 			return false;
 		}
@@ -85,9 +85,9 @@ public class PABlockLocation {
 		return true;
 	}
 
-	public PABlockLocation pointTo(PABlockLocation dest, Double length) {
-		Vector source = new Vector(x, y, z);
-		Vector destination = new Vector(dest.x, dest.y, dest.z);
+	public PABlockLocation pointTo(final PABlockLocation dest, final Double length) {
+		final Vector source = new Vector(x, y, z);
+		final Vector destination = new Vector(dest.x, dest.y, dest.z);
 
 		Vector goal = source.subtract(destination);
 
@@ -97,16 +97,16 @@ public class PABlockLocation {
 				+ goal.getBlockY(), z + goal.getBlockZ());
 	}
 
-	public void setX(int i) {
-		x = i;
+	public void setX(final int value) {
+		x = value;
 	}
 
-	public void setY(int i) {
-		y = i;
+	public void setY(final int value) {
+		y = value;
 	}
 
-	public void setZ(int i) {
-		z = i;
+	public void setZ(final int value) {
+		z = value;
 	}
 
 	public Location toLocation() {

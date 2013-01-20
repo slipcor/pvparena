@@ -28,9 +28,9 @@ import org.bukkit.util.Vector;
 
 public final class PlayerState {
 	
-	private static Debug db = new Debug(7);
+	private static Debug debug = new Debug(7);
 
-	private String sPlayer;
+	private final String name;
 
 	private int fireticks;
 	private int foodlevel;
@@ -45,9 +45,9 @@ public final class PlayerState {
 	private String displayname;
 	private Collection<PotionEffect> potionEffects;
 
-	public PlayerState(Player player) {
-		sPlayer = player.getName();
-		db.i("creating PlayerState of " + sPlayer, player);
+	public PlayerState(final Player player) {
+		name = player.getName();
+		debug.i("creating PlayerState of " + name, player);
 
 		fireticks = player.getFireTicks();
 		foodlevel = player.getFoodLevel();
@@ -61,18 +61,18 @@ public final class PlayerState {
 
 		potionEffects = player.getActivePotionEffects();
 		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		Arena a = ap.getArena();
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final Arena arena = aPlayer.getArena();
 
-		if (a.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
+		if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			displayname = player.getDisplayName();
 		}
 		
-		fullReset(a, player);
+		fullReset(arena, player);
 	}
 
-	public void dump(YamlConfiguration cfg) {
-		db.i("backing up PlayerState of " + sPlayer, sPlayer);
+	public void dump(final YamlConfiguration cfg) {
+		debug.i("backing up PlayerState of " + name, name);
 		cfg.set("state.fireticks", fireticks);
 		cfg.set("state.foodlevel", foodlevel);
 		cfg.set("state.gamemode", gamemode);
@@ -84,37 +84,37 @@ public final class PlayerState {
 		cfg.set("state.displayname", displayname);
 	}
 
-	public static void fullReset(Arena a, Player player) {
-		playersetHealth(player, a.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
+	public static void fullReset(final Arena arena, final Player player) {
+		playersetHealth(player, arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
 		player.setFireTicks(0);
 		player.setFallDistance(0);
 		player.setVelocity(new Vector());
-		player.setFoodLevel(a.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
-		player.setSaturation(a.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
-		player.setExhaustion((float) a.getArenaConfig().getDouble(
+		player.setFoodLevel(arena.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
+		player.setSaturation(arena.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
+		player.setExhaustion((float) arena.getArenaConfig().getDouble(
 				CFG.PLAYER_EXHAUSTION));
 		player.setLevel(0);
 		player.setExp(0);
-		player.setGameMode(GameMode.getByValue(a.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
+		player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
 		PlayerState.removeEffects(player);
 	}
 
 	public void unload() {
-		Player player = Bukkit.getPlayerExact(sPlayer);
+		final Player player = Bukkit.getPlayerExact(name);
 		
 		if (player == null) {
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(sPlayer);
-			PVPArena.instance.getAgm().disconnect(ap.getArena(), ap);
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(name);
+			PVPArena.instance.getAgm().disconnect(aPlayer.getArena(), aPlayer);
 			return;
 		}
-		db.i("restoring PlayerState of " + sPlayer, player);
+		debug.i("restoring PlayerState of " + name, player);
 		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setHealth(health);
 
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
 		player.setHealth(health);
 		player.setSaturation(saturation);
@@ -124,25 +124,25 @@ public final class PlayerState {
 		player.setExhaustion(exhaustion);
 		player.setFallDistance(0);
 		player.setVelocity(new Vector());
-		if (ap.getArena() != null && ap.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
+		if (aPlayer.getArena() != null && aPlayer.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			player.setDisplayName(displayname);
 		}
 		
-		if (ap.getArena() != null) {
+		if (aPlayer.getArena() != null) {
 			
-			ArenaModuleManager.unload(ap.getArena(), player);
-			PVPArena.instance.getAgm().unload(ap.getArena(), player);
+			ArenaModuleManager.unload(aPlayer.getArena(), player);
+			PVPArena.instance.getAgm().unload(aPlayer.getArena(), player);
 		}
 		
 
 		removeEffects(player);
 		player.addPotionEffects(potionEffects);
 
-		ap.setTelePass(false);
+		aPlayer.setTelePass(false);
 		player.setFireTicks(fireticks);
 		
-		if (ap.getArena() != null) {
-			player.setNoDamageTicks(ap.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+		if (aPlayer.getArena() != null) {
+			player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 	}
 
@@ -154,21 +154,21 @@ public final class PlayerState {
 	 * @param value
 	 *            the health value
 	 */
-	static void playersetHealth(Player player, int value) {
-		db.i("setting health to " + value + "/20", player);
+	protected static void playersetHealth(final Player player, final int value) {
+		debug.i("setting health to " + value + "/20", player);
 		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
 			player.setHealth(value);
 		}
-		int current = player.getHealth();
-		int regain = value - current;
+		final int current = player.getHealth();
+		final int regain = value - current;
 
-		EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain,
+		final EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain,
 				RegainReason.CUSTOM);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	public void reset() {
-		db.i("clearing PlayerState of " + sPlayer, sPlayer);
+		debug.i("clearing PlayerState of " + name, name);
 		fireticks = 0;
 		foodlevel = 0;
 		gamemode = 0;
@@ -182,27 +182,27 @@ public final class PlayerState {
 		potionEffects = null;
 	}
 
-	public static void removeEffects(Player player) {
+	public static void removeEffects(final Player player) {
 		for (PotionEffect pe : player.getActivePotionEffects()) {
 			player.removePotionEffect(pe.getType());
 		}
 
 	}
 
-	public static PlayerState undump(YamlConfiguration cfg, String pName) {
-		db.i("restoring backed up PlayerState of " + pName, pName);
-		PlayerState ps = new PlayerState(Bukkit.getPlayer(pName));
+	public static PlayerState undump(final YamlConfiguration cfg, final String pName) {
+		debug.i("restoring backed up PlayerState of " + pName, pName);
+		final PlayerState pState = new PlayerState(Bukkit.getPlayer(pName));
 		
-		ps.fireticks = cfg.getInt("state.fireticks", 0);
-		ps.foodlevel = cfg.getInt("state.foodlevel", 0);
-		ps.gamemode = cfg.getInt("state.gamemode", 0);
-		ps.health = cfg.getInt("state.health", 1);
-		ps.exhaustion = (float) cfg.getDouble("state.exhaustion", 1);
-		ps.experience = (float) cfg.getDouble("state.experience", 0);
-		ps.explevel = cfg.getInt("state.explevel", 0);
-		ps.saturation = (float) cfg.getDouble("state.saturation", 0);
-		ps.displayname = cfg.getString("state.displayname", pName);
+		pState.fireticks = cfg.getInt("state.fireticks", 0);
+		pState.foodlevel = cfg.getInt("state.foodlevel", 0);
+		pState.gamemode = cfg.getInt("state.gamemode", 0);
+		pState.health = cfg.getInt("state.health", 1);
+		pState.exhaustion = (float) cfg.getDouble("state.exhaustion", 1);
+		pState.experience = (float) cfg.getDouble("state.experience", 0);
+		pState.explevel = cfg.getInt("state.explevel", 0);
+		pState.saturation = (float) cfg.getDouble("state.saturation", 0);
+		pState.displayname = cfg.getString("state.displayname", pName);
 		
-		return ps;
+		return pState;
 	}
 }

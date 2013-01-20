@@ -18,15 +18,15 @@ import org.bukkit.Location;
  */
 
 public class PALocation {
-	private String world;
+	private final String world;
 	private double x;
 	private double y;
 	private double z;
 	private float pitch;
 	private float yaw;
 
-	public PALocation(String world, double x, double y, double z, float pitch,
-			float yaw) {
+	public PALocation(final String world, final double x, final double y, final double z, final float pitch,
+			final float yaw) {
 		this.world = world;
 		this.x = x;
 		this.y = y;
@@ -35,16 +35,16 @@ public class PALocation {
 		this.yaw = yaw;
 	}
 
-	public PALocation(Location l) {
-		world = l.getWorld().getName();
-		x = l.getX();
-		y = l.getY();
-		z = l.getZ();
-		pitch = l.getPitch();
-		yaw = l.getYaw();
+	public PALocation(final Location bukkitLocation) {
+		world = bukkitLocation.getWorld().getName();
+		x = bukkitLocation.getX();
+		y = bukkitLocation.getY();
+		z = bukkitLocation.getZ();
+		pitch = bukkitLocation.getPitch();
+		yaw = bukkitLocation.getYaw();
 	}
 
-	public PALocation add(double x, double y, double z) {
+	public PALocation add(final double x, final double y, final double z) {
 		return new PALocation(world, x + this.x, y + this.y, z + this.z, pitch,
 				yaw);
 	}
@@ -61,19 +61,19 @@ public class PALocation {
 		return (int) Math.floor(z);
 	}
 
-	public double getDistance(PALocation o) {
-		if (o == null) {
+	public double getDistance(final PALocation otherLocation) {
+		if (otherLocation == null) {
 			throw new IllegalArgumentException(
 					"Cannot measure distance to a null location");
 		}
-		if (!o.world.equals(world)) {
+		if (!otherLocation.world.equals(world)) {
 			throw new IllegalArgumentException(
 					"Cannot measure distance between " + world + " and "
-							+ o.world);
+							+ otherLocation.world);
 		}
 
-		return Math.sqrt(Math.pow(this.x - o.x, 2.0D)
-				+ Math.pow(this.y - o.y, 2.0D) + Math.pow(this.z - o.z, 2.0D));
+		return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
+				+ Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
 	}
 
 	public double getPitch() {
@@ -100,24 +100,24 @@ public class PALocation {
 		return z;
 	}
 
-	public void setPitch(float f) {
-		pitch = f;
+	public void setPitch(final float value) {
+		pitch = value;
 	}
 
-	public void setX(double d) {
-		x = d;
+	public void setX(final double value) {
+		x = value;
 	}
 
-	public void setY(double d) {
-		y = d;
+	public void setY(final double value) {
+		y = value;
 	}
 
-	public void setYaw(float f) {
-		yaw = f;
+	public void setYaw(final float value) {
+		yaw = value;
 	}
 
-	public void setZ(double d) {
-		z = d;
+	public void setZ(final double value) {
+		z = value;
 	}
 
 	public Location toLocation() {

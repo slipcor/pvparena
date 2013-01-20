@@ -29,7 +29,7 @@ import net.slipcor.pvparena.events.PAKillEvent;
  */
 
 public class StatisticsManager {
-	public static final Debug db = new Debug(28);
+	public static final Debug DEBUG = new Debug(28);
 	private static File players;
 	private static YamlConfiguration config;
 
@@ -41,8 +41,8 @@ public class StatisticsManager {
 
 		private final String fullName;
 
-		type(String s) {
-			fullName = s;
+		type(final String name) {
+			fullName = name;
 		}
 
 		/**
@@ -52,9 +52,9 @@ public class StatisticsManager {
 		 *            the type
 		 * @return the next type
 		 */
-		public static type next(type tType) {
-			type[] types = type.values();
-			int ord = tType.ordinal();
+		public static type next(final type tType) {
+			final type[] types = type.values();
+			final int ord = tType.ordinal();
 			if (ord >= types.length - 2) {
 				return types[0];
 			}
@@ -68,9 +68,9 @@ public class StatisticsManager {
 		 *            the type
 		 * @return the previous type
 		 */
-		public static type last(type tType) {
-			type[] types = type.values();
-			int ord = tType.ordinal();
+		public static type last(final type tType) {
+			final type[] types = type.values();
+			final int ord = tType.ordinal();
 			if (ord <= 0) {
 				return types[types.length - 2];
 			}
@@ -91,9 +91,9 @@ public class StatisticsManager {
 		 *            the name to find
 		 * @return the type if found, null otherwise
 		 */
-		public static type getByString(String string) {
+		public static type getByString(final String string) {
 			for (type t : type.values()) {
-				if (t.name().equals(string.toUpperCase())) {
+				if (t.name().equalsIgnoreCase(string)) {
 					return t;
 				}
 			}
@@ -106,37 +106,37 @@ public class StatisticsManager {
 	 * 
 	 * @param arena
 	 *            the arena where that happens
-	 * @param e
+	 * @param entity
 	 *            an eventual attacker
 	 * @param defender
 	 *            the attacked player
 	 * @param dmg
 	 *            the damage value
 	 */
-	public static void damage(Arena arena, Entity e, Player defender, int dmg) {
+	public static void damage(final Arena arena, final Entity entity, final Player defender, final int dmg) {
 
-		db.i("adding damage to player " + defender.getName(), defender);
+		DEBUG.i("adding damage to player " + defender.getName(), defender);
 		
 
-		if ((e != null) && (e instanceof Player)) {
-			Player attacker = (Player) e;
-			db.i("attacker is player: " + attacker.getName(), defender);
+		if ((entity != null) && (entity instanceof Player)) {
+			final Player attacker = (Player) entity;
+			DEBUG.i("attacker is player: " + attacker.getName(), defender);
 			if (arena.hasPlayer(attacker)) {
-				db.i("attacker is in the arena, adding damage!", defender);
-				ArenaPlayer p = ArenaPlayer.parsePlayer(attacker.getName());
-				int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGE);
-				p.getStatistics(arena).incStat(type.DAMAGE, dmg);
+				DEBUG.i("attacker is in the arena, adding damage!", defender);
+				final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
+				final int maxdamage = apAttacker.getStatistics(arena).getStat(type.MAXDAMAGE);
+				apAttacker.getStatistics(arena).incStat(type.DAMAGE, dmg);
 				if (dmg > maxdamage) {
-					p.getStatistics(arena).setStat(type.MAXDAMAGE, dmg);
+					apAttacker.getStatistics(arena).setStat(type.MAXDAMAGE, dmg);
 				}
 			}
 		}
-		ArenaPlayer p = ArenaPlayer.parsePlayer(defender.getName());
+		final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
-		int maxdamage = p.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
-		p.getStatistics(arena).incStat(type.DAMAGETAKE, dmg);
+		final int maxdamage = apDefender.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
+		apDefender.getStatistics(arena).incStat(type.DAMAGETAKE, dmg);
 		if (dmg > maxdamage) {
-			p.getStatistics(arena).setStat(type.MAXDAMAGETAKE, dmg);
+			apDefender.getStatistics(arena).setStat(type.MAXDAMAGETAKE, dmg);
 		}
 	}
 
@@ -154,39 +154,39 @@ public class StatisticsManager {
 	 * @param global 
 	 * @return true if pair has to be sorted, false otherwise
 	 */
-	private static boolean decide(ArenaPlayer[] aps, int pos, type sortBy,
-			boolean desc, boolean global) {
-		int a = 0;
-		int b = 0;
+	private static boolean decide(final ArenaPlayer[] aps, final int pos, final type sortBy,
+			final boolean desc, final boolean global) {
+		int iThis = 0;
+		int iNext = 0;
 		
-		a = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
-		b = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
+		iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
+		iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
 
 		if (global) {
-			a = aps[pos].getTotalStatistics(sortBy);
-			b = aps[pos + 1].getTotalStatistics(sortBy);
+			iThis = aps[pos].getTotalStatistics(sortBy);
+			iNext = aps[pos + 1].getTotalStatistics(sortBy);
 		}
 
-		return desc ? (a < b) : (a > b);
+		return desc ? (iThis < iNext) : (iThis > iNext);
 	}
 
 	/**
 	 * get a set of arena players sorted by type
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena to check
 	 * @param sortBy
 	 *            the type to sort
 	 * @return an array of ArenaPlayer
 	 */
-	public static ArenaPlayer[] getStats(Arena a, type sortBy) {
-		return getStats(a, sortBy, true);
+	public static ArenaPlayer[] getStats(final Arena arena, final type sortBy) {
+		return getStats(arena, sortBy, true);
 	}
 
 	/**
 	 * get a set of arena players sorted by type
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena to check
 	 * @param sortBy
 	 *            the type to sort
@@ -194,26 +194,26 @@ public class StatisticsManager {
 	 *            should it be sorted descending?
 	 * @return an array of ArenaPlayer
 	 */
-	public static ArenaPlayer[] getStats(Arena a, type sortBy, boolean desc) {
-		db.i("getting stats: " + (a == null?"global":a.getName()) + " sorted by " + sortBy + " "
+	public static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
+		DEBUG.i("getting stats: " + (arena == null?"global":arena.getName()) + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
 		
-		int count = (a == null)?ArenaPlayer.countPlayers():TeamManager.countPlayersInTeams(a);
+		final int count = (arena == null)?ArenaPlayer.countPlayers():TeamManager.countPlayersInTeams(arena);
 		
 		ArenaPlayer[] aps = new ArenaPlayer[count];
 		
-		int i = 0;
-		if (a == null) {
+		int pos = 0;
+		if (arena == null) {
 			for (ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
-				aps[i++] = p;
+				aps[pos++] = p;
 			}
 		} else {
-			for (ArenaPlayer p : a.getFighters()) {
-				aps[i++] = p;
+			for (ArenaPlayer p : arena.getFighters()) {
+				aps[pos++] = p;
 			}
 		}
 
-		sortBy(aps, sortBy, desc, a == null);
+		sortBy(aps, sortBy, desc, arena == null);
 
 		return aps;
 	}
@@ -225,14 +225,14 @@ public class StatisticsManager {
 	 *            the line to determine the type
 	 * @return the Statistics type
 	 */
-	public static type getTypeBySignLine(String line) {
+	public static type getTypeBySignLine(final String line) {
 		if (!line.startsWith("[PA]")) {
 			return type.NULL;
 		}
-		line = line.replace("[PA]", "").toUpperCase();
+		final String stripped = line.replace("[PA]", "").toUpperCase();
 
 		for (type t : type.values()) {
-			if (t.name().equals(line)) {
+			if (t.name().equals(stripped)) {
 				return t;
 			}
 		}
@@ -268,24 +268,24 @@ public class StatisticsManager {
 	 * 
 	 * @param arena
 	 *            the arena where that happens
-	 * @param e
+	 * @param entity
 	 *            an eventual attacker
 	 * @param defender
 	 *            the attacked player
 	 */
-	public static void kill(Arena arena, Entity e, Player defender,
-			boolean willRespawn) {
-		PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, (e != null && e instanceof Player));
+	public static void kill(final Arena arena, final Entity entity, final Player defender,
+			final boolean willRespawn) {
+		final PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, (entity instanceof Player));
 		Bukkit.getPluginManager().callEvent(dEvent);
 		if (!willRespawn) {
-			PAExitEvent exitEvent = new PAExitEvent(arena, defender);
+			final PAExitEvent exitEvent = new PAExitEvent(arena, defender);
 			Bukkit.getPluginManager().callEvent(exitEvent);
 		}
 
-		if ((e != null) && (e instanceof Player)) {
-			Player attacker = (Player) e;
+		if ((entity != null) && (entity instanceof Player)) {
+			final Player attacker = (Player) entity;
 			if (arena.hasPlayer(attacker)) {
-				PAKillEvent kEvent = new PAKillEvent(arena, attacker);
+				final PAKillEvent kEvent = new PAKillEvent(arena, attacker);
 				Bukkit.getPluginManager().callEvent(kEvent);
 
 				ArenaPlayer.parsePlayer(attacker.getName()).addKill();
@@ -299,35 +299,35 @@ public class StatisticsManager {
 	 * 
 	 * @param players
 	 *            the ArenaPlayer array to check
-	 * @param t
+	 * @param tType
 	 *            the type to read
 	 * @return an Array of String
 	 */
-	public static String[] read(ArenaPlayer[] players, type t, boolean global) {
+	public static String[] read(final ArenaPlayer[] players, final type tType, final boolean global) {
 		String[] result = new String[players.length < 8 ? 8 : players.length];
-		int i = 0;
+		int pos = 0;
 		if (global) {
 			for (ArenaPlayer p : players) {
 				if (p == null || p.get() == null) {
 					continue;
 				}
-				if (t.equals(type.NULL)) {
-					result[i++] = p.getName();
+				if (tType.equals(type.NULL)) {
+					result[pos++] = p.getName();
 				} else {
-					result[i++] = String.valueOf(p.getTotalStatistics(t));
+					result[pos++] = String.valueOf(p.getTotalStatistics(tType));
 				}
 			}
 		} else {
 			for (ArenaPlayer p : players) {
-				if (t.equals(type.NULL)) {
-					result[i++] = p.getName();
+				if (tType.equals(type.NULL)) {
+					result[pos++] = p.getName();
 				} else {
-					result[i++] = String.valueOf(p.getStatistics(p.getArena()).getStat(t));
+					result[pos++] = String.valueOf(p.getStatistics(p.getArena()).getStat(tType));
 				}
 			}
 		}
-		while (i < 8) {
-			result[i++] = "";
+		while (pos < 8) {
+			result[pos++] = "";
 		}
 		return result;
 	}
@@ -343,16 +343,16 @@ public class StatisticsManager {
 	 *            descending order?
 	 * @param global 
 	 */
-	private static void sortBy(ArenaPlayer[] aps, type sortBy, boolean desc, boolean global) {
-		int n = aps.length;
+	private static void sortBy(final ArenaPlayer[] aps, final type sortBy, final boolean desc, final boolean global) {
+		int pos = aps.length;
 		boolean doMore = true;
 		while (doMore) {
-			n--;
+			pos--;
 			doMore = false; // assume this is our last pass over the array
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < pos; i++) {
 				if (decide(aps, i, sortBy, desc, global)) {
 					// exchange elements
-					ArenaPlayer temp = aps[i];
+					final ArenaPlayer temp = aps[i];
 					aps[i] = aps[i + 1];
 					aps[i + 1] = temp;
 					doMore = true; // after an exchange, must look again

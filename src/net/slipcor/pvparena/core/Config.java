@@ -3,7 +3,6 @@ package net.slipcor.pvparena.core;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 
 public class Config {
-	private YamlConfiguration config;
+	private YamlConfiguration cfg;
 	private File configFile;
 	private Map<String, Boolean> booleans;
 	private Map<String, Integer> ints;
@@ -172,12 +171,12 @@ public class Config {
 		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
 		MODULES_ANNOUNCEMENTS_ADVERT("modules.announcements.advert", false),
 
-		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", Boolean.valueOf(false)),
-		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", Boolean.valueOf(true)),
-		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", Boolean.valueOf(true)),
-		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", Boolean.valueOf(true)),
+		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", false),
+		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", true),
+		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", true),
+		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", true),
 
-		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", Boolean.valueOf(true)),
+		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", true),
 		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
 
@@ -222,7 +221,7 @@ public class Config {
 		private Object value;
 		private String type;
 
-		public static CFG getByNode(String node) {
+		public static CFG getByNode(final String node) {
 			for (CFG m : CFG.values()) {
 				if (m.getNode().equals(node)) {
 					return m;
@@ -231,31 +230,31 @@ public class Config {
 			return null;
 		}
 
-		private CFG(String node, String value) {
+		private CFG(final String node, final String value) {
 			this.node = node;
 			this.value = value;
 			this.type = "string";
 		}
 
-		private CFG(String node, Boolean value) {
+		private CFG(final String node, final Boolean value) {
 			this.node = node;
 			this.value = value;
 			this.type = "boolean";
 		}
 
-		private CFG(String node, Integer value) {
+		private CFG(final String node, final Integer value) {
 			this.node = node;
 			this.value = value;
 			this.type = "int";
 		}
 
-		private CFG(String node, Double value) {
+		private CFG(final String node, final Double value) {
 			this.node = node;
 			this.value = value;
 			this.type = "double";
 		}
 
-		private CFG(String node, List<String> value) {
+		private CFG(final String node, final List<String> value) {
 			this.node = node;
 			this.value = value;
 			this.type = "list";
@@ -265,8 +264,8 @@ public class Config {
 			return node;
 		}
 
-		public void setNode(String s) {
-			node = s;
+		public void setNode(final String value) {
+			node = value;
 		}
 
 		@Override
@@ -294,8 +293,8 @@ public class Config {
 	 * @param configFile
 	 *            a YAML file
 	 */
-	public Config(File configFile) {
-		this.config = new YamlConfiguration();
+	public Config(final File configFile) {
+		this.cfg = new YamlConfiguration();
 		this.configFile = configFile;
 		this.booleans = new HashMap<String, Boolean>();
 		this.ints = new HashMap<String, Integer>();
@@ -304,10 +303,10 @@ public class Config {
 	}
 
 	public void createDefaults() {
-		this.config.options().indent(4);
+		this.cfg.options().indent(4);
 
 		for (CFG cfg : CFG.values()) {
-			this.config.addDefault(cfg.getNode(), cfg.getValue());
+			this.cfg.addDefault(cfg.getNode(), cfg.getValue());
 		}
 		save();
 	}
@@ -320,7 +319,7 @@ public class Config {
 	 */
 	public boolean load() {
 		try {
-			config.load(configFile);
+			cfg.load(configFile);
 			reloadMaps();
 			return true;
 		} catch (Exception e) {
@@ -335,17 +334,17 @@ public class Config {
 	 * strings-map, etc.
 	 */
 	public void reloadMaps() {
-		for (String s : config.getKeys(true)) {
-			Object o = config.get(s);
+		for (String s : cfg.getKeys(true)) {
+			final Object object = cfg.get(s);
 
-			if (o instanceof Boolean) {
-				booleans.put(s, (Boolean) o);
-			} else if (o instanceof Integer) {
-				ints.put(s, (Integer) o);
-			} else if (o instanceof Double) {
-				doubles.put(s, (Double) o);
-			} else if (o instanceof String) {
-				strings.put(s, (String) o);
+			if (object instanceof Boolean) {
+				booleans.put(s, (Boolean) object);
+			} else if (object instanceof Integer) {
+				ints.put(s, (Integer) object);
+			} else if (object instanceof Double) {
+				doubles.put(s, (Double) object);
+			} else if (object instanceof String) {
+				strings.put(s, (String) object);
 			}
 		}
 	}
@@ -357,7 +356,7 @@ public class Config {
 	 */
 	public boolean save() {
 		try {
-			config.save(configFile);
+			cfg.save(configFile);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -380,8 +379,8 @@ public class Config {
 	 * @param header
 	 *            the header
 	 */
-	public void setHeader(String header) {
-		config.options().header(header);
+	public void setHeader(final String header) {
+		cfg.options().header(header);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////
@@ -398,7 +397,7 @@ public class Config {
 	 * @return the YamlConfiguration of this Config instance
 	 */
 	public YamlConfiguration getYamlConfiguration() {
-		return config;
+		return cfg;
 	}
 
 	/**
@@ -408,8 +407,8 @@ public class Config {
 	 *            the path of the value
 	 * @return the value of the path
 	 */
-	public Object getUnsafe(String string) {
-		return config.get(string);
+	public Object getUnsafe(final String string) {
+		return cfg.get(string);
 	}
 
 	/**
@@ -419,7 +418,7 @@ public class Config {
 	 *            the path of the value
 	 * @return the boolean value of the path if the path exists, false otherwise
 	 */
-	public boolean getBoolean(CFG cfg) {
+	public boolean getBoolean(final CFG cfg) {
 		return getBoolean(cfg, (Boolean) cfg.getValue());
 	}
 
@@ -432,10 +431,10 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the boolean value of the path if it exists, def otherwise
 	 */
-	private boolean getBoolean(CFG cfg, boolean def) {
-		String path = cfg.getNode();
-		Boolean result = booleans.get(path);
-		return (result != null ? result : def);
+	private boolean getBoolean(final CFG cfg, final boolean def) {
+		final String path = cfg.getNode();
+		final Boolean result = booleans.get(path);
+		return (result == null ? def : result);
 	}
 
 	/**
@@ -445,7 +444,7 @@ public class Config {
 	 *            the path of the value
 	 * @return the int value of the path if the path exists, 0 otherwise
 	 */
-	public int getInt(CFG cfg) {
+	public int getInt(final CFG cfg) {
 		return getInt(cfg, (Integer) cfg.getValue());
 	}
 
@@ -458,10 +457,10 @@ public class Config {
 	 *            a default value to return if the value was not in the map
 	 * @return the int value of the path if it exists, def otherwise
 	 */
-	public int getInt(CFG cfg, int def) {
-		String path = cfg.getNode();
-		Integer result = ints.get(path);
-		return (result != null ? result : def);
+	public int getInt(final CFG cfg, final int def) {
+		final String path = cfg.getNode();
+		final Integer result = ints.get(path);
+		return (result == null ? def : result);
 	}
 
 	/**
@@ -485,9 +484,9 @@ public class Config {
 	 * @return the double value of the path if it exists, def otherwise
 	 */
 	public double getDouble(CFG cfg, double def) {
-		String path = cfg.getNode();
-		Double result = doubles.get(path);
-		return (result != null ? result : def);
+		final String path = cfg.getNode();
+		final Double result = doubles.get(path);
+		return (result == null ? def : result);
 	}
 
 	/**
@@ -511,28 +510,26 @@ public class Config {
 	 * @return the string value of the path if it exists, def otherwise
 	 */
 	public String getString(CFG cfg, String def) {
-		String path = cfg.getNode();
-		String result = strings.get(path);
-		return (result != null ? result : def);
+		final String path = cfg.getNode();
+		final String result = strings.get(path);
+		return (result == null ? def : result);
 	}
 
 	public Set<String> getKeys(String path) {
-		if (config.get(path) == null) {
+		if (cfg.get(path) == null) {
 			return null;
 		}
 
-		ConfigurationSection section = config.getConfigurationSection(path);
+		ConfigurationSection section = cfg.getConfigurationSection(path);
 		return section.getKeys(false);
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<String> getStringList(String path, List<String> def) {
-		if (config.get(path) == null) {
-			return def != null ? def : new LinkedList<String>();
+	public List<String> getStringList(final String path, final List<String> def) {
+		if (cfg.get(path) == null) {
+			return def == null ? new LinkedList<String>() : def;
 		}
 
-		List<?> list = config.getStringList(path);
-		return (List<String>) list;
+		return cfg.getStringList(path);
 	}
 
 	// /////////////////////////////////////////////////////////////////////////
@@ -571,7 +568,7 @@ public class Config {
 			strings.remove(value);
 		}
 
-		config.set(path, value);
+		cfg.set(path, value);
 	}
 
 	public void set(CFG cfg, Object value) {
@@ -599,13 +596,13 @@ public class Config {
 					"Input string must contain world, x, y, and z: " + coords);
 		}
 
-		Integer x = parseInteger(parts[1]);
-		Integer y = parseInteger(parts[2]);
-		Integer z = parseInteger(parts[3]);
+		final Integer x = parseInteger(parts[1]);
+		final Integer y = parseInteger(parts[2]);
+		final Integer z = parseInteger(parts[3]);
 
 		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
 				|| z == null) {
-			throw new NullPointerException(
+			throw new IllegalArgumentException(
 					"Some of the parsed values are null!");
 		}
 
@@ -621,12 +618,11 @@ public class Config {
 	 *            a string of the form "world,x,y,z,yaw,pitch"
 	 * @return a PALocation in the given world with the given coordinates
 	 */
-	public static PALocation parseLocation(String coords) {
+	public static PALocation parseLocation(final String coords) {
 		String[] parts = coords.split(",");
 
 		if (parts.length == 4) {
-			coords += ",0.0,0.0";
-			parts = coords.split(",");
+			parts = (coords + ",0.0,0.0").split(",");
 		}
 
 		if (parts.length != 6) {
@@ -635,15 +631,15 @@ public class Config {
 							+ coords);
 		}
 
-		Integer x = parseInteger(parts[1]);
-		Integer y = parseInteger(parts[2]);
-		Integer z = parseInteger(parts[3]);
-		Float yaw = parseFloat(parts[4]);
-		Float pitch = parseFloat(parts[5]);
+		final Integer x = parseInteger(parts[1]);
+		final Integer y = parseInteger(parts[2]);
+		final Integer z = parseInteger(parts[3]);
+		final Float yaw = parseFloat(parts[4]);
+		final Float pitch = parseFloat(parts[5]);
 
 		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
 				|| z == null || yaw == null || pitch == null) {
-			throw new NullPointerException(
+			throw new IllegalArgumentException(
 					"Some of the parsed values are null!");
 		}
 		return new PALocation(parts[0], x, y, z, pitch, yaw);
@@ -659,12 +655,11 @@ public class Config {
 	 * @return a PALocation in the given world with the given coordinates
 	 */
 	@Deprecated
-	public static PALocation parseOldLocation(String coords, String world) {
+	public static PALocation parseOldLocation(final String coords, final String world) {
 		String[] parts = coords.split(",");
 		// 245,45,-88,90.7486,2.5499942
 		if (parts.length == 3) {
-			coords += ",0.0,0.0";
-			parts = coords.split(",");
+			parts = (coords + ",0.0,0.0").split(",");
 		}
 
 		if (parts.length != 5) {
@@ -672,15 +667,15 @@ public class Config {
 					"Input string must contain x, y, z, yaw and pitch: "
 							+ coords);
 		}
-		Integer x = parseInteger(parts[0]);
-		Integer y = parseInteger(parts[1]);
-		Integer z = parseInteger(parts[2]);
-		Float yaw = parseFloat(parts[3]);
-		Float pitch = parseFloat(parts[4]);
+		final Integer x = parseInteger(parts[0]);
+		final Integer y = parseInteger(parts[1]);
+		final Integer z = parseInteger(parts[2]);
+		final Float yaw = parseFloat(parts[3]);
+		final Float pitch = parseFloat(parts[4]);
 
 		if (Bukkit.getWorld(world) == null || x == null || y == null
 				|| z == null || yaw == null || pitch == null) {
-			throw new NullPointerException(
+			throw new IllegalArgumentException(
 					"Some of the parsed values are null!");
 		}
 
@@ -690,13 +685,13 @@ public class Config {
 	/**
 	 * 
 	 */
-	public static ArenaRegionShape parseRegion(Arena arena,
-			YamlConfiguration config, String regionName) {
+	public static ArenaRegionShape parseRegion(final Arena arena,
+			final YamlConfiguration config, final String regionName) {
 
-		String coords = config.getString("arenaregion." + regionName);
-		String[] parts = coords.split(",");
+		final String coords = config.getString("arenaregion." + regionName);
+		final String[] parts = coords.split(",");
 
-		ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager
+		final ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager
 				.getShapeByName(parts[7]);
 
 		if (parts.length < 11) {
@@ -709,26 +704,26 @@ public class Config {
 					"Input string does not contain valid region shape: "
 							+ coords);
 		}
-		Integer x1 = parseInteger(parts[1]);
-		Integer y1 = parseInteger(parts[2]);
-		Integer z1 = parseInteger(parts[3]);
-		Integer x2 = parseInteger(parts[4]);
-		Integer y2 = parseInteger(parts[5]);
-		Integer z2 = parseInteger(parts[6]);
-		Integer flags = parseInteger(parts[8]);
-		Integer prots = parseInteger(parts[9]);
+		final Integer x1 = parseInteger(parts[1]);
+		final Integer y1 = parseInteger(parts[2]);
+		final Integer z1 = parseInteger(parts[3]);
+		final Integer x2 = parseInteger(parts[4]);
+		final Integer y2 = parseInteger(parts[5]);
+		final Integer z2 = parseInteger(parts[6]);
+		final Integer flags = parseInteger(parts[8]);
+		final Integer prots = parseInteger(parts[9]);
 
 		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null
 				|| z1 == null || x2 == null || y2 == null || z2 == null
 				|| flags == null || prots == null) {
-			throw new NullPointerException(
+			throw new IllegalArgumentException(
 					"Some of the parsed values are null!");
 		}
 
-		PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
+		final PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };
 
-		ArenaRegionShape region = ArenaRegionShape.create(arena, regionName,
+		final ArenaRegionShape region = ArenaRegionShape.create(arena, regionName,
 				shape, l);
 		region.applyFlags(flags);
 		region.applyProtections(prots);
@@ -740,24 +735,24 @@ public class Config {
 		return region;
 	}
 
-	public static Integer parseInteger(String s) {
+	public static Integer parseInteger(final String string) {
 		try {
-			return Integer.parseInt(s.trim());
+			return Integer.parseInt(string.trim());
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public static Float parseFloat(String s) {
+	public static Float parseFloat(final String string) {
 		try {
-			return Float.parseFloat(s.trim());
+			return Float.parseFloat(string.trim());
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public static String parseToString(PALocation loc) {
-		String[] result = new String[6];
+	public static String parseToString(final PALocation loc) {
+		final String[] result = new String[6];
 		result[0] = String.valueOf(loc.getWorldName());
 		result[1] = String.valueOf(loc.getBlockX());
 		result[2] = String.valueOf(loc.getBlockY());
@@ -768,8 +763,8 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(PABlockLocation loc) {
-		String[] result = new String[4];
+	public static String parseToString(final PABlockLocation loc) {
+		final String[] result = new String[4];
 		result[0] = String.valueOf(loc.getWorldName());
 		result[1] = String.valueOf(loc.getX());
 		result[2] = String.valueOf(loc.getY());
@@ -778,9 +773,9 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(ArenaRegionShape region,
-			HashSet<RegionFlag> flags, HashSet<RegionProtection> protections) {
-		String[] result = new String[11];
+	public static String parseToString(final ArenaRegionShape region,
+			final Set<RegionFlag> flags, final Set<RegionProtection> protections) {
+		final String[] result = new String[11];
 		result[0] = region.getWorldName();
 		result[1] = String.valueOf(region.getLocs()[0].getX());
 		result[2] = String.valueOf(region.getLocs()[0].getY());

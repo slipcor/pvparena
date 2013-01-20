@@ -1,8 +1,8 @@
 package net.slipcor.pvparena.classes;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.StatisticsManager;
 
 /**
@@ -16,36 +16,29 @@ import net.slipcor.pvparena.managers.StatisticsManager;
  */
 
 public class PAStatMap {
-	private final String playerName;
-	private final Debug db = new Debug(12);
-	private final HashMap<StatisticsManager.type, Integer> map = new HashMap<StatisticsManager.type, Integer>();
-	
-	public PAStatMap(String name) {
-		playerName = name;
-		db.i("created player stat map for " + playerName, playerName);
-	}
+	private final Map<StatisticsManager.type, Integer> map = new HashMap<StatisticsManager.type, Integer>();
 
-	public void decStat(StatisticsManager.type type) {
+	public void decStat(final StatisticsManager.type type) {
 		decStat(type, 1);
 	}
 
-	public void decStat(StatisticsManager.type type, int i) {
-		map.put(type, getStat(type) - i);
+	public void decStat(final StatisticsManager.type type, final int value) {
+		map.put(type, getStat(type) - value);
 	}
 	
-	public int getStat(StatisticsManager.type type) {
+	public int getStat(final StatisticsManager.type type) {
 		return map.containsKey(type)?map.get(type):0;
 	}
 
-	public void incStat(StatisticsManager.type type) {
+	public void incStat(final StatisticsManager.type type) {
 		incStat(type, 1);
 	}
 
-	public void incStat(StatisticsManager.type type, int i) {
-		map.put(type, getStat(type) + i);
+	public void incStat(final StatisticsManager.type type, final int value) {
+		map.put(type, getStat(type) + value);
 	}
 
-	public void setStat(StatisticsManager.type type, int i) {
-		map.put(type, i);
+	public void setStat(final StatisticsManager.type type, final int value) {
+		map.put(type, value);
 	}
 }

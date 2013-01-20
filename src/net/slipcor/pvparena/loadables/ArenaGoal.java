@@ -1,6 +1,6 @@
 package net.slipcor.pvparena.loadables;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.block.Block;
@@ -27,7 +27,7 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  */
 
 public class ArenaGoal extends NCBLoadable implements Cloneable {
-	protected static Debug db = new Debug(30);
+	protected static Debug debug = new Debug(30);
 	protected Arena arena;
 
 	/**
@@ -36,7 +36,7 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param sName
 	 *            the arena type name
 	 */
-	public ArenaGoal(String sName) {
+	public ArenaGoal(final String sName) {
 		super(sName);
 	}
 
@@ -47,11 +47,11 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 		return false;
 	}
 
-	public PACheck checkCommand(PACheck res, String string) {
+	public PACheck checkCommand(final PACheck res, final String string) {
 		return res;
 	}
 
-	public PACheck checkEnd(PACheck res) {
+	public PACheck checkEnd(final PACheck res) {
 		return res;
 	}
 
@@ -62,7 +62,7 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 *            the list of all set spawns
 	 * @return null if ready, error message otherwise
 	 */
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		return null;
 	}
 
@@ -76,11 +76,11 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 *            the block being clicked
 	 * @return 
 	 */
-	public PACheck checkInteract(PACheck res, Player player, Block clickedBlock) {
+	public PACheck checkInteract(final PACheck res, final Player player, final Block clickedBlock) {
 		return res;
 	}
 
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
 		return res;
 	}
 
@@ -89,7 +89,7 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param player the dying player
 	 * @return a PACheckResult instance to hand forth for parsing
 	 */
-	public PACheck checkPlayerDeath(PACheck res, Player player) {
+	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		return res;
 	}
 
@@ -100,32 +100,32 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param block
 	 * @return
 	 */
-	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 		return res;
 	}
 
-	public PACheck checkStart(PACheck res) {
+	public PACheck checkStart(final PACheck res) {
 		return res;
 	}
 
-	public void commitCommand(CommandSender sender, String[] args) {
+	public void commitCommand(final CommandSender sender, final String[] args) {
 		throw new IllegalStateException(this.getName());
 	}
 
-	public void commitEnd(boolean force) {
+	public void commitEnd(final boolean force) {
 		throw new IllegalStateException(this.getName());
 	}
 
-	public void commitInteract(Player player, Block clickedBlock) {
+	public void commitInteract(final Player player, final Block clickedBlock) {
 		throw new IllegalStateException(this.getName());
 	}
 	
-	public void commitPlayerDeath(Player player,
-			boolean doesRespawn, String error, PlayerDeathEvent event) {
+	public void commitPlayerDeath(final Player player,
+			final boolean doesRespawn, final String error, final PlayerDeathEvent event) {
 		throw new IllegalStateException(this.getName());
 	}
 
-	public boolean commitSetFlag(Player player, Block block) {
+	public boolean commitSetFlag(final Player player, final Block block) {
 		throw new IllegalStateException(this.getName());
 	}
 	
@@ -137,16 +137,16 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * hook into the config parsing
 	 * @param config 
 	 */
-	public void configParse(YamlConfiguration config) {
+	public void configParse(final YamlConfiguration config) {
 	}
 	
-	public void disconnect(ArenaPlayer player) {
+	public void disconnect(final ArenaPlayer player) {
 	}
 
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 	}
 
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer player) {
 		return res;
 	}
 
@@ -157,25 +157,25 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 *            the string to check
 	 * @return the proper spawn name
 	 */
-	public String guessSpawn(String place) {
+	public String guessSpawn(final String place) {
 		return null;
 	}
 
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		return false;
 	}
 
-	public void initate(Player player) {
+	public void initate(final Player player) {
 	}
 
 	public void onThisLoad() {
 	}
 
-	public void parseLeave(Player player) {
+	public void parseLeave(final Player player) {
 	}
 	
-	public void parsePlayerDeath(Player player,
-			EntityDamageEvent lastDamageCause) {
+	public void parsePlayerDeath(final Player player,
+			final EntityDamageEvent lastDamageCause) {
 	}
 
 	public void parseStart() {
@@ -198,23 +198,23 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param force
 	 *            is the resetting forced?
 	 */
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 	}
 
-	public void setArena(Arena a) {
-		arena = a;
+	public void setArena(final Arena arena) {
+		this.arena = arena;
 	}
 
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 	}
 	
-	public void setPlayerLives(int value) {
+	public void setPlayerLives(final int value) {
 	}
 
-	public void setPlayerLives(ArenaPlayer ap, int value) {
+	public void setPlayerLives(final ArenaPlayer player, final int value) {
 	}
 
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		return scores;
 	}
 	/**
@@ -223,7 +223,7 @@ public class ArenaGoal extends NCBLoadable implements Cloneable {
 	 * @param player
 	 *            the player to unload
 	 */
-	public void unload(Player player) {
+	public void unload(final Player player) {
 	}
 
 	public String version() {

@@ -16,29 +16,29 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class TimedEndRunnable extends ArenaRunnable {
-	private Debug db = new Debug(42);
+	private static final Debug DEBUG = new Debug(42);
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
 	 */
-	public TimedEndRunnable(Arena a, int i) {
-		super(MSG.TIMER_ENDING_IN.getNode(), i, null, a, false);
-		db.i("TimedEndRunnable constructor");
-		a.END_ID = this;
+	public TimedEndRunnable(final Arena arena, final int seconds) {
+		super(MSG.TIMER_ENDING_IN.getNode(), seconds, null, arena, false);
+		DEBUG.i("TimedEndRunnable constructor");
+		arena.endRunner = this;
 	}
 	
 	@Override
 	public void commit() {
-		db.i("TimedEndRunnable commiting");
+		DEBUG.i("TimedEndRunnable commiting");
 		if (arena.isFightInProgress()) {
 			PVPArena.instance.getAgm().timedEnd(arena);
 		}
-		arena.END_ID = null;
-		if (arena.REALEND_ID != null) {
-			arena.REALEND_ID.cancel();
-			arena.REALEND_ID = null;
+		arena.endRunner = null;
+		if (arena.realEndRunner != null) {
+			arena.realEndRunner.cancel();
+			arena.realEndRunner = null;
 		}
 	}
 	

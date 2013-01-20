@@ -23,19 +23,19 @@ import net.slipcor.pvparena.managers.SpawnManager;
  */
 
 public class TeleportRunnable implements Runnable {
-	final String string;
-	final String player;
-	final Arena arena;
-	final boolean soft;
+	private final String spawnName;
+	private final String player;
+	private final Arena arena;
+	private final boolean soft;
 
-	Debug db = new Debug(77);
+	private final static Debug DEBUG = new Debug(77);
 
-	public TeleportRunnable(Arena a, ArenaPlayer ap, String s, boolean soft) {
-		db.i("TeleportRunnable: " + a.getName() + " | " + ap.getName() + " => "
-				+ s, ap.getName());
-		string = s;
-		player = ap.getName();
-		arena = a;
+	public TeleportRunnable(final Arena arena, final ArenaPlayer player, final String spawn, final boolean soft) {
+		DEBUG.i("TeleportRunnable: " + arena.getName() + " | " + player.getName() + " => "
+				+ spawn, player.getName());
+		this.spawnName = spawn;
+		this.player = player.getName();
+		this.arena = arena;
 		this.soft = soft;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this,
 				10L);
@@ -43,32 +43,32 @@ public class TeleportRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		if (ap == null || ap.get() == null) {
-			db.i("ArenaPlayer NULL: " + player, player);
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+		if (aPlayer == null || aPlayer.get() == null) {
+			DEBUG.i("ArenaPlayer NULL: " + player, player);
 			return;
 		}
-		if (string.equalsIgnoreCase("old")) {
-			db.i("tping to old", player);
-			if (ap.getLocation() != null) {
-				db.i("location is fine", player);
-				PALocation loc = ap.getLocation();
-				ap.get().teleport(loc.toLocation());
-				ap.get()
+		if (spawnName.equalsIgnoreCase("old")) {
+			DEBUG.i("tping to old", player);
+			if (aPlayer.getLocation() != null) {
+				DEBUG.i("location is fine", player);
+				final PALocation loc = aPlayer.getLocation();
+				aPlayer.get().teleport(loc.toLocation());
+				aPlayer.get()
 						.setNoDamageTicks(
 								arena.getArenaConfig().getInt(
 										CFG.TIME_TELEPORTPROTECT) * 20);
 			}
 		} else {
-			PALocation l = SpawnManager.getCoords(arena, string);
-			ap.get().teleport(l.toLocation());
-			ap.get()
+			final PALocation loc = SpawnManager.getCoords(arena, spawnName);
+			aPlayer.get().teleport(loc.toLocation());
+			aPlayer.get()
 					.setNoDamageTicks(
 							arena.getArenaConfig().getInt(
 									CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 		if (!soft) {
-			ap.setLocation(null);
+			aPlayer.setLocation(null);
 		}
 	}
 

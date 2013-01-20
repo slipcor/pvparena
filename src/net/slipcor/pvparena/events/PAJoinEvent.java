@@ -18,25 +18,26 @@ import org.bukkit.event.HandlerList;
 
 public class PAJoinEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
-	private Player player;
-	private boolean spectator;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
+	private final boolean spectator;
 
 	/**
 	 * create an arena join event
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena where the event is happening in
-	 * @param p
+	 * @param player
 	 *            the joining player
-	 * @param willSpectate
+	 * @param isSpectator
 	 *            true if the player will spectate, false otherwise
 	 */
-	public PAJoinEvent(Arena a, Player p, boolean willSpectate) {
-		arena = a;
-		player = p;
-		spectator = willSpectate;
+	public PAJoinEvent(final Arena arena, final Player player, final boolean isSpectator) {
+		super();
+		this.arena = arena;
+		this.player = player;
+		this.spectator = isSpectator;
 	}
 
 	/**
@@ -49,11 +50,11 @@ public class PAJoinEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	/**
@@ -66,11 +67,19 @@ public class PAJoinEvent extends Event {
 	}
 
 	/**
+	 * replaced by isSpectator()
+	 */
+	@Deprecated
+	public boolean getSpectate() {
+		return spectator;
+	}
+
+	/**
 	 * hand over the spectate state
 	 * 
 	 * @return true if the player will join as spectator, false otherwise
 	 */
-	public boolean getSpectate() {
+	public boolean isSpectator() {
 		return spectator;
 	}
 }

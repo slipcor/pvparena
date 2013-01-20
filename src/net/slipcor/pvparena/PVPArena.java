@@ -8,10 +8,10 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Reload;
-import net.slipcor.pvparena.commands.PAA__Command;
+import net.slipcor.pvparena.commands.AbstractArenaCommand;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
-import net.slipcor.pvparena.commands.PA__Command;
+import net.slipcor.pvparena.commands.AbstractGlobalCommand;
 import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -155,7 +155,7 @@ public class PVPArena extends JavaPlugin {
 			
 		}
 
-		final PA__Command pacmd = PA__Command.getByName(args[0]);
+		final AbstractGlobalCommand pacmd = AbstractGlobalCommand.getByName(args[0]);
 
 		if (pacmd != null
 				&& !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd
@@ -211,7 +211,7 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 
-		PAA__Command paacmd = PAA__Command.getByName(newArgs[0]);
+		AbstractArenaCommand paacmd = AbstractArenaCommand.getByName(newArgs[0]);
 		if (paacmd == null && (PACheck.handleCommand(tempArena, sender, newArgs))) {
 			return true;
 		}
@@ -241,7 +241,7 @@ public class PVPArena extends JavaPlugin {
 	public void onDisable() {
 		ArenaManager.reset(true);
 		Tracker.stop();
-		Language.log_info(MSG.LOG_PLUGIN_DISABLED, getDescription()
+		Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription()
 				.getFullName());
 	}
 
@@ -288,7 +288,7 @@ public class PVPArena extends JavaPlugin {
 
 		if (ArenaManager.count() > 0) {
 
-			final Tracker trackMe = new Tracker(this);
+			final Tracker trackMe = new Tracker();
 			trackMe.start();
 
 			Metrics metrics;
@@ -314,7 +314,7 @@ public class PVPArena extends JavaPlugin {
 
 		}
 
-		Language.log_info(MSG.LOG_PLUGIN_ENABLED, getDescription()
+		Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription()
 				.getFullName());
 	}
 

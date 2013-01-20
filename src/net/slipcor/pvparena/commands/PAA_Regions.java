@@ -19,14 +19,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_Regions extends PAA__Command {
+public class PAA_Regions extends AbstractArenaCommand {
 
 	public PAA_Regions() {
 		super(new String[] {});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -47,7 +47,7 @@ public class PAA_Regions extends PAA__Command {
 			return;
 		}
 		
-		ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
@@ -69,7 +69,7 @@ public class PAA_Regions extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGIONS));
 	}
 }

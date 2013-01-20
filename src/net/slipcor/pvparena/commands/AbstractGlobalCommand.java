@@ -1,5 +1,7 @@
 package net.slipcor.pvparena.commands;
 
+import java.util.Locale;
+
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -9,7 +11,7 @@ import org.bukkit.command.CommandSender;
 
 /**
  * <pre>
- * PVP Arena Command class
+ * PVP Arena Global Command class
  * </pre>
  * 
  * The abstract class of a general command, including perm check
@@ -19,15 +21,15 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public abstract class PA__Command {
+public abstract class AbstractGlobalCommand {
 	public final String[] perms;
 
-	public PA__Command(String[] s) {
-		perms = s;
+	public AbstractGlobalCommand(final String[] permissions) {
+		perms = permissions.clone();
 	}
 
-	public static boolean argCountValid(CommandSender sender, String[] args,
-			Integer[] validCounts) {
+	public static boolean argCountValid(final CommandSender sender, final String[] args,
+			final Integer[] validCounts) {
 
 		for (int i : validCounts) {
 			if (i == args.length) {
@@ -47,7 +49,7 @@ public abstract class PA__Command {
 
 	public abstract String getName();
 
-	public boolean hasPerms(CommandSender sender) {
+	public boolean hasPerms(final CommandSender sender) {
 		if (sender.hasPermission("pvparena.admin")) {
 			return true;
 		}
@@ -59,12 +61,12 @@ public abstract class PA__Command {
 		}
 
 		if (perms.length > 0) {
-			String s[] = perms[0].split(".");
+			final String split[] = perms[0].split(".");
 
 			Arena.pmsg(
 					sender,
 					Language.parse(MSG.ERROR_NOPERM,
-							Language.parse(MSG.getByNode("nopermto." + s[1]))));
+							Language.parse(MSG.getByNode("nopermto." + split[1]))));
 		} else {
 
 			Arena.pmsg(
@@ -76,9 +78,9 @@ public abstract class PA__Command {
 		return false;
 	}
 
-	public static PA__Command getByName(String name) {
+	public static AbstractGlobalCommand getByName(final String commandName) {
 
-		name = name.toLowerCase();
+		final String name = commandName.toLowerCase(Locale.ENGLISH);
 
 		if (name.equals("create") || name.equals("!c") || name.equals("new")) {
 			return new PAA_Create();

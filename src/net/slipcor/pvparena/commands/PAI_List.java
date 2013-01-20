@@ -2,6 +2,8 @@ package net.slipcor.pvparena.commands;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 import net.slipcor.pvparena.arena.Arena;
@@ -25,13 +27,13 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAI_List extends PAA__Command {
+public class PAI_List extends AbstractArenaCommand {
 
 	public PAI_List() {
 		super(new String[] {"pvparena.user"});
 	}
 	
-	private static HashMap<ArenaPlayer.Status, Character> colorMap = new HashMap<ArenaPlayer.Status, Character>();
+	private static Map<ArenaPlayer.Status, Character> colorMap = new HashMap<ArenaPlayer.Status, Character>();
 
 	static {
 
@@ -46,7 +48,7 @@ public class PAI_List extends PAA__Command {
 	}
 	
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -59,26 +61,27 @@ public class PAI_List extends PAA__Command {
 		
 			
 			for (ArenaTeam teams : arena.getTeams()) {
-				HashSet<String> names = new HashSet<String>();
+				final Set<String> names = new HashSet<String>();
 				
-				for (ArenaPlayer player : teams.getTeamMembers())
+				for (ArenaPlayer player : teams.getTeamMembers()) {
 					names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
+				}
 				
 				if (arena.isFreeForAll()) {
 					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 				} else {
-					int count = teams.getTeamMembers().size();
-					String sCount = " &r(" + count + ")";
+					final int count = teams.getTeamMembers().size();
+					final String sCount = " &r(" + count + ")";
 					arena.msg(sender, Language.parse(MSG.LIST_TEAM, teams.getColoredName() + sCount, StringParser.joinSet(names, ", ")));
 				}
 			}
 			return;
 		}
 		
-		HashMap<ArenaPlayer.Status, HashSet<String>> stats = new HashMap<ArenaPlayer.Status, HashSet<String>>();
+		final Map<ArenaPlayer.Status,Set<String>> stats = new HashMap<ArenaPlayer.Status, Set<String>>();
 		
 		for (ArenaPlayer player : arena.getEveryone()) {
-			HashSet<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
+			final Set<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
 			
 			players.add(player.getName());
 			stats.put(player.getStatus(), players);
@@ -96,7 +99,7 @@ public class PAI_List extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.LIST));
 	}
 }

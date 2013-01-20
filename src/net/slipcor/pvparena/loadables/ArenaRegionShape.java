@@ -3,6 +3,8 @@ package net.slipcor.pvparena.loadables;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -52,23 +54,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
-	protected static Debug db = new Debug(34);
+	protected static Debug debug = new Debug(34);
 	protected String world;
 	protected RegionShape shape;
 	private Arena arena;
 	private String name;
 	private RegionType type;
 	private int tickID = -1;
-	private HashSet<RegionFlag> flags = new HashSet<RegionFlag>();
-	private HashSet<RegionProtection> protections = new HashSet<RegionProtection>();
-	private HashMap<String, Location> playerNameLocations = new HashMap<String, Location>();
+	private final Set<RegionFlag> flags = new HashSet<RegionFlag>();
+	private final Set<RegionProtection> protections = new HashSet<RegionProtection>();
+	private final Map<String, Location> playerLocations = new HashMap<String, Location>();
 
-	private static HashSet<Material> noWools = new HashSet<Material>();
+	private static final Set<Material> NOWOOLS = new HashSet<Material>();
 
 	protected final PABlockLocation[] locs;
 
 	static {
-		noWools.add(Material.CHEST);
+		NOWOOLS.add(Material.CHEST);
 	}
 
 	public static enum RegionShape {
@@ -90,8 +92,8 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	public static enum RegionType {
 		CUSTOM, WATCH, LOUNGE, BATTLE, JOIN, SPAWN;
 
-		public static RegionType guessFromName(String name) {
-			name = name.toUpperCase();
+		public static RegionType guessFromName(final String regionName) {
+			final String name = regionName.toUpperCase();
 			for (RegionType rt : values()) {
 				if (name.endsWith(rt.name()) || name.startsWith(rt.name())) {
 					return rt;
@@ -158,16 +160,16 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	/**
 	 * check if an arena has overlapping battlefield region with another arena
 	 * 
-	 * @param a1
+	 * @param region1
 	 *            the arena to check
-	 * @param a2
+	 * @param region2
 	 *            the arena to check
 	 * @return true if it does not overlap, false otherwise
 	 */
-	public static boolean checkRegion(Arena a1, Arena a2) {
+	public static boolean checkRegion(final Arena region1, final Arena region2) {
 
-		HashSet<ArenaRegionShape> ars1 = a1.getRegionsByType(RegionType.BATTLE);
-		HashSet<ArenaRegionShape> ars2 = a2.getRegionsByType(RegionType.BATTLE);
+		final Set<ArenaRegionShape> ars1 = region1.getRegionsByType(RegionType.BATTLE);
+		final Set<ArenaRegionShape> ars2 = region2.getRegionsByType(RegionType.BATTLE);
 
 		if (ars1.size() < 0 || ars2.size() < 1) {
 			return true;
@@ -190,11 +192,11 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * @return true if no running arena is interfering with this arena, false
 	 *         otherwise
 	 */
-	public static boolean checkRegions(Arena arena) {
+	public static boolean checkRegions(final Arena arena) {
 		if (!arena.getArenaConfig().getBoolean(CFG.USES_OVERLAPCHECK)) {
 			return true;
 		}
-		db.i("checking regions");
+		debug.i("checking regions");
 
 		return ArenaManager.checkRegions(arena);
 	}
@@ -208,12 +210,12 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 *            the player interacting
 	 * @return true if the position is being saved, false otherwise
 	 */
-	public static boolean checkRegionSetPosition(PlayerInteractEvent event,
-			Player player) {
+	public static boolean checkRegionSetPosition(final PlayerInteractEvent event,
+			final Player player) {
 		if (!PAA_Region.activeSelections.containsKey(player.getName())) {
 			return false;
 		}
-		Arena arena = PAA_Region.activeSelections.get(player.getName());
+		final Arena arena = PAA_Region.activeSelections.get(player.getName());
 		if (arena != null
 				&& (PVPArena.hasAdminPerms(player) || (PVPArena.hasCreatePerms(
 						player, arena)))
@@ -223,17 +225,17 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
-			db.i("modify&adminperms&wand", player);
-			ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+			debug.i("modify&adminperms&wand", player);
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-				ap.setSelection(event.getClickedBlock().getLocation(), false);
+				aPlayer.setSelection(event.getClickedBlock().getLocation(), false);
 				arena.msg(player, Language.parse(MSG.REGION_POS1));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				ap.setSelection(event.getClickedBlock().getLocation(), true);
+				aPlayer.setSelection(event.getClickedBlock().getLocation(), true);
 				arena.msg(player, Language.parse(MSG.REGION_POS2));
 				return true; // right click => pos2
 			}
@@ -241,10 +243,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		return false;
 	}
 
-	public static ArenaRegionShape create(Arena arena, String name,
-			RegionShape shape, PABlockLocation[] locs) {
+	public static ArenaRegionShape create(final Arena arena, final String name,
+			final RegionShape shape, final PABlockLocation[] locs) {
 
-		db.i("public static ArenaRegionShape create");
+		debug.i("public static ArenaRegionShape create");
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
 		} else if (shape.equals(RegionShape.SPHERIC)) {
@@ -255,7 +257,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		throw new UnsupportedOperationException("Arena Shape unknown: " + shape);
 	}
 
-	public static RegionShape getShapeFromShapeName(String string) {
+	public static RegionShape getShapeFromShapeName(final String string) {
 		for (RegionShape r : RegionShape.values()) {
 			if (r.name().startsWith(string.toUpperCase())) {
 				return r;
@@ -271,12 +273,12 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 *            the player to check
 	 * @return true if the player is too far away, false otherwise
 	 */
-	public static boolean tooFarAway(Arena arena, Player player) {
+	public static boolean tooFarAway(final Arena arena, final Player player) {
 		int joinRange = arena.getArenaConfig().getInt(CFG.JOIN_RANGE);
 		if (joinRange < 1) {
 			return false;
 		}
-		HashSet<ArenaRegionShape> ars = arena
+		final Set<ArenaRegionShape> ars = arena
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (ars.size() < 1) {
@@ -293,22 +295,22 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		return true;
 	}
 
-	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs) {
+	public ArenaRegionShape(final Arena arena, final String name, final PABlockLocation[] locs) {
 		super("cuboid");
 		this.setName(name);
 		this.world = locs[0].getWorldName();
-		this.locs = locs;
+		this.locs = locs.clone();
 		this.setArena(arena);
 
 		this.type = RegionType.CUSTOM;
 	}
 
-	public ArenaRegionShape(Arena arena, String name, PABlockLocation[] locs,
-			String shape) {
+	public ArenaRegionShape(final Arena arena, final String name, final PABlockLocation[] locs,
+			final String shape) {
 		super("cuboid");
 		this.setName(name);
 		this.world = locs[0].getWorldName();
-		this.locs = locs;
+		this.locs = locs.clone();
 		this.setArena(arena);
 
 		this.shape = ArenaRegionShapeManager.getShapeByName(shape);
@@ -336,19 +338,20 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 
 	public abstract boolean tooFarAway(int joinRange, Location location);
 
-	public void applyFlags(int f) {
-		for (RegionFlag rf : RegionFlag.values())
-			if ((f & (int) Math.pow(2, rf.ordinal())) != 0) {
-				flags.add(rf);
+	public void applyFlags(final int flags) {
+		for (RegionFlag rf : RegionFlag.values()) {
+			if ((flags & (int) Math.pow(2, rf.ordinal())) != 0) {
+				this.flags.add(rf);
 			}
+		}
 	}
 
-	public void applyProtections(int p) {
+	public void applyProtections(final int protections) {
 		for (RegionProtection rp : RegionProtection.values()) {
-			if ((p & (int) Math.pow(2, rp.ordinal())) != 0) {
-				protections.add(rp);
+			if ((protections & (int) Math.pow(2, rp.ordinal())) == 0) {
+				this.protections.remove(rp);
 			} else {
-				protections.remove(rp);
+				this.protections.add(rp);
 			}
 		}
 	}
@@ -358,39 +361,39 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		return (ArenaRegionShape) super.clone();
 	}
 
-	public void displayInfo(CommandSender sender) {
+	public void displayInfo(final CommandSender sender) {
 	}
 
-	public void flagAdd(RegionFlag rf) {
-		flags.add(rf);
+	public void flagAdd(final RegionFlag regionFlag) {
+		flags.add(regionFlag);
 	}
 
-	public boolean flagToggle(RegionFlag rf) {
-		if (flags.contains(rf)) {
-			flags.remove(rf);
+	public boolean flagToggle(RegionFlag regionFlag) {
+		if (flags.contains(regionFlag)) {
+			flags.remove(regionFlag);
 		} else {
-			flags.add(rf);
+			flags.add(regionFlag);
 		}
-		return flags.contains(rf);
+		return flags.contains(regionFlag);
 	}
 
-	public void flagRemove(RegionFlag rf) {
-		flags.remove(rf);
+	public void flagRemove(final RegionFlag regionFlag) {
+		flags.remove(regionFlag);
 	}
 
 	public Arena getArena() {
 		return arena;
 	}
 
-	public HashSet<RegionFlag> getFlags() {
+	public Set<RegionFlag> getFlags() {
 		return flags;
 	}
 
 	public PABlockLocation[] getLocs() {
-		return locs;
+		return locs.clone();
 	}
 
-	public HashSet<RegionProtection> getProtections() {
+	public Set<RegionProtection> getProtections() {
 		return protections;
 	}
 
@@ -424,49 +427,47 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			getArena().setFightInProgress(true);
 		}
 
-		RegionRunnable rr = new RegionRunnable(this);
+		final RegionRunnable regionRunner = new RegionRunnable(this);
 		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, rr,
+				PVPArena.instance, regionRunner,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
-		rr.setId(tickID);
+		regionRunner.setId(tickID);
 	}
 
-	protected boolean isInNoWoolSet(Block b) {
-		return noWools.contains(b.getType());
+	protected boolean isInNoWoolSet(final Block block) {
+		return NOWOOLS.contains(block.getType());
 	}
 
-	public boolean isInRange(int offset, PABlockLocation loc) {
+	public boolean isInRange(final int offset, final PABlockLocation loc) {
 		if (!world.equals(loc.getWorldName())) {
 			return false;
 		}
 
-		PABlockLocation bvdiff = getCenter();
-
-		return (offset < bvdiff.getDistance(loc));
+		return (offset < getCenter().getDistance(loc));
 	}
 
 	public void onThisLoad() {
 	}
 
-	public void protectionAdd(RegionProtection rp) {
-		if (rp == null) {
+	public void protectionAdd(final RegionProtection regionProtection) {
+		if (regionProtection == null) {
 			protectionSetAll(true);
 			return;
 		}
-		protections.add(rp);
+		protections.add(regionProtection);
 	}
 
-	public boolean protectionSetAll(Boolean b) {
+	public boolean protectionSetAll(final Boolean value) {
 		for (RegionProtection rp : RegionProtection.values()) {
 			if (rp == null) {
 				getArena().msg(Bukkit.getConsoleSender(),
 						"&cWarning! RegionProtection is null!");
 				return false;
 			}
-			if (b == null) {
+			if (value == null) {
 				protectionToggle(rp);
-			} else if (b.booleanValue()) {
+			} else if (value.booleanValue()) {
 				protectionAdd(rp);
 			} else {
 				protectionRemove(rp);
@@ -476,24 +477,24 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		return true;
 	}
 
-	public boolean protectionToggle(RegionProtection rp) {
-		if (rp == null) {
+	public boolean protectionToggle(final RegionProtection regionProtection) {
+		if (regionProtection == null) {
 			return protectionSetAll(null);
 		}
-		if (protections.contains(rp)) {
-			protections.remove(rp);
+		if (protections.contains(regionProtection)) {
+			protections.remove(regionProtection);
 		} else {
-			protections.add(rp);
+			protections.add(regionProtection);
 		}
-		return protections.contains(rp);
+		return protections.contains(regionProtection);
 	}
 
-	public void protectionRemove(RegionProtection rp) {
-		if (rp == null) {
+	public void protectionRemove(final RegionProtection regionProtection) {
+		if (regionProtection == null) {
 			protectionSetAll(false);
 			return;
 		}
-		protections.remove(rp);
+		protections.remove(regionProtection);
 	}
 
 	public void reset() {
@@ -505,18 +506,18 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			return;
 		}
 
-		Iterator<Entity> ie = getWorld().getEntities().iterator();
+		final Iterator<Entity> eIterator = getWorld().getEntities().iterator();
 
-		while (ie.hasNext()) {
-			Entity e = ie.next();
-			if ((e instanceof Player)
-					|| (!contains(new PABlockLocation(e.getLocation()
-							.getWorld().getName(), e.getLocation().getBlockX(),
-							e.getLocation().getBlockY(), e.getLocation()
+		while (eIterator.hasNext()) {
+			final Entity entity = eIterator.next();
+			if ((entity instanceof Player)
+					|| (!contains(new PABlockLocation(entity.getLocation()
+							.getWorld().getName(), entity.getLocation().getBlockX(),
+							entity.getLocation().getBlockY(), entity.getLocation()
 									.getBlockZ())))) {
 				continue;
 			}
-			e.remove();
+			entity.remove();
 		}
 		Bukkit.getScheduler().cancelTask(tickID);
 		tickID = -1;
@@ -528,97 +529,94 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		arena.getArenaConfig().save();
 	}
 
-	public void setArena(Arena arena) {
+	public final void setArena(final Arena arena) {
 		this.arena = arena;
 	}
 
-	public void setName(String name) {
+	public final void setName(final String name) {
 		this.name = name;
 	}
 
-	public void setShape(RegionShape shape) {
+	public void setShape(final RegionShape shape) {
 		this.shape = shape;
 	}
 
-	public void setType(RegionType type) {
+	public void setType(final RegionType type) {
 		this.type = type;
 	}
 
 	public void tick() {
 		for (ArenaPlayer ap : arena.getFighters()) {
-			PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
-			if (flags.contains(RegionFlag.DEATH)) {
-				if (this.contains(pLoc)) {
-					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
-					ap.get().setLastDamageCause(
-							new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-									1000));
-					ap.get().damage(1000);
+			if (ap.get() == null) {
+				continue;
+			}
+			final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
+			if (flags.contains(RegionFlag.DEATH) && this.contains(pLoc)) {
+				Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
+				ap.get().setLastDamageCause(
+						new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
+								1000));
+				ap.get().damage(1000);
+			}
+			if (flags.contains(RegionFlag.WIN) && this.contains(pLoc)) {
+				for (ArenaTeam team : arena.getTeams()) {
+					if (!arena.isFreeForAll()
+							&& team.getTeamMembers().contains(ap)) {
+						// skip winning team
+						continue;
+					}
+					for (ArenaPlayer ap2 : team.getTeamMembers()) {
+						if (arena.isFreeForAll()
+								&& ap2.getName().equals(ap.getName())) {
+							continue;
+						}
+						if (ap2.getStatus().equals(Status.FIGHT)) {
+							Bukkit.getWorld(world).strikeLightningEffect(
+									ap2.get().getLocation());
+							final EntityDamageEvent event = new EntityDamageEvent(
+									ap2.get(), DamageCause.LIGHTNING, 10);
+							PlayerListener.finallyKillPlayer(arena,
+									ap2.get(), event);
+						}
+					}
+					return;
 				}
 			}
-			if (flags.contains(RegionFlag.WIN)) {
-				if (this.contains(pLoc)) {
+			if (flags.contains(RegionFlag.LOSE) && this.contains(pLoc)) {
+				if (arena.isFreeForAll()) {
+					if (ap.getStatus().equals(Status.FIGHT)) {
+						Bukkit.getWorld(world).strikeLightningEffect(
+								ap.get().getLocation());
+						final EntityDamageEvent event = new EntityDamageEvent(
+								ap.get(), DamageCause.LIGHTNING, 10);
+						PlayerListener
+								.finallyKillPlayer(arena, ap.get(), event);
+					}
+				} else {
 					for (ArenaTeam team : arena.getTeams()) {
-						if (!arena.isFreeForAll()
-								&& team.getTeamMembers().contains(ap)) {
-							// skip winning team
+						if (!team.getTeamMembers().contains(ap)) {
+							// skip winner
 							continue;
 						}
 						for (ArenaPlayer ap2 : team.getTeamMembers()) {
-							if (arena.isFreeForAll()
-									&& ap2.getName().equals(ap.getName())) {
-								continue;
-							}
 							if (ap2.getStatus().equals(Status.FIGHT)) {
-								Bukkit.getWorld(world).strikeLightningEffect(
-										ap2.get().getLocation());
-								EntityDamageEvent e = new EntityDamageEvent(
-										ap2.get(), DamageCause.LIGHTNING, 10);
+								Bukkit.getWorld(world)
+										.strikeLightningEffect(
+												ap2.get().getLocation());
+								final EntityDamageEvent event = new EntityDamageEvent(
+										ap2.get(), DamageCause.LIGHTNING,
+										10);
 								PlayerListener.finallyKillPlayer(arena,
-										ap2.get(), e);
+										ap2.get(), event);
 							}
 						}
 						return;
 					}
 				}
 			}
-			if (flags.contains(RegionFlag.LOSE)) {
-				if (this.contains(pLoc)) {
-					if (arena.isFreeForAll()) {
-						if (ap.getStatus().equals(Status.FIGHT)) {
-							Bukkit.getWorld(world).strikeLightningEffect(
-									ap.get().getLocation());
-							EntityDamageEvent e = new EntityDamageEvent(
-									ap.get(), DamageCause.LIGHTNING, 10);
-							PlayerListener
-									.finallyKillPlayer(arena, ap.get(), e);
-						}
-					} else {
-						for (ArenaTeam team : arena.getTeams()) {
-							if (!team.getTeamMembers().contains(ap)) {
-								// skip winner
-								continue;
-							}
-							for (ArenaPlayer ap2 : team.getTeamMembers()) {
-								if (ap2.getStatus().equals(Status.FIGHT)) {
-									Bukkit.getWorld(world)
-											.strikeLightningEffect(
-													ap2.get().getLocation());
-									EntityDamageEvent e = new EntityDamageEvent(
-											ap2.get(), DamageCause.LIGHTNING,
-											10);
-									PlayerListener.finallyKillPlayer(arena,
-											ap2.get(), e);
-								}
-							}
-							return;
-						}
-					}
-				}
-			}
 			if (flags.contains(RegionFlag.NOCAMP)) {
 				if (this.contains(pLoc)) {
-					Location loc = playerNameLocations.get(ap.getName());
+					final Location loc = playerLocations.get(ap.getName());
 					if (loc == null) {
 						Arena.pmsg(ap.get(),
 								Language.parse(MSG.NOTICE_YOU_NOCAMP));
@@ -632,10 +630,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 											CFG.DAMAGE_SPAWNCAMP));
 						}
 					}
-					playerNameLocations.put(ap.getName(), ap.get()
+					playerLocations.put(ap.getName(), ap.get()
 							.getLocation().getBlock().getLocation());
 				} else {
-					playerNameLocations.remove(ap.getName());
+					playerLocations.remove(ap.getName());
 				}
 			}
 			if (type.equals(RegionType.BATTLE)) {
@@ -658,7 +656,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 			}
 			if (type.equals(RegionType.WATCH)) {
-				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
 				for (ArenaPlayer ap2 : arena.getFighters()) {
 					plyrs.add(ap2);
 				}
@@ -673,7 +671,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 			}
 			if (type.equals(RegionType.LOUNGE)) {
-				HashSet<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
 				for (ArenaPlayer ap2 : arena.getEveryone()) {
 					plyrs.add(ap2);
 				}
@@ -693,12 +691,12 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				&& type.equals(RegionType.JOIN) && !arena.isFightInProgress()
 				&& !arena.isLocked()) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				ArenaPlayer ap = ArenaPlayer.parsePlayer(p.getName());
-				if (ap.getArena() != null) {
+				final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(p.getName());
+				if (aPlayer.getArena() != null) {
 					continue;
 				}
 				if (this.contains(new PABlockLocation(p.getLocation()))) {
-					PAG_Join cmd = new PAG_Join();
+					final PAG_Join cmd = new PAG_Join();
 					cmd.commit(arena, p,
 							new String[] { name.replace("-join", "") });
 				}
@@ -710,45 +708,45 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		throw new IllegalStateException("Module not up to date: " + getName());
 	}
 
-	public String update(String key, String value) {
+	public String update(final String key, final String value) {
 		// usage: /pa {arenaname} region [regionname] radius [number]
 		// usage: /pa {arenaname} region [regionname] height [number]
 		// usage: /pa {arenaname} region [regionname] position [position]
 		// usage: /pa {arenaname} region [regionname] flag [flag]
 		// usage: /pa {arenaname} region [regionname] type [regiontype]
 
-		if (key.toLowerCase().equals("height")) {
-			int h = 0;
+		if (key.equalsIgnoreCase("height")) {
+			int height = 0;
 			try {
-				h = Integer.parseInt(value);
+				height = Integer.parseInt(value);
 			} catch (Exception e) {
 				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
 			}
 
-			getLocs()[0].setY(getCenter().getY() - (h >> 1));
-			getLocs()[1].setY(getLocs()[0].getY() + h);
+			getLocs()[0].setY(getCenter().getY() - (height >> 1));
+			getLocs()[1].setY(getLocs()[0].getY() + height);
 
 			return Language.parse(MSG.REGION_HEIGHT, value);
-		} else if (key.toLowerCase().equals("radius")) {
-			int r = 0;
+		} else if (key.equalsIgnoreCase("radius")) {
+			int radius = 0;
 			try {
-				r = Integer.parseInt(value);
+				radius = Integer.parseInt(value);
 			} catch (Exception e) {
 				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
 			}
 
-			PABlockLocation loc = getCenter();
+			final PABlockLocation loc = getCenter();
 
-			getLocs()[0].setX(loc.getX() - r);
-			getLocs()[0].setY(loc.getY() - r);
-			getLocs()[0].setZ(loc.getZ() - r);
+			getLocs()[0].setX(loc.getX() - radius);
+			getLocs()[0].setY(loc.getY() - radius);
+			getLocs()[0].setZ(loc.getZ() - radius);
 
-			getLocs()[1].setX(loc.getX() + r);
-			getLocs()[1].setY(loc.getY() + r);
-			getLocs()[1].setZ(loc.getZ() + r);
+			getLocs()[1].setX(loc.getX() + radius);
+			getLocs()[1].setY(loc.getY() + radius);
+			getLocs()[1].setZ(loc.getZ() + radius);
 
 			return Language.parse(MSG.REGION_RADIUS, value);
-		} else if (key.toLowerCase().equals("position")) {
+		} else if (key.equalsIgnoreCase("position")) {
 			return null; // TODO insert function to align the arena based on a
 							// position setting.
 			// TODO see SETUP.creole

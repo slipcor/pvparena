@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -54,39 +55,38 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	public GoalBlockDestroy() {
 		super("BlockDestroy");
-		db = new Debug(100);
+		debug = new Debug(100);
 	}
 
-	private HashMap<String, Integer> paTeamLives = new HashMap<String, Integer>();
+	private final Map<String, Integer> paTeamLives = new HashMap<String, Integer>();
 
 	private String blockTeamName = "";
 
 	@Override
 	public String version() {
-		return "v0.10.2.33";
+		return "v0.10.3.0";
 	}
 
-	int priority = 8;
-	int killpriority = 1;
+	private static final int PRIORITY = 8;
 
 	@Override
 	public boolean allowsJoinInBattle() {
 		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
 	}
 
-	public PACheck checkCommand(PACheck res, String string) {
-		if (res.getPriority() > priority) {
+	public PACheck checkCommand(final PACheck res, final String string) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
 		if (string.equalsIgnoreCase("blocktype")) {
-			res.setPriority(this, priority);
+			res.setPriority(this, PRIORITY);
 		}
 
 		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+			final String sTeam = team.getName();
 			if (string.contains(sTeam + "block")) {
-				res.setPriority(this, priority);
+				res.setPriority(this, PRIORITY);
 			}
 		}
 
@@ -94,16 +94,16 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public PACheck checkEnd(PACheck res) {
+	public PACheck checkEnd(final PACheck res) {
 
-		if (res.getPriority() > priority) {
+		if (res.getPriority() > PRIORITY) {
 			return res;
 		}
 
-		int count = TeamManager.countActiveTeams(arena);
+		final int count = TeamManager.countActiveTeams(arena);
 
 		if (count == 1) {
-			res.setPriority(this, priority); // yep. only one team left. go!
+			res.setPriority(this, PRIORITY); // yep. only one team left. go!
 		} else if (count == 0) {
 			res.setError(this, "No teams playing!");
 		}
@@ -112,9 +112,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public String checkForMissingSpawns(Set<String> list) {
+	public String checkForMissingSpawns(final Set<String> list) {
 		for (ArenaTeam team : arena.getTeams()) {
-			String sTeam = team.getName();
+			final String sTeam = team.getName();
 			if (!list.contains(sTeam + "block")) {
 				boolean found = false;
 				for (String s : list) {
@@ -132,13 +132,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public PACheck checkJoin(CommandSender sender, PACheck res, String[] args) {
-		if (res.getPriority() >= priority) {
+	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+		if (res.getPriority() >= PRIORITY) {
 			return res;
 		}
 
-		int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		int maxTeamPlayers = arena.getArenaConfig().getInt(
+		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+		final int maxTeamPlayers = arena.getArenaConfig().getInt(
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
@@ -151,37 +151,34 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		}
 
 		if (!arena.isFreeForAll()) {
-			ArenaTeam team = arena.getTeam(args[0]);
+			final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null) {
-
-				if (maxTeamPlayers > 0
+			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-					res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
-					return res;
-				}
+				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				return res;
 			}
 		}
 
-		res.setPriority(this, priority);
+		res.setPriority(this, PRIORITY);
 		return res;
 	}
 
 	@Override
-	public PACheck checkSetBlock(PACheck res, Player player, Block block) {
+	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-		if (res.getPriority() > priority
+		if (res.getPriority() > PRIORITY
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
-		res.setPriority(this, priority); // success :)
+		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
 	}
 
-	private void commit(Arena arena, String sTeam, boolean win) {
-		db.i("[BD] committing end: " + sTeam);
-		db.i("win: " + String.valueOf(win));
+	private void commit(final Arena arena, final String sTeam, final boolean win) {
+		debug.i("[BD] committing end: " + sTeam);
+		debug.i("win: " + win);
 
 		String winteam = sTeam;
 
@@ -226,7 +223,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void commitCommand(CommandSender sender, String[] args) {
+	public void commitCommand(final CommandSender sender, final String[] args) {
 		if (args[0].equalsIgnoreCase("blocktype")) {
 			if (args.length < 2) {
 				arena.msg(
@@ -237,11 +234,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			}
 
 			try {
-				int i = Integer.parseInt(args[1]);
+				final int value = Integer.parseInt(args[1]);
 				arena.getArenaConfig().set(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE,
-						Material.getMaterial(i).name());
+						Material.getMaterial(value).name());
 			} catch (Exception e) {
-				Material mat = Material.getMaterial(args[1].toUpperCase());
+				final Material mat = Material.getMaterial(args[1].toUpperCase());
 
 				if (mat == null) {
 					arena.msg(sender,
@@ -258,7 +255,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 		} else if (args[0].contains("block")) {
 			for (ArenaTeam team : arena.getTeams()) {
-				String sTeam = team.getName();
+				final String sTeam = team.getName();
 				if (args[0].contains(sTeam + "block")) {
 					blockTeamName = args[0];
 					PAA_Region.activeSelections.put(sender.getName(), arena);
@@ -271,8 +268,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void commitEnd(boolean force) {
-		db.i("[BD]");
+	public void commitEnd(final boolean force) {
+		debug.i("[BD]");
 
 		ArenaTeam aTeam = null;
 
@@ -303,7 +300,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public boolean commitSetFlag(Player player, Block block) {
+	public boolean commitSetFlag(final Player player, final Block block) {
 		if (block == null
 				|| !block
 						.getType()
@@ -318,7 +315,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		db.i("trying to set a block", player);
+		debug.i("trying to set a block", player);
 
 		// command : /pa redblock1
 		// location: red1block:
@@ -340,45 +337,44 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void configParse(YamlConfiguration config) {
+	public void configParse(final YamlConfiguration config) {
 		Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
 	}
 
 	@Override
-	public PACheck getLives(PACheck res, ArenaPlayer ap) {
-		if (!res.hasError() && res.getPriority() <= priority) {
+	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					""
-							+ (paTeamLives.containsKey(ap.getArenaTeam()
-									.getName()) ? paTeamLives.get(ap
+					String.valueOf(paTeamLives.containsKey(aPlayer.getArenaTeam()
+									.getName()) ? paTeamLives.get(aPlayer
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
 	}
 
 	@Override
-	public String guessSpawn(String place) {
+	public String guessSpawn(final String place) {
 		// no exact match: assume we have multiple spawnpoints
-		HashMap<Integer, String> locs = new HashMap<Integer, String>();
-		int i = 0;
+		final Map<Integer, String> locs = new HashMap<Integer, String>();
+		int pos = 0;
 
-		db.i("searching for team spawns: " + place);
+		debug.i("searching for team spawns: " + place);
 
-		HashMap<String, Object> coords = (HashMap<String, Object>) arena
+		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
 				.getConfigurationSection("spawns").getValues(false);
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
-				locs.put(i++, name);
-				db.i("found match: " + name);
+				locs.put(pos++, name);
+				debug.i("found match: " + name);
 			}
 			if (name.endsWith("block")) {
 				for (ArenaTeam team : arena.getTeams()) {
-					String sTeam = team.getName();
+					final String sTeam = team.getName();
 					if (name.startsWith(sTeam) && place.startsWith(sTeam)) {
-						locs.put(i++, name);
-						db.i("found match: " + name);
+						locs.put(pos++, name);
+						debug.i("found match: " + name);
 					}
 				}
 			}
@@ -387,15 +383,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		if (locs.size() < 1) {
 			return null;
 		}
-		Random r = new Random();
+		final Random random = new Random();
 
-		place = locs.get(r.nextInt(locs.size()));
-
-		return place;
+		return locs.get(random.nextInt(locs.size()));
 	}
 
 	@Override
-	public boolean hasSpawn(String string) {
+	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().equals(teamName.toLowerCase() + "block")) {
 				return true;
@@ -409,11 +403,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void initate(Player player) {
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = ap.getArenaTeam();
+	public void initate(final Player player) {
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 		if (!paTeamLives.containsKey(team.getName())) {
-			paTeamLives.put(ap.getArenaTeam().getName(), arena.getArenaConfig()
+			paTeamLives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_BLOCKDESTROY_LIVES));
 
 			takeBlock(team.getColor().name(), false,
@@ -431,14 +425,14 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		paTeamLives.clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() > 0) {
-				db.i("adding team " + team.getName());
+				debug.i("adding team " + team.getName());
 				// team is active
 				paTeamLives.put(
 						team.getName(),
 						arena.getArenaConfig().getInt(
 								CFG.GOAL_BLOCKDESTROY_LIVES, 1));
 			}
-			HashMap<String, PALocation> map = SpawnManager.getSpawnMap(arena,
+			final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
 					"blocks");
 			for (String s : map.keySet()) {
 				takeBlock(team.getColor().name(), false,
@@ -447,12 +441,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		}
 	}
 
-	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
+	private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
-		db.i("reducing lives of team " + team);
-		int i = paTeamLives.get(team) - 1;
-		if (i > 0) {
-			paTeamLives.put(team, i);
+		debug.i("reducing lives of team " + team);
+		final int count = paTeamLives.get(team) - 1;
+		if (count > 0) {
+			paTeamLives.put(team, count);
 		} else {
 			paTeamLives.remove(team);
 			commit(arena, team, false);
@@ -462,12 +456,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void reset(boolean force) {
+	public void reset(final boolean force) {
 		paTeamLives.clear();
 	}
 
 	@Override
-	public void setDefaults(YamlConfiguration config) {
+	public void setDefaults(final YamlConfiguration config) {
 		if (arena.isFreeForAll()) {
 			return;
 		}
@@ -476,7 +470,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			db.i("no teams defined, adding custom red and blue!");
+			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
@@ -494,20 +488,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	 * @param lBlock
 	 *            the location to take/reset
 	 */
-	public void takeBlock(String blockColor, boolean take, PALocation lBlock) {
+	public void takeBlock(final String blockColor, final boolean take, final PALocation lBlock) {
 		if (lBlock == null) {
 			return;
 		}
-		if (!arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)
+		if (arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)
 				.equals("WOOL")) {
-			lBlock.toLocation()
-					.getBlock()
-					.setTypeId(
-							Material.valueOf(
-									arena.getArenaConfig().getString(
-											CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))
-									.getId());
-		} else {
 			lBlock.toLocation()
 					.getBlock()
 					.setTypeIdAndData(
@@ -517,11 +503,19 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 									.getId(),
 							StringParser.getColorDataFromENUM(blockColor),
 							false);
+		} else {
+			lBlock.toLocation()
+					.getBlock()
+					.setTypeId(
+							Material.valueOf(
+									arena.getArenaConfig().getString(
+											CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))
+									.getId());
 		}
 	}
 
 	@Override
-	public HashMap<String, Double> timedEnd(HashMap<String, Double> scores) {
+	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 		double score;
 
 		for (ArenaTeam team : arena.getTeams()) {
@@ -538,7 +532,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@Override
-	public void unload(Player player) {
+	public void unload(final Player player) {
 		disconnect(ArenaPlayer.parsePlayer(player.getName()));
 		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
@@ -546,8 +540,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		Player player = event.getPlayer();
+	public void onBlockBreak(final BlockBreakEvent event) {
+		final Player player = event.getPlayer();
 		if (!arena.hasPlayer(event.getPlayer())
 				|| !event
 						.getBlock()
@@ -556,37 +550,37 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 						.equals(arena.getArenaConfig().getString(
 								CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))) {
 
-			db.i("block destroy, ignoring", player);
-			db.i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
-			db.i(event.getBlock().getType().name(), player);
+			debug.i("block destroy, ignoring", player);
+			debug.i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
+			debug.i(event.getBlock().getType().name(), player);
 			return;
 		}
 
-		Block block = event.getBlock();
+		final Block block = event.getBlock();
 
-		db.i("block destroy!", player);
+		debug.i("block destroy!", player);
 
 		Vector vLoc;
 		Vector vBlock = null;
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-		ArenaTeam pTeam = ap.getArenaTeam();
+		final ArenaTeam pTeam = aPlayer.getArenaTeam();
 		if (pTeam == null) {
 			return;
 		}
 
 		for (ArenaTeam team : arena.getTeams()) {
-			String blockTeam = team.getName();
+			final String blockTeam = team.getName();
 
 			if (team.getTeamMembers().size() < 1
 					&& !team.getName().equals("touchdown")) {
-				db.i("size!OUT! ", player);
+				debug.i("size!OUT! ", player);
 				continue; // dont check for inactive teams
 			}
 
-			db.i("checking for block of team " + blockTeam, player);
+			debug.i("checking for block of team " + blockTeam, player);
 			vLoc = block.getLocation().toVector();
-			db.i("block: " + vLoc.toString(), player);
+			debug.i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, blockTeam + "block").size() > 0) {
 				vBlock = SpawnManager
 						.getBlockNearest(
@@ -600,12 +594,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				// ///////
 
 				if (blockTeam.equals(pTeam.getName())) {
-					db.i("is own team! cancel and OUT! ", player);
+					debug.i("is own team! cancel and OUT! ", player);
 					event.setCancelled(true);
 					continue;
 				}
 
-				String sTeam = pTeam.getName();
+				final String sTeam = pTeam.getName();
 
 				try {
 					arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
@@ -623,8 +617,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 						SpawnManager.getCoords(arena, blockTeam + "block"));
 
 				reduceLivesCheckEndAndCommit(arena, blockTeam);
-
-				// ///////
 
 				return;
 			}

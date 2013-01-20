@@ -22,14 +22,14 @@ import org.bukkit.entity.Player;
  * @version v0.10.0
  */
 
-public class PAG_Chat extends PAA__Command {
+public class PAG_Chat extends AbstractArenaCommand {
 
 	public PAG_Chat() {
 		super(new String[] {"pvparena.user"});
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -43,26 +43,26 @@ public class PAG_Chat extends PAA__Command {
 			return;
 		}
 		
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (args.length < 1) {
 			// toggle
-			if (!ap.isPublicChatting()) {
-				ap.setPublicChatting(true);
+			if (aPlayer.isPublicChatting()) {
+				aPlayer.setPublicChatting(false);
+				arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
+			} else {
+				aPlayer.setPublicChatting(true);
 				if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
 					arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
 				} else {
 					arena.msg(sender, Language.parse(MSG.MESSAGES_TOPUBLIC));
 				}
-			} else {
-				ap.setPublicChatting(false);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
 			}
 			return;
 		}
 
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
-			ap.setPublicChatting(true);
+			aPlayer.setPublicChatting(true);
 			if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
 				arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
 			} else {
@@ -72,7 +72,7 @@ public class PAG_Chat extends PAA__Command {
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
-			ap.setPublicChatting(false);
+			aPlayer.setPublicChatting(false);
 			arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
 			return;
 		}
@@ -91,7 +91,7 @@ public class PAG_Chat extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CHAT));
 	}
 }

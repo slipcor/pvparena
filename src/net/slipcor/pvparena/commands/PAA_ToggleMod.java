@@ -19,14 +19,14 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public class PAA_ToggleMod extends PAA__Command {
+public class PAA_ToggleMod extends AbstractArenaCommand {
 
 	public PAA_ToggleMod() {
 		super(new String[0]);
 	}
 
 	@Override
-	public void commit(Arena arena, CommandSender sender, String[] args) {
+	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
@@ -38,10 +38,10 @@ public class PAA_ToggleMod extends PAA__Command {
 
 		// pa [arenaname] togglemod [module]
 		
-		String name = args[0].toLowerCase();
-		ArenaModule am = PVPArena.instance.getAmm().getModByName(name);
-		if (am != null) {
-			arena.msg(sender, Language.parse(MSG.SET_DONE, am.getName(), String.valueOf(am.toggleEnabled(arena))));
+		final String name = args[0].toLowerCase();
+		final ArenaModule mod = PVPArena.instance.getAmm().getModByName(name);
+		if (mod != null) {
+			arena.msg(sender, Language.parse(MSG.SET_DONE, mod.getName(), String.valueOf(mod.toggleEnabled(arena))));
 			return;
 		}
 		arena.msg(sender, Language.parse(MSG.ERROR_UNKNOWN_MODULE, args[0]));
@@ -53,7 +53,7 @@ public class PAA_ToggleMod extends PAA__Command {
 	}
 
 	@Override
-	public void displayHelp(CommandSender sender) {
+	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TOGGLEMOD));
 	}
 }
