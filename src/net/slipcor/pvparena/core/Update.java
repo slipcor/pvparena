@@ -77,14 +77,14 @@ public class Update extends Thread {
 			return RELEASE;
 		}
 		
-		public static boolean matchType(final UpdateType updateType) {
-			switch (updateType) {
+		public static boolean matchType(final String updateType) {
+			switch (type) {
 				case ALPHA:
 					return true;
 				case BETA:
-					return updateType != ALPHA;
+					return updateType.equalsIgnoreCase("beta") || updateType.equalsIgnoreCase("release");
 				default:
-					return (updateType == RELEASE);
+					return updateType.equalsIgnoreCase("release");
 			}
 		}
 	}
@@ -294,7 +294,7 @@ public class Update extends Thread {
 	        for (int i = 0 ; i < array.size(); i++) {
 	        	final JSONObject value = (JSONObject)array.get(i);
 	        	final String type = (String) value.get("type");
-	        	if (!UpdateType.matchType(Update.type)) {
+	        	if (!UpdateType.matchType(type)) {
 	        		debug.i(Update.type.name() + " does not match " + type);
 	        		continue;
 	        	}
