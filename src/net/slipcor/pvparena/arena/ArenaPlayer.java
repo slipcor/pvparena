@@ -367,12 +367,12 @@ public class ArenaPlayer {
 			state.dump(cfg);
 		}
 
-		cfg.set("inventory",
-				StringParser.getStringFromItemStacks(savedInventory));
-		cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
-		cfg.set("loc", Config.parseToString(location));
-
 		try {
+			cfg.set("inventory",
+					StringParser.getStringFromItemStacks(savedInventory));
+			cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
+			cfg.set("loc", Config.parseToString(location));
+			
 			cfg.save(file);
 		} catch (Exception e) {
 			e.printStackTrace();

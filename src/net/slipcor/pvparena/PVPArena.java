@@ -233,7 +233,7 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 		DEBUG.i("cmd null", sender);
-
+		
 		return false;
 	}
 
