@@ -392,7 +392,8 @@ public class PlayerListener implements Listener {
 					+ "?", player);
 			if (block.getTypeId() == mMat.getId()) {
 				DEBUG.i("clicked ready block!", player);
-				if (aPlayer.getClass().equals("")) {
+				if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().equals("")) {
+					arena.msg(player, Language.parse(MSG.ERROR_READY_NOCLASS));
 					return; // not chosen class => OUT
 				}
 				if (arena.startRunner != null) {
@@ -403,7 +404,7 @@ public class PlayerListener implements Listener {
 				}
 
 				DEBUG.i("===============", player);
-				DEBUG.i("===== class: " + aPlayer.getClass() + " =====", player);
+				DEBUG.i("===== class: " + aPlayer.getArenaClass() + " =====", player);
 				DEBUG.i("===============", player);
 
 				if (!arena.isFightInProgress()) {
