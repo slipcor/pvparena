@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
@@ -619,6 +620,40 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				reduceLivesCheckEndAndCommit(arena, blockTeam);
 
 				return;
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityExplode(final EntityExplodeEvent event) {
+
+		final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
+				"blocks");
+		for (Block b : event.blockList()) {
+			PALocation loc = new PALocation(b.getLocation());
+			for (String node : map.keySet()) {
+				if (map.get(node).getDistance(loc) < 1) {
+					final String blockTeam = node.split("block")[0];
+					
+					System.out.print(blockTeam);
+					
+					try {
+						arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
+								Language.parse(MSG.DEATHCAUSE_BLOCK_EXPLOSION)
+										+ ChatColor.YELLOW, arena
+										.getTeam(blockTeam).getColoredName()
+										+ ChatColor.YELLOW, String
+										.valueOf(paTeamLives.get(blockTeam) - 1)));
+					} catch (Exception e) {
+						Bukkit.getLogger().severe(
+								"[PVP Arena] team unknown/no lives: " + blockTeam);
+						e.printStackTrace();
+					}
+					takeBlock(arena.getTeam(blockTeam).getColor().name(), false,
+							SpawnManager.getCoords(arena, node));
+
+					reduceLivesCheckEndAndCommit(arena, blockTeam);
+				}
 			}
 		}
 	}
