@@ -71,11 +71,12 @@ public class GoalTank extends ArenaGoal {
 
 		final int count = lives.size();
 
-		if (count == 1
+		if (count <= 1
 				|| !ArenaPlayer.parsePlayer(tanks.get(arena)).getStatus()
 						.equals(Status.FIGHT)) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
-		} else if (count == 0) {
+		}
+		if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
 

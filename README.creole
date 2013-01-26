@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.3.4 - aims to fix Ticket #193 - arena not ending
 * v0.10.3.3 - Support TNT in BlockDestroy
 * v0.10.3.2 - Several fixes
 * v0.10.3.1 - StartRunnable now is on the main... thank you, TagAPI :p

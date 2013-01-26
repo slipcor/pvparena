@@ -74,9 +74,10 @@ public class GoalPlayerLives extends ArenaGoal {
 
 		final int count = lives.size();
 
-		if (count == 1) {
+		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
-		} else if (count == 0) {
+		}
+		if (count == 0) {
 			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
 		}
 
