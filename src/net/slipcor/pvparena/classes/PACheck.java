@@ -168,6 +168,10 @@ public class PACheck {
 		
 		if (res.hasError()) {
 			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+			if (commit != null) {
+				commit.commitEnd(force);
+				return true;
+			}
 			return false;
 		}
 		
