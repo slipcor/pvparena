@@ -240,6 +240,9 @@ public class GoalDomination extends ArenaGoal {
 					reduceLivesCheckEndAndCommit(arena, team);
 					
 					int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
+					if (!paTeamLives.containsKey(team)) {
+						continue;
+					}
 					int lives = this.paTeamLives.get(team);
 					
 					arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
@@ -629,7 +632,7 @@ public class GoalDomination extends ArenaGoal {
 				paTeamLives.put(team, iLives);
 			} else {
 				paTeamLives.remove(team);
-				commit(arena, team, false);
+				commit(arena, team, true);
 				return true;
 			}
 		}
