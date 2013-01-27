@@ -191,6 +191,8 @@ public class Config {
 		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),
 		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false),
 
+		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false),
+		
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 
