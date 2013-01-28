@@ -69,6 +69,7 @@ public final class PlayerState {
 		}
 		
 		fullReset(arena, player);
+		player.setPlayerTime(arena.getArenaConfig().getInt(CFG.GENERAL_TIME), false);
 	}
 
 	public void dump(final YamlConfiguration cfg) {
@@ -144,6 +145,7 @@ public final class PlayerState {
 		if (aPlayer.getArena() != null) {
 			player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
+		player.resetPlayerTime();
 	}
 
 	/**

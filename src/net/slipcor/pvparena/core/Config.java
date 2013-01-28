@@ -67,6 +67,7 @@ public class Config {
 		GENERAL_QUICKSPAWN("general.quickspawn", true),
 		GENERAL_PREFIX("general.prefix", "PVP Arena"),
 		GENERAL_SMARTSPAWN("general.smartspawn", false),
+		GENERAL_TIME("general.time", -1),
 		GENERAL_TYPE("general.type", "none"),
 		GENERAL_WAND("general.wand", 280),
 
@@ -97,6 +98,7 @@ public class Config {
 		PERMS_JOININBATTLE("perms.joinInBattle", false),
 		PERMS_TEAMKILL("perms.teamkill", false),
 
+		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false),
 		PLAYER_DROPSINVENTORY("player.dropsInventory", false),
 		PLAYER_EXHAUSTION("player.exhaustion", 0.0),
 		PLAYER_FOODLEVEL("player.foodLevel", 20),

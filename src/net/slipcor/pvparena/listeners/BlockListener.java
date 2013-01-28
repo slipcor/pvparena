@@ -17,7 +17,9 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -35,6 +37,7 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * <pre>
@@ -378,6 +381,16 @@ public class BlockListener implements Listener {
 
 		arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event
 				.getBlock().getLocation()));
+		
+		if (event.getBlock().getType().equals(Material.TNT) && arena.getArenaConfig().getBoolean(CFG.PLAYER_AUTOIGNITE)) {
+			event.setCancelled(true);
+			event.getPlayer().getInventory().remove(new ItemStack(Material.TNT, 1));
+			event.getBlock().getLocation().getWorld().spawnEntity(
+					event.getBlock().getRelative(BlockFace.UP).getLocation(), EntityType.PRIMED_TNT);
+			return;
+		}
+		
+		
 		List<String> list = new ArrayList<String>();
 
 		list = arena.getArenaConfig().getStringList(
