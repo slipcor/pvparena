@@ -69,7 +69,10 @@ public final class PlayerState {
 		}
 		
 		fullReset(arena, player);
-		player.setPlayerTime(arena.getArenaConfig().getInt(CFG.GENERAL_TIME), false);
+		final int time = arena.getArenaConfig().getInt(CFG.GENERAL_TIME);
+		if (time != -1) {
+			player.setPlayerTime(time, false);
+		}
 	}
 
 	public void dump(final YamlConfiguration cfg) {
