@@ -184,8 +184,8 @@ public class EntityListener implements Listener {
 			}
 		}
 
-		if ((eDamager != null && eDamagee != null) && eDamager instanceof Player
-				&& eDamagee instanceof Player && PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
+		if (eDamager instanceof Player && eDamagee instanceof Player
+				&& PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
 				event.setCancelled(true);
 				// cancel events for regular no PVP servers
 		}
@@ -208,7 +208,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("both entities are players");
+		DEBUG.i("both entities are players",(Player) eDamager);
 		final Player attacker = (Player) eDamager;
 		final Player defender = (Player) eDamagee;
 
@@ -234,7 +234,8 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("both players part of the arena");
+		DEBUG.i("both players part of the arena",attacker);
+		DEBUG.i("both players part of the arena",defender);
 
 		if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
 			event.setCancelled(false); // uncancel events for regular no PVP
@@ -245,13 +246,15 @@ public class EntityListener implements Listener {
 				&& (apAttacker.getArenaTeam())
 						.equals(apDefender.getArenaTeam())) {
 			// no team fights!
-			DEBUG.i("team hit, cancel!");
+			DEBUG.i("team hit, cancel!",attacker);
+			DEBUG.i("team hit, cancel!",defender);
 			event.setCancelled(true);
 			return;
 		}
 
 		if (!arena.isFightInProgress() || (arena.pvpRunner != null)) {
-			// fight not started, cancel!
+			DEBUG.i("fight not started, cancel!",attacker);
+			DEBUG.i("fight not started, cancel!",defender);
 			event.setCancelled(true);
 			return;
 		}
@@ -263,14 +266,16 @@ public class EntityListener implements Listener {
 				&& SpawnManager.isNearSpawn(arena, defender, arena
 					.getArenaConfig().getInt(CFG.PROTECT_SPAWN))) {
 			// spawn protection!
-			DEBUG.i("spawn protection! damage cancelled!");
+			DEBUG.i("spawn protection! damage cancelled!",attacker);
+			DEBUG.i("spawn protection! damage cancelled!",defender);
 			event.setCancelled(true);
 			return;
 		}
 
 		// here it comes, process the damage!
 
-		DEBUG.i("processing damage!");
+		DEBUG.i("processing damage!",attacker);
+		DEBUG.i("processing damage!",defender);
 
 		ArenaModuleManager.onEntityDamageByEntity(arena, attacker, defender,
 				event);

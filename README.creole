@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.3.13 - aim to fix CosmoVibe :p
 * v0.10.3.12 - allow teleportation into arena regions that are NOT type BATTLE
 * v0.10.3.11 - fix Flags. Period.
 * v0.10.3.10 - fix BlockDestroy with explosions
