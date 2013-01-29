@@ -90,6 +90,8 @@ public class PlayerListener implements Listener {
 		if (arena != null && !arena.isFightInProgress()) {
 			DEBUG.i("arena != null and fight in progress => cancel", player);
 			DEBUG.i("> true", player);
+
+			PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
 			event.setCancelled(true);
 			return true;
 		}
@@ -312,6 +314,8 @@ public class PlayerListener implements Listener {
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getClickedBlock().getLocation()));
 			if (checkAndCommitCancel(arena, event.getPlayer(), event)) {
+
+				PACheck.handleInteract(arena, player, event, event.getClickedBlock());
 				return;
 			}
 		}
