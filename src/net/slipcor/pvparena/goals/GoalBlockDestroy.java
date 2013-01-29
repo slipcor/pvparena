@@ -35,6 +35,8 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
@@ -626,6 +628,22 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(final EntityExplodeEvent event) {
+		if (arena == null) {
+			return;
+		}
+		
+		boolean contains = false;
+		
+		for (ArenaRegionShape region : arena.getRegionsByType(RegionType.BATTLE)) {
+			if (region.contains(new PABlockLocation(event.getLocation()))) {
+				contains = true;
+				break;
+			}
+		}
+		
+		if (!contains) {
+			return;
+		}
 
 		final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
 				"blocks");

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.3.10 - fix BlockDestroy with explosions
 * v0.10.3.9 - fix /pa ready
 * v0.10.3.8 - add Ticket #227 - player time and auto igniting TNT
 * v0.10.3.7 - fix DOM - points lead to winning, not to losing!
