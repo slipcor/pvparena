@@ -801,9 +801,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	@Override
 	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {
-			if (string.equalsIgnoreCase(teamName.toLowerCase() + "flag")) {
-				return true;
-			}
 			if (string.toLowerCase().startsWith(
 					teamName.toLowerCase() + "spawn")) {
 				return true;

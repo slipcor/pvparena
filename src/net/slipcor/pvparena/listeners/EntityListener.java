@@ -251,7 +251,7 @@ public class EntityListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		if (!arena.isFightInProgress() || (arena.pvpRunner != null)) {
 			DEBUG.i("fight not started, cancel!",attacker);
 			DEBUG.i("fight not started, cancel!",defender);
