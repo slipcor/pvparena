@@ -546,8 +546,21 @@ public class PlayerListener implements Listener {
 		if (arena == null) {
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getTo()));
+			
 			if (arena == null) {
 				return; // no fighting player and no arena location => OUT
+			}
+			
+			Set<ArenaRegionShape> regs = arena.getRegionsByType(RegionType.BATTLE);
+			boolean contained = false;
+			for (ArenaRegionShape reg : regs) {
+				if (reg.contains(new PABlockLocation(event.getTo()))) {
+					contained = true;
+					break;
+				}
+			}
+			if (!contained) {
+				return;
 			}
 		}
 
