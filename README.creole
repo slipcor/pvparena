@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v0.10.3.15 - LOGICALLY set the player location before saving the state (for laggy servers)
 * v0.10.3.14 - Stop ppl from setting the flags as a SPAWN ...
 * v0.10.3.13 - aim to fix CosmoVibe :p
 * v0.10.3.12 - allow teleportation into arena regions that are NOT type BATTLE

@@ -65,10 +65,10 @@ public class StandardSpectate extends ArenaModule {
 
 		// standard join --> lounge
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		aPlayer.setLocation(new PALocation(aPlayer.get().getLocation()));
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
 				new PlayerStateCreateRunnable(aPlayer, aPlayer.get()), 2L);
 		// ArenaPlayer.prepareInventory(arena, ap.get());
-		aPlayer.setLocation(new PALocation(aPlayer.get().getLocation()));
 		aPlayer.setArena(arena);
 		aPlayer.setStatus(Status.WATCH);
 

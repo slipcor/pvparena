@@ -170,10 +170,10 @@ public class StandardLounge extends ArenaModule {
 
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
+		player.setLocation(new PALocation(player.get().getLocation()));
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
 				new PlayerStateCreateRunnable(player, player.get()), 2L);
 		// ArenaPlayer.prepareInventory(arena, ap.get());
-		player.setLocation(new PALocation(player.get().getLocation()));
 		player.setArena(arena);
 		team.add(player);
 		if (arena.isFreeForAll()) {
