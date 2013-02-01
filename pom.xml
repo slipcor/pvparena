@@ -29,6 +29,7 @@
 		<system>jenkins</system>
 		<url>http://www.mc-praxis.com:8080</url>
 	</ciManagement>
+	
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
