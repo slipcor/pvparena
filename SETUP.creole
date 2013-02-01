@@ -1,0 +1,92 @@
+== Setting up an arena ==
+
+First, make sure you know what game you want to play.
+
+#free for all, one team, one winner
+game:free
+
+#team game, 2-X teams, one team wins
+game:team
+
+--------------------------------------
+
+Then think about the regions you might want to have.
+
+region:[regionname]:[regiontype]:[regionshape]:[radius]+[height]+[position]:[protection]+[protection]:[regionflag]+[regionflag]
+
+#regiontypes:
+- battle
+- spectator
+- exit
+- lounge
+- custom:module
+
+#region name can be anything you want
+#radius should be clear
+#height is not needed / parsed for spheric regions
+#position is the alignment to the battlefield
+
+#protections ("break"=protected; "^break"=unprotected):
+- all
+- break
+- place
+- tnt
+- tntbreak
+- piston
+- nature
+- mobs
+- fire
+- painting
+
+#region flags:
+- nocamp
+- death
+- win
+- lose
+
+------------------------------------------------------
+
+now define your SpawnManager.
+
+#place spawns absolutely random
+spawns:random
+
+#split spawns North/South
+spawns:NS
+
+#align spawns in a circle with [radius] diff from battlefield center
+spawns:circle:[radius]
+
+#align spawns in a rectangular order with [radius] diff from battlefield center
+spawns:rect:[radius]
+
+------------------------------------------------------
+
+eventually add flags as goal.
+
+#same logic as spawns, but with "flags" instead of "spawns"
+
+#example for a physical flag:
+flags:EW:physical
+
+#example for a domination flag:
+flags:EW:domination
+
+------------------------------------------------------
+
+eventually add a tank spawn
+
+#tank at center
+tank:C
+
+#tank at north end
+tank:N
+
+------------------------------------------------------
+
+eventually add checkpoints
+
+#3 checkpoints from start to end
+start:N
+check:3
+end:S 

@@ -9,51 +9,68 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+/**
+ * <pre>
+ * PVP Arena Win Event class
+ * </pre>
+ * 
+ * is called when a player wins an arena match
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
+
 public class PAWinEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
-	private final Arena a;
-	private final Player p;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
 	private final List<String> items;
 
-	public PAWinEvent(Arena arena, Player player, String[] arrItems) {
-		a = arena;
-		p = player;
+	public PAWinEvent(final Arena arena, final Player player, final String[] arrItems) {
+		super();
+		this.arena = arena;
+		this.player = player;
 		items = new ArrayList<String>();
+
+		if (arrItems == null || arrItems.length == 0) {
+			return;
+		}
 		for (String s : arrItems) {
 			items.add(s);
 		}
 	}
-	
-	public void addItemString(String s) {
-		items.add(s);
+
+	public void addItemString(final String item) {
+		items.add(item);
 	}
 
 	public Arena getArena() {
-		return a;
+		return arena;
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public String[] getItems() {
-		String[] output = new String[items.size()];
-		int i = 0;
+		final String[] output = new String[items.size()];
+		int pos = 0;
 		for (String s : items) {
-			output[i++] = s;
+			output[pos++] = s;
 		}
 		return output;
 	}
 
 	public Player getPlayer() {
-		return p;
+		return player;
 	}
 
-	public void removeItemString(String s) {
-		items.remove(s);
+	public void removeItemString(final String item) {
+		items.remove(item);
 	}
 }

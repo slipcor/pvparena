@@ -1,16 +1,20 @@
 name: pvparena
-author: slipcor
+authors: [slipcor]
 main: net.slipcor.pvparena.PVPArena
-version: 0.8.12.19
-website: http://dev.bukkit.org/server-mods/pvp-arena
-dev-url: http://dev.bukkit.org/server-mods/pvp-arena
-softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTremeWorlds,Vault]
+version: 0.10.3.jenkins-build-number
+softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,MobDisguise,DisguiseCraft,TagAPI]
+website: http://dev.bukkit.org/server-mods/pvparena
+dev-url: http://dev.bukkit.org/server-mods/pvparena
 commands:
     pvparena:
         description: Base commands for the PVP arena.
         aliases: ['pa']
         usage: |
             /pvparena help
+            /pvparena help admin | help administrating
+            /pvparena help setup | help setting up
+            /pvparena help game | help ingame
+            /pvparena help info | help getting information
 permissions:
     pvparena.*:
         description: Gives access to all commands

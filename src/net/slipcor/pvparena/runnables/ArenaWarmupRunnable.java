@@ -1,84 +1,67 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.command.PAAJoin;
-import net.slipcor.pvparena.command.PAAJoinTeam;
-import net.slipcor.pvparena.command.PAASpectate;
+import net.slipcor.pvparena.commands.PAG_Join;
+import net.slipcor.pvparena.commands.PAG_Spectate;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
- * player reset runnable class
+ * <pre>Arena Runnable class "Warmup"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to warmup a player
+ * An arena timer to count down a warming up player
  * 
  * @author slipcor
  * 
- * @version v0.8.4
- * 
+ * @version v0.10.2
  */
 
-public class ArenaWarmupRunnable implements Runnable {
+public class ArenaWarmupRunnable extends ArenaRunnable {
 	private final ArenaPlayer player;
 	private final String teamName;
-	private final Arena arena;
 	private final boolean spectator;
-	private int id;
-	private Debug db = new Debug(40);
+	private final static Debug DEBUG = new Debug(40);
 	
-	private int count = 0;
+	private final Arena wArena;
 	
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param p
+	 * @param player
 	 *            the player to reset
 	 */
-	public ArenaWarmupRunnable(Arena a, ArenaPlayer p, String team, boolean spec, int i, int iid) {
-		db.i("ArenaWarmupRunnable constructor");
-		id = 0;
-		player = p;
-		teamName = team;
-		arena = a;
-		spectator = spec;
-		count = i+1;
-	}
-
-	/**
-	 * the run method, warmup the arena player
-	 */
-	@Override
-	public void run() {
-		TimerInfo.spam("warmingupexact", --count, player.get(), null, false);
-		if (count <= 0) {
-			commit();
-		} else {
-			id = Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 20L);
-		}
+	public ArenaWarmupRunnable(final Arena arena, final ArenaPlayer player, final String team, final boolean spectator, final int seconds) {
+		super(MSG.TIMER_WARMINGUP.getNode(), seconds, player.get(), null, false);
+		DEBUG.i("ArenaWarmupRunnable constructor", player.getName());
+		this.player = player;
+		this.teamName = team;
+		this.spectator = spectator;
+		this.wArena = arena;
 	}
 	
-	private void commit() {
-		db.i("ArenaWarmupRunnable commiting");
+	@Override
+	protected void commit() {
+		DEBUG.i("ArenaWarmupRunnable commiting", player.getName());
 		player.setStatus(Status.WARM);
 		if (spectator) {
-			(new PAASpectate()).commit(arena, player.get(), null);
+			wArena.hasNotPlayed(player);
+			(new PAG_Spectate()).commit(wArena, player.get(), null);
 		} else if (teamName == null) {
-			(new PAAJoin()).commit(arena, player.get(), null);
+			wArena.hasNotPlayed(player);
+			(new PAG_Join()).commit(wArena, player.get(), null);
 		} else {
+			wArena.hasNotPlayed(player);
 			String[] args = new String[1];
 			args[0] = teamName;
-			(new PAAJoinTeam()).commit(arena, player.get(), args);
+			(new PAG_Join()).commit(wArena, player.get(), args);
 		}
-		Bukkit.getScheduler().cancelTask(id);
 	}
 	
-	public void setId(int i) {
-		id = i;
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("ArenaWarmupRunnable not scheduled yet!");
 	}
 }

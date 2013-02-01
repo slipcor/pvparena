@@ -1,67 +1,97 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.bukkit.inventory.ItemStack;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
- * arena ending runnable class
+ * <pre>Arena Runnable class "End"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to end the arena it is running in
+ * An arena timer counting down to the end of an arena
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.9.8
  */
 
-public class EndRunnable implements Runnable {
-	private final Arena a;
-	private Debug db = new Debug(40);
-	private int id;
+public class EndRunnable extends ArenaRunnable {
+	private final static Debug DEBUG = new Debug(40);
 
-	private int count = 0;
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
-	 * @param i 
+	 * @param seconds
 	 */
-	public EndRunnable(Arena a, int i, int iid) {
-		id = 0;
-		this.a = a;
-		count = i+1;
-		db.i("EndRunnable constructor");
-		Bukkit.getScheduler().cancelTask(a.END_ID);
-		a.END_ID = -1;
+	public EndRunnable(final Arena arena, final int seconds) {
+		super(MSG.TIMER_RESETTING_IN.getNode(), seconds, null, arena, false);
+		DEBUG.i("EndRunnable constructor");
+		if (arena.endRunner != null) {
+			arena.endRunner.cancel();
+			arena.endRunner = null;
+		}
+		arena.realEndRunner = this;
 	}
 
-	/**
-	 * the run method, commit arena end
-	 */
 	@Override
-	public void run() {
-		TimerInfo.spam("resetexact", --count, null, a, false);
-		if (count <= 0) {
-			commit();
-			Bukkit.getScheduler().cancelTask(a.REALEND_ID);
-			a.REALEND_ID = -1;
-			Bukkit.getScheduler().cancelTask(a.END_ID);
-			a.END_ID = -1;
-			Bukkit.getScheduler().cancelTask(id);
+	protected void commit() {
+		DEBUG.i("EndRunnable commiting");
+		
+		arena.setRound(arena.getRound()+1);
+		
+		if (arena.getRound() >= arena.getRoundCount()) {
+			DEBUG.i("rounds done!");
+		
+			arena.reset(false);
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
+			}
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
+			}
+		} else {
+			DEBUG.i("Starting round #" + arena.getRound());
+			
+			if (arena.realEndRunner != null) {
+				arena.realEndRunner = null;
+			}
+			if (arena.endRunner != null) {
+				arena.endRunner.cancel();
+				arena.endRunner = null;
+			}
+			
+			PACheck.handleStart(arena, null);
+			
+			for (ArenaPlayer ap : arena.getFighters()) {
+				arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),
+						ap.get().getLastDamageCause().getEntity());
+				
+				final List<ItemStack> items = new ArrayList<ItemStack>();
+
+				for (ItemStack is : ap.get().getInventory().getArmorContents()) {
+					items.add(is);
+				}
+
+				for (ItemStack is : ap.get().getInventory().getContents()) {
+					items.add(is);
+				}
+				new InventoryRefillRunnable(arena, ap.get(), items);
+			}
 		}
 	}
 	
-	private void commit() {
-		db.i("EndRunnable commiting");
-		a.reset(false);
-	}
-	
-	public void setId(int i) {
-		id = i;
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("EndRunnable not scheduled yet!");
 	}
 }

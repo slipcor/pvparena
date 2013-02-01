@@ -7,36 +7,33 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Kill Event class</pre>
  * 
- * PVP Arena Kill Event
- * 
- * -
- * 
- * is thrown when a player kills in the arena
- * 
- * @version v0.7.8
+ * is called when a player kills in the arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.1
  */
 
 public class PAKillEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
-	private Player player;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
 
 	/**
 	 * create an arena death event
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena where the event is happening in
-	 * @param p
+	 * @param player
 	 *            the killing player
 	 */
-	public PAKillEvent(Arena a, Player p) {
-		arena = a;
-		player = p;
+	public PAKillEvent(final Arena arena, final Player player) {
+		super();
+		this.arena = arena;
+		this.player = player;
 	}
 
 	/**
@@ -49,11 +46,11 @@ public class PAKillEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	/**

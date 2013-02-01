@@ -7,40 +7,37 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Leave Event class</pre>
  * 
- * PVP Arena Leave Event
- * 
- * -
- * 
- * is thrown when a player leaves the arena
- * 
- * @version v0.7.8
+ * is called when a player leaves an arena
  * 
  * @author slipcor
  * 
+ * @version v0.9.1
  */
 
 public class PALeaveEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
-	private Player player;
-	private boolean spectator;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
+	private final boolean spectator;
 
 	/**
 	 * create an arena leave event
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena where the event is happening in
-	 * @param p
+	 * @param player
 	 *            the leaving player
-	 * @param didSpectate
+	 * @param isSpectator
 	 *            true if the player was spectator, false otherwise
 	 */
-	public PALeaveEvent(Arena a, Player p, boolean didSpectate) {
-		arena = a;
-		player = p;
-		spectator = didSpectate;
+	public PALeaveEvent(final Arena arena, final Player player, final boolean isSpectator) {
+		super();
+		this.arena = arena;
+		this.player = player;
+		spectator = isSpectator;
 	}
 
 	/**
@@ -53,11 +50,11 @@ public class PALeaveEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	/**
@@ -70,11 +67,19 @@ public class PALeaveEvent extends Event {
 	}
 
 	/**
+	 * replaced by isSpectate()
+	 */
+	@Deprecated
+	public boolean getSpectate() {
+		return spectator;
+	}
+
+	/**
 	 * hand over the spectate state
 	 * 
 	 * @return true if the player was a spectator, false otherwise
 	 */
-	public boolean getSpectate() {
+	public boolean isSpectator() {
 		return spectator;
 	}
 }

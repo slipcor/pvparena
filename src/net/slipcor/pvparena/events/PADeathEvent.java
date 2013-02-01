@@ -7,43 +7,40 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
+ * <pre>PVP Arena Death Event class</pre>
  * 
- * PVP Arena Death Event
- * 
- * -
- * 
- * is thrown when a player dies in the arena
- * 
- * @version v0.7.23
+ * is called when a player dies
  * 
  * @author slipcor
  * 
+ * @version v0.9.1
  */
 
 public class PADeathEvent extends Event {
 
-	private static final HandlerList handlers = new HandlerList();
-	private Arena arena;
-	private Player player;
-	private boolean respawn;
-	private boolean pvp;
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
+	private final boolean respawn;
+	private final boolean pvp;
 
 	/**
 	 * create an arena death event
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena where the event is happening in
-	 * @param p
+	 * @param player
 	 *            the dying player
-	 * @param willRespawn
+	 * @param isRespawning
 	 *            true if the player will respawn, false otherwise
 	 * @param pvp 
 	 */
-	public PADeathEvent(Arena a, Player p, boolean willRespawn, boolean pv) {
-		arena = a;
-		player = p;
-		respawn = willRespawn;
-		pvp = pv;
+	public PADeathEvent(final Arena arena, final Player player, final boolean isRespawning, final boolean isDueToPVP) {
+		super();
+		this.arena = arena;
+		this.player = player;
+		this.respawn = isRespawning;
+		this.pvp = isDueToPVP;
 	}
 
 	/**
@@ -56,11 +53,11 @@ public class PADeathEvent extends Event {
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	/**
@@ -73,11 +70,19 @@ public class PADeathEvent extends Event {
 	}
 
 	/**
+	 * replaced by isRespawning()
+	 */
+	@Deprecated
+	public boolean getRespawn() {
+		return respawn;
+	}
+
+	/**
 	 * hand over the respawn state
 	 * 
 	 * @return true if the player will respawn, false otherwise
 	 */
-	public boolean getRespawn() {
+	public boolean isRespawning() {
 		return respawn;
 	}
 

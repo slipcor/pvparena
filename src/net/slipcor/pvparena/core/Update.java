@@ -9,10 +9,11 @@ import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.managers.Arenas;
-
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.json.simple.JSONArray;
@@ -20,54 +21,106 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 /**
- * update manager class
- * 
- * -
+ * <pre>Update class</pre>
  * 
  * provides access to update check and methods
  * 
  * @author slipcor
  * 
- * @version v0.8.10
- * 
+ * @version v0.10.2
  */
 
 public class Update extends Thread {
 
 	public static boolean msg = false;
 	public static boolean outdated = false;
-	public static byte v = -1;
+	public static byte updateState = -1;
 
 	private static String vOnline;
 	private static String vThis;
-	private static Plugin plugin;
-	private static Debug db = new Debug(6);
+	private static Debug debug = new Debug(19);
 
-	public Update(Plugin p) {
-		plugin = p;
+	private static String fileURL = null;
+	private static String pageURL = null;
+	
+	private static UpdateMode mode = UpdateMode.BOTH;
+	private static UpdateType type = UpdateType.RELEASE;
+
+	enum UpdateMode {
+		OFF, ANNOUNCE, DOWNLOAD, BOTH;
+
+		public static UpdateMode getBySetting(final String setting) {
+			final String lcSetting = setting.toLowerCase();
+			if (lcSetting.contains("ann")) {
+				return ANNOUNCE;
+			}
+			if (lcSetting.contains("down") || lcSetting.contains("load")) {
+				return DOWNLOAD;
+			}
+			if (lcSetting.equals("both")) {
+				return BOTH;
+			}
+			return OFF;
+		}
+	}
+
+	enum UpdateType {
+		ALPHA, BETA, RELEASE;
+
+		public static UpdateType getBySetting(final String setting) {
+			if (setting.equalsIgnoreCase("beta")) {
+				return BETA;
+			}
+			if (setting.equalsIgnoreCase("alpha")) {
+				return ALPHA;
+			}
+			return RELEASE;
+		}
+		
+		public static boolean matchType(final String updateType) {
+			switch (type) {
+				case ALPHA:
+					return true;
+				case BETA:
+					return updateType.equalsIgnoreCase("beta") || updateType.equalsIgnoreCase("release");
+				default:
+					return updateType.equalsIgnoreCase("release");
+			}
+		}
+	}
+	
+	public Update(final Plugin plugin) {
+		super();
+		String setting = plugin.getConfig().getString("update", "both");
+		mode = UpdateMode.getBySetting(setting);
+		if (mode != UpdateMode.OFF) {
+			setting = plugin.getConfig().getString("updatetype", "beta");
+			type = UpdateType.getBySetting(setting);
+		}
+		init();
 	}
 
 	/**
 	 * calculate the message variables based on the versions
 	 */
-	private static void calculateVersions() {
-		db.i("calculating versions");
-		String[] aOnline = vOnline.split("\\.");
-		String[] aThis = vThis.split("\\.");
+	private void calculateVersions() {
+		debug.i("calculating versions");
+		final String[] aOnline = vOnline.split("\\.");
+		final String[] aThis = vThis.split("\\.");
 		outdated = false;
 
 		for (int i = 0; i < aOnline.length && i < aThis.length; i++) {
 			try {
-				int o = Integer.parseInt(aOnline[i]);
-				int t = Integer.parseInt(aThis[i]);
-				if (o == t) {
+				final int iOnline = Integer.parseInt(aOnline[i]);
+				final int iThis = Integer.parseInt(aThis[i]);
+				if (iOnline == iThis) {
 					msg = false;
 					continue;
 				}
 				msg = true;
-				outdated = (o > t);
-				v = (byte) i;
-				message(null);
+				outdated = (iOnline > iThis);
+				updateState = (byte) i;
+				message(Bukkit.getConsoleSender());
 				return;
 			} catch (Exception e) {
 				calculateRadixString(aOnline[i], aThis[i], i);
@@ -84,20 +137,20 @@ public class Update extends Thread {
 	 * @param sThis
 	 *            the local letter(s)
 	 */
-	private static void calculateRadixString(String sOnline, String sThis,
-			int pos) {
-		db.i("calculating including letters");
+	private void calculateRadixString(final String sOnline, final String sThis,
+			final int pos) {
+		debug.i("calculating including letters");
 		try {
-			int o = Integer.parseInt(sOnline, 46);
-			int t = Integer.parseInt(sThis, 46);
-			if (o == t) {
+			final int iOnline = Integer.parseInt(sOnline, 46);
+			final int iThis = Integer.parseInt(sThis, 46);
+			if (iOnline == iThis) {
 				msg = false;
 				return;
 			}
 			msg = true;
-			outdated = (o > t);
-			v = (byte) pos;
-			message(null);
+			outdated = (iOnline > iThis);
+			updateState = (byte) pos;
+			message(Bukkit.getConsoleSender());
 		} catch (Exception e) {
 		}
 	}
@@ -109,19 +162,22 @@ public class Update extends Thread {
 	 *            the string to colorize
 	 * @return a colorized string
 	 */
-	private static String colorize(String s) {
-		if (v == 0) {
-			s = ChatColor.RED + s + ChatColor.WHITE;
-		} else if (v == 1) {
-			s = ChatColor.GOLD + s + ChatColor.WHITE;
-		} else if (v == 2) {
-			s = ChatColor.YELLOW + s + ChatColor.WHITE;
-		} else if (v == 3) {
-			s = ChatColor.BLUE + s + ChatColor.WHITE;
+	private static String colorize(final String string) {
+		StringBuffer result = null;
+		if (updateState == 0) {
+			result = new StringBuffer(ChatColor.RED.toString());
+		} else if (updateState == 1) {
+			result = new StringBuffer(ChatColor.GOLD.toString());
+		} else if (updateState == 2) {
+			result = new StringBuffer(ChatColor.YELLOW.toString());
+		} else if (updateState == 3) {
+			result = new StringBuffer(ChatColor.BLUE.toString());
 		} else {
-			s = ChatColor.GREEN + s + ChatColor.WHITE;
+			result = new StringBuffer(ChatColor.GREEN.toString());
 		}
-		return s;
+		result.append(string);
+		result.append(ChatColor.WHITE);
+		return result.toString();
 	}
 
 	/**
@@ -130,84 +186,132 @@ public class Update extends Thread {
 	 * @param player
 	 *            the player to message
 	 */
-	public static boolean message(Player player) {
-		if (player == null || !(player instanceof Player)) {
-			if (!msg) {
-				Bukkit.getLogger().info(
-						"[PVP Arena] You are on latest version!");
-			} else {
-				if (outdated) {
-					Bukkit.getLogger().warning(
-							"[PVP Arena] You are using v" + vThis
-									+ ", an outdated version! Latest: "
-									+ vOnline);
-				} else {
-					Bukkit.getLogger()
-							.warning(
-									"[PVP Arena] You are using v"
-											+ vThis
-											+ ", an experimental version! Latest stable: "
-											+ vOnline);
-				}
-			}
-		}
+	public static boolean message(final CommandSender player) {
 		if (!msg) {
-			db.i("version is up to date!");
+			debug.i("version is up to date!", player);
 			return false;
 		}
 
 		if (outdated) {
-			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+			if (!(player instanceof Player) && (mode != UpdateMode.ANNOUNCE)) {
+				// not only announce, download!
+				final File folder = Bukkit.getServer().getUpdateFolderFile();
+				if (!folder.exists()) {
+					folder.mkdirs();
+				}
+				final File destination = new File(folder, "pvparena.jar");
+				if (destination.exists()) {
+					destination.delete();
+				}
+
+				debug.i("Downloading jar file from DBO link", player);
+				try {
+					final URL url = new URL(fileURL);
+					
+					final ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+					final FileOutputStream output = new FileOutputStream(destination);
+					output.getChannel().transferFrom(rbc, 0, 1 << 24);
+					
+					debug.i("Downloaded jar file from DBO link!", player);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			Arena.pmsg(player, "You are using " + colorize("v" + vThis)
 					+ ", an outdated version! Latest: §a" + "v" + vOnline);
+			if (mode == UpdateMode.ANNOUNCE) {
+				Arena.pmsg(player, pageURL);
+			} else {
+				Arena.pmsg(player, "The plugin has been updated, please restart the server!");
+			}
 		} else {
-			Arenas.tellPlayer(player, "You are using " + colorize("v" + vThis)
+			Arena.pmsg(player, "You are using " + colorize("v" + vThis)
 					+ ", an experimental version! Latest stable: §a" + "v"
 					+ vOnline);
 		}
 		return true;
 	}
 
-	@Override
-	public void run() {
-		db.i("checking for updates");
-		if (!plugin.getConfig().getBoolean("updatecheck")) {
-			Language.log_info("notupdating");
+	public static void message(final CommandSender sender, final boolean announce) {
+		if (!message(sender)) {
+			Arena.pmsg(sender, "[PVP Arena] You are on latest version!");
 			return;
 		}
-		Language.log_info("updating");
+
+		if (mode != UpdateMode.DOWNLOAD) {
+			Arena.pmsg(sender,
+					"http://dev.bukkit.org/server-mods/pvparena/files/");
+		}
+	}
+
+	public final void init() {
+		if (PVPArena.instance.getConfig().getBoolean("modulecheck", true)) {
+			try {
+				final File destination = PVPArena.instance.getDataFolder();
+
+				final File lib = new File(destination, "install.yml");
+
+				PVPArena.instance.getLogger().info("Downloading module update file...");
+				final URL url = new URL(
+						"http://pa.slipcor.net/install.yml");
+				final ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+				final FileOutputStream output = new FileOutputStream(lib);
+				output.getChannel().transferFrom(rbc, 0, 1 << 24);
+				PVPArena.instance.getLogger().info("Downloaded module update file");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (mode == UpdateMode.OFF) {
+			return;
+		}
+		start();
+	}
+
+	@Override
+	public void run() {
+		debug.i("checking for updates");
+		if (!PVPArena.instance.getConfig().getBoolean("updatecheck")) {
+			Language.logInfo(MSG.LOG_UPDATE_DISABLED);
+			return;
+		}
+		Language.logInfo(MSG.LOG_UPDATE_ENABLED);
 		try {
-			final URLConnection connection = new URL("http://bukget.org/api/plugin/pvp-arena").openConnection();
+			final URLConnection connection = new URL("http://api.bukget.org/api2/bukkit/plugin/pvparena").openConnection();
 	        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 	        final StringBuffer stringBuffer = new StringBuffer();
 	        String line;
-	        while ((line = bufferedReader.readLine()) != null)
+	        while ((line = bufferedReader.readLine()) != null) {
 	            stringBuffer.append(line);
-	            bufferedReader.close();
-	        JSONParser parser=new JSONParser();
-	        Object obj=parser.parse(stringBuffer.toString());
+	        }
+            bufferedReader.close();
+            final JSONParser parser=new JSONParser();
+            final Object obj=parser.parse(stringBuffer.toString());
 	       
-	        JSONArray array=(JSONArray)((JSONObject) obj).get("versions");
+            final JSONArray array=(JSONArray)((JSONObject) obj).get("versions");
 	        
 	        for (int i = 0 ; i < array.size(); i++) {
-	        	JSONObject value = (JSONObject)array.get(i);
-	        	String type = (String) value.get("type");
-	        	//String link = (String) value.get("dl_link");
-	        	if (!type.equalsIgnoreCase("Release")) {
+	        	final JSONObject value = (JSONObject)array.get(i);
+	        	final String type = (String) value.get("type");
+	        	if (!UpdateType.matchType(type)) {
+	        		debug.i(Update.type.name() + " does not match " + type);
 	        		continue;
 	        	}
-	        	String sOnlineVersion = (String) value.get("name");
-				String sThisVersion = plugin.getDescription().getVersion();
-
-				if (sOnlineVersion.toUpperCase().contains("BETA")
-						|| sOnlineVersion.toUpperCase().contains("ALPHA")) {
-					continue;
-				}
+	        	
+	        	if (incorrectJarFileLink((String) value.get("download"))) {
+	        		debug.i("incorrect file link: " + (String) value.get("download"));
+	        		continue;
+	        	}
+	        	
+	        	String sOnlineVersion = (String) value.get("version");
+	        	final String sThisVersion = PVPArena.instance.getDescription().getVersion();
 
 				if (sOnlineVersion.contains(" ")) {
-					String[] s = sOnlineVersion.split(" ");
-					for (int j=0; j< s.length; j++) {
-						if (s[j].contains(".")) {
-							sOnlineVersion = s[j];
+					final String[] split = sOnlineVersion.split(" ");
+					for (int j=0; j< split.length; j++) {
+						if (split[j].contains(".")) {
+							sOnlineVersion = split[j];
 							break;
 						}
 					}
@@ -215,115 +319,30 @@ public class Update extends Thread {
 
 				vOnline = sOnlineVersion.replace("v", "");
 				vThis = sThisVersion.replace("v", "");
-				db.i("online version: " + vOnline);
-				db.i("local version: " + vThis);
+				debug.i("online version: " + vOnline);
+				debug.i("local version: " + vThis);
+				
+				if (mode != UpdateMode.DOWNLOAD) {
+					// Not ONLY download: announce!
+					pageURL = (String) value.get("link");
+				}
+				
+				if (mode != UpdateMode.ANNOUNCE) {
+					// Not ONLY announcing: download!
+					fileURL = (String) value.get("download");
+				}
 
 				calculateVersions();
 				return;
 	        }
 	        
-		
 		} catch (Exception e) {
 			
 		}
-		
-		return;
-		
-		/*
-		
-		
-		
-
-		String pluginUrlString = "http://dev.bukkit.org/server-mods/pvp-arena/files.rss";
-
-		NodeList nodes = null;
-
-		try {
-			URL url = new URL(pluginUrlString);
-			Document doc = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder()
-					.parse(url.openConnection().getInputStream());
-			doc.getDocumentElement().normalize();
-			nodes = doc.getElementsByTagName("item");
-
-		} catch (Exception localException) {
-			return;
-		}
-
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node selectedFile = nodes.item(i);
-
-			if (selectedFile.getNodeType() == 1) {
-				Element firstElement = (Element) selectedFile;
-				NodeList firstElementTagName = firstElement
-						.getElementsByTagName("title");
-
-				Element firstNameElement = (Element) firstElementTagName
-						.item(0);
-				NodeList firstNodes = firstNameElement.getChildNodes();
-
-				String sOnlineVersion = firstNodes.item(0).getNodeValue();
-				String sThisVersion = plugin.getDescription().getVersion();
-
-				System.out.print(((Element) firstElement.getElementsByTagName("link").item(0)).getChildNodes().item(0).getNodeValue());
-				
-				if (sOnlineVersion.toUpperCase().contains("BETA")
-						|| sOnlineVersion.toUpperCase().contains("ALPHA")) {
-					continue;
-				}
-
-				while (sOnlineVersion.contains(" ")) {
-					String[] s = sOnlineVersion.split(" ");
-					sOnlineVersion = s[1];
-				}
-
-				vOnline = sOnlineVersion.replace("v", "");
-				vThis = sThisVersion.replace("v", "");
-				db.i("online version: " + vOnline);
-				db.i("local version: " + vThis);
-
-				calculateVersions();
-				return;
-			}
-		}*/
 	}
 
-	public void init() {
-		if (PVPArena.instance.getConfig().getBoolean("modulecheck", true)) {
-			try {
-				File destination = PVPArena.instance.getDataFolder();
-
-				File lib = new File(destination, "install.yml");
-
-				System.out.println("Downloading module update file...");
-				URL url = new URL(
-						"http://www.slipcor.net/public/mc/pafiles/install.yml");
-				ReadableByteChannel rbc = Channels.newChannel(url.openStream());
-				FileOutputStream output = new FileOutputStream(lib);
-				output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				System.out.println("Downloaded module update file");
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static void message(Player p, boolean b) {
-		// b = announce update!
-		if (!message(p)) {
-			if (p != null) {
-				Arenas.tellPlayer(p, "[PVP Arena] You are on latest version!");
-			}
-			return;
-		}
-
-		if (p == null) {
-			System.out
-					.print("http://dev.bukkit.org/server-mods/pvp-arena/files/");
-		} else {
-			Arenas.tellPlayer(p,
-					"http://dev.bukkit.org/server-mods/pvp-arena/files/");
-		}
+	private boolean incorrectJarFileLink(final String link) {
+		debug.i("checking link: " + link);
+		return (!link.startsWith("http://dev.bukkit.org/") || !link.endsWith(".jar"));
 	}
 }

@@ -6,29 +6,40 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class PALoseEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
-	private final Arena a;
-	private final Player p;
+/**
+ * <pre>PVP Arena Lose Event class</pre>
+ * 
+ * is called when a player loses an arena match
+ * 
+ * @author slipcor
+ * 
+ * @version v0.9.1
+ */
 
-	public PALoseEvent(Arena arena, Player player) {
-		a = arena;
-		p = player;
+public class PALoseEvent extends Event {
+	private static final HandlerList HANDLERS = new HandlerList();
+	private final Arena arena;
+	private final Player player;
+
+	public PALoseEvent(final Arena arena, final Player player) {
+		super();
+		this.arena = arena;
+		this.player = player;
 	}
 
 	public Arena getArena() {
-		return a;
+		return arena;
 	}
 
 	public static HandlerList getHandlerList() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public HandlerList getHandlers() {
-		return handlers;
+		return HANDLERS;
 	}
 
 	public Player getPlayer() {
-		return p;
+		return player;
 	}
 }

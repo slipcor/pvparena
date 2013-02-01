@@ -1,69 +1,49 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language.MSG;
 
 /**
- * timed arena runnable class
+ * <pre>Arena Runnable class "TimedEnd"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to end the arena it is running in
+ * An arena timer to end the arena match after a certain amount of time
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.8
  */
 
-public class TimedEndRunnable implements Runnable {
-	private final Arena arena;
-	private Debug db = new Debug(42);
-	private int id;
-
-	private int count = 0;
+public class TimedEndRunnable extends ArenaRunnable {
+	private static final Debug DEBUG = new Debug(42);
 	/**
 	 * create a timed arena runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
 	 */
-	public TimedEndRunnable(Arena a, int i, int iid) {
-		id = 0;
-		this.arena = a;
-		count = i+1;
-		db.i("TimedEndRunnable constructor");
+	public TimedEndRunnable(final Arena arena, final int seconds) {
+		super(MSG.TIMER_ENDING_IN.getNode(), seconds, null, arena, false);
+		DEBUG.i("TimedEndRunnable constructor");
+		arena.endRunner = this;
 	}
-
-	/**
-	 * the run method, commit arena end
-	 */
+	
 	@Override
-	public void run() {
-		TimerInfo.spam("endingexact", --count, null, arena, false);
-		if (count <= 0) {
-			commit();
-			Bukkit.getScheduler().cancelTask(arena.END_ID);
-			arena.END_ID = -1;
-			Bukkit.getScheduler().cancelTask(arena.REALEND_ID);
-			arena.REALEND_ID = -1;
+	public void commit() {
+		DEBUG.i("TimedEndRunnable commiting");
+		if (arena.isFightInProgress()) {
+			PVPArena.instance.getAgm().timedEnd(arena);
+		}
+		arena.endRunner = null;
+		if (arena.realEndRunner != null) {
+			arena.realEndRunner.cancel();
+			arena.realEndRunner = null;
 		}
 	}
 	
-	private void commit() {
-		db.i("TimedEndRunnable commiting");
-		if (arena.fightInProgress)
-			arena.type().timed();
-		else {
-			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(id);
-		}
-		this.hashCode();
-	}
-	
-	public void setId(int i) {
-		id = i;
+	@Override
+	protected void warn() {
+		PVPArena.instance.getLogger().warning("TimedEndRunnable not scheduled yet!");
 	}
 }

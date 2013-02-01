@@ -2,25 +2,28 @@ package net.slipcor.pvparena.arena;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
- * arena class class
+ * <pre>Arena Class class</pre>
  * 
- * -
- * 
- * contains arena class methods and variables for quicker access
+ * contains Arena Class methods and variables for quicker access
  * 
  * @author slipcor
  * 
- * @version v0.7.11
- * 
+ * @version v0.10.2
  */
 
 public final class ArenaClass {
+	
+	private static Debug debug = new Debug(4);
 
 	private final String name;
 	private final ItemStack[] items;
@@ -65,26 +68,25 @@ public final class ArenaClass {
 		ARMORS_TYPE.addAll(BOOTS_TYPE);
 	}
 	
-	public static void equip(Player player, ItemStack[] items) {
+	public static void equip(final Player player, final ItemStack[] items) {
+		debug.i("Equipping player " + player.getName() + " with items!", player);
 		for (ItemStack item : items) {
 			if (ARMORS_TYPE.contains(item.getType())) {
 				equipArmor(item, player.getInventory());
 			} else {
 				player.getInventory().addItem(new ItemStack[] { item });
+				debug.i("- " + StringParser.getStringFromItemStack(item), player);
 			}
 		}
 	}
 
-	/**
-	 * equip an armor item to the respective slot
-	 * 
-	 * @param stack
-	 *            the item to equip
-	 * @param inv
-	 *            the player's inventory
-	 */
-	private static void equipArmor(ItemStack stack, PlayerInventory inv) {
-		Material type = stack.getType();
+	public void equip(final Player player) {
+		equip(player, items);
+	}
+
+	private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
+		debug.i("- " + StringParser.getStringFromItemStack(stack));
+		final Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
 			inv.setHelmet(stack);
 		} else if (CHESTPLATES_TYPE.contains(type)) {
@@ -96,7 +98,7 @@ public final class ArenaClass {
 		}
 	}
 
-	public ArenaClass(String className, ItemStack[] classItems) {
+	public ArenaClass(final String className, final ItemStack[] classItems) {
 		this.name = className;
 		this.items = classItems.clone();
 	}
@@ -105,16 +107,7 @@ public final class ArenaClass {
 		return name;
 	}
 
-	public void load(Player player) {
-		for (int i = 0; i < items.length; ++i) {
-			ItemStack stack = items[i];
-			if (ARMORS_TYPE.contains(stack.getType())) {
-				equipArmor(stack, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { stack });
-			}
-		}
+	public ItemStack[] getItems() {
+		return items.clone();
 	}
-	
-	
 }

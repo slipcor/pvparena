@@ -1,27 +1,30 @@
 package net.slipcor.pvparena.arena;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 
 /**
- * arena team class
+ * <pre>Arena Team class</pre>
  * 
- * -
- * 
- * contains team methods and variables for quicker access
+ * contains Arena Team methods and variables for quicker access
  * 
  * @author slipcor
  * 
- * @version v0.7.16
- * 
+ * @version v0.10.2
  */
 
 public class ArenaTeam {
+	
+	private static Debug debug = new Debug(6);
 
-	private final HashSet<ArenaPlayer> players;
+	private final Set<ArenaPlayer> players;
 	private final ChatColor color;
 	private final String name;
 
@@ -33,7 +36,7 @@ public class ArenaTeam {
 	 * @param color
 	 *            the arena team color string
 	 */
-	public ArenaTeam(String name, String color) {
+	public ArenaTeam(final String name, final String color) {
 		this.players = new HashSet<ArenaPlayer>();
 		this.color = StringParser.getChatColorFromWoolEnum(color);
 		this.name = name;
@@ -45,17 +48,10 @@ public class ArenaTeam {
 	 * @param player
 	 *            the player to add
 	 */
-	public void add(ArenaPlayer player) {
+	public void add(final ArenaPlayer player) {
 		this.players.add(player);
-	}
-
-	/**
-	 * colorize the team name
-	 * 
-	 * @return the colorized team name
-	 */
-	public String colorize() {
-		return color + name;
+		debug.i("Added player " + player.getName() + " to team " + name, player.get());
+		player.getArena().increasePlayerCount();
 	}
 
 	/**
@@ -65,7 +61,7 @@ public class ArenaTeam {
 	 *            the player to colorize
 	 * @return the colorized player name
 	 */
-	public String colorizePlayer(Player player) {
+	public String colorizePlayer(final Player player) {
 		return color + player.getName();
 	}
 
@@ -79,11 +75,20 @@ public class ArenaTeam {
 	}
 
 	/**
+	 * colorize the team name
+	 * 
+	 * @return the colorized team name
+	 */
+	public String getColoredName() {
+		return color + name;
+	}
+
+	/**
 	 * return the team color code
 	 * 
 	 * @return the team color code
 	 */
-	public String getColorString() {
+	public String getColorCodeString() {
 		return "&" + Integer.toHexString(color.ordinal());
 	}
 
@@ -101,8 +106,21 @@ public class ArenaTeam {
 	 * 
 	 * @return a HashSet of all arena players
 	 */
-	public HashSet<ArenaPlayer> getTeamMembers() {
+	public Set<ArenaPlayer> getTeamMembers() {
 		return players;
+	}
+
+	public boolean hasPlayer(final Player player) {
+		return players.contains(ArenaPlayer.parsePlayer(player.getName()));
+	}
+
+	public boolean isEveryoneReady() {
+		for (ArenaPlayer ap : players) {
+			if (!ap.getStatus().equals(Status.READY)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -111,7 +129,7 @@ public class ArenaTeam {
 	 * @param player
 	 *            the player to remove
 	 */
-	public void remove(ArenaPlayer player) {
+	public void remove(final ArenaPlayer player) {
 		this.players.remove(player);
 	}
 }

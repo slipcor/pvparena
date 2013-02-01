@@ -1,18 +1,31 @@
 package net.slipcor.pvparena.listeners;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.managers.Arenas;
-import net.slipcor.pvparena.managers.Inventories;
-import net.slipcor.pvparena.managers.Spawns;
-import net.slipcor.pvparena.managers.Statistics;
-import net.slipcor.pvparena.managers.Teams;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
+import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.managers.ArenaManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.runnables.DamageResetRunnable;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
@@ -20,77 +33,122 @@ import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
- * entity listener class
- * 
- * -
- * 
- * PVP Arena Entity Listener
+ * <pre>
+ * Entity Listener class
+ * </pre>
  * 
  * @author slipcor
  * 
- * @version v0.8.11
- * 
+ * @version v0.10.2
  */
 
 public class EntityListener implements Listener {
-	private static Debug db = new Debug(20);
+	private final static Debug DEBUG = new Debug(21);
+	private final static Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<PotionEffectType, Boolean>();
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityExplode(EntityExplodeEvent event) {
-		db.i("explosion");
+	static {
+		TEAMEFFECT.put(PotionEffectType.BLINDNESS, false);
+		TEAMEFFECT.put(PotionEffectType.CONFUSION, false);
+		TEAMEFFECT.put(PotionEffectType.DAMAGE_RESISTANCE, true);
+		TEAMEFFECT.put(PotionEffectType.FAST_DIGGING, true);
+		TEAMEFFECT.put(PotionEffectType.FIRE_RESISTANCE, true);
+		TEAMEFFECT.put(PotionEffectType.HARM, false);
+		TEAMEFFECT.put(PotionEffectType.HEAL, true);
+		TEAMEFFECT.put(PotionEffectType.HUNGER, false);
+		TEAMEFFECT.put(PotionEffectType.INCREASE_DAMAGE, true);
+		TEAMEFFECT.put(PotionEffectType.JUMP, true);
+		TEAMEFFECT.put(PotionEffectType.POISON, false);
+		TEAMEFFECT.put(PotionEffectType.REGENERATION, true);
+		TEAMEFFECT.put(PotionEffectType.SLOW, false);
+		TEAMEFFECT.put(PotionEffectType.SLOW_DIGGING, false);
+		TEAMEFFECT.put(PotionEffectType.SPEED, true);
+		TEAMEFFECT.put(PotionEffectType.WATER_BREATHING, true);
+		TEAMEFFECT.put(PotionEffectType.WEAKNESS, false);
+	}
 
-		Arena arena = Arenas.getArenaByRegionLocation(event.getLocation());
-		if (arena == null)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onCreatureSpawn(final CreatureSpawnEvent event) {
+		final Set<SpawnReason> naturals = new HashSet<SpawnReason>();
+		naturals.add(SpawnReason.CHUNK_GEN);
+		naturals.add(SpawnReason.DEFAULT);
+		naturals.add(SpawnReason.NATURAL);
+		naturals.add(SpawnReason.SLIME_SPLIT);
+		naturals.add(SpawnReason.VILLAGE_INVASION);
+
+		if (!naturals.contains(event.getSpawnReason())) {
+			// custom generation, this is not our business!
+			return;
+		}
+
+		final Arena arena = ArenaManager
+				.getArenaByProtectedRegionLocation(
+						new PABlockLocation(event.getLocation()),
+						RegionProtection.MOBS);
+		if (arena == null) {
 			return; // no arena => out
+		}
+		event.setCancelled(true);
+	}
 
-		db.i("explosion inside an arena");
-		if ((!(arena.cfg.getBoolean("protection.enabled", true)))
-				|| (!(arena.cfg.getBoolean("protection.blocktntdamage", true)))
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityExplode(final EntityExplodeEvent event) {
+		DEBUG.i("explosion");
+
+		final Arena arena = ArenaManager.getArenaByProtectedRegionLocation(
+				new PABlockLocation(event.getLocation()), RegionProtection.TNT);
+		if (arena == null) {
+			return; // no arena => out
+		}
+		DEBUG.i("explosion inside an arena");
+		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
+				|| (!BlockListener.isProtected(event.getLocation(), event,
+						RegionProtection.TNT))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-			PVPArena.instance.getAmm().onEntityExplode(arena, event);
+
+			ArenaModuleManager.onEntityExplode(arena, event);
 			return;
 		}
 
 		event.setCancelled(true); // ELSE => cancel event
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onEntityRegainHealth(final EntityRegainHealthEvent event) {
+		final Entity entity = event.getEntity();
 
-		if (event.isCancelled()) {
-			return; // respect other plugins
-		}
-
-		Entity p1 = event.getEntity();
-
-		if ((p1 == null) || (!(p1 instanceof Player)))
+		if ((entity == null) || (!(entity instanceof Player))) {
 			return; // no player
-
-		Arena arena = Arenas.getArenaByPlayer((Player) p1);
-		if (arena == null)
+		}
+		final Arena arena = ArenaPlayer.parsePlayer(((Player) entity).getName())
+				.getArena();
+		if (arena == null) {
 			return;
-
-		db.i("onEntityRegainHealth => fighing player");
-		if (!arena.fightInProgress) {
+		}
+		final Player player = (Player) entity;
+		DEBUG.i("onEntityRegainHealth => fighing player", player);
+		if (!arena.isFightInProgress()) {
 			return;
 		}
 
-		Player player = (Player) p1;
-
-		ArenaPlayer ap = ArenaPlayer.parsePlayer(player);
-		ArenaTeam team = Teams.getTeam(arena, ap);
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		final ArenaTeam team = aPlayer.getArenaTeam();
 
 		if (team == null) {
 			return;
 		}
 
-		PVPArena.instance.getAmm().onEntityRegainHealth(arena, event);
+		ArenaModuleManager.onEntityRegainHealth(arena, event);
 
 	}
 
@@ -100,67 +158,60 @@ public class EntityListener implements Listener {
 	 * @param event
 	 *            the triggering event
 	 */
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
+		Entity eDamager = event.getDamager();
+		final Entity eDamagee = event.getEntity();
 
-		if (event.isCancelled()) {
-			return;
-		}
-
-		Entity p1 = event.getDamager();
-		Entity p2 = event.getEntity();
-
-		db.i("onEntityDamageByEntity: cause: " + event.getCause().name()
+		DEBUG.i("onEntityDamageByEntity: cause: " + event.getCause().name()
 				+ " : " + event.getDamager().toString() + " => "
 				+ event.getEntity().toString());
 
-
-		if (p1 instanceof Projectile) {
-			db.i("parsing projectile");
-			p1 = ((Projectile) p1).getShooter();
-			db.i("=> " + String.valueOf(p1));
+		if (eDamager instanceof Projectile) {
+			DEBUG.i("parsing projectile");
+			eDamager = ((Projectile) eDamager).getShooter();
+			DEBUG.i("=> " + eDamager);
 		}
 
 		if (event.getEntity() instanceof Wolf) {
-			Wolf wolf = (Wolf) event.getEntity();
+			final Wolf wolf = (Wolf) event.getEntity();
 			if (wolf.getOwner() != null) {
 				try {
-					p1 = (Entity) wolf.getOwner();
+					eDamager = (Entity) wolf.getOwner();
 				} catch (Exception e) {
 					// wolf belongs to dead player or whatnot
 				}
 			}
 		}
 
-		if ((p1 != null && p2 != null) && p1 instanceof Player
-				&& p2 instanceof Player) {
-			if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
-				event.setCancelled(true); // cancel events for regular no PVP
-				// servers
-			}
+		if (eDamager instanceof Player && eDamagee instanceof Player
+				&& PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
+				event.setCancelled(true);
+				// cancel events for regular no PVP servers
 		}
 
-		if ((p2 == null) || (!(p2 instanceof Player))) {
+		if (!(eDamagee instanceof Player)) {
 			return;
 		}
 
-		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		final Arena arena = ArenaPlayer.parsePlayer(((Player) eDamagee).getName())
+				.getArena();
 		if (arena == null) {
 			// defender no arena player => out
 			return;
 		}
 
-		db.i("onEntityDamageByEntity: fighting player");
+		DEBUG.i("onEntityDamageByEntity: fighting player");
 
-		if ((p1 == null) || (!(p1 instanceof Player))) {
+		if ((eDamager == null) || (!(eDamager instanceof Player))) {
 			// attacker no player => out!
 			return;
 		}
 
-		db.i("both entities are players");
-		Player attacker = (Player) p1;
-		Player defender = (Player) p2;
-		
+		DEBUG.i("both entities are players",(Player) eDamager);
+		final Player attacker = (Player) eDamager;
+		final Player defender = (Player) eDamagee;
+
 		if (attacker.equals(defender)) {
 			// player attacking himself. ignore!
 			return;
@@ -168,8 +219,8 @@ public class EntityListener implements Listener {
 
 		boolean defTeam = false;
 		boolean attTeam = false;
-		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender);
-		ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker);
+		final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
+		final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
 
 		for (ArenaTeam team : arena.getTeams()) {
 			defTeam = defTeam ? true : team.getTeamMembers().contains(
@@ -178,92 +229,142 @@ public class EntityListener implements Listener {
 					apAttacker);
 		}
 
-		if (!defTeam || !attTeam || arena.REALEND_ID != -1) {
+		if (!defTeam || !attTeam || arena.realEndRunner != null) {
 			event.setCancelled(true);
 			return;
 		}
 
-		db.i("both players part of the arena");
+		DEBUG.i("both players part of the arena",attacker);
+		DEBUG.i("both players part of the arena",defender);
 
 		if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
 			event.setCancelled(false); // uncancel events for regular no PVP
 			// servers
 		}
 
-		if ((!arena.cfg.getBoolean("game.teamKill", false))
-				&& (Teams.getTeam(arena, apAttacker)).equals(Teams.getTeam(
-						arena, apDefender))) {
+		if ((!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL))
+				&& (apAttacker.getArenaTeam())
+						.equals(apDefender.getArenaTeam())) {
 			// no team fights!
-			db.i("team hit, cancel!");
+			DEBUG.i("team hit, cancel!",attacker);
+			DEBUG.i("team hit, cancel!",defender);
+			event.setCancelled(true);
+			return;
+		}
+		
+		if (!arena.isFightInProgress() || (arena.pvpRunner != null)) {
+			DEBUG.i("fight not started, cancel!",attacker);
+			DEBUG.i("fight not started, cancel!",defender);
 			event.setCancelled(true);
 			return;
 		}
 
-		if (!arena.fightInProgress) {
-			// fight not started, cancel!
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
+				new DamageResetRunnable(arena, attacker, defender), 1L);
+
+		if (arena.getArenaConfig().getInt(CFG.PROTECT_SPAWN) > 0
+				&& SpawnManager.isNearSpawn(arena, defender, arena
+					.getArenaConfig().getInt(CFG.PROTECT_SPAWN))) {
+			// spawn protection!
+			DEBUG.i("spawn protection! damage cancelled!",attacker);
+			DEBUG.i("spawn protection! damage cancelled!",defender);
 			event.setCancelled(true);
 			return;
-		}
-
-		if (arena.cfg.getBoolean("game.weaponDamage")) {
-			if (Inventories.receivesDamage(attacker.getItemInHand())) {
-				attacker.getItemInHand().setDurability((short) 0);
-			}
-		}
-
-		// TODO NOT LAGGING
-
-		if (arena.cfg.getInt("protection.spawn") > 0) {
-			if (Spawns.isNearSpawn(arena, defender,
-					arena.cfg.getInt("protection.spawn"))) {
-				// spawn protection!
-				db.i("spawn protection! damage cancelled!");
-				event.setCancelled(true);
-				return;
-			}
 		}
 
 		// here it comes, process the damage!
 
-		db.i("processing damage!");
+		DEBUG.i("processing damage!",attacker);
+		DEBUG.i("processing damage!",defender);
 
+		ArenaModuleManager.onEntityDamageByEntity(arena, attacker, defender,
+				event);
 
-		PVPArena.instance.getAmm().onEntityDamageByEntity(arena, attacker,
-				defender, event);
-
-		Statistics.damage(arena, attacker, defender, event.getDamage());
+		StatisticsManager.damage(arena, attacker, defender, event.getDamage());
 	}
-	
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onEntityDamage(EntityDamageEvent event) {
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEntityDamage(final EntityDamageEvent event) {
+		final Entity entity = event.getEntity();
 
-		if (event.isCancelled()) {
+		DEBUG.i("onEntityDamage: cause: " + event.getCause().name() + " : "
+				+ event.getEntity().toString());
+
+		if (!(entity instanceof Player)) {
 			return;
 		}
 
-		Entity p2 = event.getEntity();
-
-		db.i("onEntityDamage: cause: " + event.getCause().name()
-				+ " : " + event.getEntity().toString());
-
-		if ((p2 == null) || (!(p2 instanceof Player))) {
-			return;
-		}
-
-		Arena arena = Arenas.getArenaByPlayer((Player) p2);
+		final Arena arena = ArenaPlayer.parsePlayer(((Player) entity).getName())
+				.getArena();
 		if (arena == null) {
 			// defender no arena player => out
 			return;
 		}
 
-		Player defender = (Player) p2;
+		final Player defender = (Player) entity;
 
-		ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender);
+		final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
-		if (arena.REALEND_ID != -1 || (!apDefender.getStatus().equals(Status.EMPTY) && !apDefender.getStatus().equals(Status.FIGHT))) {
+		if (arena.realEndRunner != null
+				|| (!apDefender.getStatus().equals(Status.NULL) && !apDefender
+						.getStatus().equals(Status.FIGHT))) {
 			event.setCancelled(true);
 			return;
+		}
+
+		for (ArenaRegionShape ars : arena.getRegions()) {
+			if (ars.getFlags().contains(RegionFlag.NODAMAGE)
+					&& ars.contains(new PABlockLocation(defender.getLocation()))) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPotionSplash(final PotionSplashEvent event) {
+
+		DEBUG.i("onPotionSplash");
+		boolean affectTeam = true;
+
+		final Collection<PotionEffect> pot = event.getPotion().getEffects();
+		for (PotionEffect eff : pot) {
+			if (TEAMEFFECT.containsKey(eff.getType())) {
+				affectTeam = TEAMEFFECT.get(eff.getType());
+				break;
+			}
+		}
+
+		ArenaPlayer shooter = null;
+
+		try {
+			shooter = ArenaPlayer.parsePlayer(((Player) event.getEntity()
+					.getShooter()).getName());
+		} catch (Exception e) {
+			return;
+		}
+
+		DEBUG.i("legit player: " + shooter, shooter.getName());
+
+		if (shooter == null || shooter.getArena() == null
+				|| !shooter.getStatus().equals(Status.FIGHT)) {
+			DEBUG.i("something is null!", shooter.getName());
+			return;
+		}
+
+		final Collection<LivingEntity> entities = event.getAffectedEntities();
+		for (LivingEntity e : entities) {
+			if (!(e instanceof Player)) {
+				continue;
+			}
+			final ArenaPlayer damagee = ArenaPlayer.parsePlayer(((Player) e).getName());
+			final boolean sameTeam = damagee.getArenaTeam().equals(shooter.getArenaTeam());
+			if (sameTeam != affectTeam) {
+				// different team and only team should be affected
+				// same team and the other team should be affected
+				// ==> cancel!
+				event.setIntensity(e, 0);
+			}
 		}
 	}
 }

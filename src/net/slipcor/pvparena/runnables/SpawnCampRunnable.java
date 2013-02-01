@@ -3,36 +3,34 @@ package net.slipcor.pvparena.runnables;
 import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 
 /**
- * spawn camp runnable class
+ * <pre>Arena Runnable class "SpawnCamp"</pre>
  * 
- * -
- * 
- * implements an own runnable class in order to punish spawn camping
+ * An arena timer to punish spawn campers
  * 
  * @author slipcor
  * 
- * @version v0.8.7
- * 
+ * @version v0.9.8
  */
 
 public class SpawnCampRunnable implements Runnable {
-	private final Arena a;
-	private Debug db = new Debug(44);
-	private int id;
+	private final Arena arena;
+	private final static Debug DEBUG = new Debug(44);
+	private int iID;
 
 	/**
 	 * create a spawn camp runnable
 	 * 
-	 * @param a
+	 * @param arena
 	 *            the arena we are running in
 	 */
-	public SpawnCampRunnable(Arena a, int i) {
-		id = 0;
-		this.a = a;
-		db.i("SpawnCampRunnable constructor");
+	public SpawnCampRunnable(final Arena arena, final int i) {
+		iID = 0;
+		this.arena = arena;
+		DEBUG.i("SpawnCampRunnable constructor");
 	}
 
 	/**
@@ -40,17 +38,17 @@ public class SpawnCampRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		db.i("SpawnCampRunnable commiting");
-		if (a.fightInProgress && a.cfg.getBoolean("protection.punish"))
-			a.spawnCampPunish();
-		else {
+		DEBUG.i("SpawnCampRunnable commiting");
+		if (arena.isFightInProgress() && arena.getArenaConfig().getBoolean(CFG.PROTECT_PUNISH)) {
+			arena.spawnCampPunish();
+		} else {
 			// deactivate the auto saving task
-			Bukkit.getServer().getScheduler().cancelTask(id);
-			a.SPAWNCAMP_ID = -1;
+			Bukkit.getServer().getScheduler().cancelTask(iID);
+			arena.spawnCampRunnerID = -1;
 		}
 	}
 	
-	public void setId(int i) {
-		id = i;
+	public void setId(final int runID) {
+		iID = runID;
 	}
 }
