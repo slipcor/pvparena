@@ -1,7 +1,7 @@
 name: pvparena
 authors: [slipcor]
 main: net.slipcor.pvparena.PVPArena
-version: 0.10.3.jenkins-build-number
+version: 1.0.0.jenkins-build-number
 softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,MobDisguise,DisguiseCraft,TagAPI]
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena
