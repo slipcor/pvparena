@@ -365,7 +365,9 @@ public class GoalPlayerLives extends ArenaGoal {
 					scores.put(ap.getName(), score);
 				}
 			} else {
-
+				if (ap.getArenaTeam() == null) {
+					continue;
+				}
 				if (scores.containsKey(ap.getArenaTeam().getName())) {
 					scores.put(ap.getArenaTeam().getName(),
 							scores.get(ap.getName()) + score);
