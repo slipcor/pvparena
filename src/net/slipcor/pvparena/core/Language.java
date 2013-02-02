@@ -194,6 +194,7 @@ public final class Language {
 		ERROR_WHITELIST_UNKNOWN_TYPE("nulang.error.whitelist.unknowntype", "Unknown type. Valid types: &e%1%&r"),
 		
 		FIGHT_BEGINS("nulang.fight.begins", "Let the fight begin!"),
+		FIGHT_DRAW("nulang.fight.draw", "This match was a draw! No winners!"),
 		FIGHT_KILLED_BY_REMAINING("nulang.fight.killedbyremaining", "%1% has been killed by %2%! %3% lives remaining."),
 		FIGHT_KILLED_BY_REMAINING_FRAGS("nulang.fight.killedbyremainingfrags", "%1% has been killed by %2%! %3% kills remaining."),
 		FIGHT_KILLED_BY_REMAINING_TEAM("nulang.fight.killedbyremainingteam", "%1% has been killed by %2%! %3% lives remaining for %4%."),
@@ -370,7 +371,7 @@ public final class Language {
 		WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
 
 		GOAL_BLOCKDESTROY_TYPESET("nulang.goal.blockdestroy.typeset", "Blocktype set to: &e%1%"),
-		GOAL_BLOCKDESTROY_SCORE("lang.flaghomeleft", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
+		GOAL_BLOCKDESTROY_SCORE("lang.goal.blockdestroy.score", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
 		GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),
 		GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Block to set: %1%"),
 

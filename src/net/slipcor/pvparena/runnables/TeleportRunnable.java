@@ -61,7 +61,11 @@ public class TeleportRunnable implements Runnable {
 			}
 		} else {
 			final PALocation loc = SpawnManager.getCoords(arena, spawnName);
-			aPlayer.get().teleport(loc.toLocation());
+			if (loc == null) {
+				PVPArena.instance.getLogger().warning("Spawn null: " + spawnName);
+			} else {
+				aPlayer.get().teleport(loc.toLocation());
+			}
 			aPlayer.get()
 					.setNoDamageTicks(
 							arena.getArenaConfig().getInt(

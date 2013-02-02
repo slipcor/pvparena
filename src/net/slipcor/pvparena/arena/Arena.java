@@ -336,6 +336,10 @@ public class Arena {
 	public String getOwner() {
 		return owner;
 	}
+	
+	public Set<String> getPlayedPlayers() {
+		return playedPlayers;
+	}
 
 	public String getPrefix() {
 		return prefix;
@@ -724,7 +728,9 @@ public class Arena {
 	 * @param b
 	 */
 	public void playerLeave(final Player player, final CFG location, final boolean silent) {
-
+		if (player == null) {
+			return;
+		}
 		for (ArenaGoal goal : getGoals()) {
 			goal.parseLeave(player);
 		}
