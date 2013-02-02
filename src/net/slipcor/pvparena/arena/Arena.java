@@ -618,7 +618,7 @@ public class Arena {
 	}
 
 	public void msg(final CommandSender sender, final String msg) {
-		if (sender == null) {
+		if (sender == null || msg == null || msg.length() < 1) {
 			return;
 		}
 		DEBUG.i("@" + sender.getName() + ": " + msg);
@@ -713,6 +713,9 @@ public class Arena {
 	}
 
 	public static void pmsg(final CommandSender sender, final String msg) {
+		if (sender == null || msg == null || msg.length() < 1) {
+			return;
+		}
 		DEBUG.i("@" + sender.getName() + ": " + msg, sender);
 		sender.sendMessage(ChatColor.YELLOW + "[" + globalprefix + "] "
 				+ ChatColor.WHITE + msg);

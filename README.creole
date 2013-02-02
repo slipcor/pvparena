@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.0.12 - don't send messages if empty
 * v1.0.0.11 - fix an NPE when calculating the winner
 * v1.0.0.10 - attempt to fix Ticket #193,#198,#209
 * v1.0.0.1 - update versions and readme
