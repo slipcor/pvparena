@@ -33,6 +33,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 		}
 		
 		if (!argCountValid(sender, arena, args, new Integer[]{0,2,3})) {
+			displayHelp(sender);
 			return;
 		}
 
@@ -48,6 +49,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 		}
 		
 		if (!argCountValid(sender, arena, args, args[0].equals("remove")?new Integer[]{2}:new Integer[]{3})) {
+			displayHelp(sender);
 			return;
 		}
 		
