@@ -20,6 +20,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -59,12 +60,16 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
+		debug.i("checkEnd - " + arena.getName());
 		if (res.getPriority() > PRIORITY) {
+			debug.i(res.getPriority() + ">" + PRIORITY);
 			return res;
 		}
 
 		if (!arena.isFreeForAll()) {
+			debug.i("TEAMS!");
 			final int count = TeamManager.countActiveTeams(arena);
+			debug.i("count: " + count);
 
 			if (count <= 1) {
 				res.setPriority(this, PRIORITY); // yep. only one team left. go!
@@ -73,6 +78,8 @@ public class GoalPlayerLives extends ArenaGoal {
 		}
 
 		final int count = lives.size();
+
+		debug.i("lives: " + StringParser.joinSet(lives.keySet(), "|"));
 
 		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
