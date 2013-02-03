@@ -46,6 +46,11 @@ public class PAA_Teams extends AbstractArenaCommand {
 			arena.msg(sender, Language.parse(MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), "§f,")));
 			return;
 		}
+		
+		if (!argCountValid(sender, arena, args, args[0].equals("remove")?new Integer[]{2}:new Integer[]{3})) {
+			return;
+		}
+		
 		final ArenaTeam team = arena.getTeam(args[1]);
 		
 		if (team == null && !args[0].equals("add")) {
