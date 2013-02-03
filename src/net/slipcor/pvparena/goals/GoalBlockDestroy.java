@@ -67,7 +67,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.14";
 	}
 
 	private static final int PRIORITY = 8;
@@ -616,9 +616,26 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 							"[PVP Arena] team unknown/no lives: " + blockTeam);
 					e.printStackTrace();
 				}
-				takeBlock(arena.getTeam(blockTeam).getColor().name(), false,
-						SpawnManager.getCoords(arena, blockTeam + "block"));
-
+				class RunLater implements Runnable  {
+					String localColor;
+					PALocation localLoc;
+					RunLater(String color, PALocation loc) {
+						localColor = color;
+						localLoc = loc;
+					}
+					
+					@Override
+					public void run() {
+						takeBlock(localColor, false,
+								localLoc);
+					}
+				}
+				Bukkit.getScheduler().runTaskLater(
+						PVPArena.instance,
+						new RunLater(
+								arena.getTeam(blockTeam).getColor().name(),
+								new PALocation(event.getBlock().getLocation())), 5L);
+				
 				reduceLivesCheckEndAndCommit(arena, blockTeam);
 
 				return;
