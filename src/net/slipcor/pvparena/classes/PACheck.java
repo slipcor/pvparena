@@ -148,19 +148,21 @@ public class PACheck {
 	}
 	
 	public static boolean handleEnd(final Arena arena, final boolean force) {
+		DEBUG.i("handleEnd: " + arena.getName() + "; force: " + force);
 		int priority = 0;
 		PACheck res = new PACheck();
 		
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
+			DEBUG.i("checking " + mod.getName());
 			res = mod.checkEnd(res);
 			if (res.getPriority() > priority && priority >= 0) {
-				// success and higher priority
+				DEBUG.i("> success and higher priority");
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				// fail
+				DEBUG.i("> fail");
 				priority = res.getPriority();
 				commit = null;
 			}
@@ -169,16 +171,20 @@ public class PACheck {
 		if (res.hasError()) {
 			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
 			if (commit != null) {
+				DEBUG.i("error; committing end: " + commit.getName());
 				commit.commitEnd(force);
 				return true;
 			}
+			DEBUG.i("error; FALSE!");
 			return false;
 		}
 		
 		if (commit == null) {
+			DEBUG.i("FALSE");
 			return false;
 		}
-		
+
+		DEBUG.i("committing end: " + commit.getName());
 		commit.commitEnd(force);
 		return true;
 	}
