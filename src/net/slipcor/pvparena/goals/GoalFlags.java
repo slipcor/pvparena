@@ -63,9 +63,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		debug = new Debug(100);
 	}
 
-	private final Map<String, Integer> paTeamLives = new HashMap<String, Integer>();
-	private final Map<String, String> paTeamFlags = new HashMap<String, String>();
-	private final Map<String, ItemStack> paHeadGears = new HashMap<String, ItemStack>();
+	// lifeMap
+	private final Map<String, String> paTeamFlags = new HashMap<String, String>(); //TODO <<<
+	private final Map<String, ItemStack> paHeadGears = new HashMap<String, ItemStack>(); //TODO <<<
 	private static Set<Material> headFlags = new HashSet<Material>();
 
 	private String flagName = "";
@@ -226,7 +226,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 								MSG.GOAL_FLAGS_TOUCHHOME, arena.getTeam(sTeam)
 										.colorizePlayer(player)
 										+ ChatColor.YELLOW, String
-										.valueOf(paTeamLives.get(aPlayer
+										.valueOf(getLifeMap().get(aPlayer
 												.getArenaTeam().getName()) - 1)));
 					} else {
 						arena.broadcast(Language.parse(
@@ -235,7 +235,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 										+ ChatColor.YELLOW,
 								arena.getTeam(flagTeam).getColoredName()
 										+ ChatColor.YELLOW, String
-										.valueOf(paTeamLives.get(flagTeam) - 1)));
+										.valueOf(getLifeMap().get(flagTeam) - 1)));
 					}
 					paTeamFlags.remove(flagTeam);
 				} catch (Exception e) {
@@ -478,7 +478,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 							+ ChatColor.YELLOW));
 		}
 
-		paTeamLives.clear();
+		getLifeMap().clear();
 		new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
@@ -733,8 +733,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					String.valueOf(paTeamLives.containsKey(aPlayer.getArenaTeam()
-									.getName()) ? paTeamLives.get(aPlayer
+					String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()
+									.getName()) ? getLifeMap().get(aPlayer
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
@@ -813,8 +813,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	public void initate(final Player player) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final ArenaTeam team = aPlayer.getArenaTeam();
-		if (!paTeamLives.containsKey(team.getName())) {
-			paTeamLives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
+		if (!getLifeMap().containsKey(team.getName())) {
+			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_FLAGS_LIVES));
 
 			takeFlag(team.getColor().name(), false,
@@ -881,12 +881,12 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void parseStart() {
-		paTeamLives.clear();
+		getLifeMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() > 0) {
 				debug.i("adding team " + team.getName());
 				// team is active
-				paTeamLives.put(team.getName(),
+				getLifeMap().put(team.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
 			}
 			takeFlag(team.getColor().name(), false,
@@ -900,24 +900,24 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 		debug.i("reducing lives of team " + team);
 		
-		if (paTeamLives.get(team) == null) {
+		if (getLifeMap().get(team) == null) {
 			if (team.contains(":")) {
 				final String realTeam = team.split(":")[1];
-				final int pos = paTeamLives.get(realTeam) - 1;
+				final int pos = getLifeMap().get(realTeam) - 1;
 				if (pos > 0) {
-					paTeamLives.put(realTeam, pos);
+					getLifeMap().put(realTeam, pos);
 				} else {
-					paTeamLives.remove(realTeam);
+					getLifeMap().remove(realTeam);
 					commit(arena, realTeam, true);
 					return true;
 				}
 			}
 		} else {
-			final int pos = paTeamLives.get(team) - 1;
+			final int pos = getLifeMap().get(team) - 1;
 			if (pos > 0) {
-				paTeamLives.put(team, pos);
+				getLifeMap().put(team, pos);
 			} else {
-				paTeamLives.remove(team);
+				getLifeMap().remove(team);
 				commit(arena, team, false);
 				return true;
 			}
@@ -961,7 +961,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	public void reset(final boolean force) {
 		paTeamFlags.clear();
 		paHeadGears.clear();
-		paTeamLives.clear();
+		getLifeMap().clear();
 	}
 
 	@Override
@@ -1026,7 +1026,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		double score;
 
 		for (ArenaTeam team : arena.getTeams()) {
-			score = (paTeamLives.containsKey(team.getName()) ? paTeamLives
+			score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
 					.get(team.getName()) : 0);
 			if (scores.containsKey(team)) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);

@@ -61,11 +61,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	 * private static enum GameMode { GEAR_UP; }
 	 */
 
-	private final Map<Integer, ItemStack[]> items = new HashMap<Integer, ItemStack[]>();
+	private final Map<Integer, ItemStack[]> items = new HashMap<Integer, ItemStack[]>(); //TODO <<<<
 
 	private EndRunnable endRunner = null;
 
-	final Map<String, Integer> lives = new HashMap<String, Integer>();
+	// lifeMap
 
 	@Override
 	public String version() {
@@ -99,7 +99,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			return res;
 		}
 
-		final int count = lives.size();
+		final int count = getLifeMap().size();
 
 		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
@@ -259,10 +259,10 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public void parsePlayerDeath(final Player player, final EntityDamageEvent event) {
-		if (!lives.containsKey(player.getName())) {
+		if (!getLifeMap().containsKey(player.getName())) {
 			return;
 		}
-		lives.put(player.getName(), getMaxInt());
+		getLifeMap().put(player.getName(), getMaxInt());
 
 		class ResetRunnable implements Runnable {
 			private final Player player;
@@ -277,11 +277,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			}
 
 			private void reset(final Player player) {
-				if (!lives.containsKey(player.getName())) {
+				if (!getLifeMap().containsKey(player.getName())) {
 					return;
 				}
 
-				final int iLives = lives.get(player.getName());
+				final int iLives = getLifeMap().get(player.getName());
 				if (!ArenaPlayer.parsePlayer(player.getName()).getStatus()
 						.equals(Status.FIGHT)) {
 					return;
@@ -304,7 +304,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			return;
 		}
 
-		int iLives = lives.get(killer.getName());
+		int iLives = getLifeMap().get(killer.getName());
 		debug.i("kills to go: " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
@@ -316,7 +316,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				plrs.add(ap);
 			}
 			for (ArenaPlayer ap : plrs) {
-				lives.remove(ap.getName());
+				getLifeMap().remove(ap.getName());
 				debug.i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
 						false);
@@ -333,7 +333,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			PACheck.handleEnd(arena, false);
 		} else {
 			iLives--;
-			lives.put(killer.getName(), iLives);
+			getLifeMap().put(killer.getName(), iLives);
 			Bukkit.getScheduler().runTaskLater(PVPArena.instance,
 					new ResetRunnable(killer), 4L);
 		}
@@ -361,7 +361,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public void initate(final Player player) {
-		lives.put(player.getName(), getMaxInt());
+		getLifeMap().put(player.getName(), getMaxInt());
 	}
 
 	private int getMaxInt() {
@@ -384,8 +384,8 @@ public class GoalPlayerKillReward extends ArenaGoal {
 					this.getName() + ": player NULL");
 			return;
 		}
-		if (lives.containsKey(player.getName())) {
-			lives.remove(player.getName());
+		if (getLifeMap().containsKey(player.getName())) {
+			getLifeMap().remove(player.getName());
 		}
 	}
 
@@ -393,7 +393,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.lives.put(ap.getName(), getMaxInt());
+				this.getLifeMap().put(ap.getName(), getMaxInt());
 			}
 		}
 	}
@@ -401,7 +401,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	@Override
 	public void reset(final boolean force) {
 		endRunner = null;
-		lives.clear();
+		getLifeMap().clear();
 		items.clear();
 	}
 
@@ -470,7 +470,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 		for (ArenaPlayer ap : arena.getFighters()) {
 			score = getMaxInt()
-					- (lives.containsKey(ap.getName()) ? lives
+					- (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
 							.get(ap.getName()) : 0);
 			if (scores.containsKey(ap)) {
 				scores.put(ap.getName(), scores.get(ap.getName()) + score);
@@ -484,6 +484,6 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public void unload(final Player player) {
-		lives.remove(player.getName());
+		getLifeMap().remove(player.getName());
 	}
 }

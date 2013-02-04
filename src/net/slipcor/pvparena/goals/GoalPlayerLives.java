@@ -49,7 +49,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	private Map<String, Integer> lifeMap = null;
+	// lifeMap
 
 	@Override
 	public String version() {
@@ -251,13 +251,6 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
-	}
-	
-	private Map<String, Integer> getLifeMap() {
-		if (lifeMap == null) {
-			lifeMap = new HashMap<String, Integer>();
-		}
-		return lifeMap;
 	}
 
 	@Override

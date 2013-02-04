@@ -47,7 +47,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	private final Map<String, Integer> lives = new HashMap<String, Integer>();
+	// lifeMap
 
 	@Override
 	public String version() {
@@ -67,7 +67,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			return res;
 		}
 
-		final int count = lives.size();
+		final int count = getLifeMap().size();
 
 		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
@@ -164,7 +164,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			final String error, final PlayerDeathEvent event) {
 
 		if (player.getKiller() == null
-				|| !lives.containsKey(player.getKiller().getName())) {
+				|| !getLifeMap().containsKey(player.getKiller().getName())) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 						.getArenaTeam();
@@ -189,7 +189,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		}
 		final Player killer = player.getKiller();
 
-		int iLives = lives.get(killer.getName());
+		int iLives = getLifeMap().get(killer.getName());
 		debug.i("kills to go: " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
@@ -201,7 +201,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				plrs.add(ap);
 			}
 			for (ArenaPlayer ap : plrs) {
-				lives.remove(ap.getName());
+				getLifeMap().remove(ap.getName());
 				debug.i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
 						false);
@@ -219,7 +219,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			PACheck.handleEnd(arena, false);
 		} else {
 			iLives--;
-			lives.put(killer.getName(), iLives);
+			getLifeMap().put(killer.getName(), iLives);
 
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
@@ -257,8 +257,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			res.setError(
 					this,
 					String.valueOf(arena.getArenaConfig()
-									.getInt(CFG.GOAL_PDM_LIVES) - (lives
-									.containsKey(aPlayer.getName()) ? lives.get(aPlayer
+									.getInt(CFG.GOAL_PDM_LIVES) - (getLifeMap()
+									.containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
 									.getName()) : 0)));
 		}
 		return res;
@@ -272,7 +272,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public void initate(final Player player) {
-		lives.put(player.getName(),
+		getLifeMap().put(player.getName(),
 				arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
 	}
 
@@ -288,8 +288,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 					this.getName() + ": player NULL");
 			return;
 		}
-		if (lives.containsKey(player.getName())) {
-			lives.remove(player.getName());
+		if (getLifeMap().containsKey(player.getName())) {
+			getLifeMap().remove(player.getName());
 		}
 	}
 
@@ -297,7 +297,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.lives.put(ap.getName(),
+				this.getLifeMap().put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
 			}
 		}
@@ -306,7 +306,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 	@Override
 	public void reset(final boolean force) {
 		endRunner = null;
-		lives.clear();
+		getLifeMap().clear();
 	}
 
 	@Override
@@ -315,7 +315,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 		for (ArenaPlayer ap : arena.getFighters()) {
 			score = arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)
-					- (lives.containsKey(ap.getName()) ? lives
+					- (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
 							.get(ap.getName()) : 0);
 			if (scores.containsKey(ap)) {
 				scores.put(ap.getName(), scores.get(ap.getName()) + score);
@@ -329,7 +329,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public void unload(final Player player) {
-		lives.remove(player.getName());
+		getLifeMap().remove(player.getName());
 		if (allowsJoinInBattle()) {
 			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
 		}

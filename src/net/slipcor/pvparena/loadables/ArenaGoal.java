@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.loadables;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,8 +28,9 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  */
 
 public class ArenaGoal extends NCBLoadable {
-	protected static Debug debug = new Debug(30);
+	protected Debug debug = new Debug(30);
 	protected Arena arena;
+	protected Map<String, Integer> lifeMap = null;
 
 	/**
 	 * create an arena type instance
@@ -146,10 +148,17 @@ public class ArenaGoal extends NCBLoadable {
 	public void displayInfo(final CommandSender sender) {
 	}
 
+	protected Map<String, Integer> getLifeMap() {
+		if (lifeMap == null) {
+			lifeMap = new HashMap<String, Integer>();
+		}
+		return lifeMap;
+	}
+	
 	public PACheck getLives(final PACheck res, final ArenaPlayer player) {
 		return res;
 	}
-
+	
 	/**
 	 * guess the spawn name from a given string
 	 * 

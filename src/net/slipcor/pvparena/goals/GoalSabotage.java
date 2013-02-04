@@ -61,8 +61,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	private String flagName = "";
-	private final Map<String, String> paTeamFlags = new HashMap<String, String>();
-	private final Map<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>();
+	private final Map<String, String> paTeamFlags = new HashMap<String, String>(); //TODO <<<<
+	private final Map<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>(); // TODO <<<<
 
 	@Override
 	public String version() {

@@ -45,7 +45,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		debug = new Debug(104);
 	}
 
-	private final Map<String, Integer> lives = new HashMap<String, Integer>(); // flags
+	// lifeMap
 
 	@Override
 	public String version() {
@@ -194,7 +194,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		reduceLives(arena, killerTeam);
 
-		if (lives.get(killerTeam.getName()) != null) {
+		if (getLifeMap().get(killerTeam.getName()) != null) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				arena.broadcast(Language.parse(
 						MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
@@ -203,7 +203,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 								respawnPlayer, event.getEntity()
 										.getLastDamageCause().getCause(), event
 										.getEntity().getKiller()), String
-								.valueOf(lives.get(killerTeam.getName())),
+								.valueOf(getLifeMap().get(killerTeam.getName())),
 						killerTeam.getColoredName()));
 			}
 
@@ -244,8 +244,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			res.setError(
 					this,
 					String.valueOf(arena.getArenaConfig()
-									.getInt(CFG.GOAL_TDM_LIVES) - (lives
-									.containsKey(aPlayer.getArenaTeam().getName()) ? lives
+									.getInt(CFG.GOAL_TDM_LIVES) - (getLifeMap()
+									.containsKey(aPlayer.getArenaTeam().getName()) ? getLifeMap()
 									.get(aPlayer.getArenaTeam().getName()) : 0)));
 		}
 		return res;
@@ -295,8 +295,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public void initate(final Player player) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-		if (lives.get(aPlayer.getArenaTeam().getName()) == null) {
-			lives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
+		if (getLifeMap().get(aPlayer.getArenaTeam().getName()) == null) {
+			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_TDM_LIVES));
 		}
 	}
@@ -307,14 +307,14 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	}
 
 	private void reduceLives(final Arena arena, final ArenaTeam team) {
-		final int iLives = this.lives.get(team.getName());
+		final int iLives = this.getLifeMap().get(team.getName());
 
 		if (iLives <= 1) {
 			for (ArenaTeam otherTeam : arena.getTeams()) {
 				if (otherTeam.equals(team)) {
 					continue;
 				}
-				lives.remove(otherTeam.getName());
+				getLifeMap().remove(otherTeam.getName());
 				for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
 					if (ap.getStatus().equals(Status.FIGHT)) {
 						ap.setStatus(Status.LOST);
@@ -327,12 +327,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			return;
 		}
 
-		lives.put(team.getName(), iLives - 1);
+		getLifeMap().put(team.getName(), iLives - 1);
 	}
 
 	@Override
 	public void reset(final boolean force) {
-		lives.clear();
+		getLifeMap().clear();
 	}
 
 	@Override
@@ -360,7 +360,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
-			this.lives.put(team.getName(),
+			this.getLifeMap().put(team.getName(),
 					arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
 		}
 	}
@@ -371,7 +371,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			score = arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)
-					- (lives.containsKey(team.getName()) ? lives.get(team
+					- (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
 							.getName()) : 0);
 			if (scores.containsKey(team)) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);

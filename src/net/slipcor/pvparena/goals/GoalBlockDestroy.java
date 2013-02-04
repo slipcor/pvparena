@@ -61,7 +61,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		debug = new Debug(100);
 	}
 
-	private final Map<String, Integer> paTeamLives = new HashMap<String, Integer>();
+	//lifeMap
 
 	private String blockTeamName = "";
 
@@ -220,7 +220,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 							+ ChatColor.YELLOW));
 		}
 
-		paTeamLives.clear();
+		getLifeMap().clear();
 		new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
@@ -350,8 +350,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					String.valueOf(paTeamLives.containsKey(aPlayer.getArenaTeam()
-									.getName()) ? paTeamLives.get(aPlayer
+					String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()
+									.getName()) ? getLifeMap().get(aPlayer
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
@@ -410,8 +410,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	public void initate(final Player player) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final ArenaTeam team = aPlayer.getArenaTeam();
-		if (!paTeamLives.containsKey(team.getName())) {
-			paTeamLives.put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
+		if (!getLifeMap().containsKey(team.getName())) {
+			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_BLOCKDESTROY_LIVES));
 
 			takeBlock(team.getColor().name(), false,
@@ -426,12 +426,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public void parseStart() {
-		paTeamLives.clear();
+		getLifeMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() > 0) {
 				debug.i("adding team " + team.getName());
 				// team is active
-				paTeamLives.put(
+				getLifeMap().put(
 						team.getName(),
 						arena.getArenaConfig().getInt(
 								CFG.GOAL_BLOCKDESTROY_LIVES, 1));
@@ -448,11 +448,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
 		debug.i("reducing lives of team " + team);
-		final int count = paTeamLives.get(team) - 1;
+		final int count = getLifeMap().get(team) - 1;
 		if (count > 0) {
-			paTeamLives.put(team, count);
+			getLifeMap().put(team, count);
 		} else {
-			paTeamLives.remove(team);
+			getLifeMap().remove(team);
 			commit(arena, team, false);
 			return true;
 		}
@@ -461,7 +461,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public void reset(final boolean force) {
-		paTeamLives.clear();
+		getLifeMap().clear();
 	}
 
 	@Override
@@ -523,7 +523,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		double score;
 
 		for (ArenaTeam team : arena.getTeams()) {
-			score = (paTeamLives.containsKey(team.getName()) ? paTeamLives
+			score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
 					.get(team.getName()) : 0);
 			if (scores.containsKey(team)) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);
@@ -616,7 +616,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 									+ ChatColor.YELLOW, arena
 									.getTeam(blockTeam).getColoredName()
 									+ ChatColor.YELLOW, String
-									.valueOf(paTeamLives.get(blockTeam) - 1)));
+									.valueOf(getLifeMap().get(blockTeam) - 1)));
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + blockTeam);
@@ -684,7 +684,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 										+ ChatColor.YELLOW, arena
 										.getTeam(blockTeam).getColoredName()
 										+ ChatColor.YELLOW, String
-										.valueOf(paTeamLives.get(blockTeam) - 1)));
+										.valueOf(getLifeMap().get(blockTeam) - 1)));
 					} catch (Exception e) {
 						Bukkit.getLogger().severe(
 								"[PVP Arena] team unknown/no lives: " + blockTeam);
