@@ -161,14 +161,14 @@ public class GoalPlayerLives extends ArenaGoal {
 		}
 		return res;
 	}
-	
+	/*
 	@Override
 	public GoalPlayerLives clone() {
 		GoalPlayerLives gpl = this.clone();
 		gpl.lives = new HashMap<String, Integer>();
 		return gpl;
 	}
-
+*/
 	@Override
 	public void commitEnd(final boolean force) {
 		if (endRunner != null) {
