@@ -49,7 +49,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	private final Map<String, Integer> lives = new HashMap<String, Integer>();
+	public Map<String, Integer> lives = new HashMap<String, Integer>();
 
 	@Override
 	public String version() {

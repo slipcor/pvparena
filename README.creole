@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.0.17 - wait. what? if this fixes it, Im gonna...
 * v1.0.0.16 - add to /pa debug 102
 * v1.0.0.15 - add to /pa debug 9
 * v1.0.0.14 - support multiple destroyable blocks!
