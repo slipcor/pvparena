@@ -26,7 +26,7 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  * @version v0.10.0
  */
 
-public class ArenaGoal extends NCBLoadable implements Cloneable {
+public class ArenaGoal extends NCBLoadable {
 	protected static Debug debug = new Debug(30);
 	protected Arena arena;
 

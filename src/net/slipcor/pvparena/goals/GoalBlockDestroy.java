@@ -337,6 +337,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitStart() {
+		
 	}
 
 	@Override
@@ -559,6 +560,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			return;
 		}
 
+		if (!arena.isFightInProgress()) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		final Block block = event.getBlock();
 
 		debug.i("block destroy!", player);
