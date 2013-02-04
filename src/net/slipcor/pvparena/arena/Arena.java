@@ -833,6 +833,9 @@ public class Arena {
 
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
+				if (p.get() == null) {
+					continue;
+				}
 				DEBUG.i("checking class: " + p.get().getName(), p.get());
 
 				if (p.getArenaClass() == null) {
