@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.0.20 - new attempt to fix the .clone() issue
 * v1.0.0.19 - revert #18 - first sleep then code. night! 
 * v1.0.0.18 - .clone() Lesson 1: unlink field references
 * v1.0.0.17 - wait. what? if this fixes it, Im gonna...

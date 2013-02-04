@@ -49,7 +49,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	private Map<String, Integer> lives = new HashMap<String, Integer>();
+	private Map<String, Integer> lifeMap = null;
 
 	@Override
 	public String version() {
@@ -77,9 +77,9 @@ public class GoalPlayerLives extends ArenaGoal {
 			return res;
 		}
 
-		final int count = lives.size();
+		final int count = getLifeMap().size();
 
-		debug.i("lives: " + StringParser.joinSet(lives.keySet(), "|"));
+		debug.i("lives: " + StringParser.joinSet(getLifeMap().keySet(), "|"));
 
 		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
@@ -213,13 +213,13 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
 			final String error, final PlayerDeathEvent event) {
-		if (!lives.containsKey(player.getName())) {
+		if (!getLifeMap().containsKey(player.getName())) {
 			return;
 		}
-		int pos = lives.get(player.getName());
+		int pos = getLifeMap().get(player.getName());
 		debug.i("lives before death: " + pos, player);
 		if (pos <= 1) {
-			lives.remove(player.getName());
+			getLifeMap().remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 				debug.i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
@@ -228,7 +228,7 @@ public class GoalPlayerLives extends ArenaGoal {
 			PACheck.handleEnd(arena, false);
 		} else {
 			pos--;
-			lives.put(player.getName(), pos);
+			getLifeMap().put(player.getName(), pos);
 
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
@@ -259,13 +259,20 @@ public class GoalPlayerLives extends ArenaGoal {
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
+	
+	private Map<String, Integer> getLifeMap() {
+		if (lifeMap == null) {
+			lifeMap = new HashMap<String, Integer>();
+		}
+		return lifeMap;
+	}
 
 	@Override
 	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
 		if (!res.hasError() && res.getPriority() <= PRIORITY) {
 			res.setError(
 					this,
-					String.valueOf(lives.containsKey(aPlayer.getName()) ? lives.get(aPlayer
+					String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
 									.getName()) : 0));
 		}
 		return res;
@@ -287,7 +294,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public void initate(final Player player) {
-		lives.put(player.getName(),
+		getLifeMap().put(player.getName(),
 				arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
 
@@ -303,8 +310,8 @@ public class GoalPlayerLives extends ArenaGoal {
 					this.getName() + ": player NULL");
 			return;
 		}
-		if (lives.containsKey(player.getName())) {
-			lives.remove(player.getName());
+		if (getLifeMap().containsKey(player.getName())) {
+			getLifeMap().remove(player.getName());
 		}
 	}
 
@@ -312,7 +319,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.lives.put(ap.getName(),
+				this.getLifeMap().put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 			}
 		}
@@ -321,7 +328,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void reset(final boolean force) {
 		endRunner = null;
-		lives.clear();
+		getLifeMap().clear();
 	}
 
 	@Override
@@ -350,18 +357,18 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void setPlayerLives(final int value) {
 		final Set<String> plrs = new HashSet<String>();
 
-		for (String name : lives.keySet()) {
+		for (String name : getLifeMap().keySet()) {
 			plrs.add(name);
 		}
 
 		for (String s : plrs) {
-			lives.put(s, value);
+			getLifeMap().put(s, value);
 		}
 	}
 
 	@Override
 	public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
-		lives.put(aPlayer.getName(), value);
+		getLifeMap().put(aPlayer.getName(), value);
 	}
 
 	@Override
@@ -369,7 +376,7 @@ public class GoalPlayerLives extends ArenaGoal {
 		double score;
 
 		for (ArenaPlayer ap : arena.getFighters()) {
-			score = (lives.containsKey(ap.getName()) ? lives.get(ap.getName())
+			score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
 					: 0);
 			if (arena.isFreeForAll()) {
 
@@ -396,6 +403,6 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public void unload(final Player player) {
-		lives.remove(player.getName());
+		getLifeMap().remove(player.getName());
 	}
 }
