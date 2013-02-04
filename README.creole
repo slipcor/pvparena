@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.0.23 - what you say!
 * v1.0.0.22 - rewrite part one: fix lives. affects ALL GOALS!
 * v1.0.0.21 - fix a little NPE in BlockDestroy goal. REWRITE incoming!
 * v1.0.0.20 - new attempt to fix the .clone() issue
