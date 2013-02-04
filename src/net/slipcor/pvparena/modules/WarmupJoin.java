@@ -29,7 +29,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	private final static int PRIORITY = 2;
 	
-	private final Set<ArenaPlayer> joiners = new HashSet<ArenaPlayer>();
+	private Set<ArenaPlayer> playerSet = null;
 
 	public WarmupJoin() {
 		super("WarmupJoin");
@@ -38,7 +38,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.25";
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public class WarmupJoin extends ArenaModule {
 		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
-		if (joiners.contains(aPlayer)) {
+		if (getPlayerSet().contains(aPlayer)) {
 			return result;
 		}
 		
@@ -72,7 +72,7 @@ public class WarmupJoin extends ArenaModule {
 			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;
 		}
-		joiners.add(aPlayer);
+		getPlayerSet().add(aPlayer);
 		
 		result.setPriority(this, PRIORITY);
 		return result;
@@ -93,13 +93,20 @@ public class WarmupJoin extends ArenaModule {
 		return true;
 	}
 	
+	private Set<ArenaPlayer> getPlayerSet() {
+		if (playerSet == null) {
+			playerSet = new HashSet<ArenaPlayer>();
+		}
+		return playerSet;
+	}
+	
 	@Override
 	public void reset(final boolean force) {
-		joiners.clear();
+		getPlayerSet().clear();
 	}
 	
 	@Override
 	public void parsePlayerLeave(final Player player, final ArenaTeam team) {
-		joiners.remove(ArenaPlayer.parsePlayer(player.getName()));
+		getPlayerSet().remove(ArenaPlayer.parsePlayer(player.getName()));
 	}
 }
