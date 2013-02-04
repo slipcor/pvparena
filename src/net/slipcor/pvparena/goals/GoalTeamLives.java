@@ -45,11 +45,9 @@ public class GoalTeamLives extends ArenaGoal {
 		debug = new Debug(105);
 	}
 
-	// lifeMap
-
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private final static int PRIORITY = 4;

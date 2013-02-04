@@ -61,15 +61,13 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	 * private static enum GameMode { GEAR_UP; }
 	 */
 
-	private final Map<Integer, ItemStack[]> items = new HashMap<Integer, ItemStack[]>(); //TODO <<<<
+	private Map<Integer, ItemStack[]> itemMap = null;
 
 	private EndRunnable endRunner = null;
 
-	// lifeMap
-
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private final static int PRIORITY = 6;
@@ -192,7 +190,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			return;
 		}
 		if (args.length > 2) {
-			items.remove(value);
+			getItemMap().remove(value);
 			arena.msg(sender,
 					Language.parse(MSG.GOAL_KILLREWARD_REMOVED, args[1]));
 		} else {
@@ -207,7 +205,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 					+ StringParser.getStringFromItemStacks(player.getInventory()
 							.getContents());
 
-			items.put(value, StringParser.getItemStacksFromString(contents));
+			getItemMap().put(value, StringParser.getItemStacksFromString(contents));
 			arena.msg(sender, Language.parse(MSG.GOAL_KILLREWARD_ADDED,
 					args[1], contents));
 
@@ -287,8 +285,8 @@ public class GoalPlayerKillReward extends ArenaGoal {
 					return;
 				}
 				InventoryManager.clearInventory(player);
-				if (items.containsKey(iLives)) {
-					ArenaClass.equip(player, items.get(iLives));
+				if (getItemMap().containsKey(iLives)) {
+					ArenaClass.equip(player, getItemMap().get(iLives));
 				} else {
 					ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
 							.equip(player);
@@ -344,6 +342,13 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		// sender.sendMessage("killrewards: " +
 		// arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
+	
+	private Map<Integer, ItemStack[]> getItemMap() {
+		if (itemMap == null) {
+			itemMap = new HashMap<Integer, ItemStack[]>();
+		}
+		return itemMap;
+	}
 
 	@Override
 	public boolean hasSpawn(final String string) {
@@ -366,7 +371,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	private int getMaxInt() {
 		int max = 0;
-		for (int i : items.keySet()) {
+		for (int i : getItemMap().keySet()) {
 			max = Math.max(max, i);
 		}
 		return max;
@@ -402,7 +407,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	public void reset(final boolean force) {
 		endRunner = null;
 		getLifeMap().clear();
-		items.clear();
+		getItemMap().clear();
 	}
 
 	@Override
@@ -432,24 +437,24 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		if (cs != null) {
 			for (String line : cs.getKeys(false)) {
 				try {
-					items.put(Integer.parseInt(line.substring(2)), StringParser
+					getItemMap().put(Integer.parseInt(line.substring(2)), StringParser
 							.getItemStacksFromString(cs.getString(line)));
 				} catch (Exception e) {
 				}
 			}
 		}
 
-		if (items.size() < 1) {
+		if (getItemMap().size() < 1) {
 
-			items.put(5,
+			getItemMap().put(5,
 					StringParser.getItemStacksFromString("298,299,300,301,268")); // leather
-			items.put(4,
+			getItemMap().put(4,
 					StringParser.getItemStacksFromString("302,303,304,305,272")); // chain
-			items.put(3,
+			getItemMap().put(3,
 					StringParser.getItemStacksFromString("314,315,316,317,267")); // gold
-			items.put(2,
+			getItemMap().put(2,
 					StringParser.getItemStacksFromString("306,307,308,309,276")); // iron
-			items.put(1,
+			getItemMap().put(1,
 					StringParser.getItemStacksFromString("310,311,312,313,276")); // diamond
 
 			saveItems();
@@ -457,9 +462,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	}
 
 	private void saveItems() {
-		for (int i : items.keySet()) {
+		for (int i : getItemMap().keySet()) {
 			arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i,
-					StringParser.getStringFromItemStacks(items.get(i)));
+					StringParser.getStringFromItemStacks(getItemMap().get(i)));
 		}
 		arena.getArenaConfig().save();
 	}

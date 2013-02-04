@@ -54,16 +54,14 @@ public class GoalDomination extends ArenaGoal {
 		debug = new Debug(99);
 	}
 
-	private final Map<Location, String> paFlags = new HashMap<Location, String>(); //TODO <<<
-	// lifeMap
-	private final Map<String, String> paTeamFlags = new HashMap<String, String>(); //TODO <<<
-	private final Map<Location, DominationRunnable> paRuns = new HashMap<Location, DominationRunnable>();
+	private Map<Location, String> flagMap = new HashMap<Location, String>();
+	private Map<Location, DominationRunnable> runnerMap = new HashMap<Location, DominationRunnable>();
 
 	private String flagName = "";
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private static final int PRIORITY = 8;
@@ -223,14 +221,14 @@ public class GoalDomination extends ArenaGoal {
 			if (teams.size() < 1) {
 				// debug.i("=> noone there!");
 				// no one there
-				if (paRuns.containsKey(loc)) {
+				if (getRunnerMap().containsKey(loc)) {
 					debug.i("flag is being (un)claimed! Cancelling!");
 					// cancel unclaiming/claiming if noone's near
-					Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
-					paRuns.remove(loc);
+					Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
+					getRunnerMap().remove(loc);
 				}
-				if (paFlags.containsKey(loc)) {
-					final String team = paFlags.get(loc);
+				if (getFlagMap().containsKey(loc)) {
+					final String team = getFlagMap().get(loc);
 
 					if (!getLifeMap().containsKey(team)) {
 						continue;
@@ -255,15 +253,15 @@ public class GoalDomination extends ArenaGoal {
 			// there are actually teams at the flag
 			debug.i("=> at least one team is at the flag!");
 
-			if (paFlags.containsKey(loc)) {
+			if (getFlagMap().containsKey(loc)) {
 				// flag is taken. by whom?
-				if (teams.contains(paFlags.get(loc))) {
+				if (teams.contains(getFlagMap().get(loc))) {
 					// owning team is there
 					debug.i("  - owning team is there");
 					if (teams.size() > 1) {
 						// another team is there
 						debug.i("    - and another one");
-						if (paRuns.containsKey(loc)) {
+						if (getRunnerMap().containsKey(loc)) {
 							// it is being unclaimed
 							debug.i("      - being unclaimed. continue!");
 						} else {
@@ -271,26 +269,26 @@ public class GoalDomination extends ArenaGoal {
 							debug.i("      - not being unclaimed. do it!");
 							final DominationRunnable domRunner = new DominationRunnable(
 									arena, false, loc,
-									paFlags.get(loc), this);
+									getFlagMap().get(loc), this);
 							domRunner.runID = Bukkit.getScheduler()
 									.scheduleSyncRepeatingTask(
 											PVPArena.instance, domRunner, 10 * 20L,
 											10 * 20L);
-							paRuns.put(loc, domRunner);
+							getRunnerMap().put(loc, domRunner);
 						}
 					} else {
 						// just the owning team is there
 						debug.i("    - noone else");
-						if (paRuns.containsKey(loc)) {
+						if (getRunnerMap().containsKey(loc)) {
 							debug.i("      - being unclaimed. cancel!");
 							// it is being unclaimed
 							// cancel task!
 							Bukkit.getScheduler()
-									.cancelTask(paRuns.get(loc).runID);
-							paRuns.remove(loc);
+									.cancelTask(getRunnerMap().get(loc).runID);
+							getRunnerMap().remove(loc);
 						} else {
 
-							final String team = paFlags.get(loc);
+							final String team = getFlagMap().get(loc);
 
 							if (!getLifeMap().containsKey(team)) {
 								continue;
@@ -313,12 +311,12 @@ public class GoalDomination extends ArenaGoal {
 				debug.i("  - owning team is not there!");
 				// owning team is NOT there ==> unclaim!
 
-				if (paRuns.containsKey(loc)) {
-					if (paRuns.get(loc).take) {
+				if (getRunnerMap().containsKey(loc)) {
+					if (getRunnerMap().get(loc).take) {
 						debug.i("    - runnable is trying to score, abort");
 
-						Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
-						paRuns.remove(loc);
+						Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
+						getRunnerMap().remove(loc);
 					} else {
 						debug.i("    - being unclaimed. continue.");
 					}
@@ -327,12 +325,12 @@ public class GoalDomination extends ArenaGoal {
 				debug.i("    - not yet being unclaimed, do it!");
 				// create an unclaim runnable
 				final DominationRunnable running = new DominationRunnable(arena,
-						false, loc, paFlags.get(loc), this);
+						false, loc, getFlagMap().get(loc), this);
 				final long interval = 20L * 10;
 
 				running.runID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 						PVPArena.instance, running, interval, interval);
-				paRuns.put(loc, running);
+				getRunnerMap().put(loc, running);
 			} else {
 				// flag not taken
 				debug.i("- flag not taken");
@@ -348,13 +346,13 @@ public class GoalDomination extends ArenaGoal {
 				 * 			yes => create runnable;
 				 * 			no => continue
 				 */
-				if (paRuns.containsKey(loc)) {
+				if (getRunnerMap().containsKey(loc)) {
 
 					debug.i("  - being claimed");
 
 					if (teams.size() < 2) {
 						debug.i("  - only one team present");
-						if (teams.contains(paRuns.get(loc).team)) {
+						if (teams.contains(getRunnerMap().get(loc).team)) {
 							// just THE team that is claiming => NEXT
 							debug.i("  - claiming team present. next!");
 							continue;
@@ -362,7 +360,7 @@ public class GoalDomination extends ArenaGoal {
 					}
 					debug.i("  - more than one team or another team. cancel claim!");
 					// more than THE team that is claiming => cancel!
-					Bukkit.getScheduler().cancelTask(paRuns.get(loc).runID);
+					Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
 				} else {
 					debug.i("  - not being claimed");
 					// not being claimed
@@ -383,7 +381,7 @@ public class GoalDomination extends ArenaGoal {
 									.scheduleSyncRepeatingTask(
 											PVPArena.instance, running,
 											interval, interval);
-							paRuns.put(loc, running);
+							getRunnerMap().put(loc, running);
 						}
 					} else {
 						debug.i("  - more than one team present. continue!");
@@ -525,6 +523,13 @@ public class GoalDomination extends ArenaGoal {
 		return false;
 	}
 
+	private Map<Location, String> getFlagMap() {
+		if (flagMap == null) {
+			flagMap = new HashMap<Location, String>();
+		}
+		return flagMap;
+	}
+	
 	@Override
 	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
 		if (!res.hasError() && res.getPriority() <= PRIORITY) {
@@ -535,6 +540,13 @@ public class GoalDomination extends ArenaGoal {
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
+	}
+
+	private Map<Location, DominationRunnable> getRunnerMap() {
+		if (runnerMap == null) {
+			runnerMap = new HashMap<Location, DominationRunnable>();
+		}
+		return runnerMap;
 	}
 
 	@Override
@@ -641,10 +653,9 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public void reset(final boolean force) {
-		paTeamFlags.clear();
 		getLifeMap().clear();
-		paRuns.clear();
-		paFlags.clear();
+		getRunnerMap().clear();
+		getFlagMap().clear();
 	}
 
 	@Override
@@ -753,23 +764,23 @@ public class GoalDomination extends ArenaGoal {
 			debug.i("team " + team + ", take: " + take);
 			if (take) {
 				// claim a flag for the team
-				if (domination.paFlags.containsKey(loc)) {
+				if (domination.getFlagMap().containsKey(loc)) {
 					// PVPArena.instance.getLogger().warning("wtf");
 				} else {
 					// flag unclaimed! claim!
 					debug.i("clag unclaimed. claim!");
-					domination.paFlags.put(loc, team);
+					domination.getFlagMap().put(loc, team);
 					// long interval = 20L * 5;
 
 					arena.broadcast(Language.parse(
 							MSG.GOAL_DOMINATION_CLAIMED, arena.getTeam(team)
 									.getColoredName() + ChatColor.YELLOW));
 					GoalDomination.takeFlag(arena, loc, team);
-					domination.paFlags.put(loc, team);
+					domination.getFlagMap().put(loc, team);
 
 					// claim done. end timer
 					Bukkit.getScheduler().cancelTask(runID);
-					domination.paRuns.remove(loc);
+					domination.getRunnerMap().remove(loc);
 				}
 			} else {
 				// unclaim
@@ -778,8 +789,8 @@ public class GoalDomination extends ArenaGoal {
 						team + ChatColor.YELLOW));
 				GoalDomination.takeFlag(arena, loc, "");
 				Bukkit.getScheduler().cancelTask(runID);
-				domination.paRuns.remove(loc);
-				domination.paFlags.remove(loc);
+				domination.getRunnerMap().remove(loc);
+				domination.getFlagMap().remove(loc);
 			}
 		}
 	}

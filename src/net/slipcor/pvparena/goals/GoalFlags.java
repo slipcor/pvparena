@@ -63,9 +63,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		debug = new Debug(100);
 	}
 
-	// lifeMap
-	private final Map<String, String> paTeamFlags = new HashMap<String, String>(); //TODO <<<
-	private final Map<String, ItemStack> paHeadGears = new HashMap<String, ItemStack>(); //TODO <<<
+	private Map<String, String> flagMap = null;
+	private Map<String, ItemStack> headGearMap = null;
+	
 	private static Set<Material> headFlags = new HashSet<Material>();
 
 	private String flagName = "";
@@ -79,7 +79,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private static final int PRIORITY = 6;
@@ -181,7 +181,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		Vector vFlag = null;
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-		if (paTeamFlags.containsValue(player.getName())) {
+		if (getFlagMap().containsValue(player.getName())) {
 			debug.i("player " + player.getName() + " has got a flag", player);
 			vLoc = block.getLocation().toVector();
 			sTeam = aPlayer.getArenaTeam().getName();
@@ -201,13 +201,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 				debug.i("player is at his flag", player);
 
-				if (paTeamFlags.containsKey(sTeam)
-						|| paTeamFlags.containsKey("touchdown")) {
+				if (getFlagMap().containsKey(sTeam)
+						|| getFlagMap().containsKey("touchdown")) {
 					debug.i("the flag of the own team is taken!", player);
 
 					if (arena.getArenaConfig().getBoolean(
 							CFG.GOAL_FLAGS_MUSTBESAFE)
-							&& !paTeamFlags.containsKey("touchdown")) {
+							&& !getFlagMap().containsKey("touchdown")) {
 						debug.i("cancelling", player);
 
 						arena.msg(player,
@@ -237,7 +237,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 										+ ChatColor.YELLOW, String
 										.valueOf(getLifeMap().get(flagTeam) - 1)));
 					}
-					paTeamFlags.remove(flagTeam);
+					getFlagMap().remove(flagTeam);
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
@@ -253,13 +253,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				removeEffects(player);
 				if (arena.getArenaConfig().getBoolean(
 						CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-					if (paHeadGears.get(player.getName()) == null) {
+					if (getHeadGearMap().get(player.getName()) == null) {
 						player.getInventory().setHelmet(
 								new ItemStack(Material.AIR, 1));
 					} else {
 						player.getInventory().setHelmet(
-								paHeadGears.get(player.getName()).clone());
-						paHeadGears.remove(player.getName());
+								getHeadGearMap().get(player.getName()).clone());
+						getHeadGearMap().remove(player.getName());
 					}
 				}
 
@@ -292,7 +292,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					debug.i("size!OUT! ", player);
 					continue; // dont check for inactive teams
 				}
-				if (paTeamFlags != null && paTeamFlags.containsKey(aTeam)) {
+				if (getFlagMap() != null && getFlagMap().containsKey(aTeam)) {
 					debug.i("taken!OUT! ", player);
 					continue; // already taken
 				}
@@ -326,7 +326,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 												+ ChatColor.YELLOW));
 					}
 					try {
-						paHeadGears.put(player.getName(), player.getInventory()
+						getHeadGearMap().put(player.getName(), player.getInventory()
 								.getHelmet().clone());
 					} catch (Exception e) {
 					}
@@ -341,7 +341,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 					takeFlag(team.getColor().name(), true,
 							new PALocation(block.getLocation()));
-					paTeamFlags.put(aTeam, player.getName()); // TODO move to
+					getFlagMap().put(aTeam, player.getName()); // TODO move to
 																// "commit" ?
 
 					return res;
@@ -668,7 +668,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void disconnect(final ArenaPlayer aPlayer) {
-		if (paTeamFlags == null) {
+		if (getFlagMap() == null) {
 			return;
 		}
 		final String sTeam = getHeldFlagTeam(aPlayer.getName());
@@ -683,13 +683,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						+ aPlayer.getName()
 						+ ChatColor.YELLOW));
 
-				paTeamFlags.remove("touchdown");
-				if (paHeadGears != null && paHeadGears.get(aPlayer.getName()) != null) {
+				getFlagMap().remove("touchdown");
+				if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
 					if (aPlayer.get() != null) {
 						aPlayer.get().getInventory()
-								.setHelmet(paHeadGears.get(aPlayer.getName()).clone());
+								.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
 					}
-					paHeadGears.remove(aPlayer.getName());
+					getHeadGearMap().remove(aPlayer.getName());
 				}
 
 				takeFlag(ChatColor.BLACK.name(), false,
@@ -701,18 +701,25 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					.getArenaTeam().getColorCodeString()
 					+ aPlayer.getName()
 					+ ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
-			paTeamFlags.remove(flagTeam.getName());
-			if (paHeadGears != null && paHeadGears.get(aPlayer.getName()) != null) {
+			getFlagMap().remove(flagTeam.getName());
+			if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
 				if (aPlayer.get() != null) {
 					aPlayer.get().getInventory()
-							.setHelmet(paHeadGears.get(aPlayer.getName()).clone());
+							.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
 				}
-				paHeadGears.remove(aPlayer.getName());
+				getHeadGearMap().remove(aPlayer.getName());
 			}
 
 			takeFlag(flagTeam.getColor().name(), false,
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
 		}
+	}
+	
+	private Map<String, String> getFlagMap() {
+		if (flagMap == null) {
+			flagMap = new HashMap<String, String>();
+		}
+		return flagMap;
 	}
 
 	private short getFlagOverrideTeamShort(final Arena arena, final String team) {
@@ -739,6 +746,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 		return res;
 	}
+	
+	private Map<String, ItemStack> getHeadGearMap() {
+		if (headGearMap == null) {
+			headGearMap = new HashMap<String, ItemStack>();
+		}
+		return headGearMap;
+	}
 
 	/**
 	 * get the team name of the flag a player holds
@@ -748,15 +762,15 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	 * @return a team name
 	 */
 	private String getHeldFlagTeam(final String player) {
-		if (paTeamFlags.size() < 1) {
+		if (getFlagMap().size() < 1) {
 			return null;
 		}
 
 		debug.i("getting held FLAG of player " + player, player);
-		for (String sTeam : paTeamFlags.keySet()) {
-			debug.i("team " + sTeam + " is in " + paTeamFlags.get(sTeam)
+		for (String sTeam : getFlagMap().keySet()) {
+			debug.i("team " + sTeam + " is in " + getFlagMap().get(sTeam)
 					+ "s hands", player);
-			if (player.equals(paTeamFlags.get(sTeam))) {
+			if (player.equals(getFlagMap().get(sTeam))) {
 				return sTeam;
 			}
 		}
@@ -833,7 +847,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	public void parsePlayerDeath(final Player player,
 			final EntityDamageEvent lastDamageCause) {
 
-		if (paTeamFlags == null) {
+		if (getFlagMap() == null) {
 			debug.i("no flags set!!", player);
 			return;
 		}
@@ -850,13 +864,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						+ aPlayer.getName()
 						+ ChatColor.YELLOW));
 
-				paTeamFlags.remove("touchdown");
-				if (paHeadGears != null && paHeadGears.get(aPlayer.getName()) != null) {
+				getFlagMap().remove("touchdown");
+				if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
 					if (aPlayer.get() != null) {
 						aPlayer.get().getInventory()
-								.setHelmet(paHeadGears.get(aPlayer.getName()).clone());
+								.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
 					}
-					paHeadGears.remove(aPlayer.getName());
+					getHeadGearMap().remove(aPlayer.getName());
 				}
 
 				takeFlag(ChatColor.BLACK.name(), false,
@@ -866,12 +880,12 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED, aPlayer
 					.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW,
 					flagTeam.getColoredName() + ChatColor.YELLOW));
-			paTeamFlags.remove(flagTeam.getName());
-			if (paHeadGears != null
-					&& paHeadGears.get(player.getName()) != null) {
+			getFlagMap().remove(flagTeam.getName());
+			if (getHeadGearMap() != null
+					&& getHeadGearMap().get(player.getName()) != null) {
 				player.getInventory().setHelmet(
-						paHeadGears.get(player.getName()).clone());
-				paHeadGears.remove(player.getName());
+						getHeadGearMap().get(player.getName()).clone());
+				getHeadGearMap().remove(player.getName());
 			}
 
 			takeFlag(flagTeam.getColor().name(), false,
@@ -959,8 +973,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void reset(final boolean force) {
-		paTeamFlags.clear();
-		paHeadGears.clear();
+		getFlagMap().clear();
+		getHeadGearMap().clear();
 		getLifeMap().clear();
 	}
 

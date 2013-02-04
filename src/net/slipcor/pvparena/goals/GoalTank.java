@@ -50,13 +50,13 @@ public class GoalTank extends ArenaGoal {
 		debug = new Debug(108);
 	}
 
-	private static Map<Arena, String> tanks = new HashMap<Arena, String>(); //TODO <<<
+	private static Map<Arena, String> tanks = new HashMap<Arena, String>();
 
 	private EndRunnable endRunner = null;
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private static final int PRIORITY = 8;

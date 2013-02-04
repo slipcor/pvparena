@@ -61,13 +61,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		debug = new Debug(100);
 	}
 
-	//lifeMap
-
 	private String blockTeamName = "";
 
 	@Override
 	public String version() {
-		return "v1.0.0.14";
+		return "v1.0.0.24";
 	}
 
 	private static final int PRIORITY = 8;

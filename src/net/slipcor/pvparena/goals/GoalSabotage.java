@@ -61,14 +61,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	private String flagName = "";
-	private final Map<String, String> paTeamFlags = new HashMap<String, String>(); //TODO <<<<
-	private final Map<ArenaTeam, TNTPrimed> tnts = new HashMap<ArenaTeam, TNTPrimed>(); // TODO <<<<
+	private Map<String, String> teamFlags = null;
+	private Map<ArenaTeam, TNTPrimed> teamTNTs = null;
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
-
+	
 	private static final int PRIORITY = 7;
 
 	@Override
@@ -362,14 +362,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public void disconnect(final ArenaPlayer aPlayer) {
-		if (paTeamFlags == null) {
-			return;
-		}
 
 		final String flag = this.getHeldFlagTeam(aPlayer.getName());
 		if (flag != null) {
 			final ArenaTeam flagTeam = arena.getTeam(flag);
-			paTeamFlags.remove(flag);
+			getFlagMap().remove(flag);
 			distributeFlag(aPlayer, flagTeam);
 		}
 	}
@@ -385,7 +382,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				continue;
 			}
 			if (--pos <= 1) {
-				paTeamFlags.put(team.getName(), ap.getName());
+				getFlagMap().put(team.getName(), ap.getName());
 				ap.get().getInventory()
 						.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
 				arena.msg(ap.get(), Language.parse(MSG.GOAL_SABOTAGE_YOUTNT));
@@ -395,19 +392,33 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	private String getHeldFlagTeam(final String player) {
-		if (paTeamFlags.size() < 1) {
+		if (getFlagMap().size() < 1) {
 			return null;
 		}
 
 		debug.i("getting held TNT of player " + player, player);
-		for (String sTeam : paTeamFlags.keySet()) {
+		for (String sTeam : getFlagMap().keySet()) {
 			debug.i("team " + sTeam + "'s sabotage is carried by "
-					+ paTeamFlags.get(sTeam) + "s hands", player);
-			if (player.equals(paTeamFlags.get(sTeam))) {
+					+ getFlagMap().get(sTeam) + "s hands", player);
+			if (player.equals(getFlagMap().get(sTeam))) {
 				return sTeam;
 			}
 		}
 		return null;
+	}
+	
+	private Map<String, String> getFlagMap() {
+		if (teamFlags == null) {
+			teamFlags = new HashMap<String, String>();
+		}
+		return teamFlags;
+	}
+	
+	private Map<ArenaTeam, TNTPrimed> getTNTmap() {
+		if (teamTNTs == null) {
+			teamTNTs = new HashMap<ArenaTeam, TNTPrimed>();
+		}
+		return teamTNTs;
 	}
 
 	@Override
@@ -465,7 +476,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		final ArenaTeam team = aPlayer.getArenaTeam();
 		takeFlag(team.getName(), false,
 				SpawnManager.getCoords(arena, team.getName() + "tnt"));
-		if (!paTeamFlags.containsKey(team.getName())) {
+		if (!getFlagMap().containsKey(team.getName())) {
 			debug.i("adding team " + team.getName(), player);
 			distributeFlag(null, team);
 		}
@@ -482,7 +493,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		final ArenaTeam team = arena.getTeam(teamName);
 		if (teamName != null && team != null) {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-			paTeamFlags.remove(teamName);
+			getFlagMap().remove(teamName);
 			distributeFlag(aPlayer, team);
 		}
 	}
@@ -490,11 +501,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	@Override
 	public void parseStart() {
 		debug.i("initiating arena");
-		paTeamFlags.clear();
+		getFlagMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			takeFlag(team.getName(), false,
 					SpawnManager.getCoords(arena, team.getName() + "tnt"));
-			if (!paTeamFlags.containsKey(team.getName())) {
+			if (!getFlagMap().containsKey(team.getName())) {
 				debug.i("adding team " + team.getName());
 				distributeFlag(null, team);
 			}
@@ -503,11 +514,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public void reset(final boolean force) {
-		paTeamFlags.clear();
-		for (TNTPrimed t : tnts.values()) {
+		getFlagMap().clear();
+		for (TNTPrimed t : getTNTmap().values()) {
 			t.remove();
 		}
-		tnts.clear();
+		getTNTmap().clear();
 	}
 
 	@Override
@@ -544,7 +555,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(
 					SpawnManager.getRegionCenter(arena).getWorldName())
 					.spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
-			tnts.put(arena.getTeam(teamName), tnt);
+			getTNTmap().put(arena.getTeam(teamName), tnt);
 		}
 	}
 
@@ -561,8 +572,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 		final TNTPrimed tnt = (TNTPrimed) event.getEntity();
 
-		for (ArenaTeam team : tnts.keySet()) {
-			if (tnt.getUniqueId().equals(tnts.get(team).getUniqueId())) {
+		for (ArenaTeam team : getTNTmap().keySet()) {
+			if (tnt.getUniqueId().equals(getTNTmap().get(team).getUniqueId())) {
 				event.setCancelled(true);
 				tnt.remove();
 				commit(arena, team.getName(), false);

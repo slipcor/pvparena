@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -49,11 +48,9 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	// lifeMap
-
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.0.24";
 	}
 
 	private static final int PRIORITY = 2;
