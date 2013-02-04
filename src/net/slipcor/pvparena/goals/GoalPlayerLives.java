@@ -49,7 +49,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	private EndRunnable endRunner = null;
 
-	public Map<String, Integer> lives = new HashMap<String, Integer>();
+	private Map<String, Integer> lives = new HashMap<String, Integer>();
 
 	@Override
 	public String version() {
@@ -160,6 +160,13 @@ public class GoalPlayerLives extends ArenaGoal {
 			res.setPriority(this, PRIORITY);
 		}
 		return res;
+	}
+	
+	@Override
+	public GoalPlayerLives clone() {
+		GoalPlayerLives gpl = this.clone();
+		gpl.lives = new HashMap<String, Integer>();
+		return gpl;
 	}
 
 	@Override
