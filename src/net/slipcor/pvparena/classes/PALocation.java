@@ -48,6 +48,41 @@ public class PALocation {
 		return new PALocation(world, x + this.x, y + this.y, z + this.z, pitch,
 				yaw);
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || getClass() != other.getClass()) {
+			return false;
+		}
+		
+		final PALocation location = (PALocation) other;
+		
+		if (this.world != location.world && (this.world == null || !this.world.equals(location.world))) {
+			return false;
+		}
+		
+		if (this.x != location.x) {
+			return false;
+		}
+		
+		if (this.y != location.y) {
+			return false;
+		}
+		
+		if (this.z != location.z) {
+			return false;
+		}
+		
+		if (this.pitch != location.pitch) {
+			return false;
+		}
+		
+		if (this.yaw != location.yaw) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	public int getBlockX() {
 		return (int) Math.floor(x);

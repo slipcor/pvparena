@@ -35,6 +35,33 @@ public class PABlockLocation {
 		this.y = bukkitLocation.getBlockY();
 		this.z = bukkitLocation.getBlockZ();
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null || getClass() != other.getClass()) {
+			return false;
+		}
+		
+		final PABlockLocation location = (PABlockLocation) other;
+		
+		if (this.world != location.world && (this.world == null || !this.world.equals(location.world))) {
+			return false;
+		}
+		
+		if (this.x != location.x) {
+			return false;
+		}
+		
+		if (this.y != location.y) {
+			return false;
+		}
+		
+		if (this.z != location.z) {
+			return false;
+		}
+		
+		return true;
+	}
 
 	public double getDistance(final PABlockLocation otherLocation) {
 		if (otherLocation == null) {
