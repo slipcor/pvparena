@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.0.28 - fix more issues with CB 1.7 and respawning 
 * v1.0.0.27 - override .equals() for PALocation and PABlockLocation
 * v1.0.0.26 - fix an NPE due to disconnecting when the arena checks if it is ready
 * v1.0.0.25 - fix WarmupJoin - anyone remember stupid messups? Now we know why.

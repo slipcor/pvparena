@@ -211,6 +211,7 @@ public class Update extends Thread {
 					final ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 					final FileOutputStream output = new FileOutputStream(destination);
 					output.getChannel().transferFrom(rbc, 0, 1 << 24);
+					output.close();
 					
 					debug.i("Downloaded jar file from DBO link!", player);
 				} catch (Exception e) {
@@ -258,7 +259,7 @@ public class Update extends Thread {
 				final FileOutputStream output = new FileOutputStream(lib);
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
 				PVPArena.instance.getLogger().info("Downloaded module update file");
-
+				output.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

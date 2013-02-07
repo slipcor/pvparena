@@ -616,7 +616,7 @@ public final class SpawnManager {
 				if (diffs.get(loc) == max) {
 					for (String s : locs.keySet()) {
 						if (locs.get(s).equals(loc)) {
-							arena.tpPlayerToCoordName(aPlayer.get(), s);
+							Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, s), 1L);
 							return;
 						}
 					}
@@ -627,7 +627,7 @@ public final class SpawnManager {
 			return;
 		}
 		
-		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer), 1L);
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, null), 1L);
 		aPlayer.setStatus(Status.FIGHT);
 	}
 
@@ -678,20 +678,33 @@ public final class SpawnManager {
 			
 		}
 		
-		final PALocation temp = aPlayer.getLocation();
+		final PABlockLocation newLoc = loc;
 		
-		Location bLoc = loc.toLocation();
-		
-		while (bLoc.getBlock().getType() != Material.AIR
-				&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR
-				&& bLoc.getBlock().getRelative(BlockFace.UP, 2).getType() != Material.AIR) {
-			bLoc = bLoc.add(0, 1, 0);
+		class RunLater implements Runnable {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				final PALocation temp = aPlayer.getLocation();
+				
+				Location bLoc = newLoc.toLocation();
+				
+				while (bLoc.getBlock().getType() != Material.AIR
+						&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR
+						&& bLoc.getBlock().getRelative(BlockFace.UP, 2).getType() != Material.AIR) {
+					bLoc = bLoc.add(0, 1, 0);
+				}
+	
+				aPlayer.setLocation(new PALocation(bLoc));
+				
+				aPlayer.setStatus(Status.FIGHT);
+				arena.tpPlayerToCoordName(aPlayer.get(), "old");
+				aPlayer.setLocation(temp);
+				
+			}
+			
 		}
 		
-		aPlayer.setLocation(new PALocation(bLoc));
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
 		
-		aPlayer.setStatus(Status.FIGHT);
-		arena.tpPlayerToCoordName(aPlayer.get(), "old");
-		aPlayer.setLocation(temp);
 	}
 }

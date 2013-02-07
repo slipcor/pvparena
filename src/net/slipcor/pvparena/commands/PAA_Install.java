@@ -198,6 +198,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 			fos.close();
 
 			PVPArena.instance.getLogger().info("Installed module " + file);
+			stream.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

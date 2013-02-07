@@ -818,13 +818,4 @@ public class GoalDomination extends ArenaGoal {
 			domination.checkMove();
 		}
 	}
-	
-	protected <V> V get(Map<PALocation, V> map, PALocation find) {
-		for (PALocation l : map.keySet()) {
-			if (l.getDistance(find) < 1) {
-				return map.get(l);
-			}
-		}
-		return null;
-	}
 }

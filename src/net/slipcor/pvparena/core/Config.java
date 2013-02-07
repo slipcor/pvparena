@@ -158,6 +158,18 @@ public class Config {
 		GOAL_TIME_END("goal.time.timedend", 0),
 		GOAL_TIME_WINNER("goal.time.winner", "none"),
 		
+
+		GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true),
+		GOAL_PILLARS_LIVES("goal.pillars.pillives", 10),
+		GOAL_PILLARS_PLACEABLE("goal.pillars.placeable", true),
+		GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true),
+		GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1),
+		GOAL_PILLARS_INTERVAL("goal.pillars.interval", 20),
+		
+		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5),
+		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
+		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),
+		
 		// -----------
 		
 		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
