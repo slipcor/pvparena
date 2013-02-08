@@ -165,7 +165,8 @@ public class Config {
 		GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true),
 		GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1),
 		GOAL_PILLARS_INTERVAL("goal.pillars.interval", 20),
-		
+
+		GOAL_PILLARS_MAXCLICKS("goal.pillars.maxclicks", 10),
 		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5),
 		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
 		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),

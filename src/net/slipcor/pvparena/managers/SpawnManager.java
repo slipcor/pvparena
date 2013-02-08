@@ -419,6 +419,10 @@ public final class SpawnManager {
 				if (!name.contains("block")) {
 					continue;
 				}
+			} else if (sTeam.equals("pillar")) {
+				if (!name.contains("pillar")) {
+					continue;
+				}
 			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
 				String sName = sTeam.replace("flag", "");
 				sName = sName.replace("pumpkin", "");
@@ -687,6 +691,7 @@ public final class SpawnManager {
 				final PALocation temp = aPlayer.getLocation();
 				
 				Location bLoc = newLoc.toLocation();
+				bLoc.add(0.5, 0.5, 0.5);
 				
 				while (bLoc.getBlock().getType() != Material.AIR
 						&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR

@@ -408,6 +408,15 @@ public final class Language {
 		
 		// -----------------------------------------------
 
+		GOAL_PILLARS_MSG_BLOCK_BROKEN("nulang.goal.pillars.msg.block_broken","[%1%] %2% broke a block!"),
+		GOAL_PILLARS_MSG_LOWER("nulang.goal.pillars.msg.lower","[%1%] %2% shortened the pillar!"),
+		GOAL_PILLARS_MSG_BLOCK_PLACED("nulang.goal.pillars.msg.block_placed","[%1%] %2% placed a block!"),
+		GOAL_PILLARS_MSG_HIGHER("nulang.goal.pillars.msg.higher","[%1%] %2% lengthened the pillar!"),
+		GOAL_PILLARS_MSG_CLAIMED("nulang.goal.pillars.msg.claimed","[%1%] %2% claimed the pillar!"),
+		GOAL_PILLARS_MSG_UNCLAIMED("nulang.goal.pillars.msg.unclaimed","[%1%] %2% unclaimed the pillar!"),
+		
+		// -----------------------------------------------
+
 		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),
 		MODULE_AFTERMATCH_STARTINGIN("nulang.mod.aftermatch.startingin", "AfterMatch in %1%!"),
 		MODULE_AFTERMATCH_SPAWNNOTSET("nulang.mod.aftermatch.spawnnotset", "Spawn 'after' not set!"),
