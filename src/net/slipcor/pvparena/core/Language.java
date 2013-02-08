@@ -415,6 +415,8 @@ public final class Language {
 		GOAL_PILLARS_MSG_CLAIMED("nulang.goal.pillars.msg.claimed","[%1%] %2% claimed the pillar!"),
 		GOAL_PILLARS_MSG_UNCLAIMED("nulang.goal.pillars.msg.unclaimed","[%1%] %2% unclaimed the pillar!"),
 		
+		GOAL_PILLARS_MSG_SCORE("nulang.goal.pillars.msg.score", "%1% scored %2% points"),
+		
 		// -----------------------------------------------
 
 		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),

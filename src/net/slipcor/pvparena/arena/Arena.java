@@ -1238,9 +1238,15 @@ public class Arena {
 		DEBUG.i("@" + team.getName() + ": " + msg, player);
 		synchronized(this) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
-				p.get().sendMessage(
-						color + "[" + team.getName() + "] " + player.getName() + ChatColor.WHITE
-								+ ": " + msg);
+				if (player == null) {
+					p.get().sendMessage(
+							color + "[" + team.getName() + "]"+ ChatColor.WHITE
+									+ ": " + msg);
+				} else {
+					p.get().sendMessage(
+							color + "[" + team.getName() + "] " + player.getName() + ChatColor.WHITE
+									+ ": " + msg);
+				}
 			}
 		}
 	}
