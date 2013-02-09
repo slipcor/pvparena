@@ -634,12 +634,16 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 								localLoc);
 					}
 				}
-				Bukkit.getScheduler().runTaskLater(
-						PVPArena.instance,
-						new RunLater(
-								arena.getTeam(blockTeam).getColor().name(),
-								new PALocation(event.getBlock().getLocation())), 5L);
 				
+				if (this.getLifeMap().containsKey(blockTeam)
+						&& getLifeMap().get(blockTeam) > SpawnManager.getSpawnMap(arena, blockTeam + "block").size()) {
+				
+					Bukkit.getScheduler().runTaskLater(
+							PVPArena.instance,
+							new RunLater(
+									arena.getTeam(blockTeam).getColor().name(),
+									new PALocation(event.getBlock().getLocation())), 5L);
+				}
 				reduceLivesCheckEndAndCommit(arena, blockTeam);
 
 				return;

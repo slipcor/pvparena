@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.32 - fix #209 - only replace BlockDestroy Block if more lives than blocks!
 * v1.0.1.31 - Pillars config setting fix
 * v1.0.0.30 - more pillar configuration!
 * v1.0.0.29 - PILLAR goal!
