@@ -220,6 +220,9 @@ public class Config {
 
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
+		MODULES_TURRETS_MAXDEGREES("modules.turrets.maxdegrees", 90.0),
+		MODULES_TURRETS_MININTERVAL("modules.turrets.mininterval", 0),
+
 		MODULES_VAULT_BETPOT("modules.vault.betpot", false),
 		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.34 - Turret module settings and spawn management!
 * v1.0.1.33 - fix #251 - rather than triggering the end, check for remaining teams
 * v1.0.1.32 - fix #209 - only replace BlockDestroy Block if more lives than blocks!
 * v1.0.1.31 - Pillars config setting fix

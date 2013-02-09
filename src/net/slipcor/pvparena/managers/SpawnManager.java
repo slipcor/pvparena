@@ -419,6 +419,10 @@ public final class SpawnManager {
 				if (!name.contains("block")) {
 					continue;
 				}
+			} else if (sTeam.equals("turrets")) {
+				if (!name.contains("turret")) {
+					continue;
+				}
 			} else if (sTeam.contains("block")) {
 				if (!name.startsWith(sTeam)) {
 					continue;

@@ -35,31 +35,38 @@ public class PABlockLocation {
 		this.y = bukkitLocation.getBlockY();
 		this.z = bukkitLocation.getBlockZ();
 	}
-	
+
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || getClass() != other.getClass()) {
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((world == null) ? 0 : world.hashCode());
+		result = prime * result + x;
+		result = prime * result + y;
+		result = prime * result + z;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		
-		final PABlockLocation location = (PABlockLocation) other;
-		
-		if (this.world != location.world && (this.world == null || !this.world.equals(location.world))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		
-		if (this.x != location.x) {
+		PABlockLocation other = (PABlockLocation) obj;
+		if (world == null) {
+			if (other.world != null)
+				return false;
+		} else if (!world.equals(other.world))
 			return false;
-		}
-		
-		if (this.y != location.y) {
+		if (x != other.x)
 			return false;
-		}
-		
-		if (this.z != location.z) {
+		if (y != other.y)
 			return false;
-		}
-		
+		if (z != other.z)
+			return false;
 		return true;
 	}
 
