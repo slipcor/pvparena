@@ -178,7 +178,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
-		debug.i("[BD] committing end: " + sTeam);
+		debug.i("[BD] checking end: " + sTeam);
 		debug.i("win: " + win);
 
 		String winteam = sTeam;
@@ -194,6 +194,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				ap.setTelePass(false);
 			}
 		}
+		
+		if (!win && getLifeMap().size() > 1) {
+			return; // if not a win trigger AND more than one team left. out!
+		}
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
