@@ -48,39 +48,48 @@ public class PALocation {
 		return new PALocation(world, x + this.x, y + this.y, z + this.z, pitch,
 				yaw);
 	}
-	
+
 	@Override
-	public boolean equals(Object other) {
-		if (other == null || getClass() != other.getClass()) {
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(pitch);
+		result = prime * result + ((world == null) ? 0 : world.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + Float.floatToIntBits(yaw);
+		temp = Double.doubleToLongBits(z);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		
-		final PALocation location = (PALocation) other;
-		
-		if (this.world != location.world && (this.world == null || !this.world.equals(location.world))) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
-		
-		if (this.x != location.x) {
+		PALocation other = (PALocation) obj;
+		if (Float.floatToIntBits(pitch) != Float.floatToIntBits(other.pitch))
 			return false;
-		}
-		
-		if (this.y != location.y) {
+		if (world == null) {
+			if (other.world != null)
+				return false;
+		} else if (!world.equals(other.world))
 			return false;
-		}
-		
-		if (this.z != location.z) {
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
 			return false;
-		}
-		
-		if (this.pitch != location.pitch) {
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
 			return false;
-		}
-		
-		if (this.yaw != location.yaw) {
+		if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw))
 			return false;
-		}
-		
+		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
+			return false;
 		return true;
 	}
 

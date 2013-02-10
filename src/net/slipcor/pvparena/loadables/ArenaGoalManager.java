@@ -219,7 +219,7 @@ public class ArenaGoalManager {
 
 		final Set<String> winners = new HashSet<String>();
 		
-		if (arena.isFreeForAll() && arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
+		if (arena.isFreeForAll()) {
 			winners.add("free");
 			DEBUG.i("adding FREE");
 		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
@@ -319,6 +319,7 @@ public class ArenaGoalManager {
 		
 		ArenaModuleManager.timedEnd(arena, winners);
 
+
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {
 				final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
@@ -350,12 +351,14 @@ public class ArenaGoalManager {
 				arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
 			}
 		} else {
+			boolean hasBroadcasted = false;
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
 					
-					ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, "Team " + team.getName()), "WINNER");
-					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, team.getColor()
+					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + team.getName()), "WINNER");
+					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
+					hasBroadcasted = true;
 				} else {
 					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 					for (ArenaPlayer p : team.getTeamMembers()) {
@@ -366,6 +369,10 @@ public class ArenaGoalManager {
 							continue;
 						}
 						p.addLosses();
+						if (!hasBroadcasted) {
+							arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, team.getColor()
+									+ "Team " + team.getName()));
+						}
 						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
 					}
 				}
