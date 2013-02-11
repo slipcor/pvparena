@@ -227,11 +227,18 @@ public class ArenaGoalManager {
 			// check all teams
 			double maxScore = 0;
 
+			boolean notEveryone = false;
+			
 			for (String team : arena.getTeamNames()) {
 				if (scores.containsKey(team)) {
 					final double teamScore = scores.get(team);
 
 					if (teamScore > maxScore) {
+						
+						if (!winners.isEmpty()) {
+							notEveryone = true;
+						}
+						
 						maxScore = teamScore;
 						winners.clear();
 						winners.add(team);
@@ -241,6 +248,10 @@ public class ArenaGoalManager {
 						DEBUG.i("add team "+team);
 					}
 				}
+			}
+			
+			if (!notEveryone) {
+				winners.clear(); // noone wins.
 			}
 		} else {
 			winners.add(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER));
@@ -277,6 +288,7 @@ public class ArenaGoalManager {
 					DEBUG.i("clearing and adddding + " + team.getName());
 				}
 			}
+			
 			if (!preciseWinners.isEmpty()) {
 				winners.clear();
 				winners.addAll(preciseWinners);
@@ -351,7 +363,7 @@ public class ArenaGoalManager {
 				ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW), "WINNER");
 				arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
 			}
-		} else {
+		} else if (!winners.isEmpty()){
 			boolean hasBroadcasted = false;
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
@@ -380,6 +392,9 @@ public class ArenaGoalManager {
 					}
 				}
 			}
+		} else {
+			ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW), "WINNER");
+			arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
 		}
 		
 		arena.reset(false); //TODO: try to establish round compatibility with new EndRunnable();
