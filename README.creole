@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.39 - attempt #3 to fix the timed end
 * v1.0.1.38 - attempt #2 to fix the timed end
 * v1.0.1.37 - properly reset ArenaPlayers on timed end
 * v1.0.1.36 - properly reset ArenaPlayers that still have a team

@@ -380,8 +380,8 @@ public class ArenaGoalManager {
 			}
 		}
 		
-		if (arena.endRunner == null) {
-			arena.endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+		if (arena.realEndRunner == null) {
+			new EndRunnable(arena, arena.getArenaConfig().getInt(
 					CFG.TIME_ENDCOUNTDOWN));
 		}
 	}
