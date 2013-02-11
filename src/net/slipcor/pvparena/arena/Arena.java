@@ -930,6 +930,10 @@ public class Arena {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				DEBUG.i("player: " + p.getName(), p.get());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
+					if (p.getArenaTeam() != null) {
+						p.getArenaTeam().remove(p);
+						DEBUG.i("> removed", p.get());
+					}
 					DEBUG.i("> skipped", p.get());
 					continue;
 				} else {
