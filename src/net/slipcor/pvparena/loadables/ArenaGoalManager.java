@@ -330,7 +330,7 @@ public class ArenaGoalManager {
 				
 				for (ArenaPlayer p : apSet) {
 					if (winners.isEmpty()) {
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
 					} else {
 						if (winners.contains(p.getName())) {
 							
@@ -341,7 +341,7 @@ public class ArenaGoalManager {
 								continue;
 							}
 							p.addLosses();
-							arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+							arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
 						}
 					}
 				}
@@ -373,7 +373,7 @@ public class ArenaGoalManager {
 							arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, team.getColor()
 									+ "Team " + team.getName()));
 						}
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
 					}
 				}
 			}
