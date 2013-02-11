@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
@@ -154,6 +157,12 @@ public final class Importer {
 	public static void commitImport(final String arenaName, final YamlConfiguration cfg) {
 
 		final Arena arena = new Arena(arenaName);
+		
+		if (!arena.isValid()) {
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ARENACONFIG, arenaName));
+			return;
+		}
+		
 		arena.getLegacyGoals(cfg.getString("general.type"));
 		ArenaManager.loadArena(arena.getName());
 

@@ -331,7 +331,7 @@ public class ArenaGoalManager {
 				
 				for (ArenaPlayer p : apSet) {
 					if (winners.isEmpty()) {
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
 					} else {
 						if (winners.contains(p.getName())) {
 							
@@ -342,7 +342,7 @@ public class ArenaGoalManager {
 								continue;
 							}
 							p.addLosses();
-							arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
+							arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
 						}
 					}
 				}
@@ -376,16 +376,13 @@ public class ArenaGoalManager {
 										+ "Team " + winTeam));
 							}
 						}
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
 					}
 				}
 			}
 		}
 		
-		if (arena.realEndRunner == null) {
-			new EndRunnable(arena, arena.getArenaConfig().getInt(
-					CFG.TIME_ENDCOUNTDOWN));
-		}
+		arena.reset(false); //TODO: try to establish round compatibility with new EndRunnable();
 	}
 
 	public void unload(final Arena arena, final Player player) {

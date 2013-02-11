@@ -49,8 +49,10 @@ public final class ConfigurationManager {
 	 * @param cfg
 	 *            the configuration
 	 */
-	public static void configParse(final Arena arena, final Config cfg) {
-		cfg.load();
+	public static boolean configParse(final Arena arena, final Config cfg) {
+		if (!cfg.load()) {
+			return false;
+		}
 		final YamlConfiguration config = cfg.getYamlConfiguration();
 
 		if (cfg.getString(CFG.GENERAL_TYPE, "null") == null
@@ -204,6 +206,7 @@ public final class ConfigurationManager {
 		cfg.reloadMaps();
 
 		arena.setPrefix(cfg.getString(CFG.GENERAL_PREFIX));
+		return true;
 	}
 
 	/**

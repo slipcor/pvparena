@@ -92,6 +92,7 @@ public class Arena {
 	private boolean fightInProgress = false;
 	private boolean locked = false;
 	private boolean free = false;
+	private boolean valid = false;
 	private int startCount = 0;
 	private int round = 0;
 
@@ -118,7 +119,7 @@ public class Arena {
 			}
 		}
 		cfg = new Config(file);
-		ConfigurationManager.configParse(this, cfg);
+		valid = ConfigurationManager.configParse(this, cfg);
 	}
 
 	public void addClass(final String className, final ItemStack[] items) {
@@ -603,6 +604,10 @@ public class Arena {
 		return locked;
 	}
 
+	public boolean isValid() {
+		return valid;
+	}
+
 	public void markPlayedPlayer(final String playerName) {
 		playedPlayers.add(playerName);
 	}
@@ -930,10 +935,11 @@ public class Arena {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				DEBUG.i("player: " + p.getName(), p.get());
 				if (p.getArena() == null || !p.getArena().equals(this)) {
+					/*
 					if (p.getArenaTeam() != null) {
 						p.getArenaTeam().remove(p);
 						DEBUG.i("> removed", p.get());
-					}
+					}*/
 					DEBUG.i("> skipped", p.get());
 					continue;
 				} else {

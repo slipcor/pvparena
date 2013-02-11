@@ -102,6 +102,7 @@ public final class Language {
 		ERROR_ARENA_ALREADY_PART_OF("nulang.error.arena.alreadyplaying", "You are already part of &a%1%&r"),
 		ERROR_ARENA_EXISTS("nulang.error.arenaexists", "Arena already exists!"),
 		ERROR_ARENA_NOTFOUND("nulang.error.arenanotexists", "Arena does not exist: %1%"),
+		ERROR_ARENACONFIG("nulang.error.arenaconfig", "Error when loading arena config: %1%"),
 		ERROR_ARGUMENT_TYPE("nulang.error.argumenttype", "&cInvalid argument type:&r &e%1%&r is no proper &a%2%&r"),
 		ERROR_ARGUMENT("nulang.error.argument", "&cArgument not recognized:&r %1% - possible arguments: &a%2%&r"),
 		ERROR_AUTOSETUP_RUNNING("nulang.error.autosetup.running", "There is already an autosetup running! Player: %1%"),

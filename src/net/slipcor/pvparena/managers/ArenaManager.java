@@ -25,6 +25,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -312,6 +313,12 @@ public final class ArenaManager {
 	public static Arena loadArena(final String configFile) {
 		DEBUG.i("loading arena " + configFile);
 		final Arena arena = new Arena(configFile);
+		
+		if (!arena.isValid()) {
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ARENACONFIG, configFile));
+			return null;
+		}
+		
 		ARENAS.put(arena.getName().toLowerCase(), arena);
 		return arena;
 	}
