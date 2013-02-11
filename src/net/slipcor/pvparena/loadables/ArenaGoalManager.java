@@ -371,8 +371,10 @@ public class ArenaGoalManager {
 						}
 						p.addLosses();
 						if (!hasBroadcasted) {
-							arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, team.getColor()
-									+ "Team " + team.getName()));
+							for (String winTeam : winners) {
+								arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, arena.getTeam(winTeam).getColor()
+										+ "Team " + winTeam));
+							}
 						}
 						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
 					}
