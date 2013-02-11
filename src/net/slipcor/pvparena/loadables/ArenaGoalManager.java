@@ -32,6 +32,7 @@ import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.goals.GoalTime;
 import net.slipcor.pvparena.ncloader.NCBLoader;
+import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
  * <pre>Arena Goal Manager class</pre>
@@ -379,7 +380,10 @@ public class ArenaGoalManager {
 			}
 		}
 		
-		arena.reset(false);
+		if (arena.endRunner == null) {
+			arena.endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+					CFG.TIME_ENDCOUNTDOWN));
+		}
 	}
 
 	public void unload(final Arena arena, final Player player) {
