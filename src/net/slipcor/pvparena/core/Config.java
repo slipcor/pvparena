@@ -151,6 +151,10 @@ public class Config {
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
 		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
 		GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none"),
+
+		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1),
+		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1),
+		
 		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
 		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
 		GOAL_TANK_LIVES("goal.tank.tlives", 1),

@@ -393,6 +393,11 @@ public final class Language {
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
 		GOAL_FLAGS_TYPESET("lang.typeset", "Flag type set to: &e%1%"),
 
+		GOAL_INFECTED_LOST("nulang.goal.infected.lost", "&6The infected players have been killed!"),
+		GOAL_INFECTED_PLAYER("nulang.goal.infected.player", "&c%1% is infected!"),
+		GOAL_INFECTED_YOU("nulang.goal.infected.you", "&cYou are infected!"),
+		GOAL_INFECTED_WON("nulang.goal.infected.won", "&6The infected players have won the game!"),
+		
 		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&f->&a%2%"),
 		GOAL_KILLREWARD_REMOVED("nulang.goal.killreward.removed", "Kill reward removed: &e%1%"),
 		

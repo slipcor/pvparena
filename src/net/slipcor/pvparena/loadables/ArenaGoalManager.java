@@ -7,14 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -22,6 +19,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.GoalBlockDestroy;
 import net.slipcor.pvparena.goals.GoalDomination;
 import net.slipcor.pvparena.goals.GoalFlags;
+import net.slipcor.pvparena.goals.GoalInfect;
 import net.slipcor.pvparena.goals.GoalPhysicalFlags;
 import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
 import net.slipcor.pvparena.goals.GoalPlayerKillReward;
@@ -32,7 +30,9 @@ import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
 import net.slipcor.pvparena.goals.GoalTeamLives;
 import net.slipcor.pvparena.goals.GoalTime;
 import net.slipcor.pvparena.ncloader.NCBLoader;
-import net.slipcor.pvparena.runnables.EndRunnable;
+
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 /**
  * <pre>Arena Goal Manager class</pre>
@@ -69,6 +69,7 @@ public class ArenaGoalManager {
 		types.add(new GoalBlockDestroy());
 		types.add(new GoalDomination());
 		types.add(new GoalFlags());
+		types.add(new GoalInfect());
 		types.add(new GoalPhysicalFlags());
 		types.add(new GoalPlayerDeathMatch());
 		types.add(new GoalPlayerKillReward());
