@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -264,12 +265,29 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public boolean hasSpawn(final String string) {
 		if (arena.isFreeForAll()) {
+
+			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+				for (ArenaClass aClass : arena.getClasses()) {
+					if (string.toLowerCase().startsWith(
+							aClass.getName() + "spawn")) {
+						return true;
+					}
+				}
+			}
 			return (string.toLowerCase().startsWith("spawn"));
 		}
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().startsWith(
 					teamName.toLowerCase() + "spawn")) {
 				return true;
+			}
+			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+				for (ArenaClass aClass : arena.getClasses()) {
+					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
+							aClass.getName() + "spawn")) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;

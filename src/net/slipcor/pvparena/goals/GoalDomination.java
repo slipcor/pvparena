@@ -16,6 +16,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -585,6 +586,15 @@ public class GoalDomination extends ArenaGoal {
 			if (string.toLowerCase().startsWith(
 					teamName.toLowerCase() + "spawn")) {
 				return true;
+			}
+
+			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+				for (ArenaClass aClass : arena.getClasses()) {
+					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
+							aClass.getName() + "spawn")) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;

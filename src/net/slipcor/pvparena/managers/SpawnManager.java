@@ -87,7 +87,11 @@ public final class SpawnManager {
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+				if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+					arena.tpPlayerToCoordName(ap.get(), team.getName() + ap.getArenaClass().getName() + "spawn");
+				} else {
+					arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+				}
 				ap.setStatus(Status.FIGHT);
 			}
 			return;
@@ -119,7 +123,12 @@ public final class SpawnManager {
 		
 		if (!arena.isFreeForAll() || arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
 			for (ArenaPlayer ap : teamMembers) {
-				arena.tpPlayerToCoordName(ap.get(), teamPrefix + "spawn");
+
+				if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+					arena.tpPlayerToCoordName(ap.get(), teamPrefix + ap.getArenaClass().getName() + "spawn");
+				} else {
+					arena.tpPlayerToCoordName(ap.get(), teamPrefix + "spawn");
+				}
 				ap.setStatus(Status.FIGHT);
 			}
 			return;

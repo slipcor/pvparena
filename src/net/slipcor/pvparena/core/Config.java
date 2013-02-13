@@ -60,6 +60,7 @@ public class Config {
 		DAMAGE_SPAWNCAMP("damage.spawncamp", 1),
 		DAMAGE_WEAPONS("damage.weapons", true),
 
+		GENERAL_CLASSSPAWN("general.classspawn", false),
 		GENERAL_ENABLED("general.enabled", true),
 		GENERAL_GAMEMODE("general.gm", 0),
 		GENERAL_LEAVEDEATH("general.leavedeath", false),

@@ -253,6 +253,17 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public boolean hasSpawn(final String string) {
+		
+
+		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+			for (ArenaClass aClass : arena.getClasses()) {
+				if (string.toLowerCase().startsWith( 
+						aClass.getName() + "spawn")) {
+					return true;
+				}
+			}
+		}
+		
 		return (arena.isFreeForAll() && string.toLowerCase()
 				.startsWith("spawn")) || string.equals("tank");
 	}

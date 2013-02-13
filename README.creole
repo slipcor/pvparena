@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.43 - add class spawns!
 * v1.0.1.42 - properly add a draw for team games
 * v1.0.1.41 - revert former "fixes" + stop resetting configs!
 * v1.0.1.40 - finally fix the timed end bug!
