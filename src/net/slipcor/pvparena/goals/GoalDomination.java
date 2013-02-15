@@ -62,7 +62,7 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
 	private static final int PRIORITY = 8;
@@ -104,6 +104,11 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
+
+		String team = checkForMissingTeamSpawn(list);
+		if (team != null) {
+			return team;
+		}
 		int count = 0;
 		for (String s : list) {
 			if (s.startsWith("flag")) {

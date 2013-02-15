@@ -80,7 +80,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
 	private static final int PRIORITY = 6;
@@ -131,22 +131,12 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (!list.contains(sTeam + "flag")) {
-				boolean found = false;
-				for (String s : list) {
-					if (s.startsWith(sTeam) && s.endsWith("flag")) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return team.getName() + "flag not set";
-				}
-			}
+		String team = checkForMissingTeamSpawn(list);
+		if (team != null) {
+			return team;
 		}
-		return null;
+		
+		return checkForMissingTeamCustom(list, "flag");
 	}
 
 	/**

@@ -48,7 +48,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
 	private final static int PRIORITY = 5;
@@ -77,22 +77,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (!list.contains(team + "spawn")) {
-				boolean found = false;
-				for (String s : list) {
-					if (s.startsWith(sTeam) && s.endsWith("spawn")) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return team.getName() + "spawn not set";
-				}
-			}
-		}
-		return null;
+		return this.checkForMissingTeamSpawn(list);
 	}
 
 	@Override

@@ -400,6 +400,10 @@ public final class Language {
 		
 		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&f->&a%2%"),
 		GOAL_KILLREWARD_REMOVED("nulang.goal.killreward.removed", "Kill reward removed: &e%1%"),
+
+		GOAL_LIBERATION_LIBERATED("nulang.goal.liberation.liberated", "Team %1% has been liberated!"),
+		GOAL_LIBERATION_SET("nulang.goal.liberation.setbutton", "Button set: %1%"),
+		GOAL_LIBERATION_TOSET("nulang.goal.liberation.tosetbutton", "Button to set: %1%"),
 		
 		GOAL_PHYSICALFLAGS_HOLDFLAG("nulang.goal.physicalflags.holdflag", "You have to hold the flag to bring it back!"),
 		

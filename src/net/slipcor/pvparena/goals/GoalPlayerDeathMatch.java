@@ -49,7 +49,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
 	private static final int PRIORITY = 3;
@@ -82,13 +82,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		if (!arena.isFreeForAll()) {
 			return null; // teams are handled somewhere else
 		}
-		int count = 0;
-		for (String s : list) {
-			if (s.startsWith("spawn")) {
-				count++;
-			}
-		}
-		return count > 3 ? null : "need more spawns! (" + count + "/4)";
+		
+		return checkForMissingSpawn(list);
 	}
 
 	@Override

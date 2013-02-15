@@ -4,18 +4,28 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -25,36 +35,56 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
+import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
+import net.slipcor.pvparena.runnables.RespawnRunnable;
 
 /**
  * <pre>
- * Arena Goal class "PlayerLives"
+ * Arena Goal class "Liberation"
  * </pre>
  * 
- * The first Arena Goal. Players have lives. When every life is lost, the player
- * is teleported to the spectator spawn to watch the rest of the fight.
+ * Players have lives. When every life is lost, the player is teleported
+ * to the killer's team's jail. Once every player of a team is jailed, the
+ * team is out.
  * 
  * @author slipcor
  * 
  * @version v0.10.2
  */
 
-public class GoalPlayerLives extends ArenaGoal {
-	public GoalPlayerLives() {
-		super("PlayerLives");
+public class GoalLiberation extends ArenaGoal  {
+	public GoalLiberation() {
+		super("Liberation");
 		debug = new Debug(102);
 	}
 
 	private EndRunnable endRunner = null;
+	private String flagName = "";
 
 	@Override
 	public String version() {
 		return "v1.0.1.44";
 	}
 
-	private static final int PRIORITY = 2;
+	private static final int PRIORITY = 10;
+
+	public PACheck checkCommand(final PACheck res, final String string) {
+		if (res.getPriority() > PRIORITY) {
+			return res;
+		}
+
+		for (ArenaTeam team : arena.getTeams()) {
+			final String sTeam = team.getName();
+			if (string.contains(sTeam + "button")) {
+				res.setPriority(this, PRIORITY);
+			}
+		}
+
+		return res;
+	}
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
@@ -75,16 +105,7 @@ public class GoalPlayerLives extends ArenaGoal {
 			return res;
 		}
 
-		final int count = getLifeMap().size();
-
-		debug.i("lives: " + StringParser.joinSet(getLifeMap().keySet(), "|"));
-
-		if (count <= 1) {
-			res.setPriority(this, PRIORITY); // yep. only one player left. go!
-		}
-		if (count == 0) {
-			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
-		}
+		PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
 
 		return res;
 	}
@@ -92,9 +113,99 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
 		if (!arena.isFreeForAll()) {
-			return this.checkForMissingTeamSpawn(list);
+			String team = checkForMissingTeamSpawn(list);
+			if (team != null) {
+				return team;
+			}
+			
+			return checkForMissingTeamCustom(list,"jail");
 		}
-		return this.checkForMissingSpawn(list);
+		PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
+		return null;
+	}
+
+	/**
+	 * hook into an interacting player
+	 * 
+	 * @param res
+	 * 
+	 * @param player
+	 *            the interacting player
+	 * @param clickedBlock
+	 *            the block being clicked
+	 * @return
+	 */
+	@Override
+	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
+		if (block == null || res.getPriority() > PRIORITY) {
+			return res;
+		}
+		debug.i("checking interact", player);
+
+		if (block.getType() != Material.STONE_BUTTON) {
+			debug.i("block, but not button", player);
+			return res;
+		}
+		debug.i("button click!", player);
+
+		Vector vLoc;
+		String sTeam;
+		Vector vFlag = null;
+		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+		final ArenaTeam pTeam = aPlayer.getArenaTeam();
+		if (pTeam == null) {
+			return res;
+		}
+		final Set<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
+
+		for (ArenaTeam team : arena.getTeams()) {
+			setTeam.add(team);
+		}
+		
+		for (ArenaTeam team : setTeam) {
+			final String aTeam = team.getName();
+
+			if (aTeam.equals(pTeam.getName())) {
+				debug.i("equals!OUT! ", player);
+				continue;
+			}
+			if (team.getTeamMembers().size() < 1) {
+				debug.i("size!OUT! ", player);
+				continue; // dont check for inactive teams
+			}
+			debug.i("checking for flag of team " + aTeam, player);
+			vLoc = block.getLocation().toVector();
+			debug.i("block: " + vLoc.toString(), player);
+			if (SpawnManager.getBlocks(arena, aTeam + "button").size() > 0) {
+				vFlag = SpawnManager
+						.getBlockNearest(
+								SpawnManager.getBlocks(arena, aTeam
+										+ "button"),
+								new PABlockLocation(player.getLocation()))
+						.toLocation().toVector();
+			}
+			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
+				debug.i("button found!", player);
+				debug.i("vFlag: " + vFlag.toString(), player);
+
+
+				arena.broadcast(Language
+						.parse(MSG.GOAL_LIBERATION_LIBERATED,
+								pTeam.getColoredName()
+										+ ChatColor.YELLOW));
+				
+				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
+					if (jailedPlayer.getStatus() == Status.DEAD) {
+						SpawnManager.respawn(arena, jailedPlayer);
+					}
+				}
+
+				return res;
+			}
+		}
+
+		return res;
 	}
 
 	@Override
@@ -131,11 +242,39 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
+	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
+
+		if (res.getPriority() > PRIORITY
+				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
+			return res;
+		}
+		res.setPriority(this, PRIORITY); // success :)
+
+		return res;
+	}
+
+	@Override
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
 		}
 		return res;
+	}
+
+	@Override
+	public void commitCommand(final CommandSender sender, final String[] args) {
+		if (args[0].contains("button")) {
+			for (ArenaTeam team : arena.getTeams()) {
+				final String sTeam = team.getName();
+				if (args[0].contains(sTeam + "button")) {
+					flagName = args[0];
+					PAA_Region.activeSelections.put(sender.getName(), arena);
+
+					arena.msg(sender,
+							Language.parse(MSG.GOAL_LIBERATION_TOSET, flagName));
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -182,19 +321,61 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
 			final String error, final PlayerDeathEvent event) {
+		
 		if (!getLifeMap().containsKey(player.getName())) {
 			return;
 		}
 		int pos = getLifeMap().get(player.getName());
 		debug.i("lives before death: " + pos, player);
 		if (pos <= 1) {
-			getLifeMap().remove(player.getName());
-			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				debug.i("faking player death", player);
-				PlayerListener.finallyKillPlayer(arena, player, event);
+			getLifeMap().put(player.getName(),1);
+			
+			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+			
+			aPlayer.setStatus(Status.DEAD);
+			
+			ArenaTeam team = aPlayer.getArenaTeam();
+			
+			boolean someoneAlive = false;
+			
+			for (ArenaPlayer temp : team.getTeamMembers()) {
+				if (temp.getStatus() == Status.FIGHT) {
+					someoneAlive = true;
+					break;
+				}
 			}
-			// player died => commit death!
-			PACheck.handleEnd(arena, false);
+			
+			if (!someoneAlive) {
+				PACheck.handleEnd(arena, false);
+			} else {
+
+				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+						.getArenaTeam();
+				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+					arena.broadcast(Language.parse(
+							MSG.FIGHT_KILLED_BY,
+							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+							arena.parseDeathCause(player, event.getEntity()
+									.getLastDamageCause().getCause(),
+									player.getKiller()), String.valueOf(pos)));
+				}
+				
+				if (arena.isCustomClassAlive()
+						|| arena.getArenaConfig().getBoolean(
+								CFG.PLAYER_DROPSINVENTORY)) {
+					InventoryManager.drop(player);
+					event.getDrops().clear();
+				}
+				new InventoryRefillRunnable(arena, aPlayer.get(), event.getDrops());
+				
+				String teamName = null;
+				
+				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, teamName+"jail"), 1L);
+				
+				arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause()==null?null:aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
+				
+			}
+			
 		} else {
 			pos--;
 			getLifeMap().put(player.getName(), pos);
@@ -224,9 +405,37 @@ public class GoalPlayerLives extends ArenaGoal {
 	}
 
 	@Override
+	public boolean commitSetFlag(final Player player, final Block block) {
+		if (block == null
+				|| block.getType() != Material.STONE_BUTTON) {
+			return false;
+		}
+
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
+			return false;
+		}
+
+		debug.i("trying to set a button", player);
+
+		// command : /pa redbutton1
+		// location: redbutton1:
+
+		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
+				flagName);
+
+		arena.msg(player, Language.parse(MSG.GOAL_LIBERATION_SET, flagName));
+
+		PAA_Region.activeSelections.remove(player.getName());
+		flagName = "";
+
+		return false;
+	}
+
+	@Override
 	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+				+ arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
 	}
 
 	@Override
@@ -243,16 +452,8 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public boolean hasSpawn(final String string) {
 		if (arena.isFreeForAll()) {
-
-			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(
-							aClass.getName() + "spawn")) {
-						return true;
-					}
-				}
-			}
-			return (string.toLowerCase().startsWith("spawn"));
+			PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode! /pa " + arena.getName() + " !gm team");
+			return false;
 		}
 		for (String teamName : arena.getTeamNames()) {
 			if (string.toLowerCase().startsWith(
@@ -267,6 +468,10 @@ public class GoalPlayerLives extends ArenaGoal {
 					}
 				}
 			}
+			if (string.toLowerCase().startsWith(
+					teamName.toLowerCase() + "jail")) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -274,7 +479,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public void initate(final Player player) {
 		getLifeMap().put(player.getName(),
-				arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+				arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
 	}
 
 	@Override
@@ -299,7 +504,7 @@ public class GoalPlayerLives extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				this.getLifeMap().put(ap.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+						arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
 			}
 		}
 	}
@@ -323,12 +528,6 @@ public class GoalPlayerLives extends ArenaGoal {
 			debug.i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
-		}
-		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
-				&& (config.get("flagColors") == null)) {
-			debug.i("no flagheads defined, adding white and black!");
-			config.addDefault("flagColors.red", "WHITE");
-			config.addDefault("flagColors.blue", "BLACK");
 		}
 	}
 

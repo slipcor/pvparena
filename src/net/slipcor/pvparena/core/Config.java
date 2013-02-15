@@ -155,6 +155,7 @@ public class Config {
 		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1),
 		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1),
 		
+		GOAL_LLIVES_LIVES("goal.liberation.llives", 3),
 		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
 		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
 		GOAL_TANK_LIVES("goal.tank.tlives", 1),

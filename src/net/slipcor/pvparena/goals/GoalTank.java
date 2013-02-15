@@ -56,7 +56,7 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
 	private static final int PRIORITY = 8;
@@ -91,13 +91,7 @@ public class GoalTank extends ArenaGoal {
 			return "tank";
 		}
 
-		int count = 0;
-		for (String s : list) {
-			if (s.startsWith("spawn")) {
-				count++;
-			}
-		}
-		return count > 3 ? null : "need more spawns! (" + count + "/4)";
+		return this.checkForMissingSpawn(list);
 	}
 
 	@Override

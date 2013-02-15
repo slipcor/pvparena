@@ -13,6 +13,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -65,6 +66,66 @@ public class ArenaGoal extends NCBLoadable {
 	 * @return null if ready, error message otherwise
 	 */
 	public String checkForMissingSpawns(final Set<String> list) {
+		return null;
+	}
+	
+	/**
+	 * check if necessary FFA spawns are set
+	 * @return
+	 */
+	protected String checkForMissingSpawn(final Set<String> list) {
+		int count = 0;
+		for (String s : list) {
+			if (s.startsWith("spawn")) {
+				count++;
+			}
+		}
+		return count > 3 ? null : "need more spawns! (" + count + "/4)";
+	}
+	
+	/**
+	 * check if necessary team spawns are set
+	 * @return
+	 */
+	protected String checkForMissingTeamSpawn(final Set<String> list) {
+		for (ArenaTeam team : arena.getTeams()) {
+			final String sTeam = team.getName();
+			if (!list.contains(team + "spawn")) {
+				boolean found = false;
+				for (String s : list) {
+					if (s.startsWith(sTeam+"spawn")) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return team.getName() + "spawn not set";
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * check if necessary team spawns are set
+	 * @return
+	 */
+	protected String checkForMissingTeamCustom(final Set<String> list, String custom) {
+		for (ArenaTeam team : arena.getTeams()) {
+			final String sTeam = team.getName();
+			if (!list.contains(sTeam + custom)) {
+				boolean found = false;
+				for (String s : list) {
+					if (s.startsWith(sTeam + custom)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return sTeam + custom + "not set";
+				}
+			}
+		}
 		return null;
 	}
 

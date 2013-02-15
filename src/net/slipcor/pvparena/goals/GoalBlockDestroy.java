@@ -66,10 +66,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 
-	private static final int PRIORITY = 8;
+	private static final int PRIORITY = 9;
 
 	@Override
 	public boolean allowsJoinInBattle() {
@@ -115,22 +115,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (!list.contains(sTeam + "block")) {
-				boolean found = false;
-				for (String s : list) {
-					if (s.startsWith(sTeam) && s.endsWith("block")) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return team.getName() + "block not set";
-				}
-			}
+		String team = checkForMissingTeamSpawn(list);
+		if (team != null) {
+			return team;
 		}
-		return null;
+		return this.checkForMissingTeamCustom(list, "block");
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import net.slipcor.pvparena.goals.GoalBlockDestroy;
 import net.slipcor.pvparena.goals.GoalDomination;
 import net.slipcor.pvparena.goals.GoalFlags;
 import net.slipcor.pvparena.goals.GoalInfect;
+import net.slipcor.pvparena.goals.GoalLiberation;
 import net.slipcor.pvparena.goals.GoalPhysicalFlags;
 import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
 import net.slipcor.pvparena.goals.GoalPlayerKillReward;
@@ -70,6 +71,7 @@ public class ArenaGoalManager {
 		types.add(new GoalDomination());
 		types.add(new GoalFlags());
 		types.add(new GoalInfect());
+		types.add(new GoalLiberation());
 		types.add(new GoalPhysicalFlags());
 		types.add(new GoalPlayerDeathMatch());
 		types.add(new GoalPlayerKillReward());

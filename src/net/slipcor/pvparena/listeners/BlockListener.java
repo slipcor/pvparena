@@ -2,6 +2,8 @@ package net.slipcor.pvparena.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
@@ -14,6 +16,7 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -384,7 +387,18 @@ public class BlockListener implements Listener {
 		
 		if (event.getBlock().getType().equals(Material.TNT) && arena.getArenaConfig().getBoolean(CFG.PLAYER_AUTOIGNITE)) {
 			event.setCancelled(true);
-			event.getPlayer().getInventory().remove(new ItemStack(Material.TNT, 1));
+			
+			class RunLater implements Runnable {
+
+				@Override
+				public void run() {
+					event.getPlayer().getInventory().remove(new ItemStack(Material.TNT, 1));
+				}
+				
+			}
+			
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+			
 			event.getBlock().getLocation().getWorld().spawnEntity(
 					event.getBlock().getRelative(BlockFace.UP).getLocation(), EntityType.PRIMED_TNT);
 			return;

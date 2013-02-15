@@ -67,7 +67,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.0.24";
+		return "v1.0.1.44";
 	}
 	
 	private static final int PRIORITY = 7;
@@ -94,22 +94,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (!list.contains(sTeam + "tnt")) {
-				boolean found = false;
-				for (String s : list) {
-					if (s.startsWith(sTeam) && s.endsWith("tnt")) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					return team.getName() + "tnt not set";
-				}
-			}
+		String team = this.checkForMissingTeamSpawn(list);
+		if (team != null) {
+			return team;
 		}
-		return null;
+		return this.checkForMissingTeamCustom(list,"tnt");
 	}
 
 	/**

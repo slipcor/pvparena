@@ -272,6 +272,18 @@ public final class SpawnManager {
 						continue;
 					}
 				}
+			} else if (sTeam.endsWith("button")) {
+				if (!name.contains("button")) {
+					continue;
+				}
+				if (!name.equals("button")) {
+				
+					final String sName = sTeam.replace("button", "");
+					DEBUG.i("checking if " + name + " starts with " + sName);
+					if (!name.startsWith(sName)) {
+						continue;
+					}
+				}
 			} else if (sTeam.endsWith("flag")) {
 				if (name.contains("tnt") || name.contains("block") || name.contains("lounge") || name.contains("spawn")) {
 					continue;
