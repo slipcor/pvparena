@@ -545,7 +545,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	public void onBlockBreak(final BlockBreakEvent event) {
 		final Player player = event.getPlayer();
 		if (!arena.hasPlayer(event.getPlayer())

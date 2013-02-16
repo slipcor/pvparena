@@ -627,7 +627,8 @@ public class Arena {
 			return;
 		}
 		DEBUG.i("@" + sender.getName() + ": " + msg);
-		sender.sendMessage(ChatColor.YELLOW + "[" + prefix + "] "
+		sender.sendMessage(ChatColor.YELLOW + "[" +
+				ChatColor.translateAlternateColorCodes('&',prefix) + "] "
 				+ ChatColor.WHITE + msg);
 	}
 
@@ -722,7 +723,8 @@ public class Arena {
 			return;
 		}
 		DEBUG.i("@" + sender.getName() + ": " + msg, sender);
-		sender.sendMessage(ChatColor.YELLOW + "[" + globalprefix + "] "
+		sender.sendMessage(ChatColor.YELLOW + "[" +
+				ChatColor.translateAlternateColorCodes('&',globalprefix) + "] "
 				+ ChatColor.WHITE + msg);
 	}
 

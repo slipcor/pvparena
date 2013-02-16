@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.50 - allow colored prefixes, fix BlockDestroy destruction detection
 * v1.0.1.49 - fix what NodinChan promised: You dun goofed!
 * v1.0.1.48 - improve handling of admins sticking files into wrong folders 
 * v1.0.1.47 - fix #2 and #4 of Ticket #262
