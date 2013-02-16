@@ -69,10 +69,20 @@ public class ArenaModuleManager {
 		mods.add(new StandardSpectate());
 		mods.add(new WarmupJoin());
 
-		for (ArenaModule mod : mods) {
-			mod.onThisLoad();
-			DEBUG.i("module ArenaModule loaded: "
-					+ mod.getName() + " (version " + mod.version() +")");
+		try {
+		
+			for (ArenaModule mod : mods) {
+				mod.onThisLoad();
+				DEBUG.i("module ArenaModule loaded: "
+						+ mod.getName() + " (version " + mod.version() +")");
+			}
+		} catch (ClassCastException cce) {
+			String[] split = cce.getMessage().split(" ");
+			String[] classSplit = split[0].split(".");
+			String modName = classSplit[classSplit.length-1];
+
+			PVPArena.instance.getLogger().severe("You tried to load '" + modName + "' as a module. Please put it into the correct folder!");
+			PVPArena.instance.getLogger().severe("Aborting module loading!");
 		}
 	}
 	

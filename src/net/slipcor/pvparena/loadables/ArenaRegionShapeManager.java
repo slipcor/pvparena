@@ -57,10 +57,19 @@ public class ArenaRegionShapeManager {
 		regions.add(new CylindricRegion());
 		regions.add(new SphericRegion());
 
-		for (ArenaRegionShape mod : regions) {
-			mod.onThisLoad();
-			DEBUG.i("module ArenaRegion loaded: "
-					+ mod.getName() + " (version " + mod.getVersion() +")");
+		try {
+			for (ArenaRegionShape mod : regions) {
+				mod.onThisLoad();
+				DEBUG.i("module ArenaRegion loaded: "
+						+ mod.getName() + " (version " + mod.getVersion() +")");
+			}
+		} catch (ClassCastException cce) {
+			String[] split = cce.getMessage().split(" ");
+			String[] classSplit = split[0].split(".");
+			String modName = classSplit[classSplit.length-1];
+
+			PVPArena.instance.getLogger().severe("You tried to load '" + modName + "' as a region shape. Please put it into the correct folder!");
+			PVPArena.instance.getLogger().severe("Aborting region shape loading!");
 		}
 	}
 
