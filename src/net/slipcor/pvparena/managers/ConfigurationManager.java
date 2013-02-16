@@ -189,8 +189,9 @@ public final class ConfigurationManager {
 				.getValues(true);
 
 		if (arena.isFreeForAll()) {
-			arena.getArenaConfig().set(CFG.PERMS_TEAMKILL, true);
-			arena.getArenaConfig().save();
+			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
+				PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die! Ignore this if you're running infect!");
+			}
 		} else {
 			for (String sTeam : tempMap.keySet()) {
 				final ArenaTeam team = new ArenaTeam(sTeam,

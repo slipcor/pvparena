@@ -236,6 +236,11 @@ public class GoalInfect extends ArenaGoal {
 				final ArenaTeam respawnTeam = arena.getTeam("infected");
 				respawnTeam.add(aPlayer);
 				
+				final ArenaClass infectedClass = arena.getClass("%infected%");
+				if (infectedClass != null) {
+					aPlayer.setArenaClass(infectedClass);
+				}
+				
 				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 					arena.broadcast(Language.parse(
 							MSG.FIGHT_KILLED_BY,
@@ -324,8 +329,10 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+		sender.sendMessage("normal lives: "
+				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + "|" +
+				"infected lives: "
+				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
 	}
 
 	@Override
@@ -423,6 +430,7 @@ public class GoalInfect extends ArenaGoal {
 				}
 				this.getLifeMap().put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+				break;
 			}
 		}
 		final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
