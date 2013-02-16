@@ -107,7 +107,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 	 * 
 	 * @return List of loaded loadables
 	 */
-	public final List<T> load() {
+	public final List<T> load(Class<? extends NCBLoadable> classType) {
 		for (File file : files) {
 			try {
 				JarFile jarFile = new JarFile(file);
@@ -126,7 +126,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 
 					if (clazz != null) {
 						Class<? extends NCBLoadable> loadableClass = clazz
-								.asSubclass(NCBLoadable.class);
+								.asSubclass(classType);
 						Constructor<? extends NCBLoadable> ctor = loadableClass
 								.getConstructor(ctorParams);
 						T loadable = (T) ctor.newInstance(paramTypes);
@@ -167,7 +167,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 				e.printStackTrace();
 				getLogger().log(
 						Level.WARNING,
-						"The JAR file " + file.getName()
+						"The JAR file " + file.getPath()
 								+ " is in the wrong directory");
 				getLogger().log(Level.WARNING,
 						"The JAR file " + file.getName() + " failed to load");
@@ -192,7 +192,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 	/**
 	 * Reloads the Loader
 	 */
-	public List<T> reload() {
+	public List<T> reload(Class<? extends NCBLoadable> classType) {
 		unload();
 
 		List<URL> urls = new ArrayList<URL>();
@@ -212,7 +212,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[urls
 				.size()]), plugin.getClass().getClassLoader());
 
-		return load();
+		return load(classType);
 	}
 
 	/**

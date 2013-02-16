@@ -62,7 +62,7 @@ public class ArenaGoalManager {
 			path.mkdir();
 		}
 		loader = new NCBLoader<ArenaGoal>(plugin, path, new Object[] {});
-		types = loader.load();
+		types = loader.load(ArenaGoal.class);
 		fill();
 	}
 
@@ -82,19 +82,10 @@ public class ArenaGoalManager {
 		types.add(new GoalTeamLives());
 		types.add(new GoalTime());
 
-		try {
-			for (ArenaGoal type : types) {
-				type.onThisLoad();
-				DEBUG.i("module ArenaType loaded: " + type.getName() + " (version "
-						+ type.version() + ")");
-			}
-		} catch (ClassCastException cce) {
-			String[] split = cce.getMessage().split(" ");
-			String[] classSplit = split[0].split(".");
-			String modName = classSplit[classSplit.length-1];
-
-			PVPArena.instance.getLogger().severe("You tried to load '" + modName + "' as a goal. Please put it into the correct folder!");
-			PVPArena.instance.getLogger().severe("Aborting goal loading!");
+		for (ArenaGoal type : types) {
+			type.onThisLoad();
+			DEBUG.i("module ArenaType loaded: " + type.getName() + " (version "
+					+ type.version() + ")");
 		}
 	}
 
@@ -185,7 +176,7 @@ public class ArenaGoalManager {
 	}
 	
 	public void reload() {
-		types = loader.reload();
+		types = loader.reload(ArenaGoal.class);
 		fill();
 	}
 	
