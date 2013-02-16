@@ -1,13 +1,16 @@
 name: pvparena
+author: slipcor
 authors: [slipcor]
+prefix: PVP Arena
 main: net.slipcor.pvparena.PVPArena
 version: 1.0.0.jenkins-build-number
 softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,MobDisguise,DisguiseCraft,TagAPI]
+description: create, manage and enhance PvP arenas
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena
 commands:
     pvparena:
-        description: Base commands for the PVP arena.
+        description: Base commands for the PvP arena.
         aliases: ['pa']
         usage: |
             /pvparena help
@@ -17,7 +20,8 @@ commands:
             /pvparena help info | help getting information
 permissions:
     pvparena.*:
-        description: Gives access to all commands
+        description: Gives access to everything
+        default: op
         children:
             pvparena.admin: true
             pvparena.telepass: true
@@ -25,6 +29,8 @@ permissions:
     pvparena.admin:
         description: Allows you to administrate arenas
         default: op
+        children:
+            pvparena.create: true
     pvparena.create:
         description: Allows you to create and administrate an arena
         default: op

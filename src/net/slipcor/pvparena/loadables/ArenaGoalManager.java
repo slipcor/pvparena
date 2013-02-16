@@ -370,7 +370,6 @@ public class ArenaGoalManager {
 			boolean hasBroadcasted = false;
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					
 					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + team.getName()), "WINNER");
 					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
@@ -391,7 +390,7 @@ public class ArenaGoalManager {
 										+ "Team " + winTeam));
 							}
 						}
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
 					}
 				}
 			}
