@@ -1364,9 +1364,9 @@ public class Arena {
 	 * @param string
 	 *            legacy goal
 	 */
-	public void getLegacyGoals(final String goalName) {
+	public boolean getLegacyGoals(final String goalName) {
 		setFree(false);
-		final String lcName = goalName.toLowerCase(Locale.ENGLISH);
+		final String lcName = goalName.toLowerCase();
 
 		if ("teams".equals(lcName)) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("TeamLives"));
@@ -1396,9 +1396,12 @@ public class Arena {
 		} else if ("sabotage".equals(lcName)) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("Sabotage"));
 			cfg.save();
+		} else {
+			return false;
 		}
 
 		updateGoals();
+		return true;
 	}
 
 	public Set<ArenaRegionShape> getRegionsByType(final RegionType regionType) {

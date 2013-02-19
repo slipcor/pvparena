@@ -70,6 +70,11 @@ public class PAA_Spawn extends AbstractArenaCommand {
 				}
 			}
 			
+			if (arena.getGoals().isEmpty()) {
+				arena.msg(sender, Language.parse(MSG.ERROR_NO_GOAL));
+				return;
+			}
+			
 			for (ArenaGoal mod : arena.getGoals()) {
 				if (mod.hasSpawn(args[0])) {
 					commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);

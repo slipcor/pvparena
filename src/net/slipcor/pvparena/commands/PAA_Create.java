@@ -5,6 +5,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.command.CommandSender;
@@ -59,8 +60,10 @@ public class PAA_Create extends AbstractGlobalCommand {
 		
 		if (args.length > 1) {
 			// preset arena stuff based on legacy stuff
-			arena.getLegacyGoals(args[1]);
-		} else if (args.length == 0) {
+			if (!arena.getLegacyGoals(args[1])) {
+				arena.msg(sender, Language.parse(MSG.ERROR_GOAL_LEGACY_UNKNOWN, args[1]));
+			}
+		} else {
 			arena.getLegacyGoals("teams");
 		}
 		

@@ -118,6 +118,7 @@ public final class Language {
 		ERROR_DISABLED("nulang.error.arenadisabled", "Arena disabled, please try again later!"),
 		ERROR_ERROR("nulang.error.error", "&cError: %1%"),
 		ERROR_FIGHT_IN_PROGRESS("nulang.error.fightinprogress", "A fight is already in progress!"),
+		ERROR_GOAL_LEGACY_UNKNOWN("nulang.error.goal.legacyunknown", "Legacy goal &a%1%&r unknown! You will want to add goals: &a/pa [arena] goal [goalname]"),
 		ERROR_GOAL_NOTFOUND("nulang.error.goal.goalnotfound", "Goal &a%1%&r unknown. Valid goals: &a%2%&r"),
 		ERROR_INSTALL("nulang.error.install", "Error while installing &a%1%&r"),
 		ERROR_INVALID_ARGUMENT_COUNT("nulang.error.invalid_argument_count", "&cInvalid number of arguments&r (%1% instead of %2%)!"),
@@ -137,6 +138,7 @@ public final class Language {
 		ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
 		ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
 		ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
+		ERROR_NO_GOAL("nulang.error.nogoal", "You did not add a goal! &a/pa [arena] goal [goalname]"),
 		ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r"),
 		ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join the arena!"),
 		
