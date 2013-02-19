@@ -245,7 +245,7 @@ public final class StringParser {
 			final String[] dataSplit = temp[2].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
 			final String lore = dataSplit.length > 1 ? dataSplit[1] : null;
-			if (temp.length == 3) {
+			if (temp.length >= 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				final ItemStack itemStack = new ItemStack(mat, amount, dmg);
 
@@ -325,6 +325,15 @@ public final class StringParser {
 				for (Enchantment e : enchants.keySet()) {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
+				
+				if (temp.length > 3) {
+					// [itemid/name]~[dmg]~[data]:[amount]:[displayname]
+					
+					ItemMeta meta = itemStack.getItemMeta();
+					meta.setDisplayName(codeCharacters(temp[3],false));
+					itemStack.setItemMeta(meta);
+				}
+				
 				return itemStack;
 			}
 		}
@@ -397,6 +406,7 @@ public final class StringParser {
 			if (!durability) {
 				temp.append('~');
 				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
 			}
 			temp.append('~');
 			temp.append(String.valueOf(itemStack.getData().getData()));
@@ -405,6 +415,7 @@ public final class StringParser {
 			if (!durability) {
 				temp.append('~');
 				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
 			}
 			final BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
 			if (bookMeta != null && (bookMeta.getAuthor() != null) && (bookMeta.getTitle() != null)
@@ -423,6 +434,7 @@ public final class StringParser {
 			if (!durability) {
 				temp.append('~');
 				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
 			}
 			final LeatherArmorMeta leatherMeta = (LeatherArmorMeta) itemStack.getItemMeta();
 			temp.append('~');
@@ -431,6 +443,7 @@ public final class StringParser {
 			if (!durability) {
 				temp.append('~');
 				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
 			}
 			final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 			temp.append('~');
@@ -441,8 +454,10 @@ public final class StringParser {
 			if (!durability) {
 				temp.append('~');
 				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
 			}
-			
+
+			temp.append('~');
 			temp.append(SAFE_LORE_BREAK);
 			temp.append(codeCharacters(
 							joinArray(((ItemMeta) itemStack.getItemMeta()).getLore()
@@ -459,9 +474,14 @@ public final class StringParser {
 			}
 		}
 
-		if (itemStack.getAmount() > 1) {
+		if (itemStack.getAmount() > 1 || itemStack.getItemMeta().hasDisplayName()) {
 			temp.append(':');
 			temp.append(itemStack.getAmount());
+		}
+		
+		if (itemStack.getItemMeta().hasDisplayName()) {
+			temp.append(':');
+			temp.append(codeCharacters(itemStack.getItemMeta().getDisplayName(),true));
 		}
 
 		return temp.toString();
