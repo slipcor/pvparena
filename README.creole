@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.52 - fix #271 - properly handle mis-set wand settings instead of spamming
 * v1.0.1.51 - fix and improve arena creation, add proper message if no goal active
 * v1.0.1.50 - allow colored prefixes, fix BlockDestroy destruction detection
 * v1.0.1.49 - fix what NodinChan promised: You dun goofed!

@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -50,6 +51,10 @@ public class RegionTool extends ArenaModule {
 		if (event.getPlayer().getItemInHand().getType() == Material.AIR) {
 			return false;
 		}
+		
+		if (!PVPArena.hasAdminPerms(event.getPlayer())) {
+			return false;
+		}
 
 		for (Arena arena : ArenaManager.getArenas()) {
 			Material mMat = Material.STICK;
@@ -57,13 +62,13 @@ public class RegionTool extends ArenaModule {
 				debug.i("reading wand", event.getPlayer());
 				try {
 					mMat = Material.getMaterial(arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
+					debug.i("mMat now is " + mMat.name(), event.getPlayer());
 				} catch (Exception e) {
 					debug.i("exception reading ready block", event.getPlayer());
 					final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
-					Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_MAT_NOT_FOUND, sMat));
-					return false;
+					arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_MAT_NOT_FOUND, sMat));
+					continue;
 				}
-				debug.i("mMat now is " + mMat.name(), event.getPlayer());
 				if (event.getPlayer().getItemInHand().getType() == mMat) {
 					PABlockLocation loc = new PABlockLocation(event.getPlayer().getLocation());
 					if (event.getClickedBlock() != null) {
@@ -71,7 +76,7 @@ public class RegionTool extends ArenaModule {
 					}
 					for (ArenaRegionShape region : arena.getRegions()) {
 						if (region.contains(loc)) {
-							Arena.pmsg(event.getPlayer(), "§fArena §b"
+							arena.msg(event.getPlayer(), "§fArena §b"
 									+ arena.getName() + "§f: region §b"
 									+ region.getRegionName());
 						}
