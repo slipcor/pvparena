@@ -6,6 +6,7 @@ import java.util.Map;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -13,6 +14,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -134,7 +136,14 @@ public class PAA_Region extends AbstractArenaCommand {
 			return;
 		}
 		
-		region.update(args[1], args[2]);
+		String message = region.update(args[1], args[2]);
+		
+		if (message != null) {
+			if (arena.getArenaConfig().getBoolean(CFG.MODULES_WORLDEDIT_AUTOSAVE)) {
+				Bukkit.getServer().dispatchCommand(sender, "pvparena " + arena.getName() + " regsave " + region.getRegionName());
+			}
+			arena.msg(sender, message);
+		}
 		
 		// usage: /pa {arenaname} region [regionname] radius [number]
 		// usage: /pa {arenaname} region [regionname] height [number]

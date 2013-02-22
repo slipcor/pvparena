@@ -138,7 +138,6 @@ public final class Importer {
 		CONTENT.put("latelounge.latelounge", "modules.latelounge.llactive");
 
 		CONTENT.put("colors.requireSpout", "modules.colorteams.spoutonly");
-		CONTENT.put("colors.tagapi", "modules.colorteams.tagapi");
 		CONTENT.put("whitelist", "cmds.whitelist");
 	}
 	

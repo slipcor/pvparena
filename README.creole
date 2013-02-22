@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.54 - save regions on region update. This should prevent WorldEdit messups when resizing.
 * v1.0.1.53 - fix StringParser, bug about LORE affected player dumps and classes
 * v1.0.1.52 - fix #271 - properly handle mis-set wand settings instead of spamming
 * v1.0.1.51 - fix and improve arena creation, add proper message if no goal active
