@@ -262,6 +262,9 @@ public class ArenaGoal extends NCBLoadable {
 		return null;
 	}
 
+	public void refillInventory(Player player) {
+	}
+
 	/**
 	 * hook into an arena reset
 	 * @param a the arena being reset

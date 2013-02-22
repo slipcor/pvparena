@@ -152,6 +152,10 @@ public class Config {
 		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
 		GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none"),
 
+		GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50),
+		GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10),
+		GOAL_FOOD_FTEAMITEMS("goal.food.fteamitems", 100),
+
 		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1),
 		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1),
 		

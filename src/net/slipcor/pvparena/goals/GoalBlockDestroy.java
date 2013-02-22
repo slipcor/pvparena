@@ -682,8 +682,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				if (map.get(node).getDistance(loc) < 1) {
 					final String blockTeam = node.split("block")[0];
 					
-					System.out.print(blockTeam);
-					
 					try {
 						arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
 								Language.parse(MSG.DEATHCAUSE_BLOCK_EXPLOSION)

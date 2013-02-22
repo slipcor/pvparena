@@ -64,6 +64,7 @@ public class InventoryRefillRunnable implements Runnable {
 					player.getInventory().setHelmet(
 							new ItemStack(Material.WOOL, 1, StringParser
 									.getColorDataFromENUM(color)));
+					PVPArena.instance.getAgm().refillInventory(arena, player);
 				}
 			} else {
 				InventoryManager.clearInventory(player);

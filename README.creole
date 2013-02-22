@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* Bukkit Beta 1.4.6-R0.3
+* Bukkit 1.4.6
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.55 - Add GOAL: Food!
 * v1.0.1.54 - save regions on region update. This should prevent WorldEdit messups when resizing.
 * v1.0.1.53 - fix StringParser, bug about LORE affected player dumps and classes
 * v1.0.1.52 - fix #271 - properly handle mis-set wand settings instead of spamming
@@ -101,9 +102,7 @@ A PVP experience enhancing plugin.
 * modules
 * goals
 ** tournament arenas ; rounds switch through arenas
-** furnace -> domination FoodFury
 ** siege -> bring PACKET from A to B || prevent
-** pillar
 
 -----------------------------------------------------------------------------------------------------------------------
 

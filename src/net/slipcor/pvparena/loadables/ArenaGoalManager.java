@@ -16,20 +16,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.goals.GoalBlockDestroy;
-import net.slipcor.pvparena.goals.GoalDomination;
-import net.slipcor.pvparena.goals.GoalFlags;
-import net.slipcor.pvparena.goals.GoalInfect;
-import net.slipcor.pvparena.goals.GoalLiberation;
-import net.slipcor.pvparena.goals.GoalPhysicalFlags;
-import net.slipcor.pvparena.goals.GoalPlayerDeathMatch;
-import net.slipcor.pvparena.goals.GoalPlayerKillReward;
-import net.slipcor.pvparena.goals.GoalPlayerLives;
-import net.slipcor.pvparena.goals.GoalSabotage;
-import net.slipcor.pvparena.goals.GoalTank;
-import net.slipcor.pvparena.goals.GoalTeamDeathMatch;
-import net.slipcor.pvparena.goals.GoalTeamLives;
-import net.slipcor.pvparena.goals.GoalTime;
+import net.slipcor.pvparena.goals.*;
 import net.slipcor.pvparena.ncloader.NCBLoader;
 
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -70,6 +57,7 @@ public class ArenaGoalManager {
 		types.add(new GoalBlockDestroy());
 		types.add(new GoalDomination());
 		types.add(new GoalFlags());
+		types.add(new GoalFood());
 		types.add(new GoalInfect());
 		types.add(new GoalLiberation());
 		types.add(new GoalPhysicalFlags());
@@ -173,6 +161,15 @@ public class ArenaGoalManager {
 			}
 		}
 		return null;
+	}
+
+	public void refillInventory(Arena arena, Player player) {
+		if (player == null) {
+			return;
+		}
+		for (ArenaGoal type : arena.getGoals()) {
+			type.refillInventory(player);
+		}
 	}
 	
 	public void reload() {

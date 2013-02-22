@@ -879,7 +879,6 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		
 		return false;
 	}
-
 	private void removeEffects(final Player player) {
 		final String value = arena.getArenaConfig().getString(
 				CFG.GOAL_FLAGS_FLAGEFFECT);
