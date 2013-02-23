@@ -44,8 +44,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * The most fast paced arena goal atm. Lighting a TNT ends the game. BOOM.
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalDomination extends ArenaGoal {
@@ -62,7 +60,7 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private static final int PRIORITY = 8;
@@ -527,6 +525,14 @@ public class GoalDomination extends ArenaGoal {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("needed points: " + 
+				arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES));
+		sender.sendMessage("claim range: " + 
+				arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE));
 	}
 
 	private Map<Location, String> getFlagMap() {

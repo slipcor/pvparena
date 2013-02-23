@@ -46,8 +46,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * final step and then win
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalPlayerKillReward extends ArenaGoal {
@@ -67,7 +65,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private final static int PRIORITY = 6;
@@ -318,8 +316,10 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public void displayInfo(final CommandSender sender) {
-		// sender.sendMessage("killrewards: " +
-		// arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+		for (int i : getItemMap().keySet()) {
+			ItemStack[] items = getItemMap().get(i);
+			sender.sendMessage("kill #" + i + ": " + StringParser.getStringFromItemStacks(items));
+		}
 	}
 	
 	private Map<Integer, ItemStack[]> getItemMap() {

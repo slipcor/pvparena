@@ -16,13 +16,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * <pre>Arena Module class "BattlefieldJoin"</pre>
+ * <pre>Arena Module class "WarmupJoin"</pre>
  * 
- * Enables direct joining to the battlefield
+ * Enables a warmup countdown before joining the arena
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class WarmupJoin extends ArenaModule {
@@ -38,7 +36,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	@Override
 	public String version() {
-		return "v1.0.0.25";
+		return "v1.0.1.59";
 	}
 
 	@Override
@@ -86,6 +84,12 @@ public class WarmupJoin extends ArenaModule {
 	@Override
 	public void commitSpectate(final Player sender) {
 		new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), null, true, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
+	}
+	
+	@Override
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("seconds: " + 
+				arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
 	}
 
 	@Override

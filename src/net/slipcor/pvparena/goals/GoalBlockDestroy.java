@@ -51,8 +51,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * Win by breaking the other team's block(s).
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalBlockDestroy extends ArenaGoal implements Listener {
@@ -66,7 +64,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private static final int PRIORITY = 9;
@@ -348,6 +346,14 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 									.getArenaTeam().getName()) : 0));
 		}
 		return res;
+	}
+	
+	@Override
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("block type: " + 
+				arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE));
+		sender.sendMessage("lives: " + 
+				arena.getArenaConfig().getInt(CFG.GOAL_BLOCKDESTROY_LIVES));
 	}
 
 	@Override

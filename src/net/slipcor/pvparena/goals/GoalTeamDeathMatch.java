@@ -20,7 +20,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -36,8 +35,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * team is teleported to the spectator spawn to watch the rest of the fight.
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class GoalTeamDeathMatch extends ArenaGoal {
@@ -48,7 +45,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private final static int PRIORITY = 5;
@@ -216,8 +213,6 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("teams: "
-				+ StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
 		sender.sendMessage("lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
 	}

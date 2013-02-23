@@ -46,15 +46,13 @@ import net.slipcor.pvparena.runnables.EndRunnable;
 
 /**
  * <pre>
- * Arena Goal class "TeamLives"
+ * Arena Goal class "Food"
  * </pre>
  * 
- * The second Arena Goal. Arena Teams have lives. When every life is lost, the
- * team is teleported to the spectator spawn to watch the rest of the fight.
+ * Players are equipped with raw food, the goal is to bring back cooked food
+ * to their base. The first team having gathered enough wins!
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class GoalFood extends ArenaGoal implements Listener {
@@ -65,7 +63,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.1.55";
+		return "v1.0.1.59";
 	}
 
 	private final static int PRIORITY = 12;
@@ -311,8 +309,6 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 	@Override
 	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("teams: "
-				+ StringParser.joinSet(arena.getTeamNamesColored(), "§r, "));
 		sender.sendMessage("items needed: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
 		sender.sendMessage("items per player: "

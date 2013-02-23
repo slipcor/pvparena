@@ -37,8 +37,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * is teleported to the spectator spawn to watch the rest of the fight.
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalPlayerLives extends ArenaGoal {
@@ -51,7 +49,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private static final int PRIORITY = 2;

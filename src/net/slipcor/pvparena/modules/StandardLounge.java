@@ -28,8 +28,6 @@ import org.bukkit.entity.Player;
  * Enables joining to lounges instead of the battlefield
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class StandardLounge extends ArenaModule {

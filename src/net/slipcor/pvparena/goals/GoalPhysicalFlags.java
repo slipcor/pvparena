@@ -55,8 +55,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * Capture flags by breaking them, bring them home, get points, win.
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalPhysicalFlags extends ArenaGoal implements Listener {
@@ -82,7 +80,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 
 	private static final int PRIORITY = 7;
@@ -642,6 +640,20 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			takeFlag(flagTeam.getColor().name(), false,
 					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
 		}
+	}
+	
+	@Override
+	public void displayInfo(CommandSender sender) {
+		sender.sendMessage("flageffect: " + 
+				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT));
+		sender.sendMessage("flagtype: " + 
+				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE));
+		sender.sendMessage("lives: " + 
+				arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
+		sender.sendMessage(StringParser.colorVar("mustbesafe",
+				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) + 
+				" | " + StringParser.colorVar("flaghead",
+				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)));
 	}
 	
 	private Map<String, String> getFlagMap() {

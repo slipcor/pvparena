@@ -50,8 +50,6 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * their TNT.
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class GoalSabotage extends ArenaGoal implements Listener {
@@ -67,7 +65,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.1.44";
+		return "v1.0.1.59";
 	}
 	
 	private static final int PRIORITY = 7;

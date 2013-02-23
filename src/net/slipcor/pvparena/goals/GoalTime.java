@@ -3,6 +3,7 @@ package net.slipcor.pvparena.goals;
 import org.bukkit.command.CommandSender;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.runnables.TimedEndRunnable;
 
@@ -12,8 +13,6 @@ import net.slipcor.pvparena.runnables.TimedEndRunnable;
  * Time is ticking ^^
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class GoalTime extends ArenaGoal {
@@ -27,7 +26,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.1.59";
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public void displayInfo(final CommandSender sender) {
-		
+		sender.sendMessage("timer: " + StringParser.colorVar(arena.getArenaConfig().getInt(CFG.GOAL_TIME_END)));
 	}
 
 	@Override

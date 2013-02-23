@@ -21,8 +21,6 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * Enables region debug via WAND item
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class RegionTool extends ArenaModule {
@@ -33,7 +31,7 @@ public class RegionTool extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.1.59";
 	}
 
 	@Override

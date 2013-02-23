@@ -25,8 +25,6 @@ import org.bukkit.entity.Player;
  * Enables joining to lounges instead of the battlefield
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class StandardSpectate extends ArenaModule {
@@ -40,7 +38,7 @@ public class StandardSpectate extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.1.59";
 	}
 
 	@Override
@@ -68,7 +66,6 @@ public class StandardSpectate extends ArenaModule {
 		aPlayer.setLocation(new PALocation(aPlayer.get().getLocation()));
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
 				new PlayerStateCreateRunnable(aPlayer, aPlayer.get()), 2L);
-		// ArenaPlayer.prepareInventory(arena, ap.get());
 		aPlayer.setArena(arena);
 		aPlayer.setStatus(Status.WATCH);
 

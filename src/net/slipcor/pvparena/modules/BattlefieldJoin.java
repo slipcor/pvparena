@@ -24,8 +24,6 @@ import org.bukkit.entity.Player;
  * Enables direct joining to the battlefield
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class BattlefieldJoin extends ArenaModule {
@@ -39,7 +37,7 @@ public class BattlefieldJoin extends ArenaModule {
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return "v1.0.1.59";
 	}
 
 	@Override
@@ -87,7 +85,6 @@ public class BattlefieldJoin extends ArenaModule {
 		player.setLocation(new PALocation(player.get().getLocation()));
 		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
 				new PlayerStateCreateRunnable(player, player.get()), 2L);
-		// ArenaPlayer.prepareInventory(arena, ap.get());
 		player.setArena(arena);
 		player.setStatus(Status.LOUNGE);
 		team.add(player);

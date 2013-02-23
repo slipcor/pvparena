@@ -44,7 +44,8 @@ public class PAI_Info extends AbstractArenaCommand {
 		
 		arena.msg(sender, Language.parse(MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix()));
 		
-		arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, StringParser.joinSet(arena.getTeamNames(), ", ")));
+		arena.msg(sender, Language.parse(MSG.INFO_HEAD_TEAMS, 
+				StringParser.joinSet(arena.getTeamNamesColored(), "§r, ")));
 		
 		arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
 				StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +

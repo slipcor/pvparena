@@ -50,7 +50,7 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.40";
+		return "v1.0.1.59";
 	}
 
 	private static final int PRIORITY = 9;
@@ -330,7 +330,7 @@ public class GoalInfect extends ArenaGoal {
 	@Override
 	public void displayInfo(final CommandSender sender) {
 		sender.sendMessage("normal lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + "|" +
+				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
 				"infected lives: "
 				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
 	}
