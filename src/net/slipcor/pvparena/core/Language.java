@@ -363,6 +363,7 @@ public final class Language {
 		TIMER_STARTING_IN("nulang.timer.starting", "Starting in %1%!"),
 		TIMER_WARMINGUP("nulang.timer.warmingup", "Warming up... %1%!"),
 		TIMER_PVPACTIVATING("nulang.timer.pvpactivating", "PVP will be activated in %1%!"),
+		TIMER_WALLS("nulang.timer.walls", "Walls will be removed in %1%!"),
 		
 		UNINSTALL_DONE("nulang.uninstall.done", "uninstalled: &a%1%&r"),
 		
@@ -482,6 +483,9 @@ public final class Language {
 		MODULE_LATELOUNGE_ANNOUNCE("nulang.mod.latelounge.llannounce", "Arena %1% is starting! Player %2% wants to start. Join with /pa %1%"),
 		MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
 		MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
+
+		MODULE_PLAYERFINDER_NEAR("nulang.mod.playerfinder.near", "Nearest player: %1% blocks!"),
+		MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player!"),
 
 		MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
 		MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp %2%!"),

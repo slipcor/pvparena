@@ -181,6 +181,7 @@ public class Config {
 		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5),
 		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
 		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),
+		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", true),
 		
 		// -----------
 		
@@ -245,6 +246,8 @@ public class Config {
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
 
+		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300),
+		
 		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
 		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
 
