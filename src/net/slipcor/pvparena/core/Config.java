@@ -181,7 +181,7 @@ public class Config {
 		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5),
 		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
 		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),
-		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", true),
+		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false),
 		
 		// -----------
 		
