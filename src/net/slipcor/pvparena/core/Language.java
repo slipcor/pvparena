@@ -236,6 +236,7 @@ public final class Language {
 		INFO_MOD_INACTIVE("nulang.info.mod_inactive", "Module: &b%1%&r &7== INACTIVE =="),
 		INFO_OWNER("nulang.info.owner", "Owner: &a%1%&r"),
 		INFO_REGIONS("nulang.info.regions", "Regions: &a%1%&r"),
+		INFO_SECTION("nulang.info.section", "----- &a%1%&r -----"),
 		
 		INSTALL_DONE("nulang.install.installed", "installed: &a%1%&r"),
 		

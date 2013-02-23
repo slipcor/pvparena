@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.61 - finish /pa info output
 * v1.0.1.60 - add Walls MATERIAL and RespawnRelay SECONDS config setting
 * v1.0.1.59 - enhance /pa info output
 * v1.0.1.58 - update LateLounge to display queue position
