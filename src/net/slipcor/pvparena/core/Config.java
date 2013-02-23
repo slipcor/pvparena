@@ -225,6 +225,8 @@ public class Config {
 
 		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
 		MODULES_ITEMS_ITEMS("modules.items.items", "none"),
+		
+		MODULES_RESPAWNRELAY_INTERVAL("modules.items.respawnseconds", 10),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
@@ -246,6 +248,7 @@ public class Config {
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
 
+		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND"),
 		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300),
 		
 		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
