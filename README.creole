@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.58 - update LateLounge to display queue position
 * v1.0.1.57 - oups, default to NOT "claimall" for Pillars
 * v1.0.1.56 - Add [m]PlayerFinder, [m]Walls, enhance Pillars 
 * v1.0.1.55 - Add GOAL: Food!

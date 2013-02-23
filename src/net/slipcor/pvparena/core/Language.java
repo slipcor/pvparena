@@ -481,6 +481,7 @@ public final class Language {
 		MODULE_FIXINVENTORYLOSS_INVENTORY("nulang.mod.fixinventorylos.invenory", "Empty your inventory before joining!"),
 
 		MODULE_LATELOUNGE_ANNOUNCE("nulang.mod.latelounge.llannounce", "Arena %1% is starting! Player %2% wants to start. Join with /pa %1%"),
+		MODULE_LATELOUNGE_POSITION("nulang.mod.latelounge.llposition", "You are on queue position %1%!"),
 		MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
 		MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
 
