@@ -299,7 +299,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 		PAA_Region.activeSelections.remove(player.getName());
 		flagName = "";
 
-		return false;
+		return true;
 	}
 	
 	@Override

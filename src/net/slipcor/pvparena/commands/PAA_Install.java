@@ -114,7 +114,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 			final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
 			for (String key : entries) {
-				final String value = cfg.getString("goals." + key);
+				final String latest = cfg.getString("goals." + key);
 				final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
 				final boolean installed = (goal != null);
 				String version = null;
@@ -124,8 +124,8 @@ public class PAA_Install extends AbstractGlobalCommand {
 				Arena.pmsg(sender, ((installed) ? "§e" : "§7")
 						+ key
 						+ "§r - "
-						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
-								: "") + value);
+						+ (installed ? ((latest.equals(version)) ? "§a" : "§c")
+								: "") + version + "§f(" + latest + ")");
 			}
 		}
 		if (sub == null || sub.equalsIgnoreCase("mods")) {
@@ -133,7 +133,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 			final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
 					false);
 			for (String key : entries) {
-				final String value = cfg.getString("mods." + key);
+				final String latest = cfg.getString("mods." + key);
 				final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
 				final boolean installed = (mod != null);
 				String version = null;
@@ -143,8 +143,8 @@ public class PAA_Install extends AbstractGlobalCommand {
 				Arena.pmsg(sender, ((installed) ? "§e" : "§7")
 						+ key
 						+ "§r - "
-						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
-								: "") + value);
+						+ (installed ? ((latest.equals(version)) ? "§a" : "§c")
+								: "") + version + "§f(" + latest + ")");
 			}
 
 		}

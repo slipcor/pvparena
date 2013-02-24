@@ -420,7 +420,7 @@ public class GoalLiberation extends ArenaGoal  {
 		PAA_Region.activeSelections.remove(player.getName());
 		flagName = "";
 
-		return false;
+		return true;
 	}
 
 	@Override

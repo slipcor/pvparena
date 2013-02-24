@@ -340,7 +340,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 		PAA_Region.activeSelections.remove(player.getName());
 		this.flagName = "";
-		return false;
+		return true;
 	}
 
 	@Override

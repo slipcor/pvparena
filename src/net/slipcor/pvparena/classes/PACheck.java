@@ -470,6 +470,13 @@ public class PACheck {
 		
 	}
 
+	/**
+	 * try to set a flag
+	 * 
+	 * @param player the player trying to set
+	 * @param block the block being set
+	 * @return true if the handling is successful and if the event should be cancelled
+	 */
 	public static boolean handleSetFlag(final Player player, final Block block) {
 		final Arena arena = PAA_Region.activeSelections.get(player.getName());
 		

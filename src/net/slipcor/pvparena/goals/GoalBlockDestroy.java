@@ -323,7 +323,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		PAA_Region.activeSelections.remove(player.getName());
 		blockTeamName = "";
 
-		return false;
+		return true;
 	}
 
 	@Override
