@@ -19,7 +19,7 @@ import net.slipcor.pvparena.core.Debug;
 public final class InventoryManager {
 
 	public static final Debug DEBUG = new Debug(26);
-	
+	private static final String[] TOOLSUFFIXES = {"_AXE","_PICKAXE","_SPADE","_HOE","_SWORD","BOW","SHEARS"};
 	private InventoryManager() {
 	}
 
@@ -69,9 +69,7 @@ public final class InventoryManager {
 			return false;
 		}
 		
-		final String[] toolSuffixes = {"_AXE","_PICKAXE","_SPADE","_HOE","_SWORD"};
-		
-		for (String s : toolSuffixes) {
+		for (String s : TOOLSUFFIXES) {
 			if (item.getType().name().endsWith(s)) {
 				return true;
 			}
