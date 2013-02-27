@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.64 - fix splash potions for free for all arenas
 * v1.0.1.63 - repair bows if wanted
 * v1.0.1.62 - finish JavaDocs for ArenaGoal and ArenaModule
 * v1.0.1.61 - finish /pa info output

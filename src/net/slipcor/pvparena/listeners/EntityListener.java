@@ -329,8 +329,10 @@ public class EntityListener implements Listener {
 
 		final Collection<PotionEffect> pot = event.getPotion().getEffects();
 		for (PotionEffect eff : pot) {
+			DEBUG.i(">" + eff.getType().getName());
 			if (TEAMEFFECT.containsKey(eff.getType())) {
 				affectTeam = TEAMEFFECT.get(eff.getType());
+				DEBUG.i(">" + affectTeam);
 				break;
 			}
 		}
@@ -351,6 +353,10 @@ public class EntityListener implements Listener {
 			DEBUG.i("something is null!", shooter.getName());
 			return;
 		}
+		
+		if (shooter.getArena().getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
+			return; // if teamkill allowed, don't check, just ignore
+		}
 
 		final Collection<LivingEntity> entities = event.getAffectedEntities();
 		for (LivingEntity e : entities) {
@@ -359,11 +365,15 @@ public class EntityListener implements Listener {
 			}
 			final ArenaPlayer damagee = ArenaPlayer.parsePlayer(((Player) e).getName());
 			final boolean sameTeam = damagee.getArenaTeam().equals(shooter.getArenaTeam());
+
+			
+			
 			if (sameTeam != affectTeam) {
 				// different team and only team should be affected
 				// same team and the other team should be affected
 				// ==> cancel!
 				event.setIntensity(e, 0);
+				break;
 			}
 		}
 	}
