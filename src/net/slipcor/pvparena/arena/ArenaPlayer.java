@@ -190,13 +190,34 @@ public class ArenaPlayer {
 		try {
 			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
 
-			final Set<String> players = cfg.getKeys(false);
-			for (String s : players) {
-				totalPlayers.put(s, new ArenaPlayer(s));
+			final Set<String> arenas = cfg.getKeys(false);
+			
+			for (String arenaname : arenas) {
+
+				final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
+				for (String player : players) {
+				
+					final Set<String> values = cfg.getConfigurationSection(arenaname+"."+player).getKeys(false);
+
+					ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+					
+					for (String value : values) {
+						final StatisticsManager.type statType = StatisticsManager.type.getByString(value);
+						
+						if (statType == null) {
+							System.out.print("null: " + value);
+							continue;
+						}
+						
+						aPlayer.addStatistic(arenaname, statType, cfg.getInt(arenaname+"."+player+"."+value));
+					}
+				}
+				
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			return;
 		}
 	}
 

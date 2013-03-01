@@ -45,7 +45,7 @@ public class PAI_Stats extends AbstractArenaCommand {
 		}
 
 		final String[] values = StatisticsManager.read(StatisticsManager.getStats(arena, statType), statType, arena==null);
-		final String[] names = StatisticsManager.read(StatisticsManager.getStats(arena, type.NULL), statType, arena==null);
+		final String[] names = StatisticsManager.read(StatisticsManager.getStats(arena, statType), type.NULL, arena==null);
 		
 		int max = 10;
 		
@@ -57,9 +57,9 @@ public class PAI_Stats extends AbstractArenaCommand {
 			}
 		}
 		
-		Arena.pmsg(sender, Language.parse(MSG.STATS_HEAD, String.valueOf(max), Language.parse(MSG.getByName("STATTYPE_" + statType.getName()))));
+		Arena.pmsg(sender, Language.parse(MSG.STATS_HEAD, String.valueOf(max), Language.parse(MSG.getByName("STATTYPE_" + statType.name()))));
 		
-		for (int i = 0; i < max; i++) {
+		for (int i = 0; i < max && i < names.length && i < values.length; i++) {
 			Arena.pmsg(sender, names[i] + ": " + values[i]);
 		}
 	}

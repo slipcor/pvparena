@@ -198,20 +198,20 @@ public class StatisticsManager {
 		DEBUG.i("getting stats: " + (arena == null?"global":arena.getName()) + " sorted by " + sortBy + " "
 				+ (desc ? "desc" : "asc"));
 		
-		final int count = (arena == null)?ArenaPlayer.countPlayers():TeamManager.countPlayersInTeams(arena);
+		final int count = /*(arena == null)?*/ArenaPlayer.countPlayers()/*:TeamManager.countPlayersInTeams(arena)*/;
 		
 		ArenaPlayer[] aps = new ArenaPlayer[count];
 		
 		int pos = 0;
-		if (arena == null) {
+		//if (arena == null) {
 			for (ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
 				aps[pos++] = p;
-			}
+			}/*
 		} else {
 			for (ArenaPlayer p : arena.getFighters()) {
 				aps[pos++] = p;
 			}
-		}
+		}*/
 
 		sortBy(aps, sortBy, desc, arena == null);
 
@@ -308,7 +308,7 @@ public class StatisticsManager {
 		int pos = 0;
 		if (global) {
 			for (ArenaPlayer p : players) {
-				if (p == null || p.get() == null) {
+				if (p == null) {
 					continue;
 				}
 				if (tType.equals(type.NULL)) {

@@ -165,10 +165,17 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		if (args[0].equalsIgnoreCase("-s")
-				|| args[0].toLowerCase().contains("stats")) {
+				|| args[0].equalsIgnoreCase("stats")) {
 			final PAI_Stats scmd = new PAI_Stats();
 			DEBUG.i("committing: " + scmd.getName(), sender);
-			scmd.commit(null, sender, new String[0]);
+			scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
+			return true;
+		} else if (args.length > 1 &&
+				(args[1].equalsIgnoreCase("-s")
+				|| args[1].equalsIgnoreCase("stats"))) {
+			final PAI_Stats scmd = new PAI_Stats();
+			DEBUG.i("committing: " + scmd.getName(), sender);
+			scmd.commit(ArenaManager.getArenaByName(args[0]), sender, StringParser.shiftArrayBy(args, 2));
 			return true;
 		} else if (args[0].equalsIgnoreCase("!rl")
 				|| args[0].toLowerCase().contains("reload")) {
