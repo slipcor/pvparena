@@ -1100,10 +1100,13 @@ public class Arena {
 		for (ArenaClass c : classes) {
 			if (c.getName().equalsIgnoreCase(cName)) {
 				aPlayer.setArenaClass(c);
+				aPlayer.setArena(this);
+				aPlayer.createState(aPlayer.get());
+				InventoryManager.clearInventory(aPlayer.get());
 				ArenaClass.equip(aPlayer.get(), c.getItems());
 				msg(aPlayer.get(), Language.parse(MSG.CLASS_PREVIEW, c.getName()));
+				return;
 			}
-			return;
 		}
 		msg(aPlayer.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, cName));
 	}

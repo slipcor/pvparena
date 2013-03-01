@@ -59,13 +59,13 @@ public class PAA_Class extends AbstractArenaCommand {
 
 		if (args.length == 1) {
 			final Player player = (Player) sender;
-			try {
-				arena.playerLeave(player, null, true);
-				arena.remove(player);
-			} catch (Exception e) {
-				PVPArena.instance.getLogger().info("Exiting edit mode: " + player.getName());
-			}
-			ArenaPlayer.parsePlayer(player.getName()).setArena(null);
+			PVPArena.instance.getLogger().info("Exiting edit mode: " + player.getName());
+			
+			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+			ArenaPlayer.reloadInventory(arena, player);
+			
+			aPlayer.setArena(null);
 			return;
 		}
 
@@ -100,6 +100,10 @@ public class PAA_Class extends AbstractArenaCommand {
 			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
 		} else if (args[0].equalsIgnoreCase("load")) {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+			
+
+			ArenaPlayer.backupAndClearInventory(arena, aPlayer.get());
+			
 			arena.selectClass(aPlayer, args[1]);
 		} else if (args[0].equalsIgnoreCase("remove")) {
 			final Player player = (Player) sender;

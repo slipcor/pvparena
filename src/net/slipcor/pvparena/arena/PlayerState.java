@@ -102,7 +102,7 @@ public final class PlayerState {
 		player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
 		PlayerState.removeEffects(player);
 	}
-
+ 
 	public void unload() {
 		final Player player = Bukkit.getPlayerExact(name);
 		
