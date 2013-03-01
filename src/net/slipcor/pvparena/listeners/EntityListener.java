@@ -105,18 +105,26 @@ public class EntityListener implements Listener {
 	public void onEntityExplode(final EntityExplodeEvent event) {
 		DEBUG.i("explosion");
 
-		final Arena arena = ArenaManager.getArenaByProtectedRegionLocation(
+		Arena arena = ArenaManager.getArenaByProtectedRegionLocation(
 				new PABlockLocation(event.getLocation()), RegionProtection.TNT);
 		if (arena == null) {
-			return; // no arena => out
+
+			arena = ArenaManager.getArenaByProtectedRegionLocation(
+					new PABlockLocation(event.getLocation()), RegionProtection.TNTBREAK);
+			if (arena == null) {
+				return; // no arena => out
+			}
 		}
 		DEBUG.i("explosion inside an arena");
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
-				|| (!BlockListener.isProtected(event.getLocation(), event,
-						RegionProtection.TNT))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
-
 			ArenaModuleManager.onEntityExplode(arena, event);
+			return;
+		}
+		
+		if (BlockListener.isProtected(event.getLocation(), event,
+				RegionProtection.TNTBREAK)) {
+			event.blockList().clear();
 			return;
 		}
 
