@@ -628,7 +628,7 @@ public class Config {
 	 */
 	public static PABlockLocation parseBlockLocation(String coords) {
 		String[] parts = coords.split(",");
-		if (parts.length != 4) {
+		if (parts.length != 4 && parts.length != 6) {
 			throw new IllegalArgumentException(
 					"Input string must contain world, x, y, and z: " + coords);
 		}
