@@ -154,9 +154,9 @@ public class GoalTank extends ArenaGoal {
 				if (tanks.containsValue(ap.getName())) {
 
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.GOAL_TANK_TANKWON), "WINNER");
+							Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()), "WINNER");
 
-					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON));
+					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()));
 				} else {
 
 					// String tank = tanks.get(arena);
