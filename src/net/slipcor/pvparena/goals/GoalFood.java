@@ -20,6 +20,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
@@ -94,6 +95,8 @@ public class GoalFood extends ArenaGoal implements Listener {
 		for (ArenaTeam team : arena.getTeams()) {
 			final String sTeam = team.getName();
 			if (string.contains(sTeam + "foodchest")) {
+				res.setPriority(this, PRIORITY);
+			} else if (string.contains(sTeam + "foodfurnace")) {
 				res.setPriority(this, PRIORITY);
 			}
 		}
@@ -195,6 +198,17 @@ public class GoalFood extends ArenaGoal implements Listener {
 							Language.parse(MSG.GOAL_FOOD_TOSET, flagName));
 				}
 			}
+		} else if (args[0].contains("foodfurnace")) {
+			for (ArenaTeam team : arena.getTeams()) {
+				final String sTeam = team.getName();
+				if (args[0].contains(sTeam + "foodfurnace")) {
+					flagName = args[0];
+					PAA_Region.activeSelections.put(sender.getName(), arena);
+
+					arena.msg(sender,
+							Language.parse(MSG.GOAL_FOODFURNACE_TOSET, flagName));
+				}
+			}
 		}
 	}
 
@@ -276,8 +290,8 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 	@Override
 	public boolean commitSetFlag(final Player player, final Block block) {
-		if (block == null
-				|| block.getType() != Material.CHEST ) {
+		if (flagName == null || block == null
+				|| (block.getType() != Material.CHEST && block.getType() != Material.FURNACE) ) {
 			return false;
 		}
 
@@ -286,7 +300,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		debug.i("trying to set a foodchest", player);
+		debug.i("trying to set a foodchest/furnace", player);
 
 		// command : /pa redflag1
 		// location: red1flag:
@@ -294,7 +308,20 @@ public class GoalFood extends ArenaGoal implements Listener {
 		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
 				flagName);
 
-		arena.msg(player, Language.parse(MSG.GOAL_FOOD_SET, flagName));
+		
+		if (flagName.contains("furnace")) {
+			if (block.getType() != Material.FURNACE) {
+				return false;
+			}
+			arena.msg(player, Language.parse(MSG.GOAL_FOODFURNACE_SET, flagName));
+			
+		} else {
+			if (block.getType() != Material.CHEST) {
+				return false;
+			}
+			arena.msg(player, Language.parse(MSG.GOAL_FOOD_SET, flagName));
+			
+		}
 
 		PAA_Region.activeSelections.remove(player.getName());
 		flagName = "";
@@ -399,9 +426,39 @@ public class GoalFood extends ArenaGoal implements Listener {
 	public boolean isInternal() {
 		return true;
 	}
+
+	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
+	public void onFurnaceClick(PlayerInteractEvent event) {
+		if (!event.hasBlock() || event.getClickedBlock().getType() != Material.FURNACE) {
+			return;
+		}
+		
+		ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+		
+		if (player.getArena() == null || !player.getArena().isFightInProgress()) {
+			return;
+		}
+		
+		Map<String, PALocation> locs = SpawnManager.getSpawnMap(arena, "foodfurnace");
+		
+		String teamName = player.getArenaTeam().getName();
+		
+		if (locs.size() < 1 || !locs.containsKey(teamName + "foodfurnace")) {
+			return;
+		}
+		
+		if (!locs.get(teamName + "foodfurnace").equals(new PALocation (event.getClickedBlock().getLocation()))) {
+			arena.msg(player.get(), Language.parse(MSG.GOAL_FOOD_NOTYOURFOOD));
+			event.setCancelled(true);
+			return;
+		}
+		
+	}
+	
 	
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
+		
 		if (arena == null || !arena.isFightInProgress()) {
 			return;
 		}

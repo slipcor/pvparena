@@ -397,8 +397,11 @@ public final class Language {
 		GOAL_FLAGS_TOSET("lang.tosetflag", "Flag to set: %1%"),
 		GOAL_FLAGS_TYPESET("lang.typeset", "Flag type set to: &e%1%"),
 
+		GOAL_FOOD_NOTYOURFOOD("lang.notyourfood", "This is not your furnace!"),
 		GOAL_FOOD_SET("lang.setfood", "Food chest set: %1%"),
 		GOAL_FOOD_TOSET("lang.tosetfood", "Food chest to set: %1%"),
+		GOAL_FOODFURNACE_SET("lang.setfoodfurnace", "Furnace set: %1%"),
+		GOAL_FOODFURNACE_TOSET("lang.tosetfoodfurnace", "Furnace to set: %1%"),
 
 		GOAL_INFECTED_LOST("nulang.goal.infected.lost", "&6The infected players have been killed!"),
 		GOAL_INFECTED_PLAYER("nulang.goal.infected.player", "&c%1% is infected!"),

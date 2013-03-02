@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.71 - add [team]foodfurnace to only allow the team to use THAT furnace
 * v1.0.1.70 - fix tank winning message
 * v1.0.1.69 - fix /pa class load [classname] - remember: /pa class done !
 * v1.0.1.68 - and, yeah fixed /pa stats !
