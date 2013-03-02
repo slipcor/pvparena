@@ -231,6 +231,8 @@ public class Config {
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
 
+		MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true),
+
 		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
 
 		MODULES_TURRETS_MAXDEGREES("modules.turrets.maxdegrees", 90.0),

@@ -444,6 +444,10 @@ public final class SpawnManager {
 				if (!name.contains("foodchest")) {
 					continue;
 				}
+			} else if (sTeam.equals("foodfurnace")) {
+				if (!name.contains("foodfurnace")) {
+					continue;
+				}
 			} else if (sTeam.equals("turrets")) {
 				if (!name.contains("turret")) {
 					continue;

@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -443,11 +444,23 @@ public class GoalFood extends ArenaGoal implements Listener {
 		
 		String teamName = player.getArenaTeam().getName();
 		
-		if (locs.size() < 1 || !locs.containsKey(teamName + "foodfurnace")) {
+		if (locs.size() < 1) {
 			return;
 		}
 		
-		if (!locs.get(teamName + "foodfurnace").equals(new PALocation (event.getClickedBlock().getLocation()))) {
+		Set<PALocation> validSpawns = new HashSet<PALocation>();
+		
+		for (String spawnName : locs.keySet()) {
+			if (spawnName.startsWith(teamName + "foodfurnace")) {
+				validSpawns.add(locs.get(spawnName));
+			}
+		}
+		
+		if (validSpawns.size() < 1) {
+			return;
+		}
+		
+		if (!validSpawns.contains(new PALocation (event.getClickedBlock().getLocation()))) {
 			arena.msg(player.get(), Language.parse(MSG.GOAL_FOOD_NOTYOURFOOD));
 			event.setCancelled(true);
 			return;
