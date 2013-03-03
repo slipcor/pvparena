@@ -84,7 +84,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
 			arena.msg(sender, Language.parse(MSG.ERROR_SPAWN_UNKNOWN, args[0]));
 			
-		} else {
+		} else if (args[1].equalsIgnoreCase("remove")) {
 			// usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
 			final PALocation loc = SpawnManager.getCoords(arena, args[0]);
 			if (loc == null) {
@@ -93,6 +93,8 @@ public class PAA_Spawn extends AbstractArenaCommand {
 				arena.msg(sender, Language.parse(MSG.SPAWN_REMOVED, args[0]));
 				arena.spawnUnset(args[0]);
 			}
+		} else {
+			displayHelp(sender);
 		}
 	}
 	

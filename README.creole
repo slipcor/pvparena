@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.73 - fix #295 - display proper help when trying to set spawn wrongly
 * v1.0.1.72 - add SpecialJoin setting for player count display
 * v1.0.1.71 - add [team]foodfurnace to only allow the team to use THAT furnace
 * v1.0.1.70 - fix tank winning message
