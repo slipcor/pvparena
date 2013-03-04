@@ -517,6 +517,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 									.getBlockZ())))) {
 				continue;
 			}
+			
+			if (entity.hasMetadata("NPC")) {
+				continue;
+			}
 			entity.remove();
 		}
 		Bukkit.getScheduler().cancelTask(tickID);
