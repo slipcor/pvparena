@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.76 - don't reset the (ready) countdown if ppl leave and there's enough ppl left
 * v1.0.1.75 - don't reset the (ready) countdown if ppl join and there's an autoClass set!
 * v1.0.1.74 - add Citizens support (don't remove NPCs)
 * v1.0.1.73 - fix #295 - display proper help when trying to set spawn wrongly

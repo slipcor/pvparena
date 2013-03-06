@@ -774,7 +774,8 @@ public class Arena {
 		removePlayer(player, getArenaConfig().getString(location), false,
 				silent);
 
-		if (startRunner != null) {
+		if (startRunner != null && getArenaConfig().getInt(CFG.READY_MINPLAYERS) > 0 &&
+				getFighters().size() <= getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
 			startRunner.cancel();
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			startRunner = null;
