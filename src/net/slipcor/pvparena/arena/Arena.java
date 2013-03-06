@@ -241,7 +241,7 @@ public class Arena {
 	 */
 	public void countDown() {
 		if (startRunner != null || this.isFightInProgress()) {
-			if (!this.isFightInProgress()) {
+			if (this.getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS)) == null && !this.isFightInProgress()) {
 				startRunner.cancel();
 				startRunner = null;
 				broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
