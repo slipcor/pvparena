@@ -173,7 +173,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				.parsePlayer(respawnPlayer.getName()).getArenaTeam();
 		final ArenaTeam killerTeam = ArenaPlayer.parsePlayer(
 				respawnPlayer.getKiller().getName()).getArenaTeam();
-		reduceLives(arena, killerTeam);
+		if (reduceLives(arena, killerTeam)) {
+			return;
+		}
 
 		if (getLifeMap().get(killerTeam.getName()) != null) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
@@ -293,7 +295,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		return true;
 	}
 
-	private void reduceLives(final Arena arena, final ArenaTeam team) {
+	/**
+	 * @param arena the arena this is happening in
+	 * @param team the killing team
+	 * @return true if the player should not respawn but be removed
+	 */
+	private boolean reduceLives(final Arena arena, final ArenaTeam team) {
 		final int iLives = this.getLifeMap().get(team.getName());
 
 		if (iLives <= 1) {
@@ -311,10 +318,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				}
 			}
 			PACheck.handleEnd(arena, false);
-			return;
+			return true;
 		}
 
 		getLifeMap().put(team.getName(), iLives - 1);
+		return false;
 	}
 
 	@Override
