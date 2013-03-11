@@ -919,9 +919,9 @@ public class Arena {
 			PAClassSign.remove(signs, player);
 		}
 
-		if (getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
-			aPlayer.setArena(null);
-		}
+//		if (getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+//			aPlayer.setArena(null);
+//		}
 
 		player.setNoDamageTicks(60);
 	}
