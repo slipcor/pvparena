@@ -79,6 +79,7 @@ public class EntityListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onCreatureSpawn(final CreatureSpawnEvent event) {
+		DEBUG.i("onCreatureSpawn: " + event.getSpawnReason().name());
 		final Set<SpawnReason> naturals = new HashSet<SpawnReason>();
 		naturals.add(SpawnReason.CHUNK_GEN);
 		naturals.add(SpawnReason.DEFAULT);
@@ -88,6 +89,7 @@ public class EntityListener implements Listener {
 
 		if (!naturals.contains(event.getSpawnReason())) {
 			// custom generation, this is not our business!
+			DEBUG.i(">natural");
 			return;
 		}
 
@@ -96,8 +98,10 @@ public class EntityListener implements Listener {
 						new PABlockLocation(event.getLocation()),
 						RegionProtection.MOBS);
 		if (arena == null) {
+			DEBUG.i("null arena");
 			return; // no arena => out
 		}
+		DEBUG.i("cancel!");
 		event.setCancelled(true);
 	}
 
