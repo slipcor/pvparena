@@ -50,7 +50,7 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return "v1.0.1.79";
 	}
 
 	private static final int PRIORITY = 9;
@@ -430,7 +430,7 @@ public class GoalInfect extends ArenaGoal {
 				}
 				this.getLifeMap().put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-				break;
+				//break;
 			}
 		}
 		final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");

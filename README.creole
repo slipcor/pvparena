@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.79 - fix Infect goal. Strange noone witnessed this :p
 * v1.0.1.78 - revert v0.10.0.3 (zOMG), fix re-join arenas messing up
 * v1.0.1.77 - default to teamkill = true -> fixes 99% of all issues :p
 * v1.0.1.76 - stop respawning players that have lost a TDM match!
