@@ -116,6 +116,12 @@ public class EntityListener implements Listener {
 			arena = ArenaManager.getArenaByProtectedRegionLocation(
 					new PABlockLocation(event.getLocation()), RegionProtection.TNTBREAK);
 			if (arena == null) {
+				
+				arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event.getLocation()));
+				if (arena != null) {
+					ArenaModuleManager.onEntityExplode(arena, event);
+				}
+				
 				return; // no arena => out
 			}
 		}
