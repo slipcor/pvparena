@@ -212,6 +212,9 @@ public class Arena {
 			if (ArenaModuleManager.cannotSelectClass(this, player, className)) {
 				return;
 			}
+			if (startRunner != null) {
+				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
+			}
 		}
 		InventoryManager.clearInventory(player);
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
