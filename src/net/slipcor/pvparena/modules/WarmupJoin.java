@@ -25,7 +25,7 @@ import org.bukkit.entity.Player;
 
 public class WarmupJoin extends ArenaModule {
 	
-	private final static int PRIORITY = 2;
+	private final static int PRIORITY = 3;
 	
 	private Set<ArenaPlayer> playerSet = null;
 

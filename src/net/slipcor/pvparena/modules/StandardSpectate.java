@@ -34,7 +34,7 @@ public class StandardSpectate extends ArenaModule {
 		debug = new Debug(301);
 	}
 
-	private static final int PRIORITY = 1;
+	private static final int PRIORITY = 2;
 
 	@Override
 	public String version() {

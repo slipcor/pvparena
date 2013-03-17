@@ -28,7 +28,7 @@ import org.bukkit.entity.Player;
 
 public class BattlefieldJoin extends ArenaModule {
 
-	private final static int PRIORITY = 0;
+	private final static int PRIORITY = 1;
 
 	public BattlefieldJoin() {
 		super("BattlefieldJoin");
@@ -93,7 +93,17 @@ public class BattlefieldJoin extends ArenaModule {
 		} else {
 			arena.tpPlayerToCoordName(player.get(), team.getName() + "spawn");
 		}
-		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+		
+		class RunLater implements Runnable {
+
+			@Override
+			public void run() {
+				PACheck.handleStart(arena, sender);
+			}
+			
+		}
+		
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 10L);
 	}
 
 	@Override

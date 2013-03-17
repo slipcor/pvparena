@@ -32,7 +32,7 @@ import org.bukkit.entity.Player;
 
 public class StandardLounge extends ArenaModule {
 
-	private static final int PRIORITY = 1;
+	private static final int PRIORITY = 2;
 
 	public StandardLounge() {
 		super("StandardLounge");

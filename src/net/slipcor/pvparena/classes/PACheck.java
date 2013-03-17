@@ -325,6 +325,7 @@ public class PACheck {
 			arena.markPlayedPlayer(sender.getName());
 			
 			if ((commModule == null) || (commGoal == null)) {
+				
 				if (commModule != null) {
 					commModule.commitJoin((Player) sender, team);
 					
@@ -353,7 +354,6 @@ public class PACheck {
 				ArenaModuleManager.initiate(arena, (Player) sender);
 				
 				if (arena.getFighters().size() > 1 && arena.getFighters().size() >= arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
-					arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 					arena.setFightInProgress(true);
 					for (ArenaPlayer p : arena.getFighters()) {
 						if (p.getName().equals(sender.getName())) {
@@ -575,6 +575,10 @@ public class PACheck {
 			} else {
 				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
 			}
+			return;
+		}
+		
+		if (arena.getFighters().size() < 2 || arena.getFighters().size() < arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
 			return;
 		}
 		
