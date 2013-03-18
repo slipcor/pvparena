@@ -45,7 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.0.1.83 - fix /pa rounds error message
+* v1.0.1.84 - properly pars /pa round arguments
+* v1.0.1.83 - fix /pa round error message
 * v1.0.1.82 - allow modules to hook into tnt explosions in unprotected regions
 * v1.0.1.81 - automatically ready ppl that join and select a class when an arena is starting
 * v1.0.1.80 - fix BattlefieldJoin (direct joining)
