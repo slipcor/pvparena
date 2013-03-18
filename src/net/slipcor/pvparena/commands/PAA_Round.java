@@ -95,8 +95,13 @@ public class PAA_Round extends AbstractArenaCommand {
 			roundMap.set(round, rRound);
 			//TODO LATER
 			
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
 			arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[1]));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, e.getLocalizedMessage()));
+			
 		}
 	}
 
