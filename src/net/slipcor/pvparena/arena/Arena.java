@@ -1478,5 +1478,6 @@ public class Arena {
 		}
 
 		cfg.setManually("rounds", result);
+		cfg.save();
 	}
 }

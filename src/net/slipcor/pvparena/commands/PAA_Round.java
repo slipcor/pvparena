@@ -14,6 +14,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena ROUND Command class</pre>
@@ -97,7 +98,6 @@ public class PAA_Round extends AbstractArenaCommand {
 			
 		} catch (NumberFormatException e) {
 			arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[0]));
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, e.getLocalizedMessage()));

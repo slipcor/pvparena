@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.85 - pro tip: when altering the Config, save it!
 * v1.0.1.84 - properly pars /pa round arguments
 * v1.0.1.83 - fix /pa round error message
 * v1.0.1.82 - allow modules to hook into tnt explosions in unprotected regions
