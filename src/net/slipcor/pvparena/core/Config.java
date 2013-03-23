@@ -102,6 +102,7 @@ public class Config {
 		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false),
 		PLAYER_DROPSINVENTORY("player.dropsInventory", false),
 		PLAYER_EXHAUSTION("player.exhaustion", 0.0),
+		PLAYER_FEEDFORKILL("player.hungerforkill", 0),
 		PLAYER_FOODLEVEL("player.foodLevel", 20),
 		PLAYER_HEALTH("player.health", 20),
 		PLAYER_PREVENTDEATH("player.preventDeath", true),

@@ -415,6 +415,12 @@ public class PACheck {
 		StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
 		event.setDeathMessage(null);
 		
+		if (player.getKiller() != null) {
+			player.getKiller().setFoodLevel(
+					player.getKiller().getFoodLevel() + 
+					arena.getArenaConfig().getInt(CFG.PLAYER_FEEDFORKILL));
+		}
+		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			DEBUG.i("don't drop inventory", player);
 			event.getDrops().clear();
