@@ -443,6 +443,9 @@ public final class Language {
 		MODULE_AFTERMATCH_STARTINGIN("nulang.mod.aftermatch.startingin", "AfterMatch in %1%!"),
 		MODULE_AFTERMATCH_SPAWNNOTSET("nulang.mod.aftermatch.spawnnotset", "Spawn 'after' not set!"),
 
+		MODULE_ANNOUNCEMENTS_IGNOREON("nulang.mod.announcements.ignoreon", "You are now ignoring announcements!"),
+		MODULE_ANNOUNCEMENTS_IGNOREOFF("nulang.mod.announcements.ignoreoff", "You are now receiving announcements!"),
+
 		MODULE_ARENABOARDS_CREATE("nulang.mod.arenaboards.createarenaboard", "create an ArenaBoard"),
 		MODULE_ARENABOARDS_DESTROYED("nulang.mod.arenaboards.arenaboarddestroyed", "ArenaBoard destroyed!"),
 		MODULE_ARENABOARDS_EXISTS("nulang.mod.arenaboards.boardexists", "ArenaBoard already exists!'"),

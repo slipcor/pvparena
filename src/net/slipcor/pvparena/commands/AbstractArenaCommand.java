@@ -143,6 +143,8 @@ public abstract class AbstractArenaCommand {
 			return new PAI_List();
 		} else if (name.equals("ready") || name.equals("-r")) {
 			return new PAI_Ready();
+		} else if (name.contains("shutup") || name.equals("-su")) {
+			return new PAI_Shutup();
 		} else if (name.equals("arenaclass") || name.equals("-ac")) {
 			return new PAG_Arenaclass();
 		} else if (name.equals("info") || name.equals("-i")) {

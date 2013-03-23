@@ -277,7 +277,7 @@ public final class Help {
 				LINE,
 				"Valid types: break | place | use",
 				"Valid subs: add | remove | show"}),
-		
+				
 		CHAT("nulang.help.msg.chat", new String[]{
 				"Set arena team chat mode",
 				LINE,
@@ -286,6 +286,17 @@ public final class Help {
 				"/pa [arenaname] chat {value}",
 				LINE,
 				"Switch between team and global chat",
+				"No value will toggle and display the result",
+				"Valid values: yes, on, 1, true, no, off, 0, false"}),
+						
+		SHUTUP("nulang.help.msg.shutup", new String[]{
+				"Ignore arena announcements",
+				LINE,
+				"shorthand command: -su",
+				LINE,
+				"/pa [arenaname] shutup {value}",
+				LINE,
+				"Switch ignore mode",
 				"No value will toggle and display the result",
 				"Valid values: yes, on, 1, true, no, off, 0, false"}),
 		JOIN("nulang.help.msg.join", new String[]{

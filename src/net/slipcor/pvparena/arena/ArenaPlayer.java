@@ -52,6 +52,7 @@ public class ArenaPlayer {
 
 	private final String name;
 	private boolean telePass = false;
+	private boolean ignoreAnnouncements = false;
 
 	private Arena arena;
 	private ArenaClass aClass;
@@ -514,6 +515,10 @@ public class ArenaPlayer {
 		return telePass;
 	}
 
+	public boolean isIgnoringAnnouncements() {
+		return ignoreAnnouncements;
+	}
+
 	public boolean isPublicChatting() {
 		return publicChatting;
 	}
@@ -682,6 +687,10 @@ public class ArenaPlayer {
 		PVPArena.instance.getLogger().warning(
 				"[PA-debug] failed to set unknown class " + className + " to player "
 						+ name);
+	}
+
+	public void setIgnoreAnnouncements(final boolean value) {
+		ignoreAnnouncements = value;
 	}
 
 	public void setLocation(final PALocation location) {

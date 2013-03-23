@@ -45,9 +45,10 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.87 - add /pa [arena] shutup - disables arena announcements
 * v1.0.1.86 - repair tools when breaking blocks
 * v1.0.1.85 - pro tip: when altering the Config, save it!
-* v1.0.1.84 - properly pars /pa round arguments
+* v1.0.1.84 - properly parse /pa round arguments
 * v1.0.1.83 - fix /pa round error message
 * v1.0.1.82 - allow modules to hook into tnt explosions in unprotected regions
 * v1.0.1.81 - automatically ready ppl that join and select a class when an arena is starting
