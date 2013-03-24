@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
@@ -643,7 +644,7 @@ public class Config {
 		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
 				|| z == null) {
 			throw new IllegalArgumentException(
-					"Some of the parsed values are null!");
+					"Some of the parsed values are null: " + coords);
 		}
 
 		return new PABlockLocation(parts[0], x, y, z);
@@ -680,7 +681,7 @@ public class Config {
 		if (Bukkit.getWorld(parts[0]) == null || x == null || y == null
 				|| z == null || yaw == null || pitch == null) {
 			throw new IllegalArgumentException(
-					"Some of the parsed values are null!");
+					"Some of the parsed values are null: " + coords);
 		}
 		return new PALocation(parts[0], x, y, z, pitch, yaw);
 	}
@@ -735,11 +736,13 @@ public class Config {
 				.getShapeByName(parts[7]);
 
 		if (parts.length < 11) {
+			PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
 			throw new IllegalArgumentException(
 					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: "
 							+ coords);
 		}
 		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
+			PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
 			throw new IllegalArgumentException(
 					"Input string does not contain valid region shape: "
 							+ coords);
@@ -756,6 +759,7 @@ public class Config {
 		if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null
 				|| z1 == null || x2 == null || y2 == null || z2 == null
 				|| flags == null || prots == null) {
+			PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
 			throw new IllegalArgumentException(
 					"Some of the parsed values are null!");
 		}
