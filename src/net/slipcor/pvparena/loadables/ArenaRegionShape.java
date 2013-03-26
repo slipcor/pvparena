@@ -282,8 +282,8 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (ars.size() < 1) {
-			return SpawnManager.getRegionCenter(arena).getDistance(
-					new PABlockLocation(player.getLocation())) > joinRange;
+			return SpawnManager.getRegionCenter(arena).getDistanceSquared(
+					new PABlockLocation(player.getLocation())) > joinRange*joinRange;
 		}
 
 		for (ArenaRegionShape ar : ars) {
@@ -444,7 +444,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			return false;
 		}
 
-		return (offset < getCenter().getDistance(loc));
+		return (offset*offset < getCenter().getDistanceSquared(loc));
 	}
 
 	public void onThisLoad() {

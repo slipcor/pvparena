@@ -71,13 +71,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		this.arena = arena;
 		this.global = global;
 		
-		if (this instanceof EndRunnable) {
-			runTaskTimer(PVPArena.instance, 20L, 20L);
-		} else if (this instanceof StartRunnable) {
-			runTaskTimer(PVPArena.instance, 20L, 20L);
-		} else {
-			runTaskTimerAsynchronously(PVPArena.instance, 20L, 20L);
-		}
+		runTaskTimer(PVPArena.instance, 20L, 20L);
 	}
 	
 	public void spam() {

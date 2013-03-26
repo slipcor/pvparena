@@ -162,7 +162,7 @@ public class PAClassSign {
 	public static PAClassSign used(final Location loc,
 			final Set<PAClassSign> signs) {
 		for (PAClassSign sign : signs) {
-			if (sign.location.getDistance(new PABlockLocation(loc)) < 1) {
+			if (sign.location.getDistanceSquared(new PABlockLocation(loc)) < 1) {
 				return sign;
 			}
 		}

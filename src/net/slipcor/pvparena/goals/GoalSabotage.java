@@ -583,7 +583,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 		final PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
 
-		if (nearest.getDistance(tLoc) < 2) {
+		if (nearest.getDistanceSquared(tLoc) < 4) {
 			event.setCancelled(true);
 		}
 	}

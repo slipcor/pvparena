@@ -290,10 +290,10 @@ public class CylindricRegion extends ArenaRegionShape {
 		final PABlockLocation a = new PABlockLocation(this.locs[1].toLocation());
 		a.setY(locs[0].getY());
 
-		final Double thisRadius = getLocs()[0].getDistance(a) / 2;
+		final Double thisRadius = getLocs()[0].getDistanceSquared(a) / 2;
 		thisCenter.setY(loc.getY());
 
-		return loc.getDistance(thisCenter) <= thisRadius;
+		return loc.getDistanceSquared(thisCenter) <= thisRadius;
 	}
 
 	@Override

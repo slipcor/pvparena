@@ -286,11 +286,15 @@ public class SphericRegion extends ArenaRegionShape {
 				|| loc == null || !loc.getWorldName().equals(world)) {
 			return false; // no arena, no container or not in the same world
 		}
-		return loc.getDistance(this.getCenter()) <= getRadius();
+		return loc.getDistanceSquared(this.getCenter()) <= getRadiusSquared();
 	}
 
 	private Double getRadius() {
 		return getLocs()[0].getDistance(getLocs()[1]) / 2;
+	}
+
+	private Double getRadiusSquared() {
+		return getLocs()[0].getDistanceSquared(getLocs()[1]) / 2;
 	}
 
 	@Override

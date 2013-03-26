@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.90 - optimization and TagAPI fix for autovote
 * v1.0.1.89 - enhance information about config messups
 * v1.0.1.88 - allow giving/taking food for pvp killing
 * v1.0.1.87 - add /pa [arena] shutup - disables arena announcements

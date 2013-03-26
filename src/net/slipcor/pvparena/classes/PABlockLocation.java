@@ -85,6 +85,21 @@ public class PABlockLocation {
 				+ Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
 	}
 
+	public double getDistanceSquared(final PABlockLocation otherLocation) {
+		if (otherLocation == null) {
+			throw new IllegalArgumentException(
+					"Cannot measure distance to a null location");
+		}
+		if (!otherLocation.world.equals(world)) {
+			throw new IllegalArgumentException(
+					"Cannot measure distance between " + world + " and "
+							+ otherLocation.world);
+		}
+
+		return Math.pow(this.x - otherLocation.x, 2.0D)
+				+ Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D);
+	}
+
 	public PABlockLocation getMidpoint(final PABlockLocation location) {
 		return new PABlockLocation(world, (x + location.x) / 2, (y + location.y) / 2,
 				(z + location.z) / 2);

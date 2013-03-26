@@ -62,7 +62,7 @@ public final class SpawnManager {
 			DEBUG.i("> checking " + s);
 			double tempDiff = 0;
 			for (int i = 0; (i < taken.length) && (taken[i] != null); i++) {
-				tempDiff += total.get(taken[i]).getDistance(available.get(s));
+				tempDiff += total.get(taken[i]).getDistanceSquared(available.get(s));
 				DEBUG.i(">> tempDiff: " + tempDiff);
 			}
 			
@@ -239,7 +239,7 @@ public final class SpawnManager {
 
 		for (PABlockLocation loc : locs) {
 			if (result == null
-					|| result.getDistance(location) > loc.getDistance(location)) {
+					|| result.getDistanceSquared(location) > loc.getDistanceSquared(location)) {
 				result = loc;
 			}
 		}
@@ -388,7 +388,7 @@ public final class SpawnManager {
 
 		for (PALocation loc : hashSet) {
 			if (result == null
-					|| result.getDistance(location) > loc.getDistance(location)) {
+					|| result.getDistanceSquared(location) > loc.getDistanceSquared(location)) {
 				result = loc;
 			}
 		}
@@ -609,7 +609,7 @@ public final class SpawnManager {
 		final Set<PALocation> spawns = getSpawns(arena, team.getName());
 
 		for (PALocation loc : spawns) {
-			if (loc.getDistance(new PALocation(player.getLocation())) <= diff) {
+			if (loc.getDistanceSquared(new PALocation(player.getLocation())) <= diff*diff) {
 				DEBUG.i("found near spawn: " + loc.toString(), player);
 				return true;
 			}
@@ -647,7 +647,7 @@ public final class SpawnManager {
 			for (PALocation spawnLoc : locs.values()) {
 				double sum = 0;
 				for (PALocation playerLoc : pLocs) {
-					sum += spawnLoc.getDistance(playerLoc);
+					sum += spawnLoc.getDistanceSquared(playerLoc);
 				}
 				max = Math.max(sum, max);
 				diffs.put(spawnLoc, sum);

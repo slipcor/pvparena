@@ -1170,7 +1170,7 @@ public class Arena {
 			final String sTeam = team.getName();
 			for (PALocation spawnLoc : SpawnManager.getSpawns(this, sTeam)) {
 				for (Location playerLoc : players.keySet()) {
-					if (spawnLoc.getDistance(new PALocation(playerLoc)) < 3) {
+					if (spawnLoc.getDistanceSquared(new PALocation(playerLoc)) < 9) {
 						players.get(playerLoc)
 								.get()
 								.setLastDamageCause(

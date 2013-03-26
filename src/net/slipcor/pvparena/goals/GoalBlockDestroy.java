@@ -685,7 +685,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		for (Block b : event.blockList()) {
 			PALocation loc = new PALocation(b.getLocation());
 			for (String node : map.keySet()) {
-				if (map.get(node).getDistance(loc) < 1) {
+				if (map.get(node).getDistanceSquared(loc) < 1) {
 					final String blockTeam = node.split("block")[0];
 					
 					try {
