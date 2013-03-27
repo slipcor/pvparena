@@ -65,7 +65,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 		}
 
 		if (config.get(args[0]) != null) {
-			listVersions(sender, config, args[1]);
+			listVersions(sender, config, args[0]);
 			return;
 		}
 
