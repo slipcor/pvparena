@@ -15,6 +15,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 
@@ -493,6 +494,22 @@ public class ArenaGoal extends NCBLoadable {
 	 *            the player to unload
 	 */
 	public void unload(final Player player) {
+	}
+	
+	protected void updateLives(final ArenaTeam team, final int value) {
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_ADDLIVESPERPLAYER)) {
+			getLifeMap().put(team.getName(), team.getTeamMembers().size() * value);
+		} else {
+			getLifeMap().put(team.getName(), team.getTeamMembers().size() * value);
+		}
+	}
+	
+	protected void updateLives(final Player player, final int value) {
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_ADDLIVESPERPLAYER)) {
+			getLifeMap().put(player.getName(), arena.getFighters().size() * value);
+		} else {
+			getLifeMap().put(player.getName(), arena.getFighters().size() * value);
+		}
 	}
 
 	/**

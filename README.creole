@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.92 - properly implement players adding to the life pool
 * v1.0.1.91 - fix AIOOB error due to /pa install
 * v1.0.1.90 - optimization and TagAPI fix for autovote
 * v1.0.1.89 - enhance information about config messups

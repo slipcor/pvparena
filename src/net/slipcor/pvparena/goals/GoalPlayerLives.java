@@ -271,8 +271,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public void initate(final Player player) {
-		getLifeMap().put(player.getName(),
-				arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+		updateLives(player, arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 	}
 
 	@Override
@@ -296,8 +295,7 @@ public class GoalPlayerLives extends ArenaGoal {
 	public void parseStart() {
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.getLifeMap().put(ap.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
+				updateLives(ap.get(), arena.getArenaConfig().getInt(CFG.GOAL_PLIVES_LIVES));
 			}
 		}
 	}

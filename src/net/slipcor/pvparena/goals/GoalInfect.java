@@ -395,8 +395,7 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public void initate(final Player player) {
-		getLifeMap().put(player.getName(),
-				arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+		updateLives(player, arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
 	}
 
 	@Override

@@ -73,7 +73,7 @@ public class Config {
 		GENERAL_TYPE("general.type", "none"),
 		GENERAL_WAND("general.wand", 280),
 
-		GOAL_ADDLIVESPERPLAYER("goal.addLivesPerPlayer", true),
+		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false),
 		
 		ITEMS_MINPLAYERS("items.minplayers", 2),
 		ITEMS_REWARDS("items.rewards", "none"),
