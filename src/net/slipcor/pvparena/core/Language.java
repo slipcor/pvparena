@@ -332,6 +332,8 @@ public final class Language {
 		SPAWN_NOTSET("nulang.spawn.notset", "Spawn not set: &a%1%&r"),
 		SPAWN_REMOVED("nulang.spawn.removed", "Spawn removed: &a%1%&r"),
 		SPAWN_SET("nulang.spawn.set", "Spawn set: &a%1%&r"),
+		SPAWN_SET_DONE("nulang.spawn.setdone", "Spawn setting done: &a%1%&r"),
+		SPAWN_SET_START("nulang.spawn.setstart", "Spawn setting started: &a%1%&r"),
 
 		STATS_FILE_DONE("nulang.stats.filedone", "Statistics file loaded!"),
 		STATS_HEAD("nulang.stats.head", "Statistics TOP %1% (%2%)"),
