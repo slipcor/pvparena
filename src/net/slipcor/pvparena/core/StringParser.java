@@ -19,9 +19,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * <pre>
@@ -303,7 +306,29 @@ public final class StringParser {
 						itemStack.setItemMeta(skullMeta);
 					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
-								"invalid leather data: " + data);
+								"invalid skull data: " + data);
+						return itemStack;
+					}
+				} else if (itemStack.getType() == Material.POTION) {
+					// data = NAMEx1x100<oOo>NAMEx2x100
+					try {
+						final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+						
+						String[] defs = data.split(SAFE_BREAK);
+						
+						for (String def : defs) {
+							String[] vals = def.split("x");
+							potionMeta.addCustomEffect(
+									new PotionEffect(
+											PotionEffectType.getByName(vals[0]),
+											Integer.parseInt(vals[1]),
+											Integer.parseInt(vals[2])), true);
+						}
+						
+						itemStack.setItemMeta(potionMeta);
+					} catch (Exception e) {
+						PVPArena.instance.getLogger().warning(
+								"invalid potion data: " + data);
 						return itemStack;
 					}
 				} else {
@@ -448,6 +473,18 @@ public final class StringParser {
 			final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
 			temp.append('~');
 			temp.append(skullMeta.getOwner());
+		} else if (itemStack.getType() == Material.POTION) {
+			if (!durability) {
+				temp.append('~');
+				temp.append(String.valueOf(itemStack.getDurability()));
+				durability = true;
+			}
+			final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
+			temp.append('~');
+			for (PotionEffect pe : potionMeta.getCustomEffects()) {
+				temp.append(pe.getType().getName() + "x" + pe.getAmplifier()+ "x" + pe.getDuration());
+				temp.append(SAFE_BREAK);
+			}
 		}
 
 		if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
