@@ -500,7 +500,7 @@ public class ArenaGoal extends NCBLoadable {
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_ADDLIVESPERPLAYER)) {
 			getLifeMap().put(team.getName(), team.getTeamMembers().size() * value);
 		} else {
-			getLifeMap().put(team.getName(), team.getTeamMembers().size() * value);
+			getLifeMap().put(team.getName(), value);
 		}
 	}
 	
@@ -508,7 +508,7 @@ public class ArenaGoal extends NCBLoadable {
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_ADDLIVESPERPLAYER)) {
 			getLifeMap().put(player.getName(), arena.getFighters().size() * value);
 		} else {
-			getLifeMap().put(player.getName(), arena.getFighters().size() * value);
+			getLifeMap().put(player.getName(), value);
 		}
 	}
 
