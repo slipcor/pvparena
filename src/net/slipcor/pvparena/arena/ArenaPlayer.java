@@ -190,14 +190,14 @@ public class ArenaPlayer {
 		final YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
-
+			
 			final Set<String> arenas = cfg.getKeys(false);
 			
 			for (String arenaname : arenas) {
 
 				final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
 				for (String player : players) {
-				
+					/*
 					final Set<String> values = cfg.getConfigurationSection(arenaname+"."+player).getKeys(false);
 
 					ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
@@ -210,8 +210,10 @@ public class ArenaPlayer {
 							continue;
 						}
 						
-						aPlayer.addStatistic(arenaname, statType, cfg.getInt(arenaname+"."+player+"."+value));
+						//aPlayer.addStatistic(arenaname, statType, cfg.getInt(arenaname+"."+player+"."+value));
 					}
+					*/
+					totalPlayers.put(player, ArenaPlayer.parsePlayer(player)); 
 				}
 				
 			}
