@@ -103,6 +103,10 @@ public class TeamManager {
 				return s;
 			}
 		}
+		
+		if (free.size() < 1) {
+			return null;
+		}
 
 		final Random random = new Random();
 		int rand = random.nextInt(free.size());
