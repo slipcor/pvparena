@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.96 - add the "CustomSpawn" module to define custom named spawns
 * v1.0.1.95 - attempt to fix statistics madness
 * v1.0.1.94 - Support CUSTOM POTIONS - fixes ticket #330
 * v1.0.1.93 - EventActions now is able to activate redstone!

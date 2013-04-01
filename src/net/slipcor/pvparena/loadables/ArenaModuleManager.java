@@ -27,6 +27,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.modules.BattlefieldJoin;
+import net.slipcor.pvparena.modules.CustomSpawn;
 import net.slipcor.pvparena.modules.RegionTool;
 import net.slipcor.pvparena.modules.StandardLounge;
 import net.slipcor.pvparena.modules.StandardSpectate;
@@ -66,6 +67,7 @@ public class ArenaModuleManager {
 	
 	private void fill() {
 		mods.add(new BattlefieldJoin());
+		mods.add(new CustomSpawn());
 		mods.add(new RegionTool());
 		mods.add(new StandardLounge());
 		mods.add(new StandardSpectate());
