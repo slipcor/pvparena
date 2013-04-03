@@ -5,6 +5,7 @@ import java.util.Set;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -43,6 +44,35 @@ public final class PVPArenaAPI {
 		}
 		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		return (arena == null) ? "" : arena.getName();
+	}
+
+	/**
+	 * get the arena team a player is part of
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return the arena team, null otherwise
+	 */
+	public static ArenaTeam getArenaTeam(final Player player) {
+		if (!Debug.override) {
+			DEBUG.i("API: get arena team of player: " + player.getName(), player);
+		}
+		return ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+	}
+
+	/**
+	 * get the arena team name a player is part of
+	 * 
+	 * @param player
+	 *            the player to check
+	 * @return the arena team name, "" otherwise
+	 */
+	public static String getArenaTeamName(final Player player) {
+		if (!Debug.override) {
+			DEBUG.i("API: get arena team of player: " + player.getName(), player);
+		}
+		ArenaTeam team =  ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+		return (team == null) ? "" : team.getName();
 	}
 
 	/**

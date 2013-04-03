@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.99 - add API access to player's teams and team names
 * v1.0.1.98 - properly print error message when arena is full; #343
 * v1.0.1.97 - properly implement the proper implementation of adding players to the life pool
 * v1.0.1.96 - add the "CustomSpawn" module to define custom named spawns
