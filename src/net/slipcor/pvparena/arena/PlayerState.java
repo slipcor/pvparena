@@ -42,6 +42,8 @@ public final class PlayerState {
 	private float experience;
 	private float saturation;
 	
+	private boolean flying;
+	
 	private String displayname;
 	private Collection<PotionEffect> potionEffects;
 
@@ -61,11 +63,17 @@ public final class PlayerState {
 
 		potionEffects = player.getActivePotionEffects();
 		
+		flying = player.isFlying();
+		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final Arena arena = aPlayer.getArena();
 
 		if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			displayname = player.getDisplayName();
+		}
+		
+		if (!arena.getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
+			player.setFlying(false);
 		}
 		
 		fullReset(arena, player);
@@ -86,6 +94,7 @@ public final class PlayerState {
 		cfg.set("state.explevel", explevel);
 		cfg.set("state.saturation", saturation);
 		cfg.set("state.displayname", displayname);
+		cfg.set("state.flying", flying);
 	}
 
 	public static void fullReset(final Arena arena, final Player player) {
@@ -149,6 +158,7 @@ public final class PlayerState {
 			player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 		player.resetPlayerTime();
+		player.setFlying(flying);
 	}
 
 	/**
@@ -185,6 +195,7 @@ public final class PlayerState {
 		saturation = 0;
 		displayname = null;
 		potionEffects = null;
+		flying = false;
 	}
 
 	public static void removeEffects(final Player player) {

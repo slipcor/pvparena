@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.102 - properly save, fix and revert fly mode
 * v1.0.1.101 - make y offset configurable and add nodamage timer on leave
 * v1.0.1.100 - add /pa [arena] playerjoin [playername] {team} - join enforcing
 * v1.0.1.99 - add API access to player's teams and team names
