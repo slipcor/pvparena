@@ -370,7 +370,7 @@ public final class SpawnManager {
 		} else {
 			result = Config.parseLocation(sLoc);
 		}
-		return result.add(0.5, 0.5, 0.5);
+		return result.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
 	}
 
 	/**
@@ -724,11 +724,10 @@ public final class SpawnManager {
 		class RunLater implements Runnable {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				final PALocation temp = aPlayer.getLocation();
 				
 				Location bLoc = newLoc.toLocation();
-				bLoc.add(0.5, 0.5, 0.5);
+				bLoc.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
 				
 				while (bLoc.getBlock().getType() != Material.AIR
 						&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR

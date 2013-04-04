@@ -7,5 +7,6 @@ onlyPVPinArena: false
 update: both
 updatetype: beta
 safeadmin: true
+y-offset: 0.5
 whitelist:
 - ungod

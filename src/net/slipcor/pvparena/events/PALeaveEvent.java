@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.events;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Config.CFG;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -38,6 +39,7 @@ public class PALeaveEvent extends Event {
 		this.arena = arena;
 		this.player = player;
 		spectator = isSpectator;
+		player.setNoDamageTicks(arena.getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 	}
 
 	/**
