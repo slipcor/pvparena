@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.commands;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
@@ -42,6 +43,11 @@ public class PAG_Join extends AbstractArenaCommand {
 		
 		if (!(sender instanceof Player)) {
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			return;
+		}
+		
+		if (!PVPArena.hasPerms(sender, arena)) {
+			arena.msg(sender, Language.parse(MSG.ERROR_NOPERM_JOIN));
 			return;
 		}
 		
