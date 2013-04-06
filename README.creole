@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.104 - more hacking for automation
 * v1.0.1.103 - properly deny players joining an arena because of explicit perms missing
 * v1.0.1.102 - properly save, fix and revert fly mode
 * v1.0.1.101 - make y offset configurable and add nodamage timer on leave

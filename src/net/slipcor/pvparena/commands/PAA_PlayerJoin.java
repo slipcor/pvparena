@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.commands;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.core.Help;
@@ -51,7 +52,7 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 		}
 		
 		PAG_Join cmd = new PAG_Join();
-		
+		player.addAttachment(PVPArena.instance, "pvparena.join."+arena.getName(), true, 20);
 		cmd.commit(arena, player, StringParser.shiftArrayBy(args, 1));
 	}
 
