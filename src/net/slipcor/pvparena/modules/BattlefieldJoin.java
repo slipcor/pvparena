@@ -85,6 +85,16 @@ public class BattlefieldJoin extends ArenaModule {
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));
+
+		player.setArena(arena);
+		player.setStatus(Status.LOUNGE);
+		team.add(player);
+		if (arena.isFreeForAll()) {
+			arena.tpPlayerToCoordName(player.get(), "spawn");
+		} else {
+			arena.tpPlayerToCoordName(player.get(), team.getName() + "spawn");
+		}
+		
 		if (player.getState() == null) {
 			
 			final Arena arena = player.getArena();
@@ -107,14 +117,6 @@ public class BattlefieldJoin extends ArenaModule {
 					return;
 				}
 			}
-		}
-		player.setArena(arena);
-		player.setStatus(Status.LOUNGE);
-		team.add(player);
-		if (arena.isFreeForAll()) {
-			arena.tpPlayerToCoordName(player.get(), "spawn");
-		} else {
-			arena.tpPlayerToCoordName(player.get(), team.getName() + "spawn");
 		}
 		
 		class RunLater implements Runnable {

@@ -169,6 +169,17 @@ public class StandardLounge extends ArenaModule {
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));
+		
+		// ArenaPlayer.prepareInventory(arena, ap.get());
+		player.setArena(arena);
+		team.add(player);
+
+		if (arena.isFreeForAll()) {
+			arena.tpPlayerToCoordName(player.get(), "lounge");
+		} else {
+			arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
+		}
+		
 		if (player.getState() == null) {
 			
 			final Arena arena = player.getArena();
@@ -191,14 +202,6 @@ public class StandardLounge extends ArenaModule {
 					return;
 				}
 			}
-		}
-		// ArenaPlayer.prepareInventory(arena, ap.get());
-		player.setArena(arena);
-		team.add(player);
-		if (arena.isFreeForAll()) {
-			arena.tpPlayerToCoordName(player.get(), "lounge");
-		} else {
-			arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
 		}
 		player.setStatus(Status.LOUNGE);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));

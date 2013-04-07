@@ -65,6 +65,13 @@ public class StandardSpectate extends ArenaModule {
 		// standard join --> lounge
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		aPlayer.setLocation(new PALocation(player.getLocation()));
+
+		aPlayer.setArena(arena);
+		aPlayer.setStatus(Status.WATCH);
+
+		arena.tpPlayerToCoordName(player, "spectator");
+		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
+		
 		if (aPlayer.getState() == null) {
 			
 			final Arena arena = aPlayer.getArena();
@@ -88,11 +95,6 @@ public class StandardSpectate extends ArenaModule {
 				}
 			}
 		}
-		aPlayer.setArena(arena);
-		aPlayer.setStatus(Status.WATCH);
-
-		arena.tpPlayerToCoordName(player, "spectator");
-		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
 	}
 
 	@Override
