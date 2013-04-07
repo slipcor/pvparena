@@ -782,11 +782,12 @@ public class Arena {
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			startRunner = null;
 		}
-		aPlayer.reset();
 
 		if (isFightInProgress()) {
 			ArenaManager.checkAndCommit(this, silent);
 		}
+		
+		aPlayer.reset();
 	}
 
 	/**
