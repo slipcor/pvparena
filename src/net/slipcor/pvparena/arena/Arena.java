@@ -25,6 +25,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAEndEvent;
 import net.slipcor.pvparena.events.PAExitEvent;
+import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PALeaveEvent;
 import net.slipcor.pvparena.events.PALoseEvent;
 import net.slipcor.pvparena.events.PAWinEvent;
@@ -38,8 +39,6 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.PlayerDestroyRunnable;
-import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 import net.slipcor.pvparena.runnables.StartRunnable;
 import net.slipcor.pvparena.runnables.TeleportRunnable;
 
@@ -783,7 +782,7 @@ public class Arena {
 			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			startRunner = null;
 		}
-		new PlayerDestroyRunnable(aPlayer);
+		aPlayer.reset();
 
 		if (isFightInProgress()) {
 			ArenaManager.checkAndCommit(this, silent);
@@ -988,7 +987,8 @@ public class Arena {
 						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
 						force);
 			}
-			new PlayerDestroyRunnable(p);
+
+			p.reset();
 		}
 	}
 
@@ -1348,8 +1348,29 @@ public class Arena {
 		tpPlayerToCoordName(player, (isFreeForAll() ? "" : team.getName())
 				+ "spawn");
 
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
-				new PlayerStateCreateRunnable(aPlayer, player), 2L);
+		if (aPlayer.getState() == null) {
+			
+			final Arena arena = aPlayer.getArena();
+
+			final PAJoinEvent event = new PAJoinEvent(arena, player, false);
+			Bukkit.getPluginManager().callEvent(event);
+
+			aPlayer.createState(player);
+			ArenaPlayer.backupAndClearInventory(arena, player);
+			aPlayer.dump();
+			
+			
+			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
+				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+					arena.chooseClass(player, null, autoClass);
+				}
+				if (autoClass == null) {
+					arena.msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					return true;
+				}
+			}
+		}
 		return true;
 	}
 

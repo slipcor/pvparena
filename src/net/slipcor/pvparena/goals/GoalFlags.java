@@ -740,7 +740,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
-		if (!res.hasError() && res.getPriority() <= PRIORITY) {
+		if (res.getPriority() <= PRIORITY+1000) {
 			res.setError(
 					this,
 					String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()

@@ -3,7 +3,7 @@ package net.slipcor.pvparena.modules;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -13,8 +13,8 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
-import net.slipcor.pvparena.runnables.PlayerStateCreateRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -169,8 +169,29 @@ public class StandardLounge extends ArenaModule {
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));
-		Bukkit.getScheduler().runTaskLaterAsynchronously(PVPArena.instance,
-				new PlayerStateCreateRunnable(player, player.get()), 2L);
+		if (player.getState() == null) {
+			
+			final Arena arena = player.getArena();
+
+			final PAJoinEvent event = new PAJoinEvent(arena, player.get(), false);
+			Bukkit.getPluginManager().callEvent(event);
+
+			player.createState(player.get());
+			ArenaPlayer.backupAndClearInventory(arena, player.get());
+			player.dump();
+			
+			
+			if (player.getArenaTeam() != null && player.getArenaClass() == null) {
+				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+					arena.chooseClass(player.get(), null, autoClass);
+				}
+				if (autoClass == null) {
+					arena.msg(player.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					return;
+				}
+			}
+		}
 		// ArenaPlayer.prepareInventory(arena, ap.get());
 		player.setArena(arena);
 		team.add(player);
