@@ -610,6 +610,7 @@ public class PACheck {
 		DEBUG.i("teleported everyone!", sender);
 
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+		arena.setFightInProgress(true);
 		
 		for (ArenaGoal x : arena.getGoals()) {
 			x.parseStart();

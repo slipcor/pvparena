@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -40,7 +39,6 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.StartRunnable;
-import net.slipcor.pvparena.runnables.TeleportRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -1065,7 +1063,33 @@ public class Arena {
 
 		DEBUG.i("string = " + string, player);
 		aPlayer.setTelePass(true);
-		new TeleportRunnable(this, aPlayer, string, soft);
+		if (string.equalsIgnoreCase("old")) {
+			DEBUG.i("tping to old", player);
+			if (aPlayer.getLocation() != null) {
+				DEBUG.i("location is fine", player);
+				final PALocation loc = aPlayer.getLocation();
+				aPlayer.get().teleport(loc.toLocation());
+				aPlayer.get()
+						.setNoDamageTicks(
+								getArenaConfig().getInt(
+										CFG.TIME_TELEPORTPROTECT) * 20);
+			}
+		} else {
+			final PALocation loc = SpawnManager.getCoords(this, string);
+			if (loc == null) {
+				PVPArena.instance.getLogger().warning("Spawn null: " + string);
+			} else {
+				aPlayer.get().teleport(loc.toLocation());
+				aPlayer.setTelePass(false);
+			}
+			aPlayer.get()
+					.setNoDamageTicks(
+							getArenaConfig().getInt(
+									CFG.TIME_TELEPORTPROTECT) * 20);
+		}
+		if (!soft) {
+			aPlayer.setLocation(null);
+		}
 	}
 
 	/**
