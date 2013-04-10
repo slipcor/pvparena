@@ -84,7 +84,8 @@ public class Debug {
 		if (!debugs(filter)) {
 			return;
 		}
-		Bukkit.getLogger().info(prefix + string);
+		
+		Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + string);
 	}
 
 	public static void load(final PVPArena instance, final CommandSender sender) {
