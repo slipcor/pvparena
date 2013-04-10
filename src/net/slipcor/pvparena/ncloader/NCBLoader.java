@@ -131,8 +131,6 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 								.getConstructor(ctorParams);
 						T loadable = (T) ctor.newInstance(paramTypes);
 
-						loadable.jar(jarFile);
-
 						LoadResult result = loadable.init();
 
 						if (result.getResult().equals(Result.SUCCESS)) {
@@ -213,54 +211,6 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 				.size()]), plugin.getClass().getClassLoader());
 
 		return load(classType);
-	}
-
-	/**
-	 * Sorts a list of Loadables by name in alphabetical order
-	 * 
-	 * @param loadables
-	 *            The list of Loadables to sort
-	 * 
-	 * @return The sorted list of Loadables
-	 */
-	public List<T> sort(List<T> loadables) {
-		List<T> sortedLoadables = new ArrayList<T>();
-		List<String> names = new ArrayList<String>();
-
-		for (T t : loadables)
-			names.add(t.getName());
-
-		Collections.sort(names);
-
-		for (String name : names) {
-			for (T t : loadables) {
-				if (t.getName().equals(name)) {
-					sortedLoadables.add(t);
-				}
-			}
-		}
-
-		return sortedLoadables;
-	}
-
-	/**
-	 * Sorts a map of Loadables by name in alphabetical order
-	 * 
-	 * @param loadables
-	 *            The map of Loadables to sort
-	 * 
-	 * @return The sorted map of Loadables
-	 */
-	public Map<String, T> sort(Map<String, T> loadables) {
-		Map<String, T> sortedLoadables = new HashMap<String, T>();
-		List<String> names = new ArrayList<String>(loadables.keySet());
-
-		Collections.sort(names);
-
-		for (String name : names)
-			sortedLoadables.put(name, loadables.get(name));
-
-		return sortedLoadables;
 	}
 
 	/**

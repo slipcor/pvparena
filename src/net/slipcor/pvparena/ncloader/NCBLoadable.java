@@ -1,10 +1,5 @@
 package net.slipcor.pvparena.ncloader;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-
 /*     Copyright (C) 2012  Nodin Chan <nodinchan@live.com>
  * 
  *     This program is free software: you can redistribute it and/or modify
@@ -30,8 +25,6 @@ import java.util.zip.ZipEntry;
 public class NCBLoadable implements Cloneable {
 
 	private final String name;
-
-	private JarFile jar;
 
 	public NCBLoadable(String name) {
 		this.name = name;
@@ -67,38 +60,6 @@ public class NCBLoadable implements Cloneable {
 	 */
 	public final String getName() {
 		return name;
-	}
-
-	/**
-	 * Gets an embedded resource in this plugin
-	 * 
-	 * @param name
-	 *            File name of the resource
-	 * 
-	 * @return InputStream of the file if found, otherwise null
-	 */
-	public InputStream getResource(String name) {
-		ZipEntry entry = jar.getEntry(name);
-
-		if (entry == null) {
-			return null;
-		}
-
-		try {
-			return jar.getInputStream(entry);
-		} catch (IOException e) {
-			return null;
-		}
-	}
-
-	JarFile jar(JarFile jar) {
-		return this.jar = jar;
-	}
-
-	/**
-	 * Called when the Loadable is unloaded
-	 */
-	public void unload() {
 	}
 
 	public static final class LoadResult {
