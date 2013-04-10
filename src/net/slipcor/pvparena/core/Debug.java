@@ -66,7 +66,7 @@ public class Debug {
 		if (!debugs()) {
 			return;
 		}
-		Bukkit.getLogger().info(prefix + string);
+		Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 	}
 
 	public void i(final String string, final CommandSender sender) {
@@ -77,15 +77,15 @@ public class Debug {
 		if (!debugs(sender.getName())) {
 			return;
 		}
-		Bukkit.getLogger().info(prefix + string);
+		Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 	}
 
 	public void i(final String string, final String filter) {
 		if (!debugs(filter)) {
 			return;
 		}
-		
-		Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + string);
+
+		Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 	}
 
 	public static void load(final PVPArena instance, final CommandSender sender) {
