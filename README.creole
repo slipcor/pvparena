@@ -45,7 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.0.1.109 - fix v109
+* v1.0.1.109 - attempt to fix v108 and v102
 * v1.0.1.108 - more precise debugging
 * v1.0.1.107 - properly start an arena with BattlefieldJoin and no regions
 * v1.0.1.106 - more secret fixes

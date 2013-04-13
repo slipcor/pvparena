@@ -73,7 +73,15 @@ public final class PlayerState {
 		}
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
-			player.setFlying(false);
+			class RunLater implements Runnable {
+
+				@Override
+				public void run() {
+					player.setFlying(false);
+				}
+			
+			}
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
 		}
 		
 		fullReset(arena, player);
