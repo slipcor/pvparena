@@ -266,7 +266,11 @@ public class EntityListener implements Listener {
 			// no team fights!
 			DEBUG.i("team hit, cancel!",attacker);
 			DEBUG.i("team hit, cancel!",defender);
-			event.setCancelled(true);
+			if (event.getDamager() instanceof Projectile) {
+				event.setDamage(0);
+			} else {
+				event.setCancelled(true);
+			}
 			return;
 		}
 		

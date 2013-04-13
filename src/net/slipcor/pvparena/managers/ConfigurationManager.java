@@ -109,7 +109,7 @@ public final class ConfigurationManager {
 
 		config.options().copyDefaults(true);
 
-		cfg.set(CFG.Z, "0.9.0.65");
+		cfg.set(CFG.Z, "1.0.1.102");
 		cfg.save();
 		cfg.load();
 
