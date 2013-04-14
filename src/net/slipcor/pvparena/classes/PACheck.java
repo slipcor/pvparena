@@ -631,8 +631,6 @@ public class PACheck {
 				region.initTimer();
 			} else if (region.getType().equals(RegionType.BATTLE)) {
 				region.initTimer();
-			} else if (region.getType().equals(RegionType.JOIN) && arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
-				region.initTimer();
 			}
 		}
 		

@@ -320,6 +320,12 @@ public final class ArenaManager {
 		}
 		
 		ARENAS.put(arena.getName().toLowerCase(), arena);
+		for (ArenaRegionShape region : arena.getRegions()) {
+			if (region.getType().equals(RegionType.JOIN) && arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
+				region.initTimer();
+			}
+		}
+		
 		return arena;
 	}
 

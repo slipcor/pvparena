@@ -43,16 +43,20 @@ public class RegionRunnable implements Runnable {
 			DEBUG.i("RegionRunnable commiting");
 		}
 		/*
-		 * J - is a join region I - is a fight in progress? T - should a region
-		 * tick be run? --------------------------- JI - T 00 - 0 : no join
-		 * region, no game, no tick 01 - 1 : no join region, game, tick for
-		 * other region type 10 - 1 : join region! no game! tick so ppl can
-		 * join! 11 - 0 : join region! game! no tick, ppl are done joining
+		 * J - is a join region
+		 * I - is a fight in progress?
+		 * T - should a region tick be run?
+		 * ---------------------------
+		 * J I - T
+		 * 0 0 - 0 : no join region, no game, no tick
+		 * 0 1 - 1 : no join region, game, tick for other region type
+		 * 1 0 - 1 : join region! no game! tick so ppl can join!
+		 * 1 1 - 1 : join region! game! tick so ppl can join!
 		 */
-		if (region.getType().equals(RegionType.JOIN) == region.getArena()
+		if (!region.getType().equals(RegionType.JOIN) && !region.getArena()
 				.isFightInProgress()) {
 			Bukkit.getScheduler().cancelTask(iID);
-		} else if (!region.getType().equals(RegionType.JOIN)) {
+		} else {
 			region.tick();
 		}
 	}
