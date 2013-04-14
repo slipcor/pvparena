@@ -28,6 +28,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
@@ -266,9 +267,7 @@ public class EntityListener implements Listener {
 			// no team fights!
 			DEBUG.i("team hit, cancel!",attacker);
 			DEBUG.i("team hit, cancel!",defender);
-			if (event.getDamager() instanceof Projectile) {
-				event.setDamage(0);
-			} else {
+			if (!(event.getDamager() instanceof Snowball)) {
 				event.setCancelled(true);
 			}
 			return;
