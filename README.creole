@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.114 - prevent exception when spawns are on different worlds
 * v1.0.1.113 - properly clear inventory when changing via arenaclass command
 * v1.0.1.112 - alter v110 fix to only apply for Snowballs. Fixes #375
 * v1.0.1.111 - properly start JOIN tick before arena start. Fixes #370

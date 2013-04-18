@@ -238,6 +238,9 @@ public final class SpawnManager {
 		PABlockLocation result = null;
 
 		for (PABlockLocation loc : locs) {
+			if (!loc.getWorldName().equals(location.getWorldName())) {
+				continue;
+			}
 			if (result == null
 					|| result.getDistanceSquared(location) > loc.getDistanceSquared(location)) {
 				result = loc;
