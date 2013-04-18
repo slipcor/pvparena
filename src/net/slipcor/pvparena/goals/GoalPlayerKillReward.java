@@ -409,24 +409,24 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public void setDefaults(final YamlConfiguration config) {
-		if (arena.isFreeForAll()) {
-			return;
+		if (!arena.isFreeForAll()) {
+			if (config.get("teams.free") != null) {
+				config.set("teams", null);
+			}
+			if (config.get("teams") == null) {
+				debug.i("no teams defined, adding custom red and blue!");
+				config.addDefault("teams.red", ChatColor.RED.name());
+				config.addDefault("teams.blue", ChatColor.BLUE.name());
+			}
+			if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
+					&& (config.get("flagColors") == null)) {
+				debug.i("no flagheads defined, adding white and black!");
+				config.addDefault("flagColors.red", "WHITE");
+				config.addDefault("flagColors.blue", "BLACK");
+			}
 		}
 
-		if (config.get("teams.free") != null) {
-			config.set("teams", null);
-		}
-		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.red", ChatColor.RED.name());
-			config.addDefault("teams.blue", ChatColor.BLUE.name());
-		}
-		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
-				&& (config.get("flagColors") == null)) {
-			debug.i("no flagheads defined, adding white and black!");
-			config.addDefault("flagColors.red", "WHITE");
-			config.addDefault("flagColors.blue", "BLACK");
-		}
+		
 
 		final ConfigurationSection cs = (ConfigurationSection) config
 				.get("goal.playerkillrewards");
