@@ -54,7 +54,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
 		InventoryManager.clearInventory(aPlayer.get());
 		aPlayer.setArenaClass(aClass);
-		aClass.equip(aPlayer.get());
+		ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
 		sender.sendMessage(Language.parse(MSG.CLASS_SELECTED, aClass.getName()));
 	}
