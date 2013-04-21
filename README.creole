@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.118 - start join tasks when resetting an arena
 * v1.0.1.117 - fix leaf decay determination
 * v1.0.1.116 - fix block listener logic
 * v1.0.1.115 - fix v#113 to support woolheads

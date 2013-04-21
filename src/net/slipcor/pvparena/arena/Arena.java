@@ -1025,6 +1025,14 @@ public class Arena {
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
 
+		if (getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
+			for (ArenaRegionShape region : getRegions()) {
+				if (region.getType().equals(RegionType.JOIN)) {
+					region.initTimer();
+				}
+			}
+		}
+		
 		round = 0;
 	}
 
