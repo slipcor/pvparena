@@ -404,7 +404,6 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	public void reset(final boolean force) {
 		endRunner = null;
 		getLifeMap().clear();
-		getItemMap().clear();
 	}
 
 	@Override

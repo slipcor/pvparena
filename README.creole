@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.119 - don't clear the killrewards map after one match. bad plugin!
 * v1.0.1.118 - start join tasks when resetting an arena
 * v1.0.1.117 - fix leaf decay determination
 * v1.0.1.116 - fix block listener logic
