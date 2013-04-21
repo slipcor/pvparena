@@ -186,11 +186,6 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onBlockDecay(final LeavesDecayEvent event) {
-		if (willBeSkipped(event, event.getBlock().getLocation(),
-				RegionProtection.NATURE)) {
-			return;
-		}
-
 		final Block block = event.getBlock();
 		final Arena arena = ArenaManager.getArenaByRegionLocation(
 				new PABlockLocation(block.getLocation()));
