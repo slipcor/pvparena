@@ -1448,6 +1448,8 @@ public class Arena {
 	 * spleef - free for all with teamkill off
 	 * sabotage - destroy TNT inside the other team's base
 	 * tank - all vs one!
+	 * liberation - free willy!
+	 * infect - infect (catchy, huh?)!
 	 * </pre>
 	 * 
 	 * @param string
@@ -1484,6 +1486,13 @@ public class Arena {
 			cfg.save();
 		} else if ("sabotage".equals(lcName)) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("Sabotage"));
+			cfg.save();
+		} else if ("infect".equals(lcName)) {
+			goalAdd(PVPArena.instance.getAgm().getGoalByName("Infect"));
+			this.setFree(true);
+			cfg.save();
+		} else if ("liberation".equals(lcName)) {
+			goalAdd(PVPArena.instance.getAgm().getGoalByName("Liberation"));
 			cfg.save();
 		} else {
 			return false;
