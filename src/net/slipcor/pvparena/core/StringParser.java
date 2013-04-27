@@ -192,11 +192,16 @@ public final class StringParser {
 		String data = null;
 		int amount = 1;
 		Material mat = null;
+		
+		String desc = null;
 
 		String[] temp = string.split(":");
 
 		if (temp.length > 1) {
 			amount = Integer.parseInt(temp[1]);
+			if (temp.length > 2) {
+				desc = temp[2];
+			}
 		}
 		final Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 		if (temp[0].contains("|")) {
@@ -351,11 +356,9 @@ public final class StringParser {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
 				
-				if (temp.length > 3) {
-					// [itemid/name]~[dmg]~[data]:[amount]:[displayname]
-					
+				if (desc != null) {
 					ItemMeta meta = itemStack.getItemMeta();
-					meta.setDisplayName(codeCharacters(temp[3],false));
+					meta.setDisplayName(codeCharacters(desc,false));
 					itemStack.setItemMeta(meta);
 				}
 				
