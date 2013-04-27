@@ -38,6 +38,7 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.world.StructureGrowEvent;
@@ -326,6 +327,27 @@ public class BlockListener implements Listener {
 			return;
 		}
 		ArenaModuleManager.onBlockBreak(arena, event.getBlock());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onExplosionPrime(final ExplosionPrimeEvent event) {
+		
+		if (willBeSkipped(event, event.getEntity().getLocation(),
+				RegionProtection.TNT)) {
+			return;
+		}
+		final Arena arena = ArenaManager.getArenaByRegionLocation(
+				new PABlockLocation(event.getEntity().getLocation()));
+		if (arena == null) {
+			return;
+		}
+		
+		if (arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
+				&& (isProtected(event.getEntity().getLocation(), event,
+						RegionProtection.FIRE))) {
+			return;
+		}
+		ArenaModuleManager.onBlockBreak(arena, event.getEntity().getLocation().getBlock());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

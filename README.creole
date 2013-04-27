@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.121 - attempt to fix TNT ignite determination
 * v1.0.1.120 - update blockrestore config to allow block restore disabling
 * v1.0.1.119 - don't clear the killrewards map after one match. bad plugin!
 * v1.0.1.118 - start join tasks when resetting an arena
