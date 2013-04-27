@@ -337,9 +337,6 @@ public final class ArenaManager {
 		if (deleteConfig) {
 			arena.getArenaConfig().delete();
 		}
-		final File path = new File(PVPArena.instance.getDataFolder().getPath()
-				+ "/stats_" + arena.getName() + ".yml");
-		path.delete();
 		arena = null;
 	}
 

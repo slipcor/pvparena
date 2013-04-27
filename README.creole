@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.133 - Reload root config and all arena configs, even lost ones!
 * v1.0.1.132 - Fix displayname loading
 * v1.0.1.131 - STOP removing paintings on arena end. You idiot plugin!
 * v1.0.1.130 - add legacy types "infect" and "liberation"

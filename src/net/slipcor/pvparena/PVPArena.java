@@ -181,10 +181,22 @@ public class PVPArena extends JavaPlugin {
 				|| args[0].toLowerCase().contains("reload")) {
 			final PAA_Reload scmd = new PAA_Reload();
 			DEBUG.i("committing: " + scmd.getName(), sender);
+			
+			this.reloadConfig();
+			
 			final String[] emptyArray = new String[0];
+			
+			for (Arena a : ArenaManager.getArenas()) {
+				ArenaManager.removeArena(a, false);
+			}
+			
+			ArenaManager.load_arenas();
+			
 			for (Arena a : ArenaManager.getArenas()) {
 				scmd.commit(a, sender, emptyArray);
 			}
+			
+			
 			return true;
 		}
 
