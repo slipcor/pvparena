@@ -424,11 +424,13 @@ public class GoalInfect extends ArenaGoal {
 			debug.i("team " + team.getName() + " random " + pos);
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				debug.i("#" + pos + ": " + ap.toString(), ap.getName());
+				this.getLifeMap().put(ap.getName(),
+						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
 				if (pos-- == 0) {
 					infected = ap;
+					this.getLifeMap().put(ap.getName(),
+							arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
 				}
-				this.getLifeMap().put(ap.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
 				//break;
 			}
 		}
