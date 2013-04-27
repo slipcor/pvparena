@@ -1450,6 +1450,7 @@ public class Arena {
 	 * tank - all vs one!
 	 * liberation - free willy!
 	 * infect - infect (catchy, huh?)!
+	 * food - food!
 	 * </pre>
 	 * 
 	 * @param string
@@ -1493,6 +1494,9 @@ public class Arena {
 			cfg.save();
 		} else if ("liberation".equals(lcName)) {
 			goalAdd(PVPArena.instance.getAgm().getGoalByName("Liberation"));
+			cfg.save();
+		} else if ("food".equals(lcName)) {
+			goalAdd(PVPArena.instance.getAgm().getGoalByName("Food"));
 			cfg.save();
 		} else {
 			return false;

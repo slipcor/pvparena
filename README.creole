@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.131 - STOP removing paintings on arena end. You idiot plugin!
 * v1.0.1.130 - add legacy types "infect" and "liberation"
 * v1.0.1.129 - add a way of not using plugins in "Skins" module
 * v1.0.1.128 - properly set un-infected players' lives

@@ -35,6 +35,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -515,6 +516,10 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 							.getWorld().getName(), entity.getLocation().getBlockX(),
 							entity.getLocation().getBlockY(), entity.getLocation()
 									.getBlockZ())))) {
+				continue;
+			}
+			
+			if (entity instanceof Hanging) {
 				continue;
 			}
 			
