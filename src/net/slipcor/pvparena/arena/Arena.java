@@ -1371,7 +1371,30 @@ public class Arena {
 		}
 
 		if (aPlayer.getArenaClass() == null) {
-			final String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
+			String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
+			
+			if (autoClass != null && autoClass.contains(":") && autoClass.contains(";")) {
+				String[] definitions = autoClass.split(";");
+				autoClass = definitions[definitions.length-1]; // set default
+				
+				Map<String, ArenaClass> classes = new HashMap<String, ArenaClass>();
+				
+				for (String definition : definitions) {
+					if (!definition.contains(":")) {
+						continue;
+					}
+					String[] var = definition.split(":");
+					ArenaClass aClass = getClass(var[1]);
+					if (aClass != null) {
+						classes.put(var[0], aClass);
+					}
+				}
+				
+				if (classes.containsKey(team.getName())) {
+					autoClass = classes.get(team.getName()).getName();
+				}
+			}
+			
 			if (autoClass != null && !autoClass.equals("none")
 					&& getClass(autoClass) == null) {
 				msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND,
