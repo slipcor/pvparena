@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.123 - stop giving rewards to matches where more than half of the players win
 * v1.0.1.122 - attempt to fix an NPE about colored items
 * v1.0.1.121 - attempt to fix TNT ignite determination
 * v1.0.1.120 - update blockrestore config to allow block restore disabling

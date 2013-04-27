@@ -935,6 +935,7 @@ public class Arena {
 	public void resetPlayers(final boolean force) {
 		DEBUG.i("resetting player manager");
 		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+		int fighters = 0;
 		for (ArenaTeam team : this.getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				DEBUG.i("player: " + p.getName(), p.get());
@@ -948,6 +949,9 @@ public class Arena {
 					continue;
 				} else {
 					DEBUG.i("> added", p.get());
+					if (p.getStatus() == Status.FIGHT) {
+						fighters++;
+					}
 					players.add(p);
 				}
 			}
@@ -955,7 +959,8 @@ public class Arena {
 
 		for (ArenaPlayer p : players) {
 			p.debugPrint();
-			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
+			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)
+					&& !(fighters > players.size()/2)) {
 				final Player player = p.get();
 
 				if (!force) {
