@@ -189,7 +189,7 @@ public class PACheck {
 		return true;
 	}
 	
-	public static int handleGetLives(final Arena arena, final ArenaPlayer aPlayer) {
+	public static double handleGetLives(final Arena arena, final ArenaPlayer aPlayer) {
 		PACheck res = new PACheck();
 		int priority = 0;
 		for (ArenaGoal mod : arena.getGoals()) {
@@ -204,7 +204,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			return Integer.valueOf(res.getError());
+			return Double.valueOf(res.getError());
 		}
 		return 0;
 	}

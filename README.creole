@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.1.126 - support decimals in life display (for pillars)
 * v1.0.1.125 - support autoClass definitions per team
 * v1.0.1.124 - properly calculate losing players
 * v1.0.1.123 - stop giving rewards to matches where more than half of the players win
