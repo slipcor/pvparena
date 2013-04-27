@@ -396,6 +396,12 @@ public class ArenaGoalManager {
 			arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
 		}
 		
+		for (ArenaPlayer player : arena.getEveryone()) {
+			if (player.getStatus() == Status.FIGHT) {
+				player.setStatus(Status.LOST);
+			}
+		}
+		
 		arena.reset(false); //TODO: try to establish round compatibility with new EndRunnable();
 	}
 
