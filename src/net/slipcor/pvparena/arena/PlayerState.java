@@ -166,6 +166,9 @@ public final class PlayerState {
 			player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
 		player.resetPlayerTime();
+		if (flying && !player.getAllowFlight()) {
+			player.setAllowFlight(true);
+		}
 		player.setFlying(flying);
 	}
 

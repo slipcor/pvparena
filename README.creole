@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.136 - properly allow players to fly if they ... did Oo
 * v1.0.2.135 - fix infected player display, attempt tp properly end the infected mode
 * v1.0.2.134 - Only force arena configuration loading if configs were messed up
 * v1.0.2.133 - Reload root config and all arena configs, even lost ones!
