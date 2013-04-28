@@ -179,7 +179,7 @@ public class GoalInfect extends ArenaGoal {
 							Language.parse(MSG.GOAL_INFECTED_WON), "WINNER");
 
 					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_WON));
-
+					break;
 				} else {
 
 					// String tank = tanks.get(arena);
@@ -187,7 +187,7 @@ public class GoalInfect extends ArenaGoal {
 							Language.parse(MSG.GOAL_INFECTED_LOST), "LOSER");
 
 					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_LOST));
-
+					break;
 				}
 			}
 
