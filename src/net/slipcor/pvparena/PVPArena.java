@@ -187,15 +187,10 @@ public class PVPArena extends JavaPlugin {
 			final String[] emptyArray = new String[0];
 			
 			for (Arena a : ArenaManager.getArenas()) {
-				ArenaManager.removeArena(a, false);
-			}
-			
-			ArenaManager.load_arenas();
-			
-			for (Arena a : ArenaManager.getArenas()) {
 				scmd.commit(a, sender, emptyArray);
 			}
 			
+			ArenaManager.load_arenas();
 			
 			return true;
 		}

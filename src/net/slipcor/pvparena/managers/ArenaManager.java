@@ -291,7 +291,9 @@ public final class ArenaManager {
 					final String error = checkForMissingGoals(sName);
 					if (error == null) {
 						DEBUG.i("arena: " + sName);
-						loadArena(sName);
+						if (!ARENAS.containsKey(sName)) {
+							loadArena(sName);
+						}
 					} else {
 						PVPArena.instance.getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, error));
 						PVPArena.instance.getLogger().warning(Language.parse(MSG.GOAL_INSTALLING, error));
