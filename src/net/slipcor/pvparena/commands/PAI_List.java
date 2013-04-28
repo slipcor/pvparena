@@ -67,7 +67,7 @@ public class PAI_List extends AbstractArenaCommand {
 					names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
 				}
 				
-				if (arena.isFreeForAll()) {
+				if (arena.isFreeForAll() && teams.getName().equals("free")) {
 					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 				} else {
 					final int count = teams.getTeamMembers().size();

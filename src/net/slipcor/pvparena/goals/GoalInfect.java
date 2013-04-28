@@ -180,8 +180,6 @@ public class GoalInfect extends ArenaGoal {
 
 					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_WON));
 
-					ArenaModuleManager.commitEnd(arena, team);
-					return;
 				} else {
 
 					// String tank = tanks.get(arena);
@@ -190,8 +188,6 @@ public class GoalInfect extends ArenaGoal {
 
 					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_LOST));
 
-					ArenaModuleManager.commitEnd(arena, team);
-					return;
 				}
 			}
 
