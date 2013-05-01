@@ -261,6 +261,8 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		this.saveDefaultConfig();
 
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();

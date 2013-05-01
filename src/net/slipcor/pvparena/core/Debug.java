@@ -39,10 +39,6 @@ public class Debug {
 		debugID = iID;
 	}
 
-	public void debug() {
-		PVPArena.instance.getLogger().info("debugger: " + debugID);
-	}
-
 	/**
 	 * does this class debug?
 	 * 

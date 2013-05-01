@@ -56,12 +56,12 @@ public class PAI_Shutup extends AbstractArenaCommand {
 		}
 
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
-			aPlayer.setPublicChatting(true);
+			aPlayer.setIgnoreAnnouncements(true);
 			arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREON));
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
-			aPlayer.setPublicChatting(false);
+			aPlayer.setIgnoreAnnouncements(false);
 			arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREOFF));
 			return;
 		}
