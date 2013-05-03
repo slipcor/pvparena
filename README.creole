@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.139 - check for worlds before comparing locations
 * v1.0.2.138 - fix /pa shutup with arguments!
 * v1.0.2.137 - don't spam the winning/losing message for every remaining infect player
 * v1.0.2.136 - properly allow players to fly if they ... did Oo
