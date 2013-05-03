@@ -59,7 +59,7 @@ public class PAG_Join extends AbstractArenaCommand {
 		}
 		
 		if (ArenaRegionShape.tooFarAway(arena, (Player) sender)) {
-			arena.msg(sender, Language.parse(MSG.ERROR_JOIN_RANGE, error));
+			arena.msg(sender, Language.parse(MSG.ERROR_JOIN_RANGE));
 			return;
 		}
 		
