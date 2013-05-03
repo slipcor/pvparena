@@ -9,6 +9,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -53,7 +54,12 @@ public class PAG_Join extends AbstractArenaCommand {
 		
 		final String error = ConfigurationManager.isSetup(arena);
 		if (error != null) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			return;
+		}
+		
+		if (ArenaRegionShape.tooFarAway(arena, (Player) sender)) {
+			arena.msg(sender, Language.parse(MSG.ERROR_JOIN_RANGE, error));
 			return;
 		}
 		
