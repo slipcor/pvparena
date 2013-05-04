@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.142 - force ready up people joining late on an arena that counts down to start
 * v1.0.2.141 - fix NPE
 * v1.0.2.140 - genius developer! Check if too far away before joining.
 * v1.0.2.139 - check for worlds before comparing locations

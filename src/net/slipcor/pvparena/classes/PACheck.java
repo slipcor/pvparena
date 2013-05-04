@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Debug;
@@ -378,6 +379,11 @@ public class PACheck {
 			commModule.commitJoin((Player) sender, team);
 			
 			ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
+			
+			ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
+			if (player.getClass() != null && arena.startRunner != null) {
+				player.setStatus(Status.READY);
+			}
 	}
 
 	public static void handlePlayerDeath(final Arena arena, final Player player, final PlayerDeathEvent event) {
