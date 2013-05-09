@@ -42,7 +42,11 @@ public final class ArenaClass {
 		HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
 		HELMETS_TYPE.add(Material.IRON_HELMET);
 		HELMETS_TYPE.add(Material.DIAMOND_HELMET);
+		
 		HELMETS_TYPE.add(Material.WOOL);
+		HELMETS_TYPE.add(Material.PUMPKIN);
+		HELMETS_TYPE.add(Material.JACK_O_LANTERN);
+		HELMETS_TYPE.add(Material.SKULL_ITEM);
 
 		CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
 		CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
@@ -88,13 +92,29 @@ public final class ArenaClass {
 		debug.i("- " + StringParser.getStringFromItemStack(stack));
 		final Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
-			inv.setHelmet(stack);
+			if (inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR) {
+				inv.addItem(stack);
+			} else {
+				inv.setHelmet(stack);
+			}
 		} else if (CHESTPLATES_TYPE.contains(type)) {
-			inv.setChestplate(stack);
+			if (inv.getChestplate() != null && inv.getChestplate().getType() != Material.AIR) {
+				inv.addItem(stack);
+			} else {
+				inv.setChestplate(stack);
+			}
 		} else if (LEGGINGS_TYPE.contains(type)) {
-			inv.setLeggings(stack);
+			if (inv.getLeggings() != null && inv.getLeggings().getType() != Material.AIR) {
+				inv.addItem(stack);
+			} else {
+				inv.setLeggings(stack);
+			}
 		} else if (BOOTS_TYPE.contains(type)) {
-			inv.setBoots(stack);
+			if (inv.getBoots() != null && inv.getBoots().getType() != Material.AIR) {
+				inv.addItem(stack);
+			} else {
+				inv.setBoots(stack);
+			}
 		}
 	}
 
