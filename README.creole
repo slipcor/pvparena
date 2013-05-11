@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.145 - add some more debug to 3 (arena)
 * v1.0.2.144 - fix an announcement not happening in special cases
 * v1.0.2.143 - add all the helmets! And check before replacing the helmet ;)
 * v1.0.2.142 - force ready up people joining late on an arena that counts down to start

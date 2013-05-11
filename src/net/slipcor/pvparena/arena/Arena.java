@@ -477,6 +477,8 @@ public class Arena {
 		final PAWinEvent dEvent = new PAWinEvent(this, player, items);
 		Bukkit.getPluginManager().callEvent(dEvent);
 		items = dEvent.getItems();
+		
+		DEBUG.i("start " + startCount + " - minplayers: " + cfg.getInt(CFG.ITEMS_MINPLAYERS), player);
 
 		if (items == null || items.length < 1
 				|| cfg.getInt(CFG.ITEMS_MINPLAYERS) > startCount) {
