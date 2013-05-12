@@ -960,6 +960,7 @@ public class Arena {
 		}
 
 		for (ArenaPlayer p : players) {
+			
 			p.debugPrint();
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)
 					&& !(fighters > players.size()/2)) {
@@ -1058,6 +1059,12 @@ public class Arena {
 		}
 		DEBUG.i("resetting player: " + player.getName() + (soft ? "(soft)" : ""),
 				player);
+		
+		for (Entity entity : player.getNearbyEntities(1.0, 1.0, 1.0)) {
+			if (entity instanceof Projectile) {
+				entity.remove();
+			}
+		}
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (aPlayer.getState() != null) {
