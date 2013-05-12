@@ -73,6 +73,15 @@ public class PVPArena extends JavaPlugin {
 	public ArenaRegionShapeManager getArsm() {
 		return arsm;
 	}
+	
+	/**
+	 * Hand over the jar file name
+	 * 
+	 * @return the .jar file name
+	 */
+	public String getFileName() {
+		return this.getFile().getName();
+	}
 
 	/**
 	 * Check if a CommandSender has admin permissions
