@@ -28,7 +28,7 @@ public class PAWinEvent extends Event {
 	private final List<String> items;
 
 	public PAWinEvent(final Arena arena, final Player player, final String[] arrItems) {
-		super();
+		super(); 
 		this.arena = arena;
 		this.player = player;
 		items = new ArrayList<String>();

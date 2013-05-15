@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.148 - properly give rewards when time determines the winners
 * v1.0.2.147 - remove arrows from players; this is said to cause crashes
 * v1.0.2.146 - properly update plugin files that have been renamed
 * v1.0.2.145 - add some more debug to 3 (arena)

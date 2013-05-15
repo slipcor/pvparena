@@ -349,6 +349,7 @@ public class ArenaGoalManager {
 							
 							ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
 							arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
+							arena.giveRewards(p.get());
 						} else {
 							if (!p.getStatus().equals(Status.FIGHT)) {
 								continue;
@@ -371,6 +372,11 @@ public class ArenaGoalManager {
 					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColor()
 							+ "Team " + team.getName()));
 					hasBroadcasted = true;
+					for (ArenaPlayer player : team.getTeamMembers()) {
+						if (player.getStatus() == Status.FIGHT) {
+							arena.giveRewards(player.get());
+						}
+					}
 				} else {
 					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 					for (ArenaPlayer p : team.getTeamMembers()) {
@@ -386,6 +392,15 @@ public class ArenaGoalManager {
 								ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + winTeam), "WINNER");
 								arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, arena.getTeam(winTeam).getColor()
 										+ "Team " + winTeam));
+								
+								ArenaTeam winningTeam = arena.getTeam(winTeam);
+								if (winningTeam != null) {
+									for (ArenaPlayer player : winningTeam.getTeamMembers()) {
+										if (player.getStatus() == Status.FIGHT) {
+											arena.giveRewards(player.get());
+										}
+									}
+								}
 							}
 							hasBroadcasted = !hasBroadcasted;
 						}
