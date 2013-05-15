@@ -54,7 +54,7 @@ public class RegionRunnable implements Runnable {
 		 * 1 1 - 1 : join region! game! tick so ppl can join!
 		 */
 		if (!region.getType().equals(RegionType.JOIN) && !region.getArena()
-				.isFightInProgress()) {
+				.isFightInProgress() && !region.getType().equals(RegionType.WATCH)) {
 			Bukkit.getScheduler().cancelTask(iID);
 		} else {
 			region.tick();
