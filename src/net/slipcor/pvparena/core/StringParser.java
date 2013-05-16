@@ -203,6 +203,7 @@ public final class StringParser {
 				desc = temp[2];
 			}
 		}
+		
 		final Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 		if (temp[0].contains("|")) {
 			DEBUG.i("trying to add enchantment");
@@ -239,6 +240,13 @@ public final class StringParser {
 					DEBUG.i("processing enchantment " + e.getName());
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
+				
+				if (desc != null) {
+					ItemMeta meta = itemStack.getItemMeta();
+					meta.setDisplayName(codeCharacters(desc,false));
+					itemStack.setItemMeta(meta);
+				}
+				
 				return itemStack;
 			}
 			dmg = Short.parseShort(temp[1]);
@@ -248,6 +256,13 @@ public final class StringParser {
 				for (Enchantment e : enchants.keySet()) {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
+				
+				if (desc != null) {
+					ItemMeta meta = itemStack.getItemMeta();
+					meta.setDisplayName(codeCharacters(desc,false));
+					itemStack.setItemMeta(meta);
+				}
+				
 				return itemStack;
 			}
 			final String[] dataSplit = temp[2].split(SAFE_LORE_BREAK);
@@ -257,6 +272,13 @@ public final class StringParser {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				final ItemStack itemStack = new ItemStack(mat, amount, dmg);
 
+				
+				if (desc != null) {
+					ItemMeta meta = itemStack.getItemMeta();
+					meta.setDisplayName(codeCharacters(desc,false));
+					itemStack.setItemMeta(meta);
+				}
+				
 				if (mat == Material.INK_SACK) {
 					try {
 						itemStack.setData(new Dye(Byte.parseByte(data)));
@@ -354,12 +376,6 @@ public final class StringParser {
 
 				for (Enchantment e : enchants.keySet()) {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
-				}
-				
-				if (desc != null) {
-					ItemMeta meta = itemStack.getItemMeta();
-					meta.setDisplayName(codeCharacters(desc,false));
-					itemStack.setItemMeta(meta);
 				}
 				
 				return itemStack;
