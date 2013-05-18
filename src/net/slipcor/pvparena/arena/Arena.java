@@ -716,8 +716,13 @@ public class Arena {
 		default:
 			break;
 		}
-		return Language.parse(MSG.getByName("DEATHCAUSE_"
-				+ cause.toString()));
+		MSG string = MSG.getByName("DEATHCAUSE_"
+				+ cause.toString());
+		if (string == null) {
+			PVPArena.instance.getLogger().warning("Unknown cause: " + cause.toString());
+			string = MSG.DEATHCAUSE_VOID;
+		}
+		return Language.parse(string);
 	}
 
 	public static void pmsg(final CommandSender sender, final String msg) {
