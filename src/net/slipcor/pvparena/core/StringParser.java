@@ -61,16 +61,18 @@ public final class StringParser {
 			findReplace.put("~", "<<tilde>>");
 			findReplace.put("|", "<<pipe>>");
 			findReplace.put(",", "<<comma>>");
+			findReplace.put("§", "&");
 		} else {
 			findReplace.put("<<colon>>", ":");
 			findReplace.put("<<tilde>>", "~");
 			findReplace.put("<<pipe>>", "|");
 			findReplace.put("<<comma>>", ",");
-			result = ChatColor.translateAlternateColorCodes('?', string);
+			result = ChatColor.translateAlternateColorCodes('&', result);
+			result = ChatColor.translateAlternateColorCodes('?', result);
 		}
 
 		for (String s : findReplace.keySet()) {
-			result = string.replace(s, findReplace.get(s));
+			result = result.replace(s, findReplace.get(s));
 		}
 
 		return result;
@@ -187,7 +189,8 @@ public final class StringParser {
 		DEBUG.i("parsing itemstack string: " + string);
 
 		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
-
+		
+		
 		short dmg = 0; 
 		String data = null;
 		int amount = 1;
@@ -265,6 +268,7 @@ public final class StringParser {
 				
 				return itemStack;
 			}
+			// ,POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>15 seconds:2:Stealth,
 			final String[] dataSplit = temp[2].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
 			final String lore = dataSplit.length > 1 ? dataSplit[1] : null;
@@ -338,6 +342,7 @@ public final class StringParser {
 					}
 				} else if (itemStack.getType() == Material.POTION) {
 					// data = NAMEx1x100<oOo>NAMEx2x100
+					
 					try {
 						final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 						
@@ -348,10 +353,19 @@ public final class StringParser {
 							potionMeta.addCustomEffect(
 									new PotionEffect(
 											PotionEffectType.getByName(vals[0]),
-											Integer.parseInt(vals[1]),
-											Integer.parseInt(vals[2])), true);
+											Integer.parseInt(vals[2]),
+											Integer.parseInt(vals[1])), true);
 						}
-						
+
+						if (lore != null
+								&& !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
+							final List<String> lLore = new ArrayList<String>();
+							for (String line : lore.split(SAFE_BREAK)) {
+								lLore.add(codeCharacters(line, false));
+							}
+							potionMeta.setLore(lLore);
+						}
+
 						itemStack.setItemMeta(potionMeta);
 					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
