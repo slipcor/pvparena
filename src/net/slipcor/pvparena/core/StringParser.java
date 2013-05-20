@@ -268,10 +268,37 @@ public final class StringParser {
 				
 				return itemStack;
 			}
-			// ,POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>15 seconds:2:Stealth,
-			final String[] dataSplit = temp[2].split(SAFE_LORE_BREAK);
+			// string: POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>Duration 15 seconds.:2:Stealth
+			
+			// ---> split(":");
+			
+			// temp[0] = POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>Duration 15 seconds.
+			// temp[1] = 2
+			// temp[2] = Stealth
+			
+			// ---> split("~");
+
+			// temp[0] = POTION
+			// temp[1] = 0
+			// temp[2] = INVISIBILITYx0x300<oOo>
+			// temp[3] = <oxXxOxXxo>Duration 15 seconds.
+			
+			final int location;
+			
+			if (temp.length > 3 && temp[3].contains(SAFE_LORE_BREAK)) {
+				location = 3;
+			} else {
+				location = 2;
+			}
+			
+			final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
+			if (temp[2].contains(SAFE_BREAK)) {
+				data = temp[2].split(SAFE_BREAK)[0];
+			}
+			
 			final String lore = dataSplit.length > 1 ? dataSplit[1] : null;
+			
 			if (temp.length >= 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				final ItemStack itemStack = new ItemStack(mat, amount, dmg);
@@ -342,7 +369,6 @@ public final class StringParser {
 					}
 				} else if (itemStack.getType() == Material.POTION) {
 					// data = NAMEx1x100<oOo>NAMEx2x100
-					
 					try {
 						final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 						
