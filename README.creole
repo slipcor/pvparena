@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.2.153 - check region ticks on everyone, not just fighters
 * v1.0.2.152 - fix custom potions and colored description/lore
 * v1.0.2.151 - catch a NPE about deaths
 * v1.0.2.150 - properly read item descriptions

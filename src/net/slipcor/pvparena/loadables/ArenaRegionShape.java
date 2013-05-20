@@ -562,7 +562,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public void tick() {
-		for (ArenaPlayer ap : arena.getFighters()) {
+		for (ArenaPlayer ap : arena.getEveryone()) {
 			if (ap.get() == null) {
 				continue;
 			}
