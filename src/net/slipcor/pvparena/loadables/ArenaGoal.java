@@ -378,6 +378,15 @@ public class ArenaGoal extends NCBLoadable {
 	}
 
 	/**
+	 * hook into an arena joining the game after it has begin
+	 * 
+	 * @param player
+	 *            the joining player
+	 */
+	public void lateJoin(final Player player) {
+	}
+
+	/**
 	 * hook into the initial goal loading
 	 */
 	public void onThisLoad() {

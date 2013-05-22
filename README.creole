@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.3.155 - properly initiate late joining players
 * v1.0.3.154 - hackfix lore - we need v2.0 !
 * v1.0.2.153 - check region ticks on everyone, not just fighters
 * v1.0.2.152 - fix custom potions and colored description/lore

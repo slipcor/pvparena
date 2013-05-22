@@ -436,4 +436,10 @@ public class ArenaGoalManager {
 			type.disconnect(player);
 		}
 	}
+
+	public static void lateJoin(Arena arena, Player player) {
+		for (ArenaGoal goal : arena.getGoals()) {
+			goal.lateJoin(player);
+		}
+	}
 }

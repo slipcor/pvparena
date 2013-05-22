@@ -293,6 +293,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		return true;
 	}
 
+	@Override
+	public void lateJoin(final Player player) {
+		initate(player);
+	}
+
 	/**
 	 * @param arena the arena this is happening in
 	 * @param team the killing team

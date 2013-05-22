@@ -17,6 +17,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
@@ -457,6 +458,7 @@ public class PlayerListener implements Listener {
 						Status.FIGHT);
 
 				ArenaModuleManager.lateJoin(arena, player);
+				ArenaGoalManager.lateJoin(arena, player);
 			}
 		}
 	}
