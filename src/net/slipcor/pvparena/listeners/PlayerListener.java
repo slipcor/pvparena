@@ -51,6 +51,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 /**
  * <pre>
@@ -586,18 +587,11 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		boolean bFrom = false;
-		boolean bTo = false;
-
 		for (ArenaRegionShape r : regions) {
-			bFrom = bFrom ? true : r
-					.contains(new PABlockLocation(event.getFrom()));
-			bTo = bTo ? true : r.contains(new PABlockLocation(event.getTo()));
-		}
-
-		if (bFrom && bTo) {
-			// teleport inside the arena, allow!
-			return;
+			if (r.contains(new PABlockLocation(event.getTo()))) {
+				// teleport inside the arena, allow!
+				return;
+			}
 		}
 
 		DEBUG.i("onPlayerTeleport: no tele pass, cancelling!", player);
