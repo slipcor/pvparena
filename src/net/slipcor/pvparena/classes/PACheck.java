@@ -560,9 +560,6 @@ public class PACheck {
 		}
 		
 		commit.commitSpectate((Player) sender);
-		for (ArenaGoal goal : arena.getGoals()) {
-			goal.initate((Player) sender);
-		}
 	}
 
 	public static void handleStart(final Arena arena, final CommandSender sender) {
