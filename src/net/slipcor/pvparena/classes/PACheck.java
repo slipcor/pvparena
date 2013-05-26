@@ -191,6 +191,12 @@ public class PACheck {
 	}
 	
 	public static int handleGetLives(final Arena arena, final ArenaPlayer aPlayer) {
+		
+		if (aPlayer.getStatus() == Status.LOUNGE ||
+				aPlayer.getStatus() == Status.WATCH) {
+			return 0;
+		}
+		
 		PACheck res = new PACheck();
 		int priority = 0;
 		for (ArenaGoal mod : arena.getGoals()) {
