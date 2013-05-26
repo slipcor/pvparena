@@ -82,6 +82,7 @@ public final class ArenaClass {
 				debug.i("- " + StringParser.getStringFromItemStack(item), player);
 			}
 		}
+		player.updateInventory();
 	}
 
 	public void equip(final Player player) {

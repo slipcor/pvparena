@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.3.161 - update player's inventories. just because we can
 * v1.0.3.160 - revert #155; fixed properly in #159
 * v1.0.3.159 - spectators and players in lounge do NOT have lives!
 * v1.0.3.158 - revert #156; fix readyup countdown messups
