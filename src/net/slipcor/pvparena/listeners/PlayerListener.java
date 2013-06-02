@@ -547,6 +547,12 @@ public class PlayerListener implements Listener {
 		Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 
 		if (arena == null) {
+			if (event.getTo() == null) {
+				
+				PVPArena.instance.getLogger().warning("Player teleported to NULL: "  + event.getPlayer());
+				
+				return;
+			}
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getTo()));
 			
