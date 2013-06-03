@@ -178,7 +178,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 
 				ap.addStatistic(arena.getName(), type.LOSSES, 1);
-				arena.tpPlayerToCoordName(ap.get(), "spectator");
+				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
+						true, false);
 				ap.setTelePass(false);
 			}
 		}

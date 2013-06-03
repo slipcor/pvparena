@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.3.163 - properly put BlockDestroy loser to the lose location
 * v1.0.3.162 - fix Valera's server. btw: v2.0 is a LIE!
 * v1.0.3.161 - update player's inventories. just because we can
 * v1.0.3.160 - revert #155; fixed properly in #159
