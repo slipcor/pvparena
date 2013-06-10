@@ -349,7 +349,9 @@ public class ArenaGoalManager {
 							
 							ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
 							arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
-							arena.giveRewards(p.get());
+							if (arena.gaveRewards) {
+								arena.giveRewards(p.get());
+							}
 						} else {
 							if (!p.getStatus().equals(Status.FIGHT)) {
 								continue;
@@ -359,6 +361,7 @@ public class ArenaGoalManager {
 						}
 					}
 				}
+				arena.gaveRewards = true;
 			}
 			if (winners.isEmpty()) {
 				ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW), "WINNER");

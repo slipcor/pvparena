@@ -101,6 +101,8 @@ public class Arena {
 	public BukkitRunnable realEndRunner = null;
 	public BukkitRunnable startRunner = null;
 	public int spawnCampRunnerID = -1;
+	
+	public boolean gaveRewards = false;
 
 	private Config cfg;
 
@@ -470,6 +472,9 @@ public class Arena {
 	 *            the player to give the reward
 	 */
 	public void giveRewards(final Player player) {
+		if (gaveRewards) {
+			return;
+		}
 
 		getDebugger().i("giving rewards to " + player.getName(), player);
 
@@ -982,7 +987,7 @@ public class Arena {
 				resetPlayer(player, getArenaConfig().getString(CFG.TP_WIN, "old"),
 						false, force);
 				if (!force && p.getStatus().equals(Status.FIGHT)
-						&& isFightInProgress()) {
+						&& isFightInProgress() && !gaveRewards) {
 					giveRewards(player); // if we are the winning team, give
 									// reward!
 				}
@@ -1007,6 +1012,7 @@ public class Arena {
 
 			p.reset();
 		}
+		gaveRewards = true;
 	}
 
 	/**
@@ -1271,6 +1277,7 @@ public class Arena {
 	 */
 	public void start() {
 		getDebugger().i("start()");
+		gaveRewards = false;
 		startRunner = null;
 		if (isFightInProgress()) {
 			getDebugger().i("already in progress! OUT!");
