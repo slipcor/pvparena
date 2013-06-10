@@ -123,6 +123,9 @@ public class PlayerListener implements Listener {
 		}
 		final ArenaTeam team = aPlayer.getArenaTeam();
 		if (team == null) {
+			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_SPECTALK)) {
+				event.setCancelled(true);
+			}
 			return; // no fighting player => OUT
 		}
 		arena.getDebugger().i("fighting player chatting!", player);

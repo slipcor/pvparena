@@ -100,6 +100,7 @@ public class Config {
 		PERMS_FLY("perms.fly", false),
 		PERMS_JOININBATTLE("perms.joinInBattle", false),
 		PERMS_TEAMKILL("perms.teamkill", true),
+		PERMS_SPECTALK("perms.specTalk", true),
 
 		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false),
 		PLAYER_DROPSINVENTORY("player.dropsInventory", false),

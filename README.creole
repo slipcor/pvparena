@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.3.166 - allow disallowing of spectator talk
 * v1.0.3.165 - verify that rewards were not already given
 * v1.0.3.164 - various fixes
 * v1.0.3.163 - properly put BlockDestroy loser to the lose location
