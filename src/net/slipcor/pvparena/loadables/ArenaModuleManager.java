@@ -24,8 +24,6 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.listeners.BlockListener;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.modules.BattlefieldJoin;
 import net.slipcor.pvparena.modules.CustomSpawn;
 import net.slipcor.pvparena.modules.RegionTool;

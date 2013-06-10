@@ -102,7 +102,7 @@ public class EntityListener implements Listener {
 			DEBUG.i("null arena");
 			return; // no arena => out
 		}
-		DEBUG.i("cancel!");
+		arena.getDebugger().i("cancel CreatureSpawnEvent!");
 		event.setCancelled(true);
 	}
 
@@ -126,7 +126,7 @@ public class EntityListener implements Listener {
 				return; // no arena => out
 			}
 		}
-		DEBUG.i("explosion inside an arena");
+		arena.getDebugger().i("explosion inside an arena");
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
 				|| (!(event.getEntity() instanceof TNTPrimed))) {
 			ArenaModuleManager.onEntityExplode(arena, event);
@@ -155,7 +155,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 		final Player player = (Player) entity;
-		DEBUG.i("onEntityRegainHealth => fighing player", player);
+		arena.getDebugger().i("onEntityRegainHealth => fighing player", player);
 		if (!arena.isFightInProgress()) {
 			return;
 		}
@@ -220,14 +220,14 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("onEntityDamageByEntity: fighting player");
+		arena.getDebugger().i("onEntityDamageByEntity: fighting player");
 
 		if ((eDamager == null) || (!(eDamager instanceof Player))) {
 			// attacker no player => out!
 			return;
 		}
 
-		DEBUG.i("both entities are players",(Player) eDamager);
+		arena.getDebugger().i("both entities are players",(Player) eDamager);
 		final Player attacker = (Player) eDamager;
 		final Player defender = (Player) eDamagee;
 
@@ -253,8 +253,8 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("both players part of the arena",attacker);
-		DEBUG.i("both players part of the arena",defender);
+		arena.getDebugger().i("both players part of the arena",attacker);
+		arena.getDebugger().i("both players part of the arena",defender);
 
 		if (PVPArena.instance.getConfig().getBoolean("onlyPVPinArena")) {
 			event.setCancelled(false); // uncancel events for regular no PVP
@@ -265,8 +265,8 @@ public class EntityListener implements Listener {
 				&& (apAttacker.getArenaTeam())
 						.equals(apDefender.getArenaTeam())) {
 			// no team fights!
-			DEBUG.i("team hit, cancel!",attacker);
-			DEBUG.i("team hit, cancel!",defender);
+			arena.getDebugger().i("team hit, cancel!",attacker);
+			arena.getDebugger().i("team hit, cancel!",defender);
 			if (!(event.getDamager() instanceof Snowball)) {
 				event.setCancelled(true);
 			}
@@ -274,8 +274,8 @@ public class EntityListener implements Listener {
 		}
 		
 		if (!arena.isFightInProgress() || (arena.pvpRunner != null)) {
-			DEBUG.i("fight not started, cancel!",attacker);
-			DEBUG.i("fight not started, cancel!",defender);
+			arena.getDebugger().i("fight not started, cancel!",attacker);
+			arena.getDebugger().i("fight not started, cancel!",defender);
 			event.setCancelled(true);
 			return;
 		}
@@ -287,16 +287,16 @@ public class EntityListener implements Listener {
 				&& SpawnManager.isNearSpawn(arena, defender, arena
 					.getArenaConfig().getInt(CFG.PROTECT_SPAWN))) {
 			// spawn protection!
-			DEBUG.i("spawn protection! damage cancelled!",attacker);
-			DEBUG.i("spawn protection! damage cancelled!",defender);
+			arena.getDebugger().i("spawn protection! damage cancelled!",attacker);
+			arena.getDebugger().i("spawn protection! damage cancelled!",defender);
 			event.setCancelled(true);
 			return;
 		}
 
 		// here it comes, process the damage!
 
-		DEBUG.i("processing damage!",attacker);
-		DEBUG.i("processing damage!",defender);
+		arena.getDebugger().i("processing damage!",attacker);
+		arena.getDebugger().i("processing damage!",defender);
 
 		ArenaModuleManager.onEntityDamageByEntity(arena, attacker, defender,
 				event);

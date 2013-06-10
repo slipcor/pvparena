@@ -90,7 +90,7 @@ public final class ArenaClass {
 	}
 
 	private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
-		debug.i("- " + StringParser.getStringFromItemStack(stack));
+		debug.i("- " + StringParser.getStringFromItemStack(stack), (Player) inv.getHolder());
 		final Material type = stack.getType();
 		if (HELMETS_TYPE.contains(type)) {
 			if (inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR) {

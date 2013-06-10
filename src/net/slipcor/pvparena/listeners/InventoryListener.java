@@ -34,7 +34,7 @@ public class InventoryListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("InventoryClick: arena player", player);
+		arena.getDebugger().i("InventoryClick: arena player", player);
 		
 		if (event.getInventory().getType()
 			.equals(InventoryType.CRAFTING)) {
@@ -59,7 +59,7 @@ public class InventoryListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("cancelling!", player);
+		arena.getDebugger().i("cancelling!", player);
 		// player is carrying a flag
 		event.setCancelled(true);
 	}

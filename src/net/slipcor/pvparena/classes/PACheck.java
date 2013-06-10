@@ -149,21 +149,21 @@ public class PACheck {
 	}
 	
 	public static boolean handleEnd(final Arena arena, final boolean force) {
-		DEBUG.i("handleEnd: " + arena.getName() + "; force: " + force);
+		arena.getDebugger().i("handleEnd: " + arena.getName() + "; force: " + force);
 		int priority = 0;
 		PACheck res = new PACheck();
 		
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
-			DEBUG.i("checking " + mod.getName());
+			arena.getDebugger().i("checking " + mod.getName());
 			res = mod.checkEnd(res);
 			if (res.getPriority() > priority && priority >= 0) {
-				DEBUG.i("> success and higher priority");
+				arena.getDebugger().i("> success and higher priority");
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				DEBUG.i("> fail");
+				arena.getDebugger().i("> fail");
 				priority = res.getPriority();
 				commit = null;
 			}
@@ -172,20 +172,20 @@ public class PACheck {
 		if (res.hasError()) {
 			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
 			if (commit != null) {
-				DEBUG.i("error; committing end: " + commit.getName());
+				arena.getDebugger().i("error; committing end: " + commit.getName());
 				commit.commitEnd(force);
 				return true;
 			}
-			DEBUG.i("error; FALSE!");
+			arena.getDebugger().i("error; FALSE!");
 			return false;
 		}
 		
 		if (commit == null) {
-			DEBUG.i("FALSE");
+			arena.getDebugger().i("FALSE");
 			return false;
 		}
 
-		DEBUG.i("committing end: " + commit.getName());
+		arena.getDebugger().i("committing end: " + commit.getName());
 		commit.commitEnd(force);
 		return true;
 	}
@@ -326,6 +326,7 @@ public class PACheck {
 				return;
 			}
 			
+			ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 			
 			ArenaModuleManager.choosePlayerTeam(arena, (Player) sender, team.getColoredName());
 			
@@ -378,6 +379,9 @@ public class PACheck {
 						mod.parseStart();
 					}
 				}
+				if (player.getClass() != null && arena.startRunner != null) {
+					player.setStatus(Status.READY);
+				}
 				
 				return;
 			}
@@ -386,7 +390,6 @@ public class PACheck {
 			
 			ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 			
-			ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 			if (player.getClass() != null && arena.startRunner != null) {
 				player.setStatus(Status.READY);
 			}
@@ -397,28 +400,28 @@ public class PACheck {
 		
 		int priority = 0;
 		PACheck res = new PACheck();
-		DEBUG.i("handlePlayerDeath", player);
+		arena.getDebugger().i("handlePlayerDeath", player);
 		
 		ArenaGoal commit = null;
 		
 		for (ArenaGoal mod : arena.getGoals()) {
 			res = mod.checkPlayerDeath(res, player);
 			if (res.getPriority() > priority && priority >= 0) {
-				DEBUG.i("success and higher priority", player);
+				arena.getDebugger().i("success and higher priority", player);
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				DEBUG.i("fail", player);
+				arena.getDebugger().i("fail", player);
 				// fail
 				priority = res.getPriority();
 				commit = null;
 			} else {
-				DEBUG.i("else", player);
+				arena.getDebugger().i("else", player);
 			}
 		}
 		
 		if (res.hasError()) {
-			DEBUG.i("has error: " + res.getError(), player);
+			arena.getDebugger().i("has error: " + res.getError(), player);
 			if (res.getError().equals("0")) {
 				doesRespawn = false;
 			}
@@ -434,12 +437,12 @@ public class PACheck {
 		}
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			DEBUG.i("don't drop inventory", player);
+			arena.getDebugger().i("don't drop inventory", player);
 			event.getDrops().clear();
 		}
 		
 		if (commit == null) {
-			DEBUG.i("no mod handles player deaths", player);
+			arena.getDebugger().i("no mod handles player deaths", player);
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -464,10 +467,10 @@ public class PACheck {
 			return;
 		}
 
-		DEBUG.i("handled by: " + commit.getName(), player);
+		arena.getDebugger().i("handled by: " + commit.getName(), player);
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
-			DEBUG.i("parsing death: " + g.getName(), player);
+			arena.getDebugger().i("parsing death: " + g.getName(), player);
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
 
@@ -481,7 +484,7 @@ public class PACheck {
 				return;
 			}
 		}
-		DEBUG.i("handleRespawn!", aPlayer.getName());
+		arena.getDebugger().i("handleRespawn!", aPlayer.getName());
 		new InventoryRefillRunnable(arena, aPlayer.get(), drops);
 		SpawnManager.respawn(arena,  aPlayer);
 		arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause()==null?null:aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
@@ -536,7 +539,7 @@ public class PACheck {
 		int priority = 0;
 		PACheck res = new PACheck();
 
-		DEBUG.i("handling spectator", sender);
+		arena.getDebugger().i("handling spectator", sender);
 		
 		// priority will be set by flags, the max priority will be called
 		
@@ -545,11 +548,11 @@ public class PACheck {
 		for (ArenaModule mod : arena.getMods()) {
 			res = mod.checkJoin(sender, res, false);
 			if (res.getPriority() > priority && priority >= 0) {
-				DEBUG.i("success and higher priority", sender);
+				arena.getDebugger().i("success and higher priority", sender);
 				priority = res.getPriority();
 				commit = mod;
 			} else if (res.getPriority() < 0 || priority < 0) {
-				DEBUG.i("fail", sender);
+				arena.getDebugger().i("fail", sender);
 				priority = res.getPriority();
 				commit = null;
 			}
@@ -561,7 +564,7 @@ public class PACheck {
 		}
 		
 		if (commit == null) {
-			DEBUG.i("commit null", sender);
+			arena.getDebugger().i("commit null", sender);
 			return;
 		}
 		
@@ -603,7 +606,7 @@ public class PACheck {
 		final PAStartEvent event = new PAStartEvent(arena);
 		Bukkit.getPluginManager().callEvent(event);
 		
-		DEBUG.i("teleporting all players to their spawns", sender);
+		arena.getDebugger().i("teleporting all players to their spawns", sender);
 
 		if (commit == null) {
 			if (arena.isFreeForAll()) {
@@ -619,7 +622,7 @@ public class PACheck {
 			commit.commitStart(); // override spawning
 		}
 
-		DEBUG.i("teleported everyone!", sender);
+		arena.getDebugger().i("teleported everyone!", sender);
 
 		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
 		arena.setFightInProgress(true);

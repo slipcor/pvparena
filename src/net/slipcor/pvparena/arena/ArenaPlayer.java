@@ -85,15 +85,12 @@ public class ArenaPlayer {
 	private PABlockLocation[] selection = new PABlockLocation[2];
 
 	public ArenaPlayer(final String playerName) {
-		debug.i("creating offline arena player: " + playerName, playerName);
 		name = playerName;
 
 		totalPlayers.put(name, this);
 	}
 
 	public ArenaPlayer(final Player player, final Arena arena) {
-		debug.i("creating arena player: " + player.getName(), player);
-
 		this.name = player.getName();
 		setArena(arena);
 
@@ -119,10 +116,14 @@ public class ArenaPlayer {
 	 *            the Event
 	 * @return the player instance if found, null otherwise
 	 */
-	public static Player getLastDamagingPlayer(final Event eEvent) {
-		debug.i("trying to get the last damaging player");
+	public static Player getLastDamagingPlayer(final Event eEvent, Player damagee) {
+		
+		Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).getArena() == null ?
+				ArenaPlayer.debug : ArenaPlayer.parsePlayer(damagee.getName()).getArena().getDebugger();
+		
+		debug.i("trying to get the last damaging player", damagee);
 		if (eEvent instanceof EntityDamageByEntityEvent) {
-			debug.i("there was an EDBEE");
+			debug.i("there was an EDBEE", damagee);
 			final EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) eEvent;
 
 			Entity eDamager = event.getDamager();
@@ -130,24 +131,24 @@ public class ArenaPlayer {
 			if (event.getCause() == DamageCause.PROJECTILE
 					&& eDamager instanceof Projectile) {
 				eDamager = ((Projectile) eDamager).getShooter();
-				debug.i("killed by projectile, shooter is found");
+				debug.i("killed by projectile, shooter is found", damagee);
 			}
 
 			if (event.getEntity() instanceof Wolf) {
 				final Wolf wolf = (Wolf) event.getEntity();
 				if (wolf.getOwner() != null) {
 					eDamager = (Entity) wolf.getOwner();
-					debug.i("tamed wolf is found");
+					debug.i("tamed wolf is found", damagee);
 				}
 			}
 
 			if (eDamager instanceof Player) {
-				debug.i("it was a player!");
+				debug.i("it was a player!", damagee);
 				return (Player) eDamager;
 			}
 		}
-		debug.i("last damaging player is null");
-		debug.i("last damaging event: " + eEvent.getEventName());
+		debug.i("last damaging player is null", damagee);
+		debug.i("last damaging event: " + eEvent.getEventName(), damagee);
 		return null;
 	}
 
@@ -164,7 +165,7 @@ public class ArenaPlayer {
 		if (playerClass == null) {
 			return;
 		}
-		InventoryManager.DEBUG.i("giving items to player '" + player.getName()
+		arena.getDebugger().i("giving items to player '" + player.getName()
 				+ "', class '" + playerClass.getName() + "'", player);
 
 		playerClass.equip(player);
@@ -172,7 +173,7 @@ public class ArenaPlayer {
 		if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
 			final ArenaTeam aTeam = aPlayer.getArenaTeam();
 			final String color = aTeam.getColor().name();
-			InventoryManager.DEBUG.i("forcing woolhead: " + aTeam.getName() + "/"
+			arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + "/"
 					+ color, player);
 			player.getInventory().setHelmet(
 					new ItemStack(Material.WOOL, 1, StringParser
@@ -252,7 +253,7 @@ public class ArenaPlayer {
 	 *            the player to save
 	 */
 	public static void backupAndClearInventory(final Arena arena, final Player player) {
-		InventoryManager.DEBUG.i("saving player inventory: " + player.getName(),
+		arena.getDebugger().i("saving player inventory: " + player.getName(),
 				player);
 
 		final ArenaPlayer aPlayer = parsePlayer(player.getName());
@@ -271,6 +272,7 @@ public class ArenaPlayer {
 		if (player == null) {
 			return;
 		}
+		Debug debug = arena.getDebugger();
 		debug.i("resetting inventory: " + player.getName(), player);
 		if (player.getInventory() == null) {
 			debug.i("inventory null!", player);

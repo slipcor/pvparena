@@ -25,13 +25,13 @@ public class TimedEndRunnable extends ArenaRunnable {
 	 */
 	public TimedEndRunnable(final Arena arena, final int seconds) {
 		super(MSG.TIMER_ENDING_IN.getNode(), seconds, null, arena, false);
-		DEBUG.i("TimedEndRunnable constructor");
+		arena.getDebugger().i("TimedEndRunnable constructor");
 		arena.endRunner = this;
 	}
 	
 	@Override
 	public void commit() {
-		DEBUG.i("TimedEndRunnable commiting");
+		arena.getDebugger().i("TimedEndRunnable commiting");
 		if (arena.isFightInProgress()) {
 			PVPArena.instance.getAgm().timedEnd(arena);
 		}

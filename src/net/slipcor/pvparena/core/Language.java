@@ -263,6 +263,7 @@ public final class Language {
 		MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
 		MESSAGES_TOPUBLIC("nulang.messages.toPublic", "You are now talking to the public!"),
 		MESSAGES_TOTEAM("nulang.messages.toTeam", "You are now talking to your team!"),
+		MESSAGES_GENERAL("nulang.messages.general", "&e[%1%&e] &f%2%"),
 		
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 
@@ -675,15 +676,16 @@ public final class Language {
 		return StringParser.colorize(arena.getArenaConfig().getString(node));
 	}
 
-	public static String parse(final Arena arena, final CFG node, final String arg1) {
-		return StringParser.colorize(arena.getArenaConfig().getString(node)
-				.replace("%1%", arg1));
-	}
-
-	public static String parse(final Arena arena, final CFG node, final String arg1,
-			final String arg2) {
-		return StringParser.colorize(arena.getArenaConfig().getString(node)
-				.replace("%1%", arg1).replace("%2%", arg2));
+	public static String parse(final Arena arena, final CFG node, final String... args) {
+		String result = arena.getArenaConfig().getString(node);
+		
+		int i = 0;
+		
+		for (String word : args) {
+			result = result.replace("%"+ ++i +"%", word);
+		}
+		
+		return StringParser.colorize(result);
 	}
 
 	/**
@@ -706,48 +708,12 @@ public final class Language {
 	 *            a string to replace
 	 * @return the replaced node string
 	 */
-	public static String parse(final MSG message, final String arg) {
-		final String var = message.toString();
-		return StringParser.colorize(var.replace("%1%", arg));
-	}
-
-	/**
-	 * read a node from the config and return its value after replacing
-	 * 
-	 * @param s
-	 *            the node name
-	 * @param arg1
-	 *            a string to replace
-	 * @param arg2
-	 *            a string to replace
-	 * @return the replaced node string
-	 */
-	public static String parse(final MSG message, final String arg1, final String arg2) {
-		final String var = message.toString().replace("%2%", arg2);
-		return StringParser.colorize(var.replace("%1%", arg1));
-	}
-
-	/**
-	 * read a node from the config and return its value after replacing
-	 * 
-	 * @param s
-	 *            the node name
-	 * @param arg1
-	 *            a string to replace
-	 * @param arg2
-	 *            a string to replace
-	 * @param arg3
-	 *            a string to replace
-	 * @return the replaced node string
-	 */
-	public static String parse(final MSG message, final String arg1, final String arg2, final String arg3) {
-		final String var = message.toString().replace("%2%", arg2).replace("%3%", arg3);
-		return StringParser.colorize(var.replace("%1%", arg1));
-	}
-
-	public static String parse(final MSG message, final String arg1, final String arg2, final String arg3,
-			final String arg4) {
-		final String var = message.toString().replace("%2%", arg2).replace("%3%", arg3).replace("%4%", arg4);
-		return StringParser.colorize(var.replace("%1%", arg1));
+	public static String parse(final MSG message, final String... args) {
+		String result = message.toString();
+		int i = 0;
+		for (String word : args) {
+			result = result.replace("%" + ++i + "%", word);
+		}
+		return StringParser.colorize(result);
 	}
 }

@@ -195,7 +195,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("block block decaying inside the arena");
+		arena.getDebugger().i("block block decaying inside the arena");
 
 		if (isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.NATURE)) {
@@ -220,7 +220,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("block block fading inside the arena");
+		arena.getDebugger().i("block block fading inside the arena");
 		if (isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.NATURE)) {
 			return;
@@ -245,7 +245,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		// debug.i("block fluids inside the arena");
+		// arena.getDebugger().info("block fluids inside the arena");
 
 		if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
 			return;
@@ -369,7 +369,7 @@ public class BlockListener implements Listener {
 		if (arena == null) {
 			return; // no arena => out
 		}
-		DEBUG.i("block piston extend inside the arena");
+		arena.getDebugger().i("block piston extend inside the arena");
 		for (Block block : event.getBlocks()) {
 
 			ArenaModuleManager.onBlockPiston(arena, block);
@@ -481,7 +481,7 @@ public class BlockListener implements Listener {
 				new PABlockLocation(event.getBlock().getLocation()),
 				RegionProtection.PAINTING);
 
-		DEBUG.i("painting place inside the arena", event.getPlayer());
+		DEBUG.i("painting place", event.getPlayer());
 
 		if (isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.PAINTING)) {
@@ -508,7 +508,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
-		DEBUG.i("painting break inside the arena");
+		arena.getDebugger().i("painting break inside the arena");
 		ArenaModuleManager.onPaintingBreak(arena, event.getEntity(), event
 				.getEntity().getType());
 	}

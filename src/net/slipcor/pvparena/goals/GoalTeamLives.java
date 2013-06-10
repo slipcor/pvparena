@@ -115,7 +115,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public void commitEnd(boolean force) {
-		debug.i("[TEAMS]");
+		arena.getDebugger().i("[TEAMS]");
 
 		ArenaTeam aTeam = null;
 
@@ -182,7 +182,7 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void configParse(final YamlConfiguration config) {
 		if (config.get("flagColors") == null) {
-			debug.i("no flagheads defined, adding white and black!");
+			arena.getDebugger().i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}
@@ -208,14 +208,14 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public String guessSpawn(final String place) {
 		if (!place.contains("spawn")) {
-			debug.i("place not found!");
+			arena.getDebugger().i("place not found!");
 			return null;
 		}
 		// no exact match: assume we have multiple spawnpoints
 		final Map<Integer, String> locs = new HashMap<Integer, String>();
 		int pos = 0;
 
-		debug.i("searching for team spawns");
+		arena.getDebugger().i("searching for team spawns");
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
@@ -223,7 +223,7 @@ public class GoalTeamLives extends ArenaGoal {
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(pos++, name);
-				debug.i("found match: " + name);
+				arena.getDebugger().i("found match: " + name);
 			}
 		}
 
@@ -307,13 +307,13 @@ public class GoalTeamLives extends ArenaGoal {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
-			debug.i("no flagheads defined, adding white and black!");
+			arena.getDebugger().i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}

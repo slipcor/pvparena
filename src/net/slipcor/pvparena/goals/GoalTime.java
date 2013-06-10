@@ -52,7 +52,7 @@ public class GoalTime extends ArenaGoal {
 	public void parseStart() {
 		final int timed = arena.getArenaConfig().getInt(CFG.GOAL_TIME_END);
 		if (timed > 0) {
-			debug.i("arena timing!");
+			arena.getDebugger().i("arena timing!");
 			// initiate autosave timer
 			ter = new TimedEndRunnable(arena, timed);
 		}

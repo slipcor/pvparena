@@ -41,7 +41,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class PVPArena extends JavaPlugin {
 	public static PVPArena instance = null;
 
-	private final static Debug DEBUG = new Debug(1);
+	private static Debug DEBUG;
 
 	private ArenaGoalManager agm = null;
 	private ArenaModuleManager amm = null;
@@ -120,13 +120,13 @@ public class PVPArena extends JavaPlugin {
 	 *         otherwise
 	 */
 	public static boolean hasPerms(final CommandSender sender, final Arena arena) {
-		DEBUG.i("perm check.", sender);
+		arena.getDebugger().i("perm check.", sender);
 		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
-			DEBUG.i(" - explicit: "
+			arena.getDebugger().i(" - explicit: "
 					+ (sender.hasPermission("pvparena.join."
 							+ arena.getName().toLowerCase())), sender);
 		} else {
-			DEBUG.i(String.valueOf(sender.hasPermission("pvparena.user")),
+			arena.getDebugger().i(String.valueOf(sender.hasPermission("pvparena.user")),
 					sender);
 		}
 
@@ -164,11 +164,11 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		final AbstractGlobalCommand pacmd = AbstractGlobalCommand.getByName(args[0]);
-
+		ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		if (pacmd != null
-				&& !((ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) && (pacmd
+				&& !((player.getArena() != null) && (pacmd
 						.getName().contains("PAI_ArenaList")))) {
-			DEBUG.i("committing: " + pacmd.getName(), sender);
+			player.getArena().getDebugger().i("committing: " + pacmd.getName(), sender);
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
@@ -244,17 +244,17 @@ public class PVPArena extends JavaPlugin {
 			if (newArgs.length > 1) {
 				newArgs = StringParser.shiftArrayBy(newArgs, 1);
 			}
-			DEBUG.i("committing: " + paacmd.getName(), sender);
+			tempArena.getDebugger().i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(tempArena, sender, newArgs);
 			return true;
 		}
 
 		if (paacmd != null) {
-			DEBUG.i("committing: " + paacmd.getName(), sender);
+			tempArena.getDebugger().i("committing: " + paacmd.getName(), sender);
 			paacmd.commit(tempArena, sender, StringParser.shiftArrayBy(newArgs, 1));
 			return true;
 		}
-		DEBUG.i("cmd null", sender);
+		tempArena.getDebugger().i("cmd null", sender);
 		
 		return false;
 	}
@@ -263,6 +263,7 @@ public class PVPArena extends JavaPlugin {
 	public void onDisable() {
 		ArenaManager.reset(true);
 		Tracker.stop();
+		Debug.destroy();
 		Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription()
 				.getFullName());
 	}
@@ -270,6 +271,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		DEBUG = new Debug(1);
 		
 		this.saveDefaultConfig();
 

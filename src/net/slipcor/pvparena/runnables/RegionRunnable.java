@@ -31,7 +31,7 @@ public class RegionRunnable implements Runnable {
 	 */
 	public RegionRunnable(final ArenaRegionShape paRegion) {
 		this.region = paRegion;
-		DEBUG.i("RegionRunnable constructor");
+		region.getArena().getDebugger().i("RegionRunnable constructor");
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class RegionRunnable implements Runnable {
 	@Override
 	public void run() {
 		if (!Debug.override) {
-			DEBUG.i("RegionRunnable commiting");
+			region.getArena().getDebugger().i("RegionRunnable commiting");
 		}
 		/*
 		 * J - is a join region

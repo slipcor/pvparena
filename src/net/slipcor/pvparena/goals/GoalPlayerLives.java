@@ -56,16 +56,16 @@ public class GoalPlayerLives extends ArenaGoal {
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
-		debug.i("checkEnd - " + arena.getName());
+		arena.getDebugger().i("checkEnd - " + arena.getName());
 		if (res.getPriority() > PRIORITY) {
-			debug.i(res.getPriority() + ">" + PRIORITY);
+			arena.getDebugger().i(res.getPriority() + ">" + PRIORITY);
 			return res;
 		}
 
 		if (!arena.isFreeForAll()) {
-			debug.i("TEAMS!");
+			arena.getDebugger().i("TEAMS!");
 			final int count = TeamManager.countActiveTeams(arena);
-			debug.i("count: " + count);
+			arena.getDebugger().i("count: " + count);
 
 			if (count <= 1) {
 				res.setPriority(this, PRIORITY); // yep. only one team left. go!
@@ -75,7 +75,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
 		final int count = getLifeMap().size();
 
-		debug.i("lives: " + StringParser.joinSet(getLifeMap().keySet(), "|"));
+		arena.getDebugger().i("lives: " + StringParser.joinSet(getLifeMap().keySet(), "|"));
 
 		if (count <= 1) {
 			res.setPriority(this, PRIORITY); // yep. only one player left. go!
@@ -184,11 +184,11 @@ public class GoalPlayerLives extends ArenaGoal {
 			return;
 		}
 		int pos = getLifeMap().get(player.getName());
-		debug.i("lives before death: " + pos, player);
+		arena.getDebugger().i("lives before death: " + pos, player);
 		if (pos <= 1) {
 			getLifeMap().remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				debug.i("faking player death", player);
+				arena.getDebugger().i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
@@ -316,13 +316,13 @@ public class GoalPlayerLives extends ArenaGoal {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
-			debug.i("no flagheads defined, adding white and black!");
+			arena.getDebugger().i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}

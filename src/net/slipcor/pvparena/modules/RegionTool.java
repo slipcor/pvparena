@@ -57,12 +57,12 @@ public class RegionTool extends ArenaModule {
 		for (Arena arena : ArenaManager.getArenas()) {
 			Material mMat = Material.STICK;
 			if (arena.getArenaConfig().getInt(CFG.GENERAL_WAND) > 0) {
-				debug.i("reading wand", event.getPlayer());
+				arena.getDebugger().i("reading wand", event.getPlayer());
 				try {
 					mMat = Material.getMaterial(arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
-					debug.i("mMat now is " + mMat.name(), event.getPlayer());
+					arena.getDebugger().i("mMat now is " + mMat.name(), event.getPlayer());
 				} catch (Exception e) {
-					debug.i("exception reading ready block", event.getPlayer());
+					arena.getDebugger().i("exception reading ready block", event.getPlayer());
 					final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
 					arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_MAT_NOT_FOUND, sMat));
 					continue;

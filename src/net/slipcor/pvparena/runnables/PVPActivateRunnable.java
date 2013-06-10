@@ -23,7 +23,7 @@ public class PVPActivateRunnable extends ArenaRunnable {
 	 */
 	public PVPActivateRunnable(final Arena arena, final int seconds) {
 		super(MSG.TIMER_PVPACTIVATING.getNode(), seconds, null, arena, false);
-		DEBUG.i("PVPActivateRunnable constructor");
+		arena.getDebugger().i("PVPActivateRunnable constructor");
 	}
 	
 	@Override

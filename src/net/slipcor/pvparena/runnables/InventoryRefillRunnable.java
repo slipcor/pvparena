@@ -59,7 +59,7 @@ public class InventoryRefillRunnable implements Runnable {
 				if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
 					final ArenaTeam aTeam = aPlayer.getArenaTeam();
 					final String color = aTeam.getColor().name();
-					InventoryManager.DEBUG.i("forcing woolhead: " + aTeam.getName() + "/"
+					arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + "/"
 							+ color, player);
 					player.getInventory().setHelmet(
 							new ItemStack(Material.WOOL, 1, StringParser

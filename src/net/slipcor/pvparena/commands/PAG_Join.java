@@ -67,14 +67,14 @@ public class PAG_Join extends AbstractArenaCommand {
 		
 		if (aPlayer.getArena() == null) {
 			if (arena.hasAlreadyPlayed(aPlayer.getName())) {
-				debug.i("Join_2", sender);
+				arena.getDebugger().i("Join_2", sender);
 				arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
 			} else {
 				PACheck.handleJoin(arena, sender, args);
 			}
 		} else {
 			final Arena pArena = aPlayer.getArena();
-			debug.i("Join_1", sender);
+			arena.getDebugger().i("Join_1", sender);
 			pArena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, pArena.getName()));
 		}
 		

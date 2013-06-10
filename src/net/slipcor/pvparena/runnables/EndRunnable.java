@@ -34,7 +34,7 @@ public class EndRunnable extends ArenaRunnable {
 	 */
 	public EndRunnable(final Arena arena, final int seconds) {
 		super(MSG.TIMER_RESETTING_IN.getNode(), seconds, null, arena, false);
-		DEBUG.i("EndRunnable constructor");
+		arena.getDebugger().i("EndRunnable constructor");
 		if (arena.endRunner != null) {
 			arena.endRunner.cancel();
 			arena.endRunner = null;
@@ -44,12 +44,12 @@ public class EndRunnable extends ArenaRunnable {
 
 	@Override
 	protected void commit() {
-		DEBUG.i("EndRunnable commiting");
+		arena.getDebugger().i("EndRunnable commiting");
 		
 		arena.setRound(arena.getRound()+1);
 		
 		if (arena.getRound() >= arena.getRoundCount()) {
-			DEBUG.i("rounds done!");
+			arena.getDebugger().i("rounds done!");
 		
 			arena.reset(false);
 			if (arena.realEndRunner != null) {
@@ -60,7 +60,7 @@ public class EndRunnable extends ArenaRunnable {
 				arena.endRunner = null;
 			}
 		} else {
-			DEBUG.i("Starting round #" + arena.getRound());
+			arena.getDebugger().i("Starting round #" + arena.getRound());
 			
 			if (arena.realEndRunner != null) {
 				arena.realEndRunner = null;

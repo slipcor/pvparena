@@ -14,7 +14,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena ROUND Command class</pre>

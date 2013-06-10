@@ -181,7 +181,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		final Player killer = player.getKiller();
 
 		int iLives = getLifeMap().get(killer.getName());
-		debug.i("kills to go: " + iLives, killer);
+		arena.getDebugger().i("kills to go: " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
 			final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
@@ -193,7 +193,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			}
 			for (ArenaPlayer ap : plrs) {
 				getLifeMap().remove(ap.getName());
-				debug.i("faking player death", ap.get());
+				arena.getDebugger().i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
 						false);
 

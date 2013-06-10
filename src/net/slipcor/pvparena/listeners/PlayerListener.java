@@ -51,7 +51,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 /**
  * <pre>
@@ -90,8 +89,8 @@ public class PlayerListener implements Listener {
 		}
 
 		if (arena != null && !arena.isFightInProgress()) {
-			DEBUG.i("arena != null and fight in progress => cancel", player);
-			DEBUG.i("> true", player);
+			arena.getDebugger().i("arena != null and fight in progress => cancel", player);
+			arena.getDebugger().i("> true", player);
 
 			PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
 			event.setCancelled(true);
@@ -126,7 +125,7 @@ public class PlayerListener implements Listener {
 		if (team == null) {
 			return; // no fighting player => OUT
 		}
-		DEBUG.i("fighting player chatting!", player);
+		arena.getDebugger().i("fighting player chatting!", player);
 		final String sTeam = team.getName();
 
 		if (!arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
@@ -170,11 +169,11 @@ public class PlayerListener implements Listener {
 				"whitelist");
 		list.add("pa");
 		list.add("pvparena");
-		DEBUG.i("checking command whitelist", player);
+		arena.getDebugger().i("checking command whitelist", player);
 
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
-				DEBUG.i("command allowed: " + s, player);
+				arena.getDebugger().i("command allowed: " + s, player);
 				return;
 			}
 		}
@@ -192,16 +191,16 @@ public class PlayerListener implements Listener {
 
 		list.add("pa");
 		list.add("pvparena");
-		DEBUG.i("checking command whitelist", player);
+		arena.getDebugger().i("checking command whitelist", player);
 
 		for (String s : list) {
 			if (event.getMessage().startsWith("/" + s)) {
-				DEBUG.i("command allowed: " + s, player);
+				arena.getDebugger().i("command allowed: " + s, player);
 				return;
 			}
 		}
 
-		DEBUG.i("command blocked: " + event.getMessage(), player);
+		arena.getDebugger().i("command blocked: " + event.getMessage(), player);
 		arena.msg(player,
 				Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
 		event.setCancelled(true);
@@ -226,7 +225,7 @@ public class PlayerListener implements Listener {
 			return; // no drop protection
 		}
 
-		DEBUG.i("onPlayerDropItem: fighting player", player);
+		arena.getDebugger().i("onPlayerDropItem: fighting player", player);
 		arena.msg(player, Language.parse(MSG.NOTICE_NO_DROP_ITEM));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
@@ -271,7 +270,7 @@ public class PlayerListener implements Listener {
 					MSG.FIGHT_KILLED_BY,
 					playerName + ChatColor.YELLOW,
 					arena.parseDeathCause(player, cause.getCause(),
-							ArenaPlayer.getLastDamagingPlayer(cause))));
+							ArenaPlayer.getLastDamagingPlayer(cause, player))));
 		}
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
@@ -347,12 +346,12 @@ public class PlayerListener implements Listener {
 
 		PACheck.handleInteract(arena, player, event, event.getClickedBlock());
 
-		DEBUG.i("event post cancelled: " + event.isCancelled(),
+		arena.getDebugger().i("event post cancelled: " + event.isCancelled(),
 				player);
 
 		if (arena.isFightInProgress()
 				&& !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
-			DEBUG.i("exiting! fight in progress AND no INBATTLEJOIN arena!",
+			arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!",
 					player);
 			return;
 		}
@@ -361,21 +360,21 @@ public class PlayerListener implements Listener {
 		final ArenaTeam team = aPlayer.getArenaTeam();
 
 		if (!aPlayer.getStatus().equals(Status.FIGHT)) {
-			DEBUG.i("cancelling: no class", player);
+			arena.getDebugger().i("cancelling: no class", player);
 			// fighting player inside the lobby!
 			event.setCancelled(true);
 		}
 
 		if (team == null) {
-			DEBUG.i("returning: no team", player);
+			arena.getDebugger().i("returning: no team", player);
 			return;
 		}
 
 		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			final Block block = event.getClickedBlock();
-			DEBUG.i("player team: " + team.getName(), player);
+			arena.getDebugger().i("player team: " + team.getName(), player);
 			if (block.getState() instanceof Sign) {
-				DEBUG.i("sign click!", player);
+				arena.getDebugger().i("sign click!", player);
 				final Sign sign = (Sign) block.getState();
 
 				if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
@@ -383,21 +382,21 @@ public class PlayerListener implements Listener {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
 				} else {
-					DEBUG.i("|" + sign.getLine(0) + "|", player);
-					DEBUG.i(String.valueOf(arena.getClass(sign.getLine(0))),
+					arena.getDebugger().i("|" + sign.getLine(0) + "|", player);
+					arena.getDebugger().i(String.valueOf(arena.getClass(sign.getLine(0))),
 							player);
-					DEBUG.i(String.valueOf(team), player);
+					arena.getDebugger().i(String.valueOf(team), player);
 				}
 				return;
 			}
 
-			DEBUG.i("block click!", player);
+			arena.getDebugger().i("block click!", player);
 
 			final Material mMat = arena.getReadyBlock();
-			DEBUG.i("clicked " + block.getType().name() + ", is it " + mMat.name()
+			arena.getDebugger().i("clicked " + block.getType().name() + ", is it " + mMat.name()
 					+ "?", player);
 			if (block.getTypeId() == mMat.getId()) {
-				DEBUG.i("clicked ready block!", player);
+				arena.getDebugger().i("clicked ready block!", player);
 				if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().equals("")) {
 					arena.msg(player, Language.parse(MSG.ERROR_READY_NOCLASS));
 					return; // not chosen class => OUT
@@ -409,9 +408,9 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				DEBUG.i("===============", player);
-				DEBUG.i("===== class: " + aPlayer.getArenaClass() + " =====", player);
-				DEBUG.i("===============", player);
+				arena.getDebugger().i("===============", player);
+				arena.getDebugger().i("===== class: " + aPlayer.getArenaClass() + " =====", player);
+				arena.getDebugger().i("===============", player);
 
 				if (!arena.isFightInProgress()) {
 					if (!aPlayer.getStatus().equals(Status.READY)) {
@@ -573,18 +572,18 @@ public class PlayerListener implements Listener {
 			}
 		}
 
-		DEBUG.i("onPlayerTeleport: fighting player '"
+		arena.getDebugger().i("onPlayerTeleport: fighting player '"
 				+ event.getPlayer().getName() + "' (uncancel)", player);
 		event.setCancelled(false); // fighting player - first recon NOT to
 									// cancel!
 
-		DEBUG.i("aimed location: " + event.getTo().toString(), player);
+		arena.getDebugger().i("aimed location: " + event.getTo().toString(), player);
 
 		if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
 				|| player.hasPermission("pvparena.telepass")) {
 			return; // if allowed => OUT
 		}
-		DEBUG.i("telepass: no!!", player);
+		arena.getDebugger().i("telepass: no!!", player);
 
 		Set<ArenaRegionShape> regions = arena
 				.getRegionsByType(RegionType.BATTLE);
@@ -600,7 +599,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 
-		DEBUG.i("onPlayerTeleport: no tele pass, cancelling!", player);
+		arena.getDebugger().i("onPlayerTeleport: no tele pass, cancelling!", player);
 		event.setCancelled(true); // cancel and tell
 		arena.msg(player, Language.parse(MSG.NOTICE_NO_TELEPORT));
 	}

@@ -35,7 +35,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	 */
 	public ArenaWarmupRunnable(final Arena arena, final ArenaPlayer player, final String team, final boolean spectator, final int seconds) {
 		super(MSG.TIMER_WARMINGUP.getNode(), seconds, player.get(), null, false);
-		DEBUG.i("ArenaWarmupRunnable constructor", player.getName());
+		arena.getDebugger().i("ArenaWarmupRunnable constructor", player.getName());
 		this.player = player;
 		this.teamName = team;
 		this.spectator = spectator;
@@ -44,7 +44,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	
 	@Override
 	protected void commit() {
-		DEBUG.i("ArenaWarmupRunnable commiting", player.getName());
+		arena.getDebugger().i("ArenaWarmupRunnable commiting", player.getName());
 		player.setStatus(Status.WARM);
 		if (spectator) {
 			wArena.hasNotPlayed(player);

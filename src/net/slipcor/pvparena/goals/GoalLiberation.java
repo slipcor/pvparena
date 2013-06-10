@@ -80,16 +80,16 @@ public class GoalLiberation extends ArenaGoal  {
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
-		debug.i("checkEnd - " + arena.getName());
+		arena.getDebugger().i("checkEnd - " + arena.getName());
 		if (res.getPriority() > PRIORITY) {
-			debug.i(res.getPriority() + ">" + PRIORITY);
+			arena.getDebugger().i(res.getPriority() + ">" + PRIORITY);
 			return res;
 		}
 
 		if (!arena.isFreeForAll()) {
-			debug.i("TEAMS!");
+			arena.getDebugger().i("TEAMS!");
 			final int count = TeamManager.countActiveTeams(arena);
-			debug.i("count: " + count);
+			arena.getDebugger().i("count: " + count);
 
 			if (count <= 1) {
 				res.setPriority(this, PRIORITY); // yep. only one team left. go!
@@ -132,13 +132,13 @@ public class GoalLiberation extends ArenaGoal  {
 		if (block == null || res.getPriority() > PRIORITY) {
 			return res;
 		}
-		debug.i("checking interact", player);
+		arena.getDebugger().i("checking interact", player);
 
 		if (block.getType() != Material.STONE_BUTTON) {
-			debug.i("block, but not button", player);
+			arena.getDebugger().i("block, but not button", player);
 			return res;
 		}
-		debug.i("button click!", player);
+		arena.getDebugger().i("button click!", player);
 
 		Vector vLoc;
 		Vector vFlag = null;
@@ -158,16 +158,16 @@ public class GoalLiberation extends ArenaGoal  {
 			final String aTeam = team.getName();
 
 			if (aTeam.equals(pTeam.getName())) {
-				debug.i("equals!OUT! ", player);
+				arena.getDebugger().i("equals!OUT! ", player);
 				continue;
 			}
 			if (team.getTeamMembers().size() < 1) {
-				debug.i("size!OUT! ", player);
+				arena.getDebugger().i("size!OUT! ", player);
 				continue; // dont check for inactive teams
 			}
-			debug.i("checking for flag of team " + aTeam, player);
+			arena.getDebugger().i("checking for flag of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
-			debug.i("block: " + vLoc.toString(), player);
+			arena.getDebugger().i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, aTeam + "button").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
@@ -177,8 +177,8 @@ public class GoalLiberation extends ArenaGoal  {
 						.toLocation().toVector();
 			}
 			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-				debug.i("button found!", player);
-				debug.i("vFlag: " + vFlag.toString(), player);
+				arena.getDebugger().i("button found!", player);
+				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 
 
 				arena.broadcast(Language
@@ -317,7 +317,7 @@ public class GoalLiberation extends ArenaGoal  {
 			return;
 		}
 		int pos = getLifeMap().get(player.getName());
-		debug.i("lives before death: " + pos, player);
+		arena.getDebugger().i("lives before death: " + pos, player);
 		if (pos <= 1) {
 			getLifeMap().put(player.getName(),1);
 			
@@ -407,7 +407,7 @@ public class GoalLiberation extends ArenaGoal  {
 			return false;
 		}
 
-		debug.i("trying to set a button", player);
+		arena.getDebugger().i("trying to set a button", player);
 
 		// command : /pa redbutton1
 		// location: redbutton1:
@@ -516,7 +516,7 @@ public class GoalLiberation extends ArenaGoal  {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}

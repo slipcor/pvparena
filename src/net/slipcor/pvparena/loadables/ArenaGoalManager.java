@@ -143,20 +143,20 @@ public class ArenaGoalManager {
 	}
 
 	public void initiate(final Arena arena, final Player player) {
-		DEBUG.i("initiating " + player.getName(), player);
+		arena.getDebugger().i("initiating " + player.getName(), player);
 		for (ArenaGoal type : arena.getGoals()) {
 			type.initate(player);
 		}
 	}
 	
 	public String ready(final Arena arena) {
-		DEBUG.i("AGM ready!?!");
+		arena.getDebugger().i("AGM ready!?!");
 		String error = null;
 		for (ArenaGoal type : arena.getGoals()) {
 			error = type.ready();
 			if (error != null) {
 
-				DEBUG.i("type error:" + type.getName());
+				arena.getDebugger().i("type error:" + type.getName());
 				return error;
 			}
 		}
@@ -209,12 +209,12 @@ public class ArenaGoalManager {
 		 * handed over to each module
 		 */
 
-		DEBUG.i("timed end!");
+		arena.getDebugger().i("timed end!");
 		
 		Map<String, Double> scores = new HashMap<String, Double>();
 
 		for (ArenaGoal type : arena.getGoals()) {
-			DEBUG.i("scores: " + type.getName());
+			arena.getDebugger().i("scores: " + type.getName());
 			scores = type.timedEnd(scores);
 		}
 
@@ -222,7 +222,7 @@ public class ArenaGoalManager {
 		
 		if (arena.isFreeForAll()) {
 			winners.add("free");
-			DEBUG.i("adding FREE");
+			arena.getDebugger().i("adding FREE");
 		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
 			// check all teams
 			double maxScore = 0;
@@ -242,10 +242,10 @@ public class ArenaGoalManager {
 						maxScore = teamScore;
 						winners.clear();
 						winners.add(team);
-						DEBUG.i("clear and add team " + team);
+						arena.getDebugger().i("clear and add team " + team);
 					} else if (teamScore == maxScore) {
 						winners.add(team);
-						DEBUG.i("add team "+team);
+						arena.getDebugger().i("add team "+team);
 					}
 				}
 			}
@@ -255,11 +255,11 @@ public class ArenaGoalManager {
 			}
 		} else {
 			winners.add(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER));
-			DEBUG.i("added winner!");
+			arena.getDebugger().i("added winner!");
 		}
 
 		if (winners.size() > 1) {
-			DEBUG.i("more than 1");
+			arena.getDebugger().i("more than 1");
 			final Set<String> preciseWinners = new HashSet<String>();
 
 			// several teams have max score!!
@@ -280,12 +280,12 @@ public class ArenaGoalManager {
 
 				if (sum == maxSum) {
 					preciseWinners.add(team.getName());
-					DEBUG.i("adddding " + team.getName());
+					arena.getDebugger().i("adddding " + team.getName());
 				} else if (sum > maxSum) {
 					maxSum = sum;
 					preciseWinners.clear();
 					preciseWinners.add(team.getName());
-					DEBUG.i("clearing and adddding + " + team.getName());
+					arena.getDebugger().i("clearing and adddding + " + team.getName());
 				}
 			}
 			
@@ -296,7 +296,7 @@ public class ArenaGoalManager {
 		}
 
 		if (arena.isFreeForAll()) {
-			DEBUG.i("FFAAA");
+			arena.getDebugger().i("FFAAA");
 			final Set<String> preciseWinners = new HashSet<String>();
 
 			for (ArenaTeam team : arena.getTeams()) {
@@ -313,12 +313,12 @@ public class ArenaGoalManager {
 					}
 					if (sum == maxSum) {
 						preciseWinners.add(ap.getName());
-						DEBUG.i("ffa adding " + ap.getName());
+						arena.getDebugger().i("ffa adding " + ap.getName());
 					} else if (sum > maxSum) {
 						maxSum = sum;
 						preciseWinners.clear();
 						preciseWinners.add(ap.getName());
-						DEBUG.i("ffa clr & adding " + ap.getName());
+						arena.getDebugger().i("ffa clr & adding " + ap.getName());
 					}
 				}
 			}

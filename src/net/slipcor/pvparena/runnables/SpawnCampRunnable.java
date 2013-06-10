@@ -30,7 +30,7 @@ public class SpawnCampRunnable implements Runnable {
 	public SpawnCampRunnable(final Arena arena, final int i) {
 		iID = 0;
 		this.arena = arena;
-		DEBUG.i("SpawnCampRunnable constructor");
+		arena.getDebugger().i("SpawnCampRunnable constructor");
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class SpawnCampRunnable implements Runnable {
 	 */
 	@Override
 	public void run() {
-		DEBUG.i("SpawnCampRunnable commiting");
+		arena.getDebugger().i("SpawnCampRunnable commiting");
 		if (arena.isFightInProgress() && arena.getArenaConfig().getBoolean(CFG.PROTECT_PUNISH)) {
 			arena.spawnCampPunish();
 		} else {

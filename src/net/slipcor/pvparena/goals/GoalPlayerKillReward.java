@@ -280,7 +280,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		}
 
 		int iLives = getLifeMap().get(killer.getName());
-		debug.i("kills to go: " + iLives, killer);
+		arena.getDebugger().i("kills to go: " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
 			final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
@@ -292,7 +292,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			}
 			for (ArenaPlayer ap : plrs) {
 				getLifeMap().remove(ap.getName());
-				debug.i("faking player death", ap.get());
+				arena.getDebugger().i("faking player death", ap.get());
 				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
 						false);
 
@@ -413,13 +413,13 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				config.set("teams", null);
 			}
 			if (config.get("teams") == null) {
-				debug.i("no teams defined, adding custom red and blue!");
+				arena.getDebugger().i("no teams defined, adding custom red and blue!");
 				config.addDefault("teams.red", ChatColor.RED.name());
 				config.addDefault("teams.blue", ChatColor.BLUE.name());
 			}
 			if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 					&& (config.get("flagColors") == null)) {
-				debug.i("no flagheads defined, adding white and black!");
+				arena.getDebugger().i("no flagheads defined, adding white and black!");
 				config.addDefault("flagColors.red", "WHITE");
 				config.addDefault("flagColors.blue", "BLACK");
 			}

@@ -104,7 +104,7 @@ public class StandardLounge extends ArenaModule {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 
 		if (aPlayer.getArena() != null) {
-			debug.i(this.getName(), sender);
+			aPlayer.getArena().getDebugger().i(this.getName(), sender);
 			result.setError(this, Language.parse(
 					MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;

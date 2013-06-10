@@ -38,7 +38,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -215,7 +214,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
-		debug.i("[FOOD]");
+		arena.getDebugger().i("[FOOD]");
 
 		ArenaTeam aTeam = null;
 
@@ -301,7 +300,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		debug.i("trying to set a foodchest/furnace", player);
+		arena.getDebugger().i("trying to set a foodchest/furnace", player);
 
 		// command : /pa redflag1
 		// location: red1flag:
@@ -368,14 +367,14 @@ public class GoalFood extends ArenaGoal implements Listener {
 	@Override
 	public String guessSpawn(final String place) {
 		if (!place.contains("spawn")) {
-			debug.i("place not found!");
+			arena.getDebugger().i("place not found!");
 			return null;
 		}
 		// no exact match: assume we have multiple spawnpoints
 		final Map<Integer, String> locs = new HashMap<Integer, String>();
 		int pos = 0;
 
-		debug.i("searching for team spawns");
+		arena.getDebugger().i("searching for team spawns");
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
@@ -383,7 +382,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(pos++, name);
-				debug.i("found match: " + name);
+				arena.getDebugger().i("found match: " + name);
 			}
 		}
 
@@ -601,7 +600,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}

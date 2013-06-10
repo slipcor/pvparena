@@ -28,7 +28,7 @@ public class StartRunnable extends ArenaRunnable {
 	 */
 	public StartRunnable(final Arena arena, final int seconds) {
 		super(MSG.ARENA_STARTING_IN.getNode(), seconds, null, arena, false);
-		DEBUG.i("StartRunnable constructor");
+		arena.getDebugger().i("StartRunnable constructor");
 		arena.startRunner = this;
 		for (ArenaPlayer player : arena.getFighters()) {
 			if (player.getStatus() != Status.READY) {
@@ -40,7 +40,7 @@ public class StartRunnable extends ArenaRunnable {
 	@Override
 	protected void commit() {
 		arena.startRunner = null;
-		DEBUG.i("StartRunnable commiting");
+		arena.getDebugger().i("StartRunnable commiting");
 		arena.start();
 	}
 	

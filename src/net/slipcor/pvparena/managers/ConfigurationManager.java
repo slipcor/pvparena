@@ -116,7 +116,7 @@ public final class ConfigurationManager {
 		final Map<String, Object> classes = config.getConfigurationSection(
 				"classitems").getValues(false);
 		arena.getClasses().clear();
-		DEBUG.i("reading class items");
+		arena.getDebugger().i("reading class items");
 		for (String className : classes.keySet()) {
 			String sItemList = "";
 
@@ -139,20 +139,20 @@ public final class ConfigurationManager {
 				}
 			}
 			arena.addClass(className, items);
-			DEBUG.i("adding class items to class " + className);
+			arena.getDebugger().i("adding class items to class " + className);
 		}
 		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
 		arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
 		arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
 		arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 		if (config.getConfigurationSection("arenaregion") == null) {
-			DEBUG.i("arenaregion null");
+			arena.getDebugger().i("arenaregion null");
 		} else {
-			DEBUG.i("arenaregion not null");
+			arena.getDebugger().i("arenaregion not null");
 			final Map<String, Object> regs = config.getConfigurationSection(
 					"arenaregion").getValues(false);
 			for (String rName : regs.keySet()) {
-				DEBUG.i("arenaregion '" + rName + "'");
+				arena.getDebugger().i("arenaregion '" + rName + "'");
 				final ArenaRegionShape region = Config.parseRegion(arena, config,
 						rName);
 
@@ -197,7 +197,7 @@ public final class ConfigurationManager {
 				final ArenaTeam team = new ArenaTeam(sTeam,
 						(String) tempMap.get(sTeam));
 				arena.getTeams().add(team);
-				DEBUG.i("added team " + team.getName() + " => "
+				arena.getDebugger().i("added team " + team.getName() + " => "
 						+ team.getColorCodeString());
 			}
 		}

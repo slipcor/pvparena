@@ -251,7 +251,7 @@ public final class SpawnManager {
 	}
 
 	public static Set<PABlockLocation> getBlocks(final Arena arena, final String sTeam) {
-		DEBUG.i("reading blocks of arena " + arena + " (" + sTeam + ")");
+		arena.getDebugger().i("reading blocks of arena " + arena + " (" + sTeam + ")");
 		final Set<PABlockLocation> result = new HashSet<PABlockLocation>();
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
@@ -270,7 +270,7 @@ public final class SpawnManager {
 				if (!name.equals("tnt")) {
 				
 					final String sName = sTeam.replace("tnt", "");
-					DEBUG.i("checking if " + name + " starts with " + sName);
+					arena.getDebugger().i("checking if " + name + " starts with " + sName);
 					if (!name.startsWith(sName)) {
 						continue;
 					}
@@ -282,7 +282,7 @@ public final class SpawnManager {
 				if (!name.equals("button")) {
 				
 					final String sName = sTeam.replace("button", "");
-					DEBUG.i("checking if " + name + " starts with " + sName);
+					arena.getDebugger().i("checking if " + name + " starts with " + sName);
 					if (!name.startsWith(sName)) {
 						continue;
 					}
@@ -292,7 +292,7 @@ public final class SpawnManager {
 					continue;
 				}
 				final String sName = sTeam.replace("flag", "");
-				DEBUG.i("checking if " + name + " starts with " + sName);
+				arena.getDebugger().i("checking if " + name + " starts with " + sName);
 				if (!name.startsWith(sName)) {
 					continue;
 				}
@@ -301,7 +301,7 @@ public final class SpawnManager {
 					continue;
 				}
 				final String sName = sTeam.replace("block", "");
-				DEBUG.i("checking if " + name + " starts with " + sName);
+				arena.getDebugger().i("checking if " + name + " starts with " + sName);
 				if (!name.startsWith(sName)) {
 					continue;
 				}
@@ -314,7 +314,7 @@ public final class SpawnManager {
 			} else if (sTeam.endsWith("flag") || sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
 				continue;
 			}
-			DEBUG.i(" - " + name);
+			arena.getDebugger().i(" - " + name);
 			final String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
 			result.add(Config.parseBlockLocation( sLoc));
 		}
@@ -330,7 +330,7 @@ public final class SpawnManager {
 	 * @return the location of that string
 	 */
 	public static PALocation getCoords(final Arena arena, final String place) {
-		DEBUG.i("get coords: " + place);
+		arena.getDebugger().i("get coords: " + place);
 		
 		String newPlace = place;
 		
@@ -338,7 +338,7 @@ public final class SpawnManager {
 			final Map<Integer, String> locs = new HashMap<Integer, String>();
 			int pos = 0;
 
-			DEBUG.i("searching for spawns");
+			arena.getDebugger().i("searching for spawns");
 
 			final Map<String, Object> coords = (HashMap<String, Object>) arena.getArenaConfig()
 					.getYamlConfiguration().getConfigurationSection("spawns")
@@ -346,7 +346,7 @@ public final class SpawnManager {
 			for (String name : coords.keySet()) {
 				if (name.startsWith(place)) {
 					locs.put(pos++, name);
-					DEBUG.i("found match: " + name);
+					arena.getDebugger().i("found match: " + name);
 				}
 			}
 			
@@ -358,7 +358,7 @@ public final class SpawnManager {
 
 			newPlace = locs.get(random.nextInt(locs.size()));
 		} else if (arena.getArenaConfig().getUnsafe("spawns." + place) == null) {
-			DEBUG.i("guessing spawn");
+			arena.getDebugger().i("guessing spawn");
 			newPlace = PVPArena.instance.getAgm().guessSpawn(arena, place);
 			if (newPlace == null) {
 				return null;
@@ -366,7 +366,7 @@ public final class SpawnManager {
 		}
 
 		final String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + newPlace));
-		DEBUG.i("parsing location: " + sLoc);
+		arena.getDebugger().i("parsing location: " + sLoc);
 		PALocation result;
 		if (newPlace.contains("flag") || newPlace.startsWith("switch")) {
 			result = new PALocation(Config.parseBlockLocation(sLoc).toLocation());
@@ -427,7 +427,7 @@ public final class SpawnManager {
 
 	public static Map<String, PALocation> getSpawnMap(final Arena arena,
 			final String sTeam) {
-		DEBUG.i("reading spawns of arena " + arena + " (" + sTeam + ")");
+		arena.getDebugger().i("reading spawns of arena " + arena + " (" + sTeam + ")");
 		final Map<String, PALocation> result = new HashMap<String, PALocation>();
 
 		final Map<String, Object> coords = arena.getArenaConfig()
@@ -466,7 +466,7 @@ public final class SpawnManager {
 			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
 				String sName = sTeam.replace("flag", "");
 				sName = sName.replace("pumpkin", "");
-				DEBUG.i("checking if " + name + " starts with " + sName);
+				arena.getDebugger().i("checking if " + name + " starts with " + sName);
 				if (!name.startsWith(sName)) {
 					continue;
 				}
@@ -481,7 +481,7 @@ public final class SpawnManager {
 			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
 				continue;
 			}
-			DEBUG.i(" - " + name);
+			arena.getDebugger().i(" - " + name);
 			final String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
 			result.put(name, Config.parseLocation(sLoc));
 		}
@@ -599,7 +599,7 @@ public final class SpawnManager {
 	 * @return true if the player is near, false otherwise
 	 */
 	public static boolean isNearSpawn(final Arena arena, final Player player, final int diff) {
-		DEBUG.i("checking if arena is near a spawn", player);
+		arena.getDebugger().i("checking if arena is near a spawn", player);
 		if (!arena.hasPlayer(player)) {
 			return false;
 		}
@@ -613,7 +613,7 @@ public final class SpawnManager {
 
 		for (PALocation loc : spawns) {
 			if (loc.getDistanceSquared(new PALocation(player.getLocation())) <= diff*diff) {
-				DEBUG.i("found near spawn: " + loc.toString(), player);
+				arena.getDebugger().i("found near spawn: " + loc.toString(), player);
 				return true;
 			}
 		}
@@ -688,7 +688,7 @@ public final class SpawnManager {
 
 		final String spawnName = Config.parseToString(loc);
 
-		DEBUG.i("setting spawn " + place + " to " + spawnName);
+		arena.getDebugger().i("setting spawn " + place + " to " + spawnName);
 
 		arena.getArenaConfig().setManually("spawns." + place, spawnName);
 

@@ -197,7 +197,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 		if (!arena.getArenaConfig().getBoolean(CFG.USES_OVERLAPCHECK)) {
 			return true;
 		}
-		debug.i("checking regions");
+		arena.getDebugger().i("checking regions");
 
 		return ArenaManager.checkRegions(arena);
 	}
@@ -226,7 +226,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			// - modify mode is active
 			// - player has admin perms
 			// - player has wand in hand
-			debug.i("modify&adminperms&wand", player);
+			arena.getDebugger().i("modify&adminperms&wand", player);
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				aPlayer.setSelection(event.getClickedBlock().getLocation(), false);
@@ -247,7 +247,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	public static ArenaRegionShape create(final Arena arena, final String name,
 			final RegionShape shape, final PABlockLocation[] locs) {
 
-		debug.i("public static ArenaRegionShape create");
+		arena.getDebugger().i("public static ArenaRegionShape create");
 		if (shape.equals(RegionShape.CUBOID)) {
 			return new CuboidRegion(arena, name, locs);
 		} else if (shape.equals(RegionShape.SPHERIC)) {

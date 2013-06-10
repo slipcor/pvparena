@@ -39,7 +39,7 @@ public class TeamManager {
 	 * @return the team name
 	 */
 	public static String calcFreeTeam(final Arena arena) {
-		DEBUG.i("calculating free team");
+		arena.getDebugger().i("calculating free team");
 		final Map<String, Integer> counts = new HashMap<String, Integer>();
 
 		// spam the available teams into a map counting the members
@@ -49,7 +49,7 @@ public class TeamManager {
 
 			if (count > 0) {
 				counts.put(team.getName(), count);
-				DEBUG.i("team " + team.getName() + " contains " + count);
+				arena.getDebugger().i("team " + team.getName() + " contains " + count);
 			}
 		}
 
@@ -65,7 +65,7 @@ public class TeamManager {
 		for (ArenaTeam team : arena.getTeams()) {
 			final String teamName = team.getName();
 			// check if we are full
-			DEBUG.i("String s: " + teamName + "; max: "
+			arena.getDebugger().i("String s: " + teamName + "; max: "
 					+ arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS));
 			if (counts.get(teamName) < arena.getArenaConfig().getInt(
 					CFG.READY_MAXPLAYERS)
@@ -125,18 +125,18 @@ public class TeamManager {
 	 * @return true if teams have the same amount of players, false otherwise
 	 */
 	public static boolean checkEven(final Arena arena) {
-		DEBUG.i("checking if teams are even");
+		arena.getDebugger().i("checking if teams are even");
 		final Map<String, Integer> counts = new HashMap<String, Integer>();
 
 		// count each team members
 
 		for (ArenaTeam team : arena.getTeams()) {
-			DEBUG.i(team.getName() + ": " + team.getTeamMembers().size());
+			arena.getDebugger().i(team.getName() + ": " + team.getTeamMembers().size());
 			counts.put(team.getName(), team.getTeamMembers().size());
 		}
 
 		if (counts.size() < 1) {
-			DEBUG.i("noone in there");
+			arena.getDebugger().i("noone in there");
 			return false; // noone there => not even
 		}
 
@@ -147,11 +147,11 @@ public class TeamManager {
 				continue;
 			}
 			if (temp != i) {
-				DEBUG.i("NOT EVEN");
+				arena.getDebugger().i("NOT EVEN");
 				return false; // different count => not even
 			}
 		}
-		DEBUG.i("EVEN");
+		arena.getDebugger().i("EVEN");
 		return true; // every team has the same player count!
 	}
 
@@ -163,12 +163,12 @@ public class TeamManager {
 	 */
 	public static void choosePlayerTeam(final Arena arena, final Player player) {
 
-		DEBUG.i("calculating player team", player);
+		arena.getDebugger().i("calculating player team", player);
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().contains(aPlayer)) {
-				DEBUG.i("TeamManager", player);
+				arena.getDebugger().i("TeamManager", player);
 				arena.msg(
 						player,
 						Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF,
@@ -179,7 +179,7 @@ public class TeamManager {
 
 		final String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
 
-		DEBUG.i(sTeam, player);
+		arena.getDebugger().i(sTeam, player);
 
 		final ArenaTeam aTeam = arena.getTeam(sTeam);
 		aPlayer.setArena(arena);
@@ -211,7 +211,7 @@ public class TeamManager {
 	 * @return the number of teams that have active players
 	 */
 	public static int countActiveTeams(final Arena arena) {
-		DEBUG.i("counting active teams");
+		arena.getDebugger().i("counting active teams");
 
 		final Set<String> activeteams = new HashSet<String>();
 		for (ArenaTeam team : arena.getTeams()) {
@@ -222,7 +222,7 @@ public class TeamManager {
 				}
 			}
 		}
-		DEBUG.i("result: " + activeteams.size());
+		arena.getDebugger().i("result: " + activeteams.size());
 		return activeteams.size();
 	}
 
@@ -236,7 +236,7 @@ public class TeamManager {
 		for (ArenaTeam team : arena.getTeams()) {
 			result += team.getTeamMembers().size();
 		}
-		DEBUG.i("players having a team: " + result);
+		arena.getDebugger().i("players having a team: " + result);
 		return result;
 	}
 
@@ -258,11 +258,11 @@ public class TeamManager {
 					result.append(team.colorizePlayer(p.get()));
 					result.append(ChatColor.WHITE.toString());
 				} else {
-					DEBUG.i("player state: " + p.getStatus().name(), p.getName());
+					arena.getDebugger().i("player state: " + p.getStatus().name(), p.getName());
 				}
 			}
 		}
-		DEBUG.i("notreadyteamstringlist: " + result);
+		arena.getDebugger().i("notreadyteamstringlist: " + result);
 		return result.toString();
 	}
 
@@ -289,7 +289,7 @@ public class TeamManager {
 				result.append(ChatColor.WHITE.toString());
 			}
 		}
-		DEBUG.i("teamstringlist: " + result);
+		arena.getDebugger().i("teamstringlist: " + result);
 		return result.toString();
 	}
 
@@ -301,20 +301,20 @@ public class TeamManager {
 	 * @return one empty team name
 	 */
 	private static String returnEmptyTeam(final Arena arena, final Set<String> set) {
-		DEBUG.i("choosing an empty team");
+		arena.getDebugger().i("choosing an empty team");
 		final Set<String> empty = new HashSet<String>();
 		for (ArenaTeam team : arena.getTeams()) {
 			final String teamName = team.getName();
-			DEBUG.i("team: " + teamName);
+			arena.getDebugger().i("team: " + teamName);
 			if (set.contains(teamName)) {
 				continue;
 			}
 			empty.add(teamName);
 		}
-		DEBUG.i("empty.size: " + empty.size());
+		arena.getDebugger().i("empty.size: " + empty.size());
 		if (empty.size() == 1) {
 			for (String s : empty) {
-				DEBUG.i("return: " + s);
+				arena.getDebugger().i("return: " + s);
 				return s;
 			}
 		}

@@ -155,17 +155,17 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		if (block == null || res.getPriority() > PRIORITY) {
 			return res;
 		}
-		debug.i("checking interact", player);
+		arena.getDebugger().i("checking interact", player);
 
 		if (!block
 				.getType()
 				.name()
 				.equals(arena.getArenaConfig().getString(
 						CFG.GOAL_FLAGS_FLAGTYPE))) {
-			debug.i("block, but not flag", player);
+			arena.getDebugger().i("block, but not flag", player);
 			return res;
 		}
-		debug.i("flag click!", player);
+		arena.getDebugger().i("flag click!", player);
 
 		Vector vLoc;
 		String sTeam;
@@ -173,11 +173,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
 		if (getFlagMap().containsValue(player.getName())) {
-			debug.i("player " + player.getName() + " has got a flag", player);
+			arena.getDebugger().i("player " + player.getName() + " has got a flag", player);
 
 			vLoc = block.getLocation().toVector();
 			sTeam = aPlayer.getArenaTeam().getName();
-			debug.i("block: " + vLoc.toString(), player);
+			arena.getDebugger().i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, sTeam + "flag").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
@@ -185,22 +185,22 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 								new PABlockLocation(player.getLocation()))
 						.toLocation().toVector();
 			} else {
-				debug.i(sTeam + "flag = null", player);
+				arena.getDebugger().i(sTeam + "flag = null", player);
 			}
 
-			debug.i("player is in the team " + sTeam, player);
+			arena.getDebugger().i("player is in the team " + sTeam, player);
 			if ((vFlag != null && vLoc.distance(vFlag) < 2)) {
 
-				debug.i("player is at his flag", player);
+				arena.getDebugger().i("player is at his flag", player);
 
 				if (getFlagMap().containsKey(sTeam)
 						|| getFlagMap().containsKey("touchdown")) {
-					debug.i("the flag of the own team is taken!", player);
+					arena.getDebugger().i("the flag of the own team is taken!", player);
 
 					if (arena.getArenaConfig().getBoolean(
 							CFG.GOAL_FLAGS_MUSTBESAFE)
 							&& !getFlagMap().containsKey("touchdown")) {
-						debug.i("cancelling", player);
+						arena.getDebugger().i("cancelling", player);
 
 						arena.msg(player,
 								Language.parse(MSG.GOAL_FLAGS_NOTSAFE));
@@ -210,7 +210,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 				String flagTeam = getHeldFlagTeam(player.getName());
 
-				debug.i("the flag belongs to team " + flagTeam, player);
+				arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
 
 				if (player.getItemInHand() == null
 						|| !player
@@ -219,7 +219,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 								.name()
 								.equals(arena.getArenaConfig().getString(
 										CFG.GOAL_FLAGS_FLAGTYPE))) {
-					debug.i("player " + player.getName()
+					arena.getDebugger().i("player " + player.getName()
 							+ " is not holding the flag", player);
 					arena.msg(player,
 							Language.parse(MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
@@ -369,8 +369,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
-		debug.i("[CTF] committing end: " + sTeam);
-		debug.i("win: " + win);
+		arena.getDebugger().i("[CTF] committing end: " + sTeam);
+		arena.getDebugger().i("win: " + win);
 
 		String winteam = sTeam;
 
@@ -525,7 +525,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
-		debug.i("[FLAGS]");
+		arena.getDebugger().i("[FLAGS]");
 
 		ArenaTeam aTeam = null;
 
@@ -571,7 +571,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		debug.i("trying to set a flag", player);
+		arena.getDebugger().i("trying to set a flag", player);
 
 		// command : /pa redflag1
 		// location: red1flag:
@@ -707,9 +707,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			return null;
 		}
 
-		debug.i("getting held FLAG of player " + player, player);
+		arena.getDebugger().i("getting held FLAG of player " + player, player);
 		for (String sTeam : getFlagMap().keySet()) {
-			debug.i("team " + sTeam + " is in " + getFlagMap().get(sTeam)
+			arena.getDebugger().i("team " + sTeam + " is in " + getFlagMap().get(sTeam)
 					+ "s hands", player);
 			if (player.equals(getFlagMap().get(sTeam))) {
 				return sTeam;
@@ -724,7 +724,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		final Map<Integer, String> locs = new HashMap<Integer, String>();
 		int pos = 0;
 
-		debug.i("searching for team spawns: " + place);
+		arena.getDebugger().i("searching for team spawns: " + place);
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
@@ -732,14 +732,14 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(pos++, name);
-				debug.i("found match: " + name);
+				arena.getDebugger().i("found match: " + name);
 			}
 			if (name.endsWith("flag")) {
 				for (ArenaTeam team : arena.getTeams()) {
 					final String sTeam = team.getName();
 					if (name.startsWith(sTeam) && place.startsWith(sTeam)) {
 						locs.put(pos++, name);
-						debug.i("found match: " + name);
+						arena.getDebugger().i("found match: " + name);
 					}
 				}
 			}
@@ -801,7 +801,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			final EntityDamageEvent lastDamageCause) {
 
 		if (getFlagMap() == null) {
-			debug.i("no flags set!!", player);
+			arena.getDebugger().i("no flags set!!", player);
 			return;
 		}
 		final String sTeam = getHeldFlagTeam(player.getName());
@@ -849,7 +849,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		getLifeMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getTeamMembers().size() > 0) {
-				debug.i("adding team " + team.getName());
+				arena.getDebugger().i("adding team " + team.getName());
 				// team is active
 				getLifeMap().put(team.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
@@ -863,7 +863,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
-		debug.i("reducing lives of team " + team);
+		arena.getDebugger().i("reducing lives of team " + team);
 		if (getLifeMap().get(team) == null) {
 			if (team.contains(":")) {
 				final String realTeam = team.split(":")[1];
@@ -940,13 +940,13 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
 				&& (config.get("flagColors") == null)) {
-			debug.i("no flagheads defined, adding white and black!");
+			arena.getDebugger().i("no flagheads defined, adding white and black!");
 			config.addDefault("flagColors.red", "WHITE");
 			config.addDefault("flagColors.blue", "BLACK");
 		}
@@ -1028,22 +1028,22 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 						.equals(arena.getArenaConfig().getString(
 								CFG.GOAL_FLAGS_FLAGTYPE))) {
 
-			debug.i("block destroy, ignoring", player);
-			debug.i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
-			debug.i(event.getBlock().getType().name(), player);
+			arena.getDebugger().i("block destroy, ignoring", player);
+			arena.getDebugger().i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
+			arena.getDebugger().i(event.getBlock().getType().name(), player);
 			return;
 		}
 
 		final Block block = event.getBlock();
 
-		debug.i("flag destroy!", player);
+		arena.getDebugger().i("flag destroy!", player);
 
 		Vector vLoc;
 		Vector vFlag = null;
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
 		if (getFlagMap().containsValue(player.getName())) {
-			debug.i("already carries a flag!", player);
+			arena.getDebugger().i("already carries a flag!", player);
 			return;
 		} else {
 			final ArenaTeam pTeam = aPlayer.getArenaTeam();
@@ -1060,21 +1060,21 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				final String aTeam = team.getName();
 
 				if (aTeam.equals(pTeam.getName())) {
-					debug.i("equals!OUT! ", player);
+					arena.getDebugger().i("equals!OUT! ", player);
 					continue;
 				}
 				if (team.getTeamMembers().size() < 1
 						&& !team.getName().equals("touchdown")) {
-					debug.i("size!OUT! ", player);
+					arena.getDebugger().i("size!OUT! ", player);
 					continue; // dont check for inactive teams
 				}
 				if (getFlagMap() != null && getFlagMap().containsKey(aTeam)) {
-					debug.i("taken!OUT! ", player);
+					arena.getDebugger().i("taken!OUT! ", player);
 					continue; // already taken
 				}
-				debug.i("checking for flag of team " + aTeam, player);
+				arena.getDebugger().i("checking for flag of team " + aTeam, player);
 				vLoc = block.getLocation().toVector();
-				debug.i("block: " + vLoc.toString(), player);
+				arena.getDebugger().i("block: " + vLoc.toString(), player);
 				if (SpawnManager.getBlocks(arena, aTeam + "flag").size() > 0) {
 					vFlag = SpawnManager
 							.getBlockNearest(
@@ -1084,8 +1084,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 							.toLocation().toVector();
 				}
 				if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-					debug.i("flag found!", player);
-					debug.i("vFlag: " + vFlag.toString(), player);
+					arena.getDebugger().i("flag found!", player);
+					arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 
 					if (team.getName().equals("touchdown")) {
 

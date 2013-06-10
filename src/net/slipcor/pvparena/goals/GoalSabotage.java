@@ -115,18 +115,18 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		if (block == null || res.getPriority() > PRIORITY) {
 			return res;
 		}
-		debug.i("checking interact", player);
+		arena.getDebugger().i("checking interact", player);
 
 		if (!block.getType().equals(Material.TNT)) {
-			debug.i("block, but not flag", player);
+			arena.getDebugger().i("block, but not flag", player);
 			return res;
 		}
-		debug.i("flag click!", player);
+		arena.getDebugger().i("flag click!", player);
 
 		if (player.getItemInHand() == null
 				|| !player.getItemInHand().getType()
 						.equals(Material.FLINT_AND_STEEL)) {
-			debug.i("block, but no sabotage items", player);
+			arena.getDebugger().i("block, but no sabotage items", player);
 			return res;
 		}
 
@@ -147,9 +147,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			if (team.getTeamMembers().size() < 1) {
 				continue; // dont check for inactive teams
 			}
-			debug.i("checking for tnt of team " + aTeam, player);
+			arena.getDebugger().i("checking for tnt of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
-			debug.i("block: " + vLoc.toString(), player);
+			arena.getDebugger().i("block: " + vLoc.toString(), player);
 			if (SpawnManager.getBlocks(arena, aTeam + "tnt").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
@@ -159,8 +159,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			}
 
 			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-				debug.i("flag found!", player);
-				debug.i("vFlag: " + vFlag.toString(), player);
+				arena.getDebugger().i("flag found!", player);
+				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 				arena.broadcast(Language.parse(MSG.GOAL_SABOTAGE_IGNITED,
 						pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						team.getColoredName() + ChatColor.YELLOW));
@@ -221,8 +221,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
-		debug.i("[SABOTAGE] committing end: " + sTeam);
-		debug.i("win: " + win);
+		arena.getDebugger().i("[SABOTAGE] committing end: " + sTeam);
+		arena.getDebugger().i("win: " + win);
 
 		String winteam = sTeam;
 
@@ -283,7 +283,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
-		debug.i("[SABOTAGE]");
+		arena.getDebugger().i("[SABOTAGE]");
 
 		ArenaTeam aTeam = null;
 
@@ -328,7 +328,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			return false;
 		}
 
-		debug.i("trying to set a tnt", player);
+		arena.getDebugger().i("trying to set a tnt", player);
 
 		// command : /pa redtnt1
 		// location: red1tnt:
@@ -365,7 +365,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		int pos = new Random().nextInt(players.size());
 
 		for (ArenaPlayer ap : players) {
-			debug.i("distributing sabotage: " + ap.getName(), ap.getName());
+			arena.getDebugger().i("distributing sabotage: " + ap.getName(), ap.getName());
 			if (ap.equals(player)) {
 				continue;
 			}
@@ -384,9 +384,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			return null;
 		}
 
-		debug.i("getting held TNT of player " + player, player);
+		arena.getDebugger().i("getting held TNT of player " + player, player);
 		for (String sTeam : getFlagMap().keySet()) {
-			debug.i("team " + sTeam + "'s sabotage is carried by "
+			arena.getDebugger().i("team " + sTeam + "'s sabotage is carried by "
 					+ getFlagMap().get(sTeam) + "s hands", player);
 			if (player.equals(getFlagMap().get(sTeam))) {
 				return sTeam;
@@ -415,7 +415,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		final Map<Integer, String> locs = new HashMap<Integer, String>();
 		int pos = 0;
 
-		debug.i("searching for team spawns: " + place);
+		arena.getDebugger().i("searching for team spawns: " + place);
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
@@ -423,14 +423,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(pos++, name);
-				debug.i("found match: " + name);
+				arena.getDebugger().i("found match: " + name);
 			}
 			if (name.endsWith("tnt")) {
 				for (ArenaTeam team : arena.getTeams()) {
 					final String sTeam = team.getName();
 					if (name.startsWith(sTeam) && place.startsWith(sTeam)) {
 						locs.put(pos++, name);
-						debug.i("found match: " + name);
+						arena.getDebugger().i("found match: " + name);
 					}
 				}
 			}
@@ -473,7 +473,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		takeFlag(team.getName(), false,
 				SpawnManager.getCoords(arena, team.getName() + "tnt"));
 		if (!getFlagMap().containsKey(team.getName())) {
-			debug.i("adding team " + team.getName(), player);
+			arena.getDebugger().i("adding team " + team.getName(), player);
 			distributeFlag(null, team);
 		}
 	}
@@ -496,13 +496,13 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public void parseStart() {
-		debug.i("initiating arena");
+		arena.getDebugger().i("initiating arena");
 		getFlagMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			takeFlag(team.getName(), false,
 					SpawnManager.getCoords(arena, team.getName() + "tnt"));
 			if (!getFlagMap().containsKey(team.getName())) {
-				debug.i("adding team " + team.getName());
+				arena.getDebugger().i("adding team " + team.getName());
 				distributeFlag(null, team);
 			}
 		}
@@ -526,7 +526,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			config.set("teams", null);
 		}
 		if (config.get("teams") == null) {
-			debug.i("no teams defined, adding custom red and blue!");
+			arena.getDebugger().i("no teams defined, adding custom red and blue!");
 			config.addDefault("teams.red", ChatColor.RED.name());
 			config.addDefault("teams.blue", ChatColor.BLUE.name());
 		}

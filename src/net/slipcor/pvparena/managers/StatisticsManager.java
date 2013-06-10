@@ -115,14 +115,14 @@ public class StatisticsManager {
 	 */
 	public static void damage(final Arena arena, final Entity entity, final Player defender, final int dmg) {
 
-		DEBUG.i("adding damage to player " + defender.getName(), defender);
+		arena.getDebugger().i("adding damage to player " + defender.getName(), defender);
 		
 
 		if ((entity != null) && (entity instanceof Player)) {
 			final Player attacker = (Player) entity;
-			DEBUG.i("attacker is player: " + attacker.getName(), defender);
+			arena.getDebugger().i("attacker is player: " + attacker.getName(), defender);
 			if (arena.hasPlayer(attacker)) {
-				DEBUG.i("attacker is in the arena, adding damage!", defender);
+				arena.getDebugger().i("attacker is in the arena, adding damage!", defender);
 				final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
 				final int maxdamage = apAttacker.getStatistics(arena).getStat(type.MAXDAMAGE);
 				apAttacker.getStatistics(arena).incStat(type.DAMAGE, dmg);

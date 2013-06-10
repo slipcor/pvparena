@@ -58,9 +58,9 @@ public final class ArenaManager {
 	 * @return true if the arena ends
 	 */
 	public static boolean checkAndCommit(final Arena arena, final boolean force) {
-		DEBUG.i("checking for arena end");
+		arena.getDebugger().i("checking for arena end");
 		if (!arena.isFightInProgress()) {
-			DEBUG.i("no fight, no end ^^");
+			arena.getDebugger().i("no fight, no end ^^");
 			return false;
 		}
 

@@ -207,13 +207,13 @@ public class GoalInfect extends ArenaGoal {
 			return;
 		}
 		int iLives = getLifeMap().get(player.getName());
-		debug.i("lives before death: " + iLives, player);
+		arena.getDebugger().i("lives before death: " + iLives, player);
 		if (iLives <= 1 || ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
 			if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
 					// kill, remove!
 				getLifeMap().remove(player.getName());
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-					debug.i("faking player death", player);
+					arena.getDebugger().i("faking player death", player);
 					PlayerListener.finallyKillPlayer(arena, player, event);
 				}
 				return;
@@ -352,7 +352,7 @@ public class GoalInfect extends ArenaGoal {
 			return null;
 		}
 		
-		debug.i("searching for infect spawns: " + place);
+		arena.getDebugger().i("searching for infect spawns: " + place);
 
 		final Map<String, Object> coords = (HashMap<String, Object>) arena
 				.getArenaConfig().getYamlConfiguration()
@@ -360,7 +360,7 @@ public class GoalInfect extends ArenaGoal {
 		for (String name : coords.keySet()) {
 			if (name.startsWith(place)) {
 				locs.put(pos++, name);
-				debug.i("found match: " + name);
+				arena.getDebugger().i("found match: " + name);
 			}
 		}
 
@@ -417,9 +417,9 @@ public class GoalInfect extends ArenaGoal {
 		final Random random = new Random();
 		for (ArenaTeam team : arena.getTeams()) {
 			int pos = random.nextInt(team.getTeamMembers().size());
-			debug.i("team " + team.getName() + " random " + pos);
+			arena.getDebugger().i("team " + team.getName() + " random " + pos);
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				debug.i("#" + pos + ": " + ap.toString(), ap.getName());
+				arena.getDebugger().i("#" + pos + ": " + ap.toString(), ap.getName());
 				this.getLifeMap().put(ap.getName(),
 						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
 				if (pos-- == 0) {

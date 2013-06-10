@@ -183,11 +183,11 @@ public class GoalTank extends ArenaGoal {
 			return;
 		}
 		int iLives = getLifeMap().get(player.getName());
-		debug.i("lives before death: " + iLives, player);
+		arena.getDebugger().i("lives before death: " + iLives, player);
 		if (iLives <= 1 || tanks.get(arena).equals(player.getName())) {
 			getLifeMap().remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				debug.i("faking player death", player);
+				arena.getDebugger().i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
 			// player died => commit death!
@@ -289,9 +289,9 @@ public class GoalTank extends ArenaGoal {
 		final Random random = new Random();
 		for (ArenaTeam team : arena.getTeams()) {
 			int pos = random.nextInt(team.getTeamMembers().size());
-			debug.i("team " + team.getName() + " random " + pos);
+			arena.getDebugger().i("team " + team.getName() + " random " + pos);
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-				debug.i("#" + pos + ": " + ap.toString(), ap.getName());
+				arena.getDebugger().i("#" + pos + ": " + ap.toString(), ap.getName());
 				if (pos-- == 0) {
 					tank = ap;
 				}
