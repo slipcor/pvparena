@@ -322,13 +322,6 @@ public final class ArenaManager {
 		}
 		
 		ARENAS.put(arena.getName().toLowerCase(), arena);
-		if (arena.getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
-			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.getType().equals(RegionType.JOIN)) {
-					region.initTimer();
-				}
-			}
-		}
 		
 		return arena;
 	}

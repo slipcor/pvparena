@@ -430,11 +430,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	public void initTimer() {
-		if (!getArena().isFightInProgress()
-				&& !this.type.equals(RegionType.JOIN)) {
-			getArena().setFightInProgress(true);
-		}
-
 		final RegionRunnable regionRunner = new RegionRunnable(this);
 		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, regionRunner,
@@ -670,12 +665,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 						arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 					}
 				}
-			}
-			if (type.equals(RegionType.WATCH)) {
-				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
-				for (ArenaPlayer ap2 : arena.getFighters()) {
-					plyrs.add(ap2);
-				}
+			} else if (type.equals(RegionType.WATCH)) {
 
 				if (!ap.getStatus().equals(Status.WATCH)) {
 					continue;
@@ -685,8 +675,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
-			}
-			if (type.equals(RegionType.LOUNGE)) {
+			} else if (type.equals(RegionType.LOUNGE)) {
 				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
 				for (ArenaPlayer ap2 : arena.getEveryone()) {
 					plyrs.add(ap2);

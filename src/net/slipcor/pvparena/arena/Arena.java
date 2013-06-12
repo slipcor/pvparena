@@ -129,6 +129,14 @@ public class Arena {
 
 	public void addRegion(final ArenaRegionShape region) {
 		this.regions.add(region);
+		getDebugger().i("loading region: "+region.getRegionName());
+		if (region.getType().equals(RegionType.JOIN)) {
+			if (getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
+				region.initTimer();
+			}
+		} else if (region.getType().equals(RegionType.WATCH)) {
+			region.initTimer();
+		}
 	}
 
 	public void broadcast(final String msg) {
@@ -1048,14 +1056,6 @@ public class Arena {
 		ArenaModuleManager.reset(this, force);
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
-
-		if (getArenaConfig().getBoolean(CFG.JOIN_FORCE)) {
-			for (ArenaRegionShape region : getRegions()) {
-				if (region.getType().equals(RegionType.JOIN)) {
-					region.initTimer();
-				}
-			}
-		}
 		
 		round = 0;
 	}
