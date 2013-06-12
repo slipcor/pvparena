@@ -33,7 +33,7 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 			return;
 		}
 		
-		if (!argCountValid(sender, arena, args, new Integer[]{1})) {
+		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
 
