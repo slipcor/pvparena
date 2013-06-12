@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.3.168 - little region tick rewrite
 * v1.0.3.167 - fix #486
 * v1.0.3.166 - allow disallowing of spectator talk
 * v1.0.3.165 - verify that rewards were not already given
