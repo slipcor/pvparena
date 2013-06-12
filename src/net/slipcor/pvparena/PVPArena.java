@@ -168,7 +168,7 @@ public class PVPArena extends JavaPlugin {
 		if (pacmd != null
 				&& !((player.getArena() != null) && (pacmd
 						.getName().contains("PAI_ArenaList")))) {
-			player.getArena().getDebugger().i("committing: " + pacmd.getName(), sender);
+			DEBUG.i("committing: " + pacmd.getName(), sender);
 			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
 			return true;
 		}
