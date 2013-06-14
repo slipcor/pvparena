@@ -15,6 +15,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.*;
 import net.slipcor.pvparena.ncloader.NCBLoader;
@@ -23,7 +24,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 /**
- * <pre>Arena Goal Manager class</pre>
+ * <pre>
+ * Arena Goal Manager class
+ * </pre>
  * 
  * Loads and manages arena goals
  * 
@@ -86,7 +89,8 @@ public class ArenaGoalManager {
 		return true;
 	}
 
-	public String checkForMissingSpawns(final Arena arena, final Set<String> list) {
+	public String checkForMissingSpawns(final Arena arena,
+			final Set<String> list) {
 		for (ArenaGoal type : arena.getGoals()) {
 			final String error = type.checkForMissingSpawns(list);
 			if (error != null) {
@@ -148,7 +152,7 @@ public class ArenaGoalManager {
 			type.initate(player);
 		}
 	}
-	
+
 	public String ready(final Arena arena) {
 		arena.getDebugger().i("AGM ready!?!");
 		String error = null;
@@ -171,12 +175,12 @@ public class ArenaGoalManager {
 			type.refillInventory(player);
 		}
 	}
-	
+
 	public void reload() {
 		types = loader.reload(ArenaGoal.class);
 		fill();
 	}
-	
+
 	public void reset(final Arena arena, final boolean force) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.reset(force);
@@ -188,19 +192,20 @@ public class ArenaGoalManager {
 			type.setDefaults(config);
 		}
 	}
-	
+
 	public void setPlayerLives(final Arena arena, final int value) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.setPlayerLives(value);
 		}
 	}
-	
-	public void setPlayerLives(final Arena arena, final ArenaPlayer player, final int value) {
+
+	public void setPlayerLives(final Arena arena, final ArenaPlayer player,
+			final int value) {
 		for (ArenaGoal type : arena.getGoals()) {
 			type.setPlayerLives(player, value);
 		}
 	}
-	
+
 	public void timedEnd(final Arena arena) {
 
 		/**
@@ -210,7 +215,7 @@ public class ArenaGoalManager {
 		 */
 
 		arena.getDebugger().i("timed end!");
-		
+
 		Map<String, Double> scores = new HashMap<String, Double>();
 
 		for (ArenaGoal type : arena.getGoals()) {
@@ -219,37 +224,38 @@ public class ArenaGoalManager {
 		}
 
 		final Set<String> winners = new HashSet<String>();
-		
+
 		if (arena.isFreeForAll()) {
 			winners.add("free");
 			arena.getDebugger().i("adding FREE");
-		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER).equals("none")) {
+		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER)
+				.equals("none")) {
 			// check all teams
 			double maxScore = 0;
 
 			boolean notEveryone = false;
-			
+
 			for (String team : arena.getTeamNames()) {
 				if (scores.containsKey(team)) {
 					final double teamScore = scores.get(team);
 
 					if (teamScore > maxScore) {
-						
+
 						if (!winners.isEmpty()) {
 							notEveryone = true;
 						}
-						
+
 						maxScore = teamScore;
 						winners.clear();
 						winners.add(team);
 						arena.getDebugger().i("clear and add team " + team);
 					} else if (teamScore == maxScore) {
 						winners.add(team);
-						arena.getDebugger().i("add team "+team);
+						arena.getDebugger().i("add team " + team);
 					}
 				}
 			}
-			
+
 			if (!notEveryone) {
 				winners.clear(); // noone wins.
 			}
@@ -285,10 +291,11 @@ public class ArenaGoalManager {
 					maxSum = sum;
 					preciseWinners.clear();
 					preciseWinners.add(team.getName());
-					arena.getDebugger().i("clearing and adddding + " + team.getName());
+					arena.getDebugger().i(
+							"clearing and adddding + " + team.getName());
 				}
 			}
-			
+
 			if (!preciseWinners.isEmpty()) {
 				winners.clear();
 				winners.addAll(preciseWinners);
@@ -318,20 +325,21 @@ public class ArenaGoalManager {
 						maxSum = sum;
 						preciseWinners.clear();
 						preciseWinners.add(ap.getName());
-						arena.getDebugger().i("ffa clr & adding " + ap.getName());
+						arena.getDebugger().i(
+								"ffa clr & adding " + ap.getName());
 					}
 				}
 			}
 			winners.clear();
-			
+
 			if (preciseWinners.size() != arena.getPlayedPlayers().size()) {
 				winners.addAll(preciseWinners);
 			}
 		}
 
-		
 		ArenaModuleManager.timedEnd(arena, winners);
-
+		
+		System.out.print(StringParser.joinArray(winners.toArray(), "---"));
 
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {
@@ -339,16 +347,20 @@ public class ArenaGoalManager {
 				for (ArenaPlayer p : team.getTeamMembers()) {
 					apSet.add(p);
 				}
-				
-				
+
 				for (ArenaPlayer p : apSet) {
 					if (winners.isEmpty()) {
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig()
+								.getString(CFG.TP_LOSE), true, false);
 					} else {
 						if (winners.contains(p.getName())) {
-							
-							ArenaModuleManager.announce(arena, Language.parse(MSG.PLAYER_HAS_WON, p.getName()), "WINNER");
-							arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, p.getName()));
+
+							ArenaModuleManager.announce(
+									arena,
+									Language.parse(MSG.PLAYER_HAS_WON,
+											p.getName()), "WINNER");
+							arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+									p.getName()));
 							if (arena.gaveRewards) {
 								arena.giveRewards(p.get());
 							}
@@ -357,30 +369,38 @@ public class ArenaGoalManager {
 								continue;
 							}
 							p.addLosses();
-							arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), true, false);
+							arena.removePlayer(p.get(), arena.getArenaConfig()
+									.getString(CFG.TP_LOSE), true, false);
 						}
 					}
 				}
 				arena.gaveRewards = true;
 			}
 			if (winners.isEmpty()) {
-				ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW), "WINNER");
+				ArenaModuleManager.announce(arena,
+						Language.parse(MSG.FIGHT_DRAW), "WINNER");
 				arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
 			}
-		} else if (!winners.isEmpty()){
+		} else if (!winners.isEmpty()) {
+
 			boolean hasBroadcasted = false;
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + team.getName()), "WINNER");
-					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, team.getColor()
-							+ "Team " + team.getName()));
+					/*
+					ArenaModuleManager.announce(
+							arena,
+							Language.parse(MSG.TEAM_HAS_WON,
+									"Team " + team.getName()), "WINNER");
+					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+							team.getColor() + "Team " + team.getName()));
 					hasBroadcasted = true;
 					for (ArenaPlayer player : team.getTeamMembers()) {
 						if (player.getStatus() == Status.FIGHT) {
 							arena.giveRewards(player.get());
 						}
-					}
+					}*/
 				} else {
+					
 					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 					for (ArenaPlayer p : team.getTeamMembers()) {
 						apSet.add(p);
@@ -389,16 +409,22 @@ public class ArenaGoalManager {
 						if (!p.getStatus().equals(Status.FIGHT)) {
 							continue;
 						}
+						/*
 						p.addLosses();
 						if (!hasBroadcasted) {
 							for (String winTeam : winners) {
-								ArenaModuleManager.announce(arena, Language.parse(MSG.TEAM_HAS_WON, "Team " + winTeam), "WINNER");
-								arena.msg(p.get(), Language.parse(MSG.TEAM_HAS_WON, arena.getTeam(winTeam).getColor()
-										+ "Team " + winTeam));
-								
+								ArenaModuleManager.announce(arena, Language
+										.parse(MSG.TEAM_HAS_WON, "Team "
+												+ winTeam), "WINNER");
+								arena.msg(p.get(), Language.parse(
+										MSG.TEAM_HAS_WON, arena
+												.getTeam(winTeam).getColor()
+												+ "Team " + winTeam));
+
 								ArenaTeam winningTeam = arena.getTeam(winTeam);
 								if (winningTeam != null) {
-									for (ArenaPlayer player : winningTeam.getTeamMembers()) {
+									for (ArenaPlayer player : winningTeam
+											.getTeamMembers()) {
 										if (player.getStatus() == Status.FIGHT) {
 											arena.giveRewards(player.get());
 										}
@@ -407,22 +433,30 @@ public class ArenaGoalManager {
 							}
 							hasBroadcasted = !hasBroadcasted;
 						}
-						arena.removePlayer(p.get(), arena.getArenaConfig().getString(CFG.TP_LOSE), false, false);
+						arena.removePlayer(p.get(), arena.getArenaConfig()
+								.getString(CFG.TP_LOSE), false, false);
+								*/
+						
+						
+						p.setStatus(Status.LOST);
 					}
 				}
 			}
 		} else {
-			ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW), "WINNER");
+			ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW),
+					"WINNER");
 			arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
+			arena.reset(true);
+			return;
 		}
-		
-		for (ArenaPlayer player : arena.getEveryone()) {
-			if (player.getStatus() == Status.FIGHT) {
-				player.setStatus(Status.LOST);
-			}
-		}
-		
-		arena.reset(false); //TODO: try to establish round compatibility with new EndRunnable();
+		/*
+		 * for (ArenaPlayer player : arena.getEveryone()) { if
+		 * (player.getStatus() == Status.FIGHT) { player.setStatus(Status.LOST);
+		 * } }
+		 */
+
+		arena.reset(false); // TODO: try to establish round compatibility with
+							// new EndRunnable();
 	}
 
 	public void unload(final Arena arena, final Player player) {
