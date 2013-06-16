@@ -99,6 +99,7 @@ public class Config {
 		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
 		PERMS_FLY("perms.fly", false),
 		PERMS_JOININBATTLE("perms.joinInBattle", false),
+		PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true),
 		PERMS_TEAMKILL("perms.teamkill", true),
 		PERMS_SPECTALK("perms.specTalk", true),
 

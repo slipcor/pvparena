@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.4.172 - allow to disallow arena gameplay if player has a scoreboard
 * v1.0.3.171 - revert an attempt to fix rewards (leading to double rewards and messed up players)
 * v1.0.3.170 - finally allow of force joining players to a team
 * v1.0.3.169 - properly start timers. this time for real.
