@@ -1020,6 +1020,15 @@ public class Arena {
 
 			p.reset();
 		}
+		for (ArenaPlayer player : ArenaPlayer.getAllArenaPlayers()) {
+			if (this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
+
+				resetPlayer(player.get(),
+						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
+						force);
+				player.setArena(null);
+			}
+		}
 		gaveRewards = true;
 	}
 
