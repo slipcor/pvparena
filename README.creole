@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.4.176 - try to fix PlayerKillReward
 * v1.0.4.175 - properly remove spectators
 * v1.0.4.174 - fix #473, #474, #478, #493, #498, #505
 * v1.0.4.173 - allow to debug to server.log, oldschool, if files are not working

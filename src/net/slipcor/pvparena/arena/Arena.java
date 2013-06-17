@@ -1024,7 +1024,7 @@ public class Arena {
 			if (this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
 
 				resetPlayer(player.get(),
-						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
+						getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
 						force);
 				player.setArena(null);
 			}

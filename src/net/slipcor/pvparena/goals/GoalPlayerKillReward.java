@@ -280,7 +280,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		}
 
 		int iLives = getLifeMap().get(killer.getName());
-		arena.getDebugger().i("kills to go: " + iLives, killer);
+		arena.getDebugger().i("kills to go for "+killer.getName()+": " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
 			final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
@@ -371,7 +371,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		for (int i : getItemMap().keySet()) {
 			max = Math.max(max, i);
 		}
-		return max;
+		return max+1;
 	}
 
 	@Override
