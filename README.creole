@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.4.174 - fix #473, #474, #478, #493, #498, #505
 * v1.0.4.173 - allow to debug to server.log, oldschool, if files are not working
 * v1.0.4.172 - allow to disallow arena gameplay if player has a scoreboard
 * v1.0.3.171 - revert an attempt to fix rewards (leading to double rewards and messed up players)

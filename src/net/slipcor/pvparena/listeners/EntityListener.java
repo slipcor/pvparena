@@ -192,6 +192,11 @@ public class EntityListener implements Listener {
 			DEBUG.i("=> " + eDamager);
 		}
 
+		if(eDamager instanceof Player && ArenaPlayer.parsePlayer(((Player) eDamager).getName()).getStatus() == Status.LOST) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		if (event.getEntity() instanceof Wolf) {
 			final Wolf wolf = (Wolf) event.getEntity();
 			if (wolf.getOwner() != null) {
@@ -312,6 +317,11 @@ public class EntityListener implements Listener {
 				+ event.getEntity().toString());
 
 		if (!(entity instanceof Player)) {
+			return;
+		}
+		
+		if(ArenaPlayer.parsePlayer(((Player) entity).getName()).getStatus() == Status.LOST) {
+			event.setCancelled(true);
 			return;
 		}
 

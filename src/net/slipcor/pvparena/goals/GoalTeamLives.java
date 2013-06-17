@@ -132,10 +132,10 @@ public class GoalTeamLives extends ArenaGoal {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor() + "Team "
+					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ "Team " + aTeam.getName() + ChatColor.YELLOW));
+					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
@@ -274,8 +274,9 @@ public class GoalTeamLives extends ArenaGoal {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus().equals(Status.FIGHT)) {
 					ap.setStatus(Status.LOST);
+					/*
 					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
-							false);
+							false);*/
 				}
 			}
 			PACheck.handleEnd(arena, false);

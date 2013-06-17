@@ -67,6 +67,11 @@ public class PlayerListener implements Listener {
 
 	private boolean checkAndCommitCancel(final Arena arena, final Player player,
 			final Cancellable event) {
+		
+		if(willBeCancelled(player, event)) {
+			return true;
+		}
+		
 		if (!(event instanceof PlayerInteractEvent)) {
 			return false;
 		}
@@ -110,6 +115,14 @@ public class PlayerListener implements Listener {
 		return false;
 	}
 
+	private boolean willBeCancelled(Player player, Cancellable event) {
+		if(ArenaPlayer.parsePlayer(player.getName()).getStatus() == Status.LOST) {
+			event.setCancelled(true);
+			return true;
+		}
+		return false;
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerChat(final AsyncPlayerChatEvent event) {
 
@@ -122,7 +135,10 @@ public class PlayerListener implements Listener {
 			return; // no fighting player => OUT
 		}
 		final ArenaTeam team = aPlayer.getArenaTeam();
-		if (team == null) {
+		if (team == null ||
+				aPlayer.getStatus() == Status.DEAD ||
+				aPlayer.getStatus() == Status.LOST ||
+				aPlayer.getStatus() == Status.WATCH) {
 			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_SPECTALK)) {
 				event.setCancelled(true);
 			}
@@ -212,6 +228,11 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDropItem(final PlayerDropItemEvent event) {
 		final Player player = event.getPlayer();
+		
+		if (willBeCancelled(player, event)) {
+			return;
+		}
+		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final Arena arena = aPlayer.getArena();
 		if (arena == null) {
@@ -523,6 +544,10 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
 		final Player player = event.getPlayer();
+		
+		if (willBeCancelled(player, event)) {
+			return;
+		}
 
 		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null

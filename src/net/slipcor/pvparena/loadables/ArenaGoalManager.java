@@ -369,8 +369,10 @@ public class ArenaGoalManager {
 								continue;
 							}
 							p.addLosses();
+							/*
 							arena.removePlayer(p.get(), arena.getArenaConfig()
-									.getString(CFG.TP_LOSE), true, false);
+									.getString(CFG.TP_LOSE), true, false);*/
+							p.setStatus(Status.LOST);
 						}
 					}
 				}
@@ -386,19 +388,15 @@ public class ArenaGoalManager {
 			boolean hasBroadcasted = false;
 			for (ArenaTeam team : arena.getTeams()) {
 				if (winners.contains(team.getName())) {
-					/*
-					ArenaModuleManager.announce(
-							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
-									"Team " + team.getName()), "WINNER");
-					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-							team.getColor() + "Team " + team.getName()));
-					hasBroadcasted = true;
-					for (ArenaPlayer player : team.getTeamMembers()) {
-						if (player.getStatus() == Status.FIGHT) {
-							arena.giveRewards(player.get());
-						}
-					}*/
+					if (!hasBroadcasted) {
+						ArenaModuleManager.announce(
+								arena,
+								Language.parse(MSG.TEAM_HAS_WON,
+										team.getName()), "WINNER");
+						arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+								team.getColor() + team.getName()));
+						hasBroadcasted = true;
+					}
 				} else {
 					
 					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
@@ -409,34 +407,23 @@ public class ArenaGoalManager {
 						if (!p.getStatus().equals(Status.FIGHT)) {
 							continue;
 						}
-						/*
 						p.addLosses();
 						if (!hasBroadcasted) {
 							for (String winTeam : winners) {
 								ArenaModuleManager.announce(arena, Language
-										.parse(MSG.TEAM_HAS_WON, "Team "
-												+ winTeam), "WINNER");
-								arena.msg(p.get(), Language.parse(
-										MSG.TEAM_HAS_WON, arena
-												.getTeam(winTeam).getColor()
-												+ "Team " + winTeam));
+										.parse(MSG.TEAM_HAS_WON, winTeam), "WINNER");
 
 								ArenaTeam winningTeam = arena.getTeam(winTeam);
+
 								if (winningTeam != null) {
-									for (ArenaPlayer player : winningTeam
-											.getTeamMembers()) {
-										if (player.getStatus() == Status.FIGHT) {
-											arena.giveRewards(player.get());
-										}
-									}
+									arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+										winningTeam.getColor() + winTeam));
+								} else {
+									PVPArena.instance.getLogger().severe("Winning team is NULL: " + winTeam);
 								}
 							}
 							hasBroadcasted = !hasBroadcasted;
 						}
-						arena.removePlayer(p.get(), arena.getArenaConfig()
-								.getString(CFG.TP_LOSE), false, false);
-								*/
-						
 						
 						p.setStatus(Status.LOST);
 					}

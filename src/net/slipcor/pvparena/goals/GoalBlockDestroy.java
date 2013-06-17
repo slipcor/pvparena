@@ -173,14 +173,23 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getName().equals(sTeam) == win) {
+				/*
+				team is sTeam and win
+				team is not sTeam and not win
+				*/
 				continue;
 			}
 			for (ArenaPlayer ap : team.getTeamMembers()) {
-
-				ap.addStatistic(arena.getName(), type.LOSSES, 1);
-				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
-						true, false);
-				ap.setTelePass(false);
+				if (ap.getStatus() == Status.FIGHT || ap.getStatus() == Status.DEAD) {
+					ap.addStatistic(arena.getName(), type.LOSSES, 1);
+					/*
+					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
+							true, false);*/
+					
+					ap.setStatus(Status.LOST);
+					
+					//ap.setTelePass(false);
+				}
 			}
 		}
 		
@@ -204,11 +213,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 					.announce(
 							arena,
 							Language.parse(MSG.TEAM_HAS_WON,
-									arena.getTeam(winteam).getColor() + "Team "
+									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-					arena.getTeam(winteam).getColor() + "Team " + winteam
+					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
 
@@ -281,10 +290,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor() + "Team "
+					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ "Team " + aTeam.getName() + ChatColor.YELLOW));
+					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {

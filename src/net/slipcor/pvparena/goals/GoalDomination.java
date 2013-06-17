@@ -408,7 +408,7 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
-		arena.getDebugger().i("[CTF] committing end: " + sTeam);
+		arena.getDebugger().i("[DOM] committing end: " + sTeam);
 		arena.getDebugger().i("win: " + win);
 
 		String winteam = sTeam;
@@ -420,8 +420,12 @@ public class GoalDomination extends ArenaGoal {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 
 				ap.addStatistic(arena.getName(), type.LOSSES, 1);
+				/*
 				arena.tpPlayerToCoordName(ap.get(), "spectator");
 				ap.setTelePass(false);
+				*/
+
+				ap.setStatus(Status.LOST);
 			}
 		}
 		for (ArenaTeam team : arena.getTeams()) {
@@ -440,11 +444,11 @@ public class GoalDomination extends ArenaGoal {
 					.announce(
 							arena,
 							Language.parse(MSG.TEAM_HAS_WON,
-									arena.getTeam(winteam).getColor() + "Team "
+									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-					arena.getTeam(winteam).getColor() + "Team " + winteam
+					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
 
@@ -484,10 +488,10 @@ public class GoalDomination extends ArenaGoal {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor() + "Team "
+					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ "Team " + aTeam.getName() + ChatColor.YELLOW));
+					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {

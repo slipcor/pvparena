@@ -5,6 +5,8 @@ import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
@@ -103,6 +105,11 @@ public class BlockListener implements Listener {
 		if (willBeSkipped(event, event.getBlock().getLocation(),
 				RegionProtection.BREAK)) {
 			DEBUG.i("willbeskipped. GFYS!!!!", event.getPlayer());
+			return;
+		}
+		
+		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST) {
+			event.setCancelled(true);
 			return;
 		}
 
@@ -382,6 +389,12 @@ public class BlockListener implements Listener {
 				RegionProtection.PLACE)) {
 			return;
 		}
+		
+		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event
 				.getBlock().getLocation()));
 		

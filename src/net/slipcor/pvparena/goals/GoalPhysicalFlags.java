@@ -381,8 +381,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 
 				ap.addStatistic(arena.getName(), type.LOSSES, 1);
+			/*
 				arena.tpPlayerToCoordName(ap.get(), "spectator");
-				ap.setTelePass(false);
+				ap.setTelePass(false);*/
+
+				ap.setStatus(Status.LOST);
 			}
 		}
 		for (ArenaTeam team : arena.getTeams()) {
@@ -401,11 +404,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 					.announce(
 							arena,
 							Language.parse(MSG.TEAM_HAS_WON,
-									arena.getTeam(winteam).getColor() + "Team "
+									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
-					arena.getTeam(winteam).getColor() + "Team " + winteam
+					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
 
@@ -542,10 +545,10 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor() + "Team "
+					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
 			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ "Team " + aTeam.getName() + ChatColor.YELLOW));
+					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
