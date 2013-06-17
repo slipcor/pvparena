@@ -233,6 +233,8 @@ public class Config {
 		MODULES_ITEMS_ITEMS("modules.items.items", "none"),
 		
 		MODULES_RESPAWNRELAY_INTERVAL("modules.items.respawnseconds", 10),
+		
+		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
