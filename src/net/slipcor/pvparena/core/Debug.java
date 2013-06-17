@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 
 public class Debug {
 	public static boolean override = false;
+	public static boolean server_log = false;
 
 	private static String prefix = "[PA-debug] ";
 	private static Set<Integer> check = new HashSet<Integer>();
@@ -79,6 +80,7 @@ public class Debug {
 	            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
 	            debugFolder.mkdirs();
 	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + "general.log");
+	            logFile.createNewFile();
 	            
 	            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
 	            
@@ -160,7 +162,9 @@ public class Debug {
 		} else {
 			localLogger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		}
-		
+		if (server_log) {
+			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
+		}
 	}
 
 	public void i(final String string, final CommandSender sender) {
@@ -183,6 +187,9 @@ public class Debug {
 		} else {
 			localLogger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		}
+		if (server_log) {
+			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
+		}
 	}
 
 	public void i(final String string, final String filter) {
@@ -198,16 +205,22 @@ public class Debug {
 
 		//Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
         logger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+		if (server_log) {
+			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
+		}
 	}
 
 	public static void load(final PVPArena instance, final CommandSender sender) {
 		check.clear();
 		strings.clear();
 		override = false;
+		
 		final String debugs = instance.getConfig().getString("debug");
 		if (debugs.equals("none")) {
 			Arena.pmsg(sender, "debugging: off");
 		} else {
+			
+			server_log = instance.getConfig().getBoolean("server_log");
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
 				override = true;

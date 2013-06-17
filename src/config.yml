@@ -1,4 +1,5 @@
 debug: none
+server_log: false
 stats: true
 tracker: true
 modulecheck: true
