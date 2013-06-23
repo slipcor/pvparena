@@ -15,7 +15,6 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PADeathEvent;
-import net.slipcor.pvparena.events.PAExitEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 
 /**
@@ -277,10 +276,6 @@ public class StatisticsManager {
 			final boolean willRespawn) {
 		final PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, (entity instanceof Player));
 		Bukkit.getPluginManager().callEvent(dEvent);
-		if (!willRespawn) {
-			final PAExitEvent exitEvent = new PAExitEvent(arena, defender);
-			Bukkit.getPluginManager().callEvent(exitEvent);
-		}
 
 		if ((entity != null) && (entity instanceof Player)) {
 			final Player attacker = (Player) entity;

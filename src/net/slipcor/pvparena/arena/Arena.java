@@ -898,18 +898,27 @@ public class Arena {
 	}
 
 	/**
-	 * remove a player from the arena
+	 * call event when a player is exiting from an arena (by plugin)
 	 * 
 	 * @param player
 	 *            the player to remove
 	 */
-	public void remove(final Player player) {
+	public void callExitEvent(final Player player) {
+		final PAExitEvent exitEvent = new PAExitEvent(this, player);
+		Bukkit.getPluginManager().callEvent(exitEvent);
+	}
+
+	/**
+	 * call event when a player is leaving an arena (on his own)
+	 * 
+	 * @param player
+	 *            the player to remove
+	 */
+	public void callLeaveEvent(final Player player) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final PALeaveEvent event = new PALeaveEvent(this, player, aPlayer.getStatus()
 				.equals(Status.FIGHT));
 		Bukkit.getPluginManager().callEvent(event);
-		final PAExitEvent exitEvent = new PAExitEvent(this, player);
-		Bukkit.getPluginManager().callEvent(exitEvent);
 	}
 
 	public void removeClass(final String string) {
@@ -940,7 +949,7 @@ public class Arena {
 			aPlayer.getArenaTeam().remove(aPlayer);
 		}
 
-		remove(player);
+		callExitEvent(player);
 		if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
 			PAClassSign.remove(signs, player);
 		}
@@ -992,6 +1001,7 @@ public class Arena {
 				if (!force) {
 					p.addWins();
 				}
+				this.callExitEvent(player);
 				resetPlayer(player, getArenaConfig().getString(CFG.TP_WIN, "old"),
 						false, force);
 				if (!force && p.getStatus().equals(Status.FIGHT)
@@ -1010,9 +1020,11 @@ public class Arena {
 				if (!force) {
 					p.addLosses();
 				}
+				this.callExitEvent(player);
 				resetPlayer(player, getArenaConfig().getString(CFG.TP_LOSE, "old"),
 						false, force);
 			} else {
+				this.callExitEvent(p.get());
 				resetPlayer(p.get(),
 						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
 						force);
@@ -1023,6 +1035,7 @@ public class Arena {
 		for (ArenaPlayer player : ArenaPlayer.getAllArenaPlayers()) {
 			if (this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
 
+				this.callExitEvent(player.get());
 				resetPlayer(player.get(),
 						getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
 						force);
