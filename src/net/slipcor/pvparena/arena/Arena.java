@@ -1138,7 +1138,7 @@ public class Arena {
 			if (loc == null) {
 				PVPArena.instance.getLogger().warning("Spawn null: " + string);
 			} else {
-				aPlayer.get().teleport(loc.toLocation());
+				player.teleport(loc.toLocation());
 				aPlayer.setTelePass(false);
 			}
 			aPlayer.get()
