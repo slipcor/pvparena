@@ -181,7 +181,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			}
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus() == Status.FIGHT || ap.getStatus() == Status.DEAD) {
-					ap.addStatistic(arena.getName(), type.LOSSES, 1);
+					//ap.addStatistic(arena.getName(), type.LOSSES, 1);
 					/*
 					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
 							true, false);*/
@@ -192,7 +192,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				}
 			}
 		}
-		
+		/*
 		if (!win && getLifeMap().size() > 1) {
 			return; // if not a win trigger AND more than one team left. out!
 		}
@@ -224,6 +224,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		getLifeMap().clear();
 		new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
+				*/
+		PACheck.handleEnd(arena, false);
 	}
 
 	@Override
