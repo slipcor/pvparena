@@ -1143,8 +1143,8 @@ public class Arena {
 			if (aPlayer.getLocation() != null) {
 				getDebugger().i("location is fine", player);
 				final PALocation loc = aPlayer.getLocation();
-				aPlayer.get().teleport(loc.toLocation());
-				aPlayer.get()
+				player.teleport(loc.toLocation());
+				player
 						.setNoDamageTicks(
 								getArenaConfig().getInt(
 										CFG.TIME_TELEPORTPROTECT) * 20);
@@ -1157,8 +1157,7 @@ public class Arena {
 				player.teleport(loc.toLocation());
 				aPlayer.setTelePass(false);
 			}
-			aPlayer.get()
-					.setNoDamageTicks(
+			player.setNoDamageTicks(
 							getArenaConfig().getInt(
 									CFG.TIME_TELEPORTPROTECT) * 20);
 		}

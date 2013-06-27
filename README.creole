@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.4.181 - fix NPE
 * v1.0.4.180 - add a warning if a player has a state when joining (no autoClass then?)
 * v1.0.4.179 - properly call PAExitEvent and PALeaveEvent on timed end
 * v1.0.4.178 - fix little NPE
