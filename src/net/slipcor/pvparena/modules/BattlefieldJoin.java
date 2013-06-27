@@ -117,6 +117,8 @@ public class BattlefieldJoin extends ArenaModule {
 					return;
 				}
 			}
+		} else {
+			PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
 		}
 		
 		class RunLater implements Runnable {

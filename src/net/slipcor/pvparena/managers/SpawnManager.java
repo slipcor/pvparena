@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * <pre>Spawn Manager class</pre>
@@ -86,14 +87,33 @@ public final class SpawnManager {
 			return;
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-					arena.tpPlayerToCoordName(ap.get(), team.getName() + ap.getArenaClass().getName() + "spawn");
-				} else {
-					arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+			class TeleportLater extends BukkitRunnable {
+				private final Set<ArenaPlayer> teamMembers = new HashSet<ArenaPlayer>();
+
+				TeleportLater(Set<ArenaPlayer> set) {
+					for (ArenaPlayer ap : set) {
+						this.teamMembers.add(ap);
+					}
 				}
-				ap.setStatus(Status.FIGHT);
+				
+				@Override
+				public void run() {
+					for (ArenaPlayer ap : teamMembers) {
+						if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+							arena.tpPlayerToCoordName(ap.get(), team.getName() + ap.getArenaClass().getName() + "spawn");
+						} else {
+							arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+						}
+						ap.setStatus(Status.FIGHT);
+						teamMembers.remove(ap);
+						return;
+					}
+					this.cancel();
+				}
+				
 			}
+			(new TeleportLater(team.getTeamMembers())).runTaskTimer(PVPArena.instance, 1L, 1L);
+			
 			return;
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
@@ -122,15 +142,35 @@ public final class SpawnManager {
 		final String teamPrefix = arena.isFreeForAll()?"":team.getName();
 		
 		if (!arena.isFreeForAll() || arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
-			for (ArenaPlayer ap : teamMembers) {
+			class TeleportLater extends BukkitRunnable {
+				private final Set<ArenaPlayer> teamMembers = new HashSet<ArenaPlayer>();
 
-				if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-					arena.tpPlayerToCoordName(ap.get(), teamPrefix + ap.getArenaClass().getName() + "spawn");
-				} else {
-					arena.tpPlayerToCoordName(ap.get(), teamPrefix + "spawn");
+				TeleportLater(Set<ArenaPlayer> set) {
+					for (ArenaPlayer ap : set) {
+						this.teamMembers.add(ap);
+					}
 				}
-				ap.setStatus(Status.FIGHT);
+				
+				@Override
+				public void run() {
+					for (ArenaPlayer ap : teamMembers) {
+
+						if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+							arena.tpPlayerToCoordName(ap.get(), teamPrefix + ap.getArenaClass().getName() + "spawn");
+						} else {
+							arena.tpPlayerToCoordName(ap.get(), teamPrefix + "spawn");
+						}
+						ap.setStatus(Status.FIGHT);
+						teamMembers.remove(ap);
+						return;
+					}
+					this.cancel();
+				}
+				
 			}
+			(new TeleportLater(teamMembers)).runTaskTimer(PVPArena.instance, 1L, 1L);
+			
+			
 			return;
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
@@ -163,20 +203,39 @@ public final class SpawnManager {
 		for (String s : removals) {
 			locs.remove(s);
 		}
-		
-		for (ArenaPlayer ap : set) {
-			ap.setStatus(Status.FIGHT);
-			if (locs.size() < 1) {
-				arena.tpPlayerToCoordName(ap.get(), string);
-				continue;
+
+		class TeleportLater extends BukkitRunnable {
+			private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
+
+			TeleportLater(Set<ArenaPlayer> set) {
+				for (ArenaPlayer ap : set) {
+					this.set.add(ap);
+				}
 			}
 			
-			for (String s : locs.keySet()) {
-				arena.tpPlayerToCoordName(ap.get(), s);
-				locs.remove(s);
-				break;
+			@Override
+			public void run() {
+				for (ArenaPlayer ap : set) {
+					ap.setStatus(Status.FIGHT);
+					if (locs.size() < 1) {
+						arena.tpPlayerToCoordName(ap.get(), string);
+						continue;
+					}
+					
+					for (String s : locs.keySet()) {
+						arena.tpPlayerToCoordName(ap.get(), s);
+						locs.remove(s);
+						break;
+					}
+					set.remove(ap);
+					return;
+				}
+				this.cancel();
 			}
+			
 		}
+		(new TeleportLater(set)).runTaskTimer(PVPArena.instance, 1L, 1L);
+		
 	}
 	
 	private static void distributeSmart(final Arena arena,
@@ -222,15 +281,38 @@ public final class SpawnManager {
 			iteratings[i] = spawnName;
 			locs.remove(spawnName);
 		}
-		int pos = 0;
-		for (ArenaPlayer ap : set) {
-			ap.setStatus(Status.FIGHT);
-			final String spawnName = iteratings[pos++%iteratings.length];
-			if (spawnName == null) {
-				PVPArena.instance.getLogger().warning("Element #"+pos+" is null: [" + StringParser.joinArray(iteratings, ",") + "]");
+		
+		class TeleportLater extends BukkitRunnable {
+			private int pos;
+			private final String[] iteratings;
+			private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
+
+			TeleportLater(Set<ArenaPlayer> set, String[] iteratings) {
+				pos = 0;
+				for (ArenaPlayer ap : set) {
+					this.set.add(ap);
+				}
+				this.iteratings = iteratings.clone();
 			}
-			arena.tpPlayerToCoordName(ap.get(), spawnName);
+			
+			@Override
+			public void run() {
+				for (ArenaPlayer ap : set) {
+					ap.setStatus(Status.FIGHT);
+					final String spawnName = iteratings[pos++%iteratings.length];
+					if (spawnName == null) {
+						PVPArena.instance.getLogger().warning("Element #"+pos+" is null: [" + StringParser.joinArray(iteratings, ",") + "]");
+					}
+					arena.tpPlayerToCoordName(ap.get(), spawnName);
+					set.remove(ap);
+					return;
+				}
+				this.cancel();
+			}
+			
 		}
+		
+		(new TeleportLater(set, iteratings)).runTaskTimer(PVPArena.instance, 1L, 1L);
 	}
 
 	public static PABlockLocation getBlockNearest(final Set<PABlockLocation> locs,

@@ -3,6 +3,7 @@ package net.slipcor.pvparena.modules;
 import java.util.Iterator;
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
@@ -221,6 +222,8 @@ public class StandardLounge extends ArenaModule {
 					return;
 				}
 			}
+		} else {
+			PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
 		}
 	}
 

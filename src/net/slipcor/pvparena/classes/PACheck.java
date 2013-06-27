@@ -379,6 +379,7 @@ public class PACheck {
 						mod.parseStart();
 					}
 				}
+				
 				if (player.getClass() != null && arena.startRunner != null) {
 					player.setStatus(Status.READY);
 				}

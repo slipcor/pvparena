@@ -47,6 +47,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -875,6 +876,7 @@ public class Arena {
 				if (p.getArenaClass() == null) {
 					getDebugger().i("player has no class", p.get());
 					// player no class!
+					PVPArena.instance.getLogger().warning("Player no class: " + p.get());
 					return Language
 							.parse(MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
 				}
@@ -1097,7 +1099,7 @@ public class Arena {
 		}
 		getDebugger().i("resetting player: " + player.getName() + (soft ? "(soft)" : ""),
 				player);
-
+/*
 		class RemoveRunner implements Runnable {
 			private final Entity e;
 			RemoveRunner(Entity e) {
@@ -1109,13 +1111,15 @@ public class Arena {
 			}
 
 		}
-		/*
-		for (Entity entity : player.getNearbyEntities(1.0, 1.0, 1.0)) {
+		*/
+		
+		
+		for (Entity entity : player.getNearbyEntities(2.0, 2.0, 2.0)) {
 			if (entity instanceof Projectile) {
-				Bukkit.getScheduler().runTaskAsynchronously(PVPArena.instance, new RemoveRunner(entity));
+				entity.remove();
 			}
-		}*/
-
+		}
+		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (aPlayer.getState() != null) {
 			aPlayer.getState().unload();
