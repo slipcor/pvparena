@@ -45,8 +45,10 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.0.4.182 - try fixing BlockDestroy ending
-* v1.0.4.181 - fix NPE
+* v1.0.4.184 - add PAPlayerClassChangeEvent
+* v1.0.4.183 - try fixing BlockDestroy ending
+* v1.0.4.182 - fix NPE
+* v1.0.4.181 - craftbukkit is a lie!
 * v1.0.4.180 - add a warning if a player has a state when joining (no autoClass then?)
 * v1.0.4.179 - properly call PAExitEvent and PALeaveEvent on timed end
 * v1.0.4.178 - fix little NPE

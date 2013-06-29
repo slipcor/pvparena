@@ -1422,6 +1422,14 @@ public class Arena {
 		aPlayer.setTelePass(false);
 	}
 
+	/**
+	 * last resort to put a player into an arena (when no goal/module wants to)
+	 * 
+	 * @param player the player to put
+	 * @param team the arena team to put into
+	 * 
+	 * @return true if joining successful
+	 */
 	public boolean tryJoin(final Player player, final ArenaTeam team) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
@@ -1430,8 +1438,13 @@ public class Arena {
 		if (aPlayer.getStatus().equals(Status.NULL)) {
 			// joining DIRECTLY - save loc !!
 			aPlayer.setLocation(new PALocation(player.getLocation()));
+		} else {
+			// should not happen; just make sure it does not. If noone reports this
+			// for some time, we can remove this check. It should never happen
+			// anything different. Just saying.
+			PVPArena.instance.getLogger().warning("Status not null for tryJoin: " + player.getName());
 		}
-
+		
 		if (aPlayer.getArenaClass() == null) {
 			String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
 			

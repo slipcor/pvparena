@@ -14,6 +14,7 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -671,7 +672,10 @@ public class ArenaPlayer {
 	 *            the arena class to set
 	 */
 	public void setArenaClass(final ArenaClass aClass) {
-		this.aClass = aClass;
+		PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
+		this.aClass = event.getArenaClass();
 	}
 
 	/**
