@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.4.185 - enhance arena list command display
 * v1.0.4.184 - add PAPlayerClassChangeEvent
 * v1.0.4.183 - try fixing BlockDestroy ending
 * v1.0.4.182 - fix NPE
