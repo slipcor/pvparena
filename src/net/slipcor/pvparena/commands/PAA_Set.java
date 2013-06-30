@@ -13,6 +13,7 @@ import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -161,7 +162,22 @@ public class PAA_Set extends AbstractArenaCommand {
 					player,
 					Language.parse(MSG.SET_DONE, node,
 							String.valueOf(value)));
-		} else if (type.equals("item")) {
+		} else if (type.equals("material")) {
+			if (value.equals("hand")) {
+				if (player instanceof Player) {
+
+					final Material mat = ((Player) player).getItemInHand().getType();
+					arena.getArenaConfig().setManually(node, mat.name());
+					arena.msg(
+							player,
+							Language.parse(MSG.SET_DONE, node,
+									String.valueOf(mat.name())));
+				} else {
+					arena.msg(player, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+				}
+				return;
+			}
+			
 			try {
 				try {
 					final Material mat = Material.valueOf(value);
@@ -189,6 +205,21 @@ public class PAA_Set extends AbstractArenaCommand {
 			}
 			return;
 		} else if (type.equals("items")) {
+			if (value.equals("inventory")) {
+				if (player instanceof Player) {
+
+					String newValue = StringParser.getStringFromItemStacks(((Player) player).getInventory().getContents());
+					arena.getArenaConfig().setManually(node, newValue);
+					arena.msg(
+							player,
+							Language.parse(MSG.SET_DONE, node,
+									newValue));
+				} else {
+					arena.msg(player, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+				}
+				return;
+			}
+			
 			final String[] split = value.split(",");
 			ItemStack[] items = new ItemStack[split.length];
 

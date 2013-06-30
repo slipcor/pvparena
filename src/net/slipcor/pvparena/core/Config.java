@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * <pre>
@@ -76,7 +77,7 @@ public class Config {
 		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false),
 		
 		ITEMS_MINPLAYERS("items.minplayers", 2),
-		ITEMS_REWARDS("items.rewards", "none"),
+		ITEMS_REWARDS("items.rewards", "none", true),
 		ITEMS_RANDOM("items.random", true),
 		
 		JOIN_RANGE("join.range", 0),
@@ -147,11 +148,11 @@ public class Config {
 		
 		// ----------
 
-		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK"),
+		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false),
 		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1),
 		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
 		GOAL_DOM_LIVES("goal.dom.dlives", 10),
-		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL"),
+		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
 		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
@@ -230,7 +231,7 @@ public class Config {
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 
 		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
-		MODULES_ITEMS_ITEMS("modules.items.items", "none"),
+		MODULES_ITEMS_ITEMS("modules.items.items", "none", true),
 		
 		MODULES_RESPAWNRELAY_INTERVAL("modules.items.respawnseconds", 10),
 		
@@ -302,7 +303,13 @@ public class Config {
 			this.value = value;
 			this.type = "double";
 		}
-
+		
+		private CFG(final String node, final String value, final boolean multiple) {
+			this.node = node;
+			this.value = value;
+			this.type = multiple?"items":"material";
+		}
+		
 		private CFG(final String node, final List<String> value) {
 			this.node = node;
 			this.value = value;
@@ -562,6 +569,32 @@ public class Config {
 		final String path = cfg.getNode();
 		final String result = strings.get(path);
 		return (result == null ? def : result);
+	}
+	
+	public Material getMaterial(CFG cfg) {
+		return getMaterial(cfg, Material.valueOf((String)cfg.getValue()));
+	}
+	
+	public Material getMaterial(CFG cfg, Material def) {
+		final String path = cfg.getNode();
+		final String result = strings.get(path);
+		if (result == null || result.equals("none")) {
+			return def;
+		}
+		return Material.valueOf(result);
+	}
+	
+	public ItemStack[] getItems(CFG cfg) {
+		return getItems(cfg, StringParser.getItemStacksFromString((String) cfg.getValue()));
+	}
+	
+	public ItemStack[] getItems(CFG cfg, ItemStack[] def) {
+		final String path = cfg.getNode();
+		final String result = strings.get(path);
+		if (result == null || result.equals("none")) {
+			return def;
+		}
+		return StringParser.getItemStacksFromString(result);
 	}
 
 	public Set<String> getKeys(String path) {
