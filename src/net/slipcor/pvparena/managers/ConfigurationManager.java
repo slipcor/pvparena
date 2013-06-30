@@ -15,7 +15,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
@@ -23,7 +22,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 /**
  * <pre>
@@ -38,7 +36,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
  */
 
 public final class ConfigurationManager {
-	private final static Debug DEBUG = new Debug(25);
+	//private final static Debug DEBUG = new Debug(25);
 
 	private ConfigurationManager() {
 	}

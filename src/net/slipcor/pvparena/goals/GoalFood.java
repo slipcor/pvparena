@@ -512,6 +512,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void parseStart() {
 
@@ -571,7 +572,8 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 		getLifeMap().put(team.getName(), iLives - amount);
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public void refillInventory(Player player) {
 		ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());

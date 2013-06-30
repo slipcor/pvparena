@@ -760,7 +760,7 @@ public class GoalDomination extends ArenaGoal {
 		public int runID = -1;
 		private final Arena arena;
 		public final String team;
-		private final Debug debug = new Debug(39);
+		//private final Debug debug = new Debug(39);
 		private final GoalDomination domination;
 
 		/**
@@ -823,7 +823,7 @@ public class GoalDomination extends ArenaGoal {
 	protected class DominationMainRunnable implements Runnable {
 		public int rID = -1;
 		private final Arena arena;
-		private final Debug debug = new Debug(39);
+		//private final Debug debug = new Debug(39);
 		private final GoalDomination domination;
 
 		public DominationMainRunnable(Arena arena, GoalDomination goal) {

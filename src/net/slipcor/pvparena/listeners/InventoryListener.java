@@ -3,7 +3,6 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 
 import org.bukkit.entity.Player;
@@ -22,7 +21,7 @@ import org.bukkit.event.inventory.InventoryType;
  */
 
 public class InventoryListener implements Listener {
-	private final static Debug DEBUG = new Debug(22);
+	//private final static Debug DEBUG = new Debug(22);
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(final InventoryClickEvent event) {

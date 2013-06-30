@@ -166,7 +166,7 @@ public final class StringParser {
 		 */
 		for (DyeColor dc : DyeColor.values()) {
 			if (dc.name().equalsIgnoreCase(wool)) {
-				return dc.getData();
+				return dc.getDyeData();
 			}
 		}
 		PVPArena.instance.getLogger().warning("unknown color enum: " + wool);

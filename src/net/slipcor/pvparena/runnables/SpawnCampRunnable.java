@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
 
 /**
  * <pre>Arena Runnable class "SpawnCamp"</pre>
@@ -18,7 +17,7 @@ import net.slipcor.pvparena.core.Debug;
 
 public class SpawnCampRunnable implements Runnable {
 	private final Arena arena;
-	private final static Debug DEBUG = new Debug(44);
+//	private final static Debug DEBUG = new Debug(44);
 	private int iID;
 
 	/**

@@ -6,7 +6,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAG_Spectate;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
@@ -23,7 +22,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 	private final ArenaPlayer player;
 	private final String teamName;
 	private final boolean spectator;
-	private final static Debug DEBUG = new Debug(40);
+//	private final static Debug DEBUG = new Debug(40);
 	
 	private final Arena wArena;
 	

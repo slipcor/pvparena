@@ -39,7 +39,6 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 
@@ -168,8 +167,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
 		arena.getDebugger().i("[BD] checking end: " + sTeam);
 		arena.getDebugger().i("win: " + win);
-
-		String winteam = sTeam;
 
 		for (ArenaTeam team : arena.getTeams()) {
 			if (team.getName().equals(sTeam) == win) {

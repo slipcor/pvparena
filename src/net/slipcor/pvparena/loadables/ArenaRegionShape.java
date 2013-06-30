@@ -435,7 +435,6 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				PVPArena.instance, regionRunner,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
-		regionRunner.setId(tickID);
 	}
 
 	protected boolean isInNoWoolSet(final Block block) {

@@ -1,7 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import org.bukkit.Bukkit;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -21,8 +19,8 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 
 public class RegionRunnable implements Runnable {
 	private final ArenaRegionShape region;
-	private final static Debug DEBUG = new Debug(49);
-	private int iID;
+//	private final static Debug DEBUG = new Debug(49);
+//	private int iID;
 
 	/**
 	 * create a region runnable
@@ -91,7 +89,8 @@ public class RegionRunnable implements Runnable {
 		
 	}
 
+	@Deprecated
 	public void setId(final int runID) {
-		iID = runID;
+		//iID = runID;
 	}
 }

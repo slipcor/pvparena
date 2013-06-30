@@ -9,7 +9,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
@@ -23,7 +22,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class EndRunnable extends ArenaRunnable {
-	private final static Debug DEBUG = new Debug(40);
+//	private final static Debug DEBUG = new Debug(40);
 
 	/**
 	 * create a timed arena runnable

@@ -4,7 +4,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
@@ -18,7 +17,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class StartRunnable extends ArenaRunnable {
-	private final static Debug DEBUG = new Debug(43);
+//	private final static Debug DEBUG = new Debug(43);
 
 	/**
 	 * create a timed arena start runnable

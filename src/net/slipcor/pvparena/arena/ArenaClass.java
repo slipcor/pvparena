@@ -71,7 +71,8 @@ public final class ArenaClass {
 		ARMORS_TYPE.addAll(LEGGINGS_TYPE);
 		ARMORS_TYPE.addAll(BOOTS_TYPE);
 	}
-	
+
+	@SuppressWarnings("deprecation")
 	public static void equip(final Player player, final ItemStack[] items) {
 		debug.i("Equipping player " + player.getName() + " with items!", player);
 		for (ItemStack item : items) {

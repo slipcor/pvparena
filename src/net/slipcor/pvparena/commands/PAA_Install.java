@@ -207,13 +207,15 @@ public class PAA_Install extends AbstractGlobalCommand {
 	}
 
 	private void disableModule(final String file) {
+		/*
 		if (file.startsWith("pa_g")) {
 			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
 					file.replace("pa_g_", "").replace(".jar", ""));
+			
 		} else if (file.startsWith("pa_m")) {
 			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
 					file.replace("pa_m_", "").replace(".jar", ""));
-		}
+		}*/
 	}
 
 	@Override

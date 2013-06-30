@@ -14,7 +14,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 
@@ -31,7 +30,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class TeamManager {
-	private final static Debug DEBUG = new Debug(29);
+	//private final static Debug DEBUG = new Debug(29);
 
 	/**
 	 * calculate the team that needs players the most

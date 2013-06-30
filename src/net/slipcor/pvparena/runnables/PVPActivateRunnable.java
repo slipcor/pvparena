@@ -2,7 +2,6 @@ package net.slipcor.pvparena.runnables;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
@@ -16,7 +15,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class PVPActivateRunnable extends ArenaRunnable {
-	private final static Debug DEBUG = new Debug(49);
+//	private final static Debug DEBUG = new Debug(49);
 	
 	/**
 	 * create a pvp activates runnable

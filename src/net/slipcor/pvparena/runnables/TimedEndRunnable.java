@@ -2,7 +2,6 @@ package net.slipcor.pvparena.runnables;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language.MSG;
 
 /**
@@ -16,7 +15,7 @@ import net.slipcor.pvparena.core.Language.MSG;
  */
 
 public class TimedEndRunnable extends ArenaRunnable {
-	private static final Debug DEBUG = new Debug(42);
+	//private static final Debug DEBUG = new Debug(42);
 	/**
 	 * create a timed arena runnable
 	 * 

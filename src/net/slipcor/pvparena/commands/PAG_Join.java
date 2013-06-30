@@ -4,7 +4,6 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -26,7 +25,7 @@ import org.bukkit.entity.Player;
 
 public class PAG_Join extends AbstractArenaCommand {
 	
-	private final Debug debug = new Debug(200);
+	//private final Debug debug = new Debug(200);
 
 	public PAG_Join() {
 		super(new String[] {"pvparena.user"});
