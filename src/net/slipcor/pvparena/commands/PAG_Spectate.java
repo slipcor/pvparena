@@ -38,13 +38,13 @@ public class PAG_Spectate extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
 		final String error = ConfigurationManager.isSetup(arena);
 		if (error != null) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ERROR, error));
 			return;
 		}
 

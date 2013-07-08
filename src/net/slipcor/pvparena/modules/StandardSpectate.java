@@ -70,7 +70,7 @@ public class StandardSpectate extends ArenaModule {
 		aPlayer.setStatus(Status.WATCH);
 
 		arena.tpPlayerToCoordName(player, "spectator");
-		arena.msg(player, Language.parse(MSG.NOTICE_WELCOME_SPECTATOR));
+		arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
 		
 		if (aPlayer.getState() == null) {
 			
@@ -90,7 +90,7 @@ public class StandardSpectate extends ArenaModule {
 					arena.chooseClass(player, null, autoClass);
 				}
 				if (autoClass == null) {
-					arena.msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return;
 				}
 			}

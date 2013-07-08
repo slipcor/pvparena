@@ -354,14 +354,15 @@ public class ArenaGoalManager {
 								.getString(CFG.TP_LOSE), true, false);
 					} else {
 						if (winners.contains(p.getName())) {
-
+							
 							ArenaModuleManager.announce(
 									arena,
-									Language.parse(MSG.PLAYER_HAS_WON,
+									Language.parse(arena, MSG.PLAYER_HAS_WON,
 											p.getName()), "WINNER");
-							arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+							arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
 									p.getName()));
-							if (arena.gaveRewards) {
+							
+							if (!arena.gaveRewards) {
 								arena.giveRewards(p.get());
 							}
 						} else {
@@ -369,9 +370,6 @@ public class ArenaGoalManager {
 								continue;
 							}
 							p.addLosses();
-							/*
-							arena.removePlayer(p.get(), arena.getArenaConfig()
-									.getString(CFG.TP_LOSE), true, false);*/
 							p.setStatus(Status.LOST);
 						}
 					}
@@ -380,8 +378,8 @@ public class ArenaGoalManager {
 			}
 			if (winners.isEmpty()) {
 				ArenaModuleManager.announce(arena,
-						Language.parse(MSG.FIGHT_DRAW), "WINNER");
-				arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
+						Language.parse(arena, MSG.FIGHT_DRAW), "WINNER");
+				arena.broadcast(Language.parse(arena, MSG.FIGHT_DRAW));
 			}
 		} else if (!winners.isEmpty()) {
 
@@ -391,9 +389,9 @@ public class ArenaGoalManager {
 					if (!hasBroadcasted) {
 						ArenaModuleManager.announce(
 								arena,
-								Language.parse(MSG.TEAM_HAS_WON,
+								Language.parse(arena, MSG.TEAM_HAS_WON,
 										team.getName()), "WINNER");
-						arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+						arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 								team.getColor() + team.getName()));
 						hasBroadcasted = true;
 					}
@@ -411,12 +409,12 @@ public class ArenaGoalManager {
 						if (!hasBroadcasted) {
 							for (String winTeam : winners) {
 								ArenaModuleManager.announce(arena, Language
-										.parse(MSG.TEAM_HAS_WON, winTeam), "WINNER");
+										.parse(arena, MSG.TEAM_HAS_WON, winTeam), "WINNER");
 
 								ArenaTeam winningTeam = arena.getTeam(winTeam);
 
 								if (winningTeam != null) {
-									arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+									arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 										winningTeam.getColor() + winTeam));
 								} else {
 									PVPArena.instance.getLogger().severe("Winning team is NULL: " + winTeam);
@@ -430,9 +428,9 @@ public class ArenaGoalManager {
 				}
 			}
 		} else {
-			ArenaModuleManager.announce(arena, Language.parse(MSG.FIGHT_DRAW),
+			ArenaModuleManager.announce(arena, Language.parse(arena, MSG.FIGHT_DRAW),
 					"WINNER");
-			arena.broadcast(Language.parse(MSG.FIGHT_DRAW));
+			arena.broadcast(Language.parse(arena, MSG.FIGHT_DRAW));
 			arena.reset(true);
 			return;
 		}

@@ -45,38 +45,38 @@ public class PAA_Goal extends AbstractArenaCommand {
 		ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 		
 		if (goal == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
-			arena.msg(sender, Language.parse(MSG.GOAL_INSTALLING));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_INSTALLING));
 			return;
 		}
 		
 		if (args.length < 2) {
 			// toggle
 			if (arena.goalToggle(goal)) {
-				arena.msg(sender, Language.parse(MSG.GOAL_ADDED, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.GOAL_ADDED, args[0]));
 			} else {
-				arena.msg(sender, Language.parse(MSG.GOAL_REMOVED, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.GOAL_REMOVED, args[0]));
 			}
 			return;
 		}
 
 		if (StringParser.positive.contains(args[1].toLowerCase())) {
 			arena.goalAdd(goal);
-			arena.msg(sender, Language.parse(MSG.GOAL_ADDED, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_ADDED, args[0]));
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[1].toLowerCase())) {
 			arena.goalRemove(goal);
-			arena.msg(sender, Language.parse(MSG.GOAL_REMOVED, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_REMOVED, args[0]));
 			return;
 		}
 			
 		// usage: /pa {arenaname} goal [goal] {value}
 
-		arena.msg(sender, Language.parse(MSG.ERROR_INVALID_VALUE, args[1]));
-		arena.msg(sender, Language.parse(MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[1]));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
 	}
 
 	@Override

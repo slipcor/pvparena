@@ -103,7 +103,7 @@ public class GoalTank extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -116,7 +116,7 @@ public class GoalTank extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -154,16 +154,16 @@ public class GoalTank extends ArenaGoal {
 				if (tanks.containsValue(ap.getName())) {
 
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()), "WINNER");
+							Language.parse(arena, MSG.GOAL_TANK_TANKWON, ap.getName()), "WINNER");
 
-					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKWON, ap.getName()));
+					arena.broadcast(Language.parse(arena, MSG.GOAL_TANK_TANKWON, ap.getName()));
 				} else {
 
 					// String tank = tanks.get(arena);
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.GOAL_TANK_TANKDOWN), "LOSER");
+							Language.parse(arena, MSG.GOAL_TANK_TANKDOWN), "LOSER");
 
-					arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKDOWN));
+					arena.broadcast(Language.parse(arena, MSG.GOAL_TANK_TANKDOWN));
 				}
 			}
 
@@ -199,7 +199,7 @@ public class GoalTank extends ArenaGoal {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -317,7 +317,7 @@ public class GoalTank extends ArenaGoal {
 			}
 		}
 
-		arena.broadcast(Language.parse(MSG.GOAL_TANK_TANKMODE, tank.getName()));
+		arena.broadcast(Language.parse(arena, MSG.GOAL_TANK_TANKMODE, tank.getName()));
 		arena.tpPlayerToCoordName(tank.get(), "tank");
 		arena.getTeams().add(tankTeam);
 	}

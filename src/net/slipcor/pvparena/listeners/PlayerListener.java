@@ -221,7 +221,7 @@ public class PlayerListener implements Listener {
 
 		arena.getDebugger().i("command blocked: " + event.getMessage(), player);
 		arena.msg(player,
-				Language.parse(MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
+				Language.parse(arena, MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
 		event.setCancelled(true);
 	}
 
@@ -241,7 +241,7 @@ public class PlayerListener implements Listener {
 		if (aPlayer.getStatus().equals(Status.READY)
 				|| aPlayer.getStatus().equals(Status.LOUNGE)) {
 			event.setCancelled(true);
-			arena.msg(player, Language.parse(MSG.NOTICE_NO_DROP_ITEM));
+			arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
 			return;
 		}
 		if (!BlockListener.isProtected(player.getLocation(), event,
@@ -250,7 +250,7 @@ public class PlayerListener implements Listener {
 		}
 
 		arena.getDebugger().i("onPlayerDropItem: fighting player", player);
-		arena.msg(player, Language.parse(MSG.NOTICE_NO_DROP_ITEM));
+		arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
 		event.setCancelled(true);
 		// cancel the drop event for fighting players, with message
 	}
@@ -290,7 +290,7 @@ public class PlayerListener implements Listener {
 
 		final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
 		if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-			arena.broadcast(Language.parse(
+			arena.broadcast(Language.parse(arena,
 					MSG.FIGHT_KILLED_BY,
 					playerName + ChatColor.YELLOW,
 					arena.parseDeathCause(player, cause.getCause(),
@@ -423,7 +423,7 @@ public class PlayerListener implements Listener {
 			if (block.getTypeId() == mMat.getId()) {
 				arena.getDebugger().i("clicked ready block!", player);
 				if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().equals("")) {
-					arena.msg(player, Language.parse(MSG.ERROR_READY_NOCLASS));
+					arena.msg(player, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
 					return; // not chosen class => OUT
 				}
 				if (arena.startRunner != null) {
@@ -439,26 +439,26 @@ public class PlayerListener implements Listener {
 
 				if (!arena.isFightInProgress()) {
 					if (!aPlayer.getStatus().equals(Status.READY)) {
-						arena.msg(player, Language.parse(MSG.READY_DONE));
-						arena.broadcast(Language.parse(MSG.PLAYER_READY, aPlayer
+						arena.msg(player, Language.parse(arena, MSG.READY_DONE));
+						arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer
 								.getArenaTeam().colorizePlayer(aPlayer.get())));
 					}
 					aPlayer.setStatus(Status.READY);
 					if (aPlayer.getArenaTeam().isEveryoneReady()) {
-						arena.broadcast(Language.parse(MSG.TEAM_READY, aPlayer
+						arena.broadcast(Language.parse(arena, MSG.TEAM_READY, aPlayer
 								.getArenaTeam().getColoredName()));
 					}
 
 					if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)
 							&& !TeamManager.checkEven(arena)) {
 							arena.msg(player,
-									Language.parse(MSG.NOTICE_WAITING_EQUAL));
+									Language.parse(arena, MSG.NOTICE_WAITING_EQUAL));
 						return; // even teams desired, not done => announce
 					}
 
 					if (!ArenaRegionShape.checkRegions(arena)) {
 						arena.msg(player,
-								Language.parse(MSG.NOTICE_WAITING_FOR_ARENA));
+								Language.parse(arena, MSG.NOTICE_WAITING_FOR_ARENA));
 						return;
 					}
 
@@ -630,7 +630,7 @@ public class PlayerListener implements Listener {
 
 		arena.getDebugger().i("onPlayerTeleport: no tele pass, cancelling!", player);
 		event.setCancelled(true); // cancel and tell
-		arena.msg(player, Language.parse(MSG.NOTICE_NO_TELEPORT));
+		arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_TELEPORT));
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -37,7 +37,7 @@ public abstract class AbstractArenaCommand {
 			}
 		}
 
-		final String msg = Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+		final String msg = Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
 				String.valueOf(args.length),
 				StringParser.joinArray(validCounts, "|"));
 

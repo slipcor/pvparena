@@ -127,7 +127,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -140,7 +140,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -163,16 +163,16 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		try {
 			value = Integer.parseInt(args[1]);
 		} catch (Exception e) {
-			arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[1]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[1]));
 			return;
 		}
 		if (args.length > 2) {
 			getItemMap().remove(value);
 			arena.msg(sender,
-					Language.parse(MSG.GOAL_KILLREWARD_REMOVED, args[1]));
+					Language.parse(arena, MSG.GOAL_KILLREWARD_REMOVED, args[1]));
 		} else {
 			if (!(sender instanceof Player)) {
-				Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+				Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 				return;
 			}
 			final Player player = (Player) sender;
@@ -183,7 +183,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 							.getContents());
 
 			getItemMap().put(value, StringParser.getItemStacksFromString(contents));
-			arena.msg(sender, Language.parse(MSG.GOAL_KILLREWARD_ADDED,
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_KILLREWARD_ADDED,
 					args[1], contents));
 
 		}
@@ -206,19 +206,19 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				if (arena.isFreeForAll()) {
 
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.PLAYER_HAS_WON, ap.getName()),
+							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
 							"WINNER");
 
-					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+					arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
 							ap.getName()));
 				} else {
 
 					ArenaModuleManager.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									team.getColoredName()), "WINNER");
 
-					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+					arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 							team.getColoredName()));
 					break;
 				}

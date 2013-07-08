@@ -49,7 +49,7 @@ public class PAA_Class extends AbstractArenaCommand {
 		}
 
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 
@@ -97,7 +97,7 @@ public class PAA_Class extends AbstractArenaCommand {
 			arena.getArenaConfig().setManually("classitems." + args[1], sItems);
 			arena.getArenaConfig().save();
 			arena.addClass(args[1], isItems);
-			Arena.pmsg(player, Language.parse(MSG.CLASS_SAVED, args[1]));
+			Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
 		} else if (args[0].equalsIgnoreCase("load")) {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 			
@@ -110,7 +110,7 @@ public class PAA_Class extends AbstractArenaCommand {
 			arena.getArenaConfig().setManually("classitems." + args[1], null);
 			arena.getArenaConfig().save();
 			arena.removeClass(args[1]);
-			Arena.pmsg(player, Language.parse(MSG.CLASS_REMOVED, args[1]));
+			Arena.pmsg(player, Language.parse(arena, MSG.CLASS_REMOVED, args[1]));
 		}
 	}
 

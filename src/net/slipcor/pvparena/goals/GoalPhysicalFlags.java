@@ -203,7 +203,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 						arena.getDebugger().i("cancelling", player);
 
 						arena.msg(player,
-								Language.parse(MSG.GOAL_FLAGS_NOTSAFE));
+								Language.parse(arena, MSG.GOAL_FLAGS_NOTSAFE));
 						return res;
 					}
 				}
@@ -222,7 +222,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 					arena.getDebugger().i("player " + player.getName()
 							+ " is not holding the flag", player);
 					arena.msg(player,
-							Language.parse(MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
+							Language.parse(arena, MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
 					return res;
 				}
 
@@ -231,14 +231,14 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 				try {
 					if (flagTeam.equals("touchdown")) {
-						arena.broadcast(Language.parse(
+						arena.broadcast(Language.parse(arena,
 								MSG.GOAL_FLAGS_TOUCHHOME, arena.getTeam(sTeam)
 										.colorizePlayer(player)
 										+ ChatColor.YELLOW, String
 										.valueOf(getLifeMap().get(aPlayer
 												.getArenaTeam().getName()) - 1)));
 					} else {
-						arena.broadcast(Language.parse(
+						arena.broadcast(Language.parse(arena,
 								MSG.GOAL_FLAGS_BROUGHTHOME, arena
 										.getTeam(sTeam).colorizePlayer(player)
 										+ ChatColor.YELLOW,
@@ -334,7 +334,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -347,7 +347,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -403,11 +403,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			ArenaModuleManager
 					.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
@@ -423,7 +423,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			if (args.length < 2) {
 				arena.msg(
 						sender,
-						Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+						Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
 								String.valueOf(args.length), "2"));
 				return;
 			}
@@ -437,14 +437,14 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 				if (mat == null) {
 					arena.msg(sender,
-							Language.parse(MSG.ERROR_MAT_NOT_FOUND, args[1]));
+							Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
 					return;
 				}
 
 				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
 			}
 			arena.getArenaConfig().save();
-			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TYPESET,
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TYPESET,
 					CFG.GOAL_FLAGS_FLAGTYPE.toString()));
 
 		} else if (args[0].equalsIgnoreCase("flageffect")) {
@@ -453,7 +453,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			if (args.length < 2) {
 				arena.msg(
 						sender,
-						Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+						Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
 								String.valueOf(args.length), "2"));
 				return;
 			}
@@ -464,7 +464,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				arena.getArenaConfig().save();
 				arena.msg(
 						sender,
-						Language.parse(MSG.SET_DONE,
+						Language.parse(arena, MSG.SET_DONE,
 								CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), args[1]));
 				return;
 			}
@@ -482,7 +482,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			}
 
 			if (pet == null) {
-				arena.msg(sender, Language.parse(
+				arena.msg(sender, Language.parse(arena,
 						MSG.ERROR_POTIONEFFECTTYPE_NOTFOUND, args[1]));
 				return;
 			}
@@ -494,7 +494,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 					amp = Integer.parseInt(args[2]);
 				} catch (Exception e) {
 					arena.msg(sender,
-							Language.parse(MSG.ERROR_NOT_NUMERIC, args[2]));
+							Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[2]));
 					return;
 				}
 			}
@@ -504,7 +504,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			arena.getArenaConfig().save();
 			arena.msg(
 					sender,
-					Language.parse(MSG.SET_DONE,
+					Language.parse(arena, MSG.SET_DONE,
 							CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), value));
 
 		} else if (args[0].contains("flag")) {
@@ -515,14 +515,14 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
 					arena.msg(sender,
-							Language.parse(MSG.GOAL_FLAGS_TOSET, flagName));
+							Language.parse(arena, MSG.GOAL_FLAGS_TOSET, flagName));
 				}
 			}
 		} else if (args[0].equalsIgnoreCase("touchdown")) {
 			flagName = args[0] + "flag";
 			PAA_Region.activeSelections.put(sender.getName(), arena);
 
-			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TOSET, flagName));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TOSET, flagName));
 		}
 	}
 
@@ -545,9 +545,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -582,7 +582,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
 				flagName);
 
-		arena.msg(player, Language.parse(MSG.GOAL_FLAGS_SET, flagName));
+		arena.msg(player, Language.parse(arena, MSG.GOAL_FLAGS_SET, flagName));
 
 		PAA_Region.activeSelections.remove(player.getName());
 		flagName = "";
@@ -609,7 +609,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		
 		if (flagTeam == null) {
 			if (sTeam != null) {
-				arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
 						.getArenaTeam().getColorCodeString()
 						+ aPlayer.getName()
 						+ ChatColor.YELLOW));
@@ -627,7 +627,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 						SpawnManager.getCoords(arena, "touchdownflag"));
 			}
 		} else {
-			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED, aPlayer
+			arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
 					.getArenaTeam().getColorCodeString()
 					+ aPlayer.getName()
 					+ ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
@@ -813,7 +813,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		
 		if (flagTeam == null) {
 			if (sTeam != null) {
-				arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
 						.getArenaTeam().getColorCodeString()
 						+ aPlayer.getName()
 						+ ChatColor.YELLOW));
@@ -831,7 +831,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 						SpawnManager.getCoords(arena, "touchdownflag"));
 			}
 		} else {
-			arena.broadcast(Language.parse(MSG.GOAL_FLAGS_DROPPED, aPlayer
+			arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
 					.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW,
 					flagTeam.getColoredName() + ChatColor.YELLOW));
 			getFlagMap().remove(flagTeam.getName());
@@ -1092,13 +1092,13 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 					if (team.getName().equals("touchdown")) {
 
-						arena.broadcast(Language.parse(
+						arena.broadcast(Language.parse(arena,
 								MSG.GOAL_FLAGS_GRABBEDTOUCH,
 								pTeam.colorizePlayer(player) + ChatColor.YELLOW));
 					} else {
 
 						arena.broadcast(Language
-								.parse(MSG.GOAL_FLAGS_GRABBED,
+								.parse(arena, MSG.GOAL_FLAGS_GRABBED,
 										pTeam.colorizePlayer(player)
 												+ ChatColor.YELLOW,
 										team.getColoredName()

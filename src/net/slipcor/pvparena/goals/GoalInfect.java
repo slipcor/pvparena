@@ -124,7 +124,7 @@ public class GoalInfect extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -137,7 +137,7 @@ public class GoalInfect extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -176,17 +176,17 @@ public class GoalInfect extends ArenaGoal {
 				if (ap.getArenaTeam().getName().equals("infected")) {
 
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.GOAL_INFECTED_WON), "WINNER");
+							Language.parse(arena, MSG.GOAL_INFECTED_WON), "WINNER");
 
-					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_WON));
+					arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_WON));
 					break;
 				} else {
 
 					// String tank = tanks.get(arena);
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.GOAL_INFECTED_LOST), "LOSER");
+							Language.parse(arena, MSG.GOAL_INFECTED_LOST), "LOSER");
 
-					arena.broadcast(Language.parse(MSG.GOAL_INFECTED_LOST));
+					arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_LOST));
 					break;
 				}
 			}
@@ -220,8 +220,8 @@ public class GoalInfect extends ArenaGoal {
 			} else if (iLives <= 1) {
 				// dying player -> infected
 				getLifeMap().put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-				arena.msg(player, Language.parse(MSG.GOAL_INFECTED_YOU));
-				arena.broadcast(Language.parse(MSG.GOAL_INFECTED_PLAYER, player.getName()));
+				arena.msg(player, Language.parse(arena, MSG.GOAL_INFECTED_YOU));
+				arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
 				
 				ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 				
@@ -238,7 +238,7 @@ public class GoalInfect extends ArenaGoal {
 				}
 				
 				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-					arena.broadcast(Language.parse(
+					arena.broadcast(Language.parse(arena,
 							MSG.FIGHT_KILLED_BY,
 							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 							arena.parseDeathCause(player, event.getEntity()
@@ -269,7 +269,7 @@ public class GoalInfect extends ArenaGoal {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -296,7 +296,7 @@ public class GoalInfect extends ArenaGoal {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -447,8 +447,8 @@ public class GoalInfect extends ArenaGoal {
 			}
 		}
 
-		arena.msg(infected.get(), Language.parse(MSG.GOAL_INFECTED_YOU, infected.getName()));
-		arena.broadcast(Language.parse(MSG.GOAL_INFECTED_PLAYER, infected.getName()));
+		arena.msg(infected.get(), Language.parse(arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
+		arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
 		arena.tpPlayerToCoordName(infected.get(), "infected");
 		arena.getTeams().add(infectedTeam);
 	}

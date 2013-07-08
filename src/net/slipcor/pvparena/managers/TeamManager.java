@@ -170,7 +170,7 @@ public class TeamManager {
 				arena.getDebugger().i("TeamManager", player);
 				arena.msg(
 						player,
-						Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF,
+						Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF,
 								team.getColoredName()));
 				return;
 			}

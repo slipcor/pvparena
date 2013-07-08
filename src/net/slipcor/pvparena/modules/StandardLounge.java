@@ -92,13 +92,13 @@ public class StandardLounge extends ArenaModule {
 				&& !player.hasPermission("pvparena.admin")
 				&& !(player.hasPermission("pvparena.create") && arena.getOwner()
 						.equals(player.getName()))) {
-			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
+			result.setError(this, Language.parse(arena, MSG.ERROR_DISABLED));
 			return result;
 		}
 
 		if (join && arena.isFightInProgress()
 				&& !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
-			result.setError(this, Language.parse(MSG.ERROR_FIGHT_IN_PROGRESS));
+			result.setError(this, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
 			return result;
 		}
 
@@ -106,7 +106,7 @@ public class StandardLounge extends ArenaModule {
 
 		if (aPlayer.getArena() != null) {
 			aPlayer.getArena().getDebugger().i(this.getName(), sender);
-			result.setError(this, Language.parse(
+			result.setError(this, Language.parse(arena,
 					MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;
 		}
@@ -115,7 +115,7 @@ public class StandardLounge extends ArenaModule {
 			final String autoClass = arena.getArenaConfig().getString(
 					CFG.READY_AUTOCLASS);
 			if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) == null) {
-				result.setError(this, Language.parse(
+				result.setError(this, Language.parse(arena,
 						MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 				return result;
 			}
@@ -218,7 +218,7 @@ public class StandardLounge extends ArenaModule {
 					arena.chooseClass(player.get(), null, autoClass);
 				}
 				if (autoClass == null) {
-					arena.msg(player.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return;
 				}
 			}

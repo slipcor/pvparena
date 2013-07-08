@@ -130,7 +130,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -143,7 +143,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -209,11 +209,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			ArenaModuleManager
 					.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
@@ -231,7 +231,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			if (args.length < 2) {
 				arena.msg(
 						sender,
-						Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+						Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
 								String.valueOf(args.length), "2"));
 				return;
 			}
@@ -245,7 +245,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 				if (mat == null) {
 					arena.msg(sender,
-							Language.parse(MSG.ERROR_MAT_NOT_FOUND, args[1]));
+							Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
 					return;
 				}
 
@@ -253,7 +253,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 						mat.name());
 			}
 			arena.getArenaConfig().save();
-			arena.msg(sender, Language.parse(MSG.GOAL_BLOCKDESTROY_TYPESET,
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_BLOCKDESTROY_TYPESET,
 					CFG.GOAL_BLOCKDESTROY_BLOCKTYPE.toString()));
 
 		} else if (args[0].contains("block")) {
@@ -263,7 +263,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 					blockTeamName = args[0];
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
-					arena.msg(sender, Language.parse(
+					arena.msg(sender, Language.parse(arena,
 							MSG.GOAL_BLOCKDESTROY_TOSET, blockTeamName));
 				}
 			}
@@ -289,9 +289,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -327,7 +327,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				blockTeamName);
 
 		arena.msg(player,
-				Language.parse(MSG.GOAL_BLOCKDESTROY_SET, blockTeamName));
+				Language.parse(arena, MSG.GOAL_BLOCKDESTROY_SET, blockTeamName));
 
 		PAA_Region.activeSelections.remove(player.getName());
 		blockTeamName = "";
@@ -628,7 +628,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				final String sTeam = pTeam.getName();
 
 				try {
-					arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
+					arena.broadcast(Language.parse(arena, MSG.GOAL_BLOCKDESTROY_SCORE,
 							arena.getTeam(sTeam).colorizePlayer(player)
 									+ ChatColor.YELLOW, arena
 									.getTeam(blockTeam).getColoredName()
@@ -698,8 +698,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 					final String blockTeam = node.split("block")[0];
 					
 					try {
-						arena.broadcast(Language.parse(MSG.GOAL_BLOCKDESTROY_SCORE,
-								Language.parse(MSG.DEATHCAUSE_BLOCK_EXPLOSION)
+						arena.broadcast(Language.parse(arena, MSG.GOAL_BLOCKDESTROY_SCORE,
+								Language.parse(arena, MSG.DEATHCAUSE_BLOCK_EXPLOSION)
 										+ ChatColor.YELLOW, arena
 										.getTeam(blockTeam).getColoredName()
 										+ ChatColor.YELLOW, String

@@ -182,7 +182,7 @@ public class GoalLiberation extends ArenaGoal  {
 
 
 				arena.broadcast(Language
-						.parse(MSG.GOAL_LIBERATION_LIBERATED,
+						.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
 								pTeam.getColoredName()
 										+ ChatColor.YELLOW));
 				
@@ -210,7 +210,7 @@ public class GoalLiberation extends ArenaGoal  {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -223,7 +223,7 @@ public class GoalLiberation extends ArenaGoal  {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -262,7 +262,7 @@ public class GoalLiberation extends ArenaGoal  {
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
 					arena.msg(sender,
-							Language.parse(MSG.GOAL_LIBERATION_TOSET, flagName));
+							Language.parse(arena, MSG.GOAL_LIBERATION_TOSET, flagName));
 				}
 			}
 		}
@@ -282,19 +282,19 @@ public class GoalLiberation extends ArenaGoal  {
 				if (arena.isFreeForAll()) {
 
 					ArenaModuleManager.announce(arena,
-							Language.parse(MSG.PLAYER_HAS_WON, ap.getName()),
+							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
 							"WINNER");
 
-					arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON,
+					arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
 							ap.getName()));
 				} else {
 
 					ArenaModuleManager.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									team.getColoredName()), "WINNER");
 
-					arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+					arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 							team.getColoredName()));
 					break;
 				}
@@ -343,7 +343,7 @@ public class GoalLiberation extends ArenaGoal  {
 				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 						.getArenaTeam();
 				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-					arena.broadcast(Language.parse(
+					arena.broadcast(Language.parse(arena,
 							MSG.FIGHT_KILLED_BY,
 							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 							arena.parseDeathCause(player, event.getEntity()
@@ -374,7 +374,7 @@ public class GoalLiberation extends ArenaGoal  {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -415,7 +415,7 @@ public class GoalLiberation extends ArenaGoal  {
 		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
 				flagName);
 
-		arena.msg(player, Language.parse(MSG.GOAL_LIBERATION_SET, flagName));
+		arena.msg(player, Language.parse(arena, MSG.GOAL_LIBERATION_SET, flagName));
 
 		PAA_Region.activeSelections.remove(player.getName());
 		flagName = "";

@@ -64,7 +64,7 @@ public class RegionTool extends ArenaModule {
 				} catch (Exception e) {
 					arena.getDebugger().i("exception reading ready block", event.getPlayer());
 					final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
-					arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_MAT_NOT_FOUND, sMat));
+					arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, sMat));
 					continue;
 				}
 				if (event.getPlayer().getItemInHand().getType() == mMat) {

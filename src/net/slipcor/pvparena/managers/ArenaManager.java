@@ -317,7 +317,7 @@ public final class ArenaManager {
 		final Arena arena = new Arena(configFile);
 		
 		if (!arena.isValid()) {
-			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ARENACONFIG, configFile));
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, configFile));
 			return null;
 		}
 		
@@ -370,7 +370,7 @@ public final class ArenaManager {
 					}
 					if (arena == null) {
 						Arena.pmsg(player,
-								Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
+								Language.parse(arena, MSG.ERROR_ARENA_NOTFOUND, sName));
 						return;
 					}
 					final AbstractArenaCommand command = new PAG_Join();

@@ -695,6 +695,42 @@ public final class Language {
 	 *            the node name
 	 * @return the node string
 	 */
+	public static String parse(Arena arena, final MSG message) {
+		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
+			return StringParser.colorize((String) arena.getLanguage().get(message.getNode()));
+		}
+		return StringParser.colorize(message.toString());
+	}
+
+	/**
+	 * read a node from the config and return its value after replacing
+	 * 
+	 * @param s
+	 *            the node name
+	 * @param arg
+	 *            a string to replace
+	 * @return the replaced node string
+	 */
+	public static String parse(Arena arena, final MSG message, final String... args) {
+		
+		String result = message.toString();
+		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
+			result = (String) arena.getLanguage().get(message.getNode());
+		}
+		int i = 0;
+		for (String word : args) {
+			result = result.replace("%" + ++i + "%", word);
+		}
+		return StringParser.colorize(result);
+	}
+
+	/**
+	 * read a node from the config and return its value
+	 * 
+	 * @param s
+	 *            the node name
+	 * @return the node string
+	 */
 	public static String parse(final MSG message) {
 		return StringParser.colorize(message.toString());
 	}

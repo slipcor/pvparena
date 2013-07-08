@@ -41,10 +41,10 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
 		final String name = args[0].toLowerCase();
 		final ArenaModule mod = PVPArena.instance.getAmm().getModByName(name);
 		if (mod != null) {
-			arena.msg(sender, Language.parse(MSG.SET_DONE, mod.getName(), String.valueOf(mod.toggleEnabled(arena))));
+			arena.msg(sender, Language.parse(arena, MSG.SET_DONE, mod.getName(), String.valueOf(mod.toggleEnabled(arena))));
 			return;
 		}
-		arena.msg(sender, Language.parse(MSG.ERROR_UNKNOWN_MODULE, args[0]));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_UNKNOWN_MODULE, args[0]));
 	}
 
 	@Override

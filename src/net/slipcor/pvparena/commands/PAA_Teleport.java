@@ -40,7 +40,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 
@@ -49,7 +49,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 		final PALocation loc = SpawnManager.getCoords(arena, args[0]);
 		
 		if (loc == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_SPAWN_UNKNOWN, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_SPAWN_UNKNOWN, args[0]));
 			return;
 		}
 		

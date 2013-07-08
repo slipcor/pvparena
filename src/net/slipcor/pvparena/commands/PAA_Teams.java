@@ -44,7 +44,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 		
 		if (args.length == 0) {
 			// show teams
-			arena.msg(sender, Language.parse(MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), "§f,")));
+			arena.msg(sender, Language.parse(arena, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), "§f,")));
 			return;
 		}
 		
@@ -56,12 +56,12 @@ public class PAA_Teams extends AbstractArenaCommand {
 		final ArenaTeam team = arena.getTeam(args[1]);
 		
 		if (team == null && !args[0].equals("add")) {
-			arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, args[1]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[1]));
 			return;
 		}
 			
 		if (args[0].equals("remove")) {
-			arena.msg(sender,  Language.parse(MSG.TEAMS_REMOVE, team.getColoredName()));
+			arena.msg(sender,  Language.parse(arena, MSG.TEAMS_REMOVE, team.getColoredName()));
 			arena.getTeams().remove(team);
 		} else if (args[0].equals("add")) {
 			try {
@@ -69,9 +69,9 @@ public class PAA_Teams extends AbstractArenaCommand {
 				final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
 				arena.getTeams().add(newTeam);
 
-				arena.msg(sender,  Language.parse(MSG.TEAMS_ADD, newTeam.getColoredName()));
+				arena.msg(sender,  Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
 			} catch (Exception e) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
 			}
 		} else if (args[0].equals("set")) {
 			try {
@@ -80,9 +80,9 @@ public class PAA_Teams extends AbstractArenaCommand {
 				arena.getTeams().remove(arena.getTeam(args[1]));
 				arena.getTeams().add(newTeam);
 
-				arena.msg(sender,  Language.parse(MSG.TEAMS_REMOVE, newTeam.getColoredName()));
+				arena.msg(sender,  Language.parse(arena, MSG.TEAMS_REMOVE, newTeam.getColoredName()));
 			} catch (Exception e) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
 			}
 		} else {
 			displayHelp(sender);

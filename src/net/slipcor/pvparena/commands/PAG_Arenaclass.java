@@ -39,7 +39,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -48,7 +48,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 		final ArenaClass aClass = arena.getClass(args[0]);
 		
 		if (aClass == null) {
-			sender.sendMessage(Language.parse(MSG.ERROR_CLASS_NOT_FOUND, args[0]));
+			sender.sendMessage(Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, args[0]));
 			return;
 		}
 
@@ -56,7 +56,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 		aPlayer.setArenaClass(aClass);
 		ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
-		sender.sendMessage(Language.parse(MSG.CLASS_SELECTED, aClass.getName()));
+		sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
 	}
 
 	@Override

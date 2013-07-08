@@ -46,7 +46,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 		Arena arena = ArenaManager.getArenaByName(args[0]);
 		
 		if (arena != null) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_EXISTS, arena.getName()));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ARENA_EXISTS, arena.getName()));
 			return;
 		}
 		
@@ -60,14 +60,14 @@ public class PAA_Create extends AbstractGlobalCommand {
 		if (args.length > 1) {
 			// preset arena stuff based on legacy stuff
 			if (!arena.getLegacyGoals(args[1])) {
-				arena.msg(sender, Language.parse(MSG.ERROR_GOAL_LEGACY_UNKNOWN, args[1]));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_LEGACY_UNKNOWN, args[1]));
 			}
 		} else {
 			arena.getLegacyGoals("teams");
 		}
 		
 		ArenaManager.loadArena(arena.getName());
-		Arena.pmsg(sender, Language.parse(MSG.ARENA_CREATE_DONE, arena.getName()));
+		Arena.pmsg(sender, Language.parse(arena, MSG.ARENA_CREATE_DONE, arena.getName()));
 		arena = ArenaManager.getArenaByName(arena.getName());
 		final PAA_ToggleMod cmd = new PAA_ToggleMod();
 		cmd.commit(arena, sender, new String[]{"standardspectate"});

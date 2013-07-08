@@ -43,14 +43,14 @@ public class PAA_Edit extends AbstractArenaCommand {
 		
 		if (PAA_Edit.activeEdits.containsValue(arena)) {
 			activeEdits.remove(sender.getName());
-			msg = Language.parse(MSG.ARENA_EDIT_DISABLED, arena.getName());
+			msg = Language.parse(arena, MSG.ARENA_EDIT_DISABLED, arena.getName());
 		} else {
 			if (arena.isFightInProgress()) {
 				final PAA_Stop cmd = new PAA_Stop();
 				cmd.commit(arena, sender, new String[0]);
 			}
 			activeEdits.put(sender.getName(), arena);
-			msg = Language.parse(MSG.ARENA_EDIT_ENABLED, arena.getName());
+			msg = Language.parse(arena, MSG.ARENA_EDIT_ENABLED, arena.getName());
 		}
 		arena.msg(sender, msg);
 	}

@@ -130,7 +130,7 @@ public class GoalDomination extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -143,7 +143,7 @@ public class GoalDomination extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -247,7 +247,7 @@ public class GoalDomination extends ArenaGoal {
 					}
 					int lives = this.getLifeMap().get(team);
 					
-					arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
+					arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
 							arena.getTeam(team).getColoredName()
 									+ ChatColor.YELLOW, (max-lives)+"/"+max));
 				}
@@ -304,7 +304,7 @@ public class GoalDomination extends ArenaGoal {
 							int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
 							int lives = this.getLifeMap().get(team);
 							
-							arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_SCORE,
+							arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
 									arena.getTeam(team).getColoredName()
 											+ ChatColor.YELLOW, (max-lives)+"/"+max));
 						}
@@ -374,7 +374,7 @@ public class GoalDomination extends ArenaGoal {
 							arena.getDebugger().i("TEAM " + sName + " IS CLAIMING "
 									+ loc.toString());
 							final ArenaTeam team = arena.getTeam(sName);
-							arena.broadcast(Language.parse(
+							arena.broadcast(Language.parse(arena,
 									MSG.GOAL_DOMINATION_CLAIMING,
 									team.getColoredName() + ChatColor.YELLOW));
 
@@ -443,11 +443,11 @@ public class GoalDomination extends ArenaGoal {
 			ArenaModuleManager
 					.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
@@ -461,11 +461,11 @@ public class GoalDomination extends ArenaGoal {
 	public void commitCommand(final CommandSender sender, final String[] args) {
 		if (PAA_Region.activeSelections.containsKey(sender.getName())) {
 			PAA_Region.activeSelections.remove(sender.getName());
-			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_SET, "flags"));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_SET, "flags"));
 		} else {
 
 			PAA_Region.activeSelections.put(sender.getName(), arena);
-			arena.msg(sender, Language.parse(MSG.GOAL_FLAGS_TOSET, "flags"));
+			arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TOSET, "flags"));
 		}
 	}
 
@@ -488,9 +488,9 @@ public class GoalDomination extends ArenaGoal {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -525,7 +525,7 @@ public class GoalDomination extends ArenaGoal {
 			SpawnManager.setBlock(arena,
 					new PABlockLocation(block.getLocation()), flagName);
 
-			arena.msg(player, Language.parse(MSG.GOAL_FLAGS_SET, flagName));
+			arena.msg(player, Language.parse(arena, MSG.GOAL_FLAGS_SET, flagName));
 			return true;
 		}
 		return false;
@@ -797,7 +797,7 @@ public class GoalDomination extends ArenaGoal {
 					domination.getFlagMap().put(loc, team);
 					// long interval = 20L * 5;
 
-					arena.broadcast(Language.parse(
+					arena.broadcast(Language.parse(arena,
 							MSG.GOAL_DOMINATION_CLAIMED, arena.getTeam(team)
 									.getColoredName() + ChatColor.YELLOW));
 					GoalDomination.takeFlag(arena, loc, team);
@@ -810,7 +810,7 @@ public class GoalDomination extends ArenaGoal {
 			} else {
 				// unclaim
 				arena.getDebugger().i("unclaim");
-				arena.broadcast(Language.parse(MSG.GOAL_DOMINATION_UNCLAIMING,
+				arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING,
 						team + ChatColor.YELLOW));
 				GoalDomination.takeFlag(arena, loc, "");
 				Bukkit.getScheduler().cancelTask(runID);

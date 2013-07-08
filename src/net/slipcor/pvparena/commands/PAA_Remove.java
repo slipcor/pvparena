@@ -46,7 +46,7 @@ public class PAA_Remove extends AbstractArenaCommand {
 		
 		if (PVPArena.instance.getConfig().getBoolean("safeadmin", true)) {
 			if ((removal == null) || (!removal.equals(name))) { 
-				Arena.pmsg(sender, Language.parse(MSG.NOTICE_REMOVE, name));
+				Arena.pmsg(sender, Language.parse(arena, MSG.NOTICE_REMOVE, name));
 				removal = name;
 				return;
 			}
@@ -54,7 +54,7 @@ public class PAA_Remove extends AbstractArenaCommand {
 		}
 		
 		ArenaManager.removeArena(arena, true);
-		Arena.pmsg(sender, Language.parse(MSG.ARENA_REMOVE_DONE, name));
+		Arena.pmsg(sender, Language.parse(arena, MSG.ARENA_REMOVE_DONE, name));
 	}
 
 	@Override

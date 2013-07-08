@@ -55,7 +55,7 @@ public class WarmupJoin extends ArenaModule {
 	
 	
 		if (arena.isLocked() && !player.hasPermission("pvparena.admin") && !(player.hasPermission("pvparena.create") && arena.getOwner().equals(player.getName()))) {
-			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
+			result.setError(this, Language.parse(arena, MSG.ERROR_DISABLED));
 			return result;
 		}
 		
@@ -67,7 +67,7 @@ public class WarmupJoin extends ArenaModule {
 		
 		if (aPlayer.getArena() != null) {
 			aPlayer.getArena().getDebugger().i(this.getName(), sender);
-			result.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
+			result.setError(this, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;
 		}
 		getPlayerSet().add(aPlayer);

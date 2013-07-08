@@ -40,7 +40,7 @@ public class PAA_Start extends AbstractArenaCommand {
 		}
 		
 		arena.start();
-		arena.msg(sender, Language.parse(MSG.ARENA_START_DONE));
+		arena.msg(sender, Language.parse(arena, MSG.ARENA_START_DONE));
 	}
 
 	@Override

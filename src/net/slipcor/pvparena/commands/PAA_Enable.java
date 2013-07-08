@@ -44,7 +44,7 @@ public class PAA_Enable extends AbstractArenaCommand {
 		arena.getArenaConfig().save();
 		arena.setLocked(false);
 		
-		arena.msg(sender, Language.parse(MSG.ARENA_ENABLE_DONE));
+		arena.msg(sender, Language.parse(arena, MSG.ARENA_ENABLE_DONE));
 	}
 
 	@Override

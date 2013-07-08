@@ -37,7 +37,7 @@ public class PAI_Shutup extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -47,30 +47,30 @@ public class PAI_Shutup extends AbstractArenaCommand {
 			// toggle
 			if (aPlayer.isIgnoringAnnouncements()) {
 				aPlayer.setIgnoreAnnouncements(false);
-				arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREOFF));
+				arena.msg(sender, Language.parse(arena, MSG.MODULE_ANNOUNCEMENTS_IGNOREOFF));
 			} else {
 				aPlayer.setIgnoreAnnouncements(true);
-				arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREON));
+				arena.msg(sender, Language.parse(arena, MSG.MODULE_ANNOUNCEMENTS_IGNOREON));
 			}
 			return;
 		}
 
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
 			aPlayer.setIgnoreAnnouncements(true);
-			arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREON));
+			arena.msg(sender, Language.parse(arena, MSG.MODULE_ANNOUNCEMENTS_IGNOREON));
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
 			aPlayer.setIgnoreAnnouncements(false);
-			arena.msg(sender, Language.parse(MSG.MODULE_ANNOUNCEMENTS_IGNOREOFF));
+			arena.msg(sender, Language.parse(arena, MSG.MODULE_ANNOUNCEMENTS_IGNOREOFF));
 			return;
 		}
 			
 		// usage: /pa {arenaname} shutup {value}
 
-		arena.msg(sender, Language.parse(MSG.ERROR_INVALID_VALUE, args[0]));
-		arena.msg(sender, Language.parse(MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[0]));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
 		
 	}
 	

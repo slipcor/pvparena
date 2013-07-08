@@ -40,7 +40,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
 		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		
@@ -49,7 +49,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
 		try {
 			regionType = RegionType.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " ")));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " ")));
 			return;
 		}
 		
@@ -58,7 +58,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
 			region.protectionSetAll(true);
 		}
 		region.saveToConfig();
-		arena.msg(sender, Language.parse(MSG.REGION_TYPE_SET, regionType.name()));
+		arena.msg(sender, Language.parse(arena, MSG.REGION_TYPE_SET, regionType.name()));
 	
 	}
 

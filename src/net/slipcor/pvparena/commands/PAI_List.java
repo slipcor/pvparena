@@ -68,11 +68,11 @@ public class PAI_List extends AbstractArenaCommand {
 				}
 				
 				if (arena.isFreeForAll() && teams.getName().equals("free")) {
-					arena.msg(sender, Language.parse(MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
+					arena.msg(sender, Language.parse(arena, MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
 				} else {
 					final int count = teams.getTeamMembers().size();
 					final String sCount = " &r(" + count + ")";
-					arena.msg(sender, Language.parse(MSG.LIST_TEAM, teams.getColoredName() + sCount, StringParser.joinSet(names, ", ")));
+					arena.msg(sender, Language.parse(arena, MSG.LIST_TEAM, teams.getColoredName() + sCount, StringParser.joinSet(names, ", ")));
 				}
 			}
 			return;
@@ -88,7 +88,7 @@ public class PAI_List extends AbstractArenaCommand {
 		}
 		
 		for (ArenaPlayer.Status stat : stats.keySet()) {
-			arena.msg(sender, Language.parse(MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
+			arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
 		}
 		
 	}

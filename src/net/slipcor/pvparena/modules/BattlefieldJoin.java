@@ -62,7 +62,7 @@ public class BattlefieldJoin extends ArenaModule {
 				&& !player.hasPermission("pvparena.admin")
 				&& !(player.hasPermission("pvparena.create") && arena.getOwner()
 						.equals(player.getName()))) {
-			result.setError(this, Language.parse(MSG.ERROR_DISABLED));
+			result.setError(this, Language.parse(arena, MSG.ERROR_DISABLED));
 			return result;
 		}
 
@@ -70,7 +70,7 @@ public class BattlefieldJoin extends ArenaModule {
 
 		if (aPlayer.getArena() != null) {
 			aPlayer.getArena().getDebugger().i(this.getName(), sender);
-			result.setError(this, Language.parse(
+			result.setError(this, Language.parse(arena,
 					MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
 			return result;
 		}
@@ -113,7 +113,7 @@ public class BattlefieldJoin extends ArenaModule {
 					arena.chooseClass(player.get(), null, autoClass);
 				}
 				if (autoClass == null) {
-					arena.msg(player.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return;
 				}
 			}

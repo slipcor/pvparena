@@ -42,11 +42,11 @@ public class PAA_GameMode extends AbstractArenaCommand {
 		
 		if (args[0].toLowerCase().startsWith("free")) {
 			arena.setFree(true);
-			arena.msg(sender, Language.parse(MSG.GAMEMODE_FREE, arena.getName()));
+			arena.msg(sender, Language.parse(arena, MSG.GAMEMODE_FREE, arena.getName()));
 			arena.getArenaConfig().set(CFG.GENERAL_TYPE, "free");
 		} else {
 			arena.setFree(false);
-			arena.msg(sender, Language.parse(MSG.GAMEMODE_TEAM, arena.getName()));
+			arena.msg(sender, Language.parse(arena, MSG.GAMEMODE_TEAM, arena.getName()));
 			arena.getArenaConfig().set(CFG.GENERAL_TYPE, "none");
 		}
 

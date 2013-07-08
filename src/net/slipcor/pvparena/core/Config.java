@@ -66,6 +66,7 @@ public class Config {
 		GENERAL_ENABLED("general.enabled", true),
 		GENERAL_GAMEMODE("general.gm", 0),
 		GENERAL_LEAVEDEATH("general.leavedeath", false),
+		GENERAL_LANG("general.lang", "none"),
 		GENERAL_OWNER("general.owner", "server"),
 		GENERAL_QUICKSPAWN("general.quickspawn", true),
 		GENERAL_PREFIX("general.prefix", "PVP Arena"),
@@ -79,6 +80,7 @@ public class Config {
 		ITEMS_MINPLAYERS("items.minplayers", 2),
 		ITEMS_REWARDS("items.rewards", "none", true),
 		ITEMS_RANDOM("items.random", true),
+		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true),
 		
 		JOIN_RANGE("join.range", 0),
 		JOIN_FORCE("join.forceregionjoin", false),

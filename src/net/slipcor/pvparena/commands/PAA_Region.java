@@ -49,7 +49,7 @@ public class PAA_Region extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -59,26 +59,26 @@ public class PAA_Region extends AbstractArenaCommand {
 			if (activeSelections.get(sender.getName()) != null) {
 				// already selecting!
 				if (sender.getName().equals(selector)) {
-					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECTEXIT));
+					arena.msg(sender,  Language.parse(arena, MSG.ERROR_REGION_YOUSELECTEXIT));
 					selector = null;
 				} else {
-					arena.msg(sender, Language.parse(MSG.ERROR_REGION_YOUSELECT, arena.getName()));
-					arena.msg(sender,  Language.parse(MSG.ERROR_REGION_YOUSELECT2));
+					arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECT, arena.getName()));
+					arena.msg(sender,  Language.parse(arena, MSG.ERROR_REGION_YOUSELECT2));
 					selector = sender.getName();
 				}
 				return;
 			}
 			// selecting now!
 			activeSelections.put(sender.getName(), arena);
-			arena.msg(sender, Language.parse(MSG.REGION_YOUSELECT, arena.getName()));
-			arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_YOUSELECT, arena.getName()));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_SELECT, arena.getName()));
 			return;
 		} else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
 			// usage: /pa {arenaname} region [regionname] border | check a region border
 			final ArenaRegionShape region = arena.getRegion(args[0]);
 			
 			if (region == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 				return;
 			}
 			region.showBorder((Player) sender);
@@ -88,11 +88,11 @@ public class PAA_Region extends AbstractArenaCommand {
 			final ArenaRegionShape region = arena.getRegion(args[1]);
 			
 			if (region == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[1]));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[1]));
 				return;
 			}
 			arena.getArenaConfig().setManually("arenaregion." + region.getRegionName(), null);
-			arena.msg(sender, Language.parse(MSG.REGION_REMOVED, region.getRegionName()));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_REMOVED, region.getRegionName()));
 			
 			arena.getRegions().remove(region);
 			arena.getArenaConfig().save();
@@ -103,7 +103,7 @@ public class PAA_Region extends AbstractArenaCommand {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 			
 			if (!aPlayer.didValidSelection()) {
-				arena.msg(sender, Language.parse(MSG.REGION_SELECT, arena.getName()));
+				arena.msg(sender, Language.parse(arena, MSG.REGION_SELECT, arena.getName()));
 				return;
 			}
 			
@@ -125,14 +125,14 @@ public class PAA_Region extends AbstractArenaCommand {
 
 			aPlayer.unsetSelection();
 			
-			arena.msg(sender, Language.parse(MSG.REGION_SAVED, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_SAVED, args[0]));
 			return;
 		}
 		
 		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		

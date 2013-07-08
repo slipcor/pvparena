@@ -249,11 +249,11 @@ public final class ConfigurationManager {
 
 		String error = ArenaModuleManager.checkForMissingSpawns(arena, list);
 		if (error != null) {
-			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);
+			return Language.parse(arena, MSG.ERROR_MISSING_SPAWN, error);
 		}
 		error = PVPArena.instance.getAgm().checkForMissingSpawns(arena, list);
 		if (error != null) {
-			return Language.parse(MSG.ERROR_MISSING_SPAWN, error);
+			return Language.parse(arena, MSG.ERROR_MISSING_SPAWN, error);
 		}
 		return null;
 	}

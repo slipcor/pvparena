@@ -42,7 +42,7 @@ public class PAA_Stop extends AbstractArenaCommand {
 		final boolean force = args.length < 1 || !args[1].equalsIgnoreCase("soft");
 		
 		arena.stop(force);
-		arena.msg(sender, Language.parse(MSG.ARENA_STOP_DONE));
+		arena.msg(sender, Language.parse(arena, MSG.ARENA_STOP_DONE));
 	}
 
 	@Override

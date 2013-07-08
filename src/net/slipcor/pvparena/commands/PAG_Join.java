@@ -42,23 +42,23 @@ public class PAG_Join extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
 		if (!PVPArena.hasPerms(sender, arena)) {
-			arena.msg(sender, Language.parse(MSG.ERROR_NOPERM_JOIN));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOPERM_JOIN));
 			return;
 		}
 		
 		final String error = ConfigurationManager.isSetup(arena);
 		if (error != null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, error));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, error));
 			return;
 		}
 		
 		if (ArenaRegionShape.tooFarAway(arena, (Player) sender)) {
-			arena.msg(sender, Language.parse(MSG.ERROR_JOIN_RANGE));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_RANGE));
 			return;
 		}
 		
@@ -67,14 +67,14 @@ public class PAG_Join extends AbstractArenaCommand {
 		if (aPlayer.getArena() == null) {
 			if (arena.hasAlreadyPlayed(aPlayer.getName())) {
 				arena.getDebugger().i("Join_2", sender);
-				arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
 			} else {
 				PACheck.handleJoin(arena, sender, args);
 			}
 		} else {
 			final Arena pArena = aPlayer.getArena();
 			arena.getDebugger().i("Join_1", sender);
-			pArena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, pArena.getName()));
+			pArena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, pArena.getName()));
 		}
 		
 	}

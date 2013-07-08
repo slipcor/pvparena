@@ -49,7 +49,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -71,7 +71,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 			}
 			
 			if (arena.getGoals().isEmpty()) {
-				arena.msg(sender, Language.parse(MSG.ERROR_NO_GOAL));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_NO_GOAL));
 				return;
 			}
 			
@@ -82,15 +82,15 @@ public class PAA_Spawn extends AbstractArenaCommand {
 				}
 			}
 
-			arena.msg(sender, Language.parse(MSG.ERROR_SPAWN_UNKNOWN, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_SPAWN_UNKNOWN, args[0]));
 			
 		} else if (args[1].equalsIgnoreCase("remove")) {
 			// usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
 			final PALocation loc = SpawnManager.getCoords(arena, args[0]);
 			if (loc == null) {
-				arena.msg(sender, Language.parse(MSG.SPAWN_NOTSET, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.SPAWN_NOTSET, args[0]));
 			} else {
-				arena.msg(sender, Language.parse(MSG.SPAWN_REMOVED, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.SPAWN_REMOVED, args[0]));
 				arena.spawnUnset(args[0]);
 			}
 		} else {
@@ -100,7 +100,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 	
 	private void commitSet(final Arena arena, final CommandSender sender, final PALocation loc, final String name) {
 		arena.spawnSet(name.toLowerCase(), loc);
-		arena.msg(sender, Language.parse(MSG.SPAWN_SET, name));
+		arena.msg(sender, Language.parse(arena, MSG.SPAWN_SET, name));
 	}
 
 	@Override

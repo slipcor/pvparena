@@ -48,7 +48,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 		
 		if (!arena.hasPlayer(aPlayer.get())) {
 
-			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
 		
@@ -59,30 +59,30 @@ public class PAI_Ready extends AbstractArenaCommand {
 			}
 			
 			if (aPlayer.getArenaClass() == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_READY_NOCLASS));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
 				return;
 			}
 			
 			if (!aPlayer.getStatus().equals(Status.READY)) {
-				arena.msg(sender, Language.parse(MSG.READY_DONE));
-				arena.broadcast(Language.parse(MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer.get())));
+				arena.msg(sender, Language.parse(arena, MSG.READY_DONE));
+				arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer.get())));
 			}
 			
 			aPlayer.setStatus(Status.READY);
 			if (aPlayer.getArenaTeam().isEveryoneReady()) {
-				arena.broadcast(Language.parse(MSG.TEAM_READY, aPlayer.getArenaTeam().getColoredName()));
+				arena.broadcast(Language.parse(arena, MSG.TEAM_READY, aPlayer.getArenaTeam().getColoredName()));
 			}
 			
 			if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)
 					&& !TeamManager.checkEven(arena)) {
 					arena.msg(sender,
-							Language.parse(MSG.NOTICE_WAITING_EQUAL));
+							Language.parse(arena, MSG.NOTICE_WAITING_EQUAL));
 				return; // even teams desired, not done => announce
 			}
 			
 			if (!ArenaRegionShape.checkRegions(arena)) {
 				arena.msg(sender,
-						Language.parse(MSG.NOTICE_WAITING_FOR_ARENA));
+						Language.parse(arena, MSG.NOTICE_WAITING_FOR_ARENA));
 				return;
 			}
 			
@@ -107,7 +107,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 				names.add("&a" + player.getName() + "&r");
 			}
 		}
-		arena.msg(sender, Language.parse(MSG.READY_LIST, StringParser.joinSet(names, ", ")));
+		arena.msg(sender, Language.parse(arena, MSG.READY_LIST, StringParser.joinSet(names, ", ")));
 	}
 
 	@Override

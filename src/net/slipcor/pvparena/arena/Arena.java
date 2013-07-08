@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.arena;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +48,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -105,6 +109,7 @@ public class Arena {
 	public boolean gaveRewards = false;
 
 	private Config cfg;
+	private YamlConfiguration language = new YamlConfiguration();
 
 	public Arena(final String name) {
 		this.name = name;
@@ -121,6 +126,24 @@ public class Arena {
 		}
 		cfg = new Config(file);
 		valid = ConfigurationManager.configParse(this, cfg);
+		if (valid) {
+			String langName = (String) cfg.getUnsafe("general.lang");
+			if (langName == null || langName.equals("none")) {
+				return;
+			}
+			
+			final File langFile = new File(PVPArena.instance.getDataFolder(), langName);
+			language = new YamlConfiguration();
+			try {
+				language.load(langFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void addClass(final String className, final ItemStack[] items) {
@@ -198,7 +221,7 @@ public class Arena {
 			if (getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
 					&& !(player.hasPermission("pvparena.class." + className))) {
 				this.msg(player,
-						Language.parse(MSG.ERROR_NOPERM_CLASS, className));
+						Language.parse(this, MSG.ERROR_NOPERM_CLASS, className));
 				return; // class permission desired and failed =>
 						// announce and OUT
 			}
@@ -213,7 +236,7 @@ public class Arena {
 				}
 				if (!classSign.add(player)) {
 					this.msg(player,
-							Language.parse(MSG.ERROR_CLASS_FULL, className));
+							Language.parse(this, MSG.ERROR_CLASS_FULL, className));
 					return;
 				}
 			}
@@ -256,7 +279,7 @@ public class Arena {
 			if (this.getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS)) == null && !this.isFightInProgress()) {
 				startRunner.cancel();
 				startRunner = null;
-				broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
+				broadcast(Language.parse(this, MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			}
 			return;
 		}
@@ -523,7 +546,7 @@ public class Arena {
 				player.getInventory().setItem(
 						player.getInventory().firstEmpty(), stack);
 			} catch (Exception e) {
-				this.msg(player, Language.parse(MSG.ERROR_INVENTORY_FULL));
+				this.msg(player, Language.parse(this, MSG.ERROR_INVENTORY_FULL));
 				return;
 			}
 		}
@@ -651,7 +674,7 @@ public class Arena {
 			return;
 		}
 		getDebugger().i("@" + sender.getName() + ": " + msg);
-		sender.sendMessage(Language.parse(MSG.MESSAGES_GENERAL, prefix, msg));
+		sender.sendMessage(Language.parse(this, MSG.MESSAGES_GENERAL, prefix, msg));
 	}
 
 	/**
@@ -669,7 +692,7 @@ public class Arena {
 			final Entity damager) {
 
 		if (cause == null) {
-			return Language.parse(MSG.DEATHCAUSE_CUSTOM);
+			return Language.parse(this, MSG.DEATHCAUSE_CUSTOM);
 		}
 
 		getDebugger().i("return a damage name for : " + cause.toString(), player);
@@ -695,24 +718,24 @@ public class Arena {
 				getDebugger().i("last damager: "
 						+ ((EntityDamageByEntityEvent) lastDamageCause)
 								.getDamager().getType(), player);
-				return Language.parse(MSG.getByName("DEATHCAUSE_"
+				return Language.parse(this, MSG.getByName("DEATHCAUSE_"
 						+ ((EntityDamageByEntityEvent) lastDamageCause)
 								.getDamager().getType().name()));
 			} catch (Exception e) {
 
-				return Language.parse(MSG.DEATHCAUSE_CUSTOM);
+				return Language.parse(this, MSG.DEATHCAUSE_CUSTOM);
 			}
 		case ENTITY_EXPLOSION:
 			try {
 				getDebugger().i("last damager: "
 						+ ((EntityDamageByEntityEvent) lastDamageCause)
 								.getDamager().getType(), player);
-				return Language.parse(MSG.getByName("DEATHCAUSE_"
+				return Language.parse(this, MSG.getByName("DEATHCAUSE_"
 						+ ((EntityDamageByEntityEvent) lastDamageCause)
 								.getDamager().getType().name()));
 			} catch (Exception e) {
 
-				return Language.parse(MSG.DEATHCAUSE_ENTITY_EXPLOSION);
+				return Language.parse(this, MSG.DEATHCAUSE_ENTITY_EXPLOSION);
 			}
 		case PROJECTILE:
 			if ((damager instanceof Player) && (team != null)) {
@@ -724,14 +747,14 @@ public class Arena {
 						+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
 								.getDamager()).getShooter().getType(), player);
 				return Language
-						.parse(MSG
+						.parse(this, MSG
 								.getByName("DEATHCAUSE_"
 										+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
 												.getDamager()).getShooter()
 												.getType().name()));
 			} catch (Exception e) {
 
-				return Language.parse(MSG.DEATHCAUSE_PROJECTILE);
+				return Language.parse(this, MSG.DEATHCAUSE_PROJECTILE);
 			}
 		default:
 			break;
@@ -742,7 +765,7 @@ public class Arena {
 			PVPArena.instance.getLogger().warning("Unknown cause: " + cause.toString());
 			string = MSG.DEATHCAUSE_VOID;
 		}
-		return Language.parse(string);
+		return Language.parse(this, string);
 	}
 
 	public static void pmsg(final CommandSender sender, final String msg) {
@@ -783,17 +806,17 @@ public class Arena {
 
 				broadcastExcept(
 						player,
-						Language.parse(MSG.FIGHT_PLAYER_LEFT, player.getName()
+						Language.parse(this, MSG.FIGHT_PLAYER_LEFT, player.getName()
 								+ ChatColor.YELLOW));
 			} else {
 				ArenaModuleManager.parsePlayerLeave(this, player, team);
 
 				broadcastExcept(
 						player,
-						Language.parse(MSG.FIGHT_PLAYER_LEFT,
+						Language.parse(this, MSG.FIGHT_PLAYER_LEFT,
 								team.colorizePlayer(player) + ChatColor.YELLOW));
 			}
-			this.msg(player, Language.parse(MSG.NOTICE_YOU_LEFT));
+			this.msg(player, Language.parse(this, MSG.NOTICE_YOU_LEFT));
 		}
 
 		removePlayer(player, getArenaConfig().getString(location), false,
@@ -802,7 +825,7 @@ public class Arena {
 		if (startRunner != null && getArenaConfig().getInt(CFG.READY_MINPLAYERS) > 0 &&
 				getFighters().size() <= getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
 			startRunner.cancel();
-			broadcast(Language.parse(MSG.TIMER_COUNTDOWN_INTERRUPTED));
+			broadcast(Language.parse(this, MSG.TIMER_COUNTDOWN_INTERRUPTED));
 			startRunner = null;
 		}
 
@@ -825,10 +848,10 @@ public class Arena {
 
 		final int players = TeamManager.countPlayersInTeams(this);
 		if (players < 2) {
-			return Language.parse(MSG.ERROR_READY_1_ALONE);
+			return Language.parse(this, MSG.ERROR_READY_1_ALONE);
 		}
 		if (players < getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
-			return Language.parse(MSG.ERROR_READY_4_MISSING_PLAYERS);
+			return Language.parse(this, MSG.ERROR_READY_4_MISSING_PLAYERS);
 		}
 
 		if (getArenaConfig().getBoolean(CFG.READY_CHECKEACHPLAYER)) {
@@ -836,7 +859,7 @@ public class Arena {
 				for (ArenaPlayer ap : team.getTeamMembers()) {
 					if (!ap.getStatus().equals(Status.READY)) {
 						return Language
-								.parse(MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
+								.parse(this, MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
 					}
 				}
 			}
@@ -856,7 +879,7 @@ public class Arena {
 			}
 
 			if (activeTeams.size() < 2) {
-				return Language.parse(MSG.ERROR_READY_2_TEAM_ALONE);
+				return Language.parse(this, MSG.ERROR_READY_2_TEAM_ALONE);
 			}
 		}
 
@@ -877,7 +900,7 @@ public class Arena {
 					// player no class!
 					PVPArena.instance.getLogger().warning("Player no class: " + p.get());
 					return Language
-							.parse(MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
+							.parse(this, MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
 				}
 			}
 		}
@@ -893,7 +916,7 @@ public class Arena {
 					return "";
 				}
 			}
-			return Language.parse(MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
+			return Language.parse(this, MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
 		}
 		return null;
 	}
@@ -1207,11 +1230,11 @@ public class Arena {
 				aPlayer.createState(aPlayer.get());
 				InventoryManager.clearInventory(aPlayer.get());
 				ArenaClass.equip(aPlayer.get(), c.getItems());
-				msg(aPlayer.get(), Language.parse(MSG.CLASS_PREVIEW, c.getName()));
+				msg(aPlayer.get(), Language.parse(this, MSG.CLASS_PREVIEW, c.getName()));
 				return;
 			}
 		}
-		msg(aPlayer.get(), Language.parse(MSG.ERROR_CLASS_NOT_FOUND, cName));
+		msg(aPlayer.get(), Language.parse(this, MSG.ERROR_CLASS_NOT_FOUND, cName));
 	}
 
 	public void setArenaConfig(final Config cfg) {
@@ -1472,7 +1495,7 @@ public class Arena {
 			
 			if (autoClass != null && !autoClass.equals("none")
 					&& getClass(autoClass) == null) {
-				msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND,
+				msg(player, Language.parse(this, MSG.ERROR_CLASS_NOT_FOUND,
 						"autoClass"));
 				return false;
 			}
@@ -1502,7 +1525,7 @@ public class Arena {
 					arena.chooseClass(player, null, autoClass);
 				}
 				if (autoClass == null) {
-					arena.msg(player, Language.parse(MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					arena.msg(player, Language.parse(this, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
 					return true;
 				}
 			}
@@ -1649,5 +1672,9 @@ public class Arena {
 
 		cfg.setManually("rounds", result);
 		cfg.save();
+	}
+
+	public YamlConfiguration getLanguage() {
+		return language;
 	}
 }

@@ -56,13 +56,13 @@ public class PAA_Check extends AbstractArenaCommand {
 					arena.msg(sender, "correct " + c.getType() + ": " + value);
 				}
 			} catch (Exception e) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, c.getNode()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, c.getNode()));
 				hasError = true;
 			}
 		}
 		
 		if (!hasError) {
-			arena.msg(sender, Language.parse(MSG.CHECK_DONE));
+			arena.msg(sender, Language.parse(arena, MSG.CHECK_DONE));
 		}
 	}
 

@@ -230,14 +230,14 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 			if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 				aPlayer.setSelection(event.getClickedBlock().getLocation(), false);
-				arena.msg(player, Language.parse(MSG.REGION_POS1));
+				arena.msg(player, Language.parse(arena, MSG.REGION_POS1));
 				event.setCancelled(true); // no destruction in creative mode :)
 				return true; // left click => pos1
 			}
 
 			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 				aPlayer.setSelection(event.getClickedBlock().getLocation(), true);
-				arena.msg(player, Language.parse(MSG.REGION_POS2));
+				arena.msg(player, Language.parse(arena, MSG.REGION_POS2));
 				return true; // right click => pos2
 			}
 		}
@@ -562,7 +562,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			}
 			final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
 			if (flags.contains(RegionFlag.DEATH) && this.contains(pLoc)) {
-				Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_DEATH));
+				Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_DEATH));
 				ap.get().setLastDamageCause(
 						new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
 								1000));
@@ -629,7 +629,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 					final Location loc = playerLocations.get(ap.getName());
 					if (loc == null) {
 						Arena.pmsg(ap.get(),
-								Language.parse(MSG.NOTICE_YOU_NOCAMP));
+								Language.parse(arena, MSG.NOTICE_YOU_NOCAMP));
 					} else {
 						if (loc.distance(ap.get().getLocation()) < 3) {
 							ap.get().setLastDamageCause(
@@ -652,7 +652,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!this.contains(pLoc)) {
-					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
 					if (arena.getArenaConfig().getBoolean(
 							CFG.GENERAL_LEAVEDEATH)) {
 						ap.get().setLastDamageCause(
@@ -671,7 +671,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!this.contains(pLoc)) {
-					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
 			} else if (type.equals(RegionType.LOUNGE)) {
@@ -686,7 +686,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 
 				if (!this.contains(pLoc)) {
-					Arena.pmsg(ap.get(), Language.parse(MSG.NOTICE_YOU_ESCAPED));
+					Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
 			}
@@ -724,19 +724,19 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			try {
 				height = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
+				return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
 			}
 
 			getLocs()[0].setY(getCenter().getY() - (height >> 1));
 			getLocs()[1].setY(getLocs()[0].getY() + height);
 
-			return Language.parse(MSG.REGION_HEIGHT, value);
+			return Language.parse(arena, MSG.REGION_HEIGHT, value);
 		} else if (key.equalsIgnoreCase("radius")) {
 			int radius = 0;
 			try {
 				radius = Integer.parseInt(value);
 			} catch (Exception e) {
-				return Language.parse(MSG.ERROR_NOT_NUMERIC, value);
+				return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
 			}
 
 			final PABlockLocation loc = getCenter();
@@ -749,14 +749,14 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			getLocs()[1].setY(loc.getY() + radius);
 			getLocs()[1].setZ(loc.getZ() + radius);
 
-			return Language.parse(MSG.REGION_RADIUS, value);
+			return Language.parse(arena, MSG.REGION_RADIUS, value);
 		} else if (key.equalsIgnoreCase("position")) {
 			return null; // TODO insert function to align the arena based on a
 							// position setting.
 			// TODO see SETUP.creole
 		}
 
-		return Language.parse(MSG.ERROR_ARGUMENT, key,
+		return Language.parse(arena, MSG.ERROR_ARGUMENT, key,
 				"height | radius | position");
 	}
 

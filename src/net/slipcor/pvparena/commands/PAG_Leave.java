@@ -37,7 +37,7 @@ public class PAG_Leave extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 
@@ -45,7 +45,7 @@ public class PAG_Leave extends AbstractArenaCommand {
 		
 		if (!arena.hasPlayer(aPlayer.get())) {
 
-			arena.msg(sender, Language.parse(MSG.ERROR_NOT_IN_ARENA));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
 

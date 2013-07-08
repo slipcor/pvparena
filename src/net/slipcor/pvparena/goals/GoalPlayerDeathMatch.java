@@ -95,7 +95,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -108,7 +108,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -137,10 +137,10 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 					continue;
 				}
 				ArenaModuleManager.announce(arena,
-						Language.parse(MSG.PLAYER_HAS_WON, ap.getName()),
+						Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
 						"WINNER");
 
-				arena.broadcast(Language.parse(MSG.PLAYER_HAS_WON, ap.getName()));
+				arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()));
 			}
 			if (ArenaModuleManager.commitEnd(arena, team)) {
 				return;
@@ -159,7 +159,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 						.getArenaTeam();
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -215,7 +215,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()

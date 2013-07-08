@@ -45,7 +45,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 		
@@ -55,7 +55,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 			regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
 			if (!args[1].equalsIgnoreCase("all")) {
-				arena.msg(sender, Language.parse(MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
 				return;
 			}
 		}
@@ -63,9 +63,9 @@ public class PAA_Protection extends AbstractArenaCommand {
 		if (args.length < 3) {
 			// toggle
 			if (region.protectionToggle(regionProtection)) {
-				arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
+				arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
 			} else {
-				arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
+				arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
 			}
 			region.saveToConfig();
 			return;
@@ -73,23 +73,23 @@ public class PAA_Protection extends AbstractArenaCommand {
 
 		if (StringParser.positive.contains(args[2].toLowerCase())) {
 			region.protectionAdd(regionProtection);
-			arena.msg(sender, Language.parse(MSG.REGION_FLAG_ADDED, args[1]));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
 			region.saveToConfig();
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[2].toLowerCase())) {
 			region.protectionRemove(regionProtection);
-			arena.msg(sender, Language.parse(MSG.REGION_FLAG_REMOVED, args[1]));
+			arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
 			region.saveToConfig();
 			return;
 		}
 			
 		// usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
 
-		arena.msg(sender, Language.parse(MSG.ERROR_INVALID_VALUE, args[2]));
-		arena.msg(sender, Language.parse(MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[2]));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
 	}
 
 	@Override

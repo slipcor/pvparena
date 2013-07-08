@@ -1,9 +1,14 @@
 package net.slipcor.pvparena.managers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 
 /**
@@ -49,14 +54,28 @@ public final class InventoryManager {
 	 */
 	public static void drop(final Player player) {
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
+		List<Material> mats;
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		
+		if (ap == null || ap.getArena() == null) {
+			mats = new ArrayList<Material>();
+		} else {
+			ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
+			mats = new ArrayList<Material>();
+			for (int i=0; i<items.length; i++) {
+				mats.add( items[i].getType());
+			}
+		}
+		
 		for (ItemStack is : player.getInventory().getArmorContents()) {
-			if ((is == null) || (is.getType().equals(Material.AIR))) {
+			if ((is == null) || (is.getType().equals(Material.AIR)) || mats.contains(is.getType())) {
 				continue;
 			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		for (ItemStack is : player.getInventory().getContents()) {
-			if ((is == null) || (is.getType().equals(Material.AIR))) {
+			if ((is == null) || (is.getType().equals(Material.AIR)) || mats.contains(is.getType())) {
 				continue;
 			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);

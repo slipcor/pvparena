@@ -42,7 +42,7 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 		Player player = Bukkit.getPlayer(args[0]);
 		
 		if (player == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_PLAYER_NOTFOUND, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_PLAYER_NOTFOUND, args[0]));
 			return;
 		}
 		

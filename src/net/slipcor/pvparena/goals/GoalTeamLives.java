@@ -83,7 +83,7 @@ public class GoalTeamLives extends ArenaGoal {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -96,7 +96,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -132,9 +132,9 @@ public class GoalTeamLives extends ArenaGoal {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -155,7 +155,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 		if (getLifeMap().get(respawnTeam.getName()) != null) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
 						respawnTeam.colorizePlayer(respawnPlayer)
 								+ ChatColor.YELLOW, arena.parseDeathCause(

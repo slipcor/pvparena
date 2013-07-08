@@ -39,10 +39,10 @@ public class PAA_Regions extends AbstractArenaCommand {
 		}
 		
 		if (args.length < 1) {
-			arena.msg(sender, Language.parse(MSG.REGIONS_LISTHEAD, arena.getName()));
+			arena.msg(sender, Language.parse(arena, MSG.REGIONS_LISTHEAD, arena.getName()));
 			
 			for (ArenaRegionShape ars : arena.getRegions()) {
-				arena.msg(sender, Language.parse(MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().name()));
+				arena.msg(sender, Language.parse(arena, MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().name()));
 			}
 			return;
 		}
@@ -50,15 +50,15 @@ public class PAA_Regions extends AbstractArenaCommand {
 		final ArenaRegionShape region = arena.getRegion(args[0]);
 		
 		if (region == null) {
-			arena.msg(sender, Language.parse(MSG.ERROR_REGION_NOTFOUND, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
 
-		arena.msg(sender, Language.parse(MSG.REGIONS_HEAD, arena.getName()+":"+args[0]));
-		arena.msg(sender, Language.parse(MSG.REGIONS_TYPE, region.getType().name()));
-		arena.msg(sender, Language.parse(MSG.REGIONS_SHAPE, region.getShape().name()));
-		arena.msg(sender, Language.parse(MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
-		arena.msg(sender, Language.parse(MSG.REGIONS_PROTECTIONS, StringParser.joinSet(region.getProtections(), ", ")));
+		arena.msg(sender, Language.parse(arena, MSG.REGIONS_HEAD, arena.getName()+":"+args[0]));
+		arena.msg(sender, Language.parse(arena, MSG.REGIONS_TYPE, region.getType().name()));
+		arena.msg(sender, Language.parse(arena, MSG.REGIONS_SHAPE, region.getShape().name()));
+		arena.msg(sender, Language.parse(arena, MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
+		arena.msg(sender, Language.parse(arena, MSG.REGIONS_PROTECTIONS, StringParser.joinSet(region.getProtections(), ", ")));
 		arena.msg(sender, "0: " + region.getLocs()[0].toString());
 		arena.msg(sender, "1: " + region.getLocs()[1].toString());
 	}

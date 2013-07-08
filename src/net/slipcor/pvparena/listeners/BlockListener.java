@@ -132,8 +132,8 @@ public class BlockListener implements Listener {
 						+ ":" + event.getBlock().getData())) {
 			arena.msg(
 					event.getPlayer(),
-					Language.parse(MSG.ERROR_WHITELIST_DISALLOWED,
-							Language.parse(MSG.GENERAL_BREAK)));
+					Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
+							Language.parse(arena, MSG.GENERAL_BREAK)));
 			// not on whitelist. DENY!
 			event.setCancelled(true);
 			DEBUG.i("whitelist out", event.getPlayer());
@@ -160,8 +160,8 @@ public class BlockListener implements Listener {
 						+ ":" + event.getBlock().getData())) {
 			arena.msg(
 					event.getPlayer(),
-					Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED,
-							Language.parse(MSG.GENERAL_BREAK)));
+					Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
+							Language.parse(arena, MSG.GENERAL_BREAK)));
 			// on blacklist. DENY!
 			event.setCancelled(true);
 			DEBUG.i("blacklist out", event.getPlayer());
@@ -436,8 +436,8 @@ public class BlockListener implements Listener {
 						+ ":" + event.getBlock().getData())) {
 			arena.msg(
 					event.getPlayer(),
-					Language.parse(MSG.ERROR_WHITELIST_DISALLOWED,
-							Language.parse(MSG.GENERAL_PLACE)));
+					Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
+							Language.parse(arena, MSG.GENERAL_PLACE)));
 			// not on whitelist. DENY!
 			event.setCancelled(true);
 			return;
@@ -472,8 +472,8 @@ public class BlockListener implements Listener {
 						+ ":" + event.getBlock().getData())) {
 			arena.msg(
 					event.getPlayer(),
-					Language.parse(MSG.ERROR_BLACKLIST_DISALLOWED,
-							Language.parse(MSG.GENERAL_PLACE)));
+					Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
+							Language.parse(arena, MSG.GENERAL_PLACE)));
 			// on blacklist. DENY!
 			event.setCancelled(true);
 			return;

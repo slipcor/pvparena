@@ -59,34 +59,34 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 			if (args[0].equalsIgnoreCase("clear")) {
 				arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
 				arena.getArenaConfig().save();
-				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
+				arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ALLCLEARED));
 				return;
 			}
-			arena.msg(sender, Language.parse(MSG.WHITELIST_HELP));
+			arena.msg(sender, Language.parse(arena, MSG.WHITELIST_HELP));
 			return;
 		} else if (args.length == 2) {
 			// usage: /pa {arenaname} blacklist [type] clear
 			if (!SUBTYPES.contains(args[0].toLowerCase())) {
-				arena.msg(sender, Language.parse(MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("clear")) {
 				arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
 				arena.getArenaConfig().save();
-				arena.msg(sender, Language.parse(MSG.WHITELIST_ALLCLEARED));
+				arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ALLCLEARED));
 				return;
 			}
-			arena.msg(sender, Language.parse(MSG.WHITELIST_HELP));
+			arena.msg(sender, Language.parse(arena, MSG.WHITELIST_HELP));
 			return;
 		}
 		
 		if (!SUBTYPES.contains(args[0].toLowerCase())) {
-			arena.msg(sender, Language.parse(MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
 			return;
 		}
 		
 		if (!SUBCOMMANDS.contains(args[1].toLowerCase())) {
-			arena.msg(sender, Language.parse(MSG.ERROR_WHITELIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(SUBCOMMANDS, "|")));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_WHITELIST_UNKNOWN_SUBCOMMAND, StringParser.joinSet(SUBCOMMANDS, "|")));
 			return;
 		}
 		
@@ -97,9 +97,9 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 		
 		if (args[1].equalsIgnoreCase("add")) {
 			list.add(args[2]);
-			arena.msg(sender, Language.parse(MSG.WHITELIST_ADDED, args[2], args[0].toLowerCase()));
+			arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ADDED, args[2], args[0].toLowerCase()));
 		} else if (args[1].equalsIgnoreCase("show")) {
-			final StringBuffer output = new StringBuffer(Language.parse(MSG.WHITELIST_SHOW, args[0].toLowerCase()));
+			final StringBuffer output = new StringBuffer(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
 			for (String s : list) {
 				output.append(": ");
 				output.append(Material.getMaterial(Integer.parseInt(s)).name());
@@ -110,7 +110,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 			arena.msg(sender, output.toString());
 		} else {
 			list.remove(args[2]);
-			arena.msg(sender, Language.parse(MSG.WHITELIST_REMOVED, args[2], args[1]));
+			arena.msg(sender, Language.parse(arena, MSG.WHITELIST_REMOVED, args[2], args[1]));
 		}
 		
 		arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);

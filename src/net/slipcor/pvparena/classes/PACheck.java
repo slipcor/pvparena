@@ -130,7 +130,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+			arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			return false;
 		}
 		if (commit == null) {
@@ -170,7 +170,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+			arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			if (commit != null) {
 				arena.getDebugger().i("error; committing end: " + commit.getName());
 				commit.commitEnd(force);
@@ -237,7 +237,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+			arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			return;
 		}
 		
@@ -270,16 +270,16 @@ public class PACheck {
 			}
 			
 			if (commModule != null && !ArenaManager.checkJoin((Player) sender, arena)) {
-				res.setError(commModule, Language.parse(MSG.ERROR_JOIN_REGION));
+				res.setError(commModule, Language.parse(arena, MSG.ERROR_JOIN_REGION));
 			}
 			
 			if (res.hasError() && !res.getModName().equals("LateLounge")) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 				return;
 			}
 			
 			if (res.hasError()) {
-				arena.msg(sender, Language.parse(MSG.NOTICE_NOTICE, res.getError()));
+				arena.msg(sender, Language.parse(arena, MSG.NOTICE_NOTICE, res.getError()));
 				return;
 			}
 			
@@ -299,11 +299,11 @@ public class PACheck {
 			}
 			
 			if (commGoal != null && !ArenaManager.checkJoin((Player) sender, arena)) {
-				res.setError(commGoal, Language.parse(MSG.ERROR_JOIN_REGION));
+				res.setError(commGoal, Language.parse(arena, MSG.ERROR_JOIN_REGION));
 			}
 			
 			if (res.hasError()) {
-				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 				return;
 			}
 			
@@ -319,10 +319,10 @@ public class PACheck {
 			
 			
 			if (team == null && args != null && args.length > 0) {
-				arena.msg(sender, Language.parse(MSG.ERROR_TEAMNOTFOUND, args[0]));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
 				return;
 			} else if (team == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 				return;
 			}
 			
@@ -341,7 +341,7 @@ public class PACheck {
 					return;
 				}
 				if (!ArenaManager.checkJoin((Player) sender, arena)) {
-					arena.msg(sender, Language.parse(MSG.ERROR_JOIN_REGION));
+					arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_REGION));
 					return;
 				}
 				// both null, just put the joiner to some spawn
@@ -453,7 +453,7 @@ public class PACheck {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(MSG.FIGHT_KILLED_BY,
+				arena.broadcast(Language.parse(arena, MSG.FIGHT_KILLED_BY,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
 			}
@@ -525,7 +525,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+			arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			return false;
 		}
 		
@@ -560,7 +560,7 @@ public class PACheck {
 		}
 		
 		if (res.hasError()) {
-			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			return;
 		}
 		
@@ -593,9 +593,9 @@ public class PACheck {
 		
 		if (res.hasError()) {
 			if (sender == null) {
-				arena.msg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ERROR, res.getError()));
+				arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			} else {
-				arena.msg(sender, Language.parse(MSG.ERROR_ERROR, res.getError()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			}
 			return;
 		}
@@ -625,7 +625,7 @@ public class PACheck {
 
 		arena.getDebugger().i("teleported everyone!", sender);
 
-		arena.broadcast(Language.parse(MSG.FIGHT_BEGINS));
+		arena.broadcast(Language.parse(arena, MSG.FIGHT_BEGINS));
 		arena.setFightInProgress(true);
 		
 		for (ArenaGoal x : arena.getGoals()) {

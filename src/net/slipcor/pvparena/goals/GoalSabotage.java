@@ -161,7 +161,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
 				arena.getDebugger().i("flag found!", player);
 				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
-				arena.broadcast(Language.parse(MSG.GOAL_SABOTAGE_IGNITED,
+				arena.broadcast(Language.parse(arena, MSG.GOAL_SABOTAGE_IGNITED,
 						pTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						team.getColoredName() + ChatColor.YELLOW));
 
@@ -186,7 +186,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -199,7 +199,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -255,11 +255,11 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			ArenaModuleManager
 					.announce(
 							arena,
-							Language.parse(MSG.TEAM_HAS_WON,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
 									arena.getTeam(winteam).getColor()
 											+ winteam + ChatColor.YELLOW),
 							"WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON,
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
 					arena.getTeam(winteam).getColor() + winteam
 							+ ChatColor.YELLOW));
 		}
@@ -277,7 +277,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 					flagName = args[0];
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
-					arena.msg(sender, Language.parse(
+					arena.msg(sender, Language.parse(arena,
 							MSG.GOAL_SABOTAGE_TOSETTNT, flagName));
 				}
 			}
@@ -303,9 +303,9 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -339,7 +339,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
 				flagName);
 
-		arena.msg(player, Language.parse(MSG.GOAL_SABOTAGE_SETTNT, flagName));
+		arena.msg(player, Language.parse(arena, MSG.GOAL_SABOTAGE_SETTNT, flagName));
 
 		PAA_Region.activeSelections.remove(player.getName());
 		this.flagName = "";
@@ -376,7 +376,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				getFlagMap().put(team.getName(), ap.getName());
 				ap.get().getInventory()
 						.addItem(new ItemStack(Material.FLINT_AND_STEEL, 1));
-				arena.msg(ap.get(), Language.parse(MSG.GOAL_SABOTAGE_YOUTNT));
+				arena.msg(ap.get(), Language.parse(arena, MSG.GOAL_SABOTAGE_YOUTNT));
 				return;
 			}
 		}

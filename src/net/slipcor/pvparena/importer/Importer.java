@@ -158,7 +158,7 @@ public final class Importer {
 		final Arena arena = new Arena(arenaName);
 		
 		if (!arena.isValid()) {
-			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_ARENACONFIG, arenaName));
+			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, arenaName));
 			return;
 		}
 		

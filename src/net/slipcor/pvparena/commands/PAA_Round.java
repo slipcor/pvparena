@@ -47,11 +47,11 @@ public class PAA_Round extends AbstractArenaCommand {
 		
 		if (args.length < 1) {
 			if (arena.getRoundCount() < 1) {
-				arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
+				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
 			} else {
 				final PARoundMap roundMap = arena.getRounds();
 				for (int i = 0; i < roundMap.getCount(); i ++) {
-					arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, String.valueOf(i+1), StringParser.joinSet(roundMap.getGoals(i),", ")));
+					arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, String.valueOf(i+1), StringParser.joinSet(roundMap.getGoals(i),", ")));
 				}
 			}
 			return;
@@ -66,7 +66,7 @@ public class PAA_Round extends AbstractArenaCommand {
 				
 				roundMap.set(round, new PARound(new HashSet<ArenaGoal>()));
 			} else if (args.length < 2) {
-				arena.msg(sender, Language.parse(MSG.ROUND_DISPLAY, args[0], StringParser.joinSet(roundMap.getGoals(round),", ")));
+				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, args[0], StringParser.joinSet(roundMap.getGoals(round),", ")));
 				return;
 			}
 			
@@ -77,8 +77,8 @@ public class PAA_Round extends AbstractArenaCommand {
 			}
 			
 			if (goal == null) {
-				arena.msg(sender, Language.parse(MSG.ERROR_GOAL_NOTFOUND, args[1], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
-				arena.msg(sender, Language.parse(MSG.GOAL_INSTALLING));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[1], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
+				arena.msg(sender, Language.parse(arena, MSG.GOAL_INSTALLING));
 				return;
 			}
 
@@ -86,20 +86,20 @@ public class PAA_Round extends AbstractArenaCommand {
 			
 			if (rRound.toggle(arena, goal)) {
 				// added
-				arena.msg(sender, Language.parse(MSG.ROUND_ADDED, goal.getName()));
+				arena.msg(sender, Language.parse(arena, MSG.ROUND_ADDED, goal.getName()));
 			} else {
 				// removed
-				arena.msg(sender, Language.parse(MSG.ROUND_REMOVED, goal.getName()));
+				arena.msg(sender, Language.parse(arena, MSG.ROUND_REMOVED, goal.getName()));
 			}
 			
 			roundMap.set(round, rRound);
 			//TODO LATER
 			
 		} catch (NumberFormatException e) {
-			arena.msg(sender, Language.parse(MSG.ERROR_NOT_NUMERIC, args[0]));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
 		} catch (Exception e) {
 			e.printStackTrace();
-			arena.msg(sender, Language.parse(MSG.ERROR_ERROR, e.getLocalizedMessage()));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, e.getLocalizedMessage()));
 			
 		}
 	}

@@ -141,7 +141,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 				CFG.READY_MAXTEAMPLAYERS);
 
 		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(MSG.ERROR_JOIN_ARENA_FULL));
+			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
 			return res;
 		}
 
@@ -154,7 +154,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 			if (team != null && maxTeamPlayers > 0
 						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(MSG.ERROR_JOIN_TEAM_FULL));
+				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
 				return res;
 			}
 		}
@@ -195,7 +195,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
 					arena.msg(sender,
-							Language.parse(MSG.GOAL_FOOD_TOSET, flagName));
+							Language.parse(arena, MSG.GOAL_FOOD_TOSET, flagName));
 				}
 			}
 		} else if (args[0].contains("foodfurnace")) {
@@ -206,7 +206,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 					PAA_Region.activeSelections.put(sender.getName(), arena);
 
 					arena.msg(sender,
-							Language.parse(MSG.GOAL_FOODFURNACE_TOSET, flagName));
+							Language.parse(arena, MSG.GOAL_FOODFURNACE_TOSET, flagName));
 				}
 			}
 		}
@@ -231,9 +231,9 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 			ArenaModuleManager.announce(
 					arena,
-					Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(MSG.TEAM_HAS_WON, aTeam.getColor()
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
 					+ aTeam.getName() + ChatColor.YELLOW));
 		}
 
@@ -266,7 +266,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 				.parsePlayer(respawnPlayer.getName()).getArenaTeam();
 
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(
+				arena.broadcast(Language.parse(arena,
 						MSG.FIGHT_KILLED_BY,
 						respawnTeam.colorizePlayer(respawnPlayer)
 								+ ChatColor.YELLOW, arena.parseDeathCause(
@@ -313,13 +313,13 @@ public class GoalFood extends ArenaGoal implements Listener {
 			if (block.getType() != Material.FURNACE) {
 				return false;
 			}
-			arena.msg(player, Language.parse(MSG.GOAL_FOODFURNACE_SET, flagName));
+			arena.msg(player, Language.parse(arena, MSG.GOAL_FOODFURNACE_SET, flagName));
 			
 		} else {
 			if (block.getType() != Material.CHEST) {
 				return false;
 			}
-			arena.msg(player, Language.parse(MSG.GOAL_FOOD_SET, flagName));
+			arena.msg(player, Language.parse(arena, MSG.GOAL_FOOD_SET, flagName));
 			
 		}
 
@@ -460,7 +460,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 		}
 		
 		if (!validSpawns.contains(new PALocation (event.getClickedBlock().getLocation()))) {
-			arena.msg(player.get(), Language.parse(MSG.GOAL_FOOD_NOTYOURFOOD));
+			arena.msg(player.get(), Language.parse(arena, MSG.GOAL_FOOD_NOTYOURFOOD));
 			event.setCancelled(true);
 			return;
 		}

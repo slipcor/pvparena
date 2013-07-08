@@ -39,7 +39,7 @@ public class PAG_Chat extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ONLY_PLAYERS));
+			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
 		
@@ -49,13 +49,13 @@ public class PAG_Chat extends AbstractArenaCommand {
 			// toggle
 			if (aPlayer.isPublicChatting()) {
 				aPlayer.setPublicChatting(false);
-				arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
+				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
 			} else {
 				aPlayer.setPublicChatting(true);
 				if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
-					arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
+					arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
 				} else {
-					arena.msg(sender, Language.parse(MSG.MESSAGES_TOPUBLIC));
+					arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
 				}
 			}
 			return;
@@ -64,24 +64,24 @@ public class PAG_Chat extends AbstractArenaCommand {
 		if (StringParser.positive.contains(args[0].toLowerCase())) {
 			aPlayer.setPublicChatting(true);
 			if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
-				arena.msg(sender, Language.parse(MSG.MESSAGES_TOARENA));
+				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
 			} else {
-				arena.msg(sender, Language.parse(MSG.MESSAGES_TOPUBLIC));
+				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
 			}
 			return;
 		}
 		
 		if (StringParser.negative.contains(args[0].toLowerCase())) {
 			aPlayer.setPublicChatting(false);
-			arena.msg(sender, Language.parse(MSG.MESSAGES_TOTEAM));
+			arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
 			return;
 		}
 			
 		// usage: /pa {arenaname} chat {value}
 
-		arena.msg(sender, Language.parse(MSG.ERROR_INVALID_VALUE, args[0]));
-		arena.msg(sender, Language.parse(MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[0]));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
 		
 	}
 	

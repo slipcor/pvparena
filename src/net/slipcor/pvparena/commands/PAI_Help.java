@@ -81,7 +81,7 @@ public class PAI_Help extends AbstractGlobalCommand {
 				Arena.pmsg(sender, "/pa help whitelist");
 				
 			} else if (args[0].equals("game")) {
-				Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "game"));
+				Arena.pmsg(sender, Language.parse( MSG.HELP_HEADLINE, "game"));
 
 				Arena.pmsg(sender, "/pa help chat");
 				Arena.pmsg(sender, "/pa help join");
