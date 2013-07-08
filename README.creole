@@ -30,7 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* Bukkit 1.4; 1.5
+* Bukkit 1.5; 1.6
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.189 - adjust reward handling for FREE arenas to reflect the recent rewrites
 * v1.0.6.188 - add language per arena; add items.excludeFromDrops
 * v1.0.5.187 - prepare for a language rewrite, fix all warnings!
 * v1.0.5.186 - allow to set config materials by "hand" and items by "inventory"
