@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.190 - update Metrics to revision 7
 * v1.0.6.189 - adjust reward handling for FREE arenas to reflect the recent rewrites
 * v1.0.6.188 - add language per arena; add items.excludeFromDrops
 * v1.0.5.187 - prepare for a language rewrite, fix all warnings!
