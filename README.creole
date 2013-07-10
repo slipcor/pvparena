@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.192 - add config setting for respawnrelay spawn choosing
 * v1.0.6.191 - allow to respawn to a specific spawn
 * v1.0.6.190 - update Metrics to revision 7
 * v1.0.6.189 - adjust reward handling for FREE arenas to reflect the recent rewrites

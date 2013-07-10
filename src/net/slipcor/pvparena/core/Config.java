@@ -234,8 +234,9 @@ public class Config {
 
 		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
 		MODULES_ITEMS_ITEMS("modules.items.items", "none", true),
-		
-		MODULES_RESPAWNRELAY_INTERVAL("modules.items.respawnseconds", 10),
+
+		MODULES_RESPAWNRELAY_INTERVAL("modules.respawnrelay.respawnseconds", 10),
+		MODULES_RESPAWNRELAY_CHOOSESPAWN("modules.respawnrelay.choosespawn", false),
 		
 		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100),
 
