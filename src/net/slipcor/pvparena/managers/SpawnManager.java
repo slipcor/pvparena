@@ -704,16 +704,20 @@ public final class SpawnManager {
 	}
 
 	public static void respawn(final Arena arena, final ArenaPlayer aPlayer) {
+		respawn(arena, aPlayer, null);
+	}
+	
+	public static void respawn(final Arena arena, final ArenaPlayer aPlayer, String overrideSpawn) {
 		final Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
-		if (!ars.isEmpty()) {
+		if (overrideSpawn == null && !ars.isEmpty()) {
 			final Set<ArenaPlayer> team = new HashSet<ArenaPlayer>();
 			team.add(aPlayer);
 			handle(arena, team, ars);
 			
 			return;
 		}
-		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN) && arena.isFreeForAll()) {
+		if (overrideSpawn == null && arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN) && arena.isFreeForAll()) {
 			final Set<PALocation> pLocs = new HashSet<PALocation>();
 			
 			for (ArenaPlayer app : aPlayer.getArenaTeam().getTeamMembers()) {
@@ -753,7 +757,7 @@ public final class SpawnManager {
 			return;
 		}
 		
-		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, null), 1L);
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, overrideSpawn), 1L);
 		aPlayer.setStatus(Status.FIGHT);
 	}
 
