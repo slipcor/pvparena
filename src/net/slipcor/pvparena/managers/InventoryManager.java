@@ -64,7 +64,9 @@ public final class InventoryManager {
 			ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
 			mats = new ArrayList<Material>();
 			for (int i=0; i<items.length; i++) {
-				mats.add( items[i].getType());
+				if (items[i] != null) {
+					mats.add( items[i].getType());
+				}
 			}
 		}
 		
