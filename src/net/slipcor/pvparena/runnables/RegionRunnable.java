@@ -64,27 +64,33 @@ public class RegionRunnable implements Runnable {
 		
 		if (region.getType() == RegionType.JOIN) {
 			// join region
-			if (region.getArena().isFightInProgress() &&
-					PVPArena.instance.getAgm().allowsJoinInBattle(region.getArena())) {
-				// ingame: only tick if allowed
-				region.getArena().getDebugger().i("tick 1: " + region.getRegionName());
-			region.tick();
+			if (region.getArena().isFightInProgress()) {
+				if (PVPArena.instance.getAgm().allowsJoinInBattle(region.getArena())) {
+					// ingame: only tick if allowed
+					region.getArena().getDebugger().i("tick 1: " + region.getRegionName());
+					region.tick();
+				} else {
+					region.getArena().getDebugger().i("notick 1: " + region.getRegionName());
+					// otherwise: no tick! No cancelling for join regions!
+					// Bukkit.getScheduler().cancelTask(iID);
+				}
 			} else {
-				region.getArena().getDebugger().i("notick 1: " + region.getRegionName());
-				// otherwise: no tick! No cancelling for join regions!
-				// Bukkit.getScheduler().cancelTask(iID);
+				// not running. JOIN!
+
+				region.getArena().getDebugger().i("tick 2: " + region.getRegionName());
+				region.tick();
 			}
 		} else if (region.getType() == RegionType.WATCH) {
 			// always tick for WATCH regions!
-			region.getArena().getDebugger().i("tick 2: " + region.getRegionName());
+			region.getArena().getDebugger().i("tick 3: " + region.getRegionName());
 			region.tick();
 		} else if (region.getArena().isFightInProgress()) {
 			// if ingame, always tick for other kinds of things!
-			region.getArena().getDebugger().i("tick 3: " + region.getRegionName());
+			region.getArena().getDebugger().i("tick 4: " + region.getRegionName());
 			region.tick();
 		} else {
 			// not ingame; ignore!
-			region.getArena().getDebugger().i("notick 4: " + region.getRegionName());
+			region.getArena().getDebugger().i("notick 5: " + region.getRegionName());
 		}
 		
 	}

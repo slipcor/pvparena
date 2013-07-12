@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.194 - awesome feature: join a game before it has begun
 * v1.0.6.193 - everyone loves derpy server implementations
 * v1.0.6.192 - add config setting for respawnrelay spawn choosing
 * v1.0.6.191 - allow to respawn to a specific spawn
