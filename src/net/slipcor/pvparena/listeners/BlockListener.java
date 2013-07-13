@@ -108,7 +108,10 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST) {
+		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.WATCH
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOUNGE
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.READY) {
 			event.setCancelled(true);
 			return;
 		}
@@ -390,7 +393,10 @@ public class BlockListener implements Listener {
 			return;
 		}
 		
-		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST) {
+		if(ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.WATCH
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOUNGE
+				|| ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.READY) {
 			event.setCancelled(true);
 			return;
 		}

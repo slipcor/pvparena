@@ -101,6 +101,7 @@ public class Config {
 		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
 		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
 		PERMS_FLY("perms.fly", false),
+		PERMS_LOUNGEINTERACT("perms.loungeinteract", false),
 		PERMS_JOININBATTLE("perms.joinInBattle", false),
 		PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true),
 		PERMS_TEAMKILL("perms.teamkill", true),

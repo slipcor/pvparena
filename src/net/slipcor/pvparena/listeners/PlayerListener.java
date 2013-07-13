@@ -93,13 +93,19 @@ public class PlayerListener implements Listener {
 			return false;
 		}
 
-		if (arena != null && !arena.isFightInProgress()) {
-			arena.getDebugger().i("arena != null and fight in progress => cancel", player);
-			arena.getDebugger().i("> true", player);
+		if (arena != null) {
+			if (arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
+				return false;
+			}
+			if (!arena.isFightInProgress()) {
+				arena.getDebugger().i("arena != null and fight in progress => cancel", player);
+				arena.getDebugger().i("> true", player);
 
-			PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
-			event.setCancelled(true);
-			return true;
+				PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
+				event.setCancelled(true);
+				return true;
+			}
+			
 		}
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
