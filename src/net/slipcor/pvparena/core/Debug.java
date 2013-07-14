@@ -188,7 +188,7 @@ public class Debug {
 			localLogger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		}
 		if (server_log) {
-			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
+			System.out.print(prefix + " ["+arena+"] " + System.currentTimeMillis()%1000 + " " + string);
 		}
 	}
 

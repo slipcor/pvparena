@@ -98,7 +98,7 @@ public class PlayerListener implements Listener {
 				return false;
 			}
 			if (!arena.isFightInProgress()) {
-				arena.getDebugger().i("arena != null and fight in progress => cancel", player);
+				arena.getDebugger().i("arena != null and fight not in progress => cancel", player);
 				arena.getDebugger().i("> true", player);
 
 				PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
