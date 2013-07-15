@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.202 - try to fix join edit mode determination - and fix 80% of the lag caused by joining
 * v1.0.6.201 - allow to enforce the start countdown
 * v1.0.6.200 - allow to restrict autovote to one world, or multiple worlds - allow to restrict autovote to one world, or multiple worlds
 * v1.0.6.199 - reduce kill count of deathmatch goals for the DEATH region flag

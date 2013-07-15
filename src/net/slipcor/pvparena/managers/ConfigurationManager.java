@@ -217,14 +217,17 @@ public final class ConfigurationManager {
 	 * @return an error string if there is something missing, null otherwise
 	 */
 	public static String isSetup(final Arena arena) {
-		arena.getArenaConfig().load();
+		//arena.getArenaConfig().load();
 
 		if (arena.getArenaConfig().getUnsafe("spawns") == null) {
 			return Language.parse(arena, MSG.ERROR_NO_SPAWNS);
 		}
 
-		if (PAA_Edit.activeEdits.containsValue(arena)) {
-			return Language.parse(arena, MSG.ERROR_EDIT_MODE);
+		for (String editor : PAA_Edit.activeEdits.keySet()) {
+			if (PAA_Edit.activeEdits.get(editor).getName().equals(
+					arena.getName())) {
+				return Language.parse(arena, MSG.ERROR_EDIT_MODE);
+			}
 		}
 
 		final Set<String> list = arena.getArenaConfig().getYamlConfiguration()
