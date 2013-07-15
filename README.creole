@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.199 - reduce kill count of deathmatch goals for the DEATH region flag
 * v1.0.6.198 - allow taking specific things out of the match
 * v1.0.6.197 - add some language nodes for proper error/notice display
 * v1.0.6.196 - enhance/clarify debug

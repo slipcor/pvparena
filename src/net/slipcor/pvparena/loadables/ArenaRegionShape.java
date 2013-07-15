@@ -563,6 +563,17 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 			final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
 			if (flags.contains(RegionFlag.DEATH) && this.contains(pLoc)) {
 				Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_DEATH));
+				for (ArenaGoal goal : arena.getGoals()) {
+					if (goal.getName().endsWith("DeathMatch")) {
+						if (goal.lifeMap.containsKey(ap.getName())) {
+							final int lives = goal.lifeMap.get(ap.getName())+1;
+							goal.lifeMap.put(ap.getName(), lives);
+						} else if (goal.getLifeMap().containsKey(ap.getArenaTeam().getName())) {
+							final int lives = goal.lifeMap.get(ap.getArenaTeam().getName())+1;
+							goal.lifeMap.put(ap.getArenaTeam().getName(), lives);
+						}
+					}
+				}
 				ap.get().setLastDamageCause(
 						new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
 								1000));
