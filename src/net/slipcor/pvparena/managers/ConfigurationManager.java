@@ -220,11 +220,11 @@ public final class ConfigurationManager {
 		arena.getArenaConfig().load();
 
 		if (arena.getArenaConfig().getUnsafe("spawns") == null) {
-			return "no spawns set";
+			return Language.parse(arena, MSG.ERROR_NO_SPAWNS);
 		}
 
 		if (PAA_Edit.activeEdits.containsValue(arena)) {
-			return "edit mode!";
+			return Language.parse(arena, MSG.ERROR_EDIT_MODE);
 		}
 
 		final Set<String> list = arena.getArenaConfig().getYamlConfiguration()

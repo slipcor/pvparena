@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.197 - add some language nodes for proper error/notice display
 * v1.0.6.196 - enhance/clarify debug
 * v1.0.6.195 - add the possibility to interact in lounge mode
 * v1.0.6.194 - awesome feature: join a game before it has begun
