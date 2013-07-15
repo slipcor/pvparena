@@ -1,8 +1,10 @@
 package net.slipcor.pvparena.arena;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -281,6 +283,41 @@ public class ArenaPlayer {
 		}
 
 		final ArenaPlayer aPlayer = parsePlayer(player.getName());
+		
+		if (!arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME).equals("none")) {
+			final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
+			
+			final List<Material> allowedMats = new ArrayList<Material>();
+			
+			for (ItemStack item : items) {
+				allowedMats.add(item.getType());
+			}
+			
+			final List<ItemStack> keepItems = new ArrayList<ItemStack>();
+			for (ItemStack item : player.getInventory().getContents()) {
+				if (allowedMats.contains(item.getType())) {
+					keepItems.add(item.clone());
+				}
+			}
+			
+			class GiveLater implements Runnable {
+
+				@Override
+				public void run() {
+					for (ItemStack item : keepItems) {
+						player.getInventory().addItem(item.clone());
+					}
+					keepItems.clear();
+				}
+				
+			}
+			
+			try {
+				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new GiveLater(), 60L);
+			} catch (Exception e) {
+				
+			}
+		}
 
 		if (aPlayer.savedInventory == null) {
 			debug.i("saved inventory null!", player);

@@ -81,6 +81,7 @@ public class Config {
 		ITEMS_REWARDS("items.rewards", "none", true),
 		ITEMS_RANDOM("items.random", true),
 		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true),
+		ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", "none", true),
 		
 		JOIN_RANGE("join.range", 0),
 		JOIN_FORCE("join.forceregionjoin", false),

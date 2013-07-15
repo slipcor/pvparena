@@ -108,7 +108,7 @@ public final class ConfigurationManager {
 
 		config.options().copyDefaults(true);
 
-		cfg.set(CFG.Z, "1.0.1.102");
+		cfg.set(CFG.Z, "1.0.6.198");
 		cfg.save();
 		cfg.load();
 

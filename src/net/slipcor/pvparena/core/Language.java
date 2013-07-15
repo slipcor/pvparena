@@ -278,6 +278,7 @@ public final class Language {
 		NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have an equal player number!"),
 		NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),
 		NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area!"),
+		NOTICE_GAME_LOOT("nulang.notice.gameloot", "Here is your game loot!"),
 		//TODO
 		NOTICE_WELCOME_SPECTATOR2("nulang.notice.welcomespec2", "/pa bet [name] [amount] to bet on team or player"),
 		NOTICE_YOU_DEATH("nulang.notice.youdeath", "You entered a DEATH region. Goodbye!"),
