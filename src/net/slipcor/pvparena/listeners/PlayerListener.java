@@ -342,6 +342,8 @@ public class PlayerListener implements Listener {
 		Arena arena = null;
 
 		if (event.hasBlock()) {
+			DEBUG.i("block: " + event.getClickedBlock().getType().name(), player);
+			
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getClickedBlock().getLocation()));
 			if (checkAndCommitCancel(arena, event.getPlayer(), event)) {

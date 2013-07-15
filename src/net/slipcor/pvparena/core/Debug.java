@@ -183,12 +183,12 @@ public class Debug {
 			}
 		}
 		if (arena == null) {
-			logger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+			logger.info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
 		} else {
-			localLogger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+			localLogger.info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
 		}
 		if (server_log) {
-			System.out.print(prefix + " ["+arena+"] " + System.currentTimeMillis()%1000 + " " + string);
+			System.out.print(prefix + " ["+arena+"] " + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
 		}
 	}
 
