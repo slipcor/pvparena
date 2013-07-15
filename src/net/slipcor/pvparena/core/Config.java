@@ -216,6 +216,7 @@ public class Config {
 		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", true),
 		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
+		MODULES_ARENAVOTE_WORLD("modules.arenavote.world", "none"),
 
 		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
 
