@@ -126,6 +126,7 @@ public class Config {
 		READY_BLOCK("ready.block", Material.IRON_BLOCK.getId()),
 		READY_CHECKEACHPLAYER("ready.checkEachPlayer", false),
 		READY_CHECKEACHTEAM("ready.checkEachTeam", true),
+		READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false),
 		READY_MINPLAYERS("ready.minPlayers", 2),
 		READY_MAXPLAYERS("ready.maxPlayers", 0),
 		READY_MAXTEAMPLAYERS("ready.maxTeam", 0),

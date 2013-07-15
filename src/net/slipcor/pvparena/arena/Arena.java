@@ -917,7 +917,7 @@ public class Arena {
 			}
 			return Language.parse(this, MSG.ERROR_READY_0_ONE_PLAYER_NOT_READY);
 		}
-		return null;
+		return getArenaConfig().getBoolean(CFG.READY_ENFORCECOUNTDOWN)?"":null;
 	}
 
 	/**
