@@ -736,7 +736,9 @@ public final class SpawnManager {
 			for (PALocation spawnLoc : locs.values()) {
 				double sum = 0;
 				for (PALocation playerLoc : pLocs) {
-					sum += spawnLoc.getDistanceSquared(playerLoc);
+					if (spawnLoc.getWorldName().equals(playerLoc.getWorldName())) {
+						sum += spawnLoc.getDistanceSquared(playerLoc);
+					}
 				}
 				max = Math.max(sum, max);
 				diffs.put(spawnLoc, sum);
