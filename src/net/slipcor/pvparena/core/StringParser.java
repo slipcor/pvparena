@@ -425,6 +425,10 @@ public final class StringParser {
 	}
 
 	public static ItemStack[] getItemStacksFromString(final String string) {
+		if (string.equals("none")) {
+			return new ItemStack[0];
+		}
+		
 		final String[] args = string.split(",");
 
 		ItemStack[] result = new ItemStack[args.length];
