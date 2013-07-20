@@ -6,6 +6,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -42,7 +43,13 @@ public class PAG_Join extends AbstractArenaCommand {
 		}
 		
 		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+			return;
+		}
+		
+		if (arena.isFightInProgress()
+				&& !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)) {
+			arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
 			return;
 		}
 		
