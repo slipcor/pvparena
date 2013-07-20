@@ -80,7 +80,7 @@ public final class StringParser {
 
 	public static String colorize(final String string) {
 		return ChatColor.translateAlternateColorCodes('&', string)
-				.replace("&&", "&");
+				.replace("&&", "&").replace("%%&%%","&");
 	}
 
 	public static String[] colorize(final List<String> stringList) {

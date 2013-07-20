@@ -184,7 +184,7 @@ public class Arena {
 	public void broadcastColored(final String msg, final ChatColor color,
 			final Player player) {
 		synchronized(this) {
-			broadcast(color + player.getName() + ChatColor.WHITE + ": " + msg);
+			broadcast(color + player.getName() + ChatColor.WHITE + ": " + msg.replace("&", "%%&%%"));
 		}
 	}
 
@@ -673,6 +673,7 @@ public class Arena {
 			return;
 		}
 		getDebugger().i("@" + sender.getName() + ": " + msg);
+		
 		sender.sendMessage(Language.parse(this, MSG.MESSAGES_GENERAL, prefix, msg));
 	}
 
