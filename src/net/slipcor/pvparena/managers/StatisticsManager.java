@@ -360,7 +360,10 @@ public class StatisticsManager {
 		if (config.getConfigurationSection(arena.getName()) == null) {
 			return;
 		}
+		arena.getDebugger().i("loading statistics!");
 		for (String player : config.getConfigurationSection(arena.getName()).getKeys(false)) {
+
+			arena.getDebugger().i("loading stats: " + player);
 			
 			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
 

@@ -127,6 +127,7 @@ public class Arena {
 		cfg = new Config(file);
 		valid = ConfigurationManager.configParse(this, cfg);
 		if (valid) {
+			StatisticsManager.loadStatistics(this);
 			String langName = (String) cfg.getUnsafe("general.lang");
 			if (langName == null || langName.equals("none")) {
 				return;
@@ -143,7 +144,6 @@ public class Arena {
 			} catch (InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
-			StatisticsManager.loadStatistics(this);
 		}
 	}
 
