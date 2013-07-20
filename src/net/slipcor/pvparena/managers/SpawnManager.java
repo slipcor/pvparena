@@ -432,7 +432,7 @@ public final class SpawnManager {
 				}
 			}
 			
-			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
+			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN) && arena.getTeam("infected") == null) {
 				return getSmartCoord(arena);
 			}
 
@@ -727,7 +727,7 @@ public final class SpawnManager {
 				pLocs.add(new PALocation(app.get().getLocation()));
 			}
 			
-			final Map<String, PALocation> locs = SpawnManager.getSpawnMap(arena, "free");
+			final Map<String, PALocation> locs = SpawnManager.getSpawnMap(arena, aPlayer.getArenaTeam().getName());
 			
 			final Map<PALocation, Double> diffs = new HashMap<PALocation, Double>();
 			

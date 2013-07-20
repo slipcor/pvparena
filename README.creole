@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.6.207 - try to fix spawn calculation for the infect goal
 * v1.0.6.206 - properly escape & before blindly handing it to the colorize method
 * v1.0.6.205 - first check if the arena is running, then check for other errors
 * v1.0.6.204 - be prepared for weird multi world setups (a bit better)
