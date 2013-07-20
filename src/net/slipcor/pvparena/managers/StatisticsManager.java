@@ -355,4 +355,38 @@ public class StatisticsManager {
 			}
 		}
 	}
+
+	public static void loadStatistics(Arena arena) {
+		if (config.getConfigurationSection(arena.getName()) == null) {
+			return;
+		}
+		for (String player : config.getConfigurationSection(arena.getName()).getKeys(false)) {
+			
+			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+
+			final int losses = config.getInt(arena.getName() + "." + player + ".losses", 0);
+			aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);
+
+			final int wins = config.getInt(arena.getName() + "." + player + ".wins", 0);
+			aPlayer.addStatistic(arena.getName(), type.WINS, wins);
+
+			final int kills = config.getInt(arena.getName() + "." + player + ".kills", 0);
+			aPlayer.addStatistic(arena.getName(), type.KILLS, kills);
+
+			final int deaths = config.getInt(arena.getName() + "." + player + ".deaths", 0);
+			aPlayer.addStatistic(arena.getName(), type.DEATHS, deaths);
+
+			final int damage = config.getInt(arena.getName() + "." + player + ".damage", 0);
+			aPlayer.addStatistic(arena.getName(), type.DAMAGE, damage);
+
+			final int maxdamage = config.getInt(arena.getName() + "." + player + ".maxdamage", 0);
+			aPlayer.addStatistic(arena.getName(), type.MAXDAMAGE, maxdamage);
+
+			final int damagetake = config.getInt(arena.getName() + "." + player + ".damagetake", 0);
+			aPlayer.addStatistic(arena.getName(), type.DAMAGETAKE, damagetake);
+
+			final int maxdamagetake = config.getInt(arena.getName() + "." + player + ".maxdamagetake", 0);
+			aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
+		}
+	}
 }

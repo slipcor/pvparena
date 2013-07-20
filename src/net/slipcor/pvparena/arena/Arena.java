@@ -38,6 +38,7 @@ import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.StartRunnable;
 
@@ -142,6 +143,7 @@ public class Arena {
 			} catch (InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
+			StatisticsManager.loadStatistics(this);
 		}
 	}
 
