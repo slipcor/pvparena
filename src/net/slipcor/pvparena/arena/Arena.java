@@ -1245,6 +1245,7 @@ public class Arena {
 
 	public void setFightInProgress(final boolean fightInProgress) {
 		this.fightInProgress = fightInProgress;
+		this.getDebugger().i("fighting : " + fightInProgress);
 	}
 
 	public void setFree(final boolean isFree) {

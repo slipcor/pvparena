@@ -357,6 +357,11 @@ public class StatisticsManager {
 	}
 
 	public static void loadStatistics(Arena arena) {
+		if (!PVPArena.instance.getConfig().getBoolean("stats")) {
+			return;
+		} else if (config == null) {
+			initialize();
+		}
 		if (config.getConfigurationSection(arena.getName()) == null) {
 			return;
 		}
