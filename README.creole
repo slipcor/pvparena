@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.213 - stop creating debug files if we don't need them. please...
 * v1.0.7.212 - fix startup NPE due to Statistics
 * v1.0.7.211 - properly support "none" as an item list
 * v1.0.7.210 - for ravand and others: CONFIG: autovote only spams to JOIN regions

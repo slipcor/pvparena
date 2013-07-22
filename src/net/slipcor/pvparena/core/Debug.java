@@ -46,7 +46,7 @@ public class Debug {
 	private final int debugID;
 
 	private static Logger logger = null;
-	private Logger localLogger = null;
+	private Logger arenaLogger = null;
 	
 	private static List<Logger> loggers = new ArrayList<Logger>();
 	
@@ -56,16 +56,8 @@ public class Debug {
 		this(iID, null);
 	}
 	
-	/**
-	 * Debug constructor
-	 * 
-	 * @param iID
-	 *            the debug id to check
-	 */
-	public Debug(final int iID, final Arena arena) {
-		debugID = iID;
-
-        if (logger == null && arena == null) {
+	private static Logger getGlobalLogger() {
+		if (logger == null) {
 	        logger = Logger.getAnonymousLogger();
 	        logger.setLevel(Level.ALL);
 	        logger.setUseParentHandlers(false);
@@ -94,39 +86,56 @@ public class Debug {
 	        } catch (SecurityException ex) {
 	        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
 	        }
-        } else if (arena != null) {
-        	this.arena = arena;
-        	
-        	if (localLogger == null) {
-	        	localLogger = Logger.getAnonymousLogger();
-	        	localLogger.setLevel(Level.ALL);
-	        	localLogger.setUseParentHandlers(false);
-		        
-		        for (Handler handler : localLogger.getHandlers()) {
-		        	localLogger.removeHandler(handler);
-		        }
+        }
 		
-		        try {
-		            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-		            
-		            final String suffix = "-" + arena.getName();
-		            
-		            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
-		            debugFolder.mkdirs();
-		            final File logFile = new File(debugFolder, dateformat.format(new Date()) + suffix + ".log");
-		            
-		            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
-		            
-		            handler.setFormatter(LogFileFormatter.newInstance());
-		            
-		            localLogger.addHandler(handler);
-		    		loggers.add(localLogger);
-		        } catch (IOException ex) {
-		        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-		        } catch (SecurityException ex) {
-		        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-		        }
-        	}
+		return logger;
+	}
+	
+	private Logger getArenaLogger() {
+		if (arenaLogger == null) {
+        	arenaLogger = Logger.getAnonymousLogger();
+        	arenaLogger.setLevel(Level.ALL);
+        	arenaLogger.setUseParentHandlers(false);
+	        
+	        for (Handler handler : arenaLogger.getHandlers()) {
+	        	arenaLogger.removeHandler(handler);
+	        }
+	
+	        try {
+	            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
+	            
+	            final String suffix = "-" + arena.getName();
+	            
+	            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
+	            debugFolder.mkdirs();
+	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + suffix + ".log");
+	            
+	            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
+	            
+	            handler.setFormatter(LogFileFormatter.newInstance());
+	            
+	            arenaLogger.addHandler(handler);
+	    		loggers.add(arenaLogger);
+	        } catch (IOException ex) {
+	        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
+	        } catch (SecurityException ex) {
+	        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
+	        }
+    	}
+		return arenaLogger;
+	}
+	
+	/**
+	 * Debug constructor
+	 * 
+	 * @param iID
+	 *            the debug id to check
+	 */
+	public Debug(final int iID, final Arena arena) {
+		debugID = iID;
+
+		if (arena != null) {
+        	this.arena = arena;
         }
 	}
 
@@ -158,9 +167,9 @@ public class Debug {
 			return;
 		}
 		if (arena == null) {
-			logger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+			getGlobalLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		} else {
-			localLogger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+			getArenaLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		}
 		if (server_log) {
 			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
@@ -183,9 +192,9 @@ public class Debug {
 			}
 		}
 		if (arena == null) {
-			logger.info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
+			getGlobalLogger().info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
 		} else {
-			localLogger.info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
+			getArenaLogger().info(prefix + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
 		}
 		if (server_log) {
 			System.out.print(prefix + " ["+arena+"] " + "[p:"+sender.getName()+"]" + System.currentTimeMillis()%1000 + " " + string);
@@ -204,7 +213,7 @@ public class Debug {
 		}
 
 		//Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
-        logger.info(prefix + System.currentTimeMillis()%1000 + " " + string);
+		getGlobalLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
 		if (server_log) {
 			System.out.print(prefix + System.currentTimeMillis()%1000 + " " + string);
 		}
