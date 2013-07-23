@@ -412,7 +412,7 @@ public class StatisticsManager {
 		PAStatMap map = aPlayer.getStatistics(arena);
 
 		final int losses = map.getStat(type.LOSSES);
-		config.set(arena.getName()+"."+aPlayer.getName()+".", losses);
+		config.set(arena.getName()+"."+aPlayer.getName()+".losses", losses);
 
 		final int wins = map.getStat(type.WINS);
 		config.set(arena.getName()+"."+aPlayer.getName()+".wins", wins);
