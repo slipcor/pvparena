@@ -1106,6 +1106,7 @@ public class Arena {
 		PVPArena.instance.getAgm().reset(this, force);
 		
 		round = 0;
+		StatisticsManager.save();
 	}
 
 	/**
@@ -1185,6 +1186,9 @@ public class Arena {
 			player.setNoDamageTicks(
 							getArenaConfig().getInt(
 									CFG.TIME_TELEPORTPROTECT) * 20);
+		}
+		if (soft || !force) {
+			StatisticsManager.update(this, aPlayer);
 		}
 		if (!soft) {
 			aPlayer.setLocation(null);

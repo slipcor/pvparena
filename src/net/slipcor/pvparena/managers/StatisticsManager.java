@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.managers;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PAStatMap;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -326,6 +328,14 @@ public class StatisticsManager {
 		}
 		return result;
 	}
+	
+	public static void save() {
+		try {
+			config.save(players);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * bubble sort an ArenaPlayer array by type
@@ -396,5 +406,34 @@ public class StatisticsManager {
 			final int maxdamagetake = config.getInt(arena.getName() + "." + player + ".maxdamagetake", 0);
 			aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
 		}
+	}
+
+	public static void update(Arena arena, ArenaPlayer aPlayer) {
+		PAStatMap map = aPlayer.getStatistics(arena);
+
+		final int losses = map.getStat(type.LOSSES);
+		config.set(arena.getName()+"."+aPlayer.getName()+".", losses);
+
+		final int wins = map.getStat(type.WINS);
+		config.set(arena.getName()+"."+aPlayer.getName()+".wins", wins);
+		
+		final int kills = map.getStat(type.KILLS);
+		config.set(arena.getName()+"."+aPlayer.getName()+".kills", kills);
+		
+		final int deaths = map.getStat(type.DEATHS);
+		config.set(arena.getName()+"."+aPlayer.getName()+".deaths", deaths);
+		
+		final int damage = map.getStat(type.DAMAGE);
+		config.set(arena.getName()+"."+aPlayer.getName()+".damage", damage);
+		
+		final int maxdamage = map.getStat(type.MAXDAMAGE);
+		config.set(arena.getName()+"."+aPlayer.getName()+".maxdamage", maxdamage);
+		
+		final int damagetake = map.getStat(type.DAMAGETAKE);
+		config.set(arena.getName()+"."+aPlayer.getName()+".damagetake", damagetake);
+		
+		final int maxdamagetake = map.getStat(type.MAXDAMAGETAKE);
+		config.set(arena.getName()+"."+aPlayer.getName()+".maxdamagetake", maxdamagetake);
+		
 	}
 }
