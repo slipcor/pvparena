@@ -147,26 +147,26 @@ public final class StringParser {
 	}
 
 	/**
-	 * calculate a color short from a color enum
+	 * calculate a WOOL byte from a color enum
 	 * 
 	 * @param color
 	 *            the string to parse
 	 * @return the color short
 	 */
 	public static byte getColorDataFromENUM(final String color) {
-
+		
 		String wool = getWoolEnumFromChatColorEnum(color);
 		if (wool == null) {
 			wool = color;
 		}
-		
 		/*
 		 * DyeColor supports: WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
 		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
 		 */
+		
 		for (DyeColor dc : DyeColor.values()) {
 			if (dc.name().equalsIgnoreCase(wool)) {
-				return dc.getDyeData();
+				return (byte) (15-dc.getDyeData());
 			}
 		}
 		PVPArena.instance.getLogger().warning("unknown color enum: " + wool);
@@ -633,10 +633,10 @@ public final class StringParser {
 		 * chat-AQUA, wool-brown
 		 */
 		final String[] wool = new String[] { "ORANGE", "MAGENTA", "LIGHT_BLUE",
-				"LIME", "PINK", "GRAY", "SILVER", "PURPLE", "BLUE", "GREEN",
-				"RED", "CYAN" };
-		final String[] chat = new String[] { "GOLD", "LIGHT_PURPLE", "BLUE", "GREEN",
-				"RED", "DARK_GRAY", "GRAY", "DARK_PURPLE", "DARK_BLUE",
+				"LIME", "PINK", "GRAY", "SILVER", "PURPLE", "BLUE",
+				"GREEN", "RED", "CYAN" };
+		final String[] chat = new String[] { "GOLD", "LIGHT_PURPLE", "BLUE",
+				"GREEN", "RED", "DARK_GRAY", "GRAY", "DARK_PURPLE", "DARK_BLUE",
 				"DARK_GREEN", "DARK_RED", "DARK_AQUA" };
 
 		if (forward) {
