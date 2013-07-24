@@ -330,6 +330,9 @@ public class StatisticsManager {
 	}
 	
 	public static void save() {
+		if (config == null) {
+			return;
+		}
 		try {
 			config.save(players);
 		} catch (IOException e) {
@@ -413,6 +416,10 @@ public class StatisticsManager {
 	}
 
 	public static void update(Arena arena, ArenaPlayer aPlayer) {
+		if (config == null) {
+			return;
+		}
+		
 		PAStatMap map = aPlayer.getStatistics(arena);
 
 		final int losses = map.getStat(type.LOSSES);
