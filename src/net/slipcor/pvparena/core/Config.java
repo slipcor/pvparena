@@ -215,6 +215,7 @@ public class Config {
 		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", true),
 
 		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", true),
+		MODULES_ARENAVOTE_AUTOSTART("modules.arenavote.autostart", false),
 		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
 		MODULES_ARENAVOTE_ONLYSPAMTOJOIN("modules.arenavote.onlySpamToJOIN", false),
 		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
