@@ -381,6 +381,10 @@ public class StatisticsManager {
 			arena.getDebugger().i("loading stats: " + player);
 			
 			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+			
+			for (type ttt : type.values()) {
+				aPlayer.setStatistic(arena.getName(), ttt, 0);
+			}
 
 			final int losses = config.getInt(arena.getName() + "." + player + ".losses", 0);
 			aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);

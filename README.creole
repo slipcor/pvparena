@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.216 - reset stats for admins that /pa reload 
 * v1.0.7.215 - do not set to an empty path - sry...
 * v1.0.7.214 - hell yeah. How about we save the player files? Derp! - thx, Uhehesh
 * v1.0.7.213 - stop creating debug files if we don't need them. please...
