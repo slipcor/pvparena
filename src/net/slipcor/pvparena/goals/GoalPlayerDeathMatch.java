@@ -47,7 +47,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private static final int PRIORITY = 3;

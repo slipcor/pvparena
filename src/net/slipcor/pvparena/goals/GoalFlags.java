@@ -78,7 +78,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private static final int PRIORITY = 6;

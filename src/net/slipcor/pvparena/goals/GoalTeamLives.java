@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -45,7 +47,7 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private final static int PRIORITY = 4;

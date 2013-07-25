@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.220 - add announce offset and points limitation for DOM
 * v1.0.7.219 - properly use wool byte instead of dye byte
 * v1.0.7.218 - add autovote autostart - so PA manages ALL THE SERVERS
 * v1.0.7.217 - stop breaking servers that didnt want stats in the first place

@@ -50,7 +50,7 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.79";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private static final int PRIORITY = 9;

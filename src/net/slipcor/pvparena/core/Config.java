@@ -155,8 +155,12 @@ public class Config {
 
 		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false),
 		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1),
+
+		GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3),
 		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
 		GOAL_DOM_LIVES("goal.dom.dlives", 10),
+		GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false),
+		
 		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),

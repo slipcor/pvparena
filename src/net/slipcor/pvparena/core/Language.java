@@ -26,7 +26,7 @@ public final class Language {
 	}
 
 	public static enum MSG {
-		ANNOUNCE_ARENA_STARTING("nulang.announce.arena", "Arena is starting! Type /pa %1% to join!"),
+		//ANNOUNCE_ARENA_STARTING("nulang.announce.arena", "Arena is starting! Type /pa %1% to join!"),
 
 		ARENA_CREATE_DONE("nulang.arena.create.done", "arena '%1%' created!"),
 		ARENA_DISABLE_DONE("nulang.arena.disable.done", "Arena disabled!"),

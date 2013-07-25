@@ -65,7 +65,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private final static int PRIORITY = 6;

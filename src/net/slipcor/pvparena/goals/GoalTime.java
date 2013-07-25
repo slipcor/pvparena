@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.goals;
 
 import org.bukkit.command.CommandSender;
+
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
@@ -26,7 +28,7 @@ public class GoalTime extends ArenaGoal {
 	
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	@Override

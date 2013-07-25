@@ -57,10 +57,12 @@ public class GoalDomination extends ArenaGoal {
 	private Map<Location, DominationRunnable> runnerMap = new HashMap<Location, DominationRunnable>();
 
 	private String flagName = "";
+	private int offset;
+	private int announceOffset;
 
 	@Override
 	public String version() {
-		return "v1.0.1.59";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	private static final int PRIORITY = 8;
@@ -239,17 +241,7 @@ public class GoalDomination extends ArenaGoal {
 					}
 					
 					// flag claimed! add score!
-					reduceLivesCheckEndAndCommit(arena, team);
-					
-					int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
-					if (!getLifeMap().containsKey(team)) {
-						continue;
-					}
-					int lives = this.getLifeMap().get(team);
-					
-					arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
-							arena.getTeam(team).getColoredName()
-									+ ChatColor.YELLOW, (max-lives)+"/"+max));
+					maybeAddScoreAndBroadCast(team);
 				}
 				continue;
 			}
@@ -297,16 +289,8 @@ public class GoalDomination extends ArenaGoal {
 							if (!getLifeMap().containsKey(team)) {
 								continue;
 							}
-							
-							// flag claimed! add score!
-							reduceLivesCheckEndAndCommit(arena, team);
-							
-							int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
-							int lives = this.getLifeMap().get(team);
-							
-							arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
-									arena.getTeam(team).getColoredName()
-											+ ChatColor.YELLOW, (max-lives)+"/"+max));
+
+							maybeAddScoreAndBroadCast(team);
 						}
 					}
 					continue;
@@ -393,6 +377,48 @@ public class GoalDomination extends ArenaGoal {
 				}
 			}
 		}
+	}
+
+	private void maybeAddScoreAndBroadCast(String team) {
+		if (arena.getArenaConfig().getBoolean(CFG.GOAL_DOM_ONLYWHENMORE)) {
+			Map<String, Integer> claimed = new HashMap<String, Integer>();
+			for (String s : this.getFlagMap().values()) {
+				final int toAdd;
+				if (claimed.containsKey(s)) {
+					toAdd = claimed.get(s)+1;
+				} else {
+					toAdd = 1;
+				}
+				claimed.put(team, toAdd);
+			}
+			for (String otherTeam : claimed.keySet()) {
+				if (otherTeam.equals(team)) {
+					continue;
+				}
+				if (claimed.get(otherTeam) >= claimed.get(team)) {
+					return;
+				}
+			}
+		}
+		
+		reduceLivesCheckEndAndCommit(arena, team);
+		
+		int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
+		if (!getLifeMap().containsKey(team)) {
+			return;
+		}
+		
+		offset = ++offset%announceOffset;
+		
+		if (offset != 0) {
+			return;
+		}
+		
+		int lives = this.getLifeMap().get(team);
+		
+		arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
+				arena.getTeam(team).getColoredName()
+						+ ChatColor.YELLOW, (max-lives)+"/"+max));
 	}
 
 	@Override
@@ -658,6 +684,9 @@ public class GoalDomination extends ArenaGoal {
 		final DominationMainRunnable domMainRunner = new DominationMainRunnable(arena, this);
 		domMainRunner.rID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, domMainRunner, 3 * 20L, 3 * 20L);
+		
+		announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
+		offset = 0;
 	}
 
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
