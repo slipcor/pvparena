@@ -389,7 +389,7 @@ public class GoalDomination extends ArenaGoal {
 				} else {
 					toAdd = 1;
 				}
-				claimed.put(team, toAdd);
+				claimed.put(s, toAdd);
 			}
 			for (String otherTeam : claimed.keySet()) {
 				if (otherTeam.equals(team)) {
