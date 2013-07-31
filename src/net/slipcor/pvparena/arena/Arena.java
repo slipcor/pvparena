@@ -899,10 +899,17 @@ public class Arena {
 
 				if (p.getArenaClass() == null) {
 					getDebugger().i("player has no class", p.get());
-					// player no class!
-					PVPArena.instance.getLogger().warning("Player no class: " + p.get());
-					return Language
-							.parse(this, MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
+					
+					final ArenaClass aClass = getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS));
+					
+					if (aClass != null) {
+						this.selectClass(p, aClass.getName());
+					} else {
+						// player no class!
+						PVPArena.instance.getLogger().warning("Player no class: " + p.get());
+						return Language
+								.parse(this, MSG.ERROR_READY_5_ONE_PLAYER_NO_CLASS);
+					}
 				}
 			}
 		}

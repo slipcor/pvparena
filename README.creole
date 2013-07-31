@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.222 - maybe fix an issue about autoClass not working on some occasions?
 * v1.0.7.221 - properly set the claimed determination map
 * v1.0.7.220 - add announce offset and points limitation for DOM
 * v1.0.7.219 - properly use wool byte instead of dye byte
