@@ -36,6 +36,7 @@ public final class PlayerState {
 	private int foodlevel;
 	private int gamemode;
 	private int health;
+	private int maxhealth;
 	private int explevel;
 
 	private float exhaustion;
@@ -55,6 +56,7 @@ public final class PlayerState {
 		foodlevel = player.getFoodLevel();
 		gamemode = player.getGameMode().getValue();
 		health = player.getHealth();
+		maxhealth = player.getMaxHealth();
 
 		exhaustion = player.getExhaustion();
 		experience = player.getExp();
@@ -97,6 +99,7 @@ public final class PlayerState {
 		cfg.set("state.foodlevel", foodlevel);
 		cfg.set("state.gamemode", gamemode);
 		cfg.set("state.health", health);
+		cfg.set("state.maxhealth", maxhealth);
 		cfg.set("state.exhaustion", exhaustion);
 		cfg.set("state.experience", experience);
 		cfg.set("state.explevel", explevel);
@@ -133,11 +136,20 @@ public final class PlayerState {
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
-		player.setHealth(health);
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
-		player.setHealth(health);
+		if (player.getMaxHealth() != maxhealth) {
+			final int newHealth = player.getMaxHealth() * health / maxhealth;
+			if (newHealth > player.getMaxHealth()) {
+				player.setHealth(player.getMaxHealth());
+			} else {
+				player.setHealth(newHealth);
+			}
+			
+		} else {
+			player.setHealth(health);
+		}
 		player.setSaturation(saturation);
 		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setLevel(explevel);
@@ -199,6 +211,7 @@ public final class PlayerState {
 		foodlevel = 0;
 		gamemode = 0;
 		health = 0;
+		maxhealth = 20;
 
 		exhaustion = 0;
 		experience = 0;
@@ -224,6 +237,7 @@ public final class PlayerState {
 		pState.foodlevel = cfg.getInt("state.foodlevel", 0);
 		pState.gamemode = cfg.getInt("state.gamemode", 0);
 		pState.health = cfg.getInt("state.health", 1);
+		pState.maxhealth = cfg.getInt("state.maxhealth", 20);
 		pState.exhaustion = (float) cfg.getDouble("state.exhaustion", 1);
 		pState.experience = (float) cfg.getDouble("state.experience", 0);
 		pState.explevel = cfg.getInt("state.explevel", 0);
