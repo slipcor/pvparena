@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.226 - fix a minor language issue
 * v1.0.7.225 - add "customReturnsGear" - allows to play with items but not bringing/taking things
 * v1.0.7.224 - prevent death as promised
 * v1.0.7.223 - support third party health boosts that vanish after joining
