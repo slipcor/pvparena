@@ -53,7 +53,10 @@ public class InventoryRefillRunnable implements Runnable {
 	public void run() {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (aPlayer.getStatus().equals(Status.FIGHT)) {
-			if (aPlayer.getClass().equals("custom") || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+			if ((aPlayer.getClass().equals("custom") && !arena.getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+				
+				
+				
 				ArenaClass.equip(player, items);
 
 				if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
@@ -66,6 +69,9 @@ public class InventoryRefillRunnable implements Runnable {
 									.getColorDataFromENUM(color)));
 					PVPArena.instance.getAgm().refillInventory(arena, player);
 				}
+			} else if (aPlayer.getClass().equals("custom")) {
+				InventoryManager.clearInventory(player);
+				ArenaPlayer.reloadInventory(arena, player);
 			} else {
 				InventoryManager.clearInventory(player);
 				ArenaPlayer.givePlayerFightItems(arena, player);

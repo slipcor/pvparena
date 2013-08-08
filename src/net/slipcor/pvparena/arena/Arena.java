@@ -1164,7 +1164,8 @@ public class Arena {
 			sClass = aPlayer.getArenaClass().getName();
 		}
 
-		if (!sClass.equalsIgnoreCase("custom")) {
+		if (!sClass.equalsIgnoreCase("custom") ||
+				getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) {
 			InventoryManager.clearInventory(player);
 			ArenaPlayer.reloadInventory(this, player);
 		}
