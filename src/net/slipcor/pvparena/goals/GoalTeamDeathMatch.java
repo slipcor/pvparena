@@ -22,6 +22,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -176,6 +177,10 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		final ArenaTeam killerTeam = ArenaPlayer.parsePlayer(
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		if (reduceLives(arena, killerTeam)) {
+			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+				arena.getDebugger().i("faking player death", respawnPlayer);
+				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
+			}
 			return;
 		}
 
