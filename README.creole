@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.227 - add language node debug - for all the debugs I don't understand :P
 * v1.0.7.226 - fix a minor language issue
 * v1.0.7.225 - add "customReturnsGear" - allows to play with items but not bringing/taking things
 * v1.0.7.224 - prevent death as promised

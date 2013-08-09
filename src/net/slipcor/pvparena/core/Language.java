@@ -24,6 +24,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public final class Language {
 	private Language() {
 	}
+	
+	private final static Debug debugger = new Debug(17);
 
 	public static enum MSG {
 		
@@ -675,10 +677,12 @@ public final class Language {
 	}
 
 	public static String parse(final Arena arena, final CFG node) {
+		arena.getDebugger().i("CFG: " + node.getNode());
 		return StringParser.colorize(arena.getArenaConfig().getString(node));
 	}
 
 	public static String parse(final Arena arena, final CFG node, final String... args) {
+		arena.getDebugger().i("CFG: " + node.getNode());
 		String result = arena.getArenaConfig().getString(node);
 		
 		int i = 0;
@@ -699,6 +703,7 @@ public final class Language {
 	 */
 	public static String parse(Arena arena, final MSG message) {
 		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
+			arena.getDebugger().i("MSG: " + message.node);
 			return StringParser.colorize((String) arena.getLanguage().get(message.getNode()));
 		}
 		return StringParser.colorize(message.toString());
@@ -714,6 +719,7 @@ public final class Language {
 	 * @return the replaced node string
 	 */
 	public static String parse(Arena arena, final MSG message, final String... args) {
+		arena.getDebugger().i("MSG: " + message.node);
 		
 		String result = message.toString();
 		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
@@ -734,6 +740,7 @@ public final class Language {
 	 * @return the node string
 	 */
 	public static String parse(final MSG message) {
+		debugger.i("MSG: " + message.node);
 		return StringParser.colorize(message.toString());
 	}
 
@@ -747,6 +754,7 @@ public final class Language {
 	 * @return the replaced node string
 	 */
 	public static String parse(final MSG message, final String... args) {
+		debugger.i("MSG: " + message.node);
 		String result = message.toString();
 		int i = 0;
 		for (String word : args) {
