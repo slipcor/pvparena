@@ -85,6 +85,7 @@ public class GoalInfect extends ArenaGoal {
 			if (bbreak) {
 				continue;
 			}
+			arena.getDebugger().i("team empty: " + team.getName());
 			return true;
 		}
 		return false;
