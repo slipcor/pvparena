@@ -1028,7 +1028,9 @@ public class Arena {
 			
 			p.debugPrint();
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)
-					&& !(fighters > players.size()/2)) {
+					/*&& !(fighters > players.size()/2)*/) {
+				// TODO enhance wannabe-smart exploit fix for people that
+				// spam join and leave the arena to make one of them win
 				final Player player = p.get();
 
 				if (!force) {
