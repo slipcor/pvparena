@@ -703,7 +703,7 @@ public final class Language {
 	 */
 	public static String parse(Arena arena, final MSG message) {
 		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
-			arena.getDebugger().i("MSG: " + message.node);
+			arena.getDebugger().i("MSG: " + message.name());
 			return StringParser.colorize((String) arena.getLanguage().get(message.getNode()));
 		}
 		return StringParser.colorize(message.toString());
@@ -719,7 +719,7 @@ public final class Language {
 	 * @return the replaced node string
 	 */
 	public static String parse(Arena arena, final MSG message, final String... args) {
-		arena.getDebugger().i("MSG: " + message.node);
+		arena.getDebugger().i("MSG: " + message.name());
 		
 		String result = message.toString();
 		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
@@ -740,7 +740,7 @@ public final class Language {
 	 * @return the node string
 	 */
 	public static String parse(final MSG message) {
-		debugger.i("MSG: " + message.node);
+		debugger.i("MSG: " + message.name());
 		return StringParser.colorize(message.toString());
 	}
 
@@ -754,7 +754,7 @@ public final class Language {
 	 * @return the replaced node string
 	 */
 	public static String parse(final MSG message, final String... args) {
-		debugger.i("MSG: " + message.node);
+		debugger.i("MSG: " + message.name());
 		String result = message.toString();
 		int i = 0;
 		for (String word : args) {

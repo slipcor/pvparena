@@ -11,6 +11,7 @@ public class RespawnRunnable implements Runnable {
 	private final String coordName;
 	
 	public RespawnRunnable(final Arena arena, final ArenaPlayer player, final String coord) {
+		arena.getDebugger().i("RespawnRunnable constructor to spawn "+ coord, player.get());
 		this.arena = arena;
 		this.player = player;
 		this.coordName = coord;
