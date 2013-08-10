@@ -545,6 +545,14 @@ public final class SpawnManager {
 				if (!name.contains("pillar")) {
 					continue;
 				}
+			} else if (sTeam.equals("tank")) {
+				if (!name.startsWith("tank")) {
+					continue;
+				}
+			} else if (sTeam.equals("infected")) {
+				if (!name.startsWith("infected")) {
+					continue;
+				}
 			} else if (name.endsWith("flag") || name.endsWith("pumpkin")) {
 				String sName = sTeam.replace("flag", "");
 				sName = sName.replace("pumpkin", "");
@@ -731,7 +739,7 @@ public final class SpawnManager {
 			
 			if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)
 					|| (arena.isFreeForAll() && !aPlayer.getArenaTeam().getName().equals("free"))) {
-				int pos = locs.size();
+				int pos = (new Random()).nextInt(locs.size());
 				for (String spawn : locs.keySet()) {
 					if (--pos <= 0) {
 						Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn), 1L);
