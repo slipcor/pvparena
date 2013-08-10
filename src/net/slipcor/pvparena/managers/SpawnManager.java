@@ -717,7 +717,7 @@ public final class SpawnManager {
 			
 			return;
 		}
-		if (overrideSpawn == null && arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN) && arena.isFreeForAll()) {
+		if (overrideSpawn == null && arena.isFreeForAll()) {
 			final Set<PALocation> pLocs = new HashSet<PALocation>();
 			
 			for (ArenaPlayer app : aPlayer.getArenaTeam().getTeamMembers()) {
@@ -728,6 +728,18 @@ public final class SpawnManager {
 			}
 			
 			final Map<String, PALocation> locs = SpawnManager.getSpawnMap(arena, aPlayer.getArenaTeam().getName());
+			
+			if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)
+					|| (arena.isFreeForAll() && !aPlayer.getArenaTeam().getName().equals("free"))) {
+				int pos = locs.size();
+				for (String spawn : locs.keySet()) {
+					if (--pos <= 0) {
+						Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn), 1L);
+						aPlayer.setStatus(Status.FIGHT);
+						return;
+					}
+				}
+			}
 			
 			final Map<PALocation, Double> diffs = new HashMap<PALocation, Double>();
 			
