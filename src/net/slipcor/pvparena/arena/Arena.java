@@ -110,6 +110,7 @@ public class Arena {
 
 	private Config cfg;
 	private YamlConfiguration language = new YamlConfiguration();
+	private long startTime;
 
 	public Arena(final String name) {
 		this.name = name;
@@ -1693,5 +1694,14 @@ public class Arena {
 
 	public YamlConfiguration getLanguage() {
 		return language;
+	}
+
+	public void setStartingTime() {
+		this.startTime = System.currentTimeMillis();
+	}
+	
+	public int getPlayedSeconds() {
+		final int seconds = (int) (System.currentTimeMillis()-startTime);
+		return seconds / 1000;
 	}
 }

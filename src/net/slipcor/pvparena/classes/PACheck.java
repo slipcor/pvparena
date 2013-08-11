@@ -453,6 +453,13 @@ public class PACheck {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+				/*if (respawnTeam == null) {
+					PVPArena.instance.getLogger().severe("respawnTeam!");
+				} else if (event.getEntity() == null) {
+					PVPArena.instance.getLogger().severe("event.getEntity()!");
+				} else if (event.getEntity().getLastDamageCause() == null) {
+					PVPArena.instance.getLogger().severe("event.getEntity().getLastDamageCause()!");
+				}*/
 				arena.broadcast(Language.parse(arena, MSG.FIGHT_KILLED_BY,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity().getLastDamageCause().getCause(), event.getEntity().getKiller())));
@@ -653,6 +660,8 @@ public class PACheck {
 		if (arena.getArenaConfig().getInt(CFG.TIME_PVP)>0) {
 			arena.pvpRunner = new PVPActivateRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_PVP));
 		}
+		
+		arena.setStartingTime();
 	}
 }
 /*

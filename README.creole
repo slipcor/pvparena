@@ -45,7 +45,9 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.0.7.232 - clarify debug for #578 - maybe fix the issue by supporting spawn maps?
+* v1.0.7.234 - allow to find out how long an arena is running
+* v1.0.7.233 - maybe fix the issue by supporting spawn maps?
+* v1.0.7.232 - clarify debug for #578
 * v1.0.7.231 - stop punishing players that are left alone. Reward them!
 * v1.0.7.230 - re-add announcement config language node
 * v1.0.7.229 - try to fix tank spawning
