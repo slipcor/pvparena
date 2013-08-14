@@ -1,7 +1,9 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -236,6 +238,36 @@ public class GoalPlayerLives extends ArenaGoal {
 									.getName()) : 0));
 		}
 		return res;
+	}
+
+	@Override
+	public String guessSpawn(final String place) {
+		if (!place.contains("spawn")) {
+			arena.getDebugger().i("place not found!");
+			return null;
+		}
+		// no exact match: assume we have multiple spawnpoints
+		final Map<Integer, String> locs = new HashMap<Integer, String>();
+		int pos = 0;
+
+		arena.getDebugger().i("searching for team spawns");
+
+		final Map<String, Object> coords = (HashMap<String, Object>) arena
+				.getArenaConfig().getYamlConfiguration()
+				.getConfigurationSection("spawns").getValues(false);
+		for (String name : coords.keySet()) {
+			if (name.startsWith(place)) {
+				locs.put(pos++, name);
+				arena.getDebugger().i("found match: " + name);
+			}
+		}
+
+		if (locs.size() < 1) {
+			return null;
+		}
+		final Random random = new Random();
+
+		return locs.get(random.nextInt(locs.size()));
 	}
 
 	@Override

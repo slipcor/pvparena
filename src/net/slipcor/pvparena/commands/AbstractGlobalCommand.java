@@ -61,7 +61,7 @@ public abstract class AbstractGlobalCommand {
 		}
 
 		if (perms.length > 0) {
-			final String split[] = perms[0].split(".");
+			final String split[] = perms[0].split("\\.");
 
 			Arena.pmsg(
 					sender,
