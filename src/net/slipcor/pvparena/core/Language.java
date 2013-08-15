@@ -719,7 +719,9 @@ public final class Language {
 	 * @return the replaced node string
 	 */
 	public static String parse(Arena arena, final MSG message, final String... args) {
-		arena.getDebugger().i("MSG: " + message.name());
+		if (arena != null) {
+			arena.getDebugger().i("MSG: " + message.name());
+		}
 		
 		String result = message.toString();
 		if (arena != null && arena.getLanguage().get(message.getNode()) != null) {

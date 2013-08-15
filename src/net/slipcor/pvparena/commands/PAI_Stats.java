@@ -57,7 +57,12 @@ public class PAI_Stats extends AbstractArenaCommand {
 			}
 		}
 		
-		Arena.pmsg(sender, Language.parse(arena, MSG.STATS_HEAD, String.valueOf(max), Language.parse(arena, MSG.getByName("STATTYPE_" + statType.name()))));
+		final String s2 = Language.parse(arena, MSG.getByName("STATTYPE_" + statType.name()));
+		
+		final String s1 = Language.parse(arena, MSG.STATS_HEAD, String.valueOf(max), s2);
+		
+		
+		Arena.pmsg(sender, s1);
 		
 		for (int i = 0; i < max && i < names.length && i < values.length; i++) {
 			Arena.pmsg(sender, names[i] + ": " + values[i]);

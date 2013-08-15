@@ -1431,13 +1431,6 @@ public class Arena {
 			player.getVehicle().eject();
 		}
 
-		if (place.endsWith("lounge")
-				&& getArenaConfig().getBoolean(CFG.CHAT_DEFAULTTEAM)
-				&& getArenaConfig().getBoolean(CFG.CHAT_ENABLED)) {
-			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-			aPlayer.setPublicChatting(true);
-		}
-
 		ArenaModuleManager.tpPlayerToCoordName(this, player, place);
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
