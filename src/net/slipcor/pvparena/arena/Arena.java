@@ -1426,7 +1426,7 @@ public class Arena {
 	 */
 	public void tpPlayerToCoordName(final Player player, final String place) {
 		getDebugger().i("teleporting " + player + " to coord " + place, player);
-
+		
 		if (player.isInsideVehicle()) {
 			player.getVehicle().eject();
 		}

@@ -210,6 +210,7 @@ public final class SpawnManager {
 	
 	private static void distributeByOrder(final Arena arena,
 			final Set<ArenaPlayer> set, final String string) {
+		arena.getDebugger().i("distributeByOrder: " + string);
 		if (set == null || set.size() < 1) {
 			return;
 		}
@@ -223,7 +224,7 @@ public final class SpawnManager {
 		final Set<String> removals = new HashSet<String>();
 		
 		for (String s : locs.keySet()) {
-			if (!s.contains("spawn")) {
+			if (!s.contains("spawn") || !s.contains(string)) {
 				removals.add(s);
 			}
 		}
