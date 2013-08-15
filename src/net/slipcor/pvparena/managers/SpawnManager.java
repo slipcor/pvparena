@@ -145,10 +145,10 @@ public final class SpawnManager {
 			return;
 		}
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)) {
-			distributeSmart(arena, team.getTeamMembers(), team.getName() + "spawn");
+			distributeSmart(arena, team.getTeamMembers(), team.getName());
 			return;
 		}
-		distributeByOrder(arena, team.getTeamMembers(), team.getName() + "spawn");
+		distributeByOrder(arena, team.getTeamMembers(), team.getName());
 	}
 
 	public static void distribute(final Arena arena, final Set<ArenaPlayer> teamMembers) {

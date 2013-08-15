@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.241 - finally fix initial spawning (maybe)
 * v1.0.7.240 - enhance the debug for Wahrheit
 * v1.0.7.239 - Wahrheit will love this fix!
 * v1.0.7.238 - fix an NPE in /pa stats
