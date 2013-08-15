@@ -98,11 +98,38 @@ public final class SpawnManager {
 				
 				@Override
 				public void run() {
+					
+					final String[] locations;
+					
+					if (SpawnManager.getSpawnMap(arena, team.getName()).size() > 1) {
+						
+						final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena, team.getName());
+						
+						locations = new String[map.size()];
+						
+						int pos = 0;
+						
+						for (String loc : map.keySet()) {
+							locations[pos++] = loc;
+						}
+						
+					} else {
+						locations = new String[1];
+						locations[0] = team.getName() + "spawn";
+					}
+					
+					int pos = 0;
+					
 					for (ArenaPlayer ap : teamMembers) {
 						if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+							
 							arena.tpPlayerToCoordName(ap.get(), team.getName() + ap.getArenaClass().getName() + "spawn");
 						} else {
-							arena.tpPlayerToCoordName(ap.get(), team.getName() + "spawn");
+							if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
+								arena.tpPlayerToCoordName(ap.get(), locations[pos++ % locations.length]);
+							} else {
+								arena.tpPlayerToCoordName(ap.get(), locations[((new Random().nextInt(locations.length)))]);
+							}
 						}
 						ap.setStatus(Status.FIGHT);
 						teamMembers.remove(ap);
