@@ -111,6 +111,7 @@ public final class SpawnManager {
 						
 						for (String loc : map.keySet()) {
 							locations[pos++] = loc;
+							arena.getDebugger().i("random: " + loc);
 						}
 						
 					} else {
