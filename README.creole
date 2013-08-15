@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.237 - apply default chat parameter
 * v1.0.7.236 - allow Wahrheit to use multiple team spawns with PlayerLives
 * v1.0.7.235 - allow to require a minimum game length to reward
 * v1.0.7.234 - allow to find out how long an arena is running

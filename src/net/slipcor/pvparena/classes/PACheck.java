@@ -332,6 +332,8 @@ public class PACheck {
 			
 			arena.markPlayedPlayer(sender.getName());
 			
+			player.setPublicChatting(!arena.getArenaConfig().getBoolean(CFG.CHAT_DEFAULTTEAM));
+			
 			if ((commModule == null) || (commGoal == null)) {
 				
 				if (commModule != null) {
