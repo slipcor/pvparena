@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.243 - fix ValeraSTK's spawning - break others? no clue
 * v1.0.7.242 - spawn debug enhancement (maybe fix)
 * v1.0.7.241 - finally fix initial spawning (maybe)
 * v1.0.7.240 - enhance the debug for Wahrheit

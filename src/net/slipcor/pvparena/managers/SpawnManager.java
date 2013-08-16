@@ -599,6 +599,10 @@ public final class SpawnManager {
 				continue;
 			} else if (sTeam.endsWith("flag") || sTeam.endsWith("pumpkin")) {
 				continue;
+			} else if (arena.getTeam(sTeam) != null) {
+				if (!(name.contains(sTeam) && name.contains("spawn"))) {
+					continue;
+				}
 			}
 			arena.getDebugger().i(" - " + name);
 			final String sLoc = String.valueOf(arena.getArenaConfig().getUnsafe("spawns." + name));
