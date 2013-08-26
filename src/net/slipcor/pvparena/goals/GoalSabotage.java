@@ -29,7 +29,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -150,10 +149,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 			arena.getDebugger().i("checking for tnt of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
 			arena.getDebugger().i("block: " + vLoc.toString(), player);
-			if (SpawnManager.getBlocks(arena, aTeam + "tnt").size() > 0) {
+			if (SpawnManager.getBlocksStartingWith(arena, aTeam + "tnt").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
-								SpawnManager.getBlocks(arena, aTeam + "tnt"),
+								SpawnManager.getBlocksStartingWith(arena, aTeam + "tnt"),
 								new PABlockLocation(player.getLocation()))
 						.toLocation().toVector();
 			}
@@ -166,7 +165,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 						team.getColoredName() + ChatColor.YELLOW));
 
 				takeFlag(team.getName(), true,
-						new PALocation(block.getLocation()));
+						new PABlockLocation(block.getLocation()));
 				res.setPriority(this, PRIORITY);
 				return res;
 			}
@@ -474,7 +473,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final ArenaTeam team = aPlayer.getArenaTeam();
 		takeFlag(team.getName(), false,
-				SpawnManager.getCoords(arena, team.getName() + "tnt"));
+				SpawnManager.getBlockByExactName(arena, team.getName() + "tnt"));
+		//TODO: allow multiple TNTs?
 		if (!getFlagMap().containsKey(team.getName())) {
 			arena.getDebugger().i("adding team " + team.getName(), player);
 			distributeFlag(null, team);
@@ -503,7 +503,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		getFlagMap().clear();
 		for (ArenaTeam team : arena.getTeams()) {
 			takeFlag(team.getName(), false,
-					SpawnManager.getCoords(arena, team.getName() + "tnt"));
+					SpawnManager.getBlockByExactName(arena, team.getName() + "tnt"));
+			// TODO: allow multiple TNTs?
 			if (!getFlagMap().containsKey(team.getName())) {
 				arena.getDebugger().i("adding team " + team.getName());
 				distributeFlag(null, team);
@@ -544,16 +545,16 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	 *            true if take, else reset
 	 * @param pumpkin
 	 *            true if pumpkin, false otherwise
-	 * @param lBlock
+	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
-	public void takeFlag(final String teamName, final boolean take, final PALocation lBlock) {
-		lBlock.toLocation().getBlock()
+	public void takeFlag(final String teamName, final boolean take, final PABlockLocation paBlockLocation) {
+		paBlockLocation.toLocation().getBlock()
 				.setType(take ? Material.AIR : Material.TNT);
 		if (take) {
 			TNTPrimed tnt = (TNTPrimed) Bukkit.getWorld(
-					SpawnManager.getRegionCenter(arena).getWorldName())
-					.spawnEntity(lBlock.toLocation(), EntityType.PRIMED_TNT);
+					paBlockLocation.getWorldName())
+					.spawnEntity(paBlockLocation.toLocation(), EntityType.PRIMED_TNT);
 			getTNTmap().put(arena.getTeam(teamName), tnt);
 		}
 	}
@@ -582,12 +583,15 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		final PABlockLocation tLoc = new PABlockLocation(event.getEntity()
 				.getLocation());
 
-		final Set<PABlockLocation> locs = SpawnManager.getBlocks(arena, "tnt");
-
-		final PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
-
-		if (nearest.getDistanceSquared(tLoc) < 4) {
-			event.setCancelled(true);
+		for (String sTeam : arena.getTeamNames()) {
+			final Set<PABlockLocation> locs = SpawnManager.getBlocksStartingWith(arena, sTeam + "tnt");
+	
+			final PABlockLocation nearest = SpawnManager.getBlockNearest(locs, tLoc);
+	
+			if (nearest.getDistanceSquared(tLoc) < 4) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 }

@@ -593,7 +593,7 @@ public class ArenaPlayer {
 		if (arena != null) {
 			final String goTo = arena.getArenaConfig().getString(CFG.TP_EXIT);
 			if (!"old".equals(goTo)) {
-				location = SpawnManager.getCoords(arena, "exit");
+				location = SpawnManager.getSpawnByExactName(arena, "exit");
 			}
 
 			if (Bukkit.getPlayer(name) == null) {

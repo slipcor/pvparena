@@ -31,7 +31,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -175,10 +174,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			vLoc = block.getLocation().toVector();
 			sTeam = aPlayer.getArenaTeam().getName();
 			arena.getDebugger().i("block: " + vLoc.toString(), player);
-			if (SpawnManager.getBlocks(arena, sTeam + "flag").size() > 0) {
+			if (SpawnManager.getBlocksStartingWith(arena, sTeam + "flag").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
-								SpawnManager.getBlocks(arena, sTeam + "flag"),
+								SpawnManager.getBlocksStartingWith(arena, sTeam + "flag"),
 								new PABlockLocation(player.getLocation()))
 						.toLocation().toVector();
 			} else {
@@ -234,10 +233,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				}
 				if (flagTeam.equals("touchdown")) {
 					takeFlag(ChatColor.BLACK.name(), false,
-							SpawnManager.getCoords(arena, "touchdownflag"));
+							SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 				} else {
 					takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
-							SpawnManager.getCoords(arena, flagTeam + "flag"));
+							SpawnManager.getBlockByExactName(arena, flagTeam + "flag"));
 				}
 				removeEffects(player);
 				if (arena.getArenaConfig().getBoolean(
@@ -288,10 +287,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				arena.getDebugger().i("checking for flag of team " + aTeam, player);
 				vLoc = block.getLocation().toVector();
 				arena.getDebugger().i("block: " + vLoc.toString(), player);
-				if (SpawnManager.getBlocks(arena, aTeam + "flag").size() > 0) {
+				if (SpawnManager.getBlocksStartingWith(arena, aTeam + "flag").size() > 0) {
 					vFlag = SpawnManager
 							.getBlockNearest(
-									SpawnManager.getBlocks(arena, aTeam
+									SpawnManager.getBlocksStartingWith(arena, aTeam
 											+ "flag"),
 									new PABlockLocation(player.getLocation()))
 							.toLocation().toVector();
@@ -329,7 +328,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					applyEffects(player);
 
 					takeFlag(team.getColor().name(), true,
-							new PALocation(block.getLocation()));
+							new PABlockLocation(block.getLocation()));
 					getFlagMap().put(aTeam, player.getName()); // TODO move to
 																// "commit" ?
 
@@ -685,7 +684,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				}
 
 				takeFlag(ChatColor.BLACK.name(), false,
-						SpawnManager.getCoords(arena, "touchdownflag"));
+						SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 
 			}
 		} else {
@@ -703,7 +702,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			}
 
 			takeFlag(flagTeam.getColor().name(), false,
-					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
+					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 		}
 	}
 	
@@ -847,9 +846,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					.getInt(CFG.GOAL_FLAGS_LIVES));
 
 			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
+					SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
 			takeFlag(ChatColor.BLACK.name(), false,
-					SpawnManager.getCoords(arena, "touchdownflag"));
+					SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 		}
 	}
 
@@ -889,7 +888,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				}
 
 				takeFlag(ChatColor.BLACK.name(), false,
-						SpawnManager.getCoords(arena, "touchdownflag"));
+						SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 			}
 		} else {
 			arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
@@ -904,7 +903,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			}
 
 			takeFlag(flagTeam.getColor().name(), false,
-					SpawnManager.getCoords(arena, flagTeam.getName() + "flag"));
+					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 		}
 	}
 
@@ -919,10 +918,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 						arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
 			}
 			takeFlag(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "flag"));
+					SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
 		}
 		takeFlag(ChatColor.BLACK.name(), false,
-				SpawnManager.getCoords(arena, "touchdownflag"));
+				SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 	}
 
 	private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
@@ -1024,16 +1023,16 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	 *            true if take, else reset
 	 * @param pumpkin
 	 *            true if pumpkin, false otherwise
-	 * @param lBlock
+	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
-	public void takeFlag(final String flagColor, final boolean take, final PALocation lBlock) {
-		if (lBlock == null) {
+	public void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
+		if (paBlockLocation == null) {
 			return;
 		}
 		if (!arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)
 				.equals("WOOL")) {
-			lBlock.toLocation()
+			paBlockLocation.toLocation()
 					.getBlock()
 					.setType(
 							take ? Material.BEDROCK : Material.valueOf(arena
@@ -1042,10 +1041,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return;
 		}
 		if (take) {
-			lBlock.toLocation().getBlock()
+			paBlockLocation.toLocation().getBlock()
 					.setData(StringParser.getColorDataFromENUM("WHITE"));
 		} else {
-			lBlock.toLocation().getBlock()
+			paBlockLocation.toLocation().getBlock()
 					.setData(StringParser.getColorDataFromENUM(flagColor));
 		}
 	}

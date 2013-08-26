@@ -496,7 +496,7 @@ public class PACheck {
 		}
 		arena.getDebugger().i("handleRespawn!", aPlayer.getName());
 		new InventoryRefillRunnable(arena, aPlayer.get(), drops);
-		SpawnManager.respawn(arena,  aPlayer);
+		SpawnManager.respawn(arena,  aPlayer, null);
 		arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause()==null?null:aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
 		
 	}
@@ -619,14 +619,8 @@ public class PACheck {
 		arena.getDebugger().i("teleporting all players to their spawns", sender);
 
 		if (commit == null) {
-			if (arena.isFreeForAll()) {
-				for (ArenaTeam team : arena.getTeams()) {
-					SpawnManager.distribute(arena, team.getTeamMembers());
-				}
-			} else {
-				for (ArenaTeam team : arena.getTeams()) {
-					SpawnManager.distribute(arena, team);
-				}
+			for (ArenaTeam team : arena.getTeams()) {
+				SpawnManager.distribute(arena, team);
 			}
 		} else {
 			commit.commitStart(); // override spawning

@@ -25,9 +25,9 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -430,9 +430,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		if (!getLifeMap().containsKey(team.getName())) {
 			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_BLOCKDESTROY_LIVES));
-
-			takeBlock(team.getColor().name(), false,
-					SpawnManager.getCoords(arena, team.getName() + "block"));
+			
+			final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
+			
+			for (PABlockLocation block : blocks) {
+				takeBlock(team.getColor().name(), false, block);
+			}
 		}
 	}
 
@@ -453,11 +456,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 						arena.getArenaConfig().getInt(
 								CFG.GOAL_BLOCKDESTROY_LIVES, 1));
 			}
-			final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
-					"blocks");
-			for (String s : map.keySet()) {
-				takeBlock(team.getColor().name(), false,
-						SpawnManager.getCoords(arena, s));
+			final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
+			
+			for (PABlockLocation block : blocks) {
+				takeBlock(team.getColor().name(), false, block);
 			}
 		}
 	}
@@ -506,16 +508,16 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	 *            true if take, else reset
 	 * @param pumpkin
 	 *            true if pumpkin, false otherwise
-	 * @param lBlock
+	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
-	public void takeBlock(final String blockColor, final boolean take, final PALocation lBlock) {
-		if (lBlock == null) {
+	public void takeBlock(final String blockColor, final boolean take, final PABlockLocation paBlockLocation) {
+		if (paBlockLocation == null) {
 			return;
 		}
 		if (arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)
 				.equals("WOOL")) {
-			lBlock.toLocation()
+			paBlockLocation.toLocation()
 					.getBlock()
 					.setTypeIdAndData(
 							Material.valueOf(
@@ -525,7 +527,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 							StringParser.getColorDataFromENUM(blockColor),
 							false);
 		} else {
-			lBlock.toLocation()
+			paBlockLocation.toLocation()
 					.getBlock()
 					.setTypeId(
 							Material.valueOf(
@@ -607,10 +609,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			arena.getDebugger().i("checking for block of team " + blockTeam, player);
 			vLoc = block.getLocation().toVector();
 			arena.getDebugger().i("block: " + vLoc.toString(), player);
-			if (SpawnManager.getBlocks(arena, blockTeam + "block").size() > 0) {
+			if (SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").size() > 0) {
 				vBlock = SpawnManager
 						.getBlockNearest(
-								SpawnManager.getBlocks(arena, blockTeam
+								SpawnManager.getBlocksStartingWith(arena, blockTeam
 										+ "block"),
 								new PABlockLocation(player.getLocation()))
 						.toLocation().toVector();
@@ -641,8 +643,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				}
 				class RunLater implements Runnable  {
 					String localColor;
-					PALocation localLoc;
-					RunLater(String color, PALocation loc) {
+					PABlockLocation localLoc;
+					RunLater(String color, PABlockLocation loc) {
 						localColor = color;
 						localLoc = loc;
 					}
@@ -655,13 +657,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 				}
 				
 				if (this.getLifeMap().containsKey(blockTeam)
-						&& getLifeMap().get(blockTeam) > SpawnManager.getSpawnMap(arena, blockTeam + "block").size()) {
+						&& getLifeMap().get(blockTeam) > SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").size()) {
 				
 					Bukkit.getScheduler().runTaskLater(
 							PVPArena.instance,
 							new RunLater(
 									arena.getTeam(blockTeam).getColor().name(),
-									new PALocation(event.getBlock().getLocation())), 5L);
+									new PABlockLocation(event.getBlock().getLocation())), 5L);
 				}
 				reduceLivesCheckEndAndCommit(arena, blockTeam);
 
@@ -689,13 +691,15 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			return;
 		}
 
-		final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
-				"blocks");
+		Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, "block");
+		
+		//final Set<PABlockLocation>
+		
 		for (Block b : event.blockList()) {
-			PALocation loc = new PALocation(b.getLocation());
-			for (String node : map.keySet()) {
-				if (map.get(node).getDistanceSquared(loc) < 1) {
-					final String blockTeam = node.split("block")[0];
+			PABlockLocation loc = new PABlockLocation(b.getLocation());
+			for (PABlock pb : blocks) {
+				if (pb.getLocation().getDistanceSquared(loc) < 1) {
+					final String blockTeam = pb.getName().split("block")[0];
 					
 					try {
 						arena.broadcast(Language.parse(arena, MSG.GOAL_BLOCKDESTROY_SCORE,
@@ -710,7 +714,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 						e.printStackTrace();
 					}
 					takeBlock(arena.getTeam(blockTeam).getColor().name(), false,
-							SpawnManager.getCoords(arena, node));
+							pb.getLocation());
 
 					reduceLivesCheckEndAndCommit(arena, blockTeam);
 				}

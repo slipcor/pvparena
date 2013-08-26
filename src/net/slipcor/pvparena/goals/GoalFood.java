@@ -30,9 +30,9 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -438,20 +438,21 @@ public class GoalFood extends ArenaGoal implements Listener {
 		if (player.getArena() == null || !player.getArena().isFightInProgress()) {
 			return;
 		}
+
+		Set<PABlock> spawns = SpawnManager.getPABlocksContaining(arena, "foodfurnace");
 		
-		Map<String, PALocation> locs = SpawnManager.getSpawnMap(arena, "foodfurnace");
-		
-		String teamName = player.getArenaTeam().getName();
-		
-		if (locs.size() < 1) {
+		if (spawns.size() < 1) {
 			return;
 		}
 		
-		Set<PALocation> validSpawns = new HashSet<PALocation>();
+		String teamName = player.getArenaTeam().getName();
 		
-		for (String spawnName : locs.keySet()) {
+		Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
+		
+		for (PABlock block : spawns) {
+			String spawnName = block.getName();
 			if (spawnName.startsWith(teamName + "foodfurnace")) {
-				validSpawns.add(locs.get(spawnName));
+				validSpawns.add(block.getLocation());
 			}
 		}
 		
@@ -459,7 +460,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 			return;
 		}
 		
-		if (!validSpawns.contains(new PALocation (event.getClickedBlock().getLocation()))) {
+		if (!validSpawns.contains(new PABlockLocation(event.getClickedBlock().getLocation()))) {
 			arena.msg(player.get(), Language.parse(arena, MSG.GOAL_FOOD_NOTYOURFOOD));
 			event.setCancelled(true);
 			return;
@@ -521,8 +522,6 @@ public class GoalFood extends ArenaGoal implements Listener {
 		
 		chestMap = new HashMap<Block, ArenaTeam>();
 		
-		Map<String, PALocation> spawns = SpawnManager.getSpawnMap(arena, "foodchest");
-		
 		for (ArenaTeam team : arena.getTeams()) {
 			int pos = new Random().nextInt(cookmap.size());
 			for (Material mat : cookmap.keySet()) {
@@ -543,7 +542,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 				player.get().getInventory().addItem(new ItemStack(getFoodMap().get(team), totalAmount));
 				player.get().updateInventory();
 			}
-			chestMap.put(spawns.get(team.getName()+ "foodchest").toLocation().getBlock(), team);
+			chestMap.put(SpawnManager.getBlockByExactName(arena, team.getName() + "foodchest").toLocation().getBlock(), team);
 			this.getLifeMap().put(team.getName(),
 					arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
 		}

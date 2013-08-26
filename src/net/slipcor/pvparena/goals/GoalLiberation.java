@@ -168,10 +168,10 @@ public class GoalLiberation extends ArenaGoal  {
 			arena.getDebugger().i("checking for flag of team " + aTeam, player);
 			vLoc = block.getLocation().toVector();
 			arena.getDebugger().i("block: " + vLoc.toString(), player);
-			if (SpawnManager.getBlocks(arena, aTeam + "button").size() > 0) {
+			if (SpawnManager.getBlocksStartingWith(arena, aTeam + "button").size() > 0) {
 				vFlag = SpawnManager
 						.getBlockNearest(
-								SpawnManager.getBlocks(arena, aTeam
+								SpawnManager.getBlocksStartingWith(arena, aTeam
 										+ "button"),
 								new PABlockLocation(player.getLocation()))
 						.toLocation().toVector();
@@ -188,7 +188,7 @@ public class GoalLiberation extends ArenaGoal  {
 				
 				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
 					if (jailedPlayer.getStatus() == Status.DEAD) {
-						SpawnManager.respawn(arena, jailedPlayer);
+						SpawnManager.respawn(arena, jailedPlayer, null);
 					}
 				}
 

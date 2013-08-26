@@ -22,7 +22,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -212,7 +211,7 @@ public class GoalDomination extends ArenaGoal {
 		final int checkDistance = arena.getArenaConfig().getInt(
 				CFG.GOAL_DOM_CLAIMRANGE);
 
-		for (PALocation paLoc : SpawnManager.getSpawns(arena, "flags")) {
+		for (PABlockLocation paLoc : SpawnManager.getBlocksStartingWith(arena, "flag")) {
 			// arena.getDebugger().info("checking location: " + loc.toString());
 			
 			Location loc = paLoc.toLocation();
@@ -539,8 +538,8 @@ public class GoalDomination extends ArenaGoal {
 				&& (player.getItemInHand().getTypeId() == arena
 						.getArenaConfig().getInt(CFG.GENERAL_WAND))) {
 
-			final Set<PABlockLocation> flags = SpawnManager.getBlocks(arena,
-					"flags");
+			final Set<PABlockLocation> flags = SpawnManager.getBlocksStartingWith(arena,
+					"flag");
 
 			if (flags.contains(new PABlockLocation(block.getLocation()))) {
 				return false;
@@ -649,11 +648,9 @@ public class GoalDomination extends ArenaGoal {
 			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
 					.getInt(CFG.GOAL_DOM_LIVES));
 
-			final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
-					"flags");
-			for (String s : map.keySet()) {
-				takeFlag("WHITE", false,
-						SpawnManager.getCoords(arena, s));
+			final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
+			for (PABlockLocation spawn : spawns) {
+				takeFlag("WHITE", false, spawn);
 			}
 		}
 	}
@@ -674,11 +671,9 @@ public class GoalDomination extends ArenaGoal {
 						arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES, 3));
 			}
 		}
-		final Map<String, PALocation> map = SpawnManager.getSpawnMap(arena,
-				"flags");
-		for (String s : map.keySet()) {
-			takeFlag("WHITE", false,
-					SpawnManager.getCoords(arena, s));
+		final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
+		for (PABlockLocation spawn : spawns) {
+			takeFlag("WHITE", false, spawn);
 		}
 
 		final DominationMainRunnable domMainRunner = new DominationMainRunnable(arena, this);
@@ -737,15 +732,15 @@ public class GoalDomination extends ArenaGoal {
 	 *            true if take, else reset
 	 * @param pumpkin
 	 *            true if pumpkin, false otherwise
-	 * @param lBlock
+	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
-	public void takeFlag(final String flagColor, final boolean take, final PALocation lBlock) {
+	public void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
 		if (take) {
-			lBlock.toLocation().getBlock()
+			paBlockLocation.toLocation().getBlock()
 			.setData(StringParser.getColorDataFromENUM(flagColor));
 		} else {
-			lBlock.toLocation().getBlock()
+			paBlockLocation.toLocation().getBlock()
 			.setData(StringParser.getColorDataFromENUM("WHITE"));
 		}
 	}

@@ -13,10 +13,12 @@ import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PARoundMap;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -84,6 +86,10 @@ public class Arena {
 	private final Set<PAClassSign> signs = new HashSet<PAClassSign>();
 	private final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final Set<String> playedPlayers = new HashSet<String>();
+
+	private final Set<PABlock> blocks = new HashSet<PABlock>();
+	private final Set<PASpawn> spawns = new HashSet<PASpawn>();
+	
 	private PARoundMap rounds;
 
 	private static String globalprefix = "PVP Arena";
@@ -145,6 +151,8 @@ public class Arena {
 			} catch (InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
+			
+			SpawnManager.loadSpawns(this, cfg);
 		}
 	}
 
@@ -314,6 +322,10 @@ public class Arena {
 		return cfg;
 	}
 
+	public Set<PABlock> getBlocks() {
+		return blocks;
+	}
+
 	public ArenaClass getClass(final String className) {
 		for (ArenaClass ac : classes) {
 			if (ac.getName().equalsIgnoreCase(className)) {
@@ -437,6 +449,10 @@ public class Arena {
 
 	public PARoundMap getRounds() {
 		return rounds;
+	}
+
+	public Set<PASpawn> getSpawns() {
+		return spawns;
 	}
 
 	public ArenaTeam getTeam(final String name) {
@@ -1003,7 +1019,6 @@ public class Arena {
 	public void resetPlayers(final boolean force) {
 		getDebugger().i("resetting player manager");
 		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
-		int fighters = 0;
 		for (ArenaTeam team : this.getTeams()) {
 			for (ArenaPlayer p : team.getTeamMembers()) {
 				getDebugger().i("player: " + p.getName(), p.get());
@@ -1017,9 +1032,6 @@ public class Arena {
 					continue;
 				} else {
 					getDebugger().i("> added", p.get());
-					if (p.getStatus() == Status.FIGHT) {
-						fighters++;
-					}
 					players.add(p);
 				}
 			}
@@ -1028,8 +1040,7 @@ public class Arena {
 		for (ArenaPlayer p : players) {
 			
 			p.debugPrint();
-			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)
-					/*&& !(fighters > players.size()/2)*/) {
+			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				// TODO enhance wannabe-smart exploit fix for people that
 				// spam join and leave the arena to make one of them win
 				final Player player = p.get();
@@ -1187,7 +1198,7 @@ public class Arena {
 										CFG.TIME_TELEPORTPROTECT) * 20);
 			}
 		} else {
-			final PALocation loc = SpawnManager.getCoords(this, string);
+			final PALocation loc = SpawnManager.getSpawnByExactName(this, string);
 			if (loc == null) {
 				PVPArena.instance.getLogger().warning("Spawn null: " + string);
 			} else {
@@ -1308,7 +1319,21 @@ public class Arena {
 				continue;
 			}
 			final String sTeam = team.getName();
-			for (PALocation spawnLoc : SpawnManager.getSpawns(this, sTeam)) {
+			Set<PALocation> spawns;
+			
+			
+			if (this.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+				spawns = SpawnManager.getSpawnsContaining(this, "spawn");
+			} else {
+				if (this.isFreeForAll()) {
+					spawns = SpawnManager.getSpawnsStartingWith(this, sTeam + "spawn");
+				} else {
+					spawns = SpawnManager.getSpawnsStartingWith(this, "spawn");
+				}
+			}
+			
+			
+			for (PALocation spawnLoc : spawns) {
 				for (Location playerLoc : players.keySet()) {
 					if (spawnLoc.getDistanceSquared(new PALocation(playerLoc)) < 9) {
 						players.get(playerLoc)
@@ -1441,7 +1466,7 @@ public class Arena {
 				aPlayer.setStatus(Status.WATCH);
 			}
 		}
-		PALocation loc = SpawnManager.getCoords(this, place);
+		PALocation loc = SpawnManager.getSpawnByExactName(this, place);
 		if ("old".equals(place)) {
 			loc = aPlayer.getLocation();
 		}
@@ -1696,5 +1721,13 @@ public class Arena {
 	public int getPlayedSeconds() {
 		final int seconds = (int) (System.currentTimeMillis()-startTime);
 		return seconds / 1000;
+	}
+
+	public void addBlock(PABlock paBlock) {
+		blocks.add(paBlock);
+	}
+
+	public void addSpawn(PASpawn paSpawn) {
+		spawns.add(paSpawn);
 	}
 }

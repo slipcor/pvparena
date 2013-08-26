@@ -46,7 +46,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 
 		// usage: /pa {arenaname} teleport [spawnname] | tp to a spawn
 		
-		final PALocation loc = SpawnManager.getCoords(arena, args[0]);
+		final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
 		
 		if (loc == null) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_SPAWN_UNKNOWN, args[0]));
