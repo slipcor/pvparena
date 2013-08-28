@@ -348,15 +348,7 @@ public class BlockListener implements Listener {
 		}
 		final Arena arena = ArenaManager.getArenaByRegionLocation(
 				new PABlockLocation(event.getEntity().getLocation()));
-		if (arena == null) {
-			return;
-		}
-		
-		if (arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
-				&& (isProtected(event.getEntity().getLocation(), event,
-						RegionProtection.FIRE))) {
-			return;
-		}
+		// all checks done in willBeSkipped
 		ArenaModuleManager.onBlockBreak(arena, event.getEntity().getLocation().getBlock());
 	}
 

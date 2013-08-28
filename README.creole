@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.245 - properly check the TNT flag, not the FIRE flag
 * v1.0.7.244 - [BREAKING?] - only for dev tests! - SpawnManager rewrite
 * v1.0.7.243 - fix ValeraSTK's spawning - break others? no clue
 * v1.0.7.242 - spawn debug enhancement (maybe fix)
