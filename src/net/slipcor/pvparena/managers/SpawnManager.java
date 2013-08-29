@@ -136,10 +136,11 @@ public final class SpawnManager {
 						} else {
 							spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
 						}
-						
+						arena.getDebugger().i("read spawns for '"+team.getName()+"'; size: "+spawns.size());
 						locations = new PASpawn[spawns.size()];
 						int pos = 0;
 						for (PASpawn spawn : spawns) {
+							arena.getDebugger().i("- "+spawn.getName());
 							locations[pos++] = spawn;
 						}
 					}
@@ -243,6 +244,7 @@ public final class SpawnManager {
 	
 	public static void distributeSmart(final Arena arena,
 			final Set<ArenaPlayer> set, final String teamNName) {
+		arena.getDebugger().i("distributing smart-ish");
 		if (set == null || set.size() < 1) {
 			return;
 		}
@@ -264,6 +266,7 @@ public final class SpawnManager {
 		}
 		
 		if (locations == null || locations.size() < 1) {
+			arena.getDebugger().i("null or less than 1! -> OUT!");
 			return;
 		}
 
