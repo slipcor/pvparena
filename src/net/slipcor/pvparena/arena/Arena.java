@@ -135,6 +135,8 @@ public class Arena {
 		valid = ConfigurationManager.configParse(this, cfg);
 		if (valid) {
 			StatisticsManager.loadStatistics(this);
+			SpawnManager.loadSpawns(this, cfg);
+			
 			String langName = (String) cfg.getUnsafe("general.lang");
 			if (langName == null || langName.equals("none")) {
 				return;
@@ -151,8 +153,6 @@ public class Arena {
 			} catch (InvalidConfigurationException e) {
 				e.printStackTrace();
 			}
-			
-			SpawnManager.loadSpawns(this, cfg);
 		}
 	}
 

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.7.247 - fix spawning, please - (begging works, fyi)
 * v1.0.7.246 - add more debug, because everyone loves debugging :)
 * v1.0.7.245 - properly check the TNT flag, not the FIRE flag
 * v1.0.7.244 - [BREAKING?] - only for dev tests! - SpawnManager rewrite
