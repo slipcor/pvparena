@@ -441,7 +441,11 @@ public class PACheck {
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			arena.getDebugger().i("don't drop inventory", player);
+			int exp = player.getTotalExperience();
 			event.getDrops().clear();
+			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+				event.setDroppedExp(exp);
+			}
 		}
 		
 		if (commit == null) {
@@ -450,7 +454,11 @@ public class PACheck {
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(player);
+				int exp = player.getTotalExperience();
 				event.getDrops().clear();
+				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+					event.setDroppedExp(exp);
+				}
 			}
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 			

@@ -24,6 +24,7 @@ import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -128,7 +129,8 @@ public class EntityListener implements Listener {
 		}
 		arena.getDebugger().i("explosion inside an arena");
 		if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
-				|| (!(event.getEntity() instanceof TNTPrimed))) {
+				|| (!(event.getEntity() instanceof TNTPrimed) 
+						&& !(event.getEntity() instanceof Creeper))) {
 			ArenaModuleManager.onEntityExplode(arena, event);
 			return;
 		}

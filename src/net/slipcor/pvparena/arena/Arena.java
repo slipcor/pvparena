@@ -1200,7 +1200,8 @@ public class Arena {
 		} else {
 			final PALocation loc = SpawnManager.getSpawnByExactName(this, string);
 			if (loc == null) {
-				PVPArena.instance.getLogger().warning("Spawn null: " + string);
+				PVPArena.instance.getLogger().severe("RESET Spawn null: " + this.getName() + "->" + string);
+				(new Exception()).printStackTrace();
 			} else {
 				player.teleport(loc.toLocation());
 				aPlayer.setTelePass(false);
@@ -1471,7 +1472,8 @@ public class Arena {
 			loc = aPlayer.getLocation();
 		}
 		if (loc == null) {
-			PVPArena.instance.getLogger().warning("Spawn null : " + place);
+			PVPArena.instance.getLogger().severe("TP Spawn null: " + this.getName() + "->" + place);
+			(new Exception()).printStackTrace();
 			return;
 		}
 		
