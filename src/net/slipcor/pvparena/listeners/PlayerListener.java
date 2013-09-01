@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.listeners;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -24,6 +26,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 
 import org.bukkit.ChatColor;
@@ -482,11 +485,29 @@ public class PlayerListener implements Listener {
 					return;
 				}
 
-				if (arena.isFreeForAll()) {
-					arena.tpPlayerToCoordName(player, "spawn");
+				final Set<PASpawn> spawns = new HashSet<PASpawn>();
+				if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+					String arenaClass = aPlayer.getArenaClass().getName();
+					spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+arenaClass+"spawn"));
+				} else if (arena.isFreeForAll()) {
+					if (team.getName().equals("free")) {
+						spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
+					} else {
+						spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()));
+					}
 				} else {
-					arena.tpPlayerToCoordName(player, team.getName() + "spawn");
+					spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
 				}
+				
+				int pos = spawns.size(); 
+				
+				for (PASpawn spawn : spawns) {
+					if (pos-- < 0) {
+						arena.tpPlayerToCoordName(player, spawn.getName());
+						break;
+					}
+				}
+				
 				ArenaPlayer.parsePlayer(player.getName()).setStatus(
 						Status.FIGHT);
 

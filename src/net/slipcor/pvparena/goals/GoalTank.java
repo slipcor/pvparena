@@ -19,6 +19,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -318,7 +319,19 @@ public class GoalTank extends ArenaGoal {
 		}
 
 		arena.broadcast(Language.parse(arena, MSG.GOAL_TANK_TANKMODE, tank.getName()));
-		arena.tpPlayerToCoordName(tank.get(), "tank");
+
+		final Set<PASpawn> spawns = new HashSet<PASpawn>();
+		spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "tank"));
+		
+		int pos = spawns.size(); 
+		
+		for (PASpawn spawn : spawns) {
+			if (pos-- < 0) {
+				arena.tpPlayerToCoordName(tank.get(), spawn.getName());
+				break;
+			}
+		}
+		
 		arena.getTeams().add(tankTeam);
 	}
 

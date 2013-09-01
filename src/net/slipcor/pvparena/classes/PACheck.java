@@ -365,12 +365,8 @@ public class PACheck {
 				
 				if (arena.getFighters().size() > 1 && arena.getFighters().size() >= arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
 					arena.setFightInProgress(true);
-					for (ArenaPlayer p : arena.getFighters()) {
-						if (p.getName().equals(sender.getName())) {
-							continue;
-						}
-						arena.tpPlayerToCoordName(p.get(), (arena.isFreeForAll()?"":p.getArenaTeam().getName())
-								+ "spawn");
+					for (ArenaTeam ateam : arena.getTeams()) {
+						SpawnManager.distribute(arena, ateam);
 					}
 					
 					for (ArenaGoal goal : arena.getGoals()) {

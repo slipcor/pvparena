@@ -18,6 +18,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -420,7 +421,18 @@ public class GoalInfect extends ArenaGoal {
 
 		arena.msg(infected.get(), Language.parse(arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
 		arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
-		arena.tpPlayerToCoordName(infected.get(), "infected");
+		
+		final Set<PASpawn> spawns = new HashSet<PASpawn>();
+		spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "infected"));
+		
+		int pos = spawns.size(); 
+		
+		for (PASpawn spawn : spawns) {
+			if (pos-- < 0) {
+				arena.tpPlayerToCoordName(infected.get(), spawn.getName());
+				break;
+			}
+		}
 		arena.getTeams().add(infectedTeam);
 	}
 

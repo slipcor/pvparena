@@ -1543,8 +1543,29 @@ public class Arena {
 		aPlayer.setArena(this);
 		team.add(aPlayer);
 		aPlayer.setStatus(Status.FIGHT);
-		tpPlayerToCoordName(player, (isFreeForAll() ? "" : team.getName())
-				+ "spawn");
+		
+		final Set<PASpawn> spawns = new HashSet<PASpawn>();
+		if (this.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+			String arenaClass = getClass(cfg.getString(CFG.READY_AUTOCLASS)).getName();
+			spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, team.getName()+arenaClass+"spawn"));
+		} else if (isFreeForAll()) {
+			if (team.getName().equals("free")) {
+				spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, "spawn"));
+			} else {
+				spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, team.getName()));
+			}
+		} else {
+			spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, team.getName()+"spawn"));
+		}
+		
+		int pos = (new Random()).nextInt(spawns.size()); 
+		
+		for (PASpawn spawn : spawns) {
+			if (pos-- < 0) {
+				tpPlayerToCoordName(player, spawn.getName());
+				break;
+			}
+		}
 
 		if (aPlayer.getState() == null) {
 			

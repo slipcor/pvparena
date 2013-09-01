@@ -1,5 +1,8 @@
 package net.slipcor.pvparena.modules;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -7,12 +10,14 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.SpawnManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -89,10 +94,27 @@ public class BattlefieldJoin extends ArenaModule {
 		player.setArena(arena);
 		player.setStatus(Status.LOUNGE);
 		team.add(player);
-		if (arena.isFreeForAll()) {
-			arena.tpPlayerToCoordName(player.get(), "spawn");
+		final Set<PASpawn> spawns = new HashSet<PASpawn>();
+		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+			String arenaClass = player.getArenaClass().getName();
+			spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+arenaClass+"spawn"));
+		} else if (arena.isFreeForAll()) {
+			if (team.getName().equals("free")) {
+				spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
+			} else {
+				spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()));
+			}
 		} else {
-			arena.tpPlayerToCoordName(player.get(), team.getName() + "spawn");
+			spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
+		}
+		
+		int pos = spawns.size(); 
+		
+		for (PASpawn spawn : spawns) {
+			if (pos-- < 0) {
+				arena.tpPlayerToCoordName(player.get(), spawn.getName());
+				break;
+			}
 		}
 		
 		if (player.getState() == null) {
