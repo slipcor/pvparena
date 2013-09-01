@@ -589,37 +589,7 @@ public class GoalDomination extends ArenaGoal {
 		}
 		return runnerMap;
 	}
-
-	@Override
-	public String guessSpawn(final String place) {
-		// no exact match: assume we have multiple spawnpoints
-		final Map<Integer, String> locs = new HashMap<Integer, String>();
-		int pos = 0;
-
-		arena.getDebugger().i("searching for team spawns: " + place);
-
-		final Map<String, Object> coords = (HashMap<String, Object>) arena
-				.getArenaConfig().getYamlConfiguration()
-				.getConfigurationSection("spawns").getValues(false);
-		for (String name : coords.keySet()) {
-			if (name.startsWith(place)) {
-				locs.put(pos++, name);
-				arena.getDebugger().i("found match: " + name);
-			}
-			if (name.startsWith("flag")) {
-				locs.put(pos++, name);
-				arena.getDebugger().i("found match: " + name);
-			}
-		}
-
-		if (locs.size() < 1) {
-			return null;
-		}
-		final Random random = new Random();
-
-		return locs.get(random.nextInt(locs.size()));
-	}
-
+	
 	@Override
 	public boolean hasSpawn(final String string) {
 		for (String teamName : arena.getTeamNames()) {

@@ -136,16 +136,6 @@ public class ArenaGoalManager {
 		return null;
 	}
 
-	public String guessSpawn(final Arena arena, final String place) {
-		for (ArenaGoal type : arena.getGoals()) {
-			final String result = type.guessSpawn(place);
-			if (result != null) {
-				return result;
-			}
-		}
-		return null;
-	}
-
 	public void initiate(final Arena arena, final Player player) {
 		arena.getDebugger().i("initiating " + player.getName(), player);
 		for (ArenaGoal type : arena.getGoals()) {

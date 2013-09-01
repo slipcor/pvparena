@@ -346,17 +346,6 @@ public class ArenaGoal extends NCBLoadable {
 	}
 
 	/**
-	 * guess the spawn name from a given string
-	 * 
-	 * @param place
-	 *            the string to check
-	 * @return the proper spawn name if known, null otherwise
-	 */
-	public String guessSpawn(final String place) {
-		return null;
-	}
-
-	/**
 	 * does a goal know this spawn?
 	 * 
 	 * @param string

@@ -923,6 +923,7 @@ public final class SpawnManager {
 		arena.getDebugger().i("setting spawn " + place + " to " + spawnName);
 		arena.getArenaConfig().setManually("spawns." + place, spawnName);
 		arena.getArenaConfig().save();
+		arena.addBlock(new PABlock(loc, place));
 	}
 
 	public static void loadSpawns(Arena arena, Config cfg) {

@@ -1356,6 +1356,7 @@ public class Arena {
 	public void spawnSet(final String node, final PALocation paLocation) {
 		cfg.setManually("spawns." + node, Config.parseToString(paLocation));
 		cfg.save();
+		this.addSpawn(new PASpawn(paLocation, node));
 	}
 
 	public void spawnUnset(final String node) {
