@@ -71,6 +71,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	private final static int PRIORITY = 6;
 
 	@Override
+	public boolean allowsJoinInBattle() {
+		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+	}
+
+	@Override
 	public PACheck checkCommand(final PACheck res, final String string) {
 		if (res.getPriority() < PRIORITY
 				&& string.equalsIgnoreCase("killrewards")
