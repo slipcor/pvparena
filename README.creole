@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.251 - fix late joining spawns and /pa [arena] teams
 * v1.0.8.250 - support class spawns and fix issue #249, revealing that spawning was still broken
 * v1.0.7.249 - remove dead code and properly add spawns & blocks when defining them
 * v1.0.7.248 - attemt to fix issues #618 and #621
