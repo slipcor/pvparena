@@ -3,6 +3,7 @@ package net.slipcor.pvparena.listeners;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -499,7 +500,7 @@ public class PlayerListener implements Listener {
 					spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
 				}
 				
-				int pos = spawns.size(); 
+				int pos = (new Random()).nextInt(spawns.size()); 
 				
 				for (PASpawn spawn : spawns) {
 
