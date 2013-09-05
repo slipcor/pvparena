@@ -438,8 +438,10 @@ public class PACheck {
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			arena.getDebugger().i("don't drop inventory", player);
 			int exp = player.getTotalExperience();
+			
 			event.getDrops().clear();
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+				arena.getDebugger().i("exp: " + exp, player);
 				event.setDroppedExp(exp);
 			}
 		}
@@ -453,6 +455,7 @@ public class PACheck {
 				int exp = player.getTotalExperience();
 				event.getDrops().clear();
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+					arena.getDebugger().i("exp: " + exp, player);
 					event.setDroppedExp(exp);
 				}
 			}
@@ -494,6 +497,7 @@ public class PACheck {
 		
 		if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
 			event.setDroppedExp(exp);
+			arena.getDebugger().i("exp: " + exp, player);
 		}
 	}
 
