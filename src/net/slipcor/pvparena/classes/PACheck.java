@@ -356,8 +356,8 @@ public class PACheck {
 					arena.msg(sender, arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
 					arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINED, sender.getName()));
 				} else {
-					arena.msg(sender, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", team.getColoredName() + "§r"));
-					arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, sender.getName(), team.getColoredName() + "§r"));
+					arena.msg(sender, arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM).replace("%1%", team.getColoredName() + "ï¿½r"));
+					arena.broadcastExcept(sender, Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM, sender.getName(), team.getColoredName() + "ï¿½r"));
 				}
 				
 				PVPArena.instance.getAgm().initiate(arena, (Player) sender);
@@ -482,6 +482,8 @@ public class PACheck {
 		}
 
 		arena.getDebugger().i("handled by: " + commit.getName(), player);
+		int exp = player.getTotalExperience();
+		
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
 			arena.getDebugger().i("parsing death: " + g.getName(), player);
@@ -489,6 +491,10 @@ public class PACheck {
 		}
 
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
+		
+		if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+			event.setDroppedExp(exp);
+		}
 	}
 
 	public static void handleRespawn(final Arena arena, final ArenaPlayer aPlayer, final List<ItemStack> drops) {

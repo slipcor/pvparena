@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.254 - fix EXP not properly dropping on some occasions
 * v1.0.8.253 - #252 - next try
 * v1.0.8.252 - allow late join for PlayerKillReward
 * v1.0.8.251 - fix late joining spawns and /pa [arena] teams
