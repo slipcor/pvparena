@@ -35,8 +35,8 @@ public final class PlayerState {
 	private int fireticks;
 	private int foodlevel;
 	private int gamemode;
-	private int health;
-	private int maxhealth;
+	private double health;
+	private double maxhealth;
 	private int explevel;
 
 	private float exhaustion;
@@ -140,7 +140,7 @@ public final class PlayerState {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
 		if (player.getMaxHealth() != maxhealth) {
-			final int newHealth = player.getMaxHealth() * health / maxhealth;
+			final double newHealth = player.getMaxHealth() * health / maxhealth;
 			if (newHealth > player.getMaxHealth()) {
 				player.setHealth(player.getMaxHealth());
 			} else {
@@ -197,8 +197,8 @@ public final class PlayerState {
 		if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
 			player.setHealth(value);
 		}
-		final int current = player.getHealth();
-		final int regain = value - current;
+		final double current = player.getHealth();
+		final double regain = value - current;
 
 		final EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain,
 				RegainReason.CUSTOM);
