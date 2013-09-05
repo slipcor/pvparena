@@ -102,6 +102,12 @@ public class StatisticsManager {
 		}
 	}
 
+	@Deprecated
+	public static void damage(Arena arena, Player attacker, Player defender,
+			int damage) {
+		damage(arena, attacker, defender, (double) damage);
+	}
+
 	/**
 	 * commit damage
 	 * 
@@ -114,7 +120,7 @@ public class StatisticsManager {
 	 * @param dmg
 	 *            the damage value
 	 */
-	public static void damage(final Arena arena, final Entity entity, final Player defender, final int dmg) {
+	public static void damage(final Arena arena, final Entity entity, final Player defender, final double dmg) {
 
 		arena.getDebugger().i("adding damage to player " + defender.getName(), defender);
 		
@@ -126,18 +132,18 @@ public class StatisticsManager {
 				arena.getDebugger().i("attacker is in the arena, adding damage!", defender);
 				final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
 				final int maxdamage = apAttacker.getStatistics(arena).getStat(type.MAXDAMAGE);
-				apAttacker.getStatistics(arena).incStat(type.DAMAGE, dmg);
+				apAttacker.getStatistics(arena).incStat(type.DAMAGE, (int) dmg);
 				if (dmg > maxdamage) {
-					apAttacker.getStatistics(arena).setStat(type.MAXDAMAGE, dmg);
+					apAttacker.getStatistics(arena).setStat(type.MAXDAMAGE, (int) dmg);
 				}
 			}
 		}
 		final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
 		final int maxdamage = apDefender.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
-		apDefender.getStatistics(arena).incStat(type.DAMAGETAKE, dmg);
+		apDefender.getStatistics(arena).incStat(type.DAMAGETAKE, (int) dmg);
 		if (dmg > maxdamage) {
-			apDefender.getStatistics(arena).setStat(type.MAXDAMAGETAKE, dmg);
+			apDefender.getStatistics(arena).setStat(type.MAXDAMAGETAKE, (int) dmg);
 		}
 	}
 
