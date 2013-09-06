@@ -320,8 +320,9 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public void commitStart() {
+		parseStart(); // hack the team in before spawning, derp!
 		for (ArenaTeam team : arena.getTeams()) {
-			SpawnManager.distribute(arena, team.getTeamMembers());
+			SpawnManager.distribute(arena, team);
 		}
 	}
 
@@ -385,6 +386,9 @@ public class GoalInfect extends ArenaGoal {
 
 	@Override
 	public void parseStart() {
+		if (arena.getTeam("infected") != null) {
+			return;
+		}
 		ArenaPlayer infected = null;
 		final Random random = new Random();
 		for (ArenaTeam team : arena.getTeams()) {
