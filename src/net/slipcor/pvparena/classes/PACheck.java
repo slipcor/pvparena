@@ -436,14 +436,7 @@ public class PACheck {
 		}
 		
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			arena.getDebugger().i("don't drop inventory", player);
-			int exp = player.getTotalExperience();
-			
 			event.getDrops().clear();
-			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
-				arena.getDebugger().i("exp: " + exp, player);
-				event.setDroppedExp(exp);
-			}
 		}
 		
 		if (commit == null) {
@@ -452,8 +445,11 @@ public class PACheck {
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 				InventoryManager.drop(player);
-				int exp = player.getTotalExperience();
+				int exp = event.getDroppedExp();
 				event.getDrops().clear();
+				if (doesRespawn || arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+					InventoryManager.dropExp(player, exp);
+				} else
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
 					arena.getDebugger().i("exp: " + exp, player);
 					event.setDroppedExp(exp);
@@ -485,7 +481,7 @@ public class PACheck {
 		}
 
 		arena.getDebugger().i("handled by: " + commit.getName(), player);
-		int exp = player.getTotalExperience();
+		int exp = event.getDroppedExp();
 		
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
@@ -494,7 +490,10 @@ public class PACheck {
 		}
 
 		ArenaModuleManager.parsePlayerDeath(arena, player, player.getLastDamageCause());
-		
+
+		if (doesRespawn || arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+			InventoryManager.dropExp(player, exp);
+		} else
 		if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
 			event.setDroppedExp(exp);
 			arena.getDebugger().i("exp: " + exp, player);

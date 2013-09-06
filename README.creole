@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.259 - drop orbs, because bukkit doesn't want to
 * v1.0.8.258 - create pseudo teams before trying to teleport members to it
 * v1.0.8.257 - properly implement Bukkit 1.6 API
 * v1.0.8.256 - update to MC 1.6 - Bukkit 1.6.2-R0.1

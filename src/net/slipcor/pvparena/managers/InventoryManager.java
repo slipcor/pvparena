@@ -3,10 +3,14 @@ package net.slipcor.pvparena.managers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -97,5 +101,24 @@ public final class InventoryManager {
 		}
 		
 		return false;
+	}
+
+	public static void dropExp(final Player player, final int exp) {
+		final Location loc = player.getLocation();
+		
+		class RunLater implements Runnable {
+
+			@Override
+			public void run() {
+				ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
+				orb.setExperience(exp);
+			}
+			
+		}
+		try {
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 20L);
+		} catch (Exception e) {
+			
+		}
 	}
 }
