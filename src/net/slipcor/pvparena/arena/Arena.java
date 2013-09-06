@@ -1235,6 +1235,10 @@ public class Arena {
 				CFG.PLAYER_EXHAUSTION, 0.0));
 		player.setVelocity(new Vector());
 		player.setFallDistance(0);
+		
+		if (this.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
+			player.setTotalExperience(0);
+		}
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final ArenaTeam team = aPlayer.getArenaTeam();
