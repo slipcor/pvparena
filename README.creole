@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.261 - seriously, bukkit - Y U F up?
 * v1.0.8.260 - reset EXP on death (if dropping)
 * v1.0.8.259 - drop orbs, because bukkit doesn't want to
 * v1.0.8.258 - create pseudo teams before trying to teleport members to it

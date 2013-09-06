@@ -1238,6 +1238,8 @@ public class Arena {
 		
 		if (this.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
 			player.setTotalExperience(0);
+			player.setLevel(0);
+			player.setExp(0);
 		}
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
