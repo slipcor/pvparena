@@ -104,6 +104,9 @@ public final class InventoryManager {
 	}
 
 	public static void dropExp(final Player player, final int exp) {
+		if (exp < 1) {
+			return;
+		}
 		final Location loc = player.getLocation();
 		
 		class RunLater implements Runnable {
