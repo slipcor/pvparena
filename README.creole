@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.263 - don't reset skulls because they receive no damage :P
 * v1.0.8.262 - do not drop experience if there is none to drop
 * v1.0.8.261 - seriously, bukkit - Y U F up?
 * v1.0.8.260 - reset EXP on death (if dropping)
