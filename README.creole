@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.265 - silently support BattlefieldManager [/spoiler]
 * v1.0.8.264 - minor language format fix 
 * v1.0.8.263 - don't reset skulls because they receive no damage :P
 * v1.0.8.262 - do not drop experience if there is none to drop
