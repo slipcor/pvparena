@@ -355,7 +355,7 @@ public final class Language {
 		STATTYPE_WINS("nulang.stattype.WINS", StatisticsManager.type.WINS.getName()),
 		
 		TEAM_HAS_WON("nulang.team.haswon", "Team %1% are the Champions!"),
-		TEAM_READY("nulang.team.ready", "Team %1% is ready!"),
+		TEAM_READY("nulang.team.ready", "Team %1%&f is ready!"),
 		
 		TEAMS_LIST("nulang.teams.list", "Available teams: %1%"),
 		TEAMS_ADD("nulang.teams.add", "Team added: %1%"),
