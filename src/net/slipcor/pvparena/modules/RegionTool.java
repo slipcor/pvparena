@@ -74,8 +74,8 @@ public class RegionTool extends ArenaModule {
 					}
 					for (ArenaRegionShape region : arena.getRegions()) {
 						if (region.contains(loc)) {
-							arena.msg(event.getPlayer(), "§fArena §b"
-									+ arena.getName() + "§f: region §b"
+							arena.msg(event.getPlayer(), "Â§fArena Â§b"
+									+ arena.getName() + "Â§f: region Â§b"
 									+ region.getRegionName());
 						}
 					}

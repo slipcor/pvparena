@@ -219,7 +219,7 @@ public class Update extends Thread {
 				}
 			}
 			Arena.pmsg(player, "You are using " + colorize("v" + vThis)
-					+ ", an outdated version! Latest: §a" + "v" + vOnline);
+					+ ", an outdated version! Latest: Â§a" + "v" + vOnline);
 			if (mode == UpdateMode.ANNOUNCE) {
 				Arena.pmsg(player, pageURL);
 			} else {
@@ -227,7 +227,7 @@ public class Update extends Thread {
 			}
 		} else {
 			Arena.pmsg(player, "You are using " + colorize("v" + vThis)
-					+ ", an experimental version! Latest stable: §a" + "v"
+					+ ", an experimental version! Latest stable: Â§a" + "v"
 					+ vOnline);
 		}
 		return true;

@@ -187,11 +187,11 @@ public class StandardLounge extends ArenaModule {
 		} else {
 			arena.msg(sender,
 					arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-							.replace("%1%", team.getColoredName() + "§r"));
+							.replace("%1%", team.getColoredName() + "Â§r"));
 			arena.broadcastExcept(
 					sender,
 					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-							sender.getName(), team.getColoredName() + "§r"));
+							sender.getName(), team.getColoredName() + "Â§r"));
 		}
 		
 		if (player.getState() == null) {

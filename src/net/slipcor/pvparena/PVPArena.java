@@ -140,9 +140,9 @@ public class PVPArena extends JavaPlugin {
 			final String commandLabel, final String[] args) {
 
 		if (args.length < 1) {
-			sender.sendMessage("§e§l|-- PVP Arena --|");
-			sender.sendMessage("§e§o--By slipcor--");
-			sender.sendMessage("§7§oDo §e/pa help §7§ofor help.");
+			sender.sendMessage("Â§eÂ§l|-- PVP Arena --|");
+			sender.sendMessage("Â§eÂ§o--By slipcor--");
+			sender.sendMessage("Â§7Â§oDo Â§e/pa help Â§7Â§ofor help.");
 			return true;
 		}
 		
@@ -228,7 +228,17 @@ public class PVPArena extends JavaPlugin {
 			}
 		}
 
-		if (tempArena == null) {
+		latelounge: if (tempArena == null) {
+			for (Arena ar : ArenaManager.getArenas()) {
+				for (ArenaModule mod : ar.getMods()) {
+					if (mod.hasSpawn(sender.getName())) {
+						tempArena = ar;
+						break latelounge;
+					}
+				}
+			}
+			
+			
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
 			return true;
 		}

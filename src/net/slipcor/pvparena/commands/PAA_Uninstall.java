@@ -88,10 +88,10 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 	private void listVersions(final CommandSender sender, final YamlConfiguration cfg,
 			final String sub) {
 		Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
-		Arena.pmsg(sender, "[§7uninstalled§r | §einstalled§r]");
-		Arena.pmsg(sender, "[§coutdated§r | §alatest version§r]");
+		Arena.pmsg(sender, "[Â§7uninstalledÂ§r | Â§einstalledÂ§r]");
+		Arena.pmsg(sender, "[Â§coutdatedÂ§r | Â§alatest versionÂ§r]");
 		if (sub == null || sub.equalsIgnoreCase("arenas")) {
-			Arena.pmsg(sender, "§c--- Arena Goals ----> /goals");
+			Arena.pmsg(sender, "Â§c--- Arena Goals ----> /goals");
 			final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
 			for (String key : entries) {
@@ -102,15 +102,15 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 				if (installed) {
 					version = goal.version();
 				}
-				Arena.pmsg(sender, ((installed) ? "§e" : "§7")
+				Arena.pmsg(sender, ((installed) ? "Â§e" : "Â§7")
 						+ key
-						+ "§r - "
-						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
+						+ "Â§r - "
+						+ (installed ? ((value.equals(version)) ? "Â§a" : "Â§c")
 								: "") + value);
 			}
 		}
 		if (sub == null || sub.equalsIgnoreCase("mods")) {
-			Arena.pmsg(sender, "§a--- Arena Mods ----> /mods");
+			Arena.pmsg(sender, "Â§a--- Arena Mods ----> /mods");
 			final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
 					false);
 			for (String key : entries) {
@@ -121,10 +121,10 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 				if (installed) {
 					version = mod.version();
 				}
-				Arena.pmsg(sender, ((installed) ? "§e" : "§7")
+				Arena.pmsg(sender, ((installed) ? "Â§e" : "Â§7")
 						+ key
-						+ "§r - "
-						+ (installed ? ((value.equals(version)) ? "§a" : "§c")
+						+ "Â§r - "
+						+ (installed ? ((value.equals(version)) ? "Â§a" : "Â§c")
 								: "") + value);
 			}
 

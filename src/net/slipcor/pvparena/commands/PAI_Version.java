@@ -46,27 +46,27 @@ public class PAI_Version extends AbstractGlobalCommand {
 			names.add(a.getName());
 		}
 
-		Arena.pmsg(sender, "§e§n-- PVP Arena version information --");
-		Arena.pmsg(sender, "§ePVP Arena version: §l" + PVPArena.instance.getDescription().getVersion());
+		Arena.pmsg(sender, "Â§eÂ§n-- PVP Arena version information --");
+		Arena.pmsg(sender, "Â§ePVP Arena version: Â§l" + PVPArena.instance.getDescription().getVersion());
 		if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
-			Arena.pmsg(sender, "§7-----------------------------------");
-			Arena.pmsg(sender, "§cArena Goals:");
+			Arena.pmsg(sender, "Â§7-----------------------------------");
+			Arena.pmsg(sender, "Â§cArena Goals:");
 			for (ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
-				Arena.pmsg(sender,  "§c" + ag.getName() + " - " + ag.version());
+				Arena.pmsg(sender,  "Â§c" + ag.getName() + " - " + ag.version());
 			}
 		}
 		if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
-			Arena.pmsg(sender, "§7-----------------------------------");
-			Arena.pmsg(sender, "§aMods:");
+			Arena.pmsg(sender, "Â§7-----------------------------------");
+			Arena.pmsg(sender, "Â§aMods:");
 			for (ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
-				Arena.pmsg(sender,  "§a" + am.getName() + " - " + am.version());
+				Arena.pmsg(sender,  "Â§a" + am.getName() + " - " + am.version());
 			}
 		}
 		if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
-			Arena.pmsg(sender, "§7-----------------------------------");
-			Arena.pmsg(sender, "§aRegionshapes:");
+			Arena.pmsg(sender, "Â§7-----------------------------------");
+			Arena.pmsg(sender, "Â§aRegionshapes:");
 			for (ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
-				Arena.pmsg(sender,  "§a" + ars.getName() + " - " + ars.version());
+				Arena.pmsg(sender,  "Â§a" + ars.getName() + " - " + ars.version());
 			}
 		}
 	}
