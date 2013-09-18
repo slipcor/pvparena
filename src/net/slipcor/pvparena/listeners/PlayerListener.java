@@ -33,6 +33,7 @@ import net.slipcor.pvparena.managers.TeamManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -397,7 +398,7 @@ public class PlayerListener implements Listener {
 		final ArenaTeam team = aPlayer.getArenaTeam();
 
 		if (!aPlayer.getStatus().equals(Status.FIGHT)) {
-			arena.getDebugger().i("cancelling: no class", player);
+			arena.getDebugger().i("cancelling: not fighting", player);
 			// fighting player inside the lobby!
 			event.setCancelled(true);
 		}
@@ -515,6 +516,12 @@ public class PlayerListener implements Listener {
 
 				ArenaModuleManager.lateJoin(arena, player);
 				ArenaGoalManager.lateJoin(arena, player);
+			} else if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+				arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
+				if (!event.isCancelled() && arena != null && arena.getArenaConfig().getBoolean(CFG.PLAYER_QUICKLOOT)) {
+					Chest c = (Chest) block.getState();
+					InventoryManager.transferItems(player, c.getBlockInventory());
+				}
 			}
 		}
 	}

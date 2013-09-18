@@ -119,6 +119,7 @@ public class Config {
 		PLAYER_PREVENTDEATH("player.preventDeath", true),
 		PLAYER_REFILLINVENTORY("player.refillInventory", true),
 		PLAYER_SATURATION("player.saturation", 20),
+		PLAYER_QUICKLOOT("player.quickloot", false),
 		
 		PROTECT_ENABLED("protection.enabled", true),
 		PROTECT_PUNISH("protection.punish", false),

@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.managers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -8,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
@@ -123,5 +125,19 @@ public final class InventoryManager {
 		} catch (Exception e) {
 			
 		}
+	}
+
+	public static void transferItems(Player player, Inventory blockInventory) {
+		ItemStack[] oldItems = blockInventory.getContents().clone();
+		for (ItemStack items : oldItems) {
+			HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(items);
+			blockInventory.remove(items);
+			if (!remaining.isEmpty()) {
+				for (ItemStack item : remaining.values()) {
+					blockInventory.addItem(item);
+				}
+			}
+		}
+		player.updateInventory();
 	}
 }
