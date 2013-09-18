@@ -68,7 +68,7 @@ public class PAA_Set extends AbstractArenaCommand {
 						break;
 					}
 				}
-				arena.msg(sender, "§6------ config list [" + page + "] ------");
+				arena.msg(sender, "�6------ config list [" + page + "] ------");
 				for (String node : keys.keySet()) {
 					arena.msg(sender,
 							keys.get(node) + " => " + CFG.getByNode(node).getType());

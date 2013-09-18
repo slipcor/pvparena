@@ -140,9 +140,9 @@ public class PVPArena extends JavaPlugin {
 			final String commandLabel, final String[] args) {
 
 		if (args.length < 1) {
-			sender.sendMessage("§e§l|-- PVP Arena --|");
-			sender.sendMessage("§e§o--By slipcor--");
-			sender.sendMessage("§7§oDo §e/pa help §7§ofor help.");
+			sender.sendMessage("�e�l|-- PVP Arena --|");
+			sender.sendMessage("�e�o--By slipcor--");
+			sender.sendMessage("�7�oDo �e/pa help �7�ofor help.");
 			return true;
 		}
 		

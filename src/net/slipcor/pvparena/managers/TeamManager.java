@@ -196,11 +196,11 @@ public class TeamManager {
 			arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
 			arena.msg(player,
 					arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-							.replace("%1%", aTeam.getColoredName() + "§r"));
+							.replace("%1%", aTeam.getColoredName() + "�r"));
 			arena.broadcastExcept(
 					player,
 					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-							player.getName(), aTeam.getColoredName() + "§r"));
+							player.getName(), aTeam.getColoredName() + "�r"));
 		}
 	}
 
