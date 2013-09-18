@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.modules;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -74,8 +75,8 @@ public class RegionTool extends ArenaModule {
 					}
 					for (ArenaRegionShape region : arena.getRegions()) {
 						if (region.contains(loc)) {
-							arena.msg(event.getPlayer(), "�fArena �b"
-									+ arena.getName() + "�f: region �b"
+							arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + "b"
+									+ arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + "b"
 									+ region.getRegionName());
 						}
 					}

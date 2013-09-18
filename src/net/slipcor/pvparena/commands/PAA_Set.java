@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -68,7 +69,7 @@ public class PAA_Set extends AbstractArenaCommand {
 						break;
 					}
 				}
-				arena.msg(sender, "�6------ config list [" + page + "] ------");
+				arena.msg(sender, ChatColor.COLOR_CHAR + "6------ config list [" + page + "] ------");
 				for (String node : keys.keySet()) {
 					arena.msg(sender,
 							keys.get(node) + " => " + CFG.getByNode(node).getType());

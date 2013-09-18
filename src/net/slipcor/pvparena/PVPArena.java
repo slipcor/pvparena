@@ -21,6 +21,7 @@ import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.metrics.Metrics;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -140,9 +141,9 @@ public class PVPArena extends JavaPlugin {
 			final String commandLabel, final String[] args) {
 
 		if (args.length < 1) {
-			sender.sendMessage("�e�l|-- PVP Arena --|");
-			sender.sendMessage("�e�o--By slipcor--");
-			sender.sendMessage("�7�oDo �e/pa help �7�ofor help.");
+			sender.sendMessage(ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "l|-- PVP Arena --|");
+			sender.sendMessage(ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "o--By slipcor--");
+			sender.sendMessage(ChatColor.COLOR_CHAR + "7" + ChatColor.COLOR_CHAR + "oDo " + ChatColor.COLOR_CHAR + "e/pa help " + ChatColor.COLOR_CHAR + "7" + ChatColor.COLOR_CHAR + "ofor help.");
 			return true;
 		}
 		

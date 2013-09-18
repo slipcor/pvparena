@@ -18,6 +18,7 @@ import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -187,11 +188,11 @@ public class StandardLounge extends ArenaModule {
 		} else {
 			arena.msg(sender,
 					arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-							.replace("%1%", team.getColoredName() + "�r"));
+							.replace("%1%", team.getColoredName() + ChatColor.COLOR_CHAR + "r"));
 			arena.broadcastExcept(
 					sender,
 					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-							sender.getName(), team.getColoredName() + "�r"));
+							sender.getName(), team.getColoredName() + ChatColor.COLOR_CHAR + "r"));
 		}
 		
 		if (player.getState() == null) {

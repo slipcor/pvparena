@@ -15,6 +15,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.core.StringParser;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -50,7 +51,7 @@ public class PAI_Info extends AbstractArenaCommand {
 		arena.msg(sender, Language.parse(arena, MSG.INFO_HEAD_HEADLINE, arena.getName(), arena.getPrefix()));
 		
 		arena.msg(sender, Language.parse(arena, MSG.INFO_HEAD_TEAMS, 
-				StringParser.joinSet(arena.getTeamNamesColored(), "�r, ")));
+				StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "r, ")));
 		
 		arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
 				StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +

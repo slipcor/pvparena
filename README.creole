@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.8.269 - yippie, fixed?
 * v1.0.8.268 - revert the replacement of the color code char. gg slipcor
 * v1.0.8.267 - hackfix commands to work for players being in the LateLounge queue
 * v1.0.8.266 - allow "quickloot" per arena, so players just click a chest to loot

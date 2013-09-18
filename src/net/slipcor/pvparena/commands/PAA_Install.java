@@ -16,6 +16,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -107,10 +108,10 @@ public class PAA_Install extends AbstractGlobalCommand {
 	private void listVersions(final CommandSender sender, final YamlConfiguration cfg,
 			final String sub) {
 		Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
-		Arena.pmsg(sender, "[�7uninstalled�r | �einstalled�r]");
-		Arena.pmsg(sender, "[�coutdated�r | �alatest version�r]");
+		Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "7uninstalled" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "einstalled" + ChatColor.COLOR_CHAR + "r]");
+		Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "coutdated" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "alatest version" + ChatColor.COLOR_CHAR + "r]");
 		if (sub == null || sub.equalsIgnoreCase("goals")) {
-			Arena.pmsg(sender, "�c--- Arena Goals ----> /goals");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c--- Arena Goals ----> /goals");
 			final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
 					false);
 			for (String key : entries) {
@@ -121,15 +122,15 @@ public class PAA_Install extends AbstractGlobalCommand {
 				if (installed) {
 					version = goal.version();
 				}
-				Arena.pmsg(sender, ((installed) ? "�e" : "�7")
+				Arena.pmsg(sender, ((installed) ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
 						+ key
-						+ "�r - "
-						+ (installed ? ((latest.equals(version)) ? "�a" : "�c")
-								: "") + version + "�f(" + latest + ")");
+						+ ChatColor.COLOR_CHAR + "r - "
+						+ (installed ? ((latest.equals(version)) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c")
+								: "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
 			}
 		}
 		if (sub == null || sub.equalsIgnoreCase("mods")) {
-			Arena.pmsg(sender, "�a--- Arena Mods ----> /mods");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a--- Arena Mods ----> /mods");
 			final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
 					false);
 			for (String key : entries) {
@@ -140,11 +141,11 @@ public class PAA_Install extends AbstractGlobalCommand {
 				if (installed) {
 					version = mod.version();
 				}
-				Arena.pmsg(sender, ((installed) ? "�e" : "�7")
+				Arena.pmsg(sender, ((installed) ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
 						+ key
-						+ "�r - "
-						+ (installed ? ((latest.equals(version)) ? "�a" : "�c")
-								: "") + version + "�f(" + latest + ")");
+						+ ChatColor.COLOR_CHAR + "r - "
+						+ (installed ? ((latest.equals(version)) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c")
+								: "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
 			}
 
 		}
@@ -158,9 +159,9 @@ public class PAA_Install extends AbstractGlobalCommand {
 		if (source == null || !source.exists()) {
 			Arena.pmsg(
 					Bukkit.getConsoleSender(),
-					"�cFile '�r"
+					ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + "r"
 							+ file
-							+ "�c' not found. Please extract the file to /files before trying to install!");
+							+ ChatColor.COLOR_CHAR + "c' not found. Please extract the file to /files before trying to install!");
 			return false;
 		}
 

@@ -44,7 +44,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 		
 		if (args.length == 0) {
 			// show teams
-			arena.msg(sender, Language.parse(arena, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), "�f,")));
+			arena.msg(sender, Language.parse(arena, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "f,")));
 			return;
 		}
 		

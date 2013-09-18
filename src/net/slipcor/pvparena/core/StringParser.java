@@ -61,7 +61,7 @@ public final class StringParser {
 			findReplace.put("~", "<<tilde>>");
 			findReplace.put("|", "<<pipe>>");
 			findReplace.put(",", "<<comma>>");
-			findReplace.put("�", "&");
+			findReplace.put(ChatColor.COLOR_CHAR + "", "&");
 		} else {
 			findReplace.put("<<colon>>", ":");
 			findReplace.put("<<tilde>>", "~");
@@ -584,7 +584,7 @@ public final class StringParser {
 			temp.append(codeCharacters(itemStack.getItemMeta().getDisplayName(),true));
 		}
 
-		return temp.toString().replace('�', '&');
+		return temp.toString().replace(ChatColor.COLOR_CHAR, '&');
 	}
 
 	public static String getWoolEnumFromChatColorEnum(final String color) {

@@ -13,6 +13,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.managers.ArenaManager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -46,27 +47,27 @@ public class PAI_Version extends AbstractGlobalCommand {
 			names.add(a.getName());
 		}
 
-		Arena.pmsg(sender, "�e�n-- PVP Arena version information --");
-		Arena.pmsg(sender, "�ePVP Arena version: �l" + PVPArena.instance.getDescription().getVersion());
+		Arena.pmsg(sender, ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "n-- PVP Arena version information --");
+		Arena.pmsg(sender, ChatColor.COLOR_CHAR + "ePVP Arena version: " + ChatColor.COLOR_CHAR + "l" + PVPArena.instance.getDescription().getVersion());
 		if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
-			Arena.pmsg(sender, "�7-----------------------------------");
-			Arena.pmsg(sender, "�cArena Goals:");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "cArena Goals:");
 			for (ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
-				Arena.pmsg(sender,  "�c" + ag.getName() + " - " + ag.version());
+				Arena.pmsg(sender,  ChatColor.COLOR_CHAR + "c" + ag.getName() + " - " + ag.version());
 			}
 		}
 		if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
-			Arena.pmsg(sender, "�7-----------------------------------");
-			Arena.pmsg(sender, "�aMods:");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aMods:");
 			for (ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
-				Arena.pmsg(sender,  "�a" + am.getName() + " - " + am.version());
+				Arena.pmsg(sender,  ChatColor.COLOR_CHAR + "a" + am.getName() + " - " + am.version());
 			}
 		}
 		if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
-			Arena.pmsg(sender, "�7-----------------------------------");
-			Arena.pmsg(sender, "�aRegionshapes:");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
+			Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aRegionshapes:");
 			for (ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
-				Arena.pmsg(sender,  "�a" + ars.getName() + " - " + ars.version());
+				Arena.pmsg(sender,  ChatColor.COLOR_CHAR + "a" + ars.getName() + " - " + ars.version());
 			}
 		}
 	}
