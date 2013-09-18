@@ -18,8 +18,9 @@ import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Update;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.Updater;
+import net.slipcor.pvparena.core.Updater.UpdateResult;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
@@ -552,7 +553,17 @@ public class PlayerListener implements Listener {
 			return; // no OP => OUT
 		}
 		DEBUG.i("OP joins the game", player);
-		Update.message(player);
+		if (PVPArena.instance.getUpdater() != null) {
+			UpdateResult test = PVPArena.instance.getUpdater().getResult();
+			Updater updater = PVPArena.instance.getUpdater();
+			if (test == UpdateResult.UPDATE_AVAILABLE) {
+				Arena.pmsg(player, updater.getLatestVersionString() + " is available!");
+				Arena.pmsg(player, "http://dev.bukkit.org/bukkit-plugins/pvparena/files");
+			} else if (test == UpdateResult.SUCCESS) {
+				Arena.pmsg(player, "The plugin has been updated, please restart the server!");
+				
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)

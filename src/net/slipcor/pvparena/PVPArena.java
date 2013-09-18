@@ -47,6 +47,8 @@ public class PVPArena extends JavaPlugin {
 	private ArenaGoalManager agm = null;
 	private ArenaModuleManager amm = null;
 	private ArenaRegionShapeManager arsm = null;
+	
+	private Updater updater = null;
 
 	/**
 	 * Hand over the ArenaGoalManager instance
@@ -82,6 +84,10 @@ public class PVPArena extends JavaPlugin {
 	 */
 	public String getFileName() {
 		return this.getFile().getName();
+	}
+
+	public Updater getUpdater() {
+		return updater;
 	}
 
 	/**
@@ -321,7 +327,29 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.load(this, Bukkit.getConsoleSender());
 		ArenaManager.load_arenas();
-		new Update(this);
+		final String update = getConfig().getString("update").toLowerCase();
+		
+		final Updater.UpdateType updateType;
+		final boolean announce;
+		
+		if (update.contains("ann")) {
+			updateType = Updater.UpdateType.NO_DOWNLOAD;
+			announce = true;
+		} else if (update.contains("down") || update.contains("load")) {
+			updateType = Updater.UpdateType.DEFAULT;
+			announce = false;
+		} else if (update.equals("both")) {
+			updateType = Updater.UpdateType.DEFAULT;
+			announce = true;
+		} else {
+			updateType = null;
+			announce = false;
+		}
+		
+		if (updateType != null) {
+			updater = new Updater(this, "pvparena", this.getFile(), updateType, announce);
+		}
+		// else: Updater OFF
 
 		if (ArenaManager.count() > 0) {
 
