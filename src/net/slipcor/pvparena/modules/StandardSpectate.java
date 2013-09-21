@@ -61,6 +61,11 @@ public class StandardSpectate extends ArenaModule {
 
 	@Override
 	public void commitSpectate(final Player player) {
+		final PAJoinEvent event = new PAJoinEvent(arena, player, true);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 
 		// standard join --> lounge
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
@@ -75,9 +80,6 @@ public class StandardSpectate extends ArenaModule {
 		if (aPlayer.getState() == null) {
 			
 			final Arena arena = aPlayer.getArena();
-
-			final PAJoinEvent event = new PAJoinEvent(arena, player, false);
-			Bukkit.getPluginManager().callEvent(event);
 
 			aPlayer.createState(player);
 			ArenaPlayer.backupAndClearInventory(arena, player);

@@ -161,7 +161,11 @@ public class StandardLounge extends ArenaModule {
 
 	@Override
 	public void commitJoin(final Player sender, final ArenaTeam team) {
-
+		final PAJoinEvent event = new PAJoinEvent(arena, sender, false);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));
@@ -198,9 +202,6 @@ public class StandardLounge extends ArenaModule {
 		if (player.getState() == null) {
 			
 			final Arena arena = player.getArena();
-
-			final PAJoinEvent event = new PAJoinEvent(arena, player.get(), false);
-			Bukkit.getPluginManager().callEvent(event);
 
 			player.createState(player.get());
 			ArenaPlayer.backupAndClearInventory(arena, player.get());

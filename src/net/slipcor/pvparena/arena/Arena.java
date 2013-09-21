@@ -1392,17 +1392,21 @@ public class Arena {
 		}
 		getDebugger().i("sum == " + sum);
 		final String errror = ready();
-		if (errror == null || errror.equals("")) {
+		Boolean handle = PACheck.handleStart(this, null);
+		if ((errror == null || errror.equals(""))
+				&& (handle == true)) {
 			getDebugger().i("START!");
-			PACheck.handleStart(this, null);
 			setFightInProgress(true);
-		} else {
+		} else if (handle == null){
 			PVPArena.instance.getLogger().info(errror);
 			for (ArenaPlayer ap : getFighters()) {
 				getDebugger().i("removing player " + ap.getName());
 				playerLeave(ap.get(), CFG.TP_EXIT, false);
 			}
 			reset(false);
+		} else {
+			// false
+			PVPArena.instance.getLogger().info("START aborted by event cancel");
 		}
 	}
 
@@ -1502,6 +1506,14 @@ public class Arena {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
 		getDebugger().i("trying to join player " + player.getName(), player);
+		
+
+
+		final PAJoinEvent event = new PAJoinEvent(this, player, false);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return false;
+		}
 
 		if (aPlayer.getStatus().equals(Status.NULL)) {
 			// joining DIRECTLY - save loc !!
@@ -1576,9 +1588,8 @@ public class Arena {
 		if (aPlayer.getState() == null) {
 			
 			final Arena arena = aPlayer.getArena();
-
-			final PAJoinEvent event = new PAJoinEvent(arena, player, false);
-			Bukkit.getPluginManager().callEvent(event);
+			
+			
 
 			aPlayer.createState(player);
 			ArenaPlayer.backupAndClearInventory(arena, player);

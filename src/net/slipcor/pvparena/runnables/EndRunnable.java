@@ -69,7 +69,9 @@ public class EndRunnable extends ArenaRunnable {
 				arena.endRunner = null;
 			}
 			
-			PACheck.handleStart(arena, null);
+			if (true != PACheck.handleStart(arena, null)) {
+				return;
+			}
 			
 			for (ArenaPlayer ap : arena.getFighters()) {
 				arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),

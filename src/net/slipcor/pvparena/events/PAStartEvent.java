@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.events;
 
 import net.slipcor.pvparena.arena.Arena;
+
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -14,9 +16,10 @@ import org.bukkit.event.HandlerList;
  * @version v0.9.1
  */
 
-public class PAStartEvent extends Event {
+public class PAStartEvent extends Event implements Cancellable {
 	private static final HandlerList HANDLERS = new HandlerList();
 	private final Arena arena;
+	private boolean cancelled;
 
 	/**
 	 * create a start event instance
@@ -25,7 +28,7 @@ public class PAStartEvent extends Event {
 	 *            the starting arena
 	 */
 	public PAStartEvent(final Arena arena) {
-		super();
+		super(); 
 		this.arena = arena;
 	}
 
@@ -44,5 +47,15 @@ public class PAStartEvent extends Event {
 
 	public HandlerList getHandlers() {
 		return HANDLERS;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	@Override
+	public void setCancelled(boolean value) {
+		cancelled = value;
 	}
 }

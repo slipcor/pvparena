@@ -594,7 +594,7 @@ public class PACheck {
 		commit.commitSpectate((Player) sender);
 	}
 
-	public static void handleStart(final Arena arena, final CommandSender sender) {
+	public static Boolean handleStart(final Arena arena, final CommandSender sender) {
 		PACheck res = new PACheck();
 
 		ArenaGoal commit = null;
@@ -619,15 +619,18 @@ public class PACheck {
 			} else {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
 			}
-			return;
+			return null;
 		}
 		
 		if (arena.getFighters().size() < 2 || arena.getFighters().size() < arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS)) {
-			return;
+			return false;
 		}
 		
 		final PAStartEvent event = new PAStartEvent(arena);
 		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return false;
+		}
 		
 		arena.getDebugger().i("teleporting all players to their spawns", sender);
 
@@ -671,6 +674,7 @@ public class PACheck {
 		}
 		
 		arena.setStartingTime();
+		return true;
 	}
 }
 /*
