@@ -1,6 +1,7 @@
 package net.slipcor.pvparena;
 
 import java.io.File;
+import java.io.IOException;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
@@ -17,6 +18,7 @@ import net.slipcor.pvparena.listeners.*;
 import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.metrics.Metrics;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -354,9 +356,48 @@ public class PVPArena extends JavaPlugin {
 			final Tracker trackMe = new Tracker();
 			trackMe.start();
 
+			Metrics metrics;
+			try {
+				metrics = new Metrics(this);
+				final Metrics.Graph atg = metrics.createGraph("Game modes installed");
+				for (ArenaGoal at : agm.getAllGoals()) {
+					atg.addPlotter(new WrapPlotter(at.getName()));
+				}
+				final Metrics.Graph amg = metrics
+						.createGraph("Enhancement modules installed");
+				for (ArenaModule am : amm.getAllMods()) {
+					amg.addPlotter(new WrapPlotter(am.getName()));
+				}
+				final Metrics.Graph acg = metrics.createGraph("Arena count");
+				acg.addPlotter(new WrapPlotter("count", ArenaManager
+						.getArenas().size()));
+
+				metrics.start();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		}
 
 		Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription()
 				.getFullName());
+	}
+
+	private class WrapPlotter extends Metrics.Plotter {
+		final private int arenaCount;
+
+		public WrapPlotter(final String name) {
+			super(name);
+			arenaCount = 1;
+		}
+
+		public WrapPlotter(final String name, final int count) {
+			super(name);
+			arenaCount = count;
+		}
+
+		public int getValue() {
+			return arenaCount;
+		}
 	}
 }

@@ -45,7 +45,6 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.0.9.272 - remove Stats - many thanks to Hidendra. We will miss it <3
 * v1.0.9.271 - make PAJoinEvent and PAStartEvent cancellable
 * v1.0.9.270 - add a DBO guideline compliant updater
 * v1.0.8.269 - yippie, fixed?
