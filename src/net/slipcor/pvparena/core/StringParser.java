@@ -294,7 +294,11 @@ public final class StringParser {
 			final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
 			if (temp[2].contains(SAFE_BREAK)) {
-				data = temp[2].split(SAFE_BREAK)[0];
+				if (mat == Material.POTION) {
+					data = temp[2];
+				} else {
+					data = temp[2].split(SAFE_BREAK)[0];
+				}
 			}
 			
 			final String lore = dataSplit.length > 1 ? dataSplit[1] : null;

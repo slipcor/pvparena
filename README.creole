@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.9.274 - allow Potions to contain more than one effect - derp 
 * v1.0.9.271 - make PAJoinEvent and PAStartEvent cancellable
 * v1.0.9.270 - add a DBO guideline compliant updater
 * v1.0.8.269 - yippie, fixed?
