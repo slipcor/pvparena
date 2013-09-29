@@ -214,6 +214,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
+		if (block == null || !block.getType().equals(Material.TNT)) {
+			return res;
+		}
+
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
+			return res;
+		}
 		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
@@ -321,14 +329,6 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
 	@Override
 	public boolean commitSetFlag(final Player player, final Block block) {
-		if (block == null || !block.getType().equals(Material.TNT)) {
-			return false;
-		}
-
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			return false;
-		}
 
 		arena.getDebugger().i("trying to set a tnt", player);
 

@@ -420,6 +420,19 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
+		if (block == null
+				|| !block
+						.getType()
+						.name()
+						.equals(arena.getArenaConfig().getString(
+								CFG.GOAL_FLAGS_FLAGTYPE))) {
+			return res;
+		}
+
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
+			return res;
+		}
 		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
@@ -617,19 +630,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public boolean commitSetFlag(final Player player, final Block block) {
-		if (block == null
-				|| !block
-						.getType()
-						.name()
-						.equals(arena.getArenaConfig().getString(
-								CFG.GOAL_FLAGS_FLAGTYPE))) {
-			return false;
-		}
-
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			return false;
-		}
 
 		arena.getDebugger().i("trying to set a flag", player);
 

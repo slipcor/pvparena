@@ -239,6 +239,15 @@ public class GoalLiberation extends ArenaGoal  {
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
+		if (block == null
+				|| block.getType() != Material.STONE_BUTTON) {
+			return res;
+		}
+
+		if (!PVPArena.hasAdminPerms(player)
+				&& !(PVPArena.hasCreatePerms(player, arena))) {
+			return res;
+		}
 		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
@@ -397,15 +406,6 @@ public class GoalLiberation extends ArenaGoal  {
 
 	@Override
 	public boolean commitSetFlag(final Player player, final Block block) {
-		if (block == null
-				|| block.getType() != Material.STONE_BUTTON) {
-			return false;
-		}
-
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			return false;
-		}
 
 		arena.getDebugger().i("trying to set a button", player);
 

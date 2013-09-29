@@ -427,6 +427,9 @@ public class GoalDomination extends ArenaGoal {
 				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
 			return res;
 		}
+		if (block == null || !block.getType().equals(Material.WOOL)) {
+			return res;
+		}
 		res.setPriority(this, PRIORITY); // success :)
 
 		return res;
@@ -528,9 +531,6 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public boolean commitSetFlag(final Player player, final Block block) {
-		if (block == null || !block.getType().equals(Material.WOOL)) {
-			return false;
-		}
 
 		if (PVPArena.hasAdminPerms(player)
 				|| (PVPArena.hasCreatePerms(player, arena))
