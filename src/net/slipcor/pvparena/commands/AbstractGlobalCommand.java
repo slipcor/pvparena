@@ -88,8 +88,6 @@ public abstract class AbstractGlobalCommand {
 			return new PAA_Debug();
 		} else if (name.contains("help") || name.equals("-h")) {
 			return new PAI_Help();
-		} else if (name.contains("import") || name.startsWith("!imp")) {
-			return new PAA_Import();
 		} else if (name.equals("install") || name.equals("!i")) {
 			return new PAA_Install();
 		} else if (name.contains("uninstall") || name.equals("!ui")) {

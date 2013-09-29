@@ -107,7 +107,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 	public final List<T> load(Class<? extends NCBLoadable> classType) {
 		for (File file : files) {
 			try {
-				JarFile jarFile = new JarFile(file);
+				final JarFile jarFile = new JarFile(file);
 				String mainClass = null;
 
 				if (jarFile.getEntry("path.yml") != null) {

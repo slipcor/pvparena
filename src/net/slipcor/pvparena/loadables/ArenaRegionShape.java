@@ -576,7 +576,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 				}
 				ap.get().setLastDamageCause(
 						new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-								1000));
+								1000d));
 				ap.get().damage(1000);
 			}
 			if (flags.contains(RegionFlag.WIN) && this.contains(pLoc)) {
@@ -595,7 +595,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 							Bukkit.getWorld(world).strikeLightningEffect(
 									ap2.get().getLocation());
 							final EntityDamageEvent event = new EntityDamageEvent(
-									ap2.get(), DamageCause.LIGHTNING, 10);
+									ap2.get(), DamageCause.LIGHTNING, 10d);
 							PlayerListener.finallyKillPlayer(arena,
 									ap2.get(), event);
 						}
@@ -609,7 +609,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 						Bukkit.getWorld(world).strikeLightningEffect(
 								ap.get().getLocation());
 						final EntityDamageEvent event = new EntityDamageEvent(
-								ap.get(), DamageCause.LIGHTNING, 10);
+								ap.get(), DamageCause.LIGHTNING, 10d);
 						PlayerListener
 								.finallyKillPlayer(arena, ap.get(), event);
 					}
@@ -626,7 +626,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 												ap2.get().getLocation());
 								final EntityDamageEvent event = new EntityDamageEvent(
 										ap2.get(), DamageCause.LIGHTNING,
-										10);
+										10d);
 								PlayerListener.finallyKillPlayer(arena,
 										ap2.get(), event);
 							}
@@ -645,7 +645,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 						if (loc.distance(ap.get().getLocation()) < 3) {
 							ap.get().setLastDamageCause(
 									new EntityDamageEvent(ap.get(),
-											DamageCause.CUSTOM, 1000));
+											DamageCause.CUSTOM, 1000d));
 							ap.get().damage(
 									arena.getArenaConfig().getInt(
 											CFG.DAMAGE_SPAWNCAMP));
@@ -668,7 +668,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 							CFG.GENERAL_LEAVEDEATH)) {
 						ap.get().setLastDamageCause(
 								new EntityDamageEvent(ap.get(),
-										DamageCause.CUSTOM, 1000));
+										DamageCause.CUSTOM, 1000d));
 						// ap.get().setHealth(0);
 						ap.get().damage(1000);
 					} else {

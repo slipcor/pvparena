@@ -745,43 +745,6 @@ public class Config {
 	}
 
 	/**
-	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a
-	 * Block Location. This method will only accept strings of the specified
-	 * form.
-	 * 
-	 * @param coords
-	 *            a string of the form "world,x,y,z,yaw,pitch"
-	 * @return a PALocation in the given world with the given coordinates
-	 */
-	@Deprecated
-	public static PALocation parseOldLocation(final String coords, final String world) {
-		String[] parts = coords.split(",");
-		// 245,45,-88,90.7486,2.5499942
-		if (parts.length == 3) {
-			parts = (coords + ",0.0,0.0").split(",");
-		}
-
-		if (parts.length != 5) {
-			throw new IllegalArgumentException(
-					"Input string must contain x, y, z, yaw and pitch: "
-							+ coords);
-		}
-		final Integer x = parseInteger(parts[0]);
-		final Integer y = parseInteger(parts[1]);
-		final Integer z = parseInteger(parts[2]);
-		final Float yaw = parseFloat(parts[3]);
-		final Float pitch = parseFloat(parts[4]);
-
-		if (Bukkit.getWorld(world) == null || x == null || y == null
-				|| z == null || yaw == null || pitch == null) {
-			throw new IllegalArgumentException(
-					"Some of the parsed values are null!");
-		}
-
-		return new PALocation(world, x, y, z, pitch, yaw);
-	}
-
-	/**
 	 * 
 	 */
 	public static ArenaRegionShape parseRegion(final Arena arena,
