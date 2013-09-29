@@ -1579,7 +1579,7 @@ public class Arena {
 		int pos = (new Random()).nextInt(spawns.size()); 
 		
 		for (PASpawn spawn : spawns) {
-			if (pos-- < 0) {
+			if (--pos < 0) {
 				tpPlayerToCoordName(player, spawn.getName());
 				break;
 			}

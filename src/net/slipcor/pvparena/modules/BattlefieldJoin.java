@@ -116,7 +116,7 @@ public class BattlefieldJoin extends ArenaModule {
 		int pos = spawns.size(); 
 		
 		for (PASpawn spawn : spawns) {
-			if (pos-- < 0) {
+			if (--pos < 0) {
 				arena.tpPlayerToCoordName(player.get(), spawn.getName());
 				break;
 			}

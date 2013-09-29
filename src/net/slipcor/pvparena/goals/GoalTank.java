@@ -330,7 +330,7 @@ public class GoalTank extends ArenaGoal {
 		int pos = spawns.size(); 
 		
 		for (PASpawn spawn : spawns) {
-			if (pos-- < 0) {
+			if (--pos < 0) {
 				arena.tpPlayerToCoordName(tank.get(), spawn.getName());
 				break;
 			}
