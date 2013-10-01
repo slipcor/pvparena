@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.9.278 - allow to enforce late joining only to initial players "onlyifhasplayed" 
 * v1.0.9.277 - remove import command. goodbye, v0.8
 * v1.0.9.276 - properly iterate through random spawns
 * v1.0.9.275 - actually allow multiple block related goals -.-

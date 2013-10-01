@@ -86,6 +86,7 @@ public class Config {
 		
 		JOIN_RANGE("join.range", 0),
 		JOIN_FORCE("join.forceregionjoin", false),
+		JOIN_ONLYIFHASPLAYED("join.onlyifhasplayed", false),
 		
 		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
 		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
