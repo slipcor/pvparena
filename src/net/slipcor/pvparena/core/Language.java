@@ -17,8 +17,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * provides methods to display configurable texts
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public final class Language {
@@ -484,6 +482,8 @@ public final class Language {
 		MODULE_BETTERGEARS_TEAMDONE("nulang.bettergears.teamdone", "Team %1% now has Color %2%"),
 		
 		MODULE_BLOCKRESTORE_CLEARINVDONE("nulang.blockrestore.clearinvdone", "Inventories cleared! Expect lag on next arena start!"),
+
+		MODULE_CHESTFILLER_CLEAR("nulang.chestfiller.clear", "Inventories cleared!"),
 		
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
 
