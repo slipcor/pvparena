@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.9.283 - add a Vault setting to only allow betting during the first X seconds
 * v1.0.9.281 - add language for chestfiller reset
 * v1.0.9.279 - fix BattleFieldJoin putting ppl nowhere before the match started
 * v1.0.9.278 - allow to enforce late joining only to initial players "onlyifhasplayed" 

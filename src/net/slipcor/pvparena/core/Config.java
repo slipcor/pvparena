@@ -34,8 +34,6 @@ import org.bukkit.inventory.ItemStack;
  * start of this config.
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class Config {
@@ -267,6 +265,7 @@ public class Config {
 		MODULES_TURRETS_MININTERVAL("modules.turrets.mininterval", 0),
 
 		MODULES_VAULT_BETPOT("modules.vault.betpot", false),
+		MODULES_VAULT_BETTIME("modules.vault.bettime", 60),
 		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),
 		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1)),
