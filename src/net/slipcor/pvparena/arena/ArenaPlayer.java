@@ -201,22 +201,6 @@ public class ArenaPlayer {
 
 				final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
 				for (String player : players) {
-					/*
-					final Set<String> values = cfg.getConfigurationSection(arenaname+"."+player).getKeys(false);
-
-					ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
-					
-					for (String value : values) {
-						final StatisticsManager.type statType = StatisticsManager.type.getByString(value);
-						
-						if (statType == null) {
-							System.out.print("null: " + value);
-							continue;
-						}
-						
-						//aPlayer.addStatistic(arenaname, statType, cfg.getInt(arenaname+"."+player+"."+value));
-					}
-					*/
 					totalPlayers.put(player, ArenaPlayer.parsePlayer(player)); 
 				}
 				

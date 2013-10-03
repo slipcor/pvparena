@@ -15,7 +15,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.goals.*;
 import net.slipcor.pvparena.ncloader.NCBLoader;
@@ -328,8 +327,6 @@ public class ArenaGoalManager {
 		}
 
 		ArenaModuleManager.timedEnd(arena, winners);
-		
-		System.out.print(StringParser.joinArray(winners.toArray(), "---"));
 
 		if (arena.isFreeForAll()) {
 			for (ArenaTeam team : arena.getTeams()) {

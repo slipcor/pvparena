@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.modules;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -113,7 +114,7 @@ public class BattlefieldJoin extends ArenaModule {
 			spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
 		}
 		
-		int pos = spawns.size(); 
+		int pos = new Random().nextInt(spawns.size());
 		
 		for (PASpawn spawn : spawns) {
 			if (--pos < 0) {
