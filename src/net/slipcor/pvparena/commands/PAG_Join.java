@@ -48,9 +48,12 @@ public class PAG_Join extends AbstractArenaCommand {
 		}
 		
 		if (arena.isFightInProgress()
-				&& (!arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)
-						|| (arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) 
+				&& (
+						!arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)
+						||
+						(arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) 
 								&& !arena.hasAlreadyPlayed(sender.getName())))) {
+			
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
 			return;
 		}

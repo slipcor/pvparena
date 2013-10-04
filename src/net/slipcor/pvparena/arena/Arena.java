@@ -641,6 +641,9 @@ public class Arena {
 	}
 
 	public void hasNotPlayed(final ArenaPlayer player) {
+		if (cfg.getBoolean(CFG.JOIN_ONLYIFHASPLAYED)) {
+			return;
+		}
 		playedPlayers.remove(player.getName());
 	}
 
