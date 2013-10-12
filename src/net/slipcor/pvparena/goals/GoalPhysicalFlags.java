@@ -733,7 +733,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 				for (ArenaClass aClass : arena.getClasses()) {
 					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
-							aClass.getName() + "spawn")) {
+							aClass.getName().toLowerCase() + "spawn")) {
 						return true;
 					}
 				}

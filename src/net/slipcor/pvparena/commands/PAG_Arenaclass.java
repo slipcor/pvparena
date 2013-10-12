@@ -56,7 +56,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 		aPlayer.setArenaClass(aClass);
 		ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
-		sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+		sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName().toLowerCase()));
 	}
 
 	@Override

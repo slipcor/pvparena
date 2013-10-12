@@ -923,7 +923,7 @@ public class Arena {
 					final ArenaClass aClass = getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS));
 					
 					if (aClass != null) {
-						this.selectClass(p, aClass.getName());
+						this.selectClass(p, aClass.getName().toLowerCase());
 					} else {
 						// player no class!
 						PVPArena.instance.getLogger().warning("Player no class: " + p.get());

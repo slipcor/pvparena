@@ -252,7 +252,7 @@ public class GoalTank extends ArenaGoal {
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 			for (ArenaClass aClass : arena.getClasses()) {
 				if (string.toLowerCase().startsWith( 
-						aClass.getName() + "spawn")) {
+						aClass.getName().toLowerCase() + "spawn")) {
 					return true;
 				}
 			}

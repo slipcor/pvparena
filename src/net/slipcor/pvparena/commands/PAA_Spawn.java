@@ -99,7 +99,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 	}
 	
 	private void commitSet(final Arena arena, final CommandSender sender, final PALocation loc, final String name) {
-		arena.spawnSet(name.toLowerCase(), loc);
+		arena.spawnSet(name, loc);
 		arena.msg(sender, Language.parse(arena, MSG.SPAWN_SET, name));
 	}
 

@@ -351,14 +351,14 @@ public class GoalInfect extends ArenaGoal {
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 			for (ArenaClass aClass : arena.getClasses()) {
 				if (string.toLowerCase().startsWith( 
-						aClass.getName() + "spawn")) {
+						aClass.getName().toLowerCase() + "spawn")) {
 					return true;
 				}
 			}
 		}
 		
 		return (arena.isFreeForAll() && string.toLowerCase()
-				.startsWith("spawn")) || string.startsWith("infected");
+				.startsWith("spawn")) || string.toLowerCase().startsWith("infected");
 	}
 
 	@Override

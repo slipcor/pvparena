@@ -381,7 +381,7 @@ public class ArenaPlayer {
 		debug.i("telepass: " + telePass + " | chatting: "
 				+ publicChatting, this.name);
 		debug.i("arena: " + (arena == null ? "null" : arena.getName()), this.name);
-		debug.i("aClass: " + (aClass == null ? "null" : aClass.getName()),
+		debug.i("aClass: " + (aClass == null ? "null" : aClass.getName().toLowerCase()),
 				this.name);
 		debug.i("location: " + ((PALocation) location).toString(), this.name);
 		debug.i("status: " + status.name(), this.name);
