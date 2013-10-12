@@ -557,7 +557,7 @@ public class PlayerListener implements Listener {
 			UpdateResult test = PVPArena.instance.getUpdater().getResult();
 			Updater updater = PVPArena.instance.getUpdater();
 			if (test == UpdateResult.UPDATE_AVAILABLE) {
-				Arena.pmsg(player, updater.getLatestVersionString() + " is available!");
+				Arena.pmsg(player, updater.getLatestName() + " is available!");
 				Arena.pmsg(player, "http://dev.bukkit.org/bukkit-plugins/pvparena/files");
 			} else if (test == UpdateResult.SUCCESS) {
 				Arena.pmsg(player, "The plugin has been updated, please restart the server!");
