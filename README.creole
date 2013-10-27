@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.9.288 - make /pa teams properly read the color variables
 * v1.0.9.287 - compare changes or fix greedy replacements - derp
 * v1.0.9.286 - if we have to care about case, we should do it the right way and constistently
 * v1.0.9.285 - fix the install.yml error and add the new curse API updater

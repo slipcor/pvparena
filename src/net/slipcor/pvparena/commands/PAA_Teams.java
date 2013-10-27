@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -67,10 +68,11 @@ public class PAA_Teams extends AbstractArenaCommand {
 			arena.getArenaConfig().save();
 		} else if (args[0].equals("add")) {
 			try {
-				final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
-				final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
+				
+				final DyeColor dColor = DyeColor.valueOf(args[2].toUpperCase());
+				final ArenaTeam newTeam = new ArenaTeam(args[1], dColor.name());
 				arena.getTeams().add(newTeam);
-				arena.getArenaConfig().setManually("teams."+newTeam.getName(), color.name());
+				arena.getArenaConfig().setManually("teams."+newTeam.getName(), dColor.name());
 				arena.getArenaConfig().save();
 
 				arena.msg(sender,  Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
