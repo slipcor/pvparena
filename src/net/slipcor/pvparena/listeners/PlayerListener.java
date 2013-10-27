@@ -519,9 +519,41 @@ public class PlayerListener implements Listener {
 				ArenaGoalManager.lateJoin(arena, player);
 			} else if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 				arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
-				if (!event.isCancelled() && arena != null && arena.getArenaConfig().getBoolean(CFG.PLAYER_QUICKLOOT)) {
-					Chest c = (Chest) block.getState();
-					InventoryManager.transferItems(player, c.getBlockInventory());
+				if (arena != null) {
+				
+					Set<ArenaRegionShape> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
+					out: if (!event.isCancelled() && bl_regions != null && !bl_regions.isEmpty()) {
+						for (ArenaRegionShape region : bl_regions) {
+							if (region.contains(new PABlockLocation(block.getLocation()))) {
+								if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
+										|| region.getRegionName().toLowerCase().contains(
+												aPlayer.getArenaClass().getName().toLowerCase())) {
+									event.setCancelled(true);
+									break out;
+								}
+							}
+						}
+					}
+					Set<ArenaRegionShape> wl_regions = arena.getRegionsByType(RegionType.WL_INV);
+					out: if (!event.isCancelled() && wl_regions != null && !wl_regions.isEmpty()) {
+						event.setCancelled(true);
+						for (ArenaRegionShape region : wl_regions) {
+							if (region.contains(new PABlockLocation(block.getLocation()))) {
+								if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
+										|| region.getRegionName().toLowerCase().contains(
+												aPlayer.getArenaClass().getName().toLowerCase())) {
+									event.setCancelled(false);
+									break out;
+								}
+							}
+						}
+					}
+				
+				
+					if (!event.isCancelled() && arena.getArenaConfig().getBoolean(CFG.PLAYER_QUICKLOOT)) {
+						Chest c = (Chest) block.getState();
+						InventoryManager.transferItems(player, c.getBlockInventory());
+					}
 				}
 			}
 		}

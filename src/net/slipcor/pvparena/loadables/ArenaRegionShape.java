@@ -79,7 +79,7 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	}
 
 	/**
-	 * RegionType for physical orientation
+	 * RegionType
 	 * 
 	 * <pre>
 	 * CUSTOM => a module added region
@@ -88,10 +88,12 @@ public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable 
 	 * BATTLE => the battlefield region
 	 * JOIN   => the join region
 	 * SPAWN  => the spawn region
+	 * BL_INV => blacklist inventory
+	 * WL_INV => whitelist inventory
 	 * </pre>
 	 */
 	public static enum RegionType {
-		CUSTOM, WATCH, LOUNGE, BATTLE, JOIN, SPAWN;
+		CUSTOM, WATCH, LOUNGE, BATTLE, JOIN, SPAWN, BL_INV, WL_INV;
 
 		public static RegionType guessFromName(final String regionName) {
 			final String name = regionName.toUpperCase();
