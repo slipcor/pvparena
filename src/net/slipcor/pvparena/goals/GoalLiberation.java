@@ -26,6 +26,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -185,7 +186,9 @@ public class GoalLiberation extends ArenaGoal  {
 						.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
 								pTeam.getColoredName()
 										+ ChatColor.YELLOW));
-				
+
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
 				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
 					if (jailedPlayer.getStatus() == Status.DEAD) {
 						SpawnManager.respawn(arena, jailedPlayer, null);
@@ -283,6 +286,8 @@ public class GoalLiberation extends ArenaGoal  {
 			return;
 		}
 
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
@@ -325,6 +330,8 @@ public class GoalLiberation extends ArenaGoal  {
 		if (!getLifeMap().containsKey(player.getName())) {
 			return;
 		}
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
+		Bukkit.getPluginManager().callEvent(gEvent);
 		int pos = getLifeMap().get(player.getName());
 		arena.getDebugger().i("lives before death: " + pos, player);
 		if (pos <= 1) {

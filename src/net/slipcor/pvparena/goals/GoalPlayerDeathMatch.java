@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,6 +21,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -131,6 +133,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		if (endRunner != null) {
 			return;
 		}
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
@@ -184,6 +188,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		arena.getDebugger().i("kills to go: " + iLives, killer);
 		if (iLives <= 1) {
 			// player has won!
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+killer.getName(),
+					"playerKill:"+killer.getName()+":"+player.getName(), "playerDeath:"+player.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
 			final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
 			for (ArenaPlayer ap : arena.getFighters()) {
 				if (ap.getName().equals(killer.getName())) {
@@ -212,6 +219,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			
 			PACheck.handleEnd(arena, false);
 		} else {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:"+killer.getName()+":"+player.getName(), "playerDeath:"+player.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
 			iLives--;
 			getLifeMap().put(killer.getName(), iLives);
 

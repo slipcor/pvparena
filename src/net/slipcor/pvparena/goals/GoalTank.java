@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -147,6 +149,8 @@ public class GoalTank extends ArenaGoal {
 		if (endRunner != null) {
 			return;
 		}
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (!ap.getStatus().equals(Status.FIGHT)) {
@@ -186,6 +190,23 @@ public class GoalTank extends ArenaGoal {
 		int iLives = getLifeMap().get(player.getName());
 		arena.getDebugger().i("lives before death: " + iLives, player);
 		if (iLives <= 1 || tanks.get(arena).equals(player.getName())) {
+			
+			if (tanks.get(arena).equals(player.getName())) {
+
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "tank", "playerDeath:"+player.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
+			} else if (doesRespawn) {
+				
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:"+player.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
+			} else {
+				
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
+			}
+			
+			
+			
 			getLifeMap().remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 				arena.getDebugger().i("faking player death", player);
@@ -194,6 +215,8 @@ public class GoalTank extends ArenaGoal {
 			// player died => commit death!
 			PACheck.handleEnd(arena, false);
 		} else {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:"+player.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
 			iLives--;
 			getLifeMap().put(player.getName(), iLives);
 

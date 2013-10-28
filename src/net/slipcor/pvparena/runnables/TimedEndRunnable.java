@@ -1,8 +1,12 @@
 package net.slipcor.pvparena.runnables;
 
+import org.bukkit.Bukkit;
+
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.goals.GoalTime;
 
 /**
  * <pre>Arena Runnable class "TimedEnd"</pre>
@@ -16,21 +20,26 @@ import net.slipcor.pvparena.core.Language.MSG;
 
 public class TimedEndRunnable extends ArenaRunnable {
 	//private static final Debug DEBUG = new Debug(42);
+	private final GoalTime goal;
 	/**
 	 * create a timed arena runnable
 	 * 
 	 * @param arena
 	 *            the arena we are running in
+	 * @param goalTime 
 	 */
-	public TimedEndRunnable(final Arena arena, final int seconds) {
+	public TimedEndRunnable(final Arena arena, final int seconds, GoalTime goalTime) {
 		super(MSG.TIMER_ENDING_IN.getNode(), seconds, null, arena, false);
 		arena.getDebugger().i("TimedEndRunnable constructor");
 		arena.endRunner = this;
+		this.goal = goalTime;
 	}
 	
 	@Override
 	public void commit() {
 		arena.getDebugger().i("TimedEndRunnable commiting");
+		PAGoalEvent gEvent = new PAGoalEvent(arena, goal, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		if (arena.isFightInProgress()) {
 			PVPArena.instance.getAgm().timedEnd(arena);
 		}

@@ -36,6 +36,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -255,6 +256,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 				reduceLivesCheckEndAndCommit(arena, flagTeam); // TODO move to
 																// "commit" ?
+
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+aPlayer.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
 			}
 		} else {
 			final ArenaTeam pTeam = aPlayer.getArenaTeam();
@@ -599,6 +603,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	public void commitEnd(final boolean force) {
 		arena.getDebugger().i("[FLAGS]");
 
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		ArenaTeam aTeam = null;
 
 		for (ArenaTeam team : arena.getTeams()) {

@@ -27,6 +27,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -500,6 +501,8 @@ public class GoalDomination extends ArenaGoal {
 	public void commitEnd(final boolean force) {
 		arena.getDebugger().i("[DOMINATION]");
 
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		ArenaTeam aTeam = null;
 
 		for (ArenaTeam team : arena.getTeams()) {

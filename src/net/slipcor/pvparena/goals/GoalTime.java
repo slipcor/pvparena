@@ -56,7 +56,7 @@ public class GoalTime extends ArenaGoal {
 		if (timed > 0) {
 			arena.getDebugger().i("arena timing!");
 			// initiate autosave timer
-			ter = new TimedEndRunnable(arena, timed);
+			ter = new TimedEndRunnable(arena, timed, this);
 		}
 	}
 	

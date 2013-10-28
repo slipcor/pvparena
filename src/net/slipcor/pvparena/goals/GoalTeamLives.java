@@ -3,6 +3,7 @@ package net.slipcor.pvparena.goals;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +21,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -117,6 +119,8 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void commitEnd(boolean force) {
 		arena.getDebugger().i("[TEAMS]");
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 
 		ArenaTeam aTeam = null;
 
@@ -149,6 +153,13 @@ public class GoalTeamLives extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
 			final String error, final PlayerDeathEvent event) {
+		if (doesRespawn) {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:"+respawnPlayer.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
+		} else {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+respawnPlayer.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
+		}
 
 		final ArenaTeam respawnTeam = ArenaPlayer
 				.parsePlayer(respawnPlayer.getName()).getArenaTeam();

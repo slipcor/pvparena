@@ -38,6 +38,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -225,6 +226,8 @@ public class GoalFood extends ArenaGoal implements Listener {
 	public void commitEnd(final boolean force) {
 		arena.getDebugger().i("[FOOD]");
 
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 		ArenaTeam aTeam = null;
 
 		for (ArenaTeam team : arena.getTeams()) {
@@ -476,9 +479,15 @@ public class GoalFood extends ArenaGoal implements Listener {
 		
 		if (sType == SlotType.CONTAINER) {
 			// OUT of container
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
+					aPlayer.getName()+":"+team.getName()+":-"+stack.getAmount());
+			Bukkit.getPluginManager().callEvent(gEvent);
 			this.reduceLives(arena, team, -stack.getAmount());
 		} else {
 			// INTO container
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
+					aPlayer.getName()+":"+team.getName()+":"+stack.getAmount());
+			Bukkit.getPluginManager().callEvent(gEvent);
 			this.reduceLives(arena, team, stack.getAmount());
 		}
 	}

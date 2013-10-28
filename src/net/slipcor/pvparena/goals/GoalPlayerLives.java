@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,6 +22,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -141,6 +143,8 @@ public class GoalPlayerLives extends ArenaGoal {
 		if (endRunner != null) {
 			return;
 		}
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+		Bukkit.getPluginManager().callEvent(gEvent);
 
 		for (ArenaTeam team : arena.getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
@@ -182,6 +186,13 @@ public class GoalPlayerLives extends ArenaGoal {
 			final String error, final PlayerDeathEvent event) {
 		if (!getLifeMap().containsKey(player.getName())) {
 			return;
+		}
+		if (doesRespawn) {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:"+player.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
+		} else {
+			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
+			Bukkit.getPluginManager().callEvent(gEvent);
 		}
 		int pos = getLifeMap().get(player.getName());
 		arena.getDebugger().i("lives before death: " + pos, player);
