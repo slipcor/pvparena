@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.0.9.292 - maybe support CrackShot and other plugins utilizing "only" projectiles
 * v1.0.9.291 - add more goal specific events
 * v1.0.9.290 - enhance duel module messaging
 * v1.0.9.289 - add regiontypes! BL_INV / WL_INV => blacklist / whitelist inventory

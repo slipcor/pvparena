@@ -46,6 +46,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -723,6 +724,22 @@ public class PlayerListener implements Listener {
 			return; // no fighting player or no powerups => OUT
 		}
 		ArenaModuleManager.onPlayerVelocity(arena, event);
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onPlayerVelocity(final ProjectileLaunchEvent event) {
+		if (event.getEntity().getShooter() instanceof Player) {
+			final Player player = (Player) event.getEntity().getShooter();
+			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+			final Arena arena = aPlayer.getArena();
+			if (arena == null) {
+				return; // no fighting player => OUT
+			}
+			if (aPlayer.getStatus() == Status.FIGHT || aPlayer.getStatus() == Status.NULL) {
+				return;
+			}
+			event.setCancelled(true);
+		}
 	}
 
 }
