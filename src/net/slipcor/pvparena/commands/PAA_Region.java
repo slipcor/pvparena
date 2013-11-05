@@ -118,6 +118,11 @@ public class PAA_Region extends AbstractArenaCommand {
 				shape = new CuboidRegion();
 			}
 			
+			if (shape == null) {
+				arena.msg(sender, Language.parse(arena, MSG.ARENA_REGION_SHAPE_UNKNOWN, args[1]));
+				return;
+			}
+			
 			final ArenaRegion region = new ArenaRegion(arena, args[0], shape, locs);
 			region.saveToConfig();
 			

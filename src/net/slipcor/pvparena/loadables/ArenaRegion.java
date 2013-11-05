@@ -51,7 +51,7 @@ public class ArenaRegion {
 
 	private static final Set<Material> NOWOOLS = new HashSet<Material>();
 
-	protected final PABlockLocation[] locs;
+	public final PABlockLocation[] locs;
 	
 	protected final ArenaRegionShape shape;
 
@@ -240,10 +240,12 @@ public class ArenaRegion {
 			final ArenaRegionShape shape, final PABlockLocation[] locs) {
 
 		this.arena = arena;
-		arena.addRegion(this);
 		this.name = name;
 		this.locs = locs;
 		this.shape = shape.clone();
+		this.type = RegionType.CUSTOM;
+		this.world = locs[0].getWorldName();
+		arena.addRegion(this);
 		this.shape.initialize(this);
 	}
 
@@ -324,10 +326,6 @@ public class ArenaRegion {
 
 	public Set<RegionFlag> getFlags() {
 		return flags;
-	}
-
-	public PABlockLocation[] getLocs() {
-		return locs.clone();
 	}
 
 	public Set<RegionProtection> getProtections() {
@@ -652,8 +650,8 @@ public class ArenaRegion {
 				return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
 			}
 
-			getLocs()[0].setY(getShape().getCenter().getY() - (height >> 1));
-			getLocs()[1].setY(getLocs()[0].getY() + height);
+			locs[0].setY(getShape().getCenter().getY() - (height >> 1));
+			locs[1].setY(locs[0].getY() + height);
 
 			return Language.parse(arena, MSG.REGION_HEIGHT, value);
 		} else if (key.equalsIgnoreCase("radius")) {
@@ -666,13 +664,13 @@ public class ArenaRegion {
 
 			final PABlockLocation loc = getShape().getCenter();
 
-			getLocs()[0].setX(loc.getX() - radius);
-			getLocs()[0].setY(loc.getY() - radius);
-			getLocs()[0].setZ(loc.getZ() - radius);
+			locs[0].setX(loc.getX() - radius);
+			locs[0].setY(loc.getY() - radius);
+			locs[0].setZ(loc.getZ() - radius);
 
-			getLocs()[1].setX(loc.getX() + radius);
-			getLocs()[1].setY(loc.getY() + radius);
-			getLocs()[1].setZ(loc.getZ() + radius);
+			locs[1].setX(loc.getX() + radius);
+			locs[1].setY(loc.getY() + radius);
+			locs[1].setZ(loc.getZ() + radius);
 
 			return Language.parse(arena, MSG.REGION_RADIUS, value);
 		} else if (key.equalsIgnoreCase("position")) {

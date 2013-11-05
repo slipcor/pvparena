@@ -38,12 +38,7 @@ public class ArenaRegionShapeManager {
 		}
 		loader = new NCBLoader<ArenaRegionShape>(plugin, path, new Object[] {});
 		regions = loader.load(ArenaRegionShape.class);
-		//regions.add(new CuboidRegion());
-
-		for (ArenaRegionShape mod : regions) {
-			DEBUG.i("module ArenaRegion loaded: "
-					+ mod.getName() + " (version " + mod.getVersion() +")");
-		}
+		fill();
 	}
 
 	private void fill() {
@@ -53,7 +48,7 @@ public class ArenaRegionShapeManager {
 
 		for (ArenaRegionShape mod : regions) {
 			mod.onThisLoad();
-			DEBUG.i("module ArenaRegion loaded: "
+			DEBUG.i("module ArenaRegionShape loaded: "
 					+ mod.getName() + " (version " + mod.getVersion() +")");
 		}
 	}

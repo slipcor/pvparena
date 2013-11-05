@@ -115,6 +115,8 @@ public abstract class AbstractArenaCommand {
 			return new PAA_Round();
 		} else if (name.equals("set") || name.equals("!s")) {
 			return new PAA_Set();
+		} else if (name.equals("setup") || name.equals("!su")) {
+			return new PAA_Setup();
 		} else if (name.equals("setowner") || name.equals("!so")) {
 			return new PAA_SetOwner();
 		} else if (name.equals("spawn") || name.equals("!sp")) {

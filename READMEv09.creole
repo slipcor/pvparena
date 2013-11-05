@@ -1,4 +1,4 @@
-== PVP-Arena v1.0 Changelog
+== PVP-Arena v0.9 Changelog
 
 * v0.9.9.18 - /pa [arena] region [regionname] border - YAY!
 * v0.9.9.17 - don't spawn players on flags. derp :p

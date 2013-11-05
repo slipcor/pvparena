@@ -842,12 +842,12 @@ public class Config {
 			final Set<RegionFlag> flags, final Set<RegionProtection> protections) {
 		final String[] result = new String[11];
 		result[0] = region.getWorldName();
-		result[1] = String.valueOf(region.getLocs()[0].getX());
-		result[2] = String.valueOf(region.getLocs()[0].getY());
-		result[3] = String.valueOf(region.getLocs()[0].getZ());
-		result[4] = String.valueOf(region.getLocs()[1].getX());
-		result[5] = String.valueOf(region.getLocs()[1].getY());
-		result[6] = String.valueOf(region.getLocs()[1].getZ());
+		result[1] = String.valueOf(region.locs[0].getX());
+		result[2] = String.valueOf(region.locs[0].getY());
+		result[3] = String.valueOf(region.locs[0].getZ());
+		result[4] = String.valueOf(region.locs[1].getX());
+		result[5] = String.valueOf(region.locs[1].getY());
+		result[6] = String.valueOf(region.locs[1].getZ());
 		result[7] = region.getShape().getName();
 		result[10] = region.getType().name();
 
