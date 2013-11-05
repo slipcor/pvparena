@@ -42,7 +42,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 		final Set<String> names = new HashSet<String>();
 		
 		for (Arena a : ArenaManager.getArenas()) {
-			names.add((a.isLocked()?"&c":(PAA_Edit.activeEdits.containsValue(a)?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
+			names.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
 		}
 		
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, ", ")));

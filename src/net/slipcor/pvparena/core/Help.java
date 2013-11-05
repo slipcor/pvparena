@@ -16,8 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * provides methods to display configurable help texts
  * 
  * @author slipcor
- * 
- * @version v0.9.9
  */
 
 public final class Help {
@@ -212,6 +210,23 @@ public final class Help {
 				"shorthand command: !so",
 				LINE,
 				"/pa [arenaname] setowner [playername]"}),
+		SETUP("nulang.help.msg.setup", new String[]{
+				"Toggle setup mode of an arena",
+				LINE,
+				"shorthand command: !su",
+				LINE,
+				"/pa [arenaname] setup"}),
+		SETUP_CMDS("nulang.help.msg.setup_cmds", new String[]{
+				"Special commands for setup mode",
+				LINE,
+				"show [region|spawn|block] | display a region/spawn/block with wool blocks",
+				"region [region] move 2 up | move region [region] 2 blocks up",
+				"region [region] expand 10 north | expand region [region] 10 block to the north",
+				"region [region] expand 15 out | expand region [region] 15 blocks in all directions",
+				"all arguments can be abbreviated, e.g. 'r' = 'region', 'e' = 'expand', 'm' = 'move'",
+				"done | exit setup mode",
+				LINE,
+				"/pa [arenaname] setup"}),
 		SPAWN("nulang.help.msg.spawn", new String[]{
 				"Manage arena spawns",
 				LINE,

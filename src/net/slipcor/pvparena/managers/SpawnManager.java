@@ -19,8 +19,8 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.runnables.RespawnRunnable;
 
 import org.bukkit.Bukkit;
@@ -92,7 +92,7 @@ public final class SpawnManager {
 	 * @param team
 	 */
 	public static void distribute(final Arena arena, final ArenaTeam team) {
-		final Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+		final Set<ArenaRegion> ars = arena.getRegionsByType(RegionType.SPAWN);
 		
 		if (!ars.isEmpty()) {
 			placeInsideSpawnRegions(arena, team.getTeamMembers(), ars);
@@ -633,8 +633,8 @@ public final class SpawnManager {
 	public static PABlockLocation getRegionCenter(final Arena arena) {
 		final Set<PALocation> locs = new HashSet<PALocation>();
 		
-		ArenaRegionShape ars = null;
-		for (ArenaRegionShape a : arena.getRegionsByType(RegionType.BATTLE)) {
+		ArenaRegion ars = null;
+		for (ArenaRegion a : arena.getRegionsByType(RegionType.BATTLE)) {
 			ars = a;
 			break;
 		}
@@ -669,10 +669,10 @@ public final class SpawnManager {
 	}
 	
 	private static void placeInsideSpawnRegion(final Arena arena, final ArenaPlayer aPlayer,
-			final ArenaRegionShape ars) {
-		int x = ars.getMinimumLocation().getX();
-		int y = ars.getMinimumLocation().getY();
-		int z = ars.getMinimumLocation().getZ();
+			final ArenaRegion region) {
+		int x = region.getShape().getMinimumLocation().getX();
+		int y = region.getShape().getMinimumLocation().getY();
+		int z = region.getShape().getMinimumLocation().getZ();
 		final Random random = new Random();
 		
 		boolean found = false;
@@ -682,16 +682,16 @@ public final class SpawnManager {
 		
 		while (!found && attempt < 10) {
 		
-			x += random.nextInt(ars.getMaximumLocation().getX() - 
-				ars.getMinimumLocation().getX());
-			y += random.nextInt(ars.getMaximumLocation().getY() - 
-				ars.getMinimumLocation().getY());
-			z += random.nextInt(ars.getMaximumLocation().getZ() - 
-				ars.getMinimumLocation().getZ());
+			x += random.nextInt(region.getShape().getMaximumLocation().getX() - 
+				region.getShape().getMinimumLocation().getX());
+			y += random.nextInt(region.getShape().getMaximumLocation().getY() - 
+				region.getShape().getMinimumLocation().getY());
+			z += random.nextInt(region.getShape().getMaximumLocation().getZ() - 
+				region.getShape().getMinimumLocation().getZ());
 		
-			loc = new PABlockLocation(ars.getMinimumLocation().getWorldName(), x, y, z);
+			loc = new PABlockLocation(region.getShape().getMinimumLocation().getWorldName(), x, y, z);
 			attempt++;
-			found = ars.contains(loc);
+			found = region.getShape().contains(loc);
 			
 		}
 		
@@ -726,12 +726,12 @@ public final class SpawnManager {
 	}
 	
 	private static void placeInsideSpawnRegions(final Arena arena, final Set<ArenaPlayer> set,
-			final Set<ArenaRegionShape> ars) {
+			final Set<ArenaRegion> ars) {
 		if (arena.isFreeForAll()) {
 			for (ArenaPlayer ap : set) {
 				int pos = new Random().nextInt(ars.size());
 			
-				for (ArenaRegionShape x : ars) {
+				for (ArenaRegion x : ars) {
 					if (pos-- == 0) {
 						placeInsideSpawnRegion(arena, ap, x);
 						break;
@@ -744,7 +744,7 @@ public final class SpawnManager {
 				if (teamName == null) {
 					teamName = ap.getArenaTeam().getName();
 				}
-				for (ArenaRegionShape x : ars) {
+				for (ArenaRegion x : ars) {
 					if (x.getRegionName().contains(teamName)) {
 						placeInsideSpawnRegion(arena, ap, x);
 						break;
@@ -828,7 +828,7 @@ public final class SpawnManager {
 				return;
 			}
 			
-			final Set<ArenaRegionShape> ars = arena.getRegionsByType(RegionType.SPAWN);
+			final Set<ArenaRegion> ars = arena.getRegionsByType(RegionType.SPAWN);
 			if (!ars.isEmpty()) {
 				final Set<ArenaPlayer> team = new HashSet<ArenaPlayer>();
 				team.add(aPlayer);

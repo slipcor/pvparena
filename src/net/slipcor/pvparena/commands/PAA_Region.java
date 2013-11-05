@@ -11,8 +11,10 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
+import net.slipcor.pvparena.regions.CuboidRegion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -75,17 +77,17 @@ public class PAA_Region extends AbstractArenaCommand {
 			return;
 		} else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
 			// usage: /pa {arenaname} region [regionname] border | check a region border
-			final ArenaRegionShape region = arena.getRegion(args[0]);
+			final ArenaRegion region = arena.getRegion(args[0]);
 			
 			if (region == null) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 				return;
 			}
-			region.showBorder((Player) sender);
+			region.getShape().showBorder((Player) sender);
 			return;
 		} else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
 			// usage: /pa {arenaname} region remove [regionname] | remove a region
-			final ArenaRegionShape region = arena.getRegion(args[1]);
+			final ArenaRegion region = arena.getRegion(args[1]);
 			
 			if (region == null) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[1]));
@@ -108,17 +110,15 @@ public class PAA_Region extends AbstractArenaCommand {
 			}
 			
 			final PABlockLocation[] locs = aPlayer.getSelection();
-			RegionShape shape;
+			ArenaRegionShape shape;
 			
 			if (args.length == 2) {
-				shape = ArenaRegionShape.getShapeFromShapeName(args[1]);
+				shape = ArenaRegionShapeManager.getShapeByName(args[1]);
 			} else {
-				shape = ArenaRegionShape.RegionShape.CUBOID;
+				shape = new CuboidRegion();
 			}
 			
-			final ArenaRegionShape region = ArenaRegionShape.create(arena, args[0], shape, locs);
-			
-			arena.addRegion(region);
+			final ArenaRegion region = new ArenaRegion(arena, args[0], shape, locs);
 			region.saveToConfig();
 			
 			activeSelections.remove(sender.getName());
@@ -129,7 +129,7 @@ public class PAA_Region extends AbstractArenaCommand {
 			return;
 		}
 		
-		final ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegion region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));

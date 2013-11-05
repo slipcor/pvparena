@@ -2,8 +2,8 @@ package net.slipcor.pvparena.runnables;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 
 /**
  * <pre>
@@ -18,7 +18,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
  */
 
 public class RegionRunnable implements Runnable {
-	private final ArenaRegionShape region;
+	private final ArenaRegion region;
 //	private final static Debug DEBUG = new Debug(49);
 //	private int iID;
 
@@ -28,7 +28,7 @@ public class RegionRunnable implements Runnable {
 	 * @param a
 	 *            the arena we are running in
 	 */
-	public RegionRunnable(final ArenaRegionShape paRegion) {
+	public RegionRunnable(final ArenaRegion paRegion) {
 		this.region = paRegion;
 		region.getArena().getDebugger().i("RegionRunnable constructor: " + paRegion.getRegionName());
 	}

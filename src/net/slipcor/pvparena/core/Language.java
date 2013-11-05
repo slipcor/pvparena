@@ -36,6 +36,8 @@ public final class Language {
 		ARENA_REGION_SHAPE_UNKNOWN("nulang.arena.regionshapeunknown", "Arena Shape '%1%' unknown. consult the forums: http://goo.gl/IfLOh"),
 		ARENA_RELOAD_DONE("nulang.arena.reload.done", "Arena reloaded!"),
 		ARENA_REMOVE_DONE("nulang.arena.remove.done", "Arena removed: &e%1%&r"),
+		ARENA_SETUP_DISABLED("nulang.arena.setup.disabled", "Disabled setup mode for arena: %1%"),
+		ARENA_SETUP_ENABLED("nulang.arena.setup.enabled", "Enabled setup mode for arena: %1%"),
 		ARENA_STARTING_IN("nulang.arena.startingin", "Enough players ready. Starting in %1%!"),
 		ARENA_START_DONE("nulang.arena.start.done", "Arena force started!"),
 		ARENA_STOP_DONE("nulang.arena.stop.done", "Arena force stopped!"),
@@ -187,6 +189,7 @@ public final class Language {
 		ERROR_REGION_YOUSELECTEXIT("nulang.error.region.youselectexit", "Region selection cancelled!"),
 		
 		
+		ERROR_SETUP_MODE("nulang.error.setupmode", "setup mode!"),
 		ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
 		ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!"),
 		ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),

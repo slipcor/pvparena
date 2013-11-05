@@ -12,10 +12,11 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 
 import org.bukkit.Bukkit;
@@ -747,14 +748,13 @@ public class Config {
 	/**
 	 * 
 	 */
-	public static ArenaRegionShape parseRegion(final Arena arena,
+	public static ArenaRegion parseRegion(final Arena arena,
 			final YamlConfiguration config, final String regionName) {
 
 		final String coords = config.getString("arenaregion." + regionName);
 		final String[] parts = coords.split(",");
 
-		final ArenaRegionShape.RegionShape shape = ArenaRegionShapeManager
-				.getShapeByName(parts[7]);
+		final ArenaRegionShape shape = ArenaRegionShapeManager.getShapeByName(parts[7]);
 
 		if (parts.length < 11) {
 			PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
@@ -762,7 +762,7 @@ public class Config {
 					"Input string must contain only world, x1, y1, z1, x2, y2, z2, shape and FLAGS: "
 							+ coords);
 		}
-		if (ArenaRegionShapeManager.getShapeByName(parts[7]) == null) {
+		if (shape == null) {
 			PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
 			throw new IllegalArgumentException(
 					"Input string does not contain valid region shape: "
@@ -788,7 +788,7 @@ public class Config {
 		final PABlockLocation[] l = { new PABlockLocation(parts[0], x1, y1, z1),
 				new PABlockLocation(parts[0], x2, y2, z2) };
 
-		final ArenaRegionShape region = ArenaRegionShape.create(arena, regionName,
+		final ArenaRegion region = new ArenaRegion(arena, regionName,
 				shape, l);
 		region.applyFlags(flags);
 		region.applyProtections(prots);
@@ -838,7 +838,7 @@ public class Config {
 		return StringParser.joinArray(result, ",");
 	}
 
-	public static String parseToString(final ArenaRegionShape region,
+	public static String parseToString(final ArenaRegion region,
 			final Set<RegionFlag> flags, final Set<RegionProtection> protections) {
 		final String[] result = new String[11];
 		result[0] = region.getWorldName();
@@ -848,7 +848,7 @@ public class Config {
 		result[4] = String.valueOf(region.getLocs()[1].getX());
 		result[5] = String.valueOf(region.getLocs()[1].getY());
 		result[6] = String.valueOf(region.getLocs()[1].getZ());
-		result[7] = region.getShape().name();
+		result[7] = region.getShape().getName();
 		result[10] = region.getType().name();
 
 		int sum = 0;

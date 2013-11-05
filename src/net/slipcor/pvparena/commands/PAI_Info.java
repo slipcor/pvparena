@@ -12,7 +12,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.core.StringParser;
 
 import org.bukkit.ChatColor;
@@ -242,7 +242,7 @@ public class PAI_Info extends AbstractArenaCommand {
 		
 			if (arena.getRegions() != null) {
 				final Set<String> regions = new HashSet<String>();
-				for (ArenaRegionShape ar : arena.getRegions()) {
+				for (ArenaRegion ar : arena.getRegions()) {
 					regions.add(ar.getRegionName());
 				}
 				
@@ -266,8 +266,8 @@ public class PAI_Info extends AbstractArenaCommand {
 		}
 
 		if (displayMode == null || displayMode.equalsIgnoreCase("region")) {
-			for (ArenaRegionShape reg : arena.getRegions()) {
-				reg.displayInfo(sender);
+			for (ArenaRegion reg : arena.getRegions()) {
+				reg.getShape().displayInfo(sender);
 			}
 		}
 	}

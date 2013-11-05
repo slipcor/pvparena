@@ -21,9 +21,9 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
@@ -113,10 +113,10 @@ public final class ArenaManager {
 	 */
 	public static boolean checkJoin(final Player player, final Arena arena) {
 		boolean found = false;
-		for (ArenaRegionShape region : arena.getRegions()) {
+		for (ArenaRegion region : arena.getRegions()) {
 			if (region.getType().equals(RegionType.JOIN)) {
 				found = true;
-				if (region.contains(new PABlockLocation(player.getLocation()))) {
+				if (region.getShape().contains(new PABlockLocation(player.getLocation()))) {
 					return true;
 				}
 			}
@@ -137,7 +137,7 @@ public final class ArenaManager {
 				continue;
 			}
 			if ((a.isFightInProgress())
-					&& !ArenaRegionShape.checkRegion(a, arena)) {
+					&& !ArenaRegion.checkRegion(a, arena)) {
 				return false;
 			}
 		}
@@ -199,8 +199,8 @@ public final class ArenaManager {
 			if (arena.isLocked()) {
 				continue;
 			}
-			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location)) {
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.getShape().contains(location)) {
 					return arena;
 				}
 			}
@@ -214,8 +214,8 @@ public final class ArenaManager {
 			if (!arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)) {
 				continue;
 			}
-			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location)
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.getShape().contains(location)
 						&& region.getProtections().contains(regionProtection)) {
 					return arena;
 				}
@@ -231,8 +231,8 @@ public final class ArenaManager {
 			if (arena.isLocked()) {
 				continue;
 			}
-			for (ArenaRegionShape region : arena.getRegions()) {
-				if (region.contains(location)) {
+			for (ArenaRegion region : arena.getRegions()) {
+				if (region.getShape().contains(location)) {
 					result.add(arena);
 				}
 			}

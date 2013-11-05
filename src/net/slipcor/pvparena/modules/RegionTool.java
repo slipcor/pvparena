@@ -14,7 +14,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 
 /**
  * <pre>Arena Module class "RegionTool"</pre>
@@ -73,8 +73,8 @@ public class RegionTool extends ArenaModule {
 					if (event.getClickedBlock() != null) {
 						loc = new PABlockLocation(event.getClickedBlock().getLocation());
 					}
-					for (ArenaRegionShape region : arena.getRegions()) {
-						if (region.contains(loc)) {
+					for (ArenaRegion region : arena.getRegions()) {
+						if (region.getShape().contains(loc)) {
 							arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + "b"
 									+ arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + "b"
 									+ region.getRegionName());

@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -696,5 +697,21 @@ public final class StringParser {
 		final String[] newArgs = new String[args.length + offset];
 		System.arraycopy(args, 0, newArgs, 1, args.length);
 		return newArgs;
+	}
+
+	public static BlockFace parseToBlockFace(final String string) {
+		if (string.startsWith("o") || string.startsWith("i")) {
+			// out or in are just the same thing, reference to self with positive/negative values
+			return BlockFace.SELF;
+		}
+		BlockFace[] faces = new BlockFace[]{
+				BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
+				BlockFace.UP, BlockFace.DOWN};
+		for (BlockFace face : faces) {
+			if (face.name().startsWith(string.toUpperCase())) {
+				return face;
+			}
+		}
+		return null;
 	}
 }

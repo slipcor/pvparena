@@ -34,8 +34,8 @@ import net.slipcor.pvparena.events.PAWinEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -82,7 +82,7 @@ public class Arena {
 	private final Set<ArenaClass> classes = new HashSet<ArenaClass>();
 	private final Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
 	private final Set<ArenaModule> mods = new HashSet<ArenaModule>();
-	private final Set<ArenaRegionShape> regions = new HashSet<ArenaRegionShape>();
+	private final Set<ArenaRegion> regions = new HashSet<ArenaRegion>();
 	private final Set<PAClassSign> signs = new HashSet<PAClassSign>();
 	private final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
 	private final Set<String> playedPlayers = new HashSet<String>();
@@ -160,7 +160,7 @@ public class Arena {
 		classes.add(new ArenaClass(className, items));
 	}
 
-	public void addRegion(final ArenaRegionShape region) {
+	public void addRegion(final ArenaRegion region) {
 		this.regions.add(region);
 		getDebugger().i("loading region: "+region.getRegionName());
 		if (region.getType().equals(RegionType.JOIN)) {
@@ -276,7 +276,7 @@ public class Arena {
 	}
 
 	public void clearRegions() {
-		for (ArenaRegionShape region : regions) {
+		for (ArenaRegion region : regions) {
 			region.reset();
 		}
 	}
@@ -426,8 +426,8 @@ public class Arena {
 		return mMat;
 	}
 
-	public ArenaRegionShape getRegion(final String name) {
-		for (ArenaRegionShape region : regions) {
+	public ArenaRegion getRegion(final String name) {
+		for (ArenaRegion region : regions) {
 			if (region.getRegionName().equalsIgnoreCase(name)) {
 				return region;
 			}
@@ -435,7 +435,7 @@ public class Arena {
 		return null;
 	}
 
-	public Set<ArenaRegionShape> getRegions() {
+	public Set<ArenaRegion> getRegions() {
 		return regions;
 	}
 
@@ -500,9 +500,9 @@ public class Arena {
 	}
 
 	public String getWorld() {
-		ArenaRegionShape ars = null;
+		ArenaRegion ars = null;
 
-		for (ArenaRegionShape arss : this.getRegionsByType(RegionType.BATTLE)) {
+		for (ArenaRegion arss : this.getRegionsByType(RegionType.BATTLE)) {
 			ars = arss;
 			break;
 		}
@@ -688,6 +688,12 @@ public class Arena {
 	public void modRemove(final ArenaModule mod) {
 		mods.remove(mod);
 		updateMods();
+	}
+
+	public void msg(final CommandSender sender, final String[] msg) {
+		for (String string : msg) {
+			msg(sender, string);
+		}
 	}
 
 	public void msg(final CommandSender sender, final String msg) {
@@ -1684,9 +1690,9 @@ public class Arena {
 		return true;
 	}
 
-	public Set<ArenaRegionShape> getRegionsByType(final RegionType regionType) {
-		Set<ArenaRegionShape> result = new HashSet<ArenaRegionShape>();
-		for (ArenaRegionShape rs : regions) {
+	public Set<ArenaRegion> getRegionsByType(final RegionType regionType) {
+		Set<ArenaRegion> result = new HashSet<ArenaRegion>();
+		for (ArenaRegion rs : regions) {
 			if (rs.getType().equals(regionType)) {
 				result.add(rs);
 			}

@@ -13,6 +13,7 @@ import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Reload;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
+import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.commands.PAI_Stats;
 import net.slipcor.pvparena.commands.AbstractGlobalCommand;
@@ -236,6 +237,8 @@ public class PVPArena extends JavaPlugin {
 					&& ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
 				tempArena = ArenaPlayer.parsePlayer(sender.getName())
 						.getArena();
+			} else if (PAA_Setup.activeSetups.containsKey(sender.getName())) {
+				tempArena = PAA_Setup.activeSetups.get(sender.getName());
 			} else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
 				tempArena = PAA_Edit.activeEdits.get(sender.getName());
 			} else if (ArenaManager.count() == 1) {

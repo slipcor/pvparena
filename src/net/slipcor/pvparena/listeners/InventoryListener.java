@@ -3,7 +3,7 @@ package net.slipcor.pvparena.listeners;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

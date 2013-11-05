@@ -25,8 +25,8 @@ import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -729,7 +729,7 @@ public class PACheck {
 						arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
 		scr.setId(arena.spawnCampRunnerID);
 
-		for (ArenaRegionShape region : arena.getRegions()) {
+		for (ArenaRegion region : arena.getRegions()) {
 			if (region.getFlags().size() > 0) {
 				region.initTimer();
 			} else if (region.getType().equals(RegionType.BATTLE)) {

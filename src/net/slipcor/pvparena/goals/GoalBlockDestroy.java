@@ -35,8 +35,8 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -648,8 +648,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		
 		boolean contains = false;
 		
-		for (ArenaRegionShape region : arena.getRegionsByType(RegionType.BATTLE)) {
-			if (region.contains(new PABlockLocation(event.getLocation()))) {
+		for (ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
+			if (region.getShape().contains(new PABlockLocation(event.getLocation()))) {
 				contains = true;
 				break;
 			}

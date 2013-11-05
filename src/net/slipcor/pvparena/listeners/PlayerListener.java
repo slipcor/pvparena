@@ -15,6 +15,7 @@ import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PASpawn;
+import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -23,9 +24,9 @@ import net.slipcor.pvparena.core.Updater;
 import net.slipcor.pvparena.core.Updater.UpdateResult;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionType;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
@@ -140,6 +141,11 @@ public class PlayerListener implements Listener {
 	public void onPlayerChat(final AsyncPlayerChatEvent event) {
 
 		final Player player = event.getPlayer();
+		
+		if (PAA_Setup.activeSetups.containsKey(player.getName())) {
+			PAA_Setup.chat(player, event.getMessage());
+			return;
+		}
 
 		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
@@ -191,6 +197,11 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final Player player = event.getPlayer();
+		
+		if (PAA_Setup.activeSetups.containsKey(player.getName())) {
+			PAA_Setup.chat(player, event.getMessage().substring(1));
+			return;
+		}
 
 		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
 		if (arena == null || player.isOp()) {
@@ -372,7 +383,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (ArenaRegionShape.checkRegionSetPosition(event, player)) {
+		if (ArenaRegion.checkRegionSetPosition(event, player)) {
 			DEBUG.i("returning: #3", player);
 			return;
 		}
@@ -471,7 +482,7 @@ public class PlayerListener implements Listener {
 						return; // even teams desired, not done => announce
 					}
 
-					if (!ArenaRegionShape.checkRegions(arena)) {
+					if (!ArenaRegion.checkRegions(arena)) {
 						arena.msg(player,
 								Language.parse(arena, MSG.NOTICE_WAITING_FOR_ARENA));
 						return;
@@ -522,10 +533,10 @@ public class PlayerListener implements Listener {
 				arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
 				if (arena != null) {
 				
-					Set<ArenaRegionShape> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
+					Set<ArenaRegion> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
 					out: if (!event.isCancelled() && bl_regions != null && !bl_regions.isEmpty()) {
-						for (ArenaRegionShape region : bl_regions) {
-							if (region.contains(new PABlockLocation(block.getLocation()))) {
+						for (ArenaRegion region : bl_regions) {
+							if (region.getShape().contains(new PABlockLocation(block.getLocation()))) {
 								if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
 										|| region.getRegionName().toLowerCase().contains(
 												aPlayer.getArenaClass().getName().toLowerCase())) {
@@ -535,11 +546,11 @@ public class PlayerListener implements Listener {
 							}
 						}
 					}
-					Set<ArenaRegionShape> wl_regions = arena.getRegionsByType(RegionType.WL_INV);
+					Set<ArenaRegion> wl_regions = arena.getRegionsByType(RegionType.WL_INV);
 					out: if (!event.isCancelled() && wl_regions != null && !wl_regions.isEmpty()) {
 						event.setCancelled(true);
-						for (ArenaRegionShape region : wl_regions) {
-							if (region.contains(new PABlockLocation(block.getLocation()))) {
+						for (ArenaRegion region : wl_regions) {
+							if (region.getShape().contains(new PABlockLocation(block.getLocation()))) {
 								if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
 										|| region.getRegionName().toLowerCase().contains(
 												aPlayer.getArenaClass().getName().toLowerCase())) {
@@ -670,10 +681,10 @@ public class PlayerListener implements Listener {
 				return; // no fighting player and no arena location => OUT
 			}
 			
-			Set<ArenaRegionShape> regs = arena.getRegionsByType(RegionType.BATTLE);
+			Set<ArenaRegion> regs = arena.getRegionsByType(RegionType.BATTLE);
 			boolean contained = false;
-			for (ArenaRegionShape reg : regs) {
-				if (reg.contains(new PABlockLocation(event.getTo()))) {
+			for (ArenaRegion reg : regs) {
+				if (reg.getShape().contains(new PABlockLocation(event.getTo()))) {
 					contained = true;
 					break;
 				}
@@ -696,15 +707,15 @@ public class PlayerListener implements Listener {
 		}
 		arena.getDebugger().i("telepass: no!!", player);
 
-		Set<ArenaRegionShape> regions = arena
+		Set<ArenaRegion> regions = arena
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (regions == null || regions.size() < 0) {
 			return;
 		}
 
-		for (ArenaRegionShape r : regions) {
-			if (r.contains(new PABlockLocation(event.getTo()))) {
+		for (ArenaRegion r : regions) {
+			if (r.getShape().contains(new PABlockLocation(event.getTo()))) {
 				// teleport inside the arena, allow!
 				return;
 			}

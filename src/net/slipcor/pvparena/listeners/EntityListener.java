@@ -15,9 +15,9 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionFlag;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
@@ -345,9 +345,9 @@ public class EntityListener implements Listener {
 			return;
 		}
 
-		for (ArenaRegionShape ars : arena.getRegions()) {
+		for (ArenaRegion ars : arena.getRegions()) {
 			if (ars.getFlags().contains(RegionFlag.NODAMAGE)
-					&& ars.contains(new PABlockLocation(defender.getLocation()))) {
+					&& ars.getShape().contains(new PABlockLocation(defender.getLocation()))) {
 				event.setCancelled(true);
 				return;
 			}

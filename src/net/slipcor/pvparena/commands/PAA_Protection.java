@@ -9,8 +9,8 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 
 import org.bukkit.command.CommandSender;
 
@@ -42,7 +42,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 			return;
 		}
 		
-		final ArenaRegionShape region = arena.getRegion(args[0]);
+		final ArenaRegion region = arena.getRegion(args[0]);
 		
 		if (region == null) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));

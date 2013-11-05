@@ -13,7 +13,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.TeamManager;
 
 import org.bukkit.command.CommandSender;
@@ -80,7 +80,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 				return; // even teams desired, not done => announce
 			}
 			
-			if (!ArenaRegionShape.checkRegions(arena)) {
+			if (!ArenaRegion.checkRegions(arena)) {
 				arena.msg(sender,
 						Language.parse(arena, MSG.NOTICE_WAITING_FOR_ARENA));
 				return;

@@ -10,12 +10,13 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
+import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape.RegionProtection;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.runnables.DamageResetRunnable;
 
@@ -71,9 +72,9 @@ public class BlockListener implements Listener {
 		if (arena.isLocked() || !arena.isFightInProgress()) {
 			if (event instanceof Cancellable) {
 				final Cancellable cEvent = (Cancellable) event;
-				cEvent.setCancelled(!PAA_Edit.activeEdits.containsValue(arena));
+				cEvent.setCancelled(!(PAA_Edit.activeEdits.containsValue(arena)||PAA_Setup.activeSetups.containsValue(arena)));
 			}
-			return PAA_Edit.activeEdits.containsValue(arena);
+			return (PAA_Edit.activeEdits.containsValue(arena)||PAA_Setup.activeSetups.containsValue(arena));
 		}
 
 		arena = ArenaManager.getArenaByProtectedRegionLocation(

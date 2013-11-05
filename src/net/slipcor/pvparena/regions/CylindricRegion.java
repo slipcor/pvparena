@@ -8,12 +8,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 
 /**
@@ -24,29 +24,20 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * Defines a cylindric region, including overlap checks and contain checks
  * 
  * @author slipcor
- * 
- * @version v0.10.0
  */
 
 public class CylindricRegion extends ArenaRegionShape {
 
 	private final Set<Block> border = new HashSet<Block>();
+	private ArenaRegion region;
 
 	public CylindricRegion() {
 		super("cylindric");
-		shape = RegionShape.CYLINDRIC;
-		initialize();
-	}
-
-	public CylindricRegion(final Arena arena, final String name, final PABlockLocation[] locs) {
-		super(arena, name, locs, "cylindric");
-		debug = new Debug(201);
-		initialize();
 	}
 
 	@Override
 	public String version() {
-		return "v0.10.3.0";
+		return PVPArena.instance.getDescription().getVersion();
 	}
 
 	/**
@@ -77,25 +68,26 @@ public class CylindricRegion extends ArenaRegionShape {
 		return new PABlockLocation[] { l1, l2 };
 	}
 
-	public final void initialize() {
-		final PABlockLocation[] sane = sanityCheck(getLocs()[0], getLocs()[1]);
-		locs[0] = sane[0];
-		locs[1] = sane[1];
+	public final void initialize(ArenaRegion region) {
+		this.region = region;
+		final PABlockLocation[] sane = sanityCheck(region.getLocs()[0], region.getLocs()[1]);
+		region.getLocs()[0] = sane[0];
+		region.getLocs()[1] = sane[1];
 	}
 
 	@Override
-	public boolean overlapsWith(final ArenaRegionShape paRegion) {
-		if (paRegion.getShape().equals(RegionShape.CUBOID)) {
+	public boolean overlapsWith(final ArenaRegion paRegion) {
+		if (paRegion.getShape() instanceof CuboidRegion) {
 			// we are cylinder and search for intersecting cuboid
 
-			final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			final PABlockLocation thisCenter = getRegion().getLocs()[1].getMidpoint(getRegion().getLocs()[0]);
 			final PABlockLocation thatCenter = paRegion.getLocs()[1]
 					.getMidpoint(paRegion.getLocs()[0]);
 
-			if (locs[1].getY() < paRegion.getLocs()[0].getY()) {
+			if (getRegion().getLocs()[1].getY() < paRegion.getLocs()[0].getY()) {
 				return false;
 			}
-			if (locs[0].getY() > paRegion.getLocs()[1].getY()) {
+			if (getRegion().getLocs()[0].getY() > paRegion.getLocs()[1].getY()) {
 				return false;
 			}
 
@@ -105,17 +97,19 @@ public class CylindricRegion extends ArenaRegionShape {
 				return true; // the cube is inside!
 			}
 
-			final Double thisRadius = getLocs()[0].getDistance(getLocs()[1]) / 2;
+			final Double thisRadius = getRegion().getLocs()[0].getDistance(
+					getRegion().getLocs()[1]) / 2;
 
 			final PABlockLocation offset = thisCenter.pointTo(thatCenter, thisRadius);
 			// offset is pointing from this to that
 
-			return paRegion.contains(offset);
+			return paRegion.getShape().contains(offset);
 
-		} else if (paRegion.getShape().equals(RegionShape.SPHERIC)) {
+		} else if (paRegion.getShape() instanceof SphericRegion) {
 			// we are cylinder and search for intersecting sphere
 
-			final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			final PABlockLocation thisCenter = getRegion().getLocs()[1].getMidpoint(
+					getRegion().getLocs()[0]);
 			final PABlockLocation thatCenter = paRegion.getLocs()[1]
 					.getMidpoint(paRegion.getLocs()[0]);
 
@@ -130,17 +124,18 @@ public class CylindricRegion extends ArenaRegionShape {
 			// offset is pointing from that to this
 
 			return this.contains(offset);
-		} else if (paRegion.getShape().equals(RegionShape.CYLINDRIC)) {
+		} else if (paRegion.getShape() instanceof CylindricRegion) {
 			// we are cylinder and search for intersecting cylinder
 
-			final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+			final PABlockLocation thisCenter = getRegion().getLocs()[1].getMidpoint(
+					getRegion().getLocs()[0]);
 			final PABlockLocation thatCenter = paRegion.getLocs()[1]
 					.getMidpoint(paRegion.getLocs()[0]);
 
-			if (locs[1].getY() < paRegion.getLocs()[0].getY()) {
+			if (getRegion().getLocs()[1].getY() < paRegion.getLocs()[0].getY()) {
 				return false;
 			}
-			if (locs[0].getY() > paRegion.getLocs()[1].getY()) {
+			if (getRegion().getLocs()[0].getY() > paRegion.getLocs()[1].getY()) {
 				return false;
 			}
 
@@ -152,14 +147,14 @@ public class CylindricRegion extends ArenaRegionShape {
 
 			final Double thatRadius = paRegion.getLocs()[0].getDistance(paRegion
 					.getLocs()[1]) / 2;
-			final Double thisRadius = getLocs()[0].getDistance(getLocs()[1]) / 2;
+			final Double thisRadius = getRegion().getLocs()[0].getDistance(getRegion().getLocs()[1]) / 2;
 
 			return thisCenter.getDistance(thisCenter) <= (thatRadius + thisRadius);
 		} else {
 			PVPArena.instance.getLogger()
 					.warning(
 							"Region Shape not supported: "
-									+ paRegion.getShape().name());
+									+ paRegion.getShape().getName());
 		}
 		return false;
 	}
@@ -176,7 +171,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		lowercenter.setY(getMinimumLocation().getY());
 		uppercenter.setY(getMaximumLocation().getY());
 
-		final World world = Bukkit.getWorld(this.world);
+		final World world = Bukkit.getWorld(this.getRegion().getWorldName());
 
 		border.clear();
 
@@ -246,7 +241,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		}
 
 		for (Block b : border) {
-			if (!isInNoWoolSet(b)) {
+			if (!getRegion().isInNoWoolSet(b)) {
 				player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
 			}
 		}
@@ -267,30 +262,31 @@ public class CylindricRegion extends ArenaRegionShape {
 	}
 
 	private Double getRadius() {
-		return (double) ((getLocs()[1].getX() == getLocs()[0].getX()) ? ((getLocs()[1]
-				.getZ() - getLocs()[0].getZ()) / 2)
-				: ((getLocs()[1].getX() - getLocs()[0].getX()) / 2));
+		return (double) ((getRegion().getLocs()[1].getX() == getRegion().getLocs()[0].getX()) ? ((getRegion().getLocs()[1]
+				.getZ() - getRegion().getLocs()[0].getZ()) / 2)
+				: ((getRegion().getLocs()[1].getX() - getRegion().getLocs()[0].getX()) / 2));
 	}
 
 	@Override
 	public boolean contains(final PABlockLocation loc) {
-		if (this.getLocs()[0] == null || this.getLocs()[1] == null
-				|| loc == null || !loc.getWorldName().equals(world)) {
+		if (getRegion().getLocs()[0] == null || getRegion().getLocs()[1] == null
+				|| loc == null || !loc.getWorldName().equals(getRegion().getWorldName())) {
 			return false; // no arena, no container or not in the same world
 		}
-		if (loc.getY() > this.getLocs()[1].getY()) {
+		if (loc.getY() > getRegion().getLocs()[1].getY()) {
 			return false;
 		}
-		if (loc.getY() < this.getLocs()[0].getY()) {
+		if (loc.getY() < getRegion().getLocs()[0].getY()) {
 			return false;
 		}
 
-		final PABlockLocation thisCenter = this.locs[1].getMidpoint(this.locs[0]);
+		final PABlockLocation thisCenter = getRegion().getLocs()[1].getMidpoint(
+				getRegion().getLocs()[0]);
 
-		final PABlockLocation a = new PABlockLocation(this.locs[1].toLocation());
-		a.setY(locs[0].getY());
+		final PABlockLocation a = new PABlockLocation(getRegion().getLocs()[1].toLocation());
+		a.setY(getRegion().getLocs()[0].getY());
 
-		final Double thisRadius = getLocs()[0].getDistanceSquared(a) / 2;
+		final Double thisRadius = getRegion().getLocs()[0].getDistanceSquared(a) / 2;
 		thisCenter.setY(loc.getY());
 
 		return loc.getDistanceSquared(thisCenter) <= thisRadius;
@@ -298,7 +294,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	@Override
 	public PABlockLocation getCenter() {
-		return new PABlockLocation(locs[0].getMidpoint(locs[1]).toLocation());
+		return new PABlockLocation(getRegion().getLocs()[0].getMidpoint(getRegion().getLocs()[1]).toLocation());
 	}
 
 	@Override
@@ -306,7 +302,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		final Double thisRadius = getRadius();
 		final PABlockLocation result = getCenter();
 		result.setX((int) (result.getX() + thisRadius));
-		result.setY(getLocs()[1].getY());
+		result.setY(getRegion().getLocs()[1].getY());
 		result.setZ((int) (result.getZ() + thisRadius));
 		return result;
 	}
@@ -316,9 +312,13 @@ public class CylindricRegion extends ArenaRegionShape {
 		final Double thisRadius = getRadius();
 		final PABlockLocation result = getCenter();
 		result.setX((int) (result.getX() - thisRadius));
-		result.setY(getLocs()[0].getY());
+		result.setY(getRegion().getLocs()[0].getY());
 		result.setZ((int) (result.getZ() - thisRadius));
 		return result;
+	}
+	
+	public ArenaRegion getRegion() {
+		return region;
 	}
 
 	@Override
@@ -329,5 +329,38 @@ public class CylindricRegion extends ArenaRegionShape {
 				(double) joinRange);
 
 		return contains(reach);
+	}
+
+	@Override
+	public void move(BlockFace direction, int value) {
+		final int diffX = direction.getModX();
+		final int diffY = direction.getModY();
+		final int diffZ = direction.getModZ();
+		
+		if (diffX == 0 && diffY == 0 && diffZ == 0) {
+			return;
+		}
+		region.getLocs()[0] = new PABlockLocation(region.getLocs()[0].toLocation().add(diffX*value, diffY*value, diffZ*value));
+		region.getLocs()[1] = new PABlockLocation(region.getLocs()[1].toLocation().add(diffX*value, diffY*value, diffZ*value));
+	}
+
+	@Override
+	public void extend(BlockFace direction, int value) {
+		final int diffX = direction.getModX();
+		final int diffY = direction.getModY();
+		final int diffZ = direction.getModZ();
+		
+		if (diffX == 0 && diffY == 0 && diffZ == 0) {
+			return;
+		}
+		if (diffY == 0) {
+			region.getLocs()[0] = new PABlockLocation(region.getLocs()[0].toLocation().subtract(diffX*value, diffY*value, diffZ*value));
+			region.getLocs()[1] = new PABlockLocation(region.getLocs()[1].toLocation().add(diffX*value, diffY*value, diffZ*value));
+		} else if (diffY > 0) {
+			// positive Y means "up", means change the TOP value
+			region.getLocs()[1] = new PABlockLocation(region.getLocs()[1].toLocation().add(diffX*value, diffY*value, diffZ*value));
+		} else {
+			region.getLocs()[0] = new PABlockLocation(region.getLocs()[0].toLocation().subtract(diffX*value, diffY*value, diffZ*value));
+		}
 	}
 }

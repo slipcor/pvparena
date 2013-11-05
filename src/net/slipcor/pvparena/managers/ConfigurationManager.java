@@ -13,6 +13,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.commands.PAA_Edit;
+import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
@@ -21,7 +22,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 
 /**
  * <pre>
@@ -152,7 +153,7 @@ public final class ConfigurationManager {
 					"arenaregion").getValues(false);
 			for (String rName : regs.keySet()) {
 				arena.getDebugger().i("arenaregion '" + rName + "'");
-				final ArenaRegionShape region = Config.parseRegion(arena, config,
+				final ArenaRegion region = Config.parseRegion(arena, config,
 						rName);
 
 				if (region == null) {
@@ -227,6 +228,13 @@ public final class ConfigurationManager {
 			if (PAA_Edit.activeEdits.get(editor).getName().equals(
 					arena.getName())) {
 				return Language.parse(arena, MSG.ERROR_EDIT_MODE);
+			}
+		}
+
+		for (String setter : PAA_Setup.activeSetups.keySet()) {
+			if (PAA_Setup.activeSetups.get(setter).getName().equals(
+					arena.getName())) {
+				return Language.parse(arena, MSG.ERROR_SETUP_MODE);
 			}
 		}
 

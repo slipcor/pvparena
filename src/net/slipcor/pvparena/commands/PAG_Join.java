@@ -9,7 +9,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.loadables.ArenaRegionShape;
+import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,7 +69,7 @@ public class PAG_Join extends AbstractArenaCommand {
 			return;
 		}
 		
-		if (ArenaRegionShape.tooFarAway(arena, (Player) sender)) {
+		if (ArenaRegion.tooFarAway(arena, (Player) sender)) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_RANGE));
 			return;
 		}
