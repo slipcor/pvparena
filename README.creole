@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.295 - try to establish backwards compatibility
 * v1.1.0.294 - finish the ArenaRegion rewrite. Use with caution!!!
 * v1.1.0.293 - rewrite the ArenaRegion system. Hope noone created their own Shapes yet :O
 
