@@ -50,9 +50,9 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * <pre>
  * Arena Goal class "PhysicalFlags"
  * </pre>
- * 
+ *
  * Capture flags by breaking them, bring them home, get points, win.
- * 
+ *
  * @author slipcor
  */
 
@@ -65,8 +65,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	private Map<String, String> flagMap = null;
 	private Map<String, ItemStack> headGearMap = null;
-	
-	private final static Set<Material> HEADFLAGS = new HashSet<Material>();
+
+	private final static Set<Material> HEADFLAGS = new HashSet<Material>(); //never read from, consider removing
 
 	private String flagName = "";
 
@@ -139,9 +139,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	/**
 	 * hook into an interacting player
-	 * 
+	 *
 	 * @param res
-	 * 
+	 *
 	 * @param player
 	 *            the interacting player
 	 * @param clickedBlock
@@ -249,7 +249,6 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
-					e.printStackTrace();
 				}
 				if (flagTeam.equals("touchdown")) {
 					takeFlag(ChatColor.BLACK.name(), false,
@@ -301,8 +300,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		if (split.length > 1) {
 			try {
 				amp = Integer.parseInt(split[1]);
-			} catch (Exception e) {
-
+			} catch (NumberFormatException e) {
 			}
 		}
 
@@ -447,7 +445,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				final int value = Integer.parseInt(args[1]);
 				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE,
 						Material.getMaterial(value).name());
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				final Material mat = Material.getMaterial(args[1].toUpperCase());
 
 				if (mat == null) {
@@ -507,7 +505,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			if (args.length == 5) {
 				try {
 					amp = Integer.parseInt(args[2]);
-				} catch (Exception e) {
+				} catch (NumberFormatException e) {
 					arena.msg(sender,
 							Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[2]));
 					return;
@@ -610,7 +608,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		}
 		final String sTeam = getHeldFlagTeam(aPlayer.getName());
 		final ArenaTeam flagTeam = arena.getTeam(sTeam);
-		
+
 		if (flagTeam == null) {
 			if (sTeam != null) {
 				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
@@ -648,21 +646,21 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 		}
 	}
-	
+
 	@Override
 	public void displayInfo(CommandSender sender) {
-		sender.sendMessage("flageffect: " + 
+		sender.sendMessage("flageffect: " +
 				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT));
-		sender.sendMessage("flagtype: " + 
+		sender.sendMessage("flagtype: " +
 				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE));
-		sender.sendMessage("lives: " + 
+		sender.sendMessage("lives: " +
 				arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
 		sender.sendMessage(StringParser.colorVar("mustbesafe",
-				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) + 
+				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) +
 				" | " + StringParser.colorVar("flaghead",
 				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)));
 	}
-	
+
 	private Map<String, String> getFlagMap() {
 		if (flagMap == null) {
 			flagMap = new HashMap<String, String>();
@@ -694,7 +692,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		}
 		return res;
 	}
-	
+
 	private Map<String, ItemStack> getHeadGearMap() {
 		if (headGearMap == null) {
 			headGearMap = new HashMap<String, ItemStack>();
@@ -704,7 +702,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	/**
 	 * get the team name of the flag a player holds
-	 * 
+	 *
 	 * @param player
 	 *            the player to check
 	 * @return a team name
@@ -738,7 +736,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
+					if (string.toLowerCase().startsWith(teamName.toLowerCase() +
 							aClass.getName().toLowerCase() + "spawn")) {
 						return true;
 					}
@@ -779,7 +777,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		final String sTeam = getHeldFlagTeam(player.getName());
 		final ArenaTeam flagTeam = arena.getTeam(sTeam);
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-		
+
 		if (flagTeam == null) {
 			if (sTeam != null) {
 				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
@@ -860,7 +858,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 	private void removeEffects(final Player player) {
@@ -926,7 +924,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	/**
 	 * take/reset an arena flag
-	 * 
+	 *
 	 * @param flagColor
 	 *            the teamcolor to reset
 	 * @param take
@@ -1016,7 +1014,6 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 		if (getFlagMap().containsValue(player.getName())) {
 			arena.getDebugger().i("already carries a flag!", player);
-			return;
 		} else {
 			final ArenaTeam pTeam = aPlayer.getArenaTeam();
 			if (pTeam == null) {

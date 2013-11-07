@@ -19,16 +19,16 @@ import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena SPAWN Command class</pre>
- * 
+ *
  * A command to set / remove arena spawns
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.0
  */
 
 public class PAA_Spawn extends AbstractArenaCommand {
-	private static Set<String> spawns = new HashSet<String>();
+	private static final Set<String> spawns = new HashSet<String>();
 	static {
 		spawns.add("exit");
 		spawns.add("spectator");
@@ -43,38 +43,38 @@ public class PAA_Spawn extends AbstractArenaCommand {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
-		
+
 		if (!argCountValid(sender, arena, args, new Integer[]{1,2})) {
 			return;
 		}
-		
+
 		if (!(sender instanceof Player)) {
 			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 			return;
 		}
-		
+
 		if (args.length < 2) {
 			// usage: /pa {arenaname} spawn [spawnname] | set a spawn
 
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-			
+
 			if (spawns.contains(args[0])) {
 				commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
 				return;
 			}
-			
+
 			for (ArenaModule mod : arena.getMods()) {
 				if (mod.hasSpawn(args[0])) {
 					commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
 					return;
 				}
 			}
-			
+
 			if (arena.getGoals().isEmpty()) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_NO_GOAL));
 				return;
 			}
-			
+
 			for (ArenaGoal mod : arena.getGoals()) {
 				if (mod.hasSpawn(args[0])) {
 					commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
@@ -83,7 +83,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 			}
 
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_SPAWN_UNKNOWN, args[0]));
-			
+
 		} else if (args[1].equalsIgnoreCase("remove")) {
 			// usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
 			final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
@@ -97,7 +97,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 			displayHelp(sender);
 		}
 	}
-	
+
 	private void commitSet(final Arena arena, final CommandSender sender, final PALocation loc, final String name) {
 		arena.spawnSet(name, loc);
 		arena.msg(sender, Language.parse(arena, MSG.SPAWN_SET, name));

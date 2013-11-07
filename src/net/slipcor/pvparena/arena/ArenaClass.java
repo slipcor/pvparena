@@ -13,17 +13,17 @@ import org.bukkit.inventory.PlayerInventory;
 
 /**
  * <pre>Arena Class class</pre>
- * 
+ *
  * contains Arena Class methods and variables for quicker access
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.2
  */
 
 public final class ArenaClass {
-	
-	private static Debug debug = new Debug(4);
+
+	private static final Debug debug = new Debug(4);
 
 	private final String name;
 	private final ItemStack[] items;
@@ -42,7 +42,7 @@ public final class ArenaClass {
 		HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
 		HELMETS_TYPE.add(Material.IRON_HELMET);
 		HELMETS_TYPE.add(Material.DIAMOND_HELMET);
-		
+
 		HELMETS_TYPE.add(Material.WOOL);
 		HELMETS_TYPE.add(Material.PUMPKIN);
 		HELMETS_TYPE.add(Material.JACK_O_LANTERN);

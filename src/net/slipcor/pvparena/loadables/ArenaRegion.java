@@ -52,16 +52,16 @@ public class ArenaRegion {
 	private static final Set<Material> NOWOOLS = new HashSet<Material>();
 
 	public final PABlockLocation[] locs;
-	
+
 	protected final ArenaRegionShape shape;
 
 	static {
 		NOWOOLS.add(Material.CHEST);
 	}
-	
+
 	/**
 	 * RegionType
-	 * 
+	 *
 	 * <pre>
 	 * CUSTOM => a module added region
 	 * WATCH  => the spectator region
@@ -89,7 +89,7 @@ public class ArenaRegion {
 
 	/**
 	 * RegionFlag for tick events
-	 * 
+	 *
 	 * <pre>
 	 * NOCAMP -   players not moving will be damaged
 	 * DEATH -    players being here will die
@@ -104,7 +104,7 @@ public class ArenaRegion {
 
 	/**
 	 * RegionProtection
-	 * 
+	 *
 	 * <pre>
 	 * BREAK - Block break
 	 * FIRE - Fire
@@ -124,7 +124,7 @@ public class ArenaRegion {
 
 	/**
 	 * region position for physical orientation
-	 * 
+	 *
 	 * <pre>
 	 * CENTER = in the battlefield center
 	 * NORTH = north end of the battlefield
@@ -143,7 +143,7 @@ public class ArenaRegion {
 
 	/**
 	 * check if an arena has overlapping battlefield region with another arena
-	 * 
+	 *
 	 * @param region1
 	 *            the arena to check
 	 * @param region2
@@ -172,7 +172,7 @@ public class ArenaRegion {
 
 	/**
 	 * check if other running arenas are interfering with this arena
-	 * 
+	 *
 	 * @return true if no running arena is interfering with this arena, false
 	 *         otherwise
 	 */
@@ -187,7 +187,7 @@ public class ArenaRegion {
 
 	/**
 	 * check if an admin tries to set an arena position
-	 * 
+	 *
 	 * @param event
 	 *            the interact event to hand over
 	 * @param player
@@ -226,14 +226,14 @@ public class ArenaRegion {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Creates a new Arena Region
 	 * @param arena the arena to bind to
 	 * @param name the region name
 	 * @param shape the shape (to be cloned)
 	 * @param locs the defining locations
-	 * 
+	 *
 	 * Does NOT save the region! use region.saveToConfig();
 	 */
 	public ArenaRegion(final Arena arena, final String name,
@@ -251,7 +251,7 @@ public class ArenaRegion {
 
 	/**
 	 * is a player to far away to join?
-	 * 
+	 *
 	 * @param player
 	 *            the player to check
 	 * @return true if the player is too far away, false otherwise
@@ -284,7 +284,7 @@ public class ArenaRegion {
 
 		return true;
 	}
-	
+
 	public void applyFlags(final int flags) {
 		for (RegionFlag rf : RegionFlag.values()) {
 			if ((flags & (int) Math.pow(2, rf.ordinal())) != 0) {
@@ -335,7 +335,7 @@ public class ArenaRegion {
 	public String getRegionName() {
 		return name;
 	}
-	
+
 	public ArenaRegionShape getShape() {
 		return shape;
 	}
@@ -439,11 +439,11 @@ public class ArenaRegion {
 									.getBlockZ())))) {
 				continue;
 			}
-			
+
 			if (entity instanceof Hanging) {
 				continue;
 			}
-			
+
 			if (entity.hasMetadata("NPC")) {
 				continue;
 			}
@@ -602,7 +602,7 @@ public class ArenaRegion {
 					arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
 			} else if (type.equals(RegionType.LOUNGE)) {
-				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
+				final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>(); //never read from, consider removing
 				for (ArenaPlayer ap2 : arena.getEveryone()) {
 					plyrs.add(ap2);
 				}
@@ -646,7 +646,7 @@ public class ArenaRegion {
 			int height = 0;
 			try {
 				height = Integer.parseInt(value);
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
 			}
 
@@ -655,10 +655,10 @@ public class ArenaRegion {
 
 			return Language.parse(arena, MSG.REGION_HEIGHT, value);
 		} else if (key.equalsIgnoreCase("radius")) {
-			int radius = 0;
+			int radius;
 			try {
 				radius = Integer.parseInt(value);
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
 			}
 

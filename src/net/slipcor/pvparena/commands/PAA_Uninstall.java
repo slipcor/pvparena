@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.commands;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -14,15 +15,16 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * <pre>PVP Arena UNINSTALL Command class</pre>
- * 
+ *
  * A command to uninstall modules
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.0
  */
 
@@ -49,10 +51,13 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 		final YamlConfiguration config = new YamlConfiguration();
 		try {
 			config.load(PVPArena.instance.getDataFolder().getPath() + "/install.yml");
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
 			return;
 		}
+    catch (InvalidConfigurationException e)
+    {
+      return;
+    }
 
 		if (args.length == 0) {
 			listVersions(sender, config, null);
@@ -83,7 +88,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 				return;
 			}
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,mod.getName()));
-			return;
 		}
 	}
 
@@ -154,7 +158,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 			disableModule(file);
 		} catch (Exception e) {
 			PVPArena.instance.getLogger().warning("Error while removing: " + file);
-			e.printStackTrace();
 		}
 		String folder = null;
 		if (file.startsWith("pa_g")) {
