@@ -26,11 +26,11 @@ import org.bukkit.entity.Player;
  * <pre>
  * Arena Goal Manager class
  * </pre>
- * 
+ *
  * Loads and manages arena goals
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.2
  */
 
@@ -41,7 +41,7 @@ public class ArenaGoalManager {
 
 	/**
 	 * create an arena type instance
-	 * 
+	 *
 	 * @param plugin
 	 *            the plugin instance
 	 */
@@ -121,7 +121,7 @@ public class ArenaGoalManager {
 
 	/**
 	 * find an arena type by arena type name
-	 * 
+	 *
 	 * @param tName
 	 *            the type name to find
 	 * @return the arena type if found, null otherwise
@@ -144,7 +144,7 @@ public class ArenaGoalManager {
 
 	public String ready(final Arena arena) {
 		arena.getDebugger().i("AGM ready!?!");
-		String error = null;
+		String error;
 		for (ArenaGoal type : arena.getGoals()) {
 			error = type.ready();
 			if (error != null) {
@@ -199,7 +199,7 @@ public class ArenaGoalManager {
 
 		/**
 		 * name/team => score points
-		 * 
+		 *
 		 * handed over to each module
 		 */
 
@@ -341,7 +341,7 @@ public class ArenaGoalManager {
 								.getString(CFG.TP_LOSE), true, false);
 					} else {
 						if (winners.contains(p.getName())) {
-							
+
 							ArenaModuleManager.announce(
 									arena,
 									Language.parse(arena, MSG.PLAYER_HAS_WON,
@@ -378,7 +378,7 @@ public class ArenaGoalManager {
 						hasBroadcasted = true;
 					}
 				} else {
-					
+
 					final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 					for (ArenaPlayer p : team.getTeamMembers()) {
 						apSet.add(p);
@@ -404,7 +404,7 @@ public class ArenaGoalManager {
 							}
 							hasBroadcasted = !hasBroadcasted;
 						}
-						
+
 						p.setStatus(Status.LOST);
 					}
 				}

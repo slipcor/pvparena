@@ -67,11 +67,11 @@ import org.bukkit.util.Vector;
  * <pre>
  * Arena class
  * </pre>
- * 
+ *
  * contains >general< arena methods and variables
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.2
  */
 
@@ -89,10 +89,10 @@ public class Arena {
 
 	private final Set<PABlock> blocks = new HashSet<PABlock>();
 	private final Set<PASpawn> spawns = new HashSet<PASpawn>();
-	
+
 	private PARoundMap rounds;
 
-	private static String globalprefix = "PVP Arena";
+	private static final String globalprefix = "PVP Arena";
 	private final String name;
 	private String prefix = "PVP Arena";
 	private String owner = "%server%";
@@ -111,7 +111,7 @@ public class Arena {
 	public BukkitRunnable realEndRunner = null;
 	public BukkitRunnable startRunner = null;
 	public int spawnCampRunnerID = -1;
-	
+
 	public boolean gaveRewards = false;
 
 	private Config cfg;
@@ -128,7 +128,6 @@ public class Arena {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 		cfg = new Config(file);
@@ -136,22 +135,19 @@ public class Arena {
 		if (valid) {
 			StatisticsManager.loadStatistics(this);
 			SpawnManager.loadSpawns(this, cfg);
-			
+
 			String langName = (String) cfg.getUnsafe("general.lang");
 			if (langName == null || langName.equals("none")) {
 				return;
 			}
-			
+
 			final File langFile = new File(PVPArena.instance.getDataFolder(), langName);
 			language = new YamlConfiguration();
 			try {
 				language.load(langFile);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (InvalidConfigurationException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -185,7 +181,7 @@ public class Arena {
 
 	/**
 	 * send a message to every player, prefix player name and ChatColor
-	 * 
+	 *
 	 * @param player
 	 *            the team to send to
 	 * @param msg
@@ -201,7 +197,7 @@ public class Arena {
 
 	/**
 	 * send a message to every player except the given one
-	 * 
+	 *
 	 * @param sender
 	 *            the player to exclude
 	 * @param msg
@@ -300,7 +296,7 @@ public class Arena {
 
 	/**
 	 * count all players being ready
-	 * 
+	 *
 	 * @param arena
 	 *            the arena to count
 	 * @return the number of ready players
@@ -338,8 +334,8 @@ public class Arena {
 	public Set<ArenaClass> getClasses() {
 		return classes;
 	}
-	
-	public Debug getDebugger() {
+
+	public final Debug getDebugger() {
 		if (debug == null) {
 			debug = new Debug(this);
 		}
@@ -348,7 +344,7 @@ public class Arena {
 
 	/**
 	 * hand over everyone being part of the arena
-	 * 
+	 *
 	 */
 	public Set<ArenaPlayer> getEveryone() {
 
@@ -364,7 +360,7 @@ public class Arena {
 
 	/**
 	 * hand over all players being member of a team
-	 * 
+	 *
 	 */
 	public Set<ArenaPlayer> getFighters() {
 
@@ -393,7 +389,7 @@ public class Arena {
 	public String getOwner() {
 		return owner;
 	}
-	
+
 	public Set<String> getPlayedPlayers() {
 		return playedPlayers;
 	}
@@ -466,7 +462,7 @@ public class Arena {
 
 	/**
 	 * hand over all teams
-	 * 
+	 *
 	 * @return the arena teams
 	 */
 	public Set<ArenaTeam> getTeams() {
@@ -475,7 +471,7 @@ public class Arena {
 
 	/**
 	 * hand over all teams
-	 * 
+	 *
 	 * @return the arena teams
 	 */
 	public Set<String> getTeamNames() {
@@ -488,7 +484,7 @@ public class Arena {
 
 	/**
 	 * hand over all teams
-	 * 
+	 *
 	 * @return the arena teams
 	 */
 	public Set<String> getTeamNamesColored() {
@@ -516,7 +512,7 @@ public class Arena {
 
 	/**
 	 * give customized rewards to players
-	 * 
+	 *
 	 * @param player
 	 *            the player to give the reward
 	 */
@@ -540,7 +536,7 @@ public class Arena {
 		final PAWinEvent dEvent = new PAWinEvent(this, player, items);
 		Bukkit.getPluginManager().callEvent(dEvent);
 		items = dEvent.getItems();
-		
+
 		getDebugger().i("start " + startCount + " - minplayers: " + cfg.getInt(CFG.ITEMS_MINPLAYERS), player);
 
 		if (items == null || items.length < 1
@@ -621,7 +617,7 @@ public class Arena {
 
 	/**
 	 * check if a custom class player is alive
-	 * 
+	 *
 	 * @return true if there is a custom class player alive, false otherwise
 	 */
 	public boolean isCustomClassAlive() {
@@ -701,13 +697,13 @@ public class Arena {
 			return;
 		}
 		getDebugger().i("@" + sender.getName() + ": " + msg);
-		
+
 		sender.sendMessage(Language.parse(this, MSG.MESSAGES_GENERAL, prefix, msg));
 	}
 
 	/**
 	 * return an understandable representation of a player's death cause
-	 * 
+	 *
 	 * @param player
 	 *            the dying player
 	 * @param cause
@@ -806,7 +802,7 @@ public class Arena {
 
 	/**
 	 * a player leaves from the arena
-	 * 
+	 *
 	 * @param arena
 	 *            the arena where this happens
 	 * @param player
@@ -860,13 +856,13 @@ public class Arena {
 		if (isFightInProgress()) {
 			ArenaManager.checkAndCommit(this, silent);
 		}
-		
+
 		aPlayer.reset();
 	}
 
 	/**
 	 * check if an arena is ready
-	 * 
+	 *
 	 * @param arena
 	 *            the arena to check
 	 * @return null if ok, error message otherwise
@@ -925,9 +921,9 @@ public class Arena {
 
 				if (p.getArenaClass() == null) {
 					getDebugger().i("player has no class", p.get());
-					
+
 					final ArenaClass aClass = getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS));
-					
+
 					if (aClass != null) {
 						this.selectClass(p, aClass.getName());
 					} else {
@@ -958,7 +954,7 @@ public class Arena {
 
 	/**
 	 * call event when a player is exiting from an arena (by plugin)
-	 * 
+	 *
 	 * @param player
 	 *            the player to remove
 	 */
@@ -969,7 +965,7 @@ public class Arena {
 
 	/**
 	 * call event when a player is leaving an arena (on his own)
-	 * 
+	 *
 	 * @param player
 	 *            the player to remove
 	 */
@@ -991,7 +987,7 @@ public class Arena {
 
 	/**
 	 * remove a player from the arena
-	 * 
+	 *
 	 * @param player
 	 *            the player to reset
 	 * @param tploc
@@ -1022,7 +1018,7 @@ public class Arena {
 
 	/**
 	 * reset an arena
-	 * 
+	 *
 	 * @param force
 	 */
 	public void resetPlayers(final boolean force) {
@@ -1047,7 +1043,7 @@ public class Arena {
 		}
 
 		for (ArenaPlayer p : players) {
-			
+
 			p.debugPrint();
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				// TODO enhance wannabe-smart exploit fix for people that
@@ -1134,14 +1130,14 @@ public class Arena {
 		ArenaModuleManager.reset(this, force);
 		clearRegions();
 		PVPArena.instance.getAgm().reset(this, force);
-		
+
 		round = 0;
 		StatisticsManager.save();
 	}
 
 	/**
 	 * reset a player to his pre-join values
-	 * 
+	 *
 	 * @param player
 	 * @param string
 	 * @param soft
@@ -1167,14 +1163,14 @@ public class Arena {
 
 		}
 		*/
-		
-		
+
+
 		for (Entity entity : player.getNearbyEntities(2.0, 2.0, 2.0)) {
 			if (entity instanceof Projectile) {
 				entity.remove();
 			}
 		}
-		
+
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (aPlayer.getState() != null) {
 			aPlayer.getState().unload();
@@ -1210,7 +1206,6 @@ public class Arena {
 			final PALocation loc = SpawnManager.getSpawnByExactName(this, string);
 			if (loc == null) {
 				PVPArena.instance.getLogger().severe("RESET Spawn null: " + this.getName() + "->" + string);
-				(new Exception()).printStackTrace();
 			} else {
 				player.teleport(loc.toLocation());
 				aPlayer.setTelePass(false);
@@ -1229,7 +1224,7 @@ public class Arena {
 
 	/**
 	 * reset player variables
-	 * 
+	 *
 	 * @param player
 	 *            the player to access
 	 */
@@ -1244,7 +1239,7 @@ public class Arena {
 				CFG.PLAYER_EXHAUSTION, 0.0));
 		player.setVelocity(new Vector());
 		player.setFallDistance(0);
-		
+
 		if (this.getArenaConfig().getBoolean(CFG.PLAYER_DROPSEXP)) {
 			player.setTotalExperience(0);
 			player.setLevel(0);
@@ -1335,9 +1330,9 @@ public class Arena {
 				continue;
 			}
 			final String sTeam = team.getName();
-			Set<PALocation> spawns;
-			
-			
+			Set<PALocation> spawns; //should be renamed, hides feild
+
+
 			if (this.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 				spawns = SpawnManager.getSpawnsContaining(this, "spawn");
 			} else {
@@ -1347,8 +1342,8 @@ public class Arena {
 					spawns = SpawnManager.getSpawnsStartingWith(this, "spawn");
 				}
 			}
-			
-			
+
+
 			for (PALocation spawnLoc : spawns) {
 				for (Location playerLoc : players.keySet()) {
 					if (spawnLoc.getDistanceSquared(new PALocation(playerLoc)) < 9) {
@@ -1402,7 +1397,7 @@ public class Arena {
 		getDebugger().i("sum == " + sum);
 		final String errror = ready();
 		Boolean handle = PACheck.handleStart(this, null);
-		if ((errror == null || errror.equals(""))
+		if ((errror == null || errror.isEmpty())
 				&& (handle == true)) {
 			getDebugger().i("START!");
 			setFightInProgress(true);
@@ -1428,7 +1423,7 @@ public class Arena {
 
 	/**
 	 * send a message to every player of a given team
-	 * 
+	 *
 	 * @param player
 	 *            the team to send to
 	 * @param msg
@@ -1464,7 +1459,7 @@ public class Arena {
 
 	/**
 	 * teleport a given player to the given coord string
-	 * 
+	 *
 	 * @param player
 	 *            the player to teleport
 	 * @param place
@@ -1472,7 +1467,7 @@ public class Arena {
 	 */
 	public void tpPlayerToCoordName(final Player player, final String place) {
 		getDebugger().i("teleporting " + player + " to coord " + place, player);
-		
+
 		if (player.isInsideVehicle()) {
 			player.getVehicle().eject();
 		}
@@ -1493,10 +1488,9 @@ public class Arena {
 		}
 		if (loc == null) {
 			PVPArena.instance.getLogger().severe("TP Spawn null: " + this.getName() + "->" + place);
-			(new Exception()).printStackTrace();
 			return;
 		}
-		
+
 		aPlayer.setTelePass(true);
 		player.teleport(loc.toLocation());
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
@@ -1505,17 +1499,17 @@ public class Arena {
 
 	/**
 	 * last resort to put a player into an arena (when no goal/module wants to)
-	 * 
+	 *
 	 * @param player the player to put
 	 * @param team the arena team to put into
-	 * 
+	 *
 	 * @return true if joining successful
 	 */
 	public boolean tryJoin(final Player player, final ArenaTeam team) {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
 		getDebugger().i("trying to join player " + player.getName(), player);
-		
+
 
 
 		final PAJoinEvent event = new PAJoinEvent(this, player, false);
@@ -1533,16 +1527,16 @@ public class Arena {
 			// anything different. Just saying.
 			PVPArena.instance.getLogger().warning("Status not null for tryJoin: " + player.getName());
 		}
-		
+
 		if (aPlayer.getArenaClass() == null) {
 			String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
-			
+
 			if (autoClass != null && autoClass.contains(":") && autoClass.contains(";")) {
 				String[] definitions = autoClass.split(";");
 				autoClass = definitions[definitions.length-1]; // set default
-				
-				Map<String, ArenaClass> classes = new HashMap<String, ArenaClass>();
-				
+
+				Map<String, ArenaClass> classes = new HashMap<String, ArenaClass>(); //should be renamed, hides feild
+
 				for (String definition : definitions) {
 					if (!definition.contains(":")) {
 						continue;
@@ -1553,12 +1547,12 @@ public class Arena {
 						classes.put(var[0], aClass);
 					}
 				}
-				
+
 				if (classes.containsKey(team.getName())) {
 					autoClass = classes.get(team.getName()).getName();
 				}
 			}
-			
+
 			if (autoClass != null && !autoClass.equals("none")
 					&& getClass(autoClass) == null) {
 				msg(player, Language.parse(this, MSG.ERROR_CLASS_NOT_FOUND,
@@ -1570,7 +1564,7 @@ public class Arena {
 		aPlayer.setArena(this);
 		team.add(aPlayer);
 		aPlayer.setStatus(Status.FIGHT);
-		
+
 		final Set<PASpawn> spawns = new HashSet<PASpawn>();
 		if (this.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 			String arenaClass = getClass(cfg.getString(CFG.READY_AUTOCLASS)).getName();
@@ -1584,9 +1578,9 @@ public class Arena {
 		} else {
 			spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, team.getName()+"spawn"));
 		}
-		
-		int pos = (new Random()).nextInt(spawns.size()); 
-		
+
+		int pos = (new Random()).nextInt(spawns.size());
+
 		for (PASpawn spawn : spawns) {
 			if (--pos < 0) {
 				tpPlayerToCoordName(player, spawn.getName());
@@ -1595,16 +1589,16 @@ public class Arena {
 		}
 
 		if (aPlayer.getState() == null) {
-			
+
 			final Arena arena = aPlayer.getArena();
-			
-			
+
+
 
 			aPlayer.createState(player);
 			ArenaPlayer.backupAndClearInventory(arena, player);
 			aPlayer.dump();
-			
-			
+
+
 			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
 				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
@@ -1621,7 +1615,7 @@ public class Arena {
 
 	/**
 	 * Setup an arena based on legacy goals:
-	 * 
+	 *
 	 * <pre>
 	 * teams - team lives arena
 	 * teamdm - team deathmatch arena
@@ -1636,7 +1630,7 @@ public class Arena {
 	 * infect - infect (catchy, huh?)!
 	 * food - food!
 	 * </pre>
-	 * 
+	 *
 	 * @param string
 	 *            legacy goal
 	 */
@@ -1767,7 +1761,7 @@ public class Arena {
 	public void setStartingTime() {
 		this.startTime = System.currentTimeMillis();
 	}
-	
+
 	public int getPlayedSeconds() {
 		final int seconds = (int) (System.currentTimeMillis()-startTime);
 		return seconds / 1000;

@@ -19,11 +19,11 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  * <pre>PVP Arena SET Command class</pre>
- * 
+ *
  * A command to set config values
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.0
  */
 
@@ -75,7 +75,7 @@ public class PAA_Set extends AbstractArenaCommand {
 							keys.get(node) + " => " + CFG.getByNode(node).getType());
 				}
 
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
 			}
 			return;
@@ -94,7 +94,7 @@ public class PAA_Set extends AbstractArenaCommand {
 				return;
 			}
 		}
-		
+
 		final String type = CFG.getByNode(node) == null ? "" : CFG.getByNode(node).getType();
 
 
@@ -127,7 +127,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
 			try {
 				iValue = Integer.parseInt(value);
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				arena.msg(player, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value));
 				return;
 			}
@@ -141,7 +141,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
 			try {
 				dValue = Double.parseDouble(value);
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
 						"double (e.g. 12.00)"));
 				return;
@@ -178,7 +178,7 @@ public class PAA_Set extends AbstractArenaCommand {
 				}
 				return;
 			}
-			
+
 			try {
 				try {
 					final Material mat = Material.valueOf(value);
@@ -200,7 +200,7 @@ public class PAA_Set extends AbstractArenaCommand {
 				}
 				arena.getArenaConfig().save();
 				return;
-			} catch (Exception e) {
+			} catch (NumberFormatException e) {
 				arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
 						"valid ENUM or item ID"));
 			}
@@ -220,7 +220,7 @@ public class PAA_Set extends AbstractArenaCommand {
 				}
 				return;
 			}
-			
+
 			final String[] split = value.split(",");
 			ItemStack[] items = new ItemStack[split.length];
 

@@ -13,16 +13,16 @@ import org.bukkit.command.CommandSender;
 
 /**
  * <pre>PVP Arena REGIONTYPE Command class</pre>
- * 
+ *
  * A command to set an arena region type
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.0
  */
 
 public class PAA_RegionType extends AbstractArenaCommand {
-	
+
 	public PAA_RegionType() {
 		super(new String[] {});
 	}
@@ -32,34 +32,34 @@ public class PAA_RegionType extends AbstractArenaCommand {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
-		
+
 		if (!argCountValid(sender, arena, args, new Integer[]{2})) {
 			return;
 		}
-		
+
 		final ArenaRegion region = arena.getRegion(args[0]);
-		
+
 		if (region == null) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
 			return;
 		}
-		
-		RegionType regionType = null;
-		
+
+		RegionType regionType;
+
 		try {
 			regionType = RegionType.valueOf(args[1].toUpperCase());
 		} catch (Exception e) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " ")));
 			return;
 		}
-		
+
 		region.setType(regionType);
 		if (regionType.equals(RegionType.BATTLE)) {
 			region.protectionSetAll(true);
 		}
 		region.saveToConfig();
 		arena.msg(sender, Language.parse(arena, MSG.REGION_TYPE_SET, regionType.name()));
-	
+
 	}
 
 	@Override

@@ -29,9 +29,9 @@ import org.bukkit.entity.Player;
  * <pre>
  * Debug class
  * </pre>
- * 
+ *
  * provides methods for logging when in debug mode
- * 
+ *
  * @author slipcor
  */
 
@@ -47,25 +47,25 @@ public class Debug {
 
 	private static Logger logger = null;
 	private Logger arenaLogger = null;
-	
+
 	private static List<Logger> loggers = new ArrayList<Logger>();
-	
+
 	private Arena arena = null;
 
 	public Debug(final int iID) {
 		this(iID, null);
 	}
-	
+
 	private static Logger getGlobalLogger() {
 		if (logger == null) {
 	        logger = Logger.getAnonymousLogger();
 	        logger.setLevel(Level.ALL);
 	        logger.setUseParentHandlers(false);
-	        
+
 	        for (Handler handler : logger.getHandlers()) {
 	            logger.removeHandler(handler);
 	        }
-	
+
 	        try {
 	            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 
@@ -73,11 +73,11 @@ public class Debug {
 	            debugFolder.mkdirs();
 	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + "general.log");
 	            logFile.createNewFile();
-	            
+
 	            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
-	            
+
 	            handler.setFormatter(LogFileFormatter.newInstance());
-	            
+
 	            logger.addHandler(handler);
 
 	    		loggers.add(logger);
@@ -87,33 +87,33 @@ public class Debug {
 	        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
 	        }
         }
-		
+
 		return logger;
 	}
-	
+
 	private Logger getArenaLogger() {
 		if (arenaLogger == null) {
         	arenaLogger = Logger.getAnonymousLogger();
         	arenaLogger.setLevel(Level.ALL);
         	arenaLogger.setUseParentHandlers(false);
-	        
+
 	        for (Handler handler : arenaLogger.getHandlers()) {
 	        	arenaLogger.removeHandler(handler);
 	        }
-	
+
 	        try {
 	            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
-	            
+
 	            final String suffix = "-" + arena.getName();
-	            
+
 	            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
 	            debugFolder.mkdirs();
 	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + suffix + ".log");
-	            
+
 	            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
-	            
+
 	            handler.setFormatter(LogFileFormatter.newInstance());
-	            
+
 	            arenaLogger.addHandler(handler);
 	    		loggers.add(arenaLogger);
 	        } catch (IOException ex) {
@@ -124,10 +124,10 @@ public class Debug {
     	}
 		return arenaLogger;
 	}
-	
+
 	/**
 	 * Debug constructor
-	 * 
+	 *
 	 * @param iID
 	 *            the debug id to check
 	 */
@@ -145,7 +145,7 @@ public class Debug {
 
 	/**
 	 * does this class debug?
-	 * 
+	 *
 	 * @return true if debugs, false otherwise
 	 */
 	private boolean debugs() {
@@ -158,7 +158,7 @@ public class Debug {
 
 	/**
 	 * log a message as prefixed INFO
-	 * 
+	 *
 	 * @param string
 	 *            the message
 	 */
@@ -205,7 +205,7 @@ public class Debug {
 		if (!debugs(filter)) {
 			return;
 		}
-		
+
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(filter);
 		if (ap.getArena() != null) {
 			ap.getArena().getDebugger().i(string);
@@ -223,12 +223,12 @@ public class Debug {
 		check.clear();
 		strings.clear();
 		override = false;
-		
+
 		final String debugs = instance.getConfig().getString("debug");
 		if (debugs.equals("none")) {
 			Arena.pmsg(sender, "debugging: off");
 		} else {
-			
+
 			server_log = instance.getConfig().getBoolean("server_log");
 			if (debugs.equals("all") || debugs.equals("full")) {
 				Debug.check.add(666);
@@ -240,16 +240,16 @@ public class Debug {
 				for (String s : sIds) {
 					try {
 						Debug.check.add(Integer.valueOf(s));
-					} catch (Exception e) {
+					} catch (NumberFormatException e) {
 						strings.add(s);
 					}
 				}
 			}
 		}
 	}
-	
+
 	public static void destroy() {
-		
+
 		for (Logger log : Debug.loggers) {
 			Handler[] handlers = log.getHandlers().clone();
 			for (Handler hand : handlers) {
@@ -258,7 +258,7 @@ public class Debug {
 		}
 		Debug.loggers.clear();
 	}
-	
+
 
     static class LogFileFormatter extends Formatter {
 
@@ -273,6 +273,7 @@ public class Debug {
             this.date = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
         }
 
+        @Override
         public String format(final LogRecord record) {
             final StringBuilder builder = new StringBuilder();
             final Throwable exception = record.getThrown();

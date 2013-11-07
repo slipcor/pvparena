@@ -26,9 +26,9 @@ import org.bukkit.entity.Player;
  * <pre>
  * Arena Module class "StandardLounge"
  * </pre>
- * 
+ *
  * Enables joining to lounges instead of the battlefield
- * 
+ *
  * @author slipcor
  */
 
@@ -169,7 +169,7 @@ public class StandardLounge extends ArenaModule {
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));
-		
+
 		// ArenaPlayer.prepareInventory(arena, ap.get());
 		player.setArena(arena);
 		team.add(player);
@@ -179,7 +179,7 @@ public class StandardLounge extends ArenaModule {
 		} else {
 			arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
 		}
-		
+
 		player.setStatus(Status.LOUNGE);
 		arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
 		if (arena.isFreeForAll()) {
@@ -198,16 +198,16 @@ public class StandardLounge extends ArenaModule {
 					Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
 							sender.getName(), team.getColoredName() + ChatColor.COLOR_CHAR + "r"));
 		}
-		
+
 		if (player.getState() == null) {
-			
+
 			final Arena arena = player.getArena();
 
 			player.createState(player.get());
 			ArenaPlayer.backupAndClearInventory(arena, player.get());
 			player.dump();
-			
-			
+
+
 			if (player.getArenaTeam() != null && player.getArenaClass() == null) {
 				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
@@ -215,7 +215,6 @@ public class StandardLounge extends ArenaModule {
 				}
 				if (autoClass == null) {
 					arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
-					return;
 				}
 			}
 		} else {

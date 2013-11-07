@@ -40,12 +40,12 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * <pre>
  * Arena Goal class "PlayerKillreward"
  * </pre>
- * 
+ *
  * This will feature several ways of altering player rewards
- * 
+ *
  * The following modes exist: * GEAR_UP - get better gear until you reached the
  * final step and then win
- * 
+ *
  * @author slipcor
  */
 
@@ -118,7 +118,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		if (!arena.isFreeForAll()) {
 			return checkForMissingTeamSpawn(list);
 		}
-		
+
 		return checkForMissingSpawn(list);
 	}
 
@@ -164,11 +164,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 		// /pa [arena] !kr [number] {remove}
 
-		int value = 0;
+		int value;
 
 		try {
 			value = Integer.parseInt(args[1]);
-		} catch (Exception e) {
+		} catch (NumberFormatException e) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[1]));
 			return;
 		}
@@ -246,7 +246,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			return;
 		}
 		getLifeMap().put(player.getName(), getMaxInt());
-		
+
 		class ResetRunnable implements Runnable {
 			private final Player player;
 
@@ -333,7 +333,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			sender.sendMessage("kill #" + i + ": " + StringParser.getStringFromItemStacks(items));
 		}
 	}
-	
+
 	private Map<Integer, ItemStack[]> getItemMap() {
 		if (itemMap == null) {
 			itemMap = new HashMap<Integer, ItemStack[]>();
@@ -363,7 +363,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
+					if (string.toLowerCase().startsWith(teamName.toLowerCase() +
 							aClass.getName().toLowerCase() + "spawn")) {
 						return true;
 					}
@@ -437,8 +437,6 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			}
 		}
 
-		
-
 		final ConfigurationSection cs = (ConfigurationSection) config
 				.get("goal.playerkillrewards");
 
@@ -447,7 +445,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				try {
 					getItemMap().put(Integer.parseInt(line.substring(2)), StringParser
 							.getItemStacksFromString(cs.getString(line)));
-				} catch (Exception e) {
+				} catch (NumberFormatException e) {
 				}
 			}
 		}
@@ -491,7 +489,6 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				scores.put(ap.getName(), score);
 			}
 		}
-
 		return scores;
 	}
 

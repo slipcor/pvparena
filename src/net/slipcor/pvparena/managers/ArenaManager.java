@@ -36,23 +36,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
  * <pre>
  * Arena Manager class
  * </pre>
- * 
+ *
  * Provides static methods to manage Arenas
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.2
  */
 
 public final class ArenaManager {
 	private final static Map<String, Arena> ARENAS = new HashMap<String, Arena>();
 	private final static Debug DEBUG = new Debug(24);
-	
+
 	private ArenaManager() {
 	}
 	/**
 	 * check for arena end and commit it, if true
-	 * 
+	 *
 	 * @param arena
 	 *            the arena to check
 	 * @return true if the arena ends
@@ -69,7 +69,7 @@ public final class ArenaManager {
 
 	/**
 	 * try loading an arena
-	 * 
+	 *
 	 * @param name
 	 *            the arena name to load
 	 * @return
@@ -106,7 +106,7 @@ public final class ArenaManager {
 
 	/**
 	 * check if join region is set and if player is inside, if so
-	 * 
+	 *
 	 * @param player
 	 *            the player to check
 	 * @return true if not set or player inside, false otherwise
@@ -126,7 +126,7 @@ public final class ArenaManager {
 
 	/**
 	 * check if an arena has interfering regions with other arenas
-	 * 
+	 *
 	 * @param arena
 	 *            the arena to check
 	 * @return true if no running arena interfering, false otherwise
@@ -146,7 +146,7 @@ public final class ArenaManager {
 
 	/**
 	 * count the arenas
-	 * 
+	 *
 	 * @return the arena count
 	 */
 	public static int count() {
@@ -155,13 +155,13 @@ public final class ArenaManager {
 
 	/**
 	 * search the arenas by arena name
-	 * 
+	 *
 	 * @param sName
 	 *            the arena name
 	 * @return an arena instance if found, null otherwise
 	 */
 	public static Arena getArenaByName(final String name) {
-		if (name == null || name.equals("")) {
+		if (name == null || name.isEmpty()) {
 			return null;
 		}
 		final String sName = name.toLowerCase();
@@ -189,7 +189,7 @@ public final class ArenaManager {
 
 	/**
 	 * search the arenas by location
-	 * 
+	 *
 	 * @param location
 	 *            the location to find
 	 * @return an arena instance if found, null otherwise
@@ -242,7 +242,7 @@ public final class ArenaManager {
 
 	/**
 	 * return the arenas
-	 * 
+	 *
 	 * @return
 	 */
 	public static Set<Arena> getArenas() {
@@ -255,7 +255,7 @@ public final class ArenaManager {
 
 	/**
 	 * return the first arena
-	 * 
+	 *
 	 * @return the first arena instance
 	 */
 	public static Arena getFirst() {
@@ -267,7 +267,7 @@ public final class ArenaManager {
 
 	/**
 	 * get all arena names
-	 * 
+	 *
 	 * @return a string with all arena names joined with comma
 	 */
 	public static String getNames() {
@@ -301,28 +301,26 @@ public final class ArenaManager {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			return;
 		}
 	}
 
 	/**
 	 * load a specific arena
-	 * 
+	 *
 	 * @param configFile
 	 *            the file to load
 	 */
 	public static Arena loadArena(final String configFile) {
 		DEBUG.i("loading arena " + configFile);
 		final Arena arena = new Arena(configFile);
-		
+
 		if (!arena.isValid()) {
 			Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, configFile));
 			return null;
 		}
-		
+
 		ARENAS.put(arena.getName().toLowerCase(), arena);
-		
+
 		return arena;
 	}
 
@@ -347,7 +345,7 @@ public final class ArenaManager {
 
 	/**
 	 * try to join an arena via sign click
-	 * 
+	 *
 	 * @param event
 	 *            the PlayerInteractEvent
 	 * @param player
@@ -375,7 +373,6 @@ public final class ArenaManager {
 					}
 					final AbstractArenaCommand command = new PAG_Join();
 					command.commit(arena, player, newArgs);
-					return;
 				}
 			}
 		}

@@ -64,9 +64,9 @@ import org.bukkit.event.player.PlayerVelocityEvent;
  * <pre>
  * Player Listener class
  * </pre>
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.2
  */
 
@@ -75,11 +75,11 @@ public class PlayerListener implements Listener {
 
 	private boolean checkAndCommitCancel(final Arena arena, final Player player,
 			final Cancellable event) {
-		
+
 		if(willBeCancelled(player, event)) {
 			return true;
 		}
-		
+
 		if (!(event instanceof PlayerInteractEvent)) {
 			return false;
 		}
@@ -113,7 +113,7 @@ public class PlayerListener implements Listener {
 				event.setCancelled(true);
 				return true;
 			}
-			
+
 		}
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
@@ -141,7 +141,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerChat(final AsyncPlayerChatEvent event) {
 
 		final Player player = event.getPlayer();
-		
+
 		if (PAA_Setup.activeSetups.containsKey(player.getName())) {
 			PAA_Setup.chat(player, event.getMessage());
 			return;
@@ -197,7 +197,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final Player player = event.getPlayer();
-		
+
 		if (PAA_Setup.activeSetups.containsKey(player.getName())) {
 			PAA_Setup.chat(player, event.getMessage().substring(1));
 			return;
@@ -225,7 +225,7 @@ public class PlayerListener implements Listener {
 		list.addAll(arena.getArenaConfig().getStringList(
 				CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>()));
 
-		if (list == null || list.size() < 1) {
+		if (list.size() < 1) {
 			list.clear();
 			list.add("ungod");
 			arena.getArenaConfig().set(CFG.LISTS_CMDWHITELIST, list);
@@ -252,11 +252,11 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDropItem(final PlayerDropItemEvent event) {
 		final Player player = event.getPlayer();
-		
+
 		if (willBeCancelled(player, event)) {
 			return;
 		}
-		
+
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final Arena arena = aPlayer.getArena();
 		if (arena == null) {
@@ -291,7 +291,7 @@ public class PlayerListener implements Listener {
 
 	/**
 	 * pretend a player death
-	 * 
+	 *
 	 * @param arena
 	 *            the arena the player is playing in
 	 * @param player
@@ -340,7 +340,6 @@ public class PlayerListener implements Listener {
 		PlayerState.fullReset(arena, player);
 
 		if (ArenaManager.checkAndCommit(arena, false)) {
-			return;
 		}
 	}
 
@@ -361,7 +360,7 @@ public class PlayerListener implements Listener {
 
 		if (event.hasBlock()) {
 			DEBUG.i("block: " + event.getClickedBlock().getType().name(), player);
-			
+
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getClickedBlock().getLocation()));
 			if (checkAndCommitCancel(arena, event.getPlayer(), event)) {
@@ -429,7 +428,7 @@ public class PlayerListener implements Listener {
 				final Sign sign = (Sign) block.getState();
 
 				if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
-						.getClass(sign.getLine(0)) != null)) && (team != null)) {
+						.getClass(sign.getLine(0)) != null))) {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
 				} else {
@@ -492,7 +491,7 @@ public class PlayerListener implements Listener {
 
 					if (error == null) {
 						arena.start();
-					} else if (error.equals("")) {
+					} else if (error.isEmpty()) {
 						arena.countDown();
 					} else {
 						arena.msg(player, error);
@@ -513,9 +512,9 @@ public class PlayerListener implements Listener {
 				} else {
 					spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()+"spawn"));
 				}
-				
-				int pos = (new Random()).nextInt(spawns.size()); 
-				
+
+				int pos = (new Random()).nextInt(spawns.size());
+
 				for (PASpawn spawn : spawns) {
 
 					if (--pos < 0) {
@@ -523,7 +522,7 @@ public class PlayerListener implements Listener {
 						break;
 					}
 				}
-				
+
 				ArenaPlayer.parsePlayer(player.getName()).setStatus(
 						Status.FIGHT);
 
@@ -532,7 +531,7 @@ public class PlayerListener implements Listener {
 			} else if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 				arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
 				if (arena != null) {
-				
+
 					Set<ArenaRegion> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
 					out: if (!event.isCancelled() && bl_regions != null && !bl_regions.isEmpty()) {
 						for (ArenaRegion region : bl_regions) {
@@ -560,8 +559,8 @@ public class PlayerListener implements Listener {
 							}
 						}
 					}
-				
-				
+
+
 					if (!event.isCancelled() && arena.getArenaConfig().getBoolean(CFG.PLAYER_QUICKLOOT)) {
 						Chest c = (Chest) block.getState();
 						InventoryManager.transferItems(player, c.getBlockInventory());
@@ -605,7 +604,7 @@ public class PlayerListener implements Listener {
 				Arena.pmsg(player, "http://dev.bukkit.org/bukkit-plugins/pvparena/files");
 			} else if (test == UpdateResult.SUCCESS) {
 				Arena.pmsg(player, "The plugin has been updated, please restart the server!");
-				
+
 			}
 		}
 	}
@@ -638,7 +637,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
 		final Player player = event.getPlayer();
-		
+
 		if (willBeCancelled(player, event)) {
 			return;
 		}
@@ -669,18 +668,18 @@ public class PlayerListener implements Listener {
 
 		if (arena == null) {
 			if (event.getTo() == null) {
-				
+
 				PVPArena.instance.getLogger().warning("Player teleported to NULL: "  + event.getPlayer());
-				
+
 				return;
 			}
 			arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(
 					event.getTo()));
-			
+
 			if (arena == null) {
 				return; // no fighting player and no arena location => OUT
 			}
-			
+
 			Set<ArenaRegion> regs = arena.getRegionsByType(RegionType.BATTLE);
 			boolean contained = false;
 			for (ArenaRegion reg : regs) {

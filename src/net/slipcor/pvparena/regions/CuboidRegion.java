@@ -20,9 +20,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * <pre>
  * Arena Region Shape class "cuboid"
  * </pre>
- * 
+ *
  * Defines a cuboid region, including overlap checks and contain checks
- * 
+ *
  * @author slipcor
  */
 
@@ -34,7 +34,7 @@ public class CuboidRegion extends ArenaRegionShape {
 	public CuboidRegion() {
 		super("cuboid");
 	}
-	
+
 	@Override
 	public String version() {
 		return PVPArena.instance.getDescription().getVersion();
@@ -42,7 +42,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	/**
 	 * sanitize a pair of locations
-	 * 
+	 *
 	 * @param lMin
 	 *            the minimum point
 	 * @param lMax
@@ -68,6 +68,7 @@ public class CuboidRegion extends ArenaRegionShape {
 		return new PABlockLocation[] { l1, l2 };
 	}
 
+  @Override
 	public final void initialize(ArenaRegion region) {
 		this.region = region;
 		final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);
@@ -84,6 +85,7 @@ public class CuboidRegion extends ArenaRegionShape {
 					|| getMinimumLocation().getZ() > paRegion.locs[1].getZ()) {
 				return false;
 			}
+      //this is redundant, should be refactored
 			if (paRegion.locs[0].getX() > getMaximumLocation().getX()
 					|| paRegion.locs[0].getY() > getMaximumLocation().getY()
 					|| paRegion.locs[0].getZ() > getMaximumLocation().getZ()) {
@@ -232,7 +234,7 @@ public class CuboidRegion extends ArenaRegionShape {
 	public PABlockLocation getMinimumLocation() {
 		return getRegion().locs[0];
 	}
-	
+
 	public ArenaRegion getRegion() {
 		return region;
 	}
@@ -250,7 +252,7 @@ public class CuboidRegion extends ArenaRegionShape {
 		final int diffX = direction.getModX();
 		final int diffY = direction.getModY();
 		final int diffZ = direction.getModZ();
-		
+
 		if (diffX == 0 && diffY == 0 && diffZ == 0) {
 			return;
 		}
@@ -263,28 +265,28 @@ public class CuboidRegion extends ArenaRegionShape {
 		final int diffX = direction.getModX();
 		final int diffY = direction.getModY();
 		final int diffZ = direction.getModZ();
-		
+
 		if (diffX == 0 && diffY == 0 && diffZ == 0) {
 			return;
 		}
-		
+
 		if (diffX > 0) {
 			region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(diffX*value, 0, 0));
 		} else if (diffX < 0) {
 			region.locs[0] = new PABlockLocation(region.locs[0].toLocation().subtract(diffX*value, 0, 0));
 		}
-		
+
 		if (diffY > 0) {
 			region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(0, diffY*value, 0));
 		} else if (diffY < 0) {
 			region.locs[0] = new PABlockLocation(region.locs[0].toLocation().subtract(0, diffY*value, 0));
 		}
-		
+
 		if (diffZ > 0) {
 			region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(0, 0, diffZ*value));
 		} else if (diffZ < 0) {
 			region.locs[0] = new PABlockLocation(region.locs[0].toLocation().subtract(0, 0, diffZ*value));
 		}
-		
+
 	}
 }

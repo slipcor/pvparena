@@ -25,14 +25,14 @@ import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena SETUP Command class</pre>
- * 
+ *
  * A command to toggle an arena's setup mode
- * 
+ *
  * @author slipcor
  */
 
 public class PAA_Setup extends AbstractArenaCommand {
-	
+
 	public static Map<String, Arena> activeSetups = new HashMap<String, Arena>();
 
 	public PAA_Setup() {
@@ -44,13 +44,13 @@ public class PAA_Setup extends AbstractArenaCommand {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
-		
+
 		if (!argCountValid(sender, arena, args, new Integer[]{0})) {
 			return;
 		}
-		
+
 		String msg;
-		
+
 		if (activeSetups.containsValue(arena)) {
 			activeSetups.remove(sender.getName());
 			msg = Language.parse(arena, MSG.ARENA_SETUP_DISABLED, arena.getName());
@@ -79,7 +79,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 		final Arena arena = activeSetups.get(player.getName());
 		/**
 		 * help | ?
-		 * 
+		 *
 		 * show [region|spawn|block] | display a region/spawn/block with wool blocks",
 		 * region [region] move 2 up | move region [region] 2 blocks up",
 		 * region [region] expand 10 north | expand region [region] 10 block to the north",
@@ -90,13 +90,13 @@ public class PAA_Setup extends AbstractArenaCommand {
 		if (message.length() < 1) {
 			return;
 		}
-		
+
 		String[] word = message.toLowerCase().split(" ");
 		if (word[0].startsWith("h") || word[0].startsWith("?")) {
 			arena.msg(player, Language.parse(MSG.ERROR_ERROR, message));
 			arena.msg(player, Help.parse(HELP.SETUP_CMDS));
 		}
-		
+
 		if (word[0].startsWith("s")) {
 			// show [region|spawn|block] | display a region/spawn/block with wool blocks",
 			if (word.length > 2) {
@@ -111,7 +111,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 					public void run() {
 						player.sendBlockChange(location, location.getBlock().getTypeId(), location.getBlock().getData());
 					}
-					
+
 				}
 				if (word[1].startsWith("r")) {
 					// show region [name]
@@ -150,8 +150,8 @@ public class PAA_Setup extends AbstractArenaCommand {
 				int amount = 0;
 				try {
 					amount = Integer.parseInt(word[3]);
-				} catch (Exception e) {
-					
+				} catch (NumberFormatException e) {
+
 				}
 				if (region == null || amount == 0) {
 					if (region == null) {
@@ -191,9 +191,8 @@ public class PAA_Setup extends AbstractArenaCommand {
 			cmd.commit(arena, player, new String[] {""});
 			return;
 		}
-		
+
 		arena.msg(player, Language.parse(MSG.ERROR_ERROR, message));
 		arena.msg(player, Help.parse(HELP.SETUP_CMDS));
-		return;
 	}
 }

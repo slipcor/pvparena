@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 
 /**
  * <pre>PVP Arena Class Sign class</pre>
- * 
+ *
  * A sign displaying the players being part of the class
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.9.1
  */
 
@@ -23,7 +23,7 @@ public class PAClassSign {
 
 	/**
 	 * create an arena class sign instance
-	 * 
+	 *
 	 * @param loc
 	 *            the location the sign resides
 	 */
@@ -35,7 +35,7 @@ public class PAClassSign {
 
 	/**
 	 * add a player name to a sign
-	 * 
+	 *
 	 * @param player
 	 *            the player name to add
 	 * @return true if successful, false otherwise
@@ -54,8 +54,7 @@ public class PAClassSign {
 			sign.setLine(3, "");
 			sign.update();
 			this.clearNext();
-		} catch (Exception e) {
-			return;
+		} catch (IndexOutOfBoundsException e) {
 		}
 	}
 
@@ -71,14 +70,13 @@ public class PAClassSign {
 			sign.setLine(2, "");
 			sign.setLine(3, "");
 			sign.update();
-		} catch (Exception e) {
-			return;
+		} catch (IndexOutOfBoundsException e) {
 		}
 	}
 
 	/**
 	 * remove a player from all signs he may be on
-	 * 
+	 *
 	 * @param signs
 	 *            the signs to check
 	 * @param player
@@ -92,7 +90,7 @@ public class PAClassSign {
 
 	/**
 	 * remove a player name from a string
-	 * 
+	 *
 	 * @param name
 	 *            the name to remove
 	 */
@@ -113,14 +111,13 @@ public class PAClassSign {
 				}
 			}
 			sign.update();
-		} catch (Exception e) {
-			return;
+		} catch (IndexOutOfBoundsException e) {
 		}
 	}
 
 	/**
 	 * add a player name to the first free line on a sign group
-	 * 
+	 *
 	 * @param name
 	 *            the name to set
 	 * @return true if successful, false otherwise
@@ -129,7 +126,7 @@ public class PAClassSign {
 		try {
 			Sign sign = (Sign) location.toLocation().getBlock().getState();
 			for (int i = 2; i < 4; i++) {
-				if (sign.getLine(i) == null || sign.getLine(i).equals("")) {
+				if (sign.getLine(i) == null || sign.getLine(i).isEmpty()) {
 					sign.setLine(i, name);
 					sign.update();
 					return true;
@@ -138,13 +135,13 @@ public class PAClassSign {
 			sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
 					.getState();
 			for (int i = 0; i < 4; i++) {
-				if (sign.getLine(i) == null || sign.getLine(i).equals("")) {
+				if (sign.getLine(i) == null || sign.getLine(i).isEmpty()) {
 					sign.setLine(i, name);
 					sign.update();
 					return true;
 				}
 			}
-		} catch (Exception e) {
+		} catch (IndexOutOfBoundsException e) {
 			return false;
 		}
 		return false;
@@ -152,7 +149,7 @@ public class PAClassSign {
 
 	/**
 	 * check if a location already is reserved by a class sign
-	 * 
+	 *
 	 * @param loc
 	 *            the location to check
 	 * @param signs

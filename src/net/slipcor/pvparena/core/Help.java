@@ -1,31 +1,33 @@
 package net.slipcor.pvparena.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * <pre>
  * Help class
  * </pre>
- * 
+ *
  * provides methods to display configurable help texts
- * 
+ *
  * @author slipcor
  */
 
 public final class Help {
 	private Help() {
-		
+
 	}
 
 	private static String version = "v0.9.9.9";
 	private final static String LINE = "-------------------------------------------";
-	
+
 	public static enum HELP {
 		BLACKLIST("nulang.help.msg.blacklist", new String[]{
 				"Manages block break/place blacklist entries",
@@ -292,7 +294,7 @@ public final class Help {
 				LINE,
 				"Valid types: break | place | use",
 				"Valid subs: add | remove | show"}),
-				
+
 		CHAT("nulang.help.msg.chat", new String[]{
 				"Set arena team chat mode",
 				LINE,
@@ -303,7 +305,7 @@ public final class Help {
 				"Switch between team and global chat",
 				"No value will toggle and display the result",
 				"Valid values: yes, on, 1, true, no, off, 0, false"}),
-						
+
 		SHUTUP("nulang.help.msg.shutup", new String[]{
 				"Ignore arena announcements",
 				LINE,
@@ -332,7 +334,7 @@ public final class Help {
 				"shorthand command: -s",
 				LINE,
 				"/pa [arenaname] spectate"}),
-				
+
 
 		ARENACLASS("nulang.help.msg.arenaclass", new String[]{
 				"Switch your arena class",
@@ -364,7 +366,7 @@ public final class Help {
 				"shorthand command: -ls",
 				LINE,
 				"/pa {arenaname} list"}),
-		
+
 		READY("nulang.help.msg.ready", new String[]{
 				"Ready up / show ready players",
 				LINE,
@@ -385,16 +387,16 @@ public final class Help {
 				"shorthand command: -v",
 				LINE,
 				"/pa version"});
-		
 
-		private String node;
+
+		private final String node;
 		private List<String> value;
 
 		private HELP(final String node, final List<String> value) {
 			this.node = node;
 			this.value = value;
 		}
-		
+
 		private HELP(final String node, final String[] sArray) {
 			this.node = node;
 			final List<String> list = new ArrayList<String>();
@@ -427,7 +429,7 @@ public final class Help {
 		if (!(configFile.exists())) {
 			try {
 				configFile.createNewFile();
-			} catch (Exception e) {
+			} catch (IOException e) {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error when creating help language file.");
 			}
@@ -438,7 +440,7 @@ public final class Help {
 		try {
 			config.load(configFile);
 			final String ver = config.getString("version", "0");
-			
+
 			if (!ver.equals(version)) {
 				override = true;
 				final File file = new File(configFile.getParent(), "/help_"+langString+"_backup.yml");
@@ -447,9 +449,11 @@ public final class Help {
 				}
 				config.save(file);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
 		}
+    catch (InvalidConfigurationException e)
+    {
+    }
 
 		for (HELP m : HELP.values()) {
 			if (override) {
@@ -458,20 +462,19 @@ public final class Help {
 				config.addDefault(m.getNode(), m.get());
 			}
 		}
-		
+
 		config.set("version", version);
 
 		config.options().copyDefaults(true);
 		try {
 			config.save(configFile);
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
 		}
 	}
 
 	/**
 	 * read a node from the config and return its value
-	 * 
+	 *
 	 * @param s
 	 *            the node name
 	 * @return the node string

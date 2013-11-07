@@ -20,9 +20,9 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
  * <pre>
  * Arena Region Shape class "cylindric"
  * </pre>
- * 
+ *
  * Defines a cylindric region, including overlap checks and contain checks
- * 
+ *
  * @author slipcor
  */
 
@@ -42,7 +42,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	/**
 	 * sanitize a pair of locations
-	 * 
+	 *
 	 * @param lMin
 	 *            the minimum point
 	 * @param lMax
@@ -68,6 +68,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		return new PABlockLocation[] { l1, l2 };
 	}
 
+  @Override
 	public final void initialize(ArenaRegion region) {
 		this.region = region;
 		final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);
@@ -316,7 +317,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		result.setZ((int) (result.getZ() - thisRadius));
 		return result;
 	}
-	
+
 	public ArenaRegion getRegion() {
 		return region;
 	}
@@ -336,7 +337,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		final int diffX = direction.getModX();
 		final int diffY = direction.getModY();
 		final int diffZ = direction.getModZ();
-		
+
 		if (diffX == 0 && diffY == 0 && diffZ == 0) {
 			return;
 		}
@@ -349,7 +350,7 @@ public class CylindricRegion extends ArenaRegionShape {
 		final int diffX = direction.getModX();
 		final int diffY = direction.getModY();
 		final int diffZ = direction.getModZ();
-		
+
 		if (diffX == 0 && diffY == 0 && diffZ == 0) {
 			return;
 		}

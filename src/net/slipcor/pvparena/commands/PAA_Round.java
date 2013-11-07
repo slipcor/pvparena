@@ -17,16 +17,16 @@ import org.bukkit.command.CommandSender;
 
 /**
  * <pre>PVP Arena ROUND Command class</pre>
- * 
+ *
  * A command to manage arena rounds
- * 
+ *
  * @author slipcor
- * 
+ *
  * @version v0.10.0
  */
 
 public class PAA_Round extends AbstractArenaCommand {
-	
+
 	public PAA_Round() {
 		super(new String[] {});
 	}
@@ -40,11 +40,11 @@ public class PAA_Round extends AbstractArenaCommand {
 		// /pa [arenaname] round - list rounds
 		// /pa [arenaname] round [number] - list round goals
 		// /pa [arenaname] round [number] [goal] - toggle round goal
-		
+
 		if (!argCountValid(sender, arena, args, new Integer[]{0,1,2})) {
 			return;
 		}
-		
+
 		if (args.length < 1) {
 			if (arena.getRoundCount() < 1) {
 				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
@@ -56,26 +56,26 @@ public class PAA_Round extends AbstractArenaCommand {
 			}
 			return;
 		}
-		
+
 		try {
 			int round = Integer.parseInt(args[0]);
 			final PARoundMap roundMap = arena.getRounds();
-			
+
 			if (round >= arena.getRoundCount()) {
 				round = arena.getRoundCount();
-				
+
 				roundMap.set(round, new PARound(new HashSet<ArenaGoal>()));
 			} else if (args.length < 2) {
 				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, args[0], StringParser.joinSet(roundMap.getGoals(round),", ")));
 				return;
 			}
-			
+
 			ArenaGoal goal = null;
-			
+
 			if (args.length > 1) {
 				goal = PVPArena.instance.getAgm().getGoalByName(args[1].toLowerCase());
 			}
-			
+
 			if (goal == null) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[1], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
 				arena.msg(sender, Language.parse(arena, MSG.GOAL_INSTALLING));
@@ -83,7 +83,7 @@ public class PAA_Round extends AbstractArenaCommand {
 			}
 
 			final PARound rRound = roundMap.getRound(round);
-			
+
 			if (rRound.toggle(arena, goal)) {
 				// added
 				arena.msg(sender, Language.parse(arena, MSG.ROUND_ADDED, goal.getName()));
@@ -91,16 +91,12 @@ public class PAA_Round extends AbstractArenaCommand {
 				// removed
 				arena.msg(sender, Language.parse(arena, MSG.ROUND_REMOVED, goal.getName()));
 			}
-			
+
 			roundMap.set(round, rRound);
 			//TODO LATER
-			
+
 		} catch (NumberFormatException e) {
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
-		} catch (Exception e) {
-			e.printStackTrace();
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, e.getLocalizedMessage()));
-			
 		}
 	}
 
