@@ -74,18 +74,6 @@ public final class PlayerState {
 			displayname = player.getDisplayName();
 		}
 
-		if (!arena.getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
-			class RunLater implements Runnable {
-
-				@Override
-				public void run() {
-					player.setFlying(false);
-				}
-
-			}
-			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
-		}
-
 		fullReset(arena, player);
 		final int time = arena.getArenaConfig().getInt(CFG.GENERAL_TIME);
 		if (time != -1) {

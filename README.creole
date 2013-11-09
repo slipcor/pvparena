@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.298 - attempt to enforce flymode removal
+* v1.1.0.297 - merge code optimisations by Iaccidentally
 * v1.1.0.296 - nope, backwards compatibility is too hard - more changes to come. Hands off!
 * v1.1.0.295 - try to establish backwards compatibility
 * v1.1.0.294 - finish the ArenaRegion rewrite. Use with caution!!!

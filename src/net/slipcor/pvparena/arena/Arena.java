@@ -1495,6 +1495,19 @@ public class Arena {
 		player.teleport(loc.toLocation());
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		aPlayer.setTelePass(false);
+
+
+		if (!getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
+			class RunLater implements Runnable {
+
+				@Override
+				public void run() {
+					player.setFlying(false);
+				}
+
+			}
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
+		}
 	}
 
 	/**
