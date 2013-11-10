@@ -1508,6 +1508,7 @@ public class Arena {
 
 				@Override
 				public void run() {
+					player.setAllowFlight(false);
 					player.setFlying(false);
 				}
 
