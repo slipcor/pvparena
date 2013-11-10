@@ -1379,10 +1379,13 @@ public class Arena {
 		cfg.save();
 	}
 
+	public void start() {
+		start(false);
+	}
 	/**
 	 * initiate the arena start
 	 */
-	public void start() {
+	public void start(boolean forceStart) {
 		getDebugger().i("start()");
 		gaveRewards = false;
 		startRunner = null;
@@ -1401,12 +1404,26 @@ public class Arena {
 		}
 		getDebugger().i("sum == " + sum);
 		final String errror = ready();
-		Boolean handle = PACheck.handleStart(this, null);
-		if ((errror == null || errror.equals(""))
+		Boolean handle = PACheck.handleStart(this, null, forceStart);
+		
+		
+		
+		boolean overRide = false;
+		
+		if (forceStart) {
+			overRide = 
+					errror.contains(Language.parse(MSG.ERROR_READY_1_ALONE)) ||
+					errror.contains(Language.parse(MSG.ERROR_READY_2_TEAM_ALONE)) ||
+					errror.contains(Language.parse(MSG.ERROR_READY_3_TEAM_MISSING_PLAYERS)) ||
+					errror.contains(Language.parse(MSG.ERROR_READY_4_MISSING_PLAYERS));
+		}
+		
+		
+		if (overRide || (errror == null || errror.equals(""))
 				&& (handle == true)) {
 			getDebugger().i("START!");
 			setFightInProgress(true);
-		} else if (handle == null){
+		} else if (overRide || handle == null){
 			PVPArena.instance.getLogger().info(errror);
 			for (ArenaPlayer ap : getFighters()) {
 				getDebugger().i("removing player " + ap.getName());

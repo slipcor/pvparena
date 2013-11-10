@@ -39,7 +39,7 @@ public class PAA_Start extends AbstractArenaCommand {
 			return;
 		}
 		
-		arena.start();
+		arena.start(true);
 		arena.msg(sender, Language.parse(arena, MSG.ARENA_START_DONE));
 	}
 

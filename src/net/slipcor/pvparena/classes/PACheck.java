@@ -658,6 +658,11 @@ public class PACheck {
 
 	public static Boolean handleStart(final Arena arena,
 			final CommandSender sender) {
+		return handleStart(arena, sender, false);
+	}
+
+	public static Boolean handleStart(final Arena arena,
+			final CommandSender sender, final boolean force) {
 		PACheck res = new PACheck();
 
 		ArenaGoal commit = null;
@@ -687,7 +692,7 @@ public class PACheck {
 			return null;
 		}
 
-		if (arena.getFighters().size() < 2
+		if (!force && arena.getFighters().size() < 2
 				|| arena.getFighters().size() < arena.getArenaConfig().getInt(
 						CFG.READY_MINPLAYERS)) {
 			return false;
@@ -695,7 +700,7 @@ public class PACheck {
 
 		final PAStartEvent event = new PAStartEvent(arena);
 		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled()) {
+		if (!force && event.isCancelled()) {
 			return false;
 		}
 

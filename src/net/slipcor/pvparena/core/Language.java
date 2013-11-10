@@ -168,12 +168,14 @@ public final class Language {
 		ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &f%1%&c!"),
 		ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
 		ERROR_POTIONEFFECTTYPE_NOTFOUND("nulang.error.potioneffecttypenotfound", "PotionEffectType not found: &e%1%&r"),
+		
 		ERROR_READY_0_ONE_PLAYER_NOT_READY("nulang.error.ready.notready0", "At least one player is not ready!"),
 		ERROR_READY_1_ALONE("nulang.error.ready.notready1", "You are alone in the arena!"),
 		ERROR_READY_2_TEAM_ALONE("nulang.error.ready.notready2", "Your team is alone in the arena!"),
 		ERROR_READY_3_TEAM_MISSING_PLAYERS("nulang.error.ready.notready3", "A team is missing players!"),
 		ERROR_READY_4_MISSING_PLAYERS("nulang.error.ready.notready4", "The arena is missing players!"),
 		ERROR_READY_5_ONE_PLAYER_NO_CLASS("nulang.error.ready.notready5", "At least one player has not chosen a class!"),
+		
 		ERROR_READY_NOCLASS("nulang.error.ready.noclass", "You don't have a class!"),
 		ERROR_READY("nulang.error.ready.error", "The arena is not ready! %1%"),
 		ERROR_REGION_BEING_CREATED("nulang.error.region.beingcreated", "A region is already being created: %1%"),
