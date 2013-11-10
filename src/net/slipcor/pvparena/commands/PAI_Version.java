@@ -18,11 +18,11 @@ import org.bukkit.command.CommandSender;
 
 /**
  * <pre>PVP Arena VERSION Command class</pre>
- *
+ * 
  * A command to display the plugin and module versions
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.0
  */
 
@@ -37,12 +37,12 @@ public class PAI_Version extends AbstractGlobalCommand {
 		if (!this.hasPerms(sender)) {
 			return;
 		}
-
+		
 		if (!argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
-		final Set<String> names = new HashSet<String>(); //never read, consider removing
-
+		final Set<String> names = new HashSet<String>();
+		
 		for (Arena a : ArenaManager.getArenas()) {
 			names.add(a.getName());
 		}

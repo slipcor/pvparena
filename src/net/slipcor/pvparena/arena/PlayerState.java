@@ -18,17 +18,17 @@ import org.bukkit.util.Vector;
 
 /**
  * <pre>Arena Player State class</pre>
- *
+ * 
  * Saves and loads player data before and after the match, respectively
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
 public final class PlayerState {
-
-	private static final Debug debug = new Debug(7);
+	
+	private static Debug debug = new Debug(7);
 
 	private final String name;
 
@@ -42,9 +42,9 @@ public final class PlayerState {
 	private float exhaustion;
 	private float experience;
 	private float saturation;
-
+	
 	private boolean flying;
-
+	
 	private String displayname;
 	private Collection<PotionEffect> potionEffects;
 
@@ -64,16 +64,16 @@ public final class PlayerState {
 		saturation = player.getSaturation();
 
 		potionEffects = player.getActivePotionEffects();
-
+		
 		flying = player.isFlying();
-
+		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		final Arena arena = aPlayer.getArena();
 
 		if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			displayname = player.getDisplayName();
 		}
-
+		
 		fullReset(arena, player);
 		final int time = arena.getArenaConfig().getInt(CFG.GENERAL_TIME);
 		if (time != -1) {
@@ -110,17 +110,17 @@ public final class PlayerState {
 		player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
 		PlayerState.removeEffects(player);
 	}
-
+ 
 	public void unload() {
 		final Player player = Bukkit.getPlayerExact(name);
-
+		
 		if (player == null) {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(name);
 			PVPArena.instance.getAgm().disconnect(aPlayer.getArena(), aPlayer);
 			return;
 		}
 		debug.i("restoring PlayerState of " + name, player);
-
+		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
 		player.setGameMode(GameMode.getByValue(gamemode));
@@ -134,7 +134,7 @@ public final class PlayerState {
 			} else {
 				player.setHealth(newHealth);
 			}
-
+			
 		} else {
 			player.setHealth(health);
 		}
@@ -148,20 +148,20 @@ public final class PlayerState {
 		if (aPlayer.getArena() != null && aPlayer.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
 			player.setDisplayName(displayname);
 		}
-
+		
 		if (aPlayer.getArena() != null) {
-
+			
 			ArenaModuleManager.unload(aPlayer.getArena(), player);
 			PVPArena.instance.getAgm().unload(aPlayer.getArena(), player);
 		}
-
+		
 
 		removeEffects(player);
 		player.addPotionEffects(potionEffects);
 
 		aPlayer.setTelePass(false);
 		player.setFireTicks(fireticks);
-
+		
 		if (aPlayer.getArena() != null) {
 			player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		}
@@ -174,7 +174,7 @@ public final class PlayerState {
 
 	/**
 	 * health setting method. Implemented for heroes to work right
-	 *
+	 * 
 	 * @param player
 	 *            the player to set
 	 * @param value
@@ -220,8 +220,7 @@ public final class PlayerState {
 	public static PlayerState undump(final YamlConfiguration cfg, final String pName) {
 		debug.i("restoring backed up PlayerState of " + pName, pName);
 		final PlayerState pState = new PlayerState(Bukkit.getPlayer(pName));
-
-    //these calls are accessing private feilds, should be refactored
+		
 		pState.fireticks = cfg.getInt("state.fireticks", 0);
 		pState.foodlevel = cfg.getInt("state.foodlevel", 0);
 		pState.gamemode = cfg.getInt("state.gamemode", 0);
@@ -232,7 +231,7 @@ public final class PlayerState {
 		pState.explevel = cfg.getInt("state.explevel", 0);
 		pState.saturation = (float) cfg.getDouble("state.saturation", 0);
 		pState.displayname = cfg.getString("state.displayname", pName);
-
+		
 		return pState;
 	}
 }

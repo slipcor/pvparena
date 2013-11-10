@@ -15,11 +15,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * <pre>Arena Runnable class</pre>
- *
+ * 
  * The interface for arena timers
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.0.1
  */
 
@@ -54,7 +54,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 	protected String sPlayer;
 	protected Arena arena;
 	protected Boolean global;
-
+	
 	/**
 	 * Spam the message of the remaining time to... someone, probably:
 	 * @param message the Language.parse("**") String to wrap
@@ -70,10 +70,10 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		this.sPlayer = player == null ? null : player.getName();
 		this.arena = arena;
 		this.global = global;
-
+		
 		runTaskTimer(PVPArena.instance, 20L, 20L);
 	}
-
+	
 	public void spam() {
 		if ((message == null) || (MESSAGES.get(seconds) == null)) {
 			return;
@@ -86,7 +86,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		final String message = seconds > 5 ? Language.parse(arena, msg, MESSAGES.get(seconds)) : MESSAGES.get(seconds);
 		if (global) {
 			final Player[] players = Bukkit.getOnlinePlayers();
-
+			
 			for (Player p : players) {
 				try {
 					if (arena != null && arena.hasPlayer(p)) {
@@ -99,7 +99,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 				} catch (Exception e) {
 				}
 			}
-
+			
 			return;
 		}
 		if (arena != null) {
@@ -116,9 +116,10 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		}
 		if (Bukkit.getPlayer(sPlayer) != null) {
 			Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
+			return;
 		}
 	}
-
+	
 	@Override
 	public void run() {
 		spam();
@@ -132,7 +133,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 		}
 		seconds--;
 	}
-
+	
 	protected abstract void warn();
 	protected abstract void commit();
 }

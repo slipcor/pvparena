@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.core;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -12,17 +11,17 @@ import org.bukkit.Bukkit;
 
 /**
  * <pre>Tracker class</pre>
- *
+ * 
  * phones home to www.slipcor.net, saving server IP and PVP Arena version
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.9.5
  */
 
 public class Tracker implements Runnable {
 	private static int taskID = -1;
-	private static final Debug debug = new Debug(18);
+	private static Debug debug = new Debug(18);
 
 	/**
 	 * call home to save the server/plugin state
@@ -42,11 +41,12 @@ public class Tracker implements Runnable {
 							URLEncoder.encode(PVPArena.instance.getDescription().getName(), "UTF-8"),
 							URLEncoder.encode(PVPArena.instance.getDescription().getVersion(), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
 
 		try {
 			new URL(url).openConnection().getInputStream();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			PVPArena.instance.getLogger().warning("Error while connecting to www.slipcor.net");
 			return;
 		}

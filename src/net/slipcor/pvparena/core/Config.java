@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.core;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,7 +22,6 @@ import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
@@ -31,11 +29,11 @@ import org.bukkit.inventory.ItemStack;
  * <pre>
  * Configuration class
  * </pre>
- *
+ * 
  * This Config wrapper improves access to config files by storing them in RAM
  * and providing quick, secured, access. Thanks a lot to garbagemule for the
  * start of this config.
- *
+ * 
  * @author slipcor
  */
 
@@ -51,12 +49,12 @@ public class Config {
 
 
 		Z("configversion","v0.9.0.0"),
-
+		
 		CHAT_COLORNICK("chat.colorNick", true),
 		CHAT_DEFAULTTEAM("chat.defaultTeam", false),
 		CHAT_ENABLED("chat.enabled", true),
 		CHAT_ONLYPRIVATE("chat.onlyPrivate", false),
-
+		
 		CMDS_DEFAULTJOIN("cmds.defaultjoin", true),
 
 		DAMAGE_ARMOR("damage.armor", true),
@@ -78,30 +76,30 @@ public class Config {
 		GENERAL_WAND("general.wand", 280),
 
 		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false),
-
+		
 		ITEMS_MINPLAYERS("items.minplayers", 2),
 		ITEMS_REWARDS("items.rewards", "none", true),
 		ITEMS_RANDOM("items.random", true),
 		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true),
 		ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", "none", true),
-
+		
 		JOIN_RANGE("join.range", 0),
 		JOIN_FORCE("join.forceregionjoin", false),
 		JOIN_ONLYIFHASPLAYED("join.onlyifhasplayed", false),
-
+		
 		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
 		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
 		LISTS_GOALS("goals", new ArrayList<String>()),
 		LISTS_MODS("mods", new ArrayList<String>()),
 		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
-
+		
 		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
 		MSG_PLAYERJOINED("msg.playerjoined", "%1% joined the Arena!"),
 		MSG_PLAYERJOINEDTEAM("msg.playerjoinedteam", "%1% joined team %2%!"),
 		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!"),
 		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!"),
 		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!"),
-
+		
 		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
 		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
 		PERMS_FLY("perms.fly", false),
@@ -122,7 +120,7 @@ public class Config {
 		PLAYER_REFILLINVENTORY("player.refillInventory", true),
 		PLAYER_SATURATION("player.saturation", 20),
 		PLAYER_QUICKLOOT("player.quickloot", false),
-
+		
 		PROTECT_ENABLED("protection.enabled", true),
 		PROTECT_PUNISH("protection.punish", false),
 		PROTECT_SPAWN("protection.spawn", 0),
@@ -136,7 +134,7 @@ public class Config {
 		READY_MAXPLAYERS("ready.maxPlayers", 0),
 		READY_MAXTEAMPLAYERS("ready.maxTeam", 0),
 		READY_NEEDEDRATIO("ready.neededRatio", 0.5),
-
+		
 		TIME_ENDCOUNTDOWN("goal.endCountDown", 5),
 		TIME_STARTCOUNTDOWN("time.startCountDown", 10),
 		TIME_REGIONTIMER("time.regionTimer", 10),
@@ -155,7 +153,7 @@ public class Config {
 		USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false),
 		USES_OVERLAPCHECK("uses.overlapCheck", true),
 		USES_WOOLHEAD("uses.woolHead", false),
-
+		
 		// ----------
 
 		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false),
@@ -165,7 +163,7 @@ public class Config {
 		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
 		GOAL_DOM_LIVES("goal.dom.dlives", 10),
 		GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false),
-
+		
 		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
@@ -178,7 +176,7 @@ public class Config {
 
 		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1),
 		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1),
-
+		
 		GOAL_LLIVES_LIVES("goal.liberation.llives", 3),
 		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
 		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
@@ -187,7 +185,7 @@ public class Config {
 		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10),
 		GOAL_TIME_END("goal.time.timedend", 0),
 		GOAL_TIME_WINNER("goal.time.winner", "none"),
-
+		
 
 		GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true),
 		GOAL_PILLARS_LIVES("goal.pillars.pillives", 10),
@@ -202,9 +200,9 @@ public class Config {
 		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
 		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),
 		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false),
-
+		
 		// -----------
-
+		
 		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
 
 		MODULES_ANNOUNCEMENTS_RADIUS("modules.announcements.radius", 0),
@@ -243,7 +241,7 @@ public class Config {
 		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false),
 
 		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false),
-
+		
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
 
@@ -252,7 +250,7 @@ public class Config {
 
 		MODULES_RESPAWNRELAY_INTERVAL("modules.respawnrelay.respawnseconds", 10),
 		MODULES_RESPAWNRELAY_CHOOSESPAWN("modules.respawnrelay.choosespawn", false),
-
+		
 		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
@@ -283,13 +281,13 @@ public class Config {
 
 		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND"),
 		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300),
-
+		
 		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
 		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
 
 		private String node;
-		private final Object value;
-		private final String type;
+		private Object value;
+		private String type;
 
 		public static CFG getByNode(final String node) {
 			for (CFG m : CFG.values()) {
@@ -323,13 +321,13 @@ public class Config {
 			this.value = value;
 			this.type = "double";
 		}
-
+		
 		private CFG(final String node, final String value, final boolean multiple) {
 			this.node = node;
 			this.value = value;
 			this.type = multiple?"items":"material";
 		}
-
+		
 		private CFG(final String node, final List<String> value) {
 			this.node = node;
 			this.value = value;
@@ -365,7 +363,7 @@ public class Config {
 	/**
 	 * Create a new Config instance that uses the specified file for loading and
 	 * saving.
-	 *
+	 * 
 	 * @param configFile
 	 *            a YAML file
 	 */
@@ -390,7 +388,7 @@ public class Config {
 	/**
 	 * Load the config-file into the YamlConfiguration, and then populate the
 	 * value maps.
-	 *
+	 * 
 	 * @return true, if the load succeeded, false otherwise.
 	 */
 	public boolean load() {
@@ -398,13 +396,10 @@ public class Config {
 			cfg.load(configFile);
 			reloadMaps();
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
-    catch (InvalidConfigurationException e)
-    {
-      return false;
-    }
 	}
 
 	/**
@@ -430,21 +425,22 @@ public class Config {
 
 	/**
 	 * Save the YamlConfiguration to the config-file.
-	 *
+	 * 
 	 * @return true, if the save succeeded, false otherwise.
 	 */
 	public boolean save() {
 		try {
 			cfg.save(configFile);
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
 
 	/**
 	 * Delete the config-file.
-	 *
+	 * 
 	 * @return true, if the delete succeeded, false otherwise.
 	 */
 	public boolean delete() {
@@ -453,7 +449,7 @@ public class Config {
 
 	/**
 	 * Set the header of the config-file.
-	 *
+	 * 
 	 * @param header
 	 *            the header
 	 */
@@ -471,7 +467,7 @@ public class Config {
 	 * Get the YamlConfiguration associated with this Config instance. Note that
 	 * changes made directly to the YamlConfiguration will cause an
 	 * inconsistency with the value maps unless reloadMaps() is called.
-	 *
+	 * 
 	 * @return the YamlConfiguration of this Config instance
 	 */
 	public YamlConfiguration getYamlConfiguration() {
@@ -480,7 +476,7 @@ public class Config {
 
 	/**
 	 * Retrieve a value from the YamlConfiguration.
-	 *
+	 * 
 	 * @param string
 	 *            the path of the value
 	 * @return the value of the path
@@ -491,7 +487,7 @@ public class Config {
 
 	/**
 	 * Retrieve a boolean from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @return the boolean value of the path if the path exists, false otherwise
@@ -502,7 +498,7 @@ public class Config {
 
 	/**
 	 * Retrieve a boolean from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @param def
@@ -517,7 +513,7 @@ public class Config {
 
 	/**
 	 * Retrieve an int from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @return the int value of the path if the path exists, 0 otherwise
@@ -528,7 +524,7 @@ public class Config {
 
 	/**
 	 * Retrieve an int from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @param def
@@ -543,7 +539,7 @@ public class Config {
 
 	/**
 	 * Retrieve a double from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @return the double value of the path if the path exists, 0D otherwise
@@ -554,7 +550,7 @@ public class Config {
 
 	/**
 	 * Retrieve a double from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @param def
@@ -569,7 +565,7 @@ public class Config {
 
 	/**
 	 * Retrieve a string from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @return the string value of the path if the path exists, null otherwise
@@ -580,7 +576,7 @@ public class Config {
 
 	/**
 	 * Retrieve a string from the value maps.
-	 *
+	 * 
 	 * @param path
 	 *            the path of the value
 	 * @param def
@@ -592,11 +588,11 @@ public class Config {
 		final String result = strings.get(path);
 		return (result == null ? def : result);
 	}
-
+	
 	public Material getMaterial(CFG cfg) {
 		return getMaterial(cfg, Material.valueOf((String)cfg.getValue()));
 	}
-
+	
 	public Material getMaterial(CFG cfg, Material def) {
 		final String path = cfg.getNode();
 		final String result = strings.get(path);
@@ -605,11 +601,11 @@ public class Config {
 		}
 		return Material.valueOf(result);
 	}
-
+	
 	public ItemStack[] getItems(CFG cfg) {
 		return getItems(cfg, StringParser.getItemStacksFromString((String) cfg.getValue()));
 	}
-
+	
 	public ItemStack[] getItems(CFG cfg, ItemStack[] def) {
 		final String path = cfg.getNode();
 		final String result = strings.get(path);
@@ -648,7 +644,7 @@ public class Config {
 	 * relevant value map, if it is of one of the supported types. The method
 	 * can also be used to remove values from their maps and the
 	 * YamlConfiguration by passing null for the value.
-	 *
+	 * 
 	 * @param path
 	 *            the path on which to set the value
 	 * @param value
@@ -688,7 +684,7 @@ public class Config {
 	/**
 	 * Parse an input string of the form "world,x,y,z" to create a Block
 	 * Location. This method will only accept strings of the specified form.
-	 *
+	 * 
 	 * @param coords
 	 *            a string of the form "world,x,y,z"
 	 * @return a PABlockLocation in the given world with the given coordinates
@@ -717,7 +713,7 @@ public class Config {
 	 * Parse an input string of the form "world,x,y,z,yaw,pitch" to create a
 	 * Block Location. This method will only accept strings of the specified
 	 * form.
-	 *
+	 * 
 	 * @param coords
 	 *            a string of the form "world,x,y,z,yaw,pitch"
 	 * @return a PALocation in the given world with the given coordinates
@@ -750,7 +746,7 @@ public class Config {
 	}
 
 	/**
-	 *
+	 * 
 	 */
 	public static ArenaRegion parseRegion(final Arena arena,
 			final YamlConfiguration config, final String regionName) {
@@ -807,7 +803,7 @@ public class Config {
 	public static Integer parseInteger(final String string) {
 		try {
 			return Integer.parseInt(string.trim());
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}
@@ -815,7 +811,7 @@ public class Config {
 	public static Float parseFloat(final String string) {
 		try {
 			return Float.parseFloat(string.trim());
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			return null;
 		}
 	}

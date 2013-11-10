@@ -22,9 +22,9 @@ import org.bukkit.entity.Player;
  * <pre>
  * Arena Module class "StandardLounge"
  * </pre>
- *
+ * 
  * Enables joining to lounges instead of the battlefield
- *
+ * 
  * @author slipcor
  */
 
@@ -76,16 +76,16 @@ public class StandardSpectate extends ArenaModule {
 
 		arena.tpPlayerToCoordName(player, "spectator");
 		arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
-
+		
 		if (aPlayer.getState() == null) {
-
+			
 			final Arena arena = aPlayer.getArena();
 
 			aPlayer.createState(player);
 			ArenaPlayer.backupAndClearInventory(arena, player);
 			aPlayer.dump();
-
-
+			
+			
 			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
 				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
@@ -93,6 +93,7 @@ public class StandardSpectate extends ArenaModule {
 				}
 				if (autoClass == null) {
 					arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+					return;
 				}
 			}
 		}

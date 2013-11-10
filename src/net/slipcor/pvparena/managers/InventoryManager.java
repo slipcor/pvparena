@@ -19,11 +19,11 @@ import net.slipcor.pvparena.core.Debug;
 
 /**
  * <pre>Inventory Manager class</pre>
- *
+ * 
  * Provides static methods to manage Inventories
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -36,7 +36,7 @@ public final class InventoryManager {
 
 	/**
 	 * fully clear a player's inventory
-	 *
+	 * 
 	 * @param player
 	 *            the player to clear
 	 */
@@ -54,16 +54,16 @@ public final class InventoryManager {
 
 	/**
 	 * drop a player's inventory
-	 *
+	 * 
 	 * @param player
 	 *            the player to empty
 	 */
 	public static void drop(final Player player) {
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
 		List<Material> mats;
-
+		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-
+		
 		if (ap == null || ap.getArena() == null) {
 			mats = new ArrayList<Material>();
 		} else {
@@ -75,7 +75,7 @@ public final class InventoryManager {
 				}
 			}
 		}
-
+		
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR)) || mats.contains(is.getType())) {
 				continue;
@@ -95,12 +95,13 @@ public final class InventoryManager {
 		if (item == null || item.getType().equals(Material.AIR)) {
 			return false;
 		}
-
+		
 		for (String s : TOOLSUFFIXES) {
 			if (item.getType().name().endsWith(s)) {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 
@@ -109,7 +110,7 @@ public final class InventoryManager {
 			return;
 		}
 		final Location loc = player.getLocation();
-
+		
 		class RunLater implements Runnable {
 
 			@Override
@@ -117,10 +118,12 @@ public final class InventoryManager {
 				ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
 				orb.setExperience(exp);
 			}
+			
 		}
 		try {
 		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 20L);
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
+			
 		}
 	}
 

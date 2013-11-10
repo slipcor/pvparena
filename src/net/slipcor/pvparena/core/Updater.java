@@ -33,17 +33,17 @@ import org.json.simple.JSONValue;
 
 public class Updater {
 
-    private final Plugin plugin;
-    private final UpdateType type;
+    private Plugin plugin;
+    private UpdateType type;
     private String versionName;
     private String versionLink;
     private String versionType;
     private String versionGameVersion;
 
-    private final boolean announce; // Whether to announce file downloads
+    private boolean announce; // Whether to announce file downloads
 
     private URL url; // Connecting to RSS
-    private final File file; // The plugin's file
+    private File file; // The plugin's file
     private Thread thread; // Updater thread
 
     private int id = -1; // Project's Curse ID
@@ -57,8 +57,8 @@ public class Updater {
 
     private static final String[] NO_UPDATE_TAG = { "-DEV", "-PRE", "-SNAPSHOT" }; // If the version number contains one of these, don't update.
     private static final int BYTE_SIZE = 1024; // Used for downloading files
-    private final YamlConfiguration config; // Config file
-    private final String updateFolder;// The folder that downloads will be placed in
+    private YamlConfiguration config; // Config file
+    private String updateFolder;// The folder that downloads will be placed in
     private Updater.UpdateResult result = Updater.UpdateResult.SUCCESS; // Used for determining the outcome of the update process
 
     /**

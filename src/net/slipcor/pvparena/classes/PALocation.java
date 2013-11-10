@@ -9,11 +9,11 @@ import org.bukkit.Location;
  * <pre>
  * PVP Arena Location class
  * </pre>
- *
+ * 
  * A simple wrapper of the Bukkit Location
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.9.6
  */
 
@@ -68,38 +68,28 @@ public class PALocation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-      return true;
-    }
-		if (obj == null) {
-      return false;
-    }
-		if (getClass() != obj.getClass()) {
-      return false;
-    }
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		PALocation other = (PALocation) obj;
-		if (Float.floatToIntBits(pitch) != Float.floatToIntBits(other.pitch)) {
-      return false;
-    }
+		if (Float.floatToIntBits(pitch) != Float.floatToIntBits(other.pitch))
+			return false;
 		if (world == null) {
-			if (other.world != null) {
-        return false;
-      }
-		} else if (!world.equals(other.world)) {
-      return false;
-    }
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) {
-      return false;
-    }
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y)) {
-      return false;
-    }
-		if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw)) {
-      return false;
-    }
-		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z)) {
-      return false;
-    }
+			if (other.world != null)
+				return false;
+		} else if (!world.equals(other.world))
+			return false;
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+			return false;
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
+			return false;
+		if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw))
+			return false;
+		if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
+			return false;
 		return true;
 	}
 

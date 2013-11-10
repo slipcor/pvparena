@@ -28,11 +28,11 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
  * <pre>
  * Configuration Manager class
  * </pre>
- *
+ * 
  * Provides static methods to manage Configurations
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -43,7 +43,7 @@ public final class ConfigurationManager {
 	}
 	/**
 	 * create a config manager instance
-	 *
+	 * 
 	 * @param arena
 	 *            the arena to load
 	 * @param cfg
@@ -118,7 +118,7 @@ public final class ConfigurationManager {
 		arena.getClasses().clear();
 		arena.getDebugger().i("reading class items");
 		for (String className : classes.keySet()) {
-			String sItemList;
+			String sItemList = "";
 
 			try {
 				sItemList = (String) classes.get(className);
@@ -212,7 +212,7 @@ public final class ConfigurationManager {
 
 	/**
 	 * check if an arena is configured completely
-	 *
+	 * 
 	 * @param arena
 	 *            the arena to check
 	 * @return an error string if there is something missing, null otherwise

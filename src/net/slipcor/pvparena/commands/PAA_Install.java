@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Set;
 
 import net.slipcor.pvparena.PVPArena;
@@ -19,18 +18,17 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * <pre>
  * PVP Arena INSTALL Command class
  * </pre>
- *
+ * 
  * A command to install modules
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.0
  */
 
@@ -57,13 +55,10 @@ public class PAA_Install extends AbstractGlobalCommand {
 		try {
 			config.load(PVPArena.instance.getDataFolder().getPath()
 					+ "/install.yml");
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
-    catch (InvalidConfigurationException e)
-    {
-      return;
-    }
 
 		if (args.length == 0) {
 			listVersions(sender, config, null);
@@ -206,7 +201,8 @@ public class PAA_Install extends AbstractGlobalCommand {
 			PVPArena.instance.getLogger().info("Installed module " + file);
 			stream.close();
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}
@@ -216,7 +212,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 		if (file.startsWith("pa_g")) {
 			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
 					file.replace("pa_g_", "").replace(".jar", ""));
-
+			
 		} else if (file.startsWith("pa_m")) {
 			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
 					file.replace("pa_m_", "").replace(".jar", ""));

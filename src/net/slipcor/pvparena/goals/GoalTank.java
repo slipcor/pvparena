@@ -38,10 +38,10 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * <pre>
  * Arena Goal class "PlayerLives"
  * </pre>
- *
+ * 
  * The first Arena Goal. Players have lives. When every life is lost, the player
  * is teleported to the spectator spawn to watch the rest of the fight.
- *
+ * 
  * @author slipcor
  */
 
@@ -51,7 +51,7 @@ public class GoalTank extends ArenaGoal {
 		debug = new Debug(108);
 	}
 
-	private static final Map<Arena, String> tanks = new HashMap<Arena, String>();
+	private static Map<Arena, String> tanks = new HashMap<Arena, String>();
 
 	private EndRunnable endRunner = null;
 
@@ -190,23 +190,23 @@ public class GoalTank extends ArenaGoal {
 		int iLives = getLifeMap().get(player.getName());
 		arena.getDebugger().i("lives before death: " + iLives, player);
 		if (iLives <= 1 || tanks.get(arena).equals(player.getName())) {
-
+			
 			if (tanks.get(arena).equals(player.getName())) {
 
 				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "tank", "playerDeath:"+player.getName());
 				Bukkit.getPluginManager().callEvent(gEvent);
 			} else if (doesRespawn) {
-
+				
 				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:"+player.getName());
 				Bukkit.getPluginManager().callEvent(gEvent);
 			} else {
-
+				
 				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
 				Bukkit.getPluginManager().callEvent(gEvent);
 			}
-
-
-
+			
+			
+			
 			getLifeMap().remove(player.getName());
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 				arena.getDebugger().i("faking player death", player);
@@ -270,17 +270,17 @@ public class GoalTank extends ArenaGoal {
 
 	@Override
 	public boolean hasSpawn(final String string) {
-
+		
 
 		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 			for (ArenaClass aClass : arena.getClasses()) {
-				if (string.toLowerCase().startsWith(
+				if (string.toLowerCase().startsWith( 
 						aClass.getName().toLowerCase() + "spawn")) {
 					return true;
 				}
 			}
 		}
-
+		
 		return (arena.isFreeForAll() && string.toLowerCase()
 				.startsWith("spawn")) || string.equals("tank");
 	}
@@ -349,16 +349,16 @@ public class GoalTank extends ArenaGoal {
 
 		final Set<PASpawn> spawns = new HashSet<PASpawn>();
 		spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "tank"));
-
-		int pos = spawns.size();
-
+		
+		int pos = spawns.size(); 
+		
 		for (PASpawn spawn : spawns) {
 			if (--pos < 0) {
 				arena.tpPlayerToCoordName(tank.get(), spawn.getName());
 				break;
 			}
 		}
-
+		
 		arena.getTeams().add(tankTeam);
 	}
 

@@ -20,11 +20,11 @@ import org.bukkit.command.CommandSender;
 
 /**
  * <pre>PVP Arena READY Command class</pre>
- *
+ * 
  * A command to ready up inside the arena
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.0
  */
 
@@ -39,67 +39,67 @@ public class PAI_Ready extends AbstractArenaCommand {
 		if (!this.hasPerms(sender, arena)) {
 			return;
 		}
-
+		
 		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
 			return;
 		}
-
+		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-
+		
 		if (!arena.hasPlayer(aPlayer.get())) {
 
 			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
 			return;
 		}
-
+		
 		if (args.length < 1) {
-
+			
 			if (!aPlayer.getStatus().equals(Status.LOUNGE)) {
 				return;
 			}
-
+			
 			if (aPlayer.getArenaClass() == null) {
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
 				return;
 			}
-
+			
 			if (!aPlayer.getStatus().equals(Status.READY)) {
 				arena.msg(sender, Language.parse(arena, MSG.READY_DONE));
 				arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer.get())));
 			}
-
+			
 			aPlayer.setStatus(Status.READY);
 			if (aPlayer.getArenaTeam().isEveryoneReady()) {
 				arena.broadcast(Language.parse(arena, MSG.TEAM_READY, aPlayer.getArenaTeam().getColoredName()));
 			}
-
+			
 			if (arena.getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)
 					&& !TeamManager.checkEven(arena)) {
 					arena.msg(sender,
 							Language.parse(arena, MSG.NOTICE_WAITING_EQUAL));
 				return; // even teams desired, not done => announce
 			}
-
+			
 			if (!ArenaRegion.checkRegions(arena)) {
 				arena.msg(sender,
 						Language.parse(arena, MSG.NOTICE_WAITING_FOR_ARENA));
 				return;
 			}
-
+			
 			final String error = arena.ready();
 
 			if (error == null) {
 				arena.start();
-			} else if (error.isEmpty()) {
+			} else if (error.equals("")) {
 				arena.countDown();
 			} else {
 				arena.msg(sender, error);
 			}
 			return;
 		}
-
+		
 		final Set<String> names = new HashSet<String>();
-
+		
 		for (ArenaPlayer player : arena.getEveryone()) {
 			if (player.getStatus().equals(Status.LOUNGE)) {
 				names.add("&7" + player.getName() + "&r");

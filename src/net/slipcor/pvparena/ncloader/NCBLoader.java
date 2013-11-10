@@ -21,26 +21,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 
 /*     Copyright (C) 2012  Nodin Chan <nodinchan@live.com>
- *
+ * 
  *     This program is free software: you can redistribute it and/or modify
  *     it under the terms of the GNU General Public License as published by
  *     the Free Software Foundation, either version 3 of the License, or
  *     (at your option) any later version.
- *
+ * 
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *     GNU General Public License for more details.
- *
+ * 
  *     You should have received a copy of the GNU General Public License
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /**
  * Loader - Loader base for loading Loadables
- *
+ * 
  * @author NodinChan
- *
+ * 
  * @param <T>
  *            A loadable class
  */
@@ -83,6 +83,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 			try {
 				urls.add(file.toURI().toURL());
 			} catch (MalformedURLException e) {
+				e.printStackTrace();
 			}
 
 		this.loader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
@@ -91,7 +92,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 
 	/**
 	 * Gets the Logger
-	 *
+	 * 
 	 * @return The Logger
 	 */
 	public Logger getLogger() {
@@ -100,7 +101,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 
 	/**
 	 * Loads the Loadables
-	 *
+	 * 
 	 * @return List of loaded loadables
 	 */
 	public final List<T> load(Class<? extends NCBLoadable> classType) {
@@ -158,6 +159,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 				}
 
 			} catch (ClassCastException e) {
+				e.printStackTrace();
 				getLogger().log(
 						Level.WARNING,
 						"The JAR file " + file.getPath()
@@ -166,11 +168,13 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 						"The JAR file " + file.getName() + " failed to load");
 
 			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
 				getLogger().log(Level.WARNING, "Invalid path.yml");
 				getLogger().log(Level.WARNING,
 						"The JAR file " + file.getName() + " failed to load");
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				getLogger().log(Level.WARNING, "Unknown cause");
 				getLogger().log(Level.WARNING,
 						"The JAR file " + file.getName() + " failed to load");
@@ -195,6 +199,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 				try {
 					urls.add(file.toURI().toURL());
 				} catch (MalformedURLException e) {
+					e.printStackTrace();
 				}
 			}
 		}

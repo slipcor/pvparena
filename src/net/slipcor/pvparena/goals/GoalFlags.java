@@ -48,9 +48,9 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * <pre>
  * Arena Goal class "Flags"
  * </pre>
- *
+ * 
  * Well, should be clear. Capture flags, bring them home, get points, win.
- *
+ * 
  * @author slipcor
  */
 
@@ -63,8 +63,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	private Map<String, String> flagMap = null;
 	private Map<String, ItemStack> headGearMap = null;
-
-	private static Set<Material> headFlags = new HashSet<Material>(); //never read from, consider removing
+	
+	private static Set<Material> headFlags = new HashSet<Material>();
 
 	private String flagName = "";
 
@@ -132,15 +132,15 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (team != null) {
 			return team;
 		}
-
+		
 		return checkForMissingTeamCustom(list, "flag");
 	}
 
 	/**
 	 * hook into an interacting player
-	 *
+	 * 
 	 * @param res
-	 *
+	 * 
 	 * @param player
 	 *            the interacting player
 	 * @param clickedBlock
@@ -229,6 +229,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				} catch (Exception e) {
 					Bukkit.getLogger().severe(
 							"[PVP Arena] team unknown/no lives: " + flagTeam);
+					e.printStackTrace();
 				}
 				if (flagTeam.equals("touchdown")) {
 					takeFlag(ChatColor.BLACK.name(), false,
@@ -359,7 +360,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (split.length > 1) {
 			try {
 				amp = Integer.parseInt(split[1]);
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 			}
 		}
 
@@ -504,7 +505,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 				final int amount = Integer.parseInt(args[1]);
 				arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE,
 						Material.getMaterial(amount).name());
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 				final Material mat = Material.getMaterial(args[1].toUpperCase());
 
 				if (mat == null) {
@@ -564,7 +565,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			if (args.length == 5) {
 				try {
 					amp = Integer.parseInt(args[2]);
-				} catch (NumberFormatException e) {
+				} catch (Exception e) {
 					arena.msg(sender,
 							Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[2]));
 					return;
@@ -668,9 +669,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 		final String sTeam = getHeldFlagTeam(aPlayer.getName());
 		final ArenaTeam flagTeam = arena.getTeam(sTeam);
-
+		
 		if (flagTeam == null) {
 			if (sTeam == null) {
+				return;
 			} else {
 				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
 						.getArenaTeam().getColorCodeString()
@@ -708,21 +710,21 @@ public class GoalFlags extends ArenaGoal implements Listener {
 					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 		}
 	}
-
+	
 	@Override
 	public void displayInfo(CommandSender sender) {
-		sender.sendMessage("flageffect: " +
+		sender.sendMessage("flageffect: " + 
 				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT));
-		sender.sendMessage("flagtype: " +
+		sender.sendMessage("flagtype: " + 
 				arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE));
-		sender.sendMessage("lives: " +
+		sender.sendMessage("lives: " + 
 				arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
 		sender.sendMessage(StringParser.colorVar("mustbesafe",
-				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) +
+				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) + 
 				" | " + StringParser.colorVar("flaghead",
 				arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)));
 	}
-
+	
 	private Map<String, String> getFlagMap() {
 		if (flagMap == null) {
 			flagMap = new HashMap<String, String>();
@@ -754,7 +756,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		}
 		return res;
 	}
-
+	
 	private Map<String, ItemStack> getHeadGearMap() {
 		if (headGearMap == null) {
 			headGearMap = new HashMap<String, ItemStack>();
@@ -764,7 +766,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	/**
 	 * get the team name of the flag a player holds
-	 *
+	 * 
 	 * @param player
 	 *            the player to check
 	 * @return a team name
@@ -795,7 +797,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
 				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(teamName.toLowerCase() +
+					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
 							aClass.getName().toLowerCase() + "spawn")) {
 						return true;
 					}
@@ -836,7 +838,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		final String sTeam = getHeldFlagTeam(player.getName());
 		final ArenaTeam flagTeam = arena.getTeam(sTeam);
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-
+		
 		if (flagTeam == null) {
 			if (sTeam == null) {
 				return;
@@ -895,7 +897,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
 		arena.getDebugger().i("reducing lives of team " + team);
-
+		
 		if (getLifeMap().get(team) == null) {
 			if (team.contains(":")) {
 				final String realTeam = team.split(":")[1];
@@ -984,7 +986,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
 	/**
 	 * take/reset an arena flag
-	 *
+	 * 
 	 * @param flagColor
 	 *            the teamcolor to reset
 	 * @param take

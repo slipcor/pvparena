@@ -31,11 +31,11 @@ import org.bukkit.potion.PotionEffectType;
  * <pre>
  * String Parser class
  * </pre>
- *
+ * 
  * provides methods to parse Objects to String and back
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -45,7 +45,7 @@ public final class StringParser {
 	private static final String SAFE_LORE_BREAK = "<oxXxOxXxo>";
 
 	public static final Debug DEBUG = new Debug(17);
-
+	
 	private StringParser() {
 	}
 
@@ -95,7 +95,7 @@ public final class StringParser {
 
 	/**
 	 * color an integer if bigger than 0
-	 *
+	 * 
 	 * @param timed
 	 *            the integer to color
 	 * @return a colored string
@@ -106,7 +106,7 @@ public final class StringParser {
 
 	/**
 	 * color a boolean based on value
-	 *
+	 * 
 	 * @param value
 	 *            the boolean to color
 	 * @return a colored string
@@ -121,13 +121,13 @@ public final class StringParser {
 
 	/**
 	 * color a string if set
-	 *
+	 * 
 	 * @param string
 	 *            the string to color
 	 * @return a colored string
 	 */
 	public static String colorVar(final String string) {
-		if (string == null || string.isEmpty() || string.equals("none")) {
+		if (string == null || string.equals("") || string.equals("none")) {
 			return colorVar("null", false);
 		}
 		return colorVar(string, true);
@@ -135,7 +135,7 @@ public final class StringParser {
 
 	/**
 	 * color a string based on a given boolean
-	 *
+	 * 
 	 * @param string
 	 *            the string to color
 	 * @param value
@@ -149,13 +149,13 @@ public final class StringParser {
 
 	/**
 	 * calculate a WOOL byte from a color enum
-	 *
+	 * 
 	 * @param color
 	 *            the string to parse
 	 * @return the color short
 	 */
 	public static byte getColorDataFromENUM(final String color) {
-
+		
 		String wool = getWoolEnumFromChatColorEnum(color);
 		if (wool == null) {
 			wool = color;
@@ -164,7 +164,7 @@ public final class StringParser {
 		 * DyeColor supports: WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
 		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
 		 */
-
+		
 		for (DyeColor dc : DyeColor.values()) {
 			if (dc.name().equalsIgnoreCase(wool)) {
 				return (byte) (15-dc.getDyeData());
@@ -181,7 +181,7 @@ public final class StringParser {
 
 	/**
 	 * construct an itemstack out of a string
-	 *
+	 * 
 	 * @param string
 	 *            the formatted string: [itemid/name][~[dmg]]~[data]:[amount]
 	 * @return the itemstack
@@ -190,13 +190,13 @@ public final class StringParser {
 		DEBUG.i("parsing itemstack string: " + string);
 
 		// [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
-
-
-		short dmg = 0;
+		
+		
+		short dmg = 0; 
 		String data = null;
 		int amount = 1;
-		Material mat;
-
+		Material mat = null;
+		
 		String desc = null;
 
 		String[] temp = string.split(":");
@@ -207,7 +207,7 @@ public final class StringParser {
 				desc = temp[2];
 			}
 		}
-
+		
 		final Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
 		if (temp[0].contains("|")) {
 			DEBUG.i("trying to add enchantment");
@@ -244,13 +244,13 @@ public final class StringParser {
 					DEBUG.i("processing enchantment " + e.getName());
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
-
+				
 				if (desc != null) {
 					ItemMeta meta = itemStack.getItemMeta();
 					meta.setDisplayName(codeCharacters(desc,false));
 					itemStack.setItemMeta(meta);
 				}
-
+				
 				return itemStack;
 			}
 			dmg = Short.parseShort(temp[1]);
@@ -260,38 +260,38 @@ public final class StringParser {
 				for (Enchantment e : enchants.keySet()) {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
-
+				
 				if (desc != null) {
 					ItemMeta meta = itemStack.getItemMeta();
 					meta.setDisplayName(codeCharacters(desc,false));
 					itemStack.setItemMeta(meta);
 				}
-
+				
 				return itemStack;
 			}
 			// string: POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>Duration 15 seconds.:2:Stealth
-
+			
 			// ---> split(":");
-
+			
 			// temp[0] = POTION~0~INVISIBILITYx0x300<oOo>~<oxXxOxXxo>Duration 15 seconds.
 			// temp[1] = 2
 			// temp[2] = Stealth
-
+			
 			// ---> split("~");
 
 			// temp[0] = POTION
 			// temp[1] = 0
 			// temp[2] = INVISIBILITYx0x300<oOo>
 			// temp[3] = <oxXxOxXxo>Duration 15 seconds.
-
+			
 			final int location;
-
+			
 			if (temp.length > 3 && temp[3].contains(SAFE_LORE_BREAK)) {
 				location = 3;
 			} else {
 				location = 2;
 			}
-
+			
 			final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
 			data = dataSplit[0];
 			if (temp[2].contains(SAFE_BREAK)) {
@@ -301,24 +301,24 @@ public final class StringParser {
 					data = temp[2].split(SAFE_BREAK)[0];
 				}
 			}
-
+			
 			final String lore = dataSplit.length > 1 ? dataSplit[1] : null;
-
+			
 			if (temp.length >= 3) {
 				// [itemid/name]~[dmg]~[data]:[amount]
 				final ItemStack itemStack = new ItemStack(mat, amount, dmg);
 
-
+				
 				if (desc != null) {
 					ItemMeta meta = itemStack.getItemMeta();
 					meta.setDisplayName(codeCharacters(desc,false));
 					itemStack.setItemMeta(meta);
 				}
-
+				
 				if (mat == Material.INK_SACK) {
 					try {
 						itemStack.setData(new Dye(Byte.parseByte(data)));
-					} catch (NumberFormatException e) {
+					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
 								"invalid dye data: " + data);
 						return itemStack;
@@ -326,7 +326,7 @@ public final class StringParser {
 				} else if (mat == Material.WOOL) {
 					try {
 						itemStack.setData(new Wool(Byte.parseByte(data)));
-					} catch (NumberFormatException e) {
+					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
 								"invalid wool data: " + data);
 						return itemStack;
@@ -357,7 +357,7 @@ public final class StringParser {
 								.getItemMeta();
 						leatherMeta.setColor(Color.fromRGB(Integer.parseInt(data)));
 						itemStack.setItemMeta(leatherMeta);
-					} catch (IllegalArgumentException e) {
+					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
 								"invalid leather data: " + data);
 						return itemStack;
@@ -376,9 +376,9 @@ public final class StringParser {
 					// data = NAMEx1x100<oOo>NAMEx2x100
 					try {
 						final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
-
+						
 						String[] defs = data.split(SAFE_BREAK);
-
+						
 						for (String def : defs) {
 							String[] vals = def.split("x");
 							potionMeta.addCustomEffect(
@@ -398,7 +398,7 @@ public final class StringParser {
 						}
 
 						itemStack.setItemMeta(potionMeta);
-					} catch (NumberFormatException e) {
+					} catch (Exception e) {
 						PVPArena.instance.getLogger().warning(
 								"invalid potion data: " + data);
 						return itemStack;
@@ -422,7 +422,7 @@ public final class StringParser {
 				for (Enchantment e : enchants.keySet()) {
 					itemStack.addUnsafeEnchantment(e, enchants.get(e));
 				}
-
+				
 				return itemStack;
 			}
 		}
@@ -433,7 +433,7 @@ public final class StringParser {
 		if (string.equals("none")) {
 			return new ItemStack[0];
 		}
-
+		
 		final String[] args = string.split(",");
 
 		ItemStack[] result = new ItemStack[args.length];
@@ -583,7 +583,7 @@ public final class StringParser {
 			temp.append(':');
 			temp.append(itemStack.getAmount());
 		}
-
+		
 		if (itemStack.getItemMeta().hasDisplayName()) {
 			temp.append(':');
 			temp.append(codeCharacters(itemStack.getItemMeta().getDisplayName(),true));
@@ -625,16 +625,16 @@ public final class StringParser {
 		/**
 		 * wool colors: ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY, SILVER,
 		 * PURPLE, BLUE, GREEN, RED, CYAN;
-		 *
+		 * 
 		 * chat colors: GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY, GRAY,
 		 * DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
-		 *
-		 *
-		 *
+		 * 
+		 * 
+		 * 
 		 * both colors (ignore): WHITE, YELLOW, BLACK
-		 *
+		 * 
 		 * colors not being able to parse:
-		 *
+		 * 
 		 * chat-AQUA, wool-brown
 		 */
 		final String[] wool = new String[] { "ORANGE", "MAGENTA", "LIGHT_BLUE",
@@ -664,7 +664,7 @@ public final class StringParser {
 
 	/**
 	 * retrieve a material from a string
-	 *
+	 * 
 	 * @param string
 	 *            the string to parse
 	 * @return the material
@@ -677,7 +677,7 @@ public final class StringParser {
 			if (mat == null) {
 				mat = Material.getMaterial(string);
 			}
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
 			mat = Material.getMaterial(string);
 		}
 		if (mat == null) {

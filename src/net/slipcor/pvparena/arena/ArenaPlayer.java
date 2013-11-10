@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.arena;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,7 +26,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -43,11 +41,11 @@ import org.bukkit.permissions.PermissionAttachment;
  * <pre>
  * Arena Player class
  * </pre>
- *
+ * 
  * contains Arena Player methods and variables for quicker access
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -87,7 +85,7 @@ public class ArenaPlayer {
 	}
 
 	private boolean publicChatting = true;
-	private final PABlockLocation[] selection = new PABlockLocation[2];
+	private PABlockLocation[] selection = new PABlockLocation[2];
 
 	public ArenaPlayer(final String playerName) {
 		name = playerName;
@@ -116,16 +114,16 @@ public class ArenaPlayer {
 
 	/**
 	 * try to find the last damaging player
-	 *
+	 * 
 	 * @param eEvent
 	 *            the Event
 	 * @return the player instance if found, null otherwise
 	 */
 	public static Player getLastDamagingPlayer(final Event eEvent, Player damagee) {
-
+		
 		Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).getArena() == null ?
 				ArenaPlayer.debug : ArenaPlayer.parsePlayer(damagee.getName()).getArena().getDebugger();
-
+		
 		debug.i("trying to get the last damaging player", damagee);
 		if (eEvent instanceof EntityDamageByEntityEvent) {
 			debug.i("there was an EDBEE", damagee);
@@ -159,7 +157,7 @@ public class ArenaPlayer {
 
 	/**
 	 * supply a player with class items and eventually wool head
-	 *
+	 * 
 	 * @param player
 	 *            the player to supply
 	 */
@@ -196,29 +194,27 @@ public class ArenaPlayer {
 		final YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
-
+			
 			final Set<String> arenas = cfg.getKeys(false);
-
+			
 			for (String arenaname : arenas) {
 
 				final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
 				for (String player : players) {
-					totalPlayers.put(player, ArenaPlayer.parsePlayer(player));
+					totalPlayers.put(player, ArenaPlayer.parsePlayer(player)); 
 				}
-
+				
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
 		}
-    catch (InvalidConfigurationException e)
-    {
-      return;
-    }
 	}
 
 	/**
 	 * get an ArenaPlayer from a player name
-	 *
+	 * 
 	 * @param String
 	 *            the playername to use
 	 * @return an ArenaPlayer instance belonging to that player
@@ -239,7 +235,7 @@ public class ArenaPlayer {
 
 	/**
 	 * prepare a player's inventory, back it up and clear it
-	 *
+	 * 
 	 * @param player
 	 *            the player to save
 	 */
@@ -248,14 +244,14 @@ public class ArenaPlayer {
 				player);
 
 		final ArenaPlayer aPlayer = parsePlayer(player.getName());
-		aPlayer.savedInventory = player.getInventory().getContents().clone(); //accesses a private feild of another object, should be refactored
-		aPlayer.savedArmor = player.getInventory().getArmorContents().clone(); //accesses a private feild of another object, should be refactored
+		aPlayer.savedInventory = player.getInventory().getContents().clone();
+		aPlayer.savedArmor = player.getInventory().getArmorContents().clone();
 		InventoryManager.clearInventory(player);
 	}
 
 	/**
 	 * reload player inventories from saved variables
-	 *
+	 * 
 	 * @param player
 	 */
 	public static void reloadInventory(final Arena arena, final Player player) {
@@ -271,23 +267,23 @@ public class ArenaPlayer {
 		}
 
 		final ArenaPlayer aPlayer = parsePlayer(player.getName());
-
+		
 		if (!arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME).equals("none")) {
 			final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
-
+			
 			final List<Material> allowedMats = new ArrayList<Material>();
-
+			
 			for (ItemStack item : items) {
 				allowedMats.add(item.getType());
 			}
-
+			
 			final List<ItemStack> keepItems = new ArrayList<ItemStack>();
 			for (ItemStack item : player.getInventory().getContents()) {
 				if (allowedMats.contains(item.getType())) {
 					keepItems.add(item.clone());
 				}
 			}
-
+			
 			class GiveLater implements Runnable {
 
 				@Override
@@ -297,15 +293,17 @@ public class ArenaPlayer {
 					}
 					keepItems.clear();
 				}
+				
 			}
-
+			
 			try {
 				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new GiveLater(), 60L);
-			} catch (IllegalArgumentException e) {
+			} catch (Exception e) {
+				
 			}
 		}
 
-		if (aPlayer.savedInventory == null) { //accesses a private feild of another object, should be refactored (as for every other savedInvenetory and savedArmor here
+		if (aPlayer.savedInventory == null) {
 			debug.i("saved inventory null!", player);
 			return;
 		}
@@ -356,7 +354,7 @@ public class ArenaPlayer {
 
 	/**
 	 * save the player state
-	 *
+	 * 
 	 * @param player
 	 *            the player to save
 	 */
@@ -406,7 +404,8 @@ public class ArenaPlayer {
 				+ "/dumps/" + this.name + ".yml");
 		try {
 			file.createNewFile();
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 
@@ -421,15 +420,16 @@ public class ArenaPlayer {
 					StringParser.getStringFromItemStacks(savedInventory));
 			cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
 			cfg.set("loc", Config.parseToString(location));
-
+			
 			cfg.save(file);
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * return the PVP Arena bukkit player
-	 *
+	 * 
 	 * @return the bukkit player instance
 	 */
 	public Player get() {
@@ -438,7 +438,7 @@ public class ArenaPlayer {
 
 	/**
 	 * return the arena
-	 *
+	 * 
 	 * @return the arena
 	 */
 	public Arena getArena() {
@@ -447,7 +447,7 @@ public class ArenaPlayer {
 
 	/**
 	 * return the arena class
-	 *
+	 * 
 	 * @return the arena class
 	 */
 	public ArenaClass getArenaClass() {
@@ -476,7 +476,7 @@ public class ArenaPlayer {
 
 	/**
 	 * return the player name
-	 *
+	 * 
 	 * @return the player name
 	 */
 	public String getName() {
@@ -489,7 +489,7 @@ public class ArenaPlayer {
 
 	/**
 	 * return the player state
-	 *
+	 * 
 	 * @return the player state
 	 */
 	public PlayerState getState() {
@@ -516,7 +516,7 @@ public class ArenaPlayer {
 
 	/**
 	 * hand over a player's tele pass
-	 *
+	 * 
 	 * @return true if may pass, false otherwise
 	 */
 	public boolean isTelePass() {
@@ -562,13 +562,10 @@ public class ArenaPlayer {
 		final YamlConfiguration cfg = new YamlConfiguration();
 		try {
 			cfg.load(file);
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
-    catch (InvalidConfigurationException e)
-    {
-      return;
-    }
 
 		arena = ArenaManager.getArenaByName(cfg.getString("arena"));
 		savedInventory = StringParser.getItemStacksFromString(cfg.getString(
@@ -596,7 +593,7 @@ public class ArenaPlayer {
 
 	/**
 	 * save and reset a player instance
-	 *
+	 * 
 	 * @param b
 	 *            should
 	 */
@@ -646,11 +643,9 @@ public class ArenaPlayer {
 
 				cfg.save(file);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-    catch (InvalidConfigurationException e)
-    {
-    }
 
 		if (get() == null) {
 			debug.i("reset() ; out! null", this.name);
@@ -677,13 +672,13 @@ public class ArenaPlayer {
 		aClass = null;
 
 		get().setFireTicks(0);
-
+		
 		clearDump();
 	}
 
 	/**
 	 * set the player's arena
-	 *
+	 * 
 	 * @param arena
 	 *            the arena to set
 	 */
@@ -693,20 +688,20 @@ public class ArenaPlayer {
 
 	/**
 	 * set the player's arena class
-	 *
+	 * 
 	 * @param aClass
 	 *            the arena class to set
 	 */
 	public void setArenaClass(final ArenaClass aClass) {
 		PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
 		Bukkit.getServer().getPluginManager().callEvent(event);
-
+		
 		this.aClass = event.getArenaClass();
 	}
 
 	/**
 	 * set a player's arena class by name
-	 *
+	 * 
 	 * @param className
 	 *            an arena class name
 	 */
@@ -760,7 +755,7 @@ public class ArenaPlayer {
 
 	/**
 	 * hand over a player's tele pass
-	 *
+	 * 
 	 * @param canTeleport
 	 *            true if may pass, false otherwise
 	 */

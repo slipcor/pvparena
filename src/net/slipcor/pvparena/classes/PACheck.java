@@ -41,15 +41,15 @@ import net.slipcor.pvparena.runnables.SpawnCampRunnable;
  * <pre>
  * PVP Arena Check class
  * </pre>
- *
+ * 
  * This class parses a complex check.
- *
+ * 
  * It is called staticly to iterate over all needed/possible modules to return
  * one committing module (inside the result) and to make modules listen to the
  * checked events if necessary
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -60,7 +60,7 @@ public class PACheck {
 	private final static Debug DEBUG = new Debug(9);
 
 	/**
-	 *
+	 * 
 	 * @return the error message
 	 */
 	public String getError() {
@@ -68,7 +68,7 @@ public class PACheck {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return the module name returning the current result
 	 */
 	public String getModName() {
@@ -76,7 +76,7 @@ public class PACheck {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return the PACR priority
 	 */
 	public int getPriority() {
@@ -84,7 +84,7 @@ public class PACheck {
 	}
 
 	/**
-	 *
+	 * 
 	 * @return true if there was an error
 	 */
 	public boolean hasError() {
@@ -93,7 +93,7 @@ public class PACheck {
 
 	/**
 	 * set the error message
-	 *
+	 * 
 	 * @param error
 	 *            the error message
 	 */
@@ -106,7 +106,7 @@ public class PACheck {
 
 	/**
 	 * set the priority
-	 *
+	 * 
 	 * @param priority
 	 *            the priority
 	 */
@@ -327,7 +327,7 @@ public class PACheck {
 			return;
 		}
 
-		ArenaTeam team;
+		ArenaTeam team = null;
 
 		if (args.length < 1 || (arena.getTeam(args[0]) == null)) {
 			// usage: /pa {arenaname} join | join an arena
@@ -572,7 +572,7 @@ public class PACheck {
 
 	/**
 	 * try to set a flag
-	 *
+	 * 
 	 * @param player
 	 *            the player trying to set
 	 * @param block
@@ -748,33 +748,33 @@ public class PACheck {
 }
 /*
  * AVAILABLE PACheckResults:
- *
+ * 
  * ArenaGoal.checkCommand() => ArenaGoal.commitCommand() ( onCommand() ) >
  * default: nothing
- *
- *
+ * 
+ * 
  * ArenaGoal.checkEnd() => ArenaGoal.commitEnd() (
  * ArenaGoalManager.checkEndAndCommit(arena) ) < used > 1: PlayerLives > 2:
  * PlayerDeathMatch > 3: TeamLives > 4: TeamDeathMatch > 5: Flags
- *
+ * 
  * ArenaGoal.checkInteract() => ArenaGoal.commitInteract() (
  * PlayerListener.onPlayerInteract() ) > 5: Flags
- *
+ * 
  * ArenaGoal.checkJoin() => ArenaGoal.commitJoin() ( PAG_Join ) < used >
  * default: tp inside
- *
+ * 
  * ArenaGoal.checkPlayerDeath() => ArenaGoal.commitPlayerDeath() (
  * PlayerLister.onPlayerDeath() ) > 1: PlayerLives > 2: PlayerDeathMatch > 3:
  * TeamLives > 4: TeamDeathMatch > 5: Flags
- *
+ * 
  * ArenaGoal.checkSetFlag() => ArenaGoal.commitSetFlag() (
  * PlayerListener.onPlayerInteract() ) > 5: Flags
- *
+ * 
  * =================================
- *
+ * 
  * ArenaModule.checkJoin() ( PAG_Join | PAG_Spectate ) < used > 1:
  * StandardLounge > 2: BattlefieldJoin > default: nothing
- *
+ * 
  * ArenaModule.checkStart() ( PAI_Ready | StartRunnable.commit() ) < used >
  * default: tp players to (team) spawns
  */

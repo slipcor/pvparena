@@ -29,7 +29,6 @@ import net.slipcor.pvparena.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -38,11 +37,11 @@ import org.bukkit.plugin.java.JavaPlugin;
  * <pre>
  * Main Plugin class
  * </pre>
- *
+ * 
  * contains central elements like plugin handlers and listeners
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
@@ -59,7 +58,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Hand over the ArenaGoalManager instance
-	 *
+	 * 
 	 * @return the ArenaGoalManager instance
 	 */
 	public ArenaGoalManager getAgm() {
@@ -68,7 +67,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Hand over the ArenaModuleManager instance
-	 *
+	 * 
 	 * @return the ArenaModuleManager instance
 	 */
 	public ArenaModuleManager getAmm() {
@@ -77,7 +76,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Hand over the ArenaRegionShapeManager instance
-	 *
+	 * 
 	 * @return the ArenaRegionShapeManager instance
 	 */
 	public ArenaRegionShapeManager getArsm() {
@@ -86,7 +85,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Hand over the jar file name
-	 *
+	 * 
 	 * @return the .jar file name
 	 */
 	public String getFileName() {
@@ -99,7 +98,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Check if a CommandSender has admin permissions
-	 *
+	 * 
 	 * @param sender
 	 *            the CommandSender to check
 	 * @return true if a CommandSender has admin permissions, false otherwise
@@ -110,7 +109,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Check if a CommandSender has creation permissions
-	 *
+	 * 
 	 * @param sender
 	 *            the CommandSender to check
 	 * @param arena
@@ -126,7 +125,7 @@ public class PVPArena extends JavaPlugin {
 
 	/**
 	 * Check if a CommandSender has permission for an arena
-	 *
+	 * 
 	 * @param sender
 	 *            the CommandSender to check
 	 * @param arena
@@ -177,7 +176,7 @@ public class PVPArena extends JavaPlugin {
 							sender,
 							"pa " + arena.getName() + " "
 									+ StringParser.joinArray(newArgs, " "));
-				} catch (CommandException e) {
+				} catch (Exception e) {
 					getLogger().warning("arena null!");
 				}
 			}
@@ -372,10 +371,11 @@ public class PVPArena extends JavaPlugin {
 		if (updateType == null) {
 			// Updater OFF
 			File file = new File(this.getDataFolder().getPath(), "install.yml");
-
+			
 			try {
 				file.createNewFile(); // create empty file
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		} else {
 			updater = new Updater(this, 41652, this.getFile(), updateType,
@@ -395,7 +395,8 @@ public class PVPArena extends JavaPlugin {
 				output.getChannel().transferFrom(rbc, 0, 1 << 24);
 				this.getLogger().info("Downloaded module update file");
 				output.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 
@@ -423,6 +424,7 @@ public class PVPArena extends JavaPlugin {
 
 				metrics.start();
 			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
 		}
@@ -443,7 +445,7 @@ public class PVPArena extends JavaPlugin {
 			arenaCount = count;
 		}
 
-		public int getValue() { //this method should be renamed.
+		public int getValue() {
 			return arenaCount;
 		}
 	}

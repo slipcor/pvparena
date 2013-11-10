@@ -12,17 +12,17 @@ import net.slipcor.pvparena.core.StringParser;
 
 /**
  * <pre>Arena Team class</pre>
- *
+ * 
  * contains Arena Team methods and variables for quicker access
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.10.2
  */
 
 public class ArenaTeam {
-
-	private static final Debug debug = new Debug(6);
+	
+	private static Debug debug = new Debug(6);
 
 	private final Set<ArenaPlayer> players;
 	private final ChatColor color;
@@ -30,7 +30,7 @@ public class ArenaTeam {
 
 	/**
 	 * create an arena team instance
-	 *
+	 * 
 	 * @param name
 	 *            the arena team name
 	 * @param color
@@ -44,7 +44,7 @@ public class ArenaTeam {
 
 	/**
 	 * add an arena player to the arena team
-	 *
+	 * 
 	 * @param player
 	 *            the player to add
 	 */
@@ -56,7 +56,7 @@ public class ArenaTeam {
 
 	/**
 	 * colorize a player name
-	 *
+	 * 
 	 * @param player
 	 *            the player to colorize
 	 * @return the colorized player name
@@ -67,7 +67,7 @@ public class ArenaTeam {
 
 	/**
 	 * return the team color
-	 *
+	 * 
 	 * @return the team color
 	 */
 	public ChatColor getColor() {
@@ -76,7 +76,7 @@ public class ArenaTeam {
 
 	/**
 	 * colorize the team name
-	 *
+	 * 
 	 * @return the colorized team name
 	 */
 	public String getColoredName() {
@@ -85,7 +85,7 @@ public class ArenaTeam {
 
 	/**
 	 * return the team color code
-	 *
+	 * 
 	 * @return the team color code
 	 */
 	public String getColorCodeString() {
@@ -94,7 +94,7 @@ public class ArenaTeam {
 
 	/**
 	 * return the team name
-	 *
+	 * 
 	 * @return the team name
 	 */
 	public String getName() {
@@ -103,7 +103,7 @@ public class ArenaTeam {
 
 	/**
 	 * return the team members
-	 *
+	 * 
 	 * @return a HashSet of all arena players
 	 */
 	public Set<ArenaPlayer> getTeamMembers() {
@@ -125,7 +125,7 @@ public class ArenaTeam {
 
 	/**
 	 * remove a player from the team
-	 *
+	 * 
 	 * @param player
 	 *            the player to remove
 	 */

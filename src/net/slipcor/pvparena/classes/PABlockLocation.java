@@ -8,11 +8,11 @@ import org.bukkit.util.Vector;
  * <pre>
  * PVP Arena Location class
  * </pre>
- *
+ * 
  * A simple wrapper of the Bukkit Location, only calculating blocks
- *
+ * 
  * @author slipcor
- *
+ * 
  * @version v0.9.1
  */
 
@@ -49,32 +49,24 @@ public class PABlockLocation {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-      return true;
-    }
-		if (obj == null) {
-      return false;
-    }
-		if (getClass() != obj.getClass()) {
-      return false;
-    }
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		PABlockLocation other = (PABlockLocation) obj;
 		if (world == null) {
-			if (other.world != null) {
-        return false;
-      }
-		} else if (!world.equals(other.world)) {
-      return false;
-    }
-		if (x != other.x) {
-      return false;
-    }
-		if (y != other.y) {
-      return false;
-    }
-		if (z != other.z) {
-      return false;
-    }
+			if (other.world != null)
+				return false;
+		} else if (!world.equals(other.world))
+			return false;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		if (z != other.z)
+			return false;
 		return true;
 	}
 
