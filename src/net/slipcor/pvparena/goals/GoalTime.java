@@ -1,8 +1,16 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
@@ -65,6 +73,40 @@ public class GoalTime extends ArenaGoal {
 		if (ter != null) {
 			ter.commit();
 			ter = null;
+		}
+	}
+
+	@Override
+	public void unload(final Player player) {
+		class RunLater implements Runnable {
+
+			@Override
+			public void run() {
+				commitEnd();
+			}
+
+		}
+		if (arena.getFighters().size() <= 2) {
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+			return;
+		}
+		if (arena.isFreeForAll()) {
+			return;
+		}
+		
+		Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
+		
+		for (ArenaPlayer aPlayer : arena.getFighters()) {
+			if (aPlayer.getStatus() == Status.FIGHT) {
+				teams.add(aPlayer.getArenaTeam());
+				if (teams.size() > 1) {
+					return;
+				}
+			}
+			
+		}
+		if (teams.size() < 2) {
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
 		}
 	}
 }

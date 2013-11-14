@@ -41,8 +41,6 @@ import org.bukkit.plugin.java.JavaPlugin;
  * contains central elements like plugin handlers and listeners
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public class PVPArena extends JavaPlugin {
