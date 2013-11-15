@@ -45,7 +45,9 @@ public class GoalTime extends ArenaGoal {
 	}
 	
 	public void commitEnd() {
-		ter.commit();
+		if (ter != null) {
+			ter.commit();
+		}
 	}
 	
 	@Override
@@ -86,7 +88,7 @@ public class GoalTime extends ArenaGoal {
 			}
 
 		}
-		if (arena.getFighters().size() <= 2) {
+		if (arena.getFighters().size() < 2) {
 			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
 			return;
 		}

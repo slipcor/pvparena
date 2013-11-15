@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.304 - fix the Time Goal ending and NPE derp
 * v1.1.0.302 - end games where people leave a Time Goal only match
 * v1.1.0.301 - FORCE START OVERRIDE! let's pray this does not break all the things
 * v1.1.0.300 - if this does not disable flying, you are hacking, mibby
