@@ -49,7 +49,7 @@ public class Debug {
 	private Logger arenaLogger = null;
 	
 	private static List<Logger> loggers = new ArrayList<Logger>();
-	
+	private static List<Debug> debugs = new ArrayList<Debug>();	
 	private Arena arena = null;
 
 	public Debug(final int iID) {
@@ -70,6 +70,9 @@ public class Debug {
 	            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 
 	            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
+	            
+	            
+	            
 	            debugFolder.mkdirs();
 	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + "general.log");
 	            logFile.createNewFile();
@@ -104,11 +107,12 @@ public class Debug {
 	        try {
 	            final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd-HH-mm");
 	            
-	            final String suffix = "-" + arena.getName();
+	            final File debugMainFolder = new File(PVPArena.instance.getDataFolder(), "debug");
+	            debugMainFolder.mkdirs();
 	            
-	            final File debugFolder = new File(PVPArena.instance.getDataFolder(), "debug");
+	            final File debugFolder = new File(debugMainFolder, arena.getName());
 	            debugFolder.mkdirs();
-	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + suffix + ".log");
+	            final File logFile = new File(debugFolder, dateformat.format(new Date()) + ".log");
 	            
 	            final FileHandler handler = new FileHandler(logFile.getAbsolutePath());
 	            
@@ -116,6 +120,7 @@ public class Debug {
 	            
 	            arenaLogger.addHandler(handler);
 	    		loggers.add(arenaLogger);
+	    		debugs.add(this);
 	        } catch (IOException ex) {
 	        	PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
 	        } catch (SecurityException ex) {
@@ -225,8 +230,16 @@ public class Debug {
 		override = false;
 		
 		final String debugs = instance.getConfig().getString("debug");
+		
+		for (Debug debug : Debug.debugs) {
+			debug.arenaLogger = null;
+		}
+		
+		loggers.clear();
+		
 		if (debugs.equals("none")) {
 			Arena.pmsg(sender, "debugging: off");
+			
 		} else {
 			
 			server_log = instance.getConfig().getBoolean("server_log");
