@@ -279,6 +279,12 @@ public class Config {
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
 
+		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", Double.valueOf(0)),
+		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", Double.valueOf(0)),
+		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", Double.valueOf(0)),
+		MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", Double.valueOf(0)),
+		MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", Double.valueOf(0)),
+
 		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND"),
 		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300),
 		
