@@ -96,7 +96,7 @@ public class Config {
 		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
 		MSG_PLAYERJOINED("msg.playerjoined", "%1% joined the Arena!"),
 		MSG_PLAYERJOINEDTEAM("msg.playerjoinedteam", "%1% joined team %2%!"),
-		//MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!"),
+		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!"),
 		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!"),
 		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!"),
 		
