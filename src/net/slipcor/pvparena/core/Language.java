@@ -136,7 +136,7 @@ public final class Language {
 		ERROR_JOIN_VEHICLE("nulang.error.insidevehicle", "You cannot join while on a vehicle!"),
 		ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'"),
 		ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
-		ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &f%1%"),
+		ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &r%1%"),
 		ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
 		ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
 		ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
@@ -165,7 +165,7 @@ public final class Language {
 		ERROR_NOT_THE_SAME_WORLD("nulang.error.notsameworld", "Not in the same world as the arena (%1%)!"),
 		ERROR_NOTEAMFOUND("nulang.error.noteamfound", "No team found!"),
 		ERROR_ONLY_PLAYERS("nulang.error.onlyplayers", "&cThis command can only be used by players!"),
-		ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &f%1%&c!"),
+		ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &r%1%&c!"),
 		ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
 		ERROR_POTIONEFFECTTYPE_NOTFOUND("nulang.error.potioneffecttypenotfound", "PotionEffectType not found: &e%1%&r"),
 		
@@ -269,7 +269,7 @@ public final class Language {
 		MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
 		MESSAGES_TOPUBLIC("nulang.messages.toPublic", "You are now talking to the public!"),
 		MESSAGES_TOTEAM("nulang.messages.toTeam", "You are now talking to your team!"),
-		MESSAGES_GENERAL("nulang.messages.general", "&e[%1%&e] &f%2%"),
+		MESSAGES_GENERAL("nulang.messages.general", "&e[%1%&e] &r%2%"),
 		
 		NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 
@@ -278,7 +278,7 @@ public final class Language {
 		NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
 		NOTICE_NOTICE("nulang.notice.notice", "Notice: %1%"),
 		NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%"),
-		NOTICE_REMOVE("nulang.notice.remove", "&cThis will permanently remove the arena &a%1%&c. Are you sure? Then commit the command again!&f To disable this message, see 'safeadmin' in your config.yml"),
+		NOTICE_REMOVE("nulang.notice.remove", "&cThis will permanently remove the arena &a%1%&c. Are you sure? Then commit the command again!&r To disable this message, see 'safeadmin' in your config.yml"),
 		NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have an equal player number!"),
 		NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),
 		NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area!"),
@@ -357,8 +357,8 @@ public final class Language {
 		STATTYPE_NULL("nulang.stattype.NULL", StatisticsManager.type.NULL.getName()),
 		STATTYPE_WINS("nulang.stattype.WINS", StatisticsManager.type.WINS.getName()),
 		
-		TEAM_HAS_WON("nulang.team.haswon", "Team %1% are the Champions!"),
-		TEAM_READY("nulang.team.ready", "Team %1%&f is ready!"),
+		TEAM_HAS_WON("nulang.team.haswon", "Team %1%&r are the Champions!"),
+		TEAM_READY("nulang.team.ready", "Team %1%&r is ready!"),
 		
 		TEAMS_LIST("nulang.teams.list", "Available teams: %1%"),
 		TEAMS_ADD("nulang.teams.add", "Team added: %1%"),
@@ -418,7 +418,7 @@ public final class Language {
 		GOAL_INFECTED_YOU("nulang.goal.infected.you", "&cYou are infected!"),
 		GOAL_INFECTED_WON("nulang.goal.infected.won", "&6The infected players have won the game!"),
 		
-		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&f->&a%2%"),
+		GOAL_KILLREWARD_ADDED("nulang.goal.killreward.added", "Kill reward added: &e%1%&r->&a%2%"),
 		GOAL_KILLREWARD_REMOVED("nulang.goal.killreward.removed", "Kill reward removed: &e%1%"),
 
 		GOAL_LIBERATION_LIBERATED("nulang.goal.liberation.liberated", "Team %1% has been liberated!"),
@@ -493,8 +493,8 @@ public final class Language {
 		MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
 
 		MODULE_DUEL_ACCEPTED("nulang.mod.duel.accepted", "%1% &eaccepted the challenge! The game is starting."),
-		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &f/pa %2% accept."),
-		MODULE_DUEL_REQUESTED("nulang.mod.duel.requested", "You &echallenged &f%1%&e!"),
+		MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept."),
+		MODULE_DUEL_REQUESTED("nulang.mod.duel.requested", "You &echallenged &r%1%&e!"),
 		MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
 
 		MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
