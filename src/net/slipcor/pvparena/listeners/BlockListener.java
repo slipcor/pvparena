@@ -495,7 +495,7 @@ public class BlockListener implements Listener {
 
 		DEBUG.i("painting place", event.getPlayer());
 
-		if (isProtected(event.getBlock().getLocation(), event,
+		if (arena == null || isProtected(event.getBlock().getLocation(), event,
 				RegionProtection.PAINTING)) {
 			return;
 		}
