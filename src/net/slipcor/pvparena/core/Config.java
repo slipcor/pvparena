@@ -229,6 +229,11 @@ public class Config {
 		MODULES_ARENAVOTE_WORLD("modules.arenavote.world", "none"),
 
 		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
+		
+		MODULES_BETTERCLASSES_HEAD("modules.betterclasses.head", true),
+		MODULES_BETTERCLASSES_CHEST("modules.betterclasses.chest", true),
+		MODULES_BETTERCLASSES_LEG("modules.betterclasses.leg", true),
+		MODULES_BETTERCLASSES_FOOT("modules.betterclasses.foot", true),
 
 		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
