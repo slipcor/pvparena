@@ -229,16 +229,16 @@ public class Config {
 		MODULES_ARENAVOTE_WORLD("modules.arenavote.world", "none"),
 
 		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
-		
-		MODULES_BETTERCLASSES_HEAD("modules.betterclasses.head", true),
-		MODULES_BETTERCLASSES_CHEST("modules.betterclasses.chest", true),
-		MODULES_BETTERCLASSES_LEG("modules.betterclasses.leg", true),
-		MODULES_BETTERCLASSES_FOOT("modules.betterclasses.foot", true),
 
 		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
 		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
 		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
 		MODULES_BETTERFIGHT_EXPLODEONDEATH("modules.betterfight.explodeondeath", true),
+		
+		MODULES_BETTERGEARS_HEAD("modules.bettergears.head", true),
+		MODULES_BETTERGEARS_CHEST("modules.bettergears.chest", true),
+		MODULES_BETTERGEARS_LEG("modules.bettergears.leg", true),
+		MODULES_BETTERGEARS_FOOT("modules.bettergears.foot", true),
 
 		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false),
 		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),
