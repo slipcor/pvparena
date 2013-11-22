@@ -2,6 +2,7 @@ package net.slipcor.pvparena.commands;
 
 import java.util.Locale;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -62,11 +63,18 @@ public abstract class AbstractGlobalCommand {
 
 		if (perms.length > 0) {
 			final String split[] = perms[0].split("\\.");
-
+			try {
 			Arena.pmsg(
 					sender,
 					Language.parse(MSG.ERROR_NOPERM,
 							Language.parse(MSG.getByNode("nopermto." + split[1]))));
+			} catch (Exception e) {
+				PVPArena.instance.getLogger().warning("Unknown MSG for pvparena."+split[1]);
+				Arena.pmsg(
+						sender,
+						Language.parse(MSG.ERROR_NOPERM,
+								Language.parse(MSG.ERROR_NOPERM_X_USER)));
+			}
 		} else {
 
 			Arena.pmsg(

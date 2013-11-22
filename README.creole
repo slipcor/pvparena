@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.312 - prevent a NPE apparently happening on perm removal
 * v1.1.0.311 - offer bettergears armor customisation; revert #310
 * v1.1.0.310 - offer betterclasses armor customisation
 * v1.1.0.309 - language fixes, partially fixes github issue #23
