@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.316 - little gamemode deprecation fix
 * v1.1.0.315 - automatically assign joining to one arena if only one is running
 * v1.1.0.314 - in 3+ team games, properly determine if there is a draw
 * v1.1.0.313 - bettergears config addition: only replace armor if leather

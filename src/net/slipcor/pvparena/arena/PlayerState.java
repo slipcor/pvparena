@@ -54,7 +54,7 @@ public final class PlayerState {
 
 		fireticks = player.getFireTicks();
 		foodlevel = player.getFoodLevel();
-		gamemode = player.getGameMode().getValue();
+		gamemode = player.getGameMode().ordinal();
 		health = player.getHealth();
 		maxhealth = player.getMaxHealth();
 
@@ -107,7 +107,7 @@ public final class PlayerState {
 				CFG.PLAYER_EXHAUSTION));
 		player.setLevel(0);
 		player.setExp(0);
-		player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
+		player.setGameMode(GameMode.values()[arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)]);
 		PlayerState.removeEffects(player);
 	}
  
@@ -123,7 +123,7 @@ public final class PlayerState {
 		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
-		player.setGameMode(GameMode.getByValue(gamemode));
+		player.setGameMode(GameMode.values()[gamemode]);
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
@@ -139,7 +139,7 @@ public final class PlayerState {
 			player.setHealth(health);
 		}
 		player.setSaturation(saturation);
-		player.setGameMode(GameMode.getByValue(gamemode));
+		player.setGameMode(GameMode.values()[gamemode]);
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
