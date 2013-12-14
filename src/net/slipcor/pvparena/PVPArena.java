@@ -244,6 +244,8 @@ public class PVPArena extends JavaPlugin {
 			} else if (ArenaManager.count() < 1) {
 				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
 				return true;
+			} else if (ArenaManager.countAvailable() == 1) {
+				tempArena = ArenaManager.getAvailable();
 			}
 		} else {
 			if (args != null && args.length > 1) {

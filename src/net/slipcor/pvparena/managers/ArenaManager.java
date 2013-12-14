@@ -380,4 +380,21 @@ public final class ArenaManager {
 			}
 		}
 	}
+	public static int countAvailable() {
+		int sum = 0;
+		for (Arena a : getArenas()) {
+			if (!a.isLocked() && !a.isFightInProgress()) {
+				sum++;
+			}
+		}
+		return sum;
+	}
+	public static Arena getAvailable() {
+		for (Arena a : getArenas()) {
+			if (!a.isLocked() && !a.isFightInProgress()) {
+				return a;
+			}
+		}
+		return null;
+	}
 }
