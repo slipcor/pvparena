@@ -223,6 +223,8 @@ public class ArenaGoalManager {
 			double maxScore = 0;
 
 			boolean notEveryone = false;
+			
+			int neededTeams = arena.getTeams().size();
 
 			for (String team : arena.getTeamNames()) {
 				if (scores.containsKey(team)) {
@@ -242,7 +244,15 @@ public class ArenaGoalManager {
 						winners.add(team);
 						arena.getDebugger().i("add team " + team);
 					}
+				} else {
+					neededTeams -= 1;
 				}
+			}
+			
+			// neededTeams should be the number of active teams
+			
+			if (winners.size() >= neededTeams) { // everyone is a winner, at least (lol)
+				notEveryone = false;
 			}
 
 			if (!notEveryone) {

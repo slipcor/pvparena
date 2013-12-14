@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.314 - in 3+ team games, properly determine if there is a draw
 * v1.1.0.313 - bettergears config addition: only replace armor if leather
 * v1.1.0.312 - prevent a NPE apparently happening on perm removal
 * v1.1.0.311 - offer bettergears armor customisation; revert #310
