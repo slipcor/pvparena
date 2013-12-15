@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.319 - attempt to maintain WATCH region maintainance 
 * v1.1.0.318 - properly check before blocking commands
 * v1.1.0.317 - undo #316; try again later
 * v1.1.0.316 - little gamemode deprecation fix

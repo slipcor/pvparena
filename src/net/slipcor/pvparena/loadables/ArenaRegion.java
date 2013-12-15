@@ -354,6 +354,9 @@ public class ArenaRegion {
 
 	public void initTimer() {
 		final RegionRunnable regionRunner = new RegionRunnable(this);
+		if (tickID != -1) {
+			Bukkit.getScheduler().cancelTask(tickID);
+		}
 		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, regionRunner,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
@@ -448,6 +451,9 @@ public class ArenaRegion {
 				continue;
 			}
 			entity.remove();
+		}
+		if (getType() == RegionType.JOIN || getType() == RegionType.WATCH) {
+			return;
 		}
 		Bukkit.getScheduler().cancelTask(tickID);
 		tickID = -1;
@@ -611,6 +617,8 @@ public class ArenaRegion {
 						&& !ap.getStatus().equals(Status.LOUNGE)) {
 					continue;
 				}
+
+				debug.i("LOUNGE TICK");
 
 				if (!getShape().contains(pLoc)) {
 					Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
