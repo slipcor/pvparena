@@ -204,7 +204,8 @@ public class PlayerListener implements Listener {
 		}
 
 		final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-		if (arena == null || player.isOp()) {
+		if (arena == null || player.isOp() || PVPArena.hasAdminPerms(player)
+				|| PVPArena.hasCreatePerms(player, arena)) {
 			return; // no fighting player => OUT
 		}
 
