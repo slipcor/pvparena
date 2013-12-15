@@ -22,8 +22,6 @@ import org.bukkit.util.Vector;
  * Saves and loads player data before and after the match, respectively
  * 
  * @author slipcor
- * 
- * @version v0.10.2
  */
 
 public final class PlayerState {
@@ -54,7 +52,7 @@ public final class PlayerState {
 
 		fireticks = player.getFireTicks();
 		foodlevel = player.getFoodLevel();
-		gamemode = player.getGameMode().ordinal();
+		gamemode = player.getGameMode().getValue();
 		health = player.getHealth();
 		maxhealth = player.getMaxHealth();
 
@@ -107,7 +105,7 @@ public final class PlayerState {
 				CFG.PLAYER_EXHAUSTION));
 		player.setLevel(0);
 		player.setExp(0);
-		player.setGameMode(GameMode.values()[arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)]);
+		player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
 		PlayerState.removeEffects(player);
 	}
  
@@ -123,7 +121,7 @@ public final class PlayerState {
 		
 		player.setFireTicks(fireticks);
 		player.setFoodLevel(foodlevel);
-		player.setGameMode(GameMode.values()[gamemode]);
+		player.setGameMode(GameMode.getByValue(gamemode));
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
@@ -139,7 +137,7 @@ public final class PlayerState {
 			player.setHealth(health);
 		}
 		player.setSaturation(saturation);
-		player.setGameMode(GameMode.values()[gamemode]);
+		player.setGameMode(GameMode.getByValue(gamemode));
 		player.setLevel(explevel);
 		player.setExp(experience);
 		player.setExhaustion(exhaustion);
