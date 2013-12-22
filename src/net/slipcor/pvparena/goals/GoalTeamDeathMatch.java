@@ -159,7 +159,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	@Override
 	public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
 			final String error, final PlayerDeathEvent event) {
-		if (respawnPlayer.getKiller() == null) {
+		if (respawnPlayer.getKiller() == null ||
+				respawnPlayer.getPlayer().equals(respawnPlayer.getPlayer().getKiller())) {
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
@@ -181,6 +182,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 			
 			return;
 		}
+		
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+respawnPlayer.getName(),
 				"playerKill:"+respawnPlayer.getName()+":"+respawnPlayer.getKiller().getName());
 		Bukkit.getPluginManager().callEvent(gEvent);

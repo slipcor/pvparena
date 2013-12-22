@@ -159,7 +159,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			final String error, final PlayerDeathEvent event) {
 
 		if (player.getKiller() == null
-				|| !getLifeMap().containsKey(player.getKiller().getName())) {
+				|| !getLifeMap().containsKey(player.getKiller().getName())
+				|| player.getPlayer().equals(player.getPlayer().getKiller())) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 						.getArenaTeam();
