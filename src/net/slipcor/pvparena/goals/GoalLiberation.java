@@ -185,7 +185,7 @@ public class GoalLiberation extends ArenaGoal  {
 				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 
 
-				arena.broadcast(Language
+				arena.broadcast(ChatColor.YELLOW + Language
 						.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
 								pTeam.getColoredName()
 										+ ChatColor.YELLOW));

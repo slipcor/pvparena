@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.328 - fix liberation liberation formatting
 * v1.1.0.327 - address github issue #22 - properly parse dead player's chat and refill inventory
 * v1.1.0.326 - address github issue #22 - read the player's team name rather than trying to teleport to nulljail
 * v1.1.0.325 - suppress an issue about non arena players damaging arena players or vice versa - github issue #27
