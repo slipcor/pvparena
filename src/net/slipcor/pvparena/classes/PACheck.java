@@ -681,7 +681,7 @@ public class PACheck {
 			}
 		}
 
-		if (res.hasError()) {
+		if (!force && res.hasError()) {
 			if (sender == null) {
 				arena.msg(Bukkit.getConsoleSender(),
 						Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
