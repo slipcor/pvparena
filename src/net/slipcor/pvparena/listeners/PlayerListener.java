@@ -456,9 +456,11 @@ public class PlayerListener implements Listener {
 				if (arena.startRunner != null) {
 					return; // counting down => OUT
 				}
-				if (aPlayer.getStatus() != Status.LOUNGE) {
+				if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
 					return;
 				}
+				
+				boolean alreadyReady = aPlayer.getStatus() == Status.READY;
 
 				arena.getDebugger().i("===============", player);
 				arena.getDebugger().i("===== class: " + aPlayer.getArenaClass() + " =====", player);
@@ -467,11 +469,13 @@ public class PlayerListener implements Listener {
 				if (!arena.isFightInProgress()) {
 					if (!aPlayer.getStatus().equals(Status.READY)) {
 						arena.msg(player, Language.parse(arena, MSG.READY_DONE));
-						arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer
+						if (!alreadyReady) {
+							arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer
 								.getArenaTeam().colorizePlayer(aPlayer.get())));
+						}
 					}
 					aPlayer.setStatus(Status.READY);
-					if (aPlayer.getArenaTeam().isEveryoneReady()) {
+					if (!alreadyReady && aPlayer.getArenaTeam().isEveryoneReady()) {
 						arena.broadcast(Language.parse(arena, MSG.TEAM_READY, aPlayer
 								.getArenaTeam().getColoredName()));
 					}
