@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.325 - suppress an issue about non arena players damaging arena players or vice versa - github issue #27
 * v1.1.0.324 - stop using multiple end countdowns at at time, addresses github issue #23
 * v1.1.0.323 - address github issue #19 - refresh arena debuggers
 * v1.1.0.322 - allow players to re-ready

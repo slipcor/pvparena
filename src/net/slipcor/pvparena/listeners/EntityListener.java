@@ -397,6 +397,18 @@ public class EntityListener implements Listener {
 				continue;
 			}
 			final ArenaPlayer damagee = ArenaPlayer.parsePlayer(((Player) e).getName());
+			
+			if (damagee.getArena() == null || shooter.getArena() == null ||
+					(damagee.getArena() != shooter.getArena()) ||
+					damagee.getArenaTeam() == null || shooter.getArenaTeam() == null) {
+				/**
+				 * some people obviously allow non arena players to mess with potions around arena players
+				 * 
+				 * this check should cover any of the entities not being in the same arena, or not arena at all
+				 */
+				continue;
+			}
+			
 			final boolean sameTeam = damagee.getArenaTeam().equals(shooter.getArenaTeam());
 
 			
