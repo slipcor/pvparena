@@ -38,6 +38,9 @@ public class EndRunnable extends ArenaRunnable {
 			arena.endRunner.cancel();
 			arena.endRunner = null;
 		}
+		if (arena.realEndRunner != null) {
+			arena.realEndRunner.cancel();
+		}
 		arena.realEndRunner = this;
 	}
 
