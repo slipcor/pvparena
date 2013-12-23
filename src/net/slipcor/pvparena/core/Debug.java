@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.managers.ArenaManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -236,6 +237,10 @@ public class Debug {
 		}
 		
 		loggers.clear();
+		
+		for (Arena a : ArenaManager.getArenas()) {
+			a.renewDebugger();
+		}
 		
 		if (debugs.equals("none")) {
 			Arena.pmsg(sender, "debugging: off");

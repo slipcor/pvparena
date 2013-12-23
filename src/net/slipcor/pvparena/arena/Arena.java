@@ -77,7 +77,7 @@ import org.bukkit.util.Vector;
 
 public class Arena {
 
-	private final static Debug DEBUG = new Debug(3);
+	private static Debug DEBUG = new Debug(3);
 	private Debug debug = null;
 	private final Set<ArenaClass> classes = new HashSet<ArenaClass>();
 	private final Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
@@ -1018,6 +1018,11 @@ public class Arena {
 //		}
 
 		player.setNoDamageTicks(60);
+	}
+	
+	public void renewDebugger() {
+		debug = null;
+		DEBUG = new Debug(3);
 	}
 
 	/**
