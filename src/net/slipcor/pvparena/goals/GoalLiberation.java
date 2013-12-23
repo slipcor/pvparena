@@ -375,7 +375,7 @@ public class GoalLiberation extends ArenaGoal  {
 				}
 				new InventoryRefillRunnable(arena, aPlayer.get(), event.getDrops());
 				
-				String teamName = null;
+				String teamName = aPlayer.getArenaTeam().getName();
 				
 				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, teamName+"jail"), 1L);
 				
