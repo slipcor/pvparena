@@ -155,7 +155,7 @@ public class PlayerListener implements Listener {
 		}
 		final ArenaTeam team = aPlayer.getArenaTeam();
 		if (team == null ||
-				aPlayer.getStatus() == Status.DEAD ||
+				(aPlayer.getStatus() == Status.DEAD && aPlayer.get() == null) ||
 				aPlayer.getStatus() == Status.LOST ||
 				aPlayer.getStatus() == Status.WATCH) {
 			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_SPECTALK)) {

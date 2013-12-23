@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import net.slipcor.pvparena.PVPArena;
@@ -192,6 +195,12 @@ public class GoalLiberation extends ArenaGoal  {
 				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
 					if (jailedPlayer.getStatus() == Status.DEAD) {
 						SpawnManager.respawn(arena, jailedPlayer, null);
+						List<ItemStack> iList = new ArrayList<ItemStack>();
+						
+						for (ItemStack item : jailedPlayer.getArenaClass().getItems()) {
+							iList.add(item);
+						}
+						new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
 					}
 				}
 
