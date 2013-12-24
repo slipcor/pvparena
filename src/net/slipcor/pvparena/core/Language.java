@@ -310,6 +310,7 @@ public final class Language {
 		REGION_RADIUS("nulang.region.radius", "Region radius set to: &a%1%&r"),
 		REGION_REMOVED("nulang.region.removed", "Region removed: %1%"),
 		REGION_SAVED("nulang.region.saved", "Region saved."),
+		REGION_SAVED_NOTICE("nulang.region.saved_notice", "&6You created a &oCUSTOM&6 region. It has no function yet! To turn it into a battlefield region, type &r/pvparena %1% !rt %2% BATTLE"),
 		REGION_SELECT("nulang.region.select", "Select two points with your wand item, left click first and then right click!"),
 		REGION_SETTING("nulang.region.setting", "Setting region enabled."),
 		REGION_TYPE_SET("nulang.region.typeset", "Region Type set: &e%1%"),
@@ -375,6 +376,8 @@ public final class Language {
 		TIMER_WARMINGUP("nulang.timer.warmingup", "Warming up... %1%!"),
 		TIMER_PVPACTIVATING("nulang.timer.pvpactivating", "PVP will be activated in %1%!"),
 		TIMER_WALLS("nulang.timer.walls", "Walls will be removed in %1%!"),
+		
+		TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type &r/pvparena [arena] !rt [region] BATTLE"),
 		
 		UNINSTALL_DONE("nulang.uninstall.done", "uninstalled: &a%1%&r"),
 		

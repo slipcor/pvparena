@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.330 - allow mods to notify admins that forgot to set their regions to BATTLE
 * v1.1.0.329 - check if anyone IS liberated before stating and giving points! fixes github issue #32 
 * v1.1.0.328 - fix liberation liberation formatting
 * v1.1.0.327 - address github issue #22 - properly parse dead player's chat and refill inventory

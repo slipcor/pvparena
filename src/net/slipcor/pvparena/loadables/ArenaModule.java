@@ -97,6 +97,10 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 		return res;
 	}
 
+	public boolean checkForMissingBattleRegion() {
+		return false;
+	}
+
 	/**
 	 * check for unset spawns
 	 * 

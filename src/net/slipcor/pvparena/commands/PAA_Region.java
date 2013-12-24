@@ -131,6 +131,9 @@ public class PAA_Region extends AbstractArenaCommand {
 			aPlayer.unsetSelection();
 			
 			arena.msg(sender, Language.parse(arena, MSG.REGION_SAVED, args[0]));
+			
+			arena.msg(sender, Language.parse(arena, MSG.REGION_SAVED_NOTICE, arena.getName(), args[0]));
+			
 			return;
 		}
 		
