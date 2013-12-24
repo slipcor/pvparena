@@ -184,14 +184,8 @@ public class GoalLiberation extends ArenaGoal  {
 				arena.getDebugger().i("button found!", player);
 				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 
-
-				arena.broadcast(ChatColor.YELLOW + Language
-						.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
-								pTeam.getColoredName()
-										+ ChatColor.YELLOW));
-
-				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
-				Bukkit.getPluginManager().callEvent(gEvent);
+				boolean success = false;
+				
 				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
 					if (jailedPlayer.getStatus() == Status.DEAD) {
 						SpawnManager.respawn(arena, jailedPlayer, null);
@@ -201,7 +195,19 @@ public class GoalLiberation extends ArenaGoal  {
 							iList.add(item);
 						}
 						new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
+						success = true;
 					}
+				}
+				
+				if (success) {
+
+					arena.broadcast(ChatColor.YELLOW + Language
+							.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
+									pTeam.getColoredName()
+											+ ChatColor.YELLOW));
+
+					PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
+					Bukkit.getPluginManager().callEvent(gEvent);
 				}
 
 				return res;
