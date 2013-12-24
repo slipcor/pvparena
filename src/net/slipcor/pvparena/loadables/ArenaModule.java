@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -95,10 +96,6 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public PACheck checkJoin(final CommandSender sender, final PACheck res,
 			final boolean isSpectating) {
 		return res;
-	}
-
-	public boolean checkForMissingBattleRegion() {
-		return false;
 	}
 
 	/**
@@ -234,6 +231,16 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void initiate(final Player sender) {
 	}
 
+	public boolean isMissingBattleRegion() {
+		if (this.needsBattleRegion()) {
+			for (ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * hook into an arena joining the game after it has begin
 	 * 
@@ -241,6 +248,10 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	 *            the joining player
 	 */
 	public void lateJoin(final Player player) {
+	}
+
+	public boolean needsBattleRegion() {
+		return false;
 	}
 
 	/**
