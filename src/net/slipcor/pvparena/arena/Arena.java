@@ -1022,6 +1022,8 @@ public class Arena {
 	
 	public void renewDebugger() {
 		debug = null;
+		debug = new Debug(this);
+		DEBUG = null;
 		DEBUG = new Debug(3);
 	}
 
@@ -1401,6 +1403,9 @@ public class Arena {
 		int sum = 0;
 		for (ArenaTeam team : getTeams()) {
 			for (ArenaPlayer ap : team.getTeamMembers()) {
+				if (forceStart) {
+					ap.setStatus(Status.READY);
+				}
 				if (ap.getStatus().equals(Status.LOUNGE)
 						|| ap.getStatus().equals(Status.READY)) {
 					sum++;
