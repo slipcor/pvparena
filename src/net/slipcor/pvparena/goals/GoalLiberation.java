@@ -30,6 +30,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
@@ -368,6 +369,12 @@ public class GoalLiberation extends ArenaGoal  {
 			}
 			
 			if (!someoneAlive) {
+				getLifeMap().remove(player.getName());
+				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+					arena.getDebugger().i("faking player death", player);
+					PlayerListener.finallyKillPlayer(arena, player, event);
+				}
+				
 				PACheck.handleEnd(arena, false);
 			} else {
 
