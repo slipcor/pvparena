@@ -37,6 +37,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -46,11 +47,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -342,6 +345,21 @@ public class PlayerListener implements Listener {
 
 		if (ArenaManager.checkAndCommit(arena, false)) {
 			return;
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerHunger(final FoodLevelChangeEvent event) {
+		if (event.getEntityType() != EntityType.PLAYER) {
+			return;
+		}
+		
+		Player player = (Player)event.getEntity();
+		
+		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+		
+		if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE) {
+			event.setCancelled(true);
 		}
 	}
 
