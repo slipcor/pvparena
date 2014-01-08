@@ -360,6 +360,8 @@ public class PlayerListener implements Listener {
 		
 		if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE) {
 			event.setCancelled(true);
+		} else if (ap.getArena() != null && !ap.getArena().getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)) {
+			event.setCancelled(true);
 		}
 	}
 

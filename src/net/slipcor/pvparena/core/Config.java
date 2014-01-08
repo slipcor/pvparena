@@ -116,6 +116,7 @@ public class Config {
 		PLAYER_FEEDFORKILL("player.hungerforkill", 0),
 		PLAYER_FOODLEVEL("player.foodLevel", 20),
 		PLAYER_HEALTH("player.health", 20),
+		PLAYER_HUNGER("player.hunger", true),
 		PLAYER_PREVENTDEATH("player.preventDeath", true),
 		PLAYER_REFILLINVENTORY("player.refillInventory", true),
 		PLAYER_SATURATION("player.saturation", 20),

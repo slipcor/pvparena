@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.335 - allow hunger disabling (player.hunger)
 * v1.1.0.334 - stop starvation in the lounge
 * v1.1.0.333 - attempt to properly remove liberation losers
 * v1.1.0.332 - attempt to tackle github issue #16 and github issue #19
