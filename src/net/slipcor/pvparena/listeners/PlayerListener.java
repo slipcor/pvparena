@@ -442,7 +442,8 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
+		if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) ||
+				event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			final Block block = event.getClickedBlock();
 			arena.getDebugger().i("player team: " + team.getName(), player);
 			if (block.getState() instanceof Sign) {
