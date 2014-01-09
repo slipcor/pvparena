@@ -380,7 +380,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return;
 		}
 
-		player.addPotionEffect(new PotionEffect(pet, amp, 2147000));
+		player.addPotionEffect(new PotionEffect(pet, 2147000, amp));
 	}
 
 	@Override
