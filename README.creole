@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.341 - suprise, #340 now works
 * v1.1.0.340 - fix invisibility - configurably
 * v1.1.0.339 - stop removing region runnables if they are needed
 * v1.1.0.338 - support max health changing ingame by double checking max health

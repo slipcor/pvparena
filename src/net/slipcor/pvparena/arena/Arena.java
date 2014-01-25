@@ -1545,6 +1545,7 @@ public class Arena {
 				}
 				
 			}
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
 		}
 
 		if (!getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
