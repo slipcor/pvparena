@@ -353,10 +353,16 @@ public class ArenaRegion {
 	}
 
 	public void initTimer() {
-		final RegionRunnable regionRunner = new RegionRunnable(this);
+		
 		if (tickID != -1) {
+			if (getType() == RegionType.JOIN || getType() == RegionType.WATCH) {
+				return;
+			}
+			
 			Bukkit.getScheduler().cancelTask(tickID);
 		}
+		
+		final RegionRunnable regionRunner = new RegionRunnable(this);
 		tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
 				PVPArena.instance, regionRunner,
 				getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
@@ -455,6 +461,7 @@ public class ArenaRegion {
 		if (getType() == RegionType.JOIN || getType() == RegionType.WATCH) {
 			return;
 		}
+		
 		Bukkit.getScheduler().cancelTask(tickID);
 		tickID = -1;
 	}
