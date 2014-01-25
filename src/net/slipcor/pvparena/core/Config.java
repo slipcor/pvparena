@@ -152,6 +152,7 @@ public class Config {
 		USES_DEATHMESSAGES("uses.deathMessages", true),
 		USES_EVENTEAMS("uses.evenTeams", false),
 		USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false),
+		USES_INVISIBILITYFIX("uses.invisibilityfix", false),
 		USES_OVERLAPCHECK("uses.overlapCheck", true),
 		USES_WOOLHEAD("uses.woolHead", false),
 		

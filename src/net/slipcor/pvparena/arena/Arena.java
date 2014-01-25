@@ -1529,6 +1529,23 @@ public class Arena {
 		player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 		aPlayer.setTelePass(false);
 
+		if (getArenaConfig().getBoolean(CFG.USES_INVISIBILITYFIX) &&
+				aPlayer.getStatus() == Status.FIGHT ||
+				aPlayer.getStatus() == Status.LOUNGE) {
+			class RunLater implements Runnable {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					for (ArenaPlayer player : Arena.this.getFighters()) {
+						if (player.get() != null) {
+							player.get().showPlayer(aPlayer.get());
+						}
+					}
+				}
+				
+			}
+		}
 
 		if (!getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
 			class RunLater implements Runnable {
