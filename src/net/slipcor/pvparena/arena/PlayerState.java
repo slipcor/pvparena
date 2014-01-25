@@ -95,7 +95,14 @@ public final class PlayerState {
 	}
 
 	public static void fullReset(final Arena arena, final Player player) {
-		playersetHealth(player, arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
+		int iHealth = arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH);
+		
+		if (iHealth > player.getMaxHealth()) {
+			player.setHealth(player.getMaxHealth());
+		} else {
+			playersetHealth(player, iHealth);
+		}
+		
 		player.setFireTicks(0);
 		player.setFallDistance(0);
 		player.setVelocity(new Vector());
