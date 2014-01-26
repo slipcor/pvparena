@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.344 - finally finish! fix arrows staying stuck on players!
 * v1.1.0.343 - still onyl for moo !!!
 * v1.1.0.342 - only for moo !!! arrow debugging!
 * v1.1.0.341 - suprise, #340 now works

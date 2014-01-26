@@ -1166,7 +1166,6 @@ public class Arena {
 		try {
 			new ArrowHack(player);
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
