@@ -13,15 +13,15 @@ public class ArrowHack {
 		
 		Method mGetHandle = player.getClass().getMethod("getHandle");
 		
-		Object cHandle = mGetHandle.invoke(null);
+		Object cHandle = mGetHandle.invoke(player);
 		
 		Method mGetDataWatcher = cHandle.getClass().getMethod("getDataWatcher");
 		
-		Object cWatcher = mGetDataWatcher.invoke(null);
+		Object cWatcher = mGetDataWatcher.invoke(cHandle);
 		
 		Method mWatch = cWatcher.getClass().getMethod("watch", int.class, Object.class);
 		
-		mWatch.invoke(9, (byte) 0);
+		mWatch.invoke(cWatcher, 9, (byte) 0);
 	}
 
 }
