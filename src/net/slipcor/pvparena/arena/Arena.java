@@ -21,6 +21,7 @@ import net.slipcor.pvparena.classes.PARoundMap;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.ArrowHack;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
@@ -1161,25 +1162,11 @@ public class Arena {
 		}
 		getDebugger().i("resetting player: " + player.getName() + (soft ? "(soft)" : ""),
 				player);
-/*
-		class RemoveRunner implements Runnable {
-			private final Entity e;
-			RemoveRunner(Entity e) {
-				this.e = e;
-			}
-			@Override
-			public void run() {
-				e.remove();
-			}
-
-		}
-		*/
 		
-		
-		for (Entity entity : player.getNearbyEntities(2.0, 2.0, 2.0)) {
-			if (entity instanceof Projectile) {
-				entity.remove();
-			}
+		try {
+			new ArrowHack(player);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
