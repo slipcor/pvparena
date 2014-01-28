@@ -32,6 +32,7 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -62,6 +63,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.plugin.IllegalPluginAccessException;
 
 /**
  * <pre>
@@ -729,6 +731,9 @@ public class PlayerListener implements Listener {
 
 		if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
 				|| player.hasPermission("pvparena.telepass")) {
+			
+			maybeFixInvisibility(arena, player);
+			
 			return; // if allowed => OUT
 		}
 		arena.getDebugger().i("telepass: no!!", player);
@@ -737,12 +742,16 @@ public class PlayerListener implements Listener {
 				.getRegionsByType(RegionType.BATTLE);
 
 		if (regions == null || regions.size() < 0) {
+			maybeFixInvisibility(arena, player);
+			
 			return;
 		}
 
 		for (ArenaRegion r : regions) {
 			if (r.getShape().contains(new PABlockLocation(event.getTo()))) {
 				// teleport inside the arena, allow!
+				maybeFixInvisibility(arena, player);
+				
 				return;
 			}
 		}
@@ -750,6 +759,28 @@ public class PlayerListener implements Listener {
 		arena.getDebugger().i("onPlayerTeleport: no tele pass, cancelling!", player);
 		event.setCancelled(true); // cancel and tell
 		arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_TELEPORT));
+	}
+
+	private void maybeFixInvisibility(final Arena arena, final Player player) {
+		if (arena.getArenaConfig().getBoolean(CFG.USES_EVILINVISIBILITYFIX)) {
+			class RunLater implements Runnable {
+
+				@Override
+				public void run() {
+					for (ArenaPlayer otherPlayer : arena.getFighters()) {
+						if (otherPlayer.get() != null) {
+							otherPlayer.get().showPlayer(player);
+						}
+					}
+				}
+				
+			}
+			try {
+				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
+			} catch (IllegalPluginAccessException e) {
+				
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
