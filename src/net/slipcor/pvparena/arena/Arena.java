@@ -1825,4 +1825,13 @@ public class Arena {
 	public void addSpawn(PASpawn paSpawn) {
 		spawns.add(paSpawn);
 	}
+
+	public boolean allowsJoinInBattle() {
+		for (ArenaGoal goal : this.getGoals()) {
+			if (!goal.allowsJoinInBattle()) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

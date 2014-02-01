@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.347 - properly allow autovote to access running arenas
 * v1.1.0.346 - sanely handle non global non arena notification runnables 
 * v1.1.0.345 - add an evil invisibility fix attempt
 * v1.1.0.344 - finally finish! fix arrows staying stuck on players!

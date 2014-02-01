@@ -391,7 +391,7 @@ public final class ArenaManager {
 	}
 	public static Arena getAvailable() {
 		for (Arena a : getArenas()) {
-			if (!a.isLocked() && !a.isFightInProgress()) {
+			if (!a.isLocked() && !(a.isFightInProgress() && !a.allowsJoinInBattle())) {
 				return a;
 			}
 		}
