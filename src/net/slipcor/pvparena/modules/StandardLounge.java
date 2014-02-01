@@ -66,7 +66,15 @@ public class StandardLounge extends ArenaModule {
 			}
 
 		}
-		if (lounges == arena.getTeams().size()) {
+		
+		int neededCount = arena.getTeams().size();
+		
+		for (ArenaTeam team : arena.getTeams()) {
+			if (team.getName().equals("infected")) {
+				neededCount--;
+			}
+		}
+		if (lounges == neededCount) {
 			return null;
 		}
 
