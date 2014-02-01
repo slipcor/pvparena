@@ -1429,6 +1429,7 @@ public class Arena {
 		} else {
 			// false
 			PVPArena.instance.getLogger().info("START aborted by event cancel");
+			reset(true);
 		}
 	}
 
