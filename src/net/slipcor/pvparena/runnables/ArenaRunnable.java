@@ -59,7 +59,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 	 * Spam the message of the remaining time to... someone, probably:
 	 * @param message the Language.parse("**") String to wrap
 	 * @param arena the arena to spam to (!global) or to exclude (global)
-	 * @param player the player to spam to (!global && !arena) or to exclude (global || arena)
+	 * @param player the player to spam to (!global && !arena) or to exclude (global && arena)
 	 * @param seconds the seconds remaining
 	 * @param global the trigger to generally spam to everyone or to specific arenas/players
 	 */
@@ -114,8 +114,14 @@ public abstract class ArenaRunnable extends BukkitRunnable {
 			}
 			return;
 		}
+		
 		if (Bukkit.getPlayer(sPlayer) != null) {
-			Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
+			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sPlayer);
+			if (aPlayer.getArena() == null) {
+				Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
+			} else {
+				aPlayer.getArena().msg(aPlayer.get(), message);
+			}
 			return;
 		}
 	}
