@@ -33,16 +33,23 @@ public class InventoryRefillRunnable implements Runnable {
 	private final Arena arena;
 	
 	public InventoryRefillRunnable(final Arena arena, final Player player, final List<ItemStack> itemList) {
+		ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+		if (arena == null && aPlayer.getArena() == null) {
+			this.player = null;
+			this.items = null;
+			this.arena = null;
+			return;
+		}
 		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 			this.player = player;
-			this.arena = arena;
+			this.arena = arena==null?aPlayer.getArena():arena;
 			this.items = null;
 			return;
 		}
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, this, 3L);
 		this.player = player;
 		this.items = new ItemStack[itemList.size()];
-		this.arena = arena;
+		this.arena = arena==null?aPlayer.getArena():arena;
 		int pos = 0;
 		for (ItemStack item : itemList) {
 			items[pos++] = item.clone();

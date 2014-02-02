@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.350 - fix strange refill runnable NPE
 * v1.1.0.349 - don't require a lounge for infected people!
 * v1.1.0.348 - force reset an arena if the start event has been cancelled
 * v1.1.0.347 - properly allow autovote to access running arenas
