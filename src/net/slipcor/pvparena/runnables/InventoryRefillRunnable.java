@@ -40,7 +40,12 @@ public class InventoryRefillRunnable implements Runnable {
 			this.arena = null;
 			return;
 		}
-		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+		
+		boolean refill = arena == null ?
+				aPlayer.getArena().getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY) :
+				arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY);
+		
+		if (!refill) {
 			this.player = player;
 			this.arena = arena==null?aPlayer.getArena():arena;
 			this.items = null;
