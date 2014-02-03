@@ -44,6 +44,26 @@
 					<include>plugin.yml</include>
 				</includes>
 			</resource>
+			<resource>
+				<targetPath>.</targetPath>
+				<filtering>true</filtering>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>README.creole</include>
+					<include>READMEv01.creole</include>
+					<include>READMEv010.creole</include>
+					<include>READMEv02.creole</include>
+					<include>READMEv03.creole</include>
+					<include>READMEv04.creole</include>
+					<include>READMEv05.creole</include>
+					<include>READMEv06.creole</include>
+					<include>READMEv07.creole</include>
+					<include>READMEv08.creole</include>
+					<include>READMEv09.creole</include>
+					<include>READMEv10.creole</include>
+					<include>SETUP.creole</include>
+				</includes>
+			</resource>
 		</resources>
 
 		<plugins>
