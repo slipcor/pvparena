@@ -214,7 +214,7 @@ public class ArenaGoalManager {
 
 		final Set<String> winners = new HashSet<String>();
 
-		if (arena.isFreeForAll()) {
+		if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
 			winners.add("free");
 			arena.getDebugger().i("adding FREE");
 		} else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER)
@@ -301,7 +301,7 @@ public class ArenaGoalManager {
 			}
 		}
 
-		if (arena.isFreeForAll()) {
+		if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
 			arena.getDebugger().i("FFAAA");
 			final Set<String> preciseWinners = new HashSet<String>();
 
@@ -338,7 +338,7 @@ public class ArenaGoalManager {
 
 		ArenaModuleManager.timedEnd(arena, winners);
 
-		if (arena.isFreeForAll()) {
+		if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
 			for (ArenaTeam team : arena.getTeams()) {
 				final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
 				for (ArenaPlayer p : team.getTeamMembers()) {
