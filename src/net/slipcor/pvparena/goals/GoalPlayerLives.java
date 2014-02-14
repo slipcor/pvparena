@@ -241,10 +241,34 @@ public class GoalPlayerLives extends ArenaGoal {
 	@Override
 	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
 		if (res.getPriority() <= PRIORITY+1000) {
-			res.setError(
-					this,
-					String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-									.getName()) : 0));
+			
+			if (arena.isFreeForAll()) {
+				res.setError(
+						this,
+						String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
+										.getName()) : 0));
+			} else {
+				
+				if (getLifeMap().containsKey(aPlayer.getArenaTeam().getName())) {
+					res.setError(this, String.valueOf(
+							getLifeMap().get(aPlayer.getName())));
+				} else {
+
+					int sum = 0;
+					
+					for (ArenaPlayer player : aPlayer.getArenaTeam().getTeamMembers()) {
+						if (getLifeMap().containsKey(player.getName())) {
+							sum += getLifeMap().get(player.getName());
+						}
+					}
+					
+					res.setError(
+						this,
+						String.valueOf(sum));
+				}
+			}
+			
+			
 		}
 		return res;
 	}
