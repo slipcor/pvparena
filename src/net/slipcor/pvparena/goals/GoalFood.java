@@ -19,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -440,7 +441,47 @@ public class GoalFood extends ArenaGoal implements Listener {
 		}
 		
 	}
-	
+
+	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
+	public void onItemTransfer(InventoryMoveItemEvent event) {
+		
+		if (arena == null || !arena.isFightInProgress()) {
+			return;
+		}
+		
+		InventoryType type = event.getDestination().getType();
+		
+		if (type != InventoryType.CHEST) {
+			return;
+		}
+		
+		if (chestMap == null || !chestMap.containsKey(((Chest) event.getDestination()
+				.getHolder()).getBlock())) {
+			return;
+		}
+		
+		ItemStack stack = event.getItem();
+		
+		ArenaTeam team = chestMap.get(((Chest) event.getDestination()
+				.getHolder()).getBlock());
+		
+		if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
+			return;
+		}
+		
+		ArenaPlayer noone = null;
+		
+		for (ArenaPlayer player : team.getTeamMembers()) {
+			noone = player;
+			break;
+		}
+
+		// INTO container
+		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
+				noone.getName()+":"+team.getName()+":"+stack.getAmount());
+		Bukkit.getPluginManager().callEvent(gEvent);
+		this.reduceLives(arena, team, stack.getAmount());
+	}
 	
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {

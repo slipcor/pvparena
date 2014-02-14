@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.354 - support hoppers and droppers and stuff for FOOD goal!
 * v1.1.0.353 - if this breaks all the things, blame moo !
 * v1.1.0.352 - attempt to add readme files to the jar
 * v1.1.0.351 - really fix the NPE mentioned in #351
