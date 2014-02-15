@@ -24,6 +24,7 @@ permissions:
         default: op
         children:
             pvparena.admin: true
+            pvparena.override: true
             pvparena.telepass: true
             pvparena.user: true
     pvparena.admin:
@@ -33,6 +34,9 @@ permissions:
             pvparena.create: true
     pvparena.create:
         description: Allows you to create and administrate an arena
+        default: op
+    pvparena.override:
+        description: Allows you to override some checks
         default: op
     pvparena.telepass:
         description: Allows you to teleport while in an arena

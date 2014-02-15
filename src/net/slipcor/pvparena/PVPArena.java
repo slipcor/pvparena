@@ -121,6 +121,10 @@ public class PVPArena extends JavaPlugin {
 				.getOwner().equals(sender.getName())));
 	}
 
+	public static boolean hasOverridePerms(CommandSender sender) {
+		return sender.hasPermission("pvparena.override");
+	}
+
 	/**
 	 * Check if a CommandSender has permission for an arena
 	 * 
