@@ -10,6 +10,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -80,14 +81,14 @@ public class PAG_Join extends AbstractArenaCommand {
 			if (!arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) && 
 					arena.hasAlreadyPlayed(aPlayer.getName())) {
 				arena.getDebugger().i("Join_2", sender);
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, arena.getName()));
+				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(arena)));
 			} else {
 				PACheck.handleJoin(arena, sender, args);
 			}
 		} else {
 			final Arena pArena = aPlayer.getArena();
 			arena.getDebugger().i("Join_1", sender);
-			pArena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, pArena.getName()));
+			pArena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(pArena)));
 		}
 		
 	}

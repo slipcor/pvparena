@@ -455,6 +455,18 @@ public final class ArenaManager {
 		}
 		return result;
 	}
+	
+	public static String getIndirectArenaName(Arena arena) {
+		if (usingShortcuts && PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+			for (String name : DEF_VALUES.keySet()) {
+				if (DEF_VALUES.get(name).equals(arena)) {
+					return name;
+				}
+			}
+		}
+		return arena.getName();
+	}
+	
 	public static Arena getIndirectArenaByName(CommandSender sender, String string) {
 		if (!usingShortcuts || PVPArena.hasOverridePerms(sender)) {
 			return getArenaByName(string);

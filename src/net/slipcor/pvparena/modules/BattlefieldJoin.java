@@ -18,6 +18,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 
 import org.bukkit.Bukkit;
@@ -77,7 +78,7 @@ public class BattlefieldJoin extends ArenaModule {
 		if (aPlayer.getArena() != null) {
 			aPlayer.getArena().getDebugger().i(this.getName(), sender);
 			result.setError(this, Language.parse(arena,
-					MSG.ERROR_ARENA_ALREADY_PART_OF, aPlayer.getArena().getName()));
+					MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(aPlayer.getArena())));
 			return result;
 		}
 
