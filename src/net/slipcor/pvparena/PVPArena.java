@@ -329,6 +329,7 @@ public class PVPArena extends JavaPlugin {
 		new File(getDataFolder().getPath() + "/regionshapes").mkdir();
 		new File(getDataFolder().getPath() + "/dumps").mkdir();
 		new File(getDataFolder().getPath() + "/files").mkdir();
+		new File(getDataFolder().getPath() + "/templates").mkdir();
 
 		agm = new ArenaGoalManager(this);
 		amm = new ArenaModuleManager(this);

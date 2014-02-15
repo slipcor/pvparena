@@ -131,6 +131,8 @@ public abstract class AbstractArenaCommand {
 		} else if (name.contains("teleport") || name.equals("tp")
 				|| name.equals("!t")) {
 			return new PAA_Teleport();
+		} else if (name.contains("template") || name.equals("!tmp")) {
+			return new PAA_Template();
 		} else if (name.contains("togglemod") || name.equals("!tm")) {
 			return new PAA_ToggleMod();
 		} else if (name.contains("whitelist") || name.equals("!wl")) {

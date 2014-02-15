@@ -365,6 +365,9 @@ public final class Language {
 		TEAMS_ADD("nulang.teams.add", "Team added: %1%"),
 		TEAMS_SET("nulang.teams.set", "Team set: %1%"),
 		TEAMS_REMOVE("nulang.teams.remove", "Team removed: %1%"),
+
+		TEMPLATE_LOAD_DONE("nulang.template.loaddone", "Template loaded from &a%1%&r"),
+		TEMPLATE_SAVE_DONE("nulang.template.savedone", "Template saved to &a%1%&r"),
 		
 		TIME_MINUTES("nulang.time.minutes", "minutes"),
 		TIME_SECONDS("nulang.time.seconds", "seconds"),

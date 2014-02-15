@@ -268,6 +268,13 @@ public final class Help {
 				LINE,
 				"/pa [arenaname] teleport [spawnname]",
 				"shorthand command: !t"}),
+		TEMPLATE("nulang.help.msg.template", new String[]{
+				"Save/load arena configs",
+				LINE,
+				"shorthand command: !tmp",
+				LINE,
+				"/pa {arenaname} template load {filename}",
+				"/pa {arenaname} template save {filename}"}),
 		UNINSTALL("nulang.help.msg.uninstall", new String[]{
 				"Uninstall a PVP Arena module",
 				LINE,
