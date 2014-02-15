@@ -1145,6 +1145,18 @@ public class Arena {
 		
 		round = 0;
 		StatisticsManager.save();
+		
+		class RunLater implements Runnable {
+			@Override
+			public void run() {
+				ArenaManager.advance(Arena.this);
+			}
+		}
+		try {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new RunLater(), 30L);
+		} catch (Exception e) {
+			// maybe shutting down?
+		}
 	}
 
 	/**

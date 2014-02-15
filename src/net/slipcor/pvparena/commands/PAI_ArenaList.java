@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
@@ -41,9 +42,14 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 		}
 		final Set<String> names = new HashSet<String>();
 		
-		for (Arena a : ArenaManager.getArenas()) {
-			names.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
+		if (!PVPArena.hasAdminPerms(sender) && ArenaManager.isUsingShortcuts()) {
+			names.addAll(ArenaManager.getColoredShortcuts());
+		} else {
+			for (Arena a : ArenaManager.getArenas()) {
+				names.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
+			}
 		}
+		
 		
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, ", ")));
 	}

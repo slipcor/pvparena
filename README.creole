@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.356 - add new main config settings to allow for arena management
 * v1.1.0.355 - fix playerlives goal lives calculation for team arenas
 * v1.1.0.354 - support hoppers and droppers and stuff for FOOD goal!
 * v1.1.0.353 - if this breaks all the things, blame moo !

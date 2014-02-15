@@ -203,7 +203,7 @@ public class PVPArena extends JavaPlugin {
 						.equalsIgnoreCase("stats"))) {
 			final PAI_Stats scmd = new PAI_Stats();
 			DEBUG.i("committing: " + scmd.getName(), sender);
-			scmd.commit(ArenaManager.getArenaByName(args[0]), sender,
+			scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
 					StringParser.shiftArrayBy(args, 2));
 			return true;
 		} else if (args[0].equalsIgnoreCase("!rl")
@@ -224,7 +224,7 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 
-		Arena tempArena = ArenaManager.getArenaByName(args[0]);
+		Arena tempArena = ArenaManager.getIndirectArenaByName(sender, args[0]);
 
 		final String name = args[0];
 
@@ -349,6 +349,12 @@ public class PVPArena extends JavaPlugin {
 
 		Debug.load(this, Bukkit.getConsoleSender());
 		ArenaManager.load_arenas();
+		
+		if (getConfig().getBoolean("use_shortcuts") ||
+				getConfig().getBoolean("only_shortcuts")) {
+			ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
+		}
+		
 		final String update = getConfig().getString("update").toLowerCase();
 
 		final Updater.UpdateType updateType;

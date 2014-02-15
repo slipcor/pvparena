@@ -13,6 +13,8 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
+import net.slipcor.pvparena.commands.PAA_Edit;
+import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.commands.PAG_Join;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
@@ -28,6 +30,8 @@ import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -47,6 +51,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public final class ArenaManager {
 	private final static Map<String, Arena> ARENAS = new HashMap<String, Arena>();
 	private final static Debug DEBUG = new Debug(24);
+
+	private final static Map<String, Arena> DEF_VALUES = new HashMap<String, Arena>();
+	private final static Map<String, List<String>> DEF_LISTS = new HashMap<String, List<String>>();
+	
+	private static boolean usingShortcuts = false;
 	
 	private ArenaManager() {
 	}
@@ -380,6 +389,7 @@ public final class ArenaManager {
 			}
 		}
 	}
+	
 	public static int countAvailable() {
 		int sum = 0;
 		for (Arena a : getArenas()) {
@@ -389,6 +399,7 @@ public final class ArenaManager {
 		}
 		return sum;
 	}
+	
 	public static Arena getAvailable() {
 		for (Arena a : getArenas()) {
 			if (!a.isLocked() && !(a.isFightInProgress() && !a.allowsJoinInBattle())) {
@@ -396,5 +407,117 @@ public final class ArenaManager {
 			}
 		}
 		return null;
+	}
+	
+	public static void readShortcuts(ConfigurationSection cs) {
+		usingShortcuts = false;
+		if (cs == null) {
+			PVPArena.instance.getLogger().warning("'shortcuts' node is null!!");
+			return;
+		}
+		
+		for (String key : cs.getKeys(false)) {
+			List<String> strings = cs.getStringList(key);
+			
+			if (strings == null) {
+				PVPArena.instance.getLogger().warning("'shortcuts=>"+key+"' node is null!!");
+				continue;
+			}
+
+			boolean error = false;
+			for (String arena : strings) {
+				if (!ARENAS.containsKey(arena)) {
+					PVPArena.instance.getLogger().warning("Arena not found: " + arena);
+					error = true;
+				}
+			}
+			if (error || strings.size() < 2) {
+				PVPArena.instance.getLogger().warning("shortcut '"+key+"' will be skipped!!");
+				continue;
+			}
+			usingShortcuts = true;
+			DEF_LISTS.put(key, strings);
+		}
+	}
+	
+	public static boolean isUsingShortcuts() {
+		return usingShortcuts;
+	}
+	public static Set<String> getColoredShortcuts() {
+		Set<String> result = new HashSet<String>();
+		for (String definition : DEF_LISTS.keySet()) {
+			if (DEF_VALUES.containsKey(definition)) {
+				Arena a = DEF_VALUES.get(definition);
+				result.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + definition + "&r");
+			} else {
+				result.add("&f" + definition + "&r");
+			}
+		}
+		return result;
+	}
+	public static Arena getIndirectArenaByName(CommandSender sender, String string) {
+		if (!usingShortcuts || PVPArena.hasAdminPerms(sender)) {
+			return getArenaByName(string);
+		}
+		if (!DEF_LISTS.containsKey(string)) {
+			if (PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+				return null;
+			} else {
+				return getArenaByName(string);
+			}
+		}
+		
+		if (!DEF_VALUES.containsKey(string)) {
+			advance(string);
+		}
+		
+		return DEF_VALUES.get(string);
+	}
+	
+	public static void advance(Arena arena) {
+		if (usingShortcuts) {
+			for (String def : DEF_VALUES.keySet()) {
+				if (DEF_VALUES.get(def).equals(arena)) {
+					advance(def);
+					return;
+				}
+			}
+		}
+	}
+	
+	public static void advance(String string) {
+		if (!usingShortcuts) {
+			return;
+		}
+		List<String> defs = DEF_LISTS.get(string);
+		
+		if (DEF_VALUES.containsKey(string)) {
+			defs.addAll(defs);
+			Arena arena = DEF_VALUES.get(string);
+			boolean found = false;
+			for (String arenaName : defs) {
+				if (found == false) {
+					if (arenaName.equals(arena.getName())) {
+						found = true;
+					}
+					continue;
+				} else {
+					// we just found it, this is the one!
+					Arena nextArena = getArenaByName(arenaName);
+					
+					DEF_VALUES.put(string, nextArena);
+				}
+			}
+		} else {
+			// get the first available!
+			for (String arenaName : defs) {
+				Arena arena = getArenaByName(arenaName);
+				if (arena.isFightInProgress() || arena.isLocked()) {
+					continue;
+				}
+				
+				DEF_VALUES.put(string, arena);
+			}
+		}
 	}
 }
