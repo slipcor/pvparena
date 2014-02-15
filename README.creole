@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.359 - finish /pa reload, reloading the main config and all arenas+subs
 * v1.1.0.358 - correctly place shortcuts instead of arena names, when enforcing 
 * v1.1.0.357 - add pvparena.override - to specifically allow/deny special privileges
 * v1.1.0.356 - add new main config settings to allow for arena management

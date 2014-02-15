@@ -411,6 +411,8 @@ public final class ArenaManager {
 	
 	public static void readShortcuts(ConfigurationSection cs) {
 		usingShortcuts = false;
+		DEF_VALUES.clear();
+		DEF_LISTS.clear();
 		if (cs == null) {
 			PVPArena.instance.getLogger().warning("'shortcuts' node is null!!");
 			return;

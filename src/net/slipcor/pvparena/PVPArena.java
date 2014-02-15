@@ -224,6 +224,10 @@ public class PVPArena extends JavaPlugin {
 			}
 
 			ArenaManager.load_arenas();
+			if (getConfig().getBoolean("use_shortcuts") ||
+					getConfig().getBoolean("only_shortcuts")) {
+				ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
+			}
 
 			return true;
 		}
