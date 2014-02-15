@@ -473,6 +473,16 @@ public final class ArenaManager {
 		if (!usingShortcuts || PVPArena.hasOverridePerms(sender)) {
 			return getArenaByName(string);
 		}
+		
+		if (!DEF_LISTS.containsKey(string)) {
+			for (String temp : DEF_LISTS.keySet()) {
+				if (temp.toLowerCase().contains(string.toLowerCase())) {
+					string = temp;
+					break;
+				}
+			}
+		}
+		
 		if (!DEF_LISTS.containsKey(string)) {
 			if (PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
 				return null;
