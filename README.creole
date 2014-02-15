@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.362 - add global class definitions, classes.yml
 * v1.1.0.361 - allow for case insensitive lazy usage of shortcuts
 * v1.1.0.360 - add /pa [arena] template save|load [file]
 * v1.1.0.359 - finish /pa reload, reloading the main config and all arenas+subs

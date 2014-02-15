@@ -8,6 +8,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
@@ -357,6 +358,7 @@ public class PVPArena extends JavaPlugin {
 		}
 
 		Debug.load(this, Bukkit.getConsoleSender());
+		ArenaClass.addGlobalClasses();
 		ArenaManager.load_arenas();
 		
 		if (getConfig().getBoolean("use_shortcuts") ||

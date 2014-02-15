@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
@@ -117,6 +118,7 @@ public final class ConfigurationManager {
 				"classitems").getValues(false);
 		arena.getClasses().clear();
 		arena.getDebugger().i("reading class items");
+		ArenaClass.addGlobalClasses(arena);
 		for (String className : classes.keySet()) {
 			String sItemList = "";
 

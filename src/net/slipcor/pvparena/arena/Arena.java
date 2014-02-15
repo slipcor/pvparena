@@ -158,6 +158,10 @@ public class Arena {
 	}
 
 	public void addClass(final String className, final ItemStack[] items) {
+		if (this.getClass(className) != null) {
+			this.removeClass(className);
+		}
+		
 		classes.add(new ArenaClass(className, items));
 	}
 
