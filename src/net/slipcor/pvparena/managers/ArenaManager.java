@@ -520,13 +520,12 @@ public final class ArenaManager {
 			boolean found = false;
 			for (String arenaName : defs) {
 				if (found == false) {
-					if (arenaName.equals(arena.getName())) {
+					if (arenaName.equalsIgnoreCase(arena.getName())) {
 						found = true;
 					}
-					continue;
 				} else {
 					// we just found it, this is the one!
-					Arena nextArena = getArenaByName(arenaName);
+					Arena nextArena = ARENAS.get(arenaName.toLowerCase());
 					
 					DEF_VALUES.put(string, nextArena);
 					return;
