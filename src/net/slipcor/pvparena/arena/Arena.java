@@ -1108,6 +1108,7 @@ public class Arena {
 						getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
 						force);
 				player.setArena(null);
+				player.reset();
 			}
 		}
 		gaveRewards = true;
