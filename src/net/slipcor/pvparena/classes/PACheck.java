@@ -518,6 +518,9 @@ public class PACheck {
 								.getLastDamageCause().getCause(), event
 								.getEntity().getKiller())));
 			}
+			
+			ArenaModuleManager.parsePlayerDeath(arena, player, event
+					.getEntity().getLastDamageCause());
 
 			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
 					event.getDrops());
@@ -525,8 +528,6 @@ public class PACheck {
 			for (ArenaGoal g : arena.getGoals()) {
 				g.parsePlayerDeath(player, player.getLastDamageCause());
 			}
-			ArenaModuleManager.parsePlayerDeath(arena, player, event
-					.getEntity().getLastDamageCause());
 
 			return;
 		}
@@ -534,14 +535,14 @@ public class PACheck {
 		arena.getDebugger().i("handled by: " + commit.getName(), player);
 		int exp = event.getDroppedExp();
 
+		ArenaModuleManager.parsePlayerDeath(arena, player,
+				player.getLastDamageCause());
+
 		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
 			arena.getDebugger().i("parsing death: " + g.getName(), player);
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
-
-		ArenaModuleManager.parsePlayerDeath(arena, player,
-				player.getLastDamageCause());
 
 		if (doesRespawn
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
