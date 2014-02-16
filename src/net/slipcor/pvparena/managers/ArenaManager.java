@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -439,6 +441,7 @@ public final class ArenaManager {
 			}
 			usingShortcuts = true;
 			DEF_LISTS.put(key, strings);
+			advance(key);
 		}
 	}
 	
@@ -446,8 +449,11 @@ public final class ArenaManager {
 		return usingShortcuts;
 	}
 	public static Set<String> getColoredShortcuts() {
+		Set<String> sorted = new TreeSet<String>(DEF_LISTS.keySet());
+		
 		Set<String> result = new HashSet<String>();
-		for (String definition : DEF_LISTS.keySet()) {
+		
+		for (String definition : sorted) {
 			if (DEF_VALUES.containsKey(definition)) {
 				Arena a = DEF_VALUES.get(definition);
 				result.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + definition + "&r");
@@ -542,5 +548,13 @@ public final class ArenaManager {
 			DEF_VALUES.put(string, arena);
 		}
 		
+	}
+	public static List<Arena> getArenasSorted() {
+		Map<String, Arena> sorted = new TreeMap<String, Arena>(ARENAS);
+		List<Arena> result = new ArrayList<Arena>();
+		for (String name : sorted.keySet()) {
+			result.add(sorted.get(name));
+		}
+		return result;
 	}
 }

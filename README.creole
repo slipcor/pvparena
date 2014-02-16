@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.375 - sort all the things!
 * v1.1.0.374 - ...
 * v1.1.0.373 - don't ask
 * v1.1.0.372 - fix spectators not being completely reset

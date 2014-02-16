@@ -45,11 +45,10 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 		if (!PVPArena.hasOverridePerms(sender) && ArenaManager.isUsingShortcuts()) {
 			names.addAll(ArenaManager.getColoredShortcuts());
 		} else {
-			for (Arena a : ArenaManager.getArenas()) {
+			for (Arena a : ArenaManager.getArenasSorted()) {
 				names.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
 			}
 		}
-		
 		
 		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, ", ")));
 	}
