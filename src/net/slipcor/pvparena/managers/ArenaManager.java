@@ -88,7 +88,7 @@ public final class ArenaManager {
 		final File file = new File(PVPArena.instance.getDataFolder() + "/arenas/"
 				+ name + ".yml");
 		if (!file.exists()) {
-			return "file does not exist";
+			return name +" (file does not exist)";
 		}
 		final Config cfg = new Config(file);
 
@@ -304,7 +304,7 @@ public final class ArenaManager {
 							loadArena(sName);
 						}
 					} else {
-						PVPArena.instance.getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, error));
+						PVPArena.instance.getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, error, StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), ", ")));
 						PVPArena.instance.getLogger().warning(Language.parse(MSG.GOAL_INSTALLING, error));
 					}
 				}
