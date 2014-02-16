@@ -296,7 +296,7 @@ public final class ArenaManager {
 			for (pos = 0; pos < file.length; pos++) {
 				if (!file[pos].isDirectory() && file[pos].getName().contains(".yml")) {
 					String sName = file[pos].getName().replace("config_", "");
-					sName = sName.replace(".yml", "");
+					sName = sName.replace(".yml", "").toLowerCase();
 					final String error = checkForMissingGoals(sName);
 					if (error == null) {
 						DEBUG.i("arena: " + sName);
@@ -428,7 +428,7 @@ public final class ArenaManager {
 
 			boolean error = false;
 			for (String arena : strings) {
-				if (!ARENAS.containsKey(arena)) {
+				if (!ARENAS.containsKey(arena.toLowerCase())) {
 					PVPArena.instance.getLogger().warning("Arena not found: " + arena);
 					error = true;
 				}
