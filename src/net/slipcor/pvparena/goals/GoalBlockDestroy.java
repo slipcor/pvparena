@@ -565,6 +565,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
 		Bukkit.getPluginManager().callEvent(gEvent);
+		
 		for (ArenaTeam team : arena.getTeams()) {
 			final String blockTeam = team.getName();
 
@@ -609,6 +610,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 							"[PVP Arena] team unknown/no lives: " + blockTeam);
 					e.printStackTrace();
 				}
+				gEvent = new PAGoalEvent(arena, this,
+						"score:"+player.getName()+":"+aPlayer.getArenaTeam().getName()+":1");
+				Bukkit.getPluginManager().callEvent(gEvent);
 				class RunLater implements Runnable  {
 					String localColor;
 					PABlockLocation localLoc;
