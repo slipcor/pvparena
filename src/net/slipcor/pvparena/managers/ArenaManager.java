@@ -516,7 +516,6 @@ public final class ArenaManager {
 		List<String> defs = DEF_LISTS.get(string);
 		
 		if (DEF_VALUES.containsKey(string)) {
-			defs.addAll(defs);
 			Arena arena = DEF_VALUES.get(string);
 			boolean found = false;
 			for (String arenaName : defs) {
@@ -530,18 +529,19 @@ public final class ArenaManager {
 					Arena nextArena = getArenaByName(arenaName);
 					
 					DEF_VALUES.put(string, nextArena);
+					return;
 				}
-			}
-		} else {
-			// get the first available!
-			for (String arenaName : defs) {
-				Arena arena = getArenaByName(arenaName);
-				if (arena.isFightInProgress() || arena.isLocked()) {
-					continue;
-				}
-				
-				DEF_VALUES.put(string, arena);
 			}
 		}
+		// get the first available!
+		for (String arenaName : defs) {
+			Arena arena = getArenaByName(arenaName);
+			if (arena.isFightInProgress() || arena.isLocked()) {
+				continue;
+			}
+			
+			DEF_VALUES.put(string, arena);
+		}
+		
 	}
 }

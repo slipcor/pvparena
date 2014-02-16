@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.369 - address github issue #39 - rotation
 * v1.1.0.368 - together with Announcements v367, fix github issue #38
 * v1.1.0.367 - plugin for sale. I pay you 100 bucks!
 * v1.1.0.366 - never code when not drunk!
