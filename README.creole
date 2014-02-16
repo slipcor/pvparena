@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.367 - plugin for sale. I pay you 100 bucks!
 * v1.1.0.366 - never code when not drunk!
 * v1.1.0.365 - clarify missing goal/arena file message
 * v1.1.0.364 - run the "score" goal when players destroy blockdestroy blocks

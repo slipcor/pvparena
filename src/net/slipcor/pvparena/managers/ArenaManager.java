@@ -298,10 +298,9 @@ public final class ArenaManager {
 					String sName = file[pos].getName().replace("config_", "");
 					sName = sName.replace(".yml", "");
 					final String error = checkForMissingGoals(sName);
-					sName = sName.toLowerCase();
 					if (error == null) {
 						DEBUG.i("arena: " + sName);
-						if (!ARENAS.containsKey(sName)) {
+						if (!ARENAS.containsKey(sName.toLowerCase())) {
 							loadArena(sName);
 						}
 					} else {
