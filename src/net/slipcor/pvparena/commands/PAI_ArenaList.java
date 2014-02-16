@@ -42,7 +42,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 		}
 		final Set<String> names = new HashSet<String>();
 		
-		if (!PVPArena.hasAdminPerms(sender) && ArenaManager.isUsingShortcuts()) {
+		if (!PVPArena.hasOverridePerms(sender) && ArenaManager.isUsingShortcuts()) {
 			names.addAll(ArenaManager.getColoredShortcuts());
 		} else {
 			for (Arena a : ArenaManager.getArenas()) {

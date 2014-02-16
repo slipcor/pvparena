@@ -300,7 +300,7 @@ public final class ArenaManager {
 					final String error = checkForMissingGoals(sName);
 					if (error == null) {
 						DEBUG.i("arena: " + sName);
-						if (!ARENAS.containsKey(sName.toLowerCase())) {
+						if (getArenaByName(sName) == null) {
 							loadArena(sName);
 						}
 					} else {
