@@ -296,8 +296,9 @@ public final class ArenaManager {
 			for (pos = 0; pos < file.length; pos++) {
 				if (!file[pos].isDirectory() && file[pos].getName().contains(".yml")) {
 					String sName = file[pos].getName().replace("config_", "");
-					sName = sName.replace(".yml", "").toLowerCase();
+					sName = sName.replace(".yml", "");
 					final String error = checkForMissingGoals(sName);
+					sName = sName.toLowerCase();
 					if (error == null) {
 						DEBUG.i("arena: " + sName);
 						if (!ARENAS.containsKey(sName)) {
