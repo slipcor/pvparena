@@ -72,10 +72,11 @@ public class PAA_Class extends AbstractArenaCommand {
 		if (args[0].equalsIgnoreCase("save")) {
 			final Player player = (Player) sender;
 			final List<ItemStack> items = new ArrayList<ItemStack>();
+			final List<ItemStack> armors = new ArrayList<ItemStack>();
 
 			for (ItemStack is : player.getInventory().getArmorContents()) {
 				if (is != null) {
-					items.add(is);
+					armors.add(is);
 				}
 			}
 			
@@ -93,10 +94,18 @@ public class PAA_Class extends AbstractArenaCommand {
 
 			final String sItems = (isItems == null || isItems.length < 1) ? "AIR"
 					: StringParser.getStringFromItemStacks(isItems);
+			StringBuffer armor = new StringBuffer("");
+			int pos = 0;
+			for (ItemStack item : player.getInventory().getArmorContents()) {
+				armor.append(',');
+				armor.append(pos++);
+				armor.append(':');
+				armor.append(StringParser.getStringFromItemStack(item));
+			}
 
-			arena.getArenaConfig().setManually("classitems." + args[1], sItems);
+			arena.getArenaConfig().setManually("classitems." + args[1], sItems+armor.toString());
 			arena.getArenaConfig().save();
-			arena.addClass(args[1], isItems);
+			arena.addClass(args[1], isItems, player.getInventory().getArmorContents());
 			Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
 		} else if (args[0].equalsIgnoreCase("load")) {
 			final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());

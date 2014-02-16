@@ -157,12 +157,12 @@ public class Arena {
 		}
 	}
 
-	public void addClass(final String className, final ItemStack[] items) {
+	public void addClass(final String className, final ItemStack[] items, ItemStack[] armors) {
 		if (this.getClass(className) != null) {
 			this.removeClass(className);
 		}
 		
-		classes.add(new ArenaClass(className, items));
+		classes.add(new ArenaClass(className, items, armors));
 	}
 
 	public void addRegion(final ArenaRegion region) {
@@ -1282,7 +1282,7 @@ public class Arena {
 				aPlayer.setArena(this);
 				aPlayer.createState(aPlayer.get());
 				InventoryManager.clearInventory(aPlayer.get());
-				ArenaClass.equip(aPlayer.get(), c.getItems());
+				c.equip(aPlayer.get());
 				msg(aPlayer.get(), Language.parse(this, MSG.CLASS_PREVIEW, c.getName()));
 				return;
 			}

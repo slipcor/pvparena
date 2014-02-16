@@ -34,8 +34,9 @@ public final class ArenaClass {
 
 	private final String name;
 	private final ItemStack[] items;
+	private final ItemStack[] armors;
 	
-	private static final Map<String, ItemStack[]> globals = new HashMap<String, ItemStack[]>();
+	private static final Map<String, ArenaClass> globals = new HashMap<String, ArenaClass>();
 
 	// private statics: item definitions
 	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
@@ -112,27 +113,41 @@ public final class ArenaClass {
 			}
 			final String[] sItems = sItemList.split(",");
 			final ItemStack[] items = new ItemStack[sItems.length];
-
+			final ItemStack[] armors = new ItemStack[4];
+			
 			for (int i = 0; i < sItems.length; i++) {
+				
+				if (sItems[i].contains("!")) {
+					String[] split = sItems[i].split("!");
+					
+					int id = Integer.parseInt(split[0]);
+					armors[id] = StringParser.getItemStackFromString(split[1]);
+					
+					if (armors[id] == null) {
+						PVPArena.instance.getLogger().warning(
+								"unrecognized armor item: " + split[1]);
+					}
+					
+					sItems[i] = "AIR";
+				}
+				
 				items[i] = StringParser.getItemStackFromString(sItems[i]);
 				if (items[i] == null) {
 					PVPArena.instance.getLogger().warning(
 							"unrecognized item: " + items[i]);
 				}
 			}
-			globals.put(className, items);
+			globals.put(className, new ArenaClass(className, items, armors));
 		}
 	}
 	
 	public static void addGlobalClasses(Arena arena) {
 		for (String teamName : globals.keySet()) {
-			arena.addClass(teamName, globals.get(teamName));
+			arena.addClass(teamName, globals.get(teamName).getItems(), globals.get(teamName).getArmors());
 		}
 	}
-
-	@SuppressWarnings("deprecation")
+	
 	public static void equip(final Player player, final ItemStack[] items) {
-		debug.i("Equipping player " + player.getName() + " with items!", player);
 		for (ItemStack item : items) {
 			if (ARMORS_TYPE.contains(item.getType())) {
 				equipArmor(item, player.getInventory());
@@ -145,7 +160,17 @@ public final class ArenaClass {
 	}
 
 	public void equip(final Player player) {
-		equip(player, items);
+		debug.i("Equipping player " + player.getName() + " with items!", player);
+		player.getInventory().setArmorContents(armors);
+		for (ItemStack item : items) {
+			if (ARMORS_TYPE.contains(item.getType())) {
+				equipArmor(item, player.getInventory());
+			} else {
+				player.getInventory().addItem(new ItemStack[] { item });
+				debug.i("- " + StringParser.getStringFromItemStack(item), player);
+			}
+		}
+		player.updateInventory();
 	}
 
 	private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
@@ -178,13 +203,18 @@ public final class ArenaClass {
 		}
 	}
 
-	public ArenaClass(final String className, final ItemStack[] classItems) {
+	public ArenaClass(final String className, final ItemStack[] classItems, ItemStack[] armors) {
 		this.name = className;
 		this.items = classItems.clone();
+		this.armors = armors.clone();
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public ItemStack[] getArmors() {
+		return armors.clone();
 	}
 
 	public ItemStack[] getItems() {

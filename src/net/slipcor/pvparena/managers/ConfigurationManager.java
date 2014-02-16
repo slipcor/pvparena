@@ -132,18 +132,34 @@ public final class ConfigurationManager {
 			}
 			final String[] sItems = sItemList.split(",");
 			final ItemStack[] items = new ItemStack[sItems.length];
+			final ItemStack[] armors = new ItemStack[4];
 
 			for (int i = 0; i < sItems.length; i++) {
+				
+				if (sItems[i].contains("!")) {
+					String[] split = sItems[i].split("!");
+					
+					int id = Integer.parseInt(split[0]);
+					armors[id] = StringParser.getItemStackFromString(split[1]);
+					
+					if (armors[id] == null) {
+						PVPArena.instance.getLogger().warning(
+								"unrecognized armor item: " + split[1]);
+					}
+					
+					sItems[i] = "AIR";
+				}
+				
 				items[i] = StringParser.getItemStackFromString(sItems[i]);
 				if (items[i] == null) {
 					PVPArena.instance.getLogger().warning(
 							"unrecognized item: " + items[i]);
 				}
 			}
-			arena.addClass(className, items);
+			arena.addClass(className, items, armors);
 			arena.getDebugger().i("adding class items to class " + className);
 		}
-		arena.addClass("custom", StringParser.getItemStacksFromString("0"));
+		arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStacksFromString("0"));
 		arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
 		arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
 		arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
