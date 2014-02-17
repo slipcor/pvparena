@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.377 - support tank late joining, addresses github issue #40
 * v1.1.0.376 - fix class saving and load messup - sorry !
 * v1.1.0.375 - sort all the things!
 * v1.1.0.374 - ...

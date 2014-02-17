@@ -71,7 +71,8 @@ public class StandardLounge extends ArenaModule {
 		int neededCount = arena.getTeams().size();
 		
 		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getName().equals("infected")) {
+			if (team.getName().equals("infected") ||
+					team.getName().equalsIgnoreCase("tank")) {
 				neededCount--;
 			}
 		}
