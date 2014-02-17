@@ -190,7 +190,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			}
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 				if (ap.getStatus() == Status.FIGHT || ap.getStatus() == Status.DEAD) {
-					//ap.addStatistic(arena.getName(), type.LOSSES, 1);
+					ap.addLosses();
 					/*
 					arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
 							true, false);*/

@@ -399,7 +399,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 			}
 			for (ArenaPlayer ap : team.getTeamMembers()) {
 
-				ap.addStatistic(arena.getName(), type.LOSSES, 1);
+				ap.addLosses();
 			/*
 				arena.tpPlayerToCoordName(ap.get(), "spectator");
 				ap.setTelePass(false);*/
