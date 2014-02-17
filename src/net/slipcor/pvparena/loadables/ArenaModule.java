@@ -231,7 +231,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	public void initiate(final Player sender) {
 	}
 
-	public boolean isMissingBattleRegion() {
+	public boolean isMissingBattleRegion(Arena arena) {
 		if (this.needsBattleRegion()) {
 			for (ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
 				return false;
@@ -239,6 +239,10 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 			return true;
 		}
 		return false;
+	}
+
+	public boolean isMissingBattleRegion() {
+		return isMissingBattleRegion(arena);
 	}
 
 	/**
