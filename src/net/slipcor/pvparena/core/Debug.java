@@ -52,6 +52,7 @@ public class Debug {
 	private static List<Logger> loggers = new ArrayList<Logger>();
 	private static List<Debug> debugs = new ArrayList<Debug>();	
 	private Arena arena = null;
+	private boolean active = false;
 
 	public Debug(final int iID) {
 		this(iID, null);
@@ -155,11 +156,11 @@ public class Debug {
 	 * @return true if debugs, false otherwise
 	 */
 	private boolean debugs() {
-		return override || check.contains(debugID) || check.contains(666);
+		return override || active || check.contains(debugID) || check.contains(666);
 	}
 
 	private boolean debugs(final String term) {
-		return override || strings.contains(term) || check.contains(666);
+		return override || active || strings.contains(term) || check.contains(666);
 	}
 
 	/**
@@ -260,12 +261,20 @@ public class Debug {
 						Debug.check.add(Integer.valueOf(s));
 					} catch (Exception e) {
 						strings.add(s);
+						Arena a = ArenaManager.getArenaByName(s);
+						if (a != null) {
+							a.getDebugger().activate();
+						}
 					}
 				}
 			}
 		}
 	}
 	
+	private void activate() {
+		this.active = true;
+	}
+
 	public static void destroy() {
 		
 		for (Logger log : Debug.loggers) {
