@@ -133,6 +133,10 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 		if (endRunner != null) {
 			return;
 		}
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[PDM] already ending");
+			return;
+		}
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
 		Bukkit.getPluginManager().callEvent(gEvent);
 		for (ArenaTeam team : arena.getTeams()) {

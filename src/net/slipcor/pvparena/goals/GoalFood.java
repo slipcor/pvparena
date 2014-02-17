@@ -225,6 +225,10 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[FOOD] already ending");
+			return;
+		}
 		arena.getDebugger().i("[FOOD]");
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");

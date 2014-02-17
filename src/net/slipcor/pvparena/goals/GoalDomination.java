@@ -436,6 +436,10 @@ public class GoalDomination extends ArenaGoal {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[DOM] already ending");
+			return;
+		}
 		arena.getDebugger().i("[DOM] committing end: " + sTeam);
 		arena.getDebugger().i("win: " + win);
 
@@ -499,6 +503,10 @@ public class GoalDomination extends ArenaGoal {
 
 	@Override
 	public void commitEnd(final boolean force) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[DOMINATION] already ending");
+			return;
+		}
 		arena.getDebugger().i("[DOMINATION]");
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");

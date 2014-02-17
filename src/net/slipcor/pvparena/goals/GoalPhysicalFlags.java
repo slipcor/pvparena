@@ -384,6 +384,10 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 	}
 
 	private void commit(final Arena arena, final String sTeam, final boolean win) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[CTF] already ending");
+			return;
+		}
 		arena.getDebugger().i("[CTF] committing end: " + sTeam);
 		arena.getDebugger().i("win: " + win);
 
@@ -543,6 +547,10 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[FLAGS] already ending");
+			return;
+		}
 		arena.getDebugger().i("[FLAGS]");
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");

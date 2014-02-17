@@ -301,6 +301,10 @@ public class GoalLiberation extends ArenaGoal  {
 		if (endRunner != null) {
 			return;
 		}
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[LIBERATION] already ending");
+			return;
+		}
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
 		Bukkit.getPluginManager().callEvent(gEvent);

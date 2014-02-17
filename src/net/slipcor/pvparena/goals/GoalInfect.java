@@ -170,6 +170,10 @@ public class GoalInfect extends ArenaGoal {
 		if (endRunner != null) {
 			return;
 		}
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[INFECT] already ending");
+			return;
+		}
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
 		Bukkit.getPluginManager().callEvent(gEvent);
 		

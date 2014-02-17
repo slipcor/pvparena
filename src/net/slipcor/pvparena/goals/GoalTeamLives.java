@@ -118,6 +118,10 @@ public class GoalTeamLives extends ArenaGoal {
 
 	@Override
 	public void commitEnd(boolean force) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[TEAMS] already ending");
+			return;
+		}
 		arena.getDebugger().i("[TEAMS]");
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
 		Bukkit.getPluginManager().callEvent(gEvent);

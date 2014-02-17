@@ -284,6 +284,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 	@Override
 	public void commitEnd(final boolean force) {
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[BD] already ending");
+			return;
+		}
 		arena.getDebugger().i("[BD]");
 
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");

@@ -124,7 +124,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
 	@Override
 	public void commitEnd(final boolean force) {
-		arena.getDebugger().i("[TEAMS]");
+		if (arena.realEndRunner != null) {
+			arena.getDebugger().i("[TDM] already ending");
+			return;
+		}
+		arena.getDebugger().i("[TDM]");
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
 		Bukkit.getPluginManager().callEvent(gEvent);
 

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.380 - double check each goal if the arena is counting down to end
 * v1.1.0.379 - attempty to activate loggers per arena ... maybe?
 * v1.1.0.378 - properly display warning on module enabling
 * v1.1.0.377 - support tank late joining, addresses github issue #40
