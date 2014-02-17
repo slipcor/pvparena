@@ -117,8 +117,8 @@ public final class ArenaClass {
 			
 			for (int i = 0; i < sItems.length; i++) {
 				
-				if (sItems[i].contains("!")) {
-					String[] split = sItems[i].split("!");
+				if (sItems[i].contains(">>!<<")) {
+					String[] split = sItems[i].split(">>!<<");
 					
 					int id = Integer.parseInt(split[0]);
 					armors[id] = StringParser.getItemStackFromString(split[1]);

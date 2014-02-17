@@ -99,7 +99,7 @@ public class PAA_Class extends AbstractArenaCommand {
 			for (ItemStack item : player.getInventory().getArmorContents()) {
 				armor.append(',');
 				armor.append(pos++);
-				armor.append(':');
+				armor.append(">>!<<");
 				armor.append(StringParser.getStringFromItemStack(item));
 			}
 
