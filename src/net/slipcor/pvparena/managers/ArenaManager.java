@@ -505,9 +505,6 @@ public final class ArenaManager {
 	}
 	
 	public static void advance(Arena arena) {
-
-		System.out.print("ADVANCE " + arena.getName());
-		
 		if (usingShortcuts) {
 			for (String def : DEF_VALUES.keySet()) {
 				if (DEF_VALUES.get(def).equals(arena)) {

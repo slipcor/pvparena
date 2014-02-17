@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.384 - finalize the finalization
 * v1.1.0.383 - finalize the arena shortcut system
 * v1.1.0.382 - don't remove liberation and TDM players on the final kill
 * v1.1.0.381 - have playerdeathmatch and playerkillrewards reflect default arena ending behaviour
