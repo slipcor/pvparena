@@ -505,6 +505,9 @@ public final class ArenaManager {
 	}
 	
 	public static void advance(Arena arena) {
+
+		System.out.print("ADVANCE " + arena.getName());
+		
 		if (usingShortcuts) {
 			for (String def : DEF_VALUES.keySet()) {
 				if (DEF_VALUES.get(def).equals(arena)) {
@@ -540,12 +543,13 @@ public final class ArenaManager {
 		}
 		// get the first available!
 		for (String arenaName : defs) {
-			Arena arena = getArenaByName(arenaName);
+			Arena arena = ARENAS.get(arenaName.toLowerCase());
 			if (arena.isFightInProgress() || arena.isLocked()) {
 				continue;
 			}
 			
 			DEF_VALUES.put(string, arena);
+			return;
 		}
 		
 	}
