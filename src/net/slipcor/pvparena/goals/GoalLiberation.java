@@ -374,10 +374,14 @@ public class GoalLiberation extends ArenaGoal  {
 			
 			if (!someoneAlive) {
 				getLifeMap().remove(player.getName());
+				PACheck.handleRespawn(arena,
+						ArenaPlayer.parsePlayer(player.getName()),
+						event.getDrops());
+				/*
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 					arena.getDebugger().i("faking player death", player);
 					PlayerListener.finallyKillPlayer(arena, player, event);
-				}
+				}*/
 				
 				PACheck.handleEnd(arena, false);
 			} else {

@@ -197,8 +197,11 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		if (reduceLives(arena, killerTeam)) {
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				arena.getDebugger().i("faking player death", respawnPlayer);
-				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
+				PACheck.handleRespawn(arena,
+						ArenaPlayer.parsePlayer(respawnPlayer.getName()),
+						event.getDrops());
+//				arena.getDebugger().i("faking player death", respawnPlayer);
+//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
 			}
 			return;
 		}
