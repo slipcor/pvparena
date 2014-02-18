@@ -696,7 +696,7 @@ public class PACheck {
 		if (!force && arena.getFighters().size() < 2
 				|| arena.getFighters().size() < arena.getArenaConfig().getInt(
 						CFG.READY_MINPLAYERS)) {
-			return false;
+			return null;
 		}
 
 		final PAStartEvent event = new PAStartEvent(arena);
