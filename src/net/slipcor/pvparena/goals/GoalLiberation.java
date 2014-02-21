@@ -378,6 +378,8 @@ public class GoalLiberation extends ArenaGoal  {
 				PACheck.handleRespawn(arena,
 						ArenaPlayer.parsePlayer(player.getName()),
 						event.getDrops());
+
+				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
 				/*
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 					arena.getDebugger().i("faking player death", player);

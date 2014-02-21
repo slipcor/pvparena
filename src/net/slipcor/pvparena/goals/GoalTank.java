@@ -216,6 +216,8 @@ public class GoalTank extends ArenaGoal {
 				arena.getDebugger().i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);
 			}
+
+			ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
 			// player died => commit death!
 			PACheck.handleEnd(arena, false);
 		} else {

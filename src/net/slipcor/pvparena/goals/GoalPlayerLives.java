@@ -202,6 +202,7 @@ public class GoalPlayerLives extends ArenaGoal {
 		arena.getDebugger().i("lives before death: " + pos, player);
 		if (pos <= 1) {
 			getLifeMap().remove(player.getName());
+			ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
 			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 				arena.getDebugger().i("faking player death", player);
 				PlayerListener.finallyKillPlayer(arena, player, event);

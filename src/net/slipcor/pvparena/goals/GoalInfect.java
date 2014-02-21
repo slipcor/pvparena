@@ -303,7 +303,8 @@ public class GoalInfect extends ArenaGoal {
 			
 			PACheck.handleRespawn(arena,
 					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
-			
+
+			ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
 			// player died => commit death!
 			PACheck.handleEnd(arena, false);
 		} else {
