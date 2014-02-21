@@ -348,6 +348,7 @@ public class GoalLiberation extends ArenaGoal  {
 			final String error, final PlayerDeathEvent event) {
 		
 		if (!getLifeMap().containsKey(player.getName())) {
+			arena.getDebugger().i("cmd: not in life map!", player);
 			return;
 		}
 		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
