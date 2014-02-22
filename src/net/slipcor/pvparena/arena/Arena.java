@@ -47,6 +47,7 @@ import net.slipcor.pvparena.runnables.StartRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -1579,7 +1580,11 @@ public class Arena {
 
 		getDebugger().i("trying to join player " + player.getName(), player);
 		
-
+		if (player.getGameMode() == GameMode.CREATIVE &&
+				getArenaConfig().getBoolean(CFG.PLAYER_CLEARCREATIVE)) {
+			player.getInventory().clear();
+			player.updateInventory();
+		}
 
 		final PAJoinEvent event = new PAJoinEvent(this, player, false);
 		Bukkit.getPluginManager().callEvent(event);
