@@ -215,12 +215,14 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 //				PlayerState.fullReset(arena, ap.get());
 
 				if (ArenaManager.checkAndCommit(arena, false)) {
+					arena.unKillPlayer(player, event.getEntity()
+							.getLastDamageCause().getCause(), player.getKiller());
 					return;
 				}
 			}
 
 			arena.unKillPlayer(player, event.getEntity()
-								.getLastDamageCause().getCause(), player.getKiller());
+					.getLastDamageCause().getCause(), player.getKiller());
 			
 			PACheck.handleEnd(arena, false);
 		} else {

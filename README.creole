@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.388 - properly unkill PlayerDeathMatch losers
 * v1.1.0.387 - properly mark users as such
 * v1.1.0.386 - tweak liberation debug output
 * v1.1.0.385 - properly return that there are not enough players
