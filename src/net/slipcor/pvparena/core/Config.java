@@ -77,10 +77,11 @@ public class Config {
 
 		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false),
 		
-		ITEMS_MINPLAYERS("items.minplayers", 2),
-		ITEMS_REWARDS("items.rewards", "none", true),
-		ITEMS_RANDOM("items.random", true),
 		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true),
+		ITEMS_KEEPONRESPAWN("items.keepOnRespawn", "none", true),
+		ITEMS_MINPLAYERS("items.minplayers", 2),
+		ITEMS_RANDOM("items.random", true),
+		ITEMS_REWARDS("items.rewards", "none", true),
 		ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", "none", true),
 		
 		JOIN_RANGE("join.range", 0),

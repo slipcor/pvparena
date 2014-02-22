@@ -326,6 +326,7 @@ public class PlayerListener implements Listener {
 					arena.parseDeathCause(player, cause.getCause(),
 							ArenaPlayer.getLastDamagingPlayer(cause, player))));
 		}
+		
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
 			InventoryManager.drop(player);

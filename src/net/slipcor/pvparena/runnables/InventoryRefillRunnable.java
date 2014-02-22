@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.runnables;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.slipcor.pvparena.PVPArena;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 public class InventoryRefillRunnable implements Runnable {
 	private final Player player;
 	private final ItemStack[] items;
+	private List<ItemStack> additions = new ArrayList<ItemStack>();
 	private final Arena arena;
 	
 	public InventoryRefillRunnable(final Arena arena, final Player player, final List<ItemStack> itemList) {
@@ -39,6 +41,29 @@ public class InventoryRefillRunnable implements Runnable {
 			this.items = null;
 			this.arena = null;
 			return;
+		}
+		
+		if (!arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN).equals("none")) {
+			ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
+			
+			for (ItemStack item : player.getInventory().getContents()) {
+				if (item != null) {
+					for (ItemStack iItem : items) {
+						if (iItem != null) {
+							if (item.getType() != iItem.getType()) {
+								continue;
+							}
+							
+							if (item.getData().getData() != iItem.getData().getData()) {
+								continue;
+							}
+							
+							additions.add(item);
+							break;
+						}
+					}
+				}
+			}
 		}
 		
 		boolean refill = arena == null ?
@@ -88,6 +113,12 @@ public class InventoryRefillRunnable implements Runnable {
 				InventoryManager.clearInventory(player);
 				ArenaPlayer.givePlayerFightItems(arena, player);
 			}
+		}
+		if (additions.size() > 0) {
+			for (ItemStack item : additions) {
+				player.getInventory().addItem(items);
+			}
+			player.updateInventory();
 		}
 		player.setFireTicks(0);
 	}
