@@ -249,7 +249,7 @@ public class Debug {
 		} else {
 			
 			server_log = instance.getConfig().getBoolean("server_log");
-			if (debugs.equals("all") || debugs.equals("full")) {
+			if (debugs.equalsIgnoreCase("all") || debugs.equalsIgnoreCase("full")) {
 				Debug.check.add(666);
 				override = true;
 				Arena.pmsg(sender, "debugging EVERYTHING");

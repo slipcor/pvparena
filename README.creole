@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.392 - allow for case insensitive ALL / FULL debug
 * v1.1.0.391 - fix Liberation LOST determination
 * v1.1.0.390 - add "items.keepOnRespawn" to ... duh... keep items on respawn
 * v1.1.0.389 - add "clearCreative" setting to clear creative players before joining
