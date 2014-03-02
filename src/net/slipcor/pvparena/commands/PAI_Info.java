@@ -161,11 +161,14 @@ public class PAI_Info extends AbstractArenaCommand {
 						arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH))+" | " +
 				StringParser.colorVar("refillInventory", 
 						arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)));
-
+			
+			String healthDisplay = (String) (arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH)<1?"FULL":arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
+			healthDisplay += "/" + (arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH)<1?"DEFAULT":arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
+			
 			arena.msg(sender,
 					"exhaustion: "+ arena.getArenaConfig().getDouble(CFG.PLAYER_EXHAUSTION)+" | " +
 					"foodLevel: "+ arena.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL)+" | " +
-					"health: "+ arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH)+" | " +
+					"health: "+ healthDisplay+" | " +
 					"saturation: "+ arena.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
 		}
 

@@ -1247,8 +1247,13 @@ public class Arena {
 	public void unKillPlayer(final Player player, final DamageCause cause, final Entity damager) {
 
 		getDebugger().i("respawning player " + player.getName(), player);
-		PlayerState.playersetHealth(player,
-				getArenaConfig().getInt(CFG.PLAYER_HEALTH, 20));
+		int iHealth = getArenaConfig().getInt(CFG.PLAYER_HEALTH, -1);
+		
+		if (iHealth < 1) {
+			iHealth = (int) player.getMaxHealth();
+		}
+		
+		PlayerState.playersetHealth(player, iHealth);
 		player.setFoodLevel(getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL, 20));
 		player.setSaturation(getArenaConfig().getInt(CFG.PLAYER_SATURATION, 20));
 		player.setExhaustion((float) getArenaConfig().getDouble(

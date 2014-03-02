@@ -97,6 +97,14 @@ public final class PlayerState {
 	public static void fullReset(final Arena arena, final Player player) {
 		int iHealth = arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH);
 		
+		if (iHealth < 1) {
+			iHealth = (int) player.getMaxHealth();
+		}
+		
+		if (arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
+			player.setMaxHealth(arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
+		}
+		
 		if (iHealth > player.getMaxHealth()) {
 			player.setHealth(player.getMaxHealth());
 		} else {
@@ -132,6 +140,11 @@ public final class PlayerState {
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		player.setFoodLevel(foodlevel);
+		
+		if (aPlayer.getArena().getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
+			player.setMaxHealth(maxhealth);
+		}
+		
 		if (player.getMaxHealth() != maxhealth) {
 			final double newHealth = player.getMaxHealth() * health / maxhealth;
 			if (newHealth > player.getMaxHealth()) {
@@ -204,7 +217,7 @@ public final class PlayerState {
 		foodlevel = 0;
 		gamemode = 0;
 		health = 0;
-		maxhealth = 20;
+		maxhealth = -1;
 
 		exhaustion = 0;
 		experience = 0;
@@ -230,7 +243,7 @@ public final class PlayerState {
 		pState.foodlevel = cfg.getInt("state.foodlevel", 0);
 		pState.gamemode = cfg.getInt("state.gamemode", 0);
 		pState.health = cfg.getInt("state.health", 1);
-		pState.maxhealth = cfg.getInt("state.maxhealth", 20);
+		pState.maxhealth = cfg.getInt("state.maxhealth", -1);
 		pState.exhaustion = (float) cfg.getDouble("state.exhaustion", 1);
 		pState.experience = (float) cfg.getDouble("state.experience", 0);
 		pState.explevel = cfg.getInt("state.explevel", 0);
