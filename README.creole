@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.395 - make classes.yml copy-able - needs reordering if you already set global classes. sorry!
 * v1.1.0.394 - add a "maxhealth" setting to alter starting health, and allow setting health to -1 for FULL health
 * v1.1.0.393 - allow admins to create multiple battle regions and only need players to be in one of those
 * v1.1.0.392 - allow for case insensitive ALL / FULL debug

@@ -87,11 +87,11 @@ public final class ArenaClass {
 		File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
 		YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 		
-		cfg.addDefault("Ranger",
+		cfg.addDefault("classes.Ranger",
 				"261,262:64,298,299,300,301");
-		cfg.addDefault("Swordsman", "276,306,307,308,309");
-		cfg.addDefault("Tank", "272,310,311,312,313");
-		cfg.addDefault("Pyro", "259,46:3,298,299,300,301");
+		cfg.addDefault("classes.Swordsman", "276,306,307,308,309");
+		cfg.addDefault("classes.Tank", "272,310,311,312,313");
+		cfg.addDefault("classes.Pyro", "259,46:3,298,299,300,301");
 		
 		cfg.options().copyDefaults();
 		try {
@@ -100,11 +100,11 @@ public final class ArenaClass {
 			e1.printStackTrace();
 		}
 		
-		for (String className : cfg.getKeys(false)) {
+		for (String className : cfg.getConfigurationSection("classes").getKeys(false)) {
 			String sItemList = "";
 
 			try {
-				sItemList = (String) cfg.get(className);
+				sItemList = (String) cfg.getConfigurationSection("classes").get(className);
 			} catch (Exception e) {
 				Bukkit.getLogger().severe(
 						"[PVP Arena] Error while parsing class, skipping: "
