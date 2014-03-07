@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
@@ -322,6 +324,22 @@ public class PVPArena extends JavaPlugin {
 		DEBUG = new Debug(1);
 
 		this.saveDefaultConfig();
+		if (!this.getConfig().contains("shortcuts")) {
+			final List<String> ffa = new ArrayList<String>();
+			final List<String> teams = new ArrayList<String>();
+			
+			ffa.add("arena1");
+			ffa.add("arena2");
+
+			teams.add("teamarena1");
+			teams.add("teamarena2");
+			
+			getConfig().options().copyDefaults(true);
+			getConfig().addDefault("shortcuts.freeforall", ffa);
+			getConfig().addDefault("shortcuts.teams", teams);
+			
+			this.saveConfig();
+		}
 
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
