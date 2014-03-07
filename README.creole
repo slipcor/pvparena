@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.398 - change inv clearing: NONE / SURVIVAL / CREATIVE / ALL
 * v1.1.0.397 - fix issue #808 - team kills score in TDM
 * v1.1.0.396 - properly / sanely initiate shortcut definition defaults
 * v1.1.0.395 - make classes.yml copy-able - needs reordering if you already set global classes. sorry!

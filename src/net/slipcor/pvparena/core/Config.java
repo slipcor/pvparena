@@ -111,7 +111,7 @@ public class Config {
 		PERMS_SPECTALK("perms.specTalk", true),
 
 		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false),
-		PLAYER_CLEARCREATIVE("player.clearCreative", false),
+		PLAYER_CLEARINVENTORY("player.clearInventory", "NONE"),
 		PLAYER_DROPSEXP("player.dropsEXP", false),
 		PLAYER_DROPSINVENTORY("player.dropsInventory", false),
 		PLAYER_EXHAUSTION("player.exhaustion", 0.0),

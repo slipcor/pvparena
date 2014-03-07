@@ -1585,8 +1585,9 @@ public class Arena {
 
 		getDebugger().i("trying to join player " + player.getName(), player);
 		
-		if (player.getGameMode() == GameMode.CREATIVE &&
-				getArenaConfig().getBoolean(CFG.PLAYER_CLEARCREATIVE)) {
+		String clear = getArenaConfig().getString(CFG.PLAYER_CLEARINVENTORY);
+		
+		if (clear.equals("ALL") || clear.contains(player.getGameMode().name())) {
 			player.getInventory().clear();
 			player.updateInventory();
 		}
