@@ -435,7 +435,7 @@ public final class ArenaManager {
 					error = true;
 				}
 			}
-			if (error || strings.size() < 2) {
+			if (error || strings.size() < 1) {
 				PVPArena.instance.getLogger().warning("shortcut '"+key+"' will be skipped!!");
 				continue;
 			}

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.400 - address github issue #42 - hooray for single arena shortcuts!
 * v1.1.0.399 - address github issue #46
 * v1.1.0.398 - change inv clearing: NONE / SURVIVAL / CREATIVE / ALL
 * v1.1.0.397 - fix issue #808 - team kills score in TDM
