@@ -1075,8 +1075,16 @@ public class Arena {
 						false, force);
 				if (!force && p.getStatus().equals(Status.FIGHT)
 						&& isFightInProgress() && !gaveRewards) {
-					giveRewards(player); // if we are the winning team, give
-									// reward!
+					
+					if (!isFreeForAll() && getArenaConfig().getBoolean(CFG.USES_TEAMREWARDS)) {
+						// we found a surviver, reward the team!
+						giveRewardsLater(p.getArenaTeam());
+					} else {
+						// if we are remaining, give reward!
+						giveRewards(player);
+					}
+					
+					
 				}
 			} else if (p.getStatus() != null
 					&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
@@ -1113,6 +1121,31 @@ public class Arena {
 			}
 		}
 		gaveRewards = true;
+	}
+
+	private void giveRewardsLater(final ArenaTeam arenaTeam) {
+		if (arenaTeam == null) {
+			return; // this one failed. try next time...
+		}
+		gaveRewards = true; // set this so it doesnt give again later
+		
+		class RewardLater implements Runnable {
+
+			@Override
+			public void run() {
+				for (ArenaPlayer ap : arenaTeam.getTeamMembers()) {
+					try {
+						giveRewards(ap.get());
+					} catch (Exception e) {
+						
+					}
+				}
+			}
+			
+		}
+		
+		Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RewardLater(), 1L);
+		
 	}
 
 	/**

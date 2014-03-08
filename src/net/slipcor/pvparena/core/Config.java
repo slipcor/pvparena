@@ -158,6 +158,7 @@ public class Config {
 		USES_INVISIBILITYFIX("uses.invisibilityfix", false),
 		USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false),
 		USES_OVERLAPCHECK("uses.overlapCheck", true),
+		USES_TEAMREWARDS("uses.teamrewards", false),
 		USES_WOOLHEAD("uses.woolHead", false),
 		
 		// ----------
