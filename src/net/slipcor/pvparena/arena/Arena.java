@@ -1044,6 +1044,21 @@ public class Arena {
 	 * @param force
 	 */
 	public void resetPlayers(final boolean force) {
+		class ResetLater implements Runnable {
+			@Override
+			public void run() {
+				resetPlayersNew(force, true);
+			}
+		}
+		try {
+			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new ResetLater(), 1L);
+		} catch (Exception e) {
+			resetPlayersNew(force, false);
+		}
+		
+	}
+	
+	private void resetPlayersNew(boolean force, boolean delayed) {
 		getDebugger().i("resetting player manager");
 		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 		for (ArenaTeam team : this.getTeams()) {
@@ -1065,7 +1080,13 @@ public class Arena {
 		}
 
 		for (ArenaPlayer p : players) {
-			
+			if (delayed) {
+				try {
+					Thread.sleep(500L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			p.debugPrint();
 			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
 				// TODO enhance wannabe-smart exploit fix for people that
@@ -1115,6 +1136,13 @@ public class Arena {
 			p.reset();
 		}
 		for (ArenaPlayer player : ArenaPlayer.getAllArenaPlayers()) {
+			if (delayed) {
+				try {
+					Thread.sleep(500L);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 			if (this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
 
 				this.callExitEvent(player.get());
