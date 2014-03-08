@@ -915,6 +915,11 @@ public class Arena {
 			if (activeTeams.size() < 2) {
 				return Language.parse(this, MSG.ERROR_READY_2_TEAM_ALONE);
 			}
+			
+			if (getArenaConfig().getBoolean(CFG.USES_EVENTEAMS)
+					&& !TeamManager.checkEven(this)) {
+				return Language.parse(this, MSG.NOTICE_WAITING_EQUAL);
+			}
 		}
 
 		final String error = PVPArena.instance.getAgm().ready(this);

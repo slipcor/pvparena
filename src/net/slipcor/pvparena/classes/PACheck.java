@@ -692,7 +692,7 @@ public class PACheck {
 			}
 			return null;
 		}
-
+		
 		if (!force && arena.getFighters().size() < 2
 				|| arena.getFighters().size() < arena.getArenaConfig().getInt(
 						CFG.READY_MINPLAYERS)) {
