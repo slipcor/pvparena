@@ -69,6 +69,12 @@ public final class Help {
 				"/pa debug [values]",
 				LINE,
 				"Valid values are class numbers (separated by comma) and &enone&r"}),
+		DUTY("nulang.help.msg.duty", new String[]{
+				"Toggle your override status",
+				LINE,
+				"shorthand command: !du",
+				LINE,
+				"/pa duty"}),
 		DISABLE("nulang.help.msg.disable", new String[]{
 				"Disable an arena",
 				LINE,

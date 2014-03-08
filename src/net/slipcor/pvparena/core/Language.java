@@ -99,6 +99,9 @@ public final class Language {
 		DEATHCAUSE_WOLF("nulang.deathcause.WOLF","a wolf"),
 		DEATHCAUSE_IRON_GOLEM("nulang.deathcause.IRON_GOLEM","an iron golem"),
 		DEATHCAUSE_SPLASH_POTION("nulang.deathcause.SPLASH_POTION","a splash potion"),
+
+		DUTY_FALSE("nulang.duty.false", "You are now off duty!"),
+		DUTY_TRUE("nulang.duty.true", "You are now on duty!"),
 		
 		ERROR_ARENA_ALREADY_PART_OF("nulang.error.arena.alreadyplaying", "You are already part of &a%1%&r"),
 		ERROR_ARENA_EXISTS("nulang.error.arenaexists", "Arena already exists!"),

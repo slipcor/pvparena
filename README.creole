@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.0.402 - adds /pa duty; adding github issue #41
 * v1.1.0.401 - address github issue #44
 * v1.1.0.400 - address github issue #42 - hooray for single arena shortcuts!
 * v1.1.0.399 - address github issue #46
