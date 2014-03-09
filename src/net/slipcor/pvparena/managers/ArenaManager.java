@@ -476,13 +476,16 @@ public final class ArenaManager {
 	}
 	
 	public static Arena getIndirectArenaByName(CommandSender sender, String string) {
+		DEBUG.i("getIndirect("+sender.getName()+"): "+string);
 		if (!usingShortcuts || PVPArena.hasOverridePerms(sender)) {
+			DEBUG.i("out1");
 			return getArenaByName(string);
 		}
 		
 		if (!DEF_LISTS.containsKey(string)) {
 			for (String temp : DEF_LISTS.keySet()) {
 				if (temp.toLowerCase().contains(string.toLowerCase())) {
+					DEBUG.i("found "+temp);
 					string = temp;
 					break;
 				}
@@ -491,14 +494,23 @@ public final class ArenaManager {
 		
 		if (!DEF_LISTS.containsKey(string)) {
 			if (PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+				DEBUG.i("out null");
 				return null;
 			} else {
+				DEBUG.i("out getArenaByName: "+string);
 				return getArenaByName(string);
 			}
 		}
 		
 		if (!DEF_VALUES.containsKey(string)) {
+			DEBUG.i("advance "+string);
 			advance(string);
+		}
+		
+		if (DEF_VALUES.get(string) == null) {
+			DEBUG.i("out null -.-");
+		} else {
+			DEBUG.i("out : "+DEF_VALUES.get(string).getName());
 		}
 		
 		return DEF_VALUES.get(string);
