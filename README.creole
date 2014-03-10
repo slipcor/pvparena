@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.1.407 - actually allow usage of /pa duty 
 * v1.1.1.406 - revert 403 and 405 - sorry, moo :P
 * v1.1.1.405 - fix 403 - maybe
 * v1.1.1.404 - shortcut determination debug enhancement

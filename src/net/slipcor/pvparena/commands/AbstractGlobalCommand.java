@@ -94,6 +94,8 @@ public abstract class AbstractGlobalCommand {
 			return new PAA_Create();
 		} else if (name.contains("debug") || name.equals("!d")) {
 			return new PAA_Debug();
+		} else if (name.contains("duty") || name.equals("!du")) {
+			return new PAA_Duty();
 		} else if (name.contains("help") || name.equals("-h")) {
 			return new PAI_Help();
 		} else if (name.equals("install") || name.equals("!i")) {
