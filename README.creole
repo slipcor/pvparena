@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.1.405 - fix 403 - maybe
 * v1.1.1.404 - shortcut determination debug enhancement
 * v1.1.1.403 - try to queue teleports at the end, for less invisibility??
 * v1.1.1.402 - adds /pa duty; adding github issue #41

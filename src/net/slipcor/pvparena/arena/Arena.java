@@ -1047,18 +1047,100 @@ public class Arena {
 		class ResetLater implements Runnable {
 			@Override
 			public void run() {
-				resetPlayersNew(force, true);
+				resetPlayersLater(force);
 			}
 		}
 		try {
 			Bukkit.getScheduler().runTaskLater(PVPArena.instance, new ResetLater(), 1L);
 		} catch (Exception e) {
-			resetPlayersNew(force, false);
+			resetPlayersDirectly(force);
 		}
 		
 	}
 	
-	private void resetPlayersNew(boolean force, boolean delayed) {
+	private void resetPlayersDirectly(boolean force) {
+		getDebugger().i("resetting player manager");
+		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+		for (ArenaTeam team : this.getTeams()) {
+			for (ArenaPlayer p : team.getTeamMembers()) {
+				getDebugger().i("player: " + p.getName(), p.get());
+				if (p.getArena() == null || !p.getArena().equals(this)) {
+					getDebugger().i("> skipped", p.get());
+					continue;
+				} else {
+					getDebugger().i("> added", p.get());
+					players.add(p);
+				}
+			}
+		}
+		for (ArenaPlayer p : players) {
+			p.debugPrint();
+			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
+				// TODO enhance wannabe-smart exploit fix for people that
+				// spam join and leave the arena to make one of them win
+				final Player player = p.get();
+
+				if (!force) {
+					p.addWins();
+				}
+				Arena.this.callExitEvent(player);
+				resetPlayer(player, getArenaConfig().getString(CFG.TP_WIN, "old"),
+						false, force);
+				if (!force && p.getStatus().equals(Status.FIGHT)
+						&& isFightInProgress() && !gaveRewards) {
+					
+					if (!isFreeForAll() && getArenaConfig().getBoolean(CFG.USES_TEAMREWARDS)) {
+						// we found a surviver, reward the team!
+						giveRewardsLater(p.getArenaTeam());
+					} else {
+						// if we are remaining, give reward!
+						giveRewards(player);
+					}
+					
+					
+				}
+			} else if (p.getStatus() != null
+					&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
+							.equals(Status.LOST))) {
+
+				PALoseEvent loseEvent = new PALoseEvent(Arena.this, p.get());
+				Bukkit.getPluginManager().callEvent(loseEvent);
+
+				Player player = p.get();
+				if (!force) {
+					p.addLosses();
+				}
+				Arena.this.callExitEvent(player);
+				resetPlayer(player, getArenaConfig().getString(CFG.TP_LOSE, "old"),
+						false, force);
+			} else {
+				Arena.this.callExitEvent(p.get());
+				resetPlayer(p.get(),
+						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
+						force);
+			}
+
+			p.reset();
+			
+		}
+		
+		for (ArenaPlayer player : players) {
+			if (Arena.this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
+
+				Arena.this.callExitEvent(player.get());
+				resetPlayer(player.get(),
+						getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
+						force);
+				player.setArena(null);
+				player.reset();
+			}
+		}
+		gaveRewards = true;
+			
+	}
+	
+	private void resetPlayersLater(boolean force) {
+		
 		getDebugger().i("resetting player manager");
 		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
 		for (ArenaTeam team : this.getTeams()) {
@@ -1079,81 +1161,108 @@ public class Arena {
 			}
 		}
 
-		for (ArenaPlayer p : players) {
-			if (delayed) {
-				try {
-					Thread.sleep(500L);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			p.debugPrint();
-			if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
-				// TODO enhance wannabe-smart exploit fix for people that
-				// spam join and leave the arena to make one of them win
-				final Player player = p.get();
+		resetPlayersLater2(force, players);
+	}
 
-				if (!force) {
-					p.addWins();
-				}
-				this.callExitEvent(player);
-				resetPlayer(player, getArenaConfig().getString(CFG.TP_WIN, "old"),
-						false, force);
-				if (!force && p.getStatus().equals(Status.FIGHT)
-						&& isFightInProgress() && !gaveRewards) {
-					
-					if (!isFreeForAll() && getArenaConfig().getBoolean(CFG.USES_TEAMREWARDS)) {
-						// we found a surviver, reward the team!
-						giveRewardsLater(p.getArenaTeam());
+	private void resetPlayersLater2(final boolean force,
+			final Set<ArenaPlayer> players) {
+		
+		class TickDelay extends BukkitRunnable {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				for (ArenaPlayer p : players) {
+					p.debugPrint();
+					if (p.getStatus() != null && p.getStatus().equals(Status.FIGHT)) {
+						// TODO enhance wannabe-smart exploit fix for people that
+						// spam join and leave the arena to make one of them win
+						final Player player = p.get();
+
+						if (!force) {
+							p.addWins();
+						}
+						Arena.this.callExitEvent(player);
+						resetPlayer(player, getArenaConfig().getString(CFG.TP_WIN, "old"),
+								false, force);
+						if (!force && p.getStatus().equals(Status.FIGHT)
+								&& isFightInProgress() && !gaveRewards) {
+							
+							if (!isFreeForAll() && getArenaConfig().getBoolean(CFG.USES_TEAMREWARDS)) {
+								// we found a surviver, reward the team!
+								giveRewardsLater(p.getArenaTeam());
+							} else {
+								// if we are remaining, give reward!
+								giveRewards(player);
+							}
+							
+							
+						}
+					} else if (p.getStatus() != null
+							&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
+									.equals(Status.LOST))) {
+
+						PALoseEvent loseEvent = new PALoseEvent(Arena.this, p.get());
+						Bukkit.getPluginManager().callEvent(loseEvent);
+
+						Player player = p.get();
+						if (!force) {
+							p.addLosses();
+						}
+						Arena.this.callExitEvent(player);
+						resetPlayer(player, getArenaConfig().getString(CFG.TP_LOSE, "old"),
+								false, force);
 					} else {
-						// if we are remaining, give reward!
-						giveRewards(player);
+						Arena.this.callExitEvent(p.get());
+						resetPlayer(p.get(),
+								getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
+								force);
 					}
-					
-					
+
+					p.reset();
+					players.remove(p);
+					break;
 				}
-			} else if (p.getStatus() != null
-					&& (p.getStatus().equals(Status.DEAD) || p.getStatus()
-							.equals(Status.LOST))) {
-
-				PALoseEvent loseEvent = new PALoseEvent(this, p.get());
-				Bukkit.getPluginManager().callEvent(loseEvent);
-
-				Player player = p.get();
-				if (!force) {
-					p.addLosses();
+				if (players.size() < 1) {
+					Arena.this.resetPlayersLater3(force);
+					this.cancel();
 				}
-				this.callExitEvent(player);
-				resetPlayer(player, getArenaConfig().getString(CFG.TP_LOSE, "old"),
-						false, force);
-			} else {
-				this.callExitEvent(p.get());
-				resetPlayer(p.get(),
-						getArenaConfig().getString(CFG.TP_LOSE, "old"), false,
-						force);
-			}
-
-			p.reset();
-		}
-		for (ArenaPlayer player : ArenaPlayer.getAllArenaPlayers()) {
-			if (delayed) {
-				try {
-					Thread.sleep(500L);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			if (this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
-
-				this.callExitEvent(player.get());
-				resetPlayer(player.get(),
-						getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
-						force);
-				player.setArena(null);
-				player.reset();
 			}
 		}
-		gaveRewards = true;
+			
+		new TickDelay().runTaskTimer(
+					PVPArena.instance, 1L, 1L);
+	}
+	
+	private void resetPlayersLater3(final boolean force) {
+		final Set<ArenaPlayer> players = ArenaPlayer.getAllArenaPlayers();
+		class TickDelay extends BukkitRunnable {
+			
+			@Override
+			public void run() {
+				for (ArenaPlayer player : players) {
+					if (Arena.this.equals(player.getArena()) && player.getStatus() == Status.WATCH) {
+
+						Arena.this.callExitEvent(player.get());
+						resetPlayer(player.get(),
+								getArenaConfig().getString(CFG.TP_EXIT, "old"), false,
+								force);
+						player.setArena(null);
+						player.reset();
+
+					}
+					players.remove(player);
+					break;
+				}
+				if (players.size() < 1) {
+					gaveRewards = true;
+				}
+			}
+			
+		}
+		new TickDelay().runTaskTimer(
+				PVPArena.instance, 1L, 1L);
+		
 	}
 
 	private void giveRewardsLater(final ArenaTeam arenaTeam) {
