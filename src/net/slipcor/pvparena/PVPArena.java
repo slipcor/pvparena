@@ -125,7 +125,12 @@ public class PVPArena extends JavaPlugin {
 	}
 
 	public static boolean hasOverridePerms(CommandSender sender) {
-		return sender.hasPermission("pvparena.override");
+		if (sender instanceof Player) {
+			return sender.hasPermission("pvparena.override");
+		}
+		
+		return instance.getConfig().getBoolean("consoleoffduty")
+				!= sender.hasPermission("pvparena.override");
 	}
 
 	/**

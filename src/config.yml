@@ -13,3 +13,4 @@ whitelist:
 - ungod
 use_shortcuts: false
 only_shortcuts: false
+consoleoffduty: false
