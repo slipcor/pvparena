@@ -215,11 +215,11 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
 	private void drop(Player player, ArenaTeam team) {
 		ItemStack item = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
 		
-		switch (item.getType()) {
-		case WOOL:
-		case INK_SACK:
-		case STAINED_CLAY:
-		case STAINED_GLASS:
+		switch (item.getType().name()) {
+		case "WOOL":
+		case "INK_SACK":
+		case "STAINED_CLAY":
+		case "STAINED_GLASS":
 			MaterialData data = item.getData();
 			data.setData(getDataFromTeam(team));
 			item.setData(data);
