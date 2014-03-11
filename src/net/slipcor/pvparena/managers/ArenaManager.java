@@ -284,6 +284,14 @@ public final class ArenaManager {
 	public static String getNames() {
 		return StringParser.joinSet(ARENAS.keySet(), ", ");
 	}
+	
+	public static Map<String, List<String>> getShortcutDefinitions() {
+		return DEF_LISTS;
+	}
+	
+	public static Map<String, Arena> getShortcutValues() {
+		return DEF_VALUES;
+	}
 
 	/**
 	 * load all configs in the PVP Arena folder

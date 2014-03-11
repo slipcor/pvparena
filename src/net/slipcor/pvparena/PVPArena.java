@@ -7,6 +7,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.slipcor.pvparena.arena.Arena;
@@ -244,6 +245,10 @@ public class PVPArena extends JavaPlugin {
 
 		final String name = args[0];
 
+		if (tempArena == null && Arrays.asList(args).contains("vote")) {
+			tempArena = ArenaManager.getArenaByName(args[0]); // arenavote shortcut hack
+		}
+		
 		String[] newArgs = args;
 
 		if (tempArena == null) {
