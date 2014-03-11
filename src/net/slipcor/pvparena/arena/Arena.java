@@ -56,12 +56,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
@@ -776,16 +778,19 @@ public class Arena {
 				return team.colorizePlayer(aPlayer.get()) + ChatColor.YELLOW;
 			}
 			try {
-
+				
+				ProjectileSource source = ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
+						.getDamager()).getShooter();
+				
+				LivingEntity lEntity = (LivingEntity) source;
+				
 				getDebugger().i("last damager: "
-						+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
-								.getDamager()).getShooter().getType(), player);
+						+ lEntity.getType(), player);
+				
 				return Language
 						.parse(this, MSG
 								.getByName("DEATHCAUSE_"
-										+ ((Projectile) ((EntityDamageByEntityEvent) lastDamageCause)
-												.getDamager()).getShooter()
-												.getType().name()));
+										+  lEntity.getType().name()));
 			} catch (Exception e) {
 
 				return Language.parse(this, MSG.DEATHCAUSE_PROJECTILE);

@@ -28,6 +28,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Wolf;
@@ -36,6 +37,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.projectiles.ProjectileSource;
 
 /**
  * <pre>
@@ -133,8 +135,16 @@ public class ArenaPlayer {
 
 			if (event.getCause() == DamageCause.PROJECTILE
 					&& eDamager instanceof Projectile) {
-				eDamager = ((Projectile) eDamager).getShooter();
-				debug.i("killed by projectile, shooter is found", damagee);
+				
+				ProjectileSource p = ((Projectile) eDamager).getShooter();
+				
+				if (p instanceof LivingEntity) {
+				
+					eDamager = (LivingEntity) p;
+					
+					
+					debug.i("killed by projectile, shooter is found", damagee);
+				}
 			}
 
 			if (event.getEntity() instanceof Wolf) {

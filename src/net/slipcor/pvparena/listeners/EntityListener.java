@@ -44,6 +44,7 @@ import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
 
 /**
  * <pre>
@@ -190,7 +191,14 @@ public class EntityListener implements Listener {
 
 		if (eDamager instanceof Projectile) {
 			DEBUG.i("parsing projectile");
-			eDamager = ((Projectile) eDamager).getShooter();
+			
+			ProjectileSource p = ((Projectile) eDamager).getShooter();
+			
+			if (p instanceof LivingEntity) {
+			
+				eDamager = (LivingEntity) p;
+				
+			}
 			DEBUG.i("=> " + eDamager);
 		}
 
