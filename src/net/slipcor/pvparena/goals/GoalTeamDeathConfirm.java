@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -215,18 +216,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
 	private void drop(Player player, ArenaTeam team) {
 		ItemStack item = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
 		
-		switch (item.getType().name()) {
-		case "WOOL":
-		case "INK_SACK":
-		case "STAINED_CLAY":
-		case "STAINED_GLASS":
+		if (item.getType() == Material.WOOL || item.getType() == Material.INK_SACK ||
+				item.getType() == Material.STAINED_GLASS ||item.getType() == Material.STAINED_CLAY) {
 			MaterialData data = item.getData();
 			data.setData(getDataFromTeam(team));
 			item.setData(data);
 			item.setDurability(getDataFromTeam(team));
-			break;
-		default:
-			break;
 		}
 		ItemMeta meta = item.getItemMeta();
 		
