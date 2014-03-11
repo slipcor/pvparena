@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.2.414 - update to bukkit 1.7
 * v1.1.2.413 - fixed: add goal "PlayerDeathConfirm" - FUN FUN FUN !!!
 * v1.1.2.412 - jenkins no likey switch?
 * v1.1.2.411 - add goal "PlayerDeathConfirm" - FUN FUN FUN !!!
