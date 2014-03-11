@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.1.410 - take worlds into account when comparing region overlap
 * v1.1.1.409 - expose shortcut definitions and values
 * v1.1.1.408 - consoleoffduty: allow the console to use shortcuts by default
 * v1.1.1.407 - actually allow usage of /pa duty 

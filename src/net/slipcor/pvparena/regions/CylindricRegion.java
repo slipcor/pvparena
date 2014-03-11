@@ -77,6 +77,10 @@ public class CylindricRegion extends ArenaRegionShape {
 
 	@Override
 	public boolean overlapsWith(final ArenaRegion paRegion) {
+		if (!getMinimumLocation().getWorldName().equals(
+				paRegion.getShape().getMinimumLocation().getWorldName())) {
+			return false;
+		}
 		if (paRegion.getShape() instanceof CuboidRegion) {
 			// we are cylinder and search for intersecting cuboid
 

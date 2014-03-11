@@ -77,6 +77,10 @@ public class CuboidRegion extends ArenaRegionShape {
 
 	@Override
 	public boolean overlapsWith(final ArenaRegion paRegion) {
+		if (!getMinimumLocation().getWorldName().equals(
+				paRegion.getShape().getMinimumLocation().getWorldName())) {
+			return false;
+		}
 		if (paRegion.getShape() instanceof CuboidRegion) {
 			// compare 2 cuboids
 			if (getMinimumLocation().getX() > paRegion.locs[1].getX()
