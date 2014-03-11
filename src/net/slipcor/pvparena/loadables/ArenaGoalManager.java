@@ -21,6 +21,7 @@ import net.slipcor.pvparena.ncloader.NCBLoader;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 /**
  * <pre>
@@ -68,6 +69,7 @@ public class ArenaGoalManager {
 		types.add(new GoalPlayerLives());
 		types.add(new GoalSabotage());
 		types.add(new GoalTank());
+		types.add(new GoalTeamDeathConfirm());
 		types.add(new GoalTeamDeathMatch());
 		types.add(new GoalTeamLives());
 		types.add(new GoalTime());
@@ -454,6 +456,12 @@ public class ArenaGoalManager {
 	public static void lateJoin(Arena arena, Player player) {
 		for (ArenaGoal goal : arena.getGoals()) {
 			goal.lateJoin(player);
+		}
+	}
+
+	public static void onPlayerPickUp(Arena arena, PlayerPickupItemEvent event) {
+		for (ArenaGoal goal : arena.getGoals()) {
+			goal.onPlayerPickUp(event);
 		}
 	}
 }

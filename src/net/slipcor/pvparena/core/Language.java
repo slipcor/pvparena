@@ -444,6 +444,13 @@ public final class Language {
 		GOAL_TANK_TANKDOWN("nulang.goal.tank.tankdown", "The tank is down!"),
 		GOAL_TANK_TANKMODE("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),
 		GOAL_TANK_TANKWON("nulang.goal.tank.tankwon", "The tank has won! Congratulations to %1%!"),
+
+		GOAL_TEAMDEATHCONFIRM_DENIED("nulang.goal.tdc.denied", "%1% denied a kill!"),
+		GOAL_TEAMDEATHCONFIRM_REMAINING("nulang.goal.tdc.remaining", "%1% kills remaining for %2%."),
+		GOAL_TEAMDEATHCONFIRM_SCORED("nulang.goal.tdc.scored", "%1% scored a kill!"),
+		GOAL_TEAMDEATHCONFIRM_YOUDENIED("nulang.goal.tdc.youdenied", "You denied a kill!"),
+		GOAL_TEAMDEATHCONFIRM_YOUSCORED("nulang.goal.tdc.youscored", "You scored a kill!"),
+		
 		
 		// -----------------------------------------------
 

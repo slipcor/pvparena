@@ -678,6 +678,7 @@ public class PlayerListener implements Listener {
 						RegionProtection.PICKUP)) {
 			return; // no fighting player or no powerups => OUT
 		}
+		ArenaGoalManager.onPlayerPickUp(arena, event);
 		ArenaModuleManager.onPlayerPickupItem(arena, event);
 	}
 

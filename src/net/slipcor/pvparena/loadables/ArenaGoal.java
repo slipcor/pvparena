@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -379,6 +380,9 @@ public class ArenaGoal extends NCBLoadable {
 	 * hook into the initial goal loading
 	 */
 	public void onThisLoad() {
+	}
+
+	public void onPlayerPickUp(PlayerPickupItemEvent event) {
 	}
 
 	/**
