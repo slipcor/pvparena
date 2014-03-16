@@ -570,9 +570,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		if (pTeam == null) {
 			return;
 		}
-
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
-		Bukkit.getPluginManager().callEvent(gEvent);
 		
 		for (ArenaTeam team : arena.getTeams()) {
 			final String blockTeam = team.getName();
@@ -603,7 +600,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 					event.setCancelled(true);
 					continue;
 				}
-
+				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
+				Bukkit.getPluginManager().callEvent(gEvent);
 				final String sTeam = pTeam.getName();
 
 				try {
@@ -618,6 +616,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 							"[PVP Arena] team unknown/no lives: " + blockTeam);
 					e.printStackTrace();
 				}
+
+				
 				gEvent = new PAGoalEvent(arena, this,
 						"score:"+player.getName()+":"+aPlayer.getArenaTeam().getName()+":1");
 				Bukkit.getPluginManager().callEvent(gEvent);

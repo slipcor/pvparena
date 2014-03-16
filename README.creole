@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.2.419 - don't trigger a score trigger for destroying your own block
 * v1.1.2.418 - remove unneeded event, there is a static hook present!
 * v1.1.2.417 - properly implement the event
 * v1.1.2.416 - add "proper" (hackfix) API to use Announcements in other modules
