@@ -19,7 +19,14 @@ import org.bukkit.event.HandlerList;
 public class PAAnnounceEvent extends Event implements Cancellable {
 	
 	public static enum AnnounceType {
-		JOIN, ADVERT, START, END, WINNER, LOSER, PRIZE, CUSTOM;
+		JOIN, // done: announcement.parseJoin
+		ADVERT, // done: announcement.parseJoin
+		START, // done: announcement.parseStart
+		END,
+		WINNER,
+		LOSER,
+		PRIZE,
+		CUSTOM;
 	}
 	
 	private static final HandlerList HANDLERS = new HandlerList();
@@ -66,5 +73,13 @@ public class PAAnnounceEvent extends Event implements Cancellable {
 	@Override
 	public void setCancelled(boolean value) {
 		cancelled = value;
+	}
+	
+	public AnnounceType getType() {
+		return type;
+	}
+	
+	public String getMessage() {
+		return message;
 	}
 }
