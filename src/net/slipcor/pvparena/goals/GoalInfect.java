@@ -183,6 +183,8 @@ public class GoalInfect extends ArenaGoal {
 					continue;
 				}
 				if (ap.getArenaTeam().getName().equals("infected")) {
+					ArenaModuleManager.announce(arena,
+							Language.parse(arena, MSG.GOAL_INFECTED_WON), "END");
 
 					ArenaModuleManager.announce(arena,
 							Language.parse(arena, MSG.GOAL_INFECTED_WON), "WINNER");
@@ -191,6 +193,8 @@ public class GoalInfect extends ArenaGoal {
 					break;
 				} else {
 
+					ArenaModuleManager.announce(arena,
+							Language.parse(arena, MSG.GOAL_INFECTED_LOST), "END");
 					// String tank = tanks.get(arena);
 					ArenaModuleManager.announce(arena,
 							Language.parse(arena, MSG.GOAL_INFECTED_LOST), "LOSER");

@@ -144,7 +144,12 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		}
 
 		if (aTeam != null && !force) {
-
+			ArenaModuleManager.announce(
+					arena,
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+							+ aTeam.getName() + ChatColor.YELLOW), "END");
+			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+					+ aTeam.getName() + ChatColor.YELLOW));
 			ArenaModuleManager.announce(
 					arena,
 					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()

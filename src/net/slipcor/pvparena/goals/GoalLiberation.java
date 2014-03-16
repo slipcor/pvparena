@@ -314,6 +314,9 @@ public class GoalLiberation extends ArenaGoal  {
 					continue;
 				}
 				if (arena.isFreeForAll()) {
+					ArenaModuleManager.announce(arena,
+							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
+							"END");
 
 					ArenaModuleManager.announce(arena,
 							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),

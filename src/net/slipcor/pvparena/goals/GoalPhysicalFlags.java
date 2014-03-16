@@ -567,6 +567,10 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 		}
 
 		if (aTeam != null && !force) {
+			ArenaModuleManager.announce(
+					arena,
+					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+							+ aTeam.getName() + ChatColor.YELLOW), "END");
 
 			ArenaModuleManager.announce(
 					arena,

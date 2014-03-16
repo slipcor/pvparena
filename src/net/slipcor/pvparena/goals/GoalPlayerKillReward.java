@@ -216,6 +216,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 				}
 
 				if (arena.isFreeForAll()) {
+					ArenaModuleManager.announce(arena,
+							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
+							"END");
 
 					ArenaModuleManager.announce(arena,
 							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
@@ -224,6 +227,10 @@ public class GoalPlayerKillReward extends ArenaGoal {
 					arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
 							ap.getName()));
 				} else {
+					ArenaModuleManager.announce(
+							arena,
+							Language.parse(arena, MSG.TEAM_HAS_WON,
+									team.getColoredName()), "END");
 
 					ArenaModuleManager.announce(
 							arena,
