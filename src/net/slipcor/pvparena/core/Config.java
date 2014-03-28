@@ -288,12 +288,14 @@ public class Config {
 		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", Integer.valueOf(0)),
 		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0)),
 		MODULES_VAULT_MINPLAYTIME("modules.vault.minplaytime", Integer.valueOf(0)),
+		MODULES_VAULT_MINPLAYERS("modules.vault.vminplayers", 2),
 		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0)),
 		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
 		MODULES_VAULT_WINPOT("modules.vault.winPot", false),
 		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
 		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
-
+		MODULES_VAULT_WINREWARDPLAYERFACTOR("modules.vault.winrewardPlayerFactor", Double.valueOf(1)),
+		
 		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", Double.valueOf(0)),
 		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", Double.valueOf(0)),
 		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", Double.valueOf(0)),

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.1.2.420 - add config settings for DBO ticket 815
 * v1.1.2.419 - don't trigger a score trigger for destroying your own block
 * v1.1.2.418 - remove unneeded event, there is a static hook present!
 * v1.1.2.417 - properly implement the event
