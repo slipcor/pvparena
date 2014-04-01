@@ -489,6 +489,7 @@ public class ArenaPlayer {
 	 * 
 	 * @return the player name
 	 */
+	@Deprecated
 	public String getName() {
 		return name;
 	}
