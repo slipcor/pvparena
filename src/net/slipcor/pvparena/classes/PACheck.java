@@ -396,6 +396,7 @@ public class PACheck {
 								sender.getName(), team.getColoredName()
 										+ ChatColor.COLOR_CHAR + "r"));
 			}
+			ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 
 			PVPArena.instance.getAgm().initiate(arena, (Player) sender);
 			ArenaModuleManager.initiate(arena, (Player) sender);

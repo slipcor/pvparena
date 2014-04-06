@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.2.422 - properly reset the "players that have played" counters
 * v1.2.2.421 - prepare for 1.8 - STEP 1: use player UUIDs for stats
 * v1.1.2.420 - add config settings for DBO ticket 815
 * v1.1.2.419 - don't trigger a score trigger for destroying your own block

@@ -1199,6 +1199,8 @@ public class Arena {
 			@Override
 			public void run() {
 				ArenaManager.advance(Arena.this);
+				Arena.this.playedPlayers.clear();
+				Arena.this.startCount = 0;
 			}
 		}
 		try {
