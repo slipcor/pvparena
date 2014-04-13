@@ -47,7 +47,6 @@ import net.slipcor.pvparena.runnables.StartRunnable;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -1635,6 +1634,8 @@ public class Arena {
 		if (clear.equals("ALL") || clear.contains(player.getGameMode().name())) {
 			player.getInventory().clear();
 			player.updateInventory();
+			ArenaPlayer.backupAndClearInventory(this, player);
+			aPlayer.dump();
 		}
 
 		final PAJoinEvent event = new PAJoinEvent(this, player, false);
