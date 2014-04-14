@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.2.424 - fix issue #830 - only care about players not playing or players part of the current arena
 * v1.2.2.423 - enforce inventory reset (if wanted)
 * v1.2.2.422 - properly reset the "players that have played" counters
 * v1.2.2.421 - prepare for 1.8 - STEP 1: use player UUIDs for stats

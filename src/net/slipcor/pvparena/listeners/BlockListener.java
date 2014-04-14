@@ -44,6 +44,7 @@ import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -94,6 +95,17 @@ public class BlockListener implements Listener {
 		if (arena == null) {
 			return false;
 		}
+		
+		if (event instanceof PlayerEvent) {
+			PlayerEvent e = (PlayerEvent) event;
+			
+			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(e.getPlayer().getName());
+			
+			if (aPlayer.getArena() != null && aPlayer.getArena() != arena) {
+				return false; // players in arenas should be caught by their arenas
+			}
+		}
+		
 		// debug.i("protection " + node.name() + " enabled and thus cancelling " +
 		// event.toString());
 		event.setCancelled(true);
