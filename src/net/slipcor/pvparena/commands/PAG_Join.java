@@ -78,7 +78,8 @@ public class PAG_Join extends AbstractArenaCommand {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 		
 		if (aPlayer.getArena() == null) {
-			if (!arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) && 
+			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_ALWAYSJOININBATTLE) &&
+					!arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) &&
 					arena.hasAlreadyPlayed(aPlayer.getName())) {
 				arena.getDebugger().i("Join_2", sender);
 				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(arena)));

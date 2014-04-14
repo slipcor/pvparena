@@ -100,7 +100,8 @@ public class Config {
 		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!"),
 		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!"),
 		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!"),
-		
+
+		PERMS_ALWAYSJOININBATTLE("perms.alwaysJoinInBattle", false),
 		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
 		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
 		PERMS_FLY("perms.fly", false),
