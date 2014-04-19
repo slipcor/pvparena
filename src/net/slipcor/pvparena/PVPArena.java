@@ -1,11 +1,7 @@
 package net.slipcor.pvparena;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -350,6 +346,17 @@ public class PVPArena extends JavaPlugin {
 			
 			this.saveConfig();
 		}
+		
+		if (!this.getConfig().contains("update.mode") && this.getConfig().contains("modulecheck")) {
+			getConfig().set("update.mode", getConfig().getString("update", "both"));
+			getConfig().set("update.type", getConfig().getString("updatetype", "beta"));
+			getConfig().set("update.modules", getConfig().getBoolean("modulecheck", true));
+
+			getConfig().set("modulecheck", null);
+			getConfig().set("updatetype", null);
+
+			this.saveConfig();
+		}
 
 		getDataFolder().mkdir();
 		new File(getDataFolder().getPath() + "/arenas").mkdir();
@@ -394,56 +401,7 @@ public class PVPArena extends JavaPlugin {
 			ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
 		}
 		
-		final String update = getConfig().getString("update").toLowerCase();
-
-		final Updater.UpdateType updateType;
-		final boolean announce;
-
-		if (update.contains("ann")) {
-			updateType = Updater.UpdateType.NO_DOWNLOAD;
-			announce = true;
-		} else if (update.contains("down") || update.contains("load")) {
-			updateType = Updater.UpdateType.DEFAULT;
-			announce = false;
-		} else if (update.equals("both")) {
-			updateType = Updater.UpdateType.DEFAULT;
-			announce = true;
-		} else {
-			updateType = null;
-			announce = false;
-		}
-
-		if (updateType == null) {
-			// Updater OFF
-			File file = new File(this.getDataFolder().getPath(), "install.yml");
-			
-			try {
-				file.createNewFile(); // create empty file
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			updater = new Updater(this, 41652, this.getFile(), updateType,
-					announce);
-
-			try {
-				final File destination = this.getDataFolder();
-
-				final File lib = new File(destination, "install.yml");
-
-				final URL url = new URL("http://pa.slipcor.net/install.yml");
-
-				this.getLogger().info("Downloading module update file...");
-				final ReadableByteChannel rbc = Channels.newChannel(url
-						.openStream());
-				final FileOutputStream output = new FileOutputStream(lib);
-				output.getChannel().transferFrom(rbc, 0, 1 << 24);
-				this.getLogger().info("Downloaded module update file");
-				output.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		updater = new Updater(this, this.getFile(), 41652, true);
 
 		if (ArenaManager.count() > 0) {
 

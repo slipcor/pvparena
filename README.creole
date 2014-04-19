@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.2.426 - change the updater to my former way for several reasons. see documentation
 * v1.2.2.425 - add alwaysJoinInBattle - allow people to join late, no matter what!
 * v1.2.2.424 - fix issue #830 - only care about players not playing or players part of the current arena
 * v1.2.2.423 - enforce inventory reset (if wanted)
