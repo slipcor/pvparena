@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.2.428 - finish the old/new updater!
 * v1.2.2.427 - fix a ClassCastException when using /pa info
 * v1.2.2.426 - change the updater to my former way for several reasons. see documentation
 * v1.2.2.425 - add alwaysJoinInBattle - allow people to join late, no matter what!

@@ -45,6 +45,8 @@ public class Updater extends Thread {
 	private final File file;
 	
 	private final int id;
+	
+	private final String min_version = "1.2.2.428";
 
 	private enum UpdateMode {
 		OFF, ANNOUNCE, DOWNLOAD, BOTH;
@@ -359,6 +361,11 @@ public class Updater extends Thread {
 	
 					vOnline = sOnlineVersion.replace("v", "");
 					vThis = sThisVersion.replace("v", "");
+					
+					if (compareDeeply(vThis, min_version) < 0) {
+						continue; // version before the updater. Do not update!
+					}
+					
 					if (mode != UpdateMode.DOWNLOAD || mode != UpdateMode.ANNOUNCE) {
 						pluginURL = (String) value.get("downloadUrl");
 					}
