@@ -162,7 +162,7 @@ public class PAI_Info extends AbstractArenaCommand {
 				StringParser.colorVar("refillInventory", 
 						arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)));
 			
-			String healthDisplay = (String) (arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH)<1?"FULL":arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH));
+			String healthDisplay = String.valueOf((arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH)<1?"FULL":arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH)));
 			healthDisplay += "/" + (arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH)<1?"DEFAULT":arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
 			
 			arena.msg(sender,
