@@ -97,10 +97,11 @@ public class PAClassSign {
 	 *            the name to remove
 	 */
 	private void remove(final String name) {
+		final String playerName = name.substring(0, 15);
 		try {
 			Sign sign = (Sign) location.toLocation().getBlock().getState();
 			for (int i = 2; i < 4; i++) {
-				if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
+				if (sign.getLine(i) != null && sign.getLine(i).equals(playerName)) {
 					sign.setLine(i, "");
 				}
 			}
@@ -110,14 +111,13 @@ public class PAClassSign {
 				sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
 						.getState();
 				for (int i = 0; i < 4; i++) {
-					if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
+					if (sign.getLine(i) != null && sign.getLine(i).equals(playerName)) {
 						sign.setLine(i, "");
 					}
 				}
 				sign.update();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			return;
 		}
 	}
