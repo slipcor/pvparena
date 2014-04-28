@@ -97,7 +97,8 @@ public class PAClassSign {
 	 *            the name to remove
 	 */
 	private void remove(final String name) {
-		final String playerName = name.substring(0, 15);
+		
+		final String playerName = name.length() > 15 ? name.substring(0, 15) : name;
 		try {
 			Sign sign = (Sign) location.toLocation().getBlock().getState();
 			for (int i = 2; i < 4; i++) {
