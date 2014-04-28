@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.2.433 - [g:TeamLives] only mark a player as lost when needed
 * v1.2.2.432 - verify #431
 * v1.2.2.431 - properly remove player names that are longer than 15 characters
 * v1.2.2.430 - nerf #429 

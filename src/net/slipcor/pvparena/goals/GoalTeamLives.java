@@ -195,9 +195,9 @@ public class GoalTeamLives extends ArenaGoal {
 					ArenaPlayer.parsePlayer(respawnPlayer.getName()),
 					event.getDrops());
 
-			ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
 		} else if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 			arena.getDebugger().i("faking player death", respawnPlayer);
+			ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
 			PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
 		}
 	}
