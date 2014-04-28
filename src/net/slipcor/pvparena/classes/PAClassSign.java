@@ -105,14 +105,17 @@ public class PAClassSign {
 				}
 			}
 			sign.update();
-			sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
-					.getState();
-			for (int i = 0; i < 4; i++) {
-				if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
-					sign.setLine(i, "");
+			if (location.toLocation().getBlock().getRelative(BlockFace.DOWN)
+					.getState() instanceof Sign) {
+				sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
+						.getState();
+				for (int i = 0; i < 4; i++) {
+					if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
+						sign.setLine(i, "");
+					}
 				}
+				sign.update();
 			}
-			sign.update();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
