@@ -114,6 +114,7 @@ public class PAClassSign {
 			}
 			sign.update();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 	}
