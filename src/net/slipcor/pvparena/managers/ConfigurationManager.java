@@ -63,7 +63,27 @@ public final class ConfigurationManager {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 
-			for (CFG c : CFG.values()) {
+			values: for (CFG c : CFG.getValues()) {
+				if (c.hasModule()) {
+					goals: for (ArenaGoal goal : arena.getGoals()) {
+						if (goal.getName().equals(c.getModule())) {
+							if (cfg.getUnsafe(c.getNode()) == null) {
+								cfg.createDefaults();
+								break values;
+							}
+						}
+					}
+				
+					modules: for (ArenaModule mod : arena.getMods()) {
+						if (mod.getName().equals(c.getModule())) {
+							if (cfg.getUnsafe(c.getNode()) == null) {
+								cfg.createDefaults();
+								break values;
+							}
+						}
+					}
+					continue; // node unused, don't check for existence!
+				}
 				if (cfg.getUnsafe(c.getNode()) == null) {
 					cfg.createDefaults();
 					break;

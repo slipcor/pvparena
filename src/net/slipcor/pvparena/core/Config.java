@@ -48,273 +48,274 @@ public class Config {
 	public static enum CFG {
 
 
-		Z("configversion","v0.9.0.0"),
+		Z("configversion","v0.9.0.0", null),
 		
-		CHAT_COLORNICK("chat.colorNick", true),
-		CHAT_DEFAULTTEAM("chat.defaultTeam", false),
-		CHAT_ENABLED("chat.enabled", true),
-		CHAT_ONLYPRIVATE("chat.onlyPrivate", false),
+		CHAT_COLORNICK("chat.colorNick", true, null),
+		CHAT_DEFAULTTEAM("chat.defaultTeam", false, null),
+		CHAT_ENABLED("chat.enabled", true, null),
+		CHAT_ONLYPRIVATE("chat.onlyPrivate", false, null),
 		
-		CMDS_DEFAULTJOIN("cmds.defaultjoin", true),
+		CMDS_DEFAULTJOIN("cmds.defaultjoin", true, null),
 
-		DAMAGE_ARMOR("damage.armor", true),
-		DAMAGE_SPAWNCAMP("damage.spawncamp", 1),
-		DAMAGE_WEAPONS("damage.weapons", true),
+		DAMAGE_ARMOR("damage.armor", true, null),
+		DAMAGE_SPAWNCAMP("damage.spawncamp", 1, null),
+		DAMAGE_WEAPONS("damage.weapons", true, null),
 
-		GENERAL_CLASSSPAWN("general.classspawn", false),
-		GENERAL_CUSTOMRETURNSGEAR("general.customReturnsGear", false),
-		GENERAL_ENABLED("general.enabled", true),
-		GENERAL_GAMEMODE("general.gm", 0),
-		GENERAL_LEAVEDEATH("general.leavedeath", false),
-		GENERAL_LANG("general.lang", "none"),
-		GENERAL_OWNER("general.owner", "server"),
-		GENERAL_QUICKSPAWN("general.quickspawn", true),
-		GENERAL_PREFIX("general.prefix", "PVP Arena"),
-		GENERAL_SMARTSPAWN("general.smartspawn", false),
-		GENERAL_TIME("general.time", -1),
-		GENERAL_TYPE("general.type", "none"),
-		GENERAL_WAND("general.wand", 280),
+		GENERAL_CLASSSPAWN("general.classspawn", false, null),
+		GENERAL_CUSTOMRETURNSGEAR("general.customReturnsGear", false, null),
+		GENERAL_ENABLED("general.enabled", true, null),
+		GENERAL_GAMEMODE("general.gm", 0, null),
+		GENERAL_LEAVEDEATH("general.leavedeath", false, null),
+		GENERAL_LANG("general.lang", "none", null),
+		GENERAL_OWNER("general.owner", "server", null),
+		GENERAL_QUICKSPAWN("general.quickspawn", true, null),
+		GENERAL_PREFIX("general.prefix", "PVP Arena", null),
+		GENERAL_SMARTSPAWN("general.smartspawn", false, null),
+		GENERAL_TIME("general.time", -1, null),
+		GENERAL_TYPE("general.type", "none", null),
+		GENERAL_WAND("general.wand", 280, null),
 
-		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false),
+		GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 		
-		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true),
-		ITEMS_KEEPONRESPAWN("items.keepOnRespawn", "none", true),
-		ITEMS_MINPLAYERS("items.minplayers", 2),
-		ITEMS_RANDOM("items.random", true),
-		ITEMS_REWARDS("items.rewards", "none", true),
-		ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", "none", true),
+		ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", "none", true, null),
+		ITEMS_KEEPONRESPAWN("items.keepOnRespawn", "none", true, null),
+		ITEMS_MINPLAYERS("items.minplayers", 2, null),
+		ITEMS_RANDOM("items.random", true, null),
+		ITEMS_REWARDS("items.rewards", "none", true, null),
+		ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", "none", true, null),
 		
-		JOIN_RANGE("join.range", 0),
-		JOIN_FORCE("join.forceregionjoin", false),
-		JOIN_ONLYIFHASPLAYED("join.onlyifhasplayed", false),
+		JOIN_RANGE("join.range", 0, null),
+		JOIN_FORCE("join.forceregionjoin", false, null),
+		JOIN_ONLYIFHASPLAYED("join.onlyifhasplayed", false, null),
 		
-		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>()),
-		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>()),
-		LISTS_GOALS("goals", new ArrayList<String>()),
-		LISTS_MODS("mods", new ArrayList<String>()),
-		LISTS_WHITELIST("block.whitelist", new ArrayList<String>()),
+		LISTS_BLACKLIST("block.blacklist", new ArrayList<String>(), null),
+		LISTS_CMDWHITELIST("cmds.whitelist", new ArrayList<String>(), null),
+		LISTS_GOALS("goals", new ArrayList<String>(), null),
+		LISTS_MODS("mods", new ArrayList<String>(), null),
+		LISTS_WHITELIST("block.whitelist", new ArrayList<String>(), null),
 		
-		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!"),
-		MSG_PLAYERJOINED("msg.playerjoined", "%1% joined the Arena!"),
-		MSG_PLAYERJOINEDTEAM("msg.playerjoinedteam", "%1% joined team %2%!"),
-		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!"),
-		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!"),
-		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!"),
+		MSG_LOUNGE("msg.lounge", "Welcome to the arena lounge! Hit a class sign and then the iron block to flag yourself as ready!", null),
+		MSG_PLAYERJOINED("msg.playerjoined", "%1% joined the Arena!", null),
+		MSG_PLAYERJOINEDTEAM("msg.playerjoinedteam", "%1% joined team %2%!", null),
+		MSG_STARTING("msg.starting", "Arena is starting! Type &e/pa %1% to join!", null),
+		MSG_YOUJOINED("msg.youjoined", "You have joined the FreeForAll Arena!", null),
+		MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!", null),
 
-		PERMS_ALWAYSJOININBATTLE("perms.alwaysJoinInBattle", false),
-		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false),
-		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false),
-		PERMS_FLY("perms.fly", false),
-		PERMS_LOUNGEINTERACT("perms.loungeinteract", false),
-		PERMS_JOININBATTLE("perms.joinInBattle", false),
-		PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true),
-		PERMS_TEAMKILL("perms.teamkill", true),
-		PERMS_SPECTALK("perms.specTalk", true),
+		PERMS_ALWAYSJOININBATTLE("perms.alwaysJoinInBattle", false, null),
+		PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false, null),
+		PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false, null),
+		PERMS_FLY("perms.fly", false, null),
+		PERMS_LOUNGEINTERACT("perms.loungeinteract", false, null),
+		PERMS_JOININBATTLE("perms.joinInBattle", false, null),
+		PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true, null),
+		PERMS_TEAMKILL("perms.teamkill", true, null),
+		PERMS_SPECTALK("perms.specTalk", true, null),
 
-		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false),
-		PLAYER_CLEARINVENTORY("player.clearInventory", "NONE"),
-		PLAYER_DROPSEXP("player.dropsEXP", false),
-		PLAYER_DROPSINVENTORY("player.dropsInventory", false),
-		PLAYER_EXHAUSTION("player.exhaustion", 0.0),
-		PLAYER_FEEDFORKILL("player.hungerforkill", 0),
-		PLAYER_FOODLEVEL("player.foodLevel", 20),
-		PLAYER_HEALTH("player.health", -1),
-		PLAYER_HUNGER("player.hunger", true),
-		PLAYER_MAXHEALTH("player.maxhealth", -1),
-		PLAYER_PREVENTDEATH("player.preventDeath", true),
-		PLAYER_REFILLINVENTORY("player.refillInventory", true),
-		PLAYER_SATURATION("player.saturation", 20),
-		PLAYER_QUICKLOOT("player.quickloot", false),
+		PLAYER_AUTOIGNITE("player.autoIgniteTNT", false, null),
+		PLAYER_CLEARINVENTORY("player.clearInventory", "NONE", null),
+		PLAYER_DROPSEXP("player.dropsEXP", false, null),
+		PLAYER_DROPSINVENTORY("player.dropsInventory", false, null),
+		PLAYER_EXHAUSTION("player.exhaustion", 0.0, null),
+		PLAYER_FEEDFORKILL("player.hungerforkill", 0, null),
+		PLAYER_FOODLEVEL("player.foodLevel", 20, null),
+		PLAYER_HEALTH("player.health", -1, null),
+		PLAYER_HUNGER("player.hunger", true, null),
+		PLAYER_MAXHEALTH("player.maxhealth", -1, null),
+		PLAYER_PREVENTDEATH("player.preventDeath", true, null),
+		PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
+		PLAYER_SATURATION("player.saturation", 20, null),
+		PLAYER_QUICKLOOT("player.quickloot", false, null),
 		
-		PROTECT_ENABLED("protection.enabled", true),
-		PROTECT_PUNISH("protection.punish", false),
-		PROTECT_SPAWN("protection.spawn", 0),
+		PROTECT_ENABLED("protection.enabled", true, null),
+		PROTECT_PUNISH("protection.punish", false, null),
+		PROTECT_SPAWN("protection.spawn", 0, null),
 
-		READY_AUTOCLASS("ready.autoClass", "none"),
-		READY_BLOCK("ready.block", Material.IRON_BLOCK.getId()),
-		READY_CHECKEACHPLAYER("ready.checkEachPlayer", false),
-		READY_CHECKEACHTEAM("ready.checkEachTeam", true),
-		READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false),
-		READY_MINPLAYERS("ready.minPlayers", 2),
-		READY_MAXPLAYERS("ready.maxPlayers", 0),
-		READY_MAXTEAMPLAYERS("ready.maxTeam", 0),
-		READY_NEEDEDRATIO("ready.neededRatio", 0.5),
+		READY_AUTOCLASS("ready.autoClass", "none", null),
+		READY_BLOCK("ready.block", Material.IRON_BLOCK.getId(), null),
+		READY_CHECKEACHPLAYER("ready.checkEachPlayer", false, null),
+		READY_CHECKEACHTEAM("ready.checkEachTeam", true, null),
+		READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false, null),
+		READY_MINPLAYERS("ready.minPlayers", 2, null),
+		READY_MAXPLAYERS("ready.maxPlayers", 0, null),
+		READY_MAXTEAMPLAYERS("ready.maxTeam", 0, null),
+		READY_NEEDEDRATIO("ready.neededRatio", 0.5, null),
 		
-		TIME_ENDCOUNTDOWN("goal.endCountDown", 5),
-		TIME_STARTCOUNTDOWN("time.startCountDown", 10),
-		TIME_REGIONTIMER("time.regionTimer", 10),
-		TIME_TELEPORTPROTECT("time.teleportProtect", 3),
-		TIME_WARMUPCOUNTDOWN("time.warmupCountDown", 0),
-		TIME_PVP("time.pvp", 0),
+		TIME_ENDCOUNTDOWN("goal.endCountDown", 5, null),
+		TIME_STARTCOUNTDOWN("time.startCountDown", 10, null),
+		TIME_REGIONTIMER("time.regionTimer", 10, null),
+		TIME_TELEPORTPROTECT("time.teleportProtect", 3, null),
+		TIME_WARMUPCOUNTDOWN("time.warmupCountDown", 0, null),
+		TIME_PVP("time.pvp", 0, null),
 
-		TP_DEATH("tp.death", "old"),
-		TP_EXIT("tp.exit", "old"),
-		TP_LOSE("tp.lose", "old"),
-		TP_WIN("tp.win", "old"),
+		TP_DEATH("tp.death", "old", null),
+		TP_EXIT("tp.exit", "old", null),
+		TP_LOSE("tp.lose", "old", null),
+		TP_WIN("tp.win", "old", null),
 
-		USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false),
-		USES_DEATHMESSAGES("uses.deathMessages", true),
-		USES_EVENTEAMS("uses.evenTeams", false),
-		USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false),
-		USES_INVISIBILITYFIX("uses.invisibilityfix", false),
-		USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false),
-		USES_OVERLAPCHECK("uses.overlapCheck", true),
-		USES_TEAMREWARDS("uses.teamrewards", false),
-		USES_WOOLHEAD("uses.woolHead", false),
+		USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false, null),
+		USES_DEATHMESSAGES("uses.deathMessages", true, null),
+		USES_EVENTEAMS("uses.evenTeams", false, null),
+		USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false, null),
+		USES_INVISIBILITYFIX("uses.invisibilityfix", false, null),
+		USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false, null),
+		USES_OVERLAPCHECK("uses.overlapCheck", true, null),
+		USES_TEAMREWARDS("uses.teamrewards", false, null),
+		USES_WOOLHEAD("uses.woolHead", false, null),
 		
 		// ----------
 
-		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false),
-		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1),
+		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false, "BlockDestroy"),
+		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
-		GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3),
-		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3),
-		GOAL_DOM_LIVES("goal.dom.dlives", 10),
-		GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false),
+		GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
+		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
+		GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
+		GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
 		
-		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false),
-		GOAL_FLAGS_LIVES("goal.flags.flives", 3),
-		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true),
-		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true),
-		GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none"),
+		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false, "Flags"),
+		GOAL_FLAGS_LIVES("goal.flags.flives", 3, "Flags"),
+		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
+		GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true, "Flags"),
+		GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none", "Flags"),
 
-		GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50),
-		GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10),
-		GOAL_FOOD_FTEAMITEMS("goal.food.fteamitems", 100),
+		GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50, "Food"),
+		GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10, "Food"),
+		GOAL_FOOD_FTEAMITEMS("goal.food.fteamitems", 100, "Food"),
 
-		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1),
-		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1),
+		GOAL_INFECTED_ILIVES("goal.infected.iilives", 1, "Infect"),
+		GOAL_INFECTED_NLIVES("goal.infected.inlives", 1, "Infect"),
 		
-		GOAL_LLIVES_LIVES("goal.liberation.llives", 3),
-		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3),
-		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3),
-		GOAL_TANK_LIVES("goal.tank.tlives", 1),
-		GOAL_TDC_LIVES("goal.teamdc.tdclives", 10),
-		GOAL_TDC_ITEM("goal.teamdc.tdcitem", "WOOL", false),
-		GOAL_TDM_LIVES("goal.teamdm.tdlives", 10),
-		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10),
-		GOAL_TIME_END("goal.time.timedend", 0),
-		GOAL_TIME_WINNER("goal.time.winner", "none"),
+		GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
+		GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
+		GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
+		GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
+		GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
+		GOAL_TDC_ITEM("goal.teamdc.tdcitem", "WOOL", false, "TeamDeathConfirm"),
+		GOAL_TDM_LIVES("goal.teamdm.tdlives", 10, "TeamDeathMatch"),
+		GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10, "TeamLives"),
+		GOAL_TIME_END("goal.time.timedend", 0, "Time"),
+		GOAL_TIME_WINNER("goal.time.winner", "none", "Time"),
 		
 
-		GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true),
-		GOAL_PILLARS_LIVES("goal.pillars.pillives", 10),
-		GOAL_PILLARS_ONLYFREE("goal.pillars.onlyfree", true),
-		GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true),
-		GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1),
-		GOAL_PILLARS_INTERVAL("goal.pillars.tickinterval", 20),
+		GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true, ""),
+		GOAL_PILLARS_LIVES("goal.pillars.pillives", 10, ""),
+		GOAL_PILLARS_ONLYFREE("goal.pillars.onlyfree", true, ""),
+		GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true, ""),
+		GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1, ""),
+		GOAL_PILLARS_INTERVAL("goal.pillars.tickinterval", 20, ""),
 
-		GOAL_PILLARS_ANNOUNCEOFFSET("goal.pillars.announceoffset", 3),
-		GOAL_PILLARS_MAXCLICKS("goal.pillars.maxclicks", 10),
-		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5),
-		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1),
-		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2),
-		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false),
+		GOAL_PILLARS_ANNOUNCEOFFSET("goal.pillars.announceoffset", 3, "Pillars"),
+		GOAL_PILLARS_MAXCLICKS("goal.pillars.maxclicks", 10, "Pillars"),
+		GOAL_PILLARS_MAXHEIGHT("goal.pillars.maxheight", 5, "Pillars"),
+		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1, "Pillars"),
+		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2, "Pillars"),
+		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false, "Pillars"),
 		
 		// -----------
 		
-		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off"),
+		MODULES_AFTERMATCH_AFTERMATCH("modules.aftermatch.aftermatch", "off", "AfterMatch"),
 
-		MODULES_ANNOUNCEMENTS_RADIUS("modules.announcements.radius", 0),
-		MODULES_ANNOUNCEMENTS_COLOR("modules.announcements.color", "AQUA"),
-		MODULES_ANNOUNCEMENTS_JOIN("modules.announcements.join", false),
-		MODULES_ANNOUNCEMENTS_START("modules.announcements.start", false),
-		MODULES_ANNOUNCEMENTS_END("modules.announcements.end", false),
-		MODULES_ANNOUNCEMENTS_WINNER("modules.announcements.winner", false),
-		MODULES_ANNOUNCEMENTS_LOSER("modules.announcements.loser", false),
-		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false),
-		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false),
-		MODULES_ANNOUNCEMENTS_ADVERT("modules.announcements.advert", false),
+		MODULES_ANNOUNCEMENTS_RADIUS("modules.announcements.radius", 0, "Announcements"),
+		MODULES_ANNOUNCEMENTS_COLOR("modules.announcements.color", "AQUA", "Announcements"),
+		MODULES_ANNOUNCEMENTS_JOIN("modules.announcements.join", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_START("modules.announcements.start", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_END("modules.announcements.end", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_WINNER("modules.announcements.winner", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_LOSER("modules.announcements.loser", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_PRIZE("modules.announcements.prize", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_CUSTOM("modules.announcements.custom", false, "Announcements"),
+		MODULES_ANNOUNCEMENTS_ADVERT("modules.announcements.advert", false, "Announcements"),
 
-		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", false),
-		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", true),
-		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", true),
-		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", true),
+		MODULES_ARENAMAPS_ALIGNTOPLAYER("modules.arenamaps.aligntoplayer", false, "ArenaMaps"),
+		MODULES_ARENAMAPS_SHOWSPAWNS("modules.arenamaps.showspawns", true, "ArenaMaps"),
+		MODULES_ARENAMAPS_SHOWPLAYERS("modules.arenamaps.showplayers", true, "ArenaMaps"),
+		MODULES_ARENAMAPS_SHOWLIVES("modules.arenamaps.showlives", true, "ArenaMaps"),
 
-		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", true),
-		MODULES_ARENAVOTE_AUTOSTART("modules.arenavote.autostart", false),
-		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30),
-		MODULES_ARENAVOTE_ONLYSPAMTOJOIN("modules.arenavote.onlySpamToJOIN", false),
-		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30),
-		MODULES_ARENAVOTE_WORLD("modules.arenavote.world", "none"),
+		MODULES_ARENAVOTE_EVERYONE("modules.arenavote.everyone", true, "AutoVote"),
+		MODULES_ARENAVOTE_AUTOSTART("modules.arenavote.autostart", false, "AutoVote"),
+		MODULES_ARENAVOTE_READYUP("modules.arenavote.readyup", 30, "AutoVote"),
+		MODULES_ARENAVOTE_ONLYSPAMTOJOIN("modules.arenavote.onlySpamToJOIN", false, "AutoVote"),
+		MODULES_ARENAVOTE_SECONDS("modules.arenavote.seconds", 30, "AutoVote"),
+		MODULES_ARENAVOTE_WORLD("modules.arenavote.world", "none", "AutoVote"),
 
-		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false),
+		MODULES_BATTLEFIELDGUARD_ENTERDEATH("modules.battlefieldguard.enterdeath", false, "BattleFieldGuard"),
 
-		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false),
-		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none"),
-		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true),
-		MODULES_BETTERFIGHT_EXPLODEONDEATH("modules.betterfight.explodeondeath", true),
+		MODULES_BETTERFIGHT_MESSAGES("modules.betterfight.usemessages", false, "BetterFight"),
+		MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none", "BetterFight"),
+		MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true, "BetterFight"),
+		MODULES_BETTERFIGHT_EXPLODEONDEATH("modules.betterfight.explodeondeath", true, "BetterFight"),
 		
-		MODULES_BETTERGEARS_HEAD("modules.bettergears.head", true),
-		MODULES_BETTERGEARS_CHEST("modules.bettergears.chest", true),
-		MODULES_BETTERGEARS_LEG("modules.bettergears.leg", true),
-		MODULES_BETTERGEARS_FOOT("modules.bettergears.foot", true),
-		MODULES_BETTERGEARS_ONLYIFLEATHER("modules.bettergears.onlyifleather", false),
+		MODULES_BETTERGEARS_HEAD("modules.bettergears.head", true, "BetterGears"),
+		MODULES_BETTERGEARS_CHEST("modules.bettergears.chest", true, "BetterGears"),
+		MODULES_BETTERGEARS_LEG("modules.bettergears.leg", true, "BetterGears"),
+		MODULES_BETTERGEARS_FOOT("modules.bettergears.foot", true, "BetterGears"),
+		MODULES_BETTERGEARS_ONLYIFLEATHER("modules.bettergears.onlyifleather", false, "BetterGears"),
 
-		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false),
-		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1),
-		MODULES_BLOCKRESTORE_RESTOREBLOCKS("modules.blockrestore.restoreblocks", true),
-		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false),
+		MODULES_BLOCKRESTORE_HARD("modules.blockrestore.hard", false, "BlockRestore"),
+		MODULES_BLOCKRESTORE_OFFSET("modules.blockrestore.offset", 1, "BlockRestore"),
+		MODULES_BLOCKRESTORE_RESTOREBLOCKS("modules.blockrestore.restoreblocks", true, "BlockRestore"),
+		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false, "BlockRestore"),
 
-		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false),
+		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false, "ColorTeams"),
 		
-		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false),
-		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false),
+		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false, "FixInventoryLoss"),
+		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false, "FixInventoryLoss"),
 
-		MODULES_ITEMS_INTERVAL("modules.items.interval", 0),
-		MODULES_ITEMS_ITEMS("modules.items.items", "none", true),
+		MODULES_ITEMS_INTERVAL("modules.items.interval", 0, "Items"),
+		MODULES_ITEMS_ITEMS("modules.items.items", "none", true, "Items"),
 
-		MODULES_RESPAWNRELAY_INTERVAL("modules.respawnrelay.respawnseconds", 10),
-		MODULES_RESPAWNRELAY_CHOOSESPAWN("modules.respawnrelay.choosespawn", false),
+		MODULES_RESPAWNRELAY_INTERVAL("modules.respawnrelay.respawnseconds", 10, "RespawnRelay"),
+		MODULES_RESPAWNRELAY_CHOOSESPAWN("modules.respawnrelay.choosespawn", false, "RespawnRelay"),
 		
-		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100),
+		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100, "PlayerFinder"),
 
-		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false),
-		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off"),
+		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
+		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
 
-		MODULES_SKINS_VANILLA("modules.skins.vanilla", false),
+		MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
-		MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true),
+		MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true, "SpecialJoin"),
 
-		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0),
+		MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0, "StartFreeze"),
 
-		MODULES_TURRETS_MAXDEGREES("modules.turrets.maxdegrees", 90.0),
-		MODULES_TURRETS_MININTERVAL("modules.turrets.mininterval", 0),
+		MODULES_TURRETS_MAXDEGREES("modules.turrets.maxdegrees", 90.0, "Turrets"),
+		MODULES_TURRETS_MININTERVAL("modules.turrets.mininterval", 0, "Turrets"),
 
-		MODULES_VAULT_BETPOT("modules.vault.betpot", false),
-		MODULES_VAULT_BETTIME("modules.vault.bettime", 60),
-		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1)),
-		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1)),
-		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1)),
-		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", Integer.valueOf(0)),
-		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0)),
-		MODULES_VAULT_MINPLAYTIME("modules.vault.minplaytime", Integer.valueOf(0)),
-		MODULES_VAULT_MINPLAYERS("modules.vault.vminplayers", 2),
-		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0)),
-		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0)),
-		MODULES_VAULT_WINPOT("modules.vault.winPot", false),
-		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2)),
-		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0)),
-		MODULES_VAULT_WINREWARDPLAYERFACTOR("modules.vault.winrewardPlayerFactor", Double.valueOf(1)),
+		MODULES_VAULT_BETPOT("modules.vault.betpot", false, "Vault"),
+		MODULES_VAULT_BETTIME("modules.vault.bettime", 60, "Vault"),
+		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1), "Vault"),
+		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1), "Vault"),
+		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1), "Vault"),
+		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", Integer.valueOf(0), "Vault"),
+		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_MINPLAYTIME("modules.vault.minplaytime", Integer.valueOf(0), "Vault"),
+		MODULES_VAULT_MINPLAYERS("modules.vault.vminplayers", 2, "Vault"),
+		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_WINPOT("modules.vault.winPot", false, ""),
+		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2), "Vault"),
+		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0), "Vault"),
+		MODULES_VAULT_WINREWARDPLAYERFACTOR("modules.vault.winrewardPlayerFactor", Double.valueOf(1), "Vault"),
 		
-		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", Double.valueOf(0)),
-		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", Double.valueOf(0)),
-		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", Double.valueOf(0)),
-		MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", Double.valueOf(0)),
-		MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", Double.valueOf(0)),
+		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", Double.valueOf(0), "Vault"),
 
-		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND"),
-		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300),
+		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND", "Walls"),
+		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 		
-		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false),
-		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false);
+		MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),
+		MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit");
 
 		private String node;
 		private Object value;
 		private String type;
+		private String module;
 
 		public static CFG getByNode(final String node) {
-			for (CFG m : CFG.values()) {
+			for (CFG m : CFG.getValues()) {
 				if (m.getNode().equals(node)) {
 					return m;
 				}
@@ -322,40 +323,46 @@ public class Config {
 			return null;
 		}
 
-		private CFG(final String node, final String value) {
+		private CFG(final String node, final String value, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = "string";
+			this.module = source;
 		}
 
-		private CFG(final String node, final Boolean value) {
+		private CFG(final String node, final Boolean value, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = "boolean";
+			this.module = source;
 		}
 
-		private CFG(final String node, final Integer value) {
+		private CFG(final String node, final Integer value, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = "int";
+			this.module = source;
 		}
 
-		private CFG(final String node, final Double value) {
+		private CFG(final String node, final Double value, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = "double";
+			this.module = source;
 		}
 		
-		private CFG(final String node, final String value, final boolean multiple) {
+		private CFG(final String node, final String value, final boolean multiple, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = multiple?"items":"material";
+			this.module = source;
 		}
 		
-		private CFG(final String node, final List<String> value) {
+		private CFG(final String node, final List<String> value, String source) {
 			this.node = node;
 			this.value = value;
 			this.type = "list";
+			this.module = source;
 		}
 
 		public String getNode() {
@@ -382,6 +389,14 @@ public class Config {
 		public String getType() {
 			return type;
 		}
+
+		public String getModule() {
+			return module;
+		}
+
+		public boolean hasModule() {
+			return module!=null;
+		}
 	}
 
 	/**
@@ -403,8 +418,10 @@ public class Config {
 	public void createDefaults() {
 		this.cfg.options().indent(4);
 
-		for (CFG cfg : CFG.values()) {
-			this.cfg.addDefault(cfg.getNode(), cfg.getValue());
+		for (CFG cfg : CFG.getValues()) {
+			if (!cfg.hasModule()) {
+				this.cfg.addDefault(cfg.getNode(), cfg.getValue());
+			}
 		}
 		save();
 	}
