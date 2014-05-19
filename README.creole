@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.436 - properly save the config after setting an inventory to a config node
 * v1.2.3.435 - add BlockDissolve config values
 * v1.2.3.434 - only add needed config nodes
 * v1.2.2.433 - [g:TeamLives] only mark a player as lost when needed

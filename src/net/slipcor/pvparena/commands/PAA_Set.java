@@ -215,6 +215,7 @@ public class PAA_Set extends AbstractArenaCommand {
 							player,
 							Language.parse(arena, MSG.SET_DONE, node,
 									newValue));
+					arena.getArenaConfig().save();
 				} else {
 					arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
 				}
