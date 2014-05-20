@@ -92,18 +92,30 @@ public final class ConfigurationManager {
 
 			List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(),
 					new ArrayList<String>());
-			for (String type : list) {
-				ArenaGoal aType = PVPArena.instance.getAgm()
-						.getGoalByName(type);
-				aType = (ArenaGoal) aType.clone();
-				aType.setArena(arena);
-				arena.goalAdd(aType);
+			for (String goal : list) {
+				ArenaGoal aGoal = PVPArena.instance.getAgm()
+						.getGoalByName(goal);
+				if (aGoal == null) {
+					PVPArena.instance.getLogger().warning(
+						"Goal referenced in arena '"+
+						arena.getName()+"' not found (uninstalled?): " + goal);
+					continue;
+				}
+				aGoal = (ArenaGoal) aGoal.clone();
+				aGoal.setArena(arena);
+				arena.goalAdd(aGoal);
 			}
 
 			list = cfg.getStringList(CFG.LISTS_MODS.getNode(),
 					new ArrayList<String>());
 			for (String mod : list) {
 				ArenaModule aMod = PVPArena.instance.getAmm().getModByName(mod);
+				if (aMod == null) {
+					PVPArena.instance.getLogger().warning(
+						"Module referenced in arena '"+
+						arena.getName()+"' not found (uninstalled?): " + mod);
+					continue;
+				}
 				aMod = (ArenaModule) aMod.clone();
 				aMod.setArena(arena);
 				aMod.toggleEnabled(arena);
