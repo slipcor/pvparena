@@ -456,10 +456,10 @@ public final class ArenaManager {
 	public static boolean isUsingShortcuts() {
 		return usingShortcuts;
 	}
-	public static Set<String> getColoredShortcuts() {
+	public static List<String> getColoredShortcuts() {
 		Set<String> sorted = new TreeSet<String>(DEF_LISTS.keySet());
 		
-		Set<String> result = new HashSet<String>();
+		List<String> result = new ArrayList<String>();
 		
 		for (String definition : sorted) {
 			if (DEF_VALUES.containsKey(definition)) {

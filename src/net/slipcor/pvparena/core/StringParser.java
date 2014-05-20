@@ -608,6 +608,18 @@ public final class StringParser {
 		return new String(result.substring(glue.length()));
 	}
 
+	public static String joinList(final List<?> set, final String glue) {
+		final StringBuffer result = new StringBuffer("");
+		for (Object o : set) {
+			result.append(glue);
+			result.append(String.valueOf(o));
+		}
+		if (result.length() <= glue.length()) {
+			return result.toString();
+		}
+		return new String(result.substring(glue.length()));
+	}
+
 	public static String joinSet(final Set<?> set, final String glue) {
 		final StringBuffer result = new StringBuffer("");
 		for (Object o : set) {

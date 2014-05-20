@@ -1,6 +1,8 @@
 package net.slipcor.pvparena.commands;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -40,17 +42,18 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 		if (!argCountValid(sender, args, new Integer[]{0})) {
 			return;
 		}
-		final Set<String> names = new HashSet<String>();
+		final List<String> names;
 		
 		if (!PVPArena.hasOverridePerms(sender) && ArenaManager.isUsingShortcuts()) {
-			names.addAll(ArenaManager.getColoredShortcuts());
+			names = ArenaManager.getColoredShortcuts();
 		} else {
+			names = new ArrayList<String>();
 			for (Arena a : ArenaManager.getArenasSorted()) {
 				names.add((a.isLocked()?"&c":((PAA_Edit.activeEdits.containsValue(a)||PAA_Setup.activeSetups.containsValue(a))?"&e":(a.isFightInProgress()?"&a":"&f"))) + a.getName() + "&r");
 			}
 		}
 		
-		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinSet(names, ", ")));
+		Arena.pmsg(sender, Language.parse(MSG.ARENA_LIST, StringParser.joinList(names, ", ")));
 	}
 
 	@Override
