@@ -571,10 +571,16 @@ public final class ArenaManager {
 		
 	}
 	public static List<Arena> getArenasSorted() {
+		DEBUG.i("Sorting!");
+		for (String s : ARENAS.keySet()) {
+			DEBUG.i(s);
+		}
 		Map<String, Arena> sorted = new TreeMap<String, Arena>(ARENAS);
 		List<Arena> result = new ArrayList<Arena>();
+		DEBUG.i("Sorted!");
 		for (String name : sorted.keySet()) {
 			result.add(sorted.get(name));
+			DEBUG.i(name);
 		}
 		return result;
 	}
