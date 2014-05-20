@@ -667,6 +667,8 @@ public class PACheck {
 			final CommandSender sender, final boolean force) {
 		PACheck res = new PACheck();
 
+		arena.getDebugger().i("handling start!");
+
 		ArenaGoal commit = null;
 		int priority = 0;
 
@@ -684,6 +686,7 @@ public class PACheck {
 		}
 
 		if (!force && res.hasError()) {
+			arena.getDebugger().i("not forcing and we have error: " + res.getError());
 			if (sender == null) {
 				arena.msg(Bukkit.getConsoleSender(),
 						Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
@@ -697,12 +700,14 @@ public class PACheck {
 		if (!force && arena.getFighters().size() < 2
 				|| arena.getFighters().size() < arena.getArenaConfig().getInt(
 						CFG.READY_MINPLAYERS)) {
+			arena.getDebugger().i("not forcing and we have less than minplayers");
 			return null;
 		}
 
 		final PAStartEvent event = new PAStartEvent(arena);
 		Bukkit.getPluginManager().callEvent(event);
 		if (!force && event.isCancelled()) {
+			arena.getDebugger().i("not forcing and cancelled by other plugin");
 			return false;
 		}
 
