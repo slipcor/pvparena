@@ -257,6 +257,7 @@ public class Config {
 		MODULES_BLOCKRESTORE_RESTORECHESTS("modules.blockrestore.restorechests", false, "BlockRestore"),
 
 		MODULES_BLOCKDISSOLVE_MATERIALS("modules.blockdissolve.materials", "SNOW,WOOL", true, "BlockDissolve"),
+		MODULES_BLOCKDISSOLVE_STARTSECONDS("modules.blockdissolve.startseconds", 10, "BlockDissolve"),
 		MODULES_BLOCKDISSOLVE_TICKS("modules.blockdissolve.ticks", 40, "BlockDissolve"),
 
 		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false, "ColorTeams"),
