@@ -1133,20 +1133,24 @@ public class Arena {
 	}
 
 	private void giveRewardsLater(final ArenaTeam arenaTeam) {
+		debug.i("Giving rewards to the whole team!");
 		if (arenaTeam == null) {
+			debug.i("team is null");
 			return; // this one failed. try next time...
 		}
 		gaveRewards = true; // set this so it doesnt give again later
+		debug.i("Giving rewards to team"+arenaTeam.getName()+"!");
 		
 		class RewardLater implements Runnable {
 
 			@Override
 			public void run() {
 				for (ArenaPlayer ap : arenaTeam.getTeamMembers()) {
+					debug.i("Giving rewards to "+ap.get().getName()+"!");
 					try {
 						giveRewards(ap.get());
 					} catch (Exception e) {
-						
+						e.printStackTrace();
 					}
 				}
 			}

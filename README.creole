@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.440 - add debug for github issue #46 - "teamrewards"
 * v1.2.3.439 - [BlockDissolve] add "startSeconds" to wait X seconds before removing
 * v1.2.3.438 - properly maintain sorting when handing over sorted collections
 * v1.2.3.437 - add debug for github issue #43
