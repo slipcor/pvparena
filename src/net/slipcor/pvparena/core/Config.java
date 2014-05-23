@@ -261,6 +261,7 @@ public class Config {
 		MODULES_BLOCKDISSOLVE_TICKS("modules.blockdissolve.ticks", 40, "BlockDissolve"),
 
 		MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false, "ColorTeams"),
+		MODULES_COLORTEAMS_SCOREBOARD("modules.colorteams.scoreboard", false, "ColorTeams"),
 		
 		MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false, "FixInventoryLoss"),
 		MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false, "FixInventoryLoss"),

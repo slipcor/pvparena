@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.443 - add ColorTeams->ScoreBoard to use the scoreboard coloring instead of TagAPI
 * v1.2.3.442 - little fixes, thanks to samoatesgames
 * v1.2.3.441 - add debug for github issue #44 - countdown ignoring uneven teams
 * v1.2.3.440 - add debug for github issue #46 - "teamrewards"
