@@ -1471,9 +1471,6 @@ public class Arena {
 		}
 		getDebugger().i("sum == " + sum);
 		final String errror = ready();
-		Boolean handle = PACheck.handleStart(this, null, forceStart);
-		
-		
 		
 		boolean overRide = false;
 		
@@ -1485,18 +1482,26 @@ public class Arena {
 					errror.contains(Language.parse(MSG.ERROR_READY_4_MISSING_PLAYERS));
 		}
 		
-		
-		if (overRide || (errror == null || errror.equals(""))
-				&& (handle == true)) {
-			getDebugger().i("START!");
-			setFightInProgress(true);
-		} else if (overRide || handle == null){
-			PVPArena.instance.getLogger().info(errror);
-			for (ArenaPlayer ap : getFighters()) {
-				getDebugger().i("removing player " + ap.getName());
-				playerLeave(ap.get(), CFG.TP_EXIT, false);
+		if (overRide || (errror == null || errror.equals(""))) {
+			Boolean handle = PACheck.handleStart(this, null, forceStart);
+			
+			if (overRide || handle == true) {
+				getDebugger().i("START!");
+				setFightInProgress(true);
+				
+			} else if (handle == null) {
+				PVPArena.instance.getLogger().info(errror);
+				for (ArenaPlayer ap : getFighters()) {
+					getDebugger().i("removing player " + ap.getName());
+					playerLeave(ap.get(), CFG.TP_EXIT, false);
+				}
+				reset(false);
+			} else {
+				
+				// false
+				PVPArena.instance.getLogger().info("START aborted by event cancel");
+				reset(true);
 			}
-			reset(false);
 		} else {
 			// false
 			PVPArena.instance.getLogger().info("START aborted by event cancel");
