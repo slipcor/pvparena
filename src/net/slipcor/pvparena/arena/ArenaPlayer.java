@@ -476,7 +476,7 @@ public class ArenaPlayer {
 		return null;
 	}
 
-	public PALocation getLocation() {
+	public PALocation getSavedLocation() {
 		debug.i("reading loc!", this.name);
 		if (location != null) {
 			debug.i(": " + location.toString(), this.name);

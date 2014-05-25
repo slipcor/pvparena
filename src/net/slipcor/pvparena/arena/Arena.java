@@ -1033,8 +1033,6 @@ public class Arena {
 //		}
 
 		player.setNoDamageTicks(60);
-		
-		aPlayer.setArena(null);
 	}
 	
 	public void renewDebugger() {
@@ -1258,9 +1256,9 @@ public class Arena {
 		aPlayer.setTelePass(true);
 		if (string.equalsIgnoreCase("old")) {
 			getDebugger().i("tping to old", player);
-			if (aPlayer.getLocation() != null) {
+			if (aPlayer.getSavedLocation() != null) {
 				getDebugger().i("location is fine", player);
-				final PALocation loc = aPlayer.getLocation();
+				final PALocation loc = aPlayer.getSavedLocation();
 				player.teleport(loc.toLocation());
 				player
 						.setNoDamageTicks(
@@ -1584,7 +1582,7 @@ public class Arena {
 		}
 		PALocation loc = SpawnManager.getSpawnByExactName(this, place);
 		if ("old".equals(place)) {
-			loc = aPlayer.getLocation();
+			loc = aPlayer.getSavedLocation();
 		}
 		if (loc == null) {
 			PVPArena.instance.getLogger().severe("TP Spawn null: " + this.getName() + "->" + place);

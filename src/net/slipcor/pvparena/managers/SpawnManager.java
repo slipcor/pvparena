@@ -700,10 +700,10 @@ public final class SpawnManager {
 		class RunLater implements Runnable {
 			@Override
 			public void run() {
-				final PALocation temp = aPlayer.getLocation();
+				final PALocation temp = aPlayer.getSavedLocation();
 				
 				Location bLoc = newLoc.toLocation();
-				bLoc.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
+				bLoc = bLoc.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
 				
 				while (bLoc.getBlock().getType() != Material.AIR
 						&& bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR
