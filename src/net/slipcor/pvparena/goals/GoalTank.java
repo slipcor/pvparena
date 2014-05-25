@@ -26,6 +26,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.events.PATeamChangeEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -336,8 +337,14 @@ public class GoalTank extends ArenaGoal {
 			}
 		}
 		final ArenaTeam tankTeam = new ArenaTeam("tank", "PINK");
+		
+		
 		for (ArenaTeam team : arena.getTeams()) {
-			team.remove(tank);
+			if (team.getTeamMembers().contains(tank)) {
+				PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, tank.get(), team, tankTeam);
+				Bukkit.getPluginManager().callEvent(tcEvent);
+				team.remove(tank);
+			}
 		}
 		tankTeam.add(tank);
 		tanks.put(arena, tank.getName());

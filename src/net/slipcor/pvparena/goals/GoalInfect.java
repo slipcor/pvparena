@@ -24,6 +24,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.events.PATeamChangeEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -245,10 +246,13 @@ public class GoalInfect extends ArenaGoal {
 				ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 				
 				final ArenaTeam oldTeam = aPlayer.getArenaTeam();
+				final ArenaTeam respawnTeam = arena.getTeam("infected");
+				
+				PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, player, oldTeam, respawnTeam);
+				Bukkit.getPluginManager().callEvent(tcEvent);
 				
 				oldTeam.remove(aPlayer);
 				
-				final ArenaTeam respawnTeam = arena.getTeam("infected");
 				respawnTeam.add(aPlayer);
 				
 				final ArenaClass infectedClass = arena.getClass("%infected%");
