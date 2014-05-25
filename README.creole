@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.447 - anyone having an issue with us NOT kicking everyone if the arena fails to start? addresses github issue #44
 * v1.2.3.446 - add PATeamChangeEvent for infect, tank and other things like that
 * v1.2.3.445 - fix github issue #57 - modules/goals do not add default config settings
 * v1.2.3.444 - [WARNING] only for mibby & github issue #44 - rewrote the start check, might either fix it or break everything

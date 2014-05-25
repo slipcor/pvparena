@@ -1490,22 +1490,25 @@ public class Arena {
 				setFightInProgress(true);
 				
 			} else if (handle == null) {
-				PVPArena.instance.getLogger().info(errror);
+				if (errror != null) {
+					PVPArena.instance.getLogger().info(errror);
+				}
+				/*
 				for (ArenaPlayer ap : getFighters()) {
 					getDebugger().i("removing player " + ap.getName());
 					playerLeave(ap.get(), CFG.TP_EXIT, false);
 				}
-				reset(false);
+				reset(false);*/
 			} else {
 				
 				// false
 				PVPArena.instance.getLogger().info("START aborted by event cancel");
-				reset(true);
+				//reset(true);
 			}
 		} else {
 			// false
-			PVPArena.instance.getLogger().info("START aborted by event cancel");
-			reset(true);
+			this.broadcast(Language.parse(MSG.ERROR_ERROR, errror));
+			//reset(true);
 		}
 	}
 
