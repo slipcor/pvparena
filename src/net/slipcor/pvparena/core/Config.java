@@ -420,12 +420,19 @@ public class Config {
 		this.strings = new HashMap<String, String>();
 	}
 
-	public void createDefaults() {
+	public void createDefaults(List<String> goals, List<String> modules) {
 		this.cfg.options().indent(4);
 
 		for (CFG cfg : CFG.getValues()) {
 			if (!cfg.hasModule()) {
 				this.cfg.addDefault(cfg.getNode(), cfg.getValue());
+			} else {
+				String mod = cfg.getModule();
+				if (mod.startsWith("Goal") && goals.contains(mod)) {
+					this.cfg.addDefault(cfg.getNode(), cfg.getValue());
+				} else if (modules.contains(mod)) {
+					this.cfg.addDefault(cfg.getNode(), cfg.getValue());
+				}
 			}
 		}
 		save();

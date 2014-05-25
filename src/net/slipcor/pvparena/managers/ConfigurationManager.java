@@ -56,28 +56,32 @@ public final class ConfigurationManager {
 		}
 		final YamlConfiguration config = cfg.getYamlConfiguration();
 
+		List<String> goals = cfg.getStringList("goals", new ArrayList<String>());
+		List<String> modules = cfg.getStringList("mods", new ArrayList<String>());
+		
 		if (cfg.getString(CFG.GENERAL_TYPE, "null") == null
 				|| cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
-			cfg.createDefaults();
+			cfg.createDefaults(goals, modules);
 		} else {
 			// opening existing arena
 			arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
 
+			
 			values: for (CFG c : CFG.getValues()) {
 				if (c.hasModule()) {
-					goals: for (ArenaGoal goal : arena.getGoals()) {
-						if (goal.getName().equals(c.getModule())) {
+					for (String goal : goals) {
+						if (goal.equals(c.getModule())) {
 							if (cfg.getUnsafe(c.getNode()) == null) {
-								cfg.createDefaults();
+								cfg.createDefaults(goals, modules);
 								break values;
 							}
 						}
 					}
 				
-					modules: for (ArenaModule mod : arena.getMods()) {
-						if (mod.getName().equals(c.getModule())) {
+					for (String mod : modules) {
+						if (mod.equals(c.getModule())) {
 							if (cfg.getUnsafe(c.getNode()) == null) {
-								cfg.createDefaults();
+								cfg.createDefaults(goals, modules);
 								break values;
 							}
 						}
@@ -85,7 +89,7 @@ public final class ConfigurationManager {
 					continue; // node unused, don't check for existence!
 				}
 				if (cfg.getUnsafe(c.getNode()) == null) {
-					cfg.createDefaults();
+					cfg.createDefaults(goals, modules);
 					break;
 				}
 			}
