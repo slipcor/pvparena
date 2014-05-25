@@ -1033,6 +1033,8 @@ public class Arena {
 //		}
 
 		player.setNoDamageTicks(60);
+		
+		aPlayer.setArena(null);
 	}
 	
 	public void renewDebugger() {

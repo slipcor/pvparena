@@ -485,7 +485,7 @@ public class PlayerListener implements Listener {
 				boolean alreadyReady = aPlayer.getStatus() == Status.READY;
 
 				arena.getDebugger().i("===============", player);
-				arena.getDebugger().i("===== class: " + aPlayer.getArenaClass() + " =====", player);
+				arena.getDebugger().i("===== class: " + (aPlayer.getArenaClass()==null?"null":aPlayer.getArenaClass().getName()) + " =====", player);
 				arena.getDebugger().i("===============", player);
 
 				if (!arena.isFightInProgress()) {
