@@ -704,7 +704,8 @@ public class Arena {
 	}
 
 	public void msg(final CommandSender sender, final String msg) {
-		if (sender == null || msg == null || msg.length() < 1) {
+		if (sender == null || msg == null || msg.length() < 1 ||
+				msg.equals(" ")) {
 			return;
 		}
 		getDebugger().i("@" + sender.getName() + ": " + msg);
@@ -807,7 +808,8 @@ public class Arena {
 	}
 
 	public static void pmsg(final CommandSender sender, final String msg) {
-		if (sender == null || msg == null || msg.length() < 1) {
+		if (sender == null || msg == null || msg.length() < 1 ||
+				msg.equals(" ")) {
 			return;
 		}
 		DEBUG.i("@" + sender.getName() + ": " + msg, sender);
