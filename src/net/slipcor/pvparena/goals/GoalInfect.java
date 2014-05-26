@@ -432,7 +432,11 @@ public class GoalInfect extends ArenaGoal {
 		}
 		final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
 		for (ArenaTeam team : arena.getTeams()) {
-			team.remove(infected);
+			if (team.getTeamMembers().contains(infected)) {
+				PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
+				Bukkit.getPluginManager().callEvent(tcEvent);
+				team.remove(infected);
+			}
 		}
 		infectedTeam.add(infected);
 
