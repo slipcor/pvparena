@@ -1584,7 +1584,7 @@ public class Arena {
 		}
 		PALocation loc = SpawnManager.getSpawnByExactName(this, place);
 		if ("old".equals(place)) {
-			loc = aPlayer.getSavedLocation();
+			loc = aPlayer.getSavedLocation().add(0, PVPArena.instance.getConfig().getDouble("y-offset"), 0);
 		}
 		if (loc == null) {
 			PVPArena.instance.getLogger().severe("TP Spawn null: " + this.getName() + "->" + place);
