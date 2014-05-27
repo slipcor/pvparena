@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.453 - add default goal config settings
 * v1.2.3.452 - add the teleport lag y-offset to "old" (pre-join) locations 
 * v1.2.3.451 - add ' ' to the non printed messages. addresses github issue #59
 * v1.2.3.450 - finish github issue #53 [Infect]

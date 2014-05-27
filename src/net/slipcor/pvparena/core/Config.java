@@ -428,9 +428,7 @@ public class Config {
 				this.cfg.addDefault(cfg.getNode(), cfg.getValue());
 			} else {
 				String mod = cfg.getModule();
-				if (mod.startsWith("Goal") && goals.contains(mod)) {
-					this.cfg.addDefault(cfg.getNode(), cfg.getValue());
-				} else if (modules.contains(mod)) {
+				if (goals.contains(mod) || modules.contains(mod)) {
 					this.cfg.addDefault(cfg.getNode(), cfg.getValue());
 				}
 			}
