@@ -36,15 +36,22 @@ public class StatisticsManager {
 	private static YamlConfiguration config;
 
 	public static enum type {
-		WINS("matches won"), LOSSES("matches lost"), KILLS("kills"), DEATHS(
-				"deaths"), MAXDAMAGE("max damage dealt"), MAXDAMAGETAKE(
-				"max damage taken"), DAMAGE("full damage dealt"), DAMAGETAKE(
-				"full damage taken"), NULL("player name");
+		WINS("matches won", "Wins"),
+		LOSSES("matches lost", "Losses"),
+		KILLS("kills", "Kills"),
+		DEATHS("deaths", "Deaths"),
+		MAXDAMAGE("max damage dealt", "MaxDmg"),
+		MAXDAMAGETAKE("max damage taken", "MaxDmgTaken"),
+		DAMAGE("full damage dealt", "Damage"),
+		DAMAGETAKE("full damage taken", "DamageTagen"),
+		NULL("player name", "Player");
 
 		private final String fullName;
+		private final String niceDesc;
 
-		type(final String name) {
+		type(final String name, final String desc) {
 			fullName = name;
+			niceDesc = desc;
 		}
 
 		/**
@@ -100,6 +107,10 @@ public class StatisticsManager {
 				}
 			}
 			return null;
+		}
+
+		public String getNiceName() {
+			return niceDesc;
 		}
 	}
 
@@ -238,6 +249,9 @@ public class StatisticsManager {
 
 		for (type t : type.values()) {
 			if (t.name().equals(stripped)) {
+				return t;
+			}
+			if (t.getNiceName().equals(stripped)) {
 				return t;
 			}
 		}

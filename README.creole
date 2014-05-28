@@ -46,7 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.2.3.454 - support colored Scoreboard signs
+* v1.2.3.455 - add better named ArenaBoard headers
+* v1.2.3.454 - support colored ArenaBoard signs
 * v1.2.3.453 - add default goal config settings
 * v1.2.3.452 - add the teleport lag y-offset to "old" (pre-join) locations 
 * v1.2.3.451 - add ' ' to the non printed messages. addresses github issue #59
