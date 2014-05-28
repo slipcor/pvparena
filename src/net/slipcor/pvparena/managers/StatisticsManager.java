@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -233,10 +234,7 @@ public class StatisticsManager {
 	 * @return the Statistics type
 	 */
 	public static type getTypeBySignLine(final String line) {
-		if (!line.startsWith("[PA]")) {
-			return type.NULL;
-		}
-		final String stripped = line.replace("[PA]", "").toUpperCase();
+		final String stripped = ChatColor.stripColor(line).replace("[PA]", "").toUpperCase();
 
 		for (type t : type.values()) {
 			if (t.name().equals(stripped)) {
