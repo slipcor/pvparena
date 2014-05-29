@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.461 - fix WorldGuard language nodes
 * v1.2.3.461 - fix arena player class determination
 * v1.2.3.460 - fix "custom" classes not being considered as such, fixes #828
 * v1.2.3.459 - allow inventory access for Flag Holders; fixes #828
