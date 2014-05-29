@@ -563,6 +563,9 @@ public final class Language {
 		MODULE_WORLDEDIT_LOADED("nulang.mod.worldedit.loaded", "Region loaded: &e%1%"),
 		MODULE_WORLDEDIT_SAVED("nulang.mod.worldedit.saved", "Region saved: &e%1%"),
 		
+		MODULE_WORLDGUARD_NOTFOUND("nulang.mod.worldedit.created", "Region not found: &e%1%"),
+		MODULE_WORLDGUARD_SAVED("nulang.mod.worldedit.saved", "Region &e%2%&f saved to &e%1%"),
+		
 		Z("version", "0.9.0.0");
 
 		private String node;
