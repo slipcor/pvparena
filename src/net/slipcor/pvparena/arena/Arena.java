@@ -635,7 +635,7 @@ public class Arena {
 	public boolean isCustomClassAlive() {
 		for (ArenaPlayer p : getFighters()) {
 			if (p.getStatus().equals(Status.FIGHT)
-					&& p.getClass().equals("custom")) {
+					&& p.getArenaClass() != null && p.getArenaClass().getName().equals("custom")) {
 				getDebugger().i("custom class active: true");
 				return true;
 			}

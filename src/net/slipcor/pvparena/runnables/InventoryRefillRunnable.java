@@ -90,9 +90,7 @@ public class InventoryRefillRunnable implements Runnable {
 	public void run() {
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (aPlayer.getStatus().equals(Status.FIGHT)) {
-			if ((aPlayer.getClass().equals("custom") && !arena.getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
-				
-				
+			if ((aPlayer.getArenaClass().getName().equals("custom") && !arena.getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
 				
 				ArenaClass.equip(player, items);
 
@@ -106,7 +104,7 @@ public class InventoryRefillRunnable implements Runnable {
 									.getColorDataFromENUM(color)));
 					PVPArena.instance.getAgm().refillInventory(arena, player);
 				}
-			} else if (aPlayer.getClass().equals("custom")) {
+			} else if (aPlayer.getArenaClass().getName().equals("custom")) {
 				InventoryManager.clearInventory(player);
 				ArenaPlayer.reloadInventory(arena, player);
 			} else {
