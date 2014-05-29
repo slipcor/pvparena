@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -1076,6 +1077,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
 			return;
 		}
 
-		event.setCancelled(true);
+		if (event.getSlotType().equals(SlotType.ARMOR) && event.getCurrentItem() != null && !event.getCurrentItem().getType().equals(Material.AIR)) {
+			event.setCancelled(true);
+		}
 	}
 }
