@@ -96,6 +96,8 @@ public abstract class AbstractArenaCommand {
 			return new PAA_Goal();
 		} else if (name.contains("playerjoin") || name.equals("!pj")) {
 			return new PAA_PlayerJoin();
+		} else if (name.equals("playerclass") || name.equals("!pcl")) {
+			return new PAA_PlayerClass();
 		} else if (name.contains("protect") || name.equals("!p")) {
 			return new PAA_Protection();
 		} else if (name.equals("regions") || name.equals("!rs")) {

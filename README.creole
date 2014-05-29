@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.457 - add PlayerClass command implementation
 * v1.2.3.456 - add player created classes [pvparena.create.class]
 * v1.2.3.455 - add better named ArenaBoard headers
 * v1.2.3.454 - support colored ArenaBoard signs
