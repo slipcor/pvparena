@@ -87,7 +87,11 @@ public class StandardSpectate extends ArenaModule {
 			
 			
 			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
-				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+				final String autoClass = 
+						arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+								(arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
+								: arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+								
 				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
 					arena.chooseClass(player, null, autoClass);
 				}

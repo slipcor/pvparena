@@ -45,14 +45,14 @@ public final class Help {
 				"shorthand command: !ch",
 				LINE,
 				"/pa [arenaname] check"}),
-		CLASS("nulang.help.msg.class", new String[]{
-				"Manage arena classes",
-				LINE,
-				"shorthand command: !cl",
-				LINE,
-				"/pa [arenaname] class load [classname]",
-				"/pa [arenaname] class save [classname]",
-				"/pa [arenaname] class remove [classname]"}),
+				CLASS("nulang.help.msg.class", new String[]{
+						"Manage arena classes",
+						LINE,
+						"shorthand command: !cl",
+						LINE,
+						"/pa [arenaname] class load [classname]",
+						"/pa [arenaname] class save [classname]",
+						"/pa [arenaname] class remove [classname]"}),
 		CREATE("nulang.help.msg.create", new String[]{
 				"Create an arena",
 				LINE,
@@ -125,6 +125,13 @@ public final class Help {
 				"/pa install [modulename]",
 				LINE,
 				"modules / arenas will list available files"}),
+		PLAYERCLASS("nulang.help.msg.playerclass", new String[]{
+				"Manage arena player classes",
+				LINE,
+				"shorthand command: !pcl",
+				LINE,
+				"/pa [arenaname] playerclass save {classname}",
+				"/pa [arenaname] playerclass remove {classname}"}),
 		PROTECTION("nulang.help.msg.protection", new String[]{
 				"Manage arena region protections",
 				LINE,

@@ -293,6 +293,7 @@ public class Arena {
 	 */
 	public void countDown() {
 		if (startRunner != null || this.isFightInProgress()) {
+			
 			if (this.getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS)) == null && !this.isFightInProgress()) {
 				startRunner.cancel();
 				startRunner = null;
@@ -943,8 +944,13 @@ public class Arena {
 				if (p.getArenaClass() == null) {
 					getDebugger().i("player has no class", p.get());
 					
-					final ArenaClass aClass = getClass(getArenaConfig().getString(CFG.READY_AUTOCLASS));
-					
+
+					final String autoClass = 
+							getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+									(getClass(p.getName()) != null ? p.getName() : getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
+									: getArenaConfig().getString(CFG.READY_AUTOCLASS);
+					final ArenaClass aClass = getClass(autoClass);
+									
 					if (aClass != null) {
 						this.selectClass(p, aClass.getName());
 					} else {
@@ -1669,7 +1675,10 @@ public class Arena {
 		}
 		
 		if (aPlayer.getArenaClass() == null) {
-			String autoClass = cfg.getString(CFG.READY_AUTOCLASS);
+			String autoClass = 
+					getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+							(getClass(player.getName()) != null ? player.getName() : getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
+							: getArenaConfig().getString(CFG.READY_AUTOCLASS);
 			
 			if (autoClass != null && autoClass.contains(":") && autoClass.contains(";")) {
 				String[] definitions = autoClass.split(";");
@@ -1707,7 +1716,10 @@ public class Arena {
 		
 		final Set<PASpawn> spawns = new HashSet<PASpawn>();
 		if (this.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-			String arenaClass = getClass(cfg.getString(CFG.READY_AUTOCLASS)).getName();
+			final String arenaClass = 
+					getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+							(getClass(player.getName()) != null ? player.getName() : getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
+							: getArenaConfig().getString(CFG.READY_AUTOCLASS);
 			spawns.addAll(SpawnManager.getPASpawnsStartingWith(this, team.getName()+arenaClass+"spawn"));
 		} else if (isFreeForAll()) {
 			if (team.getName().equals("free")) {
@@ -1740,7 +1752,10 @@ public class Arena {
 			
 			
 			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
-				final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+				final String autoClass = 
+						arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+								(arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
+								: arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
 					arena.chooseClass(player, null, autoClass);
 				}
