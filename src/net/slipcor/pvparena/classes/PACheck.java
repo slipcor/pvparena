@@ -418,7 +418,7 @@ public class PACheck {
 				}
 			}
 
-			if (player.getClass() != null && arena.startRunner != null) {
+			if (player.getArenaClass() != null && arena.startRunner != null) {
 				player.setStatus(Status.READY);
 			}
 
@@ -429,7 +429,7 @@ public class PACheck {
 
 		ArenaModuleManager.parseJoin(res, arena, (Player) sender, team);
 
-		if (player.getClass() != null && arena.startRunner != null) {
+		if (player.getArenaClass() != null && arena.startRunner != null) {
 			player.setStatus(Status.READY);
 		}
 	}
