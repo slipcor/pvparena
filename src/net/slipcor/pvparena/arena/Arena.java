@@ -1137,7 +1137,6 @@ public class Arena {
 				player.reset();
 			}
 		}
-		gaveRewards = true;
 	}
 
 	private void giveRewardsLater(final ArenaTeam arenaTeam) {
