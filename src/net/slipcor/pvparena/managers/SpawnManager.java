@@ -881,7 +881,7 @@ public final class SpawnManager {
 						continue;
 					}
 					pLocs.add(new PALocation(app.get().getLocation()));
-					arena.getDebugger().i("pos of " + app.getName() + new PALocation(app.get().getLocation()));
+					arena.getDebugger().i("pos of " + app.getName() + new PALocation(app.get().getLocation()).toString());
 				}
 				arena.getDebugger().i("pLocs.size: " + pLocs.size());
 				
