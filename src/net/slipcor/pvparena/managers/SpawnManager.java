@@ -881,6 +881,7 @@ public final class SpawnManager {
 						continue;
 					}
 					pLocs.add(new PALocation(app.get().getLocation()));
+					arena.getDebugger().i("pos of " + app.getName() + new PALocation(app.get().getLocation()));
 				}
 				arena.getDebugger().i("pLocs.size: " + pLocs.size());
 				
@@ -899,7 +900,7 @@ public final class SpawnManager {
 					}
 					max = Math.max(sum, max);
 					diffs.put(spawnLoc.getLocation(), sum);
-					arena.getDebugger().i("spawnLoc: " + sum);
+					arena.getDebugger().i("spawnLoc: " + spawnLoc.getName() + ":" + sum);
 				}
 				arena.getDebugger().i("max = " + max);
 				
