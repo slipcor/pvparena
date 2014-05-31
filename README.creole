@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.465 - mibby sais push, slipcor pushes!
 * v1.2.3.464 - another instance of false proclamation of rewards
 * v1.2.3.463 - add final liberation kill, don't tell the arena the rewards have been given too early
 * v1.2.3.462 - address github issue #46 - buffer team players

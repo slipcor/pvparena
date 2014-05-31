@@ -160,7 +160,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}
-		new EndRunnable(arena, arena.getArenaConfig().getInt(
+		arena.realEndRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
 
@@ -201,16 +201,28 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		
 		
-		if (!killerTeam.equals(respawnTeam) && reduceLives(arena, killerTeam)) {
-			if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-				PACheck.handleRespawn(arena,
-						ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-						event.getDrops());
-				ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
-//				arena.getDebugger().i("faking player death", respawnPlayer);
-//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
+		if (!killerTeam.equals(respawnTeam)) {
+
+			arena.broadcast(Language.parse(arena,
+					MSG.FIGHT_KILLED_BY,
+					respawnTeam.colorizePlayer(respawnPlayer)
+							+ ChatColor.YELLOW, arena.parseDeathCause(
+							respawnPlayer, event.getEntity()
+									.getLastDamageCause().getCause(), event
+									.getEntity().getKiller())));
+			if (reduceLives(arena, killerTeam)) {
+				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+					PACheck.handleRespawn(arena,
+							ArenaPlayer.parsePlayer(respawnPlayer.getName()),
+							event.getDrops());
+					ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
+	
+					
+	//				arena.getDebugger().i("faking player death", respawnPlayer);
+	//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
+				}
+				return;
 			}
-			return;
 		}
 
 		if (getLifeMap().get(killerTeam.getName()) != null) {
@@ -224,16 +236,6 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 									respawnPlayer, event.getEntity()
 											.getLastDamageCause().getCause(), event
 											.getEntity().getKiller())));
-				} else {
-					arena.broadcast(Language.parse(arena,
-							MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
-							respawnTeam.colorizePlayer(respawnPlayer)
-									+ ChatColor.YELLOW, arena.parseDeathCause(
-									respawnPlayer, event.getEntity()
-											.getLastDamageCause().getCause(), event
-											.getEntity().getKiller()), String
-									.valueOf(getLifeMap().get(killerTeam.getName())),
-							killerTeam.getColoredName()));
 				}
 			}
 
