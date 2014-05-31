@@ -1147,13 +1147,16 @@ public class Arena {
 			return; // this one failed. try next time...
 		}
 		gaveRewards = true; // set this so it doesnt give again later
-		debug.i("Giving rewards to team"+arenaTeam.getName()+"!");
+		debug.i("Giving rewards to team "+arenaTeam.getName()+"!");
+		
+		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+		players.addAll(arenaTeam.getTeamMembers());
 		
 		class RewardLater implements Runnable {
 
 			@Override
 			public void run() {
-				for (ArenaPlayer ap : arenaTeam.getTeamMembers()) {
+				for (ArenaPlayer ap : players) {
 					debug.i("Giving rewards to "+ap.get().getName()+"!");
 					try {
 						giveRewards(ap.get());

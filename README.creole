@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.462 - address github issue #46 - buffer team players
 * v1.2.3.461 - fix WorldGuard language nodes
 * v1.2.3.461 - fix arena player class determination
 * v1.2.3.460 - fix "custom" classes not being considered as such, fixes #828
