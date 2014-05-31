@@ -211,6 +211,12 @@ public class Config {
 		GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1, "Pillars"),
 		GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2, "Pillars"),
 		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false, "Pillars"),
+
+		
+		GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "WOOL", false, "Rescue"),
+		GOAL_RESCUE_LIVES("goal.rescue.rlives", 1, "Rescue"),
+		GOAL_RESCUE_MUSTBESAFE("goal.rescue.mustBeSafe", true, "Rescue"),
+		GOAL_RESCUE_RESCUEEFFECT("goal.rescue.effect", "none", "Rescue"),
 		
 		// -----------
 		

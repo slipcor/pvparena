@@ -463,6 +463,15 @@ public final class Language {
 		
 		GOAL_PILLARS_MSG_SCORE("nulang.goal.pillars.msg.score", "%1% scored %2% points"),
 		
+
+		GOAL_RESCUE_BROUGHTHOME("nulang.goal.rescue.flaghomeleft", "%1% brought home the hostage of team %2%! Rescues remaining: %3%"),
+		GOAL_RESCUE_DROPPED("nulang.goal.rescue.flagsave", "%1% dropped the hostage of team %2%!"),
+		GOAL_RESCUE_GRABBED("nulang.goal.rescue.flaggrab", "%1% grabbed the hostage of team %2%!"),
+		GOAL_RESCUE_NOTSAFE("nulang.goal.rescue.flagnotsafe", "Your hostage is taken! Cannot bring back an enemy hostage!'"),
+		GOAL_RESCUE_SET("nulang.goal.rescue.setflag", "Rescue set: %1%"),
+		GOAL_RESCUE_TOSET("nulang.goal.rescue.tosetflag", "Rescue to set: %1%"),
+		GOAL_RESCUE_TYPESET("nulang.goal.rescue.typeset", "Hostage type set to: &e%1%"),
+		
 		// -----------------------------------------------
 
 		MODULE_AFTERMATCH_STARTING("nulang.mod.aftermatch.aftermatch", "The aftermatch has begun!"),
