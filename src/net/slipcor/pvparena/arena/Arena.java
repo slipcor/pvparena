@@ -1146,7 +1146,6 @@ public class Arena {
 			debug.i("team is null");
 			return; // this one failed. try next time...
 		}
-		gaveRewards = true; // set this so it doesnt give again later
 		debug.i("Giving rewards to team "+arenaTeam.getName()+"!");
 		
 		final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
@@ -1164,6 +1163,7 @@ public class Arena {
 						e.printStackTrace();
 					}
 				}
+				Arena.this.gaveRewards = true;
 			}
 			
 		}

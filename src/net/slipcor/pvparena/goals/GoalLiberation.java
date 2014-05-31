@@ -387,6 +387,17 @@ public class GoalLiberation extends ArenaGoal  {
 					arena.getDebugger().i("faking player death", player);
 					PlayerListener.finallyKillPlayer(arena, player, event);
 				}*/
+
+				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+						.getArenaTeam();
+				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+					arena.broadcast(Language.parse(arena,
+							MSG.FIGHT_KILLED_BY,
+							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+							arena.parseDeathCause(player, event.getEntity()
+									.getLastDamageCause().getCause(),
+									player.getKiller()), String.valueOf(pos)));
+				}
 				
 				PACheck.handleEnd(arena, false);
 			} else {
