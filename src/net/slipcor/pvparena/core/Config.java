@@ -213,7 +213,7 @@ public class Config {
 		GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false, "Pillars"),
 
 		
-		GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "WOOL", false, "Rescue"),
+		GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "VILLAGER", false, "Rescue"),
 		GOAL_RESCUE_LIVES("goal.rescue.rlives", 1, "Rescue"),
 		GOAL_RESCUE_MUSTBESAFE("goal.rescue.mustBeSafe", true, "Rescue"),
 		GOAL_RESCUE_RESCUEEFFECT("goal.rescue.effect", "none", "Rescue"),
