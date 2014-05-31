@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.471 - rewrite the smart respawning
 * v1.2.3.470 - fixed debug
 * v1.2.3.469 - even more debug :/
 * v1.2.3.468 - godgodgodgo - I will! [smart respawn debug spam]

@@ -892,10 +892,10 @@ public final class SpawnManager {
 				double max = 0;
 				
 				for (PASpawn spawnLoc : spawns) {
-					double sum = 0;
+					double sum = 90000;
 					for (PALocation playerLoc : pLocs) {
 						if (spawnLoc.getLocation().getWorldName().equals(playerLoc.getWorldName())) {
-							sum += spawnLoc.getLocation().getDistanceSquared(playerLoc);
+							sum = Math.min(sum, spawnLoc.getLocation().getDistanceSquared(playerLoc));
 						}
 					}
 					max = Math.max(sum, max);
