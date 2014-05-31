@@ -869,6 +869,8 @@ public final class SpawnManager {
 				}
 				
 				// we need a smart spawn
+
+				arena.getDebugger().i("we need smart!");
 				
 				final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, "spawn");
 				
@@ -880,6 +882,7 @@ public final class SpawnManager {
 					}
 					pLocs.add(new PALocation(app.get().getLocation()));
 				}
+				arena.getDebugger().i("pLocs.size: " + pLocs.size());
 				
 				// pLocs now contains the other player's positions
 				
@@ -896,7 +899,9 @@ public final class SpawnManager {
 					}
 					max = Math.max(sum, max);
 					diffs.put(spawnLoc.getLocation(), sum);
+					arena.getDebugger().i("spawnLoc: " + sum);
 				}
+				arena.getDebugger().i("max = " + max);
 				
 				for (PALocation loc : diffs.keySet()) {
 					if (diffs.get(loc) == max) {
