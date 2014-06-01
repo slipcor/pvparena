@@ -30,6 +30,7 @@ public class RespawnRunnable implements Runnable {
 			PVPArena.instance.getLogger().warning("player null!");
 			return;
 		}
+		arena.getDebugger().i("respawning " + player.getName() + " to " + coordName);
 		
 		PALocation loc = SpawnManager.getSpawnByExactName(arena, coordName);
 		
