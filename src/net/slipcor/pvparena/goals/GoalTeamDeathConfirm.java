@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -198,16 +199,18 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
 									.getEntity().getKiller())));
 		}
 
+		final List<ItemStack> returned;
 		if (arena.isCustomClassAlive()
 				|| arena.getArenaConfig().getBoolean(
 						CFG.PLAYER_DROPSINVENTORY)) {
-			InventoryManager.drop(respawnPlayer);
+			returned = InventoryManager.drop(respawnPlayer);
 			event.getDrops().clear();
+		} else {
+			returned = event.getDrops();
 		}
 
 		PACheck.handleRespawn(arena,
-				ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-				event.getDrops());
+				ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 	}
 
 	@Override

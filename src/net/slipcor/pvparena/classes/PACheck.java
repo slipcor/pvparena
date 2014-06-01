@@ -523,6 +523,17 @@ public class PACheck {
 			ArenaModuleManager.parsePlayerDeath(arena, player, event
 					.getEntity().getLastDamageCause());
 
+			final List<ItemStack> returned;
+
+			if (arena.isCustomClassAlive()
+					|| arena.getArenaConfig().getBoolean(
+							CFG.PLAYER_DROPSINVENTORY)) {
+				returned = InventoryManager.drop(player);
+				event.getDrops().clear();
+			} else {
+				returned = event.getDrops();
+			}
+			
 			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
 					event.getDrops());
 

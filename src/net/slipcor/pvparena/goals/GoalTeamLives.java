@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
@@ -184,16 +186,20 @@ public class GoalTeamLives extends ArenaGoal {
 								.valueOf(getLifeMap().get(respawnTeam.getName())),
 						respawnTeam.getColoredName()));
 			}
+
+			final List<ItemStack> returned;
+			
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(respawnPlayer);
+				returned = InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
+			} else {
+				returned = event.getDrops();
 			}
 
 			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-					event.getDrops());
+					ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 
 		} else if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 			arena.getDebugger().i("faking player death", respawnPlayer);

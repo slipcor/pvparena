@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
@@ -268,16 +270,20 @@ public class GoalInfect extends ArenaGoal {
 									.getLastDamageCause().getCause(),
 									player.getKiller()), String.valueOf(iLives)));
 				}
+				
+				final List<ItemStack> returned;
 
 				if (arena.isCustomClassAlive()
 						|| arena.getArenaConfig().getBoolean(
 								CFG.PLAYER_DROPSINVENTORY)) {
-					InventoryManager.drop(player);
+					returned = InventoryManager.drop(player);
 					event.getDrops().clear();
+				} else {
+					returned = event.getDrops();
 				}
 				
 				PACheck.handleRespawn(arena,
-						ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+						ArenaPlayer.parsePlayer(player.getName()), returned);
 				
 				if (anyTeamEmpty()) {
 					PACheck.handleEnd(arena, false);
@@ -301,16 +307,20 @@ public class GoalInfect extends ArenaGoal {
 								.getLastDamageCause().getCause(),
 								player.getKiller()), String.valueOf(iLives)));
 			}
+			
+			final List<ItemStack> returned;
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(player);
+				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
+			} else {
+				returned = event.getDrops();
 			}
 			
 			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+					ArenaPlayer.parsePlayer(player.getName()), returned);
 
 			
 			// player died => commit death!
@@ -329,16 +339,20 @@ public class GoalInfect extends ArenaGoal {
 								.getLastDamageCause().getCause(),
 								player.getKiller()), String.valueOf(iLives)));
 			}
+			
+			final List<ItemStack> returned;
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(player);
+				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
+			} else {
+				returned = event.getDrops();
 			}
 
 			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+					ArenaPlayer.parsePlayer(player.getName()), returned);
 		}
 	}
 

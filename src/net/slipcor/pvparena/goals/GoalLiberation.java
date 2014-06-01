@@ -377,9 +377,19 @@ public class GoalLiberation extends ArenaGoal  {
 			
 			if (!someoneAlive) {
 				getLifeMap().remove(player.getName());
+				final List<ItemStack> returned;
+
+				if (arena.isCustomClassAlive()
+						|| arena.getArenaConfig().getBoolean(
+								CFG.PLAYER_DROPSINVENTORY)) {
+					returned = InventoryManager.drop(player);
+					event.getDrops().clear();
+				} else {
+					returned = event.getDrops();
+				}
+				
 				PACheck.handleRespawn(arena,
-						ArenaPlayer.parsePlayer(player.getName()),
-						event.getDrops());
+						ArenaPlayer.parsePlayer(player.getName()), returned);
 
 				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
 				/*
@@ -443,16 +453,20 @@ public class GoalLiberation extends ArenaGoal  {
 								.getLastDamageCause().getCause(),
 								player.getKiller()), String.valueOf(pos)));
 			}
+			
+			final List<ItemStack> returned;
 
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(player);
+				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
+			} else {
+				returned = event.getDrops();
 			}
 
 			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), event.getDrops());
+					ArenaPlayer.parsePlayer(player.getName()), returned);
 
 		}
 	}

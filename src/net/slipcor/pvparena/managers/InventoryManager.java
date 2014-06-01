@@ -57,8 +57,12 @@ public final class InventoryManager {
 	 * 
 	 * @param player
 	 *            the player to empty
+	 * @return 
 	 */
-	public static void drop(final Player player) {
+	public static List<ItemStack> drop(final Player player) {
+		
+		List<ItemStack> returned = new ArrayList<ItemStack>();
+		
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
 		List<Material> mats;
 		
@@ -77,18 +81,28 @@ public final class InventoryManager {
 		}
 		
 		for (ItemStack is : player.getInventory().getArmorContents()) {
-			if ((is == null) || (is.getType().equals(Material.AIR)) || mats.contains(is.getType())) {
+			if ((is == null) || (is.getType().equals(Material.AIR))) {
+				continue;
+			}
+			if (mats.contains(is.getType())) {
+				returned.add(is.clone());
 				continue;
 			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		for (ItemStack is : player.getInventory().getContents()) {
-			if ((is == null) || (is.getType().equals(Material.AIR)) || mats.contains(is.getType())) {
+			if ((is == null) || (is.getType().equals(Material.AIR))) {
+				continue;
+			}
+			if (mats.contains(is.getType())) {
+				returned.add(is.clone());
 				continue;
 			}
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		player.getInventory().clear();
+		
+		return returned;
 	}
 
 	public static boolean receivesDamage(final ItemStack item) {
