@@ -1485,7 +1485,7 @@ public class Arena {
 		boolean overRide = false;
 		
 		if (forceStart) {
-			overRide = 
+			overRide = errror == null ||
 					errror.contains(Language.parse(MSG.ERROR_READY_1_ALONE)) ||
 					errror.contains(Language.parse(MSG.ERROR_READY_2_TEAM_ALONE)) ||
 					errror.contains(Language.parse(MSG.ERROR_READY_3_TEAM_MISSING_PLAYERS)) ||

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.3.474 - address ticket #866
 * v1.2.3.473 - forward allowed items instead of the (mostly cleared) event drops
 * v1.2.3.472 - add respawnrelay specific debug
 * v1.2.3.471 - rewrite the smart respawning
