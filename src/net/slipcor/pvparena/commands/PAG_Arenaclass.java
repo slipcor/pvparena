@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 
 import org.bukkit.command.CommandSender;
@@ -51,12 +52,18 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 			sender.sendMessage(Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, args[0]));
 			return;
 		}
+		
+		if (ArenaModuleManager.cannotSelectClass(arena, (Player) sender, args[0])) {
+			return;
+		}
 
 		InventoryManager.clearInventory(aPlayer.get());
 		aPlayer.setArenaClass(aClass);
-		ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
-
-		sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+		if (aPlayer.getArenaClass() != null) {
+			ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
+	
+			sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+		}
 	}
 
 	@Override

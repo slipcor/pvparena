@@ -281,6 +281,14 @@ public class Config {
 		
 		MODULES_PLAYERFINDER_MAXRADIUS("modules.playerfinder.maxradius", 100, "PlayerFinder"),
 
+		MODULES_POINTS_GLOBAL("modules.points.global", true, "Points"),
+		
+		MODULES_POINTS_REWARD_DEATH("modules.points.reward.PplayerDeath", Double.valueOf(0), "Points"),
+		MODULES_POINTS_REWARD_KILL("modules.points.reward.PplayerKill", Double.valueOf(0), "Points"),
+		MODULES_POINTS_REWARD_SCORE("modules.points.reward.PplayerScore", Double.valueOf(0), "Points"),
+		MODULES_POINTS_REWARD_TRIGGER("modules.points.reward.Ptrigger", Double.valueOf(0), "Points"),
+		MODULES_POINTS_REWARD_WIN("modules.points.reward.PplayerWin", Double.valueOf(0), "Points"),
+
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
 

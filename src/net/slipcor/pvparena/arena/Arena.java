@@ -273,12 +273,17 @@ public class Arena {
 							+ player.getName());
 			return;
 		}
+		if (ArenaModuleManager.cannotSelectClass(this, player, className)) {
+			return;
+		}
 		aPlayer.setArenaClass(className);
-		if (className.equalsIgnoreCase("custom")) {
-			// if custom, give stuff back
-			ArenaPlayer.reloadInventory(this, player);
-		} else {
-			ArenaPlayer.givePlayerFightItems(this, player);
+		if (aPlayer.getArenaClass() != null) {
+			if (className.equalsIgnoreCase("custom")) {
+				// if custom, give stuff back
+				ArenaPlayer.reloadInventory(this, player);
+			} else {
+				ArenaPlayer.givePlayerFightItems(this, player);
+			}
 		}
 	}
 
@@ -1341,14 +1346,19 @@ public class Arena {
 	}
 
 	public void selectClass(final ArenaPlayer aPlayer, final String cName) {
+		if (ArenaModuleManager.cannotSelectClass(this, aPlayer.get(), cName)) {
+			return;
+		}
 		for (ArenaClass c : classes) {
 			if (c.getName().equalsIgnoreCase(cName)) {
 				aPlayer.setArenaClass(c);
-				aPlayer.setArena(this);
-				aPlayer.createState(aPlayer.get());
-				InventoryManager.clearInventory(aPlayer.get());
-				c.equip(aPlayer.get());
-				msg(aPlayer.get(), Language.parse(this, MSG.CLASS_PREVIEW, c.getName()));
+				if (aPlayer.getArenaClass() != null) {
+					aPlayer.setArena(this);
+					aPlayer.createState(aPlayer.get());
+					InventoryManager.clearInventory(aPlayer.get());
+					c.equip(aPlayer.get());
+					msg(aPlayer.get(), Language.parse(this, MSG.CLASS_PREVIEW, c.getName()));
+				}
 				return;
 			}
 		}
