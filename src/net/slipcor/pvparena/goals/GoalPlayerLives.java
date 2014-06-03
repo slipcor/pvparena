@@ -136,6 +136,12 @@ public class GoalPlayerLives extends ArenaGoal {
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
+
+			int pos = getLifeMap().get(player.getName());
+			arena.getDebugger().i("lives before death: " + pos, player);
+			if (pos <= 1) {
+				res.setError(this, "0");
+			}
 		}
 		return res;
 	}

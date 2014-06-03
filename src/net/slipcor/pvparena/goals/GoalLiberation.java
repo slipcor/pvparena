@@ -275,6 +275,29 @@ public class GoalLiberation extends ArenaGoal  {
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
+			int pos = getLifeMap().get(player.getName());
+			arena.getDebugger().i("lives before death: " + pos, player);
+			if (pos <= 1) {
+				getLifeMap().put(player.getName(),1);
+				
+				ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+				
+				ArenaTeam team = aPlayer.getArenaTeam();
+				
+				boolean someoneAlive = false;
+				
+				for (ArenaPlayer temp : team.getTeamMembers()) {
+					if (temp.getStatus() == Status.FIGHT) {
+						someoneAlive = true;
+						break;
+					}
+				}
+				
+				if (!someoneAlive) {
+					res.setError(this, "0");
+				}
+				
+			}
 		}
 		return res;
 	}

@@ -135,6 +135,15 @@ public class GoalTank extends ArenaGoal {
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
+
+			if (!getLifeMap().containsKey(player.getName())) {
+				return res;
+			}
+			int iLives = getLifeMap().get(player.getName());
+			arena.getDebugger().i("lives before death: " + iLives, player);
+			if (iLives <= 1 || tanks.get(arena).equals(player.getName())) {
+				res.setError(this, "0");
+			}
 		}
 		return res;
 	}

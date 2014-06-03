@@ -114,6 +114,17 @@ public class GoalTeamLives extends ArenaGoal {
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
+
+			final ArenaTeam respawnTeam = ArenaPlayer
+					.parsePlayer(player.getName()).getArenaTeam();
+
+			if (getLifeMap().get(respawnTeam.getName()) != null) {
+				return res;
+			}
+			if (getLifeMap().get(respawnTeam.getName()) <= 1) {
+				res.setError(this, "0");
+			}
+			
 		}
 		return res;
 	}

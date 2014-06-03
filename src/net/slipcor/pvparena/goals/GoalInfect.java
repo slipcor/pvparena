@@ -156,6 +156,16 @@ public class GoalInfect extends ArenaGoal {
 	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
 		if (res.getPriority() <= PRIORITY) {
 			res.setPriority(this, PRIORITY);
+			
+			if (!getLifeMap().containsKey(player.getName())) {
+				return res;
+			}
+			int iLives = getLifeMap().get(player.getName());
+			arena.getDebugger().i("lives before death: " + iLives, player);
+			if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+				res.setError(this, "0");
+			}
+			
 		}
 		return res;
 	}

@@ -45,7 +45,7 @@ A PVP experience enhancing plugin.
 -----------------------------------------------------------------------------------------------------------------------
 
 === Changelog
-
+* v1.2.4.476 - WARNING - MAYBE BREAKING
 * v1.2.3.475 - add config settings for global points system
 * v1.2.3.474 - address ticket #866
 * v1.2.3.473 - forward allowed items instead of the (mostly cleared) event drops
