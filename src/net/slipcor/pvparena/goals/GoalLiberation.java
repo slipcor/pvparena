@@ -445,14 +445,17 @@ public class GoalLiberation extends ArenaGoal  {
 									.getLastDamageCause().getCause(),
 									player.getKiller()), String.valueOf(pos)));
 				}
+				final List<ItemStack> returned;
 				
 				if (arena.isCustomClassAlive()
 						|| arena.getArenaConfig().getBoolean(
 								CFG.PLAYER_DROPSINVENTORY)) {
-					InventoryManager.drop(player);
+					returned = InventoryManager.drop(player);
 					event.getDrops().clear();
+				} else {
+					returned = event.getDrops();
 				}
-				new InventoryRefillRunnable(arena, aPlayer.get(), event.getDrops());
+				new InventoryRefillRunnable(arena, aPlayer.get(), returned);
 				
 				String teamName = aPlayer.getArenaTeam().getName();
 				

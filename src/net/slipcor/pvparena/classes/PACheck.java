@@ -484,10 +484,12 @@ public class PACheck {
 		if (commit == null) {
 			arena.getDebugger().i("no mod handles player deaths", player);
 
+
+			List<ItemStack> returned = null;
 			if (arena.isCustomClassAlive()
 					|| arena.getArenaConfig().getBoolean(
 							CFG.PLAYER_DROPSINVENTORY)) {
-				InventoryManager.drop(player);
+				returned = InventoryManager.drop(player);
 				int exp = event.getDroppedExp();
 				event.getDrops().clear();
 				if (doesRespawn
@@ -523,19 +525,19 @@ public class PACheck {
 			ArenaModuleManager.parsePlayerDeath(arena, player, event
 					.getEntity().getLastDamageCause());
 
-			final List<ItemStack> returned;
-
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(player);
-				event.getDrops().clear();
-			} else {
-				returned = event.getDrops();
+			if (returned == null) {
+				if (arena.isCustomClassAlive()
+						|| arena.getArenaConfig().getBoolean(
+								CFG.PLAYER_DROPSINVENTORY)) {
+						returned = InventoryManager.drop(player);
+						event.getDrops().clear();
+				} else {
+					returned = event.getDrops();
+				}
 			}
 			
 			handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
-					event.getDrops());
+					returned);
 
 			for (ArenaGoal g : arena.getGoals()) {
 				g.parsePlayerDeath(player, player.getLastDamageCause());
