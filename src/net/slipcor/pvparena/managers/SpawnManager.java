@@ -806,9 +806,14 @@ public final class SpawnManager {
 	}
 
 	public static void respawn(final Arena arena, final ArenaPlayer aPlayer, String overrideSpawn) {
-		
+
+		if (arena == null) {
+			PVPArena.instance.getLogger().warning("Arena is null for player " + aPlayer + " while respawning!");
+			return;
+		}
 		
 		if (overrideSpawn == null) {
+			
 			
 			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)
 					&& (arena.isFreeForAll() == aPlayer.getArenaTeam().getName().equals("free"))) {
