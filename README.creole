@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.482 - [DOM] change announceOffset to display logic, not to count logic; addresses github issue #66
 * v1.2.4.481 - fix TDM kill output. address github issue #65; revert fix build #465
 * v1.2.4.480 - address github issue #64
 * v1.2.4.479 - add Domination tickinterval (60) and tickreward (1); adds github issue #60

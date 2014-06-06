@@ -55,7 +55,6 @@ public class GoalDomination extends ArenaGoal {
 	private Map<Location, DominationRunnable> runnerMap = new HashMap<Location, DominationRunnable>();
 
 	private String flagName = "";
-	private int offset;
 	private int announceOffset;
 
 	@Override
@@ -406,13 +405,11 @@ public class GoalDomination extends ArenaGoal {
 			return;
 		}
 		
-		offset = ++offset%announceOffset;
-		
-		if (offset != 0) {
-			return;
-		}
-		
 		int lives = this.getLifeMap().get(team);
+
+        if ((max-lives)%announceOffset != 0) {
+            return;
+        }
 		
 		arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_SCORE,
 				arena.getTeam(team).getColoredName()
@@ -665,7 +662,6 @@ public class GoalDomination extends ArenaGoal {
 				PVPArena.instance, domMainRunner, tickInterval, tickInterval);
 		
 		announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
-		offset = 0;
 	}
 
 	private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
