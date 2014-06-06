@@ -162,7 +162,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
 			return;
 		}
-		arena.realEndRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+		new EndRunnable(arena, arena.getArenaConfig().getInt(
 				CFG.TIME_ENDCOUNTDOWN));
 	}
 

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.480 - address github issue #64
 * v1.2.4.479 - add Domination tickinterval (60) and tickreward (1); adds github issue #60
 * v1.2.4.478 - fix a respawn relay NPE, e.g. when a player leaves while respawning
 * v1.2.4.477 - more Inventory dropping/restoring fixes
