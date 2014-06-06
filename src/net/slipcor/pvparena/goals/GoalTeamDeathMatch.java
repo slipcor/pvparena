@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -207,39 +208,30 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				respawnPlayer.getKiller().getName()).getArenaTeam();
 		
 		
-		if (!killerTeam.equals(respawnTeam)) {
+		if (!killerTeam.equals(respawnTeam) && reduceLives(arena, killerTeam, respawnPlayer, event)) {
+            if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
-			arena.broadcast(Language.parse(arena,
-					MSG.FIGHT_KILLED_BY,
-					respawnTeam.colorizePlayer(respawnPlayer)
-							+ ChatColor.YELLOW, arena.parseDeathCause(
-							respawnPlayer, event.getEntity()
-									.getLastDamageCause().getCause(), event
-									.getEntity().getKiller())));
-			if (reduceLives(arena, killerTeam)) {
-				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+                final List<ItemStack> returned;
 
-					final List<ItemStack> returned;
+                if (arena.isCustomClassAlive()
+                        || arena.getArenaConfig().getBoolean(
+                                CFG.PLAYER_DROPSINVENTORY)) {
+                    returned = InventoryManager.drop(respawnPlayer);
+                    event.getDrops().clear();
+                } else {
+                    returned = event.getDrops();
+                }
 
-					if (arena.isCustomClassAlive()
-							|| arena.getArenaConfig().getBoolean(
-									CFG.PLAYER_DROPSINVENTORY)) {
-						returned = InventoryManager.drop(respawnPlayer);
-						event.getDrops().clear();
-					} else {
-						returned = event.getDrops();
-					}
-					
-					PACheck.handleRespawn(arena,
-							ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
-					ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
-	
-					
-	//				arena.getDebugger().i("faking player death", respawnPlayer);
-	//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
-				}
-				return;
-			}
+                PACheck.handleRespawn(arena,
+                        ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+                ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
+
+
+//				arena.getDebugger().i("faking player death", respawnPlayer);
+//				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
+            }
+            return;
+
 		}
 
 		if (getLifeMap().get(killerTeam.getName()) != null) {
@@ -253,7 +245,17 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 									respawnPlayer, event.getEntity()
 											.getLastDamageCause().getCause(), event
 											.getEntity().getKiller())));
-				}
+				} else {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY_REMAINING_TEAM_FRAGS,
+                            respawnTeam.colorizePlayer(respawnPlayer)
+                                    + ChatColor.YELLOW, arena.parseDeathCause(
+                                    respawnPlayer, event.getEntity()
+                                            .getLastDamageCause().getCause(), event
+                                            .getEntity().getKiller()), String
+                                    .valueOf(getLifeMap().get(killerTeam.getName())),
+                            killerTeam.getColoredName()));
+                }
 			}
 			final List<ItemStack> returned;
 
@@ -336,7 +338,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 	 * @param team the killing team
 	 * @return true if the player should not respawn but be removed
 	 */
-	private boolean reduceLives(final Arena arena, final ArenaTeam team) {
+	private boolean reduceLives(final Arena arena, final ArenaTeam team, final Player respawnPlayer, final EntityDeathEvent event) {
 		final int iLives = this.getLifeMap().get(team.getName());
 
 		if (iLives <= 1) {
@@ -354,6 +356,13 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 					}
 				}
 			}
+            arena.broadcast(Language.parse(arena,
+                    MSG.FIGHT_KILLED_BY,
+                    team.colorizePlayer(respawnPlayer)
+                            + ChatColor.YELLOW, arena.parseDeathCause(
+                            respawnPlayer, event.getEntity()
+                                    .getLastDamageCause().getCause(), event
+                                    .getEntity().getKiller())));
 			PACheck.handleEnd(arena, false);
 			return true;
 		}
