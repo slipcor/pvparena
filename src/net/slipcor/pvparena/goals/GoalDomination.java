@@ -39,7 +39,7 @@ import net.slipcor.pvparena.runnables.EndRunnable;
  * Arena Goal class "Domination"
  * </pre>
  * 
- * The most fast paced arena goal atm. Lighting a TNT ends the game. BOOM.
+ *
  * 
  * @author slipcor
  */
@@ -660,8 +660,9 @@ public class GoalDomination extends ArenaGoal {
 		}
 
 		final DominationMainRunnable domMainRunner = new DominationMainRunnable(arena, this);
+        final int tickInterval = arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKINTERVAL);
 		domMainRunner.rID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-				PVPArena.instance, domMainRunner, 3 * 20L, 3 * 20L);
+				PVPArena.instance, domMainRunner, tickInterval, tickInterval);
 		
 		announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
 		offset = 0;
@@ -671,7 +672,7 @@ public class GoalDomination extends ArenaGoal {
 
 		arena.getDebugger().i("reducing lives of team " + team);
 		if (getLifeMap().get(team) != null) {
-			final int iLives = getLifeMap().get(team) - 1;
+			final int iLives = getLifeMap().get(team) - arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
 			if (iLives > 0) {
 				getLifeMap().put(team, iLives);
 			} else {
@@ -713,8 +714,6 @@ public class GoalDomination extends ArenaGoal {
 	 *            the teamcolor to reset
 	 * @param take
 	 *            true if take, else reset
-	 * @param pumpkin
-	 *            true if pumpkin, false otherwise
 	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
@@ -775,7 +774,6 @@ public class GoalDomination extends ArenaGoal {
 		 * 
 		 * @param arena
 		 *            the arena we are running in
-		 * @param domination
 		 */
 		public DominationRunnable(final Arena arena, final boolean take, final Location loc2, final String teamName,
 				final GoalDomination goal) {

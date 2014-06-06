@@ -168,11 +168,13 @@ public class Config {
 		GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false, "BlockDestroy"),
 		GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
-		GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
+        GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
 		GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
 		GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
 		GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
-		
+        GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
+        GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
+
 		GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", "WOOL", false, "Flags"),
 		GOAL_FLAGS_LIVES("goal.flags.flives", 3, "Flags"),
 		GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
