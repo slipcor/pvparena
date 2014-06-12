@@ -549,14 +549,14 @@ public class PACheck {
 		arena.getDebugger().i("handled by: " + commit.getName(), player);
 		int exp = event.getDroppedExp();
 
-		ArenaModuleManager.parsePlayerDeath(arena, player,
-				player.getLastDamageCause());
-
-		commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
+        commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
 		for (ArenaGoal g : arena.getGoals()) {
 			arena.getDebugger().i("parsing death: " + g.getName(), player);
 			g.parsePlayerDeath(player, player.getLastDamageCause());
 		}
+
+        ArenaModuleManager.parsePlayerDeath(arena, player,
+                player.getLastDamageCause());
 
 		if (doesRespawn
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {

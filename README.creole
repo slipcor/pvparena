@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.484 - shift death parsing order; attempt to fix respawnrelay - ticket #792
 * v1.2.4.482 - [DOM] change announceOffset to display logic, not to count logic; addresses github issue #66
 * v1.2.4.481 - fix TDM kill output. address github issue #65; revert fix build #465
 * v1.2.4.480 - address github issue #64
