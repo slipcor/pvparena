@@ -190,6 +190,10 @@ public class GoalPlayerLives extends ArenaGoal {
 			}
 
 			if (ArenaModuleManager.commitEnd(arena, team)) {
+                if (arena.realEndRunner == null) {
+                    endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+                            CFG.TIME_ENDCOUNTDOWN));
+                }
 				return;
 			}
 		}
