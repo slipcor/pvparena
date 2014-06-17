@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.487 - fix little Arcade related NPE
 * v1.2.4.486 - add (hacky) support for Arcade; and: jenkins maven repo!
 * v1.2.4.485 - possibly fix PlayerLives ending?
 * v1.2.4.484 - shift death parsing order; attempt to fix respawnrelay - ticket #792

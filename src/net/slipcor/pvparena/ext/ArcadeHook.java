@@ -24,6 +24,8 @@ public class ArcadeHook {
             return null;
         } catch (IllegalAccessException e) {
             return null;
+        } catch (NullPointerException e) {
+        	return null;
         }
     }
 
