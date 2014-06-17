@@ -178,6 +178,7 @@ public class StandardLounge extends ArenaModule {
 		if (event.isCancelled()) {
 			return;
 		}
+		PVPArena.arcade.setPlaying(sender.getName(), true);
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		player.setLocation(new PALocation(player.get().getLocation()));

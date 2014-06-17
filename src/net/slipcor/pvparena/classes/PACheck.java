@@ -266,6 +266,12 @@ public class PACheck {
 
 	public static void handleJoin(final Arena arena,
 			final CommandSender sender, final String[] args) {
+
+		if (PVPArena.arcade.isPlaying(sender.getName())) {
+			String name = PVPArena.arcade.getPlugin(sender.getName());
+			arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, name));
+			return;
+		}
 		int priority = 0;
 		PACheck res = new PACheck();
 

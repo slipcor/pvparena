@@ -93,6 +93,7 @@ public class BattlefieldJoin extends ArenaModule {
 		if (event.isCancelled()) {
 			return;
 		}
+		PVPArena.arcade.setPlaying(sender.getName(), true);
 		
 		// standard join --> lounge
 		final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());

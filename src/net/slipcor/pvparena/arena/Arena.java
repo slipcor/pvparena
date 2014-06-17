@@ -313,9 +313,7 @@ public class Arena {
 
 	/**
 	 * count all players being ready
-	 * 
-	 * @param arena
-	 *            the arena to count
+	 *
 	 * @return the number of ready players
 	 */
 	public int countReadyPlayers() {
@@ -824,12 +822,9 @@ public class Arena {
 
 	/**
 	 * a player leaves from the arena
-	 * 
-	 * @param arena
-	 *            the arena where this happens
+	 *
 	 * @param player
 	 *            the leaving player
-	 * @param b
 	 */
 	public void playerLeave(final Player player, final CFG location, final boolean silent) {
 		if (player == null) {
@@ -884,9 +879,7 @@ public class Arena {
 
 	/**
 	 * check if an arena is ready
-	 * 
-	 * @param arena
-	 *            the arena to check
+	 *
 	 * @return null if ok, error message otherwise
 	 */
 	public String ready() {
@@ -993,6 +986,7 @@ public class Arena {
 	public void callExitEvent(final Player player) {
 		final PAExitEvent exitEvent = new PAExitEvent(this, player);
 		Bukkit.getPluginManager().callEvent(exitEvent);
+		PVPArena.arcade.setPlaying(player.getName(), false);
 	}
 
 	/**
@@ -1669,12 +1663,20 @@ public class Arena {
 			ArenaPlayer.backupAndClearInventory(this, player);
 			aPlayer.dump();
 		}
+		
+		if (PVPArena.arcade.isPlaying(player.getName())) {
+			String name = PVPArena.arcade.getPlugin(player.getName());
+			msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, name));
+			return false;
+		}
 
 		final PAJoinEvent event = new PAJoinEvent(this, player, false);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return false;
 		}
+		
+		PVPArena.arcade.setPlaying(player.getName(), true);
 
 		if (aPlayer.getStatus().equals(Status.NULL)) {
 			// joining DIRECTLY - save loc !!
@@ -1798,7 +1800,7 @@ public class Arena {
 	 * food - food!
 	 * </pre>
 	 * 
-	 * @param string
+	 * @param goalName
 	 *            legacy goal
 	 */
 	public boolean getLegacyGoals(final String goalName) {

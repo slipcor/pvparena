@@ -2,6 +2,7 @@ package net.slipcor.pvparena.modules;
 
 import java.util.Set;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -66,6 +67,7 @@ public class StandardSpectate extends ArenaModule {
 		if (event.isCancelled()) {
 			return;
 		}
+		PVPArena.arcade.setPlaying(player.getName(), true);
 
 		// standard join --> lounge
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());

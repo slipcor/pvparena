@@ -20,6 +20,7 @@ import net.slipcor.pvparena.commands.AbstractGlobalCommand;
 import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.ext.ArcadeHook;
 import net.slipcor.pvparena.listeners.*;
 import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -45,6 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PVPArena extends JavaPlugin {
 	public static PVPArena instance = null;
+	public static ArcadeHook arcade = null;
 
 	private static Debug DEBUG;
 
@@ -327,6 +329,7 @@ public class PVPArena extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
+		arcade = new ArcadeHook();
 		DEBUG = new Debug(1);
 
 		this.saveDefaultConfig();
