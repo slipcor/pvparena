@@ -187,15 +187,26 @@ public class GoalTeamLives extends ArenaGoal {
 
 		if (getLifeMap().get(respawnTeam.getName()) != null) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
-						respawnTeam.colorizePlayer(respawnPlayer)
-								+ ChatColor.YELLOW, arena.parseDeathCause(
-								respawnPlayer, event.getEntity()
-										.getLastDamageCause().getCause(), event
-										.getEntity().getKiller()), String
-								.valueOf(getLifeMap().get(respawnTeam.getName())),
-						respawnTeam.getColoredName()));
+                if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY_REMAINING_TEAM,
+                            respawnTeam.colorizePlayer(respawnPlayer)
+                                    + ChatColor.YELLOW, arena.parseDeathCause(
+                                    respawnPlayer, event.getEntity()
+                                            .getLastDamageCause().getCause(), event
+                                            .getEntity().getKiller()), String
+                                    .valueOf(getLifeMap().get(respawnTeam.getName())),
+                            respawnTeam.getColoredName()));
+                } else {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY,
+                            respawnTeam.colorizePlayer(respawnPlayer)
+                                    + ChatColor.YELLOW, arena.parseDeathCause(
+                                    respawnPlayer, event.getEntity()
+                                            .getLastDamageCause().getCause(), event
+                                            .getEntity().getKiller())));
+                }
+
 			}
 
 			final List<ItemStack> returned;

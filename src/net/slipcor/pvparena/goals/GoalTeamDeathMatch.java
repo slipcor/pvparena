@@ -237,7 +237,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 		if (getLifeMap().get(killerTeam.getName()) != null) {
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
 				
-				if (killerTeam.equals(respawnTeam)) {
+				if (killerTeam.equals(respawnTeam) || !arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
 					arena.broadcast(Language.parse(arena,
 							MSG.FIGHT_KILLED_BY,
 							respawnTeam.colorizePlayer(respawnPlayer)

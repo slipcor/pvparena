@@ -241,12 +241,21 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
 					.getArenaTeam();
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
-						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-						arena.parseDeathCause(player, event.getEntity()
-								.getLastDamageCause().getCause(), killer),
-						String.valueOf(iLives)));
+                if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
+                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                            arena.parseDeathCause(player, event.getEntity()
+                                    .getLastDamageCause().getCause(), killer),
+                            String.valueOf(iLives)));
+                } else {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY,
+                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                            arena.parseDeathCause(player, event.getEntity()
+                                    .getLastDamageCause().getCause(), killer)));
+                }
+
 			}
 
 			final List<ItemStack> returned;
