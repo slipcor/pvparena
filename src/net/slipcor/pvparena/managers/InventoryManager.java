@@ -63,8 +63,6 @@ public final class InventoryManager {
 	public static List<ItemStack> drop(final Player player) {
 		List<ItemStack> returned = new ArrayList<ItemStack>();
 
-        new Exception().printStackTrace();
-
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
 		List<Material> mats;
 		

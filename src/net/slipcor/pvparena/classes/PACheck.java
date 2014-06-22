@@ -447,11 +447,6 @@ public class PACheck {
 
 		int priority = 0;
 		PACheck res = new PACheck();
-		arena.getDebugger().i("handlePlayerDeath", player);
-        System.out.print("handlePlayerDeath drops:");
-        for (ItemStack drop : event.getDrops()) {
-            System.out.print(StringParser.getStringFromItemStack(drop));
-        }
 
 		ArenaGoal commit = null;
 
