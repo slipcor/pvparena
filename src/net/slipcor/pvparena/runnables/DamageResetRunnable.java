@@ -48,8 +48,7 @@ public class DamageResetRunnable implements Runnable {
 				final ItemStack[] items = defender.getInventory().getArmorContents();
 				
 				for (ItemStack is : items) {
-					if (is == null || is.getType().equals(Material.WOOL)
-							 || is.getType().equals(Material.SKULL_ITEM)) {
+					if (is == null || !is.getType().name().endsWith("_HELMET")) {
 						continue;
 					}
 					is.setDurability((short) 0);

@@ -404,8 +404,7 @@ public final class StringParser {
 						return itemStack;
 					}
 				} else {
-					PVPArena.instance.getLogger().warning(
-							"data not available for: " + mat.name());
+					DEBUG.i("data not available for: " + mat.name());
 				}
 
 				if (lore != null

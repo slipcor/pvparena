@@ -34,6 +34,13 @@ public class InventoryListener implements Listener {
 		}
 
 		arena.getDebugger().i("InventoryClick: arena player", player);
+
+        if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_MAYCHANGEARMOR)) {
+            if (event.getSlotType() == InventoryType.SlotType.ARMOR) {
+                event.setCancelled(true);
+                return;
+            }
+        }
 		
 		if (event.getInventory().getType()
 			.equals(InventoryType.CRAFTING)) {
