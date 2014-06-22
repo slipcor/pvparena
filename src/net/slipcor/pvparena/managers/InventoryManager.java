@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -60,9 +61,10 @@ public final class InventoryManager {
 	 * @return 
 	 */
 	public static List<ItemStack> drop(final Player player) {
-		
 		List<ItemStack> returned = new ArrayList<ItemStack>();
-		
+
+        new Exception().printStackTrace();
+
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
 		List<Material> mats;
 		
@@ -101,7 +103,6 @@ public final class InventoryManager {
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		player.getInventory().clear();
-		
 		return returned;
 	}
 

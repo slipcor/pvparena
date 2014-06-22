@@ -1,10 +1,6 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -289,7 +285,8 @@ public class GoalInfect extends ArenaGoal {
 					returned = InventoryManager.drop(player);
 					event.getDrops().clear();
 				} else {
-					returned = event.getDrops();
+                    returned = new ArrayList<ItemStack>();
+                    returned.addAll(event.getDrops());
 				}
 				
 				PACheck.handleRespawn(arena,
@@ -326,7 +323,8 @@ public class GoalInfect extends ArenaGoal {
 				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 			
 			PACheck.handleRespawn(arena,
@@ -358,7 +356,8 @@ public class GoalInfect extends ArenaGoal {
 				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,

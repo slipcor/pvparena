@@ -1,9 +1,11 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -217,7 +219,8 @@ public class GoalTeamLives extends ArenaGoal {
 				returned = InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+				returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,

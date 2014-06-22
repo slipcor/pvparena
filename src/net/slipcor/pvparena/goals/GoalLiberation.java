@@ -408,7 +408,8 @@ public class GoalLiberation extends ArenaGoal  {
 					returned = InventoryManager.drop(player);
 					event.getDrops().clear();
 				} else {
-					returned = event.getDrops();
+                    returned = new ArrayList<ItemStack>();
+                    returned.addAll(event.getDrops());
 				}
 				
 				PACheck.handleRespawn(arena,
@@ -453,7 +454,8 @@ public class GoalLiberation extends ArenaGoal  {
 					returned = InventoryManager.drop(player);
 					event.getDrops().clear();
 				} else {
-					returned = event.getDrops();
+                    returned = new ArrayList<ItemStack>();
+                    returned.addAll(event.getDrops());
 				}
 				new InventoryRefillRunnable(arena, aPlayer.get(), returned);
 				
@@ -488,7 +490,8 @@ public class GoalLiberation extends ArenaGoal  {
 				returned = InventoryManager.drop(player);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,

@@ -1,11 +1,6 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -279,12 +274,13 @@ public class GoalFood extends ArenaGoal implements Listener {
 				returned = InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,
 					ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-					event.getDrops());
+					returned);
 
 			return;
 		}
@@ -310,7 +306,8 @@ public class GoalFood extends ArenaGoal implements Listener {
 				returned = InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,

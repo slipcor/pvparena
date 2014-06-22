@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.goals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -265,7 +266,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 				returned = InventoryManager.drop(respawnPlayer);
 				event.getDrops().clear();
 			} else {
-				returned = event.getDrops();
+                returned = new ArrayList<ItemStack>();
+                returned.addAll(event.getDrops());
 			}
 
 			PACheck.handleRespawn(arena,

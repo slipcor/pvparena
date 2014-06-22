@@ -2,6 +2,7 @@ package net.slipcor.pvparena.classes;
 
 import java.util.List;
 
+import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -447,6 +448,10 @@ public class PACheck {
 		int priority = 0;
 		PACheck res = new PACheck();
 		arena.getDebugger().i("handlePlayerDeath", player);
+        System.out.print("handlePlayerDeath drops:");
+        for (ItemStack drop : event.getDrops()) {
+            System.out.print(StringParser.getStringFromItemStack(drop));
+        }
 
 		ArenaGoal commit = null;
 
@@ -483,10 +488,6 @@ public class PACheck {
 									CFG.PLAYER_FEEDFORKILL));
 		}
 
-		if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
-			event.getDrops().clear();
-		}
-
 		if (commit == null) {
 			arena.getDebugger().i("no mod handles player deaths", player);
 
@@ -512,15 +513,6 @@ public class PACheck {
 					player.getName()).getArenaTeam();
 
 			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				/*
-				 * if (respawnTeam == null) {
-				 * PVPArena.instance.getLogger().severe("respawnTeam!"); } else
-				 * if (event.getEntity() == null) {
-				 * PVPArena.instance.getLogger().severe("event.getEntity()!"); }
-				 * else if (event.getEntity().getLastDamageCause() == null) {
-				 * PVPArena.instance.getLogger().severe(
-				 * "event.getEntity().getLastDamageCause()!"); }
-				 */
 				arena.broadcast(Language.parse(arena, MSG.FIGHT_KILLED_BY,
 						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
 						arena.parseDeathCause(player, event.getEntity()
@@ -564,6 +556,9 @@ public class PACheck {
         ArenaModuleManager.parsePlayerDeath(arena, player,
                 player.getLastDamageCause());
 
+        if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+            event.getDrops().clear();
+        }
 		if (doesRespawn
 				|| arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 			InventoryManager.dropExp(player, exp);
