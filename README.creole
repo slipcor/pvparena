@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.492 - remove the remaining Exceptions -.-
 * v1.2.4.491 - remove debug leftovers - sorry!
 * v1.2.4.490 - address DBO ticket #874 - various fixes/additions
 * v1.2.4.489 - finally correctly address the inventory restoring issues (keepItems should be fixed now!)

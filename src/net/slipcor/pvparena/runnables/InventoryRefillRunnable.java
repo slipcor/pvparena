@@ -36,7 +36,6 @@ public class InventoryRefillRunnable implements Runnable {
     private final boolean refill;
 	
 	public InventoryRefillRunnable(final Arena arena, final Player player, final List<ItemStack> itemList) {
-        new Exception().printStackTrace();
 		ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 		if (arena == null && aPlayer.getArena() == null) {
 			this.player = null;
