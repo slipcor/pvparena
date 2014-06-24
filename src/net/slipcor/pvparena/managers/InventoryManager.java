@@ -64,40 +64,55 @@ public final class InventoryManager {
 		List<ItemStack> returned = new ArrayList<ItemStack>();
 
 		DEBUG.i("dropping player inventory: " + player.getName(), player);
-		List<Material> mats;
+        List<Material> exclude;
+        List<Material> keep;
 		
 		ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 		
 		if (ap == null || ap.getArena() == null) {
-			mats = new ArrayList<Material>();
+            exclude = new ArrayList<Material>();
+            keep = new ArrayList<Material>();
 		} else {
 			ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
-			mats = new ArrayList<Material>();
-			for (int i=0; i<items.length; i++) {
-				if (items[i] != null) {
-					mats.add( items[i].getType());
-				}
-			}
+            exclude = new ArrayList<Material>();
+            for (int i=0; i<items.length; i++) {
+                if (items[i] != null) {
+                    exclude.add( items[i].getType());
+                }
+            }
+            items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN);
+            keep = new ArrayList<Material>();
+            for (int i=0; i<items.length; i++) {
+                if (items[i] != null) {
+                    keep.add( items[i].getType());
+                }
+            }
 		}
 		
 		for (ItemStack is : player.getInventory().getArmorContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {
 				continue;
 			}
-			if (mats.contains(is.getType())) {
-				returned.add(is.clone());
-				continue;
-			}
+            if (keep.contains(is.getType())) {
+                returned.add(is.clone());
+                continue;
+            }
+            if (exclude.contains(is.getType())) {
+                continue;
+            }
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		for (ItemStack is : player.getInventory().getContents()) {
 			if ((is == null) || (is.getType().equals(Material.AIR))) {
 				continue;
 			}
-			if (mats.contains(is.getType())) {
-				returned.add(is.clone());
-				continue;
-			}
+            if (keep.contains(is.getType())) {
+                returned.add(is.clone());
+                continue;
+            }
+            if (exclude.contains(is.getType())) {
+                continue;
+            }
 			player.getWorld().dropItemNaturally(player.getLocation(), is);
 		}
 		player.getInventory().clear();
