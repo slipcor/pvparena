@@ -319,7 +319,7 @@ public final class StringParser {
 					try {
 						itemStack.setData(new Dye(Byte.parseByte(data)));
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning(
+						DEBUG.i(
 								"invalid dye data: " + data);
 						return itemStack;
 					}
@@ -358,7 +358,7 @@ public final class StringParser {
 						leatherMeta.setColor(Color.fromRGB(Integer.parseInt(data)));
 						itemStack.setItemMeta(leatherMeta);
 					} catch (Exception e) {
-						PVPArena.instance.getLogger().warning(
+						DEBUG.i(
 								"invalid leather data: " + data);
 						return itemStack;
 					}

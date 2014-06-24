@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.2.4.494 - remove some debug spam about dye and leather data
 * v1.2.4.493 - properly make use of the "keepOnDeath" together with "dropsInventory"
 * v1.2.4.492 - remove the remaining Exceptions -.-
 * v1.2.4.491 - remove debug leftovers - sorry!
