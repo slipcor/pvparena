@@ -43,7 +43,7 @@ public class StandardLounge extends ArenaModule {
 
     @Override
     public String version() {
-        return "v0.10.3.0";
+        return PVPArena.instance.getDescription().getVersion();
     }
 
     @Override

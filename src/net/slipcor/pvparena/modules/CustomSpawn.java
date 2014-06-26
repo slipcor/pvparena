@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.modules;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.loadables.ArenaModule;
 
 public class CustomSpawn extends ArenaModule {
@@ -10,7 +11,7 @@ public class CustomSpawn extends ArenaModule {
 
     @Override
     public String version() {
-        return "v1.0.1.96";
+        return PVPArena.instance.getDescription().getVersion();
     }
 
     @Override

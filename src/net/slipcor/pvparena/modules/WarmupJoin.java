@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.modules;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -37,7 +38,7 @@ public class WarmupJoin extends ArenaModule {
 
     @Override
     public String version() {
-        return "v1.0.1.59";
+        return PVPArena.instance.getDescription().getVersion();
     }
 
     @Override

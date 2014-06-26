@@ -39,7 +39,7 @@ public class StandardSpectate extends ArenaModule {
 
     @Override
     public String version() {
-        return "v1.0.1.59";
+        return PVPArena.instance.getDescription().getVersion();
     }
 
     @Override
