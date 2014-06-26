@@ -1,22 +1,23 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegion;
-import net.slipcor.pvparena.core.StringParser;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>PVP Arena INFO Command class</pre>
@@ -284,4 +285,35 @@ public class PAI_Info extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.INFO));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("info");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("-i");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"chat"});
+        result.define(new String[]{"command"});
+        result.define(new String[]{"damage"});
+        result.define(new String[]{"general"});
+        result.define(new String[]{"item"});
+        result.define(new String[]{"join"});
+        result.define(new String[]{"perms"});
+        result.define(new String[]{"player"});
+        result.define(new String[]{"protect"});
+        result.define(new String[]{"ready"});
+        result.define(new String[]{"time"});
+        result.define(new String[]{"tp"});
+        result.define(new String[]{"region"});
+        result.define(new String[]{"mod"});
+        result.define(new String[]{"goal"});
+        return result;
+    }
 }

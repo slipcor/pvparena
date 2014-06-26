@@ -1,27 +1,24 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.SpawnManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.*;
 
 /**
  * <pre>PVP Arena SETUP Command class</pre>
@@ -194,6 +191,39 @@ public class PAA_Setup extends AbstractArenaCommand {
 		
 		arena.msg(player, Language.parse(MSG.ERROR_ERROR, message));
 		arena.msg(player, Help.parse(HELP.SETUP_CMDS));
-		return;
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("setup");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!su");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"done"});
+        if (arena == null) {
+            return result;
+        }
+
+        for (PASpawn spawn : arena.getSpawns()) {
+            result.define(new String[]{"show", spawn.getName()});
+        }
+
+        for (PABlock block : arena.getBlocks()) {
+            result.define(new String[]{"show", block.getName()});
+        }
+
+        for (ArenaRegion ar : arena.getRegions()) {
+            result.define(new String[]{"show", ar.getRegionName()});
+            result.define(new String[]{"region", ar.getRegionName()});
+        }
+
+        return result;
+    }
 }

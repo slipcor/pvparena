@@ -1,20 +1,21 @@
 package net.slipcor.pvparena.commands;
 
-import java.io.File;
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>PVP Arena UNINSTALL Command class</pre>
@@ -83,7 +84,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 				return;
 			}
 			Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL,mod.getName()));
-			return;
 		}
 	}
 
@@ -133,29 +133,12 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 		}
 	}
 
-	private void disableModule(final String file) {
-		/*
-		if (file.startsWith("pa_g")) {
-			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
-					file.replace("pa_g_", "").replace(".jar", ""));
-		} else if (file.startsWith("pa_m")) {
-			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
-					file.replace("pa_m_", "").replace(".jar", ""));
-		}*/
-	}
-
 	@Override
 	public String getName() {
 		return this.getClass().getName();
 	}
 
 	private boolean remove(final String file) {
-		try {
-			disableModule(file);
-		} catch (Exception e) {
-			PVPArena.instance.getLogger().warning("Error while removing: " + file);
-			e.printStackTrace();
-		}
 		String folder = null;
 		if (file.startsWith("pa_g")) {
 			folder = "/goals/";
@@ -170,14 +153,34 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 				+ folder);
 
 		File destFile = new File(destination, file);
-		if (destFile.exists()) {
-			return destFile.delete();
-		}
-		return false;
+
+		return (destFile.exists() &&  destFile.delete());
 	}
 
 	@Override
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.UNINSTALL));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("uninstall");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!ui");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        for (String string : PVPArena.instance.getAgm().getAllGoalNames()) {
+            result.define(new String[]{string});
+        }
+        for (ArenaModule mod : PVPArena.instance.getAmm().getAllMods()) {
+            result.define(new String[]{mod.getName()});
+        }
+        return result;
+    }
 }

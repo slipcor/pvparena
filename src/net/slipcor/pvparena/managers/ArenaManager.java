@@ -1,15 +1,5 @@
 package net.slipcor.pvparena.managers;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
@@ -28,7 +18,6 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
-
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -37,6 +26,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * <pre>
@@ -83,7 +75,7 @@ public final class ArenaManager {
 	 * 
 	 * @param name
 	 *            the arena name to load
-	 * @return
+	 * @return the loaded module name if something is missing, null otherwise
 	 */
 	private static String checkForMissingGoals(final String name) {
 		DEBUG.i("check for missing goals: " + name);
@@ -167,7 +159,7 @@ public final class ArenaManager {
 	/**
 	 * search the arenas by arena name
 	 * 
-	 * @param sName
+	 * @param name
 	 *            the arena name
 	 * @return an arena instance if found, null otherwise
 	 */
@@ -254,7 +246,7 @@ public final class ArenaManager {
 	/**
 	 * return the arenas
 	 * 
-	 * @return
+	 * @return a Set of Arena
 	 */
 	public static Set<Arena> getArenas() {
 		final Set<Arena> arenas = new HashSet<Arena>();
@@ -321,7 +313,6 @@ public final class ArenaManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return;
 		}
 	}
 
@@ -351,7 +342,6 @@ public final class ArenaManager {
 		if (deleteConfig) {
 			arena.getArenaConfig().delete();
 		}
-		arena = null;
 	}
 
 	/**
@@ -389,12 +379,11 @@ public final class ArenaManager {
 					}
 					if (arena == null) {
 						Arena.pmsg(player,
-								Language.parse(arena, MSG.ERROR_ARENA_NOTFOUND, sName));
+								Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
 						return;
 					}
 					final AbstractArenaCommand command = new PAG_Join();
 					command.commit(arena, player, newArgs);
-					return;
 				}
 			}
 		}
@@ -545,16 +534,16 @@ public final class ArenaManager {
 			Arena arena = DEF_VALUES.get(string);
 			boolean found = false;
 			for (String arenaName : defs) {
-				if (found == false) {
-					if (arenaName.equalsIgnoreCase(arena.getName())) {
-						found = true;
-					}
+				if (found) {
+                    // we just found it, this is the one!
+                    Arena nextArena = ARENAS.get(arenaName.toLowerCase());
+
+                    DEF_VALUES.put(string, nextArena);
+                    return;
 				} else {
-					// we just found it, this is the one!
-					Arena nextArena = ARENAS.get(arenaName.toLowerCase());
-					
-					DEF_VALUES.put(string, nextArena);
-					return;
+                    if (arenaName.equalsIgnoreCase(arena.getName())) {
+                        found = true;
+                    }
 				}
 			}
 		}

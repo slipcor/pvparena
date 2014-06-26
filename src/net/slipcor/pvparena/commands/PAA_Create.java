@@ -2,13 +2,15 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena CREATE Command class</pre>
@@ -85,4 +87,32 @@ public class PAA_Create extends AbstractGlobalCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CREATE));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("create", "new");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!c");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"{String}","teams"});
+        result.define(new String[]{"{String}","teamdm"});
+        result.define(new String[]{"{String}","dm"});
+        result.define(new String[]{"{String}","free"});
+        result.define(new String[]{"{String}","spleef"});
+        result.define(new String[]{"{String}","ctf"});
+        result.define(new String[]{"{String}","ctp"});
+        result.define(new String[]{"{String}","tank"});
+        result.define(new String[]{"{String}","sabotage"});
+        result.define(new String[]{"{String}","infect"});
+        result.define(new String[]{"{String}","liberation"});
+        result.define(new String[]{"{String}","food"});
+        return result;
+    }
 }

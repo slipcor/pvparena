@@ -1,13 +1,11 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.Locale;
-
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-
 import org.bukkit.command.CommandSender;
 
 /**
@@ -22,7 +20,7 @@ import org.bukkit.command.CommandSender;
  * @version v0.10.0
  */
 
-public abstract class AbstractGlobalCommand {
+public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 	public final String[] perms;
 
 	public AbstractGlobalCommand(final String[] permissions) {
@@ -50,8 +48,23 @@ public abstract class AbstractGlobalCommand {
 
 	public abstract String getName();
 
+    @Override
+    public boolean hasPerms(final CommandSender sender, final Arena arena) {
+        // tabComplete check
+        if (PVPArena.hasAdminPerms(sender)) {
+            return true;
+        }
+
+        for (String perm : perms) {
+            if (sender.hasPermission(perm)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	public boolean hasPerms(final CommandSender sender) {
-		if (sender.hasPermission("pvparena.admin")) {
+        if (PVPArena.hasAdminPerms(sender)) {
 			return true;
 		}
 
@@ -76,7 +89,6 @@ public abstract class AbstractGlobalCommand {
 								Language.parse(MSG.ERROR_NOPERM_X_USER)));
 			}
 		} else {
-
 			Arena.pmsg(
 					sender,
 					Language.parse(MSG.ERROR_NOPERM,
@@ -84,33 +96,6 @@ public abstract class AbstractGlobalCommand {
 		}
 
 		return false;
-	}
-
-	public static AbstractGlobalCommand getByName(final String commandName) {
-
-		final String name = commandName.toLowerCase(Locale.ENGLISH);
-
-		if (name.equals("create") || name.equals("!c") || name.equals("new")) {
-			return new PAA_Create();
-		} else if (name.contains("debug") || name.equals("!d")) {
-			return new PAA_Debug();
-		} else if (name.contains("duty") || name.equals("!du")) {
-			return new PAA_Duty();
-		} else if (name.contains("help") || name.equals("-h")) {
-			return new PAI_Help();
-		} else if (name.equals("install") || name.equals("!i")) {
-			return new PAA_Install();
-		} else if (name.contains("uninstall") || name.equals("!ui")) {
-			return new PAA_Uninstall();
-		} else if (name.contains("update") || name.equals("!u")) {
-			return new PAA_Update();
-		} else if (name.equals("list") || name.startsWith("-ls")) {
-			return new PAI_ArenaList();
-		} else if (name.contains("version") || name.startsWith("-v")) {
-			return new PAI_Version();
-		}
-
-		return null;
 	}
 
 	public abstract void displayHelp(CommandSender sender);

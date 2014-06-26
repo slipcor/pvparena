@@ -2,12 +2,15 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena REGIONS Command class</pre>
@@ -72,4 +75,26 @@ public class PAA_Regions extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGIONS));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("regions");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!rs");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        if (arena == null) {
+            return result;
+        }
+        for (ArenaRegion region : arena.getRegions()) {
+            result.define(new String[]{region.getRegionName()});
+        }
+        return result;
+    }
 }

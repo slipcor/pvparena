@@ -3,11 +3,13 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena CHECK Command class</pre>
@@ -75,4 +77,19 @@ public class PAA_Check extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CHECK));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("debug");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!d");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 }

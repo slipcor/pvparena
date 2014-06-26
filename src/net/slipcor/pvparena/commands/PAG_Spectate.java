@@ -3,13 +3,15 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ConfigurationManager;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena SPECTATE Command class</pre>
@@ -60,4 +62,19 @@ public class PAG_Spectate extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SPECTATE));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("spectate");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("-s");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 }

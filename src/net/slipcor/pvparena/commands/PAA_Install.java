@@ -1,24 +1,25 @@
 package net.slipcor.pvparena.commands;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>
@@ -156,7 +157,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 		final File source = new File(PVPArena.instance.getDataFolder().getPath()
 				+ "/files/" + file);
 
-		if (source == null || !source.exists()) {
+		if (!source.exists()) {
 			Arena.pmsg(
 					Bukkit.getConsoleSender(),
 					ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + "r"
@@ -179,12 +180,6 @@ public class PAA_Install extends AbstractGlobalCommand {
 		try {
 			final File destination = new File(PVPArena.instance.getDataFolder()
 					.getPath() + folder + "/" + file);
-			try {
-				disableModule(file);
-			} catch (Exception e2) {
-				PVPArena.instance.getLogger().warning("Could not disable module " + file);
-			}
-
 			final FileInputStream stream = new FileInputStream(source);
 
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -207,18 +202,6 @@ public class PAA_Install extends AbstractGlobalCommand {
 		return false;
 	}
 
-	private void disableModule(final String file) {
-		/*
-		if (file.startsWith("pa_g")) {
-			final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(
-					file.replace("pa_g_", "").replace(".jar", ""));
-			
-		} else if (file.startsWith("pa_m")) {
-			final ArenaModule mod = PVPArena.instance.getAmm().getModByName(
-					file.replace("pa_m_", "").replace(".jar", ""));
-		}*/
-	}
-
 	@Override
 	public String getName() {
 		return this.getClass().getName();
@@ -228,4 +211,46 @@ public class PAA_Install extends AbstractGlobalCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.INSTALL));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("install");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!i");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"mods"});
+        result.define(new String[]{"goals"});
+        for (String string : PVPArena.instance.getAgm().getAllGoalNames()) {
+            result.define(new String[]{string});
+        }
+        final YamlConfiguration config = new YamlConfiguration();
+        try {
+            config.load(PVPArena.instance.getDataFolder().getPath()
+                    + "/install.yml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result;
+        }
+
+        Set<String> list;
+
+        list = config.getConfigurationSection("goals").getKeys(false);
+
+        for (String key : list) {
+            result.define(new String[]{key});
+        }
+
+        list = config.getConfigurationSection("mods").getKeys(false);
+        for (String key : list) {
+            result.define(new String[]{key});
+        }
+        return result;
+    }
 }

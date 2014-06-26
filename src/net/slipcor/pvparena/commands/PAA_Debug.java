@@ -5,8 +5,11 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
-
+import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena DEBUG Command class</pre>
@@ -50,4 +53,26 @@ public class PAA_Debug extends AbstractGlobalCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.DEBUG));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("debug");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!d");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        for (Arena arena : ArenaManager.getArenas()) {
+            result.define(new String[]{arena.getName()});
+        }
+        result.define(new String[]{"all"});
+        result.define(new String[]{"none"});
+        result.define(new String[]{"off"});
+        return result;
+    }
 }

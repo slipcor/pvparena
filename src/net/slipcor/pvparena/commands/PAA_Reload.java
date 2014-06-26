@@ -2,11 +2,14 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena RELOAD Command class</pre>
@@ -59,4 +62,19 @@ public class PAA_Reload extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.RELOAD));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("reload");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!rl");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 }

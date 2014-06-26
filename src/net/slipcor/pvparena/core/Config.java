@@ -1,29 +1,24 @@
 package net.slipcor.pvparena.core;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * <pre>
@@ -44,11 +39,10 @@ public class Config {
 	private Map<String, Integer> ints;
 	private Map<String, Double> doubles;
 	private Map<String, String> strings;
+    public static enum CFG {
 
-	public static enum CFG {
 
-
-		Z("configversion","v0.9.0.0", null),
+        Z("configversion","v0.9.0.0", null),
 		
 		CHAT_COLORNICK("chat.colorNick", true, null),
 		CHAT_DEFAULTTEAM("chat.defaultTeam", false, null),
@@ -287,11 +281,11 @@ public class Config {
 
 		MODULES_POINTS_GLOBAL("modules.points.global", true, "Points"),
 		
-		MODULES_POINTS_REWARD_DEATH("modules.points.reward.PplayerDeath", Double.valueOf(0), "Points"),
-		MODULES_POINTS_REWARD_KILL("modules.points.reward.PplayerKill", Double.valueOf(0), "Points"),
-		MODULES_POINTS_REWARD_SCORE("modules.points.reward.PplayerScore", Double.valueOf(0), "Points"),
-		MODULES_POINTS_REWARD_TRIGGER("modules.points.reward.Ptrigger", Double.valueOf(0), "Points"),
-		MODULES_POINTS_REWARD_WIN("modules.points.reward.PplayerWin", Double.valueOf(0), "Points"),
+		MODULES_POINTS_REWARD_DEATH("modules.points.reward.PplayerDeath", 0d, "Points"),
+		MODULES_POINTS_REWARD_KILL("modules.points.reward.PplayerKill", 0d, "Points"),
+		MODULES_POINTS_REWARD_SCORE("modules.points.reward.PplayerScore", 0d, "Points"),
+		MODULES_POINTS_REWARD_TRIGGER("modules.points.reward.Ptrigger", 0d, "Points"),
+		MODULES_POINTS_REWARD_WIN("modules.points.reward.PplayerWin", 0d, "Points"),
 
 		MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
 		MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
@@ -307,25 +301,25 @@ public class Config {
 
 		MODULES_VAULT_BETPOT("modules.vault.betpot", false, "Vault"),
 		MODULES_VAULT_BETTIME("modules.vault.bettime", 60, "Vault"),
-		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", Double.valueOf(1), "Vault"),
-		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", Double.valueOf(1), "Vault"),
-		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", Double.valueOf(1), "Vault"),
-		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", Integer.valueOf(0), "Vault"),
-		MODULES_VAULT_KILLREWARD("modules.vault.killreward", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_MINPLAYTIME("modules.vault.minplaytime", Integer.valueOf(0), "Vault"),
+		MODULES_VAULT_BETWINFACTOR("modules.vault.betWinFactor", 1d, "Vault"),
+		MODULES_VAULT_BETWINTEAMFACTOR("modules.vault.betWinTeamFactor", 1d, "Vault"),
+		MODULES_VAULT_BETWINPLAYERFACTOR("modules.vault.betWinPlayerFactor", 1d, "Vault"),
+		MODULES_VAULT_ENTRYFEE("modules.vault.entryfee", 0, "Vault"),
+		MODULES_VAULT_KILLREWARD("modules.vault.killreward", 0d, "Vault"),
+		MODULES_VAULT_MINPLAYTIME("modules.vault.minplaytime", 0, "Vault"),
 		MODULES_VAULT_MINPLAYERS("modules.vault.vminplayers", 2, "Vault"),
-		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_MINIMUMBET("modules.vault.minbet", 0d, "Vault"),
+		MODULES_VAULT_MAXIMUMBET("modules.vault.maxbet", 0d, "Vault"),
 		MODULES_VAULT_WINPOT("modules.vault.winPot", false, ""),
-		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", Double.valueOf(2), "Vault"),
-		MODULES_VAULT_WINREWARD("modules.vault.winreward", Integer.valueOf(0), "Vault"),
-		MODULES_VAULT_WINREWARDPLAYERFACTOR("modules.vault.winrewardPlayerFactor", Double.valueOf(1), "Vault"),
+		MODULES_VAULT_WINFACTOR("modules.vault.winFactor", 2d, "Vault"),
+		MODULES_VAULT_WINREWARD("modules.vault.winreward", 0, "Vault"),
+		MODULES_VAULT_WINREWARDPLAYERFACTOR("modules.vault.winrewardPlayerFactor", 1d, "Vault"),
 		
-		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", Double.valueOf(0), "Vault"),
-		MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", Double.valueOf(0), "Vault"),
+		MODULES_VAULT_REWARD_DEATH("modules.vault.reward.playerDeath", 0d, "Vault"),
+		MODULES_VAULT_REWARD_KILL("modules.vault.reward.playerKill", 0d, "Vault"),
+		MODULES_VAULT_REWARD_SCORE("modules.vault.reward.playerScore", 0d, "Vault"),
+		MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", 0d, "Vault"),
+		MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", 0d, "Vault"),
 
 		MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND", "Walls"),
 		MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
@@ -393,7 +387,35 @@ public class Config {
 			return node;
 		}
 
-		public void setNode(final String value) {
+        public static CommandTree<String> getTabTree() {
+
+            CommandTree<String> result = new CommandTree<String>(null);
+            for (CFG cfg : values()) {
+                String[] split = cfg.node.split("\\.");
+                String ending = split[split.length-1];
+
+                if (cfg.type.equals("material")) {
+                    result.define(new String[]{cfg.node, "{Material}"});
+                    result.define(new String[]{cfg.node, "hand"});
+                    result.define(new String[]{ending, "{Material}"});
+                    result.define(new String[]{ending, "hand"});
+                } else if(cfg.type.equals("items")) {
+                    result.define(new String[]{cfg.node, "inventory"});
+                    result.define(new String[]{ending, "inventory"});
+                } else if(cfg.type.equals("boolean")) {
+                    result.define(new String[]{cfg.node, "true"});
+                    result.define(new String[]{cfg.node, "false"});
+                    result.define(new String[]{ending, "true"});
+                    result.define(new String[]{ending, "false"});
+                } else {
+                    result.define(new String[]{cfg.node});
+                    result.define(new String[]{ending});
+                }
+            }
+            return result;
+        }
+
+        public void setNode(final String value) {
 			node = value;
 		}
 
@@ -421,7 +443,7 @@ public class Config {
 		public boolean hasModule() {
 			return module!=null;
 		}
-	}
+    }
 
 	/**
 	 * Create a new Config instance that uses the specified file for loading and
@@ -517,16 +539,6 @@ public class Config {
 		return configFile.delete();
 	}
 
-	/**
-	 * Set the header of the config-file.
-	 * 
-	 * @param header
-	 *            the header
-	 */
-	public void setHeader(final String header) {
-		cfg.options().header(header);
-	}
-
 	// /////////////////////////////////////////////////////////////////////////
 	// //
 	// GETTERS //
@@ -558,8 +570,8 @@ public class Config {
 	/**
 	 * Retrieve a boolean from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @return the boolean value of the path if the path exists, false otherwise
 	 */
 	public boolean getBoolean(final CFG cfg) {
@@ -568,9 +580,9 @@ public class Config {
 
 	/**
 	 * Retrieve a boolean from the value maps.
-	 * 
-	 * @param path
-	 *            the path of the value
+	 *
+	 * @param cfg
+	 *            the node of the value
 	 * @param def
 	 *            a default value to return if the value was not in the map
 	 * @return the boolean value of the path if it exists, def otherwise
@@ -584,8 +596,8 @@ public class Config {
 	/**
 	 * Retrieve an int from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @return the int value of the path if the path exists, 0 otherwise
 	 */
 	public int getInt(final CFG cfg) {
@@ -595,8 +607,8 @@ public class Config {
 	/**
 	 * Retrieve an int from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @param def
 	 *            a default value to return if the value was not in the map
 	 * @return the int value of the path if it exists, def otherwise
@@ -610,8 +622,8 @@ public class Config {
 	/**
 	 * Retrieve a double from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @return the double value of the path if the path exists, 0D otherwise
 	 */
 	public double getDouble(CFG cfg) {
@@ -621,8 +633,8 @@ public class Config {
 	/**
 	 * Retrieve a double from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @param def
 	 *            a default value to return if the value was not in the map
 	 * @return the double value of the path if it exists, def otherwise
@@ -636,8 +648,8 @@ public class Config {
 	/**
 	 * Retrieve a string from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @return the string value of the path if the path exists, null otherwise
 	 */
 	public String getString(CFG cfg) {
@@ -647,8 +659,8 @@ public class Config {
 	/**
 	 * Retrieve a string from the value maps.
 	 * 
-	 * @param path
-	 *            the path of the value
+	 * @param cfg
+	 *            the node of the value
 	 * @param def
 	 *            a default value to return if the value was not in the map
 	 * @return the string value of the path if it exists, def otherwise
@@ -732,10 +744,10 @@ public class Config {
 		}
 
 		if (value == null) {
-			booleans.remove(value);
-			ints.remove(value);
-			doubles.remove(value);
-			strings.remove(value);
+			booleans.remove(path);
+			ints.remove(path);
+			doubles.remove(path);
+			strings.remove(path);
 		}
 
 		cfg.set(path, value);

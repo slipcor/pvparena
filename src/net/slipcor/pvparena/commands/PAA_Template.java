@@ -1,15 +1,18 @@
 package net.slipcor.pvparena.commands;
 
-import java.io.File;
-import java.io.IOException;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena TEMPLATE Command class</pre>
@@ -76,4 +79,22 @@ public class PAA_Template extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TEMPLATE));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("template");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!tmp");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"load"});
+        result.define(new String[]{"save"});
+        return result;
+    }
 }

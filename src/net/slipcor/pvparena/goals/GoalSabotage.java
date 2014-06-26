@@ -1,10 +1,24 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager.type;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,25 +35,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Region;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
-import net.slipcor.pvparena.runnables.EndRunnable;
+import java.util.*;
 
 /**
  * <pre>
@@ -90,6 +86,18 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 		return res;
 	}
 
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList(new String[0]);
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "tnt");
+            }
+        }
+        return result;
+    }
+
 	@Override
 	public String checkForMissingSpawns(final Set<String> list) {
 		String team = this.checkForMissingTeamSpawn(list);
@@ -103,12 +111,12 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	 * hook into an interacting player
 	 * 
 	 * @param res
-	 * 
-	 * @param player
+     *            the PACheck instance
+     * @param player
 	 *            the interacting player
-	 * @param clickedBlock
+	 * @param block
 	 *            the block being clicked
-	 * @return
+	 * @return the PACheck instance
 	 */
 	@Override
 	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
@@ -520,12 +528,10 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 	/**
 	 * take/reset an arena flag
 	 * 
-	 * @param flagColor
+	 * @param teamName
 	 *            the teamcolor to reset
 	 * @param take
 	 *            true if take, else reset
-	 * @param pumpkin
-	 *            true if pumpkin, false otherwise
 	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */

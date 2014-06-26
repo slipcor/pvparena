@@ -1,22 +1,5 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -38,6 +21,18 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.RespawnRunnable;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import java.util.*;
 
 /**
  * <pre>
@@ -82,6 +77,18 @@ public class GoalLiberation extends ArenaGoal  {
 		return res;
 	}
 
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList(new String[0]);
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "button");
+            }
+        }
+        return result;
+    }
+
 	@Override
 	public PACheck checkEnd(final PACheck res) {
 		arena.getDebugger().i("checkEnd - " + arena.getName());
@@ -124,12 +131,12 @@ public class GoalLiberation extends ArenaGoal  {
 	 * hook into an interacting player
 	 * 
 	 * @param res
-	 * 
+	 *            the PACheck instance
 	 * @param player
 	 *            the interacting player
-	 * @param clickedBlock
+	 * @param block
 	 *            the block being clicked
-	 * @return
+	 * @return the PACheck instance
 	 */
 	@Override
 	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
@@ -192,7 +199,7 @@ public class GoalLiberation extends ArenaGoal  {
 						List<ItemStack> iList = new ArrayList<ItemStack>();
 						
 						for (ItemStack item : jailedPlayer.getArenaClass().getItems()) {
-							iList.add(item);
+							iList.add(item.clone());
 						}
 						new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
 						success = true;

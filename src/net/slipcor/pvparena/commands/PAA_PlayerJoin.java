@@ -3,13 +3,16 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena PLAYERTEAM Command class</pre>
@@ -37,7 +40,7 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 			return;
 		}
 
-		// usage: /pa {arenaname} playerjoin [spawnname] {team} | tp to a spawn
+		// usage: /pa {arenaname} playerjoin [playername] {team} | tp to a spawn
 		
 		Player player = Bukkit.getPlayer(args[0]);
 		
@@ -60,4 +63,23 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TELEPORT));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("round");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!rd");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        for (String team : arena.getTeamNames()) {
+            result.define(new String[]{"{Player}",team});
+        }
+        return result;
+    }
 }

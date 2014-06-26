@@ -1,24 +1,26 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 import net.slipcor.pvparena.regions.CuboidRegion;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>PVP Arena REGION Command class</pre>
@@ -174,4 +176,31 @@ public class PAA_Region extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.REGION));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("region");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!r");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        if (arena == null) {
+            return result;
+        }
+
+        for (ArenaRegion region : arena.getRegions()) {
+            for (ArenaRegionShape shape : PVPArena.instance.getArsm().getRegions()) {
+                result.define(new String[]{region.getRegionName(), shape.getName()});
+                result.define(new String[]{region.getRegionName(), "border"});
+                result.define(new String[]{region.getRegionName(), "remove"});
+            }
+        }
+        return result;
+    }
 }

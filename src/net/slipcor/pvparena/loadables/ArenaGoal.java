@@ -1,9 +1,15 @@
 package net.slipcor.pvparena.loadables;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.api.IArenaCommandHandler;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,13 +18,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.ncloader.NCBLoadable;
+import java.util.*;
 
 /**
  * <pre>
@@ -30,7 +30,7 @@ import net.slipcor.pvparena.ncloader.NCBLoadable;
  * @author slipcor
  */
 
-public class ArenaGoal extends NCBLoadable {
+public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
 	protected Debug debug = new Debug(30);
 	protected Arena arena;
 	protected Map<String, Integer> lifeMap = null;
@@ -64,6 +64,29 @@ public class ArenaGoal extends NCBLoadable {
 	public PACheck checkCommand(final PACheck res, final String string) {
 		return res;
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList(new String[0]);
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList(new String[0]);
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
+
+    @Override
+    public boolean hasPerms(final CommandSender sender, final Arena arena) {
+        if (arena == null) {
+            return PVPArena.hasAdminPerms(sender);
+        }
+        return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
+    }
 
 	/**
 	 * check if the goal should commit the end
@@ -517,7 +540,7 @@ public class ArenaGoal extends NCBLoadable {
 	/**
 	 * the goal version (should be overridden!)
 	 * 
-	 * @return
+	 * @return the version String
 	 */
 	public String version() {
 		return "outdated";

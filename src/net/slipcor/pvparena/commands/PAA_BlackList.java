@@ -1,20 +1,16 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-
-import org.bukkit.command.CommandSender;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
+
+import java.util.*;
 
 /**
  * <pre>PVP Arena BLACKLIST Command class</pre>
@@ -116,6 +112,30 @@ public class PAA_BlackList extends AbstractArenaCommand {
 		arena.getArenaConfig().save();
 		
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("blacklist");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!bl");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"clear"});
+        for (String main : SUBTYPES) {
+            result.define(new String[]{main, "clear"});
+            for (String sub : SUBCOMMANDS) {
+                result.define(new String[]{main, sub, "{Material}"});
+            }
+        }
+
+        return result;
+    }
 
 	@Override
 	public String getName() {

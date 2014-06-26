@@ -1,21 +1,23 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.SpawnManager;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>PVP Arena SPAWN Command class</pre>
@@ -112,4 +114,30 @@ public class PAA_Spawn extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SPAWN));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("spawn");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!sp");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        for(String spawn : spawns) {
+            result.define(new String[]{spawn});
+        }
+
+        if (arena == null) {
+            return result;
+        }
+        for (PASpawn spawn : arena.getSpawns()) {
+            result.define(new String[]{spawn.getName()});
+        }
+        return result;
+    }
 }

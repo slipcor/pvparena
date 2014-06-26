@@ -1,7 +1,27 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.*;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,27 +41,7 @@ import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlock;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Region;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.InventoryManager;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.EndRunnable;
+import java.util.*;
 
 /**
  * <pre>
@@ -101,6 +101,24 @@ public class GoalFood extends ArenaGoal implements Listener {
 
 		return res;
 	}
+
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList(new String[0]);
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "foodchest");
+                result.add(sTeam + "foodfurnace");
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
@@ -451,7 +469,6 @@ public class GoalFood extends ArenaGoal implements Listener {
 		if (!validSpawns.contains(new PABlockLocation(event.getClickedBlock().getLocation()))) {
 			arena.msg(player.get(), Language.parse(arena, MSG.GOAL_FOOD_NOTYOURFOOD));
 			event.setCancelled(true);
-			return;
 		}
 		
 	}
@@ -649,7 +666,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 			score = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS)
 					- (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
 							.getName()) : 0);
-			if (scores.containsKey(team)) {
+			if (scores.containsKey(team.getName())) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);
 			} else {
 				scores.put(team.getName(), score);

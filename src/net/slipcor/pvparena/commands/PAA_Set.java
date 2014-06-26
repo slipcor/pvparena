@@ -1,21 +1,23 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>PVP Arena SET Command class</pre>
@@ -123,7 +125,7 @@ public class PAA_Set extends AbstractArenaCommand {
 					Language.parse(arena, MSG.SET_DONE, node,
 							String.valueOf(value)));
 		} else if (type.equals("int")) {
-			int iValue = 0;
+			int iValue;
 
 			try {
 				iValue = Integer.parseInt(value);
@@ -137,7 +139,7 @@ public class PAA_Set extends AbstractArenaCommand {
 					Language.parse(arena, MSG.SET_DONE, node,
 							String.valueOf(iValue)));
 		} else if (type.equals("double")) {
-			double dValue = 0;
+			double dValue;
 
 			try {
 				dValue = Double.parseDouble(value);
@@ -261,5 +263,20 @@ public class PAA_Set extends AbstractArenaCommand {
 	@Override
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SET));
-	}
+    }
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("set");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!s");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return Config.CFG.getTabTree();
+    }
 }

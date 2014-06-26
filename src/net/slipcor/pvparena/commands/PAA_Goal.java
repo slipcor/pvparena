@@ -1,18 +1,19 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.core.StringParser;
-
+import net.slipcor.pvparena.loadables.ArenaGoal;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>PVP Arena GOAL Command class</pre>
@@ -88,4 +89,26 @@ public class PAA_Goal extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.GOAL));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("goal");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!g");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        if (arena == null) {
+            return result;
+        }
+        for (ArenaGoal goal : arena.getGoals()) {
+            result.define(new String[]{goal.getName()});
+        }
+        return result;
+    }
 }

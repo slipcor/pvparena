@@ -3,13 +3,16 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena TEAMS Command class</pre>
@@ -106,4 +109,28 @@ public class PAA_Teams extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TEAMS));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("teams");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!ts");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"add"});
+        if (arena == null) {
+            return result;
+        }
+        for (String team : arena.getTeamNames()) {
+            result.define(new String[]{"remove", team});
+            result.define(new String[]{"set", team});
+        }
+        return result;
+    }
 }

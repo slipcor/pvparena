@@ -1,11 +1,5 @@
 package net.slipcor.pvparena.listeners;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -20,7 +14,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.Updater;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
@@ -30,7 +23,6 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -39,29 +31,13 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerVelocityEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.IllegalPluginAccessException;
+
+import java.util.*;
 
 /**
  * <pre>
@@ -104,20 +80,17 @@ public class PlayerListener implements Listener {
 			return false;
 		}
 
-		if (arena != null) {
-			if (arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
-				return false;
-			}
-			if (!arena.isFightInProgress()) {
-				arena.getDebugger().i("arena != null and fight not in progress => cancel", player);
-				arena.getDebugger().i("> true", player);
+        if (arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
+            return false;
+        }
+        if (!arena.isFightInProgress()) {
+            arena.getDebugger().i("arena != null and fight not in progress => cancel", player);
+            arena.getDebugger().i("> true", player);
 
-				PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
-				event.setCancelled(true);
-				return true;
-			}
-			
-		}
+            PACheck.handleInteract(arena, player, pie, pie.getClickedBlock());
+            event.setCancelled(true);
+            return true;
+        }
 
 		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
@@ -229,7 +202,7 @@ public class PlayerListener implements Listener {
 		list.addAll(arena.getArenaConfig().getStringList(
 				CFG.LISTS_CMDWHITELIST.getNode(), new ArrayList<String>()));
 
-		if (list == null || list.size() < 1) {
+		if (list.size() < 1) {
 			list.clear();
 			list.add("ungod");
 			arena.getArenaConfig().set(CFG.LISTS_CMDWHITELIST, list);
@@ -321,7 +294,7 @@ public class PlayerListener implements Listener {
 			arena.broadcast(Language.parse(arena,
 					MSG.FIGHT_KILLED_BY,
 					playerName + ChatColor.YELLOW,
-					arena.parseDeathCause(player, cause.getCause(),
+					arena.parseDeathCause(player, cause == null? EntityDamageEvent.DamageCause.VOID:cause.getCause(),
 							ArenaPlayer.getLastDamagingPlayer(cause, player))));
 		}
 		
@@ -344,9 +317,7 @@ public class PlayerListener implements Listener {
 
 		PlayerState.fullReset(arena, player);
 
-		if (ArenaManager.checkAndCommit(arena, false)) {
-			return;
-		}
+		ArenaManager.checkAndCommit(arena, false);
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
@@ -452,7 +423,7 @@ public class PlayerListener implements Listener {
 				final Sign sign = (Sign) block.getState();
 
 				if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
-						.getClass(sign.getLine(0)) != null)) && (team != null)) {
+						.getClass(sign.getLine(0)) != null))) {
 
 					arena.chooseClass(player, sign, sign.getLine(0));
 				} else {
@@ -471,7 +442,7 @@ public class PlayerListener implements Listener {
 					+ "?", player);
 			if (block.getTypeId() == mMat.getId()) {
 				arena.getDebugger().i("clicked ready block!", player);
-				if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().equals("")) {
+				if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().getName().equals("")) {
 					arena.msg(player, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
 					return; // not chosen class => OUT
 				}

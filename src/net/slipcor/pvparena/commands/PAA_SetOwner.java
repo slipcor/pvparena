@@ -3,11 +3,13 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena SETOWNER Command class</pre>
@@ -53,4 +55,21 @@ public class PAA_SetOwner extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.SETOWNER));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("setowner");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!so");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"%server%"});
+        return result;
+    }
 }

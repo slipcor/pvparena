@@ -1,19 +1,5 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
@@ -22,6 +8,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
+import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -34,6 +21,16 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 /**
  * <pre>
@@ -84,6 +81,23 @@ public class GoalPlayerKillReward extends ArenaGoal {
 		}
 		return res;
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("killrewards");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!kr");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"{int}", "remove"});
+        return result;
+    }
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
@@ -163,7 +177,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
 		// /pa [arena] !kr [number] {remove}
 
-		int value = 0;
+		int value;
 
 		try {
 			value = Integer.parseInt(args[1]);
@@ -496,7 +510,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 			score = getMaxInt()
 					- (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
 							.get(ap.getName()) : 0);
-			if (scores.containsKey(ap)) {
+			if (scores.containsKey(ap.getName())) {
 				scores.put(ap.getName(), scores.get(ap.getName()) + score);
 			} else {
 				scores.put(ap.getName(), score);

@@ -1,15 +1,16 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>PVP Arena START Command class</pre>
@@ -52,4 +53,19 @@ public class PAA_Start extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.START));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("start");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!go");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 }

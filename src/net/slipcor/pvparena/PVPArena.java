@@ -1,38 +1,35 @@
 package net.slipcor.pvparena;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Edit;
-import net.slipcor.pvparena.commands.PAA_Reload;
-import net.slipcor.pvparena.commands.AbstractArenaCommand;
-import net.slipcor.pvparena.commands.PAA_Setup;
-import net.slipcor.pvparena.commands.PAG_Join;
-import net.slipcor.pvparena.commands.PAI_Stats;
-import net.slipcor.pvparena.commands.AbstractGlobalCommand;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.ext.ArcadeHook;
-import net.slipcor.pvparena.listeners.*;
+import net.slipcor.pvparena.listeners.BlockListener;
+import net.slipcor.pvparena.listeners.EntityListener;
+import net.slipcor.pvparena.listeners.InventoryListener;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.TabManager;
 import net.slipcor.pvparena.metrics.Metrics;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>
@@ -53,6 +50,9 @@ public class PVPArena extends JavaPlugin {
 	private ArenaGoalManager agm = null;
 	private ArenaModuleManager amm = null;
 	private ArenaRegionShapeManager arsm = null;
+
+    private final List<AbstractArenaCommand> arenaCommands = new ArrayList<AbstractArenaCommand>();
+    private final List<AbstractGlobalCommand> globalCommands = new ArrayList<AbstractGlobalCommand>();
 
 	private Updater updater = null;
 
@@ -83,14 +83,13 @@ public class PVPArena extends JavaPlugin {
 		return arsm;
 	}
 
-	/**
-	 * Hand over the jar file name
-	 * 
-	 * @return the .jar file name
-	 */
-	public String getFileName() {
-		return this.getFile().getName();
-	}
+    public List<AbstractArenaCommand> getArenaCommands() {
+        return arenaCommands;
+    }
+
+    public List<AbstractGlobalCommand> getGlobalCommands() {
+        return globalCommands;
+    }
 
 	public Updater getUpdater() {
 		return updater;
@@ -160,6 +159,59 @@ public class PVPArena extends JavaPlugin {
 				: sender.hasPermission("pvparena.user");
 	}
 
+    private void loadArenaCommands() {
+        arenaCommands.add(new PAA_BlackList());
+        arenaCommands.add(new PAA_Check());
+        arenaCommands.add(new PAA_Class());
+        arenaCommands.add(new PAA_Disable());
+        arenaCommands.add(new PAA_Edit());
+        arenaCommands.add(new PAA_Enable());
+        arenaCommands.add(new PAA_GameMode());
+        arenaCommands.add(new PAA_Goal());
+        arenaCommands.add(new PAA_PlayerJoin());
+        arenaCommands.add(new PAA_PlayerClass());
+        arenaCommands.add(new PAA_Protection());
+        arenaCommands.add(new PAA_Regions());
+        arenaCommands.add(new PAA_Region());
+        arenaCommands.add(new PAA_RegionFlag());
+        arenaCommands.add(new PAA_RegionType());
+        arenaCommands.add(new PAA_Reload());
+        arenaCommands.add(new PAA_Remove());
+        arenaCommands.add(new PAA_Round());
+        arenaCommands.add(new PAA_Set());
+        arenaCommands.add(new PAA_Setup());
+        arenaCommands.add(new PAA_SetOwner());
+        arenaCommands.add(new PAA_Spawn());
+        arenaCommands.add(new PAA_Start());
+        arenaCommands.add(new PAA_Stop());
+        arenaCommands.add(new PAA_Teams());
+        arenaCommands.add(new PAA_Teleport());
+        arenaCommands.add(new PAA_Template());
+        arenaCommands.add(new PAA_ToggleMod());
+        arenaCommands.add(new PAA_WhiteList());
+        arenaCommands.add(new PAG_Chat());
+        arenaCommands.add(new PAG_Join());
+        arenaCommands.add(new PAG_Leave());
+        arenaCommands.add(new PAG_Spectate());
+        arenaCommands.add(new PAI_List());
+        arenaCommands.add(new PAI_Ready());
+        arenaCommands.add(new PAI_Shutup());
+        arenaCommands.add(new PAG_Arenaclass());
+        arenaCommands.add(new PAI_Info());
+    }
+
+    private void loadGlobalCommands() {
+        globalCommands.add(new PAA_Create());
+        globalCommands.add(new PAA_Debug());
+        globalCommands.add(new PAA_Duty());
+        globalCommands.add(new PAI_Help());
+        globalCommands.add(new PAA_Install());
+        globalCommands.add(new PAA_Uninstall());
+        globalCommands.add(new PAA_Update());
+        globalCommands.add(new PAI_ArenaList());
+        globalCommands.add(new PAI_Version());
+    }
+
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command cmd,
 			final String commandLabel, final String[] args) {
@@ -193,8 +245,13 @@ public class PVPArena extends JavaPlugin {
 
 		}
 
-		final AbstractGlobalCommand pacmd = AbstractGlobalCommand
-				.getByName(args[0]);
+		AbstractGlobalCommand pacmd = null;
+        for (AbstractGlobalCommand agc : globalCommands) {
+            if (agc.getMain().contains(args[0]) || agc.getShort().contains(args[0])) {
+                pacmd = agc;
+                break;
+            }
+        }
 		ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 		if (pacmd != null
 				&& !((player.getArena() != null) && (pacmd.getName()
@@ -267,7 +324,7 @@ public class PVPArena extends JavaPlugin {
 				tempArena = ArenaManager.getAvailable();
 			}
 		} else {
-			if (args != null && args.length > 1) {
+			if (args.length > 1) {
 				newArgs = StringParser.shiftArrayBy(args, 1);
 			}
 		}
@@ -286,8 +343,14 @@ public class PVPArena extends JavaPlugin {
 			return true;
 		}
 
-		AbstractArenaCommand paacmd = AbstractArenaCommand
-				.getByName(newArgs[0]);
+		AbstractArenaCommand paacmd = null;
+        for (AbstractArenaCommand aac : arenaCommands) {
+            if(aac.getMain().contains(newArgs[0]) || aac.getShort().contains(newArgs[0])) {
+                paacmd = aac;
+                break;
+            }
+
+        }
 		if (paacmd == null
 				&& (PACheck.handleCommand(tempArena, sender, newArgs))) {
 			return true;
@@ -316,6 +379,11 @@ public class PVPArena extends JavaPlugin {
 
 		return false;
 	}
+
+    @Override
+    public List<String> onTabComplete (CommandSender sender, Command cmd, String alias, String[] args) {
+        return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
+    }
 
 	@Override
 	public void onDisable() {
@@ -373,6 +441,9 @@ public class PVPArena extends JavaPlugin {
 		agm = new ArenaGoalManager(this);
 		amm = new ArenaModuleManager(this);
 		arsm = new ArenaRegionShapeManager(this);
+
+        loadArenaCommands();
+        loadGlobalCommands();
 
 		Language.init(getConfig().getString("language", "en"));
 		Help.init(getConfig().getString("language", "en"));
@@ -432,7 +503,6 @@ public class PVPArena extends JavaPlugin {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 
 		Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());

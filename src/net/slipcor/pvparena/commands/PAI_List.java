@@ -1,21 +1,16 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-
+import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.command.CommandSender;
+
+import java.util.*;
 
 /**
  * <pre>PVP Arena LIST Command class</pre>
@@ -102,4 +97,19 @@ public class PAI_List extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.LIST));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("list");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("-ls");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
 }

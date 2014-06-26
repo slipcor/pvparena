@@ -1,10 +1,27 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.StatisticsManager.type;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,27 +40,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Region;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
-import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.EndRunnable;
+import java.util.*;
 
 /**
  * <pre>
@@ -109,6 +106,25 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		return res;
 	}
 
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList("flagtype","flageffect","touchdown");
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "flag");
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"{Material}"});
+        return result;
+    }
+
 	@Override
 	public PACheck checkEnd(final PACheck res) {
 
@@ -141,12 +157,12 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	 * hook into an interacting player
 	 * 
 	 * @param res
-	 * 
+	 *            the PACheck instance
 	 * @param player
 	 *            the interacting player
-	 * @param clickedBlock
+	 * @param block
 	 *            the block being clicked
-	 * @return
+	 * @return the PACheck instance
 	 */
 	@Override
 	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
@@ -686,42 +702,41 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (flagTeam == null) {
 			if (sTeam == null) {
 				return;
-			} else {
-				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
-						.getArenaTeam().getColorCodeString()
-						+ aPlayer.getName()
-						+ ChatColor.YELLOW));
-
-				getFlagMap().remove("touchdown");
-				if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
-					if (aPlayer.get() != null) {
-						aPlayer.get().getInventory()
-								.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
-					}
-					getHeadGearMap().remove(aPlayer.getName());
-				}
-
-				takeFlag(ChatColor.BLACK.name(), false,
-						SpawnManager.getBlockByExactName(arena, "touchdownflag"));
-
 			}
-		} else {
-			arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
-					.getArenaTeam().getColorCodeString()
-					+ aPlayer.getName()
-					+ ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
-			getFlagMap().remove(flagTeam.getName());
-			if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
-				if (aPlayer.get() != null) {
-					aPlayer.get().getInventory()
-							.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
-				}
-				getHeadGearMap().remove(aPlayer.getName());
-			}
+            arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+                    .getArenaTeam().getColorCodeString()
+                    + aPlayer.getName()
+                    + ChatColor.YELLOW));
 
-			takeFlag(flagTeam.getColor().name(), false,
-					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
+            getFlagMap().remove("touchdown");
+            if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+                if (aPlayer.get() != null) {
+                    aPlayer.get().getInventory()
+                            .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+                }
+                getHeadGearMap().remove(aPlayer.getName());
+            }
+
+            takeFlag(ChatColor.BLACK.name(), false,
+                    SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+
+			return;
 		}
+        arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
+                .getArenaTeam().getColorCodeString()
+                + aPlayer.getName()
+                + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
+        getFlagMap().remove(flagTeam.getName());
+        if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+            if (aPlayer.get() != null) {
+                aPlayer.get().getInventory()
+                        .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+            }
+            getHeadGearMap().remove(aPlayer.getName());
+        }
+
+        takeFlag(flagTeam.getColor().name(), false,
+                SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 	}
 	
 	@Override
@@ -855,39 +870,38 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		if (flagTeam == null) {
 			if (sTeam == null) {
 				return;
-			} else {
-				arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
-						.getArenaTeam().getColorCodeString()
-						+ aPlayer.getName()
-						+ ChatColor.YELLOW));
-
-				getFlagMap().remove("touchdown");
-				if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
-					if (aPlayer.get() != null) {
-						aPlayer.get().getInventory()
-								.setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
-					}
-					getHeadGearMap().remove(aPlayer.getName());
-				}
-
-				takeFlag(ChatColor.BLACK.name(), false,
-						SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 			}
-		} else {
-			arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
-					.getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW,
-					flagTeam.getColoredName() + ChatColor.YELLOW));
-			getFlagMap().remove(flagTeam.getName());
-			if (getHeadGearMap() != null
-					&& getHeadGearMap().get(player.getName()) != null) {
-				player.getInventory().setHelmet(
-						getHeadGearMap().get(player.getName()).clone());
-				getHeadGearMap().remove(player.getName());
-			}
+            arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+                    .getArenaTeam().getColorCodeString()
+                    + aPlayer.getName()
+                    + ChatColor.YELLOW));
 
-			takeFlag(flagTeam.getColor().name(), false,
-					SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
+            getFlagMap().remove("touchdown");
+            if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+                if (aPlayer.get() != null) {
+                    aPlayer.get().getInventory()
+                            .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+                }
+                getHeadGearMap().remove(aPlayer.getName());
+            }
+
+            takeFlag(ChatColor.BLACK.name(), false,
+                    SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+            return;
 		}
+        arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
+                .getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW,
+                flagTeam.getColoredName() + ChatColor.YELLOW));
+        getFlagMap().remove(flagTeam.getName());
+        if (getHeadGearMap() != null
+                && getHeadGearMap().get(player.getName()) != null) {
+            player.getInventory().setHelmet(
+                    getHeadGearMap().get(player.getName()).clone());
+            getHeadGearMap().remove(player.getName());
+        }
+
+        takeFlag(flagTeam.getColor().name(), false,
+                SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
 	}
 
 	@Override
@@ -1004,8 +1018,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
 	 *            the teamcolor to reset
 	 * @param take
 	 *            true if take, else reset
-	 * @param pumpkin
-	 *            true if pumpkin, false otherwise
 	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
@@ -1039,7 +1051,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 		for (ArenaTeam team : arena.getTeams()) {
 			score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
 					.get(team.getName()) : 0);
-			if (scores.containsKey(team)) {
+			if (scores.containsKey(team.getName())) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);
 			} else {
 				scores.put(team.getName(), score);

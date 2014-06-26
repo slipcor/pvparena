@@ -2,16 +2,19 @@ package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PALocation;
-import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.SpawnManager;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena TELEPORT Command class</pre>
@@ -66,4 +69,26 @@ public class PAA_Teleport extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.TELEPORT));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("teleport");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!tp", "!t");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        if (arena == null) {
+            return result;
+        }
+        for (PASpawn spawn : arena.getSpawns()) {
+            result.define(new String[]{spawn.getName()});
+        }
+        return result;
+    }
 }

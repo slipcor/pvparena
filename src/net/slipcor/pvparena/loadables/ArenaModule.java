@@ -1,11 +1,12 @@
 package net.slipcor.pvparena.loadables;
 
-import java.util.List;
-import java.util.Set;
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -28,6 +29,10 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 /**
  * <pre>
  * Arena Module class
@@ -38,7 +43,7 @@ import org.bukkit.inventory.ItemStack;
  * @author slipcor
  */
 
-public class ArenaModule extends NCBLoadable implements Cloneable {
+public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommandHandler {
 	protected static Debug debug = new Debug(32);
 
 	protected Arena arena;
@@ -82,6 +87,29 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 		return false;
 	}
 
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList(new String[0]);
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList(new String[0]);
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        return new CommandTree<String>(null);
+    }
+
+    @Override
+    public boolean hasPerms(final CommandSender sender, final Arena arena) {
+        if (arena == null) {
+            return PVPArena.hasAdminPerms(sender);
+        }
+        return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
+    }
+
 	/**
 	 * check if the module should commit a player join
 	 * 
@@ -107,19 +135,6 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 	 */
 	public String checkForMissingSpawns(final Set<String> list) {
 		return null;
-	}
-
-	/**
-	 * check if a module should commit an arena start
-	 * 
-	 * @param aPlayer
-	 *            the player triggering the start
-	 * @param res
-	 *            the PACheck instance
-	 * @return the PACheck instance
-	 */
-	public PACheck checkStart(final ArenaPlayer aPlayer, final PACheck res) {
-		return res;
 	}
 
 	/**
@@ -233,16 +248,9 @@ public class ArenaModule extends NCBLoadable implements Cloneable {
 
 	public boolean isMissingBattleRegion(Arena arena) {
 		if (this.needsBattleRegion()) {
-			for (ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
-				return false;
-			}
-			return true;
+            return arena.getRegionsByType(RegionType.BATTLE).size() < 1;
 		}
 		return false;
-	}
-
-	public boolean isMissingBattleRegion() {
-		return isMissingBattleRegion(arena);
 	}
 
 	/**

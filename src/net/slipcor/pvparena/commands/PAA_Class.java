@@ -1,22 +1,19 @@
 package net.slipcor.pvparena.commands;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-
+import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 /**
  * <pre>
@@ -92,7 +89,7 @@ public class PAA_Class extends AbstractArenaCommand {
 				isItems[position++] = is;
 			}
 
-			final String sItems = (isItems == null || isItems.length < 1) ? "AIR"
+			final String sItems = (isItems.length < 1) ? "AIR"
 					: StringParser.getStringFromItemStacks(isItems);
 			StringBuffer armor = new StringBuffer("");
 			int pos = 0;
@@ -132,4 +129,28 @@ public class PAA_Class extends AbstractArenaCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.CLASS));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("class");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!cl");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"save"});
+        if (arena == null) {
+            return result;
+        }
+        for (ArenaClass aclass : arena.getClasses()) {
+            result.define(new String[]{"load",aclass.getName()});
+            result.define(new String[]{"remove",aclass.getName()});
+        }
+        return result;
+    }
 }

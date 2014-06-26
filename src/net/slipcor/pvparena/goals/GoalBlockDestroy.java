@@ -1,8 +1,29 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.Map;
-import java.util.Set;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,29 +38,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlock;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Region;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.loadables.ArenaRegion;
-import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.EndRunnable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <pre>
@@ -90,6 +92,25 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 		return res;
 	}
+
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList("blocktype");
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "block");
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena arena) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[] {"{Material}"});
+        return result;
+    }
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
@@ -408,7 +429,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 			
 			for (PABlockLocation block : blocks) {
-				takeBlock(team.getColor().name(), false, block);
+				takeBlock(team.getColor().name(), block);
 			}
 		}
 	}
@@ -433,7 +454,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 			final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 			
 			for (PABlockLocation block : blocks) {
-				takeBlock(team.getColor().name(), false, block);
+				takeBlock(team.getColor().name(), block);
 			}
 		}
 	}
@@ -478,14 +499,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 	 * 
 	 * @param blockColor
 	 *            the teamcolor to reset
-	 * @param take
-	 *            true if take, else reset
-	 * @param pumpkin
-	 *            true if pumpkin, false otherwise
 	 * @param paBlockLocation
 	 *            the location to take/reset
 	 */
-	public void takeBlock(final String blockColor, final boolean take, final PABlockLocation paBlockLocation) {
+	public void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
 		if (paBlockLocation == null) {
 			return;
 		}
@@ -518,7 +535,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 		for (ArenaTeam team : arena.getTeams()) {
 			score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
 					.get(team.getName()) : 0);
-			if (scores.containsKey(team)) {
+			if (scores.containsKey(team.getName())) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);
 			} else {
 				scores.put(team.getName(), score);
@@ -631,8 +648,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 					
 					@Override
 					public void run() {
-						takeBlock(localColor, false,
-								localLoc);
+						takeBlock(localColor, localLoc);
 					}
 				}
 				
@@ -693,7 +709,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 								"[PVP Arena] team unknown/no lives: " + blockTeam);
 						e.printStackTrace();
 					}
-					takeBlock(arena.getTeam(blockTeam).getColor().name(), false,
+					takeBlock(arena.getTeam(blockTeam).getColor().name(),
 							pb.getLocation());
 
 					reduceLivesCheckEndAndCommit(arena, blockTeam);

@@ -1,11 +1,15 @@
 package net.slipcor.pvparena.commands;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena INFO Command class</pre>
@@ -98,21 +102,23 @@ public class PAI_Help extends AbstractGlobalCommand {
 				Arena.pmsg(sender, "/pa help stats");
 				Arena.pmsg(sender, "/pa help version");
 			} else {
-				final AbstractArenaCommand acmd = AbstractArenaCommand.getByName(args[0]);
-				if (acmd != null) {
-					acmd.displayHelp(sender);
-					return;
-				}
+                for (AbstractArenaCommand aac : PVPArena.instance.getArenaCommands()) {
+                    if (aac.getMain().contains(args[0]) || aac.getShort().contains(args[0])) {
+                        aac.displayHelp(sender);
+                        return;
+                    }
+                }
 				
 				if (args[0].equals("arenalist")) {
 					args[0] = "list";
 				}
-				
-				final AbstractGlobalCommand cmd = AbstractGlobalCommand.getByName(args[0]);
-				if (cmd != null) {
-					cmd.displayHelp(sender);
-					return;
-				}
+
+				for (AbstractGlobalCommand cmd : PVPArena.instance.getGlobalCommands()) {
+                    if (cmd.getMain().contains(args[0]) || cmd.getShort().contains(args[0])) {
+                        cmd.displayHelp(sender);
+                        return;
+                    }
+                }
 			}
 		}
 		
@@ -133,4 +139,25 @@ public class PAI_Help extends AbstractGlobalCommand {
 	public void displayHelp(final CommandSender sender) {
 		Arena.pmsg(sender, Help.parse(HELP.HELP));
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("help");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("-h");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        result.define(new String[]{"admin"});
+        result.define(new String[]{"setup"});
+        result.define(new String[]{"custom"});
+        result.define(new String[]{"game"});
+        result.define(new String[]{"info"});
+        return result;
+    }
 }

@@ -1,10 +1,25 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
+import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.loadables.ArenaGoal;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.SpawnManager;
+import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,26 +28,8 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.arena.ArenaClass;
-import net.slipcor.pvparena.arena.ArenaPlayer;
-import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.arena.ArenaPlayer.Status;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Region;
-import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAGoalEvent;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModuleManager;
-import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.TeamManager;
-import net.slipcor.pvparena.runnables.EndRunnable;
+
+import java.util.*;
 
 /**
  * <pre>
@@ -80,6 +77,11 @@ public class GoalDomination extends ArenaGoal {
 
 		return res;
 	}
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("flag");
+    }
 
 	@Override
 	public PACheck checkEnd(final PACheck res) {
@@ -746,7 +748,7 @@ public class GoalDomination extends ArenaGoal {
 		for (ArenaTeam team : arena.getTeams()) {
 			score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
 					.get(team.getName()) : 0);
-			if (scores.containsKey(team)) {
+			if (scores.containsKey(team.getName())) {
 				scores.put(team.getName(), scores.get(team.getName()) + score);
 			} else {
 				scores.put(team.getName(), score);
@@ -790,9 +792,7 @@ public class GoalDomination extends ArenaGoal {
 			arena.getDebugger().i("team " + team + ", take: " + take);
 			if (take) {
 				// claim a flag for the team
-				if (domination.getFlagMap().containsKey(loc)) {
-					// PVPArena.instance.getLogger().warning("wtf");
-				} else {
+				if (!domination.getFlagMap().containsKey(loc)) {
 					// flag unclaimed! claim!
 					arena.getDebugger().i("clag unclaimed. claim!");
 					domination.getFlagMap().put(loc, team);
