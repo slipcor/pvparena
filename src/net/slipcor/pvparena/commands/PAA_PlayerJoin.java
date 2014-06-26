@@ -66,12 +66,12 @@ public class PAA_PlayerJoin extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("round");
+        return Arrays.asList("playerjoin");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rd");
+        return Arrays.asList("!pj");
     }
 
     @Override

@@ -80,12 +80,12 @@ public class PAA_Check extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("debug");
+        return Arrays.asList("check");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!d");
+        return Arrays.asList("!ch");
     }
 
     @Override
