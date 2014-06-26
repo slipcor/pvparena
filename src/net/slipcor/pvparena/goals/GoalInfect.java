@@ -1,15 +1,5 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.*;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -30,514 +20,523 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.*;
 
 /**
  * <pre>
  * Arena Goal class "Infect"
  * </pre>
- * 
+ * <p/>
  * Infected players kill ppl to enhance their team. Configurable lives
- * 
+ *
  * @author slipcor
  */
 
 public class GoalInfect extends ArenaGoal {
-	public GoalInfect() {
-		super("Infect");
-		debug = new Debug(108);
-	}
+    public GoalInfect() {
+        super("Infect");
+        debug = new Debug(108);
+    }
 
-	private EndRunnable endRunner = null;
+    private EndRunnable endRunner = null;
 
-	@Override
-	public String version() {
-		return PVPArena.instance.getDescription().getVersion();
-	}
+    @Override
+    public String version() {
+        return PVPArena.instance.getDescription().getVersion();
+    }
 
-	private static final int PRIORITY = 9;
+    private static final int PRIORITY = 9;
 
-	@Override
-	public PACheck checkEnd(final PACheck res) {
-		if (res.getPriority() > PRIORITY) {
-			return res;
-		}
+    @Override
+    public PACheck checkEnd(final PACheck res) {
+        if (res.getPriority() > PRIORITY) {
+            return res;
+        }
 
-		final int count = getLifeMap().size();
+        final int count = getLifeMap().size();
 
-		if (count <= 1
-				|| anyTeamEmpty()) {
-			res.setPriority(this, PRIORITY); // yep. only one player left. go!
-		}
-		if (count == 0) {
-			res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
-		}
+        if (count <= 1
+                || anyTeamEmpty()) {
+            res.setPriority(this, PRIORITY); // yep. only one player left. go!
+        }
+        if (count == 0) {
+            res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	private boolean anyTeamEmpty() {
-		for (ArenaTeam team : arena.getTeams()) {
-			boolean bbreak = false;
-			for (ArenaPlayer player : team.getTeamMembers()) {
-				if (player.getStatus() == Status.FIGHT) {
-					bbreak = true;
-				}
-			}
-			if (bbreak) {
-				continue;
-			}
-			arena.getDebugger().i("team empty: " + team.getName());
-			return true;
-		}
-		return false;
-	}
+    private boolean anyTeamEmpty() {
+        for (ArenaTeam team : arena.getTeams()) {
+            boolean bbreak = false;
+            for (ArenaPlayer player : team.getTeamMembers()) {
+                if (player.getStatus() == Status.FIGHT) {
+                    bbreak = true;
+                }
+            }
+            if (bbreak) {
+                continue;
+            }
+            arena.getDebugger().i("team empty: " + team.getName());
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public String checkForMissingSpawns(final Set<String> list) {
-		if (!arena.isFreeForAll()) {
-			return null; // teams are handled somewhere else
-		}
-		
-		boolean infected = false;
+    @Override
+    public String checkForMissingSpawns(final Set<String> list) {
+        if (!arena.isFreeForAll()) {
+            return null; // teams are handled somewhere else
+        }
 
-		int count = 0;
-		for (String s : list) {
-			if (s.startsWith("infected")) {
-				infected = true;
-			}
-			if (s.startsWith("spawn")) {
-				count++;
-			}
-		}
-		if (!infected) {
-			return "infected";
-		}
-		return count > 3 ? null : "need more spawns! (" + count + "/4)";
-	}
+        boolean infected = false;
 
-	@Override
-	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
-		if (res.getPriority() >= PRIORITY) {
-			return res;
-		}
+        int count = 0;
+        for (String s : list) {
+            if (s.startsWith("infected")) {
+                infected = true;
+            }
+            if (s.startsWith("spawn")) {
+                count++;
+            }
+        }
+        if (!infected) {
+            return "infected";
+        }
+        return count > 3 ? null : "need more spawns! (" + count + "/4)";
+    }
 
-		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		final int maxTeamPlayers = arena.getArenaConfig().getInt(
-				CFG.READY_MAXTEAMPLAYERS);
+    @Override
+    public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+        if (res.getPriority() >= PRIORITY) {
+            return res;
+        }
 
-		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
-			return res;
-		}
+        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxTeamPlayers = arena.getArenaConfig().getInt(
+                CFG.READY_MAXTEAMPLAYERS);
 
-		if (args == null || args.length < 1) {
-			return res;
-		}
+        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+            return res;
+        }
 
-		if (!arena.isFreeForAll()) {
-			final ArenaTeam team = arena.getTeam(args[0]);
+        if (args == null || args.length < 1) {
+            return res;
+        }
 
-			if (team != null && maxTeamPlayers > 0
-						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
-				return res;
-			}
-		}
+        if (!arena.isFreeForAll()) {
+            final ArenaTeam team = arena.getTeam(args[0]);
 
-		res.setPriority(this, PRIORITY);
-		return res;
-	}
+            if (team != null && maxTeamPlayers > 0
+                    && team.getTeamMembers().size() >= maxTeamPlayers) {
+                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
+                return res;
+            }
+        }
 
-	@Override
-	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
-		if (res.getPriority() <= PRIORITY) {
-			res.setPriority(this, PRIORITY);
-			
-			if (!getLifeMap().containsKey(player.getName())) {
-				return res;
-			}
-			int iLives = getLifeMap().get(player.getName());
-			arena.getDebugger().i("lives before death: " + iLives, player);
-			if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
-				res.setError(this, "0");
-			}
-			
-		}
-		return res;
-	}
+        res.setPriority(this, PRIORITY);
+        return res;
+    }
 
-	@Override
-	public PACheck checkStart(final PACheck res) {
-		if (res.getPriority() < PRIORITY) {
-			res.setPriority(this, PRIORITY);
-		}
-		return res;
-	}
+    @Override
+    public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+        if (res.getPriority() <= PRIORITY) {
+            res.setPriority(this, PRIORITY);
 
-	@Override
-	public void commitEnd(final boolean force) {
-		if (endRunner != null) {
-			return;
-		}
-		if (arena.realEndRunner != null) {
-			arena.getDebugger().i("[INFECT] already ending");
-			return;
-		}
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
-		Bukkit.getPluginManager().callEvent(gEvent);
-		
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT)) {
-					continue;
-				}
-				if (ap.getArenaTeam().getName().equals("infected")) {
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.GOAL_INFECTED_WON), "END");
+            if (!getLifeMap().containsKey(player.getName())) {
+                return res;
+            }
+            int iLives = getLifeMap().get(player.getName());
+            arena.getDebugger().i("lives before death: " + iLives, player);
+            if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+                res.setError(this, "0");
+            }
 
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.GOAL_INFECTED_WON), "WINNER");
+        }
+        return res;
+    }
 
-					arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_WON));
-					break;
-				} else {
+    @Override
+    public PACheck checkStart(final PACheck res) {
+        if (res.getPriority() < PRIORITY) {
+            res.setPriority(this, PRIORITY);
+        }
+        return res;
+    }
 
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.GOAL_INFECTED_LOST), "END");
-					// String tank = tanks.get(arena);
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.GOAL_INFECTED_LOST), "LOSER");
+    @Override
+    public void commitEnd(final boolean force) {
+        if (endRunner != null) {
+            return;
+        }
+        if (arena.realEndRunner != null) {
+            arena.getDebugger().i("[INFECT] already ending");
+            return;
+        }
+        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        Bukkit.getPluginManager().callEvent(gEvent);
 
-					arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_LOST));
-					break;
-				}
-			}
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
+                if (!ap.getStatus().equals(Status.FIGHT)) {
+                    continue;
+                }
+                if (ap.getArenaTeam().getName().equals("infected")) {
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.GOAL_INFECTED_WON), "END");
 
-			if (ArenaModuleManager.commitEnd(arena, team)) {
-				return;
-			}
-		}
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.GOAL_INFECTED_WON), "WINNER");
 
-		endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
-				CFG.TIME_ENDCOUNTDOWN));
-	}
+                    arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_WON));
+                    break;
+                } else {
 
-	@Override
-	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
-			final String error, final PlayerDeathEvent event) {
-		if (!getLifeMap().containsKey(player.getName())) {
-			return;
-		}
-		int iLives = getLifeMap().get(player.getName());
-		arena.getDebugger().i("lives before death: " + iLives, player);
-		if (iLives <= 1 || ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
-			if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.GOAL_INFECTED_LOST), "END");
+                    // String tank = tanks.get(arena);
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.GOAL_INFECTED_LOST), "LOSER");
 
-				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "playerDeath:"+player.getName());
-				Bukkit.getPluginManager().callEvent(gEvent);
-				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
-					// kill, remove!
-				getLifeMap().remove(player.getName());
-				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-					arena.getDebugger().i("faking player death", player);
-					PlayerListener.finallyKillPlayer(arena, player, event);
-				}
-				return;
-			} else if (iLives <= 1) {
-				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
-				Bukkit.getPluginManager().callEvent(gEvent);
-				// dying player -> infected
-				getLifeMap().put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-				arena.msg(player, Language.parse(arena, MSG.GOAL_INFECTED_YOU));
-				arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
-				
-				ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-				
-				final ArenaTeam oldTeam = aPlayer.getArenaTeam();
-				final ArenaTeam respawnTeam = arena.getTeam("infected");
-				
-				PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, player, oldTeam, respawnTeam);
-				Bukkit.getPluginManager().callEvent(tcEvent);
-				
-				oldTeam.remove(aPlayer);
-				
-				respawnTeam.add(aPlayer);
-				
-				final ArenaClass infectedClass = arena.getClass("%infected%");
-				if (infectedClass != null) {
-					aPlayer.setArenaClass(infectedClass);
-				}
-				
-				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-					arena.broadcast(Language.parse(arena,
-							MSG.FIGHT_KILLED_BY,
-							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-							arena.parseDeathCause(player, event.getEntity()
-									.getLastDamageCause().getCause(),
-									player.getKiller()), String.valueOf(iLives)));
-				}
-				
-				final List<ItemStack> returned;
+                    arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_LOST));
+                    break;
+                }
+            }
 
-				if (arena.isCustomClassAlive()
-						|| arena.getArenaConfig().getBoolean(
-								CFG.PLAYER_DROPSINVENTORY)) {
-					returned = InventoryManager.drop(player);
-					event.getDrops().clear();
-				} else {
+            if (ArenaModuleManager.commitEnd(arena, team)) {
+                return;
+            }
+        }
+
+        endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+                CFG.TIME_ENDCOUNTDOWN));
+    }
+
+    @Override
+    public void commitPlayerDeath(final Player player, final boolean doesRespawn,
+                                  final String error, final PlayerDeathEvent event) {
+        if (!getLifeMap().containsKey(player.getName())) {
+            return;
+        }
+        int iLives = getLifeMap().get(player.getName());
+        arena.getDebugger().i("lives before death: " + iLives, player);
+        if (iLives <= 1 || ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+            if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+
+                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "playerDeath:" + player.getName());
+                Bukkit.getPluginManager().callEvent(gEvent);
+                ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
+                // kill, remove!
+                getLifeMap().remove(player.getName());
+                if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+                    arena.getDebugger().i("faking player death", player);
+                    PlayerListener.finallyKillPlayer(arena, player, event);
+                }
+                return;
+            } else if (iLives <= 1) {
+                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + player.getName());
+                Bukkit.getPluginManager().callEvent(gEvent);
+                // dying player -> infected
+                getLifeMap().put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                arena.msg(player, Language.parse(arena, MSG.GOAL_INFECTED_YOU));
+                arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
+
+                ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+                final ArenaTeam oldTeam = aPlayer.getArenaTeam();
+                final ArenaTeam respawnTeam = arena.getTeam("infected");
+
+                PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, player, oldTeam, respawnTeam);
+                Bukkit.getPluginManager().callEvent(tcEvent);
+
+                oldTeam.remove(aPlayer);
+
+                respawnTeam.add(aPlayer);
+
+                final ArenaClass infectedClass = arena.getClass("%infected%");
+                if (infectedClass != null) {
+                    aPlayer.setArenaClass(infectedClass);
+                }
+
+                if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY,
+                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                            arena.parseDeathCause(player, event.getEntity()
+                                            .getLastDamageCause().getCause(),
+                                    player.getKiller()), String.valueOf(iLives)));
+                }
+
+                final List<ItemStack> returned;
+
+                if (arena.isCustomClassAlive()
+                        || arena.getArenaConfig().getBoolean(
+                        CFG.PLAYER_DROPSINVENTORY)) {
+                    returned = InventoryManager.drop(player);
+                    event.getDrops().clear();
+                } else {
                     returned = new ArrayList<ItemStack>();
                     returned.addAll(event.getDrops());
-				}
-				
-				PACheck.handleRespawn(arena,
-						ArenaPlayer.parsePlayer(player.getName()), returned);
-				
-				if (anyTeamEmpty()) {
-					PACheck.handleEnd(arena, false);
-				}
-				return;
-			} else {
-				// dying infected player, has lives remaining
-				PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "doesRespawn", "playerDeath:"+player.getName());
-				Bukkit.getPluginManager().callEvent(gEvent);
-				iLives--;
-				getLifeMap().put(player.getName(), iLives);
-			}
+                }
 
-			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-					.getArenaTeam();
-			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY_REMAINING,
-						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-						arena.parseDeathCause(player, event.getEntity()
-								.getLastDamageCause().getCause(),
-								player.getKiller()), String.valueOf(iLives)));
-			}
-			
-			final List<ItemStack> returned;
+                PACheck.handleRespawn(arena,
+                        ArenaPlayer.parsePlayer(player.getName()), returned);
 
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(player);
-				event.getDrops().clear();
-			} else {
+                if (anyTeamEmpty()) {
+                    PACheck.handleEnd(arena, false);
+                }
+                return;
+            } else {
+                // dying infected player, has lives remaining
+                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "doesRespawn", "playerDeath:" + player.getName());
+                Bukkit.getPluginManager().callEvent(gEvent);
+                iLives--;
+                getLifeMap().put(player.getName(), iLives);
+            }
+
+            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                    .getArenaTeam();
+            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                arena.broadcast(Language.parse(arena,
+                        MSG.FIGHT_KILLED_BY_REMAINING,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        arena.parseDeathCause(player, event.getEntity()
+                                        .getLastDamageCause().getCause(),
+                                player.getKiller()), String.valueOf(iLives)));
+            }
+
+            final List<ItemStack> returned;
+
+            if (arena.isCustomClassAlive()
+                    || arena.getArenaConfig().getBoolean(
+                    CFG.PLAYER_DROPSINVENTORY)) {
+                returned = InventoryManager.drop(player);
+                event.getDrops().clear();
+            } else {
                 returned = new ArrayList<ItemStack>();
                 returned.addAll(event.getDrops());
-			}
-			
-			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), returned);
+            }
 
-			
-			// player died => commit death!
-			PACheck.handleEnd(arena, false);
-		} else {
-			iLives--;
-			getLifeMap().put(player.getName(), iLives);
+            PACheck.handleRespawn(arena,
+                    ArenaPlayer.parsePlayer(player.getName()), returned);
 
-			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-					.getArenaTeam();
-			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY_REMAINING,
-						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-						arena.parseDeathCause(player, event.getEntity()
-								.getLastDamageCause().getCause(),
-								player.getKiller()), String.valueOf(iLives)));
-			}
-			
-			final List<ItemStack> returned;
 
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(player);
-				event.getDrops().clear();
-			} else {
+            // player died => commit death!
+            PACheck.handleEnd(arena, false);
+        } else {
+            iLives--;
+            getLifeMap().put(player.getName(), iLives);
+
+            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                    .getArenaTeam();
+            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                arena.broadcast(Language.parse(arena,
+                        MSG.FIGHT_KILLED_BY_REMAINING,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        arena.parseDeathCause(player, event.getEntity()
+                                        .getLastDamageCause().getCause(),
+                                player.getKiller()), String.valueOf(iLives)));
+            }
+
+            final List<ItemStack> returned;
+
+            if (arena.isCustomClassAlive()
+                    || arena.getArenaConfig().getBoolean(
+                    CFG.PLAYER_DROPSINVENTORY)) {
+                returned = InventoryManager.drop(player);
+                event.getDrops().clear();
+            } else {
                 returned = new ArrayList<ItemStack>();
                 returned.addAll(event.getDrops());
-			}
+            }
 
-			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), returned);
-		}
-	}
+            PACheck.handleRespawn(arena,
+                    ArenaPlayer.parsePlayer(player.getName()), returned);
+        }
+    }
 
-	@Override
-	public void commitStart() {
-		parseStart(); // hack the team in before spawning, derp!
-		for (ArenaTeam team : arena.getTeams()) {
-			SpawnManager.distribute(arena, team);
-		}
-	}
+    @Override
+    public void commitStart() {
+        parseStart(); // hack the team in before spawning, derp!
+        for (ArenaTeam team : arena.getTeams()) {
+            SpawnManager.distribute(arena, team);
+        }
+    }
 
-	@Override
-	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("normal lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
-				"infected lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-	}
+    @Override
+    public void displayInfo(final CommandSender sender) {
+        sender.sendMessage("normal lives: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
+                "infected lives: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+    }
 
-	@Override
-	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
-		if (res.getPriority() <= PRIORITY+1000) {
-			res.setError(
-					this,
-					String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-									.getName()) : 0));
-		}
-		return res;
-	}
+    @Override
+    public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+        if (res.getPriority() <= PRIORITY + 1000) {
+            res.setError(
+                    this,
+                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
+                            .getName()) : 0));
+        }
+        return res;
+    }
 
-	@Override
-	public boolean hasSpawn(final String string) {
-		
+    @Override
+    public boolean hasSpawn(final String string) {
 
-		if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-			for (ArenaClass aClass : arena.getClasses()) {
-				if (string.toLowerCase().startsWith( 
-						aClass.getName().toLowerCase() + "spawn")) {
-					return true;
-				}
-			}
-		}
-		
-		return (arena.isFreeForAll() && string.toLowerCase()
-				.startsWith("spawn")) || string.toLowerCase().startsWith("infected");
-	}
 
-	@Override
-	public void initate(final Player player) {
-		updateLives(player, arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
-	}
+        if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+            for (ArenaClass aClass : arena.getClasses()) {
+                if (string.toLowerCase().startsWith(
+                        aClass.getName().toLowerCase() + "spawn")) {
+                    return true;
+                }
+            }
+        }
 
-	@Override
-	public boolean isInternal() {
-		return true;
-	}
+        return (arena.isFreeForAll() && string.toLowerCase()
+                .startsWith("spawn")) || string.toLowerCase().startsWith("infected");
+    }
 
-	@Override
-	public void parseLeave(final Player player) {
-		if (player == null) {
-			PVPArena.instance.getLogger().warning(
-					this.getName() + ": player NULL");
-			return;
-		}
-		if (getLifeMap().containsKey(player.getName())) {
-			getLifeMap().remove(player.getName());
-		}
-	}
+    @Override
+    public void initate(final Player player) {
+        updateLives(player, arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+    }
 
-	@Override
-	public void parseStart() {
-		if (arena.getTeam("infected") != null) {
-			return;
-		}
-		ArenaPlayer infected = null;
-		final Random random = new Random();
-		for (ArenaTeam team : arena.getTeams()) {
-			int pos = random.nextInt(team.getTeamMembers().size());
-			arena.getDebugger().i("team " + team.getName() + " random " + pos);
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				arena.getDebugger().i("#" + pos + ": " + ap.toString(), ap.getName());
-				this.getLifeMap().put(ap.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
-				if (pos-- == 0) {
-					infected = ap;
-					this.getLifeMap().put(ap.getName(),
-							arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-				}
-				//break;
-			}
-		}
-		final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
-		for (ArenaTeam team : arena.getTeams()) {
-			if (team.getTeamMembers().contains(infected)) {
-				PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
-				Bukkit.getPluginManager().callEvent(tcEvent);
-				team.remove(infected);
-			}
-		}
-		infectedTeam.add(infected);
+    @Override
+    public boolean isInternal() {
+        return true;
+    }
 
-		final ArenaClass infectedClass = arena.getClass("%infected%");
-		if (infectedClass != null) {
-			infected.setArenaClass(infectedClass);
-			InventoryManager.clearInventory(infected.get());
-			infectedClass.equip(infected.get());
-			for (ArenaModule mod : arena.getMods()) {
-				mod.parseRespawn(infected.get(), infectedTeam, DamageCause.CUSTOM,
-						infected.get());
-			}
-		}
+    @Override
+    public void parseLeave(final Player player) {
+        if (player == null) {
+            PVPArena.instance.getLogger().warning(
+                    this.getName() + ": player NULL");
+            return;
+        }
+        if (getLifeMap().containsKey(player.getName())) {
+            getLifeMap().remove(player.getName());
+        }
+    }
 
-		arena.msg(infected.get(), Language.parse(arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
-		arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
-		
-		final Set<PASpawn> spawns = new HashSet<PASpawn>();
-		spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "infected"));
-		
-		int pos = spawns.size(); 
-		
-		for (PASpawn spawn : spawns) {
-			if (pos-- < 0) {
-				arena.tpPlayerToCoordName(infected.get(), spawn.getName());
-				break;
-			}
-		}
-		arena.getTeams().add(infectedTeam);
-	}
+    @Override
+    public void parseStart() {
+        if (arena.getTeam("infected") != null) {
+            return;
+        }
+        ArenaPlayer infected = null;
+        final Random random = new Random();
+        for (ArenaTeam team : arena.getTeams()) {
+            int pos = random.nextInt(team.getTeamMembers().size());
+            arena.getDebugger().i("team " + team.getName() + " random " + pos);
+            for (ArenaPlayer ap : team.getTeamMembers()) {
+                arena.getDebugger().i("#" + pos + ": " + ap.toString(), ap.getName());
+                this.getLifeMap().put(ap.getName(),
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+                if (pos-- == 0) {
+                    infected = ap;
+                    this.getLifeMap().put(ap.getName(),
+                            arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                }
+                //break;
+            }
+        }
+        final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
+        for (ArenaTeam team : arena.getTeams()) {
+            if (team.getTeamMembers().contains(infected)) {
+                PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
+                Bukkit.getPluginManager().callEvent(tcEvent);
+                team.remove(infected);
+            }
+        }
+        infectedTeam.add(infected);
 
-	@Override
-	public void reset(final boolean force) {
-		endRunner = null;
-		getLifeMap().clear();
-		arena.getTeams().remove(arena.getTeam("infected"));
-	}
+        final ArenaClass infectedClass = arena.getClass("%infected%");
+        if (infectedClass != null) {
+            infected.setArenaClass(infectedClass);
+            InventoryManager.clearInventory(infected.get());
+            infectedClass.equip(infected.get());
+            for (ArenaModule mod : arena.getMods()) {
+                mod.parseRespawn(infected.get(), infectedTeam, DamageCause.CUSTOM,
+                        infected.get());
+            }
+        }
 
-	@Override
-	public void setPlayerLives(final int value) {
-		final Set<String> plrs = new HashSet<String>();
+        arena.msg(infected.get(), Language.parse(arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
+        arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
 
-		for (String name : getLifeMap().keySet()) {
-			plrs.add(name);
-		}
+        final Set<PASpawn> spawns = new HashSet<PASpawn>();
+        spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "infected"));
 
-		for (String s : plrs) {
-			getLifeMap().put(s, value);
-		}
-	}
+        int pos = spawns.size();
 
-	@Override
-	public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
-		getLifeMap().put(aPlayer.getName(), value);
-	}
+        for (PASpawn spawn : spawns) {
+            if (pos-- < 0) {
+                arena.tpPlayerToCoordName(infected.get(), spawn.getName());
+                break;
+            }
+        }
+        arena.getTeams().add(infectedTeam);
+    }
 
-	@Override
-	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-		double score;
+    @Override
+    public void reset(final boolean force) {
+        endRunner = null;
+        getLifeMap().clear();
+        arena.getTeams().remove(arena.getTeam("infected"));
+    }
 
-		for (ArenaPlayer ap : arena.getFighters()) {
-			score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
-					: 0);
-			if (ap.getArenaTeam() != null && ap.getArenaTeam().getName().equals("infected")) {
-				score *= arena.getFighters().size();
-			}
-			if (scores.containsKey(ap)) {
-				scores.put(ap.getName(), scores.get(ap.getName()) + score);
-			} else {
-				scores.put(ap.getName(), score);
-			}
-		}
+    @Override
+    public void setPlayerLives(final int value) {
+        final Set<String> plrs = new HashSet<String>();
 
-		return scores;
-	}
+        for (String name : getLifeMap().keySet()) {
+            plrs.add(name);
+        }
 
-	@Override
-	public void unload(final Player player) {
-		getLifeMap().remove(player.getName());
-	}
+        for (String s : plrs) {
+            getLifeMap().put(s, value);
+        }
+    }
+
+    @Override
+    public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
+        getLifeMap().put(aPlayer.getName(), value);
+    }
+
+    @Override
+    public Map<String, Double> timedEnd(final Map<String, Double> scores) {
+        double score;
+
+        for (ArenaPlayer ap : arena.getFighters()) {
+            score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
+                    : 0);
+            if (ap.getArenaTeam() != null && ap.getArenaTeam().getName().equals("infected")) {
+                score *= arena.getFighters().size();
+            }
+            if (scores.containsKey(ap.getName())) {
+                scores.put(ap.getName(), scores.get(ap.getName()) + score);
+            } else {
+                scores.put(ap.getName(), score);
+            }
+        }
+
+        return scores;
+    }
+
+    @Override
+    public void unload(final Player player) {
+        getLifeMap().remove(player.getName());
+    }
 }

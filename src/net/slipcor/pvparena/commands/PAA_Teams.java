@@ -16,99 +16,98 @@ import java.util.List;
 
 /**
  * <pre>PVP Arena TEAMS Command class</pre>
- * 
+ * <p/>
  * A command to manage arena teams
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAA_Teams extends AbstractArenaCommand {
 
-	public PAA_Teams() {
-		super(new String[] {});
-	}
+    public PAA_Teams() {
+        super(new String[]{});
+    }
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{0,2,3})) {
-			displayHelp(sender);
-			return;
-		}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-		// usage: /pa {arenaname} teams set [name] [value]
-		// usage: /pa {arenaname} teams add [name] [value]
-		// usage: /pa {arenaname} teams remove [name]
-		// usage: /pa {arenaname} teams
-		
-		if (args.length == 0) {
-			// show teams
-			arena.msg(sender, Language.parse(arena, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "f,")));
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, args[0].equals("remove")?new Integer[]{2}:new Integer[]{3})) {
-			displayHelp(sender);
-			return;
-		}
-		
-		final ArenaTeam team = arena.getTeam(args[1]);
-		
-		if (team == null && !args[0].equals("add")) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[1]));
-			return;
-		}
-			
-		if (args[0].equals("remove")) {
-			arena.msg(sender,  Language.parse(arena, MSG.TEAMS_REMOVE, team.getColoredName()));
-			arena.getTeams().remove(team);
-			arena.getArenaConfig().setManually("teams."+team.getName(), null);
-			arena.getArenaConfig().save();
-		} else if (args[0].equals("add")) {
-			try {
-				
-				final DyeColor dColor = DyeColor.valueOf(args[2].toUpperCase());
-				final ArenaTeam newTeam = new ArenaTeam(args[1], dColor.name());
-				arena.getTeams().add(newTeam);
-				arena.getArenaConfig().setManually("teams."+newTeam.getName(), dColor.name());
-				arena.getArenaConfig().save();
+        if (!argCountValid(sender, arena, args, new Integer[]{0, 2, 3})) {
+            displayHelp(sender);
+            return;
+        }
 
-				arena.msg(sender,  Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
-			} catch (Exception e) {
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
-			}
-		} else if (args[0].equals("set")) {
-			try {
-				final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
-				final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
-				arena.getTeams().remove(arena.getTeam(args[1]));
-				arena.getTeams().add(newTeam);
-				arena.getArenaConfig().setManually("teams."+newTeam.getName(), color.name());
-				arena.getArenaConfig().save();
+        // usage: /pa {arenaname} teams set [name] [value]
+        // usage: /pa {arenaname} teams add [name] [value]
+        // usage: /pa {arenaname} teams remove [name]
+        // usage: /pa {arenaname} teams
 
-				arena.msg(sender,  Language.parse(arena, MSG.TEAMS_REMOVE, newTeam.getColoredName()));
-			} catch (Exception e) {
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
-			}
-		} else {
-			displayHelp(sender);
-		}
-	}
+        if (args.length == 0) {
+            // show teams
+            arena.msg(sender, Language.parse(arena, MSG.TEAMS_LIST, StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "f,")));
+            return;
+        }
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+        if (!argCountValid(sender, arena, args, args[0].equals("remove") ? new Integer[]{2} : new Integer[]{3})) {
+            displayHelp(sender);
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.TEAMS));
-	}
+        final ArenaTeam team = arena.getTeam(args[1]);
+
+        if (team == null && !args[0].equals("add")) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[1]));
+            return;
+        }
+
+        if (args[0].equals("remove")) {
+            arena.msg(sender, Language.parse(arena, MSG.TEAMS_REMOVE, team.getColoredName()));
+            arena.getTeams().remove(team);
+            arena.getArenaConfig().setManually("teams." + team.getName(), null);
+            arena.getArenaConfig().save();
+        } else if (args[0].equals("add")) {
+            try {
+
+                final DyeColor dColor = DyeColor.valueOf(args[2].toUpperCase());
+                final ArenaTeam newTeam = new ArenaTeam(args[1], dColor.name());
+                arena.getTeams().add(newTeam);
+                arena.getArenaConfig().setManually("teams." + newTeam.getName(), dColor.name());
+                arena.getArenaConfig().save();
+
+                arena.msg(sender, Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
+            } catch (Exception e) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
+            }
+        } else if (args[0].equals("set")) {
+            try {
+                final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+                final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
+                arena.getTeams().remove(arena.getTeam(args[1]));
+                arena.getTeams().add(newTeam);
+                arena.getArenaConfig().setManually("teams." + newTeam.getName(), color.name());
+                arena.getArenaConfig().save();
+
+                arena.msg(sender, Language.parse(arena, MSG.TEAMS_REMOVE, newTeam.getColoredName()));
+            } catch (Exception e) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
+            }
+        } else {
+            displayHelp(sender);
+        }
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.TEAMS));
+    }
 
     @Override
     public List<String> getMain() {

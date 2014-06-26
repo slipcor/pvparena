@@ -18,102 +18,101 @@ import java.util.List;
 
 /**
  * <pre>PVP Arena ROUND Command class</pre>
- * 
+ * <p/>
  * A command to manage arena rounds
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAA_Round extends AbstractArenaCommand {
-	
-	public PAA_Round() {
-		super(new String[] {});
-	}
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
+    public PAA_Round() {
+        super(new String[]{});
+    }
 
-		// /pa [arenaname] round - list rounds
-		// /pa [arenaname] round [number] - list round goals
-		// /pa [arenaname] round [number] [goal] - toggle round goal
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{0,1,2})) {
-			return;
-		}
-		
-		if (args.length < 1) {
-			if (arena.getRoundCount() < 1) {
-				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
-			} else {
-				final PARoundMap roundMap = arena.getRounds();
-				for (int i = 0; i < roundMap.getCount(); i ++) {
-					arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, String.valueOf(i+1), StringParser.joinSet(roundMap.getGoals(i),", ")));
-				}
-			}
-			return;
-		}
-		
-		try {
-			int round = Integer.parseInt(args[0]);
-			final PARoundMap roundMap = arena.getRounds();
-			
-			if (round >= arena.getRoundCount()) {
-				round = arena.getRoundCount();
-				
-				roundMap.set(round, new PARound(new HashSet<ArenaGoal>()));
-			} else if (args.length < 2) {
-				arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, args[0], StringParser.joinSet(roundMap.getGoals(round),", ")));
-				return;
-			}
-			
-			ArenaGoal goal = null;
-			
-			if (args.length > 1) {
-				goal = PVPArena.instance.getAgm().getGoalByName(args[1].toLowerCase());
-			}
-			
-			if (goal == null) {
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[1], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
-				arena.msg(sender, Language.parse(arena, MSG.GOAL_INSTALLING));
-				return;
-			}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-			final PARound rRound = roundMap.getRound(round);
-			
-			if (rRound.toggle(arena, goal)) {
-				// added
-				arena.msg(sender, Language.parse(arena, MSG.ROUND_ADDED, goal.getName()));
-			} else {
-				// removed
-				arena.msg(sender, Language.parse(arena, MSG.ROUND_REMOVED, goal.getName()));
-			}
-			
-			roundMap.set(round, rRound);
-			//TODO LATER
-			
-		} catch (NumberFormatException e) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
-		} catch (Exception e) {
-			e.printStackTrace();
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, e.getLocalizedMessage()));
-			
-		}
-	}
+        // /pa [arenaname] round - list rounds
+        // /pa [arenaname] round [number] - list round goals
+        // /pa [arenaname] round [number] [goal] - toggle round goal
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+        if (!argCountValid(sender, arena, args, new Integer[]{0, 1, 2})) {
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.ROUND));
-	}
+        if (args.length < 1) {
+            if (arena.getRoundCount() < 1) {
+                arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, "1", StringParser.joinSet(arena.getGoals(), ", ")));
+            } else {
+                final PARoundMap roundMap = arena.getRounds();
+                for (int i = 0; i < roundMap.getCount(); i++) {
+                    arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, String.valueOf(i + 1), StringParser.joinSet(roundMap.getGoals(i), ", ")));
+                }
+            }
+            return;
+        }
+
+        try {
+            int round = Integer.parseInt(args[0]);
+            final PARoundMap roundMap = arena.getRounds();
+
+            if (round >= arena.getRoundCount()) {
+                round = arena.getRoundCount();
+
+                roundMap.set(round, new PARound(new HashSet<ArenaGoal>()));
+            } else if (args.length < 2) {
+                arena.msg(sender, Language.parse(arena, MSG.ROUND_DISPLAY, args[0], StringParser.joinSet(roundMap.getGoals(round), ", ")));
+                return;
+            }
+
+            ArenaGoal goal = null;
+
+            if (args.length > 1) {
+                goal = PVPArena.instance.getAgm().getGoalByName(args[1].toLowerCase());
+            }
+
+            if (goal == null) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[1], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
+                arena.msg(sender, Language.parse(arena, MSG.GOAL_INSTALLING));
+                return;
+            }
+
+            final PARound rRound = roundMap.getRound(round);
+
+            if (rRound.toggle(arena, goal)) {
+                // added
+                arena.msg(sender, Language.parse(arena, MSG.ROUND_ADDED, goal.getName()));
+            } else {
+                // removed
+                arena.msg(sender, Language.parse(arena, MSG.ROUND_REMOVED, goal.getName()));
+            }
+
+            roundMap.set(round, rRound);
+            //TODO LATER
+
+        } catch (NumberFormatException e) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, e.getLocalizedMessage()));
+
+        }
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.ROUND));
+    }
 
     @Override
     public List<String> getMain() {

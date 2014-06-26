@@ -1,135 +1,128 @@
 package net.slipcor.pvparena.arena;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * <pre>Arena Team class</pre>
- * 
+ * <p/>
  * contains Arena Team methods and variables for quicker access
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.2
  */
 
 public class ArenaTeam {
-	
-	private static Debug debug = new Debug(6);
 
-	private final Set<ArenaPlayer> players;
-	private final ChatColor color;
-	private final String name;
+    private static Debug debug = new Debug(6);
 
-	/**
-	 * create an arena team instance
-	 * 
-	 * @param name
-	 *            the arena team name
-	 * @param color
-	 *            the arena team color string
-	 */
-	public ArenaTeam(final String name, final String color) {
-		this.players = new HashSet<ArenaPlayer>();
-		this.color = StringParser.getChatColorFromWoolEnum(color);
-		this.name = name;
-	}
+    private final Set<ArenaPlayer> players;
+    private final ChatColor color;
+    private final String name;
 
-	/**
-	 * add an arena player to the arena team
-	 * 
-	 * @param player
-	 *            the player to add
-	 */
-	public void add(final ArenaPlayer player) {
-		this.players.add(player);
-		debug.i("Added player " + player.getName() + " to team " + name, player.get());
-		player.getArena().increasePlayerCount();
-	}
+    /**
+     * create an arena team instance
+     *
+     * @param name  the arena team name
+     * @param color the arena team color string
+     */
+    public ArenaTeam(final String name, final String color) {
+        this.players = new HashSet<ArenaPlayer>();
+        this.color = StringParser.getChatColorFromWoolEnum(color);
+        this.name = name;
+    }
 
-	/**
-	 * colorize a player name
-	 * 
-	 * @param player
-	 *            the player to colorize
-	 * @return the colorized player name
-	 */
-	public String colorizePlayer(final Player player) {
-		return color + player.getName();
-	}
+    /**
+     * add an arena player to the arena team
+     *
+     * @param player the player to add
+     */
+    public void add(final ArenaPlayer player) {
+        this.players.add(player);
+        debug.i("Added player " + player.getName() + " to team " + name, player.get());
+        player.getArena().increasePlayerCount();
+    }
 
-	/**
-	 * return the team color
-	 * 
-	 * @return the team color
-	 */
-	public ChatColor getColor() {
-		return color;
-	}
+    /**
+     * colorize a player name
+     *
+     * @param player the player to colorize
+     * @return the colorized player name
+     */
+    public String colorizePlayer(final Player player) {
+        return color + player.getName();
+    }
 
-	/**
-	 * colorize the team name
-	 * 
-	 * @return the colorized team name
-	 */
-	public String getColoredName() {
-		return color + name;
-	}
+    /**
+     * return the team color
+     *
+     * @return the team color
+     */
+    public ChatColor getColor() {
+        return color;
+    }
 
-	/**
-	 * return the team color code
-	 * 
-	 * @return the team color code
-	 */
-	public String getColorCodeString() {
-		return "&" + Integer.toHexString(color.ordinal());
-	}
+    /**
+     * colorize the team name
+     *
+     * @return the colorized team name
+     */
+    public String getColoredName() {
+        return color + name;
+    }
 
-	/**
-	 * return the team name
-	 * 
-	 * @return the team name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * return the team color code
+     *
+     * @return the team color code
+     */
+    public String getColorCodeString() {
+        return "&" + Integer.toHexString(color.ordinal());
+    }
 
-	/**
-	 * return the team members
-	 * 
-	 * @return a HashSet of all arena players
-	 */
-	public Set<ArenaPlayer> getTeamMembers() {
-		return players;
-	}
+    /**
+     * return the team name
+     *
+     * @return the team name
+     */
+    public String getName() {
+        return name;
+    }
 
-	public boolean hasPlayer(final Player player) {
-		return players.contains(ArenaPlayer.parsePlayer(player.getName()));
-	}
+    /**
+     * return the team members
+     *
+     * @return a HashSet of all arena players
+     */
+    public Set<ArenaPlayer> getTeamMembers() {
+        return players;
+    }
 
-	public boolean isEveryoneReady() {
-		for (ArenaPlayer ap : players) {
-			if (!ap.getStatus().equals(Status.READY)) {
-				return false;
-			}
-		}
-		return true;
-	}
+    public boolean hasPlayer(final Player player) {
+        return players.contains(ArenaPlayer.parsePlayer(player.getName()));
+    }
 
-	/**
-	 * remove a player from the team
-	 * 
-	 * @param player
-	 *            the player to remove
-	 */
-	public void remove(final ArenaPlayer player) {
-		this.players.remove(player);
-	}
+    public boolean isEveryoneReady() {
+        for (ArenaPlayer ap : players) {
+            if (!ap.getStatus().equals(Status.READY)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * remove a player from the team
+     *
+     * @param player the player to remove
+     */
+    public void remove(final ArenaPlayer player) {
+        this.players.remove(player);
+    }
 }

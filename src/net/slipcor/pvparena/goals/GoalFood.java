@@ -47,60 +47,60 @@ import java.util.*;
  * <pre>
  * Arena Goal class "Food"
  * </pre>
- * 
+ * <p/>
  * Players are equipped with raw food, the goal is to bring back cooked food
  * to their base. The first team having gathered enough wins!
- * 
+ *
  * @author slipcor
  */
 
 public class GoalFood extends ArenaGoal implements Listener {
-	public GoalFood() {
-		super("Food");
-		debug = new Debug(105);
-	}
+    public GoalFood() {
+        super("Food");
+        debug = new Debug(105);
+    }
 
-	@Override
-	public String version() {
-		return PVPArena.instance.getDescription().getVersion();
-	}
+    @Override
+    public String version() {
+        return PVPArena.instance.getDescription().getVersion();
+    }
 
-	private final static int PRIORITY = 12;
-	
-	private Map<ArenaTeam, Material> foodtypes = null;
-	private Map<Block, ArenaTeam> chestMap = null;
-	static Map<Material, Material> cookmap = new HashMap<Material, Material>();
-	
-	static {
-		cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
-		cookmap.put(Material.RAW_CHICKEN, Material.COOKED_CHICKEN);
-		cookmap.put(Material.RAW_FISH, Material.COOKED_FISH);
-		cookmap.put(Material.POTATO_ITEM, Material.BAKED_POTATO);
-		cookmap.put(Material.PORK, Material.GRILLED_PORK);
-	}
+    private final static int PRIORITY = 12;
 
-	@Override
-	public boolean allowsJoinInBattle() {
-		return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
-	}
+    private Map<ArenaTeam, Material> foodtypes = null;
+    private Map<Block, ArenaTeam> chestMap = null;
+    static Map<Material, Material> cookmap = new HashMap<Material, Material>();
 
-	@Override
-	public PACheck checkCommand(final PACheck res, final String string) {
-		if (res.getPriority() > PRIORITY) {
-			return res;
-		}
+    static {
+        cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
+        cookmap.put(Material.RAW_CHICKEN, Material.COOKED_CHICKEN);
+        cookmap.put(Material.RAW_FISH, Material.COOKED_FISH);
+        cookmap.put(Material.POTATO_ITEM, Material.BAKED_POTATO);
+        cookmap.put(Material.PORK, Material.GRILLED_PORK);
+    }
 
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (string.contains(sTeam + "foodchest")) {
-				res.setPriority(this, PRIORITY);
-			} else if (string.contains(sTeam + "foodfurnace")) {
-				res.setPriority(this, PRIORITY);
-			}
-		}
+    @Override
+    public boolean allowsJoinInBattle() {
+        return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+    }
 
-		return res;
-	}
+    @Override
+    public PACheck checkCommand(final PACheck res, final String string) {
+        if (res.getPriority() > PRIORITY) {
+            return res;
+        }
+
+        for (ArenaTeam team : arena.getTeams()) {
+            final String sTeam = team.getName();
+            if (string.contains(sTeam + "foodchest")) {
+                res.setPriority(this, PRIORITY);
+            } else if (string.contains(sTeam + "foodfurnace")) {
+                res.setPriority(this, PRIORITY);
+            }
+        }
+
+        return res;
+    }
 
     @Override
     public List<String> getMain() {
@@ -120,566 +120,566 @@ public class GoalFood extends ArenaGoal implements Listener {
         return new CommandTree<String>(null);
     }
 
-	@Override
-	public PACheck checkEnd(final PACheck res) {
-		if (res.getPriority() > PRIORITY) {
-			return res;
-		}
+    @Override
+    public PACheck checkEnd(final PACheck res) {
+        if (res.getPriority() > PRIORITY) {
+            return res;
+        }
 
-		final int count = TeamManager.countActiveTeams(arena);
+        final int count = TeamManager.countActiveTeams(arena);
 
-		if (count == 1) {
-			res.setPriority(this, PRIORITY); // yep. only one team left. go!
-		} else if (count == 0) {
-			res.setError(this, MSG.ERROR_NOTEAMFOUND.toString());
-		}
+        if (count == 1) {
+            res.setPriority(this, PRIORITY); // yep. only one team left. go!
+        } else if (count == 0) {
+            res.setError(this, MSG.ERROR_NOTEAMFOUND.toString());
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	@Override
-	public String checkForMissingSpawns(final Set<String> list) {
-		String error = this.checkForMissingTeamSpawn(list);
-		if (error != null) {
-			return error;
-		}
-		return this.checkForMissingTeamCustom(list, "foodchest");
-	}
+    @Override
+    public String checkForMissingSpawns(final Set<String> list) {
+        String error = this.checkForMissingTeamSpawn(list);
+        if (error != null) {
+            return error;
+        }
+        return this.checkForMissingTeamCustom(list, "foodchest");
+    }
 
-	@Override
-	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
-		if (res.getPriority() >= PRIORITY) {
-			return res;
-		}
+    @Override
+    public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+        if (res.getPriority() >= PRIORITY) {
+            return res;
+        }
 
-		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		final int maxTeamPlayers = arena.getArenaConfig().getInt(
-				CFG.READY_MAXTEAMPLAYERS);
+        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxTeamPlayers = arena.getArenaConfig().getInt(
+                CFG.READY_MAXTEAMPLAYERS);
 
-		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
-			return res;
-		}
+        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+            return res;
+        }
 
-		if (args == null || args.length < 1) {
-			return res;
-		}
+        if (args == null || args.length < 1) {
+            return res;
+        }
 
-		if (!arena.isFreeForAll()) {
-			final ArenaTeam team = arena.getTeam(args[0]);
+        if (!arena.isFreeForAll()) {
+            final ArenaTeam team = arena.getTeam(args[0]);
 
-			if (team != null && maxTeamPlayers > 0
-						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
-				return res;
-			}
-		}
+            if (team != null && maxTeamPlayers > 0
+                    && team.getTeamMembers().size() >= maxTeamPlayers) {
+                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
+                return res;
+            }
+        }
 
-		res.setPriority(this, PRIORITY);
-		return res;
-	}
+        res.setPriority(this, PRIORITY);
+        return res;
+    }
 
-	@Override
-	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
-		if (res.getPriority() <= PRIORITY && player.getKiller() != null) {
-			res.setPriority(this, PRIORITY);
-		}
-		return res;
-	}
+    @Override
+    public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+        if (res.getPriority() <= PRIORITY && player.getKiller() != null) {
+            res.setPriority(this, PRIORITY);
+        }
+        return res;
+    }
 
-	@Override
-	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
+    @Override
+    public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-		if (res.getPriority() > PRIORITY
-				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
-			return res;
-		}
-		if (flagName == null || block == null
-				|| (block.getType() != Material.CHEST && block.getType() != Material.FURNACE) ) {
-			return res;
-		}
+        if (res.getPriority() > PRIORITY
+                || !PAA_Region.activeSelections.containsKey(player.getName())) {
+            return res;
+        }
+        if (flagName == null || block == null
+                || (block.getType() != Material.CHEST && block.getType() != Material.FURNACE)) {
+            return res;
+        }
 
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			return res;
-		}
-		res.setPriority(this, PRIORITY); // success :)
+        if (!PVPArena.hasAdminPerms(player)
+                && !(PVPArena.hasCreatePerms(player, arena))) {
+            return res;
+        }
+        res.setPriority(this, PRIORITY); // success :)
 
-		return res;
-	}
-	
-	String flagName = null;
+        return res;
+    }
 
-	@Override
-	public void commitCommand(final CommandSender sender, final String[] args) {
-		if (args[0].contains("foodchest")) {
-			for (ArenaTeam team : arena.getTeams()) {
-				final String sTeam = team.getName();
-				if (args[0].contains(sTeam + "foodchest")) {
-					flagName = args[0];
-					PAA_Region.activeSelections.put(sender.getName(), arena);
+    String flagName = null;
 
-					arena.msg(sender,
-							Language.parse(arena, MSG.GOAL_FOOD_TOSET, flagName));
-				}
-			}
-		} else if (args[0].contains("foodfurnace")) {
-			for (ArenaTeam team : arena.getTeams()) {
-				final String sTeam = team.getName();
-				if (args[0].contains(sTeam + "foodfurnace")) {
-					flagName = args[0];
-					PAA_Region.activeSelections.put(sender.getName(), arena);
+    @Override
+    public void commitCommand(final CommandSender sender, final String[] args) {
+        if (args[0].contains("foodchest")) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                if (args[0].contains(sTeam + "foodchest")) {
+                    flagName = args[0];
+                    PAA_Region.activeSelections.put(sender.getName(), arena);
 
-					arena.msg(sender,
-							Language.parse(arena, MSG.GOAL_FOODFURNACE_TOSET, flagName));
-				}
-			}
-		}
-	}
+                    arena.msg(sender,
+                            Language.parse(arena, MSG.GOAL_FOOD_TOSET, flagName));
+                }
+            }
+        } else if (args[0].contains("foodfurnace")) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                if (args[0].contains(sTeam + "foodfurnace")) {
+                    flagName = args[0];
+                    PAA_Region.activeSelections.put(sender.getName(), arena);
 
-	@Override
-	public void commitEnd(final boolean force) {
-		if (arena.realEndRunner != null) {
-			arena.getDebugger().i("[FOOD] already ending");
-			return;
-		}
-		arena.getDebugger().i("[FOOD]");
+                    arena.msg(sender,
+                            Language.parse(arena, MSG.GOAL_FOODFURNACE_TOSET, flagName));
+                }
+            }
+        }
+    }
 
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
-		Bukkit.getPluginManager().callEvent(gEvent);
-		ArenaTeam aTeam = null;
+    @Override
+    public void commitEnd(final boolean force) {
+        if (arena.realEndRunner != null) {
+            arena.getDebugger().i("[FOOD] already ending");
+            return;
+        }
+        arena.getDebugger().i("[FOOD]");
 
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (ap.getStatus().equals(Status.FIGHT)) {
-					aTeam = team;
-					break;
-				}
-			}
-		}
+        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        Bukkit.getPluginManager().callEvent(gEvent);
+        ArenaTeam aTeam = null;
 
-		if (aTeam != null && !force) {
-			ArenaModuleManager.announce(
-					arena,
-					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
-							+ aTeam.getName() + ChatColor.YELLOW), "END");
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus().equals(Status.FIGHT)) {
+                    aTeam = team;
+                    break;
+                }
+            }
+        }
 
-			ArenaModuleManager.announce(
-					arena,
-					Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
-							+ aTeam.getName() + ChatColor.YELLOW), "WINNER");
-			arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
-					+ aTeam.getName() + ChatColor.YELLOW));
-		}
+        if (aTeam != null && !force) {
+            ArenaModuleManager.announce(
+                    arena,
+                    Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+                            + aTeam.getName() + ChatColor.YELLOW), "END");
 
-		if (ArenaModuleManager.commitEnd(arena, aTeam)) {
-			return;
-		}
-		new EndRunnable(arena, arena.getArenaConfig().getInt(
-				CFG.TIME_ENDCOUNTDOWN));
-	}
+            ArenaModuleManager.announce(
+                    arena,
+                    Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+                            + aTeam.getName() + ChatColor.YELLOW), "WINNER");
+            arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+                    + aTeam.getName() + ChatColor.YELLOW));
+        }
 
-	@Override
-	public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
-			final String error, final PlayerDeathEvent event) {
-		if (respawnPlayer.getKiller() == null) {
-			
-			final List<ItemStack> returned;
-			
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(respawnPlayer);
-				event.getDrops().clear();
-			} else {
+        if (ArenaModuleManager.commitEnd(arena, aTeam)) {
+            return;
+        }
+        new EndRunnable(arena, arena.getArenaConfig().getInt(
+                CFG.TIME_ENDCOUNTDOWN));
+    }
+
+    @Override
+    public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
+                                  final String error, final PlayerDeathEvent event) {
+        if (respawnPlayer.getKiller() == null) {
+
+            final List<ItemStack> returned;
+
+            if (arena.isCustomClassAlive()
+                    || arena.getArenaConfig().getBoolean(
+                    CFG.PLAYER_DROPSINVENTORY)) {
+                returned = InventoryManager.drop(respawnPlayer);
+                event.getDrops().clear();
+            } else {
                 returned = new ArrayList<ItemStack>();
                 returned.addAll(event.getDrops());
-			}
+            }
 
-			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-					returned);
+            PACheck.handleRespawn(arena,
+                    ArenaPlayer.parsePlayer(respawnPlayer.getName()),
+                    returned);
 
-			return;
-		}
+            return;
+        }
 
-		final ArenaTeam respawnTeam = ArenaPlayer
-				.parsePlayer(respawnPlayer.getName()).getArenaTeam();
+        final ArenaTeam respawnTeam = ArenaPlayer
+                .parsePlayer(respawnPlayer.getName()).getArenaTeam();
 
-			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY,
-						respawnTeam.colorizePlayer(respawnPlayer)
-								+ ChatColor.YELLOW, arena.parseDeathCause(
-								respawnPlayer, event.getEntity()
-										.getLastDamageCause().getCause(), event
-										.getEntity().getKiller())));
-			}
-			
-			final List<ItemStack> returned;
+        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            arena.broadcast(Language.parse(arena,
+                    MSG.FIGHT_KILLED_BY,
+                    respawnTeam.colorizePlayer(respawnPlayer)
+                            + ChatColor.YELLOW, arena.parseDeathCause(
+                            respawnPlayer, event.getEntity()
+                                    .getLastDamageCause().getCause(), event
+                                    .getEntity().getKiller())));
+        }
 
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(respawnPlayer);
-				event.getDrops().clear();
-			} else {
-                returned = new ArrayList<ItemStack>();
-                returned.addAll(event.getDrops());
-			}
+        final List<ItemStack> returned;
 
-			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+        if (arena.isCustomClassAlive()
+                || arena.getArenaConfig().getBoolean(
+                CFG.PLAYER_DROPSINVENTORY)) {
+            returned = InventoryManager.drop(respawnPlayer);
+            event.getDrops().clear();
+        } else {
+            returned = new ArrayList<ItemStack>();
+            returned.addAll(event.getDrops());
+        }
 
-	}
+        PACheck.handleRespawn(arena,
+                ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 
-	@Override
-	public boolean commitSetFlag(final Player player, final Block block) {
+    }
 
-		arena.getDebugger().i("trying to set a foodchest/furnace", player);
+    @Override
+    public boolean commitSetFlag(final Player player, final Block block) {
 
-		// command : /pa redflag1
-		// location: red1flag:
+        arena.getDebugger().i("trying to set a foodchest/furnace", player);
 
-		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
-				flagName);
+        // command : /pa redflag1
+        // location: red1flag:
 
-		
-		if (flagName.contains("furnace")) {
-			if (block.getType() != Material.FURNACE) {
-				return false;
-			}
-			arena.msg(player, Language.parse(arena, MSG.GOAL_FOODFURNACE_SET, flagName));
-			
-		} else {
-			if (block.getType() != Material.CHEST) {
-				return false;
-			}
-			arena.msg(player, Language.parse(arena, MSG.GOAL_FOOD_SET, flagName));
-			
-		}
+        SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
+                flagName);
 
-		PAA_Region.activeSelections.remove(player.getName());
-		flagName = "";
 
-		return true;
-	}
-	
-	@Override
-	public void configParse(YamlConfiguration config) {
-		Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
-	}
+        if (flagName.contains("furnace")) {
+            if (block.getType() != Material.FURNACE) {
+                return false;
+            }
+            arena.msg(player, Language.parse(arena, MSG.GOAL_FOODFURNACE_SET, flagName));
 
-	@Override
-	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("items needed: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
-		sender.sendMessage("items per player: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS));
-		sender.sendMessage("items per team: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FTEAMITEMS));
-	}
-	
-	private Map<ArenaTeam, Material> getFoodMap() {
-		if (foodtypes == null) {
-			foodtypes = new HashMap<ArenaTeam, Material>();
-		}
-		return foodtypes;
-	}
+        } else {
+            if (block.getType() != Material.CHEST) {
+                return false;
+            }
+            arena.msg(player, Language.parse(arena, MSG.GOAL_FOOD_SET, flagName));
 
-	@Override
-	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
-		if (res.getPriority() <= PRIORITY+1000) {
-			res.setError(
-					this,
-					String.valueOf(arena.getArenaConfig()
-									.getInt(CFG.GOAL_FOOD_FMAXITEMS) - (getLifeMap()
-									.containsKey(aPlayer.getArenaTeam().getName()) ? getLifeMap()
-									.get(aPlayer.getArenaTeam().getName()) : 0)));
-		}
-		return res;
-	}
-	
-	@Override
-	public boolean hasSpawn(final String string) {
-		for (String teamName : arena.getTeamNames()) {
-			if (string.toLowerCase().startsWith(
-					teamName.toLowerCase() + "spawn")) {
-				return true;
-			}
-			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
-							aClass.getName().toLowerCase() + "spawn")) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+        }
 
-	@Override
-	public void initate(final Player player) {
-		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-		if (getLifeMap().get(aPlayer.getArenaTeam().getName()) == null) {
-			getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
-					.getInt(CFG.GOAL_FOOD_FMAXITEMS));
-		}
-	}
+        PAA_Region.activeSelections.remove(player.getName());
+        flagName = "";
 
-	@Override
-	public boolean isInternal() {
-		return true;
-	}
+        return true;
+    }
 
-	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
-	public void onFurnaceClick(PlayerInteractEvent event) {
-		if (!event.hasBlock() || event.getClickedBlock().getType() != Material.FURNACE) {
-			return;
-		}
-		
-		ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
-		
-		if (player.getArena() == null || !player.getArena().isFightInProgress()) {
-			return;
-		}
+    @Override
+    public void configParse(YamlConfiguration config) {
+        Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
+    }
 
-		Set<PABlock> spawns = SpawnManager.getPABlocksContaining(arena, "foodfurnace");
-		
-		if (spawns.size() < 1) {
-			return;
-		}
-		
-		String teamName = player.getArenaTeam().getName();
-		
-		Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
-		
-		for (PABlock block : spawns) {
-			String spawnName = block.getName();
-			if (spawnName.startsWith(teamName + "foodfurnace")) {
-				validSpawns.add(block.getLocation());
-			}
-		}
-		
-		if (validSpawns.size() < 1) {
-			return;
-		}
-		
-		if (!validSpawns.contains(new PABlockLocation(event.getClickedBlock().getLocation()))) {
-			arena.msg(player.get(), Language.parse(arena, MSG.GOAL_FOOD_NOTYOURFOOD));
-			event.setCancelled(true);
-		}
-		
-	}
+    @Override
+    public void displayInfo(final CommandSender sender) {
+        sender.sendMessage("items needed: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
+        sender.sendMessage("items per player: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS));
+        sender.sendMessage("items per team: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FTEAMITEMS));
+    }
 
-	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
-	public void onItemTransfer(InventoryMoveItemEvent event) {
-		
-		if (arena == null || !arena.isFightInProgress()) {
-			return;
-		}
-		
-		InventoryType type = event.getDestination().getType();
-		
-		if (type != InventoryType.CHEST) {
-			return;
-		}
-		
-		if (chestMap == null || !chestMap.containsKey(((Chest) event.getDestination()
-				.getHolder()).getBlock())) {
-			return;
-		}
-		
-		ItemStack stack = event.getItem();
-		
-		ArenaTeam team = chestMap.get(((Chest) event.getDestination()
-				.getHolder()).getBlock());
-		
-		if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
-			return;
-		}
-		
-		ArenaPlayer noone = null;
-		
-		for (ArenaPlayer player : team.getTeamMembers()) {
-			noone = player;
-			break;
-		}
+    private Map<ArenaTeam, Material> getFoodMap() {
+        if (foodtypes == null) {
+            foodtypes = new HashMap<ArenaTeam, Material>();
+        }
+        return foodtypes;
+    }
 
-		// INTO container
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
-				noone.getName()+":"+team.getName()+":"+stack.getAmount());
-		Bukkit.getPluginManager().callEvent(gEvent);
-		this.reduceLives(arena, team, stack.getAmount());
-	}
-	
-	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
-	public void onInventoryClick(InventoryClickEvent event) {
-		
-		if (arena == null || !arena.isFightInProgress()) {
-			return;
-		}
-		
-		InventoryType type = event.getInventory().getType();
-	
-		if (type != InventoryType.CHEST) {
-			return;
-		}
-		
-		if (chestMap == null || !chestMap.containsKey(((Chest) event.getInventory()
-				.getHolder()).getBlock())) {
-			return;
-		}
-		
-		if (!event.isShiftClick()) {
-			event.setCancelled(true);
-			return;
-		}
+    @Override
+    public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+        if (res.getPriority() <= PRIORITY + 1000) {
+            res.setError(
+                    this,
+                    String.valueOf(arena.getArenaConfig()
+                            .getInt(CFG.GOAL_FOOD_FMAXITEMS) - (getLifeMap()
+                            .containsKey(aPlayer.getArenaTeam().getName()) ? getLifeMap()
+                            .get(aPlayer.getArenaTeam().getName()) : 0)));
+        }
+        return res;
+    }
 
-		ItemStack stack = event.getCurrentItem();
+    @Override
+    public boolean hasSpawn(final String string) {
+        for (String teamName : arena.getTeamNames()) {
+            if (string.toLowerCase().startsWith(
+                    teamName.toLowerCase() + "spawn")) {
+                return true;
+            }
+            if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+                for (ArenaClass aClass : arena.getClasses()) {
+                    if (string.toLowerCase().startsWith(teamName.toLowerCase() +
+                            aClass.getName().toLowerCase() + "spawn")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-		ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(event.getWhoClicked().getName());
-		
-		ArenaTeam team = aPlayer.getArenaTeam();
-		
-		if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
-			return;
-		}
-		
-		SlotType sType = event.getSlotType();
-		
-		if (sType == SlotType.CONTAINER) {
-			// OUT of container
-			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
-					aPlayer.getName()+":"+team.getName()+":-"+stack.getAmount());
-			Bukkit.getPluginManager().callEvent(gEvent);
-			this.reduceLives(arena, team, -stack.getAmount());
-		} else {
-			// INTO container
-			PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:"+
-					aPlayer.getName()+":"+team.getName()+":"+stack.getAmount());
-			Bukkit.getPluginManager().callEvent(gEvent);
-			this.reduceLives(arena, team, stack.getAmount());
-		}
-	}
+    @Override
+    public void initate(final Player player) {
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        if (getLifeMap().get(aPlayer.getArenaTeam().getName()) == null) {
+            getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
+                    .getInt(CFG.GOAL_FOOD_FMAXITEMS));
+        }
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void parseStart() {
+    @Override
+    public boolean isInternal() {
+        return true;
+    }
 
-		final int pAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS);
-		final int tAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FTEAMITEMS);
-		
-		chestMap = new HashMap<Block, ArenaTeam>();
-		
-		for (ArenaTeam team : arena.getTeams()) {
-			int pos = new Random().nextInt(cookmap.size());
-			for (Material mat : cookmap.keySet()) {
-				if (pos <= 0) {
-					getFoodMap().put(team, mat);
-					break;
-				}
-				pos--;
-			}
-			int totalAmount = pAmount;
-			totalAmount += tAmount/team.getTeamMembers().size();
-			
-			if (totalAmount < 1) {
-				totalAmount = 1;
-			}
-			for (ArenaPlayer player : team.getTeamMembers()) {
-				
-				player.get().getInventory().addItem(new ItemStack(getFoodMap().get(team), totalAmount));
-				player.get().updateInventory();
-			}
-			chestMap.put(SpawnManager.getBlockByExactName(arena, team.getName() + "foodchest").toLocation().getBlock(), team);
-			this.getLifeMap().put(team.getName(),
-					arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
-		}
-	}
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onFurnaceClick(PlayerInteractEvent event) {
+        if (!event.hasBlock() || event.getClickedBlock().getType() != Material.FURNACE) {
+            return;
+        }
 
-	private void reduceLives(final Arena arena, final ArenaTeam team, int amount) {
-		final int iLives = this.getLifeMap().get(team.getName());
-		
-		if (iLives <= amount && amount > 0) {
-			for (ArenaTeam otherTeam : arena.getTeams()) {
-				if (otherTeam.equals(team)) {
-					continue;
-				}
-				getLifeMap().remove(otherTeam.getName());
-				for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
-					if (ap.getStatus().equals(Status.FIGHT)) {
-						ap.setStatus(Status.LOST);/*
-						arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
+        ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+
+        if (player.getArena() == null || !player.getArena().isFightInProgress()) {
+            return;
+        }
+
+        Set<PABlock> spawns = SpawnManager.getPABlocksContaining(arena, "foodfurnace");
+
+        if (spawns.size() < 1) {
+            return;
+        }
+
+        String teamName = player.getArenaTeam().getName();
+
+        Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
+
+        for (PABlock block : spawns) {
+            String spawnName = block.getName();
+            if (spawnName.startsWith(teamName + "foodfurnace")) {
+                validSpawns.add(block.getLocation());
+            }
+        }
+
+        if (validSpawns.size() < 1) {
+            return;
+        }
+
+        if (!validSpawns.contains(new PABlockLocation(event.getClickedBlock().getLocation()))) {
+            arena.msg(player.get(), Language.parse(arena, MSG.GOAL_FOOD_NOTYOURFOOD));
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onItemTransfer(InventoryMoveItemEvent event) {
+
+        if (arena == null || !arena.isFightInProgress()) {
+            return;
+        }
+
+        InventoryType type = event.getDestination().getType();
+
+        if (type != InventoryType.CHEST) {
+            return;
+        }
+
+        if (chestMap == null || !chestMap.containsKey(((Chest) event.getDestination()
+                .getHolder()).getBlock())) {
+            return;
+        }
+
+        ItemStack stack = event.getItem();
+
+        ArenaTeam team = chestMap.get(((Chest) event.getDestination()
+                .getHolder()).getBlock());
+
+        if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
+            return;
+        }
+
+        ArenaPlayer noone = null;
+
+        for (ArenaPlayer player : team.getTeamMembers()) {
+            noone = player;
+            break;
+        }
+
+        // INTO container
+        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                noone.getName() + ":" + team.getName() + ":" + stack.getAmount());
+        Bukkit.getPluginManager().callEvent(gEvent);
+        this.reduceLives(arena, team, stack.getAmount());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onInventoryClick(InventoryClickEvent event) {
+
+        if (arena == null || !arena.isFightInProgress()) {
+            return;
+        }
+
+        InventoryType type = event.getInventory().getType();
+
+        if (type != InventoryType.CHEST) {
+            return;
+        }
+
+        if (chestMap == null || !chestMap.containsKey(((Chest) event.getInventory()
+                .getHolder()).getBlock())) {
+            return;
+        }
+
+        if (!event.isShiftClick()) {
+            event.setCancelled(true);
+            return;
+        }
+
+        ItemStack stack = event.getCurrentItem();
+
+        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(event.getWhoClicked().getName());
+
+        ArenaTeam team = aPlayer.getArenaTeam();
+
+        if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
+            return;
+        }
+
+        SlotType sType = event.getSlotType();
+
+        if (sType == SlotType.CONTAINER) {
+            // OUT of container
+            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                    aPlayer.getName() + ":" + team.getName() + ":-" + stack.getAmount());
+            Bukkit.getPluginManager().callEvent(gEvent);
+            this.reduceLives(arena, team, -stack.getAmount());
+        } else {
+            // INTO container
+            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                    aPlayer.getName() + ":" + team.getName() + ":" + stack.getAmount());
+            Bukkit.getPluginManager().callEvent(gEvent);
+            this.reduceLives(arena, team, stack.getAmount());
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void parseStart() {
+
+        final int pAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS);
+        final int tAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FTEAMITEMS);
+
+        chestMap = new HashMap<Block, ArenaTeam>();
+
+        for (ArenaTeam team : arena.getTeams()) {
+            int pos = new Random().nextInt(cookmap.size());
+            for (Material mat : cookmap.keySet()) {
+                if (pos <= 0) {
+                    getFoodMap().put(team, mat);
+                    break;
+                }
+                pos--;
+            }
+            int totalAmount = pAmount;
+            totalAmount += tAmount / team.getTeamMembers().size();
+
+            if (totalAmount < 1) {
+                totalAmount = 1;
+            }
+            for (ArenaPlayer player : team.getTeamMembers()) {
+
+                player.get().getInventory().addItem(new ItemStack(getFoodMap().get(team), totalAmount));
+                player.get().updateInventory();
+            }
+            chestMap.put(SpawnManager.getBlockByExactName(arena, team.getName() + "foodchest").toLocation().getBlock(), team);
+            this.getLifeMap().put(team.getName(),
+                    arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
+        }
+    }
+
+    private void reduceLives(final Arena arena, final ArenaTeam team, int amount) {
+        final int iLives = this.getLifeMap().get(team.getName());
+
+        if (iLives <= amount && amount > 0) {
+            for (ArenaTeam otherTeam : arena.getTeams()) {
+                if (otherTeam.equals(team)) {
+                    continue;
+                }
+                getLifeMap().remove(otherTeam.getName());
+                for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
+                    if (ap.getStatus().equals(Status.FIGHT)) {
+                        ap.setStatus(Status.LOST);/*
+                        arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
 								true, false);*/
-					}
-				}
-			}
-			PACheck.handleEnd(arena, false);
-			return;
-		}
+                    }
+                }
+            }
+            PACheck.handleEnd(arena, false);
+            return;
+        }
 
-		getLifeMap().put(team.getName(), iLives - amount);
-	}
+        getLifeMap().put(team.getName(), iLives - amount);
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void refillInventory(Player player) {
-		ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-		ArenaTeam team = aPlayer.getArenaTeam();
-		if (team == null) {
-			return;
-		}
+    @SuppressWarnings("deprecation")
+    @Override
+    public void refillInventory(Player player) {
+        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        ArenaTeam team = aPlayer.getArenaTeam();
+        if (team == null) {
+            return;
+        }
 
-		player.getInventory().addItem(new ItemStack(getFoodMap().get(team), arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS)));
-		player.updateInventory();
-	}
+        player.getInventory().addItem(new ItemStack(getFoodMap().get(team), arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS)));
+        player.updateInventory();
+    }
 
 
-	@Override
-	public void reset(final boolean force) {
-		getLifeMap().clear();
-	}
+    @Override
+    public void reset(final boolean force) {
+        getLifeMap().clear();
+    }
 
-	@Override
-	public void setDefaults(final YamlConfiguration config) {
-		if (arena.isFreeForAll()) {
-			return;
-		}
+    @Override
+    public void setDefaults(final YamlConfiguration config) {
+        if (arena.isFreeForAll()) {
+            return;
+        }
 
-		if (config.get("teams.free") != null) {
-			config.set("teams", null);
-		}
-		if (config.get("teams") == null) {
-			arena.getDebugger().i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.red", ChatColor.RED.name());
-			config.addDefault("teams.blue", ChatColor.BLUE.name());
-		}
-	}
+        if (config.get("teams.free") != null) {
+            config.set("teams", null);
+        }
+        if (config.get("teams") == null) {
+            arena.getDebugger().i("no teams defined, adding custom red and blue!");
+            config.addDefault("teams.red", ChatColor.RED.name());
+            config.addDefault("teams.blue", ChatColor.BLUE.name());
+        }
+    }
 
-	@Override
-	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-		double score;
+    @Override
+    public Map<String, Double> timedEnd(final Map<String, Double> scores) {
+        double score;
 
-		for (ArenaTeam team : arena.getTeams()) {
-			score = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS)
-					- (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
-							.getName()) : 0);
-			if (scores.containsKey(team.getName())) {
-				scores.put(team.getName(), scores.get(team.getName()) + score);
-			} else {
-				scores.put(team.getName(), score);
-			}
-		}
+        for (ArenaTeam team : arena.getTeams()) {
+            score = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS)
+                    - (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
+                    .getName()) : 0);
+            if (scores.containsKey(team.getName())) {
+                scores.put(team.getName(), scores.get(team.getName()) + score);
+            } else {
+                scores.put(team.getName(), score);
+            }
+        }
 
-		return scores;
-	}
+        return scores;
+    }
 
-	@Override
-	public void unload(final Player player) {
-		if (allowsJoinInBattle()) {
-			arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
-		}
-	}
+    @Override
+    public void unload(final Player player) {
+        if (allowsJoinInBattle()) {
+            arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
+        }
+    }
 }

@@ -17,91 +17,90 @@ import java.util.Map;
 
 /**
  * <pre>PVP Arena PROTECTION Command class</pre>
- * 
+ * <p/>
  * A command to manage arena region protections
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAA_Protection extends AbstractArenaCommand {
-	
-	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
-	public PAA_Protection() {
-		super(new String[] {});
-	}
+    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{2,3})) {
-			return;
-		}
-		
-		final ArenaRegion region = arena.getRegion(args[0]);
-		
-		if (region == null) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
-			return;
-		}
-		
-		RegionProtection regionProtection = null;
-		
-		try {
-			regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
-		} catch (Exception e) {
-			if (!args[1].equalsIgnoreCase("all")) {
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
-				return;
-			}
-		}
-		
-		if (args.length < 3) {
-			// toggle
-			if (region.protectionToggle(regionProtection)) {
-				arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
-			} else {
-				arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
-			}
-			region.saveToConfig();
-			return;
-		}
+    public PAA_Protection() {
+        super(new String[]{});
+    }
 
-		if (StringParser.positive.contains(args[2].toLowerCase())) {
-			region.protectionAdd(regionProtection);
-			arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
-			region.saveToConfig();
-			return;
-		}
-		
-		if (StringParser.negative.contains(args[2].toLowerCase())) {
-			region.protectionRemove(regionProtection);
-			arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
-			region.saveToConfig();
-			return;
-		}
-			
-		// usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[2]));
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
-	}
+        if (!argCountValid(sender, arena, args, new Integer[]{2, 3})) {
+            return;
+        }
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+        final ArenaRegion region = arena.getRegion(args[0]);
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.PROTECTION));
-	}
+        if (region == null) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
+            return;
+        }
+
+        RegionProtection regionProtection = null;
+
+        try {
+            regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
+        } catch (Exception e) {
+            if (!args[1].equalsIgnoreCase("all")) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
+                return;
+            }
+        }
+
+        if (args.length < 3) {
+            // toggle
+            if (region.protectionToggle(regionProtection)) {
+                arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
+            } else {
+                arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
+            }
+            region.saveToConfig();
+            return;
+        }
+
+        if (StringParser.positive.contains(args[2].toLowerCase())) {
+            region.protectionAdd(regionProtection);
+            arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_ADDED, args[1]));
+            region.saveToConfig();
+            return;
+        }
+
+        if (StringParser.negative.contains(args[2].toLowerCase())) {
+            region.protectionRemove(regionProtection);
+            arena.msg(sender, Language.parse(arena, MSG.REGION_FLAG_REMOVED, args[1]));
+            region.saveToConfig();
+            return;
+        }
+
+        // usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
+
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[2]));
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.PROTECTION));
+    }
 
     @Override
     public List<String> getMain() {

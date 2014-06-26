@@ -1,117 +1,115 @@
 package net.slipcor.pvparena.modules;
 
-import java.util.Set;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PALocation;
+import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Set;
 
 /**
  * <pre>
  * Arena Module class "StandardLounge"
  * </pre>
- * 
+ * <p/>
  * Enables joining to lounges instead of the battlefield
- * 
+ *
  * @author slipcor
  */
 
 public class StandardSpectate extends ArenaModule {
 
-	public StandardSpectate() {
-		super("StandardSpectate");
-		debug = new Debug(301);
-	}
+    public StandardSpectate() {
+        super("StandardSpectate");
+        debug = new Debug(301);
+    }
 
-	private static final int PRIORITY = 2;
+    private static final int PRIORITY = 2;
 
-	@Override
-	public String version() {
-		return "v1.0.1.59";
-	}
+    @Override
+    public String version() {
+        return "v1.0.1.59";
+    }
 
-	@Override
-	public String checkForMissingSpawns(final Set<String> list) {
-		return list.contains("spectator") ? null : "spectator not set";
-	}
+    @Override
+    public String checkForMissingSpawns(final Set<String> list) {
+        return list.contains("spectator") ? null : "spectator not set";
+    }
 
-	@Override
-	public PACheck checkJoin(final CommandSender sender, final PACheck res, final boolean join) {
-		if (join) {
-			return res;
-		}
+    @Override
+    public PACheck checkJoin(final CommandSender sender, final PACheck res, final boolean join) {
+        if (join) {
+            return res;
+        }
 
-		if (res.getPriority() < PRIORITY) {
-			res.setPriority(this, PRIORITY);
-		}
-		return res;
-	}
+        if (res.getPriority() < PRIORITY) {
+            res.setPriority(this, PRIORITY);
+        }
+        return res;
+    }
 
-	@Override
-	public void commitSpectate(final Player player) {
-		final PAJoinEvent event = new PAJoinEvent(arena, player, true);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.isCancelled()) {
-			return;
-		}
-		PVPArena.arcade.setPlaying(player.getName(), true);
+    @Override
+    public void commitSpectate(final Player player) {
+        final PAJoinEvent event = new PAJoinEvent(arena, player, true);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        PVPArena.arcade.setPlaying(player.getName(), true);
 
-		// standard join --> lounge
-		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-		aPlayer.setLocation(new PALocation(player.getLocation()));
+        // standard join --> lounge
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        aPlayer.setLocation(new PALocation(player.getLocation()));
 
-		aPlayer.setArena(arena);
-		aPlayer.setStatus(Status.WATCH);
+        aPlayer.setArena(arena);
+        aPlayer.setStatus(Status.WATCH);
 
-		arena.tpPlayerToCoordName(player, "spectator");
-		arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
-		
-		if (aPlayer.getState() == null) {
-			
-			final Arena arena = aPlayer.getArena();
+        arena.tpPlayerToCoordName(player, "spectator");
+        arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
 
-			aPlayer.createState(player);
-			ArenaPlayer.backupAndClearInventory(arena, player);
-			aPlayer.dump();
-			
-			
-			if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
-				final String autoClass = 
-						arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-								(arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)) 
-								: arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-								
-				if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
-					arena.chooseClass(player, null, autoClass);
-				}
-				if (autoClass == null) {
-					arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
-					return;
-				}
-			}
-		}
-	}
+        if (aPlayer.getState() == null) {
 
-	@Override
-	public boolean hasSpawn(final String string) {
-		return string.equalsIgnoreCase("spectator");
-	}
+            final Arena arena = aPlayer.getArena();
 
-	@Override
-	public boolean isInternal() {
-		return true;
-	}
+            aPlayer.createState(player);
+            ArenaPlayer.backupAndClearInventory(arena, player);
+            aPlayer.dump();
+
+
+            if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
+                final String autoClass =
+                        arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+                                (arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS))
+                                : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+
+                if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+                    arena.chooseClass(player, null, autoClass);
+                }
+                if (autoClass == null) {
+                    arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean hasSpawn(final String string) {
+        return string.equalsIgnoreCase("spectator");
+    }
+
+    @Override
+    public boolean isInternal() {
+        return true;
+    }
 }

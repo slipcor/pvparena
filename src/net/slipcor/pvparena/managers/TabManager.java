@@ -50,7 +50,7 @@ public class TabManager {
                 }
             } else if (arena != null) {
                 // arena has been found
-                if ( args.length < 2) {
+                if (args.length < 2) {
                     // return the exact arena name
                     matches.add(arena.getName());
                     return new ArrayList<String>(matches);
@@ -111,8 +111,8 @@ public class TabManager {
      * Find a Set of main sub commands and main shortcuts matching a prefix in a List of ArenaCommandHandler
      *
      * @param matches the Set to add to
-     * @param list the ArenaCommandHandler list to search
-     * @param prefix the prefix to look for
+     * @param list    the ArenaCommandHandler list to search
+     * @param prefix  the prefix to look for
      */
     private static void addCommandsStartingWithPrefix(Set<String> matches, CommandSender sender, Arena arena, List<? extends IArenaCommandHandler> list, String prefix) {
         for (IArenaCommandHandler ach : list) {
@@ -135,8 +135,8 @@ public class TabManager {
      * Add matching entries of an Enum to a List of String
      *
      * @param result the List to add to
-     * @param key the key to match
-     * @param list the Enum list to search
+     * @param key    the key to match
+     * @param list   the Enum list to search
      */
     private static void addEnumMatchesToList(List<String> result, String key, List<? extends Enum> list) {
         for (Enum e : list) {
@@ -150,8 +150,8 @@ public class TabManager {
      * Search a CommandTree (recursively), add found matches to the matches Set
      *
      * @param matches the set to add to
-     * @param args the arguments to search for
-     * @param sub the current CommandTree
+     * @param args    the arguments to search for
+     * @param sub     the current CommandTree
      */
     private static void addMatchesFromCommandTree(Set<String> matches, String[] args, CommandTree<String> sub) {
         if (args.length < 1) {
@@ -187,14 +187,15 @@ public class TabManager {
     /**
      * Read a list of ArenaCommandHandler, add exact matches to a list of CommandTree
      *
-     * @param treeList the list of CommandTree to add to
+     * @param treeList    the list of CommandTree to add to
      * @param handlerList the list of ArenaCommandHandler to search
-     * @param arena the arena instance to apply for subvalues (can be null)
-     * @param value the value to search for
+     * @param arena       the arena instance to apply for subvalues (can be null)
+     * @param value       the value to search for
      */
     private static void addTreesMatchingValueInHandlerList(List<CommandTree<String>> treeList, List<? extends IArenaCommandHandler> handlerList, Arena arena, String value) {
 
-        outer: for (IArenaCommandHandler aac : handlerList) {
+        outer:
+        for (IArenaCommandHandler aac : handlerList) {
             for (String entry : aac.getMain()) {
                 if (entry.equals(value)) {
                     treeList.add(aac.getSubs(arena));
@@ -213,7 +214,7 @@ public class TabManager {
     /**
      * Return matches of a key inside a special node definition
      *
-     * @param key the key to match
+     * @param key        the key to match
      * @param definition the node definition ("{Enum}")
      * @return a set of matching nodes
      */
@@ -287,7 +288,7 @@ public class TabManager {
     /**
      * Find an override key inside a special node definition
      *
-     * @param key the key to find
+     * @param key        the key to find
      * @param definition the node definition ("{Enum}")
      * @return the definition if found, the key, if not
      */
@@ -352,9 +353,9 @@ public class TabManager {
     /**
      * Find a key inside a List of Enum
      *
-     * @param key the key to find
+     * @param key        the key to find
      * @param definition the node definition ("{Enum}")
-     * @param list the Enum list to search
+     * @param list       the Enum list to search
      * @return the definition if found, the key, if not
      */
     private static String getOverrideKey(String key, String definition, List<? extends Enum> list) {

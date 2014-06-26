@@ -12,41 +12,40 @@ import org.bukkit.command.CommandSender;
  * <pre>
  * PVP Arena Global Command class
  * </pre>
- * 
+ * <p/>
  * The abstract class of a general command, including perm check
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
-	public final String[] perms;
+    public final String[] perms;
 
-	public AbstractGlobalCommand(final String[] permissions) {
-		perms = permissions.clone();
-	}
+    public AbstractGlobalCommand(final String[] permissions) {
+        perms = permissions.clone();
+    }
 
-	public static boolean argCountValid(final CommandSender sender, final String[] args,
-			final Integer[] validCounts) {
+    public static boolean argCountValid(final CommandSender sender, final String[] args,
+                                        final Integer[] validCounts) {
 
-		for (int i : validCounts) {
-			if (i == args.length) {
-				return true;
-			}
-		}
+        for (int i : validCounts) {
+            if (i == args.length) {
+                return true;
+            }
+        }
 
-		Arena.pmsg(
-				sender,
-				Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
-						String.valueOf(args.length),
-						StringParser.joinArray(validCounts, "|")));
-		return false;
-	}
+        Arena.pmsg(
+                sender,
+                Language.parse(MSG.ERROR_INVALID_ARGUMENT_COUNT,
+                        String.valueOf(args.length),
+                        StringParser.joinArray(validCounts, "|")));
+        return false;
+    }
 
-	public abstract void commit(CommandSender sender, String[] args);
+    public abstract void commit(CommandSender sender, String[] args);
 
-	public abstract String getName();
+    public abstract String getName();
 
     @Override
     public boolean hasPerms(final CommandSender sender, final Arena arena) {
@@ -63,40 +62,40 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
         return false;
     }
 
-	public boolean hasPerms(final CommandSender sender) {
+    public boolean hasPerms(final CommandSender sender) {
         if (PVPArena.hasAdminPerms(sender)) {
-			return true;
-		}
+            return true;
+        }
 
-		for (String perm : perms) {
-			if (sender.hasPermission(perm)) {
-				return true;
-			}
-		}
+        for (String perm : perms) {
+            if (sender.hasPermission(perm)) {
+                return true;
+            }
+        }
 
-		if (perms.length > 0) {
-			final String split[] = perms[0].split("\\.");
-			try {
-			Arena.pmsg(
-					sender,
-					Language.parse(MSG.ERROR_NOPERM,
-							Language.parse(MSG.getByNode("nopermto." + split[1]))));
-			} catch (Exception e) {
-				PVPArena.instance.getLogger().warning("Unknown MSG for pvparena."+split[1]);
-				Arena.pmsg(
-						sender,
-						Language.parse(MSG.ERROR_NOPERM,
-								Language.parse(MSG.ERROR_NOPERM_X_USER)));
-			}
-		} else {
-			Arena.pmsg(
-					sender,
-					Language.parse(MSG.ERROR_NOPERM,
-							MSG.ERROR_NOPERM_X_ADMIN.toString()));
-		}
+        if (perms.length > 0) {
+            final String split[] = perms[0].split("\\.");
+            try {
+                Arena.pmsg(
+                        sender,
+                        Language.parse(MSG.ERROR_NOPERM,
+                                Language.parse(MSG.getByNode("nopermto." + split[1]))));
+            } catch (Exception e) {
+                PVPArena.instance.getLogger().warning("Unknown MSG for pvparena." + split[1]);
+                Arena.pmsg(
+                        sender,
+                        Language.parse(MSG.ERROR_NOPERM,
+                                Language.parse(MSG.ERROR_NOPERM_X_USER)));
+            }
+        } else {
+            Arena.pmsg(
+                    sender,
+                    Language.parse(MSG.ERROR_NOPERM,
+                            MSG.ERROR_NOPERM_X_ADMIN.toString()));
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public abstract void displayHelp(CommandSender sender);
+    public abstract void displayHelp(CommandSender sender);
 }

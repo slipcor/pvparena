@@ -20,92 +20,91 @@ import java.util.List;
 
 /**
  * <pre>PVP Arena JOIN Command class</pre>
- * 
+ * <p/>
  * A command to join an arena
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.2
  */
 
 public class PAG_Join extends AbstractArenaCommand {
-	
-	//private final Debug debug = new Debug(200);
 
-	public PAG_Join() {
-		super(new String[] {"pvparena.user"});
-	}
+    //private final Debug debug = new Debug(200);
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
-			return;
-		}
-		
-		if (!(sender instanceof Player)) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
-			return;
-		}
-		
-		if (arena.isFightInProgress()
-				&& (
-						!arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)
-						||
-						(arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) 
-								&& !arena.hasAlreadyPlayed(sender.getName())))) {
-			
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
-			return;
-		}
-		
-		if (!PVPArena.hasPerms(sender, arena)) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_NOPERM_JOIN));
-			return;
-		}
-		
-		final String error = ConfigurationManager.isSetup(arena);
-		if (error != null) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, error));
-			return;
-		}
-		
-		if (ArenaRegion.tooFarAway(arena, (Player) sender)) {
-			arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_RANGE));
-			return;
-		}
-		
-		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-		
-		if (aPlayer.getArena() == null) {
-			if (!arena.getArenaConfig().getBoolean(CFG.PERMS_ALWAYSJOININBATTLE) &&
-					!arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) &&
-					arena.hasAlreadyPlayed(aPlayer.getName())) {
-				arena.getDebugger().i("Join_2", sender);
-				arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(arena)));
-			} else {
-				PACheck.handleJoin(arena, sender, args);
-			}
-		} else {
-			final Arena pArena = aPlayer.getArena();
-			arena.getDebugger().i("Join_1", sender);
-			pArena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(pArena)));
-		}
-		
-	}
+    public PAG_Join() {
+        super(new String[]{"pvparena.user"});
+    }
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.JOIN));
-	}
+        if (!argCountValid(sender, arena, args, new Integer[]{0, 1})) {
+            return;
+        }
+
+        if (!(sender instanceof Player)) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+            return;
+        }
+
+        if (arena.isFightInProgress()
+                && (
+                !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)
+                        ||
+                        (arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED)
+                                && !arena.hasAlreadyPlayed(sender.getName())))) {
+
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
+            return;
+        }
+
+        if (!PVPArena.hasPerms(sender, arena)) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOPERM_JOIN));
+            return;
+        }
+
+        final String error = ConfigurationManager.isSetup(arena);
+        if (error != null) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, error));
+            return;
+        }
+
+        if (ArenaRegion.tooFarAway(arena, (Player) sender)) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_RANGE));
+            return;
+        }
+
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+
+        if (aPlayer.getArena() == null) {
+            if (!arena.getArenaConfig().getBoolean(CFG.PERMS_ALWAYSJOININBATTLE) &&
+                    !arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED) &&
+                    arena.hasAlreadyPlayed(aPlayer.getName())) {
+                arena.getDebugger().i("Join_2", sender);
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(arena)));
+            } else {
+                PACheck.handleJoin(arena, sender, args);
+            }
+        } else {
+            final Arena pArena = aPlayer.getArena();
+            arena.getDebugger().i("Join_1", sender);
+            pArena.msg(sender, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(pArena)));
+        }
+
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.JOIN));
+    }
 
     @Override
     public List<String> getMain() {

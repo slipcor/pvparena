@@ -14,45 +14,44 @@ import java.util.Map;
 
 /**
  * <pre>PVP Arena START Command class</pre>
- * 
+ * <p/>
  * A command to start an arena
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAA_Start extends AbstractArenaCommand {
-	
-	public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
-	public PAA_Start() {
-		super(new String[] {});
-	}
+    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{0})) {
-			return;
-		}
-		
-		arena.start(true);
-		arena.msg(sender, Language.parse(arena, MSG.ARENA_START_DONE));
-	}
+    public PAA_Start() {
+        super(new String[]{});
+    }
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.START));
-	}
+        if (!argCountValid(sender, arena, args, new Integer[]{0})) {
+            return;
+        }
+
+        arena.start(true);
+        arena.msg(sender, Language.parse(arena, MSG.ARENA_START_DONE));
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.START));
+    }
 
     @Override
     public List<String> getMain() {

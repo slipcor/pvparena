@@ -16,86 +16,85 @@ import java.util.List;
 
 /**
  * <pre>PVP Arena CHAT Command class</pre>
- * 
+ * <p/>
  * A command to toggle global chatting
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAG_Chat extends AbstractArenaCommand {
 
-	public PAG_Chat() {
-		super(new String[] {"pvparena.user"});
-	}
+    public PAG_Chat() {
+        super(new String[]{"pvparena.user"});
+    }
 
-	@Override
-	public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender, arena)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
-			return;
-		}
-		
-		if (!(sender instanceof Player)) {
-			Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
-			return;
-		}
-		
-		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-		
-		if (args.length < 1) {
-			// toggle
-			if (aPlayer.isPublicChatting()) {
-				aPlayer.setPublicChatting(false);
-				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
-			} else {
-				aPlayer.setPublicChatting(true);
-				if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
-					arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
-				} else {
-					arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
-				}
-			}
-			return;
-		}
+    @Override
+    public void commit(final Arena arena, final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender, arena)) {
+            return;
+        }
 
-		if (StringParser.positive.contains(args[0].toLowerCase())) {
-			aPlayer.setPublicChatting(true);
-			if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
-				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
-			} else {
-				arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
-			}
-			return;
-		}
-		
-		if (StringParser.negative.contains(args[0].toLowerCase())) {
-			aPlayer.setPublicChatting(false);
-			arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
-			return;
-		}
-			
-		// usage: /pa {arenaname} chat {value}
+        if (!argCountValid(sender, arena, args, new Integer[]{0, 1})) {
+            return;
+        }
 
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[0]));
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
-		arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
-		
-	}
-	
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+        if (!(sender instanceof Player)) {
+            Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.CHAT));
-	}
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+
+        if (args.length < 1) {
+            // toggle
+            if (aPlayer.isPublicChatting()) {
+                aPlayer.setPublicChatting(false);
+                arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
+            } else {
+                aPlayer.setPublicChatting(true);
+                if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
+                    arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
+                } else {
+                    arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
+                }
+            }
+            return;
+        }
+
+        if (StringParser.positive.contains(args[0].toLowerCase())) {
+            aPlayer.setPublicChatting(true);
+            if (arena.getArenaConfig().getBoolean(CFG.CHAT_ONLYPRIVATE)) {
+                arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOARENA));
+            } else {
+                arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOPUBLIC));
+            }
+            return;
+        }
+
+        if (StringParser.negative.contains(args[0].toLowerCase())) {
+            aPlayer.setPublicChatting(false);
+            arena.msg(sender, Language.parse(arena, MSG.MESSAGES_TOTEAM));
+            return;
+        }
+
+        // usage: /pa {arenaname} chat {value}
+
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[0]));
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));
+        arena.msg(sender, Language.parse(arena, MSG.ERROR_NEGATIVES, StringParser.joinSet(StringParser.negative, " | ")));
+
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.CHAT));
+    }
 
     @Override
     public List<String> getMain() {
