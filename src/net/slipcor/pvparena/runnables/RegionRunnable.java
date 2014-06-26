@@ -9,39 +9,37 @@ import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
  * <pre>
  * Arena Runnable class "Region"
  * </pre>
- * 
+ * <p/>
  * An arena timer to commit region specific checks
- * 
+ *
  * @author slipcor
- * 
  * @version v0.9.9
  */
 
 public class RegionRunnable implements Runnable {
-	private final ArenaRegion region;
+    private final ArenaRegion region;
 //	private final static Debug DEBUG = new Debug(49);
 //	private int iID;
 
-	/**
-	 * create a region runnable
-	 * 
-	 * @param a
-	 *            the arena we are running in
-	 */
-	public RegionRunnable(final ArenaRegion paRegion) {
-		this.region = paRegion;
-		region.getArena().getDebugger().i("RegionRunnable constructor: " + paRegion.getRegionName());
-	}
+    /**
+     * create a region runnable
+     *
+     * @param paRegion the region we are running in
+     */
+    public RegionRunnable(final ArenaRegion paRegion) {
+        this.region = paRegion;
+        region.getArena().getDebugger().i("RegionRunnable constructor: " + paRegion.getRegionName());
+    }
 
-	/**
-	 * the run method, commit arena end
-	 */
-	@Override
-	public void run() {
-		if (!Debug.override) {
-			region.getArena().getDebugger().i("RegionRunnable commiting: " + region.getRegionName());
-		}
-		/*
+    /**
+     * the run method, commit arena end
+     */
+    @Override
+    public void run() {
+        if (!Debug.override) {
+            region.getArena().getDebugger().i("RegionRunnable commiting: " + region.getRegionName());
+        }
+        /*
 		 * J - is a join region
 		 * I - is a fight in progress?
 		 * T - should a region tick be run?
@@ -60,43 +58,38 @@ public class RegionRunnable implements Runnable {
 		} else {
 			region.tick();
 		}*/
-		
-		
-		if (region.getType() == RegionType.JOIN) {
-			// join region
-			if (region.getArena().isFightInProgress()) {
-				if (PVPArena.instance.getAgm().allowsJoinInBattle(region.getArena())) {
-					// ingame: only tick if allowed
-					region.getArena().getDebugger().i("tick 1: " + region.getRegionName());
-					region.tick();
-				} else {
-					region.getArena().getDebugger().i("notick 1: " + region.getRegionName());
-					// otherwise: no tick! No cancelling for join regions!
-					// Bukkit.getScheduler().cancelTask(iID);
-				}
-			} else {
-				// not running. JOIN!
 
-				region.getArena().getDebugger().i("tick 2: " + region.getRegionName());
-				region.tick();
-			}
-		} else if (region.getType() == RegionType.WATCH) {
-			// always tick for WATCH regions!
-			region.getArena().getDebugger().i("tick 3: " + region.getRegionName());
-			region.tick();
-		} else if (region.getArena().isFightInProgress()) {
-			// if ingame, always tick for other kinds of things!
-			region.getArena().getDebugger().i("tick 4: " + region.getRegionName());
-			region.tick();
-		} else {
-			// not ingame; ignore!
-			region.getArena().getDebugger().i("notick 5: " + region.getRegionName());
-		}
-		
-	}
 
-	@Deprecated
-	public void setId(final int runID) {
-		//iID = runID;
-	}
+        if (region.getType() == RegionType.JOIN) {
+            // join region
+            if (region.getArena().isFightInProgress()) {
+                if (PVPArena.instance.getAgm().allowsJoinInBattle(region.getArena())) {
+                    // ingame: only tick if allowed
+                    region.getArena().getDebugger().i("tick 1: " + region.getRegionName());
+                    region.tick();
+                } else {
+                    region.getArena().getDebugger().i("notick 1: " + region.getRegionName());
+                    // otherwise: no tick! No cancelling for join regions!
+                    // Bukkit.getScheduler().cancelTask(iID);
+                }
+            } else {
+                // not running. JOIN!
+
+                region.getArena().getDebugger().i("tick 2: " + region.getRegionName());
+                region.tick();
+            }
+        } else if (region.getType() == RegionType.WATCH) {
+            // always tick for WATCH regions!
+            region.getArena().getDebugger().i("tick 3: " + region.getRegionName());
+            region.tick();
+        } else if (region.getArena().isFightInProgress()) {
+            // if ingame, always tick for other kinds of things!
+            region.getArena().getDebugger().i("tick 4: " + region.getRegionName());
+            region.tick();
+        } else {
+            // not ingame; ignore!
+            region.getArena().getDebugger().i("notick 5: " + region.getRegionName());
+        }
+
+    }
 }

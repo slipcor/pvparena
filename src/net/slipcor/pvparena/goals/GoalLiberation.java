@@ -1,22 +1,5 @@
 package net.slipcor.pvparena.goals;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -38,636 +21,657 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import net.slipcor.pvparena.runnables.InventoryRefillRunnable;
 import net.slipcor.pvparena.runnables.RespawnRunnable;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
+
+import java.util.*;
 
 /**
  * <pre>
  * Arena Goal class "Liberation"
  * </pre>
- * 
+ * <p/>
  * Players have lives. When every life is lost, the player is teleported
  * to the killer's team's jail. Once every player of a team is jailed, the
  * team is out.
- * 
+ *
  * @author slipcor
  */
 
-public class GoalLiberation extends ArenaGoal  {
-	public GoalLiberation() {
-		super("Liberation");
-		debug = new Debug(102);
-	}
+public class GoalLiberation extends ArenaGoal {
+    public GoalLiberation() {
+        super("Liberation");
+        debug = new Debug(102);
+    }
 
-	private EndRunnable endRunner = null;
-	private String flagName = "";
+    private EndRunnable endRunner = null;
+    private String flagName = "";
 
-	@Override
-	public String version() {
-		return PVPArena.instance.getDescription().getVersion();
-	}
+    @Override
+    public String version() {
+        return PVPArena.instance.getDescription().getVersion();
+    }
 
-	private static final int PRIORITY = 10;
+    private static final int PRIORITY = 10;
 
-	public PACheck checkCommand(final PACheck res, final String string) {
-		if (res.getPriority() > PRIORITY) {
-			return res;
-		}
+    public PACheck checkCommand(final PACheck res, final String string) {
+        if (res.getPriority() > PRIORITY) {
+            return res;
+        }
 
-		for (ArenaTeam team : arena.getTeams()) {
-			final String sTeam = team.getName();
-			if (string.contains(sTeam + "button")) {
-				res.setPriority(this, PRIORITY);
-			}
-		}
+        for (ArenaTeam team : arena.getTeams()) {
+            final String sTeam = team.getName();
+            if (string.contains(sTeam + "button")) {
+                res.setPriority(this, PRIORITY);
+            }
+        }
 
-		return res;
-	}
+        return res;
+    }
 
-	@Override
-	public PACheck checkEnd(final PACheck res) {
-		arena.getDebugger().i("checkEnd - " + arena.getName());
-		if (res.getPriority() > PRIORITY) {
-			arena.getDebugger().i(res.getPriority() + ">" + PRIORITY);
-			return res;
-		}
+    @Override
+    public List<String> getMain() {
+        List<String> result = Arrays.asList(new String[0]);
+        if (arena != null) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                result.add(sTeam + "button");
+            }
+        }
+        return result;
+    }
 
-		if (!arena.isFreeForAll()) {
-			arena.getDebugger().i("TEAMS!");
-			final int count = TeamManager.countActiveTeams(arena);
-			arena.getDebugger().i("count: " + count);
+    @Override
+    public PACheck checkEnd(final PACheck res) {
+        arena.getDebugger().i("checkEnd - " + arena.getName());
+        if (res.getPriority() > PRIORITY) {
+            arena.getDebugger().i(res.getPriority() + ">" + PRIORITY);
+            return res;
+        }
 
-			if (count <= 1) {
-				res.setPriority(this, PRIORITY); // yep. only one team left. go!
-			}
-			return res;
-		}
+        if (!arena.isFreeForAll()) {
+            arena.getDebugger().i("TEAMS!");
+            final int count = TeamManager.countActiveTeams(arena);
+            arena.getDebugger().i("count: " + count);
 
-		PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
+            if (count <= 1) {
+                res.setPriority(this, PRIORITY); // yep. only one team left. go!
+            }
+            return res;
+        }
 
-		return res;
-	}
+        PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
 
-	@Override
-	public String checkForMissingSpawns(final Set<String> list) {
-		if (!arena.isFreeForAll()) {
-			String team = checkForMissingTeamSpawn(list);
-			if (team != null) {
-				return team;
-			}
-			
-			return checkForMissingTeamCustom(list,"jail");
-		}
-		PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
-		return null;
-	}
+        return res;
+    }
 
-	/**
-	 * hook into an interacting player
-	 * 
-	 * @param res
-	 * 
-	 * @param player
-	 *            the interacting player
-	 * @param clickedBlock
-	 *            the block being clicked
-	 * @return
-	 */
-	@Override
-	public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
-		if (block == null || res.getPriority() > PRIORITY) {
-			return res;
-		}
-		arena.getDebugger().i("checking interact", player);
+    @Override
+    public String checkForMissingSpawns(final Set<String> list) {
+        if (!arena.isFreeForAll()) {
+            String team = checkForMissingTeamSpawn(list);
+            if (team != null) {
+                return team;
+            }
 
-		if (block.getType() != Material.STONE_BUTTON) {
-			arena.getDebugger().i("block, but not button", player);
-			return res;
-		}
-		arena.getDebugger().i("button click!", player);
+            return checkForMissingTeamCustom(list, "jail");
+        }
+        PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode: " + arena.getName());
+        return null;
+    }
 
-		Vector vLoc;
-		Vector vFlag = null;
-		final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+    /**
+     * hook into an interacting player
+     *
+     * @param res    the PACheck instance
+     * @param player the interacting player
+     * @param block  the block being clicked
+     * @return the PACheck instance
+     */
+    @Override
+    public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
+        if (block == null || res.getPriority() > PRIORITY) {
+            return res;
+        }
+        arena.getDebugger().i("checking interact", player);
 
-		final ArenaTeam pTeam = aPlayer.getArenaTeam();
-		if (pTeam == null) {
-			return res;
-		}
-		final Set<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
+        if (block.getType() != Material.STONE_BUTTON) {
+            arena.getDebugger().i("block, but not button", player);
+            return res;
+        }
+        arena.getDebugger().i("button click!", player);
 
-		for (ArenaTeam team : arena.getTeams()) {
-			setTeam.add(team);
-		}
-		
-		for (ArenaTeam team : setTeam) {
-			final String aTeam = team.getName();
+        Vector vLoc;
+        Vector vFlag = null;
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-			if (aTeam.equals(pTeam.getName())) {
-				arena.getDebugger().i("equals!OUT! ", player);
-				continue;
-			}
-			if (team.getTeamMembers().size() < 1) {
-				arena.getDebugger().i("size!OUT! ", player);
-				continue; // dont check for inactive teams
-			}
-			arena.getDebugger().i("checking for flag of team " + aTeam, player);
-			vLoc = block.getLocation().toVector();
-			arena.getDebugger().i("block: " + vLoc.toString(), player);
-			if (SpawnManager.getBlocksStartingWith(arena, aTeam + "button").size() > 0) {
-				vFlag = SpawnManager
-						.getBlockNearest(
-								SpawnManager.getBlocksStartingWith(arena, aTeam
-										+ "button"),
-								new PABlockLocation(player.getLocation()))
-						.toLocation().toVector();
-			}
-			if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
-				arena.getDebugger().i("button found!", player);
-				arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
+        final ArenaTeam pTeam = aPlayer.getArenaTeam();
+        if (pTeam == null) {
+            return res;
+        }
+        final Set<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
 
-				boolean success = false;
-				
-				for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
-					if (jailedPlayer.getStatus() == Status.DEAD) {
-						SpawnManager.respawn(arena, jailedPlayer, null);
-						List<ItemStack> iList = new ArrayList<ItemStack>();
-						
-						for (ItemStack item : jailedPlayer.getArenaClass().getItems()) {
-							iList.add(item);
-						}
-						new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
-						success = true;
-					}
-				}
-				
-				if (success) {
+        for (ArenaTeam team : arena.getTeams()) {
+            setTeam.add(team);
+        }
 
-					arena.broadcast(ChatColor.YELLOW + Language
-							.parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
-									pTeam.getColoredName()
-											+ ChatColor.YELLOW));
+        for (ArenaTeam team : setTeam) {
+            final String aTeam = team.getName();
 
-					PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:"+player.getName());
-					Bukkit.getPluginManager().callEvent(gEvent);
-				}
+            if (aTeam.equals(pTeam.getName())) {
+                arena.getDebugger().i("equals!OUT! ", player);
+                continue;
+            }
+            if (team.getTeamMembers().size() < 1) {
+                arena.getDebugger().i("size!OUT! ", player);
+                continue; // dont check for inactive teams
+            }
+            arena.getDebugger().i("checking for flag of team " + aTeam, player);
+            vLoc = block.getLocation().toVector();
+            arena.getDebugger().i("block: " + vLoc.toString(), player);
+            if (SpawnManager.getBlocksStartingWith(arena, aTeam + "button").size() > 0) {
+                vFlag = SpawnManager
+                        .getBlockNearest(
+                                SpawnManager.getBlocksStartingWith(arena, aTeam
+                                        + "button"),
+                                new PABlockLocation(player.getLocation()))
+                        .toLocation().toVector();
+            }
+            if ((vFlag != null) && (vLoc.distance(vFlag) < 2)) {
+                arena.getDebugger().i("button found!", player);
+                arena.getDebugger().i("vFlag: " + vFlag.toString(), player);
 
-				return res;
-			}
-		}
+                boolean success = false;
 
-		return res;
-	}
+                for (ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
+                    if (jailedPlayer.getStatus() == Status.DEAD) {
+                        SpawnManager.respawn(arena, jailedPlayer, null);
+                        List<ItemStack> iList = new ArrayList<ItemStack>();
 
-	@Override
-	public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
-		if (res.getPriority() >= PRIORITY) {
-			return res;
-		}
+                        for (ItemStack item : jailedPlayer.getArenaClass().getItems()) {
+                            iList.add(item.clone());
+                        }
+                        new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
+                        success = true;
+                    }
+                }
 
-		final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-		final int maxTeamPlayers = arena.getArenaConfig().getInt(
-				CFG.READY_MAXTEAMPLAYERS);
+                if (success) {
 
-		if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-			res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
-			return res;
-		}
+                    arena.broadcast(ChatColor.YELLOW + Language
+                            .parse(arena, MSG.GOAL_LIBERATION_LIBERATED,
+                                    pTeam.getColoredName()
+                                            + ChatColor.YELLOW));
 
-		if (args == null || args.length < 1) {
-			return res;
-		}
+                    PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + player.getName());
+                    Bukkit.getPluginManager().callEvent(gEvent);
+                }
 
-		if (!arena.isFreeForAll()) {
-			final ArenaTeam team = arena.getTeam(args[0]);
+                return res;
+            }
+        }
 
-			if (team != null && maxTeamPlayers > 0
-						&& team.getTeamMembers().size() >= maxTeamPlayers) {
-				res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
-				return res;
-			}
-		}
+        return res;
+    }
 
-		res.setPriority(this, PRIORITY);
-		return res;
-	}
+    @Override
+    public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
+        if (res.getPriority() >= PRIORITY) {
+            return res;
+        }
 
-	@Override
-	public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
+        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxTeamPlayers = arena.getArenaConfig().getInt(
+                CFG.READY_MAXTEAMPLAYERS);
 
-		if (res.getPriority() > PRIORITY
-				|| !PAA_Region.activeSelections.containsKey(player.getName())) {
-			return res;
-		}
-		if (block == null
-				|| block.getType() != Material.STONE_BUTTON) {
-			return res;
-		}
+        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+            return res;
+        }
 
-		if (!PVPArena.hasAdminPerms(player)
-				&& !(PVPArena.hasCreatePerms(player, arena))) {
-			return res;
-		}
-		res.setPriority(this, PRIORITY); // success :)
+        if (args == null || args.length < 1) {
+            return res;
+        }
 
-		return res;
-	}
+        if (!arena.isFreeForAll()) {
+            final ArenaTeam team = arena.getTeam(args[0]);
 
-	@Override
-	public PACheck checkPlayerDeath(final PACheck res, final Player player) {
-		if (res.getPriority() <= PRIORITY) {
-			res.setPriority(this, PRIORITY);
-			int pos = getLifeMap().get(player.getName());
-			arena.getDebugger().i("lives before death: " + pos, player);
-			if (pos <= 1) {
-				getLifeMap().put(player.getName(),1);
-				
-				ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-				
-				ArenaTeam team = aPlayer.getArenaTeam();
-				
-				boolean someoneAlive = false;
-				
-				for (ArenaPlayer temp : team.getTeamMembers()) {
-					if (temp.getStatus() == Status.FIGHT) {
-						someoneAlive = true;
-						break;
-					}
-				}
-				
-				if (!someoneAlive) {
-					res.setError(this, "0");
-				}
-				
-			}
-		}
-		return res;
-	}
+            if (team != null && maxTeamPlayers > 0
+                    && team.getTeamMembers().size() >= maxTeamPlayers) {
+                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
+                return res;
+            }
+        }
 
-	@Override
-	public void commitCommand(final CommandSender sender, final String[] args) {
-		if (args[0].contains("button")) {
-			for (ArenaTeam team : arena.getTeams()) {
-				final String sTeam = team.getName();
-				if (args[0].contains(sTeam + "button")) {
-					flagName = args[0];
-					PAA_Region.activeSelections.put(sender.getName(), arena);
+        res.setPriority(this, PRIORITY);
+        return res;
+    }
 
-					arena.msg(sender,
-							Language.parse(arena, MSG.GOAL_LIBERATION_TOSET, flagName));
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void commitEnd(final boolean force) {
-		if (endRunner != null) {
-			return;
-		}
-		if (arena.realEndRunner != null) {
-			arena.getDebugger().i("[LIBERATION] already ending");
-			return;
-		}
+    @Override
+    public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
-		Bukkit.getPluginManager().callEvent(gEvent);
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				if (!ap.getStatus().equals(Status.FIGHT)) {
-					continue;
-				}
-				if (arena.isFreeForAll()) {
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
-							"END");
+        if (res.getPriority() > PRIORITY
+                || !PAA_Region.activeSelections.containsKey(player.getName())) {
+            return res;
+        }
+        if (block == null
+                || block.getType() != Material.STONE_BUTTON) {
+            return res;
+        }
 
-					ArenaModuleManager.announce(arena,
-							Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
-							"WINNER");
+        if (!PVPArena.hasAdminPerms(player)
+                && !(PVPArena.hasCreatePerms(player, arena))) {
+            return res;
+        }
+        res.setPriority(this, PRIORITY); // success :)
 
-					arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
-							ap.getName()));
-				} else {
+        return res;
+    }
 
-					ArenaModuleManager.announce(
-							arena,
-							Language.parse(arena, MSG.TEAM_HAS_WON,
-									team.getColoredName()), "WINNER");
+    @Override
+    public PACheck checkPlayerDeath(final PACheck res, final Player player) {
+        if (res.getPriority() <= PRIORITY) {
+            res.setPriority(this, PRIORITY);
+            int pos = getLifeMap().get(player.getName());
+            arena.getDebugger().i("lives before death: " + pos, player);
+            if (pos <= 1) {
+                getLifeMap().put(player.getName(), 1);
 
-					arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
-							team.getColoredName()));
-					break;
-				}
-			}
+                ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-			if (ArenaModuleManager.commitEnd(arena, team)) {
-				return;
-			}
-		}
+                ArenaTeam team = aPlayer.getArenaTeam();
 
-		endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
-				CFG.TIME_ENDCOUNTDOWN));
-	}
+                boolean someoneAlive = false;
 
-	@Override
-	public void commitPlayerDeath(final Player player, final boolean doesRespawn,
-			final String error, final PlayerDeathEvent event) {
-		
-		if (!getLifeMap().containsKey(player.getName())) {
-			arena.getDebugger().i("cmd: not in life map!", player);
-			return;
-		}
-		PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:"+player.getName());
-		Bukkit.getPluginManager().callEvent(gEvent);
-		int pos = getLifeMap().get(player.getName());
-		arena.getDebugger().i("lives before death: " + pos, player);
-		if (pos <= 1) {
-			getLifeMap().put(player.getName(),1);
-			
-			ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-			
-			aPlayer.setStatus(Status.DEAD);
-			
-			ArenaTeam team = aPlayer.getArenaTeam();
-			
-			boolean someoneAlive = false;
-			
-			for (ArenaPlayer temp : team.getTeamMembers()) {
-				if (temp.getStatus() == Status.FIGHT) {
-					someoneAlive = true;
-					break;
-				}
-			}
-			
-			if (!someoneAlive) {
-				getLifeMap().remove(player.getName());
-				final List<ItemStack> returned;
+                for (ArenaPlayer temp : team.getTeamMembers()) {
+                    if (temp.getStatus() == Status.FIGHT) {
+                        someoneAlive = true;
+                        break;
+                    }
+                }
 
-				if (arena.isCustomClassAlive()
-						|| arena.getArenaConfig().getBoolean(
-								CFG.PLAYER_DROPSINVENTORY)) {
-					returned = InventoryManager.drop(player);
-					event.getDrops().clear();
-				} else {
+                if (!someoneAlive) {
+                    res.setError(this, "0");
+                }
+
+            }
+        }
+        return res;
+    }
+
+    @Override
+    public void commitCommand(final CommandSender sender, final String[] args) {
+        if (args[0].contains("button")) {
+            for (ArenaTeam team : arena.getTeams()) {
+                final String sTeam = team.getName();
+                if (args[0].contains(sTeam + "button")) {
+                    flagName = args[0];
+                    PAA_Region.activeSelections.put(sender.getName(), arena);
+
+                    arena.msg(sender,
+                            Language.parse(arena, MSG.GOAL_LIBERATION_TOSET, flagName));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void commitEnd(final boolean force) {
+        if (endRunner != null) {
+            return;
+        }
+        if (arena.realEndRunner != null) {
+            arena.getDebugger().i("[LIBERATION] already ending");
+            return;
+        }
+
+        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        Bukkit.getPluginManager().callEvent(gEvent);
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
+                if (!ap.getStatus().equals(Status.FIGHT)) {
+                    continue;
+                }
+                if (arena.isFreeForAll()) {
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
+                            "END");
+
+                    ArenaModuleManager.announce(arena,
+                            Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()),
+                            "WINNER");
+
+                    arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
+                            ap.getName()));
+                } else {
+
+                    ArenaModuleManager.announce(
+                            arena,
+                            Language.parse(arena, MSG.TEAM_HAS_WON,
+                                    team.getColoredName()), "WINNER");
+
+                    arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
+                            team.getColoredName()));
+                    break;
+                }
+            }
+
+            if (ArenaModuleManager.commitEnd(arena, team)) {
+                return;
+            }
+        }
+
+        endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+                CFG.TIME_ENDCOUNTDOWN));
+    }
+
+    @Override
+    public void commitPlayerDeath(final Player player, final boolean doesRespawn,
+                                  final String error, final PlayerDeathEvent event) {
+
+        if (!getLifeMap().containsKey(player.getName())) {
+            arena.getDebugger().i("cmd: not in life map!", player);
+            return;
+        }
+        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + player.getName());
+        Bukkit.getPluginManager().callEvent(gEvent);
+        int pos = getLifeMap().get(player.getName());
+        arena.getDebugger().i("lives before death: " + pos, player);
+        if (pos <= 1) {
+            getLifeMap().put(player.getName(), 1);
+
+            ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+            aPlayer.setStatus(Status.DEAD);
+
+            ArenaTeam team = aPlayer.getArenaTeam();
+
+            boolean someoneAlive = false;
+
+            for (ArenaPlayer temp : team.getTeamMembers()) {
+                if (temp.getStatus() == Status.FIGHT) {
+                    someoneAlive = true;
+                    break;
+                }
+            }
+
+            if (!someoneAlive) {
+                getLifeMap().remove(player.getName());
+                final List<ItemStack> returned;
+
+                if (arena.isCustomClassAlive()
+                        || arena.getArenaConfig().getBoolean(
+                        CFG.PLAYER_DROPSINVENTORY)) {
+                    returned = InventoryManager.drop(player);
+                    event.getDrops().clear();
+                } else {
                     returned = new ArrayList<ItemStack>();
                     returned.addAll(event.getDrops());
-				}
-				
-				PACheck.handleRespawn(arena,
-						ArenaPlayer.parsePlayer(player.getName()), returned);
+                }
 
-				ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
-				/*
+                PACheck.handleRespawn(arena,
+                        ArenaPlayer.parsePlayer(player.getName()), returned);
+
+                ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
+                /*
 				if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 					arena.getDebugger().i("faking player death", player);
 					PlayerListener.finallyKillPlayer(arena, player, event);
 				}*/
 
-				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-						.getArenaTeam();
-				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-					arena.broadcast(Language.parse(arena,
-							MSG.FIGHT_KILLED_BY,
-							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-							arena.parseDeathCause(player, event.getEntity()
-									.getLastDamageCause().getCause(),
-									player.getKiller()), String.valueOf(pos)));
-				}
-				
-				PACheck.handleEnd(arena, false);
-			} else {
+                final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                        .getArenaTeam();
+                if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY,
+                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                            arena.parseDeathCause(player, event.getEntity()
+                                            .getLastDamageCause().getCause(),
+                                    player.getKiller()), String.valueOf(pos)));
+                }
 
-				final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-						.getArenaTeam();
-				if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-					arena.broadcast(Language.parse(arena,
-							MSG.FIGHT_KILLED_BY,
-							respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-							arena.parseDeathCause(player, event.getEntity()
-									.getLastDamageCause().getCause(),
-									player.getKiller()), String.valueOf(pos)));
-				}
-				final List<ItemStack> returned;
-				
-				if (arena.isCustomClassAlive()
-						|| arena.getArenaConfig().getBoolean(
-								CFG.PLAYER_DROPSINVENTORY)) {
-					returned = InventoryManager.drop(player);
-					event.getDrops().clear();
-				} else {
+                PACheck.handleEnd(arena, false);
+            } else {
+
+                final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                        .getArenaTeam();
+                if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                    arena.broadcast(Language.parse(arena,
+                            MSG.FIGHT_KILLED_BY,
+                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                            arena.parseDeathCause(player, event.getEntity()
+                                            .getLastDamageCause().getCause(),
+                                    player.getKiller()), String.valueOf(pos)));
+                }
+                final List<ItemStack> returned;
+
+                if (arena.isCustomClassAlive()
+                        || arena.getArenaConfig().getBoolean(
+                        CFG.PLAYER_DROPSINVENTORY)) {
+                    returned = InventoryManager.drop(player);
+                    event.getDrops().clear();
+                } else {
                     returned = new ArrayList<ItemStack>();
                     returned.addAll(event.getDrops());
-				}
-				new InventoryRefillRunnable(arena, aPlayer.get(), returned);
-				
-				String teamName = aPlayer.getArenaTeam().getName();
-				
-				Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, teamName+"jail"), 1L);
-				
-				arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause()==null?null:aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
-				
-			}
-			
-		} else {
-			pos--;
-			getLifeMap().put(player.getName(), pos);
+                }
+                new InventoryRefillRunnable(arena, aPlayer.get(), returned);
 
-			final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-					.getArenaTeam();
-			if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-				arena.broadcast(Language.parse(arena,
-						MSG.FIGHT_KILLED_BY_REMAINING,
-						respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-						arena.parseDeathCause(player, event.getEntity()
-								.getLastDamageCause().getCause(),
-								player.getKiller()), String.valueOf(pos)));
-			}
-			
-			final List<ItemStack> returned;
+                String teamName = aPlayer.getArenaTeam().getName();
 
-			if (arena.isCustomClassAlive()
-					|| arena.getArenaConfig().getBoolean(
-							CFG.PLAYER_DROPSINVENTORY)) {
-				returned = InventoryManager.drop(player);
-				event.getDrops().clear();
-			} else {
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, teamName + "jail"), 1L);
+
+                arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause() == null ? null : aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
+
+            }
+
+        } else {
+            pos--;
+            getLifeMap().put(player.getName(), pos);
+
+            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                    .getArenaTeam();
+            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                arena.broadcast(Language.parse(arena,
+                        MSG.FIGHT_KILLED_BY_REMAINING,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        arena.parseDeathCause(player, event.getEntity()
+                                        .getLastDamageCause().getCause(),
+                                player.getKiller()), String.valueOf(pos)));
+            }
+
+            final List<ItemStack> returned;
+
+            if (arena.isCustomClassAlive()
+                    || arena.getArenaConfig().getBoolean(
+                    CFG.PLAYER_DROPSINVENTORY)) {
+                returned = InventoryManager.drop(player);
+                event.getDrops().clear();
+            } else {
                 returned = new ArrayList<ItemStack>();
                 returned.addAll(event.getDrops());
-			}
+            }
 
-			PACheck.handleRespawn(arena,
-					ArenaPlayer.parsePlayer(player.getName()), returned);
+            PACheck.handleRespawn(arena,
+                    ArenaPlayer.parsePlayer(player.getName()), returned);
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public boolean commitSetFlag(final Player player, final Block block) {
+    @Override
+    public boolean commitSetFlag(final Player player, final Block block) {
 
-		arena.getDebugger().i("trying to set a button", player);
+        arena.getDebugger().i("trying to set a button", player);
 
-		// command : /pa redbutton1
-		// location: redbutton1:
+        // command : /pa redbutton1
+        // location: redbutton1:
 
-		SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
-				flagName);
+        SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
+                flagName);
 
-		arena.msg(player, Language.parse(arena, MSG.GOAL_LIBERATION_SET, flagName));
+        arena.msg(player, Language.parse(arena, MSG.GOAL_LIBERATION_SET, flagName));
 
-		PAA_Region.activeSelections.remove(player.getName());
-		flagName = "";
+        PAA_Region.activeSelections.remove(player.getName());
+        flagName = "";
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public void displayInfo(final CommandSender sender) {
-		sender.sendMessage("lives: "
-				+ arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
-	}
+    @Override
+    public void displayInfo(final CommandSender sender) {
+        sender.sendMessage("lives: "
+                + arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
+    }
 
-	@Override
-	public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
-		if (res.getPriority() <= PRIORITY+1000) {
-			res.setError(
-					this,
-					String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-									.getName()) : 0));
-		}
-		return res;
-	}
+    @Override
+    public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
+        if (res.getPriority() <= PRIORITY + 1000) {
+            res.setError(
+                    this,
+                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
+                            .getName()) : 0));
+        }
+        return res;
+    }
 
-	@Override
-	public boolean hasSpawn(final String string) {
-		if (arena.isFreeForAll()) {
-			PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode! /pa " + arena.getName() + " !gm team");
-			return false;
-		}
-		for (String teamName : arena.getTeamNames()) {
-			if (string.toLowerCase().startsWith(
-					teamName.toLowerCase() + "spawn")) {
-				return true;
-			}
-			if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-				for (ArenaClass aClass : arena.getClasses()) {
-					if (string.toLowerCase().startsWith(teamName.toLowerCase() + 
-							aClass.getName().toLowerCase() + "spawn")) {
-						return true;
-					}
-				}
-			}
-			if (string.toLowerCase().startsWith(
-					teamName.toLowerCase() + "jail")) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean hasSpawn(final String string) {
+        if (arena.isFreeForAll()) {
+            PVPArena.instance.getLogger().warning("Liberation goal running in FFA mode! /pa " + arena.getName() + " !gm team");
+            return false;
+        }
+        for (String teamName : arena.getTeamNames()) {
+            if (string.toLowerCase().startsWith(
+                    teamName.toLowerCase() + "spawn")) {
+                return true;
+            }
+            if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+                for (ArenaClass aClass : arena.getClasses()) {
+                    if (string.toLowerCase().startsWith(teamName.toLowerCase() +
+                            aClass.getName().toLowerCase() + "spawn")) {
+                        return true;
+                    }
+                }
+            }
+            if (string.toLowerCase().startsWith(
+                    teamName.toLowerCase() + "jail")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public void initate(final Player player) {
-		getLifeMap().put(player.getName(),
-				arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
-	}
+    @Override
+    public void initate(final Player player) {
+        getLifeMap().put(player.getName(),
+                arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
+    }
 
-	@Override
-	public boolean isInternal() {
-		return true;
-	}
+    @Override
+    public boolean isInternal() {
+        return true;
+    }
 
-	@Override
-	public void parseLeave(final Player player) {
-		if (player == null) {
-			PVPArena.instance.getLogger().warning(
-					this.getName() + ": player NULL");
-			return;
-		}
-		if (getLifeMap().containsKey(player.getName())) {
-			getLifeMap().remove(player.getName());
-		}
-	}
+    @Override
+    public void parseLeave(final Player player) {
+        if (player == null) {
+            PVPArena.instance.getLogger().warning(
+                    this.getName() + ": player NULL");
+            return;
+        }
+        if (getLifeMap().containsKey(player.getName())) {
+            getLifeMap().remove(player.getName());
+        }
+    }
 
-	@Override
-	public void parseStart() {
-		for (ArenaTeam team : arena.getTeams()) {
-			for (ArenaPlayer ap : team.getTeamMembers()) {
-				this.getLifeMap().put(ap.getName(),
-						arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
-			}
-		}
-	}
+    @Override
+    public void parseStart() {
+        for (ArenaTeam team : arena.getTeams()) {
+            for (ArenaPlayer ap : team.getTeamMembers()) {
+                this.getLifeMap().put(ap.getName(),
+                        arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
+            }
+        }
+    }
 
-	@Override
-	public void reset(final boolean force) {
-		endRunner = null;
-		getLifeMap().clear();
-	}
+    @Override
+    public void reset(final boolean force) {
+        endRunner = null;
+        getLifeMap().clear();
+    }
 
-	@Override
-	public void setDefaults(final YamlConfiguration config) {
-		if (arena.isFreeForAll()) {
-			return;
-		}
+    @Override
+    public void setDefaults(final YamlConfiguration config) {
+        if (arena.isFreeForAll()) {
+            return;
+        }
 
-		if (config.get("teams.free") != null) {
-			config.set("teams", null);
-		}
-		if (config.get("teams") == null) {
-			arena.getDebugger().i("no teams defined, adding custom red and blue!");
-			config.addDefault("teams.red", ChatColor.RED.name());
-			config.addDefault("teams.blue", ChatColor.BLUE.name());
-		}
-	}
+        if (config.get("teams.free") != null) {
+            config.set("teams", null);
+        }
+        if (config.get("teams") == null) {
+            arena.getDebugger().i("no teams defined, adding custom red and blue!");
+            config.addDefault("teams.red", ChatColor.RED.name());
+            config.addDefault("teams.blue", ChatColor.BLUE.name());
+        }
+    }
 
-	@Override
-	public void setPlayerLives(final int value) {
-		final Set<String> plrs = new HashSet<String>();
+    @Override
+    public void setPlayerLives(final int value) {
+        final Set<String> plrs = new HashSet<String>();
 
-		for (String name : getLifeMap().keySet()) {
-			plrs.add(name);
-		}
+        for (String name : getLifeMap().keySet()) {
+            plrs.add(name);
+        }
 
-		for (String s : plrs) {
-			getLifeMap().put(s, value);
-		}
-	}
+        for (String s : plrs) {
+            getLifeMap().put(s, value);
+        }
+    }
 
-	@Override
-	public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
-		getLifeMap().put(aPlayer.getName(), value);
-	}
+    @Override
+    public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
+        getLifeMap().put(aPlayer.getName(), value);
+    }
 
-	@Override
-	public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-		double score;
+    @Override
+    public Map<String, Double> timedEnd(final Map<String, Double> scores) {
+        double score;
 
-		for (ArenaPlayer ap : arena.getFighters()) {
-			score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
-					: 0);
-			if (arena.isFreeForAll()) {
+        for (ArenaPlayer ap : arena.getFighters()) {
+            score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
+                    : 0);
+            if (arena.isFreeForAll()) {
 
-				if (scores.containsKey(ap.getName())) {
-					scores.put(ap.getName(), scores.get(ap.getName()) + score);
-				} else {
-					scores.put(ap.getName(), score);
-				}
-			} else {
-				if (ap.getArenaTeam() == null) {
-					continue;
-				}
-				if (scores.containsKey(ap.getArenaTeam().getName())) {
-					scores.put(ap.getArenaTeam().getName(),
-							scores.get(ap.getName()) + score);
-				} else {
-					scores.put(ap.getArenaTeam().getName(), score);
-				}
-			}
-		}
+                if (scores.containsKey(ap.getName())) {
+                    scores.put(ap.getName(), scores.get(ap.getName()) + score);
+                } else {
+                    scores.put(ap.getName(), score);
+                }
+            } else {
+                if (ap.getArenaTeam() == null) {
+                    continue;
+                }
+                if (scores.containsKey(ap.getArenaTeam().getName())) {
+                    scores.put(ap.getArenaTeam().getName(),
+                            scores.get(ap.getName()) + score);
+                } else {
+                    scores.put(ap.getArenaTeam().getName(), score);
+                }
+            }
+        }
 
-		return scores;
-	}
+        return scores;
+    }
 
-	@Override
-	public void unload(final Player player) {
-		getLifeMap().remove(player.getName());
-	}
+    @Override
+    public void unload(final Player player) {
+        getLifeMap().remove(player.getName());
+    }
 }

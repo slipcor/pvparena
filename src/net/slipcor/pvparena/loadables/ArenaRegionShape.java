@@ -2,7 +2,6 @@ package net.slipcor.pvparena.loadables;
 
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
-
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
@@ -12,59 +11,59 @@ import org.bukkit.entity.Player;
  * <pre>
  * Arena Region Shape class
  * </pre>
- * 
+ * <p/>
  * The framework for adding region shapes to an arena
- * 
+ *
  * @author slipcor
  */
 
 public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
-	
-	public ArenaRegionShape(String name) {
-		super(name);
-	}
-	
 
-	public abstract boolean contains(PABlockLocation loc);
+    public ArenaRegionShape(String name) {
+        super(name);
+    }
 
-	public abstract PABlockLocation getCenter();
 
-	public abstract PABlockLocation getMaximumLocation();
+    public abstract boolean contains(PABlockLocation loc);
 
-	public abstract PABlockLocation getMinimumLocation();
+    public abstract PABlockLocation getCenter();
 
-	public abstract boolean overlapsWith(ArenaRegion other);
+    public abstract PABlockLocation getMaximumLocation();
 
-	public abstract void showBorder(Player player);
+    public abstract PABlockLocation getMinimumLocation();
 
-	public abstract boolean tooFarAway(int joinRange, Location location);
+    public abstract boolean overlapsWith(ArenaRegion other);
 
-	@Override
-	public ArenaRegionShape clone() {
-		return (ArenaRegionShape) super.clone();
-	}
+    public abstract void showBorder(Player player);
 
-	public void displayInfo(final CommandSender sender) {
-	}
+    public abstract boolean tooFarAway(int joinRange, Location location);
 
-	public String getVersion() {
-		return "OUTDATED";
-	}
+    @Override
+    public ArenaRegionShape clone() {
+        return (ArenaRegionShape) super.clone();
+    }
 
-	public void onThisLoad() {
-	}
+    public void displayInfo(final CommandSender sender) {
+    }
 
-	public void toggleActivity() {
-		throw new IllegalStateException("Module not up to date: " + getName());
-	}
+    public String getVersion() {
+        return "OUTDATED";
+    }
 
-	public String version() {
-		return "OUTDATED";
-	}
+    public void onThisLoad() {
+    }
 
-	public abstract void move(BlockFace direction, int parseInt);
+    public void toggleActivity() {
+        throw new IllegalStateException("Module not up to date: " + getName());
+    }
 
-	public abstract void extend(BlockFace direction, int parseInt);
+    public String version() {
+        return "OUTDATED";
+    }
 
-	public abstract void initialize(ArenaRegion region);
+    public abstract void move(BlockFace direction, int parseInt);
+
+    public abstract void extend(BlockFace direction, int parseInt);
+
+    public abstract void initialize(ArenaRegion region);
 }

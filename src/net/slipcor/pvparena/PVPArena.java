@@ -1,32 +1,23 @@
 package net.slipcor.pvparena;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.PAA_Edit;
-import net.slipcor.pvparena.commands.PAA_Reload;
-import net.slipcor.pvparena.commands.AbstractArenaCommand;
-import net.slipcor.pvparena.commands.PAA_Setup;
-import net.slipcor.pvparena.commands.PAG_Join;
-import net.slipcor.pvparena.commands.PAI_Stats;
-import net.slipcor.pvparena.commands.AbstractGlobalCommand;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.core.Config.CFG;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.ext.ArcadeHook;
-import net.slipcor.pvparena.listeners.*;
+import net.slipcor.pvparena.listeners.BlockListener;
+import net.slipcor.pvparena.listeners.EntityListener;
+import net.slipcor.pvparena.listeners.InventoryListener;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.TabManager;
 import net.slipcor.pvparena.metrics.Metrics;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -34,425 +25,500 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * <pre>
  * Main Plugin class
  * </pre>
- * 
+ * <p/>
  * contains central elements like plugin handlers and listeners
- * 
+ *
  * @author slipcor
  */
 
 public class PVPArena extends JavaPlugin {
-	public static PVPArena instance = null;
-	public static ArcadeHook arcade = null;
+    public static PVPArena instance = null;
+    public static ArcadeHook arcade = null;
 
-	private static Debug DEBUG;
+    private static Debug DEBUG;
 
-	private ArenaGoalManager agm = null;
-	private ArenaModuleManager amm = null;
-	private ArenaRegionShapeManager arsm = null;
+    private ArenaGoalManager agm = null;
+    private ArenaModuleManager amm = null;
+    private ArenaRegionShapeManager arsm = null;
 
-	private Updater updater = null;
+    private final List<AbstractArenaCommand> arenaCommands = new ArrayList<AbstractArenaCommand>();
+    private final List<AbstractGlobalCommand> globalCommands = new ArrayList<AbstractGlobalCommand>();
 
-	/**
-	 * Hand over the ArenaGoalManager instance
-	 * 
-	 * @return the ArenaGoalManager instance
-	 */
-	public ArenaGoalManager getAgm() {
-		return agm;
-	}
+    private Updater updater = null;
 
-	/**
-	 * Hand over the ArenaModuleManager instance
-	 * 
-	 * @return the ArenaModuleManager instance
-	 */
-	public ArenaModuleManager getAmm() {
-		return amm;
-	}
+    /**
+     * Hand over the ArenaGoalManager instance
+     *
+     * @return the ArenaGoalManager instance
+     */
+    public ArenaGoalManager getAgm() {
+        return agm;
+    }
 
-	/**
-	 * Hand over the ArenaRegionShapeManager instance
-	 * 
-	 * @return the ArenaRegionShapeManager instance
-	 */
-	public ArenaRegionShapeManager getArsm() {
-		return arsm;
-	}
+    /**
+     * Hand over the ArenaModuleManager instance
+     *
+     * @return the ArenaModuleManager instance
+     */
+    public ArenaModuleManager getAmm() {
+        return amm;
+    }
 
-	/**
-	 * Hand over the jar file name
-	 * 
-	 * @return the .jar file name
-	 */
-	public String getFileName() {
-		return this.getFile().getName();
-	}
+    /**
+     * Hand over the ArenaRegionShapeManager instance
+     *
+     * @return the ArenaRegionShapeManager instance
+     */
+    public ArenaRegionShapeManager getArsm() {
+        return arsm;
+    }
 
-	public Updater getUpdater() {
-		return updater;
-	}
+    public List<AbstractArenaCommand> getArenaCommands() {
+        return arenaCommands;
+    }
 
-	/**
-	 * Check if a CommandSender has admin permissions
-	 * 
-	 * @param sender
-	 *            the CommandSender to check
-	 * @return true if a CommandSender has admin permissions, false otherwise
-	 */
-	public static boolean hasAdminPerms(final CommandSender sender) {
-		return sender.hasPermission("pvparena.admin");
-	}
+    public List<AbstractGlobalCommand> getGlobalCommands() {
+        return globalCommands;
+    }
 
-	/**
-	 * Check if a CommandSender has creation permissions
-	 * 
-	 * @param sender
-	 *            the CommandSender to check
-	 * @param arena
-	 *            the arena to check
-	 * @return true if the CommandSender has creation permissions, false
-	 *         otherwise
-	 */
-	public static boolean hasCreatePerms(final CommandSender sender,
-			final Arena arena) {
-		return (sender.hasPermission("pvparena.create") && (arena == null || arena
-				.getOwner().equals(sender.getName())));
-	}
+    public Updater getUpdater() {
+        return updater;
+    }
 
-	public static boolean hasOverridePerms(CommandSender sender) {
-		if (sender instanceof Player) {
-			return sender.hasPermission("pvparena.override");
-		}
-		
-		return instance.getConfig().getBoolean("consoleoffduty")
-				!= sender.hasPermission("pvparena.override");
-	}
+    /**
+     * Check if a CommandSender has admin permissions
+     *
+     * @param sender the CommandSender to check
+     * @return true if a CommandSender has admin permissions, false otherwise
+     */
+    public static boolean hasAdminPerms(final CommandSender sender) {
+        return sender.hasPermission("pvparena.admin");
+    }
 
-	/**
-	 * Check if a CommandSender has permission for an arena
-	 * 
-	 * @param sender
-	 *            the CommandSender to check
-	 * @param arena
-	 *            the arena to check
-	 * @return true if explicit permission not needed or granted, false
-	 *         otherwise
-	 */
-	public static boolean hasPerms(final CommandSender sender, final Arena arena) {
-		arena.getDebugger().i("perm check.", sender);
-		if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
-			arena.getDebugger().i(
-					" - explicit: "
-							+ (sender.hasPermission("pvparena.join."
-									+ arena.getName().toLowerCase())), sender);
-		} else {
-			arena.getDebugger().i(
-					String.valueOf(sender.hasPermission("pvparena.user")),
-					sender);
-		}
+    /**
+     * Check if a CommandSender has creation permissions
+     *
+     * @param sender the CommandSender to check
+     * @param arena  the arena to check
+     * @return true if the CommandSender has creation permissions, false
+     * otherwise
+     */
+    public static boolean hasCreatePerms(final CommandSender sender,
+                                         final Arena arena) {
+        return (sender.hasPermission("pvparena.create") && (arena == null || arena
+                .getOwner().equals(sender.getName())));
+    }
 
-		return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
-				.hasPermission("pvparena.join." + arena.getName().toLowerCase())
-				: sender.hasPermission("pvparena.user");
-	}
+    public static boolean hasOverridePerms(CommandSender sender) {
+        if (sender instanceof Player) {
+            return sender.hasPermission("pvparena.override");
+        }
 
-	@Override
-	public boolean onCommand(final CommandSender sender, final Command cmd,
-			final String commandLabel, final String[] args) {
+        return instance.getConfig().getBoolean("consoleoffduty")
+                != sender.hasPermission("pvparena.override");
+    }
 
-		if (args.length < 1) {
-			sender.sendMessage(ChatColor.COLOR_CHAR + "e"
-					+ ChatColor.COLOR_CHAR + "l|-- PVP Arena --|");
-			sender.sendMessage(ChatColor.COLOR_CHAR + "e"
-					+ ChatColor.COLOR_CHAR + "o--By slipcor--");
-			sender.sendMessage(ChatColor.COLOR_CHAR + "7"
-					+ ChatColor.COLOR_CHAR + "oDo " + ChatColor.COLOR_CHAR
-					+ "e/pa help " + ChatColor.COLOR_CHAR + "7"
-					+ ChatColor.COLOR_CHAR + "ofor help.");
-			return true;
-		}
+    /**
+     * Check if a CommandSender has permission for an arena
+     *
+     * @param sender the CommandSender to check
+     * @param arena  the arena to check
+     * @return true if explicit permission not needed or granted, false
+     * otherwise
+     */
+    public static boolean hasPerms(final CommandSender sender, final Arena arena) {
+        arena.getDebugger().i("perm check.", sender);
+        if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
+            arena.getDebugger().i(
+                    " - explicit: "
+                            + (sender.hasPermission("pvparena.join."
+                            + arena.getName().toLowerCase())), sender);
+        } else {
+            arena.getDebugger().i(
+                    String.valueOf(sender.hasPermission("pvparena.user")),
+                    sender);
+        }
 
-		if (args.length > 1 && sender.hasPermission("pvparena.admin")
-				&& args[0].equalsIgnoreCase("ALL")) {
-			final String[] newArgs = StringParser.shiftArrayBy(args, 1);
-			for (Arena arena : ArenaManager.getArenas()) {
-				try {
-					Bukkit.getServer().dispatchCommand(
-							sender,
-							"pa " + arena.getName() + " "
-									+ StringParser.joinArray(newArgs, " "));
-				} catch (Exception e) {
-					getLogger().warning("arena null!");
-				}
-			}
-			return true;
+        return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
+                .hasPermission("pvparena.join." + arena.getName().toLowerCase())
+                : sender.hasPermission("pvparena.user");
+    }
 
-		}
+    private void loadArenaCommands() {
+        arenaCommands.add(new PAA_BlackList());
+        arenaCommands.add(new PAA_Check());
+        arenaCommands.add(new PAA_Class());
+        arenaCommands.add(new PAA_Disable());
+        arenaCommands.add(new PAA_Edit());
+        arenaCommands.add(new PAA_Enable());
+        arenaCommands.add(new PAA_GameMode());
+        arenaCommands.add(new PAA_Goal());
+        arenaCommands.add(new PAA_PlayerJoin());
+        arenaCommands.add(new PAA_PlayerClass());
+        arenaCommands.add(new PAA_Protection());
+        arenaCommands.add(new PAA_Regions());
+        arenaCommands.add(new PAA_Region());
+        arenaCommands.add(new PAA_RegionFlag());
+        arenaCommands.add(new PAA_RegionType());
+        arenaCommands.add(new PAA_Reload());
+        arenaCommands.add(new PAA_Remove());
+        arenaCommands.add(new PAA_Round());
+        arenaCommands.add(new PAA_Set());
+        arenaCommands.add(new PAA_Setup());
+        arenaCommands.add(new PAA_SetOwner());
+        arenaCommands.add(new PAA_Spawn());
+        arenaCommands.add(new PAA_Start());
+        arenaCommands.add(new PAA_Stop());
+        arenaCommands.add(new PAA_Teams());
+        arenaCommands.add(new PAA_Teleport());
+        arenaCommands.add(new PAA_Template());
+        arenaCommands.add(new PAA_ToggleMod());
+        arenaCommands.add(new PAA_WhiteList());
+        arenaCommands.add(new PAG_Chat());
+        arenaCommands.add(new PAG_Join());
+        arenaCommands.add(new PAG_Leave());
+        arenaCommands.add(new PAG_Spectate());
+        arenaCommands.add(new PAI_List());
+        arenaCommands.add(new PAI_Ready());
+        arenaCommands.add(new PAI_Shutup());
+        arenaCommands.add(new PAG_Arenaclass());
+        arenaCommands.add(new PAI_Info());
+    }
 
-		final AbstractGlobalCommand pacmd = AbstractGlobalCommand
-				.getByName(args[0]);
-		ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
-		if (pacmd != null
-				&& !((player.getArena() != null) && (pacmd.getName()
-						.contains("PAI_ArenaList")))) {
-			DEBUG.i("committing: " + pacmd.getName(), sender);
-			pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
-			return true;
-		}
+    private void loadGlobalCommands() {
+        globalCommands.add(new PAA_Create());
+        globalCommands.add(new PAA_Debug());
+        globalCommands.add(new PAA_Duty());
+        globalCommands.add(new PAI_Help());
+        globalCommands.add(new PAA_Install());
+        globalCommands.add(new PAA_Uninstall());
+        globalCommands.add(new PAA_Update());
+        globalCommands.add(new PAI_ArenaList());
+        globalCommands.add(new PAI_Version());
+    }
 
-		if (args[0].equalsIgnoreCase("-s") || args[0].equalsIgnoreCase("stats")) {
-			final PAI_Stats scmd = new PAI_Stats();
-			DEBUG.i("committing: " + scmd.getName(), sender);
-			scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
-			return true;
-		} else if (args.length > 1
-				&& (args[1].equalsIgnoreCase("-s") || args[1]
-						.equalsIgnoreCase("stats"))) {
-			final PAI_Stats scmd = new PAI_Stats();
-			DEBUG.i("committing: " + scmd.getName(), sender);
-			scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
-					StringParser.shiftArrayBy(args, 2));
-			return true;
-		} else if (args[0].equalsIgnoreCase("!rl")
-				|| args[0].toLowerCase().contains("reload")) {
-			final PAA_Reload scmd = new PAA_Reload();
-			DEBUG.i("committing: " + scmd.getName(), sender);
+    @Override
+    public boolean onCommand(final CommandSender sender, final Command cmd,
+                             final String commandLabel, final String[] args) {
 
-			this.reloadConfig();
+        if (args.length < 1) {
+            sender.sendMessage(ChatColor.COLOR_CHAR + "e"
+                    + ChatColor.COLOR_CHAR + "l|-- PVP Arena --|");
+            sender.sendMessage(ChatColor.COLOR_CHAR + "e"
+                    + ChatColor.COLOR_CHAR + "o--By slipcor--");
+            sender.sendMessage(ChatColor.COLOR_CHAR + "7"
+                    + ChatColor.COLOR_CHAR + "oDo " + ChatColor.COLOR_CHAR
+                    + "e/pa help " + ChatColor.COLOR_CHAR + "7"
+                    + ChatColor.COLOR_CHAR + "ofor help.");
+            return true;
+        }
 
-			final String[] emptyArray = new String[0];
+        if (args.length > 1 && sender.hasPermission("pvparena.admin")
+                && args[0].equalsIgnoreCase("ALL")) {
+            final String[] newArgs = StringParser.shiftArrayBy(args, 1);
+            for (Arena arena : ArenaManager.getArenas()) {
+                try {
+                    Bukkit.getServer().dispatchCommand(
+                            sender,
+                            "pa " + arena.getName() + " "
+                                    + StringParser.joinArray(newArgs, " "));
+                } catch (Exception e) {
+                    getLogger().warning("arena null!");
+                }
+            }
+            return true;
 
-			for (Arena a : ArenaManager.getArenas()) {
-				scmd.commit(a, sender, emptyArray);
-			}
+        }
 
-			ArenaManager.load_arenas();
-			if (getConfig().getBoolean("use_shortcuts") ||
-					getConfig().getBoolean("only_shortcuts")) {
-				ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
-			}
+        AbstractGlobalCommand pacmd = null;
+        for (AbstractGlobalCommand agc : globalCommands) {
+            if (agc.getMain().contains(args[0]) || agc.getShort().contains(args[0])) {
+                pacmd = agc;
+                break;
+            }
+        }
+        ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
+        if (pacmd != null
+                && !((player.getArena() != null) && (pacmd.getName()
+                .contains("PAI_ArenaList")))) {
+            DEBUG.i("committing: " + pacmd.getName(), sender);
+            pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
+            return true;
+        }
 
-			return true;
-		}
+        if (args[0].equalsIgnoreCase("-s") || args[0].equalsIgnoreCase("stats")) {
+            final PAI_Stats scmd = new PAI_Stats();
+            DEBUG.i("committing: " + scmd.getName(), sender);
+            scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
+            return true;
+        } else if (args.length > 1
+                && (args[1].equalsIgnoreCase("-s") || args[1]
+                .equalsIgnoreCase("stats"))) {
+            final PAI_Stats scmd = new PAI_Stats();
+            DEBUG.i("committing: " + scmd.getName(), sender);
+            scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
+                    StringParser.shiftArrayBy(args, 2));
+            return true;
+        } else if (args[0].equalsIgnoreCase("!rl")
+                || args[0].toLowerCase().contains("reload")) {
+            final PAA_Reload scmd = new PAA_Reload();
+            DEBUG.i("committing: " + scmd.getName(), sender);
 
-		Arena tempArena = ArenaManager.getIndirectArenaByName(sender, args[0]);
+            this.reloadConfig();
 
-		final String name = args[0];
+            final String[] emptyArray = new String[0];
 
-		if (tempArena == null && Arrays.asList(args).contains("vote")) {
-			tempArena = ArenaManager.getArenaByName(args[0]); // arenavote shortcut hack
-		}
-		
-		String[] newArgs = args;
+            for (Arena a : ArenaManager.getArenas()) {
+                scmd.commit(a, sender, emptyArray);
+            }
 
-		if (tempArena == null) {
-			if (sender instanceof Player
-					&& ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
-				tempArena = ArenaPlayer.parsePlayer(sender.getName())
-						.getArena();
-			} else if (PAA_Setup.activeSetups.containsKey(sender.getName())) {
-				tempArena = PAA_Setup.activeSetups.get(sender.getName());
-			} else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
-				tempArena = PAA_Edit.activeEdits.get(sender.getName());
-			} else if (ArenaManager.count() == 1) {
-				tempArena = ArenaManager.getFirst();
-			} else if (ArenaManager.count() < 1) {
-				Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
-				return true;
-			} else if (ArenaManager.countAvailable() == 1) {
-				tempArena = ArenaManager.getAvailable();
-			}
-		} else {
-			if (args != null && args.length > 1) {
-				newArgs = StringParser.shiftArrayBy(args, 1);
-			}
-		}
+            ArenaManager.load_arenas();
+            if (getConfig().getBoolean("use_shortcuts") ||
+                    getConfig().getBoolean("only_shortcuts")) {
+                ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
+            }
 
-		latelounge: if (tempArena == null) {
-			for (Arena ar : ArenaManager.getArenas()) {
-				for (ArenaModule mod : ar.getMods()) {
-					if (mod.hasSpawn(sender.getName())) {
-						tempArena = ar;
-						break latelounge;
-					}
-				}
-			}
+            return true;
+        }
 
-			Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
-			return true;
-		}
+        Arena tempArena = ArenaManager.getIndirectArenaByName(sender, args[0]);
 
-		AbstractArenaCommand paacmd = AbstractArenaCommand
-				.getByName(newArgs[0]);
-		if (paacmd == null
-				&& (PACheck.handleCommand(tempArena, sender, newArgs))) {
-			return true;
-		}
+        final String name = args[0];
 
-		if (paacmd == null
-				&& tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
-			paacmd = new PAG_Join();
-			if (newArgs.length > 1) {
-				newArgs = StringParser.shiftArrayBy(newArgs, 1);
-			}
-			tempArena.getDebugger()
-					.i("committing: " + paacmd.getName(), sender);
-			paacmd.commit(tempArena, sender, newArgs);
-			return true;
-		}
+        if (tempArena == null && Arrays.asList(args).contains("vote")) {
+            tempArena = ArenaManager.getArenaByName(args[0]); // arenavote shortcut hack
+        }
 
-		if (paacmd != null) {
-			tempArena.getDebugger()
-					.i("committing: " + paacmd.getName(), sender);
-			paacmd.commit(tempArena, sender,
-					StringParser.shiftArrayBy(newArgs, 1));
-			return true;
-		}
-		tempArena.getDebugger().i("cmd null", sender);
+        String[] newArgs = args;
 
-		return false;
-	}
+        if (tempArena == null) {
+            if (sender instanceof Player
+                    && ArenaPlayer.parsePlayer(sender.getName()).getArena() != null) {
+                tempArena = ArenaPlayer.parsePlayer(sender.getName())
+                        .getArena();
+            } else if (PAA_Setup.activeSetups.containsKey(sender.getName())) {
+                tempArena = PAA_Setup.activeSetups.get(sender.getName());
+            } else if (PAA_Edit.activeEdits.containsKey(sender.getName())) {
+                tempArena = PAA_Edit.activeEdits.get(sender.getName());
+            } else if (ArenaManager.count() == 1) {
+                tempArena = ArenaManager.getFirst();
+            } else if (ArenaManager.count() < 1) {
+                Arena.pmsg(sender, Language.parse(MSG.ERROR_NO_ARENAS));
+                return true;
+            } else if (ArenaManager.countAvailable() == 1) {
+                tempArena = ArenaManager.getAvailable();
+            }
+        } else {
+            if (args.length > 1) {
+                newArgs = StringParser.shiftArrayBy(args, 1);
+            }
+        }
 
-	@Override
-	public void onDisable() {
-		ArenaManager.reset(true);
-		Tracker.stop();
-		Debug.destroy();
-		Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription()
-				.getFullName());
-	}
+        latelounge:
+        if (tempArena == null) {
+            for (Arena ar : ArenaManager.getArenas()) {
+                for (ArenaModule mod : ar.getMods()) {
+                    if (mod.hasSpawn(sender.getName())) {
+                        tempArena = ar;
+                        break latelounge;
+                    }
+                }
+            }
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		arcade = new ArcadeHook();
-		DEBUG = new Debug(1);
+            Arena.pmsg(sender, Language.parse(MSG.ERROR_ARENA_NOTFOUND, name));
+            return true;
+        }
 
-		this.saveDefaultConfig();
-		if (!this.getConfig().contains("shortcuts")) {
-			final List<String> ffa = new ArrayList<String>();
-			final List<String> teams = new ArrayList<String>();
-			
-			ffa.add("arena1");
-			ffa.add("arena2");
+        AbstractArenaCommand paacmd = null;
+        for (AbstractArenaCommand aac : arenaCommands) {
+            if (aac.getMain().contains(newArgs[0]) || aac.getShort().contains(newArgs[0])) {
+                paacmd = aac;
+                break;
+            }
 
-			teams.add("teamarena1");
-			teams.add("teamarena2");
-			
-			getConfig().options().copyDefaults(true);
-			getConfig().addDefault("shortcuts.freeforall", ffa);
-			getConfig().addDefault("shortcuts.teams", teams);
-			
-			this.saveConfig();
-		}
-		
-		if (!this.getConfig().contains("update.mode") && this.getConfig().contains("modulecheck")) {
-			getConfig().set("update.mode", getConfig().getString("update", "both"));
-			getConfig().set("update.type", getConfig().getString("updatetype", "beta"));
-			getConfig().set("update.modules", getConfig().getBoolean("modulecheck", true));
+        }
+        if (paacmd == null
+                && (PACheck.handleCommand(tempArena, sender, newArgs))) {
+            return true;
+        }
 
-			getConfig().set("modulecheck", null);
-			getConfig().set("updatetype", null);
+        if (paacmd == null
+                && tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
+            paacmd = new PAG_Join();
+            if (newArgs.length > 1) {
+                newArgs = StringParser.shiftArrayBy(newArgs, 1);
+            }
+            tempArena.getDebugger()
+                    .i("committing: " + paacmd.getName(), sender);
+            paacmd.commit(tempArena, sender, newArgs);
+            return true;
+        }
 
-			this.saveConfig();
-		}
+        if (paacmd != null) {
+            tempArena.getDebugger()
+                    .i("committing: " + paacmd.getName(), sender);
+            paacmd.commit(tempArena, sender,
+                    StringParser.shiftArrayBy(newArgs, 1));
+            return true;
+        }
+        tempArena.getDebugger().i("cmd null", sender);
 
-		getDataFolder().mkdir();
-		new File(getDataFolder().getPath() + "/arenas").mkdir();
-		new File(getDataFolder().getPath() + "/goals").mkdir();
-		new File(getDataFolder().getPath() + "/mods").mkdir();
-		new File(getDataFolder().getPath() + "/regionshapes").mkdir();
-		new File(getDataFolder().getPath() + "/dumps").mkdir();
-		new File(getDataFolder().getPath() + "/files").mkdir();
-		new File(getDataFolder().getPath() + "/templates").mkdir();
+        return false;
+    }
 
-		agm = new ArenaGoalManager(this);
-		amm = new ArenaModuleManager(this);
-		arsm = new ArenaRegionShapeManager(this);
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+        return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
+    }
 
-		Language.init(getConfig().getString("language", "en"));
-		Help.init(getConfig().getString("language", "en"));
+    @Override
+    public void onDisable() {
+        ArenaManager.reset(true);
+        Tracker.stop();
+        Debug.destroy();
+        Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription()
+                .getFullName());
+    }
 
-		StatisticsManager.initialize();
-		ArenaPlayer.initiate();
+    @Override
+    public void onEnable() {
+        instance = this;
+        arcade = new ArcadeHook();
+        DEBUG = new Debug(1);
 
-		getServer().getPluginManager()
-				.registerEvents(new BlockListener(), this);
-		getServer().getPluginManager().registerEvents(new EntityListener(),
-				this);
-		getServer().getPluginManager().registerEvents(new PlayerListener(),
-				this);
-		getServer().getPluginManager().registerEvents(new InventoryListener(),
-				this);
+        this.saveDefaultConfig();
+        if (!this.getConfig().contains("shortcuts")) {
+            final List<String> ffa = new ArrayList<String>();
+            final List<String> teams = new ArrayList<String>();
 
-		if (getConfig().getInt("ver", 0) < 1) {
-			getConfig().options().copyDefaults(true);
-			getConfig().set("ver", 1);
-			saveConfig();
-		}
+            ffa.add("arena1");
+            ffa.add("arena2");
 
-		Debug.load(this, Bukkit.getConsoleSender());
-		ArenaClass.addGlobalClasses();
-		ArenaManager.load_arenas();
-		
-		if (getConfig().getBoolean("use_shortcuts") ||
-				getConfig().getBoolean("only_shortcuts")) {
-			ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
-		}
-		
-		updater = new Updater(this, this.getFile(), 41652, true);
+            teams.add("teamarena1");
+            teams.add("teamarena2");
 
-		if (ArenaManager.count() > 0) {
+            getConfig().options().copyDefaults(true);
+            getConfig().addDefault("shortcuts.freeforall", ffa);
+            getConfig().addDefault("shortcuts.teams", teams);
 
-			final Tracker trackMe = new Tracker();
-			trackMe.start();
+            this.saveConfig();
+        }
 
-			Metrics metrics;
-			try {
-				metrics = new Metrics(this);
-				final Metrics.Graph atg = metrics
-						.createGraph("Game modes installed");
-				for (ArenaGoal at : agm.getAllGoals()) {
-					atg.addPlotter(new WrapPlotter(at.getName()));
-				}
-				final Metrics.Graph amg = metrics
-						.createGraph("Enhancement modules installed");
-				for (ArenaModule am : amm.getAllMods()) {
-					amg.addPlotter(new WrapPlotter(am.getName()));
-				}
-				final Metrics.Graph acg = metrics.createGraph("Arena count");
-				acg.addPlotter(new WrapPlotter("count", ArenaManager
-						.getArenas().size()));
+        if (!this.getConfig().contains("update.mode") && this.getConfig().contains("modulecheck")) {
+            getConfig().set("update.mode", getConfig().getString("update", "both"));
+            getConfig().set("update.type", getConfig().getString("updatetype", "beta"));
+            getConfig().set("update.modules", getConfig().getBoolean("modulecheck", true));
 
-				metrics.start();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+            getConfig().set("modulecheck", null);
+            getConfig().set("updatetype", null);
 
-		}
+            this.saveConfig();
+        }
 
-		Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
-	}
+        getDataFolder().mkdir();
+        new File(getDataFolder().getPath() + "/arenas").mkdir();
+        new File(getDataFolder().getPath() + "/goals").mkdir();
+        new File(getDataFolder().getPath() + "/mods").mkdir();
+        new File(getDataFolder().getPath() + "/regionshapes").mkdir();
+        new File(getDataFolder().getPath() + "/dumps").mkdir();
+        new File(getDataFolder().getPath() + "/files").mkdir();
+        new File(getDataFolder().getPath() + "/templates").mkdir();
 
-	private class WrapPlotter extends Metrics.Plotter {
-		final private int arenaCount;
+        agm = new ArenaGoalManager(this);
+        amm = new ArenaModuleManager(this);
+        arsm = new ArenaRegionShapeManager(this);
 
-		public WrapPlotter(final String name) {
-			super(name);
-			arenaCount = 1;
-		}
+        loadArenaCommands();
+        loadGlobalCommands();
 
-		public WrapPlotter(final String name, final int count) {
-			super(name);
-			arenaCount = count;
-		}
+        Language.init(getConfig().getString("language", "en"));
+        Help.init(getConfig().getString("language", "en"));
 
-		public int getValue() {
-			return arenaCount;
-		}
-	}
+        StatisticsManager.initialize();
+        ArenaPlayer.initiate();
+
+        getServer().getPluginManager()
+                .registerEvents(new BlockListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(),
+                this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(),
+                this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(),
+                this);
+
+        if (getConfig().getInt("ver", 0) < 1) {
+            getConfig().options().copyDefaults(true);
+            getConfig().set("ver", 1);
+            saveConfig();
+        }
+
+        Debug.load(this, Bukkit.getConsoleSender());
+        ArenaClass.addGlobalClasses();
+        ArenaManager.load_arenas();
+
+        if (getConfig().getBoolean("use_shortcuts") ||
+                getConfig().getBoolean("only_shortcuts")) {
+            ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
+        }
+
+        updater = new Updater(this, this.getFile(), 41652, true);
+
+        if (ArenaManager.count() > 0) {
+
+            final Tracker trackMe = new Tracker();
+            trackMe.start();
+
+            Metrics metrics;
+            try {
+                metrics = new Metrics(this);
+                final Metrics.Graph atg = metrics
+                        .createGraph("Game modes installed");
+                for (ArenaGoal at : agm.getAllGoals()) {
+                    atg.addPlotter(new WrapPlotter(at.getName()));
+                }
+                final Metrics.Graph amg = metrics
+                        .createGraph("Enhancement modules installed");
+                for (ArenaModule am : amm.getAllMods()) {
+                    amg.addPlotter(new WrapPlotter(am.getName()));
+                }
+                final Metrics.Graph acg = metrics.createGraph("Arena count");
+                acg.addPlotter(new WrapPlotter("count", ArenaManager
+                        .getArenas().size()));
+
+                metrics.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
+    }
+
+    private class WrapPlotter extends Metrics.Plotter {
+        final private int arenaCount;
+
+        public WrapPlotter(final String name) {
+            super(name);
+            arenaCount = 1;
+        }
+
+        public WrapPlotter(final String name, final int count) {
+            super(name);
+            arenaCount = count;
+        }
+
+        public int getValue() {
+            return arenaCount;
+        }
+    }
 }

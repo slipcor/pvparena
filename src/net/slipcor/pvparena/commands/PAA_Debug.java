@@ -5,49 +5,73 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
-
+import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>PVP Arena DEBUG Command class</pre>
- * 
+ * <p/>
  * A command to toggle debugging
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.0
  */
 
 public class PAA_Debug extends AbstractGlobalCommand {
 
-	public PAA_Debug() {
-		super(new String[0]);
-	}
+    public PAA_Debug() {
+        super(new String[0]);
+    }
 
-	@Override
-	public void commit(final CommandSender sender, final String[] args) {
-		if (!this.hasPerms(sender)) {
-			return;
-		}
-		
-		if (!argCountValid(sender, args, new Integer[]{0,1})) {
-			return;
-		}
-		
-		if (args.length > 0) {
-			PVPArena.instance.getConfig().set("debug", args[0]);
-		}
-		
-		Debug.load(PVPArena.instance, sender);
-	}
+    @Override
+    public void commit(final CommandSender sender, final String[] args) {
+        if (!this.hasPerms(sender)) {
+            return;
+        }
 
-	@Override
-	public String getName() {
-		return this.getClass().getName();
-	}
+        if (!argCountValid(sender, args, new Integer[]{0, 1})) {
+            return;
+        }
 
-	@Override
-	public void displayHelp(final CommandSender sender) {
-		Arena.pmsg(sender, Help.parse(HELP.DEBUG));
-	}
+        if (args.length > 0) {
+            PVPArena.instance.getConfig().set("debug", args[0]);
+        }
+
+        Debug.load(PVPArena.instance, sender);
+    }
+
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
+    @Override
+    public void displayHelp(final CommandSender sender) {
+        Arena.pmsg(sender, Help.parse(HELP.DEBUG));
+    }
+
+    @Override
+    public List<String> getMain() {
+        return Arrays.asList("debug");
+    }
+
+    @Override
+    public List<String> getShort() {
+        return Arrays.asList("!d");
+    }
+
+    @Override
+    public CommandTree<String> getSubs(final Arena nothing) {
+        CommandTree<String> result = new CommandTree<String>(null);
+        for (Arena arena : ArenaManager.getArenas()) {
+            result.define(new String[]{arena.getName()});
+        }
+        result.define(new String[]{"all"});
+        result.define(new String[]{"none"});
+        result.define(new String[]{"off"});
+        return result;
+    }
 }

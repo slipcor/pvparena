@@ -18,79 +18,78 @@ package net.slipcor.pvparena.ncloader;
 
 /**
  * Loadable - Base for loadable classes
- * 
+ *
  * @author NodinChan
- * 
  */
 public class NCBLoadable implements Cloneable {
 
-	private final String name;
+    private final String name;
 
-	public NCBLoadable(String name) {
-		this.name = name;
-	}
+    public NCBLoadable(String name) {
+        this.name = name;
+    }
 
-	@Override
-	public NCBLoadable clone() {
-		try {
-			return (NCBLoadable) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    @Override
+    public NCBLoadable clone() {
+        try {
+            return (NCBLoadable) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	/**
-	 * Called when the Loadable is loaded by the Loader
-	 * 
-	 * @return True if the Loadable is initialised
-	 */
-	public LoadResult init() {
-		return new LoadResult();
-	}
+    /**
+     * Called when the Loadable is loaded by the Loader
+     *
+     * @return True if the Loadable is initialised
+     */
+    public LoadResult init() {
+        return new LoadResult();
+    }
 
-	public boolean isInternal() {
-		return false;
-	}
+    public boolean isInternal() {
+        return false;
+    }
 
-	/**
-	 * Gets the name of the Loadable
-	 * 
-	 * @return The name
-	 */
-	public final String getName() {
-		return name;
-	}
+    /**
+     * Gets the name of the Loadable
+     *
+     * @return The name
+     */
+    public final String getName() {
+        return name;
+    }
 
-	public static final class LoadResult {
+    public static final class LoadResult {
 
-		private final Result result;
+        private final Result result;
 
-		private final String reason;
+        private final String reason;
 
-		public LoadResult() {
-			this(Result.SUCCESS, "");
-		}
+        public LoadResult() {
+            this(Result.SUCCESS, "");
+        }
 
-		public LoadResult(String failReason) {
-			this(Result.FAILURE, failReason);
-		}
+        public LoadResult(String failReason) {
+            this(Result.FAILURE, failReason);
+        }
 
-		public LoadResult(Result result, String reason) {
-			this.result = result;
-			this.reason = reason;
-		}
+        public LoadResult(Result result, String reason) {
+            this.result = result;
+            this.reason = reason;
+        }
 
-		public String getReason() {
-			return reason;
-		}
+        public String getReason() {
+            return reason;
+        }
 
-		public Result getResult() {
-			return result;
-		}
+        public Result getResult() {
+            return result;
+        }
 
-		public enum Result {
-			FAILURE, SUCCESS
-		}
-	}
+        public enum Result {
+            FAILURE, SUCCESS
+        }
+    }
 }

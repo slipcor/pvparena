@@ -10,57 +10,55 @@ import net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * <pre>Arena Runnable class "Warmup"</pre>
- * 
+ * <p/>
  * An arena timer to count down a warming up player
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.2
  */
 
 public class ArenaWarmupRunnable extends ArenaRunnable {
-	private final ArenaPlayer player;
-	private final String teamName;
-	private final boolean spectator;
+    private final ArenaPlayer player;
+    private final String teamName;
+    private final boolean spectator;
 //	private final static Debug DEBUG = new Debug(40);
-	
-	private final Arena wArena;
-	
-	/**
-	 * create a timed arena runnable
-	 * 
-	 * @param player
-	 *            the player to reset
-	 */
-	public ArenaWarmupRunnable(final Arena arena, final ArenaPlayer player, final String team, final boolean spectator, final int seconds) {
-		super(MSG.TIMER_WARMINGUP.getNode(), seconds, player.get(), null, false);
-		arena.getDebugger().i("ArenaWarmupRunnable constructor", player.getName());
-		this.player = player;
-		this.teamName = team;
-		this.spectator = spectator;
-		this.wArena = arena;
-	}
-	
-	@Override
-	protected void commit() {
-		arena.getDebugger().i("ArenaWarmupRunnable commiting", player.getName());
-		player.setStatus(Status.WARM);
-		if (spectator) {
-			wArena.hasNotPlayed(player);
-			(new PAG_Spectate()).commit(wArena, player.get(), null);
-		} else if (teamName == null) {
-			wArena.hasNotPlayed(player);
-			(new PAG_Join()).commit(wArena, player.get(), null);
-		} else {
-			wArena.hasNotPlayed(player);
-			String[] args = new String[1];
-			args[0] = teamName;
-			(new PAG_Join()).commit(wArena, player.get(), args);
-		}
-	}
-	
-	@Override
-	protected void warn() {
-		PVPArena.instance.getLogger().warning("ArenaWarmupRunnable not scheduled yet!");
-	}
+
+    private final Arena wArena;
+
+    /**
+     * create a timed arena runnable
+     *
+     * @param player the player to reset
+     */
+    public ArenaWarmupRunnable(final Arena arena, final ArenaPlayer player, final String team, final boolean spectator, final int seconds) {
+        super(MSG.TIMER_WARMINGUP.getNode(), seconds, player.get(), null, false);
+        arena.getDebugger().i("ArenaWarmupRunnable constructor", player.getName());
+        this.player = player;
+        this.teamName = team;
+        this.spectator = spectator;
+        this.wArena = arena;
+    }
+
+    @Override
+    protected void commit() {
+        arena.getDebugger().i("ArenaWarmupRunnable commiting", player.getName());
+        player.setStatus(Status.WARM);
+        if (spectator) {
+            wArena.hasNotPlayed(player);
+            (new PAG_Spectate()).commit(wArena, player.get(), null);
+        } else if (teamName == null) {
+            wArena.hasNotPlayed(player);
+            (new PAG_Join()).commit(wArena, player.get(), null);
+        } else {
+            wArena.hasNotPlayed(player);
+            String[] args = new String[1];
+            args[0] = teamName;
+            (new PAG_Join()).commit(wArena, player.get(), args);
+        }
+    }
+
+    @Override
+    protected void warn() {
+        PVPArena.instance.getLogger().warning("ArenaWarmupRunnable not scheduled yet!");
+    }
 }

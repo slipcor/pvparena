@@ -1,16 +1,8 @@
 package net.slipcor.pvparena.arena;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,206 +10,212 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <pre>Arena Class class</pre>
- * 
+ * <p/>
  * contains Arena Class methods and variables for quicker access
- * 
+ *
  * @author slipcor
- * 
  * @version v0.10.2
  */
 
 public final class ArenaClass {
-	
-	private static Debug debug = new Debug(4);
 
-	private final String name;
-	private final ItemStack[] items;
-	private final ItemStack[] armors;
-	
-	private static final Map<String, ArenaClass> globals = new HashMap<String, ArenaClass>();
+    private static Debug debug = new Debug(4);
 
-	// private statics: item definitions
-	private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
-	private static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
-	private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
-	private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
-	private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
+    private final String name;
+    private final ItemStack[] items;
+    private final ItemStack[] armors;
 
-	// static filling of the items array
-	static {
-		HELMETS_TYPE.add(Material.LEATHER_HELMET);
-		HELMETS_TYPE.add(Material.GOLD_HELMET);
-		HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
-		HELMETS_TYPE.add(Material.IRON_HELMET);
-		HELMETS_TYPE.add(Material.DIAMOND_HELMET);
-		
-		HELMETS_TYPE.add(Material.WOOL);
-		HELMETS_TYPE.add(Material.PUMPKIN);
-		HELMETS_TYPE.add(Material.JACK_O_LANTERN);
-		HELMETS_TYPE.add(Material.SKULL_ITEM);
+    private static final Map<String, ArenaClass> globals = new HashMap<String, ArenaClass>();
 
-		CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
-		CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
-		CHESTPLATES_TYPE.add(Material.CHAINMAIL_CHESTPLATE);
-		CHESTPLATES_TYPE.add(Material.IRON_CHESTPLATE);
-		CHESTPLATES_TYPE.add(Material.DIAMOND_CHESTPLATE);
+    // private statics: item definitions
+    private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
+    private static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
+    private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
+    private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
+    private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
 
-		LEGGINGS_TYPE.add(Material.LEATHER_LEGGINGS);
-		LEGGINGS_TYPE.add(Material.GOLD_LEGGINGS);
-		LEGGINGS_TYPE.add(Material.CHAINMAIL_LEGGINGS);
-		LEGGINGS_TYPE.add(Material.IRON_LEGGINGS);
-		LEGGINGS_TYPE.add(Material.DIAMOND_LEGGINGS);
+    // static filling of the items array
+    static {
+        HELMETS_TYPE.add(Material.LEATHER_HELMET);
+        HELMETS_TYPE.add(Material.GOLD_HELMET);
+        HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
+        HELMETS_TYPE.add(Material.IRON_HELMET);
+        HELMETS_TYPE.add(Material.DIAMOND_HELMET);
 
-		BOOTS_TYPE.add(Material.LEATHER_BOOTS);
-		BOOTS_TYPE.add(Material.GOLD_BOOTS);
-		BOOTS_TYPE.add(Material.CHAINMAIL_BOOTS);
-		BOOTS_TYPE.add(Material.IRON_BOOTS);
-		BOOTS_TYPE.add(Material.DIAMOND_BOOTS);
+        HELMETS_TYPE.add(Material.WOOL);
+        HELMETS_TYPE.add(Material.PUMPKIN);
+        HELMETS_TYPE.add(Material.JACK_O_LANTERN);
+        HELMETS_TYPE.add(Material.SKULL_ITEM);
 
-		ARMORS_TYPE.addAll(HELMETS_TYPE);
-		ARMORS_TYPE.addAll(CHESTPLATES_TYPE);
-		ARMORS_TYPE.addAll(LEGGINGS_TYPE);
-		ARMORS_TYPE.addAll(BOOTS_TYPE);
-	}
-	
-	public static void addGlobalClasses() {
-		globals.clear();
-		File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
-		YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
-		
-		cfg.addDefault("classes.Ranger",
-				"261,262:64,298,299,300,301");
-		cfg.addDefault("classes.Swordsman", "276,306,307,308,309");
-		cfg.addDefault("classes.Tank", "272,310,311,312,313");
-		cfg.addDefault("classes.Pyro", "259,46:3,298,299,300,301");
-		
-		cfg.options().copyDefaults();
-		try {
-			cfg.save(classFile);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		for (String className : cfg.getConfigurationSection("classes").getKeys(false)) {
-			String sItemList = "";
+        CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
+        CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
+        CHESTPLATES_TYPE.add(Material.CHAINMAIL_CHESTPLATE);
+        CHESTPLATES_TYPE.add(Material.IRON_CHESTPLATE);
+        CHESTPLATES_TYPE.add(Material.DIAMOND_CHESTPLATE);
 
-			try {
-				sItemList = (String) cfg.getConfigurationSection("classes").get(className);
-			} catch (Exception e) {
-				Bukkit.getLogger().severe(
-						"[PVP Arena] Error while parsing class, skipping: "
-								+ className);
-				continue;
-			}
-			final String[] sItems = sItemList.split(",");
-			final ItemStack[] items = new ItemStack[sItems.length];
-			final ItemStack[] armors = new ItemStack[4];
-			
-			for (int i = 0; i < sItems.length; i++) {
-				
-				if (sItems[i].contains(">>!<<")) {
-					String[] split = sItems[i].split(">>!<<");
-					
-					int id = Integer.parseInt(split[0]);
-					armors[id] = StringParser.getItemStackFromString(split[1]);
-					
-					if (armors[id] == null) {
-						PVPArena.instance.getLogger().warning(
-								"unrecognized armor item: " + split[1]);
-					}
-					
-					sItems[i] = "AIR";
-				}
-				
-				items[i] = StringParser.getItemStackFromString(sItems[i]);
-				if (items[i] == null) {
-					PVPArena.instance.getLogger().warning(
-							"unrecognized item: " + items[i]);
-				}
-			}
-			globals.put(className, new ArenaClass(className, items, armors));
-		}
-	}
-	
-	public static void addGlobalClasses(Arena arena) {
-		for (String teamName : globals.keySet()) {
-			arena.addClass(teamName, globals.get(teamName).getItems(), globals.get(teamName).getArmors());
-		}
-	}
-	
-	public static void equip(final Player player, final ItemStack[] items) {
-		for (ItemStack item : items) {
-			if (ARMORS_TYPE.contains(item.getType())) {
-				equipArmor(item, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { item });
-				debug.i("- " + StringParser.getStringFromItemStack(item), player);
-			}
-		}
-		player.updateInventory();
-	}
+        LEGGINGS_TYPE.add(Material.LEATHER_LEGGINGS);
+        LEGGINGS_TYPE.add(Material.GOLD_LEGGINGS);
+        LEGGINGS_TYPE.add(Material.CHAINMAIL_LEGGINGS);
+        LEGGINGS_TYPE.add(Material.IRON_LEGGINGS);
+        LEGGINGS_TYPE.add(Material.DIAMOND_LEGGINGS);
 
-	public void equip(final Player player) {
-		debug.i("Equipping player " + player.getName() + " with items!", player);
-		player.getInventory().setArmorContents(armors);
-		for (ItemStack item : items) {
-			if (ARMORS_TYPE.contains(item.getType())) {
-				equipArmor(item, player.getInventory());
-			} else {
-				player.getInventory().addItem(new ItemStack[] { item });
-				debug.i("- " + StringParser.getStringFromItemStack(item), player);
-			}
-		}
-		player.updateInventory();
-	}
+        BOOTS_TYPE.add(Material.LEATHER_BOOTS);
+        BOOTS_TYPE.add(Material.GOLD_BOOTS);
+        BOOTS_TYPE.add(Material.CHAINMAIL_BOOTS);
+        BOOTS_TYPE.add(Material.IRON_BOOTS);
+        BOOTS_TYPE.add(Material.DIAMOND_BOOTS);
 
-	private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
-		debug.i("- " + StringParser.getStringFromItemStack(stack), (Player) inv.getHolder());
-		final Material type = stack.getType();
-		if (HELMETS_TYPE.contains(type)) {
-			if (inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR) {
-				inv.addItem(stack);
-			} else {
-				inv.setHelmet(stack);
-			}
-		} else if (CHESTPLATES_TYPE.contains(type)) {
-			if (inv.getChestplate() != null && inv.getChestplate().getType() != Material.AIR) {
-				inv.addItem(stack);
-			} else {
-				inv.setChestplate(stack);
-			}
-		} else if (LEGGINGS_TYPE.contains(type)) {
-			if (inv.getLeggings() != null && inv.getLeggings().getType() != Material.AIR) {
-				inv.addItem(stack);
-			} else {
-				inv.setLeggings(stack);
-			}
-		} else if (BOOTS_TYPE.contains(type)) {
-			if (inv.getBoots() != null && inv.getBoots().getType() != Material.AIR) {
-				inv.addItem(stack);
-			} else {
-				inv.setBoots(stack);
-			}
-		}
-	}
+        ARMORS_TYPE.addAll(HELMETS_TYPE);
+        ARMORS_TYPE.addAll(CHESTPLATES_TYPE);
+        ARMORS_TYPE.addAll(LEGGINGS_TYPE);
+        ARMORS_TYPE.addAll(BOOTS_TYPE);
+    }
 
-	public ArenaClass(final String className, final ItemStack[] classItems, ItemStack[] armors) {
-		this.name = className;
-		this.items = classItems.clone();
-		this.armors = armors.clone();
-	}
+    public static void addGlobalClasses() {
+        globals.clear();
+        File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
+        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 
-	public String getName() {
-		return name;
-	}
+        cfg.addDefault("classes.Ranger",
+                "261,262:64,298,299,300,301");
+        cfg.addDefault("classes.Swordsman", "276,306,307,308,309");
+        cfg.addDefault("classes.Tank", "272,310,311,312,313");
+        cfg.addDefault("classes.Pyro", "259,46:3,298,299,300,301");
 
-	public ItemStack[] getArmors() {
-		return armors.clone();
-	}
+        cfg.options().copyDefaults();
+        try {
+            cfg.save(classFile);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
-	public ItemStack[] getItems() {
-		return items.clone();
-	}
+        for (String className : cfg.getConfigurationSection("classes").getKeys(false)) {
+            String sItemList;
+
+            try {
+                sItemList = (String) cfg.getConfigurationSection("classes").get(className);
+            } catch (Exception e) {
+                Bukkit.getLogger().severe(
+                        "[PVP Arena] Error while parsing class, skipping: "
+                                + className);
+                continue;
+            }
+            final String[] sItems = sItemList.split(",");
+            final ItemStack[] items = new ItemStack[sItems.length];
+            final ItemStack[] armors = new ItemStack[4];
+
+            for (int i = 0; i < sItems.length; i++) {
+
+                if (sItems[i].contains(">>!<<")) {
+                    String[] split = sItems[i].split(">>!<<");
+
+                    int id = Integer.parseInt(split[0]);
+                    armors[id] = StringParser.getItemStackFromString(split[1]);
+
+                    if (armors[id] == null) {
+                        PVPArena.instance.getLogger().warning(
+                                "unrecognized armor item: " + split[1]);
+                    }
+
+                    sItems[i] = "AIR";
+                }
+
+                items[i] = StringParser.getItemStackFromString(sItems[i]);
+                if (items[i] == null) {
+                    PVPArena.instance.getLogger().warning(
+                            "unrecognized item: " + items[i]);
+                }
+            }
+            globals.put(className, new ArenaClass(className, items, armors));
+        }
+    }
+
+    public static void addGlobalClasses(Arena arena) {
+        for (String teamName : globals.keySet()) {
+            arena.addClass(teamName, globals.get(teamName).getItems(), globals.get(teamName).getArmors());
+        }
+    }
+
+    public static void equip(final Player player, final ItemStack[] items) {
+        for (ItemStack item : items) {
+            if (ARMORS_TYPE.contains(item.getType())) {
+                equipArmor(item, player.getInventory());
+            } else {
+                player.getInventory().addItem(item);
+                debug.i("- " + StringParser.getStringFromItemStack(item), player);
+            }
+        }
+        player.updateInventory();
+    }
+
+    public void equip(final Player player) {
+        debug.i("Equipping player " + player.getName() + " with items!", player);
+        player.getInventory().setArmorContents(armors);
+        for (ItemStack item : items) {
+            if (ARMORS_TYPE.contains(item.getType())) {
+                equipArmor(item, player.getInventory());
+            } else {
+                player.getInventory().addItem(item);
+                debug.i("- " + StringParser.getStringFromItemStack(item), player);
+            }
+        }
+        player.updateInventory();
+    }
+
+    private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
+        debug.i("- " + StringParser.getStringFromItemStack(stack), (Player) inv.getHolder());
+        final Material type = stack.getType();
+        if (HELMETS_TYPE.contains(type)) {
+            if (inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR) {
+                inv.addItem(stack);
+            } else {
+                inv.setHelmet(stack);
+            }
+        } else if (CHESTPLATES_TYPE.contains(type)) {
+            if (inv.getChestplate() != null && inv.getChestplate().getType() != Material.AIR) {
+                inv.addItem(stack);
+            } else {
+                inv.setChestplate(stack);
+            }
+        } else if (LEGGINGS_TYPE.contains(type)) {
+            if (inv.getLeggings() != null && inv.getLeggings().getType() != Material.AIR) {
+                inv.addItem(stack);
+            } else {
+                inv.setLeggings(stack);
+            }
+        } else if (BOOTS_TYPE.contains(type)) {
+            if (inv.getBoots() != null && inv.getBoots().getType() != Material.AIR) {
+                inv.addItem(stack);
+            } else {
+                inv.setBoots(stack);
+            }
+        }
+    }
+
+    public ArenaClass(final String className, final ItemStack[] classItems, ItemStack[] armors) {
+        this.name = className;
+        this.items = classItems.clone();
+        this.armors = armors.clone();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ItemStack[] getArmors() {
+        return armors.clone();
+    }
+
+    public ItemStack[] getItems() {
+        return items.clone();
+    }
 }
