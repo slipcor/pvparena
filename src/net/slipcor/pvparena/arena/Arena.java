@@ -201,17 +201,16 @@ public class Arena {
 
         getDebugger().i("choosing player class", player);
 
+        getDebugger().i("checking class perms", player);
+        if (getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
+                && !(player.hasPermission("pvparena.class." + className))) {
+            this.msg(player,
+                    Language.parse(this, MSG.ERROR_NOPERM_CLASS, className));
+            return; // class permission desired and failed =>
+            // announce and OUT
+        }
+
         if (sign != null) {
-
-            getDebugger().i("checking class perms", player);
-            if (getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
-                    && !(player.hasPermission("pvparena.class." + className))) {
-                this.msg(player,
-                        Language.parse(this, MSG.ERROR_NOPERM_CLASS, className));
-                return; // class permission desired and failed =>
-                // announce and OUT
-            }
-
             if (getArenaConfig().getBoolean(CFG.USES_CLASSSIGNSDISPLAY)) {
                 PAClassSign.remove(signs, player);
                 final Block block = sign.getBlock();

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.497 - check for explicit class perms, even though we have no Sign!
 * v1.3.0.496 - minor fixes
 * v1.3.0.495 - add Command Tab support; Big Command rewrite!!
 
