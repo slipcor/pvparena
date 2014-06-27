@@ -317,6 +317,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     }
 
     @Override
+    public void lateJoin(final Player player) {
+        initate(player);
+    }
+
+    @Override
     public void parseLeave(final Player player) {
         if (player == null) {
             PVPArena.instance.getLogger().warning(
