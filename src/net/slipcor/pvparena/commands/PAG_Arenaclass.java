@@ -54,6 +54,13 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             return;
         }
 
+        if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
+                && !(sender.hasPermission("pvparena.class." + aClass.getName()))) {
+            arena.msg(sender,
+                    Language.parse(arena, MSG.ERROR_NOPERM_CLASS, aClass.getName()));
+            return;
+        }
+
         if (ArenaModuleManager.cannotSelectClass(arena, (Player) sender, args[0])) {
             return;
         }
