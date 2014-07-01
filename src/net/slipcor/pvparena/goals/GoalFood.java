@@ -181,7 +181,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public PACheck checkPlayerDeath(final PACheck res, final Player player) {
-        if (res.getPriority() <= PRIORITY && player.getKiller() != null) {
+        if (res.getPriority() <= PRIORITY) {
             res.setPriority(this, PRIORITY);
         }
         return res;
@@ -282,26 +282,6 @@ public class GoalFood extends ArenaGoal implements Listener {
     @Override
     public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
                                   final String error, final PlayerDeathEvent event) {
-        if (respawnPlayer.getKiller() == null) {
-
-            final List<ItemStack> returned;
-
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(respawnPlayer);
-                event.getDrops().clear();
-            } else {
-                returned = new ArrayList<ItemStack>();
-                returned.addAll(event.getDrops());
-            }
-
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(respawnPlayer.getName()),
-                    returned);
-
-            return;
-        }
 
         final ArenaTeam respawnTeam = ArenaPlayer
                 .parsePlayer(respawnPlayer.getName()).getArenaTeam();
