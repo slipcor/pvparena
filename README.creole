@@ -46,7 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.3.0.499 - address ticket 792, 879
+* v1.3.0.499 - address ticket 792, 879, 881
 ** attempt to fix the Food Goal to properly handle player deaths
 ** require explicit perms for /pa arenaclass (if desired)
 * v1.3.0.498 - properly initiate late joining PlayerDeathMatch players
