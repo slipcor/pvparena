@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -61,13 +62,13 @@ public final class InventoryManager {
 
         DEBUG.i("dropping player inventory: " + player.getName(), player);
         List<Material> exclude;
-        List<Material> keep;
+        List<ItemStack> keep;
 
         ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
         if (ap == null || ap.getArena() == null) {
             exclude = new ArrayList<Material>();
-            keep = new ArrayList<Material>();
+            keep = new ArrayList<ItemStack>();
         } else {
             ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
             exclude = new ArrayList<Material>();
@@ -76,22 +77,33 @@ public final class InventoryManager {
                     exclude.add(item.getType());
                 }
             }
-            items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN);
-            keep = new ArrayList<Material>();
-            for (ItemStack item : items) {
-                if (item != null) {
-                    keep.add(item.getType());
-                }
-            }
+            keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
         }
 
         for (ItemStack is : player.getInventory().getArmorContents()) {
             if ((is == null) || (is.getType().equals(Material.AIR))) {
                 continue;
             }
-            if (keep.contains(is.getType())) {
-                returned.add(is.clone());
-                continue;
+            for (ItemStack keepItem : keep) {
+                if (keepItem.getType().equals(is.getType())) {
+                    if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasLore()) {
+                        // has lore!
+                        if (is.hasItemMeta() && is.getItemMeta().hasLore() && is.getItemMeta().getLore().equals(keepItem.getItemMeta().getLore())) {
+                            returned.add(is.clone());
+                            continue;
+                        }
+                    } else if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasDisplayName()) {
+                        // has displayname!
+                        if (is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(keepItem.getItemMeta().getDisplayName())) {
+                            returned.add(is.clone());
+                            continue;
+                        }
+                    } else {
+                        // has neither!
+                        returned.add(is.clone());
+                        continue;
+                    }
+                }
             }
             if (exclude.contains(is.getType())) {
                 continue;

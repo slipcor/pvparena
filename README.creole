@@ -46,9 +46,10 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.3.0.500 - address ticket #869, #884
+* v1.3.0.500 - address ticket #869, #884, #792
 ** add time.resetDelay (default: -1 --> off) - delay for resetting players (TP & inventory)
 ** support single SPAWN regions for team matches
+** support lore and displayname for keepItems
 * v1.3.0.499 - address ticket 792, 879, 881
 ** attempt to fix the Food Goal to properly handle player deaths
 ** require explicit perms for /pa arenaclass (if desired)
