@@ -141,6 +141,7 @@ public class Config {
         TIME_STARTCOUNTDOWN("time.startCountDown", 10, null),
         TIME_REGIONTIMER("time.regionTimer", 10, null),
         TIME_TELEPORTPROTECT("time.teleportProtect", 3, null),
+        TIME_RESETDELAY("time.resetDelay", -1, null),
         TIME_WARMUPCOUNTDOWN("time.warmupCountDown", 0, null),
         TIME_PVP("time.pvp", 0, null),
 

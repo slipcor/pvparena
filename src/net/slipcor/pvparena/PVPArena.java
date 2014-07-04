@@ -55,6 +55,7 @@ public class PVPArena extends JavaPlugin {
     private final List<AbstractGlobalCommand> globalCommands = new ArrayList<AbstractGlobalCommand>();
 
     private Updater updater = null;
+    private boolean shuttingDown = false;
 
     /**
      * Hand over the ArenaGoalManager instance
@@ -152,6 +153,10 @@ public class PVPArena extends JavaPlugin {
         return arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA) ? sender
                 .hasPermission("pvparena.join." + arena.getName().toLowerCase())
                 : sender.hasPermission("pvparena.user");
+    }
+
+    public boolean isShuttingDown() {
+        return shuttingDown;
     }
 
     private void loadArenaCommands() {
@@ -383,6 +388,7 @@ public class PVPArena extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        shuttingDown = true;
         ArenaManager.reset(true);
         Tracker.stop();
         Debug.destroy();
@@ -392,6 +398,7 @@ public class PVPArena extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        shuttingDown = false;
         instance = this;
         arcade = new ArcadeHook();
         DEBUG = new Debug(1);

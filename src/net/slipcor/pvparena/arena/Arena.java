@@ -1216,37 +1216,51 @@ public class Arena {
             ArenaPlayer.reloadInventory(this, player);
         }
 
-        getDebugger().i("string = " + string, player);
-        aPlayer.setTelePass(true);
-        if (string.equalsIgnoreCase("old")) {
-            getDebugger().i("tping to old", player);
-            if (aPlayer.getSavedLocation() != null) {
-                getDebugger().i("location is fine", player);
-                final PALocation loc = aPlayer.getSavedLocation();
-                player.teleport(loc.toLocation());
-                player
-                        .setNoDamageTicks(
-                                getArenaConfig().getInt(
-                                        CFG.TIME_TELEPORTPROTECT) * 20);
+        class RunLater implements Runnable {
+
+            @Override
+            public void run() {
+                getDebugger().i("string = " + string, player);
+                aPlayer.setTelePass(true);
+                if (string.equalsIgnoreCase("old")) {
+                    getDebugger().i("tping to old", player);
+                    if (aPlayer.getSavedLocation() != null) {
+                        getDebugger().i("location is fine", player);
+                        final PALocation loc = aPlayer.getSavedLocation();
+                        player.teleport(loc.toLocation());
+                        player
+                                .setNoDamageTicks(
+                                        getArenaConfig().getInt(
+                                                CFG.TIME_TELEPORTPROTECT) * 20);
+                    }
+                } else {
+                    final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, string);
+                    if (loc == null) {
+                        PVPArena.instance.getLogger().severe("RESET Spawn null: " + Arena.this.getName() + "->" + string);
+                        (new Exception()).printStackTrace();
+                    } else {
+                        player.teleport(loc.toLocation());
+                        aPlayer.setTelePass(false);
+                    }
+                    player.setNoDamageTicks(
+                            getArenaConfig().getInt(
+                                    CFG.TIME_TELEPORTPROTECT) * 20);
+                }
+                if (soft || !force) {
+                    StatisticsManager.update(Arena.this, aPlayer);
+                }
+                if (!soft) {
+                    aPlayer.setLocation(null);
+                }
             }
+        }
+
+        RunLater runLater = new RunLater();
+
+        if (getArenaConfig().getInt(CFG.TIME_RESETDELAY) > -1) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, getArenaConfig().getInt(CFG.TIME_RESETDELAY));
         } else {
-            final PALocation loc = SpawnManager.getSpawnByExactName(this, string);
-            if (loc == null) {
-                PVPArena.instance.getLogger().severe("RESET Spawn null: " + this.getName() + "->" + string);
-                (new Exception()).printStackTrace();
-            } else {
-                player.teleport(loc.toLocation());
-                aPlayer.setTelePass(false);
-            }
-            player.setNoDamageTicks(
-                    getArenaConfig().getInt(
-                            CFG.TIME_TELEPORTPROTECT) * 20);
-        }
-        if (soft || !force) {
-            StatisticsManager.update(this, aPlayer);
-        }
-        if (!soft) {
-            aPlayer.setLocation(null);
+            runLater.run();
         }
     }
 
