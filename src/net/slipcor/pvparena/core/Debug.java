@@ -172,8 +172,11 @@ public class Debug {
     }
 
     public void i(final String string, final CommandSender sender) {
-        if (sender == null) {
+        if (arena == null && sender == null) {
             i(string, "null");
+            return;
+        } else if (sender == null) {
+            arena.getDebugger().i(string);
             return;
         }
         if (!debugs(sender.getName())) {

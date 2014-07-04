@@ -569,10 +569,22 @@ public final class SpawnManager {
                 if (teamName == null) {
                     teamName = ap.getArenaTeam().getName();
                 }
+                boolean teleported = false;
                 for (ArenaRegion x : ars) {
                     if (x.getRegionName().contains(teamName)) {
                         placeInsideSpawnRegion(arena, ap, x);
+                        teleported = true;
                         break;
+                    }
+                }
+                if (!teleported) {
+                    int pos = new Random().nextInt(ars.size());
+
+                    for (ArenaRegion x : ars) {
+                        if (pos-- == 0) {
+                            placeInsideSpawnRegion(arena, ap, x);
+                            break;
+                        }
                     }
                 }
             }
