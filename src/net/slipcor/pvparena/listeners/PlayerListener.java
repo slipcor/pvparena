@@ -10,11 +10,13 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Setup;
+import net.slipcor.pvparena.commands.PAG_Leave;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
@@ -312,6 +314,24 @@ public class PlayerListener implements Listener {
         aPlayer.addDeath();
 
         PlayerState.fullReset(arena, player);
+
+        class RunLater implements Runnable {
+
+            @Override
+            public void run() {
+
+                boolean found = false;
+                for (ArenaModule mod : arena.getMods()) {
+                    if (mod.getName().contains("Spectate")) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    new PAG_Leave().commit(arena, player, new String[0]);
+                }
+            }
+        }
 
         ArenaManager.checkAndCommit(arena, false);
     }
