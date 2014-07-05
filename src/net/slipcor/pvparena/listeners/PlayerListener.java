@@ -332,6 +332,7 @@ public class PlayerListener implements Listener {
                 }
             }
         }
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
 
         ArenaManager.checkAndCommit(arena, false);
     }
