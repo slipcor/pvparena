@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_Check extends AbstractArenaCommand {
 
     public PAA_Check() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.check"});
     }
 
     @Override

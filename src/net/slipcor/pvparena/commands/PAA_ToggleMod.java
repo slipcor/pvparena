@@ -24,7 +24,7 @@ import java.util.List;
 public class PAA_ToggleMod extends AbstractArenaCommand {
 
     public PAA_ToggleMod() {
-        super(new String[0]);
+        super(new String[]{"pvparena.cmds.togglemod"});
     }
 
     @Override

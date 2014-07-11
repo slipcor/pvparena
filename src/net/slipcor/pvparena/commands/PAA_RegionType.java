@@ -25,7 +25,7 @@ import java.util.List;
 public class PAA_RegionType extends AbstractArenaCommand {
 
     public PAA_RegionType() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.regiontype"});
     }
 
     @Override

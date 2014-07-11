@@ -24,7 +24,7 @@ import java.util.List;
 public class PAI_Shutup extends AbstractArenaCommand {
 
     public PAI_Shutup() {
-        super(new String[]{"pvparena.user"});
+        super(new String[]{"pvparena.user", "pvparena.cmds.shutup"});
     }
 
     @Override

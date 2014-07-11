@@ -35,7 +35,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
     }
 
     public PAA_WhiteList() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmds.whitelist"});
     }
 
     @Override

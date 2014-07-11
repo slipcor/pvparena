@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_Reload extends AbstractArenaCommand {
 
     public PAA_Reload() {
-        super(new String[0]);
+        super(new String[]{"pvparena.cmd.reload"});
     }
 
     @Override

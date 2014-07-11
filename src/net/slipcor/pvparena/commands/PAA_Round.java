@@ -28,7 +28,7 @@ import java.util.List;
 public class PAA_Round extends AbstractArenaCommand {
 
     public PAA_Round() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.round"});
     }
 
     @Override

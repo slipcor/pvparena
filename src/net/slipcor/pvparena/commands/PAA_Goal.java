@@ -29,7 +29,7 @@ public class PAA_Goal extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Goal() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.goal"});
     }
 
     @Override

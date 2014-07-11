@@ -25,7 +25,7 @@ import java.util.List;
 public class PAG_Leave extends AbstractArenaCommand {
 
     public PAG_Leave() {
-        super(new String[]{"pvparena.user"});
+        super(new String[]{"pvparena.user", "pvparena.cmds.leave"});
     }
 
     @Override

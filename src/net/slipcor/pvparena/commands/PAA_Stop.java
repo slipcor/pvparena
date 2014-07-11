@@ -26,7 +26,7 @@ public class PAA_Stop extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Stop() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.stop"});
     }
 
     @Override

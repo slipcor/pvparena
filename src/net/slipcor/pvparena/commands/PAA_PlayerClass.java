@@ -29,7 +29,7 @@ import java.util.List;
 public class PAA_PlayerClass extends AbstractArenaCommand {
 
     public PAA_PlayerClass() {
-        super(new String[]{"pvparena.create.class"});
+        super(new String[]{"pvparena.create.class","pvparena.cmds.playerclass"});
     }
 
     @Override

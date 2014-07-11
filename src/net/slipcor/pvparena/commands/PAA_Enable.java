@@ -27,7 +27,7 @@ public class PAA_Enable extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Enable() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.enable"});
     }
 
     @Override

@@ -25,7 +25,7 @@ import java.util.Set;
 public class PAA_Update extends AbstractGlobalCommand {
 
     public PAA_Update() {
-        super(new String[0]);
+        super(new String[]{"pvparena.cmds.update"});
     }
 
     @Override

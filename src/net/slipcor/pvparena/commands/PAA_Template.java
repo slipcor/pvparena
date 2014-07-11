@@ -25,7 +25,7 @@ import java.util.List;
 public class PAA_Template extends AbstractArenaCommand {
 
     public PAA_Template() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.template"});
     }
 
     @Override

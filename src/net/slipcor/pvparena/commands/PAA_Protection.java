@@ -29,7 +29,7 @@ public class PAA_Protection extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Protection() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.protection"});
     }
 
     @Override

@@ -33,7 +33,7 @@ public class PAA_Setup extends AbstractArenaCommand {
     public static Map<String, Arena> activeSetups = new HashMap<String, Arena>();
 
     public PAA_Setup() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.setup"});
     }
 
     @Override

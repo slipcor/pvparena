@@ -24,7 +24,7 @@ import java.util.List;
 public class PAA_Create extends AbstractGlobalCommand {
 
     public PAA_Create() {
-        super(new String[]{"pvparena.create"});
+        super(new String[]{"pvparena.create", "pvparena.cmds.create"});
     }
 
     @Override

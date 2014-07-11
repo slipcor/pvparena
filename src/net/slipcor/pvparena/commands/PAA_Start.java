@@ -26,7 +26,7 @@ public class PAA_Start extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Start() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.start"});
     }
 
     @Override

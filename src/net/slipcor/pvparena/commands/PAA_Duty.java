@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_Duty extends AbstractGlobalCommand {
 
     public PAA_Duty() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.duty"});
     }
 
     @Override

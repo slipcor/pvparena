@@ -31,7 +31,7 @@ public class PAA_Class extends AbstractArenaCommand {
     public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Class() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.class"});
     }
 
     @Override

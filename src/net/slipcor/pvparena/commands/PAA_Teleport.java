@@ -28,7 +28,7 @@ import java.util.List;
 public class PAA_Teleport extends AbstractArenaCommand {
 
     public PAA_Teleport() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.teleport"});
     }
 
     @Override

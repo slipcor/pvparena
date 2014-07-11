@@ -27,7 +27,7 @@ import java.util.List;
 
 public class PAG_Arenaclass extends AbstractArenaCommand {
     public PAG_Arenaclass() {
-        super(new String[]{"pvparena.user"});
+        super(new String[]{"pvparena.user", "pvparena.cmds.arenaclass"});
     }
 
     @Override

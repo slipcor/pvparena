@@ -25,7 +25,7 @@ import java.util.List;
 public class PAA_RegionFlag extends AbstractArenaCommand {
 
     public PAA_RegionFlag() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.regionflag"});
     }
 
     @Override

@@ -25,7 +25,7 @@ import java.util.List;
 public class PAI_Stats extends AbstractArenaCommand {
 
     public PAI_Stats() {
-        super(new String[]{"pvparena.user"});
+        super(new String[]{"pvparena.user", "pvparena.cmds.stats"});
     }
 
     @Override

@@ -37,7 +37,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
     }
 
     public PAA_Spawn() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.spawn"});
     }
 
     @Override

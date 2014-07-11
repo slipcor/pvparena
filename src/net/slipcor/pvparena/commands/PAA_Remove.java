@@ -30,7 +30,7 @@ public class PAA_Remove extends AbstractArenaCommand {
     private static String removal = null;
 
     public PAA_Remove() {
-        super(new String[]{});
+        super(new String[]{"pvparena.cmd.remove"});
     }
 
     @Override

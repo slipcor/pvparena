@@ -29,7 +29,7 @@ import java.util.Set;
 public class PAA_Uninstall extends AbstractGlobalCommand {
 
     public PAA_Uninstall() {
-        super(new String[0]);
+        super(new String[]{"pvparena.cmds.togglemod"});
     }
 
     @Override

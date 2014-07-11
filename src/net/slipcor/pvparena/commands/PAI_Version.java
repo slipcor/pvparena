@@ -28,7 +28,7 @@ import java.util.Set;
 public class PAI_Version extends AbstractGlobalCommand {
 
     public PAI_Version() {
-        super(new String[]{"pvparena.user"});
+        super(new String[]{"pvparena.user", "pvparena.cmds.version"});
     }
 
     @Override
