@@ -11,12 +11,14 @@ import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * <pre>Statistics Manager class</pre>
@@ -368,14 +370,27 @@ public class StatisticsManager {
         if (config.getConfigurationSection(arena.getName()) == null) {
             return;
         }
+        boolean foundBroken = false;
+
         arena.getDebugger().i("loading statistics!");
         for (String playerID : config.getConfigurationSection(arena.getName()).getKeys(false)) {
 
 
             String player = playerID;
 
-            if (config.getConfigurationSection(arena.getName()).contains("playerName")) {
-                player = config.getConfigurationSection(arena.getName()).getString("playerName");
+            if (config.getConfigurationSection(arena.getName()).contains(playerID+".playerName")) {
+                // old broken version
+
+                OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerID));
+
+                player = oPlayer.getName();
+                config.getConfigurationSection(arena.getName()).set(playerID+".name", player);
+                config.getConfigurationSection(arena.getName()).set(playerID+".playerName", null);
+
+                foundBroken = true;
+            } else if (config.getConfigurationSection(arena.getName()).contains(playerID+".name")) {
+                // new version
+                player = config.getConfigurationSection(arena.getName()).getString(playerID+".name");
             }
 
             arena.getDebugger().i("loading stats: " + player);
@@ -409,6 +424,9 @@ public class StatisticsManager {
 
             final int maxdamagetake = config.getInt(arena.getName() + "." + player + ".maxdamagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
+        }
+        if (foundBroken) {
+            save();
         }
     }
 

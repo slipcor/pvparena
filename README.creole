@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.503 - fix the UUID interpretation; use player names for creation, not the UUID -.-
 * v1.3.0.502 - how about we actually RUN the runnable?
 * v1.3.0.501 - force /pa leave on final player death if no specate module present
 * v1.3.0.500 - address ticket #869, #884, #792
