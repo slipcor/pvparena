@@ -30,6 +30,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -512,7 +513,9 @@ public class PACheck {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = event.getDrops();
+                    returned = new ArrayList<ItemStack>();
+                    returned.addAll(event.getDrops());
+                    event.getDrops().clear();
                 }
             }
 
