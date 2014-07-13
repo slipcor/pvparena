@@ -182,7 +182,7 @@ public final class StringParser {
 
         String[] temp = string.split(":");
 
-        String prefix = "";
+        String prefix = null;
 
         for (String s : PVPArena.instance.getConfig().getStringList("materialprefixes")) {
             if (string.startsWith(prefix+":")) {
@@ -229,7 +229,7 @@ public final class StringParser {
 
         temp = temp[0].split("~");
 
-        mat = parseMat(temp[0]);
+        mat = parseMat(prefix==null?temp[0]:prefix+":"+temp[0]);
         if (mat != null) {
             if (temp.length == 1) {
                 // [itemid/name]:[amount]
