@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.506 - add '*' command for the whitelist to allow all commands
 * v1.3.0.505 - add per command permissions - defaulting to old behaviour
 * v1.3.0.504 - don't drop inventory if not desired
 * v1.3.0.503 - fix the UUID interpretation; use player names for creation, not the UUID -.-

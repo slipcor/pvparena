@@ -193,7 +193,7 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("checking command whitelist", player);
 
         for (String s : list) {
-            if (event.getMessage().startsWith("/" + s)) {
+            if (s.equals("*") || event.getMessage().startsWith("/" + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
