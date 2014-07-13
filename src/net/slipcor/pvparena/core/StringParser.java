@@ -182,8 +182,22 @@ public final class StringParser {
 
         String[] temp = string.split(":");
 
+        String prefix = "";
+
+        for (String s : PVPArena.instance.getConfig().getStringList("materialprefixes")) {
+            if (string.startsWith(prefix+":")) {
+                prefix = s;
+                temp = string.substring(prefix.length()).split(":");
+            }
+        }
+
         if (temp.length > 1) {
-            amount = Integer.parseInt(temp[1]);
+            try {
+                amount = Integer.parseInt(temp[1]);
+            } catch (NumberFormatException e) {
+                PVPArena.instance.getLogger().severe("Material error. Maybe add " + temp[0] + " to materialprefixes?");
+                return new ItemStack(Material.AIR);
+            }
             if (temp.length > 2) {
                 desc = temp[2];
             }

@@ -15,3 +15,6 @@ update:
   mode: both
   type: beta
   modules: true
+materialprefixes:
+- minecraft
+- bukkit
