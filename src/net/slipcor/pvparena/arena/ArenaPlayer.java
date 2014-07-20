@@ -746,10 +746,6 @@ public class ArenaPlayer {
         telePass = canTeleport;
     }
 
-    public void setTempPermissions(final Set<PermissionAttachment> tempPermissions) {
-        this.tempPermissions = tempPermissions;
-    }
-
     @Override
     public String toString() {
         final ArenaTeam team = getArenaTeam();
