@@ -173,9 +173,8 @@ public final class TabManager {
             }
         } else {
             // should have a subvalue
-            String newOverride;
             for (String key : sub.getContent()) {
-                newOverride = getOverrideFromDefinition(override, key);
+                String newOverride = getOverrideFromDefinition(override, key);
                 if (getKeyMatchesInsideDefinition(newOverride, key).size() > 0) {
                     override = newOverride;
                     break;

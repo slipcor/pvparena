@@ -395,8 +395,8 @@ public class Arena {
     }
 
     public Material getReadyBlock() {
-        Material mMat = Material.IRON_BLOCK;
         getDebugger().i("reading ready block");
+        Material mMat = Material.IRON_BLOCK;
         try {
             mMat = Material.getMaterial(getArenaConfig()
                     .getInt(CFG.READY_BLOCK));
@@ -716,11 +716,11 @@ public class Arena {
         }
 
         getDebugger().i("return a damage name for : " + cause.toString(), player);
-        ArenaPlayer aPlayer = null;
-        ArenaTeam team = null;
 
         getDebugger().i("damager: " + damager, player);
 
+        ArenaPlayer aPlayer = null;
+        ArenaTeam team = null;
         if (damager instanceof Player) {
             aPlayer = ArenaPlayer.parsePlayer(((Player) damager).getName());
             team = aPlayer.getArenaTeam();
@@ -1256,8 +1256,7 @@ public class Arena {
                 } else {
                     final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, string);
                     if (loc == null) {
-                        PVPArena.instance.getLogger().severe("RESET Spawn null: " + getName() + "->" + string);
-                        new Exception().printStackTrace();
+                        new Exception("RESET Spawn null: " + getName() + "->" + string).printStackTrace();
                     } else {
                         player.teleport(loc.toLocation());
                         aPlayer.setTelePass(false);
@@ -1582,8 +1581,7 @@ public class Arena {
             loc = aPlayer.getSavedLocation().add(0, PVPArena.instance.getConfig().getDouble("y-offset"), 0);
         }
         if (loc == null) {
-            PVPArena.instance.getLogger().severe("TP Spawn null: " + getName() + "->" + place);
-            new Exception().printStackTrace();
+            new Exception("TP Spawn null: " + getName() + "->" + place).printStackTrace();
             return;
         }
 

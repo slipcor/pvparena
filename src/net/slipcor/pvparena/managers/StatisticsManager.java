@@ -159,11 +159,9 @@ public final class StatisticsManager {
      */
     private static boolean decide(final ArenaPlayer[] aps, final int pos, final type sortBy,
                                   final boolean desc, final boolean global) {
-        int iThis;
-        int iNext;
 
-        iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
-        iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
+        int iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
+        int iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
 
         if (global) {
             iThis = aps[pos].getTotalStatistics(sortBy);
@@ -367,9 +365,9 @@ public final class StatisticsManager {
         if (config.getConfigurationSection(arena.getName()) == null) {
             return;
         }
-        boolean foundBroken = false;
 
         arena.getDebugger().i("loading statistics!");
+        boolean foundBroken = false;
         for (final String playerID : config.getConfigurationSection(arena.getName()).getKeys(false)) {
 
 

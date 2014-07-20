@@ -487,9 +487,8 @@ public class PVPArena extends JavaPlugin {
             final Tracker trackMe = new Tracker();
             trackMe.start();
 
-            final Metrics metrics;
             try {
-                metrics = new Metrics(this);
+                final Metrics metrics = new Metrics(this);
                 final Metrics.Graph atg = metrics
                         .createGraph("Game modes installed");
                 for (final ArenaGoal at : agm.getAllGoals()) {

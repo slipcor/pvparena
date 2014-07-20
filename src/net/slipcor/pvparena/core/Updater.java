@@ -302,12 +302,11 @@ public class Updater extends Thread {
                 return;
             }
 
-            boolean foundFile = false;
-
             pluginURL = null;
             zipURL = null;
             final String serverVersion = Bukkit.getVersion().split("\\(")[1].replace(")", "").split(" ")[1];
 
+            boolean foundFile = false;
             for (int i = array.size() - 1; i > 0; i--) {
 
                 /**

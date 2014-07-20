@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 
 public class ArrowHack {
     public ArrowHack(final Player player) throws NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException,
+            IllegalAccessException,
             InvocationTargetException {
         final Method mGetHandle = player.getClass().getMethod("getHandle");
         final Object cHandle = mGetHandle.invoke(player);

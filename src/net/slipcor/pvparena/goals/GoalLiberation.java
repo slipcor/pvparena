@@ -148,8 +148,6 @@ public class GoalLiberation extends ArenaGoal {
         }
         arena.getDebugger().i("button click!", player);
 
-        Vector vLoc;
-        Vector vFlag = null;
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         final ArenaTeam pTeam = aPlayer.getArenaTeam();
@@ -162,6 +160,7 @@ public class GoalLiberation extends ArenaGoal {
             setTeam.add(team);
         }
 
+        Vector vFlag = null;
         for (final ArenaTeam team : setTeam) {
             final String aTeam = team.getName();
 
@@ -174,7 +173,7 @@ public class GoalLiberation extends ArenaGoal {
                 continue; // dont check for inactive teams
             }
             arena.getDebugger().i("checking for flag of team " + aTeam, player);
-            vLoc = block.getLocation().toVector();
+            Vector vLoc = block.getLocation().toVector();
             arena.getDebugger().i("block: " + vLoc, player);
             if (!SpawnManager.getBlocksStartingWith(arena, aTeam + "button").isEmpty()) {
                 vFlag = SpawnManager
@@ -642,10 +641,9 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaPlayer ap : arena.getFighters()) {
-            score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
+            double score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
                     : 0;
             if (arena.isFreeForAll()) {
 

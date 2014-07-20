@@ -47,7 +47,6 @@ public final class SpawnManager {
         DEBUG.i("--------------------");
         DEBUG.i("calculating a spawn!");
         DEBUG.i("--------------------");
-        double diff = 0;
         String far = null;
         for (final PASpawn s : available) {
             far = s.getName();
@@ -55,6 +54,7 @@ public final class SpawnManager {
         }
         DEBUG.i("last resort: " + far);
 
+        double diff = 0;
         for (final PASpawn s : available) {
             DEBUG.i("> checking " + s);
             double tempDiff = 0;

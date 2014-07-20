@@ -356,8 +356,8 @@ public class CylindricRegion extends ArenaRegionShape {
             return;
         }
         if (diffY == 0) {
-            region.locs[0] = new PABlockLocation(region.locs[0].toLocation().subtract(diffX * value, diffY * value, diffZ * value));
-            region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(diffX * value, diffY * value, diffZ * value));
+            region.locs[0] = new PABlockLocation(region.locs[0].toLocation().subtract(diffX * value, 0, diffZ * value));
+            region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(diffX * value, 0, diffZ * value));
         } else if (diffY > 0) {
             // positive Y means "up", means change the TOP value
             region.locs[1] = new PABlockLocation(region.locs[1].toLocation().add(diffX * value, diffY * value, diffZ * value));

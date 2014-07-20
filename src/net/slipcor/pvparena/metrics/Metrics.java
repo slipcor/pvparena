@@ -511,7 +511,7 @@ public class Metrics {
         }
     }
 
-    private static void appendJSONPair(final StringBuilder json, final String key, final String value) throws UnsupportedEncodingException {
+    private static void appendJSONPair(final StringBuilder json, final String key, final String value) {
         boolean isValueNumeric = false;
 
         try {

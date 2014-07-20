@@ -88,9 +88,8 @@ public class ArenaModuleManager {
     }
 
     public static String checkForMissingSpawns(final Arena arena, final Set<String> list) {
-        String error;
         for (final ArenaModule mod : arena.getMods()) {
-            error = mod.checkForMissingSpawns(list);
+            String error = mod.checkForMissingSpawns(list);
             if (error != null) {
                 return error;
             }

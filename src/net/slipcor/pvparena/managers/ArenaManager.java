@@ -288,8 +288,7 @@ public final class ArenaManager {
             final File path = new File(PVPArena.instance.getDataFolder().getPath(),
                     "arenas");
             final File[] file = path.listFiles();
-            int pos;
-            for (pos = 0; pos < file.length; pos++) {
+            for (int pos; pos < file.length; pos++) {
                 if (!file[pos].isDirectory() && file[pos].getName().contains(".yml")) {
                     String sName = file[pos].getName().replace("config_", "");
                     sName = sName.replace(".yml", "");

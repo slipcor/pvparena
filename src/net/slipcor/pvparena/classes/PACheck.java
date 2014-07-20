@@ -432,7 +432,6 @@ public class PACheck {
 
     public static void handlePlayerDeath(final Arena arena,
                                          final Player player, final PlayerDeathEvent event) {
-        boolean doesRespawn = true;
 
         int priority = 0;
         PACheck res = new PACheck();
@@ -455,6 +454,7 @@ public class PACheck {
             }
         }
 
+        boolean doesRespawn = true;
         if (res.hasError()) {
             arena.getDebugger().i("has error: " + res.getError(), player);
             if ("0".equals(res.getError())) {
@@ -620,7 +620,6 @@ public class PACheck {
 
     public static void handleSpectate(final Arena arena,
                                       final CommandSender sender) {
-        int priority = 0;
         PACheck res = new PACheck();
 
         arena.getDebugger().i("handling spectator", sender);
@@ -629,6 +628,7 @@ public class PACheck {
 
         ArenaModule commit = null;
 
+        int priority = 0;
         for (final ArenaModule mod : arena.getMods()) {
             res = mod.checkJoin(sender, res, false);
             if (res.getPriority() > priority && priority >= 0) {

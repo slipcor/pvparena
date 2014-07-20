@@ -170,14 +170,13 @@ public class GoalFlags extends ArenaGoal implements Listener {
         arena.getDebugger().i("flag click!", player);
 
         Vector vLoc;
-        final String sTeam;
         Vector vFlag = null;
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         if (getFlagMap().containsValue(player.getName())) {
             arena.getDebugger().i("player " + player.getName() + " has got a flag", player);
             vLoc = block.getLocation().toVector();
-            sTeam = aPlayer.getArenaTeam().getName();
+            final String sTeam = aPlayer.getArenaTeam().getName();
             arena.getDebugger().i("block: " + vLoc, player);
             if (!SpawnManager.getBlocksStartingWith(arena, sTeam + "flag").isEmpty()) {
                 vFlag = SpawnManager
@@ -356,8 +355,6 @@ public class GoalFlags extends ArenaGoal implements Listener {
             return;
         }
 
-        PotionEffectType pet = null;
-
         final String[] split = value.split("x");
 
         int amp = 1;
@@ -369,6 +366,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             }
         }
 
+        PotionEffectType pet = null;
         for (final PotionEffectType x : PotionEffectType.values()) {
             if (x == null) {
                 continue;
@@ -1029,10 +1027,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaTeam team : arena.getTeams()) {
-            score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
+            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
                     .get(team.getName()) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);

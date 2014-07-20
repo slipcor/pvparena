@@ -408,10 +408,9 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaTeam team : arena.getTeams()) {
-            score = arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)
+            double score = arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)
                     - (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
                     .getName()) : 0);
             if (scores.containsKey(team.getName())) {

@@ -53,8 +53,7 @@ public class PALocation {
         int result = 1;
         result = prime * result + Float.floatToIntBits(pitch);
         result = prime * result + (world == null ? 0 : world.hashCode());
-        long temp;
-        temp = Double.doubleToLongBits(x);
+        long temp = Double.doubleToLongBits(x);
         result = prime * result + (int) (temp ^ temp >>> 32);
         temp = Double.doubleToLongBits(y);
         result = prime * result + (int) (temp ^ temp >>> 32);

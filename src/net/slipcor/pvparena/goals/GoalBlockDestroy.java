@@ -526,10 +526,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaTeam team : arena.getTeams()) {
-            score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
+            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
                     .get(team.getName()) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
@@ -575,8 +574,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
         arena.getDebugger().i("block destroy!", player);
 
-        Vector vLoc;
-        Vector vBlock = null;
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         final ArenaTeam pTeam = aPlayer.getArenaTeam();
@@ -584,6 +581,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             return;
         }
 
+        Vector vBlock = null;
         for (final ArenaTeam team : arena.getTeams()) {
             final String blockTeam = team.getName();
 
@@ -594,7 +592,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             }
 
             arena.getDebugger().i("checking for block of team " + blockTeam, player);
-            vLoc = block.getLocation().toVector();
+            Vector vLoc = block.getLocation().toVector();
             arena.getDebugger().i("block: " + vLoc, player);
             if (!SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").isEmpty()) {
                 vBlock = SpawnManager

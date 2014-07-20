@@ -70,9 +70,7 @@ public class PAA_Install extends AbstractGlobalCommand {
             return;
         }
 
-        Set<String> list;
-
-        list = config.getConfigurationSection("goals").getKeys(false);
+        Set<String> list = config.getConfigurationSection("goals").getKeys(false);
         if (list.contains(args[0].toLowerCase())) {
             for (final String key : list) {
                 if (key.equalsIgnoreCase(args[0])) {
@@ -238,9 +236,7 @@ public class PAA_Install extends AbstractGlobalCommand {
             return result;
         }
 
-        Set<String> list;
-
-        list = config.getConfigurationSection("goals").getKeys(false);
+        Set<String> list = config.getConfigurationSection("goals").getKeys(false);
 
         for (final String key : list) {
             result.define(new String[]{key});

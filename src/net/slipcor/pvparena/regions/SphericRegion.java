@@ -55,13 +55,11 @@ public class SphericRegion extends ArenaRegionShape {
         if (!(x | y | z)) {
             return new PABlockLocation[]{lMin, lMax};
         }
-        final PABlockLocation l1;
-        final PABlockLocation l2;
 
-        l1 = new PABlockLocation(lMin.getWorldName(), x ? lMax.getX()
+        final PABlockLocation l1 = new PABlockLocation(lMin.getWorldName(), x ? lMax.getX()
                 : lMin.getX(), y ? lMax.getY() : lMin.getY(), z ? lMax.getZ()
                 : lMin.getZ());
-        l2 = new PABlockLocation(lMin.getWorldName(), x ? lMin.getX()
+        final PABlockLocation l2 = new PABlockLocation(lMin.getWorldName(), x ? lMin.getX()
                 : lMax.getX(), y ? lMin.getY() : lMax.getY(), z ? lMin.getZ()
                 : lMax.getZ());
         return new PABlockLocation[]{l1, l2};

@@ -134,14 +134,13 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             return res;
         }
 
-        Vector vLoc;
-        Vector vFlag = null;
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         final ArenaTeam pTeam = aPlayer.getArenaTeam();
         if (pTeam == null) {
             return res;
         }
+        Vector vFlag = null;
         for (final ArenaTeam team : arena.getTeams()) {
             final String aTeam = team.getName();
 
@@ -152,7 +151,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
                 continue; // dont check for inactive teams
             }
             arena.getDebugger().i("checking for tnt of team " + aTeam, player);
-            vLoc = block.getLocation().toVector();
+            Vector vLoc = block.getLocation().toVector();
             arena.getDebugger().i("block: " + vLoc, player);
             if (!SpawnManager.getBlocksStartingWith(arena, aTeam + "tnt").isEmpty()) {
                 vFlag = SpawnManager

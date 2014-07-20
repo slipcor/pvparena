@@ -138,9 +138,8 @@ public class ArenaGoalManager {
 
     public String ready(final Arena arena) {
         arena.getDebugger().i("AGM ready!?!");
-        String error;
         for (final ArenaGoal type : arena.getGoals()) {
-            error = type.ready();
+            String error = type.ready();
             if (error != null) {
 
                 arena.getDebugger().i("type error:" + type.getName());
@@ -215,7 +214,7 @@ public class ArenaGoalManager {
             // check all teams
             double maxScore = 0;
 
-            boolean notEveryone = false;
+            boolean everyone = true;
 
             int neededTeams = arena.getTeams().size();
 
@@ -226,7 +225,7 @@ public class ArenaGoalManager {
                     if (teamScore > maxScore) {
 
                         if (!winners.isEmpty()) {
-                            notEveryone = true;
+                            everyone = false;
                         }
 
                         maxScore = teamScore;
@@ -245,10 +244,10 @@ public class ArenaGoalManager {
             // neededTeams should be the number of active teams
 
             if (winners.size() >= neededTeams) { // everyone is a winner, at least (lol)
-                notEveryone = false;
+                everyone = true;
             }
 
-            if (!notEveryone) {
+            if (everyone) {
                 winners.clear(); // noone wins.
             }
         } else {
@@ -262,13 +261,12 @@ public class ArenaGoalManager {
 
             // several teams have max score!!
             double maxSum = 0;
-            double sum;
             for (final ArenaTeam team : arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
                     continue;
                 }
 
-                sum = 0;
+                double sum = 0;
 
                 for (final ArenaPlayer ap : team.getTeamMembers()) {
                     if (scores.containsKey(ap.getName())) {

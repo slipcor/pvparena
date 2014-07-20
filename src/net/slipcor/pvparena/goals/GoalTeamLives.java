@@ -344,10 +344,9 @@ public class GoalTeamLives extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaTeam team : arena.getTeams()) {
-            score = getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
+            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
                     .getName()) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);

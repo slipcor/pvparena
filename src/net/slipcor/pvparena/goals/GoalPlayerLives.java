@@ -415,10 +415,9 @@ public class GoalPlayerLives extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaPlayer ap : arena.getFighters()) {
-            score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
+            double score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
                     : 0;
             if (arena.isFreeForAll()) {
 

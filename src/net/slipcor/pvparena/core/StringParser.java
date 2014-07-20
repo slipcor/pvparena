@@ -173,13 +173,6 @@ public final class StringParser {
         // [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
 
 
-        final short dmg;
-        String data;
-        int amount = 1;
-        final Material mat;
-
-        String desc = null;
-
         String[] temp = string.split(":");
 
         String prefix = null;
@@ -191,6 +184,8 @@ public final class StringParser {
             }
         }
 
+        String desc = null;
+        int amount = 1;
         if (temp.length > 1) {
             try {
                 amount = Integer.parseInt(temp[1]);
@@ -229,7 +224,7 @@ public final class StringParser {
 
         temp = temp[0].split("~");
 
-        mat = parseMat(prefix==null?temp[0]:prefix+":"+temp[0]);
+        final Material mat = parseMat(prefix == null ? temp[0] : prefix + ":" + temp[0]);
         if (mat != null) {
             if (temp.length == 1) {
                 // [itemid/name]:[amount]
@@ -248,7 +243,7 @@ public final class StringParser {
 
                 return itemStack;
             }
-            dmg = Short.parseShort(temp[1]);
+            final short dmg = Short.parseShort(temp[1]);
             if (temp.length == 2) {
                 // [itemid/name]~[dmg]:[amount]
                 final ItemStack itemStack = new ItemStack(mat, amount, dmg);
@@ -288,7 +283,7 @@ public final class StringParser {
             }
 
             final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
-            data = dataSplit[0];
+            String data = dataSplit[0];
             if (temp[2].contains(SAFE_BREAK)) {
                 if (mat == Material.POTION) {
                     data = temp[2];

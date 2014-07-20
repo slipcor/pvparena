@@ -350,10 +350,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
         for (final ArenaPlayer ap : arena.getFighters()) {
-            score = arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)
+            double score = arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)
                     - (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
                     .get(ap.getName()) : 0);
             if (scores.containsKey(ap.getName())) {
