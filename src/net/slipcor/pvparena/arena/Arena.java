@@ -1546,13 +1546,14 @@ public class Arena {
         getDebugger().i("@" + team.getName() + ": " + msg, player);
         synchronized (this) {
             for (ArenaPlayer p : team.getTeamMembers()) {
+                String reset = getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)?"":ChatColor.RESET.toString();
                 if (player == null) {
                     p.get().sendMessage(
-                            color + "[" + team.getName() + "]" + ChatColor.WHITE
+                            color + "[" + team.getName() + "]" + ChatColor.RESET
                                     + ": " + msg);
                 } else {
                     p.get().sendMessage(
-                            color + "[" + team.getName() + "] " + player.getName() + ChatColor.WHITE
+                            color + "[" + team.getName() + "] " + reset + player.getName() + ChatColor.RESET
                                     + ": " + msg);
                 }
             }
