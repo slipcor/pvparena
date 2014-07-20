@@ -66,6 +66,8 @@ public class Arena {
     private final Set<PABlock> blocks = new HashSet<PABlock>();
     private final Set<PASpawn> spawns = new HashSet<PASpawn>();
 
+    private final Map<Player, UUID> entities = new HashMap<Player, UUID>();
+
     private PARoundMap rounds;
 
     private static String globalprefix = "PVP Arena";
@@ -138,6 +140,10 @@ public class Arena {
         }
 
         classes.add(new ArenaClass(className, items, armors));
+    }
+
+    public void addEntity(Player player, Entity entity) {
+        entities.put(player, entity.getUniqueId());
     }
 
     public void addRegion(final ArenaRegion region) {
@@ -323,6 +329,15 @@ public class Arena {
             debug = new Debug(this);
         }
         return debug;
+    }
+
+    public Player getEntityOwner(Entity entity) {
+        for (Player player : entities.keySet()) {
+            if (entities.get(player).equals(entity.getUniqueId())) {
+                return player;
+            }
+        }
+        return null;
     }
 
     /**
@@ -593,6 +608,10 @@ public class Arena {
             updateGoals();
         }
         return true;
+    }
+
+    public boolean hasEntity(Entity entity) {
+        return entities.containsValue(entity.getUniqueId());
     }
 
     /**
@@ -965,6 +984,15 @@ public class Arena {
         for (ArenaClass ac : classes) {
             if (ac.getName().equals(string)) {
                 classes.remove(ac);
+                return;
+            }
+        }
+    }
+
+    public void removeEntity(Entity entity) {
+        for (Player player : entities.keySet()) {
+            if (entities.get(player).equals(entity)) {
+                entities.remove(player);
                 return;
             }
         }

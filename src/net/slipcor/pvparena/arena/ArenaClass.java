@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.material.SpawnEgg;
+import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.io.File;
 import java.io.IOException;
@@ -150,7 +152,22 @@ public final class ArenaClass {
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
-                player.getInventory().addItem(item);
+                if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equals("SPAWN")) {
+                    final SpawnEgg egg = (SpawnEgg) item.getData();
+
+                    try {
+                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
+                            @Override
+                            public void run() {
+                                ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(player, player.getWorld().spawnEntity(player.getLocation(), egg.getSpawnedType()));
+                            }
+                        }, 20L);
+                    } catch(IllegalPluginAccessException e) {
+
+                    }
+                } else {
+                    player.getInventory().addItem(item);
+                }
                 debug.i("- " + StringParser.getStringFromItemStack(item), player);
             }
         }

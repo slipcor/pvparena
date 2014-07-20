@@ -380,8 +380,12 @@ public class StatisticsManager {
 
             if (config.getConfigurationSection(arena.getName()).contains(playerID+".playerName")) {
                 // old broken version
-
-                OfflinePlayer oPlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerID));
+                OfflinePlayer oPlayer;
+                try {
+                    oPlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerID));
+                } catch (NoSuchMethodError error) {
+                    continue;
+                }
 
                 player = oPlayer.getName();
                 config.getConfigurationSection(arena.getName()).set(playerID+".name", player);

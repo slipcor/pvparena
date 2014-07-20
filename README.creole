@@ -46,7 +46,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
-* v1.3.0.508 - properly build #507 prefix
+* v1.3.0.510 - add mobs fighting by your side. Give classes a spawn egg with displayname "SPAWN"
+* v1.3.0.509 - properly build #507 prefix
 * v1.3.0.507 - add materialprefixes to the global config, for special Material names (bukkit:SAND)
 * v1.3.0.506 - add '*' command for the whitelist to allow all commands
 * v1.3.0.505 - add per command permissions - defaulting to old behaviour

@@ -343,6 +343,40 @@ public class EntityListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityDamage(final EntityTargetLivingEntityEvent event) {
+        for (Arena arena : ArenaManager.getArenas()) {
+            if (arena.hasEntity(event.getEntity())) {
+
+                Player player = arena.getEntityOwner(event.getEntity());
+                ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+                if (event.getEntity().equals(player)) {
+                    event.setCancelled(true);
+                    return;
+                }
+
+                if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
+                    for (ArenaPlayer ap : aPlayer.getArenaTeam().getTeamMembers()) {
+                        if (event.getTarget().equals(ap.get())) {
+                            event.setCancelled(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityDeath(final EntityDeathEvent event) {
+        for (Arena arena : ArenaManager.getArenas()) {
+            if (arena.hasEntity(event.getEntity())) {
+
+                arena.removeEntity(event.getEntity());
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPotionSplash(final PotionSplashEvent event) {
 
