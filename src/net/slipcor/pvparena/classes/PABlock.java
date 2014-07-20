@@ -4,7 +4,7 @@ public class PABlock {
     private final PABlockLocation location;
     private final String name;
 
-    public PABlock(PABlockLocation loc, String string) {
+    public PABlock(final PABlockLocation loc, final String string) {
         location = loc;
         name = string;
     }

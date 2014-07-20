@@ -8,7 +8,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,16 +33,16 @@ public class PAA_Update extends AbstractGlobalCommand {
 
         final Set<NCBLoadable> modules = new HashSet<NCBLoadable>();
 
-        if (args.length < 1 || args[0].equals("mods")) {
+        if (args.length < 1 || "mods".equals(args[0])) {
             modules.addAll(PVPArena.instance.getAmm().getAllMods());
-        } else if (args.length < 1 || args[0].equals("goals")) {
+        } else if (args.length < 1 || "goals".equals(args[0])) {
             modules.addAll(PVPArena.instance.getAgm().getAllGoals());
-        } else if (args.length < 1 || args[0].equals("regionshapes")) {
+        } else if (args.length < 1 || "regionshapes".equals(args[0])) {
             modules.addAll(PVPArena.instance.getArsm().getRegions());
         }
 
         if (!modules.isEmpty()) {
-            for (NCBLoadable mod : modules) {
+            for (final NCBLoadable mod : modules) {
                 if (mod.isInternal()) {
                     continue;
                 }
@@ -63,7 +63,7 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -73,23 +73,23 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("update");
+        return Collections.singletonList("update");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!u");
+        return Collections.singletonList("!u");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"mods"});
         result.define(new String[]{"goals"});
-        for (String string : PVPArena.instance.getAgm().getAllGoalNames()) {
+        for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {
             result.define(new String[]{string});
         }
-        for (ArenaModule mod : PVPArena.instance.getAmm().getAllMods()) {
+        for (final ArenaModule mod : PVPArena.instance.getAmm().getAllMods()) {
             result.define(new String[]{mod.getName()});
         }
         return result;

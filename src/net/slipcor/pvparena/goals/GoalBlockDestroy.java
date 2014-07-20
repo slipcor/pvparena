@@ -38,7 +38,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,16 +74,17 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
     }
 
+    @Override
     public PACheck checkCommand(final PACheck res, final String string) {
         if (res.getPriority() > PRIORITY) {
             return res;
         }
 
-        if (string.equalsIgnoreCase("blocktype")) {
+        if ("blocktype".equalsIgnoreCase(string)) {
             res.setPriority(this, PRIORITY);
         }
 
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             final String sTeam = team.getName();
             if (string.contains(sTeam + "block")) {
                 res.setPriority(this, PRIORITY);
@@ -95,9 +96,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        List<String> result = Arrays.asList("blocktype");
+        final List<String> result = Collections.singletonList("blocktype");
         if (arena != null) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "block");
             }
@@ -107,7 +108,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"{Material}"});
         return result;
     }
@@ -132,11 +133,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-        String team = checkForMissingTeamSpawn(list);
+        final String team = checkForMissingTeamSpawn(list);
         if (team != null) {
             return team;
         }
-        return this.checkForMissingTeamCustom(list, "block");
+        return checkForMissingTeamCustom(list, "block");
     }
 
     @Override
@@ -189,7 +190,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         }
 
         if (!PVPArena.hasAdminPerms(player)
-                && !(PVPArena.hasCreatePerms(player, arena))) {
+                && !PVPArena.hasCreatePerms(player, arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -197,19 +198,19 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         return res;
     }
 
-    private void commit(final Arena arena, final String sTeam, final boolean win) {
+    private void commit(final Arena arena, final String sTeam) {
         arena.getDebugger().i("[BD] checking end: " + sTeam);
-        arena.getDebugger().i("win: " + win);
+        arena.getDebugger().i("win: " + false);
 
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == win) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            if (!team.getName().equals(sTeam)) {
                 /*
 				team is sTeam and win
 				team is not sTeam and not win
 				*/
                 continue;
             }
-            for (ArenaPlayer ap : team.getTeamMembers()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == Status.FIGHT || ap.getStatus() == Status.DEAD) {
                     ap.addLosses();
 					/*
@@ -260,7 +261,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
-        if (args[0].equalsIgnoreCase("blocktype")) {
+        if ("blocktype".equalsIgnoreCase(args[0])) {
             if (args.length < 2) {
                 arena.msg(
                         sender,
@@ -273,7 +274,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                 final int value = Integer.parseInt(args[1]);
                 arena.getArenaConfig().set(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE,
                         Material.getMaterial(value).name());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 final Material mat = Material.getMaterial(args[1].toUpperCase());
 
                 if (mat == null) {
@@ -290,7 +291,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                     CFG.GOAL_BLOCKDESTROY_BLOCKTYPE.toString()));
 
         } else if (args[0].contains("block")) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 if (args[0].contains(sTeam + "block")) {
                     blockTeamName = args[0];
@@ -311,13 +312,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("[BD]");
 
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() == Status.FIGHT) {
                     aTeam = team;
                     break;
                 }
@@ -388,7 +389,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
     }
 
     @Override
-    public void displayInfo(CommandSender sender) {
+    public void displayInfo(final CommandSender sender) {
         sender.sendMessage("block type: " +
                 arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE));
         sender.sendMessage("lives: " +
@@ -397,7 +398,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public boolean hasSpawn(final String string) {
-        for (String teamName : arena.getTeamNames()) {
+        for (final String teamName : arena.getTeamNames()) {
             if (string.toLowerCase().equals(teamName.toLowerCase() + "block")) {
                 return true;
             }
@@ -407,7 +408,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             }
 
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -428,7 +429,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
             final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 
-            for (PABlockLocation block : blocks) {
+            for (final PABlockLocation block : blocks) {
                 takeBlock(team.getColor().name(), block);
             }
         }
@@ -442,8 +443,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
     @Override
     public void parseStart() {
         getLifeMap().clear();
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getTeamMembers().size() > 0) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            if (!team.getTeamMembers().isEmpty()) {
                 arena.getDebugger().i("adding team " + team.getName());
                 // team is active
                 getLifeMap().put(
@@ -453,13 +454,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             }
             final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 
-            for (PABlockLocation block : blocks) {
+            for (final PABlockLocation block : blocks) {
                 takeBlock(team.getColor().name(), block);
             }
         }
     }
 
-    private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
+    private void reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
         arena.getDebugger().i("reducing lives of team " + team);
         final int count = getLifeMap().get(team) - 1;
@@ -467,10 +468,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             getLifeMap().put(team, count);
         } else {
             getLifeMap().remove(team);
-            commit(arena, team, false);
-            return true;
+            commit(arena, team);
+            return;
         }
-        return false;
     }
 
     @Override
@@ -500,12 +500,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
      * @param blockColor      the teamcolor to reset
      * @param paBlockLocation the location to take/reset
      */
-    public void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
+    void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
         if (paBlockLocation == null) {
             return;
         }
-        if (arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)
-                .equals("WOOL")) {
+        if ("WOOL".equals(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))) {
             paBlockLocation.toLocation()
                     .getBlock()
                     .setTypeIdAndData(
@@ -528,11 +527,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
-                    .get(team.getName()) : 0);
+        for (final ArenaTeam team : arena.getTeams()) {
+            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
+                    .get(team.getName()) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
             } else {
@@ -577,8 +575,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
         arena.getDebugger().i("block destroy!", player);
 
-        Vector vLoc;
-        Vector vBlock = null;
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         final ArenaTeam pTeam = aPlayer.getArenaTeam();
@@ -586,19 +582,20 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             return;
         }
 
-        for (ArenaTeam team : arena.getTeams()) {
+        Vector vBlock = null;
+        for (final ArenaTeam team : arena.getTeams()) {
             final String blockTeam = team.getName();
 
             if (team.getTeamMembers().size() < 1
-                    && !team.getName().equals("touchdown")) {
+                    && !"touchdown".equals(team.getName())) {
                 arena.getDebugger().i("size!OUT! ", player);
                 continue; // dont check for inactive teams
             }
 
             arena.getDebugger().i("checking for block of team " + blockTeam, player);
-            vLoc = block.getLocation().toVector();
-            arena.getDebugger().i("block: " + vLoc.toString(), player);
-            if (SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").size() > 0) {
+            Vector vLoc = block.getLocation().toVector();
+            arena.getDebugger().i("block: " + vLoc, player);
+            if (!SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").isEmpty()) {
                 vBlock = SpawnManager
                         .getBlockNearest(
                                 SpawnManager.getBlocksStartingWith(arena, blockTeam
@@ -606,7 +603,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                                 new PABlockLocation(player.getLocation()))
                         .toLocation().toVector();
             }
-            if ((vBlock != null) && (vLoc.distance(vBlock) < 2)) {
+            if (vBlock != null && vLoc.distance(vBlock) < 2) {
 
                 // ///////
 
@@ -626,7 +623,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                                     .getTeam(blockTeam).getColoredName()
                                     + ChatColor.YELLOW, String
                                     .valueOf(getLifeMap().get(blockTeam) - 1)));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     Bukkit.getLogger().severe(
                             "[PVP Arena] team unknown/no lives: " + blockTeam);
                     e.printStackTrace();
@@ -634,13 +631,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 
                 gEvent = new PAGoalEvent(arena, this,
-                        "score:" + player.getName() + ":" + aPlayer.getArenaTeam().getName() + ":1");
+                        "score:" + player.getName() + ':' + aPlayer.getArenaTeam().getName() + ":1");
                 Bukkit.getPluginManager().callEvent(gEvent);
                 class RunLater implements Runnable {
                     String localColor;
                     PABlockLocation localLoc;
 
-                    RunLater(String color, PABlockLocation loc) {
+                    RunLater(final String color, final PABlockLocation loc) {
                         localColor = color;
                         localLoc = loc;
                     }
@@ -651,7 +648,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                     }
                 }
 
-                if (this.getLifeMap().containsKey(blockTeam)
+                if (getLifeMap().containsKey(blockTeam)
                         && getLifeMap().get(blockTeam) > SpawnManager.getBlocksStartingWith(arena, blockTeam + "block").size()) {
 
                     Bukkit.getScheduler().runTaskLater(
@@ -675,7 +672,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
         boolean contains = false;
 
-        for (ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
+        for (final ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
             if (region.getShape().contains(new PABlockLocation(event.getLocation()))) {
                 contains = true;
                 break;
@@ -686,13 +683,13 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             return;
         }
 
-        Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, "block");
+        final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, "block");
 
         //final Set<PABlockLocation>
 
-        for (Block b : event.blockList()) {
-            PABlockLocation loc = new PABlockLocation(b.getLocation());
-            for (PABlock pb : blocks) {
+        for (final Block b : event.blockList()) {
+            final PABlockLocation loc = new PABlockLocation(b.getLocation());
+            for (final PABlock pb : blocks) {
                 if (pb.getLocation().getDistanceSquared(loc) < 1) {
                     final String blockTeam = pb.getName().split("block")[0];
 
@@ -703,7 +700,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                                         .getTeam(blockTeam).getColoredName()
                                         + ChatColor.YELLOW, String
                                         .valueOf(getLifeMap().get(blockTeam) - 1)));
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         Bukkit.getLogger().severe(
                                 "[PVP Arena] team unknown/no lives: " + blockTeam);
                         e.printStackTrace();

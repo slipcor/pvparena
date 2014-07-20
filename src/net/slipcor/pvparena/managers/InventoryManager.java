@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>Inventory Manager class</pre>
@@ -28,7 +28,7 @@ import java.util.List;
 
 public final class InventoryManager {
 
-    public static final Debug DEBUG = new Debug(26);
+    private static final Debug DEBUG = new Debug(26);
     private static final String[] TOOLSUFFIXES = {"_AXE", "_PICKAXE", "_SPADE", "_HOE", "_SWORD", "BOW", "SHEARS"};
 
     private InventoryManager() {
@@ -58,21 +58,21 @@ public final class InventoryManager {
      * @return a list of the items that could be returned
      */
     public static List<ItemStack> drop(final Player player) {
-        List<ItemStack> returned = new ArrayList<ItemStack>();
+        final List<ItemStack> returned = new ArrayList<ItemStack>();
 
         DEBUG.i("dropping player inventory: " + player.getName(), player);
-        List<Material> exclude;
-        List<ItemStack> keep;
+        final List<Material> exclude;
+        final List<ItemStack> keep;
 
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+        final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
         if (ap == null || ap.getArena() == null) {
             exclude = new ArrayList<Material>();
             keep = new ArrayList<ItemStack>();
         } else {
-            ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
+            final ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
             exclude = new ArrayList<Material>();
-            for (ItemStack item : items) {
+            for (final ItemStack item : items) {
                 if (item != null) {
                     exclude.add(item.getType());
                 }
@@ -80,28 +80,25 @@ public final class InventoryManager {
             keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
         }
 
-        for (ItemStack is : player.getInventory().getArmorContents()) {
-            if ((is == null) || (is.getType().equals(Material.AIR))) {
+        for (final ItemStack is : player.getInventory().getArmorContents()) {
+            if (is == null || is.getType() == Material.AIR) {
                 continue;
             }
-            for (ItemStack keepItem : keep) {
-                if (keepItem.getType().equals(is.getType())) {
+            for (final ItemStack keepItem : keep) {
+                if (keepItem.getType() == is.getType()) {
                     if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasLore()) {
                         // has lore!
                         if (is.hasItemMeta() && is.getItemMeta().hasLore() && is.getItemMeta().getLore().equals(keepItem.getItemMeta().getLore())) {
                             returned.add(is.clone());
-                            continue;
                         }
                     } else if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasDisplayName()) {
                         // has displayname!
                         if (is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(keepItem.getItemMeta().getDisplayName())) {
                             returned.add(is.clone());
-                            continue;
                         }
                     } else {
                         // has neither!
                         returned.add(is.clone());
-                        continue;
                     }
                 }
             }
@@ -110,13 +107,21 @@ public final class InventoryManager {
             }
             player.getWorld().dropItemNaturally(player.getLocation(), is);
         }
-        for (ItemStack is : player.getInventory().getContents()) {
-            if ((is == null) || (is.getType().equals(Material.AIR))) {
+        for (final ItemStack is : player.getInventory().getContents()) {
+            if (is == null || is.getType() == Material.AIR) {
                 continue;
             }
-            if (keep.contains(is.getType())) {
+            for (final ItemStack item : keep) {
+                if (item.getType() != is.getType()) {
+                    continue;
+                }
+                if (item.hasItemMeta() && !item.getItemMeta().getDisplayName().equals(is.getItemMeta().getDisplayName())) {
+                    continue;
+                }
+                if (item.hasItemMeta() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().equals(is.getItemMeta().getLore())) {
+                    continue;
+                }
                 returned.add(is.clone());
-                continue;
             }
             if (exclude.contains(is.getType())) {
                 continue;
@@ -128,11 +133,11 @@ public final class InventoryManager {
     }
 
     public static boolean receivesDamage(final ItemStack item) {
-        if (item == null || item.getType().equals(Material.AIR)) {
+        if (item == null || item.getType() == Material.AIR) {
             return false;
         }
 
-        for (String s : TOOLSUFFIXES) {
+        for (final String s : TOOLSUFFIXES) {
             if (item.getType().name().endsWith(s)) {
                 return true;
             }
@@ -147,29 +152,26 @@ public final class InventoryManager {
         }
         final Location loc = player.getLocation();
 
-        class RunLater implements Runnable {
-
-            @Override
-            public void run() {
-                ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
-                orb.setExperience(exp);
-            }
-
-        }
         try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 20L);
-        } catch (Exception e) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    final ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
+                    orb.setExperience(exp);
+                }
+            }, 20L);
+        } catch (final Exception e) {
 
         }
     }
 
-    public static void transferItems(Player player, Inventory blockInventory) {
-        ItemStack[] oldItems = blockInventory.getContents().clone();
-        for (ItemStack items : oldItems) {
-            HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(items);
+    public static void transferItems(final Player player, final Inventory blockInventory) {
+        final ItemStack[] oldItems = blockInventory.getContents().clone();
+        for (final ItemStack items : oldItems) {
+            final Map<Integer, ItemStack> remaining = player.getInventory().addItem(items);
             blockInventory.remove(items);
             if (!remaining.isEmpty()) {
-                for (ItemStack item : remaining.values()) {
+                for (final ItemStack item : remaining.values()) {
                     blockInventory.addItem(item);
                 }
             }

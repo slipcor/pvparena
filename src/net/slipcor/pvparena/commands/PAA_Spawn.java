@@ -14,7 +14,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +29,7 @@ import java.util.Set;
  */
 
 public class PAA_Spawn extends AbstractArenaCommand {
-    private static Set<String> spawns = new HashSet<String>();
+    private static final Set<String> spawns = new HashSet<String>();
 
     static {
         spawns.add("exit");
@@ -42,7 +42,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -65,7 +65,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
                 return;
             }
 
-            for (ArenaModule mod : arena.getMods()) {
+            for (final ArenaModule mod : arena.getMods()) {
                 if (mod.hasSpawn(args[0])) {
                     commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
                     return;
@@ -77,7 +77,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
                 return;
             }
 
-            for (ArenaGoal mod : arena.getGoals()) {
+            for (final ArenaGoal mod : arena.getGoals()) {
                 if (mod.hasSpawn(args[0])) {
                     commitSet(arena, sender, new PALocation(aPlayer.get().getLocation()), args[0]);
                     return;
@@ -86,7 +86,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
             arena.msg(sender, Language.parse(arena, MSG.ERROR_SPAWN_UNKNOWN, args[0]));
 
-        } else if (args[1].equalsIgnoreCase("remove")) {
+        } else if ("remove".equalsIgnoreCase(args[1])) {
             // usage: /pa {arenaname} spawn [spawnname] remove | remove a spawn
             final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
             if (loc == null) {
@@ -107,7 +107,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -117,25 +117,25 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("spawn");
+        return Collections.singletonList("spawn");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!sp");
+        return Collections.singletonList("!sp");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
-        for (String spawn : spawns) {
+        final CommandTree<String> result = new CommandTree<String>(null);
+        for (final String spawn : spawns) {
             result.define(new String[]{spawn});
         }
 
         if (arena == null) {
             return result;
         }
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{spawn.getName()});
         }
         return result;

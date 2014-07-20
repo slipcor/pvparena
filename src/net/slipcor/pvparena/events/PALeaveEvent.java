@@ -50,6 +50,7 @@ public class PALeaveEvent extends Event {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

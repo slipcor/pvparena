@@ -27,9 +27,9 @@ import java.util.Set;
 
 public class WarmupJoin extends ArenaModule {
 
-    private final static int PRIORITY = 3;
+    private static final int PRIORITY = 3;
 
-    private Set<ArenaPlayer> playerSet = null;
+    private Set<ArenaPlayer> playerSet;
 
     public WarmupJoin() {
         super("WarmupJoin");
@@ -67,7 +67,7 @@ public class WarmupJoin extends ArenaModule {
         }
 
         if (aPlayer.getArena() != null) {
-            aPlayer.getArena().getDebugger().i(this.getName(), sender);
+            aPlayer.getArena().getDebugger().i(getName(), sender);
             result.setError(this, Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(aPlayer.getArena())));
             return result;
         }
@@ -88,7 +88,7 @@ public class WarmupJoin extends ArenaModule {
     }
 
     @Override
-    public void displayInfo(CommandSender sender) {
+    public void displayInfo(final CommandSender sender) {
         sender.sendMessage("seconds: " +
                 arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
     }

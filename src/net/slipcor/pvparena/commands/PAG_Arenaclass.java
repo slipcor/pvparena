@@ -13,7 +13,7 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,7 +32,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
+        if (!hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
             return;
         }
 
@@ -55,7 +55,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
-                && !(sender.hasPermission("pvparena.class." + aClass.getName()))) {
+                && !sender.hasPermission("pvparena.class." + aClass.getName())) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_NOPERM_CLASS, aClass.getName()));
             return;
@@ -76,7 +76,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -86,21 +86,21 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("arenaclass");
+        return Collections.singletonList("arenaclass");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-ac");
+        return Collections.singletonList("-ac");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaClass aClass : arena.getClasses()) {
+        for (final ArenaClass aClass : arena.getClasses()) {
             result.define(new String[]{aClass.getName()});
         }
         return result;

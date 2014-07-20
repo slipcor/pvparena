@@ -29,17 +29,17 @@ public class PABlockLocation {
     }
 
     public PABlockLocation(final Location bukkitLocation) {
-        this.world = bukkitLocation.getWorld().getName();
-        this.x = bukkitLocation.getBlockX();
-        this.y = bukkitLocation.getBlockY();
-        this.z = bukkitLocation.getBlockZ();
+        world = bukkitLocation.getWorld().getName();
+        x = bukkitLocation.getBlockX();
+        y = bukkitLocation.getBlockY();
+        z = bukkitLocation.getBlockZ();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((world == null) ? 0 : world.hashCode());
+        result = prime * result + (world == null ? 0 : world.hashCode());
         result = prime * result + x;
         result = prime * result + y;
         result = prime * result + z;
@@ -47,26 +47,31 @@ public class PABlockLocation {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        PABlockLocation other = (PABlockLocation) obj;
+        }
+        final PABlockLocation other = (PABlockLocation) obj;
         if (world == null) {
-            if (other.world != null)
+            if (other.world != null) {
                 return false;
-        } else if (!world.equals(other.world))
+            }
+        } else if (!world.equals(other.world)) {
             return false;
-        if (x != other.x)
+        }
+        if (x != other.x) {
             return false;
-        if (y != other.y)
+        }
+        if (y != other.y) {
             return false;
-        if (z != other.z)
-            return false;
-        return true;
+        }
+        return z == other.z;
     }
 
     public double getDistance(final PABlockLocation otherLocation) {
@@ -80,8 +85,8 @@ public class PABlockLocation {
                             + otherLocation.world);
         }
 
-        return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
-                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
+        return Math.sqrt(Math.pow(x - otherLocation.x, 2.0D)
+                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D));
     }
 
     public double getDistanceSquared(final PABlockLocation otherLocation) {
@@ -95,8 +100,8 @@ public class PABlockLocation {
                             + otherLocation.world);
         }
 
-        return Math.pow(this.x - otherLocation.x, 2.0D)
-                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D);
+        return Math.pow(x - otherLocation.x, 2.0D)
+                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D);
     }
 
     public PABlockLocation getMidpoint(final PABlockLocation location) {
@@ -121,16 +126,13 @@ public class PABlockLocation {
     }
 
     public boolean isInAABB(final PABlockLocation min, final PABlockLocation max) {
-        if (this.getX() < min.getX() || this.getX() > max.getX()) {
+        if (x < min.x || x > max.x) {
             return false;
         }
-        if (this.getY() < min.getY() || this.getY() > max.getY()) {
+        if (y < min.y || y > max.y) {
             return false;
         }
-        if (this.getZ() < min.getZ() || this.getZ() > max.getZ()) {
-            return false;
-        }
-        return true;
+        return !(z < min.z || z > max.z);
     }
 
     public PABlockLocation pointTo(final PABlockLocation dest, final Double length) {
@@ -163,6 +165,6 @@ public class PABlockLocation {
 
     @Override
     public String toString() {
-        return world + ":" + x + "," + y + "," + z;
+        return world + ':' + x + ',' + y + ',' + z;
     }
 }

@@ -9,9 +9,8 @@ import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena DISABLE Command class</pre>
@@ -24,15 +23,13 @@ import java.util.Map;
 
 public class PAA_Disable extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
     public PAA_Disable() {
         super(new String[]{"pvparena.cmd.disable"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -52,7 +49,7 @@ public class PAA_Disable extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -62,7 +59,7 @@ public class PAA_Disable extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("disable");
+        return Collections.singletonList("disable");
     }
 
     @Override

@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class BattlefieldJoin extends ArenaModule {
 
-    private final static int PRIORITY = 1;
+    private static final int PRIORITY = 1;
 
     public BattlefieldJoin() {
         super("BattlefieldJoin");
@@ -75,7 +75,7 @@ public class BattlefieldJoin extends ArenaModule {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 
         if (aPlayer.getArena() != null) {
-            aPlayer.getArena().getDebugger().i(this.getName(), sender);
+            aPlayer.getArena().getDebugger().i(getName(), sender);
             result.setError(this, Language.parse(arena,
                     MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(aPlayer.getArena())));
             return result;
@@ -103,10 +103,10 @@ public class BattlefieldJoin extends ArenaModule {
         team.add(player);
         final Set<PASpawn> spawns = new HashSet<PASpawn>();
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            String arenaClass = player.getArenaClass().getName();
+            final String arenaClass = player.getArenaClass().getName();
             spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName() + arenaClass + "spawn"));
         } else if (arena.isFreeForAll()) {
-            if (team.getName().equals("free")) {
+            if ("free".equals(team.getName())) {
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
             } else {
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()));
@@ -117,7 +117,7 @@ public class BattlefieldJoin extends ArenaModule {
 
         int pos = new Random().nextInt(spawns.size());
 
-        for (PASpawn spawn : spawns) {
+        for (final PASpawn spawn : spawns) {
             if (--pos < 0) {
                 arena.tpPlayerToCoordName(player.get(), spawn.getName());
                 break;
@@ -137,9 +137,9 @@ public class BattlefieldJoin extends ArenaModule {
             if (player.getArenaTeam() != null && player.getArenaClass() == null) {
                 final String autoClass =
                         arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-                                (arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS))
+                                arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
                                 : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-                if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
                     arena.chooseClass(player.get(), null, autoClass);
                 }
                 if (autoClass == null) {

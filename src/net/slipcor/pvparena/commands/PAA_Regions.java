@@ -9,7 +9,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public class PAA_Regions extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -43,7 +43,7 @@ public class PAA_Regions extends AbstractArenaCommand {
         if (args.length < 1) {
             arena.msg(sender, Language.parse(arena, MSG.REGIONS_LISTHEAD, arena.getName()));
 
-            for (ArenaRegion ars : arena.getRegions()) {
+            for (final ArenaRegion ars : arena.getRegions()) {
                 arena.msg(sender, Language.parse(arena, MSG.REGIONS_LISTVALUE, ars.getRegionName(), ars.getType().name(), ars.getShape().getName()));
             }
             return;
@@ -56,18 +56,18 @@ public class PAA_Regions extends AbstractArenaCommand {
             return;
         }
 
-        arena.msg(sender, Language.parse(arena, MSG.REGIONS_HEAD, arena.getName() + ":" + args[0]));
+        arena.msg(sender, Language.parse(arena, MSG.REGIONS_HEAD, arena.getName() + ':' + args[0]));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_TYPE, region.getType().name()));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_SHAPE, region.getShape().getName()));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_PROTECTIONS, StringParser.joinSet(region.getProtections(), ", ")));
-        arena.msg(sender, "0: " + region.locs[0].toString());
-        arena.msg(sender, "1: " + region.locs[1].toString());
+        arena.msg(sender, "0: " + region.locs[0]);
+        arena.msg(sender, "1: " + region.locs[1]);
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -77,21 +77,21 @@ public class PAA_Regions extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("regions");
+        return Collections.singletonList("regions");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rs");
+        return Collections.singletonList("!rs");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaRegion region : arena.getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName()});
         }
         return result;

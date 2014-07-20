@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class PAI_Help extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -45,7 +45,7 @@ public class PAI_Help extends AbstractGlobalCommand {
 		 */
 
         if (args.length > 0) {
-            if (args[0].equals("admin")) {
+            if ("admin".equals(args[0])) {
                 Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "admin"));
                 Arena.pmsg(sender, "/pa help check");
                 Arena.pmsg(sender, "/pa help debug");
@@ -56,7 +56,7 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help stop");
                 Arena.pmsg(sender, "/pa help teleport");
 
-            } else if (args[0].equals("setup")) {
+            } else if ("setup".equals(args[0])) {
                 Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "setup"));
                 Arena.pmsg(sender, "/pa help autosetup");
                 Arena.pmsg(sender, "/pa help class");
@@ -67,7 +67,7 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help setowner");
                 Arena.pmsg(sender, "/pa help spawn");
 
-            } else if (args[0].equals("custom")) {
+            } else if ("custom".equals(args[0])) {
                 Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "custom"));
                 Arena.pmsg(sender, "/pa help blacklist");
                 Arena.pmsg(sender, "/pa help edit");
@@ -83,14 +83,14 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help update");
                 Arena.pmsg(sender, "/pa help whitelist");
 
-            } else if (args[0].equals("game")) {
+            } else if ("game".equals(args[0])) {
                 Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "game"));
 
                 Arena.pmsg(sender, "/pa help chat");
                 Arena.pmsg(sender, "/pa help join");
                 Arena.pmsg(sender, "/pa help leave");
                 Arena.pmsg(sender, "/pa help spectate");
-            } else if (args[0].equals("info")) {
+            } else if ("info".equals(args[0])) {
                 Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, "info"));
 
                 Arena.pmsg(sender, "/pa help arenalist");
@@ -101,18 +101,18 @@ public class PAI_Help extends AbstractGlobalCommand {
                 Arena.pmsg(sender, "/pa help stats");
                 Arena.pmsg(sender, "/pa help version");
             } else {
-                for (AbstractArenaCommand aac : PVPArena.instance.getArenaCommands()) {
+                for (final AbstractArenaCommand aac : PVPArena.instance.getArenaCommands()) {
                     if (aac.getMain().contains(args[0]) || aac.getShort().contains(args[0])) {
                         aac.displayHelp(sender);
                         return;
                     }
                 }
 
-                if (args[0].equals("arenalist")) {
+                if ("arenalist".equals(args[0])) {
                     args[0] = "list";
                 }
 
-                for (AbstractGlobalCommand cmd : PVPArena.instance.getGlobalCommands()) {
+                for (final AbstractGlobalCommand cmd : PVPArena.instance.getGlobalCommands()) {
                     if (cmd.getMain().contains(args[0]) || cmd.getShort().contains(args[0])) {
                         cmd.displayHelp(sender);
                         return;
@@ -131,7 +131,7 @@ public class PAI_Help extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -141,17 +141,17 @@ public class PAI_Help extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("help");
+        return Collections.singletonList("help");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-h");
+        return Collections.singletonList("-h");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"admin"});
         result.define(new String[]{"setup"});
         result.define(new String[]{"custom"});

@@ -7,14 +7,11 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <pre>PVP Arena VERSION Command class</pre>
@@ -33,39 +30,34 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
         if (!argCountValid(sender, args, new Integer[]{0})) {
             return;
         }
-        final Set<String> names = new HashSet<String>();
-
-        for (Arena a : ArenaManager.getArenas()) {
-            names.add(a.getName());
-        }
 
         Arena.pmsg(sender, ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "n-- PVP Arena version information --");
-        Arena.pmsg(sender, ChatColor.COLOR_CHAR + "ePVP Arena version: " + ChatColor.COLOR_CHAR + "l" + PVPArena.instance.getDescription().getVersion());
+        Arena.pmsg(sender, ChatColor.COLOR_CHAR + "ePVP Arena version: " + ChatColor.COLOR_CHAR + 'l' + PVPArena.instance.getDescription().getVersion());
         if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "cArena Goals:");
-            for (ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
+            for (final ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c" + ag.getName() + " - " + ag.version());
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aMods:");
-            for (ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
+            for (final ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a" + am.getName() + " - " + am.version());
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aRegionshapes:");
-            for (ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
+            for (final ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a" + ars.getName() + " - " + ars.version());
             }
         }
@@ -73,7 +65,7 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -83,12 +75,12 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("version");
+        return Collections.singletonList("version");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-v");
+        return Collections.singletonList("-v");
     }
 
     @Override

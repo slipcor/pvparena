@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class PAA_SetOwner extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -47,7 +47,7 @@ public class PAA_SetOwner extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -57,17 +57,17 @@ public class PAA_SetOwner extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("setowner");
+        return Collections.singletonList("setowner");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!so");
+        return Collections.singletonList("!so");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"%server%"});
         return result;
     }

@@ -10,9 +10,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena REMOVE Command class</pre>
@@ -25,9 +23,7 @@ import java.util.Map;
 
 public class PAA_Remove extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
-    private static String removal = null;
+    private static String removal;
 
     public PAA_Remove() {
         super(new String[]{"pvparena.cmd.remove"});
@@ -35,7 +31,7 @@ public class PAA_Remove extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -46,7 +42,7 @@ public class PAA_Remove extends AbstractArenaCommand {
         final String name = arena.getName();
 
         if (PVPArena.instance.getConfig().getBoolean("safeadmin", true)) {
-            if ((removal == null) || (!removal.equals(name))) {
+            if (removal == null || !removal.equals(name)) {
                 Arena.pmsg(sender, Language.parse(arena, MSG.NOTICE_REMOVE, name));
                 removal = name;
                 return;
@@ -60,7 +56,7 @@ public class PAA_Remove extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

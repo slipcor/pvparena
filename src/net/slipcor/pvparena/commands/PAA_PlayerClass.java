@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +34,7 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -50,10 +50,10 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
         final String className;
 
         if (args.length > 1) {
-            if (!PVPArena.hasCreatePerms(sender, arena)) {
-                className = sender.getName();
-            } else {
+            if (PVPArena.hasCreatePerms(sender, arena)) {
                 className = args[1];
+            } else {
+                className = sender.getName();
             }
         } else {
             className = sender.getName();
@@ -65,45 +65,38 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
 
         final Player player = (Player) sender;
 
-        if (args[0].equalsIgnoreCase("save")) {
+        if ("save".equalsIgnoreCase(args[0])) {
             final List<ItemStack> items = new ArrayList<ItemStack>();
-            final List<ItemStack> armors = new ArrayList<ItemStack>();
 
-            for (ItemStack is : player.getInventory().getArmorContents()) {
-                if (is != null) {
-                    armors.add(is);
-                }
-            }
-
-            for (ItemStack is : player.getInventory().getContents()) {
+            for (final ItemStack is : player.getInventory().getContents()) {
                 if (is != null) {
                     items.add(is);
                 }
             }
 
-            ItemStack[] isItems = new ItemStack[items.size()];
+            final ItemStack[] isItems = new ItemStack[items.size()];
             int position = 0;
-            for (ItemStack is : items) {
+            for (final ItemStack is : items) {
                 isItems[position++] = is;
             }
 
-            final String sItems = (isItems.length < 1) ? "AIR"
+            final String sItems = isItems.length < 1 ? "AIR"
                     : StringParser.getStringFromItemStacks(isItems);
-            StringBuffer armor = new StringBuffer("");
+            final StringBuilder armor = new StringBuilder("");
             int pos = 0;
-            for (ItemStack item : player.getInventory().getArmorContents()) {
+            for (final ItemStack item : player.getInventory().getArmorContents()) {
                 armor.append(',');
                 armor.append(pos++);
                 armor.append(">>!<<");
                 armor.append(StringParser.getStringFromItemStack(item));
             }
 
-            arena.getArenaConfig().setManually("classitems." + className, sItems + armor.toString());
+            arena.getArenaConfig().setManually("classitems." + className, sItems + armor);
             arena.getArenaConfig().save();
             arena.addClass(className, isItems, player.getInventory().getArmorContents());
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, className));
 
-        } else if (args[0].equalsIgnoreCase("remove")) {
+        } else if ("remove".equalsIgnoreCase(args[0])) {
             arena.getArenaConfig().setManually("classitems." + className, null);
             arena.getArenaConfig().save();
             arena.removeClass(className);
@@ -115,14 +108,14 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
     private void reset(final Player player) {
         PVPArena.instance.getLogger().info("Exiting edit mode: " + player.getName());
 
-        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         aPlayer.setArena(null);
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -132,17 +125,17 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("playerclass");
+        return Collections.singletonList("playerclass");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!pcl");
+        return Collections.singletonList("!pcl");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"save"});
         result.define(new String[]{"remove"});
         return result;

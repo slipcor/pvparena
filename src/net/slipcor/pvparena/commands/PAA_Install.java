@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -55,7 +55,7 @@ public class PAA_Install extends AbstractGlobalCommand {
         try {
             config.load(PVPArena.instance.getDataFolder().getPath()
                     + "/install.yml");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
@@ -70,11 +70,9 @@ public class PAA_Install extends AbstractGlobalCommand {
             return;
         }
 
-        Set<String> list;
-
-        list = config.getConfigurationSection("goals").getKeys(false);
+        Set<String> list = config.getConfigurationSection("goals").getKeys(false);
         if (list.contains(args[0].toLowerCase())) {
-            for (String key : list) {
+            for (final String key : list) {
                 if (key.equalsIgnoreCase(args[0])) {
                     if (download("pa_g_" + key + ".jar")) {
                         PVPArena.instance.getAgm().reload();
@@ -90,7 +88,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 
         list = config.getConfigurationSection("mods").getKeys(false);
         if (list.contains(args[0].toLowerCase())) {
-            for (String key : list) {
+            for (final String key : list) {
                 if (key.equalsIgnoreCase(args[0])) {
                     if (download("pa_m_" + key + ".jar")) {
                         PVPArena.instance.getAmm().reload();
@@ -110,42 +108,42 @@ public class PAA_Install extends AbstractGlobalCommand {
         Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
         Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "7uninstalled" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "einstalled" + ChatColor.COLOR_CHAR + "r]");
         Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "coutdated" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "alatest version" + ChatColor.COLOR_CHAR + "r]");
-        if (sub == null || sub.equalsIgnoreCase("goals")) {
+        if (sub == null || "goals".equalsIgnoreCase(sub)) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c--- Arena Goals ----> /goals");
             final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
                     false);
-            for (String key : entries) {
+            for (final String key : entries) {
                 final String latest = cfg.getString("goals." + key);
                 final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
-                final boolean installed = (goal != null);
+                final boolean installed = goal != null;
                 String version = null;
                 if (installed) {
                     version = goal.version();
                 }
-                Arena.pmsg(sender, ((installed) ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
+                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
                         + key
                         + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? ((latest.equals(version)) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c")
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
+                        + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
+                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
         }
-        if (sub == null || sub.equalsIgnoreCase("mods")) {
+        if (sub == null || "mods".equalsIgnoreCase(sub)) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a--- Arena Mods ----> /mods");
             final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
                     false);
-            for (String key : entries) {
+            for (final String key : entries) {
                 final String latest = cfg.getString("mods." + key);
                 final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
-                final boolean installed = (mod != null);
+                final boolean installed = mod != null;
                 String version = null;
                 if (installed) {
                     version = mod.version();
                 }
-                Arena.pmsg(sender, ((installed) ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
+                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
                         + key
                         + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? ((latest.equals(version)) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c")
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
+                        + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
+                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
 
         }
@@ -159,7 +157,7 @@ public class PAA_Install extends AbstractGlobalCommand {
         if (!source.exists()) {
             Arena.pmsg(
                     Bukkit.getConsoleSender(),
-                    ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + "r"
+                    ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + 'r'
                             + file
                             + ChatColor.COLOR_CHAR + "c' not found. Please extract the file to /files before trying to install!");
             return false;
@@ -178,7 +176,7 @@ public class PAA_Install extends AbstractGlobalCommand {
         }
         try {
             final File destination = new File(PVPArena.instance.getDataFolder()
-                    .getPath() + folder + "/" + file);
+                    .getPath() + folder + '/' + file);
             final FileInputStream stream = new FileInputStream(source);
 
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -195,7 +193,7 @@ public class PAA_Install extends AbstractGlobalCommand {
             PVPArena.instance.getLogger().info("Installed module " + file);
             stream.close();
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return false;
@@ -203,7 +201,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -213,41 +211,39 @@ public class PAA_Install extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("install");
+        return Collections.singletonList("install");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!i");
+        return Collections.singletonList("!i");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"mods"});
         result.define(new String[]{"goals"});
-        for (String string : PVPArena.instance.getAgm().getAllGoalNames()) {
+        for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {
             result.define(new String[]{string});
         }
         final YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(PVPArena.instance.getDataFolder().getPath()
                     + "/install.yml");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return result;
         }
 
-        Set<String> list;
+        Set<String> list = config.getConfigurationSection("goals").getKeys(false);
 
-        list = config.getConfigurationSection("goals").getKeys(false);
-
-        for (String key : list) {
+        for (final String key : list) {
             result.define(new String[]{key});
         }
 
         list = config.getConfigurationSection("mods").getKeys(false);
-        for (String key : list) {
+        for (final String key : list) {
             result.define(new String[]{key});
         }
         return result;

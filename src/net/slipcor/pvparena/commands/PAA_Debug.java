@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,7 +28,7 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -45,7 +45,7 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -55,18 +55,18 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("debug");
+        return Collections.singletonList("debug");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!d");
+        return Collections.singletonList("!d");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
-        for (Arena arena : ArenaManager.getArenas()) {
+        final CommandTree<String> result = new CommandTree<String>(null);
+        for (final Arena arena : ArenaManager.getArenas()) {
             result.define(new String[]{arena.getName()});
         }
         result.define(new String[]{"all"});

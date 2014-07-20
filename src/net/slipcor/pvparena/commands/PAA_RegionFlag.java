@@ -10,7 +10,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -45,11 +45,11 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
             return;
         }
 
-        RegionFlag regionFlag;
+        final RegionFlag regionFlag;
 
         try {
             regionFlag = RegionFlag.valueOf(args[1].toUpperCase());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionFlag.values(), " ")));
             return;
         }
@@ -88,7 +88,7 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -98,21 +98,21 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("regionflag");
+        return Collections.singletonList("regionflag");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rf");
+        return Collections.singletonList("!rf");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaRegion region : arena.getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionFlag}", "{Boolean}"});
         }
         return result;

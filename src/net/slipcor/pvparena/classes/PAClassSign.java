@@ -28,8 +28,8 @@ public class PAClassSign {
      */
     public PAClassSign(final Location loc) {
         location = new PABlockLocation(loc);
-        debug.i("adding arena class sign: " + location.toString());
-        this.clear();
+        debug.i("adding arena class sign: " + location);
+        clear();
     }
 
     /**
@@ -51,8 +51,8 @@ public class PAClassSign {
             sign.setLine(2, "");
             sign.setLine(3, "");
             sign.update();
-            this.clearNext();
-        } catch (Exception e) {
+            clearNext();
+        } catch (final Exception e) {
         }
     }
 
@@ -68,7 +68,7 @@ public class PAClassSign {
             sign.setLine(2, "");
             sign.setLine(3, "");
             sign.update();
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
     }
 
@@ -79,7 +79,7 @@ public class PAClassSign {
      * @param player the player to remove
      */
     public static void remove(final Set<PAClassSign> signs, final Player player) {
-        for (PAClassSign s : signs) {
+        for (final PAClassSign s : signs) {
             s.remove(player.getName());
         }
     }
@@ -111,7 +111,7 @@ public class PAClassSign {
                 }
                 sign.update();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
     }
 
@@ -125,7 +125,7 @@ public class PAClassSign {
         try {
             Sign sign = (Sign) location.toLocation().getBlock().getState();
             for (int i = 2; i < 4; i++) {
-                if (sign.getLine(i) == null || sign.getLine(i).equals("")) {
+                if (sign.getLine(i) == null || sign.getLine(i) != null && sign.getLine(i).isEmpty()) {
                     sign.setLine(i, name);
                     sign.update();
                     return true;
@@ -134,13 +134,13 @@ public class PAClassSign {
             sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
                     .getState();
             for (int i = 0; i < 4; i++) {
-                if (sign.getLine(i) == null || sign.getLine(i).equals("")) {
+                if (sign.getLine(i) == null || sign.getLine(i) != null && sign.getLine(i).isEmpty()) {
                     sign.setLine(i, name);
                     sign.update();
                     return true;
                 }
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return false;
         }
         return false;
@@ -155,7 +155,7 @@ public class PAClassSign {
      */
     public static PAClassSign used(final Location loc,
                                    final Set<PAClassSign> signs) {
-        for (PAClassSign sign : signs) {
+        for (final PAClassSign sign : signs) {
             if (sign.location.getDistanceSquared(new PABlockLocation(loc)) < 1) {
                 return sign;
             }

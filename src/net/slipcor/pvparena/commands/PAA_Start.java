@@ -7,10 +7,8 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena START Command class</pre>
@@ -23,15 +21,13 @@ import java.util.Map;
 
 public class PAA_Start extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
     public PAA_Start() {
         super(new String[]{"pvparena.cmd.start"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -45,7 +41,7 @@ public class PAA_Start extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -55,12 +51,12 @@ public class PAA_Start extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("start");
+        return Collections.singletonList("start");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!go");
+        return Collections.singletonList("!go");
     }
 
     @Override

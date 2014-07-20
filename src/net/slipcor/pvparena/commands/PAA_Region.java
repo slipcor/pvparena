@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +33,9 @@ import java.util.Map;
 
 public class PAA_Region extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
-    private static String selector = null;
+    private static String selector;
 
     public PAA_Region() {
         super(new String[]{"pvparena.cmd.region"});
@@ -43,7 +43,7 @@ public class PAA_Region extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -76,7 +76,8 @@ public class PAA_Region extends AbstractArenaCommand {
             arena.msg(sender, Language.parse(arena, MSG.REGION_YOUSELECT, arena.getName()));
             arena.msg(sender, Language.parse(arena, MSG.REGION_SELECT, arena.getName()));
             return;
-        } else if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
+        }
+        if (args.length == 2 && args[1].equalsIgnoreCase("border")) {
             // usage: /pa {arenaname} region [regionname] border | check a region border
             final ArenaRegion region = arena.getRegion(args[0]);
 
@@ -86,7 +87,8 @@ public class PAA_Region extends AbstractArenaCommand {
             }
             region.getShape().showBorder((Player) sender);
             return;
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
             // usage: /pa {arenaname} region remove [regionname] | remove a region
             final ArenaRegion region = arena.getRegion(args[1]);
 
@@ -100,7 +102,8 @@ public class PAA_Region extends AbstractArenaCommand {
             arena.getRegions().remove(region);
             arena.getArenaConfig().save();
             return;
-        } else if (args.length < 3) {
+        }
+        if (args.length < 3) {
             // usage: /pa {arenaname} region [regionname] {regionshape} | save selected region
 
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
@@ -145,7 +148,7 @@ public class PAA_Region extends AbstractArenaCommand {
             return;
         }
 
-        String message = region.update(args[1], args[2]);
+        final String message = region.update(args[1], args[2]);
 
         if (message != null) {
             if (arena.getArenaConfig().getBoolean(CFG.MODULES_WORLDEDIT_AUTOSAVE)) {
@@ -167,7 +170,7 @@ public class PAA_Region extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -177,23 +180,23 @@ public class PAA_Region extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("region");
+        return Collections.singletonList("region");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!r");
+        return Collections.singletonList("!r");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
 
-        for (ArenaRegion region : arena.getRegions()) {
-            for (ArenaRegionShape shape : PVPArena.instance.getArsm().getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
+            for (final ArenaRegionShape shape : PVPArena.instance.getArsm().getRegions()) {
                 result.define(new String[]{region.getRegionName(), shape.getName()});
                 result.define(new String[]{region.getRegionName(), "border"});
                 result.define(new String[]{region.getRegionName(), "remove"});

@@ -54,14 +54,14 @@ public class RegionTool extends ArenaModule {
             return false;
         }
 
-        for (Arena arena : ArenaManager.getArenas()) {
-            Material mMat;
+        for (final Arena arena : ArenaManager.getArenas()) {
             if (arena.getArenaConfig().getInt(CFG.GENERAL_WAND) > 0) {
                 arena.getDebugger().i("reading wand", event.getPlayer());
+                final Material mMat;
                 try {
                     mMat = Material.getMaterial(arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
                     arena.getDebugger().i("mMat now is " + mMat.name(), event.getPlayer());
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     arena.getDebugger().i("exception reading ready block", event.getPlayer());
                     final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
                     arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, sMat));
@@ -72,10 +72,10 @@ public class RegionTool extends ArenaModule {
                     if (event.getClickedBlock() != null) {
                         loc = new PABlockLocation(event.getClickedBlock().getLocation());
                     }
-                    for (ArenaRegion region : arena.getRegions()) {
+                    for (final ArenaRegion region : arena.getRegions()) {
                         if (region.getShape().contains(loc)) {
-                            arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + "b"
-                                    + arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + "b"
+                            arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + 'b'
+                                    + arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + 'b'
                                     + region.getRegionName());
                         }
                     }

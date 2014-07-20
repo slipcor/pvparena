@@ -33,7 +33,7 @@ import java.util.*;
 public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     protected Debug debug = new Debug(30);
     protected Arena arena;
-    protected Map<String, Integer> lifeMap = null;
+    Map<String, Integer> lifeMap;
 
     /**
      * create an arena type instance
@@ -112,7 +112,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      */
     protected String checkForMissingSpawn(final Set<String> list) {
         int count = 0;
-        for (String s : list) {
+        for (final String s : list) {
             if (s.startsWith("spawn")) {
                 count++;
             }
@@ -126,11 +126,11 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @return null if ready, error message otherwise
      */
     protected String checkForMissingTeamSpawn(final Set<String> list) {
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             final String sTeam = team.getName();
             if (!list.contains(team + "spawn")) {
                 boolean found = false;
-                for (String s : list) {
+                for (final String s : list) {
                     if (s.startsWith(sTeam + "spawn")) {
                         found = true;
                         break;
@@ -150,12 +150,12 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @return null if ready, error message otherwise
      */
     protected String checkForMissingTeamCustom(final Set<String> list,
-                                               String custom) {
-        for (ArenaTeam team : arena.getTeams()) {
+                                               final String custom) {
+        for (final ArenaTeam team : arena.getTeams()) {
             final String sTeam = team.getName();
             if (!list.contains(sTeam + custom)) {
                 boolean found = false;
-                for (String s : list) {
+                for (final String s : list) {
                     if (s.startsWith(sTeam + custom)) {
                         found = true;
                         break;
@@ -235,7 +235,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @param args   the command arguments
      */
     public void commitCommand(final CommandSender sender, final String[] args) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -244,7 +244,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @param force true, if we need to force
      */
     public void commitEnd(final boolean force) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -254,7 +254,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @param clickedBlock the block being interacted with
      */
     public void commitInteract(final Player player, final Block clickedBlock) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -268,7 +268,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     public void commitPlayerDeath(final Player player,
                                   final boolean doesRespawn, final String error,
                                   final PlayerDeathEvent event) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -279,14 +279,14 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      * @return true if the interact event should be cancelled
      */
     public boolean commitSetFlag(final Player player, final Block block) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
      * commit an arena start
      */
     public void commitStart() {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -370,7 +370,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     public void onThisLoad() {
     }
 
-    public void onPlayerPickUp(PlayerPickupItemEvent event) {
+    public void onPlayerPickUp(final PlayerPickupItemEvent event) {
     }
 
     /**
@@ -411,7 +411,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      *
      * @param player the player being refilled
      */
-    public void refillInventory(Player player) {
+    public void refillInventory(final Player player) {
     }
 
     /**

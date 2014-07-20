@@ -32,7 +32,7 @@ public class PARound {
         boolean contains = false;
         ArenaGoal removeGoal = nugoal;
 
-        for (ArenaGoal g : goals) {
+        for (final ArenaGoal g : goals) {
             if (g.getName().equals(goal.getName())) {
                 contains = true;
                 removeGoal = g;

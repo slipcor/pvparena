@@ -19,8 +19,8 @@ public class PATeamChangeEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private final Arena arena;
     private final Player player;
-    private ArenaTeam fromTeam;
-    private ArenaTeam toTeam;
+    private final ArenaTeam fromTeam;
+    private final ArenaTeam toTeam;
 
     /**
      * create an arena teamChange event
@@ -51,6 +51,7 @@ public class PATeamChangeEvent extends Event {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

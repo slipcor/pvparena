@@ -13,7 +13,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.TeamManager;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +35,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -53,7 +53,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
         if (args.length < 1) {
 
-            if (!aPlayer.getStatus().equals(Status.LOUNGE)) {
+            if (aPlayer.getStatus() != Status.LOUNGE) {
                 return;
             }
 
@@ -62,7 +62,7 @@ public class PAI_Ready extends AbstractArenaCommand {
                 return;
             }
 
-            if (!aPlayer.getStatus().equals(Status.READY)) {
+            if (aPlayer.getStatus() != Status.READY) {
                 arena.msg(sender, Language.parse(arena, MSG.READY_DONE));
                 arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer.getArenaTeam().colorizePlayer(aPlayer.get())));
             }
@@ -89,7 +89,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
             if (error == null) {
                 arena.start();
-            } else if (error.equals("")) {
+            } else if (error != null && error.isEmpty()) {
                 arena.countDown();
             } else {
                 arena.msg(sender, error);
@@ -99,10 +99,10 @@ public class PAI_Ready extends AbstractArenaCommand {
 
         final Set<String> names = new HashSet<String>();
 
-        for (ArenaPlayer player : arena.getEveryone()) {
-            if (player.getStatus().equals(Status.LOUNGE)) {
+        for (final ArenaPlayer player : arena.getEveryone()) {
+            if (player.getStatus() == Status.LOUNGE) {
                 names.add("&7" + player.getName() + "&r");
-            } else if (player.getStatus().equals(Status.READY)) {
+            } else if (player.getStatus() == Status.READY) {
                 names.add("&a" + player.getName() + "&r");
             }
         }
@@ -111,7 +111,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -121,12 +121,12 @@ public class PAI_Ready extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("ready");
+        return Collections.singletonList("ready");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-r");
+        return Collections.singletonList("-r");
     }
 
     @Override

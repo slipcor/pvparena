@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -51,24 +51,24 @@ public class PAA_Teams extends AbstractArenaCommand {
             return;
         }
 
-        if (!argCountValid(sender, arena, args, args[0].equals("remove") ? new Integer[]{2} : new Integer[]{3})) {
+        if (!argCountValid(sender, arena, args, "remove".equals(args[0]) ? new Integer[]{2} : new Integer[]{3})) {
             displayHelp(sender);
             return;
         }
 
         final ArenaTeam team = arena.getTeam(args[1]);
 
-        if (team == null && !args[0].equals("add")) {
+        if (team == null && !"add".equals(args[0])) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[1]));
             return;
         }
 
-        if (args[0].equals("remove")) {
+        if ("remove".equals(args[0])) {
             arena.msg(sender, Language.parse(arena, MSG.TEAMS_REMOVE, team.getColoredName()));
             arena.getTeams().remove(team);
             arena.getArenaConfig().setManually("teams." + team.getName(), null);
             arena.getArenaConfig().save();
-        } else if (args[0].equals("add")) {
+        } else if ("add".equals(args[0])) {
             try {
 
                 final DyeColor dColor = DyeColor.valueOf(args[2].toUpperCase());
@@ -78,10 +78,10 @@ public class PAA_Teams extends AbstractArenaCommand {
                 arena.getArenaConfig().save();
 
                 arena.msg(sender, Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
             }
-        } else if (args[0].equals("set")) {
+        } else if ("set".equals(args[0])) {
             try {
                 final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
                 final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
@@ -91,7 +91,7 @@ public class PAA_Teams extends AbstractArenaCommand {
                 arena.getArenaConfig().save();
 
                 arena.msg(sender, Language.parse(arena, MSG.TEAMS_REMOVE, newTeam.getColoredName()));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[2], StringParser.joinArray(ChatColor.values(), ",")));
             }
         } else {
@@ -101,7 +101,7 @@ public class PAA_Teams extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -111,22 +111,22 @@ public class PAA_Teams extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("teams");
+        return Collections.singletonList("teams");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!ts");
+        return Collections.singletonList("!ts");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"add"});
         if (arena == null) {
             return result;
         }
-        for (String team : arena.getTeamNames()) {
+        for (final String team : arena.getTeamNames()) {
             result.define(new String[]{"remove", team});
             result.define(new String[]{"set", team});
         }

@@ -10,10 +10,8 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena GOAL Command class</pre>
@@ -26,15 +24,13 @@ import java.util.Map;
 
 public class PAA_Goal extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
     public PAA_Goal() {
         super(new String[]{"pvparena.cmd.goal"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -42,7 +38,7 @@ public class PAA_Goal extends AbstractArenaCommand {
             return;
         }
 
-        ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
+        final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 
         if (goal == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
@@ -81,7 +77,7 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -91,21 +87,21 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("goal");
+        return Collections.singletonList("goal");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!g");
+        return Collections.singletonList("!g");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaGoal goal : arena.getGoals()) {
+        for (final ArenaGoal goal : arena.getGoals()) {
             result.define(new String[]{goal.getName()});
         }
         return result;

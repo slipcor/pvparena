@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -79,7 +80,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -94,12 +95,12 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!c");
+        return Collections.singletonList("!c");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"{String}", "teams"});
         result.define(new String[]{"{String}", "teamdm"});
         result.define(new String[]{"{String}", "dm"});

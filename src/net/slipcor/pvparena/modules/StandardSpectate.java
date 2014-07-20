@@ -90,10 +90,10 @@ public class StandardSpectate extends ArenaModule {
             if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
                 final String autoClass =
                         arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-                                (arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS))
+                                arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
                                 : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 
-                if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
                     arena.chooseClass(player, null, autoClass);
                 }
                 if (autoClass == null) {
@@ -105,7 +105,7 @@ public class StandardSpectate extends ArenaModule {
 
     @Override
     public boolean hasSpawn(final String string) {
-        return string.equalsIgnoreCase("spectator");
+        return "spectator".equalsIgnoreCase(string);
     }
 
     @Override

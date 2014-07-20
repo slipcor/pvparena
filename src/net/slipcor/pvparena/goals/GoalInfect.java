@@ -46,7 +46,7 @@ public class GoalInfect extends ArenaGoal {
         debug = new Debug(108);
     }
 
-    private EndRunnable endRunner = null;
+    private EndRunnable endRunner;
 
     @Override
     public String version() {
@@ -75,9 +75,9 @@ public class GoalInfect extends ArenaGoal {
     }
 
     private boolean anyTeamEmpty() {
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             boolean bbreak = false;
-            for (ArenaPlayer player : team.getTeamMembers()) {
+            for (final ArenaPlayer player : team.getTeamMembers()) {
                 if (player.getStatus() == Status.FIGHT) {
                     bbreak = true;
                 }
@@ -100,7 +100,7 @@ public class GoalInfect extends ArenaGoal {
         boolean infected = false;
 
         int count = 0;
-        for (String s : list) {
+        for (final String s : list) {
             if (s.startsWith("infected")) {
                 infected = true;
             }
@@ -155,9 +155,9 @@ public class GoalInfect extends ArenaGoal {
             if (!getLifeMap().containsKey(player.getName())) {
                 return res;
             }
-            int iLives = getLifeMap().get(player.getName());
+            final int iLives = getLifeMap().get(player.getName());
             arena.getDebugger().i("lives before death: " + iLives, player);
-            if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+            if (iLives <= 1 && "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
                 res.setError(this, "0");
             }
 
@@ -182,15 +182,15 @@ public class GoalInfect extends ArenaGoal {
             arena.getDebugger().i("[INFECT] already ending");
             return;
         }
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (!ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() != Status.FIGHT) {
                     continue;
                 }
-                if (ap.getArenaTeam().getName().equals("infected")) {
+                if ("infected".equals(ap.getArenaTeam().getName())) {
                     ArenaModuleManager.announce(arena,
                             Language.parse(arena, MSG.GOAL_INFECTED_WON), "END");
 
@@ -229,10 +229,10 @@ public class GoalInfect extends ArenaGoal {
         }
         int iLives = getLifeMap().get(player.getName());
         arena.getDebugger().i("lives before death: " + iLives, player);
-        if (iLives <= 1 || ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
-            if (iLives <= 1 && ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName().equals("infected")) {
+        if (iLives <= 1 || "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
+            if (iLives <= 1 && "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
 
-                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "playerDeath:" + player.getName());
+                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
                 ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
                 // kill, remove!
@@ -242,7 +242,8 @@ public class GoalInfect extends ArenaGoal {
                     PlayerListener.finallyKillPlayer(arena, player, event);
                 }
                 return;
-            } else if (iLives <= 1) {
+            }
+            if (iLives <= 1) {
                 PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
                 // dying player -> infected
@@ -295,13 +296,12 @@ public class GoalInfect extends ArenaGoal {
                     PACheck.handleEnd(arena, false);
                 }
                 return;
-            } else {
-                // dying infected player, has lives remaining
-                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "doesRespawn", "playerDeath:" + player.getName());
-                Bukkit.getPluginManager().callEvent(gEvent);
-                iLives--;
-                getLifeMap().put(player.getName(), iLives);
             }
+            // dying infected player, has lives remaining
+            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "doesRespawn", "playerDeath:" + player.getName());
+            Bukkit.getPluginManager().callEvent(gEvent);
+            iLives--;
+            getLifeMap().put(player.getName(), iLives);
 
             final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                     .getArenaTeam();
@@ -367,7 +367,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public void commitStart() {
         parseStart(); // hack the team in before spawning, derp!
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             SpawnManager.distribute(arena, team);
         }
     }
@@ -396,7 +396,7 @@ public class GoalInfect extends ArenaGoal {
 
 
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (ArenaClass aClass : arena.getClasses()) {
+            for (final ArenaClass aClass : arena.getClasses()) {
                 if (string.toLowerCase().startsWith(
                         aClass.getName().toLowerCase() + "spawn")) {
                     return true;
@@ -404,8 +404,8 @@ public class GoalInfect extends ArenaGoal {
             }
         }
 
-        return (arena.isFreeForAll() && string.toLowerCase()
-                .startsWith("spawn")) || string.toLowerCase().startsWith("infected");
+        return arena.isFreeForAll() && string.toLowerCase()
+                .startsWith("spawn") || string.toLowerCase().startsWith("infected");
     }
 
     @Override
@@ -422,7 +422,7 @@ public class GoalInfect extends ArenaGoal {
     public void parseLeave(final Player player) {
         if (player == null) {
             PVPArena.instance.getLogger().warning(
-                    this.getName() + ": player NULL");
+                    getName() + ": player NULL");
             return;
         }
         if (getLifeMap().containsKey(player.getName())) {
@@ -437,25 +437,25 @@ public class GoalInfect extends ArenaGoal {
         }
         ArenaPlayer infected = null;
         final Random random = new Random();
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             int pos = random.nextInt(team.getTeamMembers().size());
             arena.getDebugger().i("team " + team.getName() + " random " + pos);
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                arena.getDebugger().i("#" + pos + ": " + ap.toString(), ap.getName());
-                this.getLifeMap().put(ap.getName(),
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                arena.getDebugger().i("#" + pos + ": " + ap, ap.getName());
+                getLifeMap().put(ap.getName(),
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
                 if (pos-- == 0) {
                     infected = ap;
-                    this.getLifeMap().put(ap.getName(),
+                    getLifeMap().put(ap.getName(),
                             arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
                 }
                 //break;
             }
         }
         final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             if (team.getTeamMembers().contains(infected)) {
-                PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
+                final PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
                 team.remove(infected);
             }
@@ -467,7 +467,7 @@ public class GoalInfect extends ArenaGoal {
             infected.setArenaClass(infectedClass);
             InventoryManager.clearInventory(infected.get());
             infectedClass.equip(infected.get());
-            for (ArenaModule mod : arena.getMods()) {
+            for (final ArenaModule mod : arena.getMods()) {
                 mod.parseRespawn(infected.get(), infectedTeam, DamageCause.CUSTOM,
                         infected.get());
             }
@@ -481,7 +481,7 @@ public class GoalInfect extends ArenaGoal {
 
         int pos = spawns.size();
 
-        for (PASpawn spawn : spawns) {
+        for (final PASpawn spawn : spawns) {
             if (pos-- < 0) {
                 arena.tpPlayerToCoordName(infected.get(), spawn.getName());
                 break;
@@ -501,11 +501,11 @@ public class GoalInfect extends ArenaGoal {
     public void setPlayerLives(final int value) {
         final Set<String> plrs = new HashSet<String>();
 
-        for (String name : getLifeMap().keySet()) {
+        for (final String name : getLifeMap().keySet()) {
             plrs.add(name);
         }
 
-        for (String s : plrs) {
+        for (final String s : plrs) {
             getLifeMap().put(s, value);
         }
     }
@@ -517,12 +517,11 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
-        for (ArenaPlayer ap : arena.getFighters()) {
-            score = (getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
-                    : 0);
-            if (ap.getArenaTeam() != null && ap.getArenaTeam().getName().equals("infected")) {
+        for (final ArenaPlayer ap : arena.getFighters()) {
+            double score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
+                    : 0;
+            if (ap.getArenaTeam() != null && "infected".equals(ap.getArenaTeam().getName())) {
                 score *= arena.getFighters().size();
             }
             if (scores.containsKey(ap.getName())) {

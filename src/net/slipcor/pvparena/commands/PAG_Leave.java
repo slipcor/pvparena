@@ -10,7 +10,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class PAG_Leave extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -56,7 +56,7 @@ public class PAG_Leave extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -66,12 +66,12 @@ public class PAG_Leave extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("leave");
+        return Collections.singletonList("leave");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-l");
+        return Collections.singletonList("-l");
     }
 
     @Override

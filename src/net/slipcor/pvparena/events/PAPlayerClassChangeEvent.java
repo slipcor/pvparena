@@ -32,7 +32,7 @@ public class PAPlayerClassChangeEvent extends Event {
         super();
         this.arena = arena;
         this.player = player;
-        this.classToSet = arenaClass;
+        classToSet = arenaClass;
     }
 
     /**
@@ -48,6 +48,7 @@ public class PAPlayerClassChangeEvent extends Event {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }
@@ -70,7 +71,7 @@ public class PAPlayerClassChangeEvent extends Event {
         return classToSet;
     }
 
-    public void setArenaClass(ArenaClass classToSet) {
+    public void setArenaClass(final ArenaClass classToSet) {
         this.classToSet = classToSet;
     }
 }

@@ -58,7 +58,7 @@ public class Metrics {
     /**
      * The current revision number
      */
-    private final static int REVISION = 7;
+    private static final int REVISION = 7;
 
     /**
      * The base url of the metrics domain
@@ -113,9 +113,9 @@ public class Metrics {
     /**
      * The scheduled task
      */
-    private volatile BukkitTask task = null;
+    private volatile BukkitTask task;
 
-    public Metrics(Plugin plugin) throws IOException {
+    public Metrics(final Plugin plugin) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null");
         }
@@ -201,6 +201,7 @@ public class Metrics {
 
                 private boolean firstPost = true;
 
+                @Override
                 public void run() {
                     try {
                         // This has to be synchronized or it can collide with the disable method.
@@ -210,7 +211,7 @@ public class Metrics {
                                 task.cancel();
                                 task = null;
                                 // Tell all plotters to stop gathering information.
-                                for (Graph graph : graphs) {
+                                for (final Graph graph : graphs) {
                                     graph.onOptOut();
                                 }
                             }
@@ -224,7 +225,7 @@ public class Metrics {
                         // After the first post we set firstPost to false
                         // Each post thereafter will be a ping
                         firstPost = false;
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         if (debug) {
                             Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
                         }
@@ -241,17 +242,17 @@ public class Metrics {
      *
      * @return true if metrics should be opted out of it
      */
-    public boolean isOptOut() {
+    boolean isOptOut() {
         synchronized (optOutLock) {
             try {
                 // Reload the metrics file
                 configuration.load(getConfigFile());
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
                 return true;
-            } catch (InvalidConfigurationException ex) {
+            } catch (final InvalidConfigurationException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
@@ -309,13 +310,13 @@ public class Metrics {
      *
      * @return the File object for the config file
      */
-    public File getConfigFile() {
+    File getConfigFile() {
         // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
         // is to abuse the plugin object we already have
         // plugin.getDataFolder() => base/plugins/PluginA/
         // pluginsFolder => base/plugins/
         // The base is not necessarily relative to the startup directory.
-        File pluginsFolder = plugin.getDataFolder().getParentFile();
+        final File pluginsFolder = plugin.getDataFolder().getParentFile();
 
         // return => base/plugins/PluginMetrics/config.yml
         return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
@@ -326,17 +327,17 @@ public class Metrics {
      */
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        PluginDescriptionFile description = plugin.getDescription();
-        String pluginName = description.getName();
-        boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
-        String pluginVersion = description.getVersion();
-        String serverVersion = Bukkit.getVersion();
-        int playersOnline = Bukkit.getServer().getOnlinePlayers().length;
+        final PluginDescriptionFile description = plugin.getDescription();
+        final String pluginName = description.getName();
+        final boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
+        final String pluginVersion = description.getVersion();
+        final String serverVersion = Bukkit.getVersion();
+        final int playersOnline = Bukkit.getServer().getOnlinePlayers().length;
 
         // END server software specific section -- all code below does not use any code outside of this class / Java
 
         // Construct the post data
-        StringBuilder json = new StringBuilder(1024);
+        final StringBuilder json = new StringBuilder(1024);
         json.append('{');
 
         // The plugin's description file containg all of the plugin data such as name, version, author, etc
@@ -346,14 +347,14 @@ public class Metrics {
         appendJSONPair(json, "players_online", Integer.toString(playersOnline));
 
         // New data as of R6
-        String osname = System.getProperty("os.name");
+        final String osname = System.getProperty("os.name");
         String osarch = System.getProperty("os.arch");
-        String osversion = System.getProperty("os.version");
-        String java_version = System.getProperty("java.version");
-        int coreCount = Runtime.getRuntime().availableProcessors();
+        final String osversion = System.getProperty("os.version");
+        final String java_version = System.getProperty("java.version");
+        final int coreCount = Runtime.getRuntime().availableProcessors();
 
         // normalize os arch .. amd64 -> x86_64
-        if (osarch.equals("amd64")) {
+        if ("amd64".equals(osarch)) {
             osarch = "x86_64";
         }
 
@@ -369,7 +370,7 @@ public class Metrics {
             appendJSONPair(json, "ping", "1");
         }
 
-        if (graphs.size() > 0) {
+        if (!graphs.isEmpty()) {
             synchronized (graphs) {
                 json.append(',');
                 json.append('"');
@@ -380,15 +381,11 @@ public class Metrics {
 
                 boolean firstGraph = true;
 
-                final Iterator<Graph> iter = graphs.iterator();
-
-                while (iter.hasNext()) {
-                    Graph graph = iter.next();
-
-                    StringBuilder graphJson = new StringBuilder();
+                for (final Graph graph : graphs) {
+                    final StringBuilder graphJson = new StringBuilder();
                     graphJson.append('{');
 
-                    for (Plotter plotter : graph.getPlotters()) {
+                    for (final Plotter plotter : graph.getPlotters()) {
                         appendJSONPair(graphJson, plotter.getColumnName(), Integer.toString(plotter.getValue()));
                     }
 
@@ -413,10 +410,10 @@ public class Metrics {
         json.append('}');
 
         // Create the url
-        URL url = new URL(BASE_URL + String.format(REPORT_URL, urlEncode(pluginName)));
+        final URL url = new URL(BASE_URL + String.format(REPORT_URL, urlEncode(pluginName)));
 
         // Connect to the website
-        URLConnection connection;
+        final URLConnection connection;
 
         // Mineshafter creates a socks proxy, so we can safely bypass it
         // It does not reroute POST requests so we need to go around it
@@ -427,8 +424,8 @@ public class Metrics {
         }
 
 
-        byte[] uncompressed = json.toString().getBytes();
-        byte[] compressed = gzip(json.toString());
+        final byte[] uncompressed = json.toString().getBytes();
+        final byte[] compressed = gzip(json.toString());
 
         // Headers
         connection.addRequestProperty("User-Agent", "MCStats/" + REVISION);
@@ -445,7 +442,7 @@ public class Metrics {
         }
 
         // Write the data
-        OutputStream os = connection.getOutputStream();
+        final OutputStream os = connection.getOutputStream();
         os.write(compressed);
         os.flush();
 
@@ -467,14 +464,11 @@ public class Metrics {
             throw new IOException(response);
         } else {
             // Is this the first update this hour?
-            if (response.equals("1") || response.contains("This is your first update this hour")) {
+            if ("1".equals(response) || response.contains("This is your first update this hour")) {
                 synchronized (graphs) {
-                    final Iterator<Graph> iter = graphs.iterator();
 
-                    while (iter.hasNext()) {
-                        final Graph graph = iter.next();
-
-                        for (Plotter plotter : graph.getPlotters()) {
+                    for (final Graph graph : graphs) {
+                        for (final Plotter plotter : graph.getPlotters()) {
                             plotter.reset();
                         }
                     }
@@ -483,25 +477,21 @@ public class Metrics {
         }
     }
 
-    /**
-     * GZip compress a string of bytes
-     *
-     * @param input
-     * @return
-     */
-    public static byte[] gzip(String input) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    private static byte[] gzip(final String input) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
 
         try {
             gzos = new GZIPOutputStream(baos);
             gzos.write(input.getBytes("UTF-8"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         } finally {
-            if (gzos != null) try {
-                gzos.close();
-            } catch (IOException ignore) {
+            if (gzos != null) {
+                try {
+                    gzos.close();
+                } catch (IOException ignore) {
+                }
             }
         }
 
@@ -517,28 +507,20 @@ public class Metrics {
         try {
             Class.forName("mineshafter.MineServer");
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return false;
         }
     }
 
-    /**
-     * Appends a json encoded key/value pair to the given string builder.
-     *
-     * @param json
-     * @param key
-     * @param value
-     * @throws UnsupportedEncodingException
-     */
-    private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
+    private static void appendJSONPair(final StringBuilder json, final String key, final String value) {
         boolean isValueNumeric = false;
 
         try {
-            if (value.equals("0") || !value.endsWith("0")) {
+            if ("0".equals(value) || !value.endsWith("0")) {
                 Double.parseDouble(value);
                 isValueNumeric = true;
             }
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             isValueNumeric = false;
         }
 
@@ -556,18 +538,12 @@ public class Metrics {
         }
     }
 
-    /**
-     * Escape a string to create a valid JSON string
-     *
-     * @param text
-     * @return
-     */
-    private static String escapeJSON(String text) {
-        StringBuilder builder = new StringBuilder();
+    private static String escapeJSON(final String text) {
+        final StringBuilder builder = new StringBuilder();
 
         builder.append('"');
         for (int index = 0; index < text.length(); index++) {
-            char chr = text.charAt(index);
+            final char chr = text.charAt(index);
 
             switch (chr) {
                 case '"':
@@ -589,8 +565,8 @@ public class Metrics {
                     break;
                 default:
                     if (chr < ' ') {
-                        String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        final String t = "000" + Integer.toHexString(chr);
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }
@@ -686,14 +662,14 @@ public class Metrics {
         /**
          * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
          */
-        protected void onOptOut() {
+        void onOptOut() {
         }
     }
 
     /**
      * Interface used to collect custom data for a plugin
      */
-    public static abstract class Plotter {
+    public abstract static class Plotter {
 
         /**
          * The plot's name
@@ -703,7 +679,7 @@ public class Metrics {
         /**
          * Construct a plotter with the default plot name
          */
-        public Plotter() {
+        protected Plotter() {
             this("Default");
         }
 
@@ -712,7 +688,7 @@ public class Metrics {
          *
          * @param name the name of the plotter to use, which will show up on the website
          */
-        public Plotter(final String name) {
+        protected Plotter(final String name) {
             this.name = name;
         }
 
@@ -742,7 +718,7 @@ public class Metrics {
 
         @Override
         public int hashCode() {
-            return getColumnName().hashCode();
+            return name.hashCode();
         }
 
         @Override

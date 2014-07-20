@@ -21,10 +21,10 @@ public class PARoundMap {
     public PARoundMap(final Arena arena, final List<Set<String>> outer) {
         this.arena = arena;
         int position = 1;
-        for (Set<String> list : outer) {
+        for (final Set<String> list : outer) {
             final Set<ArenaGoal> result = new HashSet<ArenaGoal>();
-            for (String s : list) {
-                for (ArenaGoal goal : arena.getGoals()) {
+            for (final String s : list) {
+                for (final ArenaGoal goal : arena.getGoals()) {
                     if (goal.getName().equals(s)) {
                         result.add(goal);
                     }
@@ -37,7 +37,7 @@ public class PARoundMap {
     public Set<ArenaGoal> getGoals(final int roundID) {
         try {
             return rounds.get(roundID).getGoals();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             arena.setRound(0);
             return arena.getGoals();
         }

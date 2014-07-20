@@ -29,12 +29,14 @@ import java.util.UUID;
  * @version v0.10.2
  */
 
-public class StatisticsManager {
-    public static final Debug DEBUG = new Debug(28);
+public final class StatisticsManager {
+    private static final Debug DEBUG = new Debug(28);
     private static File players;
     private static YamlConfiguration config;
 
-    public static enum type {
+    private StatisticsManager() {}
+
+    public enum type {
         WINS("matches won", "Wins"),
         LOSSES("matches lost", "Losses"),
         KILLS("kills", "Kills"),
@@ -87,7 +89,7 @@ public class StatisticsManager {
          * return the full stat name
          */
         public String getName() {
-            return this.fullName;
+            return fullName;
         }
 
         /**
@@ -97,7 +99,7 @@ public class StatisticsManager {
          * @return the type if found, null otherwise
          */
         public static type getByString(final String string) {
-            for (type t : type.values()) {
+            for (final type t : type.values()) {
                 if (t.name().equalsIgnoreCase(string)) {
                     return t;
                 }
@@ -108,12 +110,6 @@ public class StatisticsManager {
         public String getNiceName() {
             return niceDesc;
         }
-    }
-
-    @Deprecated
-    public static void damage(Arena arena, Player attacker, Player defender,
-                              int damage) {
-        damage(arena, attacker, defender, (double) damage);
     }
 
     /**
@@ -129,7 +125,7 @@ public class StatisticsManager {
         arena.getDebugger().i("adding damage to player " + defender.getName(), defender);
 
 
-        if ((entity != null) && (entity instanceof Player)) {
+        if (entity instanceof Player) {
             final Player attacker = (Player) entity;
             arena.getDebugger().i("attacker is player: " + attacker.getName(), defender);
             if (arena.hasPlayer(attacker)) {
@@ -158,23 +154,21 @@ public class StatisticsManager {
      * @param pos    the position to check
      * @param sortBy the type to sort by
      * @param desc   descending order?
-     * @param global
+     * @param global should we read global stats instead of arena stats?
      * @return true if pair has to be sorted, false otherwise
      */
     private static boolean decide(final ArenaPlayer[] aps, final int pos, final type sortBy,
                                   final boolean desc, final boolean global) {
-        int iThis;
-        int iNext;
 
-        iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
-        iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
+        int iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
+        int iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
 
         if (global) {
             iThis = aps[pos].getTotalStatistics(sortBy);
             iNext = aps[pos + 1].getTotalStatistics(sortBy);
         }
 
-        return desc ? (iThis < iNext) : (iThis > iNext);
+        return desc ? iThis < iNext : iThis > iNext;
     }
 
     /**
@@ -196,21 +190,21 @@ public class StatisticsManager {
      * @param desc   should it be sorted descending?
      * @return an array of ArenaPlayer
      */
-    public static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
-        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + " "
+    private static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
+        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + ' '
                 + (desc ? "desc" : "asc"));
 
-        final int count = (arena == null) ? ArenaPlayer.countPlayers() : arena.getFighters().size();
+        final int count = arena == null ? ArenaPlayer.countPlayers() : arena.getFighters().size();
 
-        ArenaPlayer[] aps = new ArenaPlayer[count];
+        final ArenaPlayer[] aps = new ArenaPlayer[count];
 
         int pos = 0;
         if (arena == null) {
-            for (ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
+            for (final ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
                 aps[pos++] = p;
             }
         } else {
-            for (ArenaPlayer p : arena.getFighters()) {
+            for (final ArenaPlayer p : arena.getFighters()) {
                 aps[pos++] = p;
             }
         }
@@ -229,7 +223,7 @@ public class StatisticsManager {
     public static type getTypeBySignLine(final String line) {
         final String stripped = ChatColor.stripColor(line).replace("[PA]", "").toUpperCase();
 
-        for (type t : type.values()) {
+        for (final type t : type.values()) {
             if (t.name().equals(stripped)) {
                 return t;
             }
@@ -250,7 +244,7 @@ public class StatisticsManager {
             try {
                 players.createNewFile();
                 Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.STATS_FILE_DONE));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
                 e.printStackTrace();
             }
@@ -258,7 +252,7 @@ public class StatisticsManager {
 
         try {
             config.load(players);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
             e.printStackTrace();
         }
@@ -273,10 +267,10 @@ public class StatisticsManager {
      */
     public static void kill(final Arena arena, final Entity entity, final Player defender,
                             final boolean willRespawn) {
-        final PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, (entity instanceof Player));
+        final PADeathEvent dEvent = new PADeathEvent(arena, defender, willRespawn, entity instanceof Player);
         Bukkit.getPluginManager().callEvent(dEvent);
 
-        if ((entity != null) && (entity instanceof Player)) {
+        if (entity instanceof Player) {
             final Player attacker = (Player) entity;
             if (arena.hasPlayer(attacker)) {
                 final PAKillEvent kEvent = new PAKillEvent(arena, attacker);
@@ -296,22 +290,22 @@ public class StatisticsManager {
      * @return an Array of String
      */
     public static String[] read(final ArenaPlayer[] players, final type tType, final boolean global) {
-        String[] result = new String[players.length < 8 ? 8 : players.length];
+        final String[] result = new String[players.length < 8 ? 8 : players.length];
         int pos = 0;
         if (global) {
-            for (ArenaPlayer p : players) {
+            for (final ArenaPlayer p : players) {
                 if (p == null) {
                     continue;
                 }
-                if (tType.equals(type.NULL)) {
+                if (tType == type.NULL) {
                     result[pos++] = p.getName();
                 } else {
                     result[pos++] = String.valueOf(p.getTotalStatistics(tType));
                 }
             }
         } else {
-            for (ArenaPlayer p : players) {
-                if (tType.equals(type.NULL)) {
+            for (final ArenaPlayer p : players) {
+                if (tType == type.NULL) {
                     result[pos++] = p.getName();
                 } else {
                     result[pos++] = String.valueOf(p.getStatistics(p.getArena()).getStat(tType));
@@ -330,7 +324,7 @@ public class StatisticsManager {
         }
         try {
             config.save(players);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -361,29 +355,30 @@ public class StatisticsManager {
         }
     }
 
-    public static void loadStatistics(Arena arena) {
+    public static void loadStatistics(final Arena arena) {
         if (!PVPArena.instance.getConfig().getBoolean("stats")) {
             return;
-        } else if (config == null) {
+        }
+        if (config == null) {
             initialize();
         }
         if (config.getConfigurationSection(arena.getName()) == null) {
             return;
         }
-        boolean foundBroken = false;
 
         arena.getDebugger().i("loading statistics!");
-        for (String playerID : config.getConfigurationSection(arena.getName()).getKeys(false)) {
+        boolean foundBroken = false;
+        for (final String playerID : config.getConfigurationSection(arena.getName()).getKeys(false)) {
 
 
             String player = playerID;
 
             if (config.getConfigurationSection(arena.getName()).contains(playerID+".playerName")) {
                 // old broken version
-                OfflinePlayer oPlayer;
+                final OfflinePlayer oPlayer;
                 try {
                     oPlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerID));
-                } catch (NoSuchMethodError error) {
+                } catch (final NoSuchMethodError error) {
                     continue;
                 }
 
@@ -399,34 +394,34 @@ public class StatisticsManager {
 
             arena.getDebugger().i("loading stats: " + player);
 
-            ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
 
-            for (type ttt : type.values()) {
+            for (final type ttt : type.values()) {
                 aPlayer.setStatistic(arena.getName(), ttt, 0);
             }
 
-            final int losses = config.getInt(arena.getName() + "." + player + ".losses", 0);
+            final int losses = config.getInt(arena.getName() + '.' + player + ".losses", 0);
             aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);
 
-            final int wins = config.getInt(arena.getName() + "." + player + ".wins", 0);
+            final int wins = config.getInt(arena.getName() + '.' + player + ".wins", 0);
             aPlayer.addStatistic(arena.getName(), type.WINS, wins);
 
-            final int kills = config.getInt(arena.getName() + "." + player + ".kills", 0);
+            final int kills = config.getInt(arena.getName() + '.' + player + ".kills", 0);
             aPlayer.addStatistic(arena.getName(), type.KILLS, kills);
 
-            final int deaths = config.getInt(arena.getName() + "." + player + ".deaths", 0);
+            final int deaths = config.getInt(arena.getName() + '.' + player + ".deaths", 0);
             aPlayer.addStatistic(arena.getName(), type.DEATHS, deaths);
 
-            final int damage = config.getInt(arena.getName() + "." + player + ".damage", 0);
+            final int damage = config.getInt(arena.getName() + '.' + player + ".damage", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGE, damage);
 
-            final int maxdamage = config.getInt(arena.getName() + "." + player + ".maxdamage", 0);
+            final int maxdamage = config.getInt(arena.getName() + '.' + player + ".maxdamage", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGE, maxdamage);
 
-            final int damagetake = config.getInt(arena.getName() + "." + player + ".damagetake", 0);
+            final int damagetake = config.getInt(arena.getName() + '.' + player + ".damagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGETAKE, damagetake);
 
-            final int maxdamagetake = config.getInt(arena.getName() + "." + player + ".maxdamagetake", 0);
+            final int maxdamagetake = config.getInt(arena.getName() + '.' + player + ".maxdamagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
         }
         if (foundBroken) {
@@ -434,47 +429,47 @@ public class StatisticsManager {
         }
     }
 
-    public static void update(Arena arena, ArenaPlayer aPlayer) {
+    public static void update(final Arena arena, final ArenaPlayer aPlayer) {
         if (config == null) {
             return;
         }
 
-        PAStatMap map = aPlayer.getStatistics(arena);
+        final PAStatMap map = aPlayer.getStatistics(arena);
 
         String node = aPlayer.getName();
 
         try {
             node = aPlayer.get().getUniqueId().toString();
-        } catch (Exception e) {
+        } catch (final Exception e) {
 
         }
 
         final int losses = map.getStat(type.LOSSES);
-        config.set(arena.getName() + "." + node + ".losses", losses);
+        config.set(arena.getName() + '.' + node + ".losses", losses);
 
         final int wins = map.getStat(type.WINS);
-        config.set(arena.getName() + "." + node + ".wins", wins);
+        config.set(arena.getName() + '.' + node + ".wins", wins);
 
         final int kills = map.getStat(type.KILLS);
-        config.set(arena.getName() + "." + node + ".kills", kills);
+        config.set(arena.getName() + '.' + node + ".kills", kills);
 
         final int deaths = map.getStat(type.DEATHS);
-        config.set(arena.getName() + "." + node + ".deaths", deaths);
+        config.set(arena.getName() + '.' + node + ".deaths", deaths);
 
         final int damage = map.getStat(type.DAMAGE);
-        config.set(arena.getName() + "." + node + ".damage", damage);
+        config.set(arena.getName() + '.' + node + ".damage", damage);
 
         final int maxdamage = map.getStat(type.MAXDAMAGE);
-        config.set(arena.getName() + "." + node + ".maxdamage", maxdamage);
+        config.set(arena.getName() + '.' + node + ".maxdamage", maxdamage);
 
         final int damagetake = map.getStat(type.DAMAGETAKE);
-        config.set(arena.getName() + "." + node + ".damagetake", damagetake);
+        config.set(arena.getName() + '.' + node + ".damagetake", damagetake);
 
         final int maxdamagetake = map.getStat(type.MAXDAMAGETAKE);
-        config.set(arena.getName() + "." + node + ".maxdamagetake", maxdamagetake);
+        config.set(arena.getName() + '.' + node + ".maxdamagetake", maxdamagetake);
 
-        if (!(node.equals(aPlayer.getName()))) {
-            config.set(arena.getName() + "." + node + ".playerName", aPlayer.getName());
+        if (!node.equals(aPlayer.getName())) {
+            config.set(arena.getName() + '.' + node + ".playerName", aPlayer.getName());
         }
 
     }

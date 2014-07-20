@@ -25,7 +25,7 @@ import java.util.Collection;
 
 public final class PlayerState {
 
-    private static Debug debug = new Debug(7);
+    private static final Debug debug = new Debug(7);
 
     private final String name;
 
@@ -144,7 +144,9 @@ public final class PlayerState {
             player.setMaxHealth(maxhealth);
         }
 
-        if (player.getMaxHealth() != maxhealth) {
+        if (player.getMaxHealth() == maxhealth) {
+            player.setHealth(health);
+        } else {
             final double newHealth = player.getMaxHealth() * health / maxhealth;
             if (newHealth > player.getMaxHealth()) {
                 player.setHealth(player.getMaxHealth());
@@ -152,8 +154,6 @@ public final class PlayerState {
                 player.setHealth(newHealth);
             }
 
-        } else {
-            player.setHealth(health);
         }
         player.setSaturation(saturation);
         player.setGameMode(GameMode.getByValue(gamemode));
@@ -195,7 +195,7 @@ public final class PlayerState {
      * @param player the player to set
      * @param value  the health value
      */
-    protected static void playersetHealth(final Player player, final int value) {
+    static void playersetHealth(final Player player, final int value) {
         debug.i("setting health to " + value + "/20", player);
         if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
             player.setHealth(value);
@@ -226,7 +226,7 @@ public final class PlayerState {
     }
 
     public static void removeEffects(final Player player) {
-        for (PotionEffect pe : player.getActivePotionEffects()) {
+        for (final PotionEffect pe : player.getActivePotionEffects()) {
             player.removePotionEffect(pe.getType());
         }
 

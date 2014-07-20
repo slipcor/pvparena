@@ -24,7 +24,7 @@ import java.util.Set;
 
 public abstract class ArenaRunnable extends BukkitRunnable {
 
-    protected final static Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
+    protected static final Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
 
     static {
         final String seconds = Language.parse(MSG.TIME_SECONDS);
@@ -50,11 +50,11 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         MESSAGES.put(3600, "60 " + minutes);
     }
 
-    protected String message;
+    protected final String message;
     protected Integer seconds;
-    protected String sPlayer;
-    protected Arena arena;
-    protected Boolean global;
+    protected final String sPlayer;
+    protected final Arena arena;
+    protected final Boolean global;
 
     /**
      * Spam the message of the remaining time to... someone, probably:
@@ -65,31 +65,31 @@ public abstract class ArenaRunnable extends BukkitRunnable {
      * @param seconds the seconds remaining
      * @param global  the trigger to generally spam to everyone or to specific arenas/players
      */
-    public ArenaRunnable(final String message, final Integer seconds, final Player player, final Arena arena, final Boolean global) {
+    protected ArenaRunnable(final String message, final Integer seconds, final Player player, final Arena arena, final Boolean global) {
         super();
         this.message = message;
         this.seconds = seconds;
-        this.sPlayer = player == null ? null : player.getName();
+        sPlayer = player == null ? null : player.getName();
         this.arena = arena;
         this.global = global;
 
         runTaskTimer(PVPArena.instance, 20L, 20L);
     }
 
-    public void spam() {
+    protected void spam() {
         if ((message == null) || (MESSAGES.get(seconds) == null)) {
             return;
         }
-        final MSG msg = MSG.getByNode(this.message);
+        final MSG msg = MSG.getByNode(message);
         if (msg == null) {
-            PVPArena.instance.getLogger().warning("MSG not found: " + this.message);
+            PVPArena.instance.getLogger().warning("MSG not found: " + message);
             return;
         }
         final String message = seconds > 5 ? Language.parse(arena, msg, MESSAGES.get(seconds)) : MESSAGES.get(seconds);
         if (global) {
             final Player[] players = Bukkit.getOnlinePlayers();
 
-            for (Player p : players) {
+            for (final Player p : players) {
                 try {
                     if (arena != null && arena.hasPlayer(p)) {
                         continue;
@@ -98,7 +98,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
                         continue;
                     }
                     Arena.pmsg(p, message);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                 }
             }
 
@@ -106,7 +106,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
         if (arena != null) {
             final Set<ArenaPlayer> players = arena.getFighters();
-            for (ArenaPlayer ap : players) {
+            for (final ArenaPlayer ap : players) {
                 if (ap.getName().equals(sPlayer)) {
                     continue;
                 }
@@ -118,7 +118,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
 
         if (Bukkit.getPlayer(sPlayer) != null) {
-            ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sPlayer);
+            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sPlayer);
             if (aPlayer.getArena() == null) {
                 Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
             } else {
@@ -134,7 +134,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
             commit();
             try {
                 cancel();
-            } catch (IllegalStateException e) {
+            } catch (final IllegalStateException e) {
                 warn();
             }
         }

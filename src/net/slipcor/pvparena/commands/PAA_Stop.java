@@ -8,9 +8,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena STOP Command class</pre>
@@ -23,15 +21,13 @@ import java.util.Map;
 
 public class PAA_Stop extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
     public PAA_Stop() {
         super(new String[]{"pvparena.cmd.stop"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -39,7 +35,7 @@ public class PAA_Stop extends AbstractArenaCommand {
             return;
         }
 
-        final boolean force = args.length < 1 || !args[1].equalsIgnoreCase("soft");
+        final boolean force = args.length < 1 || !"soft".equalsIgnoreCase(args[1]);
 
         arena.stop(force);
         arena.msg(sender, Language.parse(arena, MSG.ARENA_STOP_DONE));
@@ -47,7 +43,7 @@ public class PAA_Stop extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -67,7 +63,7 @@ public class PAA_Stop extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"soft"});
         return result;
     }

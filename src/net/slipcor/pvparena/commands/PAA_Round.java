@@ -12,7 +12,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class PAA_Round extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -95,9 +95,9 @@ public class PAA_Round extends AbstractArenaCommand {
             roundMap.set(round, rRound);
             //TODO LATER
 
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, e.getLocalizedMessage()));
 
@@ -106,7 +106,7 @@ public class PAA_Round extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -116,21 +116,21 @@ public class PAA_Round extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("round");
+        return Collections.singletonList("round");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rd");
+        return Collections.singletonList("!rd");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaGoal goal : arena.getGoals()) {
+        for (final ArenaGoal goal : arena.getGoals()) {
             result.define(new String[]{"{int}", goal.getName()});
         }
         return result;

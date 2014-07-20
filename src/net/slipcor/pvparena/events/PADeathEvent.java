@@ -34,8 +34,8 @@ public class PADeathEvent extends Event {
         super();
         this.arena = arena;
         this.player = player;
-        this.respawn = isRespawning;
-        this.pvp = isDueToPVP;
+        respawn = isRespawning;
+        pvp = isDueToPVP;
     }
 
     /**
@@ -51,6 +51,7 @@ public class PADeathEvent extends Event {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

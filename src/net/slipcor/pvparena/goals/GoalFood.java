@@ -9,7 +9,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -65,11 +64,11 @@ public class GoalFood extends ArenaGoal implements Listener {
         return PVPArena.instance.getDescription().getVersion();
     }
 
-    private final static int PRIORITY = 12;
+    private static final int PRIORITY = 12;
 
-    private Map<ArenaTeam, Material> foodtypes = null;
-    private Map<Block, ArenaTeam> chestMap = null;
-    static Map<Material, Material> cookmap = new HashMap<Material, Material>();
+    private Map<ArenaTeam, Material> foodtypes;
+    private Map<Block, ArenaTeam> chestMap;
+    private static final Map<Material, Material> cookmap = new HashMap<Material, Material>();
 
     static {
         cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
@@ -90,11 +89,9 @@ public class GoalFood extends ArenaGoal implements Listener {
             return res;
         }
 
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             final String sTeam = team.getName();
-            if (string.contains(sTeam + "foodchest")) {
-                res.setPriority(this, PRIORITY);
-            } else if (string.contains(sTeam + "foodfurnace")) {
+            if (string.contains(sTeam + "foodchest") || string.contains(sTeam + "foodfurnace")) {
                 res.setPriority(this, PRIORITY);
             }
         }
@@ -104,20 +101,15 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        List<String> result = Arrays.asList(new String[0]);
+        final List<String> result = Arrays.asList(new String[0]);
         if (arena != null) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "foodchest");
                 result.add(sTeam + "foodfurnace");
             }
         }
         return result;
-    }
-
-    @Override
-    public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
     }
 
     @Override
@@ -139,11 +131,11 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-        String error = this.checkForMissingTeamSpawn(list);
+        final String error = checkForMissingTeamSpawn(list);
         if (error != null) {
             return error;
         }
-        return this.checkForMissingTeamCustom(list, "foodchest");
+        return checkForMissingTeamCustom(list, "foodchest");
     }
 
     @Override
@@ -195,12 +187,12 @@ public class GoalFood extends ArenaGoal implements Listener {
             return res;
         }
         if (flagName == null || block == null
-                || (block.getType() != Material.CHEST && block.getType() != Material.FURNACE)) {
+                || block.getType() != Material.CHEST && block.getType() != Material.FURNACE) {
             return res;
         }
 
         if (!PVPArena.hasAdminPerms(player)
-                && !(PVPArena.hasCreatePerms(player, arena))) {
+                && !PVPArena.hasCreatePerms(player, arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -208,12 +200,12 @@ public class GoalFood extends ArenaGoal implements Listener {
         return res;
     }
 
-    String flagName = null;
+    private String flagName;
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
         if (args[0].contains("foodchest")) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 if (args[0].contains(sTeam + "foodchest")) {
                     flagName = args[0];
@@ -224,7 +216,7 @@ public class GoalFood extends ArenaGoal implements Listener {
                 }
             }
         } else if (args[0].contains("foodfurnace")) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 if (args[0].contains(sTeam + "foodfurnace")) {
                     flagName = args[0];
@@ -245,13 +237,13 @@ public class GoalFood extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("[FOOD]");
 
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() == Status.FIGHT) {
                     aTeam = team;
                     break;
                 }
@@ -346,7 +338,7 @@ public class GoalFood extends ArenaGoal implements Listener {
     }
 
     @Override
-    public void configParse(YamlConfiguration config) {
+    public void configParse(final YamlConfiguration config) {
         Bukkit.getPluginManager().registerEvents(this, PVPArena.instance);
     }
 
@@ -382,13 +374,13 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public boolean hasSpawn(final String string) {
-        for (String teamName : arena.getTeamNames()) {
+        for (final String teamName : arena.getTeamNames()) {
             if (string.toLowerCase().startsWith(
                     teamName.toLowerCase() + "spawn")) {
                 return true;
             }
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -414,29 +406,29 @@ public class GoalFood extends ArenaGoal implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onFurnaceClick(PlayerInteractEvent event) {
+    public void onFurnaceClick(final PlayerInteractEvent event) {
         if (!event.hasBlock() || event.getClickedBlock().getType() != Material.FURNACE) {
             return;
         }
 
-        ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        final ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
 
         if (player.getArena() == null || !player.getArena().isFightInProgress()) {
             return;
         }
 
-        Set<PABlock> spawns = SpawnManager.getPABlocksContaining(arena, "foodfurnace");
+        final Set<PABlock> spawns = SpawnManager.getPABlocksContaining(arena, "foodfurnace");
 
         if (spawns.size() < 1) {
             return;
         }
 
-        String teamName = player.getArenaTeam().getName();
+        final String teamName = player.getArenaTeam().getName();
 
-        Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
 
-        for (PABlock block : spawns) {
-            String spawnName = block.getName();
+        for (final PABlock block : spawns) {
+            final String spawnName = block.getName();
             if (spawnName.startsWith(teamName + "foodfurnace")) {
                 validSpawns.add(block.getLocation());
             }
@@ -454,13 +446,13 @@ public class GoalFood extends ArenaGoal implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onItemTransfer(InventoryMoveItemEvent event) {
+    public void onItemTransfer(final InventoryMoveItemEvent event) {
 
         if (arena == null || !arena.isFightInProgress()) {
             return;
         }
 
-        InventoryType type = event.getDestination().getType();
+        final InventoryType type = event.getDestination().getType();
 
         if (type != InventoryType.CHEST) {
             return;
@@ -471,9 +463,9 @@ public class GoalFood extends ArenaGoal implements Listener {
             return;
         }
 
-        ItemStack stack = event.getItem();
+        final ItemStack stack = event.getItem();
 
-        ArenaTeam team = chestMap.get(((Chest) event.getDestination()
+        final ArenaTeam team = chestMap.get(((Chest) event.getDestination()
                 .getHolder()).getBlock());
 
         if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
@@ -482,26 +474,30 @@ public class GoalFood extends ArenaGoal implements Listener {
 
         ArenaPlayer noone = null;
 
-        for (ArenaPlayer player : team.getTeamMembers()) {
+        for (final ArenaPlayer player : team.getTeamMembers()) {
             noone = player;
             break;
         }
 
+        if (noone == null) {
+            return;
+        }
+
         // INTO container
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                noone.getName() + ":" + team.getName() + ":" + stack.getAmount());
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                noone.getName() + ':' + team.getName() + ':' + stack.getAmount());
         Bukkit.getPluginManager().callEvent(gEvent);
-        this.reduceLives(arena, team, stack.getAmount());
+        reduceLives(arena, team, stack.getAmount());
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(final InventoryClickEvent event) {
 
         if (arena == null || !arena.isFightInProgress()) {
             return;
         }
 
-        InventoryType type = event.getInventory().getType();
+        final InventoryType type = event.getInventory().getType();
 
         if (type != InventoryType.CHEST) {
             return;
@@ -517,30 +513,30 @@ public class GoalFood extends ArenaGoal implements Listener {
             return;
         }
 
-        ItemStack stack = event.getCurrentItem();
+        final ItemStack stack = event.getCurrentItem();
 
-        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(event.getWhoClicked().getName());
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(event.getWhoClicked().getName());
 
-        ArenaTeam team = aPlayer.getArenaTeam();
+        final ArenaTeam team = aPlayer.getArenaTeam();
 
         if (team == null || stack == null || stack.getType() != cookmap.get(getFoodMap().get(team))) {
             return;
         }
 
-        SlotType sType = event.getSlotType();
+        final SlotType sType = event.getSlotType();
 
         if (sType == SlotType.CONTAINER) {
             // OUT of container
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                    aPlayer.getName() + ":" + team.getName() + ":-" + stack.getAmount());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                    aPlayer.getName() + ':' + team.getName() + ":-" + stack.getAmount());
             Bukkit.getPluginManager().callEvent(gEvent);
-            this.reduceLives(arena, team, -stack.getAmount());
+            reduceLives(arena, team, -stack.getAmount());
         } else {
             // INTO container
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                    aPlayer.getName() + ":" + team.getName() + ":" + stack.getAmount());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
+                    aPlayer.getName() + ':' + team.getName() + ':' + stack.getAmount());
             Bukkit.getPluginManager().callEvent(gEvent);
-            this.reduceLives(arena, team, stack.getAmount());
+            reduceLives(arena, team, stack.getAmount());
         }
     }
 
@@ -553,9 +549,9 @@ public class GoalFood extends ArenaGoal implements Listener {
 
         chestMap = new HashMap<Block, ArenaTeam>();
 
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             int pos = new Random().nextInt(cookmap.size());
-            for (Material mat : cookmap.keySet()) {
+            for (final Material mat : cookmap.keySet()) {
                 if (pos <= 0) {
                     getFoodMap().put(team, mat);
                     break;
@@ -568,28 +564,28 @@ public class GoalFood extends ArenaGoal implements Listener {
             if (totalAmount < 1) {
                 totalAmount = 1;
             }
-            for (ArenaPlayer player : team.getTeamMembers()) {
+            for (final ArenaPlayer player : team.getTeamMembers()) {
 
                 player.get().getInventory().addItem(new ItemStack(getFoodMap().get(team), totalAmount));
                 player.get().updateInventory();
             }
             chestMap.put(SpawnManager.getBlockByExactName(arena, team.getName() + "foodchest").toLocation().getBlock(), team);
-            this.getLifeMap().put(team.getName(),
+            getLifeMap().put(team.getName(),
                     arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
         }
     }
 
-    private void reduceLives(final Arena arena, final ArenaTeam team, int amount) {
-        final int iLives = this.getLifeMap().get(team.getName());
+    private void reduceLives(final Arena arena, final ArenaTeam team, final int amount) {
+        final int iLives = getLifeMap().get(team.getName());
 
         if (iLives <= amount && amount > 0) {
-            for (ArenaTeam otherTeam : arena.getTeams()) {
+            for (final ArenaTeam otherTeam : arena.getTeams()) {
                 if (otherTeam.equals(team)) {
                     continue;
                 }
                 getLifeMap().remove(otherTeam.getName());
-                for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
-                    if (ap.getStatus().equals(Status.FIGHT)) {
+                for (final ArenaPlayer ap : otherTeam.getTeamMembers()) {
+                    if (ap.getStatus() == Status.FIGHT) {
                         ap.setStatus(Status.LOST);/*
                         arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
 								true, false);*/
@@ -605,9 +601,9 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void refillInventory(Player player) {
-        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        ArenaTeam team = aPlayer.getArenaTeam();
+    public void refillInventory(final Player player) {
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        final ArenaTeam team = aPlayer.getArenaTeam();
         if (team == null) {
             return;
         }
@@ -640,10 +636,9 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
-        double score;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            score = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS)
+        for (final ArenaTeam team : arena.getTeams()) {
+            double score = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS)
                     - (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
                     .getName()) : 0);
             if (scores.containsKey(team.getName())) {

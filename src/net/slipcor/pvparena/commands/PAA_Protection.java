@@ -10,10 +10,8 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena PROTECTION Command class</pre>
@@ -26,15 +24,13 @@ import java.util.Map;
 
 public class PAA_Protection extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
-
     public PAA_Protection() {
         super(new String[]{"pvparena.cmd.protection"});
     }
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -53,8 +49,8 @@ public class PAA_Protection extends AbstractArenaCommand {
 
         try {
             regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
-        } catch (Exception e) {
-            if (!args[1].equalsIgnoreCase("all")) {
+        } catch (final Exception e) {
+            if (!"all".equalsIgnoreCase(args[1])) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
                 return;
             }
@@ -94,7 +90,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -104,21 +100,21 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("protection");
+        return Collections.singletonList("protection");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!p");
+        return Collections.singletonList("!p");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaRegion region : arena.getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionProtection}", "{Boolean}"});
         }
         return result;

@@ -10,7 +10,7 @@ import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class PAG_Spectate extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -54,7 +54,7 @@ public class PAG_Spectate extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -64,12 +64,12 @@ public class PAG_Spectate extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("spectate");
+        return Collections.singletonList("spectate");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-s");
+        return Collections.singletonList("-s");
     }
 
     @Override

@@ -52,43 +52,49 @@ public class PALocation {
         final int prime = 31;
         int result = 1;
         result = prime * result + Float.floatToIntBits(pitch);
-        result = prime * result + ((world == null) ? 0 : world.hashCode());
-        long temp;
-        temp = Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (world == null ? 0 : world.hashCode());
+        long temp = Double.doubleToLongBits(x);
+        result = prime * result + (int) (temp ^ temp >>> 32);
         temp = Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ temp >>> 32);
         result = prime * result + Float.floatToIntBits(yaw);
         temp = Double.doubleToLongBits(z);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ temp >>> 32);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
-        PALocation other = (PALocation) obj;
-        if (Float.floatToIntBits(pitch) != Float.floatToIntBits(other.pitch))
+        }
+        final PALocation other = (PALocation) obj;
+        if (Float.floatToIntBits(pitch) != Float.floatToIntBits(other.pitch)) {
             return false;
+        }
         if (world == null) {
-            if (other.world != null)
+            if (other.world != null) {
                 return false;
-        } else if (!world.equals(other.world))
+            }
+        } else if (!world.equals(other.world)) {
             return false;
-        if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+        }
+        if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x)) {
             return false;
-        if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
+        }
+        if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y)) {
             return false;
-        if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw))
+        }
+        if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw)) {
             return false;
-        if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-            return false;
-        return true;
+        }
+        return Double.doubleToLongBits(z) == Double.doubleToLongBits(other.z);
     }
 
     public int getBlockX() {
@@ -114,8 +120,8 @@ public class PALocation {
                             + otherLocation.world);
         }
 
-        return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
-                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
+        return Math.sqrt(Math.pow(x - otherLocation.x, 2.0D)
+                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D));
     }
 
     public double getDistanceSquared(final PALocation otherLocation) {
@@ -129,8 +135,8 @@ public class PALocation {
                             + otherLocation.world);
         }
 
-        return Math.pow(this.x - otherLocation.x, 2.0D)
-                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D);
+        return Math.pow(x - otherLocation.x, 2.0D)
+                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D);
     }
 
     public double getPitch() {
@@ -183,11 +189,11 @@ public class PALocation {
 
     @Override
     public String toString() {
-        String[] aLoc = new String[6];
-        aLoc[0] = "w:" + getWorldName();
-        aLoc[1] = "x:" + getX();
-        aLoc[2] = "y:" + getY();
-        aLoc[3] = "z:" + getZ();
+        final String[] aLoc = new String[6];
+        aLoc[0] = "w:" + world;
+        aLoc[1] = "x:" + x;
+        aLoc[2] = "y:" + y;
+        aLoc[3] = "z:" + z;
         aLoc[4] = "P:" + getPitch();
         aLoc[5] = "Y:" + getYaw();
         return StringParser.joinArray(aLoc, "|");

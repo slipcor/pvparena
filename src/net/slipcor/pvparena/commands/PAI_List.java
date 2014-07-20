@@ -27,7 +27,7 @@ public class PAI_List extends AbstractArenaCommand {
         super(new String[]{"pvparena.user", "pvparena.cmds.list"});
     }
 
-    private static Map<ArenaPlayer.Status, Character> colorMap = new HashMap<ArenaPlayer.Status, Character>();
+    private static final Map<ArenaPlayer.Status, Character> colorMap = new HashMap<ArenaPlayer.Status, Character>();
 
     static {
 
@@ -43,7 +43,7 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -54,18 +54,18 @@ public class PAI_List extends AbstractArenaCommand {
         if (args.length < 1) {
 
 
-            for (ArenaTeam teams : arena.getTeams()) {
+            for (final ArenaTeam teams : arena.getTeams()) {
                 final Set<String> names = new HashSet<String>();
 
-                for (ArenaPlayer player : teams.getTeamMembers()) {
+                for (final ArenaPlayer player : teams.getTeamMembers()) {
                     names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
                 }
 
-                if (arena.isFreeForAll() && teams.getName().equals("free")) {
+                if (arena.isFreeForAll() && "free".equals(teams.getName())) {
                     arena.msg(sender, Language.parse(arena, MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
                 } else {
                     final int count = teams.getTeamMembers().size();
-                    final String sCount = " &r(" + count + ")";
+                    final String sCount = " &r(" + count + ')';
                     arena.msg(sender, Language.parse(arena, MSG.LIST_TEAM, teams.getColoredName() + sCount, StringParser.joinSet(names, ", ")));
                 }
             }
@@ -74,22 +74,22 @@ public class PAI_List extends AbstractArenaCommand {
 
         final Map<ArenaPlayer.Status, Set<String>> stats = new HashMap<ArenaPlayer.Status, Set<String>>();
 
-        for (ArenaPlayer player : arena.getEveryone()) {
+        for (final ArenaPlayer player : arena.getEveryone()) {
             final Set<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
 
             players.add(player.getName());
             stats.put(player.getStatus(), players);
         }
 
-        for (ArenaPlayer.Status stat : stats.keySet()) {
-            arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
+        for (final Map.Entry<ArenaPlayer.Status, Set<String>> statusSetEntry : stats.entrySet()) {
+            arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + statusSetEntry.getKey().name()), "&" + colorMap.get(statusSetEntry.getKey()) + StringParser.joinSet(statusSetEntry.getValue(), ", ")));
         }
 
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -99,12 +99,12 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("list");
+        return Collections.singletonList("list");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-ls");
+        return Collections.singletonList("-ls");
     }
 
     @Override

@@ -20,16 +20,16 @@ import org.bukkit.command.CommandSender;
  */
 
 public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
-    public final String[] perms;
+    private final String[] perms;
 
-    public AbstractGlobalCommand(final String[] permissions) {
+    AbstractGlobalCommand(final String[] permissions) {
         perms = permissions.clone();
     }
 
-    public static boolean argCountValid(final CommandSender sender, final String[] args,
-                                        final Integer[] validCounts) {
+    static boolean argCountValid(final CommandSender sender, final String[] args,
+                                 final Integer[] validCounts) {
 
-        for (int i : validCounts) {
+        for (final int i : validCounts) {
             if (i == args.length) {
                 return true;
             }
@@ -54,7 +54,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
             return true;
         }
 
-        for (String perm : perms) {
+        for (final String perm : perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }
@@ -62,25 +62,25 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
         return false;
     }
 
-    public boolean hasPerms(final CommandSender sender) {
+    boolean hasPerms(final CommandSender sender) {
         if (PVPArena.hasAdminPerms(sender)) {
             return true;
         }
 
-        for (String perm : perms) {
+        for (final String perm : perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }
         }
 
         if (perms.length > 0) {
-            final String split[] = perms[0].split("\\.");
+            final String[] split = perms[0].split("\\.");
             try {
                 Arena.pmsg(
                         sender,
                         Language.parse(MSG.ERROR_NOPERM,
                                 Language.parse(MSG.getByNode("nopermto." + split[1]))));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 PVPArena.instance.getLogger().warning("Unknown MSG for pvparena." + split[1]);
                 Arena.pmsg(
                         sender,
@@ -97,5 +97,5 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
         return false;
     }
 
-    public abstract void displayHelp(CommandSender sender);
+    protected abstract void displayHelp(CommandSender sender);
 }

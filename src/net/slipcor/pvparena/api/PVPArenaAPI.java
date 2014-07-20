@@ -24,7 +24,7 @@ import java.util.Set;
  */
 
 public final class PVPArenaAPI {
-    private final static Debug DEBUG = new Debug(2);
+    private static final Debug DEBUG = new Debug(2);
 
     private PVPArenaAPI() {
     }
@@ -40,7 +40,7 @@ public final class PVPArenaAPI {
             DEBUG.i("API: get arena of player: " + player.getName(), player);
         }
         final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
-        return (arena == null) ? "" : arena.getName();
+        return arena == null ? "" : arena.getName();
     }
 
     /**
@@ -66,8 +66,8 @@ public final class PVPArenaAPI {
         if (!Debug.override) {
             DEBUG.i("API: get arena team of player: " + player.getName(), player);
         }
-        ArenaTeam team = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
-        return (team == null) ? "" : team.getName();
+        final ArenaTeam team = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+        return team == null ? "" : team.getName();
     }
 
     /**
@@ -78,10 +78,10 @@ public final class PVPArenaAPI {
      */
     public static String getArenaNameByLocation(final Location location) {
         if (!Debug.override) {
-            DEBUG.i("API: get arena of location: " + location.toString());
+            DEBUG.i("API: get arena of location: " + location);
         }
         final Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(location));
-        return (arena == null) ? "" : arena.getName();
+        return arena == null ? "" : arena.getName();
     }
 
     /**
@@ -92,14 +92,14 @@ public final class PVPArenaAPI {
      */
     public static Set<String> getArenaNamesByLocation(final Location location) {
         if (!Debug.override) {
-            DEBUG.i("API: get arena of location: " + location.toString());
+            DEBUG.i("API: get arena of location: " + location);
         }
         final Set<Arena> arenas = ArenaManager
                 .getArenasByRegionLocation(new PABlockLocation(location));
 
         final Set<String> result = new HashSet<String>();
 
-        for (Arena a : arenas) {
+        for (final Arena a : arenas) {
             result.add(a.getName());
         }
 

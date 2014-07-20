@@ -7,7 +7,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class PAA_Edit extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeEdits = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeEdits = new HashMap<String, Arena>();
 
     public PAA_Edit() {
         super(new String[]{"pvparena.cmd.edit"});
@@ -31,7 +31,7 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -39,7 +39,7 @@ public class PAA_Edit extends AbstractArenaCommand {
             return;
         }
 
-        String msg;
+        final String msg;
 
         if (PAA_Edit.activeEdits.containsValue(arena)) {
             activeEdits.remove(sender.getName());
@@ -57,7 +57,7 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -67,12 +67,12 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("edit");
+        return Collections.singletonList("edit");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!e");
+        return Collections.singletonList("!e");
     }
 
     @Override

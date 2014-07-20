@@ -27,7 +27,7 @@ import java.util.jar.JarFile;
  *
  * @author NodinChan
  */
-public class NCBLoadEvent<T> extends Event {
+class NCBLoadEvent<T> extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
@@ -37,7 +37,7 @@ public class NCBLoadEvent<T> extends Event {
 
     private final JarFile jarFile;
 
-    public NCBLoadEvent(Plugin plugin, T loadable, JarFile jarFile) {
+    public NCBLoadEvent(final Plugin plugin, final T loadable, final JarFile jarFile) {
         this.plugin = plugin;
         this.loadable = loadable;
         this.jarFile = jarFile;

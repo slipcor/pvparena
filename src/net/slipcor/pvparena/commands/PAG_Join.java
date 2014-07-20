@@ -15,7 +15,7 @@ import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class PAG_Join extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -54,8 +54,8 @@ public class PAG_Join extends AbstractArenaCommand {
                 && (
                 !arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE)
                         ||
-                        (arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED)
-                                && !arena.hasAlreadyPlayed(sender.getName())))) {
+                        arena.getArenaConfig().getBoolean(CFG.JOIN_ONLYIFHASPLAYED)
+                                && !arena.hasAlreadyPlayed(sender.getName()))) {
 
             arena.msg(sender, Language.parse(arena, MSG.ERROR_FIGHT_IN_PROGRESS));
             return;
@@ -98,7 +98,7 @@ public class PAG_Join extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -108,22 +108,22 @@ public class PAG_Join extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("join");
+        return Collections.singletonList("join");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-j");
+        return Collections.singletonList("-j");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
         if (!arena.isFreeForAll()) {
-            for (String team : arena.getTeamNames()) {
+            for (final String team : arena.getTeamNames()) {
                 result.define(new String[]{team});
             }
         }

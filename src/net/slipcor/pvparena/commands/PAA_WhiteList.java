@@ -40,7 +40,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
         // usage: /pa {arenaname} blacklist clear
 
         if (args.length < 2) {
-            if (args[0].equalsIgnoreCase("clear")) {
+            if ("clear".equalsIgnoreCase(args[0])) {
                 arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode(), null);
                 arena.getArenaConfig().save();
                 arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ALLCLEARED));
@@ -60,7 +60,8 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             }
             arena.msg(sender, Language.parse(arena, MSG.WHITELIST_HELP));
             return;
-        } else if (args.length == 2) {
+        }
+        if (args.length == 2) {
             // usage: /pa {arenaname} blacklist [type] clear
             if (!SUBTYPES.contains(args[0].toLowerCase())) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_WHITELIST_UNKNOWN_TYPE, StringParser.joinSet(SUBTYPES, "|")));
@@ -89,14 +90,14 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
         List<String> list = new ArrayList<String>();
 
-        list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
+        list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + '.' + args[0].toLowerCase(), list);
 
-        if (args[1].equalsIgnoreCase("add")) {
+        if ("add".equalsIgnoreCase(args[1])) {
             list.add(args[2]);
             arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ADDED, args[2], args[0].toLowerCase()));
-        } else if (args[1].equalsIgnoreCase("show")) {
-            final StringBuffer output = new StringBuffer(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
-            for (String s : list) {
+        } else if ("show".equalsIgnoreCase(args[1])) {
+            final StringBuilder output = new StringBuilder(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
+            for (final String s : list) {
                 output.append(": ");
                 output.append(Material.getMaterial(Integer.parseInt(s)).name());
             }
@@ -109,14 +110,14 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             arena.msg(sender, Language.parse(arena, MSG.WHITELIST_REMOVED, args[2], args[1]));
         }
 
-        arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
+        arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + '.' + args[0].toLowerCase(), list);
         arena.getArenaConfig().save();
 
     }
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -126,21 +127,21 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("whitelist");
+        return Collections.singletonList("whitelist");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!wl");
+        return Collections.singletonList("!wl");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"clear"});
-        for (String main : SUBTYPES) {
+        for (final String main : SUBTYPES) {
             result.define(new String[]{main, "clear"});
-            for (String sub : SUBCOMMANDS) {
+            for (final String sub : SUBCOMMANDS) {
                 result.define(new String[]{main, sub, "{Material}"});
             }
         }

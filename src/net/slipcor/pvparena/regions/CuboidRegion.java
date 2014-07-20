@@ -48,9 +48,9 @@ public class CuboidRegion extends ArenaRegionShape {
      */
     private PABlockLocation[] sanityCheck(final PABlockLocation lMin,
                                           final PABlockLocation lMax) {
-        final boolean x = (lMin.getX() > lMax.getX());
-        final boolean y = (lMin.getY() > lMax.getY());
-        final boolean z = (lMin.getZ() > lMax.getZ());
+        final boolean x = lMin.getX() > lMax.getX();
+        final boolean y = lMin.getY() > lMax.getY();
+        final boolean z = lMin.getZ() > lMax.getZ();
 
         if (!(x | y | z)) {
             return new PABlockLocation[]{lMin, lMax};
@@ -65,7 +65,8 @@ public class CuboidRegion extends ArenaRegionShape {
         return new PABlockLocation[]{l1, l2};
     }
 
-    public final void initialize(ArenaRegion region) {
+    @Override
+    public final void initialize(final ArenaRegion region) {
         this.region = region;
         final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);
         region.locs[0] = sane[0];
@@ -85,13 +86,11 @@ public class CuboidRegion extends ArenaRegionShape {
                     || getMinimumLocation().getZ() > paRegion.locs[1].getZ()) {
                 return false;
             }
-            if (paRegion.locs[0].getX() > getMaximumLocation().getX()
+            return !(paRegion.locs[0].getX() > getMaximumLocation().getX()
                     || paRegion.locs[0].getY() > getMaximumLocation().getY()
-                    || paRegion.locs[0].getZ() > getMaximumLocation().getZ()) {
-                return false;
-            }
-            return true;
-        } else if (paRegion.getShape() instanceof SphericRegion) {
+                    || paRegion.locs[0].getZ() > getMaximumLocation().getZ());
+        }
+        if (paRegion.getShape() instanceof SphericRegion) {
             // we are cube and search for intersecting sphere
 
             final PABlockLocation thisCenter = getMaximumLocation().getMidpoint(getMinimumLocation());
@@ -109,7 +108,8 @@ public class CuboidRegion extends ArenaRegionShape {
             // offset is pointing from that to this
 
             return this.contains(offset);
-        } else if (paRegion.getShape() instanceof CylindricRegion) {
+        }
+        if (paRegion.getShape() instanceof CylindricRegion) {
             // we are cube and search for intersecting cylinder
 
             final PABlockLocation thisCenter = getMaximumLocation().getMidpoint(
@@ -137,12 +137,11 @@ public class CuboidRegion extends ArenaRegionShape {
             // offset is pointing from that to this
 
             return this.contains(offset);
-        } else {
-            PVPArena.instance.getLogger()
-                    .warning(
-                            "Region Shape not supported: "
-                                    + paRegion.getShape().getName());
         }
+        PVPArena.instance.getLogger()
+                .warning(
+                        "Region Shape not supported: "
+                                + paRegion.getShape().getName());
         return false;
     }
 
@@ -151,7 +150,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
         final Location min = getMinimumLocation().toLocation();
         final Location max = getMaximumLocation().toLocation();
-        final World w = Bukkit.getWorld(getRegion().getWorldName());
+        final World w = Bukkit.getWorld(region.getWorldName());
 
         border.clear();
 
@@ -189,8 +188,8 @@ public class CuboidRegion extends ArenaRegionShape {
                     .getBlock());
         }
 
-        for (Block b : border) {
-            if (!getRegion().isInNoWoolSet(b)) {
+        for (final Block b : border) {
+            if (!region.isInNoWoolSet(b)) {
                 player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
             }
         }
@@ -200,7 +199,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
                     @Override
                     public void run() {
-                        for (Block b : border) {
+                        for (final Block b : border) {
                             player.sendBlockChange(b.getLocation(),
                                     b.getTypeId(), b.getData());
                         }
@@ -213,7 +212,7 @@ public class CuboidRegion extends ArenaRegionShape {
     @Override
     public boolean contains(final PABlockLocation loc) {
         if (getMinimumLocation() == null || getMaximumLocation() == null
-                || loc == null || !loc.getWorldName().equals(getRegion().getWorldName())) {
+                || loc == null || !loc.getWorldName().equals(region.getWorldName())) {
             return false; // no arena, no container or not in the same world
         }
         return loc.isInAABB(getMinimumLocation(), getMaximumLocation());
@@ -226,28 +225,28 @@ public class CuboidRegion extends ArenaRegionShape {
 
     @Override
     public PABlockLocation getMaximumLocation() {
-        return getRegion().locs[1];
+        return region.locs[1];
     }
 
     @Override
     public PABlockLocation getMinimumLocation() {
-        return getRegion().locs[0];
+        return region.locs[0];
     }
 
-    public ArenaRegion getRegion() {
+    ArenaRegion getRegion() {
         return region;
     }
 
     @Override
     public boolean tooFarAway(final int joinRange, final Location location) {
-        final PABlockLocation reach = (new PABlockLocation(location)).pointTo(
+        final PABlockLocation reach = new PABlockLocation(location).pointTo(
                 getCenter(), (double) joinRange);
 
         return contains(reach);
     }
 
     @Override
-    public void move(BlockFace direction, int value) {
+    public void move(final BlockFace direction, final int value) {
         final int diffX = direction.getModX();
         final int diffY = direction.getModY();
         final int diffZ = direction.getModZ();
@@ -260,7 +259,7 @@ public class CuboidRegion extends ArenaRegionShape {
     }
 
     @Override
-    public void extend(BlockFace direction, int value) {
+    public void extend(final BlockFace direction, final int value) {
         final int diffX = direction.getModX();
         final int diffY = direction.getModY();
         final int diffZ = direction.getModZ();

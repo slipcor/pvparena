@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.commands;
 
 import net.slipcor.pvparena.arena.Arena;
-import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -14,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -57,7 +56,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
                 int position = 0;
 
-                for (String node : arena.getArenaConfig().getYamlConfiguration()
+                for (final String node : arena.getArenaConfig().getYamlConfiguration()
                         .getKeys(true)) {
                     if (CFG.getByNode(node) == null) {
                         continue;
@@ -71,12 +70,12 @@ public class PAA_Set extends AbstractArenaCommand {
                     }
                 }
                 arena.msg(sender, ChatColor.COLOR_CHAR + "6------ config list [" + page + "] ------");
-                for (String node : keys.keySet()) {
+                for (final Map.Entry<String, String> stringStringEntry : keys.entrySet()) {
                     arena.msg(sender,
-                            keys.get(node) + " => " + CFG.getByNode(node).getType());
+                            stringStringEntry.getValue() + " => " + CFG.getByNode(stringStringEntry.getKey()).getType());
                 }
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[0]));
             }
             return;
@@ -89,8 +88,8 @@ public class PAA_Set extends AbstractArenaCommand {
 
     private void set(final CommandSender player, final Arena arena, final String node, final String value) {
 
-        for (String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
-            if (s.toLowerCase().endsWith("." + node.toLowerCase())) {
+        for (final String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
+            if (s.toLowerCase().endsWith('.' + node.toLowerCase())) {
                 set(player, arena, s, value);
                 return;
             }
@@ -99,36 +98,36 @@ public class PAA_Set extends AbstractArenaCommand {
         final String type = CFG.getByNode(node) == null ? "" : CFG.getByNode(node).getType();
 
 
-        if (type.equals("boolean")) {
-            if (value.equalsIgnoreCase("true")) {
+        if ("boolean".equals(type)) {
+            if ("true".equalsIgnoreCase(value)) {
                 arena.getArenaConfig().setManually(node, Boolean.TRUE);
                 arena.msg(
                         player,
                         Language.parse(arena, MSG.SET_DONE, node,
-                                String.valueOf(value.equalsIgnoreCase("true"))));
-            } else if (value.equalsIgnoreCase("false")) {
+                                String.valueOf("true".equalsIgnoreCase(value))));
+            } else if ("false".equalsIgnoreCase(value)) {
                 arena.getArenaConfig().setManually(node, Boolean.FALSE);
                 arena.msg(
                         player,
                         Language.parse(arena, MSG.SET_DONE, node,
-                                String.valueOf(value.equalsIgnoreCase("true"))));
+                                String.valueOf("true".equalsIgnoreCase(value))));
             } else {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "boolean (true|false)"));
                 return;
             }
-        } else if (type.equals("string")) {
+        } else if ("string".equals(type)) {
             arena.getArenaConfig().setManually(node, String.valueOf(value));
             arena.msg(
                     player,
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(value)));
-        } else if (type.equals("int")) {
-            int iValue;
+        } else if ("int".equals(type)) {
+            final int iValue;
 
             try {
                 iValue = Integer.parseInt(value);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value));
                 return;
             }
@@ -137,12 +136,12 @@ public class PAA_Set extends AbstractArenaCommand {
                     player,
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(iValue)));
-        } else if (type.equals("double")) {
-            double dValue;
+        } else if ("double".equals(type)) {
+            final double dValue;
 
             try {
                 dValue = Double.parseDouble(value);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "double (e.g. 12.00)"));
                 return;
@@ -152,9 +151,9 @@ public class PAA_Set extends AbstractArenaCommand {
                     player,
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(dValue)));
-        } else if (type.equals("tp")) {
-            if (!value.equals("exit") && !value.equals("old")
-                    && !value.equals("spectator")) {
+        } else if ("tp".equals(type)) {
+            if (!"exit".equals(value) && !"old".equals(value)
+                    && !"spectator".equals(value)) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "tp (exit|old|spectator|...)"));
                 return;
@@ -164,8 +163,8 @@ public class PAA_Set extends AbstractArenaCommand {
                     player,
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(value)));
-        } else if (type.equals("material")) {
-            if (value.equals("hand")) {
+        } else if ("material".equals(type)) {
+            if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
                     final Material mat = ((Player) player).getItemInHand().getType();
@@ -183,14 +182,14 @@ public class PAA_Set extends AbstractArenaCommand {
             try {
                 try {
                     final Material mat = Material.valueOf(value);
-                    if (!mat.equals(Material.AIR)) {
+                    if (mat != Material.AIR) {
                         arena.getArenaConfig().setManually(node, mat.name());
                         arena.msg(
                                 player,
                                 Language.parse(arena, MSG.SET_DONE, node,
                                         String.valueOf(mat.name())));
                     }
-                } catch (Exception e2) {
+                } catch (final Exception e2) {
                     final Material mat = Material
                             .getMaterial(Integer.parseInt(value));
                     arena.getArenaConfig().setManually(node, mat.name());
@@ -201,16 +200,16 @@ public class PAA_Set extends AbstractArenaCommand {
                 }
                 arena.getArenaConfig().save();
                 return;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "valid ENUM or item ID"));
             }
             return;
-        } else if (type.equals("items")) {
-            if (value.equals("inventory")) {
+        } else if ("items".equals(type)) {
+            if ("inventory".equals(value)) {
                 if (player instanceof Player) {
 
-                    String newValue = StringParser.getStringFromItemStacks(((Player) player).getInventory().getContents());
+                    final String newValue = StringParser.getStringFromItemStacks(((Player) player).getInventory().getContents());
                     arena.getArenaConfig().setManually(node, newValue);
                     arena.msg(
                             player,
@@ -224,7 +223,7 @@ public class PAA_Set extends AbstractArenaCommand {
             }
 
             final String[] split = value.split(",");
-            ItemStack[] items = new ItemStack[split.length];
+            final ItemStack[] items = new ItemStack[split.length];
 
             for (int i = 0; i < split.length; i++) {
                 items[i] = StringParser.getItemStackFromString(split[i]);
@@ -256,7 +255,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -266,16 +265,16 @@ public class PAA_Set extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("set");
+        return Collections.singletonList("set");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!s");
+        return Collections.singletonList("!s");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return Config.CFG.getTabTree();
+        return CFG.getTabTree();
     }
 }

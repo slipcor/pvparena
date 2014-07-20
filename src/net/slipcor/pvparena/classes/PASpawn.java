@@ -4,7 +4,7 @@ public class PASpawn {
     private final PALocation location;
     private final String name;
 
-    public PASpawn(PALocation loc, String string) {
+    public PASpawn(final PALocation loc, final String string) {
         location = loc;
         name = string;
     }

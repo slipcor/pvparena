@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class PAA_Template extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -40,27 +40,27 @@ public class PAA_Template extends AbstractArenaCommand {
 
         // pa {arena} template save|load [filename]
 
-        File directory = new File(PVPArena.instance.getDataFolder(), "templates");
-        File output = new File(directory, args[1] + ".temp");
-        if (args[0].equalsIgnoreCase("save")) {
+        final File directory = new File(PVPArena.instance.getDataFolder(), "templates");
+        final File output = new File(directory, args[1] + ".temp");
+        if ("save".equalsIgnoreCase(args[0])) {
             try {
                 output.createNewFile();
                 arena.getArenaConfig().getYamlConfiguration().save(output);
 
-                YamlConfiguration cfg = YamlConfiguration.loadConfiguration(output);
+                final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(output);
 
                 cfg.set("spawns", null);
                 cfg.set("arenaregion", null);
 
                 cfg.save(output);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
             arena.msg(sender, Language.parse(MSG.TEMPLATE_SAVE_DONE, args[1]));
-        } else if (args[0].equalsIgnoreCase("load")) {
-            YamlConfiguration cfg = YamlConfiguration.loadConfiguration(output);
+        } else if ("load".equalsIgnoreCase(args[0])) {
+            final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(output);
 
-            for (String key : cfg.getKeys(false)) {
+            for (final String key : cfg.getKeys(false)) {
                 arena.getArenaConfig().getYamlConfiguration().set(key, cfg.get(key));
             }
             arena.getArenaConfig().save();
@@ -72,7 +72,7 @@ public class PAA_Template extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -82,17 +82,17 @@ public class PAA_Template extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("template");
+        return Collections.singletonList("template");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!tmp");
+        return Collections.singletonList("!tmp");
     }
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"load"});
         result.define(new String[]{"save"});
         return result;

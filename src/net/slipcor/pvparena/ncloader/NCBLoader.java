@@ -54,35 +54,37 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     private final Object[] paramTypes;
     private final Class<?>[] ctorParams;
 
-    private final ArrayList<File> files;
+    private final List<File> files;
     private final List<T> loadables;
 
-    public NCBLoader(Plugin plugin, File dir, Object... paramTypes) {
+    public NCBLoader(final Plugin plugin, final File dir, final Object... paramTypes) {
         this.plugin = plugin;
         this.dir = dir;
         this.paramTypes = paramTypes;
-        this.files = new ArrayList<File>();
-        this.loadables = new ArrayList<T>();
+        files = new ArrayList<File>();
+        loadables = new ArrayList<T>();
 
         Collections.addAll(files, dir.listFiles(new FileExtensionFilter(".jar")));
 
-        List<Class<?>> constructorParams = new ArrayList<Class<?>>();
+        final List<Class<?>> constructorParams = new ArrayList<Class<?>>();
 
-        for (Object paramType : paramTypes)
+        for (final Object paramType : paramTypes) {
             constructorParams.add(paramType.getClass());
+        }
 
-        this.ctorParams = constructorParams.toArray(new Class<?>[constructorParams.size()]);
+        ctorParams = constructorParams.toArray(new Class<?>[constructorParams.size()]);
 
-        List<URL> urls = new ArrayList<URL>();
+        final List<URL> urls = new ArrayList<URL>();
 
-        for (File file : files)
+        for (final File file : files) {
             try {
                 urls.add(file.toURI().toURL());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+        }
 
-        this.loader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]),
+        loader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]),
                 plugin.getClass().getClassLoader());
     }
 
@@ -91,7 +93,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
      *
      * @return The Logger
      */
-    public Logger getLogger() {
+    Logger getLogger() {
         return plugin.getLogger();
     }
 
@@ -100,43 +102,43 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
      *
      * @return List of loaded loadables
      */
-    public final List<T> load(Class<? extends NCBLoadable> classType) {
-        for (File file : files) {
+    public final List<T> load(final Class<? extends NCBLoadable> classType) {
+        for (final File file : files) {
             try {
                 final JarFile jarFile = new JarFile(file);
                 String mainClass = null;
 
                 if (jarFile.getEntry("path.yml") != null) {
-                    JarEntry element = jarFile.getJarEntry("path.yml");
-                    BufferedReader reader = new BufferedReader(
+                    final JarEntry element = jarFile.getJarEntry("path.yml");
+                    final BufferedReader reader = new BufferedReader(
                             new InputStreamReader(
                                     jarFile.getInputStream(element)));
                     mainClass = reader.readLine().substring(12);
                 }
 
                 if (mainClass != null) {
-                    Class<?> clazz = Class.forName(mainClass, true, loader);
+                    final Class<?> clazz = Class.forName(mainClass, true, loader);
 
                     if (clazz != null) {
-                        Class<? extends NCBLoadable> loadableClass = clazz
+                        final Class<? extends NCBLoadable> loadableClass = clazz
                                 .asSubclass(classType);
-                        Constructor<? extends NCBLoadable> ctor = loadableClass
+                        final Constructor<? extends NCBLoadable> ctor = loadableClass
                                 .getConstructor(ctorParams);
-                        T loadable = (T) ctor.newInstance(paramTypes);
+                        final T loadable = (T) ctor.newInstance(paramTypes);
 
-                        LoadResult result = loadable.init();
+                        final LoadResult result = loadable.init();
 
-                        if (result.getResult().equals(Result.SUCCESS)) {
+                        if (result.getResult() == Result.SUCCESS) {
                             loadables.add(loadable);
 
-                            NCBLoadEvent<T> event = new NCBLoadEvent<T>(plugin,
+                            final NCBLoadEvent<T> event = new NCBLoadEvent<T>(plugin,
                                     loadable, jarFile);
                             plugin.getServer().getPluginManager()
                                     .callEvent(event);
                             continue;
                         }
 
-                        String reason = result.getReason();
+                        final String reason = result.getReason();
 
                         if (reason != null && !reason.isEmpty()) {
                             getLogger().log(
@@ -154,7 +156,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                     throw new ClassNotFoundException();
                 }
 
-            } catch (ClassCastException e) {
+            } catch (final ClassCastException e) {
                 e.printStackTrace();
                 getLogger().log(
                         Level.WARNING,
@@ -163,13 +165,13 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                 getLogger().log(Level.WARNING,
                         "The JAR file " + file.getName() + " failed to load");
 
-            } catch (ClassNotFoundException e) {
+            } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
                 getLogger().log(Level.WARNING, "Invalid path.yml");
                 getLogger().log(Level.WARNING,
                         "The JAR file " + file.getName() + " failed to load");
 
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
                 getLogger().log(Level.WARNING, "Unknown cause");
                 getLogger().log(Level.WARNING,
@@ -183,24 +185,24 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     /**
      * Reloads the Loader
      */
-    public List<T> reload(Class<? extends NCBLoadable> classType) {
+    public List<T> reload(final Class<? extends NCBLoadable> classType) {
         unload();
 
-        List<URL> urls = new ArrayList<URL>();
+        final List<URL> urls = new ArrayList<URL>();
         files.clear();
-        for (String loadableFile : dir.list()) {
+        for (final String loadableFile : dir.list()) {
             if (loadableFile.endsWith(".jar")) {
-                File file = new File(dir, loadableFile);
+                final File file = new File(dir, loadableFile);
                 files.add(file);
                 try {
                     urls.add(file.toURI().toURL());
-                } catch (MalformedURLException e) {
+                } catch (final MalformedURLException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        this.loader = URLClassLoader.newInstance(urls.toArray(new URL[urls
+        loader = URLClassLoader.newInstance(urls.toArray(new URL[urls
                 .size()]), plugin.getClass().getClassLoader());
 
         return load(classType);
@@ -209,7 +211,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     /**
      * Unloads the Loader
      */
-    public void unload() {
+    void unload() {
         loadables.clear();
     }
 }

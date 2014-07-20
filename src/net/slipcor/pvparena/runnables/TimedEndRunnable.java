@@ -26,7 +26,7 @@ public class TimedEndRunnable extends ArenaRunnable {
      * @param arena    the arena we are running in
      * @param goalTime the ArenaGoal
      */
-    public TimedEndRunnable(final Arena arena, final int seconds, GoalTime goalTime) {
+    public TimedEndRunnable(final Arena arena, final int seconds, final GoalTime goalTime) {
         super(MSG.TIMER_ENDING_IN.getNode(), seconds, null, arena, false);
         arena.getDebugger().i("TimedEndRunnable constructor");
         arena.endRunner = this;
@@ -36,7 +36,7 @@ public class TimedEndRunnable extends ArenaRunnable {
     @Override
     public void commit() {
         arena.getDebugger().i("TimedEndRunnable commiting");
-        PAGoalEvent gEvent = new PAGoalEvent(arena, goal, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, goal, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         if (arena.isFightInProgress()) {
             PVPArena.instance.getAgm().timedEnd(arena);

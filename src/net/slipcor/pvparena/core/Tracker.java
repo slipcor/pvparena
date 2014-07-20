@@ -19,7 +19,7 @@ import java.net.URLEncoder;
 
 public class Tracker implements Runnable {
     private static int taskID = -1;
-    private static Debug debug = new Debug(18);
+    private static final Debug debug = new Debug(18);
 
     /**
      * call home to save the server/plugin state
@@ -38,13 +38,13 @@ public class Tracker implements Runnable {
                             PVPArena.instance.getServer().getPort(),
                             URLEncoder.encode(PVPArena.instance.getDescription().getName(), "UTF-8"),
                             URLEncoder.encode(PVPArena.instance.getDescription().getVersion(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
         try {
             new URL(url).openConnection().getInputStream();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             PVPArena.instance.getLogger().warning("Error while connecting to www.slipcor.net");
             return;
         }

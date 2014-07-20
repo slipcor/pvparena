@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -61,7 +62,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -71,7 +72,7 @@ public class PAA_Teleport extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("teleport");
+        return Collections.singletonList("teleport");
     }
 
     @Override
@@ -81,11 +82,11 @@ public class PAA_Teleport extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{spawn.getName()});
         }
         return result;
