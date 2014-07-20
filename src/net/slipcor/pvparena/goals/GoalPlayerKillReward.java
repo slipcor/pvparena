@@ -84,12 +84,12 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("killrewards");
+        return Collections.singletonList("killrewards");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!kr");
+        return Collections.singletonList("!kr");
     }
 
     @Override
@@ -197,7 +197,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
             final Player player = (Player) sender;
             final String contents = StringParser.getStringFromItemStacks(player
                     .getInventory().getArmorContents())
-                    + ","
+                    + ','
                     + StringParser.getStringFromItemStacks(player.getInventory()
                     .getContents());
 
@@ -314,7 +314,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
         arena.getDebugger().i("kills to go for " + killer.getName() + ": " + iLives, killer);
         if (iLives <= 1) {
             // player has won!
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(), "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(), "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
             for (final ArenaPlayer ap : arena.getFighters()) {
@@ -341,7 +341,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
             }
             PACheck.handleEnd(arena, false);
         } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             getLifeMap().put(killer.getName(), iLives);

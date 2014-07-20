@@ -15,7 +15,7 @@ import net.slipcor.pvparena.managers.ConfigurationManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -108,12 +108,12 @@ public class PAG_Join extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("join");
+        return Collections.singletonList("join");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-j");
+        return Collections.singletonList("-j");
     }
 
     @Override

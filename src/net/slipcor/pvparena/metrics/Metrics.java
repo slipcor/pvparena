@@ -718,7 +718,7 @@ public class Metrics {
 
         @Override
         public int hashCode() {
-            return getColumnName().hashCode();
+            return name.hashCode();
         }
 
         @Override

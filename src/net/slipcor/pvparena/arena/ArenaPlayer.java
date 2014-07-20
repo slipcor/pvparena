@@ -86,7 +86,7 @@ public class ArenaPlayer {
 
     private ArenaPlayer(final Player player, final Arena arena) {
         name = player.getName();
-        setArena(arena);
+        this.arena = arena;
 
         totalPlayers.put(name, this);
     }
@@ -111,8 +111,8 @@ public class ArenaPlayer {
      */
     public static Player getLastDamagingPlayer(final Event eEvent, final Player damagee) {
 
-        final Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).getArena() == null ?
-                ArenaPlayer.debug : ArenaPlayer.parsePlayer(damagee.getName()).getArena().getDebugger();
+        final Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).arena == null ?
+                ArenaPlayer.debug : ArenaPlayer.parsePlayer(damagee.getName()).arena.getDebugger();
 
         debug.i("trying to get the last damaging player", damagee);
         if (eEvent instanceof EntityDamageByEntityEvent) {
@@ -161,19 +161,19 @@ public class ArenaPlayer {
     public static void givePlayerFightItems(final Arena arena, final Player player) {
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
 
-        final ArenaClass playerClass = aPlayer.getArenaClass();
+        final ArenaClass playerClass = aPlayer.aClass;
         if (playerClass == null) {
             return;
         }
         arena.getDebugger().i("giving items to player '" + player.getName()
-                + "', class '" + playerClass.getName() + "'", player);
+                + "', class '" + playerClass.getName() + '\'', player);
 
         playerClass.equip(player);
 
         if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
             final ArenaTeam aTeam = aPlayer.getArenaTeam();
             final String color = aTeam.getColor().name();
-            arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + "/"
+            arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
                     + color, player);
             player.getInventory().setHelmet(
                     new ItemStack(Material.WOOL, 1, StringParser
@@ -596,32 +596,32 @@ public class ArenaPlayer {
 
                 if (arena != null) {
                     final String arenaName = arena.getName();
-                    cfg.set(arenaName + "." + name + ".losses", getStatistics()
+                    cfg.set(arenaName + '.' + name + ".losses", getStatistics()
                             .getStat(type.LOSSES)
                             + getTotalStatistics(type.LOSSES));
-                    cfg.set(arenaName + "." + name + ".wins",
+                    cfg.set(arenaName + '.' + name + ".wins",
                             getStatistics()
                                     .getStat(type.WINS)
                                     + getTotalStatistics(type.WINS));
-                    cfg.set(arenaName + "." + name + ".kills",
+                    cfg.set(arenaName + '.' + name + ".kills",
                             getStatistics().getStat(
                                     type.KILLS)
                                     + getTotalStatistics(type.KILLS));
-                    cfg.set(arenaName + "." + name + ".deaths", getStatistics()
+                    cfg.set(arenaName + '.' + name + ".deaths", getStatistics()
                             .getStat(type.DEATHS)
                             + getTotalStatistics(type.DEATHS));
-                    cfg.set(arenaName + "." + name + ".damage", getStatistics()
+                    cfg.set(arenaName + '.' + name + ".damage", getStatistics()
                             .getStat(type.DAMAGE)
                             + getTotalStatistics(type.DAMAGE));
-                    cfg.set(arenaName + "." + name + ".maxdamage",
+                    cfg.set(arenaName + '.' + name + ".maxdamage",
                             getStatistics().getStat(
                                     type.MAXDAMAGE)
                                     + getTotalStatistics(type.MAXDAMAGE));
-                    cfg.set(arenaName + "." + name + ".damagetake",
+                    cfg.set(arenaName + '.' + name + ".damagetake",
                             getStatistics().getStat(
                                     type.DAMAGETAKE)
                                     + getTotalStatistics(type.DAMAGETAKE));
-                    cfg.set(arenaName + "." + name + ".maxdamagetake",
+                    cfg.set(arenaName + '.' + name + ".maxdamagetake",
                             getStatistics().getStat(
                                     type.MAXDAMAGETAKE)
                                     + getTotalStatistics(type.MAXDAMAGETAKE));
@@ -638,7 +638,7 @@ public class ArenaPlayer {
             return;
         }
 
-        setTelePass(false);
+        telePass = false;
 
         if (state != null) {
             state.reset();
@@ -690,7 +690,7 @@ public class ArenaPlayer {
      */
     public void setArenaClass(final String className) {
 
-        for (final ArenaClass ac : getArena().getClasses()) {
+        for (final ArenaClass ac : arena.getClasses()) {
             if (ac.getName().equalsIgnoreCase(className)) {
                 setArenaClass(ac);
                 return;
@@ -732,7 +732,7 @@ public class ArenaPlayer {
     }
 
     public void setStatus(final Status status) {
-        debug.i(name + ">" + status.name(), name);
+        debug.i(name + '>' + status.name(), name);
         this.status = status;
     }
 

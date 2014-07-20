@@ -273,7 +273,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                     }
                 }
 
-                flagTeam = "touchdown".equals(flagTeam) ? flagTeam + ":" + aPlayer
+                flagTeam = "touchdown".equals(flagTeam) ? flagTeam + ':' + aPlayer
                         .getArenaTeam().getName() : flagTeam;
 
                 reduceLivesCheckEndAndCommit(arena, flagTeam);
@@ -518,7 +518,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                     return;
                 }
             }
-            final String value = args[1] + "x" + amp;
+            final String value = args[1] + 'x' + amp;
             arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGEFFECT, value);
 
             arena.getArenaConfig().save();

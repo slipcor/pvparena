@@ -47,7 +47,7 @@ public class ArenaRegionShapeManager {
         for (final ArenaRegionShape mod : regions) {
             mod.onThisLoad();
             DEBUG.i("module ArenaRegionShape loaded: "
-                    + mod.getName() + " (version " + mod.getVersion() + ")");
+                    + mod.getName() + " (version " + mod.getVersion() + ')');
         }
     }
 

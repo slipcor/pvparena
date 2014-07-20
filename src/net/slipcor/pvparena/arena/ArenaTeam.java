@@ -83,7 +83,7 @@ public class ArenaTeam {
      * @return the team color code
      */
     public String getColorCodeString() {
-        return "&" + Integer.toHexString(color.ordinal());
+        return '&' + Integer.toHexString(color.ordinal());
     }
 
     /**

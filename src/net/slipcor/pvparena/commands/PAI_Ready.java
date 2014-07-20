@@ -13,7 +13,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.managers.TeamManager;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -89,7 +89,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
             if (error == null) {
                 arena.start();
-            } else if ("".equals(error)) {
+            } else if (error != null && error.isEmpty()) {
                 arena.countDown();
             } else {
                 arena.msg(sender, error);
@@ -121,12 +121,12 @@ public class PAI_Ready extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("ready");
+        return Collections.singletonList("ready");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-r");
+        return Collections.singletonList("-r");
     }
 
     @Override

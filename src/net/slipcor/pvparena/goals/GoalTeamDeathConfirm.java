@@ -178,7 +178,7 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
             Bukkit.getPluginManager().callEvent(gEvent);
         } else {
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName(),
-                    "playerKill:" + respawnPlayer.getName() + ":" + respawnPlayer.getKiller().getName());
+                    "playerKill:" + respawnPlayer.getName() + ':' + respawnPlayer.getKiller().getName());
             Bukkit.getPluginManager().callEvent(gEvent);
         }
 

@@ -7,7 +7,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +67,12 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("edit");
+        return Collections.singletonList("edit");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!e");
+        return Collections.singletonList("!e");
     }
 
     @Override

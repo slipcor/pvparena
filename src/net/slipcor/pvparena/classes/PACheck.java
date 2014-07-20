@@ -114,20 +114,20 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkCommand(res, args[0]);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (res.hasError()) {
             arena.msg(Bukkit.getConsoleSender(),
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return false;
         }
         if (commit == null) {
@@ -156,20 +156,20 @@ public class PACheck {
         for (final ArenaGoal mod : arena.getGoals()) {
             arena.getDebugger().i("checking " + mod.getName());
             res = mod.checkEnd(res);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 arena.getDebugger().i("> success and higher priority");
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 arena.getDebugger().i("> fail");
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (res.hasError()) {
             arena.msg(Bukkit.getConsoleSender(),
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             if (commit != null) {
                 arena.getDebugger().i(
                         "error; committing end: " + commit.getName());
@@ -202,17 +202,17 @@ public class PACheck {
         int priority = 0;
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.getLives(res, aPlayer);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
-            } else if (res.getPriority() < 0 || priority < 0) {
+                priority = res.priority;
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
             }
         }
 
         if (res.hasError()) {
-            return Math.round(Float.valueOf(res.getError()));
+            return Math.round(Float.valueOf(res.error));
         }
         return 0;
     }
@@ -227,20 +227,20 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkInteract(res, player, clickedBlock);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (res.hasError()) {
             arena.msg(Bukkit.getConsoleSender(),
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return;
         }
 
@@ -268,13 +268,13 @@ public class PACheck {
 
         for (final ArenaModule mod : arena.getMods()) {
             res = mod.checkJoin(sender, res, true);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commModule = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commModule = null;
             }
         }
@@ -285,15 +285,15 @@ public class PACheck {
                     Language.parse(arena, MSG.ERROR_JOIN_REGION));
         }
 
-        if (res.hasError() && !"LateLounge".equals(res.getModName())) {
+        if (res.hasError() && !"LateLounge".equals(res.modName)) {
             arena.msg(sender,
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return;
         }
 
         if (res.hasError()) {
             arena.msg(sender,
-                    Language.parse(arena, MSG.NOTICE_NOTICE, res.getError()));
+                    Language.parse(arena, MSG.NOTICE_NOTICE, res.error));
             return;
         }
 
@@ -301,13 +301,13 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkJoin(sender, res, args);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commGoal = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commGoal = null;
             }
         }
@@ -318,7 +318,7 @@ public class PACheck {
 
         if (res.hasError()) {
             arena.msg(sender,
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return;
         }
 
@@ -385,12 +385,12 @@ public class PACheck {
                                 .replace(
                                         "%1%",
                                         team.getColoredName()
-                                                + ChatColor.COLOR_CHAR + "r"));
+                                                + ChatColor.COLOR_CHAR + 'r'));
                 arena.broadcastExcept(
                         sender,
                         Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
                                 sender.getName(), team.getColoredName()
-                                        + ChatColor.COLOR_CHAR + "r"));
+                                        + ChatColor.COLOR_CHAR + 'r'));
             }
             ArenaModuleManager.parseJoin(arena, (Player) sender, team);
 
@@ -440,14 +440,14 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkPlayerDeath(res, player);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 arena.getDebugger().i("success and higher priority", player);
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 arena.getDebugger().i("fail", player);
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             } else {
                 arena.getDebugger().i("else", player);
@@ -456,8 +456,8 @@ public class PACheck {
 
         boolean doesRespawn = true;
         if (res.hasError()) {
-            arena.getDebugger().i("has error: " + res.getError(), player);
-            if ("0".equals(res.getError())) {
+            arena.getDebugger().i("has error: " + res.error, player);
+            if ("0".equals(res.error)) {
                 doesRespawn = false;
             }
         }
@@ -533,7 +533,7 @@ public class PACheck {
         arena.getDebugger().i("handled by: " + commit.getName(), player);
         final int exp = event.getDroppedExp();
 
-        commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
+        commit.commitPlayerDeath(player, doesRespawn, res.error, event);
         for (final ArenaGoal g : arena.getGoals()) {
             arena.getDebugger().i("parsing death: " + g.getName(), player);
             g.parsePlayerDeath(player, player.getLastDamageCause());
@@ -594,20 +594,20 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkSetBlock(res, player, block);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (res.hasError()) {
             arena.msg(Bukkit.getConsoleSender(),
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return false;
         }
 
@@ -631,20 +631,20 @@ public class PACheck {
         int priority = 0;
         for (final ArenaModule mod : arena.getMods()) {
             res = mod.checkJoin(sender, res, false);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 arena.getDebugger().i("success and higher priority", sender);
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 arena.getDebugger().i("fail", sender);
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (res.hasError()) {
             arena.msg(sender,
-                    Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
             return;
         }
 
@@ -672,25 +672,25 @@ public class PACheck {
 
         for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkStart(res);
-            if (res.getPriority() > priority && priority >= 0) {
+            if (res.priority > priority && priority >= 0) {
                 // success and higher priority
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = mod;
-            } else if (res.getPriority() < 0 || priority < 0) {
+            } else if (res.priority < 0 || priority < 0) {
                 // fail
-                priority = res.getPriority();
+                priority = res.priority;
                 commit = null;
             }
         }
 
         if (!force && res.hasError()) {
-            arena.getDebugger().i("not forcing and we have error: " + res.getError());
+            arena.getDebugger().i("not forcing and we have error: " + res.error);
             if (sender == null) {
                 arena.msg(Bukkit.getConsoleSender(),
-                        Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                        Language.parse(arena, MSG.ERROR_ERROR, res.error));
             } else {
                 arena.msg(sender,
-                        Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
+                        Language.parse(arena, MSG.ERROR_ERROR, res.error));
             }
             return null;
         }

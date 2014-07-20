@@ -125,7 +125,7 @@ public class PAClassSign {
         try {
             Sign sign = (Sign) location.toLocation().getBlock().getState();
             for (int i = 2; i < 4; i++) {
-                if (sign.getLine(i) == null || "".equals(sign.getLine(i))) {
+                if (sign.getLine(i) == null || sign.getLine(i) != null && sign.getLine(i).isEmpty()) {
                     sign.setLine(i, name);
                     sign.update();
                     return true;
@@ -134,7 +134,7 @@ public class PAClassSign {
             sign = (Sign) location.toLocation().getBlock().getRelative(BlockFace.DOWN)
                     .getState();
             for (int i = 0; i < 4; i++) {
-                if (sign.getLine(i) == null || "".equals(sign.getLine(i))) {
+                if (sign.getLine(i) == null || sign.getLine(i) != null && sign.getLine(i).isEmpty()) {
                     sign.setLine(i, name);
                     sign.update();
                     return true;

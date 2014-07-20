@@ -10,7 +10,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -98,12 +98,12 @@ public class PAA_RegionFlag extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("regionflag");
+        return Collections.singletonList("regionflag");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rf");
+        return Collections.singletonList("!rf");
     }
 
     @Override

@@ -89,7 +89,7 @@ public class PAA_BlackList extends AbstractArenaCommand {
 
 
         final List<String> list = arena.getArenaConfig().getStringList(
-                CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), new ArrayList<String>());
+                CFG.LISTS_BLACKLIST.getNode() + '.' + args[0].toLowerCase(), new ArrayList<String>());
 
         if ("add".equalsIgnoreCase(args[1])) {
             list.add(args[2]);
@@ -109,19 +109,19 @@ public class PAA_BlackList extends AbstractArenaCommand {
             arena.msg(sender, Language.parse(arena, MSG.BLACKLIST_REMOVED, args[2], args[1]));
         }
 
-        arena.getArenaConfig().setManually(CFG.LISTS_BLACKLIST.getNode() + "." + args[0].toLowerCase(), list);
+        arena.getArenaConfig().setManually(CFG.LISTS_BLACKLIST.getNode() + '.' + args[0].toLowerCase(), list);
         arena.getArenaConfig().save();
 
     }
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("blacklist");
+        return Collections.singletonList("blacklist");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!bl");
+        return Collections.singletonList("!bl");
     }
 
     @Override

@@ -485,7 +485,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
         // INTO container
         final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                noone.getName() + ":" + team.getName() + ":" + stack.getAmount());
+                noone.getName() + ':' + team.getName() + ':' + stack.getAmount());
         Bukkit.getPluginManager().callEvent(gEvent);
         reduceLives(arena, team, stack.getAmount());
     }
@@ -528,13 +528,13 @@ public class GoalFood extends ArenaGoal implements Listener {
         if (sType == SlotType.CONTAINER) {
             // OUT of container
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                    aPlayer.getName() + ":" + team.getName() + ":-" + stack.getAmount());
+                    aPlayer.getName() + ':' + team.getName() + ":-" + stack.getAmount());
             Bukkit.getPluginManager().callEvent(gEvent);
             reduceLives(arena, team, -stack.getAmount());
         } else {
             // INTO container
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
-                    aPlayer.getName() + ":" + team.getName() + ":" + stack.getAmount());
+                    aPlayer.getName() + ':' + team.getName() + ':' + stack.getAmount());
             Bukkit.getPluginManager().callEvent(gEvent);
             reduceLives(arena, team, stack.getAmount());
         }

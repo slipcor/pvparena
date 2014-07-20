@@ -10,7 +10,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -100,12 +100,12 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("protection");
+        return Collections.singletonList("protection");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!p");
+        return Collections.singletonList("!p");
     }
 
     @Override

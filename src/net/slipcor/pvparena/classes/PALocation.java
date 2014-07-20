@@ -190,10 +190,10 @@ public class PALocation {
     @Override
     public String toString() {
         final String[] aLoc = new String[6];
-        aLoc[0] = "w:" + getWorldName();
-        aLoc[1] = "x:" + getX();
-        aLoc[2] = "y:" + getY();
-        aLoc[3] = "z:" + getZ();
+        aLoc[0] = "w:" + world;
+        aLoc[1] = "x:" + x;
+        aLoc[2] = "y:" + y;
+        aLoc[3] = "z:" + z;
         aLoc[4] = "P:" + getPitch();
         aLoc[5] = "Y:" + getYaw();
         return StringParser.joinArray(aLoc, "|");

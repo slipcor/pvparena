@@ -7,7 +7,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -51,12 +51,12 @@ public class PAA_Start extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("start");
+        return Collections.singletonList("start");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!go");
+        return Collections.singletonList("!go");
     }
 
     @Override

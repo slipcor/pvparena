@@ -9,7 +9,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,12 +68,12 @@ public class PAA_Duty extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("duty");
+        return Collections.singletonList("duty");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!du");
+        return Collections.singletonList("!du");
     }
 
     @Override

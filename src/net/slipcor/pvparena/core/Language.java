@@ -582,7 +582,7 @@ public final class Language {
 
         public static MSG getByNode(final String node) {
             for (final MSG m : MSG.values()) {
-                if (m.getNode().equals(node)) {
+                if (m.node.equals(node)) {
                     return m;
                 }
             }
@@ -711,7 +711,7 @@ public final class Language {
         int i = 0;
 
         for (final String word : args) {
-            result = result.replace("%" + ++i + "%", word);
+            result = result.replace("%" + ++i + '%', word);
         }
 
         return StringParser.colorize(result);
@@ -749,7 +749,7 @@ public final class Language {
         }
         int i = 0;
         for (final String word : args) {
-            result = result.replace("%" + ++i + "%", word);
+            result = result.replace("%" + ++i + '%', word);
         }
         return StringParser.colorize(result);
     }
@@ -777,7 +777,7 @@ public final class Language {
         String result = message.toString();
         int i = 0;
         for (final String word : args) {
-            result = result.replace("%" + ++i + "%", word);
+            result = result.replace("%" + ++i + '%', word);
         }
         return StringParser.colorize(result);
     }

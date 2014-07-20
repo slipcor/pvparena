@@ -228,16 +228,16 @@ public class Updater extends Thread {
                     e.printStackTrace();
                 }
             }
-            player.sendMessage("You are using " + colorize("v" + vThis)
-                    + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + "a" + "v" + vOnline);
+            player.sendMessage("You are using " + colorize('v' + vThis)
+                    + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + vOnline);
             if (mode == UpdateMode.ANNOUNCE) {
                 player.sendMessage(pluginURL);
             } else {
                 player.sendMessage("The plugin has been updated, please restart the server!");
             }
         } else {
-            player.sendMessage("You are using " + colorize("v" + vThis)
-                    + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + "a" + "v"
+            player.sendMessage("You are using " + colorize('v' + vThis)
+                    + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
                     + vOnline);
         }
         return true;

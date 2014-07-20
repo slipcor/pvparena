@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -82,12 +82,12 @@ public class PAA_Template extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("template");
+        return Collections.singletonList("template");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!tmp");
+        return Collections.singletonList("!tmp");
     }
 
     @Override

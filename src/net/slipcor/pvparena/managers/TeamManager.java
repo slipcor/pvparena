@@ -74,14 +74,14 @@ public final class TeamManager {
         int max = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
         max = max == 0 ? Integer.MAX_VALUE : max;
         // calculate the max value down to the minimum
-        for (final String s : counts.keySet()) {
-            final int count = counts.get(s);
+        for (final Map.Entry<String, Integer> stringIntegerEntry : counts.entrySet()) {
+            final int count = stringIntegerEntry.getValue();
             if (count < max) {
                 free.clear();
-                free.add(s);
+                free.add(stringIntegerEntry.getKey());
                 max = count;
             } else if (count == max) {
-                free.add(s);
+                free.add(stringIntegerEntry.getKey());
             }
         }
 

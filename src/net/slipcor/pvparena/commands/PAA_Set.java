@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +70,9 @@ public class PAA_Set extends AbstractArenaCommand {
                     }
                 }
                 arena.msg(sender, ChatColor.COLOR_CHAR + "6------ config list [" + page + "] ------");
-                for (final String node : keys.keySet()) {
+                for (final Map.Entry<String, String> stringStringEntry : keys.entrySet()) {
                     arena.msg(sender,
-                            keys.get(node) + " => " + CFG.getByNode(node).getType());
+                            stringStringEntry.getValue() + " => " + CFG.getByNode(stringStringEntry.getKey()).getType());
                 }
 
             } catch (final Exception e) {
@@ -89,7 +89,7 @@ public class PAA_Set extends AbstractArenaCommand {
     private void set(final CommandSender player, final Arena arena, final String node, final String value) {
 
         for (final String s : arena.getArenaConfig().getYamlConfiguration().getKeys(true)) {
-            if (s.toLowerCase().endsWith("." + node.toLowerCase())) {
+            if (s.toLowerCase().endsWith('.' + node.toLowerCase())) {
                 set(player, arena, s, value);
                 return;
             }
@@ -265,12 +265,12 @@ public class PAA_Set extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("set");
+        return Collections.singletonList("set");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!s");
+        return Collections.singletonList("!s");
     }
 
     @Override

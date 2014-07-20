@@ -17,7 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,12 +180,12 @@ public class PAA_Region extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("region");
+        return Collections.singletonList("region");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!r");
+        return Collections.singletonList("!r");
     }
 
     @Override

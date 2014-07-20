@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -94,7 +95,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!c");
+        return Collections.singletonList("!c");
     }
 
     @Override

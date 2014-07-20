@@ -14,7 +14,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,12 +117,12 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("spawn");
+        return Collections.singletonList("spawn");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!sp");
+        return Collections.singletonList("!sp");
     }
 
     @Override

@@ -8,7 +8,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,12 +73,12 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("update");
+        return Collections.singletonList("update");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!u");
+        return Collections.singletonList("!u");
     }
 
     @Override

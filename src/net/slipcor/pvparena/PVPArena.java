@@ -223,7 +223,7 @@ public class PVPArena extends JavaPlugin {
                     + ChatColor.COLOR_CHAR + "o--By slipcor--");
             sender.sendMessage(ChatColor.COLOR_CHAR + "7"
                     + ChatColor.COLOR_CHAR + "oDo " + ChatColor.COLOR_CHAR
-                    + "e/pa help " + ChatColor.COLOR_CHAR + "7"
+                    + "e/pa help " + ChatColor.COLOR_CHAR + '7'
                     + ChatColor.COLOR_CHAR + "ofor help.");
             return true;
         }
@@ -235,7 +235,7 @@ public class PVPArena extends JavaPlugin {
                 try {
                     Bukkit.getServer().dispatchCommand(
                             sender,
-                            "pa " + arena.getName() + " "
+                            "pa " + arena.getName() + ' '
                                     + StringParser.joinArray(newArgs, " "));
                 } catch (final Exception e) {
                     getLogger().warning("arena null!");
@@ -512,7 +512,7 @@ public class PVPArena extends JavaPlugin {
         Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
     }
 
-    private class WrapPlotter extends Metrics.Plotter {
+    private static class WrapPlotter extends Metrics.Plotter {
         private final int arenaCount;
 
         public WrapPlotter(final String name) {

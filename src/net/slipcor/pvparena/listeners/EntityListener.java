@@ -385,7 +385,7 @@ public class EntityListener implements Listener {
 
         final Collection<PotionEffect> pot = event.getPotion().getEffects();
         for (PotionEffect eff : pot) {
-            DEBUG.i(">" + eff.getType().getName());
+            DEBUG.i('>' + eff.getType().getName());
             if (TEAMEFFECT.containsKey(eff.getType())) {
                 affectTeam = TEAMEFFECT.get(eff.getType());
                 DEBUG.i(">" + affectTeam);

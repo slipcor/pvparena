@@ -198,7 +198,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         if (iLives <= 1) {
             // player has won!
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(),
-                    "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+                    "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
             for (final ArenaPlayer ap : arena.getFighters()) {
@@ -230,7 +230,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
             PACheck.handleEnd(arena, false);
         } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             getLifeMap().put(killer.getName(), iLives);

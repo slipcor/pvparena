@@ -9,7 +9,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,12 +64,12 @@ public class PAA_ToggleMod extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("togglemod");
+        return Collections.singletonList("togglemod");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!tm");
+        return Collections.singletonList("!tm");
     }
 
     @Override

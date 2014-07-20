@@ -335,7 +335,7 @@ public class Config {
 
         public static CFG getByNode(final String node) {
             for (final CFG m : CFG.getValues()) {
-                if (m.getNode().equals(node)) {
+                if (m.node.equals(node)) {
                     return m;
                 }
             }

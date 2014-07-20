@@ -10,7 +10,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,12 +75,12 @@ public class PAA_RegionType extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("regiontype");
+        return Collections.singletonList("regiontype");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rt");
+        return Collections.singletonList("!rt");
     }
 
     @Override

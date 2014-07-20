@@ -150,7 +150,7 @@ public class CuboidRegion extends ArenaRegionShape {
 
         final Location min = getMinimumLocation().toLocation();
         final Location max = getMaximumLocation().toLocation();
-        final World w = Bukkit.getWorld(getRegion().getWorldName());
+        final World w = Bukkit.getWorld(region.getWorldName());
 
         border.clear();
 
@@ -189,7 +189,7 @@ public class CuboidRegion extends ArenaRegionShape {
         }
 
         for (final Block b : border) {
-            if (!getRegion().isInNoWoolSet(b)) {
+            if (!region.isInNoWoolSet(b)) {
                 player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
             }
         }
@@ -212,7 +212,7 @@ public class CuboidRegion extends ArenaRegionShape {
     @Override
     public boolean contains(final PABlockLocation loc) {
         if (getMinimumLocation() == null || getMaximumLocation() == null
-                || loc == null || !loc.getWorldName().equals(getRegion().getWorldName())) {
+                || loc == null || !loc.getWorldName().equals(region.getWorldName())) {
             return false; // no arena, no container or not in the same world
         }
         return loc.isInAABB(getMinimumLocation(), getMaximumLocation());
@@ -225,12 +225,12 @@ public class CuboidRegion extends ArenaRegionShape {
 
     @Override
     public PABlockLocation getMaximumLocation() {
-        return getRegion().locs[1];
+        return region.locs[1];
     }
 
     @Override
     public PABlockLocation getMinimumLocation() {
-        return getRegion().locs[0];
+        return region.locs[0];
     }
 
     ArenaRegion getRegion() {

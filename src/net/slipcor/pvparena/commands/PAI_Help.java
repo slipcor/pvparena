@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -141,12 +141,12 @@ public class PAI_Help extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("help");
+        return Collections.singletonList("help");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-h");
+        return Collections.singletonList("-h");
     }
 
     @Override

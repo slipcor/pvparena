@@ -10,7 +10,7 @@ import net.slipcor.pvparena.loadables.ArenaRegionShape;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,7 +39,7 @@ public class PAI_Version extends AbstractGlobalCommand {
         }
 
         Arena.pmsg(sender, ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "n-- PVP Arena version information --");
-        Arena.pmsg(sender, ChatColor.COLOR_CHAR + "ePVP Arena version: " + ChatColor.COLOR_CHAR + "l" + PVPArena.instance.getDescription().getVersion());
+        Arena.pmsg(sender, ChatColor.COLOR_CHAR + "ePVP Arena version: " + ChatColor.COLOR_CHAR + 'l' + PVPArena.instance.getDescription().getVersion());
         if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "cArena Goals:");
@@ -75,12 +75,12 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("version");
+        return Collections.singletonList("version");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-v");
+        return Collections.singletonList("-v");
     }
 
     @Override

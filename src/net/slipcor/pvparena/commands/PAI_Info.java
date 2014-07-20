@@ -14,7 +14,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -223,7 +223,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
         }
 
-        if (displayMode == null || "".equals(displayMode)) {
+        if (displayMode == null || displayMode != null && displayMode.isEmpty()) {
             if (displayMode == null || "chat".equals(displayMode)) {
                 arena.msg(sender, Language.parse(arena, MSG.INFO_SECTION, "chat"));
                 arena.msg(sender, StringParser.colorVar("classSignsDisplay",
@@ -288,12 +288,12 @@ public class PAI_Info extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("info");
+        return Collections.singletonList("info");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-i");
+        return Collections.singletonList("-i");
     }
 
     @Override

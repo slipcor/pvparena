@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,12 +64,12 @@ public class PAA_Reload extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("reload");
+        return Collections.singletonList("reload");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rl");
+        return Collections.singletonList("!rl");
     }
 
     @Override

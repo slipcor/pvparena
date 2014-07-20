@@ -157,7 +157,7 @@ public class ArenaRegion {
 
         for (final ArenaRegion ar1 : ars1) {
             for (final ArenaRegion ar2 : ars2) {
-                if (ar1.getShape().overlapsWith(ar2)) {
+                if (ar1.shape.overlapsWith(ar2)) {
                     return false;
                 }
             }
@@ -268,10 +268,10 @@ public class ArenaRegion {
         }
 
         for (final ArenaRegion ar : ars) {
-            if (!ar.getWorldName().equals(player.getWorld().getName())) {
+            if (!ar.world.equals(player.getWorld().getName())) {
                 return true;
             }
-            if (!ar.getShape().tooFarAway(joinRange, player.getLocation())) {
+            if (!ar.shape.tooFarAway(joinRange, player.getLocation())) {
                 return false;
             }
         }
@@ -349,7 +349,7 @@ public class ArenaRegion {
     public void initTimer() {
 
         if (tickID != -1) {
-            if (getType() == RegionType.JOIN || getType() == RegionType.WATCH) {
+            if (type == RegionType.JOIN || type == RegionType.WATCH) {
                 return;
             }
 
@@ -359,8 +359,8 @@ public class ArenaRegion {
         final RegionRunnable regionRunner = new RegionRunnable(this);
         tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                 PVPArena.instance, regionRunner,
-                getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
-                getArena().getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
+                arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
+                arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
     }
 
     public boolean isInNoWoolSet(final Block block) {
@@ -372,7 +372,7 @@ public class ArenaRegion {
             return false;
         }
 
-        return offset * offset < getShape().getCenter().getDistanceSquared(loc);
+        return offset * offset < shape.getCenter().getDistanceSquared(loc);
     }
 
     public void protectionAdd(final RegionProtection regionProtection) {
@@ -386,7 +386,7 @@ public class ArenaRegion {
     public boolean protectionSetAll(final Boolean value) {
         for (final RegionProtection rp : RegionProtection.values()) {
             if (rp == null) {
-                getArena().msg(Bukkit.getConsoleSender(),
+                arena.msg(Bukkit.getConsoleSender(),
                         "&cWarning! RegionProtection is null!");
                 return false;
             }
@@ -433,7 +433,7 @@ public class ArenaRegion {
 
         for (final Entity entity : getWorld().getEntities()) {
             if (entity instanceof Player
-                    || !getShape().contains(new PABlockLocation(entity.getLocation()
+                    || !shape.contains(new PABlockLocation(entity.getLocation()
                     .getWorld().getName(), entity.getLocation().getBlockX(),
                     entity.getLocation().getBlockY(), entity.getLocation()
                     .getBlockZ()))) {
@@ -449,7 +449,7 @@ public class ArenaRegion {
             }
             entity.remove();
         }
-        if (getType() == RegionType.JOIN || getType() == RegionType.WATCH) {
+        if (type == RegionType.JOIN || type == RegionType.WATCH) {
             return;
         }
 
@@ -481,7 +481,7 @@ public class ArenaRegion {
                 continue;
             }
             final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());
-            if (flags.contains(RegionFlag.DEATH) && getShape().contains(pLoc)) {
+            if (flags.contains(RegionFlag.DEATH) && shape.contains(pLoc)) {
                 Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_DEATH));
                 for (final ArenaGoal goal : arena.getGoals()) {
                     if (goal.getName().endsWith("DeathMatch")) {
@@ -499,7 +499,7 @@ public class ArenaRegion {
                                 1000.0d));
                 ap.get().damage(1000);
             }
-            if (flags.contains(RegionFlag.WIN) && getShape().contains(pLoc)) {
+            if (flags.contains(RegionFlag.WIN) && shape.contains(pLoc)) {
                 for (final ArenaTeam team : arena.getTeams()) {
                     if (!arena.isFreeForAll()
                             && team.getTeamMembers().contains(ap)) {
@@ -523,7 +523,7 @@ public class ArenaRegion {
                     return;
                 }
             }
-            if (flags.contains(RegionFlag.LOSE) && getShape().contains(pLoc)) {
+            if (flags.contains(RegionFlag.LOSE) && shape.contains(pLoc)) {
                 if (arena.isFreeForAll()) {
                     if (ap.getStatus() == Status.FIGHT) {
                         Bukkit.getWorld(world).strikeLightningEffect(
@@ -556,7 +556,7 @@ public class ArenaRegion {
                 }
             }
             if (flags.contains(RegionFlag.NOCAMP)) {
-                if (getShape().contains(pLoc)) {
+                if (shape.contains(pLoc)) {
                     final Location loc = playerLocations.get(ap.getName());
                     if (loc == null) {
                         Arena.pmsg(ap.get(),
@@ -582,13 +582,13 @@ public class ArenaRegion {
                     continue;
                 }
 
-                if (!getShape().contains(pLoc)) {
+                if (!shape.contains(pLoc)) {
 
 
                     boolean found = false;
 
                     for (final ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
-                        if (region.getShape().contains(pLoc)) {
+                        if (region.shape.contains(pLoc)) {
                             found = true;
                             break;
                         }
@@ -615,7 +615,7 @@ public class ArenaRegion {
                     continue;
                 }
 
-                if (!getShape().contains(pLoc)) {
+                if (!shape.contains(pLoc)) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                 }
@@ -627,7 +627,7 @@ public class ArenaRegion {
 
                 debug.i("LOUNGE TICK");
 
-                if (!getShape().contains(pLoc)) {
+                if (!shape.contains(pLoc)) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                 }
@@ -641,7 +641,7 @@ public class ArenaRegion {
                 if (aPlayer.getArena() != null) {
                     continue;
                 }
-                if (getShape().contains(new PABlockLocation(p.getLocation()))) {
+                if (shape.contains(new PABlockLocation(p.getLocation()))) {
                     final PAG_Join cmd = new PAG_Join();
                     cmd.commit(arena, p,
                             new String[]{name.replace("-join", "")});
@@ -665,7 +665,7 @@ public class ArenaRegion {
                 return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
             }
 
-            locs[0].setY(getShape().getCenter().getY() - (height >> 1));
+            locs[0].setY(shape.getCenter().getY() - (height >> 1));
             locs[1].setY(locs[0].getY() + height);
 
             return Language.parse(arena, MSG.REGION_HEIGHT, value);
@@ -678,7 +678,7 @@ public class ArenaRegion {
                 return Language.parse(arena, MSG.ERROR_NOT_NUMERIC, value);
             }
 
-            final PABlockLocation loc = getShape().getCenter();
+            final PABlockLocation loc = shape.getCenter();
 
             locs[0].setX(loc.getX() - radius);
             locs[0].setY(loc.getY() - radius);

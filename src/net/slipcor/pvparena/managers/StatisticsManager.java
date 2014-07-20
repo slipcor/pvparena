@@ -191,7 +191,7 @@ public final class StatisticsManager {
      * @return an array of ArenaPlayer
      */
     private static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
-        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + " "
+        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + ' '
                 + (desc ? "desc" : "asc"));
 
         final int count = arena == null ? ArenaPlayer.countPlayers() : arena.getFighters().size();
@@ -400,28 +400,28 @@ public final class StatisticsManager {
                 aPlayer.setStatistic(arena.getName(), ttt, 0);
             }
 
-            final int losses = config.getInt(arena.getName() + "." + player + ".losses", 0);
+            final int losses = config.getInt(arena.getName() + '.' + player + ".losses", 0);
             aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);
 
-            final int wins = config.getInt(arena.getName() + "." + player + ".wins", 0);
+            final int wins = config.getInt(arena.getName() + '.' + player + ".wins", 0);
             aPlayer.addStatistic(arena.getName(), type.WINS, wins);
 
-            final int kills = config.getInt(arena.getName() + "." + player + ".kills", 0);
+            final int kills = config.getInt(arena.getName() + '.' + player + ".kills", 0);
             aPlayer.addStatistic(arena.getName(), type.KILLS, kills);
 
-            final int deaths = config.getInt(arena.getName() + "." + player + ".deaths", 0);
+            final int deaths = config.getInt(arena.getName() + '.' + player + ".deaths", 0);
             aPlayer.addStatistic(arena.getName(), type.DEATHS, deaths);
 
-            final int damage = config.getInt(arena.getName() + "." + player + ".damage", 0);
+            final int damage = config.getInt(arena.getName() + '.' + player + ".damage", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGE, damage);
 
-            final int maxdamage = config.getInt(arena.getName() + "." + player + ".maxdamage", 0);
+            final int maxdamage = config.getInt(arena.getName() + '.' + player + ".maxdamage", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGE, maxdamage);
 
-            final int damagetake = config.getInt(arena.getName() + "." + player + ".damagetake", 0);
+            final int damagetake = config.getInt(arena.getName() + '.' + player + ".damagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGETAKE, damagetake);
 
-            final int maxdamagetake = config.getInt(arena.getName() + "." + player + ".maxdamagetake", 0);
+            final int maxdamagetake = config.getInt(arena.getName() + '.' + player + ".maxdamagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
         }
         if (foundBroken) {
@@ -445,31 +445,31 @@ public final class StatisticsManager {
         }
 
         final int losses = map.getStat(type.LOSSES);
-        config.set(arena.getName() + "." + node + ".losses", losses);
+        config.set(arena.getName() + '.' + node + ".losses", losses);
 
         final int wins = map.getStat(type.WINS);
-        config.set(arena.getName() + "." + node + ".wins", wins);
+        config.set(arena.getName() + '.' + node + ".wins", wins);
 
         final int kills = map.getStat(type.KILLS);
-        config.set(arena.getName() + "." + node + ".kills", kills);
+        config.set(arena.getName() + '.' + node + ".kills", kills);
 
         final int deaths = map.getStat(type.DEATHS);
-        config.set(arena.getName() + "." + node + ".deaths", deaths);
+        config.set(arena.getName() + '.' + node + ".deaths", deaths);
 
         final int damage = map.getStat(type.DAMAGE);
-        config.set(arena.getName() + "." + node + ".damage", damage);
+        config.set(arena.getName() + '.' + node + ".damage", damage);
 
         final int maxdamage = map.getStat(type.MAXDAMAGE);
-        config.set(arena.getName() + "." + node + ".maxdamage", maxdamage);
+        config.set(arena.getName() + '.' + node + ".maxdamage", maxdamage);
 
         final int damagetake = map.getStat(type.DAMAGETAKE);
-        config.set(arena.getName() + "." + node + ".damagetake", damagetake);
+        config.set(arena.getName() + '.' + node + ".damagetake", damagetake);
 
         final int maxdamagetake = map.getStat(type.MAXDAMAGETAKE);
-        config.set(arena.getName() + "." + node + ".maxdamagetake", maxdamagetake);
+        config.set(arena.getName() + '.' + node + ".maxdamagetake", maxdamagetake);
 
         if (!node.equals(aPlayer.getName())) {
-            config.set(arena.getName() + "." + node + ".playerName", aPlayer.getName());
+            config.set(arena.getName() + '.' + node + ".playerName", aPlayer.getName());
         }
 
     }

@@ -305,7 +305,7 @@ public final class SpawnManager {
                     ap.setStatus(Status.FIGHT);
                     final String spawnName = iteratings[pos++ % iteratings.length];
                     if (spawnName == null) {
-                        PVPArena.instance.getLogger().warning("Element #" + pos + " is null: [" + StringParser.joinArray(iteratings, ",") + "]");
+                        PVPArena.instance.getLogger().warning("Element #" + pos + " is null: [" + StringParser.joinArray(iteratings, ",") + ']');
                     }
                     arena.tpPlayerToCoordName(ap.get(), spawnName);
                     set.remove(ap);
@@ -702,14 +702,14 @@ public final class SpawnManager {
                     }
                     max = Math.max(sum, max);
                     diffs.put(spawnLoc.getLocation(), sum);
-                    arena.getDebugger().i("spawnLoc: " + spawnLoc.getName() + ":" + sum);
+                    arena.getDebugger().i("spawnLoc: " + spawnLoc.getName() + ':' + sum);
                 }
                 arena.getDebugger().i("max = " + max);
 
-                for (final PALocation loc : diffs.keySet()) {
-                    if (diffs.get(loc) == max) {
+                for (final Map.Entry<PALocation, Double> paLocationDoubleEntry : diffs.entrySet()) {
+                    if (paLocationDoubleEntry.getValue() == max) {
                         for (final PASpawn spawn : spawns) {
-                            if (spawn.getLocation().equals(loc)) {
+                            if (spawn.getLocation().equals(paLocationDoubleEntry.getKey())) {
                                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
                                 return;
                             }

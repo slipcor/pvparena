@@ -74,8 +74,8 @@ public class RegionTool extends ArenaModule {
                     }
                     for (final ArenaRegion region : arena.getRegions()) {
                         if (region.getShape().contains(loc)) {
-                            arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + "b"
-                                    + arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + "b"
+                            arena.msg(event.getPlayer(), ChatColor.COLOR_CHAR + "fArena " + ChatColor.COLOR_CHAR + 'b'
+                                    + arena.getName() + ChatColor.COLOR_CHAR + "f: region " + ChatColor.COLOR_CHAR + 'b'
                                     + region.getRegionName());
                         }
                     }

@@ -67,7 +67,7 @@ public class ArenaModuleManager {
         for (final ArenaModule mod : mods) {
             mod.onThisLoad();
             DEBUG.i("module ArenaModule loaded: "
-                    + mod.getName() + " (version " + mod.version() + ")");
+                    + mod.getName() + " (version " + mod.version() + ')');
         }
     }
 

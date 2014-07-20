@@ -153,15 +153,15 @@ public final class ConfigurationManager {
         arena.getClasses().clear();
         arena.getDebugger().i("reading class items");
         ArenaClass.addGlobalClasses(arena);
-        for (final String className : classes.keySet()) {
+        for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
             final String sItemList;
 
             try {
-                sItemList = (String) classes.get(className);
+                sItemList = (String) stringObjectEntry1.getValue();
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
-                                + className);
+                                + stringObjectEntry1.getKey());
                 continue;
             }
             final String[] sItems = sItemList.split(",");
@@ -190,8 +190,8 @@ public final class ConfigurationManager {
                             "unrecognized item: " + items[i]);
                 }
             }
-            arena.addClass(className, items, armors);
-            arena.getDebugger().i("adding class items to class " + className);
+            arena.addClass(stringObjectEntry1.getKey(), items, armors);
+            arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
         }
         arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStacksFromString("0"));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
@@ -204,7 +204,7 @@ public final class ConfigurationManager {
             final Map<String, Object> regs = config.getConfigurationSection(
                     "arenaregion").getValues(false);
             for (final String rName : regs.keySet()) {
-                arena.getDebugger().i("arenaregion '" + rName + "'");
+                arena.getDebugger().i("arenaregion '" + rName + '\'');
                 final ArenaRegion region = Config.parseRegion(arena, config,
                         rName);
 
@@ -245,9 +245,9 @@ public final class ConfigurationManager {
                 PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die! Ignore this if you're running infect!");
             }
         } else {
-            for (final String sTeam : tempMap.keySet()) {
-                final ArenaTeam team = new ArenaTeam(sTeam,
-                        (String) tempMap.get(sTeam));
+            for (final Map.Entry<String, Object> stringObjectEntry : tempMap.entrySet()) {
+                final ArenaTeam team = new ArenaTeam(stringObjectEntry.getKey(),
+                        (String) stringObjectEntry.getValue());
                 arena.getTeams().add(team);
                 arena.getDebugger().i("added team " + team.getName() + " => "
                         + team.getColorCodeString());

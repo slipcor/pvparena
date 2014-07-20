@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -111,12 +111,12 @@ public class PAA_Teams extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("teams");
+        return Collections.singletonList("teams");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!ts");
+        return Collections.singletonList("!ts");
     }
 
     @Override

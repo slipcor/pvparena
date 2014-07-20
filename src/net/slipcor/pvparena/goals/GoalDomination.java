@@ -78,7 +78,7 @@ public class GoalDomination extends ArenaGoal {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("flag");
+        return Collections.singletonList("flag");
     }
 
     @Override
@@ -386,11 +386,11 @@ public class GoalDomination extends ArenaGoal {
                 }
                 claimed.put(s, toAdd);
             }
-            for (final String otherTeam : claimed.keySet()) {
-                if (otherTeam.equals(team)) {
+            for (final Map.Entry<String, Integer> stringIntegerEntry : claimed.entrySet()) {
+                if (stringIntegerEntry.getKey().equals(team)) {
                     continue;
                 }
-                if (claimed.get(otherTeam) >= claimed.get(team)) {
+                if (stringIntegerEntry.getValue() >= claimed.get(team)) {
                     return;
                 }
             }

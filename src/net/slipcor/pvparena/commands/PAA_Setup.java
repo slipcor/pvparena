@@ -196,12 +196,12 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("setup");
+        return Collections.singletonList("setup");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!su");
+        return Collections.singletonList("!su");
     }
 
     @Override

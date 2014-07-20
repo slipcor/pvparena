@@ -142,8 +142,8 @@ public final class ArenaClass {
     }
 
     public static void addGlobalClasses(final Arena arena) {
-        for (final String teamName : globals.keySet()) {
-            arena.addClass(teamName, globals.get(teamName).getItems(), globals.get(teamName).getArmors());
+        for (final Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
+            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().getItems(), stringArenaClassEntry.getValue().getArmors());
         }
     }
 

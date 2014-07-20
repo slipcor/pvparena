@@ -193,7 +193,7 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("checking command whitelist", player);
 
         for (final String s : list) {
-            if ("*".equals(s) || event.getMessage().startsWith("/" + s)) {
+            if ("*".equals(s) || event.getMessage().startsWith('/' + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -215,7 +215,7 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("checking command whitelist", player);
 
         for (final String s : list) {
-            if (event.getMessage().startsWith("/" + s)) {
+            if (event.getMessage().startsWith('/' + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -442,7 +442,7 @@ public class PlayerListener implements Listener {
 
                     arena.chooseClass(player, sign, sign.getLine(0));
                 } else {
-                    arena.getDebugger().i("|" + sign.getLine(0) + "|", player);
+                    arena.getDebugger().i('|' + sign.getLine(0) + '|', player);
                     arena.getDebugger().i(String.valueOf(arena.getClass(sign.getLine(0))),
                             player);
                     arena.getDebugger().i(String.valueOf(team), player);
@@ -454,10 +454,10 @@ public class PlayerListener implements Listener {
 
             final Material mMat = arena.getReadyBlock();
             arena.getDebugger().i("clicked " + block.getType().name() + ", is it " + mMat.name()
-                    + "?", player);
+                    + '?', player);
             if (block.getTypeId() == mMat.getId()) {
                 arena.getDebugger().i("clicked ready block!", player);
-                if (aPlayer.getArenaClass() == null || "".equals(aPlayer.getArenaClass().getName())) {
+                if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().getName() != null && aPlayer.getArenaClass().getName().isEmpty()) {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
                     return; // not chosen class => OUT
                 }
@@ -505,7 +505,7 @@ public class PlayerListener implements Listener {
 
                     if (error == null) {
                         arena.start();
-                    } else if ("".equals(error)) {
+                    } else if (error != null && error.isEmpty()) {
                         arena.countDown();
                     } else {
                         arena.msg(player, error);

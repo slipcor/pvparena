@@ -13,7 +13,7 @@ import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -86,12 +86,12 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("arenaclass");
+        return Collections.singletonList("arenaclass");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-ac");
+        return Collections.singletonList("-ac");
     }
 
     @Override

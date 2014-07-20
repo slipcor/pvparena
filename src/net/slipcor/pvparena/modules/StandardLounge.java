@@ -54,7 +54,7 @@ public class StandardLounge extends ArenaModule {
         int lounges = 0;
         while (iter.hasNext()) {
             final String spawnName = iter.next();
-            debug.i("parsing '" + spawnName + "'");
+            debug.i("parsing '" + spawnName + '\'');
             if (arena.isFreeForAll()) {
                 if ("lounge".equals(spawnName)) {
                     lounges++;
@@ -204,11 +204,11 @@ public class StandardLounge extends ArenaModule {
         } else {
             arena.msg(sender,
                     arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-                            .replace("%1%", team.getColoredName() + ChatColor.COLOR_CHAR + "r"));
+                            .replace("%1%", team.getColoredName() + ChatColor.COLOR_CHAR + 'r'));
             arena.broadcastExcept(
                     sender,
                     Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-                            sender.getName(), team.getColoredName() + ChatColor.COLOR_CHAR + "r"));
+                            sender.getName(), team.getColoredName() + ChatColor.COLOR_CHAR + 'r'));
         }
 
         if (player.getState() == null) {

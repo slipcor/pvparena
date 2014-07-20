@@ -65,7 +65,7 @@ public class PAI_List extends AbstractArenaCommand {
                     arena.msg(sender, Language.parse(arena, MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
                 } else {
                     final int count = teams.getTeamMembers().size();
-                    final String sCount = " &r(" + count + ")";
+                    final String sCount = " &r(" + count + ')';
                     arena.msg(sender, Language.parse(arena, MSG.LIST_TEAM, teams.getColoredName() + sCount, StringParser.joinSet(names, ", ")));
                 }
             }
@@ -81,8 +81,8 @@ public class PAI_List extends AbstractArenaCommand {
             stats.put(player.getStatus(), players);
         }
 
-        for (final ArenaPlayer.Status stat : stats.keySet()) {
-            arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
+        for (final Map.Entry<ArenaPlayer.Status, Set<String>> statusSetEntry : stats.entrySet()) {
+            arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + statusSetEntry.getKey().name()), "&" + colorMap.get(statusSetEntry.getKey()) + StringParser.joinSet(statusSetEntry.getValue(), ", ")));
         }
 
     }
@@ -99,12 +99,12 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("list");
+        return Collections.singletonList("list");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-ls");
+        return Collections.singletonList("-ls");
     }
 
     @Override

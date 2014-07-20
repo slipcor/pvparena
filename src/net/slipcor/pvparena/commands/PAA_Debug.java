@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -55,12 +55,12 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("debug");
+        return Collections.singletonList("debug");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!d");
+        return Collections.singletonList("!d");
     }
 
     @Override

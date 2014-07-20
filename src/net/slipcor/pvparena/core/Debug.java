@@ -162,12 +162,12 @@ public class Debug {
             return;
         }
         if (arena == null) {
-            getGlobalLogger().info(prefix + System.currentTimeMillis() % 1000 + " " + string);
+            getGlobalLogger().info(prefix + System.currentTimeMillis() % 1000 + ' ' + string);
         } else {
-            getArenaLogger().info(prefix + System.currentTimeMillis() % 1000 + " " + string);
+            getArenaLogger().info(prefix + System.currentTimeMillis() % 1000 + ' ' + string);
         }
         if (server_log) {
-            System.out.print(prefix + System.currentTimeMillis() % 1000 + " " + string);
+            System.out.print(prefix + System.currentTimeMillis() % 1000 + ' ' + string);
         }
     }
 
@@ -191,12 +191,12 @@ public class Debug {
             }
         }
         if (arena == null) {
-            getGlobalLogger().info(prefix + "[p:" + sender.getName() + "]" + System.currentTimeMillis() % 1000 + " " + string);
+            getGlobalLogger().info(prefix + "[p:" + sender.getName() + ']' + System.currentTimeMillis() % 1000 + ' ' + string);
         } else {
-            getArenaLogger().info(prefix + "[p:" + sender.getName() + "]" + System.currentTimeMillis() % 1000 + " " + string);
+            getArenaLogger().info(prefix + "[p:" + sender.getName() + ']' + System.currentTimeMillis() % 1000 + ' ' + string);
         }
         if (server_log) {
-            System.out.print(prefix + " [" + arena + "] " + "[p:" + sender.getName() + "]" + System.currentTimeMillis() % 1000 + " " + string);
+            System.out.print(prefix + " [" + arena + "] " + "[p:" + sender.getName() + ']' + System.currentTimeMillis() % 1000 + ' ' + string);
         }
     }
 
@@ -212,9 +212,9 @@ public class Debug {
         }
 
         //Bukkit.getLogger().info(prefix + System.currentTimeMillis()%1000 + " " + string);
-        getGlobalLogger().info(prefix + System.currentTimeMillis() % 1000 + " " + string);
+        getGlobalLogger().info(prefix + System.currentTimeMillis() % 1000 + ' ' + string);
         if (server_log) {
-            System.out.print(prefix + System.currentTimeMillis() % 1000 + " " + string);
+            System.out.print(prefix + System.currentTimeMillis() % 1000 + ' ' + string);
         }
     }
 

@@ -38,7 +38,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +96,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList("blocktype");
+        final List<String> result = Collections.singletonList("blocktype");
         if (arena != null) {
             for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
@@ -631,7 +631,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
 
                 gEvent = new PAGoalEvent(arena, this,
-                        "score:" + player.getName() + ":" + aPlayer.getArenaTeam().getName() + ":1");
+                        "score:" + player.getName() + ':' + aPlayer.getArenaTeam().getName() + ":1");
                 Bukkit.getPluginManager().callEvent(gEvent);
                 class RunLater implements Runnable {
                     String localColor;

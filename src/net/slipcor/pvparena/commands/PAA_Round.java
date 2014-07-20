@@ -12,7 +12,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -116,12 +116,12 @@ public class PAA_Round extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("round");
+        return Collections.singletonList("round");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rd");
+        return Collections.singletonList("!rd");
     }
 
     @Override

@@ -70,7 +70,7 @@ public class ArenaGoalManager {
         for (final ArenaGoal type : types) {
             type.onThisLoad();
             DEBUG.i("module ArenaType loaded: " + type.getName() + " (version "
-                    + type.version() + ")");
+                    + type.version() + ')');
         }
     }
 

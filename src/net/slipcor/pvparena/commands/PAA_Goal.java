@@ -10,7 +10,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -87,12 +87,12 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("goal");
+        return Collections.singletonList("goal");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!g");
+        return Collections.singletonList("!g");
     }
 
     @Override

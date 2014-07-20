@@ -167,7 +167,7 @@ public final class TabManager {
             }
             return;
         }
-        if (override.equals("")) {
+        if (override.isEmpty()) {
             for (String key : sub.getContent()) {
                 matches.addAll(getKeyMatchesInsideDefinition(override, key));
             }
@@ -222,7 +222,7 @@ public final class TabManager {
      */
     private static List<String> getKeyMatchesInsideDefinition(final String key, final String definition) {
         final List<String> result = new ArrayList<String>();
-        if (!"".equals(key) && definition.startsWith(key) || "".equals(key) && !definition.startsWith("{")) {
+        if (key != null && !key.isEmpty() && definition.startsWith(key) || key != null && key.isEmpty() && !definition.startsWith("{")) {
             result.add(definition);
         }
         if (definition.startsWith("{")) {
@@ -231,7 +231,7 @@ public final class TabManager {
                 addEnumMatchesToList(result, key, Arrays.asList(mats));
             } else if ("{Player}".equals(definition)) {
                 final Player[] players = Bukkit.getOnlinePlayers();
-                if ("".equals(key)) {
+                if (key != null && key.isEmpty()) {
                     for (final Player val : players) {
                         result.add(val.getName());
                     }
@@ -255,7 +255,7 @@ public final class TabManager {
                 final List<String> values = new ArrayList<String>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
-                if ("".equals(key)) {
+                if (key != null && key.isEmpty()) {
                     result.addAll(values);
                 } else {
                     for (final String val : values) {
@@ -266,7 +266,7 @@ public final class TabManager {
                 }
             } else if ("{PotionEffectType}".equals(definition)) {
                 final PotionEffectType[] pet = PotionEffectType.values();
-                if ("".equals(key)) {
+                if (key != null && key.isEmpty()) {
                     for (final PotionEffectType val : pet) {
                         result.add(val.getName());
                     }

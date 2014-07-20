@@ -9,6 +9,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,7 +59,7 @@ public class PAA_Disable extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("disable");
+        return Collections.singletonList("disable");
     }
 
     @Override

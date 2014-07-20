@@ -81,20 +81,20 @@ public class SphericRegion extends ArenaRegionShape {
         }
         if (paRegion.getShape() instanceof CuboidRegion) {
             // compare 2 cuboids
-            if (getRegion().locs[0].getX() > paRegion.locs[1].getX()
-                    || getRegion().locs[0].getY() > paRegion.locs[1].getY()
-                    || getRegion().locs[0].getZ() > paRegion.locs[1].getZ()) {
+            if (region.locs[0].getX() > paRegion.locs[1].getX()
+                    || region.locs[0].getY() > paRegion.locs[1].getY()
+                    || region.locs[0].getZ() > paRegion.locs[1].getZ()) {
                 return false;
             }
-            return !(paRegion.locs[0].getX() > getRegion().locs[1].getX()
-                    || paRegion.locs[0].getY() > getRegion().locs[1].getY()
-                    || paRegion.locs[0].getZ() > getRegion().locs[1].getZ());
+            return !(paRegion.locs[0].getX() > region.locs[1].getX()
+                    || paRegion.locs[0].getY() > region.locs[1].getY()
+                    || paRegion.locs[0].getZ() > region.locs[1].getZ());
         }
         if (paRegion.getShape() instanceof SphericRegion) {
             // we are cube and search for intersecting sphere
 
-            final PABlockLocation thisCenter = getRegion().locs[1].getMidpoint(
-                    getRegion().locs[0]);
+            final PABlockLocation thisCenter = region.locs[1].getMidpoint(
+                    region.locs[0]);
             final PABlockLocation thatCenter = paRegion.locs[1]
                     .getMidpoint(paRegion.locs[0]);
 
@@ -113,15 +113,15 @@ public class SphericRegion extends ArenaRegionShape {
         if (paRegion.getShape() instanceof CylindricRegion) {
             // we are cube and search for intersecting cylinder
 
-            final PABlockLocation thisCenter = getRegion().locs[1].getMidpoint(
-                    getRegion().locs[0]);
+            final PABlockLocation thisCenter = region.locs[1].getMidpoint(
+                    region.locs[0]);
             final PABlockLocation thatCenter = paRegion.locs[1]
                     .getMidpoint(paRegion.locs[0]);
 
-            if (getRegion().locs[1].getY() < paRegion.locs[0].getY()) {
+            if (region.locs[1].getY() < paRegion.locs[0].getY()) {
                 return false;
             }
-            if (getRegion().locs[0].getY() > paRegion.locs[1].getY()) {
+            if (region.locs[0].getY() > paRegion.locs[1].getY()) {
                 return false;
             }
 
@@ -150,12 +150,12 @@ public class SphericRegion extends ArenaRegionShape {
     public void showBorder(final Player player) {
         final PABlockLocation center = new PABlockLocation(getCenter().toLocation());
 
-        final World world = Bukkit.getWorld(getRegion().getWorldName());
+        final World world = Bukkit.getWorld(region.getWorldName());
 
         border.clear();
 
-        final PABlockLocation minimum = new PABlockLocation(getRegion().locs[1].toLocation());
-        minimum.setY(getRegion().locs[0].getY());
+        final PABlockLocation minimum = new PABlockLocation(region.locs[1].toLocation());
+        minimum.setY(region.locs[0].getY());
 
         final Double radius = getRadius();
 
@@ -254,7 +254,7 @@ public class SphericRegion extends ArenaRegionShape {
         }
 
         for (final Block b : border) {
-            if (!getRegion().isInNoWoolSet(b)) {
+            if (!region.isInNoWoolSet(b)) {
                 player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
             }
         }
@@ -276,19 +276,19 @@ public class SphericRegion extends ArenaRegionShape {
 
     @Override
     public boolean contains(final PABlockLocation loc) {
-        if (getRegion().locs[0] == null || getRegion().locs[1] == null
-                || loc == null || !loc.getWorldName().equals(getRegion().getWorldName())) {
+        if (region.locs[0] == null || region.locs[1] == null
+                || loc == null || !loc.getWorldName().equals(region.getWorldName())) {
             return false; // no arena, no container or not in the same world
         }
         return loc.getDistanceSquared(getCenter()) <= getRadiusSquared();
     }
 
     private Double getRadius() {
-        return getRegion().locs[0].getDistance(getRegion().locs[1]) / 2;
+        return region.locs[0].getDistance(region.locs[1]) / 2;
     }
 
     private Double getRadiusSquared() {
-        return getRegion().locs[0].getDistanceSquared(getRegion().locs[1]) / 4;
+        return region.locs[0].getDistanceSquared(region.locs[1]) / 4;
     }
 
     private ArenaRegion getRegion() {
@@ -297,7 +297,7 @@ public class SphericRegion extends ArenaRegionShape {
 
     @Override
     public PABlockLocation getCenter() {
-        return getRegion().locs[0].getMidpoint(getRegion().locs[1]);
+        return region.locs[0].getMidpoint(region.locs[1]);
     }
 
     @Override

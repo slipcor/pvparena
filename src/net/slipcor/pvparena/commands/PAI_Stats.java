@@ -10,7 +10,7 @@ import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -82,12 +82,12 @@ public class PAI_Stats extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("stats");
+        return Collections.singletonList("stats");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-s");
+        return Collections.singletonList("-s");
     }
 
     @Override

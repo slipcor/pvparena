@@ -9,7 +9,7 @@ import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,7 +56,7 @@ public class PAA_Regions extends AbstractArenaCommand {
             return;
         }
 
-        arena.msg(sender, Language.parse(arena, MSG.REGIONS_HEAD, arena.getName() + ":" + args[0]));
+        arena.msg(sender, Language.parse(arena, MSG.REGIONS_HEAD, arena.getName() + ':' + args[0]));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_TYPE, region.getType().name()));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_SHAPE, region.getShape().getName()));
         arena.msg(sender, Language.parse(arena, MSG.REGIONS_FLAGS, StringParser.joinSet(region.getFlags(), ", ")));
@@ -77,12 +77,12 @@ public class PAA_Regions extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("regions");
+        return Collections.singletonList("regions");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!rs");
+        return Collections.singletonList("!rs");
     }
 
     @Override

@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -124,7 +124,7 @@ public class PAA_Install extends AbstractGlobalCommand {
                         + key
                         + ChatColor.COLOR_CHAR + "r - "
                         + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
+                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
         }
         if (sub == null || "mods".equalsIgnoreCase(sub)) {
@@ -143,7 +143,7 @@ public class PAA_Install extends AbstractGlobalCommand {
                         + key
                         + ChatColor.COLOR_CHAR + "r - "
                         + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ")");
+                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
 
         }
@@ -157,7 +157,7 @@ public class PAA_Install extends AbstractGlobalCommand {
         if (!source.exists()) {
             Arena.pmsg(
                     Bukkit.getConsoleSender(),
-                    ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + "r"
+                    ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + 'r'
                             + file
                             + ChatColor.COLOR_CHAR + "c' not found. Please extract the file to /files before trying to install!");
             return false;
@@ -176,7 +176,7 @@ public class PAA_Install extends AbstractGlobalCommand {
         }
         try {
             final File destination = new File(PVPArena.instance.getDataFolder()
-                    .getPath() + folder + "/" + file);
+                    .getPath() + folder + '/' + file);
             final FileInputStream stream = new FileInputStream(source);
 
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -211,12 +211,12 @@ public class PAA_Install extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("install");
+        return Collections.singletonList("install");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!i");
+        return Collections.singletonList("!i");
     }
 
     @Override

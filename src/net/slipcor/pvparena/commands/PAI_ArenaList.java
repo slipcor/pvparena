@@ -11,7 +11,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,12 +64,12 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("list");
+        return Collections.singletonList("list");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("-l");
+        return Collections.singletonList("-l");
     }
 
     @Override

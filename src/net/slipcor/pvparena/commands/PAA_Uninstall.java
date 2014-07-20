@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -163,12 +163,12 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("uninstall");
+        return Collections.singletonList("uninstall");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!ui");
+        return Collections.singletonList("!ui");
     }
 
     @Override

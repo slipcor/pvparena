@@ -8,7 +8,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.command.CommandSender;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -66,12 +66,12 @@ public class PAA_GameMode extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("gamemode");
+        return Collections.singletonList("gamemode");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!gm");
+        return Collections.singletonList("!gm");
     }
 
     @Override

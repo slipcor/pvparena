@@ -127,10 +127,10 @@ public class BlockListener implements Listener {
                 && !list.contains(String.valueOf(event.getBlock().getType()
                 .name()))
                 && !list.contains(String.valueOf(event.getBlock()
-                .getTypeId()) + ":" + event.getBlock().getData())
+                .getTypeId()) + ':' + event.getBlock().getData())
                 && !list.contains(String.valueOf(event.getBlock().getType()
                 .name())
-                + ":" + event.getBlock().getData())) {
+                + ':' + event.getBlock().getData())) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
@@ -155,10 +155,10 @@ public class BlockListener implements Listener {
                 || list.contains(String.valueOf(event.getBlock().getType()
                 .name()))
                 || list.contains(String.valueOf(event.getBlock().getTypeId())
-                + ":" + event.getBlock().getData())
+                + ':' + event.getBlock().getData())
                 || list.contains(String.valueOf(event.getBlock().getType()
                 .name())
-                + ":" + event.getBlock().getData())) {
+                + ':' + event.getBlock().getData())) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
@@ -424,10 +424,10 @@ public class BlockListener implements Listener {
                 && !list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name()))
                 && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getTypeId()) + ":" + event.getBlock().getData())
+                .getTypeId()) + ':' + event.getBlock().getData())
                 && !list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name())
-                + ":" + event.getBlock().getData())) {
+                + ':' + event.getBlock().getData())) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
@@ -460,10 +460,10 @@ public class BlockListener implements Listener {
                 || list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name()))
                 || list.contains(String.valueOf(event.getBlockPlaced()
-                .getTypeId()) + ":" + event.getBlock().getData())
+                .getTypeId()) + ':' + event.getBlock().getData())
                 || list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name())
-                + ":" + event.getBlock().getData())) {
+                + ':' + event.getBlock().getData())) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,

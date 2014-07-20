@@ -199,7 +199,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
         }
 
         final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName(),
-                "playerKill:" + respawnPlayer.getName() + ":" + respawnPlayer.getKiller().getName());
+                "playerKill:" + respawnPlayer.getName() + ':' + respawnPlayer.getKiller().getName());
         Bukkit.getPluginManager().callEvent(gEvent);
 
         final ArenaTeam respawnTeam = ArenaPlayer

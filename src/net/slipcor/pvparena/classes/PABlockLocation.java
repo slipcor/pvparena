@@ -126,13 +126,13 @@ public class PABlockLocation {
     }
 
     public boolean isInAABB(final PABlockLocation min, final PABlockLocation max) {
-        if (getX() < min.getX() || getX() > max.getX()) {
+        if (x < min.x || x > max.x) {
             return false;
         }
-        if (getY() < min.getY() || getY() > max.getY()) {
+        if (y < min.y || y > max.y) {
             return false;
         }
-        return !(getZ() < min.getZ() || getZ() > max.getZ());
+        return !(z < min.z || z > max.z);
     }
 
     public PABlockLocation pointTo(final PABlockLocation dest, final Double length) {
@@ -165,6 +165,6 @@ public class PABlockLocation {
 
     @Override
     public String toString() {
-        return world + ":" + x + "," + y + "," + z;
+        return world + ':' + x + ',' + y + ',' + z;
     }
 }

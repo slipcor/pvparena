@@ -90,7 +90,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
         List<String> list = new ArrayList<String>();
 
-        list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
+        list = arena.getArenaConfig().getStringList(CFG.LISTS_WHITELIST.getNode() + '.' + args[0].toLowerCase(), list);
 
         if ("add".equalsIgnoreCase(args[1])) {
             list.add(args[2]);
@@ -110,7 +110,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             arena.msg(sender, Language.parse(arena, MSG.WHITELIST_REMOVED, args[2], args[1]));
         }
 
-        arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + "." + args[0].toLowerCase(), list);
+        arena.getArenaConfig().setManually(CFG.LISTS_WHITELIST.getNode() + '.' + args[0].toLowerCase(), list);
         arena.getArenaConfig().save();
 
     }
@@ -127,12 +127,12 @@ public class PAA_WhiteList extends AbstractArenaCommand {
 
     @Override
     public List<String> getMain() {
-        return Arrays.asList("whitelist");
+        return Collections.singletonList("whitelist");
     }
 
     @Override
     public List<String> getShort() {
-        return Arrays.asList("!wl");
+        return Collections.singletonList("!wl");
     }
 
     @Override

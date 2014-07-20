@@ -60,8 +60,8 @@ public final class StringParser {
             result = ChatColor.translateAlternateColorCodes('?', result);
         }
 
-        for (final String s : findReplace.keySet()) {
-            result = result.replace(s, findReplace.get(s));
+        for (final Map.Entry<String, String> stringStringEntry : findReplace.entrySet()) {
+            result = result.replace(stringStringEntry.getKey(), stringStringEntry.getValue());
         }
 
         return result;
@@ -112,7 +112,7 @@ public final class StringParser {
      * @return a colored string
      */
     public static String colorVar(final String string) {
-        if (string == null || "".equals(string) || "none".equals(string)) {
+        if (string == null || string != null && string.isEmpty() || "none".equals(string)) {
             return colorVar("null", false);
         }
         return colorVar(string, true);
@@ -178,7 +178,7 @@ public final class StringParser {
         String prefix = null;
 
         for (final String s : PVPArena.instance.getConfig().getStringList("materialprefixes")) {
-            if (string.startsWith(prefix+":")) {
+            if (string.startsWith(prefix+ ':')) {
                 prefix = s;
                 temp = string.substring(prefix.length()).split(":");
             }
@@ -224,15 +224,15 @@ public final class StringParser {
 
         temp = temp[0].split("~");
 
-        final Material mat = parseMat(prefix == null ? temp[0] : prefix + ":" + temp[0]);
+        final Material mat = parseMat(prefix == null ? temp[0] : prefix + ':' + temp[0]);
         if (mat != null) {
             if (temp.length == 1) {
                 // [itemid/name]:[amount]
 
                 final ItemStack itemStack = new ItemStack(mat, amount);
-                for (final Enchantment e : enchants.keySet()) {
-                    DEBUG.i("processing enchantment " + e.getName());
-                    itemStack.addUnsafeEnchantment(e, enchants.get(e));
+                for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {
+                    DEBUG.i("processing enchantment " + enchantmentIntegerEntry.getKey().getName());
+                    itemStack.addUnsafeEnchantment(enchantmentIntegerEntry.getKey(), enchantmentIntegerEntry.getValue());
                 }
 
                 if (desc != null) {
@@ -247,8 +247,8 @@ public final class StringParser {
             if (temp.length == 2) {
                 // [itemid/name]~[dmg]:[amount]
                 final ItemStack itemStack = new ItemStack(mat, amount, dmg);
-                for (final Enchantment e : enchants.keySet()) {
-                    itemStack.addUnsafeEnchantment(e, enchants.get(e));
+                for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {
+                    itemStack.addUnsafeEnchantment(enchantmentIntegerEntry.getKey(), enchantmentIntegerEntry.getValue());
                 }
 
                 if (desc != null) {
@@ -406,8 +406,8 @@ public final class StringParser {
                     itemStack.setItemMeta(itemMeta);
                 }
 
-                for (final Enchantment e : enchants.keySet()) {
-                    itemStack.addUnsafeEnchantment(e, enchants.get(e));
+                for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {
+                    itemStack.addUnsafeEnchantment(enchantmentIntegerEntry.getKey(), enchantmentIntegerEntry.getValue());
                 }
 
                 return itemStack;
@@ -537,7 +537,7 @@ public final class StringParser {
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
             temp.append('~');
             for (final PotionEffect pe : potionMeta.getCustomEffects()) {
-                temp.append(pe.getType().getName()).append("x").append(pe.getAmplifier()).append("x").append(pe.getDuration());
+                temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);
             }
         }
@@ -558,11 +558,11 @@ public final class StringParser {
         final Map<Enchantment, Integer> enchants = itemStack.getEnchantments();
 
         if (enchants != null && !enchants.isEmpty()) {
-            for (final Enchantment e : enchants.keySet()) {
+            for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {
                 temp.append('|');
-                temp.append(e.getId());
+                temp.append(enchantmentIntegerEntry.getKey().getId());
                 temp.append('~');
-                temp.append(enchants.get(e));
+                temp.append(enchantmentIntegerEntry.getValue());
             }
         }
 
