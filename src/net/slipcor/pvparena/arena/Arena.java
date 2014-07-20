@@ -1851,7 +1851,7 @@ public class Arena {
             final List<Set<String>> outer = new ArrayList<Set<String>>();
             for (String round : list) {
                 String[] split = round.split("|");
-                final HashSet<String> inner = new HashSet<String>();
+                final Set<String> inner = new HashSet<String>();
                 Collections.addAll(inner, split);
                 outer.add(inner);
             }

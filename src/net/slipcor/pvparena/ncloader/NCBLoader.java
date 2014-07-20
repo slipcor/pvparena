@@ -54,7 +54,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     private final Object[] paramTypes;
     private final Class<?>[] ctorParams;
 
-    private final ArrayList<File> files;
+    private final List<File> files;
     private final List<T> loadables;
 
     public NCBLoader(Plugin plugin, File dir, Object... paramTypes) {

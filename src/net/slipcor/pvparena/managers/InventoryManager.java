@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>Inventory Manager class</pre>
@@ -168,7 +168,7 @@ public final class InventoryManager {
     public static void transferItems(Player player, Inventory blockInventory) {
         ItemStack[] oldItems = blockInventory.getContents().clone();
         for (ItemStack items : oldItems) {
-            HashMap<Integer, ItemStack> remaining = player.getInventory().addItem(items);
+            Map<Integer, ItemStack> remaining = player.getInventory().addItem(items);
             blockInventory.remove(items);
             if (!remaining.isEmpty()) {
                 for (ItemStack item : remaining.values()) {

@@ -709,22 +709,6 @@ public class GoalDomination extends ArenaGoal {
                 .setData(StringParser.getColorDataFromENUM("WHITE"));
     }
 
-    private static void takeFlag(final Arena arena, final Location lBlock, final String name) {
-        ArenaTeam team = null;
-        for (ArenaTeam t : arena.getTeams()) {
-            if (t.getName().equals(name)) {
-                team = t;
-            }
-        }
-        if (team == null) {
-            lBlock.getBlock().setData(
-                    StringParser.getColorDataFromENUM("WHITE"));
-            return;
-        }
-        lBlock.getBlock().setData(
-                StringParser.getColorDataFromENUM(team.getColor().name()));
-    }
-
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
         double score;
@@ -784,7 +768,7 @@ public class GoalDomination extends ArenaGoal {
                     arena.broadcast(Language.parse(arena,
                             MSG.GOAL_DOMINATION_CLAIMED, arena.getTeam(team)
                                     .getColoredName() + ChatColor.YELLOW));
-                    GoalDomination.takeFlag(arena, loc, team);
+                    this.takeFlag(arena, loc, team);
                     domination.getFlagMap().put(loc, team);
 
                     // claim done. end timer
@@ -796,11 +780,28 @@ public class GoalDomination extends ArenaGoal {
                 arena.getDebugger().i("unclaim");
                 arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING,
                         team + ChatColor.YELLOW));
-                GoalDomination.takeFlag(arena, loc, "");
+                this.takeFlag(arena, loc, "");
                 Bukkit.getScheduler().cancelTask(runID);
                 domination.getRunnerMap().remove(loc);
                 domination.getFlagMap().remove(loc);
             }
+        }
+
+
+        private void takeFlag(final Arena arena, final Location lBlock, final String name) {
+            ArenaTeam team = null;
+            for (ArenaTeam t : arena.getTeams()) {
+                if (t.getName().equals(name)) {
+                    team = t;
+                }
+            }
+            if (team == null) {
+                lBlock.getBlock().setData(
+                        StringParser.getColorDataFromENUM("WHITE"));
+                return;
+            }
+            lBlock.getBlock().setData(
+                    StringParser.getColorDataFromENUM(team.getColor().name()));
         }
     }
 

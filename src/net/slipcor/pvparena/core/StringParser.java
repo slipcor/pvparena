@@ -43,7 +43,7 @@ public final class StringParser {
             "no", "off", "false", "0"));
 
     private static String codeCharacters(final String string, final boolean forward) {
-        final HashMap<String, String> findReplace = new HashMap<String, String>();
+        final Map<String, String> findReplace = new HashMap<String, String>();
         String result = string;
         if (forward) {
             findReplace.put(":", "<<colon>>");
