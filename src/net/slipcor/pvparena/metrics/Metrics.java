@@ -483,12 +483,6 @@ public class Metrics {
         }
     }
 
-    /**
-     * GZip compress a string of bytes
-     *
-     * @param input
-     * @return
-     */
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
@@ -522,14 +516,6 @@ public class Metrics {
         }
     }
 
-    /**
-     * Appends a json encoded key/value pair to the given string builder.
-     *
-     * @param json
-     * @param key
-     * @param value
-     * @throws UnsupportedEncodingException
-     */
     private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
         boolean isValueNumeric = false;
 
@@ -556,12 +542,6 @@ public class Metrics {
         }
     }
 
-    /**
-     * Escape a string to create a valid JSON string
-     *
-     * @param text
-     * @return
-     */
     private static String escapeJSON(String text) {
         StringBuilder builder = new StringBuilder();
 

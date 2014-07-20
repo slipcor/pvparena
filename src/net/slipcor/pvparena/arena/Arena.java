@@ -172,14 +172,15 @@ public class Arena {
     /**
      * send a message to every player, prefix player name and ChatColor
      *
-     * @param player the team to send to
      * @param msg    the message to send
-     * @param player
+     * @param color  the color to use
+     * @param player the player to prefix
      */
     public void broadcastColored(final String msg, final ChatColor color,
                                  final Player player) {
+        String sColor = getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)?color.toString():"";
         synchronized (this) {
-            broadcast(color + player.getName() + ChatColor.WHITE + ": " + msg.replace("&", "%%&%%"));
+            broadcast(sColor + player.getName() + ChatColor.WHITE + ": " + msg.replace("&", "%%&%%"));
         }
     }
 
@@ -1533,9 +1534,10 @@ public class Arena {
     /**
      * send a message to every player of a given team
      *
-     * @param player the team to send to
+     * @param sTeam the team to send to
      * @param msg    the message to send
-     * @param player
+     * @param color  the color to use
+     * @param player the player to prefix
      */
     public void tellTeam(final String sTeam, final String msg, final ChatColor color,
                          final Player player) {

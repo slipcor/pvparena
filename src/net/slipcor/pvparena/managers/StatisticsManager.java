@@ -158,7 +158,7 @@ public class StatisticsManager {
      * @param pos    the position to check
      * @param sortBy the type to sort by
      * @param desc   descending order?
-     * @param global
+     * @param global should we read global stats instead of arena stats?
      * @return true if pair has to be sorted, false otherwise
      */
     private static boolean decide(final ArenaPlayer[] aps, final int pos, final type sortBy,
