@@ -447,12 +447,8 @@ public class Updater extends Thread {
                         destinationFilePath.renameTo(new File(this.plugin.getDataFolder().getParent(), plugin.getDataFolder() + File.separator + "files" + File.separator + name));
                     }
                 }
-                entry = null;
-                destinationFilePath = null;
             }
-            e = null;
             zipFile.close();
-            zipFile = null;
 
             // Move any plugin data folders that were included to the right place, Bukkit won't do this for us.
             for (final File dFile : new File(zipPath).listFiles()) {

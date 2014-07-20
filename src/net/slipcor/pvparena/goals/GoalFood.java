@@ -487,6 +487,10 @@ public class GoalFood extends ArenaGoal implements Listener {
             break;
         }
 
+        if (noone == null) {
+            return;
+        }
+
         // INTO container
         PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:" +
                 noone.getName() + ":" + team.getName() + ":" + stack.getAmount());

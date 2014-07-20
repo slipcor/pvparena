@@ -114,7 +114,16 @@ public final class InventoryManager {
             if ((is == null) || (is.getType().equals(Material.AIR))) {
                 continue;
             }
-            if (keep.contains(is.getType())) {
+            for (ItemStack item : keep) {
+                if (item.getType() != is.getType()) {
+                    continue;
+                }
+                if (item.hasItemMeta() && !item.getItemMeta().getDisplayName().equals(is.getItemMeta().getDisplayName())) {
+                    continue;
+                }
+                if (item.hasItemMeta() && item.getItemMeta().hasLore() && !item.getItemMeta().getLore().equals(is.getItemMeta().getLore())) {
+                    continue;
+                }
                 returned.add(is.clone());
                 continue;
             }

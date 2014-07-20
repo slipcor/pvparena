@@ -991,7 +991,7 @@ public class Arena {
 
     public void removeEntity(Entity entity) {
         for (Player player : entities.keySet()) {
-            if (entities.get(player).equals(entity)) {
+            if (entities.get(player).equals(entity.getUniqueId())) {
                 entities.remove(player);
                 return;
             }

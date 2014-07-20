@@ -620,11 +620,6 @@ public class ArenaRegion {
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                 }
             } else if (type.equals(RegionType.LOUNGE)) {
-                final Set<ArenaPlayer> plyrs = new HashSet<ArenaPlayer>();
-                for (ArenaPlayer ap2 : arena.getEveryone()) {
-                    plyrs.add(ap2);
-                }
-
                 if (!ap.getStatus().equals(Status.READY)
                         && !ap.getStatus().equals(Status.LOUNGE)) {
                     continue;

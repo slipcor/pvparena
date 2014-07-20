@@ -7,14 +7,11 @@ import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegionShape;
-import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <pre>PVP Arena VERSION Command class</pre>
@@ -39,11 +36,6 @@ public class PAI_Version extends AbstractGlobalCommand {
 
         if (!argCountValid(sender, args, new Integer[]{0})) {
             return;
-        }
-        final Set<String> names = new HashSet<String>();
-
-        for (Arena a : ArenaManager.getArenas()) {
-            names.add(a.getName());
         }
 
         Arena.pmsg(sender, ChatColor.COLOR_CHAR + "e" + ChatColor.COLOR_CHAR + "n-- PVP Arena version information --");

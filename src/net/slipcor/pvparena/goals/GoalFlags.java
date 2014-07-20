@@ -62,16 +62,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
     private Map<String, String> flagMap = null;
     private Map<String, ItemStack> headGearMap = null;
 
-    private static Set<Material> headFlags = new HashSet<Material>();
-
     private String flagName = "";
-
-    static {
-        headFlags.add(Material.PUMPKIN);
-        headFlags.add(Material.WOOL);
-        headFlags.add(Material.JACK_O_LANTERN);
-        headFlags.add(Material.SKULL_ITEM);
-    }
 
     @Override
     public String version() {

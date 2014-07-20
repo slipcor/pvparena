@@ -67,13 +67,6 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
 
         if (args[0].equalsIgnoreCase("save")) {
             final List<ItemStack> items = new ArrayList<ItemStack>();
-            final List<ItemStack> armors = new ArrayList<ItemStack>();
-
-            for (ItemStack is : player.getInventory().getArmorContents()) {
-                if (is != null) {
-                    armors.add(is);
-                }
-            }
 
             for (ItemStack is : player.getInventory().getContents()) {
                 if (is != null) {

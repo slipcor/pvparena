@@ -313,7 +313,7 @@ public class BlockListener implements Listener {
                 return;
             }
 
-            ArenaModuleManager.onBlockChange(arena, block.getBlock(), block);
+            ArenaModuleManager.onBlockChange(null, block.getBlock(), block);
         }
     }
 
