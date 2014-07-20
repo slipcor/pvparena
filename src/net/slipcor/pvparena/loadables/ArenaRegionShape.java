@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 
 public abstract class ArenaRegionShape extends NCBLoadable {
 
-    public ArenaRegionShape(final String name) {
+    protected ArenaRegionShape(final String name) {
         super(name);
     }
 

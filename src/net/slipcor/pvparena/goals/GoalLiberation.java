@@ -62,6 +62,7 @@ public class GoalLiberation extends ArenaGoal {
 
     private static final int PRIORITY = 10;
 
+    @Override
     public PACheck checkCommand(final PACheck res, final String string) {
         if (res.getPriority() > PRIORITY) {
             return res;

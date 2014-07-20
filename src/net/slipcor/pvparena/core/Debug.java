@@ -292,6 +292,7 @@ public class Debug {
             date = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
         }
 
+        @Override
         public String format(final LogRecord record) {
             final StringBuilder builder = new StringBuilder();
             final Throwable exception = record.getThrown();

@@ -9,7 +9,6 @@ import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -111,11 +110,6 @@ public class GoalFood extends ArenaGoal implements Listener {
             }
         }
         return result;
-    }
-
-    @Override
-    public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
     }
 
     @Override

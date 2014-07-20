@@ -45,6 +45,7 @@ public class PAExitEvent extends Event {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

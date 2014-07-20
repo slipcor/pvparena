@@ -286,6 +286,7 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
         return true;
     }
 
+    @Override
     public void onPlayerPickUp(final PlayerPickupItemEvent event) {
         final ItemStack item = event.getItem().getItemStack();
 

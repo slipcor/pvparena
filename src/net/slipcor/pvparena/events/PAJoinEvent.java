@@ -50,6 +50,7 @@ public class PAJoinEvent extends Event implements Cancellable {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

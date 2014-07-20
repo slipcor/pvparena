@@ -42,6 +42,7 @@ public class PAStartEvent extends Event implements Cancellable {
         return HANDLERS;
     }
 
+    @Override
     public HandlerList getHandlers() {
         return HANDLERS;
     }

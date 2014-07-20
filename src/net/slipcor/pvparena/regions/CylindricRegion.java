@@ -65,6 +65,7 @@ public class CylindricRegion extends ArenaRegionShape {
         return new PABlockLocation[]{l1, l2};
     }
 
+    @Override
     public final void initialize(final ArenaRegion region) {
         this.region = region;
         final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);

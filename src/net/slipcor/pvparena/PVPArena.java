@@ -525,6 +525,7 @@ public class PVPArena extends JavaPlugin {
             arenaCount = count;
         }
 
+        @Override
         public int getValue() {
             return arenaCount;
         }
