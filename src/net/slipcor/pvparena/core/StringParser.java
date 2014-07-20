@@ -597,7 +597,7 @@ public final class StringParser {
         if (result.length() <= glue.length()) {
             return result.toString();
         }
-        return new String(result.substring(glue.length()));
+        return result.substring(glue.length());
     }
 
     public static String joinList(final List<?> set, final String glue) {
@@ -609,7 +609,7 @@ public final class StringParser {
         if (result.length() <= glue.length()) {
             return result.toString();
         }
-        return new String(result.substring(glue.length()));
+        return result.substring(glue.length());
     }
 
     public static String joinSet(final Set<?> set, final String glue) {
@@ -621,7 +621,7 @@ public final class StringParser {
         if (result.length() <= glue.length()) {
             return result.toString();
         }
-        return new String(result.substring(glue.length()));
+        return result.substring(glue.length());
     }
 
     private static String parseDyeColorToChatColor(final String color, final boolean forward) {
