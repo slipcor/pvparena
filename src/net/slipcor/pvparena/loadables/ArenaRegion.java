@@ -496,7 +496,7 @@ public class ArenaRegion {
                 }
                 ap.get().setLastDamageCause(
                         new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-                                1000d));
+                                1000.0d));
                 ap.get().damage(1000);
             }
             if (flags.contains(RegionFlag.WIN) && getShape().contains(pLoc)) {
@@ -515,7 +515,7 @@ public class ArenaRegion {
                             Bukkit.getWorld(world).strikeLightningEffect(
                                     ap2.get().getLocation());
                             final EntityDamageEvent event = new EntityDamageEvent(
-                                    ap2.get(), DamageCause.LIGHTNING, 10d);
+                                    ap2.get(), DamageCause.LIGHTNING, 10.0d);
                             PlayerListener.finallyKillPlayer(arena,
                                     ap2.get(), event);
                         }
@@ -529,7 +529,7 @@ public class ArenaRegion {
                         Bukkit.getWorld(world).strikeLightningEffect(
                                 ap.get().getLocation());
                         final EntityDamageEvent event = new EntityDamageEvent(
-                                ap.get(), DamageCause.LIGHTNING, 10d);
+                                ap.get(), DamageCause.LIGHTNING, 10.0d);
                         PlayerListener
                                 .finallyKillPlayer(arena, ap.get(), event);
                     }
@@ -546,7 +546,7 @@ public class ArenaRegion {
                                                 ap2.get().getLocation());
                                 final EntityDamageEvent event = new EntityDamageEvent(
                                         ap2.get(), DamageCause.LIGHTNING,
-                                        10d);
+                                        10.0d);
                                 PlayerListener.finallyKillPlayer(arena,
                                         ap2.get(), event);
                             }
@@ -565,7 +565,7 @@ public class ArenaRegion {
                         if (loc.distance(ap.get().getLocation()) < 3) {
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, 1000d));
+                                            DamageCause.CUSTOM, 1000.0d));
                             ap.get().damage(
                                     arena.getArenaConfig().getInt(
                                             CFG.DAMAGE_SPAWNCAMP));
@@ -601,7 +601,7 @@ public class ArenaRegion {
                                 CFG.GENERAL_LEAVEDEATH)) {
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, 1000d));
+                                            DamageCause.CUSTOM, 1000.0d));
                             // ap.get().setHealth(0);
                             ap.get().damage(1000);
                         } else {
