@@ -24,7 +24,6 @@ public final class Help {
 
     }
 
-    private static final String version = "v0.9.9.9";
     private final static String LINE = "-------------------------------------------";
 
     public static enum HELP {
@@ -449,6 +448,7 @@ public final class Help {
         boolean override = false;
 
         final YamlConfiguration config = new YamlConfiguration();
+        String version = "v0.9.9.9";
         try {
             config.load(configFile);
             final String ver = config.getString("version", "0");

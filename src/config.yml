@@ -18,3 +18,4 @@ update:
 materialprefixes:
 - minecraft
 - bukkit
+globalPrefix: 'PVP Arena'

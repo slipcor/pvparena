@@ -49,7 +49,6 @@ public class GoalDomination extends ArenaGoal {
     private Map<Location, String> flagMap = new HashMap<Location, String>();
     private Map<Location, DominationRunnable> runnerMap = new HashMap<Location, DominationRunnable>();
 
-    private String flagName = "";
     private int announceOffset;
 
     @Override
@@ -553,7 +552,7 @@ public class GoalDomination extends ArenaGoal {
                 return false;
             }
 
-            flagName = "flag" + flags.size();
+            String flagName = "flag" + flags.size();
 
             SpawnManager.setBlock(arena,
                     new PABlockLocation(block.getLocation()), flagName);
