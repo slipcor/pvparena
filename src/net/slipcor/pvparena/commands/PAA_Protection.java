@@ -11,9 +11,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena PROTECTION Command class</pre>
@@ -25,8 +23,6 @@ import java.util.Map;
  */
 
 public class PAA_Protection extends AbstractArenaCommand {
-
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Protection() {
         super(new String[]{"pvparena.cmd.protection"});

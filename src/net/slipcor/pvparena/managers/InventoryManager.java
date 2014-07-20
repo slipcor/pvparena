@@ -152,17 +152,14 @@ public final class InventoryManager {
         }
         final Location loc = player.getLocation();
 
-        class RunLater implements Runnable {
-
-            @Override
-            public void run() {
-                ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
-                orb.setExperience(exp);
-            }
-
-        }
         try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 20L);
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    ExperienceOrb orb = loc.getWorld().spawn(loc, ExperienceOrb.class);
+                    orb.setExperience(exp);
+                }
+            }, 20L);
         } catch (Exception e) {
 
         }

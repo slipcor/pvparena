@@ -5,10 +5,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Language;
-import net.slipcor.pvparena.core.Language.MSG;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -149,55 +145,6 @@ public class TeamManager {
     }
 
     /**
-     * assign a player to a team
-     *
-     * @param player the player to assign
-     */
-    public static void choosePlayerTeam(final Arena arena, final Player player) {
-
-        arena.getDebugger().i("calculating player team", player);
-
-        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getTeamMembers().contains(aPlayer)) {
-                arena.getDebugger().i("TeamManager", player);
-                arena.msg(
-                        player,
-                        Language.parse(arena, MSG.ERROR_ARENA_ALREADY_PART_OF,
-                                team.getColoredName()));
-                return;
-            }
-        }
-
-        final String sTeam = arena.isFreeForAll() ? "free" : calcFreeTeam(arena);
-
-        arena.getDebugger().i(sTeam, player);
-
-        final ArenaTeam aTeam = arena.getTeam(sTeam);
-        aPlayer.setArena(arena);
-        aTeam.add(aPlayer);
-
-        if (arena.isFreeForAll()) {
-            arena.tpPlayerToCoordName(player, "lounge");
-            arena.msg(player,
-                    arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
-            arena.broadcastExcept(
-                    player,
-                    Language.parse(arena, CFG.MSG_PLAYERJOINED,
-                            player.getName()));
-        } else {
-            arena.tpPlayerToCoordName(player, aTeam.getName() + "lounge");
-            arena.msg(player,
-                    arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-                            .replace("%1%", aTeam.getColoredName() + ChatColor.COLOR_CHAR + "r"));
-            arena.broadcastExcept(
-                    player,
-                    Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-                            player.getName(), aTeam.getColoredName() + ChatColor.COLOR_CHAR + "r"));
-        }
-    }
-
-    /**
      * count all teams that have active players
      *
      * @return the number of teams that have active players
@@ -230,59 +177,6 @@ public class TeamManager {
         }
         arena.getDebugger().i("players having a team: " + result);
         return result;
-    }
-
-    public static String getNotReadyTeamStringList(final Arena arena) {
-        final StringBuilder result = new StringBuilder("");
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getTeamMembers().size() < 1) {
-                continue;
-            }
-
-            if (!result.toString().equals("")) {
-                result.append(", ");
-            }
-            for (ArenaPlayer p : team.getTeamMembers()) {
-                if (p.getStatus().equals(Status.LOUNGE)) {
-                    if (!result.toString().equals("")) {
-                        result.append(", ");
-                    }
-                    result.append(team.colorizePlayer(p.get()));
-                    result.append(ChatColor.WHITE.toString());
-                } else {
-                    arena.getDebugger().i("player state: " + p.getStatus().name(), p.getName());
-                }
-            }
-        }
-        arena.getDebugger().i("notreadyteamstringlist: " + result);
-        return result.toString();
-    }
-
-    /**
-     * parse all teams and join them colored, comma separated
-     *
-     * @return a colorized, comma separated string
-     */
-    public static String getTeamStringList(final Arena arena) {
-        final StringBuilder result = new StringBuilder("");
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getTeamMembers().size() < 1) {
-                continue;
-            }
-
-            if (!result.toString().equals("")) {
-                result.append(", ");
-            }
-            for (ArenaPlayer p : team.getTeamMembers()) {
-                if (!result.toString().equals("")) {
-                    result.append(", ");
-                }
-                result.append(team.colorizePlayer(p.get()));
-                result.append(ChatColor.WHITE.toString());
-            }
-        }
-        arena.getDebugger().i("teamstringlist: " + result);
-        return result.toString();
     }
 
     /**

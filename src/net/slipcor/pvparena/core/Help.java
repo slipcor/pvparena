@@ -421,10 +421,6 @@ public final class Help {
             return node;
         }
 
-        public void setValue(final List<String> strList) {
-            value = strList;
-        }
-
         public List<String> get() {
             return value;
         }

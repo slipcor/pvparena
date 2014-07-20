@@ -13,7 +13,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <pre>
@@ -27,8 +29,6 @@ import java.util.*;
  */
 
 public class PAA_Class extends AbstractArenaCommand {
-
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     public PAA_Class() {
         super(new String[]{"pvparena.cmd.class"});

@@ -409,34 +409,6 @@ public final class SpawnManager {
         return result;
     }
 
-    public static PABlockLocation getBlockByName(Arena arena, String name) {
-        Set<PABlockLocation> spawns = getBlocksStartingWith(arena, name);
-
-        int pos = (new Random()).nextInt(spawns.size());
-
-        for (PABlockLocation loc : spawns) {
-            if (--pos < 0) {
-                return loc;
-            }
-        }
-
-        return null;
-    }
-
-    public static PALocation getSpawnByName(Arena arena, String name) {
-        Set<PALocation> spawns = getSpawnsStartingWith(arena, name);
-
-        int pos = (new Random()).nextInt(spawns.size());
-
-        for (PALocation loc : spawns) {
-            if (--pos < 0) {
-                return loc.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
-            }
-        }
-
-        return null;
-    }
-
     public static PABlockLocation getBlockByExactName(Arena arena, String name) {
         for (PABlock spawn : arena.getBlocks()) {
             if (spawn.getName().equals(name)) {

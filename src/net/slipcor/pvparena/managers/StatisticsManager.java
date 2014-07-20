@@ -110,12 +110,6 @@ public class StatisticsManager {
         }
     }
 
-    @Deprecated
-    public static void damage(Arena arena, Player attacker, Player defender,
-                              int damage) {
-        damage(arena, attacker, defender, (double) damage);
-    }
-
     /**
      * commit damage
      *

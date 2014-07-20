@@ -1133,8 +1133,7 @@ public class Arena {
         final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
         players.addAll(arenaTeam.getTeamMembers());
 
-        class RewardLater implements Runnable {
-
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
             @Override
             public void run() {
                 for (ArenaPlayer ap : players) {
@@ -1147,10 +1146,7 @@ public class Arena {
                 }
                 Arena.this.gaveRewards = true;
             }
-
-        }
-
-        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RewardLater(), 1L);
+        }, 1L);
 
     }
 
@@ -1191,16 +1187,15 @@ public class Arena {
         round = 0;
         StatisticsManager.save();
 
-        class RunLater implements Runnable {
-            @Override
-            public void run() {
-                ArenaManager.advance(Arena.this);
-                Arena.this.playedPlayers.clear();
-                Arena.this.startCount = 0;
-            }
-        }
         try {
-            Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new RunLater(), 30L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    ArenaManager.advance(Arena.this);
+                    Arena.this.playedPlayers.clear();
+                    Arena.this.startCount = 0;
+                }
+            }, 30L);
         } catch (Exception e) {
             // maybe shutting down?
         }
@@ -1607,33 +1602,27 @@ public class Arena {
         if (getArenaConfig().getBoolean(CFG.USES_INVISIBILITYFIX) &&
                 aPlayer.getStatus() == Status.FIGHT ||
                 aPlayer.getStatus() == Status.LOUNGE) {
-            class RunLater implements Runnable {
 
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    // TODO Auto-generated method stub
                     for (ArenaPlayer player : Arena.this.getFighters()) {
                         if (player.get() != null) {
                             player.get().showPlayer(aPlayer.get());
                         }
                     }
                 }
-
-            }
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
+            }, 5L);
         }
 
         if (!getArenaConfig().getBoolean(CFG.PERMS_FLY)) {
-            class RunLater implements Runnable {
-
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
                     player.setAllowFlight(false);
                     player.setFlying(false);
                 }
-
-            }
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
+            }, 5L);
         }
     }
 

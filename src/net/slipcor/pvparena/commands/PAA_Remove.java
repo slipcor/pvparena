@@ -10,9 +10,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>PVP Arena REMOVE Command class</pre>
@@ -24,8 +22,6 @@ import java.util.Map;
  */
 
 public class PAA_Remove extends AbstractArenaCommand {
-
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     private static String removal = null;
 
