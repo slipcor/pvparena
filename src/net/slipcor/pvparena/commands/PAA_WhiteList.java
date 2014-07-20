@@ -95,7 +95,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             list.add(args[2]);
             arena.msg(sender, Language.parse(arena, MSG.WHITELIST_ADDED, args[2], args[0].toLowerCase()));
         } else if (args[1].equalsIgnoreCase("show")) {
-            final StringBuffer output = new StringBuffer(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
+            final StringBuilder output = new StringBuilder(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
             for (String s : list) {
                 output.append(": ");
                 output.append(Material.getMaterial(Integer.parseInt(s)).name());

@@ -233,7 +233,7 @@ public class TeamManager {
     }
 
     public static String getNotReadyTeamStringList(final Arena arena) {
-        final StringBuffer result = new StringBuffer("");
+        final StringBuilder result = new StringBuilder("");
         for (ArenaTeam team : arena.getTeams()) {
             if (team.getTeamMembers().size() < 1) {
                 continue;
@@ -264,7 +264,7 @@ public class TeamManager {
      * @return a colorized, comma separated string
      */
     public static String getTeamStringList(final Arena arena) {
-        final StringBuffer result = new StringBuffer("");
+        final StringBuilder result = new StringBuilder("");
         for (ArenaTeam team : arena.getTeams()) {
             if (team.getTeamMembers().size() < 1) {
                 continue;

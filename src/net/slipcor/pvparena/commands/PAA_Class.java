@@ -83,7 +83,7 @@ public class PAA_Class extends AbstractArenaCommand {
 
             final String sItems = (isItems.length < 1) ? "AIR"
                     : StringParser.getStringFromItemStacks(isItems);
-            StringBuffer armor = new StringBuffer("");
+            StringBuilder armor = new StringBuilder("");
             int pos = 0;
             for (ItemStack item : player.getInventory().getArmorContents()) {
                 armor.append(',');

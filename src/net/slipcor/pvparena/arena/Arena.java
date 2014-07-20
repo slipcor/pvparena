@@ -947,8 +947,8 @@ public class Arena {
             final double ratio = getArenaConfig().getDouble(CFG.READY_NEEDEDRATIO);
             getDebugger().i("ratio: " + ratio);
             if (ratio > 0) {
-                final double aRatio = Float.valueOf(readyPlayers)
-                        / Float.valueOf(players);
+                final double aRatio = (float) readyPlayers
+                        / (float) players;
                 if ((players > 0) && (aRatio >= ratio)) {
                     return "";
                 }

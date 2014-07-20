@@ -480,7 +480,7 @@ public final class StringParser {
         if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
             return "AIR";
         }
-        final StringBuffer temp = new StringBuffer(itemStack.getType().name());
+        final StringBuilder temp = new StringBuilder(itemStack.getType().name());
         boolean durability = false;
         if (itemStack.getDurability() != 0) {
             temp.append('~');
@@ -589,7 +589,7 @@ public final class StringParser {
     }
 
     public static String joinArray(final Object[] array, final String glue) {
-        final StringBuffer result = new StringBuffer("");
+        final StringBuilder result = new StringBuilder("");
         for (Object o : array) {
             result.append(glue);
             result.append(String.valueOf(o));
@@ -601,7 +601,7 @@ public final class StringParser {
     }
 
     public static String joinList(final List<?> set, final String glue) {
-        final StringBuffer result = new StringBuffer("");
+        final StringBuilder result = new StringBuilder("");
         for (Object o : set) {
             result.append(glue);
             result.append(String.valueOf(o));
@@ -613,7 +613,7 @@ public final class StringParser {
     }
 
     public static String joinSet(final Set<?> set, final String glue) {
-        final StringBuffer result = new StringBuffer("");
+        final StringBuilder result = new StringBuilder("");
         for (Object o : set) {
             result.append(glue);
             result.append(String.valueOf(o));
