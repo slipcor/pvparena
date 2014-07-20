@@ -236,7 +236,7 @@ public final class ConfigurationManager {
 
         cfg.reloadMaps();
 
-        final Map<String, Object> tempMap = (Map<String, Object>) cfg
+        final Map<String, Object> tempMap = cfg
                 .getYamlConfiguration().getConfigurationSection("teams")
                 .getValues(true);
 
