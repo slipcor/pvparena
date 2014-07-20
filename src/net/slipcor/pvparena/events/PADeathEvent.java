@@ -34,8 +34,8 @@ public class PADeathEvent extends Event {
         super();
         this.arena = arena;
         this.player = player;
-        this.respawn = isRespawning;
-        this.pvp = isDueToPVP;
+        respawn = isRespawning;
+        pvp = isDueToPVP;
     }
 
     /**

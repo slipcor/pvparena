@@ -28,8 +28,8 @@ import java.util.logging.Formatter;
  */
 
 public class Debug {
-    public static boolean override = false;
-    private static boolean server_log = false;
+    public static boolean override;
+    private static boolean server_log;
 
     private static final String prefix = "[PA-debug] ";
     private static final Set<Integer> check = new HashSet<Integer>();
@@ -37,13 +37,13 @@ public class Debug {
 
     private final int debugID;
 
-    private static Logger logger = null;
-    private Logger arenaLogger = null;
+    private static Logger logger;
+    private Logger arenaLogger;
 
     private static final List<Logger> loggers = new ArrayList<Logger>();
     private static final List<Debug> debugs = new ArrayList<Debug>();
-    private Arena arena = null;
-    private boolean active = false;
+    private Arena arena;
+    private boolean active;
 
     public Debug(final int iID) {
         this(iID, null);
@@ -55,7 +55,7 @@ public class Debug {
             logger.setLevel(Level.ALL);
             logger.setUseParentHandlers(false);
 
-            for (Handler handler : logger.getHandlers()) {
+            for (final Handler handler : logger.getHandlers()) {
                 logger.removeHandler(handler);
             }
 
@@ -76,9 +76,9 @@ public class Debug {
                 logger.addHandler(handler);
 
                 loggers.add(logger);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
+            } catch (final SecurityException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
             }
         }
@@ -92,7 +92,7 @@ public class Debug {
             arenaLogger.setLevel(Level.ALL);
             arenaLogger.setUseParentHandlers(false);
 
-            for (Handler handler : arenaLogger.getHandlers()) {
+            for (final Handler handler : arenaLogger.getHandlers()) {
                 arenaLogger.removeHandler(handler);
             }
 
@@ -113,9 +113,9 @@ public class Debug {
                 arenaLogger.addHandler(handler);
                 loggers.add(arenaLogger);
                 debugs.add(this);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
+            } catch (final SecurityException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
             }
         }
@@ -135,7 +135,7 @@ public class Debug {
         }
     }
 
-    public Debug(Arena arena) {
+    public Debug(final Arena arena) {
         this(-1, arena);
     }
 
@@ -175,15 +175,16 @@ public class Debug {
         if (arena == null && sender == null) {
             i(string, "null");
             return;
-        } else if (sender == null) {
+        }
+        if (sender == null) {
             arena.getDebugger().i(string);
             return;
         }
         if (!debugs(sender.getName())) {
             return;
         }
-        if (arena == null && (sender instanceof Player)) {
-            ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+        if (arena == null && sender instanceof Player) {
+            final ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
             if (ap.getArena() != null) {
                 ap.getArena().getDebugger().i(string);
                 return;
@@ -204,7 +205,7 @@ public class Debug {
             return;
         }
 
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(filter);
+        final ArenaPlayer ap = ArenaPlayer.parsePlayer(filter);
         if (ap.getArena() != null) {
             ap.getArena().getDebugger().i(string);
             return;
@@ -224,35 +225,35 @@ public class Debug {
 
         final String debugs = instance.getConfig().getString("debug");
 
-        for (Debug debug : Debug.debugs) {
+        for (final Debug debug : Debug.debugs) {
             debug.arenaLogger = null;
         }
 
         loggers.clear();
 
-        for (Arena a : ArenaManager.getArenas()) {
+        for (final Arena a : ArenaManager.getArenas()) {
             a.renewDebugger();
         }
 
-        if (debugs.equals("none")) {
+        if ("none".equals(debugs)) {
             Arena.pmsg(sender, "debugging: off");
 
         } else {
 
             server_log = instance.getConfig().getBoolean("server_log");
-            if (debugs.equalsIgnoreCase("all") || debugs.equalsIgnoreCase("full")) {
+            if ("all".equalsIgnoreCase(debugs) || "full".equalsIgnoreCase(debugs)) {
                 Debug.check.add(666);
                 override = true;
                 Arena.pmsg(sender, "debugging EVERYTHING");
             } else {
                 final String[] sIds = debugs.split(",");
                 Arena.pmsg(sender, "debugging: " + debugs);
-                for (String s : sIds) {
+                for (final String s : sIds) {
                     try {
                         Debug.check.add(Integer.valueOf(s));
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         strings.add(s);
-                        Arena a = ArenaManager.getArenaByName(s);
+                        final Arena a = ArenaManager.getArenaByName(s);
                         if (a != null) {
                             a.getDebugger().activate();
                         }
@@ -263,14 +264,14 @@ public class Debug {
     }
 
     private void activate() {
-        this.active = true;
+        active = true;
     }
 
     public static void destroy() {
 
-        for (Logger log : Debug.loggers) {
-            Handler[] handlers = log.getHandlers().clone();
-            for (Handler hand : handlers) {
+        for (final Logger log : Debug.loggers) {
+            final Handler[] handlers = log.getHandlers().clone();
+            for (final Handler hand : handlers) {
                 log.removeHandler(hand);
             }
         }
@@ -288,14 +289,14 @@ public class Debug {
 
         private LogFileFormatter() {
             super();
-            this.date = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
+            date = new SimpleDateFormat("yy.MM.dd HH:mm:ss");
         }
 
         public String format(final LogRecord record) {
             final StringBuilder builder = new StringBuilder();
             final Throwable exception = record.getThrown();
 
-            builder.append(this.date.format(record.getMillis()));
+            builder.append(date.format(record.getMillis()));
             builder.append(" [");
             builder.append(record.getLevel().getLocalizedName().toUpperCase());
             builder.append("] ");

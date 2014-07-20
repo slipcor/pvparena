@@ -36,7 +36,7 @@ public class PAA_Class extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -57,7 +57,7 @@ public class PAA_Class extends AbstractArenaCommand {
             final Player player = (Player) sender;
             PVPArena.instance.getLogger().info("Exiting edit mode: " + player.getName());
 
-            ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
             ArenaPlayer.reloadInventory(arena, player);
 
@@ -65,45 +65,45 @@ public class PAA_Class extends AbstractArenaCommand {
             return;
         }
 
-        if (args[0].equalsIgnoreCase("save")) {
+        if ("save".equalsIgnoreCase(args[0])) {
             final Player player = (Player) sender;
             final List<ItemStack> items = new ArrayList<ItemStack>();
 
-            for (ItemStack is : player.getInventory().getContents()) {
+            for (final ItemStack is : player.getInventory().getContents()) {
                 if (is != null) {
                     items.add(is);
                 }
             }
 
-            ItemStack[] isItems = new ItemStack[items.size()];
+            final ItemStack[] isItems = new ItemStack[items.size()];
             int position = 0;
-            for (ItemStack is : items) {
+            for (final ItemStack is : items) {
                 isItems[position++] = is;
             }
 
-            final String sItems = (isItems.length < 1) ? "AIR"
+            final String sItems = isItems.length < 1 ? "AIR"
                     : StringParser.getStringFromItemStacks(isItems);
-            StringBuilder armor = new StringBuilder("");
+            final StringBuilder armor = new StringBuilder("");
             int pos = 0;
-            for (ItemStack item : player.getInventory().getArmorContents()) {
+            for (final ItemStack item : player.getInventory().getArmorContents()) {
                 armor.append(',');
                 armor.append(pos++);
                 armor.append(">>!<<");
                 armor.append(StringParser.getStringFromItemStack(item));
             }
 
-            arena.getArenaConfig().setManually("classitems." + args[1], sItems + armor.toString());
+            arena.getArenaConfig().setManually("classitems." + args[1], sItems + armor);
             arena.getArenaConfig().save();
             arena.addClass(args[1], isItems, player.getInventory().getArmorContents());
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
-        } else if (args[0].equalsIgnoreCase("load")) {
+        } else if ("load".equalsIgnoreCase(args[0])) {
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 
 
             ArenaPlayer.backupAndClearInventory(arena, aPlayer.get());
 
             arena.selectClass(aPlayer, args[1]);
-        } else if (args[0].equalsIgnoreCase("remove")) {
+        } else if ("remove".equalsIgnoreCase(args[0])) {
             final Player player = (Player) sender;
             arena.getArenaConfig().setManually("classitems." + args[1], null);
             arena.getArenaConfig().save();
@@ -114,7 +114,7 @@ public class PAA_Class extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -134,12 +134,12 @@ public class PAA_Class extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"save"});
         if (arena == null) {
             return result;
         }
-        for (ArenaClass aclass : arena.getClasses()) {
+        for (final ArenaClass aclass : arena.getClasses()) {
             result.define(new String[]{"load", aclass.getName()});
             result.define(new String[]{"remove", aclass.getName()});
         }

@@ -39,8 +39,8 @@ import java.util.*;
  */
 
 public class EntityListener implements Listener {
-    private final static Debug DEBUG = new Debug(21);
-    private final static Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<PotionEffectType, Boolean>();
+    private static final Debug DEBUG = new Debug(21);
+    private static final Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<PotionEffectType, Boolean>();
 
     static {
         TEAMEFFECT.put(PotionEffectType.BLINDNESS, false);
@@ -111,9 +111,9 @@ public class EntityListener implements Listener {
             }
         }
         arena.getDebugger().i("explosion inside an arena");
-        if (!(arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED))
-                || (!(event.getEntity() instanceof TNTPrimed)
-                && !(event.getEntity() instanceof Creeper))) {
+        if (!arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
+                || !(event.getEntity() instanceof TNTPrimed)
+                && !(event.getEntity() instanceof Creeper)) {
             ArenaModuleManager.onEntityExplode(arena, event);
             return;
         }
@@ -131,7 +131,7 @@ public class EntityListener implements Listener {
     public void onEntityRegainHealth(final EntityRegainHealthEvent event) {
         final Entity entity = event.getEntity();
 
-        if ((entity == null) || (!(entity instanceof Player))) {
+        if ((!(entity instanceof Player))) {
             return; // no player
         }
         final Arena arena = ArenaPlayer.parsePlayer(((Player) entity).getName())
@@ -218,7 +218,7 @@ public class EntityListener implements Listener {
 
         arena.getDebugger().i("onEntityDamageByEntity: fighting player");
 
-        if ((eDamager == null) || (!(eDamager instanceof Player))) {
+        if ((!(eDamager instanceof Player))) {
             // attacker no player => out!
             return;
         }

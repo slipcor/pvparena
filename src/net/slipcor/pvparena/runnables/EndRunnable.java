@@ -73,17 +73,17 @@ public class EndRunnable extends ArenaRunnable {
                 return;
             }
 
-            for (ArenaPlayer ap : arena.getFighters()) {
+            for (final ArenaPlayer ap : arena.getFighters()) {
                 arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),
                         ap.get().getLastDamageCause().getEntity());
 
                 final List<ItemStack> items = new ArrayList<ItemStack>();
 
-                for (ItemStack is : ap.get().getInventory().getArmorContents()) {
+                for (final ItemStack is : ap.get().getInventory().getArmorContents()) {
                     items.add(is.clone());
                 }
 
-                for (ItemStack is : ap.get().getInventory().getContents()) {
+                for (final ItemStack is : ap.get().getInventory().getContents()) {
                     items.add(is.clone());
                 }
                 new InventoryRefillRunnable(arena, ap.get(), items);

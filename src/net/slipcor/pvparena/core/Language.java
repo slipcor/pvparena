@@ -23,9 +23,9 @@ public final class Language {
     private Language() {
     }
 
-    private final static Debug debugger = new Debug(17);
+    private static final Debug debugger = new Debug(17);
 
-    public static enum MSG {
+    public enum MSG {
 
         ARENA_CREATE_DONE("nulang.arena.create.done", "arena '%1%' created!"),
         ARENA_DISABLE_DONE("nulang.arena.disable.done", "Arena disabled!"),
@@ -577,11 +577,11 @@ public final class Language {
 
         Z("version", "0.9.0.0");
 
-        private String node;
+        private final String node;
         private String value;
 
         public static MSG getByNode(final String node) {
-            for (MSG m : MSG.values()) {
+            for (final MSG m : MSG.values()) {
                 if (m.getNode().equals(node)) {
                     return m;
                 }
@@ -589,17 +589,13 @@ public final class Language {
             return null;
         }
 
-        private MSG(final String node, final String value) {
+        MSG(final String node, final String value) {
             this.node = node;
             this.value = value;
         }
 
         public String getNode() {
             return node;
-        }
-
-        public void setNode(final String value) {
-            node = value;
         }
 
         public void setValue(final String sValue) {
@@ -612,7 +608,7 @@ public final class Language {
         }
 
         public static MSG getByName(final String string) {
-            for (MSG m : MSG.values()) {
+            for (final MSG m : MSG.values()) {
                 if (m.name().equals(string)) {
                     return m;
                 }
@@ -628,10 +624,10 @@ public final class Language {
         PVPArena.instance.getDataFolder().mkdir();
         final File configFile = new File(PVPArena.instance.getDataFolder().getPath()
                 + "/lang_" + langString + ".yml");
-        if (!(configFile.exists())) {
+        if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error when creating language file.");
             }
@@ -639,21 +635,21 @@ public final class Language {
         final YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(configFile);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
-        for (MSG m : MSG.values()) {
+        for (final MSG m : MSG.values()) {
             config.addDefault(m.getNode(), m.toString());
         }
 
         config.options().copyDefaults(true);
         try {
             config.save(configFile);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
-        for (MSG m : MSG.values()) {
+        for (final MSG m : MSG.values()) {
             m.setValue(config.getString(m.getNode()));
         }
     }
@@ -714,7 +710,7 @@ public final class Language {
 
         int i = 0;
 
-        for (String word : args) {
+        for (final String word : args) {
             result = result.replace("%" + ++i + "%", word);
         }
 
@@ -727,7 +723,7 @@ public final class Language {
      * @param message the node name
      * @return the node string
      */
-    public static String parse(Arena arena, final MSG message) {
+    public static String parse(final Arena arena, final MSG message) {
         if (arena != null && arena.getLanguage().get(message.getNode()) != null) {
             arena.getDebugger().i("MSG: " + message.name());
             return StringParser.colorize((String) arena.getLanguage().get(message.getNode()));
@@ -742,7 +738,7 @@ public final class Language {
      * @param args strings to replace
      * @return the replaced node string
      */
-    public static String parse(Arena arena, final MSG message, final String... args) {
+    public static String parse(final Arena arena, final MSG message, final String... args) {
         if (arena != null) {
             arena.getDebugger().i("MSG: " + message.name());
         }
@@ -752,7 +748,7 @@ public final class Language {
             result = (String) arena.getLanguage().get(message.getNode());
         }
         int i = 0;
-        for (String word : args) {
+        for (final String word : args) {
             result = result.replace("%" + ++i + "%", word);
         }
         return StringParser.colorize(result);
@@ -780,7 +776,7 @@ public final class Language {
         debugger.i("MSG: " + message.name());
         String result = message.toString();
         int i = 0;
-        for (String word : args) {
+        for (final String word : args) {
             result = result.replace("%" + ++i + "%", word);
         }
         return StringParser.colorize(result);

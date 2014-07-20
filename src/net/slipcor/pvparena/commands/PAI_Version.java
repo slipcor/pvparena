@@ -30,7 +30,7 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -43,21 +43,21 @@ public class PAI_Version extends AbstractGlobalCommand {
         if (args.length < 2 || args[1].toLowerCase().startsWith("goal")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "cArena Goals:");
-            for (ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
+            for (final ArenaGoal ag : PVPArena.instance.getAgm().getAllGoals()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c" + ag.getName() + " - " + ag.version());
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("mod")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aMods:");
-            for (ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
+            for (final ArenaModule am : PVPArena.instance.getAmm().getAllMods()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a" + am.getName() + " - " + am.version());
             }
         }
         if (args.length < 2 || args[1].toLowerCase().startsWith("reg")) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "7-----------------------------------");
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "aRegionshapes:");
-            for (ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
+            for (final ArenaRegionShape ars : PVPArena.instance.getArsm().getRegions()) {
                 Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a" + ars.getName() + " - " + ars.version());
             }
         }
@@ -65,7 +65,7 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

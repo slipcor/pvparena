@@ -34,7 +34,7 @@ public class PAJoinEvent extends Event implements Cancellable {
         super();
         this.arena = arena;
         this.player = player;
-        this.spectator = isSpectator;
+        spectator = isSpectator;
     }
 
     /**
@@ -78,7 +78,7 @@ public class PAJoinEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean value) {
+    public void setCancelled(final boolean value) {
         cancelled = value;
     }
 }

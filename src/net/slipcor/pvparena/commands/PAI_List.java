@@ -43,7 +43,7 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -54,14 +54,14 @@ public class PAI_List extends AbstractArenaCommand {
         if (args.length < 1) {
 
 
-            for (ArenaTeam teams : arena.getTeams()) {
+            for (final ArenaTeam teams : arena.getTeams()) {
                 final Set<String> names = new HashSet<String>();
 
-                for (ArenaPlayer player : teams.getTeamMembers()) {
+                for (final ArenaPlayer player : teams.getTeamMembers()) {
                     names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
                 }
 
-                if (arena.isFreeForAll() && teams.getName().equals("free")) {
+                if (arena.isFreeForAll() && "free".equals(teams.getName())) {
                     arena.msg(sender, Language.parse(arena, MSG.LIST_PLAYERS, StringParser.joinSet(names, ", ")));
                 } else {
                     final int count = teams.getTeamMembers().size();
@@ -74,14 +74,14 @@ public class PAI_List extends AbstractArenaCommand {
 
         final Map<ArenaPlayer.Status, Set<String>> stats = new HashMap<ArenaPlayer.Status, Set<String>>();
 
-        for (ArenaPlayer player : arena.getEveryone()) {
+        for (final ArenaPlayer player : arena.getEveryone()) {
             final Set<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
 
             players.add(player.getName());
             stats.put(player.getStatus(), players);
         }
 
-        for (ArenaPlayer.Status stat : stats.keySet()) {
+        for (final ArenaPlayer.Status stat : stats.keySet()) {
             arena.msg(sender, Language.parse(arena, MSG.getByNode("LIST_" + stat.name()), "&" + colorMap.get(stat) + StringParser.joinSet(stats.get(stat), ", ")));
         }
 
@@ -89,7 +89,7 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

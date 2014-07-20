@@ -53,21 +53,21 @@ public final class ConfigurationManager {
         }
         final YamlConfiguration config = cfg.getYamlConfiguration();
 
-        List<String> goals = cfg.getStringList("goals", new ArrayList<String>());
-        List<String> modules = cfg.getStringList("mods", new ArrayList<String>());
+        final List<String> goals = cfg.getStringList("goals", new ArrayList<String>());
+        final List<String> modules = cfg.getStringList("mods", new ArrayList<String>());
 
         if (cfg.getString(CFG.GENERAL_TYPE, "null") == null
-                || cfg.getString(CFG.GENERAL_TYPE, "null").equals("null")) {
+                || "null".equals(cfg.getString(CFG.GENERAL_TYPE, "null"))) {
             cfg.createDefaults(goals, modules);
         } else {
             // opening existing arena
-            arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
+            arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));
 
 
             values:
-            for (CFG c : CFG.getValues()) {
+            for (final CFG c : CFG.getValues()) {
                 if (c.hasModule()) {
-                    for (String goal : goals) {
+                    for (final String goal : goals) {
                         if (goal.equals(c.getModule())) {
                             if (cfg.getUnsafe(c.getNode()) == null) {
                                 cfg.createDefaults(goals, modules);
@@ -76,7 +76,7 @@ public final class ConfigurationManager {
                         }
                     }
 
-                    for (String mod : modules) {
+                    for (final String mod : modules) {
                         if (mod.equals(c.getModule())) {
                             if (cfg.getUnsafe(c.getNode()) == null) {
                                 cfg.createDefaults(goals, modules);
@@ -94,7 +94,7 @@ public final class ConfigurationManager {
 
             List<String> list = cfg.getStringList(CFG.LISTS_GOALS.getNode(),
                     new ArrayList<String>());
-            for (String goal : list) {
+            for (final String goal : list) {
                 ArenaGoal aGoal = PVPArena.instance.getAgm()
                         .getGoalByName(goal);
                 if (aGoal == null) {
@@ -110,7 +110,7 @@ public final class ConfigurationManager {
 
             list = cfg.getStringList(CFG.LISTS_MODS.getNode(),
                     new ArrayList<String>());
-            for (String mod : list) {
+            for (final String mod : list) {
                 ArenaModule aMod = PVPArena.instance.getAmm().getModByName(mod);
                 if (aMod == null) {
                     PVPArena.instance.getLogger().warning(
@@ -133,7 +133,7 @@ public final class ConfigurationManager {
                 config.addDefault("classitems.Tank", "272,310,311,312,313");
                 config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
             } else {
-                for (String key : PVPArena.instance.getConfig().getKeys(false)) {
+                for (final String key : PVPArena.instance.getConfig().getKeys(false)) {
                     config.addDefault("classitems." + key, PVPArena.instance
                             .getConfig().get("classitems." + key));
                 }
@@ -153,12 +153,12 @@ public final class ConfigurationManager {
         arena.getClasses().clear();
         arena.getDebugger().i("reading class items");
         ArenaClass.addGlobalClasses(arena);
-        for (String className : classes.keySet()) {
-            String sItemList;
+        for (final String className : classes.keySet()) {
+            final String sItemList;
 
             try {
                 sItemList = (String) classes.get(className);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + className);
@@ -171,9 +171,9 @@ public final class ConfigurationManager {
             for (int i = 0; i < sItems.length; i++) {
 
                 if (sItems[i].contains(">>!<<")) {
-                    String[] split = sItems[i].split(">>!<<");
+                    final String[] split = sItems[i].split(">>!<<");
 
-                    int id = Integer.parseInt(split[0]);
+                    final int id = Integer.parseInt(split[0]);
                     armors[id] = StringParser.getItemStackFromString(split[1]);
 
                     if (armors[id] == null) {
@@ -196,14 +196,14 @@ public final class ConfigurationManager {
         arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStacksFromString("0"));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
-        arena.setFree(cfg.getString(CFG.GENERAL_TYPE).equals("free"));
+        arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));
         if (config.getConfigurationSection("arenaregion") == null) {
             arena.getDebugger().i("arenaregion null");
         } else {
             arena.getDebugger().i("arenaregion not null");
             final Map<String, Object> regs = config.getConfigurationSection(
                     "arenaregion").getValues(false);
-            for (String rName : regs.keySet()) {
+            for (final String rName : regs.keySet()) {
                 arena.getDebugger().i("arenaregion '" + rName + "'");
                 final ArenaRegion region = Config.parseRegion(arena, config,
                         rName);
@@ -245,7 +245,7 @@ public final class ConfigurationManager {
                 PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die! Ignore this if you're running infect!");
             }
         } else {
-            for (String sTeam : tempMap.keySet()) {
+            for (final String sTeam : tempMap.keySet()) {
                 final ArenaTeam team = new ArenaTeam(sTeam,
                         (String) tempMap.get(sTeam));
                 arena.getTeams().add(team);
@@ -275,14 +275,14 @@ public final class ConfigurationManager {
             return Language.parse(arena, MSG.ERROR_NO_SPAWNS);
         }
 
-        for (String editor : PAA_Edit.activeEdits.keySet()) {
+        for (final String editor : PAA_Edit.activeEdits.keySet()) {
             if (PAA_Edit.activeEdits.get(editor).getName().equals(
                     arena.getName())) {
                 return Language.parse(arena, MSG.ERROR_EDIT_MODE);
             }
         }
 
-        for (String setter : PAA_Setup.activeSetups.keySet()) {
+        for (final String setter : PAA_Setup.activeSetups.keySet()) {
             if (PAA_Setup.activeSetups.get(setter).getName().equals(
                     arena.getName())) {
                 return Language.parse(arena, MSG.ERROR_SETUP_MODE);
@@ -293,19 +293,19 @@ public final class ConfigurationManager {
                 .getConfigurationSection("spawns").getValues(false).keySet();
 
         final String sExit = arena.getArenaConfig().getString(CFG.TP_EXIT);
-        if (!sExit.equals("old") && !list.contains(sExit)) {
+        if (!"old".equals(sExit) && !list.contains(sExit)) {
             return "Exit Spawn ('" + sExit + "') not set!";
         }
         final String sWin = arena.getArenaConfig().getString(CFG.TP_WIN);
-        if (!sWin.equals("old") && !list.contains(sWin)) {
+        if (!"old".equals(sWin) && !list.contains(sWin)) {
             return "Win Spawn ('" + sWin + "') not set!";
         }
         final String sLose = arena.getArenaConfig().getString(CFG.TP_LOSE);
-        if (!sLose.equals("old") && !list.contains(sLose)) {
+        if (!"old".equals(sLose) && !list.contains(sLose)) {
             return "Lose Spawn ('" + sLose + "') not set!";
         }
         final String sDeath = arena.getArenaConfig().getString(CFG.TP_DEATH);
-        if (!sDeath.equals("old") && !list.contains(sDeath)) {
+        if (!"old".equals(sDeath) && !list.contains(sDeath)) {
             return "Death Spawn ('" + sDeath + "') not set!";
         }
 

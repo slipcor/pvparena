@@ -28,7 +28,7 @@ public abstract class AbstractArenaCommand implements IArenaCommandHandler {
     public static boolean argCountValid(final CommandSender sender, final Arena arena,
                                         final String[] args, final Integer[] validCounts) {
 
-        for (int i : validCounts) {
+        for (final int i : validCounts) {
             if (i == args.length) {
                 return true;
             }
@@ -61,7 +61,7 @@ public abstract class AbstractArenaCommand implements IArenaCommandHandler {
             return true;
         }
 
-        for (String perm : perms) {
+        for (final String perm : perms) {
             if (sender.hasPermission(perm)) {
                 return true;
             }

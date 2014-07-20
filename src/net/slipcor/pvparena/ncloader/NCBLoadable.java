@@ -25,7 +25,7 @@ public class NCBLoadable implements Cloneable {
 
     private final String name;
 
-    protected NCBLoadable(String name) {
+    protected NCBLoadable(final String name) {
         this.name = name;
     }
 
@@ -33,7 +33,7 @@ public class NCBLoadable implements Cloneable {
     public NCBLoadable clone() {
         try {
             return (NCBLoadable) super.clone();
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
             e.printStackTrace();
         }
         return null;
@@ -71,11 +71,11 @@ public class NCBLoadable implements Cloneable {
             this(Result.SUCCESS, "");
         }
 
-        public LoadResult(String failReason) {
+        public LoadResult(final String failReason) {
             this(Result.FAILURE, failReason);
         }
 
-        public LoadResult(Result result, String reason) {
+        public LoadResult(final Result result, final String reason) {
             this.result = result;
             this.reason = reason;
         }

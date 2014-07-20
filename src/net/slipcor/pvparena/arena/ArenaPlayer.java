@@ -12,7 +12,6 @@ import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,8 +45,8 @@ public class ArenaPlayer {
     private static final Map<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
 
     private final String name;
-    private boolean telePass = false;
-    private boolean ignoreAnnouncements = false;
+    private boolean telePass;
+    private boolean ignoreAnnouncements;
 
     private Arena arena;
     private ArenaClass aClass;
@@ -57,8 +56,8 @@ public class ArenaPlayer {
 
     private ItemStack[] savedInventory;
     private ItemStack[] savedArmor;
-    private Set<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
-    final private Map<String, PAStatMap> statistics = new HashMap<String, PAStatMap>();
+    private final Set<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
+    private final Map<String, PAStatMap> statistics = new HashMap<String, PAStatMap>();
 
     /**
      * <pre>
@@ -72,7 +71,7 @@ public class ArenaPlayer {
      * - LOST = lost and thus spectating
      * </pre>
      */
-    public static enum Status {
+    public enum Status {
         NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
     }
 
@@ -86,7 +85,7 @@ public class ArenaPlayer {
     }
 
     private ArenaPlayer(final Player player, final Arena arena) {
-        this.name = player.getName();
+        name = player.getName();
         setArena(arena);
 
         totalPlayers.put(name, this);
@@ -98,7 +97,7 @@ public class ArenaPlayer {
 
     public static Set<ArenaPlayer> getAllArenaPlayers() {
         final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
-        for (ArenaPlayer ap : totalPlayers.values()) {
+        for (final ArenaPlayer ap : totalPlayers.values()) {
             players.add(ap);
         }
         return players;
@@ -110,9 +109,9 @@ public class ArenaPlayer {
      * @param eEvent the Event
      * @return the player instance if found, null otherwise
      */
-    public static Player getLastDamagingPlayer(final Event eEvent, Player damagee) {
+    public static Player getLastDamagingPlayer(final Event eEvent, final Player damagee) {
 
-        Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).getArena() == null ?
+        final Debug debug = ArenaPlayer.parsePlayer(damagee.getName()).getArena() == null ?
                 ArenaPlayer.debug : ArenaPlayer.parsePlayer(damagee.getName()).getArena().getDebugger();
 
         debug.i("trying to get the last damaging player", damagee);
@@ -125,7 +124,7 @@ public class ArenaPlayer {
             if (event.getCause() == DamageCause.PROJECTILE
                     && eDamager instanceof Projectile) {
 
-                ProjectileSource p = ((Projectile) eDamager).getShooter();
+                final ProjectileSource p = ((Projectile) eDamager).getShooter();
 
                 if (p instanceof LivingEntity) {
 
@@ -195,16 +194,16 @@ public class ArenaPlayer {
 
             final Set<String> arenas = cfg.getKeys(false);
 
-            for (String arenaname : arenas) {
+            for (final String arenaname : arenas) {
 
                 final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
-                for (String player : players) {
+                for (final String player : players) {
                     totalPlayers.put(player, ArenaPlayer.parsePlayer(player));
                 }
 
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
@@ -249,7 +248,7 @@ public class ArenaPlayer {
         if (player == null) {
             return;
         }
-        Debug debug = arena.getDebugger();
+        final Debug debug = arena.getDebugger();
         debug.i("resetting inventory: " + player.getName(), player);
         if (player.getInventory() == null) {
             debug.i("inventory null!", player);
@@ -258,17 +257,17 @@ public class ArenaPlayer {
 
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
 
-        if (!arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME).equals("none")) {
+        if (!"none".equals(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME))) {
             final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
 
             final List<Material> allowedMats = new ArrayList<Material>();
 
-            for (ItemStack item : items) {
+            for (final ItemStack item : items) {
                 allowedMats.add(item.getType());
             }
 
             final List<ItemStack> keepItems = new ArrayList<ItemStack>();
-            for (ItemStack item : player.getInventory().getContents()) {
+            for (final ItemStack item : player.getInventory().getContents()) {
                 if (allowedMats.contains(item.getType())) {
                     keepItems.add(item.clone());
                 }
@@ -278,7 +277,7 @@ public class ArenaPlayer {
 
                 @Override
                 public void run() {
-                    for (ItemStack item : keepItems) {
+                    for (final ItemStack item : keepItems) {
                         player.getInventory().addItem(item.clone());
                     }
                     keepItems.clear();
@@ -288,7 +287,7 @@ public class ArenaPlayer {
 
             try {
                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, new GiveLater(), 60L);
-            } catch (Exception e) {
+            } catch (final Exception e) {
 
             }
         }
@@ -307,18 +306,18 @@ public class ArenaPlayer {
     }
 
     public void addDeath() {
-        this.getStatistics(arena).incStat(StatisticsManager.type.DEATHS);
+        getStatistics(arena).incStat(type.DEATHS);
     }
 
     public void addKill() {
-        this.getStatistics(arena).incStat(StatisticsManager.type.KILLS);
+        getStatistics(arena).incStat(type.KILLS);
     }
 
     public void addLosses() {
-        this.getStatistics(arena).incStat(StatisticsManager.type.LOSSES);
+        getStatistics(arena).incStat(type.LOSSES);
     }
 
-    public void addStatistic(final String arenaName, final StatisticsManager.type type,
+    public void addStatistic(final String arenaName, final type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());
@@ -328,14 +327,14 @@ public class ArenaPlayer {
     }
 
     public void addWins() {
-        this.getStatistics(arena).incStat(StatisticsManager.type.WINS);
+        getStatistics(arena).incStat(type.WINS);
     }
 
     private void clearDump() {
-        debug.i("clearing dump of " + name, this.name);
+        debug.i("clearing dump of " + name, name);
         debugPrint();
         final File file = new File(PVPArena.instance.getDataFolder().getPath()
-                + "/dumps/" + this.name + ".yml");
+                + "/dumps/" + name + ".yml");
         if (!file.exists()) {
             return;
         }
@@ -357,43 +356,43 @@ public class ArenaPlayer {
 
     public void debugPrint() {
         if (status == null || location == null) {
-            debug.i("DEBUG PRINT OUT:", this.name);
-            debug.i(name, this.name);
-            debug.i(String.valueOf(status), this.name);
-            debug.i(String.valueOf(location), this.name);
-            debug.i(String.valueOf(selection[0]), this.name);
-            debug.i(String.valueOf(selection[1]), this.name);
+            debug.i("DEBUG PRINT OUT:", name);
+            debug.i(name, name);
+            debug.i(String.valueOf(status), name);
+            debug.i(String.valueOf(location), name);
+            debug.i(String.valueOf(selection[0]), name);
+            debug.i(String.valueOf(selection[1]), name);
             return;
         }
-        debug.i("------------------", this.name);
-        debug.i("Player: " + name, this.name);
+        debug.i("------------------", name);
+        debug.i("Player: " + name, name);
         debug.i("telepass: " + telePass + " | chatting: "
-                + publicChatting, this.name);
-        debug.i("arena: " + (arena == null ? "null" : arena.getName()), this.name);
+                + publicChatting, name);
+        debug.i("arena: " + (arena == null ? "null" : arena.getName()), name);
         debug.i("aClass: " + (aClass == null ? "null" : aClass.getName()),
-                this.name);
-        debug.i("location: " + location.toString(), this.name);
-        debug.i("status: " + status.name(), this.name);
+                name);
+        debug.i("location: " + location, name);
+        debug.i("status: " + status.name(), name);
         debug.i("savedInventory: "
                         + StringParser.getStringFromItemStacks(savedInventory),
-                this.name);
+                name);
         debug.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor),
-                this.name);
-        debug.i("tempPermissions:", this.name);
-        for (PermissionAttachment pa : tempPermissions) {
-            debug.i("> " + pa.toString(), this.name);
+                name);
+        debug.i("tempPermissions:", name);
+        for (final PermissionAttachment pa : tempPermissions) {
+            debug.i("> " + pa, name);
         }
-        debug.i("------------------", this.name);
+        debug.i("------------------", name);
     }
 
     public void dump() {
-        debug.i("dumping...", this.name);
+        debug.i("dumping...", name);
         debugPrint();
         final File file = new File(PVPArena.instance.getDataFolder().getPath()
-                + "/dumps/" + this.name + ".yml");
+                + "/dumps/" + name + ".yml");
         try {
             file.createNewFile();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
@@ -411,7 +410,7 @@ public class ArenaPlayer {
             cfg.set("loc", Config.parseToString(location));
 
             cfg.save(file);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
@@ -447,7 +446,7 @@ public class ArenaPlayer {
         if (arena == null) {
             return null;
         }
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             if (team.getTeamMembers().contains(this)) {
                 return team;
             }
@@ -456,9 +455,9 @@ public class ArenaPlayer {
     }
 
     public PALocation getSavedLocation() {
-        debug.i("reading loc!", this.name);
+        debug.i("reading loc!", name);
         if (location != null) {
-            debug.i(": " + location.toString(), this.name);
+            debug.i(": " + location, name);
         }
         return location;
     }
@@ -520,7 +519,7 @@ public class ArenaPlayer {
     public int getTotalStatistics(final type statType) {
         int sum = 0;
 
-        for (PAStatMap stat : statistics.values()) {
+        for (final PAStatMap stat : statistics.values()) {
             sum += stat.getStat(statType);
         }
 
@@ -540,19 +539,19 @@ public class ArenaPlayer {
     }
 
     public void readDump() {
-        debug.i("reading dump: " + name, this.name);
+        debug.i("reading dump: " + name, name);
         debugPrint();
         final File file = new File(PVPArena.instance.getDataFolder().getPath()
-                + "/dumps/" + this.name + ".yml");
+                + "/dumps/" + name + ".yml");
         if (!file.exists()) {
-            debug.i("no dump!", this.name);
+            debug.i("no dump!", name);
             return;
         }
 
         final YamlConfiguration cfg = new YamlConfiguration();
         try {
             cfg.load(file);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
@@ -571,7 +570,7 @@ public class ArenaPlayer {
             }
 
             if (Bukkit.getPlayer(name) == null) {
-                debug.i("player offline, OUT!", this.name);
+                debug.i("player offline, OUT!", name);
                 return;
             }
             state = PlayerState.undump(cfg, name);
@@ -585,57 +584,57 @@ public class ArenaPlayer {
      * save and reset a player instance
      */
     public void reset() {
-        debug.i("destroying arena player " + name, this.name);
+        debug.i("destroying arena player " + name, name);
         debugPrint();
         final YamlConfiguration cfg = new YamlConfiguration();
         try {
             if (PVPArena.instance.getConfig().getBoolean("stats")) {
 
-                final String file = PVPArena.instance.getDataFolder().toString()
+                final String file = PVPArena.instance.getDataFolder()
                         + "/players.yml";
                 cfg.load(file);
 
                 if (arena != null) {
                     final String arenaName = arena.getName();
                     cfg.set(arenaName + "." + name + ".losses", getStatistics()
-                            .getStat(StatisticsManager.type.LOSSES)
-                            + getTotalStatistics(StatisticsManager.type.LOSSES));
+                            .getStat(type.LOSSES)
+                            + getTotalStatistics(type.LOSSES));
                     cfg.set(arenaName + "." + name + ".wins",
                             getStatistics()
-                                    .getStat(StatisticsManager.type.WINS)
-                                    + getTotalStatistics(StatisticsManager.type.WINS));
+                                    .getStat(type.WINS)
+                                    + getTotalStatistics(type.WINS));
                     cfg.set(arenaName + "." + name + ".kills",
                             getStatistics().getStat(
-                                    StatisticsManager.type.KILLS)
-                                    + getTotalStatistics(StatisticsManager.type.KILLS));
+                                    type.KILLS)
+                                    + getTotalStatistics(type.KILLS));
                     cfg.set(arenaName + "." + name + ".deaths", getStatistics()
-                            .getStat(StatisticsManager.type.DEATHS)
-                            + getTotalStatistics(StatisticsManager.type.DEATHS));
+                            .getStat(type.DEATHS)
+                            + getTotalStatistics(type.DEATHS));
                     cfg.set(arenaName + "." + name + ".damage", getStatistics()
-                            .getStat(StatisticsManager.type.DAMAGE)
-                            + getTotalStatistics(StatisticsManager.type.DAMAGE));
+                            .getStat(type.DAMAGE)
+                            + getTotalStatistics(type.DAMAGE));
                     cfg.set(arenaName + "." + name + ".maxdamage",
                             getStatistics().getStat(
-                                    StatisticsManager.type.MAXDAMAGE)
-                                    + getTotalStatistics(StatisticsManager.type.MAXDAMAGE));
+                                    type.MAXDAMAGE)
+                                    + getTotalStatistics(type.MAXDAMAGE));
                     cfg.set(arenaName + "." + name + ".damagetake",
                             getStatistics().getStat(
-                                    StatisticsManager.type.DAMAGETAKE)
-                                    + getTotalStatistics(StatisticsManager.type.DAMAGETAKE));
+                                    type.DAMAGETAKE)
+                                    + getTotalStatistics(type.DAMAGETAKE));
                     cfg.set(arenaName + "." + name + ".maxdamagetake",
                             getStatistics().getStat(
-                                    StatisticsManager.type.MAXDAMAGETAKE)
-                                    + getTotalStatistics(StatisticsManager.type.MAXDAMAGETAKE));
+                                    type.MAXDAMAGETAKE)
+                                    + getTotalStatistics(type.MAXDAMAGETAKE));
                 }
 
                 cfg.save(file);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
         if (get() == null) {
-            debug.i("reset() ; out! null", this.name);
+            debug.i("reset() ; out! null", name);
             return;
         }
 
@@ -650,7 +649,7 @@ public class ArenaPlayer {
         setStatus(Status.NULL);
 
         if (arena != null) {
-            final ArenaTeam team = this.getArenaTeam();
+            final ArenaTeam team = getArenaTeam();
             if (team != null) {
                 team.remove(this);
             }
@@ -678,7 +677,7 @@ public class ArenaPlayer {
      * @param aClass the arena class to set
      */
     public void setArenaClass(final ArenaClass aClass) {
-        PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
+        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         this.aClass = event.getArenaClass();
@@ -691,7 +690,7 @@ public class ArenaPlayer {
      */
     public void setArenaClass(final String className) {
 
-        for (ArenaClass ac : getArena().getClasses()) {
+        for (final ArenaClass ac : getArena().getClasses()) {
             if (ac.getName().equalsIgnoreCase(className)) {
                 setArenaClass(ac);
                 return;
@@ -722,7 +721,7 @@ public class ArenaPlayer {
         }
     }
 
-    public void setStatistic(final String arenaName, final StatisticsManager.type type,
+    public void setStatistic(final String arenaName, final type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());
@@ -733,7 +732,7 @@ public class ArenaPlayer {
     }
 
     public void setStatus(final Status status) {
-        debug.i(name + ">" + status.name(), this.name);
+        debug.i(name + ">" + status.name(), name);
         this.status = status;
     }
 
@@ -750,7 +749,7 @@ public class ArenaPlayer {
     public String toString() {
         final ArenaTeam team = getArenaTeam();
 
-        return (team == null) ? name : team.getColorCodeString() + name
+        return team == null ? name : team.getColorCodeString() + name
                 + ChatColor.RESET;
     }
 

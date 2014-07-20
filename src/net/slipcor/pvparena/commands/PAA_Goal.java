@@ -30,7 +30,7 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -38,7 +38,7 @@ public class PAA_Goal extends AbstractArenaCommand {
             return;
         }
 
-        ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
+        final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(args[0].toLowerCase());
 
         if (goal == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_GOAL_NOTFOUND, args[0], StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), " ")));
@@ -77,7 +77,7 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -97,11 +97,11 @@ public class PAA_Goal extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaGoal goal : arena.getGoals()) {
+        for (final ArenaGoal goal : arena.getGoals()) {
             result.define(new String[]{goal.getName()});
         }
         return result;

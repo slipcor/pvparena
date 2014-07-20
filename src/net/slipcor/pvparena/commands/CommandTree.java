@@ -13,8 +13,8 @@ public class CommandTree<T> {
     }
 
     public List<T> getContent() {
-        List<T> result = new ArrayList<T>();
-        for (CommandTree<T> tree : children) {
+        final List<T> result = new ArrayList<T>();
+        for (final CommandTree<T> tree : children) {
             result.add(tree.key);
         }
         return result;
@@ -22,7 +22,7 @@ public class CommandTree<T> {
 
     public void define(final T[] args) {
         if (args.length > 1) {
-            CommandTree<T> tree;
+            final CommandTree<T> tree;
             if (contains(args[0])) {
                 tree = get(args[0]);
             } else {
@@ -41,7 +41,7 @@ public class CommandTree<T> {
     }
 
     public boolean contains(final T key) {
-        for (CommandTree<T> tree : children) {
+        for (final CommandTree<T> tree : children) {
             if (tree.key.equals(key)) {
                 return true;
             }

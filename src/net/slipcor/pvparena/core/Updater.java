@@ -20,8 +20,8 @@ import java.util.zip.ZipFile;
 
 public class Updater extends Thread {
 
-    private boolean msg = false;
-    private boolean outdated = false;
+    private boolean msg;
+    private boolean outdated;
     private final boolean files;
 
     private byte updateDigit = -1;
@@ -51,7 +51,7 @@ public class Updater extends Thread {
             if (lcSetting.contains("down") || lcSetting.contains("load")) {
                 return DOWNLOAD;
             }
-            if (lcSetting.equals("both")) {
+            if ("both".equals(lcSetting)) {
                 return BOTH;
             }
             return OFF;
@@ -62,23 +62,23 @@ public class Updater extends Thread {
         ALPHA, BETA, RELEASE;
 
         public static UpdateType getBySetting(final String setting) {
-            if (setting.equalsIgnoreCase("beta")) {
+            if ("beta".equalsIgnoreCase(setting)) {
                 return BETA;
             }
-            if (setting.equalsIgnoreCase("alpha")) {
+            if ("alpha".equalsIgnoreCase(setting)) {
                 return ALPHA;
             }
             return RELEASE;
         }
 
-        public static boolean matchType(Updater updater, final String updateType) {
+        public static boolean matchType(final Updater updater, final String updateType) {
             switch (updater.type) {
                 case ALPHA:
                     return true;
                 case BETA:
-                    return updateType.equalsIgnoreCase("beta") || updateType.equalsIgnoreCase("release");
+                    return "beta".equalsIgnoreCase(updateType) || "release".equalsIgnoreCase(updateType);
                 default:
-                    return updateType.equalsIgnoreCase("release");
+                    return "release".equalsIgnoreCase(updateType);
             }
         }
     }
@@ -87,18 +87,18 @@ public class Updater extends Thread {
         super();
         this.plugin = plugin;
         this.file = file;
-        this.id = 41652;
+        id = 41652;
         this.files = files;
 
         mode = UpdateMode.getBySetting(plugin.getConfig().getString("update.mode", "both"));
-        if (mode != UpdateMode.OFF) {
-            type = UpdateType.getBySetting(plugin.getConfig().getString("update.type", "beta"));
-        } else {
+        if (mode == UpdateMode.OFF) {
             type = UpdateType.RELEASE;
+        } else {
+            type = UpdateType.getBySetting(plugin.getConfig().getString("update.type", "beta"));
         }
 
         if (files) {
-            File zipFolder = new File(plugin.getDataFolder(), "files");
+            final File zipFolder = new File(plugin.getDataFolder(), "files");
             zipFolder.mkdir();
 
             init();
@@ -122,11 +122,11 @@ public class Updater extends Thread {
                     continue;
                 }
                 msg = true;
-                outdated = (iOnline > iThis);
+                outdated = iOnline > iThis;
                 updateDigit = (byte) i;
                 message(Bukkit.getConsoleSender());
                 return;
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 calculateRadixString(aOnline[i], aThis[i], i);
                 return;
             }
@@ -149,10 +149,10 @@ public class Updater extends Thread {
                 return;
             }
             msg = true;
-            outdated = (iOnline > iThis);
+            outdated = iOnline > iThis;
             updateDigit = (byte) pos;
             message(Bukkit.getConsoleSender());
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
     }
 
@@ -163,7 +163,7 @@ public class Updater extends Thread {
      * @return a colorized string
      */
     private String colorize(final String string) {
-        StringBuffer result;
+        final StringBuffer result;
         if (updateDigit == 0) {
             result = new StringBuffer(ChatColor.RED.toString());
         } else if (updateDigit == 1) {
@@ -191,7 +191,7 @@ public class Updater extends Thread {
         }
 
         if (outdated) {
-            if (!(player instanceof Player) && (mode != UpdateMode.ANNOUNCE)) {
+            if (!(player instanceof Player) && mode != UpdateMode.ANNOUNCE) {
                 // not only announce, download!
                 final File updateFolder = Bukkit.getServer().getUpdateFolderFile();
                 if (!updateFolder.exists()) {
@@ -224,7 +224,7 @@ public class Updater extends Thread {
 
                         unzip(zipFile.getCanonicalPath());
                     }
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -273,7 +273,7 @@ public class Updater extends Thread {
                 output.getChannel().transferFrom(rbc, 0, 1 << 24);
                 plugin.getLogger().info("Downloaded module update file");
                 output.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }
@@ -306,7 +306,7 @@ public class Updater extends Thread {
 
             pluginURL = null;
             zipURL = null;
-            String serverVersion = Bukkit.getVersion().split("\\(")[1].replace(")", "").split(" ")[1];
+            final String serverVersion = Bukkit.getVersion().split("\\(")[1].replace(")", "").split(" ")[1];
 
             for (int i = array.size() - 1; i > 0; i--) {
 
@@ -340,7 +340,7 @@ public class Updater extends Thread {
 
                     if (sOnlineVersion.contains(" ")) {
                         final String[] split = sOnlineVersion.split(" ");
-                        for (String aSplit : split) {
+                        for (final String aSplit : split) {
                             if (aSplit.contains(".")) {
                                 sOnlineVersion = aSplit;
                                 break;
@@ -351,7 +351,7 @@ public class Updater extends Thread {
                     vOnline = sOnlineVersion.replace("v", "");
                     vThis = sThisVersion.replace("v", "");
 
-                    String min_version = "1.2.2.428";
+                    final String min_version = "1.2.2.428";
                     if (compareDeeply(vThis, min_version) < 0) {
                         continue; // version before the updater. Do not update!
                     }
@@ -375,15 +375,15 @@ public class Updater extends Thread {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
-    private int compareDeeply(String a, String b) {
+    private int compareDeeply(final String a, final String b) {
 
-        String[] sA = a.split("\\.");
-        String[] sB = b.split("\\.");
+        final String[] sA = a.split("\\.");
+        final String[] sB = b.split("\\.");
 
         for (int i = 0; i < 10; i++) {
             if (i == sA.length && i == sB.length) {
@@ -414,24 +414,24 @@ public class Updater extends Thread {
      *
      * @param file the location of the file to extract.
      */
-    private void unzip(String file) {
+    private void unzip(final String file) {
 
         try {
             final File fSourceZip = new File(file);
             final String zipPath = file.substring(0, file.length() - 4);
 
-            ZipFile zipFile = new ZipFile(fSourceZip);
+            final ZipFile zipFile = new ZipFile(fSourceZip);
 
-            Enumeration<? extends ZipEntry> e = zipFile.entries();
+            final Enumeration<? extends ZipEntry> e = zipFile.entries();
             while (e.hasMoreElements()) {
-                ZipEntry entry = e.nextElement();
-                File destinationFilePath = new File(zipPath, entry.getName());
+                final ZipEntry entry = e.nextElement();
+                final File destinationFilePath = new File(zipPath, entry.getName());
                 destinationFilePath.getParentFile().mkdirs();
                 if (entry.isDirectory()) {
                 } else {
                     final BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
                     int b;
-                    final byte buffer[] = new byte[1024];
+                    final byte[] buffer = new byte[1024];
                     final FileOutputStream fos = new FileOutputStream(destinationFilePath);
                     final BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);
                     while ((b = bis.read(buffer, 0, 1024)) != -1) {
@@ -442,7 +442,7 @@ public class Updater extends Thread {
                     bis.close();
                     final String name = destinationFilePath.getName();
                     if (name.endsWith(".jar")) {
-                        destinationFilePath.renameTo(new File(this.plugin.getDataFolder().getParent(), plugin.getDataFolder() + File.separator + "files" + File.separator + name));
+                        destinationFilePath.renameTo(new File(plugin.getDataFolder().getParent(), plugin.getDataFolder() + File.separator + "files" + File.separator + name));
                     }
                 }
             }
@@ -453,7 +453,7 @@ public class Updater extends Thread {
                 if (dFile.isDirectory()) {
                     for (final File cFile : dFile.listFiles()) // Loop through all the files in the new dir
                     {
-                        File destFile = new File(
+                        final File destFile = new File(
                                 plugin.getDataFolder().getCanonicalPath() +
                                         File.separator + "files" +
                                         File.separator + cFile.getName());

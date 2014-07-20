@@ -30,7 +30,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -45,17 +45,17 @@ public class PAA_RegionType extends AbstractArenaCommand {
             return;
         }
 
-        RegionType regionType;
+        final RegionType regionType;
 
         try {
             regionType = RegionType.valueOf(args[1].toUpperCase());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_TYPE_NOTFOUND, args[1], StringParser.joinArray(RegionType.values(), " ")));
             return;
         }
 
         region.setType(regionType);
-        if (regionType.equals(RegionType.BATTLE)) {
+        if (regionType == RegionType.BATTLE) {
             region.protectionSetAll(true);
         }
         region.saveToConfig();
@@ -65,7 +65,7 @@ public class PAA_RegionType extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -85,11 +85,11 @@ public class PAA_RegionType extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaRegion region : arena.getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionType}"});
         }
         return result;

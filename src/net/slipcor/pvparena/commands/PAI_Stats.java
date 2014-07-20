@@ -30,7 +30,7 @@ public class PAI_Stats extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -38,7 +38,7 @@ public class PAI_Stats extends AbstractArenaCommand {
             return;
         }
 
-        final StatisticsManager.type statType = StatisticsManager.type.getByString(args[0]);
+        final type statType = type.getByString(args[0]);
 
         if (statType == null) {
             Arena.pmsg(sender, Language.parse(arena, MSG.STATS_TYPENOTFOUND, StringParser.joinArray(type.values(), ", ")));
@@ -53,7 +53,7 @@ public class PAI_Stats extends AbstractArenaCommand {
         if (args.length > 1) {
             try {
                 max = Integer.parseInt(args[1]);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 max = 10;
             }
         }
@@ -72,7 +72,7 @@ public class PAI_Stats extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -92,8 +92,8 @@ public class PAI_Stats extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
-        for (StatisticsManager.type val : StatisticsManager.type.values()) {
+        final CommandTree<String> result = new CommandTree<String>(null);
+        for (final type val : type.values()) {
             result.define(new String[]{val.name()});
         }
         return result;

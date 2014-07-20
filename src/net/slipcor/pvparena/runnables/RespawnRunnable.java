@@ -23,7 +23,7 @@ public class RespawnRunnable implements Runnable {
         arena.getDebugger().i("RespawnRunnable constructor to spawn " + coord, player.get());
         this.arena = arena;
         this.player = player;
-        this.coordName = coord;
+        coordName = coord;
     }
 
     @Override
@@ -34,15 +34,15 @@ public class RespawnRunnable implements Runnable {
         }
         arena.getDebugger().i("respawning " + player.getName() + " to " + coordName);
 
-        PALocation loc = SpawnManager.getSpawnByExactName(arena, coordName);
+        final PALocation loc = SpawnManager.getSpawnByExactName(arena, coordName);
 
         if (loc == null) {
             final Set<PASpawn> spawns = new HashSet<PASpawn>();
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                String arenaClass = player.getArenaClass().getName();
+                final String arenaClass = player.getArenaClass().getName();
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, player.getArenaTeam().getName() + arenaClass + "spawn"));
             } else if (arena.isFreeForAll()) {
-                if (player.getArenaTeam().getName().equals("free")) {
+                if ("free".equals(player.getArenaTeam().getName())) {
                     spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
                 } else {
                     spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, player.getArenaTeam().getName()));
@@ -53,7 +53,7 @@ public class RespawnRunnable implements Runnable {
 
             int pos = spawns.size();
 
-            for (PASpawn spawn : spawns) {
+            for (final PASpawn spawn : spawns) {
                 if (--pos < 0) {
                     arena.tpPlayerToCoordName(player.get(), spawn.getName());
                     break;

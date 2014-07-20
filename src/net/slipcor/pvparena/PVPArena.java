@@ -42,20 +42,20 @@ import java.util.List;
  */
 
 public class PVPArena extends JavaPlugin {
-    public static PVPArena instance = null;
-    public static ArcadeHook arcade = null;
+    public static PVPArena instance;
+    public static ArcadeHook arcade;
 
     private static Debug DEBUG;
 
-    private ArenaGoalManager agm = null;
-    private ArenaModuleManager amm = null;
-    private ArenaRegionShapeManager arsm = null;
+    private ArenaGoalManager agm;
+    private ArenaModuleManager amm;
+    private ArenaRegionShapeManager arsm;
 
     private final List<AbstractArenaCommand> arenaCommands = new ArrayList<AbstractArenaCommand>();
     private final List<AbstractGlobalCommand> globalCommands = new ArrayList<AbstractGlobalCommand>();
 
-    private Updater updater = null;
-    private boolean shuttingDown = false;
+    private Updater updater;
+    private boolean shuttingDown;
 
     /**
      * Hand over the ArenaGoalManager instance
@@ -116,11 +116,11 @@ public class PVPArena extends JavaPlugin {
      */
     public static boolean hasCreatePerms(final CommandSender sender,
                                          final Arena arena) {
-        return (sender.hasPermission("pvparena.create") && (arena == null || arena
-                .getOwner().equals(sender.getName())));
+        return sender.hasPermission("pvparena.create") && (arena == null || arena
+                .getOwner().equals(sender.getName()));
     }
 
-    public static boolean hasOverridePerms(CommandSender sender) {
+    public static boolean hasOverridePerms(final CommandSender sender) {
         if (sender instanceof Player) {
             return sender.hasPermission("pvparena.override");
         }
@@ -142,8 +142,8 @@ public class PVPArena extends JavaPlugin {
         if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITARENA)) {
             arena.getDebugger().i(
                     " - explicit: "
-                            + (sender.hasPermission("pvparena.join."
-                            + arena.getName().toLowerCase())), sender);
+                            + sender.hasPermission("pvparena.join."
+                            + arena.getName().toLowerCase()), sender);
         } else {
             arena.getDebugger().i(
                     String.valueOf(sender.hasPermission("pvparena.user")),
@@ -229,15 +229,15 @@ public class PVPArena extends JavaPlugin {
         }
 
         if (args.length > 1 && sender.hasPermission("pvparena.admin")
-                && args[0].equalsIgnoreCase("ALL")) {
+                && "ALL".equalsIgnoreCase(args[0])) {
             final String[] newArgs = StringParser.shiftArrayBy(args, 1);
-            for (Arena arena : ArenaManager.getArenas()) {
+            for (final Arena arena : ArenaManager.getArenas()) {
                 try {
                     Bukkit.getServer().dispatchCommand(
                             sender,
                             "pa " + arena.getName() + " "
                                     + StringParser.joinArray(newArgs, " "));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     getLogger().warning("arena null!");
                 }
             }
@@ -246,27 +246,28 @@ public class PVPArena extends JavaPlugin {
         }
 
         AbstractGlobalCommand pacmd = null;
-        for (AbstractGlobalCommand agc : globalCommands) {
+        for (final AbstractGlobalCommand agc : globalCommands) {
             if (agc.getMain().contains(args[0]) || agc.getShort().contains(args[0])) {
                 pacmd = agc;
                 break;
             }
         }
-        ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
+        final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
         if (pacmd != null
-                && !((player.getArena() != null) && (pacmd.getName()
-                .contains("PAI_ArenaList")))) {
+                && !(player.getArena() != null && pacmd.getName()
+                .contains("PAI_ArenaList"))) {
             DEBUG.i("committing: " + pacmd.getName(), sender);
             pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("-s") || args[0].equalsIgnoreCase("stats")) {
+        if ("-s".equalsIgnoreCase(args[0]) || "stats".equalsIgnoreCase(args[0])) {
             final PAI_Stats scmd = new PAI_Stats();
             DEBUG.i("committing: " + scmd.getName(), sender);
             scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
             return true;
-        } else if (args.length > 1
+        }
+        if (args.length > 1
                 && (args[1].equalsIgnoreCase("-s") || args[1]
                 .equalsIgnoreCase("stats"))) {
             final PAI_Stats scmd = new PAI_Stats();
@@ -274,7 +275,8 @@ public class PVPArena extends JavaPlugin {
             scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
                     StringParser.shiftArrayBy(args, 2));
             return true;
-        } else if (args[0].equalsIgnoreCase("!rl")
+        }
+        if (args[0].equalsIgnoreCase("!rl")
                 || args[0].toLowerCase().contains("reload")) {
             final PAA_Reload scmd = new PAA_Reload();
             DEBUG.i("committing: " + scmd.getName(), sender);
@@ -331,8 +333,8 @@ public class PVPArena extends JavaPlugin {
 
         latelounge:
         if (tempArena == null) {
-            for (Arena ar : ArenaManager.getArenas()) {
-                for (ArenaModule mod : ar.getMods()) {
+            for (final Arena ar : ArenaManager.getArenas()) {
+                for (final ArenaModule mod : ar.getMods()) {
                     if (mod.hasSpawn(sender.getName())) {
                         tempArena = ar;
                         break latelounge;
@@ -345,7 +347,7 @@ public class PVPArena extends JavaPlugin {
         }
 
         AbstractArenaCommand paacmd = null;
-        for (AbstractArenaCommand aac : arenaCommands) {
+        for (final AbstractArenaCommand aac : arenaCommands) {
             if (aac.getMain().contains(newArgs[0]) || aac.getShort().contains(newArgs[0])) {
                 paacmd = aac;
                 break;
@@ -353,7 +355,7 @@ public class PVPArena extends JavaPlugin {
 
         }
         if (paacmd == null
-                && (PACheck.handleCommand(tempArena, sender, newArgs))) {
+                && PACheck.handleCommand(tempArena, sender, newArgs)) {
             return true;
         }
 
@@ -382,7 +384,7 @@ public class PVPArena extends JavaPlugin {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+    public List<String> onTabComplete(final CommandSender sender, final Command cmd, final String alias, final String[] args) {
         return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
     }
 
@@ -403,8 +405,8 @@ public class PVPArena extends JavaPlugin {
         arcade = new ArcadeHook();
         DEBUG = new Debug(1);
 
-        this.saveDefaultConfig();
-        if (!this.getConfig().contains("shortcuts")) {
+        saveDefaultConfig();
+        if (!getConfig().contains("shortcuts")) {
             final List<String> ffa = new ArrayList<String>();
             final List<String> teams = new ArrayList<String>();
 
@@ -418,10 +420,10 @@ public class PVPArena extends JavaPlugin {
             getConfig().addDefault("shortcuts.freeforall", ffa);
             getConfig().addDefault("shortcuts.teams", teams);
 
-            this.saveConfig();
+            saveConfig();
         }
 
-        if (!this.getConfig().contains("update.mode") && this.getConfig().contains("modulecheck")) {
+        if (!getConfig().contains("update.mode") && getConfig().contains("modulecheck")) {
             getConfig().set("update.mode", getConfig().getString("update", "both"));
             getConfig().set("update.type", getConfig().getString("updatetype", "beta"));
             getConfig().set("update.modules", getConfig().getBoolean("modulecheck", true));
@@ -429,7 +431,7 @@ public class PVPArena extends JavaPlugin {
             getConfig().set("modulecheck", null);
             getConfig().set("updatetype", null);
 
-            this.saveConfig();
+            saveConfig();
         }
 
         getDataFolder().mkdir();
@@ -478,24 +480,24 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updater = new Updater(this, this.getFile(), true);
+        updater = new Updater(this, getFile(), true);
 
         if (ArenaManager.count() > 0) {
 
             final Tracker trackMe = new Tracker();
             trackMe.start();
 
-            Metrics metrics;
+            final Metrics metrics;
             try {
                 metrics = new Metrics(this);
                 final Metrics.Graph atg = metrics
                         .createGraph("Game modes installed");
-                for (ArenaGoal at : agm.getAllGoals()) {
+                for (final ArenaGoal at : agm.getAllGoals()) {
                     atg.addPlotter(new WrapPlotter(at.getName()));
                 }
                 final Metrics.Graph amg = metrics
                         .createGraph("Enhancement modules installed");
-                for (ArenaModule am : amm.getAllMods()) {
+                for (final ArenaModule am : amm.getAllMods()) {
                     amg.addPlotter(new WrapPlotter(am.getName()));
                 }
                 final Metrics.Graph acg = metrics.createGraph("Arena count");
@@ -503,7 +505,7 @@ public class PVPArena extends JavaPlugin {
                         .getArenas().size()));
 
                 metrics.start();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
@@ -512,7 +514,7 @@ public class PVPArena extends JavaPlugin {
     }
 
     private class WrapPlotter extends Metrics.Plotter {
-        final private int arenaCount;
+        private final int arenaCount;
 
         public WrapPlotter(final String name) {
             super(name);

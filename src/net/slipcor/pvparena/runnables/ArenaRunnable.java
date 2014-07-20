@@ -24,7 +24,7 @@ import java.util.Set;
 
 public abstract class ArenaRunnable extends BukkitRunnable {
 
-    protected final static Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
+    protected static final Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
 
     static {
         final String seconds = Language.parse(MSG.TIME_SECONDS);
@@ -69,7 +69,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         super();
         this.message = message;
         this.seconds = seconds;
-        this.sPlayer = player == null ? null : player.getName();
+        sPlayer = player == null ? null : player.getName();
         this.arena = arena;
         this.global = global;
 
@@ -80,16 +80,16 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         if ((message == null) || (MESSAGES.get(seconds) == null)) {
             return;
         }
-        final MSG msg = MSG.getByNode(this.message);
+        final MSG msg = MSG.getByNode(message);
         if (msg == null) {
-            PVPArena.instance.getLogger().warning("MSG not found: " + this.message);
+            PVPArena.instance.getLogger().warning("MSG not found: " + message);
             return;
         }
         final String message = seconds > 5 ? Language.parse(arena, msg, MESSAGES.get(seconds)) : MESSAGES.get(seconds);
         if (global) {
             final Player[] players = Bukkit.getOnlinePlayers();
 
-            for (Player p : players) {
+            for (final Player p : players) {
                 try {
                     if (arena != null && arena.hasPlayer(p)) {
                         continue;
@@ -98,7 +98,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
                         continue;
                     }
                     Arena.pmsg(p, message);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                 }
             }
 
@@ -106,7 +106,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
         if (arena != null) {
             final Set<ArenaPlayer> players = arena.getFighters();
-            for (ArenaPlayer ap : players) {
+            for (final ArenaPlayer ap : players) {
                 if (ap.getName().equals(sPlayer)) {
                     continue;
                 }
@@ -118,7 +118,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
 
         if (Bukkit.getPlayer(sPlayer) != null) {
-            ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sPlayer);
+            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sPlayer);
             if (aPlayer.getArena() == null) {
                 Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
             } else {
@@ -134,7 +134,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
             commit();
             try {
                 cancel();
-            } catch (IllegalStateException e) {
+            } catch (final IllegalStateException e) {
                 warn();
             }
         }

@@ -56,16 +56,16 @@ public class GoalPlayerKillReward extends ArenaGoal {
 	 * private static enum GameMode { GEAR_UP; }
 	 */
 
-    private Map<Integer, ItemStack[]> itemMap = null;
+    private Map<Integer, ItemStack[]> itemMap;
 
-    private EndRunnable endRunner = null;
+    private EndRunnable endRunner;
 
     @Override
     public String version() {
         return PVPArena.instance.getDescription().getVersion();
     }
 
-    private final static int PRIORITY = 6;
+    private static final int PRIORITY = 6;
 
     @Override
     public boolean allowsJoinInBattle() {
@@ -75,8 +75,8 @@ public class GoalPlayerKillReward extends ArenaGoal {
     @Override
     public PACheck checkCommand(final PACheck res, final String string) {
         if (res.getPriority() < PRIORITY
-                && string.equalsIgnoreCase("killrewards")
-                || string.equalsIgnoreCase("!kr")) {
+                && "killrewards".equalsIgnoreCase(string)
+                || "!kr".equalsIgnoreCase(string)) {
             res.setPriority(this, PRIORITY);
         }
         return res;
@@ -94,7 +94,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"{int}", "remove"});
         return result;
     }
@@ -177,11 +177,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
         // /pa [arena] !kr [number] {remove}
 
-        int value;
+        final int value;
 
         try {
             value = Integer.parseInt(args[1]);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[1]));
             return;
         }
@@ -219,12 +219,12 @@ public class GoalPlayerKillReward extends ArenaGoal {
             arena.getDebugger().i("[PKW] already ending");
             return;
         }
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (!ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() != Status.FIGHT) {
                     continue;
                 }
 
@@ -289,8 +289,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
                 }
 
                 final int iLives = getLifeMap().get(player.getName());
-                if (!ArenaPlayer.parsePlayer(player.getName()).getStatus()
-                        .equals(Status.FIGHT)) {
+                if (ArenaPlayer.parsePlayer(player.getName()).getStatus() != Status.FIGHT) {
                     return;
                 }
                 InventoryManager.clearInventory(player);
@@ -315,16 +314,16 @@ public class GoalPlayerKillReward extends ArenaGoal {
         arena.getDebugger().i("kills to go for " + killer.getName() + ": " + iLives, killer);
         if (iLives <= 1) {
             // player has won!
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(), "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(), "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
-            for (ArenaPlayer ap : arena.getFighters()) {
+            for (final ArenaPlayer ap : arena.getFighters()) {
                 if (ap.getName().equals(killer.getName())) {
                     continue;
                 }
                 plrs.add(ap);
             }
-            for (ArenaPlayer ap : plrs) {
+            for (final ArenaPlayer ap : plrs) {
                 getLifeMap().remove(ap.getName());
 				/*
 				arena.getDebugger().i("faking player death", ap.get());
@@ -342,7 +341,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
             }
             PACheck.handleEnd(arena, false);
         } else {
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             getLifeMap().put(killer.getName(), iLives);
@@ -353,8 +352,8 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public void displayInfo(final CommandSender sender) {
-        for (int i : getItemMap().keySet()) {
-            ItemStack[] items = getItemMap().get(i);
+        for (final int i : getItemMap().keySet()) {
+            final ItemStack[] items = getItemMap().get(i);
             sender.sendMessage("kill #" + i + ": " + StringParser.getStringFromItemStacks(items));
         }
     }
@@ -371,23 +370,23 @@ public class GoalPlayerKillReward extends ArenaGoal {
         if (arena.isFreeForAll()) {
 
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
                     }
                 }
             }
-            return (string.toLowerCase().startsWith("spawn"));
+            return string.toLowerCase().startsWith("spawn");
         }
-        for (String teamName : arena.getTeamNames()) {
+        for (final String teamName : arena.getTeamNames()) {
             if (string.toLowerCase().startsWith(
                     teamName.toLowerCase() + "spawn")) {
                 return true;
             }
 
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -405,7 +404,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     private int getMaxInt() {
         int max = 0;
-        for (int i : getItemMap().keySet()) {
+        for (final int i : getItemMap().keySet()) {
             max = Math.max(max, i);
         }
         return max + 1;
@@ -420,7 +419,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
     public void parseLeave(final Player player) {
         if (player == null) {
             PVPArena.instance.getLogger().warning(
-                    this.getName() + ": player NULL");
+                    getName() + ": player NULL");
             return;
         }
         if (getLifeMap().containsKey(player.getName())) {
@@ -430,9 +429,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                this.getLifeMap().put(ap.getName(), getMaxInt());
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                getLifeMap().put(ap.getName(), getMaxInt());
             }
         }
     }
@@ -455,7 +454,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
                 config.addDefault("teams.blue", ChatColor.BLUE.name());
             }
             if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
-                    && (config.get("flagColors") == null)) {
+                    && config.get("flagColors") == null) {
                 arena.getDebugger().i("no flagheads defined, adding white and black!");
                 config.addDefault("flagColors.red", "WHITE");
                 config.addDefault("flagColors.blue", "BLACK");
@@ -467,11 +466,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
                 .get("goal.playerkillrewards");
 
         if (cs != null) {
-            for (String line : cs.getKeys(false)) {
+            for (final String line : cs.getKeys(false)) {
                 try {
                     getItemMap().put(Integer.parseInt(line.substring(2)), StringParser
                             .getItemStacksFromString(cs.getString(line)));
-                } catch (Exception e) {
+                } catch (final Exception e) {
                 }
             }
         }
@@ -494,7 +493,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
     }
 
     private void saveItems() {
-        for (int i : getItemMap().keySet()) {
+        for (final int i : getItemMap().keySet()) {
             arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i,
                     StringParser.getStringFromItemStacks(getItemMap().get(i)));
         }
@@ -505,7 +504,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
         double score;
 
-        for (ArenaPlayer ap : arena.getFighters()) {
+        for (final ArenaPlayer ap : arena.getFighters()) {
             score = getMaxInt()
                     - (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
                     .get(ap.getName()) : 0);

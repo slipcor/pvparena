@@ -24,9 +24,9 @@ public final class Help {
 
     }
 
-    private final static String LINE = "-------------------------------------------";
+    private static final String LINE = "-------------------------------------------";
 
-    public static enum HELP {
+    public enum HELP {
         BLACKLIST("nulang.help.msg.blacklist", new String[]{
                 "Manages block break/place blacklist entries",
                 LINE,
@@ -408,13 +408,13 @@ public final class Help {
 
 
         private final String node;
-        private List<String> value;
+        private final List<String> value;
 
-        private HELP(final String node, final String[] sArray) {
+        HELP(final String node, final String[] sArray) {
             this.node = node;
             final List<String> list = new ArrayList<String>();
             Collections.addAll(list, sArray);
-            this.value = list;
+            value = list;
         }
 
         public String getNode() {
@@ -433,10 +433,10 @@ public final class Help {
         PVPArena.instance.getDataFolder().mkdir();
         final File configFile = new File(PVPArena.instance.getDataFolder().getPath()
                 + "/help_" + langString + ".yml");
-        if (!(configFile.exists())) {
+        if (!configFile.exists()) {
             try {
                 configFile.createNewFile();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error when creating help language file.");
             }
@@ -444,7 +444,7 @@ public final class Help {
         boolean override = false;
 
         final YamlConfiguration config = new YamlConfiguration();
-        String version = "v0.9.9.9";
+        final String version = "v0.9.9.9";
         try {
             config.load(configFile);
             final String ver = config.getString("version", "0");
@@ -457,11 +457,11 @@ public final class Help {
                 }
                 config.save(file);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
 
-        for (HELP m : HELP.values()) {
+        for (final HELP m : HELP.values()) {
             if (override) {
                 config.set(m.getNode(), m.get());
             } else {
@@ -474,7 +474,7 @@ public final class Help {
         config.options().copyDefaults(true);
         try {
             config.save(configFile);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

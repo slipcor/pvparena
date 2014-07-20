@@ -21,16 +21,18 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 
-public class TabManager {
-    public static List<String> getMatches(CommandSender sender, List<AbstractArenaCommand> arenaCommands, List<AbstractGlobalCommand> globalCommands, String[] args) {
-        Set<String> matches = new LinkedHashSet<String>();
+public final class TabManager {
+    private TabManager() {}
+
+    public static List<String> getMatches(final CommandSender sender, final List<AbstractArenaCommand> arenaCommands, final List<AbstractGlobalCommand> globalCommands, String[] args) {
+        final Set<String> matches = new LinkedHashSet<String>();
         Arena arena = null;
         if (sender instanceof Player) {
             arena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
         }
 
         if (args.length < 1) {
-            for (Arena a : ArenaManager.getArenas()) {
+            for (final Arena a : ArenaManager.getArenas()) {
                 matches.add(a.getName());
             }
             return new ArrayList<String>(matches);
@@ -69,7 +71,7 @@ public class TabManager {
                     sender.sendMessage(Language.parse(Language.MSG.ERROR_ARENA_NOTFOUND, args[0]));
                     return new ArrayList<String>(matches);
                 }
-                for (Arena a : ArenaManager.getArenas()) {
+                for (final Arena a : ArenaManager.getArenas()) {
                     matches.add(a.getName());
                 }
                 return new ArrayList<String>(matches);
@@ -90,7 +92,7 @@ public class TabManager {
             return new ArrayList<String>(matches);
         }
 
-        List<CommandTree<String>> commands = new ArrayList<CommandTree<String>>();
+        final List<CommandTree<String>> commands = new ArrayList<CommandTree<String>>();
         addTreesMatchingValueInHandlerList(commands, arenaCommands, arena, args[0]);
         addTreesMatchingValueInHandlerList(commands, globalCommands, arena, args[0]);
         if (arena == null) {
@@ -101,7 +103,7 @@ public class TabManager {
             addTreesMatchingValueInHandlerList(commands, new ArrayList<ArenaModule>(arena.getMods()), arena, args[0]);
         }
 
-        for (CommandTree<String> tree : commands) {
+        for (final CommandTree<String> tree : commands) {
             addMatchesFromCommandTree(matches, Arrays.copyOfRange(args, 1, args.length), tree);
         }
         return new ArrayList<String>(matches);
@@ -114,15 +116,15 @@ public class TabManager {
      * @param list    the ArenaCommandHandler list to search
      * @param prefix  the prefix to look for
      */
-    private static void addCommandsStartingWithPrefix(Set<String> matches, CommandSender sender, Arena arena, List<? extends IArenaCommandHandler> list, String prefix) {
-        for (IArenaCommandHandler ach : list) {
+    private static void addCommandsStartingWithPrefix(final Set<String> matches, final CommandSender sender, final Arena arena, final List<? extends IArenaCommandHandler> list, final String prefix) {
+        for (final IArenaCommandHandler ach : list) {
             if (ach.hasPerms(sender, arena)) {
-                for (String value : ach.getMain()) {
+                for (final String value : ach.getMain()) {
                     if (value.startsWith(prefix)) {
                         matches.add(value);
                     }
                 }
-                for (String value : ach.getShort()) {
+                for (final String value : ach.getShort()) {
                     if (value.startsWith(prefix)) {
                         matches.add(value);
                     }
@@ -138,8 +140,8 @@ public class TabManager {
      * @param key    the key to match
      * @param list   the Enum list to search
      */
-    private static void addEnumMatchesToList(List<String> result, String key, List<? extends Enum> list) {
-        for (Enum e : list) {
+    private static void addEnumMatchesToList(final List<String> result, final String key, final List<? extends Enum> list) {
+        for (final Enum e : list) {
             if (e.name().startsWith(key)) {
                 result.add(e.name());
             }
@@ -153,18 +155,19 @@ public class TabManager {
      * @param args    the arguments to search for
      * @param sub     the current CommandTree
      */
-    private static void addMatchesFromCommandTree(Set<String> matches, String[] args, CommandTree<String> sub) {
+    private static void addMatchesFromCommandTree(final Set<String> matches, final String[] args, final CommandTree<String> sub) {
         if (args.length < 1) {
             return;
         }
         String override = args[0];
         if (args.length == 1) {
             // we have the last argument
-            for (String key : sub.getContent()) {
+            for (final String key : sub.getContent()) {
                 matches.addAll(getKeyMatchesInsideDefinition(override, key));
             }
             return;
-        } else if (override.equals("")) {
+        }
+        if (override.equals("")) {
             for (String key : sub.getContent()) {
                 matches.addAll(getKeyMatchesInsideDefinition(override, key));
             }
@@ -192,17 +195,17 @@ public class TabManager {
      * @param arena       the arena instance to apply for subvalues (can be null)
      * @param value       the value to search for
      */
-    private static void addTreesMatchingValueInHandlerList(List<CommandTree<String>> treeList, List<? extends IArenaCommandHandler> handlerList, Arena arena, String value) {
+    private static void addTreesMatchingValueInHandlerList(final List<CommandTree<String>> treeList, final List<? extends IArenaCommandHandler> handlerList, final Arena arena, final String value) {
 
         outer:
-        for (IArenaCommandHandler aac : handlerList) {
-            for (String entry : aac.getMain()) {
+        for (final IArenaCommandHandler aac : handlerList) {
+            for (final String entry : aac.getMain()) {
                 if (entry.equals(value)) {
                     treeList.add(aac.getSubs(arena));
                     continue outer;
                 }
             }
-            for (String entry : aac.getShort()) {
+            for (final String entry : aac.getShort()) {
                 if (entry.equals(value)) {
                     treeList.add(aac.getSubs(arena));
                     continue outer;
@@ -218,67 +221,65 @@ public class TabManager {
      * @param definition the node definition ("{Enum}")
      * @return a set of matching nodes
      */
-    private static List<String> getKeyMatchesInsideDefinition(String key, String definition) {
-        List<String> result = new ArrayList<String>();
-        if (!"".equals(key) && definition.startsWith(key)) {
-            result.add(definition);
-        } else if ("".equals(key) && !definition.startsWith("{")) {
+    private static List<String> getKeyMatchesInsideDefinition(final String key, final String definition) {
+        final List<String> result = new ArrayList<String>();
+        if (!"".equals(key) && definition.startsWith(key) || "".equals(key) && !definition.startsWith("{")) {
             result.add(definition);
         }
         if (definition.startsWith("{")) {
-            if (definition.equals("{Material}")) {
-                Material[] mats = Material.values();
+            if ("{Material}".equals(definition)) {
+                final Material[] mats = Material.values();
                 addEnumMatchesToList(result, key, Arrays.asList(mats));
-            } else if (definition.equals("{Player}")) {
-                Player[] players = Bukkit.getOnlinePlayers();
+            } else if ("{Player}".equals(definition)) {
+                final Player[] players = Bukkit.getOnlinePlayers();
                 if ("".equals(key)) {
-                    for (Player val : players) {
+                    for (final Player val : players) {
                         result.add(val.getName());
                     }
                 } else {
-                    for (Player val : players) {
+                    for (final Player val : players) {
                         if (val.getName().startsWith(key)) {
                             result.add(val.getName());
                         }
                     }
                 }
-            } else if (definition.equals("{RegionProtection}")) {
-                ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
+            } else if ("{RegionProtection}".equals(definition)) {
+                final ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
                 addEnumMatchesToList(result, key, Arrays.asList(protections));
-            } else if (definition.equals("{RegionFlag}")) {
-                ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
+            } else if ("{RegionFlag}".equals(definition)) {
+                final ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
                 addEnumMatchesToList(result, key, Arrays.asList(flags));
-            } else if (definition.equals("{RegionType}")) {
-                ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
+            } else if ("{RegionType}".equals(definition)) {
+                final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
                 addEnumMatchesToList(result, key, Arrays.asList(types));
-            } else if (definition.equals("{Boolean}")) {
-                List<String> values = new ArrayList<String>();
+            } else if ("{Boolean}".equals(definition)) {
+                final List<String> values = new ArrayList<String>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
                 if ("".equals(key)) {
                     result.addAll(values);
                 } else {
-                    for (String val : values) {
+                    for (final String val : values) {
                         if (val.startsWith(key)) {
                             result.add(val);
                         }
                     }
                 }
-            } else if (definition.equals("{PotionEffectType}")) {
-                PotionEffectType[] pet = PotionEffectType.values();
+            } else if ("{PotionEffectType}".equals(definition)) {
+                final PotionEffectType[] pet = PotionEffectType.values();
                 if ("".equals(key)) {
-                    for (PotionEffectType val : pet) {
+                    for (final PotionEffectType val : pet) {
                         result.add(val.getName());
                     }
                 } else {
-                    for (PotionEffectType val : pet) {
+                    for (final PotionEffectType val : pet) {
                         if (val.getName().startsWith(key)) {
                             result.add(val.getName());
                         }
                     }
                 }
-            } else if (definition.equals("{EntityType}")) {
-                EntityType[] entityTypes = EntityType.values();
+            } else if ("{EntityType}".equals(definition)) {
+                final EntityType[] entityTypes = EntityType.values();
                 addEnumMatchesToList(result, key, Arrays.asList(entityTypes));
             }
         }
@@ -292,58 +293,58 @@ public class TabManager {
      * @param definition the node definition ("{Enum}")
      * @return the definition if found, the key, if not
      */
-    private static String getOverrideFromDefinition(String key, String definition) {
+    private static String getOverrideFromDefinition(final String key, final String definition) {
         if (definition.startsWith("{")) {
-            if (definition.equals("{Material}")) {
-                Material[] mats = Material.values();
+            if ("{Material}".equals(definition)) {
+                final Material[] mats = Material.values();
                 return getOverrideKey(key, definition, Arrays.asList(mats));
-            } else if (definition.equals("{String}")) {
+            } else if ("{String}".equals(definition)) {
                 return definition;
-            } else if (definition.equals("{Player}")) {
-                Player[] players = Bukkit.getOnlinePlayers();
-                for (Player val : players) {
+            } else if ("{Player}".equals(definition)) {
+                final Player[] players = Bukkit.getOnlinePlayers();
+                for (final Player val : players) {
                     if (val.getName().equals(key)) {
                         return definition;
                     }
                 }
                 return key;
-            } else if (definition.equals("{RegionProtection}")) {
-                ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
+            } else if ("{RegionProtection}".equals(definition)) {
+                final ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
                 return getOverrideKey(key, definition, Arrays.asList(protections));
-            } else if (definition.equals("{RegionFlag}")) {
-                ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
+            } else if ("{RegionFlag}".equals(definition)) {
+                final ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
                 return getOverrideKey(key, definition, Arrays.asList(flags));
-            } else if (definition.equals("{RegionType}")) {
-                ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
+            } else if ("{RegionType}".equals(definition)) {
+                final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
                 return getOverrideKey(key, definition, Arrays.asList(types));
-            } else if (definition.equals("{Boolean}")) {
-                List<String> values = new ArrayList<String>();
+            } else if ("{Boolean}".equals(definition)) {
+                final List<String> values = new ArrayList<String>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
-                for (String val : values) {
+                for (final String val : values) {
                     if (val.equals(key)) {
                         return definition;
                     }
                 }
                 return key;
-            } else if (definition.equals("{int}")) {
+            } else if ("{int}".equals(definition)) {
                 try {
-                    int i = Integer.parseInt(key);
+                    final int i = Integer.parseInt(key);
                     return definition;
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     return key;
                 }
-            } else if (definition.equals("{PotionEffectType}")) {
-                PotionEffectType[] pet = PotionEffectType.values();
+            } else if ("{PotionEffectType}".equals(definition)) {
+                final PotionEffectType[] pet = PotionEffectType.values();
 
-                for (PotionEffectType val : pet) {
+                for (final PotionEffectType val : pet) {
                     if (val.getName().equals(key)) {
                         return definition;
                     }
                 }
                 return key;
-            } else if (definition.equals("{EntityType}")) {
-                EntityType[] entityTypes = EntityType.values();
+            } else if ("{EntityType}".equals(definition)) {
+                final EntityType[] entityTypes = EntityType.values();
                 return getOverrideKey(key, definition, Arrays.asList(entityTypes));
             }
         }
@@ -358,8 +359,8 @@ public class TabManager {
      * @param list       the Enum list to search
      * @return the definition if found, the key, if not
      */
-    private static String getOverrideKey(String key, String definition, List<? extends Enum> list) {
-        for (Enum e : list) {
+    private static String getOverrideKey(final String key, final String definition, final List<? extends Enum> list) {
+        for (final Enum e : list) {
             if (e.name().equals(key)) {
                 return definition;
             }

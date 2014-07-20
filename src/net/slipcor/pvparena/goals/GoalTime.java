@@ -95,9 +95,9 @@ public class GoalTime extends ArenaGoal {
             return;
         }
 
-        Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
+        final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
 
-        for (ArenaPlayer aPlayer : arena.getFighters()) {
+        for (final ArenaPlayer aPlayer : arena.getFighters()) {
             if (aPlayer.getStatus() == Status.FIGHT) {
                 teams.add(aPlayer.getArenaTeam());
                 if (teams.size() > 1) {

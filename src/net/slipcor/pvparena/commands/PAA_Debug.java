@@ -28,7 +28,7 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -45,7 +45,7 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -65,8 +65,8 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
-        for (Arena arena : ArenaManager.getArenas()) {
+        final CommandTree<String> result = new CommandTree<String>(null);
+        for (final Arena arena : ArenaManager.getArenas()) {
             result.define(new String[]{arena.getName()});
         }
         result.define(new String[]{"all"});

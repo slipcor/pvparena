@@ -84,8 +84,8 @@ public final class ArenaClass {
 
     public static void addGlobalClasses() {
         globals.clear();
-        File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
+        final File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
+        final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 
         cfg.addDefault("classes.Ranger",
                 "261,262:64,298,299,300,301");
@@ -96,16 +96,16 @@ public final class ArenaClass {
         cfg.options().copyDefaults();
         try {
             cfg.save(classFile);
-        } catch (IOException e1) {
+        } catch (final IOException e1) {
             e1.printStackTrace();
         }
 
-        for (String className : cfg.getConfigurationSection("classes").getKeys(false)) {
-            String sItemList;
+        for (final String className : cfg.getConfigurationSection("classes").getKeys(false)) {
+            final String sItemList;
 
             try {
                 sItemList = (String) cfg.getConfigurationSection("classes").get(className);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + className);
@@ -118,9 +118,9 @@ public final class ArenaClass {
             for (int i = 0; i < sItems.length; i++) {
 
                 if (sItems[i].contains(">>!<<")) {
-                    String[] split = sItems[i].split(">>!<<");
+                    final String[] split = sItems[i].split(">>!<<");
 
-                    int id = Integer.parseInt(split[0]);
+                    final int id = Integer.parseInt(split[0]);
                     armors[id] = StringParser.getItemStackFromString(split[1]);
 
                     if (armors[id] == null) {
@@ -141,18 +141,18 @@ public final class ArenaClass {
         }
     }
 
-    public static void addGlobalClasses(Arena arena) {
-        for (String teamName : globals.keySet()) {
+    public static void addGlobalClasses(final Arena arena) {
+        for (final String teamName : globals.keySet()) {
             arena.addClass(teamName, globals.get(teamName).getItems(), globals.get(teamName).getArmors());
         }
     }
 
     public static void equip(final Player player, final ItemStack[] items) {
-        for (ItemStack item : items) {
+        for (final ItemStack item : items) {
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
-                if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && item.getItemMeta().getDisplayName().equals("SPAWN")) {
+                if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
                     final SpawnEgg egg = (SpawnEgg) item.getData();
 
                     try {
@@ -162,7 +162,7 @@ public final class ArenaClass {
                                 ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(player, player.getWorld().spawnEntity(player.getLocation(), egg.getSpawnedType()));
                             }
                         }, 20L);
-                    } catch(IllegalPluginAccessException e) {
+                    } catch(final IllegalPluginAccessException e) {
 
                     }
                 } else {
@@ -177,7 +177,7 @@ public final class ArenaClass {
     public void equip(final Player player) {
         debug.i("Equipping player " + player.getName() + " with items!", player);
         player.getInventory().setArmorContents(armors);
-        for (ItemStack item : items) {
+        for (final ItemStack item : items) {
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
@@ -218,9 +218,9 @@ public final class ArenaClass {
         }
     }
 
-    public ArenaClass(final String className, final ItemStack[] classItems, ItemStack[] armors) {
-        this.name = className;
-        this.items = classItems.clone();
+    public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack[] armors) {
+        name = className;
+        items = classItems.clone();
         this.armors = armors.clone();
     }
 

@@ -30,7 +30,7 @@ public class ArenaRegionShapeManager {
      * @param plugin the plugin instance
      */
     public ArenaRegionShapeManager(final PVPArena plugin) {
-        final File path = new File(plugin.getDataFolder().toString() + "/regionshapes");
+        final File path = new File(plugin.getDataFolder() + "/regionshapes");
         if (!path.exists()) {
             path.mkdir();
         }
@@ -44,7 +44,7 @@ public class ArenaRegionShapeManager {
         regions.add(new CylindricRegion());
         regions.add(new SphericRegion());
 
-        for (ArenaRegionShape mod : regions) {
+        for (final ArenaRegionShape mod : regions) {
             mod.onThisLoad();
             DEBUG.i("module ArenaRegionShape loaded: "
                     + mod.getName() + " (version " + mod.getVersion() + ")");
@@ -58,7 +58,7 @@ public class ArenaRegionShapeManager {
      * @return the module if found, null otherwise
      */
     public ArenaRegionShape getModule(final String mName) {
-        for (ArenaRegionShape region : regions) {
+        for (final ArenaRegionShape region : regions) {
             if (region.getName().equalsIgnoreCase(mName)) {
                 return region;
             }
@@ -67,7 +67,7 @@ public class ArenaRegionShapeManager {
     }
 
     public static ArenaRegionShape getShapeByName(final String string) {
-        for (ArenaRegionShape shape : regions) {
+        for (final ArenaRegionShape shape : regions) {
             if (shape.getName().toUpperCase().startsWith(string.toUpperCase().substring(0, 2))) {
                 return shape;
             }

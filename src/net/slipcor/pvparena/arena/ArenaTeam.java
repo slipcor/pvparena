@@ -33,7 +33,7 @@ public class ArenaTeam {
      * @param color the arena team color string
      */
     public ArenaTeam(final String name, final String color) {
-        this.players = new HashSet<ArenaPlayer>();
+        players = new HashSet<ArenaPlayer>();
         this.color = StringParser.getChatColorFromWoolEnum(color);
         this.name = name;
     }
@@ -44,7 +44,7 @@ public class ArenaTeam {
      * @param player the player to add
      */
     public void add(final ArenaPlayer player) {
-        this.players.add(player);
+        players.add(player);
         debug.i("Added player " + player.getName() + " to team " + name, player.get());
         player.getArena().increasePlayerCount();
     }
@@ -109,8 +109,8 @@ public class ArenaTeam {
     }
 
     public boolean isEveryoneReady() {
-        for (ArenaPlayer ap : players) {
-            if (!ap.getStatus().equals(Status.READY)) {
+        for (final ArenaPlayer ap : players) {
+            if (ap.getStatus() != Status.READY) {
                 return false;
             }
         }
@@ -123,6 +123,6 @@ public class ArenaTeam {
      * @param player the player to remove
      */
     public void remove(final ArenaPlayer player) {
-        this.players.remove(player);
+        players.remove(player);
     }
 }

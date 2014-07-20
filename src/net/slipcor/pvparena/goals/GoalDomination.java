@@ -68,7 +68,7 @@ public class GoalDomination extends ArenaGoal {
             return res;
         }
 
-        if (string.equals("flag")) {
+        if ("flag".equals(string)) {
             res.setPriority(this, PRIORITY);
         }
 
@@ -101,12 +101,12 @@ public class GoalDomination extends ArenaGoal {
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
 
-        String team = checkForMissingTeamSpawn(list);
+        final String team = checkForMissingTeamSpawn(list);
         if (team != null) {
             return team;
         }
         int count = 0;
-        for (String s : list) {
+        for (final String s : list) {
             if (s.startsWith("flag")) {
                 count++;
             }
@@ -161,7 +161,7 @@ public class GoalDomination extends ArenaGoal {
     private Set<String> checkLocationPresentTeams(final Location loc, final int distance) {
         final Set<String> result = new HashSet<String>();
 
-        for (ArenaPlayer p : arena.getFighters()) {
+        for (final ArenaPlayer p : arena.getFighters()) {
 
             if (p.get().getLocation().distance(loc) > distance) {
                 continue;
@@ -206,10 +206,10 @@ public class GoalDomination extends ArenaGoal {
         final int checkDistance = arena.getArenaConfig().getInt(
                 CFG.GOAL_DOM_CLAIMRANGE);
 
-        for (PABlockLocation paLoc : SpawnManager.getBlocksStartingWith(arena, "flag")) {
+        for (final PABlockLocation paLoc : SpawnManager.getBlocksStartingWith(arena, "flag")) {
             // arena.getDebugger().info("checking location: " + loc.toString());
 
-            Location loc = paLoc.toLocation();
+            final Location loc = paLoc.toLocation();
 
             final Set<String> teams = checkLocationPresentTeams(paLoc.toLocation(),
                     checkDistance);
@@ -348,9 +348,9 @@ public class GoalDomination extends ArenaGoal {
                     // not being claimed
                     if (teams.size() < 2) {
                         arena.getDebugger().i("  - just one team present");
-                        for (String sName : teams) {
+                        for (final String sName : teams) {
                             arena.getDebugger().i("TEAM " + sName + " IS CLAIMING "
-                                    + loc.toString());
+                                    + loc);
                             final ArenaTeam team = arena.getTeam(sName);
                             arena.broadcast(Language.parse(arena,
                                     MSG.GOAL_DOMINATION_CLAIMING,
@@ -373,10 +373,10 @@ public class GoalDomination extends ArenaGoal {
         }
     }
 
-    private void maybeAddScoreAndBroadCast(String team) {
+    private void maybeAddScoreAndBroadCast(final String team) {
         if (arena.getArenaConfig().getBoolean(CFG.GOAL_DOM_ONLYWHENMORE)) {
-            Map<String, Integer> claimed = new HashMap<String, Integer>();
-            for (String s : this.getFlagMap().values()) {
+            final Map<String, Integer> claimed = new HashMap<String, Integer>();
+            for (final String s : getFlagMap().values()) {
                 final int toAdd;
                 if (claimed.containsKey(s)) {
                     toAdd = claimed.get(s) + 1;
@@ -385,7 +385,7 @@ public class GoalDomination extends ArenaGoal {
                 }
                 claimed.put(s, toAdd);
             }
-            for (String otherTeam : claimed.keySet()) {
+            for (final String otherTeam : claimed.keySet()) {
                 if (otherTeam.equals(team)) {
                     continue;
                 }
@@ -397,12 +397,12 @@ public class GoalDomination extends ArenaGoal {
 
         reduceLivesCheckEndAndCommit(arena, team);
 
-        int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
+        final int max = arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES);
         if (!getLifeMap().containsKey(team)) {
             return;
         }
 
-        int lives = this.getLifeMap().get(team);
+        final int lives = getLifeMap().get(team);
 
         if ((max - lives) % announceOffset != 0) {
             return;
@@ -420,7 +420,7 @@ public class GoalDomination extends ArenaGoal {
                 || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
-        if (block == null || !block.getType().equals(Material.WOOL)) {
+        if (block == null || block.getType() != Material.WOOL) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -438,11 +438,11 @@ public class GoalDomination extends ArenaGoal {
 
         String winteam = sTeam;
 
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             if (team.getName().equals(sTeam)) {
                 continue;
             }
-            for (ArenaPlayer ap : team.getTeamMembers()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
 
                 ap.addLosses();
 				/*
@@ -453,9 +453,9 @@ public class GoalDomination extends ArenaGoal {
                 ap.setStatus(Status.LOST);
             }
         }
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (!ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() != Status.FIGHT) {
                     continue;
                 }
                 winteam = team.getName();
@@ -502,13 +502,13 @@ public class GoalDomination extends ArenaGoal {
         }
         arena.getDebugger().i("[DOMINATION]");
 
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() == Status.FIGHT) {
                     aTeam = team;
                     break;
                 }
@@ -540,10 +540,10 @@ public class GoalDomination extends ArenaGoal {
     public boolean commitSetFlag(final Player player, final Block block) {
 
         if (PVPArena.hasAdminPerms(player)
-                || (PVPArena.hasCreatePerms(player, arena))
-                && (player.getItemInHand() != null)
-                && (player.getItemInHand().getTypeId() == arena
-                .getArenaConfig().getInt(CFG.GENERAL_WAND))) {
+                || PVPArena.hasCreatePerms(player, arena)
+                && player.getItemInHand() != null
+                && player.getItemInHand().getTypeId() == arena
+                .getArenaConfig().getInt(CFG.GENERAL_WAND)) {
 
             final Set<PABlockLocation> flags = SpawnManager.getBlocksStartingWith(arena,
                     "flag");
@@ -552,7 +552,7 @@ public class GoalDomination extends ArenaGoal {
                 return false;
             }
 
-            String flagName = "flag" + flags.size();
+            final String flagName = "flag" + flags.size();
 
             SpawnManager.setBlock(arena,
                     new PABlockLocation(block.getLocation()), flagName);
@@ -564,7 +564,7 @@ public class GoalDomination extends ArenaGoal {
     }
 
     @Override
-    public void displayInfo(CommandSender sender) {
+    public void displayInfo(final CommandSender sender) {
         sender.sendMessage("needed points: " +
                 arena.getArenaConfig().getInt(CFG.GOAL_DOM_LIVES));
         sender.sendMessage("claim range: " +
@@ -599,14 +599,14 @@ public class GoalDomination extends ArenaGoal {
 
     @Override
     public boolean hasSpawn(final String string) {
-        for (String teamName : arena.getTeamNames()) {
+        for (final String teamName : arena.getTeamNames()) {
             if (string.toLowerCase().startsWith(
                     teamName.toLowerCase() + "spawn")) {
                 return true;
             }
 
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -626,7 +626,7 @@ public class GoalDomination extends ArenaGoal {
                     .getInt(CFG.GOAL_DOM_LIVES));
 
             final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
-            for (PABlockLocation spawn : spawns) {
+            for (final PABlockLocation spawn : spawns) {
                 takeFlag(spawn);
             }
         }
@@ -640,8 +640,8 @@ public class GoalDomination extends ArenaGoal {
     @Override
     public void parseStart() {
         getLifeMap().clear();
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getTeamMembers().size() > 0) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            if (!team.getTeamMembers().isEmpty()) {
                 arena.getDebugger().i("adding team " + team.getName());
                 // team is active
                 getLifeMap().put(team.getName(),
@@ -649,7 +649,7 @@ public class GoalDomination extends ArenaGoal {
             }
         }
         final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
-        for (PABlockLocation spawn : spawns) {
+        for (final PABlockLocation spawn : spawns) {
             takeFlag(spawn);
         }
 
@@ -661,7 +661,7 @@ public class GoalDomination extends ArenaGoal {
         announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
     }
 
-    private boolean reduceLivesCheckEndAndCommit(Arena arena, String team) {
+    private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
         arena.getDebugger().i("reducing lives of team " + team);
         if (getLifeMap().get(team) != null) {
@@ -713,9 +713,9 @@ public class GoalDomination extends ArenaGoal {
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
         double score;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            score = (getLifeMap().containsKey(team.getName()) ? getLifeMap()
-                    .get(team.getName()) : 0);
+        for (final ArenaTeam team : arena.getTeams()) {
+            score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
+                    .get(team.getName()) : 0;
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
             } else {
@@ -744,9 +744,9 @@ public class GoalDomination extends ArenaGoal {
                                   final GoalDomination goal) {
             this.arena = arena;
             this.take = take;
-            this.team = teamName;
-            this.loc = loc2;
-            this.domination = goal;
+            team = teamName;
+            loc = loc2;
+            domination = goal;
             arena.getDebugger().i("Domination constructor");
         }
 
@@ -768,7 +768,7 @@ public class GoalDomination extends ArenaGoal {
                     arena.broadcast(Language.parse(arena,
                             MSG.GOAL_DOMINATION_CLAIMED, arena.getTeam(team)
                                     .getColoredName() + ChatColor.YELLOW));
-                    this.takeFlag(arena, loc, team);
+                    takeFlag(arena, loc, team);
                     domination.getFlagMap().put(loc, team);
 
                     // claim done. end timer
@@ -780,7 +780,7 @@ public class GoalDomination extends ArenaGoal {
                 arena.getDebugger().i("unclaim");
                 arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING,
                         team + ChatColor.YELLOW));
-                this.takeFlag(arena, loc, "");
+                takeFlag(arena, loc, "");
                 Bukkit.getScheduler().cancelTask(runID);
                 domination.getRunnerMap().remove(loc);
                 domination.getFlagMap().remove(loc);
@@ -790,7 +790,7 @@ public class GoalDomination extends ArenaGoal {
 
         private void takeFlag(final Arena arena, final Location lBlock, final String name) {
             ArenaTeam team = null;
-            for (ArenaTeam t : arena.getTeams()) {
+            for (final ArenaTeam t : arena.getTeams()) {
                 if (t.getName().equals(name)) {
                     team = t;
                 }
@@ -811,9 +811,9 @@ public class GoalDomination extends ArenaGoal {
         //private final Debug debug = new Debug(39);
         private final GoalDomination domination;
 
-        public DominationMainRunnable(Arena arena, GoalDomination goal) {
+        public DominationMainRunnable(final Arena arena, final GoalDomination goal) {
             this.arena = arena;
-            this.domination = goal;
+            domination = goal;
             arena.getDebugger().i("DominationMainRunnable constructor");
         }
 

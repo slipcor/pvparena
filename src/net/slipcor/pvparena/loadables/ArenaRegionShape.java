@@ -17,9 +17,9 @@ import org.bukkit.entity.Player;
  * @author slipcor
  */
 
-public abstract class ArenaRegionShape extends NCBLoadable implements Cloneable {
+public abstract class ArenaRegionShape extends NCBLoadable {
 
-    public ArenaRegionShape(String name) {
+    public ArenaRegionShape(final String name) {
         super(name);
     }
 

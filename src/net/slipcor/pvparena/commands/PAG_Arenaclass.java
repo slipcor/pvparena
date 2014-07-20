@@ -32,7 +32,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
+        if (!hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
             return;
         }
 
@@ -55,7 +55,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (arena.getArenaConfig().getBoolean(CFG.PERMS_EXPLICITCLASS)
-                && !(sender.hasPermission("pvparena.class." + aClass.getName()))) {
+                && !sender.hasPermission("pvparena.class." + aClass.getName())) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_NOPERM_CLASS, aClass.getName()));
             return;
@@ -76,7 +76,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -96,11 +96,11 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaClass aClass : arena.getClasses()) {
+        for (final ArenaClass aClass : arena.getClasses()) {
             result.define(new String[]{aClass.getName()});
         }
         return result;

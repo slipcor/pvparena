@@ -40,8 +40,7 @@ public class InventoryListener implements Listener {
             }
         }
 
-        if (event.getInventory().getType()
-                .equals(InventoryType.CRAFTING)) {
+        if (event.getInventory().getType() == InventoryType.CRAFTING) {
             // we are inside the standard
             if (event.getRawSlot() != 5) {
                 return;

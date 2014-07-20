@@ -49,10 +49,10 @@ import java.util.List;
  */
 
 public class PACheck {
-    private int priority = 0;
-    private String error = null;
-    private String modName = null;
-    private final static Debug DEBUG = new Debug(9);
+    private int priority;
+    private String error;
+    private String modName;
+    private static final Debug DEBUG = new Debug(9);
 
     /**
      * @return the error message
@@ -91,7 +91,7 @@ public class PACheck {
         modName = loadable.getName();
         DEBUG.i(modName + " is setting error to: " + error);
         this.error = error;
-        this.priority += 1000;
+        priority += 1000;
     }
 
     /**
@@ -112,7 +112,7 @@ public class PACheck {
 
         ArenaGoal commit = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkCommand(res, args[0]);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -131,7 +131,7 @@ public class PACheck {
             return false;
         }
         if (commit == null) {
-            for (ArenaModule am : arena.getMods()) {
+            for (final ArenaModule am : arena.getMods()) {
                 if (am.checkCommand(args[0].toLowerCase())) {
                     am.commitCommand(sender, args);
                     return true;
@@ -153,7 +153,7 @@ public class PACheck {
 
         ArenaGoal commit = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             arena.getDebugger().i("checking " + mod.getName());
             res = mod.checkEnd(res);
             if (res.getPriority() > priority && priority >= 0) {
@@ -200,7 +200,7 @@ public class PACheck {
 
         PACheck res = new PACheck();
         int priority = 0;
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.getLives(res, aPlayer);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -225,7 +225,7 @@ public class PACheck {
 
         ArenaGoal commit = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkInteract(res, player, clickedBlock);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -257,7 +257,7 @@ public class PACheck {
                                   final CommandSender sender, final String[] args) {
 
         if (PVPArena.arcade.isPlaying(sender.getName())) {
-            String name = PVPArena.arcade.getPlugin(sender.getName());
+            final String name = PVPArena.arcade.getPlugin(sender.getName());
             arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, name));
             return;
         }
@@ -266,7 +266,7 @@ public class PACheck {
 
         ArenaModule commModule = null;
 
-        for (ArenaModule mod : arena.getMods()) {
+        for (final ArenaModule mod : arena.getMods()) {
             res = mod.checkJoin(sender, res, true);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -285,7 +285,7 @@ public class PACheck {
                     Language.parse(arena, MSG.ERROR_JOIN_REGION));
         }
 
-        if (res.hasError() && !res.getModName().equals("LateLounge")) {
+        if (res.hasError() && !"LateLounge".equals(res.getModName())) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_ERROR, res.getError()));
             return;
@@ -299,7 +299,7 @@ public class PACheck {
 
         ArenaGoal commGoal = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkJoin(sender, res, args);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -322,9 +322,9 @@ public class PACheck {
             return;
         }
 
-        ArenaTeam team;
+        final ArenaTeam team;
 
-        if (args.length < 1 || (arena.getTeam(args[0]) == null)) {
+        if (args.length < 1 || arena.getTeam(args[0]) == null) {
             // usage: /pa {arenaname} join | join an arena
 
             team = arena.getTeam(TeamManager.calcFreeTeam(arena));
@@ -336,12 +336,13 @@ public class PACheck {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
             return;
-        } else if (team == null) {
+        }
+        if (team == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
             return;
         }
 
-        ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
+        final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
 
         ArenaModuleManager.choosePlayerTeam(arena, (Player) sender,
                 team.getColoredName());
@@ -351,7 +352,7 @@ public class PACheck {
         player.setPublicChatting(!arena.getArenaConfig().getBoolean(
                 CFG.CHAT_DEFAULTTEAM));
 
-        if ((commModule == null) || (commGoal == null)) {
+        if (commModule == null || commGoal == null) {
 
             if (commModule != null) {
                 commModule.commitJoin((Player) sender, team);
@@ -400,15 +401,15 @@ public class PACheck {
                     && arena.getFighters().size() >= arena.getArenaConfig()
                     .getInt(CFG.READY_MINPLAYERS)) {
                 arena.setFightInProgress(true);
-                for (ArenaTeam ateam : arena.getTeams()) {
+                for (final ArenaTeam ateam : arena.getTeams()) {
                     SpawnManager.distribute(arena, ateam);
                 }
 
-                for (ArenaGoal goal : arena.getGoals()) {
+                for (final ArenaGoal goal : arena.getGoals()) {
                     goal.parseStart();
                 }
 
-                for (ArenaModule mod : arena.getMods()) {
+                for (final ArenaModule mod : arena.getMods()) {
                     mod.parseStart();
                 }
             }
@@ -438,7 +439,7 @@ public class PACheck {
 
         ArenaGoal commit = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkPlayerDeath(res, player);
             if (res.getPriority() > priority && priority >= 0) {
                 arena.getDebugger().i("success and higher priority", player);
@@ -456,7 +457,7 @@ public class PACheck {
 
         if (res.hasError()) {
             arena.getDebugger().i("has error: " + res.getError(), player);
-            if (res.getError().equals("0")) {
+            if ("0".equals(res.getError())) {
                 doesRespawn = false;
             }
         }
@@ -480,7 +481,7 @@ public class PACheck {
                     || arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
-                int exp = event.getDroppedExp();
+                final int exp = event.getDroppedExp();
                 event.getDrops().clear();
                 if (doesRespawn
                         || arena.getArenaConfig().getBoolean(
@@ -522,7 +523,7 @@ public class PACheck {
             handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()),
                     returned);
 
-            for (ArenaGoal g : arena.getGoals()) {
+            for (final ArenaGoal g : arena.getGoals()) {
                 g.parsePlayerDeath(player, player.getLastDamageCause());
             }
 
@@ -530,10 +531,10 @@ public class PACheck {
         }
 
         arena.getDebugger().i("handled by: " + commit.getName(), player);
-        int exp = event.getDroppedExp();
+        final int exp = event.getDroppedExp();
 
         commit.commitPlayerDeath(player, doesRespawn, res.getError(), event);
-        for (ArenaGoal g : arena.getGoals()) {
+        for (final ArenaGoal g : arena.getGoals()) {
             arena.getDebugger().i("parsing death: " + g.getName(), player);
             g.parsePlayerDeath(player, player.getLastDamageCause());
         }
@@ -556,7 +557,7 @@ public class PACheck {
     public static void handleRespawn(final Arena arena,
                                      final ArenaPlayer aPlayer, final List<ItemStack> drops) {
 
-        for (ArenaModule mod : arena.getMods()) {
+        for (final ArenaModule mod : arena.getMods()) {
             if (mod.tryDeathOverride(aPlayer, drops)) {
                 return;
             }
@@ -591,7 +592,7 @@ public class PACheck {
 
         ArenaGoal commit = null;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkSetBlock(res, player, block);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -628,7 +629,7 @@ public class PACheck {
 
         ArenaModule commit = null;
 
-        for (ArenaModule mod : arena.getMods()) {
+        for (final ArenaModule mod : arena.getMods()) {
             res = mod.checkJoin(sender, res, false);
             if (res.getPriority() > priority && priority >= 0) {
                 arena.getDebugger().i("success and higher priority", sender);
@@ -669,7 +670,7 @@ public class PACheck {
         ArenaGoal commit = null;
         int priority = 0;
 
-        for (ArenaGoal mod : arena.getGoals()) {
+        for (final ArenaGoal mod : arena.getGoals()) {
             res = mod.checkStart(res);
             if (res.getPriority() > priority && priority >= 0) {
                 // success and higher priority
@@ -712,7 +713,7 @@ public class PACheck {
                 .i("teleporting all players to their spawns", sender);
 
         if (commit == null) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 SpawnManager.distribute(arena, team);
             }
         } else {
@@ -724,11 +725,11 @@ public class PACheck {
         arena.broadcast(Language.parse(arena, MSG.FIGHT_BEGINS));
         arena.setFightInProgress(true);
 
-        for (ArenaGoal x : arena.getGoals()) {
+        for (final ArenaGoal x : arena.getGoals()) {
             x.parseStart();
         }
 
-        for (ArenaModule x : arena.getMods()) {
+        for (final ArenaModule x : arena.getMods()) {
             x.parseStart();
         }
 
@@ -738,10 +739,8 @@ public class PACheck {
                         arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
         scr.setId(arena.spawnCampRunnerID);
 
-        for (ArenaRegion region : arena.getRegions()) {
-            if (region.getFlags().size() > 0) {
-                region.initTimer();
-            } else if (region.getType().equals(RegionType.BATTLE)) {
+        for (final ArenaRegion region : arena.getRegions()) {
+            if (!region.getFlags().isEmpty() || region.getType().equals(RegionType.BATTLE)) {
                 region.initTimer();
             }
         }

@@ -28,7 +28,7 @@ public class PAA_Check extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -38,25 +38,25 @@ public class PAA_Check extends AbstractArenaCommand {
 
         boolean hasError = false;
 
-        for (CFG c : CFG.getValues()) {
+        for (final CFG c : CFG.getValues()) {
             if (c == null || c.getNode() == null) {
                 continue;
             }
             try {
-                if (c.getType().equals("string")) {
+                if ("string".equals(c.getType())) {
                     final String value = arena.getArenaConfig().getString(c);
                     arena.msg(sender, "correct " + c.getType() + ": " + value);
-                } else if (c.getType().equals("boolean")) {
+                } else if ("boolean".equals(c.getType())) {
                     final boolean value = arena.getArenaConfig().getBoolean(c);
                     arena.msg(sender, "correct " + c.getType() + ": " + value);
-                } else if (c.getType().equals("int")) {
+                } else if ("int".equals(c.getType())) {
                     final int value = arena.getArenaConfig().getInt(c);
                     arena.msg(sender, "correct " + c.getType() + ": " + value);
-                } else if (c.getType().equals("double")) {
+                } else if ("double".equals(c.getType())) {
                     final double value = arena.getArenaConfig().getDouble(c);
                     arena.msg(sender, "correct " + c.getType() + ": " + value);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_ERROR, c.getNode()));
                 hasError = true;
             }
@@ -69,7 +69,7 @@ public class PAA_Check extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

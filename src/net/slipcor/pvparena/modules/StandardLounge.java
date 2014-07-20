@@ -56,11 +56,11 @@ public class StandardLounge extends ArenaModule {
             final String spawnName = iter.next();
             debug.i("parsing '" + spawnName + "'");
             if (arena.isFreeForAll()) {
-                if (spawnName.equals("lounge")) {
+                if ("lounge".equals(spawnName)) {
                     lounges++;
                 }
             } else {
-                if (spawnName.endsWith("lounge") && (!spawnName.equals("lounge"))) {
+                if (spawnName.endsWith("lounge") && !"lounge".equals(spawnName)) {
                     lounges++;
                 }
             }
@@ -69,9 +69,9 @@ public class StandardLounge extends ArenaModule {
 
         int neededCount = arena.getTeams().size();
 
-        for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals("infected") ||
-                    team.getName().equalsIgnoreCase("tank")) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            if ("infected".equals(team.getName()) ||
+                    "tank".equalsIgnoreCase(team.getName())) {
                 neededCount--;
             }
         }
@@ -109,7 +109,7 @@ public class StandardLounge extends ArenaModule {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
 
         if (aPlayer.getArena() != null) {
-            aPlayer.getArena().getDebugger().i(this.getName(), sender);
+            aPlayer.getArena().getDebugger().i(getName(), sender);
             result.setError(this, Language.parse(arena,
                     MSG.ERROR_ARENA_ALREADY_PART_OF, ArenaManager.getIndirectArenaName(aPlayer.getArena())));
             return result;
@@ -118,9 +118,9 @@ public class StandardLounge extends ArenaModule {
         if (aPlayer.getArenaClass() == null) {
             final String autoClass =
                     arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-                            (arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS))
+                            arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
                             : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-            if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) == null) {
+            if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) == null) {
                 result.setError(this, Language.parse(arena,
                         MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
                 return result;
@@ -157,7 +157,7 @@ public class StandardLounge extends ArenaModule {
         if (arena.isFreeForAll()) {
             return spawnName.startsWith("lounge");
         }
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             if (spawnName.startsWith(team.getName() + "lounge")) {
                 return true;
             }
@@ -222,7 +222,7 @@ public class StandardLounge extends ArenaModule {
 
             if (player.getArenaTeam() != null && player.getArenaClass() == null) {
                 final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-                if (autoClass != null && !autoClass.equals("none") && arena.getClass(autoClass) != null) {
+                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
                     arena.chooseClass(player.get(), null, autoClass);
                 }
                 if (autoClass == null) {

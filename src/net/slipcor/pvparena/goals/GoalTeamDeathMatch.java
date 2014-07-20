@@ -53,7 +53,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
         return PVPArena.instance.getDescription().getVersion();
     }
 
-    private final static int PRIORITY = 5;
+    private static final int PRIORITY = 5;
 
     @Override
     public boolean allowsJoinInBattle() {
@@ -79,7 +79,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-        return this.checkForMissingTeamSpawn(list);
+        return checkForMissingTeamSpawn(list);
     }
 
     @Override
@@ -131,14 +131,14 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             return;
         }
         arena.getDebugger().i("[TDM]");
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
         ArenaTeam aTeam = null;
 
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() == Status.FIGHT) {
                     aTeam = team;
                     break;
                 }
@@ -187,10 +187,10 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             PACheck.handleRespawn(arena,
                     ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
             if (doesRespawn) {
-                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
+                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
             } else {
-                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName());
+                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
             }
 
@@ -198,7 +198,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             return;
         }
 
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName(),
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName(),
                 "playerKill:" + respawnPlayer.getName() + ":" + respawnPlayer.getKiller().getName());
         Bukkit.getPluginManager().callEvent(gEvent);
 
@@ -305,13 +305,13 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
     @Override
     public boolean hasSpawn(final String string) {
-        for (String teamName : arena.getTeamNames()) {
+        for (final String teamName : arena.getTeamNames()) {
             if (string.toLowerCase().startsWith(
                     teamName.toLowerCase() + "spawn")) {
                 return true;
             }
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (ArenaClass aClass : arena.getClasses()) {
+                for (final ArenaClass aClass : arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -340,16 +340,16 @@ public class GoalTeamDeathMatch extends ArenaGoal {
      * @return true if the player should not respawn but be removed
      */
     private boolean reduceLives(final Arena arena, final ArenaTeam team, final Player respawnPlayer, final EntityDeathEvent event) {
-        final int iLives = this.getLifeMap().get(team.getName());
+        final int iLives = getLifeMap().get(team.getName());
 
         if (iLives <= 1) {
-            for (ArenaTeam otherTeam : arena.getTeams()) {
+            for (final ArenaTeam otherTeam : arena.getTeams()) {
                 if (otherTeam.equals(team)) {
                     continue;
                 }
                 getLifeMap().remove(otherTeam.getName());
-                for (ArenaPlayer ap : otherTeam.getTeamMembers()) {
-                    if (ap.getStatus().equals(Status.FIGHT)) {
+                for (final ArenaPlayer ap : otherTeam.getTeamMembers()) {
+                    if (ap.getStatus() == Status.FIGHT) {
                         ap.setStatus(Status.LOST);
                         /*
 						arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(),
@@ -392,7 +392,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             config.addDefault("teams.blue", ChatColor.BLUE.name());
         }
         if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
-                && (config.get("flagColors") == null)) {
+                && config.get("flagColors") == null) {
             arena.getDebugger().i("no flagheads defined, adding white and black!");
             config.addDefault("flagColors.red", "WHITE");
             config.addDefault("flagColors.blue", "BLACK");
@@ -401,7 +401,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             updateLives(team, arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES));
         }
     }
@@ -410,7 +410,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
         double score;
 
-        for (ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : arena.getTeams()) {
             score = arena.getArenaConfig().getInt(CFG.GOAL_TDM_LIVES)
                     - (getLifeMap().containsKey(team.getName()) ? getLifeMap().get(team
                     .getName()) : 0);

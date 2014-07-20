@@ -42,7 +42,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         debug = new Debug(101);
     }
 
-    private EndRunnable endRunner = null;
+    private EndRunnable endRunner;
 
     @Override
     public String version() {
@@ -134,11 +134,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             arena.getDebugger().i("[PDM] already ending");
             return;
         }
-        PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
-                if (!ap.getStatus().equals(Status.FIGHT)) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
+                if (ap.getStatus() != Status.FIGHT) {
                     continue;
                 }
                 ArenaModuleManager.announce(arena,
@@ -197,17 +197,17 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         arena.getDebugger().i("kills to go: " + iLives, killer);
         if (iLives <= 1) {
             // player has won!
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(),
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(),
                     "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
-            for (ArenaPlayer ap : arena.getFighters()) {
+            for (final ArenaPlayer ap : arena.getFighters()) {
                 if (ap.getName().equals(killer.getName())) {
                     continue;
                 }
                 plrs.add(ap);
             }
-            for (ArenaPlayer ap : plrs) {
+            for (final ArenaPlayer ap : plrs) {
                 getLifeMap().remove(ap.getName());
 //				arena.getDebugger().i("faking player death", ap.get());
 //				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
@@ -230,7 +230,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
             PACheck.handleEnd(arena, false);
         } else {
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ":" + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
             getLifeMap().put(killer.getName(), iLives);
@@ -295,7 +295,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     public boolean hasSpawn(final String string) {
 
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (ArenaClass aClass : arena.getClasses()) {
+            for (final ArenaClass aClass : arena.getClasses()) {
                 if (string.toLowerCase().startsWith(
                         aClass.getName().toLowerCase() + "spawn")) {
                     return true;
@@ -325,7 +325,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     public void parseLeave(final Player player) {
         if (player == null) {
             PVPArena.instance.getLogger().warning(
-                    this.getName() + ": player NULL");
+                    getName() + ": player NULL");
             return;
         }
         if (getLifeMap().containsKey(player.getName())) {
@@ -335,8 +335,8 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
     @Override
     public void parseStart() {
-        for (ArenaTeam team : arena.getTeams()) {
-            for (ArenaPlayer ap : team.getTeamMembers()) {
+        for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaPlayer ap : team.getTeamMembers()) {
                 updateLives(ap.get(), arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES));
             }
         }
@@ -352,7 +352,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
         double score;
 
-        for (ArenaPlayer ap : arena.getFighters()) {
+        for (final ArenaPlayer ap : arena.getFighters()) {
             score = arena.getArenaConfig().getInt(CFG.GOAL_PDM_LIVES)
                     - (getLifeMap().containsKey(ap.getName()) ? getLifeMap()
                     .get(ap.getName()) : 0);

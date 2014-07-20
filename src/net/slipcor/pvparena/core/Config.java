@@ -40,7 +40,7 @@ public class Config {
     private final Map<String, Double> doubles;
     private final Map<String, String> strings;
 
-    public static enum CFG {
+    public enum CFG {
 
 
         Z("configversion", "v0.9.0.0", null),
@@ -328,13 +328,13 @@ public class Config {
         MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),
         MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit");
 
-        private String node;
+        private final String node;
         private final Object value;
         private final String type;
         private final String module;
 
         public static CFG getByNode(final String node) {
-            for (CFG m : CFG.getValues()) {
+            for (final CFG m : CFG.getValues()) {
                 if (m.getNode().equals(node)) {
                     return m;
                 }
@@ -342,39 +342,39 @@ public class Config {
             return null;
         }
 
-        private CFG(final String node, final String value, String source) {
+        CFG(final String node, final String value, final String source) {
             this.node = node;
             this.value = value;
-            this.type = "string";
-            this.module = source;
+            type = "string";
+            module = source;
         }
 
-        private CFG(final String node, final Boolean value, String source) {
+        CFG(final String node, final Boolean value, final String source) {
             this.node = node;
             this.value = value;
-            this.type = "boolean";
-            this.module = source;
+            type = "boolean";
+            module = source;
         }
 
-        private CFG(final String node, final Integer value, String source) {
+        CFG(final String node, final Integer value, final String source) {
             this.node = node;
             this.value = value;
-            this.type = "int";
-            this.module = source;
+            type = "int";
+            module = source;
         }
 
-        private CFG(final String node, final Double value, String source) {
+        CFG(final String node, final Double value, final String source) {
             this.node = node;
             this.value = value;
-            this.type = "double";
-            this.module = source;
+            type = "double";
+            module = source;
         }
 
-        private CFG(final String node, final String value, final boolean multiple, String source) {
+        CFG(final String node, final String value, final boolean multiple, final String source) {
             this.node = node;
             this.value = value;
-            this.type = multiple ? "items" : "material";
-            this.module = source;
+            type = multiple ? "items" : "material";
+            module = source;
         }
 
         private CFG(final String node, final List<String> value, String source) {
@@ -390,20 +390,20 @@ public class Config {
 
         public static CommandTree<String> getTabTree() {
 
-            CommandTree<String> result = new CommandTree<String>(null);
-            for (CFG cfg : values()) {
-                String[] split = cfg.node.split("\\.");
-                String ending = split[split.length - 1];
+            final CommandTree<String> result = new CommandTree<String>(null);
+            for (final CFG cfg : values()) {
+                final String[] split = cfg.node.split("\\.");
+                final String ending = split[split.length - 1];
 
-                if (cfg.type.equals("material")) {
+                if ("material".equals(cfg.type)) {
                     result.define(new String[]{cfg.node, "{Material}"});
                     result.define(new String[]{cfg.node, "hand"});
                     result.define(new String[]{ending, "{Material}"});
                     result.define(new String[]{ending, "hand"});
-                } else if (cfg.type.equals("items")) {
+                } else if ("items".equals(cfg.type)) {
                     result.define(new String[]{cfg.node, "inventory"});
                     result.define(new String[]{ending, "inventory"});
-                } else if (cfg.type.equals("boolean")) {
+                } else if ("boolean".equals(cfg.type)) {
                     result.define(new String[]{cfg.node, "true"});
                     result.define(new String[]{cfg.node, "false"});
                     result.define(new String[]{ending, "true"});
@@ -414,10 +414,6 @@ public class Config {
                 }
             }
             return result;
-        }
-
-        public void setNode(final String value) {
-            node = value;
         }
 
         @Override
@@ -453,25 +449,25 @@ public class Config {
      * @param configFile a YAML file
      */
     public Config(final File configFile) {
-        this.cfg = new YamlConfiguration();
+        cfg = new YamlConfiguration();
         this.configFile = configFile;
-        this.booleans = new HashMap<String, Boolean>();
-        this.ints = new HashMap<String, Integer>();
-        this.doubles = new HashMap<String, Double>();
-        this.strings = new HashMap<String, String>();
+        booleans = new HashMap<String, Boolean>();
+        ints = new HashMap<String, Integer>();
+        doubles = new HashMap<String, Double>();
+        strings = new HashMap<String, String>();
     }
 
-    public void createDefaults(List<String> goals, List<String> modules) {
-        this.cfg.options().indent(4);
+    public void createDefaults(final List<String> goals, final List<String> modules) {
+        cfg.options().indent(4);
 
-        for (CFG cfg : CFG.getValues()) {
-            if (!cfg.hasModule()) {
-                this.cfg.addDefault(cfg.getNode(), cfg.getValue());
-            } else {
+        for (final CFG cfg : CFG.getValues()) {
+            if (cfg.hasModule()) {
                 String mod = cfg.getModule();
                 if (goals.contains(mod) || modules.contains(mod)) {
                     this.cfg.addDefault(cfg.getNode(), cfg.getValue());
                 }
+            } else {
+                this.cfg.addDefault(cfg.getNode(), cfg.getValue());
             }
         }
         save();
@@ -488,7 +484,7 @@ public class Config {
             cfg.load(configFile);
             reloadMaps();
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -500,7 +496,7 @@ public class Config {
      * strings-map, etc.
      */
     public void reloadMaps() {
-        for (String s : cfg.getKeys(true)) {
+        for (final String s : cfg.getKeys(true)) {
             final Object object = cfg.get(s);
 
             if (object instanceof Boolean) {
@@ -524,7 +520,7 @@ public class Config {
         try {
             cfg.save(configFile);
             return true;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -586,7 +582,7 @@ public class Config {
     private boolean getBoolean(final CFG cfg, final boolean def) {
         final String path = cfg.getNode();
         final Boolean result = booleans.get(path);
-        return (result == null ? def : result);
+        return result == null ? def : result;
     }
 
     /**
@@ -609,7 +605,7 @@ public class Config {
     public int getInt(final CFG cfg, final int def) {
         final String path = cfg.getNode();
         final Integer result = ints.get(path);
-        return (result == null ? def : result);
+        return result == null ? def : result;
     }
 
     /**
@@ -618,7 +614,7 @@ public class Config {
      * @param cfg the node of the value
      * @return the double value of the path if the path exists, 0D otherwise
      */
-    public double getDouble(CFG cfg) {
+    public double getDouble(final CFG cfg) {
         return getDouble(cfg, (Double) cfg.getValue());
     }
 
@@ -629,10 +625,10 @@ public class Config {
      * @param def a default value to return if the value was not in the map
      * @return the double value of the path if it exists, def otherwise
      */
-    public double getDouble(CFG cfg, double def) {
+    public double getDouble(final CFG cfg, final double def) {
         final String path = cfg.getNode();
         final Double result = doubles.get(path);
-        return (result == null ? def : result);
+        return result == null ? def : result;
     }
 
     /**
@@ -641,7 +637,7 @@ public class Config {
      * @param cfg the node of the value
      * @return the string value of the path if the path exists, null otherwise
      */
-    public String getString(CFG cfg) {
+    public String getString(final CFG cfg) {
         return getString(cfg, (String) cfg.getValue());
     }
 
@@ -652,44 +648,44 @@ public class Config {
      * @param def a default value to return if the value was not in the map
      * @return the string value of the path if it exists, def otherwise
      */
-    public String getString(CFG cfg, String def) {
+    public String getString(final CFG cfg, final String def) {
         final String path = cfg.getNode();
         final String result = strings.get(path);
-        return (result == null ? def : result);
+        return result == null ? def : result;
     }
 
-    public Material getMaterial(CFG cfg) {
+    public Material getMaterial(final CFG cfg) {
         return getMaterial(cfg, Material.valueOf((String) cfg.getValue()));
     }
 
-    public Material getMaterial(CFG cfg, Material def) {
+    public Material getMaterial(final CFG cfg, final Material def) {
         final String path = cfg.getNode();
         final String result = strings.get(path);
-        if (result == null || result.equals("none")) {
+        if (result == null || "none".equals(result)) {
             return def;
         }
         return Material.valueOf(result);
     }
 
-    public ItemStack[] getItems(CFG cfg) {
+    public ItemStack[] getItems(final CFG cfg) {
         return getItems(cfg, StringParser.getItemStacksFromString((String) cfg.getValue()));
     }
 
-    public ItemStack[] getItems(CFG cfg, ItemStack[] def) {
+    public ItemStack[] getItems(final CFG cfg, final ItemStack[] def) {
         final String path = cfg.getNode();
         final String result = strings.get(path);
-        if (result == null || result.equals("none")) {
+        if (result == null || "none".equals(result)) {
             return def;
         }
         return StringParser.getItemStacksFromString(result);
     }
 
-    public Set<String> getKeys(String path) {
+    public Set<String> getKeys(final String path) {
         if (cfg.get(path) == null) {
             return null;
         }
 
-        ConfigurationSection section = cfg.getConfigurationSection(path);
+        final ConfigurationSection section = cfg.getConfigurationSection(path);
         return section.getKeys(false);
     }
 
@@ -717,7 +713,7 @@ public class Config {
      * @param path  the path on which to set the value
      * @param value the value to set
      */
-    public void setManually(String path, Object value) {
+    public void setManually(final String path, final Object value) {
         if (value instanceof Boolean) {
             booleans.put(path, (Boolean) value);
         } else if (value instanceof Integer) {
@@ -738,7 +734,7 @@ public class Config {
         cfg.set(path, value);
     }
 
-    public void set(CFG cfg, Object value) {
+    public void set(final CFG cfg, final Object value) {
         setManually(cfg.getNode(), value);
     }
 
@@ -755,8 +751,8 @@ public class Config {
      * @param coords a string of the form "world,x,y,z"
      * @return a PABlockLocation in the given world with the given coordinates
      */
-    public static PABlockLocation parseBlockLocation(String coords) {
-        String[] parts = coords.split(",");
+    public static PABlockLocation parseBlockLocation(final String coords) {
+        final String[] parts = coords.split(",");
         if (parts.length != 4) {
             throw new IllegalArgumentException(
                     "Input string must only contain world, x, y, and z: " + coords);
@@ -868,7 +864,7 @@ public class Config {
     public static Integer parseInteger(final String string) {
         try {
             return Integer.parseInt(string.trim());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -876,7 +872,7 @@ public class Config {
     public static Float parseFloat(final String string) {
         try {
             return Float.parseFloat(string.trim());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
@@ -918,7 +914,7 @@ public class Config {
 
         int sum = 0;
 
-        for (RegionFlag f : flags) {
+        for (final RegionFlag f : flags) {
             sum += Math.pow(2, f.ordinal());
         }
 
@@ -926,7 +922,7 @@ public class Config {
 
         sum = 0;
 
-        for (RegionProtection p : protections) {
+        for (final RegionProtection p : protections) {
             sum += Math.pow(2, p.ordinal());
         }
         result[9] = String.valueOf(sum);

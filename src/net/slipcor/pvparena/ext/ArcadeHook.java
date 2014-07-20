@@ -14,51 +14,51 @@ public class ArcadeHook {
         arcadePlugin = Bukkit.getPluginManager().getPlugin("Arcade");
     }
 
-    private String getPluginName(String player) {
+    private String getPluginName(final String player) {
         try {
-            Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("getPlugin", String.class);
+            final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("getPlugin", String.class);
             return ((Plugin) getPlugin.invoke(arcadePlugin, player)).getName();
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             return null;
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             return null;
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             return null;
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             return null;
         }
     }
 
-    private boolean getPlaying(String player) {
+    private boolean getPlaying(final String player) {
         try {
-            Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("isPlaying", String.class);
+            final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("isPlaying", String.class);
             return (Boolean) getPlugin.invoke(arcadePlugin, player);
-        } catch (NoSuchMethodException e) {
+        } catch (final NoSuchMethodException e) {
             return false;
-        } catch (InvocationTargetException e) {
+        } catch (final InvocationTargetException e) {
             return false;
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             return false;
         }
     }
 
-    private void playerJoin(String player, Plugin plugin) {
+    private void playerJoin(final String player, final Plugin plugin) {
         try {
-            Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerJoin", String.class, Plugin.class);
+            final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerJoin", String.class, Plugin.class);
             getPlugin.invoke(arcadePlugin, player, plugin);
-        } catch (NoSuchMethodException e) {
-        } catch (InvocationTargetException e) {
-        } catch (IllegalAccessException e) {
+        } catch (final NoSuchMethodException e) {
+        } catch (final InvocationTargetException e) {
+        } catch (final IllegalAccessException e) {
         }
     }
 
-    private void playerLeave(String player, Plugin plugin) {
+    private void playerLeave(final String player, final Plugin plugin) {
         try {
-            Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerLeave", String.class, Plugin.class);
+            final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerLeave", String.class, Plugin.class);
             getPlugin.invoke(arcadePlugin, player, plugin);
-        } catch (NoSuchMethodException e) {
-        } catch (InvocationTargetException e) {
-        } catch (IllegalAccessException e) {
+        } catch (final NoSuchMethodException e) {
+        } catch (final InvocationTargetException e) {
+        } catch (final IllegalAccessException e) {
         }
     }
 
@@ -66,7 +66,7 @@ public class ArcadeHook {
         if (arcadePlugin == null) {
             return false;
         }
-        String pluginName = getPluginName(player);
+        final String pluginName = getPluginName(player);
 
         if (PVPArena.instance.getDescription().getName().equals(pluginName)) {
             return false; // we don't consider our own plugin an external thing

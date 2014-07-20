@@ -31,7 +31,7 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -39,7 +39,7 @@ public class PAA_Edit extends AbstractArenaCommand {
             return;
         }
 
-        String msg;
+        final String msg;
 
         if (PAA_Edit.activeEdits.containsValue(arena)) {
             activeEdits.remove(sender.getName());
@@ -57,7 +57,7 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

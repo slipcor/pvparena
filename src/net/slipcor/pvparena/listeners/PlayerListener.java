@@ -51,7 +51,7 @@ import java.util.*;
  */
 
 public class PlayerListener implements Listener {
-    private final static Debug DEBUG = new Debug(23);
+    private static final Debug DEBUG = new Debug(23);
 
     private boolean checkAndCommitCancel(final Arena arena, final Player player,
                                          final Cancellable event) {
@@ -106,7 +106,7 @@ public class PlayerListener implements Listener {
         return false;
     }
 
-    private boolean willBeCancelled(Player player, Cancellable event) {
+    private boolean willBeCancelled(final Player player, final Cancellable event) {
         if (ArenaPlayer.parsePlayer(player.getName()).getStatus() == Status.LOST) {
             event.setCancelled(true);
             return true;
@@ -132,7 +132,7 @@ public class PlayerListener implements Listener {
         }
         final ArenaTeam team = aPlayer.getArenaTeam();
         if (team == null ||
-                (aPlayer.getStatus() == Status.DEAD && aPlayer.get() == null) ||
+                aPlayer.getStatus() == Status.DEAD && aPlayer.get() == null ||
                 aPlayer.getStatus() == Status.LOST ||
                 aPlayer.getStatus() == Status.WATCH) {
             if (!arena.getArenaConfig().getBoolean(CFG.PERMS_SPECTALK)) {
@@ -192,8 +192,8 @@ public class PlayerListener implements Listener {
         list.add("pvparena");
         arena.getDebugger().i("checking command whitelist", player);
 
-        for (String s : list) {
-            if (s.equals("*") || event.getMessage().startsWith("/" + s)) {
+        for (final String s : list) {
+            if ("*".equals(s) || event.getMessage().startsWith("/" + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -214,7 +214,7 @@ public class PlayerListener implements Listener {
         list.add("pvparena");
         arena.getDebugger().i("checking command whitelist", player);
 
-        for (String s : list) {
+        for (final String s : list) {
             if (event.getMessage().startsWith("/" + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
@@ -240,8 +240,8 @@ public class PlayerListener implements Listener {
         if (arena == null) {
             return; // no fighting player => OUT
         }
-        if (aPlayer.getStatus().equals(Status.READY)
-                || aPlayer.getStatus().equals(Status.LOUNGE)) {
+        if (aPlayer.getStatus() == Status.READY
+                || aPlayer.getStatus() == Status.LOUNGE) {
             event.setCancelled(true);
             arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
             return;
@@ -281,13 +281,13 @@ public class PlayerListener implements Listener {
         if (eEvent instanceof EntityDeathEvent) {
             cause = player.getLastDamageCause();
         } else if (eEvent instanceof EntityDamageEvent) {
-            cause = ((EntityDamageEvent) eEvent);
+            cause = (EntityDamageEvent) eEvent;
         }
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
-        final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
+        final String playerName = team == null ? player.getName() : team.colorizePlayer(player);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
             arena.broadcast(Language.parse(arena,
                     MSG.FIGHT_KILLED_BY,
@@ -302,8 +302,8 @@ public class PlayerListener implements Listener {
         }
 
         if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
-                || !ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
-                .getName().equalsIgnoreCase("custom")) {
+                || !"custom".equalsIgnoreCase(ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
+                .getName())) {
             InventoryManager.clearInventory(player);
         }
 
@@ -321,7 +321,7 @@ public class PlayerListener implements Listener {
             public void run() {
 
                 boolean found = false;
-                for (ArenaModule mod : arena.getMods()) {
+                for (final ArenaModule mod : arena.getMods()) {
                     if (mod.getName().contains("Spectate")) {
                         found = true;
                         break;
@@ -343,13 +343,11 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Player player = (Player) event.getEntity();
+        final Player player = (Player) event.getEntity();
 
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+        final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-        if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE) {
-            event.setCancelled(true);
-        } else if (ap.getArena() != null && !ap.getArena().getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)) {
+        if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE || ap.getArena() != null && !ap.getArena().getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)) {
             event.setCancelled(true);
         }
     }
@@ -359,7 +357,7 @@ public class PlayerListener implements Listener {
         final Player player = event.getPlayer();
         DEBUG.i("onPlayerInteract", player);
 
-        if (event.getAction().equals(Action.PHYSICAL)) {
+        if (event.getAction() == Action.PHYSICAL) {
             DEBUG.i("returning: physical", player);
             return;
         }
@@ -420,7 +418,7 @@ public class PlayerListener implements Listener {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
-        if (!aPlayer.getStatus().equals(Status.FIGHT)) {
+        if (aPlayer.getStatus() != Status.FIGHT) {
             arena.getDebugger().i("cancelling: not fighting", player);
             // fighting player inside the lobby!
             event.setCancelled(true);
@@ -431,16 +429,16 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (event.getAction().equals(Action.LEFT_CLICK_BLOCK) ||
-                event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK ||
+                event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             final Block block = event.getClickedBlock();
             arena.getDebugger().i("player team: " + team.getName(), player);
             if (block.getState() instanceof Sign) {
                 arena.getDebugger().i("sign click!", player);
                 final Sign sign = (Sign) block.getState();
 
-                if (((sign.getLine(0).equalsIgnoreCase("custom")) || (arena
-                        .getClass(sign.getLine(0)) != null))) {
+                if ("custom".equalsIgnoreCase(sign.getLine(0)) || arena
+                        .getClass(sign.getLine(0)) != null) {
 
                     arena.chooseClass(player, sign, sign.getLine(0));
                 } else {
@@ -459,7 +457,7 @@ public class PlayerListener implements Listener {
                     + "?", player);
             if (block.getTypeId() == mMat.getId()) {
                 arena.getDebugger().i("clicked ready block!", player);
-                if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().getName().equals("")) {
+                if (aPlayer.getArenaClass() == null || "".equals(aPlayer.getArenaClass().getName())) {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
                     return; // not chosen class => OUT
                 }
@@ -470,14 +468,14 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
-                boolean alreadyReady = aPlayer.getStatus() == Status.READY;
+                final boolean alreadyReady = aPlayer.getStatus() == Status.READY;
 
                 arena.getDebugger().i("===============", player);
                 arena.getDebugger().i("===== class: " + (aPlayer.getArenaClass() == null ? "null" : aPlayer.getArenaClass().getName()) + " =====", player);
                 arena.getDebugger().i("===============", player);
 
                 if (!arena.isFightInProgress()) {
-                    if (!aPlayer.getStatus().equals(Status.READY)) {
+                    if (aPlayer.getStatus() != Status.READY) {
                         arena.msg(player, Language.parse(arena, MSG.READY_DONE));
                         if (!alreadyReady) {
                             arena.broadcast(Language.parse(arena, MSG.PLAYER_READY, aPlayer
@@ -507,7 +505,7 @@ public class PlayerListener implements Listener {
 
                     if (error == null) {
                         arena.start();
-                    } else if (error.equals("")) {
+                    } else if ("".equals(error)) {
                         arena.countDown();
                     } else {
                         arena.msg(player, error);
@@ -517,10 +515,10 @@ public class PlayerListener implements Listener {
 
                 final Set<PASpawn> spawns = new HashSet<PASpawn>();
                 if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                    String arenaClass = aPlayer.getArenaClass().getName();
+                    final String arenaClass = aPlayer.getArenaClass().getName();
                     spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName() + arenaClass + "spawn"));
                 } else if (arena.isFreeForAll()) {
-                    if (team.getName().equals("free")) {
+                    if ("free".equals(team.getName())) {
                         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
                     } else {
                         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()));
@@ -529,9 +527,9 @@ public class PlayerListener implements Listener {
                     spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName() + "spawn"));
                 }
 
-                int pos = (new Random()).nextInt(spawns.size());
+                int pos = new Random().nextInt(spawns.size());
 
-                for (PASpawn spawn : spawns) {
+                for (final PASpawn spawn : spawns) {
 
                     if (--pos < 0) {
                         arena.tpPlayerToCoordName(player, spawn.getName());
@@ -548,10 +546,10 @@ public class PlayerListener implements Listener {
                 arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
                 if (arena != null) {
 
-                    Set<ArenaRegion> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
+                    final Set<ArenaRegion> bl_regions = arena.getRegionsByType(RegionType.BL_INV);
                     out:
                     if (!event.isCancelled() && bl_regions != null && !bl_regions.isEmpty()) {
-                        for (ArenaRegion region : bl_regions) {
+                        for (final ArenaRegion region : bl_regions) {
                             if (region.getShape().contains(new PABlockLocation(block.getLocation()))) {
                                 if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
                                         || region.getRegionName().toLowerCase().contains(
@@ -562,11 +560,11 @@ public class PlayerListener implements Listener {
                             }
                         }
                     }
-                    Set<ArenaRegion> wl_regions = arena.getRegionsByType(RegionType.WL_INV);
+                    final Set<ArenaRegion> wl_regions = arena.getRegionsByType(RegionType.WL_INV);
                     out:
                     if (!event.isCancelled() && wl_regions != null && !wl_regions.isEmpty()) {
                         event.setCancelled(true);
-                        for (ArenaRegion region : wl_regions) {
+                        for (final ArenaRegion region : wl_regions) {
                             if (region.getShape().contains(new PABlockLocation(block.getLocation()))) {
                                 if (region.getRegionName().toLowerCase().contains(team.getName().toLowerCase())
                                         || region.getRegionName().toLowerCase().contains(
@@ -580,7 +578,7 @@ public class PlayerListener implements Listener {
 
 
                     if (!event.isCancelled() && arena.getArenaConfig().getBoolean(CFG.PLAYER_QUICKLOOT)) {
-                        Chest c = (Chest) block.getState();
+                        final Chest c = (Chest) block.getState();
                         InventoryManager.transferItems(player, c.getBlockInventory());
                     }
                 }
@@ -622,7 +620,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerKicked(final PlayerKickEvent event) {
         final Player player = event.getPlayer();
-        Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+        final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
         if (arena == null) {
             return; // no fighting player => OUT
         }
@@ -691,9 +689,9 @@ public class PlayerListener implements Listener {
                 return; // no fighting player and no arena location => OUT
             }
 
-            Set<ArenaRegion> regs = arena.getRegionsByType(RegionType.BATTLE);
+            final Set<ArenaRegion> regs = arena.getRegionsByType(RegionType.BATTLE);
             boolean contained = false;
-            for (ArenaRegion reg : regs) {
+            for (final ArenaRegion reg : regs) {
                 if (reg.getShape().contains(new PABlockLocation(event.getTo()))) {
                     contained = true;
                     break;
@@ -709,7 +707,7 @@ public class PlayerListener implements Listener {
         event.setCancelled(false); // fighting player - first recon NOT to
         // cancel!
 
-        arena.getDebugger().i("aimed location: " + event.getTo().toString(), player);
+        arena.getDebugger().i("aimed location: " + event.getTo(), player);
 
         if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
                 || player.hasPermission("pvparena.telepass")) {
@@ -720,7 +718,7 @@ public class PlayerListener implements Listener {
         }
         arena.getDebugger().i("telepass: no!!", player);
 
-        Set<ArenaRegion> regions = arena
+        final Set<ArenaRegion> regions = arena
                 .getRegionsByType(RegionType.BATTLE);
 
         if (regions == null || regions.size() < 0) {
@@ -729,7 +727,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        for (ArenaRegion r : regions) {
+        for (final ArenaRegion r : regions) {
             if (r.getShape().contains(new PABlockLocation(event.getTo()))) {
                 // teleport inside the arena, allow!
                 maybeFixInvisibility(arena, player);
@@ -749,7 +747,7 @@ public class PlayerListener implements Listener {
 
                 @Override
                 public void run() {
-                    for (ArenaPlayer otherPlayer : arena.getFighters()) {
+                    for (final ArenaPlayer otherPlayer : arena.getFighters()) {
                         if (otherPlayer.get() != null) {
                             otherPlayer.get().showPlayer(player);
                         }
@@ -759,7 +757,7 @@ public class PlayerListener implements Listener {
             }
             try {
                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
-            } catch (IllegalPluginAccessException e) {
+            } catch (final IllegalPluginAccessException e) {
 
             }
         }

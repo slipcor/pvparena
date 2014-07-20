@@ -36,7 +36,7 @@ import java.util.*;
  */
 
 public final class SpawnManager {
-    private final static Debug DEBUG = new Debug(27);
+    private static final Debug DEBUG = new Debug(27);
 
     private SpawnManager() {
     }
@@ -49,18 +49,18 @@ public final class SpawnManager {
         DEBUG.i("--------------------");
         double diff = 0;
         String far = null;
-        for (PASpawn s : available) {
+        for (final PASpawn s : available) {
             far = s.getName();
             break;
         }
         DEBUG.i("last resort: " + far);
 
-        for (PASpawn s : available) {
+        for (final PASpawn s : available) {
             DEBUG.i("> checking " + s);
             double tempDiff = 0;
-            for (int i = 0; (i < taken.length) && (taken[i] != null); i++) {
-                for (PASpawn tt : total) {
-                    for (PASpawn aa : available) {
+            for (int i = 0; i < taken.length && taken[i] != null; i++) {
+                for (final PASpawn tt : total) {
+                    for (final PASpawn aa : available) {
                         if (tt.getName().equals(taken[i])
                                 && aa.getName().equals(s.getName())) {
                             tempDiff += tt.getLocation().getDistanceSquared(aa.getLocation());
@@ -93,13 +93,13 @@ public final class SpawnManager {
             class TeleportLater extends BukkitRunnable {
                 private final Set<ArenaPlayer> teamMembers = new HashSet<ArenaPlayer>();
                 private final boolean classSpawn;
-                private int pos = 0;
+                private int pos;
 
-                private PASpawn[] locations = null;
+                private PASpawn[] locations;
 
-                TeleportLater(Set<ArenaPlayer> set) {
-                    for (ArenaPlayer ap : set) {
-                        this.teamMembers.add(ap);
+                TeleportLater(final Set<ArenaPlayer> set) {
+                    for (final ArenaPlayer ap : set) {
+                        teamMembers.add(ap);
                     }
                     classSpawn = arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN);
                 }
@@ -110,7 +110,7 @@ public final class SpawnManager {
                     if (locations == null) {
                         final Set<PASpawn> spawns = new HashSet<PASpawn>();
                         if (arena.isFreeForAll()) {
-                            if (team.getName().equals("free")) {
+                            if ("free".equals(team.getName())) {
                                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
                             } else {
                                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName()));
@@ -121,21 +121,21 @@ public final class SpawnManager {
                         arena.getDebugger().i("read spawns for '" + team.getName() + "'; size: " + spawns.size());
                         locations = new PASpawn[spawns.size()];
                         int pos = 0;
-                        for (PASpawn spawn : spawns) {
+                        for (final PASpawn spawn : spawns) {
                             arena.getDebugger().i("- " + spawn.getName());
                             locations[pos++] = spawn;
                         }
                     }
 
 
-                    for (ArenaPlayer ap : teamMembers) {
+                    for (final ArenaPlayer ap : teamMembers) {
                         if (classSpawn) {
 
 
-                            Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, team.getName() + ap.getArenaClass().getName() + "spawn");
+                            final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, team.getName() + ap.getArenaClass().getName() + "spawn");
 
-                            int pos = (new Random()).nextInt(spawns.size());
-                            for (PASpawn spawn : spawns) {
+                            int pos = new Random().nextInt(spawns.size());
+                            for (final PASpawn spawn : spawns) {
                                 if (--pos < 0) {
                                     arena.tpPlayerToCoordName(ap.get(), spawn.getName());
                                     break;
@@ -149,11 +149,11 @@ public final class SpawnManager {
                         teamMembers.remove(ap);
                         return;
                     }
-                    this.cancel();
+                    cancel();
                 }
 
             }
-            (new TeleportLater(team.getTeamMembers())).runTaskTimer(PVPArena.instance, 1L, 1L);
+            new TeleportLater(team.getTeamMembers()).runTaskTimer(PVPArena.instance, 1L, 1L);
 
             return;
         }
@@ -174,7 +174,7 @@ public final class SpawnManager {
 
         final Set<PASpawn> spawns = new HashSet<PASpawn>();
         if (arena.isFreeForAll()) {
-            if (string.equals("free")) {
+            if ("free".equals(string)) {
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
             } else {
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, string));
@@ -191,8 +191,8 @@ public final class SpawnManager {
             private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
             private final boolean classSpawn;
 
-            TeleportLater(Set<ArenaPlayer> set) {
-                for (ArenaPlayer ap : set) {
+            TeleportLater(final Set<ArenaPlayer> set) {
+                for (final ArenaPlayer ap : set) {
                     this.set.add(ap);
                 }
                 classSpawn = arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN);
@@ -200,15 +200,15 @@ public final class SpawnManager {
 
             @Override
             public void run() {
-                for (ArenaPlayer ap : set) {
+                for (final ArenaPlayer ap : set) {
                     ap.setStatus(Status.FIGHT);
                     if (classSpawn) {
 
 
-                        Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, ap.getArenaTeam().getName() + ap.getArenaClass().getName() + "spawn");
+                        final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, ap.getArenaTeam().getName() + ap.getArenaClass().getName() + "spawn");
 
-                        int pos = (new Random()).nextInt(spawns.size());
-                        for (PASpawn spawn : spawns) {
+                        int pos = new Random().nextInt(spawns.size());
+                        for (final PASpawn spawn : spawns) {
                             if (--pos < 0) {
                                 arena.tpPlayerToCoordName(ap.get(), spawn.getName());
                                 break;
@@ -216,7 +216,7 @@ public final class SpawnManager {
                         }
 
                     } else {
-                        for (PASpawn s : spawns) {
+                        for (final PASpawn s : spawns) {
                             arena.tpPlayerToCoordName(ap.get(), s.getName());
                             if (spawns.size() > 1) {
                                 spawns.remove(s);
@@ -227,11 +227,11 @@ public final class SpawnManager {
                     set.remove(ap);
                     return;
                 }
-                this.cancel();
+                cancel();
             }
 
         }
-        (new TeleportLater(set)).runTaskTimer(PVPArena.instance, 1L, 1L);
+        new TeleportLater(set).runTaskTimer(PVPArena.instance, 1L, 1L);
     }
 
     public static void distributeSmart(final Arena arena,
@@ -245,7 +245,7 @@ public final class SpawnManager {
         final Set<PASpawn> total_locations;
 
         if (arena.isFreeForAll()) {
-            if (teamNName.equals("free")) {
+            if ("free".equals(teamNName)) {
                 locations = getPASpawnsStartingWith(arena, "spawn");
                 total_locations = getPASpawnsStartingWith(arena, "spawn");
             } else {
@@ -262,12 +262,12 @@ public final class SpawnManager {
             return;
         }
 
-        String[] iteratings = new String[locations.size()];
+        final String[] iteratings = new String[locations.size()];
 
         for (int i = 0; i < total_locations.size(); i++) {
             if (i == 0) {
                 PASpawn innerSpawn = null;
-                for (PASpawn ss : locations) {
+                for (final PASpawn ss : locations) {
                     innerSpawn = ss;
                     break;
                 }
@@ -277,7 +277,7 @@ public final class SpawnManager {
             }
             final String spawnName = calculateFarSpawn(iteratings, locations, total_locations);
             iteratings[i] = spawnName;
-            for (PASpawn spawn : locations) {
+            for (final PASpawn spawn : locations) {
                 if (spawn.getName().equals(spawnName)) {
                     locations.remove(spawn);
                     break;
@@ -291,9 +291,9 @@ public final class SpawnManager {
             private final String[] iteratings;
             private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
 
-            TeleportLater(Set<ArenaPlayer> set, String[] iteratings) {
+            TeleportLater(final Set<ArenaPlayer> set, final String[] iteratings) {
                 pos = 0;
-                for (ArenaPlayer ap : set) {
+                for (final ArenaPlayer ap : set) {
                     this.set.add(ap);
                 }
                 this.iteratings = iteratings.clone();
@@ -301,7 +301,7 @@ public final class SpawnManager {
 
             @Override
             public void run() {
-                for (ArenaPlayer ap : set) {
+                for (final ArenaPlayer ap : set) {
                     ap.setStatus(Status.FIGHT);
                     final String spawnName = iteratings[pos++ % iteratings.length];
                     if (spawnName == null) {
@@ -311,12 +311,12 @@ public final class SpawnManager {
                     set.remove(ap);
                     return;
                 }
-                this.cancel();
+                cancel();
             }
 
         }
 
-        (new TeleportLater(set, iteratings)).runTaskTimer(PVPArena.instance, 1L, 1L);
+        new TeleportLater(set, iteratings).runTaskTimer(PVPArena.instance, 1L, 1L);
     }
 
 
@@ -324,7 +324,7 @@ public final class SpawnManager {
                                                   final PABlockLocation location) {
         PABlockLocation result = null;
 
-        for (PABlockLocation loc : locs) {
+        for (final PABlockLocation loc : locs) {
             if (!loc.getWorldName().equals(location.getWorldName())) {
                 continue;
             }
@@ -338,9 +338,9 @@ public final class SpawnManager {
     }
 
     public static Set<PABlockLocation> getBlocksStartingWith(final Arena arena, final String name) {
-        Set<PABlockLocation> result = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> result = new HashSet<PABlockLocation>();
 
-        for (PABlock block : arena.getBlocks()) {
+        for (final PABlock block : arena.getBlocks()) {
             if (block.getName().startsWith(name)) {
                 result.add(block.getLocation());
             }
@@ -350,9 +350,9 @@ public final class SpawnManager {
     }
 
     public static Set<PABlockLocation> getBlocksContaining(final Arena arena, final String name) {
-        Set<PABlockLocation> result = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> result = new HashSet<PABlockLocation>();
 
-        for (PABlock block : arena.getBlocks()) {
+        for (final PABlock block : arena.getBlocks()) {
             if (block.getName().contains(name)) {
                 result.add(block.getLocation());
             }
@@ -362,9 +362,9 @@ public final class SpawnManager {
     }
 
     public static Set<PABlock> getPABlocksContaining(final Arena arena, final String name) {
-        Set<PABlock> result = new HashSet<PABlock>();
+        final Set<PABlock> result = new HashSet<PABlock>();
 
-        for (PABlock block : arena.getBlocks()) {
+        for (final PABlock block : arena.getBlocks()) {
             if (block.getName().contains(name)) {
                 result.add(block);
             }
@@ -374,9 +374,9 @@ public final class SpawnManager {
     }
 
     public static Set<PALocation> getSpawnsContaining(final Arena arena, final String name) {
-        Set<PALocation> result = new HashSet<PALocation>();
+        final Set<PALocation> result = new HashSet<PALocation>();
 
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().contains(name)) {
                 result.add(spawn.getLocation());
             }
@@ -386,9 +386,9 @@ public final class SpawnManager {
     }
 
     public static Set<PALocation> getSpawnsStartingWith(final Arena arena, final String name) {
-        Set<PALocation> result = new HashSet<PALocation>();
+        final Set<PALocation> result = new HashSet<PALocation>();
 
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().startsWith(name)) {
                 result.add(spawn.getLocation());
             }
@@ -398,9 +398,9 @@ public final class SpawnManager {
     }
 
     public static Set<PASpawn> getPASpawnsStartingWith(final Arena arena, final String name) {
-        Set<PASpawn> result = new HashSet<PASpawn>();
+        final Set<PASpawn> result = new HashSet<PASpawn>();
 
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().startsWith(name)) {
                 result.add(spawn);
             }
@@ -409,8 +409,8 @@ public final class SpawnManager {
         return result;
     }
 
-    public static PABlockLocation getBlockByExactName(Arena arena, String name) {
-        for (PABlock spawn : arena.getBlocks()) {
+    public static PABlockLocation getBlockByExactName(final Arena arena, final String name) {
+        for (final PABlock spawn : arena.getBlocks()) {
             if (spawn.getName().equals(name)) {
                 return spawn.getLocation();
             }
@@ -418,8 +418,8 @@ public final class SpawnManager {
         return null;
     }
 
-    public static PALocation getSpawnByExactName(Arena arena, String name) {
-        for (PASpawn spawn : arena.getSpawns()) {
+    public static PALocation getSpawnByExactName(final Arena arena, final String name) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().equals(name)) {
                 return spawn.getLocation().add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
             }
@@ -431,7 +431,7 @@ public final class SpawnManager {
         final Set<PALocation> locs = new HashSet<PALocation>();
 
         ArenaRegion ars = null;
-        for (ArenaRegion a : arena.getRegionsByType(RegionType.BATTLE)) {
+        for (final ArenaRegion a : arena.getRegionsByType(RegionType.BATTLE)) {
             ars = a;
             break;
         }
@@ -452,7 +452,7 @@ public final class SpawnManager {
         long y = 0;
         long z = 0;
 
-        for (PALocation loc : locs) {
+        for (final PALocation loc : locs) {
             if (!loc.getWorldName().equals(world.getName())) {
                 continue;
             }
@@ -525,10 +525,10 @@ public final class SpawnManager {
     private static void placeInsideSpawnRegions(final Arena arena, final Set<ArenaPlayer> set,
                                                 final Set<ArenaRegion> ars) {
         if (arena.isFreeForAll()) {
-            for (ArenaPlayer ap : set) {
+            for (final ArenaPlayer ap : set) {
                 int pos = new Random().nextInt(ars.size());
 
-                for (ArenaRegion x : ars) {
+                for (final ArenaRegion x : ars) {
                     if (pos-- == 0) {
                         placeInsideSpawnRegion(arena, ap, x);
                         break;
@@ -537,12 +537,12 @@ public final class SpawnManager {
             }
         } else {
             String teamName = null;
-            for (ArenaPlayer ap : set) {
+            for (final ArenaPlayer ap : set) {
                 if (teamName == null) {
                     teamName = ap.getArenaTeam().getName();
                 }
                 boolean teleported = false;
-                for (ArenaRegion x : ars) {
+                for (final ArenaRegion x : ars) {
                     if (x.getRegionName().contains(teamName)) {
                         placeInsideSpawnRegion(arena, ap, x);
                         teleported = true;
@@ -552,7 +552,7 @@ public final class SpawnManager {
                 if (!teleported) {
                     int pos = new Random().nextInt(ars.size());
 
-                    for (ArenaRegion x : ars) {
+                    for (final ArenaRegion x : ars) {
                         if (pos-- == 0) {
                             placeInsideSpawnRegion(arena, ap, x);
                             break;
@@ -583,7 +583,7 @@ public final class SpawnManager {
             return false;
         }
 
-        Set<PALocation> spawns = new HashSet<PALocation>();
+        final Set<PALocation> spawns = new HashSet<PALocation>();
 
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
             spawns.addAll(SpawnManager.getSpawnsContaining(arena, team.getName() + aPlayer.getArenaClass().getName() + "spawn"));
@@ -593,16 +593,16 @@ public final class SpawnManager {
             spawns.addAll(SpawnManager.getSpawnsStartingWith(arena, team.getName() + "spawn"));
         }
 
-        for (PALocation loc : spawns) {
+        for (final PALocation loc : spawns) {
             if (loc.getDistanceSquared(new PALocation(player.getLocation())) <= diff * diff) {
-                arena.getDebugger().i("found near spawn: " + loc.toString(), player);
+                arena.getDebugger().i("found near spawn: " + loc, player);
                 return true;
             }
         }
         return false;
     }
 
-    public static void respawn(final Arena arena, final ArenaPlayer aPlayer, String overrideSpawn) {
+    public static void respawn(final Arena arena, final ArenaPlayer aPlayer, final String overrideSpawn) {
 
         if (arena == null) {
             PVPArena.instance.getLogger().warning("Arena is null for player " + aPlayer + " while respawning!");
@@ -613,13 +613,13 @@ public final class SpawnManager {
 
 
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)
-                    && (arena.isFreeForAll() == aPlayer.getArenaTeam().getName().equals("free"))) {
+                    && arena.isFreeForAll() == "free".equals(aPlayer.getArenaTeam().getName())) {
 
                 // we want a class spawn and the arena is either not FFA or the player is in the FREE team
 
                 final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + aPlayer.getArenaClass().getName() + "spawn");
-                int pos = (new Random()).nextInt(spawns.size());
-                for (PASpawn spawn : spawns) {
+                int pos = new Random().nextInt(spawns.size());
+                for (final PASpawn spawn : spawns) {
                     if (--pos <= 0) {
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
                         aPlayer.setStatus(Status.FIGHT);
@@ -642,26 +642,26 @@ public final class SpawnManager {
 
 
                 if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_SMARTSPAWN)
-                        || (!aPlayer.getArenaTeam().getName().equals("free"))) {
+                        || !"free".equals(aPlayer.getArenaTeam().getName())) {
 
                     // either we generally don't need smart spawning or the player is not in the "free" team ;)
 
                     // i.e. just put him randomly
 
-                    Set<PASpawn> spawns = new HashSet<PASpawn>();
+                    final Set<PASpawn> spawns = new HashSet<PASpawn>();
 
                     if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                        String arenaClass = aPlayer.getArenaClass().getName();
+                        final String arenaClass = aPlayer.getArenaClass().getName();
                         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + arenaClass + "spawn"));
-                    } else if (aPlayer.getArenaTeam().getName().equals("free")) {
+                    } else if ("free".equals(aPlayer.getArenaTeam().getName())) {
                         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
                     } else {
                         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName()));
                     }
 
 
-                    int pos = (new Random()).nextInt(spawns.size());
-                    for (PASpawn spawn : spawns) {
+                    int pos = new Random().nextInt(spawns.size());
+                    for (final PASpawn spawn : spawns) {
                         if (--pos <= 0) {
                             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
                             aPlayer.setStatus(Status.FIGHT);
@@ -678,12 +678,12 @@ public final class SpawnManager {
 
                 final Set<PALocation> pLocs = new HashSet<PALocation>();
 
-                for (ArenaPlayer app : aPlayer.getArenaTeam().getTeamMembers()) {
+                for (final ArenaPlayer app : aPlayer.getArenaTeam().getTeamMembers()) {
                     if (app.getName().equals(aPlayer.getName())) {
                         continue;
                     }
                     pLocs.add(new PALocation(app.get().getLocation()));
-                    arena.getDebugger().i("pos of " + app.getName() + new PALocation(app.get().getLocation()).toString());
+                    arena.getDebugger().i("pos of " + app.getName() + new PALocation(app.get().getLocation()));
                 }
                 arena.getDebugger().i("pLocs.size: " + pLocs.size());
 
@@ -693,9 +693,9 @@ public final class SpawnManager {
 
                 double max = 0;
 
-                for (PASpawn spawnLoc : spawns) {
+                for (final PASpawn spawnLoc : spawns) {
                     double sum = 90000;
-                    for (PALocation playerLoc : pLocs) {
+                    for (final PALocation playerLoc : pLocs) {
                         if (spawnLoc.getLocation().getWorldName().equals(playerLoc.getWorldName())) {
                             sum = Math.min(sum, spawnLoc.getLocation().getDistanceSquared(playerLoc));
                         }
@@ -706,9 +706,9 @@ public final class SpawnManager {
                 }
                 arena.getDebugger().i("max = " + max);
 
-                for (PALocation loc : diffs.keySet()) {
+                for (final PALocation loc : diffs.keySet()) {
                     if (diffs.get(loc) == max) {
-                        for (PASpawn spawn : spawns) {
+                        for (final PASpawn spawn : spawns) {
                             if (spawn.getLocation().equals(loc)) {
                                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
                                 return;
@@ -722,8 +722,8 @@ public final class SpawnManager {
             }
 
             final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, aPlayer.getArenaTeam().getName() + "spawn");
-            int pos = (new Random()).nextInt(spawns.size());
-            for (PASpawn spawn : spawns) {
+            int pos = new Random().nextInt(spawns.size());
+            for (final PASpawn spawn : spawns) {
                 if (--pos <= 0) {
                     Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
                     aPlayer.setStatus(Status.FIGHT);
@@ -754,15 +754,15 @@ public final class SpawnManager {
         arena.addBlock(new PABlock(loc, place));
     }
 
-    public static void loadSpawns(Arena arena, Config cfg) {
-        Set<String> spawns = cfg.getKeys("spawns");
+    public static void loadSpawns(final Arena arena, final Config cfg) {
+        final Set<String> spawns = cfg.getKeys("spawns");
         if (spawns == null) {
             return;
         }
 
-        for (String name : spawns) {
-            String value = (String) cfg.getUnsafe("spawns." + name);
-            String[] parts = value.split(",");
+        for (final String name : spawns) {
+            final String value = (String) cfg.getUnsafe("spawns." + name);
+            final String[] parts = value.split(",");
 
             if (parts.length != 4 && parts.length != 6) {
                 throw new IllegalArgumentException(

@@ -38,7 +38,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -46,7 +46,7 @@ public class PAA_Setup extends AbstractArenaCommand {
             return;
         }
 
-        String msg;
+        final String msg;
 
         if (activeSetups.containsValue(arena)) {
             activeSetups.remove(sender.getName());
@@ -64,7 +64,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PAA_Setup extends AbstractArenaCommand {
             return;
         }
 
-        String[] word = message.toLowerCase().split(" ");
+        final String[] word = message.toLowerCase().split(" ");
         if (word[0].startsWith("h") || word[0].startsWith("?")) {
             arena.msg(player, Language.parse(MSG.ERROR_ERROR, message));
             arena.msg(player, Help.parse(HELP.SETUP_CMDS));
@@ -100,7 +100,7 @@ public class PAA_Setup extends AbstractArenaCommand {
                 class Remover implements Runnable {
                     private final Location location;
 
-                    Remover(Location loc) {
+                    Remover(final Location loc) {
                         location = loc;
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, this, 100L);
                     }
@@ -113,15 +113,15 @@ public class PAA_Setup extends AbstractArenaCommand {
                 }
                 if (word[1].startsWith("r")) {
                     // show region [name]
-                    PAA_Region cmd = new PAA_Region();
+                    final PAA_Region cmd = new PAA_Region();
                     // usage: /pa {arenaname} region [regionname] border | check a region border
                     cmd.commit(arena, player, new String[]{word[2], "border"});
                     return;
                 } else if (word[1].startsWith("s")) {
                     // show spawn [name]
                     final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, word[2]);
-                    for (PASpawn spawn : spawns) {
-                        Location loc = spawn.getLocation().toLocation();
+                    for (final PASpawn spawn : spawns) {
+                        final Location loc = spawn.getLocation().toLocation();
                         player.sendBlockChange(loc, Material.WOOL.getId(), (byte) 0);
                         new Remover(loc);
                     }
@@ -129,8 +129,8 @@ public class PAA_Setup extends AbstractArenaCommand {
                 } else if (word[2].startsWith("b")) {
                     // show block [name]
                     final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, word[2]);
-                    for (PABlock block : blocks) {
-                        Location loc = block.getLocation().toLocation();
+                    for (final PABlock block : blocks) {
+                        final Location loc = block.getLocation().toLocation();
                         player.sendBlockChange(loc, Material.WOOL.getId(), (byte) 0);
                         new Remover(loc);
                     }
@@ -144,11 +144,11 @@ public class PAA_Setup extends AbstractArenaCommand {
              * region [region] expand 15 out | expand region [region] 15 blocks in all directions",
              */
             if (word.length == 5) {
-                ArenaRegion region = arena.getRegion(word[1]);
+                final ArenaRegion region = arena.getRegion(word[1]);
                 int amount = 0;
                 try {
                     amount = Integer.parseInt(word[3]);
-                } catch (Exception e) {
+                } catch (final Exception e) {
 
                 }
                 if (region == null || amount == 0) {
@@ -160,32 +160,32 @@ public class PAA_Setup extends AbstractArenaCommand {
                 } else {
                     if (word[2].startsWith("m")) {
                         // move
-                        BlockFace direction = StringParser.parseToBlockFace(word[4]);
+                        final BlockFace direction = StringParser.parseToBlockFace(word[4]);
                         if (direction != null) {
                             region.getShape().move(direction, Integer.parseInt(word[3]));
                         }
                     } else if (word[2].startsWith("e")) {
                         // expand
-                        BlockFace direction = StringParser.parseToBlockFace(word[4]);
+                        final BlockFace direction = StringParser.parseToBlockFace(word[4]);
                         if (direction != null) {
                             region.getShape().extend(direction, Integer.parseInt(word[3]));
                         }
                     }
                 }
             } else if (word.length == 3 && word[2].startsWith("r")) {
-                ArenaRegion region = arena.getRegion(word[1]);
+                final ArenaRegion region = arena.getRegion(word[1]);
                 if (region == null) {
                     arena.msg(player, Language.parse(MSG.ERROR_REGION_NOTFOUND, word[1]));
                 } else {
                     // remove
-                    PAA_Region cmd = new PAA_Region();
+                    final PAA_Region cmd = new PAA_Region();
                     // usage: /pa {arenaname} region remove [regionname] | remove a region
                     cmd.commit(arena, player, new String[]{"remove", region.getRegionName()});
                     return;
                 }
             }
         } else if (word[0].startsWith("d")) {
-            PAA_Setup cmd = new PAA_Setup();
+            final PAA_Setup cmd = new PAA_Setup();
             cmd.commit(arena, player, new String[]{""});
             return;
         }
@@ -206,21 +206,21 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"done"});
         if (arena == null) {
             return result;
         }
 
-        for (PASpawn spawn : arena.getSpawns()) {
+        for (final PASpawn spawn : arena.getSpawns()) {
             result.define(new String[]{"show", spawn.getName()});
         }
 
-        for (PABlock block : arena.getBlocks()) {
+        for (final PABlock block : arena.getBlocks()) {
             result.define(new String[]{"show", block.getName()});
         }
 
-        for (ArenaRegion ar : arena.getRegions()) {
+        for (final ArenaRegion ar : arena.getRegions()) {
             result.define(new String[]{"show", ar.getRegionName()});
             result.define(new String[]{"region", ar.getRegionName()});
         }

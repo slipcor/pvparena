@@ -60,7 +60,7 @@ public final class StringParser {
             result = ChatColor.translateAlternateColorCodes('?', result);
         }
 
-        for (String s : findReplace.keySet()) {
+        for (final String s : findReplace.keySet()) {
             result = result.replace(s, findReplace.get(s));
         }
 
@@ -112,7 +112,7 @@ public final class StringParser {
      * @return a colored string
      */
     public static String colorVar(final String string) {
-        if (string == null || string.equals("") || string.equals("none")) {
+        if (string == null || "".equals(string) || "none".equals(string)) {
             return colorVar("null", false);
         }
         return colorVar(string, true);
@@ -147,7 +147,7 @@ public final class StringParser {
 		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
 		 */
 
-        for (DyeColor dc : DyeColor.values()) {
+        for (final DyeColor dc : DyeColor.values()) {
             if (dc.name().equalsIgnoreCase(wool)) {
                 return (byte) (15 - dc.getDyeData());
             }
@@ -173,10 +173,10 @@ public final class StringParser {
         // [itemid/name]~[dmg]|[enchantmentID]~level:[amount]
 
 
-        short dmg;
+        final short dmg;
         String data;
         int amount = 1;
-        Material mat;
+        final Material mat;
 
         String desc = null;
 
@@ -184,7 +184,7 @@ public final class StringParser {
 
         String prefix = null;
 
-        for (String s : PVPArena.instance.getConfig().getStringList("materialprefixes")) {
+        for (final String s : PVPArena.instance.getConfig().getStringList("materialprefixes")) {
             if (string.startsWith(prefix+":")) {
                 prefix = s;
                 temp = string.substring(prefix.length()).split(":");
@@ -194,7 +194,7 @@ public final class StringParser {
         if (temp.length > 1) {
             try {
                 amount = Integer.parseInt(temp[1]);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 PVPArena.instance.getLogger().severe("Material error. Maybe add " + temp[0] + " to materialprefixes?");
                 return new ItemStack(Material.AIR);
             }
@@ -235,13 +235,13 @@ public final class StringParser {
                 // [itemid/name]:[amount]
 
                 final ItemStack itemStack = new ItemStack(mat, amount);
-                for (Enchantment e : enchants.keySet()) {
+                for (final Enchantment e : enchants.keySet()) {
                     DEBUG.i("processing enchantment " + e.getName());
                     itemStack.addUnsafeEnchantment(e, enchants.get(e));
                 }
 
                 if (desc != null) {
-                    ItemMeta meta = itemStack.getItemMeta();
+                    final ItemMeta meta = itemStack.getItemMeta();
                     meta.setDisplayName(codeCharacters(desc, false));
                     itemStack.setItemMeta(meta);
                 }
@@ -252,12 +252,12 @@ public final class StringParser {
             if (temp.length == 2) {
                 // [itemid/name]~[dmg]:[amount]
                 final ItemStack itemStack = new ItemStack(mat, amount, dmg);
-                for (Enchantment e : enchants.keySet()) {
+                for (final Enchantment e : enchants.keySet()) {
                     itemStack.addUnsafeEnchantment(e, enchants.get(e));
                 }
 
                 if (desc != null) {
-                    ItemMeta meta = itemStack.getItemMeta();
+                    final ItemMeta meta = itemStack.getItemMeta();
                     meta.setDisplayName(codeCharacters(desc, false));
                     itemStack.setItemMeta(meta);
                 }
@@ -305,7 +305,7 @@ public final class StringParser {
 
 
                 if (desc != null) {
-                    ItemMeta meta = itemStack.getItemMeta();
+                    final ItemMeta meta = itemStack.getItemMeta();
                     meta.setDisplayName(codeCharacters(desc, false));
                     itemStack.setItemMeta(meta);
                 }
@@ -313,7 +313,7 @@ public final class StringParser {
                 if (mat == Material.INK_SACK) {
                     try {
                         itemStack.setData(new Dye(Byte.parseByte(data)));
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         DEBUG.i(
                                 "invalid dye data: " + data);
                         return itemStack;
@@ -321,7 +321,7 @@ public final class StringParser {
                 } else if (mat == Material.WOOL) {
                     try {
                         itemStack.setData(new Wool(Byte.parseByte(data)));
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid wool data: " + data);
                         return itemStack;
@@ -339,7 +339,7 @@ public final class StringParser {
                         Collections.addAll(pages, inner);
                         bookMeta.setPages(pages);
                         itemStack.setItemMeta(bookMeta);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid book data: " + data);
                         return itemStack;
@@ -350,7 +350,7 @@ public final class StringParser {
                                 .getItemMeta();
                         leatherMeta.setColor(Color.fromRGB(Integer.parseInt(data)));
                         itemStack.setItemMeta(leatherMeta);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         DEBUG.i(
                                 "invalid leather data: " + data);
                         return itemStack;
@@ -360,7 +360,7 @@ public final class StringParser {
                         final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                         skullMeta.setOwner(data);
                         itemStack.setItemMeta(skullMeta);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid skull data: " + data);
                         return itemStack;
@@ -370,10 +370,10 @@ public final class StringParser {
                     try {
                         final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
-                        String[] defs = data.split(SAFE_BREAK);
+                        final String[] defs = data.split(SAFE_BREAK);
 
-                        for (String def : defs) {
-                            String[] vals = def.split("x");
+                        for (final String def : defs) {
+                            final String[] vals = def.split("x");
                             potionMeta.addCustomEffect(
                                     new PotionEffect(
                                             PotionEffectType.getByName(vals[0]),
@@ -384,14 +384,14 @@ public final class StringParser {
                         if (lore != null
                                 && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
                             final List<String> lLore = new ArrayList<String>();
-                            for (String line : lore.split(SAFE_BREAK)) {
+                            for (final String line : lore.split(SAFE_BREAK)) {
                                 lLore.add(codeCharacters(line, false));
                             }
                             potionMeta.setLore(lLore);
                         }
 
                         itemStack.setItemMeta(potionMeta);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid potion data: " + data);
                         return itemStack;
@@ -403,7 +403,7 @@ public final class StringParser {
                 if (lore != null
                         && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
                     final List<String> lLore = new ArrayList<String>();
-                    for (String line : lore.split(SAFE_BREAK)) {
+                    for (final String line : lore.split(SAFE_BREAK)) {
                         lLore.add(codeCharacters(line, false));
                     }
                     final ItemMeta itemMeta = itemStack.getItemMeta();
@@ -411,7 +411,7 @@ public final class StringParser {
                     itemStack.setItemMeta(itemMeta);
                 }
 
-                for (Enchantment e : enchants.keySet()) {
+                for (final Enchantment e : enchants.keySet()) {
                     itemStack.addUnsafeEnchantment(e, enchants.get(e));
                 }
 
@@ -422,17 +422,17 @@ public final class StringParser {
     }
 
     public static ItemStack[] getItemStacksFromString(final String string) {
-        if (string.equals("none")) {
+        if ("none".equals(string)) {
             return new ItemStack[0];
         }
 
         final String[] args = string.split(",");
 
-        ItemStack[] result = new ItemStack[args.length];
+        final ItemStack[] result = new ItemStack[args.length];
 
         int pos = 0;
 
-        for (String s : args) {
+        for (final String s : args) {
             result[pos++] = getItemStackFromString(s);
         }
 
@@ -447,7 +447,7 @@ public final class StringParser {
 
         int pos = 0;
 
-        for (ItemStack is : isItems) {
+        for (final ItemStack is : isItems) {
             split[pos++] = getStringFromItemStack(is);
         }
 
@@ -456,8 +456,8 @@ public final class StringParser {
 
     private static String[] trimAir(final String[] sArray) {
         final List<String> list = new ArrayList<String>();
-        for (String item : sArray) {
-            if (item.equals("AIR")) {
+        for (final String item : sArray) {
+            if ("AIR".equals(item)) {
                 continue;
             }
             list.add(item);
@@ -467,9 +467,9 @@ public final class StringParser {
             return new String[]{"AIR"};
         }
 
-        String[] result = new String[list.size()];
+        final String[] result = new String[list.size()];
         int pos = 0;
-        for (String item : list) {
+        for (final String item : list) {
             result[pos++] = item;
         }
 
@@ -477,34 +477,34 @@ public final class StringParser {
     }
 
     public static String getStringFromItemStack(final ItemStack itemStack) {
-        if (itemStack == null || itemStack.getType().equals(Material.AIR)) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
             return "AIR";
         }
         final StringBuilder temp = new StringBuilder(itemStack.getType().name());
         boolean durability = false;
         if (itemStack.getDurability() != 0) {
             temp.append('~');
-            temp.append(String.valueOf(itemStack.getDurability()));
+            temp.append(itemStack.getDurability());
             durability = true;
         }
         if (itemStack.getType() == Material.INK_SACK || itemStack.getType() == Material.WOOL) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
             temp.append('~');
-            temp.append(String.valueOf(itemStack.getData().getData()));
+            temp.append(itemStack.getData().getData());
         } else if (itemStack.getType() == Material.WRITTEN_BOOK
                 || itemStack.getType() == Material.BOOK_AND_QUILL) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
             final BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
-            if (bookMeta != null && (bookMeta.getAuthor() != null) && (bookMeta.getTitle() != null)
-                    && (bookMeta.getPages() != null)) {
+            if (bookMeta != null && bookMeta.getAuthor() != null && bookMeta.getTitle() != null
+                    && bookMeta.getPages() != null) {
                 temp.append('~');
                 temp.append(codeCharacters(bookMeta.getAuthor(), true));
                 temp.append(SAFE_BREAK);
@@ -518,7 +518,7 @@ public final class StringParser {
         } else if (itemStack.getType().name().startsWith("LEATHER_")) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
             final LeatherArmorMeta leatherMeta = (LeatherArmorMeta) itemStack.getItemMeta();
@@ -527,7 +527,7 @@ public final class StringParser {
         } else if (itemStack.getType() == Material.SKULL_ITEM) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
             final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
@@ -536,12 +536,12 @@ public final class StringParser {
         } else if (itemStack.getType() == Material.POTION) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
             temp.append('~');
-            for (PotionEffect pe : potionMeta.getCustomEffects()) {
+            for (final PotionEffect pe : potionMeta.getCustomEffects()) {
                 temp.append(pe.getType().getName()).append("x").append(pe.getAmplifier()).append("x").append(pe.getDuration());
                 temp.append(SAFE_BREAK);
             }
@@ -550,7 +550,7 @@ public final class StringParser {
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
             if (!durability) {
                 temp.append('~');
-                temp.append(String.valueOf(itemStack.getDurability()));
+                temp.append(itemStack.getDurability());
                 durability = true;
             }
 
@@ -563,9 +563,9 @@ public final class StringParser {
         final Map<Enchantment, Integer> enchants = itemStack.getEnchantments();
 
         if (enchants != null && !enchants.isEmpty()) {
-            for (Enchantment e : enchants.keySet()) {
+            for (final Enchantment e : enchants.keySet()) {
                 temp.append('|');
-                temp.append(String.valueOf(e.getId()));
+                temp.append(e.getId());
                 temp.append('~');
                 temp.append(enchants.get(e));
             }
@@ -590,9 +590,9 @@ public final class StringParser {
 
     public static String joinArray(final Object[] array, final String glue) {
         final StringBuilder result = new StringBuilder("");
-        for (Object o : array) {
+        for (final Object o : array) {
             result.append(glue);
-            result.append(String.valueOf(o));
+            result.append(o);
         }
         if (result.length() <= glue.length()) {
             return result.toString();
@@ -602,9 +602,9 @@ public final class StringParser {
 
     public static String joinList(final List<?> set, final String glue) {
         final StringBuilder result = new StringBuilder("");
-        for (Object o : set) {
+        for (final Object o : set) {
             result.append(glue);
-            result.append(String.valueOf(o));
+            result.append(o);
         }
         if (result.length() <= glue.length()) {
             return result.toString();
@@ -614,9 +614,9 @@ public final class StringParser {
 
     public static String joinSet(final Set<?> set, final String glue) {
         final StringBuilder result = new StringBuilder("");
-        for (Object o : set) {
+        for (final Object o : set) {
             result.append(glue);
-            result.append(String.valueOf(o));
+            result.append(o);
         }
         if (result.length() <= glue.length()) {
             return result.toString();
@@ -641,10 +641,10 @@ public final class StringParser {
          *
          * chat-AQUA, wool-brown
          */
-        final String[] wool = new String[]{"ORANGE", "MAGENTA", "LIGHT_BLUE",
+        final String[] wool = {"ORANGE", "MAGENTA", "LIGHT_BLUE",
                 "LIME", "PINK", "GRAY", "SILVER", "PURPLE", "BLUE",
                 "GREEN", "RED", "CYAN"};
-        final String[] chat = new String[]{"GOLD", "LIGHT_PURPLE", "BLUE",
+        final String[] chat = {"GOLD", "LIGHT_PURPLE", "BLUE",
                 "GREEN", "RED", "DARK_GRAY", "GRAY", "DARK_PURPLE", "DARK_BLUE",
                 "DARK_GREEN", "DARK_RED", "DARK_AQUA"};
 
@@ -680,7 +680,7 @@ public final class StringParser {
             if (mat == null) {
                 mat = Material.getMaterial(string);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             mat = Material.getMaterial(string);
         }
         if (mat == null) {
@@ -707,10 +707,10 @@ public final class StringParser {
             // out or in are just the same thing, reference to self with positive/negative values
             return BlockFace.SELF;
         }
-        BlockFace[] faces = new BlockFace[]{
+        final BlockFace[] faces = {
                 BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST,
                 BlockFace.UP, BlockFace.DOWN};
-        for (BlockFace face : faces) {
+        for (final BlockFace face : faces) {
             if (face.name().startsWith(string.toUpperCase())) {
                 return face;
             }

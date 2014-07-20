@@ -29,7 +29,7 @@ public class PAGoalEvent extends Event {
      * @param arena  the arena where the event is happening in
      * @param goal the goal triggering the event
      */
-    public PAGoalEvent(final Arena arena, final ArenaGoal goal, String... content) {
+    public PAGoalEvent(final Arena arena, final ArenaGoal goal, final String... content) {
         super();
         this.arena = arena;
         this.goal = goal;

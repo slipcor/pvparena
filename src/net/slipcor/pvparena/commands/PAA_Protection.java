@@ -30,7 +30,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender, arena)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -49,8 +49,8 @@ public class PAA_Protection extends AbstractArenaCommand {
 
         try {
             regionProtection = RegionProtection.valueOf(args[1].toUpperCase());
-        } catch (Exception e) {
-            if (!args[1].equalsIgnoreCase("all")) {
+        } catch (final Exception e) {
+            if (!"all".equalsIgnoreCase(args[1])) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_FLAG_NOTFOUND, args[1], StringParser.joinArray(RegionProtection.values(), " ")));
                 return;
             }
@@ -90,7 +90,7 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -110,11 +110,11 @@ public class PAA_Protection extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         if (arena == null) {
             return result;
         }
-        for (ArenaRegion region : arena.getRegions()) {
+        for (final ArenaRegion region : arena.getRegions()) {
             result.define(new String[]{region.getRegionName(), "{RegionProtection}", "{Boolean}"});
         }
         return result;

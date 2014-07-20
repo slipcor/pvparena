@@ -31,7 +31,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -44,8 +44,8 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
             names = ArenaManager.getColoredShortcuts();
         } else {
             names = new ArrayList<String>();
-            for (Arena a : ArenaManager.getArenasSorted()) {
-                names.add((a.isLocked() ? "&c" : ((PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a)) ? "&e" : (a.isFightInProgress() ? "&a" : "&f"))) + a.getName() + "&r");
+            for (final Arena a : ArenaManager.getArenasSorted()) {
+                names.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + a.getName() + "&r");
             }
         }
 
@@ -54,7 +54,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

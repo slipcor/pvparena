@@ -40,7 +40,7 @@ public class ArenaGoalManager {
      * @param plugin the plugin instance
      */
     public ArenaGoalManager(final PVPArena plugin) {
-        final File path = new File(plugin.getDataFolder().toString() + "/goals");
+        final File path = new File(plugin.getDataFolder() + "/goals");
         if (!path.exists()) {
             path.mkdir();
         }
@@ -67,7 +67,7 @@ public class ArenaGoalManager {
         types.add(new GoalTeamLives());
         types.add(new GoalTime());
 
-        for (ArenaGoal type : types) {
+        for (final ArenaGoal type : types) {
             type.onThisLoad();
             DEBUG.i("module ArenaType loaded: " + type.getName() + " (version "
                     + type.version() + ")");
@@ -75,7 +75,7 @@ public class ArenaGoalManager {
     }
 
     public boolean allowsJoinInBattle(final Arena arena) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             if (!type.allowsJoinInBattle()) {
                 return false;
             }
@@ -85,7 +85,7 @@ public class ArenaGoalManager {
 
     public String checkForMissingSpawns(final Arena arena,
                                         final Set<String> list) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             final String error = type.checkForMissingSpawns(list);
             if (error != null) {
                 return error;
@@ -95,7 +95,7 @@ public class ArenaGoalManager {
     }
 
     public void configParse(final Arena arena, final YamlConfiguration config) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.configParse(config);
         }
     }
@@ -103,7 +103,7 @@ public class ArenaGoalManager {
     public Set<String> getAllGoalNames() {
         final Set<String> result = new HashSet<String>();
 
-        for (ArenaGoal goal : types) {
+        for (final ArenaGoal goal : types) {
             result.add(goal.getName());
         }
 
@@ -121,7 +121,7 @@ public class ArenaGoalManager {
      * @return the arena type if found, null otherwise
      */
     public ArenaGoal getGoalByName(final String tName) {
-        for (ArenaGoal type : types) {
+        for (final ArenaGoal type : types) {
             if (type.getName().equalsIgnoreCase(tName)) {
                 return type;
             }
@@ -131,7 +131,7 @@ public class ArenaGoalManager {
 
     public void initiate(final Arena arena, final Player player) {
         arena.getDebugger().i("initiating " + player.getName(), player);
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.initate(player);
         }
     }
@@ -139,7 +139,7 @@ public class ArenaGoalManager {
     public String ready(final Arena arena) {
         arena.getDebugger().i("AGM ready!?!");
         String error;
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             error = type.ready();
             if (error != null) {
 
@@ -150,11 +150,11 @@ public class ArenaGoalManager {
         return null;
     }
 
-    public void refillInventory(Arena arena, Player player) {
+    public void refillInventory(final Arena arena, final Player player) {
         if (player == null) {
             return;
         }
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.refillInventory(player);
         }
     }
@@ -165,26 +165,26 @@ public class ArenaGoalManager {
     }
 
     public void reset(final Arena arena, final boolean force) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.reset(force);
         }
     }
 
     public void setDefaults(final Arena arena, final YamlConfiguration config) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.setDefaults(config);
         }
     }
 
     public void setPlayerLives(final Arena arena, final int value) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.setPlayerLives(value);
         }
     }
 
     public void setPlayerLives(final Arena arena, final ArenaPlayer player,
                                final int value) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.setPlayerLives(player, value);
         }
     }
@@ -201,7 +201,7 @@ public class ArenaGoalManager {
 
         Map<String, Double> scores = new HashMap<String, Double>();
 
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             arena.getDebugger().i("scores: " + type.getName());
             scores = type.timedEnd(scores);
         }
@@ -211,8 +211,7 @@ public class ArenaGoalManager {
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
             winners.add("free");
             arena.getDebugger().i("adding FREE");
-        } else if (arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER)
-                .equals("none")) {
+        } else if ("none".equals(arena.getArenaConfig().getString(CFG.GOAL_TIME_WINNER))) {
             // check all teams
             double maxScore = 0;
 
@@ -220,7 +219,7 @@ public class ArenaGoalManager {
 
             int neededTeams = arena.getTeams().size();
 
-            for (String team : arena.getTeamNames()) {
+            for (final String team : arena.getTeamNames()) {
                 if (scores.containsKey(team)) {
                     final double teamScore = scores.get(team);
 
@@ -264,14 +263,14 @@ public class ArenaGoalManager {
             // several teams have max score!!
             double maxSum = 0;
             double sum;
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
                     continue;
                 }
 
                 sum = 0;
 
-                for (ArenaPlayer ap : team.getTeamMembers()) {
+                for (final ArenaPlayer ap : team.getTeamMembers()) {
                     if (scores.containsKey(ap.getName())) {
                         sum += scores.get(ap.getName());
                     }
@@ -299,14 +298,14 @@ public class ArenaGoalManager {
             arena.getDebugger().i("FFAAA");
             final Set<String> preciseWinners = new HashSet<String>();
 
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
                     continue;
                 }
 
                 double maxSum = 0;
 
-                for (ArenaPlayer ap : team.getTeamMembers()) {
+                for (final ArenaPlayer ap : team.getTeamMembers()) {
                     double sum = 0;
                     if (scores.containsKey(ap.getName())) {
                         sum = scores.get(ap.getName());
@@ -333,13 +332,13 @@ public class ArenaGoalManager {
         ArenaModuleManager.timedEnd(arena, winners);
 
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
-                for (ArenaPlayer p : team.getTeamMembers()) {
+                for (final ArenaPlayer p : team.getTeamMembers()) {
                     apSet.add(p);
                 }
 
-                for (ArenaPlayer p : apSet) {
+                for (final ArenaPlayer p : apSet) {
                     if (winners.isEmpty()) {
                         arena.removePlayer(p.get(), arena.getArenaConfig()
                                 .getString(CFG.TP_LOSE), true, false);
@@ -353,7 +352,7 @@ public class ArenaGoalManager {
                             arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON,
                                     p.getName()));
                         } else {
-                            if (!p.getStatus().equals(Status.FIGHT)) {
+                            if (p.getStatus() != Status.FIGHT) {
                                 continue;
                             }
                             p.addLosses();
@@ -370,7 +369,7 @@ public class ArenaGoalManager {
         } else if (!winners.isEmpty()) {
 
             boolean hasBroadcasted = false;
-            for (ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : arena.getTeams()) {
                 if (winners.contains(team.getName())) {
                     if (!hasBroadcasted) {
                         ArenaModuleManager.announce(
@@ -384,20 +383,20 @@ public class ArenaGoalManager {
                 } else {
 
                     final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
-                    for (ArenaPlayer p : team.getTeamMembers()) {
+                    for (final ArenaPlayer p : team.getTeamMembers()) {
                         apSet.add(p);
                     }
-                    for (ArenaPlayer p : apSet) {
-                        if (!p.getStatus().equals(Status.FIGHT)) {
+                    for (final ArenaPlayer p : apSet) {
+                        if (p.getStatus() != Status.FIGHT) {
                             continue;
                         }
                         p.addLosses();
                         if (!hasBroadcasted) {
-                            for (String winTeam : winners) {
+                            for (final String winTeam : winners) {
                                 ArenaModuleManager.announce(arena, Language
                                         .parse(arena, MSG.TEAM_HAS_WON, winTeam), "WINNER");
 
-                                ArenaTeam winningTeam = arena.getTeam(winTeam);
+                                final ArenaTeam winningTeam = arena.getTeam(winTeam);
 
                                 if (winningTeam != null) {
                                     arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON,
@@ -431,7 +430,7 @@ public class ArenaGoalManager {
     }
 
     public void unload(final Arena arena, final Player player) {
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.unload(player);
         }
     }
@@ -440,19 +439,19 @@ public class ArenaGoalManager {
         if (arena == null) {
             return;
         }
-        for (ArenaGoal type : arena.getGoals()) {
+        for (final ArenaGoal type : arena.getGoals()) {
             type.disconnect(player);
         }
     }
 
-    public static void lateJoin(Arena arena, Player player) {
-        for (ArenaGoal goal : arena.getGoals()) {
+    public static void lateJoin(final Arena arena, final Player player) {
+        for (final ArenaGoal goal : arena.getGoals()) {
             goal.lateJoin(player);
         }
     }
 
-    public static void onPlayerPickUp(Arena arena, PlayerPickupItemEvent event) {
-        for (ArenaGoal goal : arena.getGoals()) {
+    public static void onPlayerPickUp(final Arena arena, final PlayerPickupItemEvent event) {
+        for (final ArenaGoal goal : arena.getGoals()) {
             goal.onPlayerPickUp(event);
         }
     }

@@ -29,7 +29,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -79,7 +79,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<String>(null);
         result.define(new String[]{"{String}", "teams"});
         result.define(new String[]{"{String}", "teamdm"});
         result.define(new String[]{"{String}", "dm"});

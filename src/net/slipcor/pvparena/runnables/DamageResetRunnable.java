@@ -36,7 +36,7 @@ public class DamageResetRunnable implements Runnable {
                     attacker.getItemInHand().setDurability((short) 0);
                     attacker.updateInventory();
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
             }
         }
 
@@ -44,14 +44,14 @@ public class DamageResetRunnable implements Runnable {
             try {
                 final ItemStack[] items = defender.getInventory().getArmorContents();
 
-                for (ItemStack is : items) {
+                for (final ItemStack is : items) {
                     if (is == null || !is.getType().name().endsWith("_HELMET")) {
                         continue;
                     }
                     is.setDurability((short) 0);
                 }
                 defender.updateInventory();
-            } catch (Exception e) {
+            } catch (final Exception e) {
             }
         }
     }

@@ -27,7 +27,7 @@ public class RegionRunnable implements Runnable {
      * @param paRegion the region we are running in
      */
     public RegionRunnable(final ArenaRegion paRegion) {
-        this.region = paRegion;
+        region = paRegion;
         region.getArena().getDebugger().i("RegionRunnable constructor: " + paRegion.getRegionName());
     }
 

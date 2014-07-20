@@ -57,7 +57,7 @@ public class PAWinEvent extends Event {
     public String[] getItems() {
         final String[] output = new String[items.size()];
         int pos = 0;
-        for (String s : items) {
+        for (final String s : items) {
             output[pos++] = s;
         }
         return output;

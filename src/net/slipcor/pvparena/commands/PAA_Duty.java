@@ -28,7 +28,7 @@ public class PAA_Duty extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!this.hasPerms(sender)) {
+        if (!hasPerms(sender)) {
             return;
         }
 
@@ -38,8 +38,8 @@ public class PAA_Duty extends AbstractGlobalCommand {
 
         boolean perm = true;
 
-        for (PermissionAttachmentInfo pai : sender.getEffectivePermissions()) {
-            if (pai.getPermission().equals("pvparena.override")) {
+        for (final PermissionAttachmentInfo pai : sender.getEffectivePermissions()) {
+            if ("pvparena.override".equals(pai.getPermission())) {
                 perm = !pai.getValue();
                 sender.removeAttachment(pai.getAttachment());
                 break;
@@ -58,7 +58,7 @@ public class PAA_Duty extends AbstractGlobalCommand {
 
     @Override
     public String getName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override

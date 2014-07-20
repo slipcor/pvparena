@@ -37,7 +37,7 @@ class NCBLoadEvent<T> extends Event {
 
     private final JarFile jarFile;
 
-    public NCBLoadEvent(Plugin plugin, T loadable, JarFile jarFile) {
+    public NCBLoadEvent(final Plugin plugin, final T loadable, final JarFile jarFile) {
         this.plugin = plugin;
         this.loadable = loadable;
         this.jarFile = jarFile;

@@ -43,7 +43,7 @@ import java.util.Set;
  * @author slipcor
  */
 
-public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommandHandler {
+public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     protected static Debug debug = new Debug(32);
 
     protected Arena arena;
@@ -144,7 +144,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommand
      * @param args   the command arguments
      */
     public void commitCommand(final CommandSender sender, final String[] args) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -164,7 +164,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommand
      * @param team   the chosen team
      */
     public void commitJoin(final Player sender, final ArenaTeam team) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -173,7 +173,7 @@ public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommand
      * @param player the spectating player
      */
     public void commitSpectate(final Player player) {
-        throw new IllegalStateException(this.getName());
+        throw new IllegalStateException(getName());
     }
 
     /**
@@ -224,8 +224,8 @@ public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommand
     public void initiate(final Player sender) {
     }
 
-    public boolean isMissingBattleRegion(Arena arena) {
-        if (this.needsBattleRegion()) {
+    public boolean isMissingBattleRegion(final Arena arena) {
+        if (needsBattleRegion()) {
             return arena.getRegionsByType(RegionType.BATTLE).size() < 1;
         }
         return false;
@@ -431,13 +431,13 @@ public class ArenaModule extends NCBLoadable implements Cloneable, IArenaCommand
      * @return true if the module was added, false if it was removed
      */
     public boolean toggleEnabled(final Arena arena) {
-        for (ArenaModule mod : arena.getMods()) {
-            if (mod.getName().equals(this.getName())) {
+        for (final ArenaModule mod : arena.getMods()) {
+            if (mod.getName().equals(getName())) {
                 arena.modRemove(mod);
                 return false;
             }
         }
-        final ArenaModule mod = (ArenaModule) this.clone();
+        final ArenaModule mod = (ArenaModule) clone();
         mod.arena = arena;
         arena.modAdd(mod);
         return true;

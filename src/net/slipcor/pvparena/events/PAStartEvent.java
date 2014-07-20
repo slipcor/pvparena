@@ -52,7 +52,7 @@ public class PAStartEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean value) {
+    public void setCancelled(final boolean value) {
         cancelled = value;
     }
 }
