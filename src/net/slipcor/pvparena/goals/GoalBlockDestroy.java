@@ -202,7 +202,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         arena.getDebugger().i("win: " + false);
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == false) {
+            if (!team.getName().equals(sTeam)) {
                 /*
 				team is sTeam and win
 				team is not sTeam and not win

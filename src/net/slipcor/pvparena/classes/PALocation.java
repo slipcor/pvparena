@@ -86,9 +86,7 @@ public class PALocation {
             return false;
         if (Float.floatToIntBits(yaw) != Float.floatToIntBits(other.yaw))
             return false;
-        if (Double.doubleToLongBits(z) != Double.doubleToLongBits(other.z))
-            return false;
-        return true;
+        return Double.doubleToLongBits(z) == Double.doubleToLongBits(other.z);
     }
 
     public int getBlockX() {

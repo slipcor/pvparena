@@ -88,12 +88,9 @@ public class SphericRegion extends ArenaRegionShape {
                     || getRegion().locs[0].getZ() > paRegion.locs[1].getZ()) {
                 return false;
             }
-            if (paRegion.locs[0].getX() > getRegion().locs[1].getX()
+            return !(paRegion.locs[0].getX() > getRegion().locs[1].getX()
                     || paRegion.locs[0].getY() > getRegion().locs[1].getY()
-                    || paRegion.locs[0].getZ() > getRegion().locs[1].getZ()) {
-                return false;
-            }
-            return true;
+                    || paRegion.locs[0].getZ() > getRegion().locs[1].getZ());
         } else if (paRegion.getShape() instanceof SphericRegion) {
             // we are cube and search for intersecting sphere
 

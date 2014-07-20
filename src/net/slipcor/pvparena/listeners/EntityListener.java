@@ -238,9 +238,9 @@ public class EntityListener implements Listener {
         final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
 
         for (ArenaTeam team : arena.getTeams()) {
-            defTeam = defTeam ? true : team.getTeamMembers().contains(
+            defTeam = defTeam || team.getTeamMembers().contains(
                     apDefender);
-            attTeam = attTeam ? true : team.getTeamMembers().contains(
+            attTeam = attTeam || team.getTeamMembers().contains(
                     apAttacker);
         }
 

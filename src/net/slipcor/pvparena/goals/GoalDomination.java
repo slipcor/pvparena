@@ -440,7 +440,7 @@ public class GoalDomination extends ArenaGoal {
         String winteam = sTeam;
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == true) {
+            if (team.getName().equals(sTeam)) {
                 continue;
             }
             for (ArenaPlayer ap : team.getTeamMembers()) {
@@ -706,13 +706,8 @@ public class GoalDomination extends ArenaGoal {
      *
      * @param paBlockLocation the location to take/reset*/
     void takeFlag(final PABlockLocation paBlockLocation) {
-        if (false) {
-            paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM("WHITE"));
-        } else {
-            paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM("WHITE"));
-        }
+        paBlockLocation.toLocation().getBlock()
+                .setData(StringParser.getColorDataFromENUM("WHITE"));
     }
 
     private static void takeFlag(final Arena arena, final Location lBlock, final String name) {

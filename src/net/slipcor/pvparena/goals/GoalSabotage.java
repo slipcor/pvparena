@@ -248,7 +248,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
         String winteam = sTeam;
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == false) {
+            if (!team.getName().equals(sTeam)) {
                 continue;
             }
             for (ArenaPlayer ap : team.getTeamMembers()) {

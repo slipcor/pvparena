@@ -90,18 +90,15 @@ public final class InventoryManager {
                         // has lore!
                         if (is.hasItemMeta() && is.getItemMeta().hasLore() && is.getItemMeta().getLore().equals(keepItem.getItemMeta().getLore())) {
                             returned.add(is.clone());
-                            continue;
                         }
                     } else if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasDisplayName()) {
                         // has displayname!
                         if (is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(keepItem.getItemMeta().getDisplayName())) {
                             returned.add(is.clone());
-                            continue;
                         }
                     } else {
                         // has neither!
                         returned.add(is.clone());
-                        continue;
                     }
                 }
             }
@@ -125,7 +122,6 @@ public final class InventoryManager {
                     continue;
                 }
                 returned.add(is.clone());
-                continue;
             }
             if (exclude.contains(is.getType())) {
                 continue;

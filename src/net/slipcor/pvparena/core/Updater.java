@@ -429,7 +429,6 @@ public class Updater extends Thread {
                 File destinationFilePath = new File(zipPath, entry.getName());
                 destinationFilePath.getParentFile().mkdirs();
                 if (entry.isDirectory()) {
-                    continue;
                 } else {
                     final BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
                     int b;

@@ -64,9 +64,7 @@ public class PABlockLocation {
             return false;
         if (y != other.y)
             return false;
-        if (z != other.z)
-            return false;
-        return true;
+        return z == other.z;
     }
 
     public double getDistance(final PABlockLocation otherLocation) {
@@ -127,10 +125,7 @@ public class PABlockLocation {
         if (this.getY() < min.getY() || this.getY() > max.getY()) {
             return false;
         }
-        if (this.getZ() < min.getZ() || this.getZ() > max.getZ()) {
-            return false;
-        }
-        return true;
+        return !(this.getZ() < min.getZ() || this.getZ() > max.getZ());
     }
 
     public PABlockLocation pointTo(final PABlockLocation dest, final Double length) {

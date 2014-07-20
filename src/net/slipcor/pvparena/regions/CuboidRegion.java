@@ -85,12 +85,9 @@ public class CuboidRegion extends ArenaRegionShape {
                     || getMinimumLocation().getZ() > paRegion.locs[1].getZ()) {
                 return false;
             }
-            if (paRegion.locs[0].getX() > getMaximumLocation().getX()
+            return !(paRegion.locs[0].getX() > getMaximumLocation().getX()
                     || paRegion.locs[0].getY() > getMaximumLocation().getY()
-                    || paRegion.locs[0].getZ() > getMaximumLocation().getZ()) {
-                return false;
-            }
-            return true;
+                    || paRegion.locs[0].getZ() > getMaximumLocation().getZ());
         } else if (paRegion.getShape() instanceof SphericRegion) {
             // we are cube and search for intersecting sphere
 
