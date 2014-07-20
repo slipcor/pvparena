@@ -73,8 +73,8 @@ public class BlockListener implements Listener {
         return PAA_Edit.activeEdits.containsValue(arena);
     }
 
-    protected static boolean isProtected(final Location loc, final Cancellable event,
-                                         final RegionProtection node) {
+    static boolean isProtected(final Location loc, final Cancellable event,
+                               final RegionProtection node) {
         final Arena arena = ArenaManager.getArenaByProtectedRegionLocation(
                 new PABlockLocation(loc), node);
         if (arena == null) {

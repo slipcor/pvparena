@@ -43,7 +43,7 @@ public class GoalTime extends ArenaGoal {
         return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
     }
 
-    public void commitEnd() {
+    void commitEnd() {
         if (ter != null) {
             ter.commit();
         }

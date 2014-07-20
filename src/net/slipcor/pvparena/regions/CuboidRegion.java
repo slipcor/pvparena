@@ -234,7 +234,7 @@ public class CuboidRegion extends ArenaRegionShape {
         return getRegion().locs[0];
     }
 
-    public ArenaRegion getRegion() {
+    ArenaRegion getRegion() {
         return region;
     }
 

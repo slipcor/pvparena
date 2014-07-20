@@ -315,18 +315,16 @@ public final class ArenaManager {
      *
      * @param configFile the file to load
      */
-    public static Arena loadArena(final String configFile) {
+    public static void loadArena(final String configFile) {
         DEBUG.i("loading arena " + configFile);
         final Arena arena = new Arena(configFile);
 
         if (!arena.isValid()) {
             Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, configFile));
-            return null;
+            return;
         }
 
         ARENAS.put(arena.getName().toLowerCase(), arena);
-
-        return arena;
     }
 
     public static void removeArena(Arena arena, final boolean deleteConfig) {

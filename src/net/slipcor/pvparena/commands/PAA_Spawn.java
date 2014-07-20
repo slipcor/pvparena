@@ -29,7 +29,7 @@ import java.util.Set;
  */
 
 public class PAA_Spawn extends AbstractArenaCommand {
-    private static Set<String> spawns = new HashSet<String>();
+    private static final Set<String> spawns = new HashSet<String>();
 
     static {
         spawns.add("exit");

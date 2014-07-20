@@ -69,7 +69,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     private Map<ArenaTeam, Material> foodtypes = null;
     private Map<Block, ArenaTeam> chestMap = null;
-    static Map<Material, Material> cookmap = new HashMap<Material, Material>();
+    private static final Map<Material, Material> cookmap = new HashMap<Material, Material>();
 
     static {
         cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
@@ -208,7 +208,7 @@ public class GoalFood extends ArenaGoal implements Listener {
         return res;
     }
 
-    String flagName = null;
+    private String flagName = null;
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {

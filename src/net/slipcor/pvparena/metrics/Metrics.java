@@ -241,7 +241,7 @@ public class Metrics {
      *
      * @return true if metrics should be opted out of it
      */
-    public boolean isOptOut() {
+    boolean isOptOut() {
         synchronized (optOutLock) {
             try {
                 // Reload the metrics file
@@ -309,7 +309,7 @@ public class Metrics {
      *
      * @return the File object for the config file
      */
-    public File getConfigFile() {
+    File getConfigFile() {
         // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
         // is to abuse the plugin object we already have
         // plugin.getDataFolder() => base/plugins/PluginA/
@@ -476,7 +476,7 @@ public class Metrics {
         }
     }
 
-    public static byte[] gzip(String input) {
+    private static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
 
@@ -659,7 +659,7 @@ public class Metrics {
         /**
          * Called when the server owner decides to opt-out of BukkitMetrics while the server is running.
          */
-        protected void onOptOut() {
+        void onOptOut() {
         }
     }
 

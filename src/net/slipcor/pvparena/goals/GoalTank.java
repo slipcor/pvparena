@@ -48,7 +48,7 @@ public class GoalTank extends ArenaGoal {
         debug = new Debug(108);
     }
 
-    private static Map<Arena, String> tanks = new HashMap<Arena, String>();
+    private static final Map<Arena, String> tanks = new HashMap<Arena, String>();
 
     private EndRunnable endRunner = null;
 

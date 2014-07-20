@@ -33,12 +33,12 @@ import java.util.*;
  */
 
 public class Config {
-    private YamlConfiguration cfg;
-    private File configFile;
-    private Map<String, Boolean> booleans;
-    private Map<String, Integer> ints;
-    private Map<String, Double> doubles;
-    private Map<String, String> strings;
+    private final YamlConfiguration cfg;
+    private final File configFile;
+    private final Map<String, Boolean> booleans;
+    private final Map<String, Integer> ints;
+    private final Map<String, Double> doubles;
+    private final Map<String, String> strings;
 
     public static enum CFG {
 
@@ -329,9 +329,9 @@ public class Config {
         MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit");
 
         private String node;
-        private Object value;
-        private String type;
-        private String module;
+        private final Object value;
+        private final String type;
+        private final String module;
 
         public static CFG getByNode(final String node) {
             for (CFG m : CFG.getValues()) {

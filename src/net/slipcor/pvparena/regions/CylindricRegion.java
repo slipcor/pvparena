@@ -318,7 +318,7 @@ public class CylindricRegion extends ArenaRegionShape {
         return result;
     }
 
-    public ArenaRegion getRegion() {
+    ArenaRegion getRegion() {
         return region;
     }
 

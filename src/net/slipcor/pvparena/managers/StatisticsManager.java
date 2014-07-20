@@ -30,7 +30,7 @@ import java.util.UUID;
  */
 
 public class StatisticsManager {
-    public static final Debug DEBUG = new Debug(28);
+    private static final Debug DEBUG = new Debug(28);
     private static File players;
     private static YamlConfiguration config;
 
@@ -196,7 +196,7 @@ public class StatisticsManager {
      * @param desc   should it be sorted descending?
      * @return an array of ArenaPlayer
      */
-    public static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
+    private static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
         DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + " "
                 + (desc ? "desc" : "asc"));
 

@@ -28,7 +28,7 @@ import java.util.List;
 
 public final class InventoryManager {
 
-    public static final Debug DEBUG = new Debug(26);
+    private static final Debug DEBUG = new Debug(26);
     private static final String[] TOOLSUFFIXES = {"_AXE", "_PICKAXE", "_SPADE", "_HOE", "_SWORD", "BOW", "SHEARS"};
 
     private InventoryManager() {

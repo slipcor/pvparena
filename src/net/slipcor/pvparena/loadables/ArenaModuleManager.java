@@ -39,7 +39,7 @@ import java.util.Set;
 public class ArenaModuleManager {
     private List<ArenaModule> mods;
     private final NCBLoader<ArenaModule> loader;
-    protected final static Debug DEBUG = new Debug(33);
+    private final static Debug DEBUG = new Debug(33);
 
     /**
      * create an arena module manager instance

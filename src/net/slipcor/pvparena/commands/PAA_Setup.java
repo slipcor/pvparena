@@ -30,7 +30,7 @@ import java.util.*;
 
 public class PAA_Setup extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSetups = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeSetups = new HashMap<String, Arena>();
 
     public PAA_Setup() {
         super(new String[]{"pvparena.cmd.setup"});

@@ -29,19 +29,19 @@ import java.util.logging.Formatter;
 
 public class Debug {
     public static boolean override = false;
-    public static boolean server_log = false;
+    private static boolean server_log = false;
 
-    private static String prefix = "[PA-debug] ";
-    private static Set<Integer> check = new HashSet<Integer>();
-    private static Set<String> strings = new HashSet<String>();
+    private static final String prefix = "[PA-debug] ";
+    private static final Set<Integer> check = new HashSet<Integer>();
+    private static final Set<String> strings = new HashSet<String>();
 
     private final int debugID;
 
     private static Logger logger = null;
     private Logger arenaLogger = null;
 
-    private static List<Logger> loggers = new ArrayList<Logger>();
-    private static List<Debug> debugs = new ArrayList<Debug>();
+    private static final List<Logger> loggers = new ArrayList<Logger>();
+    private static final List<Debug> debugs = new ArrayList<Debug>();
     private Arena arena = null;
     private boolean active = false;
 
@@ -127,7 +127,7 @@ public class Debug {
      *
      * @param iID the debug id to check
      */
-    public Debug(final int iID, final Arena arena) {
+    private Debug(final int iID, final Arena arena) {
         debugID = iID;
 
         if (arena != null) {

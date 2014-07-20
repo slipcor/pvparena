@@ -30,7 +30,7 @@ import java.util.Map;
 
 public final class ArenaClass {
 
-    private static Debug debug = new Debug(4);
+    private static final Debug debug = new Debug(4);
 
     private final String name;
     private final ItemStack[] items;

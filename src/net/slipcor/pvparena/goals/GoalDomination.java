@@ -174,7 +174,7 @@ public class GoalDomination extends ArenaGoal {
         return result;
     }
 
-    protected void checkMove() {
+    void checkMove() {
 
         /**
          * possible Situations
@@ -429,18 +429,18 @@ public class GoalDomination extends ArenaGoal {
         return res;
     }
 
-    private void commit(final Arena arena, final String sTeam, final boolean win) {
+    private void commit(final Arena arena, final String sTeam) {
         if (arena.realEndRunner != null) {
             arena.getDebugger().i("[DOM] already ending");
             return;
         }
         arena.getDebugger().i("[DOM] committing end: " + sTeam);
-        arena.getDebugger().i("win: " + win);
+        arena.getDebugger().i("win: " + true);
 
         String winteam = sTeam;
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == win) {
+            if (team.getName().equals(sTeam) == true) {
                 continue;
             }
             for (ArenaPlayer ap : team.getTeamMembers()) {
@@ -628,7 +628,7 @@ public class GoalDomination extends ArenaGoal {
 
             final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
             for (PABlockLocation spawn : spawns) {
-                takeFlag("WHITE", false, spawn);
+                takeFlag(spawn);
             }
         }
     }
@@ -651,7 +651,7 @@ public class GoalDomination extends ArenaGoal {
         }
         final Set<PABlockLocation> spawns = SpawnManager.getBlocksStartingWith(arena, "flag");
         for (PABlockLocation spawn : spawns) {
-            takeFlag("WHITE", false, spawn);
+            takeFlag(spawn);
         }
 
         final DominationMainRunnable domMainRunner = new DominationMainRunnable(arena, this);
@@ -671,7 +671,7 @@ public class GoalDomination extends ArenaGoal {
                 getLifeMap().put(team, iLives);
             } else {
                 getLifeMap().remove(team);
-                commit(arena, team, true);
+                commit(arena, team);
                 return true;
             }
         }
@@ -704,14 +704,11 @@ public class GoalDomination extends ArenaGoal {
     /**
      * take/reset an arena flag
      *
-     * @param flagColor       the teamcolor to reset
-     * @param take            true if take, else reset
-     * @param paBlockLocation the location to take/reset
-     */
-    public void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
-        if (take) {
+     * @param paBlockLocation the location to take/reset*/
+    void takeFlag(final PABlockLocation paBlockLocation) {
+        if (false) {
             paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM(flagColor));
+                    .setData(StringParser.getColorDataFromENUM("WHITE"));
         } else {
             paBlockLocation.toLocation().getBlock()
                     .setData(StringParser.getColorDataFromENUM("WHITE"));
@@ -751,7 +748,7 @@ public class GoalDomination extends ArenaGoal {
         return scores;
     }
 
-    protected class DominationRunnable implements Runnable {
+    class DominationRunnable implements Runnable {
         public final boolean take;
         public final Location loc;
         public int runID = -1;
@@ -813,7 +810,7 @@ public class GoalDomination extends ArenaGoal {
         }
     }
 
-    protected class DominationMainRunnable implements Runnable {
+    class DominationMainRunnable implements Runnable {
         public int rID = -1;
         private final Arena arena;
         //private final Debug debug = new Debug(39);

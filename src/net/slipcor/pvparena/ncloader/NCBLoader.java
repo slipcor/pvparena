@@ -91,7 +91,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
      *
      * @return The Logger
      */
-    public Logger getLogger() {
+    Logger getLogger() {
         return plugin.getLogger();
     }
 
@@ -209,7 +209,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     /**
      * Unloads the Loader
      */
-    public void unload() {
+    void unload() {
         loadables.clear();
     }
 }

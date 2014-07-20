@@ -33,7 +33,7 @@ import java.util.*;
 public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     protected Debug debug = new Debug(30);
     protected Arena arena;
-    protected Map<String, Integer> lifeMap = null;
+    Map<String, Integer> lifeMap = null;
 
     /**
      * create an arena type instance

@@ -85,11 +85,11 @@ public class Updater extends Thread {
         }
     }
 
-    public Updater(final Plugin plugin, final File file, final int id, final boolean files) {
+    public Updater(final Plugin plugin, final File file, final boolean files) {
         super();
         this.plugin = plugin;
         this.file = file;
-        this.id = id;
+        this.id = 41652;
         this.files = files;
 
         mode = UpdateMode.getBySetting(plugin.getConfig().getString("update.mode", "both"));
@@ -256,7 +256,7 @@ public class Updater extends Thread {
         }
     }
 
-    public final void init() {
+    final void init() {
         if (plugin.getConfig().getBoolean("update.modules", true)) {
             try {
                 final File destination = plugin.getDataFolder();

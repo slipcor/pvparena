@@ -70,7 +70,7 @@ public class Arena {
 
     private PARoundMap rounds;
 
-    private static String globalprefix = "PVP Arena";
+    private static final String globalprefix = "PVP Arena";
     private final String name;
     private String prefix = "PVP Arena";
     private String owner = "%server%";
@@ -90,7 +90,7 @@ public class Arena {
     public BukkitRunnable startRunner = null;
     public int spawnCampRunnerID = -1;
 
-    public boolean gaveRewards = false;
+    private boolean gaveRewards = false;
 
     private Config cfg;
     private YamlConfiguration language = new YamlConfiguration();

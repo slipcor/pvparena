@@ -42,8 +42,8 @@ import java.util.*;
  */
 
 public class ArenaPlayer {
-    private static Debug debug = new Debug(5);
-    private static Map<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
+    private static final Debug debug = new Debug(5);
+    private static final Map<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
 
     private final String name;
     private boolean telePass = false;
@@ -77,15 +77,15 @@ public class ArenaPlayer {
     }
 
     private boolean publicChatting = true;
-    private PABlockLocation[] selection = new PABlockLocation[2];
+    private final PABlockLocation[] selection = new PABlockLocation[2];
 
-    public ArenaPlayer(final String playerName) {
+    private ArenaPlayer(final String playerName) {
         name = playerName;
 
         totalPlayers.put(name, this);
     }
 
-    public ArenaPlayer(final Player player, final Arena arena) {
+    private ArenaPlayer(final Player player, final Arena arena) {
         this.name = player.getName();
         setArena(arena);
 

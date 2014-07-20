@@ -19,7 +19,7 @@ import java.net.URLEncoder;
 
 public class Tracker implements Runnable {
     private static int taskID = -1;
-    private static Debug debug = new Debug(18);
+    private static final Debug debug = new Debug(18);
 
     /**
      * call home to save the server/plugin state

@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class ArenaTeam {
 
-    private static Debug debug = new Debug(6);
+    private static final Debug debug = new Debug(6);
 
     private final Set<ArenaPlayer> players;
     private final ChatColor color;

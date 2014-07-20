@@ -946,7 +946,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
      * @param take            true if take, else reset
      * @param paBlockLocation the location to take/reset
      */
-    public void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
+    void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
         if (paBlockLocation == null) {
             return;
         }

@@ -235,20 +235,20 @@ public class GoalSabotage extends ArenaGoal implements Listener {
         return res;
     }
 
-    private void commit(final Arena arena, final String sTeam, final boolean win) {
+    private void commit(final Arena arena, final String sTeam) {
         if (arena.realEndRunner != null) {
             arena.getDebugger().i("[SABOTAGE] already ending");
             return;
         }
         arena.getDebugger().i("[SABOTAGE] committing end: " + sTeam);
-        arena.getDebugger().i("win: " + win);
+        arena.getDebugger().i("win: " + false);
 
         PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         String winteam = sTeam;
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == win) {
+            if (team.getName().equals(sTeam) == false) {
                 continue;
             }
             for (ArenaPlayer ap : team.getTeamMembers()) {
@@ -529,7 +529,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
      * @param take            true if take, else reset
      * @param paBlockLocation the location to take/reset
      */
-    public void takeFlag(final String teamName, final boolean take, final PABlockLocation paBlockLocation) {
+    void takeFlag(final String teamName, final boolean take, final PABlockLocation paBlockLocation) {
         paBlockLocation.toLocation().getBlock()
                 .setType(take ? Material.AIR : Material.TNT);
         if (take) {
@@ -557,7 +557,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             if (tnt.getUniqueId().equals(getTNTmap().get(team).getUniqueId())) {
                 event.setCancelled(true);
                 tnt.remove();
-                commit(arena, team.getName(), false);
+                commit(arena, team.getName());
             }
         }
 

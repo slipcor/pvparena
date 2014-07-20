@@ -24,7 +24,7 @@ public final class Help {
 
     }
 
-    private static String version = "v0.9.9.9";
+    private static final String version = "v0.9.9.9";
     private final static String LINE = "-------------------------------------------";
 
     public static enum HELP {
@@ -408,7 +408,7 @@ public final class Help {
                 "/pa version"});
 
 
-        private String node;
+        private final String node;
         private List<String> value;
 
         private HELP(final String node, final String[] sArray) {

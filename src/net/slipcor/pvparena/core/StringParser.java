@@ -32,14 +32,14 @@ public final class StringParser {
     private static final String SAFE_PAGE_BREAK = "<oXxOxXo>";
     private static final String SAFE_LORE_BREAK = "<oxXxOxXxo>";
 
-    public static final Debug DEBUG = new Debug(17);
+    private static final Debug DEBUG = new Debug(17);
 
     private StringParser() {
     }
 
-    public static Set<String> positive = new HashSet<String>(Arrays.asList(
+    public static final Set<String> positive = new HashSet<String>(Arrays.asList(
             "yes", "on", "true", "1"));
-    public static Set<String> negative = new HashSet<String>(Arrays.asList(
+    public static final Set<String> negative = new HashSet<String>(Arrays.asList(
             "no", "off", "false", "0"));
 
     private static String codeCharacters(final String string, final boolean forward) {
@@ -584,7 +584,7 @@ public final class StringParser {
         return temp.toString().replace(ChatColor.COLOR_CHAR, '&');
     }
 
-    public static String getWoolEnumFromChatColorEnum(final String color) {
+    private static String getWoolEnumFromChatColorEnum(final String color) {
         return parseDyeColorToChatColor(color, false);
     }
 

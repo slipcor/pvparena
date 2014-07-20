@@ -19,9 +19,9 @@ import org.bukkit.command.CommandSender;
  */
 
 public abstract class AbstractArenaCommand implements IArenaCommandHandler {
-    public final String[] perms;
+    private final String[] perms;
 
-    public AbstractArenaCommand(final String[] permissions) {
+    AbstractArenaCommand(final String[] permissions) {
         perms = permissions.clone();
     }
 

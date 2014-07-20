@@ -20,14 +20,14 @@ import org.bukkit.command.CommandSender;
  */
 
 public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
-    public final String[] perms;
+    private final String[] perms;
 
-    public AbstractGlobalCommand(final String[] permissions) {
+    AbstractGlobalCommand(final String[] permissions) {
         perms = permissions.clone();
     }
 
-    public static boolean argCountValid(final CommandSender sender, final String[] args,
-                                        final Integer[] validCounts) {
+    static boolean argCountValid(final CommandSender sender, final String[] args,
+                                 final Integer[] validCounts) {
 
         for (int i : validCounts) {
             if (i == args.length) {
@@ -62,7 +62,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
         return false;
     }
 
-    public boolean hasPerms(final CommandSender sender) {
+    boolean hasPerms(final CommandSender sender) {
         if (PVPArena.hasAdminPerms(sender)) {
             return true;
         }
@@ -97,5 +97,5 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
         return false;
     }
 
-    public abstract void displayHelp(CommandSender sender);
+    protected abstract void displayHelp(CommandSender sender);
 }

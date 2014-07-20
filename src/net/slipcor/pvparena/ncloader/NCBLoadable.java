@@ -25,7 +25,7 @@ public class NCBLoadable implements Cloneable {
 
     private final String name;
 
-    public NCBLoadable(String name) {
+    protected NCBLoadable(String name) {
         this.name = name;
     }
 

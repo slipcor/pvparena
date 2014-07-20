@@ -23,7 +23,7 @@ public class SpawnCampRunnable implements Runnable {
      *
      * @param arena the arena we are running in
      */
-    public SpawnCampRunnable(final Arena arena, final int i) {
+    public SpawnCampRunnable(final Arena arena) {
         iID = 0;
         this.arena = arena;
         arena.getDebugger().i("SpawnCampRunnable constructor");

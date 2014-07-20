@@ -32,7 +32,7 @@ import java.util.*;
 public class ArenaGoalManager {
     private List<ArenaGoal> types;
     private final NCBLoader<ArenaGoal> loader;
-    protected static final Debug DEBUG = new Debug(31);
+    private static final Debug DEBUG = new Debug(31);
 
     /**
      * create an arena type instance

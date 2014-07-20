@@ -197,12 +197,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         return res;
     }
 
-    private void commit(final Arena arena, final String sTeam, final boolean win) {
+    private void commit(final Arena arena, final String sTeam) {
         arena.getDebugger().i("[BD] checking end: " + sTeam);
-        arena.getDebugger().i("win: " + win);
+        arena.getDebugger().i("win: " + false);
 
         for (ArenaTeam team : arena.getTeams()) {
-            if (team.getName().equals(sTeam) == win) {
+            if (team.getName().equals(sTeam) == false) {
                 /*
 				team is sTeam and win
 				team is not sTeam and not win
@@ -459,7 +459,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         }
     }
 
-    private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
+    private void reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
         arena.getDebugger().i("reducing lives of team " + team);
         final int count = getLifeMap().get(team) - 1;
@@ -467,10 +467,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             getLifeMap().put(team, count);
         } else {
             getLifeMap().remove(team);
-            commit(arena, team, false);
-            return true;
+            commit(arena, team);
+            return;
         }
-        return false;
     }
 
     @Override
@@ -500,7 +499,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
      * @param blockColor      the teamcolor to reset
      * @param paBlockLocation the location to take/reset
      */
-    public void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
+    void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
         if (paBlockLocation == null) {
             return;
         }

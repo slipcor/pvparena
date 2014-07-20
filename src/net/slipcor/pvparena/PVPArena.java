@@ -478,7 +478,7 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updater = new Updater(this, this.getFile(), 41652, true);
+        updater = new Updater(this, this.getFile(), true);
 
         if (ArenaManager.count() > 0) {
 

@@ -27,7 +27,7 @@ import java.util.jar.JarFile;
  *
  * @author NodinChan
  */
-public class NCBLoadEvent<T> extends Event {
+class NCBLoadEvent<T> extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 

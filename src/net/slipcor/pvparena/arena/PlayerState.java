@@ -25,7 +25,7 @@ import java.util.Collection;
 
 public final class PlayerState {
 
-    private static Debug debug = new Debug(7);
+    private static final Debug debug = new Debug(7);
 
     private final String name;
 

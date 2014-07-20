@@ -3,7 +3,7 @@ package net.slipcor.pvparena.ncloader;
 import java.io.File;
 import java.io.FileFilter;
 
-public final class FileExtensionFilter implements FileFilter {
+final class FileExtensionFilter implements FileFilter {
 
     private final String extension;
 

@@ -732,7 +732,7 @@ public class PACheck {
             x.parseStart();
         }
 
-        final SpawnCampRunnable scr = new SpawnCampRunnable(arena, 0);
+        final SpawnCampRunnable scr = new SpawnCampRunnable(arena);
         arena.spawnCampRunnerID = Bukkit.getScheduler()
                 .scheduleSyncRepeatingTask(PVPArena.instance, scr, 100L,
                         arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));

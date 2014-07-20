@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class PAA_Region extends AbstractArenaCommand {
 
-    public static Map<String, Arena> activeSelections = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeSelections = new HashMap<String, Arena>();
 
     private static String selector = null;
 

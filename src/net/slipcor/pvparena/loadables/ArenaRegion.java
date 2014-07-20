@@ -37,8 +37,8 @@ import java.util.Set;
 
 public class ArenaRegion {
 
-    protected static Debug debug = new Debug(34);
-    protected String world;
+    private static final Debug debug = new Debug(34);
+    private final String world;
     private Arena arena;
     private String name;
     private RegionType type;
@@ -51,7 +51,7 @@ public class ArenaRegion {
 
     public final PABlockLocation[] locs;
 
-    protected final ArenaRegionShape shape;
+    private final ArenaRegionShape shape;
 
     static {
         NOWOOLS.add(Material.CHEST);
