@@ -565,7 +565,8 @@ public class ArenaRegion {
                         if (loc.distance(ap.get().getLocation()) < 3) {
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, 1000.0d));
+                                            DamageCause.CUSTOM, (double)arena.getArenaConfig().getInt(
+                                            CFG.DAMAGE_SPAWNCAMP)));
                             ap.get().damage(
                                     arena.getArenaConfig().getInt(
                                             CFG.DAMAGE_SPAWNCAMP));

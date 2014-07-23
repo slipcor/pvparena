@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.516 - try fixing NOCAMP damage
 * v1.3.0.515 - [IDEA] various fixes
 * v1.3.0.511 - address DBO issue #888 - reset chat color if desired
 * v1.3.0.510 - add mobs fighting by your side. Give classes a spawn egg with displayname "SPAWN"
