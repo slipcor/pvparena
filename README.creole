@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.519 - forcefully place players where they joined if the player is disconnecting
 * v1.3.0.518 - forcefully remove items when a player leaves the arena
 * v1.3.0.517 - address DBO issue #907 - don't try to teleport null/dead players
 * v1.3.0.516 - try fixing NOCAMP damage
