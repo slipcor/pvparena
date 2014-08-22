@@ -169,6 +169,7 @@ public class EntityListener implements Listener {
         DEBUG.i("onEntityDamageByEntity: cause: " + event.getCause().name()
                 + " : " + event.getDamager().toString() + " => "
                 + event.getEntity().toString());
+        DEBUG.i("damage: " + event.getDamage());
 
         if (eDamager instanceof Projectile) {
             DEBUG.i("parsing projectile");

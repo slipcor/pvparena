@@ -1417,7 +1417,7 @@ public class Arena {
                                 .get()
                                 .setLastDamageCause(
                                         new EntityDamageEvent(locationArenaPlayerEntry.getValue().get(),
-                                                DamageCause.CUSTOM, (double) 1000));
+                                                DamageCause.CUSTOM, (double) 1002));
                         locationArenaPlayerEntry.getValue()
                                 .get()
                                 .damage(cfg.getInt(

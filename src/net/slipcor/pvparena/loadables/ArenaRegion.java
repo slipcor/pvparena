@@ -496,7 +496,7 @@ public class ArenaRegion {
                 }
                 ap.get().setLastDamageCause(
                         new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-                                1000.0d));
+                                1003.0d));
                 ap.get().damage(1000);
             }
             if (flags.contains(RegionFlag.WIN) && shape.contains(pLoc)) {
@@ -604,7 +604,7 @@ public class ArenaRegion {
                             ap.get().updateInventory();
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, 1000.0d));
+                                            DamageCause.CUSTOM, 1004.0d));
                             // ap.get().setHealth(0);
                             ap.get().damage(1000);
                         } else {
