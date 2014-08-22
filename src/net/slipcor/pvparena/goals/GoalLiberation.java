@@ -415,6 +415,7 @@ public class GoalLiberation extends ArenaGoal {
                                     player.getKiller()), String.valueOf(pos)));
                 }
                 final List<ItemStack> returned;
+                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
                 if (arena.isCustomClassAlive()
                         || arena.getArenaConfig().getBoolean(
@@ -436,6 +437,7 @@ public class GoalLiberation extends ArenaGoal {
             } else {
                 getLifeMap().remove(player.getName());
                 final List<ItemStack> returned;
+                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
                 if (arena.isCustomClassAlive()
                         || arena.getArenaConfig().getBoolean(
@@ -487,6 +489,7 @@ public class GoalLiberation extends ArenaGoal {
             }
 
             final List<ItemStack> returned;
+            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
             if (arena.isCustomClassAlive()
                     || arena.getArenaConfig().getBoolean(

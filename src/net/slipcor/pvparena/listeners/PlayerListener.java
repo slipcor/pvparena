@@ -295,6 +295,7 @@ public class PlayerListener implements Listener {
                     arena.parseDeathCause(player, cause == null ? EntityDamageEvent.DamageCause.VOID : cause.getCause(),
                             ArenaPlayer.getLastDamagingPlayer(cause, player))));
         }
+        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
         if (arena.isCustomClassAlive()
                 || arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {

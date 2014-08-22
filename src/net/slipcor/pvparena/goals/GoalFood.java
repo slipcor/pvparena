@@ -289,6 +289,7 @@ public class GoalFood extends ArenaGoal implements Listener {
         }
 
         final List<ItemStack> returned;
+        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
         if (arena.isCustomClassAlive()
                 || arena.getArenaConfig().getBoolean(

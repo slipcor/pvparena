@@ -210,6 +210,7 @@ public class GoalTeamLives extends ArenaGoal {
             }
 
             final List<ItemStack> returned;
+            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
             if (arena.isCustomClassAlive()
                     || arena.getArenaConfig().getBoolean(

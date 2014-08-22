@@ -174,6 +174,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                 respawnPlayer.getPlayer().equals(respawnPlayer.getPlayer().getKiller())) {
 
             final List<ItemStack> returned;
+            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
             if (arena.isCustomClassAlive()
                     || arena.getArenaConfig().getBoolean(
@@ -212,6 +213,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
                 final List<ItemStack> returned;
+                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
                 if (arena.isCustomClassAlive()
                         || arena.getArenaConfig().getBoolean(
@@ -258,6 +260,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                 }
             }
             final List<ItemStack> returned;
+
+            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
             if (arena.isCustomClassAlive()
                     || arena.getArenaConfig().getBoolean(

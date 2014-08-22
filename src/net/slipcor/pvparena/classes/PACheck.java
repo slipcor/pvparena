@@ -477,6 +477,7 @@ public class PACheck {
 
 
             List<ItemStack> returned = null;
+            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
             if (arena.isCustomClassAlive()
                     || arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
@@ -508,6 +509,7 @@ public class PACheck {
                     .getEntity().getLastDamageCause());
 
             if (returned == null) {
+                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
                 if (arena.isCustomClassAlive()
                         || arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
@@ -541,6 +543,7 @@ public class PACheck {
 
         ArenaModuleManager.parsePlayerDeath(arena, player,
                 player.getLastDamageCause());
+        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
         if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
             event.getDrops().clear();
