@@ -182,7 +182,7 @@ public class CylindricRegion extends ArenaRegionShape {
 
         final Double radiusSquared = radius * radius;
 
-        for (int x = 0; x <= Math.ceil(radius + 1 / 2); x++) {
+        for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
             border.add(new Location(world, center.getX() + x, center.getY(),
@@ -212,7 +212,7 @@ public class CylindricRegion extends ArenaRegionShape {
             border.add(new Location(world, uppercenter.getX() - x, uppercenter
                     .getY(), uppercenter.getZ() - z).getBlock());
         }
-        for (int z = 0; z <= Math.ceil(radius + 1 / 2); z++) {
+        for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
             border.add(new Location(world, center.getX() + x, center.getY(),

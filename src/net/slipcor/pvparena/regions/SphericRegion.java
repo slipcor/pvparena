@@ -165,7 +165,7 @@ public class SphericRegion extends ArenaRegionShape {
         // ---------- Y CIRCLE ----------
         // ------------------------------
 
-        for (int x = 0; x <= Math.ceil(radius + 1 / 2); x++) {
+        for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
             border.add(new Location(world, center.getX() + x, center.getY(),
@@ -178,7 +178,7 @@ public class SphericRegion extends ArenaRegionShape {
                     center.getZ() - z).getBlock());
         }
 
-        for (int z = 0; z <= Math.ceil(radius + 1 / 2); z++) {
+        for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
             border.add(new Location(world, center.getX() + x, center.getY(),
@@ -195,7 +195,7 @@ public class SphericRegion extends ArenaRegionShape {
         // ---------- Z CIRCLE ----------
         // ------------------------------
 
-        for (int y = 0; y <= Math.ceil(radius + 1 / 2); y++) {
+        for (int y = 0; y <= Math.ceil(radius + 1d / 2); y++) {
             final int x = (int) Math.abs(Math.sqrt(radiusSquared - y * y));
 
             border.add(new Location(world, center.getX() + x, center.getY() + y,
@@ -209,7 +209,7 @@ public class SphericRegion extends ArenaRegionShape {
 
         }
 
-        for (int x = 0; x <= Math.ceil(radius + 1 / 2); x++) {
+        for (int x = 0; x <= Math.ceil(radius + 1d / 2); x++) {
             final int y = (int) Math.abs(Math.sqrt(radiusSquared - x * x));
 
             border.add(new Location(world, center.getX() + x, center.getY() + y,
@@ -227,7 +227,7 @@ public class SphericRegion extends ArenaRegionShape {
         // ---------- X CIRCLE ----------
         // ------------------------------
 
-        for (int y = 0; y <= Math.ceil(radius + 1 / 2); y++) {
+        for (int y = 0; y <= Math.ceil(radius + 1d / 2); y++) {
             final int z = (int) Math.abs(Math.sqrt(radiusSquared - y * y));
 
             border.add(new Location(world, center.getX(), center.getY() + y,
@@ -240,7 +240,7 @@ public class SphericRegion extends ArenaRegionShape {
                     center.getZ() - z).getBlock());
         }
 
-        for (int z = 0; z <= Math.ceil(radius + 1 / 2); z++) {
+        for (int z = 0; z <= Math.ceil(radius + 1d / 2); z++) {
             final int y = (int) Math.abs(Math.sqrt(radiusSquared - z * z));
 
             border.add(new Location(world, center.getX(), center.getY() + y,
