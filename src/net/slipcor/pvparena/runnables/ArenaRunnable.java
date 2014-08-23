@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +88,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         }
         final String message = seconds > 5 ? Language.parse(arena, msg, MESSAGES.get(seconds)) : MESSAGES.get(seconds);
         if (global) {
-            final Player[] players = Bukkit.getOnlinePlayers();
+            final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
             for (final Player p : players) {
                 try {

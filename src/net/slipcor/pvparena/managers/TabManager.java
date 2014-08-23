@@ -230,7 +230,7 @@ public final class TabManager {
                 final Material[] mats = Material.values();
                 addEnumMatchesToList(result, key, Arrays.asList(mats));
             } else if ("{Player}".equals(definition)) {
-                final Player[] players = Bukkit.getOnlinePlayers();
+                final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 if (key != null && key.isEmpty()) {
                     for (final Player val : players) {
                         result.add(val.getName());
@@ -300,7 +300,7 @@ public final class TabManager {
             } else if ("{String}".equals(definition)) {
                 return definition;
             } else if ("{Player}".equals(definition)) {
-                final Player[] players = Bukkit.getOnlinePlayers();
+                final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 for (final Player val : players) {
                     if (val.getName().equals(key)) {
                         return definition;
