@@ -297,12 +297,31 @@ public class ArenaPlayer {
             return;
         }
         // AIR AIR AIR AIR instead of contents !!!!
-        debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory),
-                player);
-        player.getInventory().setContents(aPlayer.savedInventory);
-        debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedArmor),
-                player);
-        player.getInventory().setArmorContents(aPlayer.savedArmor);
+
+        class GiveLater implements Runnable {
+            final ItemStack[] inv;
+            final ItemStack[] arm;
+            GiveLater(final ItemStack[] inv, final ItemStack[] arm) {
+                this.inv = inv.clone();
+                this.arm = arm.clone();
+            }
+            @Override
+            public void run() {
+                debug.i("adding " + StringParser.getStringFromItemStacks(inv),
+                        player);
+                player.getInventory().setContents(inv);
+                debug.i("adding " + StringParser.getStringFromItemStacks(arm),
+                        player);
+                player.getInventory().setArmorContents(arm);
+            }
+
+        }
+        final GiveLater gl = new GiveLater(aPlayer.savedInventory, aPlayer.savedArmor);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, gl, 60L);
+        } catch (final Exception e) {
+            gl.run();
+        }
     }
 
     public void addDeath() {
