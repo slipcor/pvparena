@@ -394,7 +394,14 @@ public final class StatisticsManager {
 
             arena.getDebugger().i("loading stats: " + player);
 
-            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player);
+            final ArenaPlayer aPlayer;
+
+            try {
+                aPlayer = ArenaPlayer.parsePlayer(player);
+            } catch (IllegalArgumentException e) {
+                PVPArena.instance.getLogger().warning("invalid player ID: " + playerID);
+                continue;
+            }
 
             for (final type ttt : type.values()) {
                 aPlayer.setStatistic(arena.getName(), ttt, 0);
