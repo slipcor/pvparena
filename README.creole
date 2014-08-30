@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.524 - address DBO issue #921
 * v1.3.0.522 - fix integer/integer divisions -.-
 * v1.3.0.521 - clarify custom class determination debug
 * v1.3.0.520 - clarify damage debug values

@@ -15,6 +15,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -249,6 +250,13 @@ public class PlayerListener implements Listener {
         if (!BlockListener.isProtected(player.getLocation(), event,
                 RegionProtection.DROP)) {
             return; // no drop protection
+        }
+
+        arena.getDebugger().i("item: "+ StringParser.getStringFromItemStack(event.getItemDrop().getItemStack()));
+
+        if (Bukkit.getPlayer(player.getName()) == null || aPlayer.getStatus() == Status.DEAD || aPlayer.getStatus() == Status.LOST) {
+            arena.getDebugger().i("Player is dead. allowing drops!");
+            return;
         }
 
         arena.getDebugger().i("onPlayerDropItem: fighting player", player);
