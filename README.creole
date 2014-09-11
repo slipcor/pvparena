@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.526 - add more config settings for PlayerKillReward
 * v1.3.0.525 - address DBO issue #923
 * v1.3.0.524 - address DBO issue #921
 * v1.3.0.522 - fix integer/integer divisions -.-

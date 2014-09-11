@@ -39,8 +39,7 @@ import java.util.*;
  * <p/>
  * This will feature several ways of altering player rewards
  * <p/>
- * The following modes exist: * GEAR_UP - get better gear until you reached the
- * final step and then win
+ * get better gear until you reached the final step and then win
  *
  * @author slipcor
  */
@@ -50,11 +49,6 @@ public class GoalPlayerKillReward extends ArenaGoal {
         super("PlayerKillReward");
         debug = new Debug(102);
     }
-
-    // private GameMode gm;
-    /*
-	 * private static enum GameMode { GEAR_UP; }
-	 */
 
     private Map<Integer, ItemStack[]> itemMap;
 
@@ -269,7 +263,14 @@ public class GoalPlayerKillReward extends ArenaGoal {
         if (!getLifeMap().containsKey(player.getName())) {
             return;
         }
-        getLifeMap().put(player.getName(), getMaxInt());
+        if (arena.getArenaConfig().getBoolean(CFG.GOAL_PLAYERKILLREWARD_GRADUALLYDOWN)) {
+            int lives = getLifeMap().get(player.getName());
+            lives++;
+            getLifeMap().put(player.getName(), lives);
+        } else {
+            getLifeMap().put(player.getName(), getMaxInt());
+        }
+
 
         class ResetRunnable implements Runnable {
             private final Player player;
@@ -292,7 +293,9 @@ public class GoalPlayerKillReward extends ArenaGoal {
                 if (ArenaPlayer.parsePlayer(player.getName()).getStatus() != Status.FIGHT) {
                     return;
                 }
-                InventoryManager.clearInventory(player);
+                if (!arena.getArenaConfig().getBoolean(CFG.GOAL_PLAYERKILLREWARD_ONLYGIVE)) {
+                    InventoryManager.clearInventory(player);
+                }
                 if (getItemMap().containsKey(iLives)) {
                     ArenaClass.equip(player, getItemMap().get(iLives));
                 } else {

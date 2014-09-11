@@ -198,12 +198,12 @@ public class Config {
         GOAL_TIME_WINNER("goal.time.winner", "none", "Time"),
 
 
-        GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true, ""),
-        GOAL_PILLARS_LIVES("goal.pillars.pillives", 10, ""),
-        GOAL_PILLARS_ONLYFREE("goal.pillars.onlyfree", true, ""),
-        GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true, ""),
-        GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1, ""),
-        GOAL_PILLARS_INTERVAL("goal.pillars.tickinterval", 20, ""),
+        GOAL_PILLARS_ANNOUNCETICK("goal.pillars.announcetick", true, "Pillars"),
+        GOAL_PILLARS_LIVES("goal.pillars.pillives", 10, "Pillars"),
+        GOAL_PILLARS_ONLYFREE("goal.pillars.onlyfree", true, "Pillars"),
+        GOAL_PILLARS_BREAKABLE("goal.pillars.breakable", true, "Pillars"),
+        GOAL_PILLARS_TICKPOINTS("goal.pillars.tickpoints", 1, "Pillars"),
+        GOAL_PILLARS_INTERVAL("goal.pillars.tickinterval", 20, "Pillars"),
 
         GOAL_PILLARS_ANNOUNCEOFFSET("goal.pillars.announceoffset", 3, "Pillars"),
         GOAL_PILLARS_MAXCLICKS("goal.pillars.maxclicks", 10, "Pillars"),
@@ -211,6 +211,9 @@ public class Config {
         GOAL_PILLARS_EMPTYHEIGHT("goal.pillars.emptyheight", 1, "Pillars"),
         GOAL_PILLARS_TEAMHEIGHT("goal.pillars.teamheight", 2, "Pillars"),
         GOAL_PILLARS_CLAIMALL("goal.pillars.claimall", false, "Pillars"),
+
+        GOAL_PLAYERKILLREWARD_GRADUALLYDOWN("goal.playerkillreward.graduallyDown", false, "PlayerKillReward"),
+        GOAL_PLAYERKILLREWARD_ONLYGIVE("goal.playerkillreward.onlyGive", false, "PlayerKillReward"),
 
         GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "VILLAGER", false, "Rescue"),
         GOAL_RESCUE_LIVES("goal.rescue.rlives", 1, "Rescue"),
