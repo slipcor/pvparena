@@ -600,8 +600,6 @@ public class ArenaRegion {
                         Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                         if (arena.getArenaConfig().getBoolean(
                                 CFG.GENERAL_LEAVEDEATH)) {
-                            ap.get().getInventory().clear();
-                            ap.get().updateInventory();
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
                                             DamageCause.CUSTOM, 1004.0d));
