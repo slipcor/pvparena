@@ -840,7 +840,7 @@ public class Arena {
         }
 
         removePlayer(player, cfg.getString(location), false,
-                silent || (Bukkit.getPlayer(player.getName()) == null));
+                silent);
 
         if (startRunner != null && cfg.getInt(CFG.READY_MINPLAYERS) > 0 &&
                 getFighters().size() <= cfg.getInt(CFG.READY_MINPLAYERS)) {
@@ -1276,7 +1276,7 @@ public class Arena {
 
         final RunLater runLater = new RunLater();
 
-        if (!force && cfg.getInt(CFG.TIME_RESETDELAY) > -1) {
+        if (cfg.getInt(CFG.TIME_RESETDELAY) > -1) {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY));
         } else {
             runLater.run();
