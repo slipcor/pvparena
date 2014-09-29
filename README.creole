@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.529 - revert #523 - I don't care anymore - this HAS to fix it, otherwise I give up on development :P
 * v1.3.0.528 - revert #519 - second attempt at fixing an issue on several implementations
 * v1.3.0.527 - revert #518 - this fixed dbo issue #912 (duplications on Cauldron) but caused items disappearing on other implementations
 * v1.3.0.526 - add more config settings for PlayerKillReward
