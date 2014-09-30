@@ -68,7 +68,7 @@ public class GoalInfect extends ArenaGoal {
             res.setPriority(this, PRIORITY); // yep. only one player left. go!
         }
         if (count == 0) {
-            res.setError(this, MSG.ERROR_NOPLAYERFOUND.toString());
+            res.setError(this, "");
         }
 
         return res;
