@@ -65,11 +65,16 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             return;
         }
 
-        InventoryManager.clearInventory(aPlayer.get());
         aPlayer.setArenaClass(aClass);
-        if (aPlayer.getArenaClass() != null) {
-            ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
+        if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSWITCH_AFTER_RESPAWN) || !arena.isFightInProgress()) {
+            InventoryManager.clearInventory(aPlayer.get());
+            if (aPlayer.getArenaClass() != null) {
+                ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
+
+                sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+            }
+        } else if (aPlayer.getArenaClass() != null) {
             sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
         }
     }

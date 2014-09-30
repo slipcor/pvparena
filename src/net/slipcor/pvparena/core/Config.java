@@ -57,6 +57,7 @@ public class Config {
         DAMAGE_WEAPONS("damage.weapons", true, null),
 
         GENERAL_CLASSSPAWN("general.classspawn", false, null),
+        GENERAL_CLASSSWITCH_AFTER_RESPAWN("general.classSwitchAfterRespawn", false, null),
         GENERAL_CUSTOMRETURNSGEAR("general.customReturnsGear", false, null),
         GENERAL_ENABLED("general.enabled", true, null),
         GENERAL_GAMEMODE("general.gm", 0, null),
