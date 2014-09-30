@@ -1233,7 +1233,7 @@ public class Arena {
         if (!"custom".equalsIgnoreCase(sClass) ||
                 cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) {
             InventoryManager.clearInventory(player);
-            ArenaPlayer.reloadInventory(this, player, force||!soft);
+            ArenaPlayer.reloadInventory(this, player, true);
         }
 
         class RunLater implements Runnable {
