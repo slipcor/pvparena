@@ -243,7 +243,7 @@ public class ArenaPlayer {
         InventoryManager.clearInventory(player);
     }
 
-    public static void reloadInventory(final Arena arena, final Player player) {
+    public static void reloadInventory(final Arena arena, final Player player, final boolean instant) {
 
         if (player == null) {
             return;
@@ -298,10 +298,37 @@ public class ArenaPlayer {
         }
         // AIR AIR AIR AIR instead of contents !!!!
 
-        debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory), player);
-        player.getInventory().setContents(aPlayer.savedInventory);
-        debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedArmor), player);
-        player.getInventory().setArmorContents(aPlayer.savedArmor);
+        if (instant) {
+
+            debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory), player);
+            player.getInventory().setContents(aPlayer.savedInventory);
+            debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedArmor), player);
+            player.getInventory().setArmorContents(aPlayer.savedArmor);
+        } else {
+            class GiveLater implements Runnable {
+                final ItemStack[] inv;
+                final ItemStack[] arm;
+                GiveLater(final ItemStack[] inv, final ItemStack[] arm) {
+                    this.inv = inv.clone();
+                    this.arm = arm.clone();
+                    }
+                @Override
+                public void run() {
+                    debug.i("adding " + StringParser.getStringFromItemStacks(inv),
+                            player);
+                    player.getInventory().setContents(inv);
+                    debug.i("adding " + StringParser.getStringFromItemStacks(arm),
+                            player);
+                    player.getInventory().setArmorContents(arm);
+                    }
+            }
+            final GiveLater gl = new GiveLater(aPlayer.savedInventory, aPlayer.savedArmor);
+            try {
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, gl, 60L);
+            } catch (final Exception e) {
+                gl.run();
+            }
+        }
     }
 
     public void addDeath() {

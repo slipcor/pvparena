@@ -59,7 +59,7 @@ public class PAA_Class extends AbstractArenaCommand {
 
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-            ArenaPlayer.reloadInventory(arena, player);
+            ArenaPlayer.reloadInventory(arena, player, false);
 
             aPlayer.setArena(null);
             return;

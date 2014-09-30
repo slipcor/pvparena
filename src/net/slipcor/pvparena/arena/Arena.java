@@ -254,7 +254,7 @@ public class Arena {
         if (aPlayer.getArenaClass() != null) {
             if ("custom".equalsIgnoreCase(className)) {
                 // if custom, give stuff back
-                ArenaPlayer.reloadInventory(this, player);
+                ArenaPlayer.reloadInventory(this, player, false);
             } else {
                 ArenaPlayer.givePlayerFightItems(this, player);
             }
@@ -1233,7 +1233,7 @@ public class Arena {
         if (!"custom".equalsIgnoreCase(sClass) ||
                 cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) {
             InventoryManager.clearInventory(player);
-            ArenaPlayer.reloadInventory(this, player);
+            ArenaPlayer.reloadInventory(this, player, force||!soft);
         }
 
         class RunLater implements Runnable {

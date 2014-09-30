@@ -97,7 +97,7 @@ public class InventoryRefillRunnable implements Runnable {
                 }
             } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {
                 InventoryManager.clearInventory(player);
-                ArenaPlayer.reloadInventory(arena, player);
+                ArenaPlayer.reloadInventory(arena, player, false);
 
                 for (final ItemStack item : additions) {
                     player.getInventory().addItem(item);
