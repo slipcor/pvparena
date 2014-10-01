@@ -78,7 +78,7 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
             String permString = split[1];
             try {
                 if (split.length > 2) {
-                    permString = split[1]+split[2];
+                    permString = split[1]+"."+split[2];
                 }
                 Arena.pmsg(
                         sender,
