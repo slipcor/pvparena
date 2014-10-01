@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_GameMode extends AbstractArenaCommand {
 
     public PAA_GameMode() {
-        super(new String[]{"pvparena.cmd.gamemode"});
+        super(new String[]{"pvparena.cmds.gamemode"});
     }
 
     @Override

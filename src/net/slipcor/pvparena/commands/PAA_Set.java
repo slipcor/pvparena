@@ -30,7 +30,7 @@ import java.util.Map;
 public class PAA_Set extends AbstractArenaCommand {
 
     public PAA_Set() {
-        super(new String[]{"pvparena.cmd.set"});
+        super(new String[]{"pvparena.cmds.set"});
     }
 
     @Override

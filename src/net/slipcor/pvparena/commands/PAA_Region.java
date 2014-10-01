@@ -38,7 +38,7 @@ public class PAA_Region extends AbstractArenaCommand {
     private static String selector;
 
     public PAA_Region() {
-        super(new String[]{"pvparena.cmd.region"});
+        super(new String[]{"pvparena.cmds.region"});
     }
 
     @Override

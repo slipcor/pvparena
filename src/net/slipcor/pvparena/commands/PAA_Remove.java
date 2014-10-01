@@ -26,7 +26,7 @@ public class PAA_Remove extends AbstractArenaCommand {
     private static String removal;
 
     public PAA_Remove() {
-        super(new String[]{"pvparena.cmd.remove"});
+        super(new String[]{"pvparena.cmds.remove"});
     }
 
     @Override

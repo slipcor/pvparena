@@ -75,13 +75,17 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 
         if (perms.length > 0) {
             final String[] split = perms[0].split("\\.");
+            String permString = split[1];
             try {
+                if (split.length > 2) {
+                    permString = split[1]+split[2];
+                }
                 Arena.pmsg(
                         sender,
                         Language.parse(MSG.ERROR_NOPERM,
-                                Language.parse(MSG.getByNode("nopermto." + split[1]))));
+                                Language.parse(MSG.getByNode("nopermto." + permString))));
             } catch (final Exception e) {
-                PVPArena.instance.getLogger().warning("Unknown MSG for pvparena." + split[1]);
+                PVPArena.instance.getLogger().warning("Unknown MSG for pvparena." + permString);
                 Arena.pmsg(
                         sender,
                         Language.parse(MSG.ERROR_NOPERM,

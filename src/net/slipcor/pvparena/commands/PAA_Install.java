@@ -35,7 +35,7 @@ import java.util.Set;
 public class PAA_Install extends AbstractGlobalCommand {
 
     public PAA_Install() {
-        super(new String[]{"pvparena.cmd.install"});
+        super(new String[]{"pvparena.cmds.install"});
     }
 
     @Override

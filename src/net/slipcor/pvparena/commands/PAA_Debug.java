@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_Debug extends AbstractGlobalCommand {
 
     public PAA_Debug() {
-        super(new String[]{"pvparena.cmd.debug"});
+        super(new String[]{"pvparena.cmds.debug"});
     }
 
     @Override

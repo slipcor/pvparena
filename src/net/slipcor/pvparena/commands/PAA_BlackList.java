@@ -35,7 +35,7 @@ public class PAA_BlackList extends AbstractArenaCommand {
     }
 
     public PAA_BlackList() {
-        super(new String[]{"pvparena.cmd.blacklist"});
+        super(new String[]{"pvparena.cmds.blacklist"});
     }
 
     @Override

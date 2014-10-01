@@ -25,7 +25,7 @@ import java.util.List;
 public class PAA_Protection extends AbstractArenaCommand {
 
     public PAA_Protection() {
-        super(new String[]{"pvparena.cmd.protection"});
+        super(new String[]{"pvparena.cmds.protection"});
     }
 
     @Override

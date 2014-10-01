@@ -26,7 +26,7 @@ import java.util.List;
 public class PAA_Teams extends AbstractArenaCommand {
 
     public PAA_Teams() {
-        super(new String[]{"pvparena.cmd.teams"});
+        super(new String[]{"pvparena.cmds.teams"});
     }
 
     @Override

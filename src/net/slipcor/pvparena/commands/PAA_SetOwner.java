@@ -23,7 +23,7 @@ import java.util.List;
 public class PAA_SetOwner extends AbstractArenaCommand {
 
     public PAA_SetOwner() {
-        super(new String[]{"pvparena.cmd.setowner"});
+        super(new String[]{"pvparena.cmds.setowner"});
     }
 
     @Override

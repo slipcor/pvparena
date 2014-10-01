@@ -31,7 +31,7 @@ import java.util.List;
 public class PAA_Class extends AbstractArenaCommand {
 
     public PAA_Class() {
-        super(new String[]{"pvparena.cmd.class"});
+        super(new String[]{"pvparena.cmds.class"});
     }
 
     @Override

@@ -25,7 +25,7 @@ import java.util.List;
 public class PAA_Goal extends AbstractArenaCommand {
 
     public PAA_Goal() {
-        super(new String[]{"pvparena.cmd.goal"});
+        super(new String[]{"pvparena.cmds.goal"});
     }
 
     @Override

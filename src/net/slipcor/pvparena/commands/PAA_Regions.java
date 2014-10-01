@@ -24,7 +24,7 @@ import java.util.List;
 public class PAA_Regions extends AbstractArenaCommand {
 
     public PAA_Regions() {
-        super(new String[]{"pvparena.cmd.regions"});
+        super(new String[]{"pvparena.cmds.regions"});
     }
 
     @Override

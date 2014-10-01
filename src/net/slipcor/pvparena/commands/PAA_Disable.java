@@ -24,7 +24,7 @@ import java.util.List;
 public class PAA_Disable extends AbstractArenaCommand {
 
     public PAA_Disable() {
-        super(new String[]{"pvparena.cmd.disable"});
+        super(new String[]{"pvparena.cmds.disable"});
     }
 
     @Override

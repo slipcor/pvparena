@@ -22,7 +22,7 @@ import java.util.List;
 public class PAA_Start extends AbstractArenaCommand {
 
     public PAA_Start() {
-        super(new String[]{"pvparena.cmd.start"});
+        super(new String[]{"pvparena.cmds.start"});
     }
 
     @Override

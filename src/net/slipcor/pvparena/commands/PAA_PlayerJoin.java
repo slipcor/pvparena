@@ -26,7 +26,7 @@ import java.util.List;
 public class PAA_PlayerJoin extends AbstractArenaCommand {
 
     public PAA_PlayerJoin() {
-        super(new String[]{"pvparena.cmd.playerjoin"});
+        super(new String[]{"pvparena.cmds.playerjoin"});
     }
 
     @Override
