@@ -378,6 +378,20 @@ public class EntityListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onEntityTeleport(final EntityTeleportEvent event) {
+        if (event.getEntity() instanceof Tameable) {
+            Tameable t = (Tameable) event.getEntity();
+
+            if (t.isTamed()) {
+                ArenaPlayer ap = ArenaPlayer.parsePlayer(t.getOwner().getName());
+                if (ap.getArena() != null) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPotionSplash(final PotionSplashEvent event) {
 
