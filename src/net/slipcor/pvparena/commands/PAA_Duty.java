@@ -41,7 +41,7 @@ public class PAA_Duty extends AbstractGlobalCommand {
         for (final PermissionAttachmentInfo pai : sender.getEffectivePermissions()) {
             if ("pvparena.override".equals(pai.getPermission())) {
                 perm = !pai.getValue();
-                sender.removeAttachment(pai.getAttachment());
+                /*sender.removeAttachment(pai.getAttachment());*/
                 break;
             }
         }

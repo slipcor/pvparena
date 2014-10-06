@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.538 - still on github issue #78 - never remove perms!
 * v1.3.0.537 - fix missing perms message, addressing github issue #78
 * v1.3.0.536 - finish github issue #78 - typo messup
 * v1.3.0.535 - address github issue #78 - add language nodes for missing perms
