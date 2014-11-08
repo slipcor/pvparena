@@ -170,46 +170,79 @@ public class GoalTeamDeathMatch extends ArenaGoal {
     @Override
     public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
                                   final String error, final PlayerDeathEvent event) {
+
+        Player killer = respawnPlayer.getKiller();
+
         if (respawnPlayer.getKiller() == null ||
                 respawnPlayer.getPlayer().equals(respawnPlayer.getPlayer().getKiller())) {
+            if (!arena.getArenaConfig().getBoolean(CFG.GOAL_TDM_SUICIDESCORE)) {
+                final List<ItemStack> returned;
+                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-            final List<ItemStack> returned;
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
+                if (arena.isCustomClassAlive()
+                        || arena.getArenaConfig().getBoolean(
+                        CFG.PLAYER_DROPSINVENTORY)) {
+                    returned = InventoryManager.drop(respawnPlayer);
+                    event.getDrops().clear();
+                } else {
+                    returned = event.getDrops();
+                }
 
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(respawnPlayer);
-                event.getDrops().clear();
-            } else {
-                returned = event.getDrops();
+                PACheck.handleRespawn(arena,
+                        ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+                if (doesRespawn) {
+                    final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
+                    Bukkit.getPluginManager().callEvent(gEvent);
+                } else {
+                    final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName());
+                    Bukkit.getPluginManager().callEvent(gEvent);
+                }
+
+
+                return;
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
-            if (doesRespawn) {
-                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "doesRespawn", "playerDeath:" + respawnPlayer.getName());
-                Bukkit.getPluginManager().callEvent(gEvent);
-            } else {
-                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName());
-                Bukkit.getPluginManager().callEvent(gEvent);
+            if (killer == null) {
+                killer = respawnPlayer;
             }
-
-
-            return;
         }
 
         final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + respawnPlayer.getName(),
-                "playerKill:" + respawnPlayer.getName() + ':' + respawnPlayer.getKiller().getName());
+                "playerKill:" + respawnPlayer.getName() + ':' + killer.getName());
         Bukkit.getPluginManager().callEvent(gEvent);
 
         final ArenaTeam respawnTeam = ArenaPlayer
                 .parsePlayer(respawnPlayer.getName()).getArenaTeam();
         final ArenaTeam killerTeam = ArenaPlayer.parsePlayer(
-                respawnPlayer.getKiller().getName()).getArenaTeam();
+                killer.getName()).getArenaTeam();
 
+        if (killerTeam.equals(respawnTeam)) {
+            for (ArenaTeam newKillerTeam : arena.getTeams()) {
+                if (!newKillerTeam.equals(respawnTeam) && reduceLives(arena, newKillerTeam, respawnPlayer, event)) {
+                    if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
-        if (!killerTeam.equals(respawnTeam) && reduceLives(arena, killerTeam, respawnPlayer, event)) {
+                        final List<ItemStack> returned;
+                        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
+
+                        if (arena.isCustomClassAlive()
+                                || arena.getArenaConfig().getBoolean(
+                                CFG.PLAYER_DROPSINVENTORY)) {
+                            returned = InventoryManager.drop(respawnPlayer);
+                            event.getDrops().clear();
+                        } else {
+                            returned = event.getDrops();
+                        }
+
+                        PACheck.handleRespawn(arena,
+                                ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+                        ArenaPlayer.parsePlayer(respawnPlayer.getName()).setStatus(Status.LOST);
+
+                    }
+                    return;
+
+                }
+            }
+        } else if (!killerTeam.equals(respawnTeam) && reduceLives(arena, killerTeam, respawnPlayer, event)) {
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
                 final List<ItemStack> returned;
@@ -233,6 +266,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
 //				PlayerListener.finallyKillPlayer(arena, respawnPlayer, event);
             }
             return;
+
 
         }
 
@@ -277,6 +311,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                     ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 
         }
+
     }
 
     @Override

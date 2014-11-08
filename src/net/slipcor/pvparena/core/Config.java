@@ -194,6 +194,7 @@ public class Config {
         GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
         GOAL_TDC_ITEM("goal.teamdc.tdcitem", "WOOL", false, "TeamDeathConfirm"),
         GOAL_TDM_LIVES("goal.teamdm.tdlives", 10, "TeamDeathMatch"),
+        GOAL_TDM_SUICIDESCORE("goal.teamdm.suicideScore", false, "TeamDeathMatch"),
         GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10, "TeamLives"),
         GOAL_TIME_END("goal.time.timedend", 0, "Time"),
         GOAL_TIME_WINNER("goal.time.winner", "none", "Time"),
