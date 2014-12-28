@@ -287,10 +287,22 @@ public final class StringParser {
             if (temp[2].contains(SAFE_BREAK)) {
                 if (mat == Material.POTION) {
                     data = temp[2];
+                } else if (mat == Material.INK_SACK) {
+                    data = temp[2];
+                } else if (mat == Material.WOOL) {
+                    data = temp[2];
                 } else {
                     data = temp[2].split(SAFE_BREAK)[0];
                 }
             }
+
+            /**
+             *
+             private static final String SAFE_BREAK = "<oOo>";
+             private static final String SAFE_PAGE_BREAK = "<oXxOxXo>";
+             private static final String SAFE_LORE_BREAK = "<oxXxOxXxo>";
+             *
+             */
 
             final String lore = dataSplit.length > 1 ? dataSplit[1] : null;
 
