@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.543 - trying again
 * v1.3.0.542 - attempt to fix some data reading issues (for ink sacks and wool blocks)
 * v1.3.0.541 - fix some display issues about max team players
 * v1.3.0.540 - attempt to fix special character issues

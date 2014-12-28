@@ -284,9 +284,9 @@ public final class StringParser {
 
             final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
             String data = dataSplit[0];
-            if (temp[2].contains(SAFE_BREAK)) {
+            if (temp[location].contains(SAFE_BREAK)) {
                 if (mat == Material.POTION) {
-                    data = temp[2];
+                    data = temp[location];
                 } else if (mat == Material.INK_SACK) {
                     data = temp[2];
                 } else if (mat == Material.WOOL) {
