@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.546 - reverse all the things and do what I promised the last 2 commits
 * v1.3.0.545 - fix books! (for real)
 * v1.3.0.544 - fix books!
 * v1.3.0.543 - trying again

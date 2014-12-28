@@ -284,20 +284,24 @@ public final class StringParser {
 
             final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
             String data = dataSplit[0];
-            if (temp[location].contains(SAFE_BREAK)) {
+            if (temp[2].contains(SAFE_BREAK)) {
                 if (mat == Material.POTION) {
-                    data = temp[location];
-                } else if (mat == Material.INK_SACK) {
                     data = temp[2];
-                } else if (mat == Material.WOOL) {
-                    data = temp[2];
-                } else if (mat == Material.WRITTEN_BOOK) {
-                    if (temp[2].contains(SAFE_BREAK)) {
-                        data = temp[location];
-                    }
                 } else {
                     data = temp[2].split(SAFE_BREAK)[0];
                 }
+            }
+
+            if (data.equals("")) {
+                // Data is messed up, let's try to fix it!
+
+                if (mat == Material.INK_SACK || mat == Material.WOOL) {
+                    data = temp[2]; // 2 or 3 definately is set as data, should work!
+                }
+            }
+
+            if (mat == Material.WRITTEN_BOOK) {
+                data = temp[2];
             }
 
             /**
