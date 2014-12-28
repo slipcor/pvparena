@@ -293,7 +293,7 @@ public final class StringParser {
                     data = temp[2];
                 } else if (mat == Material.WRITTEN_BOOK) {
                     if (temp[2].contains(SAFE_BREAK)) {
-                        data = temp[2];
+                        data = temp[location];
                     }
                 } else {
                     data = temp[2].split(SAFE_BREAK)[0];
