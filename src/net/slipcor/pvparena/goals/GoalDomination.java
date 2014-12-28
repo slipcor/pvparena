@@ -142,7 +142,7 @@ public class GoalDomination extends ArenaGoal {
 
             if (team != null && maxTeamPlayers > 0
                     && team.getTeamMembers().size() >= maxTeamPlayers) {
-                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL));
+                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL, team.getName()));
                 return res;
             }
         }

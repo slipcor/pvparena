@@ -273,7 +273,7 @@ public class Arena {
     public void countDown() {
         if (startRunner != null || fightInProgress) {
 
-            if (getClass(cfg.getString(CFG.READY_AUTOCLASS)) == null && !fightInProgress) {
+            if (!cfg.getBoolean(CFG.READY_ENFORCECOUNTDOWN) && getClass(cfg.getString(CFG.READY_AUTOCLASS)) == null && !fightInProgress) {
                 startRunner.cancel();
                 startRunner = null;
                 broadcast(Language.parse(this, MSG.TIMER_COUNTDOWN_INTERRUPTED));
@@ -842,7 +842,7 @@ public class Arena {
         removePlayer(player, cfg.getString(location), false,
                 silent);
 
-        if (startRunner != null && cfg.getInt(CFG.READY_MINPLAYERS) > 0 &&
+        if (!cfg.getBoolean(CFG.READY_ENFORCECOUNTDOWN) && startRunner != null && cfg.getInt(CFG.READY_MINPLAYERS) > 0 &&
                 getFighters().size() <= cfg.getInt(CFG.READY_MINPLAYERS)) {
             startRunner.cancel();
             broadcast(Language.parse(this, MSG.TIMER_COUNTDOWN_INTERRUPTED));

@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.541 - fix some display issues about max team players
 * v1.3.0.540 - attempt to fix special character issues
 * v1.3.0.539 - allow to take suicides into account for TDM
 * v1.3.0.538 - still on github issue #78 - never remove perms!
