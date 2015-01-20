@@ -268,6 +268,9 @@ public class ArenaPlayer {
 
             final List<ItemStack> keepItems = new ArrayList<ItemStack>();
             for (final ItemStack item : player.getInventory().getContents()) {
+                if (item == null) {
+                    continue;
+                }
                 if (allowedMats.contains(item.getType())) {
                     keepItems.add(item.clone());
                 }
