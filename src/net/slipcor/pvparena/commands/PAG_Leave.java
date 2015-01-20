@@ -50,7 +50,7 @@ public class PAG_Leave extends AbstractArenaCommand {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
             return;
         }
-
+        arena.callLeaveEvent(aPlayer.get());
         arena.playerLeave(aPlayer.get(), CFG.TP_EXIT, false);
     }
 
