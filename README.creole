@@ -46,6 +46,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.550 - properly check for some things before adding players to a class via command
 * v1.3.0.549 - try to fix long usernames staying on signs
 * v1.3.0.548 - prevent a NPE
 * v1.3.0.547 - call the leave event - I am shocked noone noticed that until yesterday

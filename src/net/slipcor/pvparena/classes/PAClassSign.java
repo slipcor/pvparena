@@ -84,6 +84,10 @@ public class PAClassSign {
         }
     }
 
+    public PABlockLocation getLocation() {
+        return location;
+    }
+
     /**
      * remove a player name from a string
      *

@@ -443,6 +443,10 @@ public class Arena {
         return rounds;
     }
 
+    public Set<PAClassSign> getSigns() {
+        return signs;
+    }
+
     public Set<PASpawn> getSpawns() {
         return spawns;
     }

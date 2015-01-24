@@ -3,6 +3,7 @@ package net.slipcor.pvparena.commands;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
+import net.slipcor.pvparena.classes.PAClassSign;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
@@ -10,6 +11,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -62,6 +64,34 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (ArenaModuleManager.cannotSelectClass(arena, (Player) sender, args[0])) {
+            return;
+        }
+        PAClassSign.remove(arena.getSigns(), (Player) sender);
+
+        PAClassSign oldSign = null;
+        boolean error = false;
+
+        for (PAClassSign sign : arena.getSigns()) {
+            try {
+                Sign s = (Sign) sign.getLocation().toLocation().getBlock().getState();
+                if (aPlayer.getArenaClass().getName().equals(s.getLine(0))) {
+                    oldSign = sign;
+                }
+                if (aClass.getName().equals(s.getLine(0))) {
+                    if (!sign.add((Player) sender)) {
+                        error = true;
+                    }
+                }
+            } catch (Exception e) {
+
+            }
+        }
+
+        if (error) {
+            oldSign.add((Player) sender);
+
+            arena.msg((Player) sender,
+                    Language.parse(arena, MSG.ERROR_CLASS_FULL, aClass.getName()));
             return;
         }
 
