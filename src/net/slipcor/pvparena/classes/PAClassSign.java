@@ -98,6 +98,9 @@ public class PAClassSign {
                 if (sign.getLine(i) != null && sign.getLine(i).equals(playerName)) {
                     sign.setLine(i, "");
                 }
+                if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
+                    sign.setLine(i, "");
+                }
             }
             sign.update();
             if (location.toLocation().getBlock().getRelative(BlockFace.DOWN)
@@ -108,10 +111,15 @@ public class PAClassSign {
                     if (sign.getLine(i) != null && sign.getLine(i).equals(playerName)) {
                         sign.setLine(i, "");
                     }
+                    if (sign.getLine(i) != null && sign.getLine(i).equals(name)) {
+                        sign.setLine(i, "");
+                    }
                 }
                 sign.update();
             }
+        } catch (final ClassCastException e) {
         } catch (final Exception e) {
+            e.printStackTrace();
         }
     }
 
