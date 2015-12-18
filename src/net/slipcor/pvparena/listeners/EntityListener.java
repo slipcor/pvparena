@@ -216,11 +216,13 @@ public class EntityListener implements Listener {
             // defender no arena player => out
             return;
         }
-
         arena.getDebugger().i("onEntityDamageByEntity: fighting player");
 
         if ((!(eDamager instanceof Player))) {
             // attacker no player => out!
+            if (arena.getArenaConfig().getBoolean(CFG.DAMAGE_FROMOUTSIDERS)) {
+                event.setCancelled(false);
+            }
             return;
         }
 
@@ -246,7 +248,13 @@ public class EntityListener implements Listener {
         }
 
         if (!defTeam || !attTeam || arena.realEndRunner != null) {
-            event.setCancelled(true);
+            if (!attTeam && arena.getArenaConfig().getBoolean(CFG.DAMAGE_FROMOUTSIDERS)
+                    && defTeam && arena.realEndRunner == null) {
+                // special case: attacker has no team (might not be in the arena)
+                event.setCancelled(false);
+            } else {
+                event.setCancelled(true);
+            }
             return;
         }
 

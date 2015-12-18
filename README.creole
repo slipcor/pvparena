@@ -30,8 +30,7 @@ A PVP experience enhancing plugin.
 
 === Dependencies
 
-* Bukkit 1.7.2 Beta 3
-* Bukkit 1.7.5 UUID compatible
+* Bukkit 1.7.9
 
 -----------------------------------------------------------------------------------------------------------------------
 
@@ -46,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.551 - add damage.fromOutsiders (false) to allow players (and other entities) to hurt fighters
 * v1.3.0.550 - properly check for some things before adding players to a class via command
 * v1.3.0.549 - try to fix long usernames staying on signs
 * v1.3.0.548 - prevent a NPE
