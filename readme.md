@@ -1,5 +1,7 @@
 # PVP-Arena
 
+![PVPArena Logo](/doc/images/logo.png)
+
 
 **Enhance your server by adding a new dimension of PVP battles!**
 
