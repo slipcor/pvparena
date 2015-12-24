@@ -1486,11 +1486,11 @@ public class Arena {
         if (overRide || errror == null || errror != null && errror.isEmpty()) {
             final Boolean handle = PACheck.handleStart(this, null, forceStart);
 
-            if (overRide || handle) {
+            if (overRide || (handle == true)) {
                 getDebugger().i("START!");
                 setFightInProgress(true);
 
-            } else if (handle) {
+            } else if (handle == true) {
                 if (errror != null) {
                     PVPArena.instance.getLogger().info(errror);
                 }
