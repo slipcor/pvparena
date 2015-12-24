@@ -111,13 +111,16 @@ public class ArenaRegion {
      * PAINTING - Painting placement/destruction
      * PISTON - Piston triggering
      * PLACE - Block placement
-     * REDSTONE - Redstone current change
      * TNT - TNT usage
      * TNTBREAK - TNT block break
+     * DROP - Player dropping items
+     * INVENTORY - Player accessing inventory
+     * PICKUP - Player picking up stuff
+     * CRAFT - Player crafting stuff
      * </pre>
      */
     public enum RegionProtection {
-        BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP
+        BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT
     }
 
     /**

@@ -37,6 +37,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -225,6 +226,26 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("command blocked: " + event.getMessage(), player);
         arena.msg(player,
                 Language.parse(arena, MSG.ERROR_COMMAND_BLOCKED, event.getMessage()));
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerCraft(final CraftItemEvent event) {
+
+        final Player player = (Player) event.getWhoClicked();
+
+        final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+        if (arena == null || player.isOp() || PVPArena.hasAdminPerms(player)
+                || PVPArena.hasCreatePerms(player, arena)) {
+            return; // no fighting player => OUT
+        }
+
+        if (!BlockListener.isProtected(player.getLocation(), event,
+                RegionProtection.CRAFT)) {
+            return; // no craft protection
+        }
+
+        arena.getDebugger().i("onCraftItemEvent: fighting player", player);
         event.setCancelled(true);
     }
 
