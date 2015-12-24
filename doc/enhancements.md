@@ -6,8 +6,8 @@ The API features basic access to several things, based on very few requests. If 
 
 ### Installation
 
-Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
-`/pa install [modname]`, **activate per arena** via
+Unzip the module files (files tab, "PA Files v\*.\*.\*") into the /pvparena/files folder and install them via
+`/pa install [modname]`, **activate per arena via**
 `/pa [arenaname] !tm [modname]`
 
 ### PVP Arena Goals
