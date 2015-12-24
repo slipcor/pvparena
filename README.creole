@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.553 - add chat.toGlobal to allow private talking players to talk to the public with a prefix
 * v1.3.0.552 - add CRAFT RegionProtection to prevent item crafting
 * v1.3.0.551 - add damage.fromOutsiders (false) to allow players (and other entities) to hurt fighters
 * v1.3.0.550 - properly check for some things before adding players to a class via command

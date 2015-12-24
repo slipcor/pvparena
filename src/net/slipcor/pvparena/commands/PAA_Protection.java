@@ -81,7 +81,7 @@ public class PAA_Protection extends AbstractArenaCommand {
             return;
         }
 
-        // usage: /pa {arenaname} regionflag [regionname] [regionflag] {value}
+        // usage: /pa {arenaname} protection [regionname] [regionflag] {value}
 
         arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_VALUE, args[2]));
         arena.msg(sender, Language.parse(arena, MSG.ERROR_POSITIVES, StringParser.joinSet(StringParser.positive, " | ")));

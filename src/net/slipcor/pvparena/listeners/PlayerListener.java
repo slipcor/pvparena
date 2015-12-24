@@ -154,6 +154,16 @@ public class PlayerListener implements Listener {
                 return; // player not privately chatting
             }
 
+            String toGlobal = arena.getArenaConfig().getString(CFG.CHAT_TOGLOBAL);
+
+            if (!toGlobal.equalsIgnoreCase("none")) {
+                if (event.getMessage().toLowerCase().startsWith(
+                        toGlobal.toLowerCase())) {
+                    event.setMessage(event.getMessage().substring(toGlobal.length()));
+                    return;
+                }
+            }
+
             arena.tellTeam(sTeam, event.getMessage(), team.getColor(),
                     event.getPlayer());
             event.setCancelled(true);
