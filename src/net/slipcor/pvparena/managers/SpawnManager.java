@@ -421,7 +421,10 @@ public final class SpawnManager {
     public static PALocation getSpawnByExactName(final Arena arena, final String name) {
         for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().equals(name)) {
-                return spawn.getLocation().add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
+                return spawn.getLocation().add(
+                        PVPArena.instance.getConfig().getDouble("x-offset", 0.5),
+                        PVPArena.instance.getConfig().getDouble("y-offset", 0.5),
+                        PVPArena.instance.getConfig().getDouble("z-offset", 0.5));
             }
         }
         return null;
@@ -500,7 +503,10 @@ public final class SpawnManager {
                 final PALocation temp = aPlayer.getSavedLocation();
 
                 Location bLoc = newLoc.toLocation();
-                bLoc = bLoc.add(0.5, PVPArena.instance.getConfig().getDouble("y-offset"), 0.5);
+                bLoc = bLoc.add(
+                        PVPArena.instance.getConfig().getDouble("x-offset", 0.5),
+                        PVPArena.instance.getConfig().getDouble("y-offset", 0.5),
+                        PVPArena.instance.getConfig().getDouble("z-offset", 0.5));
 
                 while (bLoc.getBlock().getType() != Material.AIR
                         && bLoc.getBlock().getRelative(BlockFace.UP).getType() != Material.AIR

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.0.555 - add x-offset and z-offset, so one can change the default behaviour of putting ppl on the middle of a block
 * v1.3.0.554 - fix an NPE in some places due to a return value of null should be expected!
 * v1.3.0.553 - add chat.toGlobal to allow private talking players to talk to the public with a prefix
 * v1.3.0.552 - add CRAFT RegionProtection to prevent item crafting

@@ -5,7 +5,9 @@ tracker: true
 language: en
 onlyPVPinArena: false
 safeadmin: true
+x-offset: 0.5
 y-offset: 0.5
+z-offset: 0.5
 whitelist:
 - ungod
 use_shortcuts: false
