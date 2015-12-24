@@ -54,6 +54,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 - [creation](doc/creation.md)
 - [commands](doc/commands.md)
+- [enhancements](doc/enhancements.md)
 
 ***
 
