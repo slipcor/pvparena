@@ -56,6 +56,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - [commands](doc/commands.md)
 - [enhancements](doc/enhancements.md)
 - [items](doc/items.md)
+- [languages] (doc/languages.md)
 
 ***
 
@@ -63,7 +64,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 - v1.3.0.552 - add CRAFT RegionProtection to prevent item crafting
 
-[more](doc/changelog.md)
+- [more](doc/changelog.md)
 
 ***
 
