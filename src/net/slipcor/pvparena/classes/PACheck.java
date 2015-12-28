@@ -168,8 +168,10 @@ public class PACheck {
         }
 
         if (res.hasError()) {
-            arena.msg(Bukkit.getConsoleSender(),
-                    Language.parse(arena, MSG.ERROR_ERROR, res.error));
+            if (res.error != null && res.error.length() > 1) {
+                arena.msg(Bukkit.getConsoleSender(),
+                        Language.parse(arena, MSG.ERROR_ERROR, res.error));
+            }
             if (commit != null) {
                 arena.getDebugger().i(
                         "error; committing end: " + commit.getName());
