@@ -330,9 +330,7 @@ public class GoalDomination extends ArenaGoal {
 				 * 			no => continue
 				 */
                 if (getRunnerMap().containsKey(loc)) {
-
                     arena.getDebugger().i("  - being claimed");
-
                     if (teams.size() < 2) {
                         arena.getDebugger().i("  - only one team present");
                         if (teams.contains(getRunnerMap().get(loc).team)) {
@@ -344,6 +342,7 @@ public class GoalDomination extends ArenaGoal {
                     arena.getDebugger().i("  - more than one team or another team. cancel claim!");
                     // more than THE team that is claiming => cancel!
                     Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
+                    getRunnerMap().remove(loc);
                 } else {
                     arena.getDebugger().i("  - not being claimed");
                     // not being claimed
