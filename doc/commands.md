@@ -57,7 +57,7 @@ _(Permission: pvparena.user (defaults to true))_
 Command | Shorthand | Definition
 ------------- | ------------- | -------------
 /pa arenaclass | /pa -ac | Changes your class, if allowed (/pa -ac [classname])
-/pa arenalist | /pa -ls | List available arenas (red: disabled, yellow: edit, green: running)
+/pa list | none | List available arenas (red: disabled, yellow: edit, green: running)
 /pa chat | /pa -c | Sets arena chat mode
 /pa info | /pa -i | Displays the active modules of an arena and its settings
 /pa join {team} | /pa -j | Joins an arena

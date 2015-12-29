@@ -8,10 +8,10 @@ The teams command adds team management. Add, set and remove teams!
 
 Command |  Definition
 ------------- | -------------
-/pa ctf teams set blue GREEN | Set the blue team's color to green
-/pa spleef teams add yellow YELLOW | Add a yellow team
-/pa default teams remove blue | Remove the blue team
-/pa default teams | list all teams
+/pa *(arena)* teams set blue GREEN | Set the blue team's color to green
+/pa *(arena)* teams add yellow YELLOW | Add a yellow team
+/pa *(arena)* teams remove blue | Remove the blue team
+/pa *(arena)* teams | list all teams
 
 ## Details
 

@@ -28,18 +28,30 @@ By default you need: 2 spawns (red & blue) / 2 lounges (red & blue) / spectator 
 ### 3. Create the battle region.
 
 `/pa (Arena Name) region`
-The default region setting tool is a stick. Set your region with left and right click. Then:
+
+The default region setting tool is a stick. Set your region with left and right click. 
+
+Then:
+
 `/pa (Arena Name) region [Region Name] (Region Shape)`
-Valid types: cuboid / spheric / cylindric
+
+Valid shape types: 
+
+- cuboid 
+- spheric 
+- cylindric
 
 ### 4. Place required items in the lounge
 
 Simply place the signs and on the first line put the class names.
+
 Default classes are: Swordsman / Tank / Pyro / Ranger
 
 Add more classes with the [class command](commands/class.md)
 
 Place the signs in each lobby, and an iron block (configurable). The iron block is the default ready block, and you push it when your ready to start the match.
+
+:triangular_flag_on_post: Tip : You can set a default class using the parameter `AutoLoad`.
 
 ### 5. Join the arena!
 

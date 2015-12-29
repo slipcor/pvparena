@@ -58,6 +58,9 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - [enhancements](doc/enhancements.md)
 - [items](doc/items.md)
 - [languages] (doc/languages.md)
+- [permissions] (doc/permissions.md)
+- [regions] (doc/regions.md)
+- [configuration](doc/configuration.md)
 
 ***
 
