@@ -23,33 +23,32 @@ _(Permission: pvparena.admin OR ownership AND pvparena.create)_
 
 Command | Shorthand | Definition
 ------------- | ------------- | -------------
-/pa blacklist (or whitelist) | /pa !bl (!wl) | Manage arena blacklist or whitelists
-/pa check | /pa !ch | Checks an arena configuration
-/pa class | /pa !cl | Manage arena classes
-/pa create | /pa !c | Creates an arena
-/pa disable | /pa !dis | Disables an arena.
-/pa edit | /pa !e | Toggles editing of an arena
-/pa enable | /pa !en | Enables an arena.
-/pa gamemode | /pa !gm | Change the general gamemode of an arena
-/pa goal | /pa !g | Manage arena goals
-/pa playerjoin | /pa !pj | Make a player join
-/pa protection | /pa !p | Manages arena protections
-/pa region | /pa !rg | Manages arena regions
-/pa regionflags | /pa !rf | Manages arena flags
-/pa regiontype | /pa !rt | Changes a region type
-/pa regions | /pa !rs | Debugs regions | ^
-/pa reload | /pa !rl | Reload arena configs
-/pa remove | /pa !rm | Removes an arena.
-/pa round | /pa !rd | Manages arena rounds
-/pa set | /pa !s | Set an arena config setting
-/pa setowner | /pa !so | Sets the owner of an arena
-/pa spawn | /pa !sp | Manage arena spawns
-/pa start | /pa !go | Force starts an arena.
-/pa stop | /pa !st | Force stops an arena.
-/pa teams | /pa !ts | Manages arena teams
-/pa teleport | /pa !tp | Teleports you to an arena spawnpoint
-/pa togglemod [module] | /pa !tm | Activates/Deactivates module
-/pa blacklist (or whitelist) | /pa !bl (!wl) | Manage arena blacklist or whitelists
+[/pa blacklist \(or whitelist\)](commands/blacklist.md) | /pa !bl (!wl) | Manage arena blacklist or whitelists
+[/pa check](commands/check.md) | /pa !ch | Checks an arena configuration
+[/pa class](commands/class.md) | /pa !cl | Manage arena classes
+[/pa create](commands/create.md) | /pa !c | Creates an arena
+[/pa disable](commands/disable.md) | /pa !dis | Disables an arena.
+[/pa edit](commands/edit.md) | /pa !e | Toggles editing of an arena
+[/pa enable](commands/enable.md) | /pa !en | Enables an arena.
+[/pa gamemode](commands/gamemode.md) | /pa !gm | Change the general gamemode of an arena
+[/pa goal](commands/goal.md) | /pa !g | Manage arena goals
+[/pa playerjoin](commands/playerjoin.md) | /pa !pj | Make a player join
+[/pa protection](commands/protection.md) | /pa !p | Manages arena protections
+[/pa region](commands/region.md) | /pa !rg | Manages arena regions
+[/pa regionflags](commands/regionflags.md) | /pa !rf | Manages arena flags
+[/pa regiontype](commands/regiontype.md) | /pa !rt | Changes a region type
+[/pa regions](commands/regions.md) | /pa !rs | Debugs regions | ^
+[/pa reload](commands/reload.md) | /pa !rl | Reload arena configs
+[/pa remove](commands/remove.md) | /pa !rm | Removes an arena.
+[/pa round](commands/round.md) | /pa !rd | Manages arena rounds
+[/pa set](commands/set.md) | /pa !s | Set an arena config setting
+[/pa setowner](commands/setowner.md) | /pa !so | Sets the owner of an arena
+[/pa spawn](commands/spawn.md) | /pa !sp | Manage arena spawns
+[/pa start](commands/start.md) | /pa !go | Force starts an arena.
+[/pa stop](commands/stop.md) | /pa !st | Force stops an arena.
+[/pa teams](commands/teams.md) | /pa !ts | Manages arena teams
+[/pa teleport](commands/teleport.md) | /pa !tp | Teleports you to an arena spawnpoint
+[/pa togglemod \[module\]](commands/togglemod.md) | /pa !tm | Activates/Deactivates module
 
 ### Arena Standard Commands
 
@@ -66,5 +65,5 @@ Command | Shorthand | Definition
 /pa leave | /pa -l | Leave an arena
 /pa ready | /pa -r | Readys you up or lists who is ready
 /pa spectate | /pa -s | Spectate an arena
-/pa stats | /pa -s | Shows [arena/global] statistics
+[/pa stats](commands/stats.md) | /pa -s | Shows [arena/global] statistics
 /pa version | /pa -v | Shows detailed version information
