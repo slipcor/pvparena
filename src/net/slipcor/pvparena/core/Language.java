@@ -346,6 +346,15 @@ public final class Language {
         PLAYER_HAS_WON("nulang.playerhaswon", "%1% is the Champion!"),
         PLAYER_READY("nulang.playerready", "%1%&e is ready!"),
 
+
+        PLAYER_PREVENTED_BREAK("nulang.player.prevented.break", "&cYou may not break blocks!"),
+        PLAYER_PREVENTED_PLACE("nulang.player.prevented.place", "&cYou may not place blocks!"),
+        PLAYER_PREVENTED_TNT("nulang.player.prevented.tnt", "&cYou may not use TNT!"),
+        PLAYER_PREVENTED_TNTBREAK("nulang.player.prevented.tntbreak", "&cYou may not break TNT!"),
+        PLAYER_PREVENTED_DROP("nulang.player.prevented.drop", "&cYou may not drop items!"),
+        PLAYER_PREVENTED_INVENTORY("nulang.player.prevented.inventory", "&cYou may not access this!"),
+        PLAYER_PREVENTED_CRAFT("nulang.player.prevented.craft", "&cYou may not craft!"),
+
         PLAYERS_NOTREADY("nulang.notreadyplayers", "Players not ready"),
 
         PLAYERS("nulang.players", "Players"),

@@ -144,12 +144,14 @@ public class GoalInfect extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.BREAK
                 )) {
                     event.setCancelled(true);
+                    arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_BREAK));
                     result.setError(this, "BREAK not allowed");
                 } else if (event.getBlock().getTypeId() == 46 &&
                         ArenaPlayer.PlayerPrevention.has(
                                 arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNTBREAK
                         )) {
                     event.setCancelled(true);
+                    arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_TNTBREAK));
                     result.setError(this, "TNTBREAK not allowed");
                 }
             }
@@ -166,6 +168,7 @@ public class GoalInfect extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.CRAFT
                 )) {
                     event.setCancelled(true);
+                    arena.msg((Player) event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_CRAFT));
                     result.setError(this, "CRAFT not allowed");
                 }
             }
@@ -182,6 +185,7 @@ public class GoalInfect extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.DROP
                 )) {
                     event.setCancelled(true);
+                    arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_DROP));
                     result.setError(this, "DROP not allowed");
                 }
             }
@@ -198,6 +202,8 @@ public class GoalInfect extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.INVENTORY
                 )) {
                     event.setCancelled(true);
+                    ((Player) event.getInventory().getHolder()).closeInventory();
+                    arena.msg((Player) event.getInventory().getHolder(), Language.parse(arena, MSG.PLAYER_PREVENTED_INVENTORY));
                     result.setError(this, "INVENTORY not allowed");
                 }
             }
@@ -230,12 +236,14 @@ public class GoalInfect extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.PLACE
                 )) {
                     event.setCancelled(true);
+                    arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_PLACE));
                     result.setError(this, "PLACE not allowed");
                 } else if (event.getBlock().getTypeId() == 46 &&
                         ArenaPlayer.PlayerPrevention.has(
                                 arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNT
                         )) {
                     event.setCancelled(true);
+                    arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_TNT));
                     result.setError(this, "TNT not allowed");
                 }
             }
@@ -315,10 +323,10 @@ public class GoalInfect extends ArenaGoal {
                 if (pp == null) {
                     continue;
                 }
-                values.add((ArenaPlayer.PlayerPrevention.has(value, pp)?
-                ChatColor.GREEN.toString() : ChatColor.RED.toString()) + pp.name());
-                arena.msg(sender, Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.YELLOW + ", "))));
+                values.add((ArenaPlayer.PlayerPrevention.has(value, pp) ?
+                        ChatColor.GREEN.toString() : ChatColor.RED.toString()) + pp.name());
             }
+            arena.msg(sender, Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.WHITE + ", "))));
 
         } else if ("setprotect".equalsIgnoreCase(args[0])) {
             // setprotect [value] {true|false}
