@@ -37,10 +37,13 @@ Valid types: cuboid / spheric / cylindric
 Simply place the signs and on the first line put the class names.
 Default classes are: Swordsman / Tank / Pyro / Ranger
 
-Add more classes with the class command
+Add more classes with the [class command](commands/class.md)
 
 Place the signs in each lobby, and an iron block (configurable). The iron block is the default ready block, and you push it when your ready to start the match.
 
 ### 5. Join the arena!
 
 `/pa [Arena Name] (join) (teamname)`
+
+
+See the [video tutorial](https://www.youtube.com/watch?v=yyPJ6vlv09s)

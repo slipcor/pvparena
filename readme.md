@@ -36,7 +36,11 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
--  Bukkit 1.7.9
+- Bukkit 1.7.9 (Compatible 1.8)
+
+***
+
+## [Downloads](http://dev.bukkit.org/bukkit-plugins/pvparena/files/)
 
 ***
 
@@ -46,7 +50,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - Place in plugins folder
 - Run a first time to create config folder
 - Configure if you wish to
-- Done!
+- Done !
 
 ***
 
@@ -63,19 +67,18 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Changelog
 
 - v1.3.0.552 - add CRAFT RegionProtection to prevent item crafting
-
-- [more](doc/changelog.md)
+- [read more](doc/changelog.md)
 
 ***
 
 ## Todo
 
 - plugin
--- calculate a winner based on ROUND results
+  - [ ] calculate a winner based on ROUND results
 - modules
 - goals
--- tournament arenas ; rounds switch through arenas
--- siege -> bring PACKET from A to B || prevent
+  - [ ] tournament arenas ; rounds switch through arenas
+  - [ ] siege -> bring PACKET from A to B || prevent
 
 ***
 
