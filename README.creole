@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.11 - clarify language for RespawnRelay and fix a little Exception in the Time goal
 * v1.3.1.10 - address github issue #88 - properly keep players as DEAD when being relayed
 * v1.3.1.9 - address github issue #87 - add THORNS damage handling
 * v1.3.1.8 - properly deal with inventory protection

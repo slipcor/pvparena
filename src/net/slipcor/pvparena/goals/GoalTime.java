@@ -12,6 +12,7 @@ import net.slipcor.pvparena.runnables.TimedEndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -107,7 +108,11 @@ public class GoalTime extends ArenaGoal {
 
         }
         if (teams.size() < 2) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+            try {
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+            } catch (IllegalPluginAccessException ex) {
+
+            }
         }
     }
 }
