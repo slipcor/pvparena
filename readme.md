@@ -1,7 +1,7 @@
 ![PVP-Arena](/doc/images/logo.png)
 
 
-** Enhance your server by adding a new dimension of PVP battles! **
+**Enhance your server by adding a new dimension of PVP battles!**
 
 Create fully customisable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish. 
 This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.
