@@ -628,7 +628,9 @@ public final class SpawnManager {
                 for (final PASpawn spawn : spawns) {
                     if (--pos <= 0) {
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
-                        aPlayer.setStatus(Status.FIGHT);
+                        if (overrideSpawn == null || !overrideSpawn.toLowerCase().startsWith("relay")) {
+                            aPlayer.setStatus(Status.FIGHT);
+                        }
                         return;
                     }
                 }
@@ -670,7 +672,9 @@ public final class SpawnManager {
                     for (final PASpawn spawn : spawns) {
                         if (--pos <= 0) {
                             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
-                            aPlayer.setStatus(Status.FIGHT);
+                            if (overrideSpawn == null || !overrideSpawn.toLowerCase().startsWith("relay")) {
+                                aPlayer.setStatus(Status.FIGHT);
+                            }
                             return;
                         }
                     }
@@ -732,7 +736,9 @@ public final class SpawnManager {
             for (final PASpawn spawn : spawns) {
                 if (--pos <= 0) {
                     Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
-                    aPlayer.setStatus(Status.FIGHT);
+                    if (overrideSpawn == null || !overrideSpawn.toLowerCase().startsWith("relay")) {
+                        aPlayer.setStatus(Status.FIGHT);
+                    }
                     return;
                 }
             }
@@ -740,8 +746,9 @@ public final class SpawnManager {
         }
 
         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, overrideSpawn), 1L);
-        aPlayer.setStatus(Status.FIGHT);
-
+        if (overrideSpawn == null || !overrideSpawn.toLowerCase().startsWith("relay")) {
+            aPlayer.setStatus(Status.FIGHT);
+        }
     }
 
     /**
