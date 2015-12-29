@@ -32,6 +32,7 @@
 	
 	<build>
 		<defaultGoal>clean package install</defaultGoal>
+        <finalName>pvparena</finalName>
 		<sourceDirectory>${basedir}/src</sourceDirectory>
 
 		<resources>
