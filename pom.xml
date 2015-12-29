@@ -27,7 +27,7 @@
 	<url>http://pa.slipcor.net</url>
 	<ciManagement>
 		<system>jenkins</system>
-		<url>http://www.mc-praxis.com:8080</url>
+		<url>https://ci2.craftyn.com</url>
 	</ciManagement>
 	
 	<build>
@@ -102,11 +102,24 @@
 					<replacements>
 						<replacement>
 							<token>jenkins-build-number</token>
-							<value>${CI_BUILD_NUMBER}</value>
+							<value>${BUILD_NUMBER}</value>
 						</replacement>
 					</replacements>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
+    <distributionManagement>
+        <repository>
+            <id>repo-release</id>
+            <name>Jail Releases</name>
+            <url>https://repo2.craftyn.com/repository/internal/</url>
+        </repository>
+        <snapshotRepository>
+            <id>repo-snapshot</id>
+            <name>Jail Snapshots</name>
+            <url>https://repo2.craftyn.com/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

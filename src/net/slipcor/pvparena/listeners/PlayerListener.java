@@ -10,6 +10,7 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Setup;
+import net.slipcor.pvparena.commands.PAG_Arenaclass;
 import net.slipcor.pvparena.commands.PAG_Leave;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -448,17 +449,17 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("event post cancelled: " + event.isCancelled(),
                 player);
 
-        if (arena.isFightInProgress()
-                && !PVPArena.instance.getAgm().allowsJoinInBattle(arena)) {
-            arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!",
-                    player);
-            return;
-        }
+        //TODO: seriously, why?
+        final boolean whyMe = arena.isFightInProgress()
+                && !PVPArena.instance.getAgm().allowsJoinInBattle(arena);
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
         if (aPlayer.getStatus() != Status.FIGHT) {
+            if (whyMe) {
+                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
+            }
             arena.getDebugger().i("cancelling: not fighting", player);
             // fighting player inside the lobby!
             event.setCancelled(true);
@@ -479,17 +480,28 @@ public class PlayerListener implements Listener {
 
                 if ("custom".equalsIgnoreCase(sign.getLine(0)) || arena
                         .getClass(sign.getLine(0)) != null) {
-
-                    arena.chooseClass(player, sign, sign.getLine(0));
+                    if (arena.isFightInProgress()) {
+                        PAG_Arenaclass ac = new PAG_Arenaclass();
+                        ac.commit(arena, player, new String[]{sign.getLine(0)});
+                    } else {
+                        arena.chooseClass(player, sign, sign.getLine(0));
+                    }
                 } else {
                     arena.getDebugger().i('|' + sign.getLine(0) + '|', player);
                     arena.getDebugger().i(String.valueOf(arena.getClass(sign.getLine(0))),
                             player);
                     arena.getDebugger().i(String.valueOf(team), player);
+
+                    if (whyMe) {
+                        arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player);
+                    }
                 }
                 return;
             }
 
+            if (whyMe) {
+                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
+            }
             arena.getDebugger().i("block click!", player);
 
             final Material mMat = arena.getReadyBlock();

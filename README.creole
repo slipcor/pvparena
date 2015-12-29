@@ -45,6 +45,8 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.1 - link to new jenkins. Thanks to @graywolf336
+* v1.3.0.558 - fix github issue #83
 * v1.3.0.557 - fix github issue #61
 * v1.3.0.556 - fix github issue #64
 * v1.3.0.555 - add x-offset and z-offset, so one can change the default behaviour of putting ppl on the middle of a block
