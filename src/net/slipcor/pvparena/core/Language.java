@@ -78,6 +78,7 @@ public final class Language {
         DEATHCAUSE_STARVATION("nulang.deathcause.STARVATION", "hunger"),
         DEATHCAUSE_SUFFOCATION("nulang.deathcause.SUFFOCATION", "lack of air"),
         DEATHCAUSE_SUICIDE("nulang.deathcause.SUICIDE", "self"),
+        DEATHCAUSE_THORNS("nulang.deathcause.THORNS", "thorns"),
         DEATHCAUSE_VOID("nulang.deathcause.VOID", "the Void"),
 
         DEATHCAUSE_CREEPER("nulang.deathcause.CREEPER", "a creeper"),

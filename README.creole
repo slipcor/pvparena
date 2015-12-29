@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.9 - address github issue #87 - add THORNS damage handling
 * v1.3.1.8 - properly deal with inventory protection
 * v1.3.1.7 - how about we don't spam EVERYthing but spam after collecting everything, and inform people that we have prevented something?
 * v1.3.1.6 - fix some mathematical and logical derps
