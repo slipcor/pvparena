@@ -28,7 +28,7 @@ Command | Shorthand | Definition
 [/pa class](commands/class.md) | /pa !cl | Manage arena classes
 [/pa create](commands/create.md) | /pa !c | Creates an arena
 [/pa disable](commands/disable.md) | /pa !dis | Disables an arena.
-[/pa edit](commands/edit.md) | /pa !e | Toggles editing of an arena
+/pa edit | /pa !e | Toggles editing of an arena
 [/pa enable](commands/enable.md) | /pa !en | Enables an arena.
 [/pa gamemode](commands/gamemode.md) | /pa !gm | Change the general gamemode of an arena
 [/pa goal](commands/goal.md) | /pa !g | Manage arena goals

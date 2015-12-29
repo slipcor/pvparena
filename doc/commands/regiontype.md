@@ -31,8 +31,8 @@ This region type blocks chest access for every team whichs name is in the region
 
 example names:
 
-    xxbluexx => disallows the blue team
-    RedSwordsman => disallows the red team and any Swordsman 
+`xxbluexx` => disallows the blue team
+`RedSwordsman` => disallows the red team and any Swordsman 
 
 ### WL_INV
 
@@ -40,8 +40,8 @@ This region type restricts chest access to teams / classes which names are part 
 
 example names:
 
-    RedBlueRanger => allows Red and Blue and Rangers to access chests
-    %infected% => allows the infected (class) to access chests 
+`RedBlueRanger` => allows Red and Blue and Rangers to access chests
+`%infected%` => allows the infected (class) to access chests 
 
 ## Todo
 

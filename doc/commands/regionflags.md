@@ -1,4 +1,4 @@
-# Regionflag Command
+# Regionflags Command
 
 ## Description
 

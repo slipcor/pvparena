@@ -20,15 +20,15 @@ Clear your inventory before doing that, to be sure that you don't save some of y
 
 As of v1.0.1.*, the following is saved:
 
-    Enchantments
-    Data values
-    Dyes
-    Dyed armor
-    Custom potions
-    Written books
-    Renamed items
-    Player Heads
-    Item Lore 
+- Enchantments
+- Data values
+- Dyes
+- Dyed armor
+- Custom potions
+- Written books
+- Renamed items
+- Player Heads
+- Item Lore 
 
 ## ToDo
 

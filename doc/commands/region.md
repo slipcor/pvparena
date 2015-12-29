@@ -19,9 +19,9 @@ Command |  Definition
 For a better display of HOW to setup regions, you might want to check out our tutorial section.
 Setting up an arena needs 3 things:
 
-    `/pa [arenaname] region`
-    select two points that define the region
-    `/pa [arenaname] region [regionshape]` 
+`/pa [arenaname] region`
+select two points that define the region
+`/pa [arenaname] region [regionshape]` 
 
 Valid regionshapes include:
  

@@ -13,7 +13,7 @@ Command |  Definition
 
 ## Details
 
-The list shows: [regionname]: [regiontype], [regionshape]
+The list shows: `[regionname]: [regiontype], [regionshape]`
 
 The debug prints:
 
