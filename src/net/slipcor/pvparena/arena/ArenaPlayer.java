@@ -60,6 +60,8 @@ public class ArenaPlayer {
     private final Map<String, PAStatMap> statistics = new HashMap<String, PAStatMap>();
 
     /**
+     * Status
+     *
      * <pre>
      * - NULL = not part of an arena
      * - WARM = not part of an arena, warmed up
@@ -72,7 +74,29 @@ public class ArenaPlayer {
      * </pre>
      */
     public enum Status {
-        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
+        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST;
+    }
+
+
+    /**
+     * PlayerPrevention
+     *
+     * <pre>
+     * BREAK - Block break
+     * PLACE - Block placement
+     * TNT - TNT usage
+     * TNTBREAK - TNT block break
+     * DROP - dropping items
+     * INVENTORY - accessing inventory
+     * PICKUP - picking up stuff
+     * CRAFT - crafting stuff
+     * </pre>
+     */
+    public enum PlayerPrevention {
+        BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
+        public static boolean has(int value, PlayerPrevention s) {
+            return ((s.ordinal() & value) > 0);
+        }
     }
 
     private boolean publicChatting = true;

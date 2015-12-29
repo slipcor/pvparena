@@ -5,12 +5,14 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.PABlockLocation;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -166,6 +168,13 @@ public class BlockListener implements Listener {
             // on blacklist. DENY!
             event.setCancelled(true);
             DEBUG.i("blacklist out", event.getPlayer());
+            return;
+        }
+
+        PACheck res = ArenaGoalManager.checkBreak(arena, event);
+
+        if (res.hasError()) {
+            DEBUG.i("onBlockBreak cancelled by goal: " + res.getModName(), event.getPlayer());
             return;
         }
 
@@ -470,6 +479,13 @@ public class BlockListener implements Listener {
                             Language.parse(arena, MSG.GENERAL_PLACE)));
             // on blacklist. DENY!
             event.setCancelled(true);
+            return;
+        }
+
+        PACheck res = ArenaGoalManager.checkPlace(arena, event);
+
+        if (res.hasError()) {
+            DEBUG.i("onBlockPlace cancelled by goal: " + res.getModName(), event.getPlayer());
             return;
         }
 

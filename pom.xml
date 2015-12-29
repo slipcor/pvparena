@@ -114,12 +114,12 @@
     <distributionManagement>
         <repository>
             <id>repo-release</id>
-            <name>Jail Releases</name>
+            <name>PVP Arena Releases</name>
             <url>https://repo2.craftyn.com/repository/internal/</url>
         </repository>
         <snapshotRepository>
             <id>repo-snapshot</id>
-            <name>Jail Snapshots</name>
+            <name>PVP Arena Snapshots</name>
             <url>https://repo2.craftyn.com/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>

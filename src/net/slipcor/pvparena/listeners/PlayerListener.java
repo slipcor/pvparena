@@ -251,6 +251,13 @@ public class PlayerListener implements Listener {
             return; // no fighting player => OUT
         }
 
+        PACheck res = ArenaGoalManager.checkCraft(arena, event);
+
+        if (res.hasError()) {
+            DEBUG.i("onPlayerCraft cancelled by goal: " + res.getModName(), player);
+            return;
+        }
+
         if (!BlockListener.isProtected(player.getLocation(), event,
                 RegionProtection.CRAFT)) {
             return; // no craft protection
@@ -279,6 +286,14 @@ public class PlayerListener implements Listener {
             arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
             return;
         }
+
+        PACheck res = ArenaGoalManager.checkDrop(arena, event);
+
+        if (res.hasError()) {
+            DEBUG.i("onPlayerDropItem cancelled by goal: " + res.getModName(), player);
+            return;
+        }
+
         if (!BlockListener.isProtected(player.getLocation(), event,
                 RegionProtection.DROP)) {
             return; // no drop protection
@@ -703,6 +718,16 @@ public class PlayerListener implements Listener {
         }
 
         final Arena arena = ArenaPlayer.parsePlayer(player.getName()).getArena();
+
+        if (arena != null) {
+
+            PACheck res = ArenaGoalManager.checkPickup(arena, event);
+
+            if (res.hasError()) {
+                DEBUG.i("onPlayerPickupItem cancelled by goal: " + res.getModName(), player);
+                return;
+            }
+        }
         if (arena == null
                 || !BlockListener.isProtected(player.getLocation(), event,
                 RegionProtection.PICKUP)) {

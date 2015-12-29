@@ -14,8 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.*;
@@ -83,6 +87,29 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
             return PVPArena.hasAdminPerms(sender);
         }
         return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
+    }
+    public String version() {
+        return "outdated";
+    }
+
+    public PACheck checkBreak(PACheck result, Arena arena, BlockBreakEvent event) {
+        return result;
+    }
+
+    public PACheck checkCraft(PACheck result, Arena arena, CraftItemEvent event) {
+        return result;
+    }
+
+    public PACheck checkDrop(PACheck result, Arena arena, PlayerDropItemEvent event) {
+        return result;
+    }
+
+    public PACheck checkPickup(PACheck result, Arena arena, PlayerPickupItemEvent event) {
+        return result;
+    }
+
+    public PACheck checkPlace(PACheck result, Arena arena, BlockPlaceEvent event) {
+        return result;
     }
 
     /**
@@ -495,7 +522,4 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      *
      * @return the version String
      */
-    public String version() {
-        return "outdated";
-    }
 }

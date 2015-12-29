@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
@@ -13,6 +14,10 @@ import net.slipcor.pvparena.goals.*;
 import net.slipcor.pvparena.ncloader.NCBLoader;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.io.File;
@@ -92,6 +97,46 @@ public class ArenaGoalManager {
             }
         }
         return null;
+    }
+
+    public static PACheck checkBreak(Arena arena, BlockBreakEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkBreak(result, arena, event);
+        }
+        return result;
+    }
+
+    public static PACheck checkCraft(Arena arena, CraftItemEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkCraft(result, arena, event);
+        }
+        return result;
+    }
+
+    public static PACheck checkDrop(Arena arena, PlayerDropItemEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkDrop(result, arena, event);
+        }
+        return result;
+    }
+
+    public static PACheck checkPickup(Arena arena, PlayerPickupItemEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkPickup(result, arena, event);
+        }
+        return result;
+    }
+
+    public static PACheck checkPlace(Arena arena, BlockPlaceEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkPlace(result, arena, event);
+        }
+        return result;
     }
 
     public void configParse(final Arena arena, final YamlConfiguration config) {

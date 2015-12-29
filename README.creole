@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.4 - allow goals to deny BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT - proof of concept!
 * v1.3.1.1 - link to new jenkins. Thanks to @graywolf336
 * v1.3.0.558 - fix github issue #83
 * v1.3.0.557 - fix github issue #61

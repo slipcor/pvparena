@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.goals;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
@@ -11,6 +12,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.events.PATeamChangeEvent;
 import net.slipcor.pvparena.listeners.PlayerListener;
@@ -24,8 +26,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -45,7 +52,7 @@ public class GoalInfect extends ArenaGoal {
         super("Infect");
         debug = new Debug(108);
     }
-
+// BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
     private EndRunnable endRunner;
 
     @Override
@@ -115,6 +122,98 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
+    public PACheck checkBreak(PACheck result, Arena arena, BlockBreakEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.BREAK
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "BREAK not allowed");
+                } else if (event.getBlock().getTypeId() == 46 &&
+                        ArenaPlayer.PlayerPrevention.has(
+                                arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNTBREAK
+                        )) {
+                    event.setCancelled(true);
+                    result.setError(this, "TNTBREAK not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public PACheck checkCraft(PACheck result, Arena arena, CraftItemEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getInventory().getHolder()).getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.CRAFT
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "CRAFT not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public PACheck checkDrop(PACheck result, Arena arena, PlayerDropItemEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.DROP
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "DROP not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public PACheck checkPickup(PACheck result, Arena arena, PlayerPickupItemEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.PICKUP
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "PICKUP not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public PACheck checkPlace(PACheck result, Arena arena, BlockPlaceEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.PLACE
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "PLACE not allowed");
+                } else if (event.getBlock().getTypeId() == 46 &&
+                        ArenaPlayer.PlayerPrevention.has(
+                                arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNT
+                        )) {
+                    event.setCancelled(true);
+                    result.setError(this, "TNT not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
     public PACheck checkJoin(final CommandSender sender, final PACheck res, final String[] args) {
         if (res.getPriority() >= PRIORITY) {
             return res;
@@ -171,6 +270,67 @@ public class GoalInfect extends ArenaGoal {
             res.setPriority(this, PRIORITY);
         }
         return res;
+    }
+
+    @Override
+    public void commitCommand(final CommandSender sender, final String[] args) {
+
+        int value = arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS);
+
+        if ("getprotect".equalsIgnoreCase(args[0])) {
+            List<String> values = new ArrayList<String>();
+
+
+            for (ArenaPlayer.PlayerPrevention pp : ArenaPlayer.PlayerPrevention.values()) {
+                if (pp == null) {
+                    continue;
+                }
+                values.add((ArenaPlayer.PlayerPrevention.has(value, pp)?
+                ChatColor.GREEN.toString() : ChatColor.RED.toString()) + pp.name());
+                arena.msg(sender, Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.YELLOW + ", "))));
+            }
+
+        } else if ("setprotect".equalsIgnoreCase(args[0])) {
+            // setprotect [value] {true|false}
+            if (args.length < 2) {
+                arena.msg(
+                        sender,
+                        Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
+                                String.valueOf(args.length), "2|3"));
+                return;
+            }
+
+            try {
+                final ArenaPlayer.PlayerPrevention pp = ArenaPlayer.PlayerPrevention.valueOf(args[1].toUpperCase());
+                if (ArenaPlayer.PlayerPrevention.has(value, pp)) {
+                    value = value ^ pp.ordinal();
+                    arena.msg(
+                            sender,
+                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
+                                    pp.name(), ChatColor.RED + "false") + ChatColor.YELLOW);
+
+                } else {
+                    value = value | pp.ordinal();
+                    arena.msg(
+                            sender,
+                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
+                                    pp.name(), ChatColor.GREEN + "true") + ChatColor.YELLOW);
+                }
+                arena.getArenaConfig().set(CFG.GOAL_INFECTED_PPROTECTS, value);
+            } catch (final Exception e) {
+                List<String> values = new ArrayList<String>();
+
+
+                for (ArenaPlayer.PlayerPrevention pp : ArenaPlayer.PlayerPrevention.values()) {
+                    values.add(pp.name());
+                }
+                arena.msg(sender,
+                        Language.parse(arena, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(values, ", ")));
+                return;
+            }
+            arena.getArenaConfig().save();
+
+        }
     }
 
     @Override
@@ -381,6 +541,12 @@ public class GoalInfect extends ArenaGoal {
                 + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
                 "infected lives: "
                 + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+    }
+
+    @Override
+    public List<String> getMain() {
+        final List<String> result = Arrays.asList("getprotect", "setprotect");
+        return result;
     }
 
     @Override
