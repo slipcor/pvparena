@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -119,6 +120,14 @@ public class ArenaGoalManager {
         PACheck result = new PACheck();
         for (final ArenaGoal type : arena.getGoals()) {
             result = type.checkDrop(result, arena, event);
+        }
+        return result;
+    }
+
+    public static PACheck checkInventory(Arena arena, InventoryClickEvent event) {
+        PACheck result = new PACheck();
+        for (final ArenaGoal type : arena.getGoals()) {
+            result = type.checkInventory(result, arena, event);
         }
         return result;
     }

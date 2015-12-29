@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
@@ -101,6 +102,10 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     }
 
     public PACheck checkDrop(PACheck result, Arena arena, PlayerDropItemEvent event) {
+        return result;
+    }
+
+    public PACheck checkInventory(PACheck result, Arena arena, InventoryClickEvent event) {
         return result;
     }
 

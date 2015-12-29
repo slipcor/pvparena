@@ -31,6 +31,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -120,6 +121,19 @@ public class GoalInfect extends ArenaGoal {
         }
         return count > 3 ? null : "need more spawns! (" + count + "/4)";
     }
+    @Override
+    public PACheck checkCommand(final PACheck res, final String string) {
+        if (res.getPriority() > PRIORITY) {
+            return res;
+        }
+
+        if ("getprotect".equalsIgnoreCase(string)
+                || "setprotect".equalsIgnoreCase(string)) {
+            res.setPriority(this, PRIORITY);
+        }
+
+        return res;
+    }
 
     @Override
     public PACheck checkBreak(PACheck result, Arena arena, BlockBreakEvent event) {
@@ -169,6 +183,22 @@ public class GoalInfect extends ArenaGoal {
                 )) {
                     event.setCancelled(true);
                     result.setError(this, "DROP not allowed");
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public PACheck checkInventory(PACheck result, Arena arena, InventoryClickEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getInventory().getHolder()).getName());
+        if (arena.equals(ap.getArena())) {
+            if ("infected".equals(ap.getArenaTeam().getName())) {
+                if (ArenaPlayer.PlayerPrevention.has(
+                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.INVENTORY
+                )) {
+                    event.setCancelled(true);
+                    result.setError(this, "INVENTORY not allowed");
                 }
             }
         }
@@ -302,19 +332,30 @@ public class GoalInfect extends ArenaGoal {
 
             try {
                 final ArenaPlayer.PlayerPrevention pp = ArenaPlayer.PlayerPrevention.valueOf(args[1].toUpperCase());
-                if (ArenaPlayer.PlayerPrevention.has(value, pp)) {
-                    value = value ^ pp.ordinal();
-                    arena.msg(
-                            sender,
-                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
-                                    pp.name(), ChatColor.RED + "false") + ChatColor.YELLOW);
+                final boolean has = ArenaPlayer.PlayerPrevention.has(value, pp);
 
-                } else {
+                boolean future = !has;
+
+                if (args.length > 2) {
+                    if (StringParser.negative.contains(args[2].toLowerCase())) {
+                        future = false;
+                    } else if (StringParser.negative.contains(args[2].toLowerCase())) {
+                        future = true;
+                    }
+                }
+
+                if (future) {
                     value = value | pp.ordinal();
                     arena.msg(
                             sender,
                             Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
                                     pp.name(), ChatColor.GREEN + "true") + ChatColor.YELLOW);
+                } else {
+                    value = value ^ pp.ordinal();
+                    arena.msg(
+                            sender,
+                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
+                                    pp.name(), ChatColor.RED + "false") + ChatColor.YELLOW);
                 }
                 arena.getArenaConfig().set(CFG.GOAL_INFECTED_PPROTECTS, value);
             } catch (final Exception e) {
