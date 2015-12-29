@@ -334,24 +334,28 @@ public class GoalInfect extends ArenaGoal {
                 final ArenaPlayer.PlayerPrevention pp = ArenaPlayer.PlayerPrevention.valueOf(args[1].toUpperCase());
                 final boolean has = ArenaPlayer.PlayerPrevention.has(value, pp);
 
+                arena.getDebugger().i("plain value: " + value);
+                arena.getDebugger().i("checked: " + pp.name());
+                arena.getDebugger().i("has: " + String.valueOf(has));
+
                 boolean future = !has;
 
                 if (args.length > 2) {
                     if (StringParser.negative.contains(args[2].toLowerCase())) {
                         future = false;
-                    } else if (StringParser.negative.contains(args[2].toLowerCase())) {
+                    } else if (StringParser.positive.contains(args[2].toLowerCase())) {
                         future = true;
                     }
                 }
 
                 if (future) {
-                    value = value | pp.ordinal();
+                    value = value | (int) Math.pow(2, pp.ordinal());
                     arena.msg(
                             sender,
                             Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
                                     pp.name(), ChatColor.GREEN + "true") + ChatColor.YELLOW);
                 } else {
-                    value = value ^ pp.ordinal();
+                    value = value ^ (int) Math.pow(2, pp.ordinal());
                     arena.msg(
                             sender,
                             Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,

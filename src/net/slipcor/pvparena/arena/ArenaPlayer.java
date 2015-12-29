@@ -95,7 +95,7 @@ public class ArenaPlayer {
     public enum PlayerPrevention {
         BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
         public static boolean has(int value, PlayerPrevention s) {
-            return ((s.ordinal() & value) > 0);
+            return (((int) Math.pow(2, s.ordinal()) & value) > 0);
         }
     }
 
