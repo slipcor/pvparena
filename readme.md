@@ -28,12 +28,6 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ***
 
-## Functions
-
-- Enhancing PVP experience
-
-***
-
 ## Dependencies
 
 - Bukkit 1.7.9 (Compatible 1.8)
@@ -61,6 +55,24 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - [enhancements](doc/enhancements.md)
 - [items](doc/items.md)
 - [languages] (doc/languages.md)
+
+***
+
+## Video Tutorials
+
+- [Basic Setup] (http://www.youtube.com/watch?v=yyPJ6vlv09s)
+- [Region setup] (http://www.youtube.com/watch?v=LB4WKdTh4Jg)
+- [CTF] (http://www.youtube.com/watch?v=SuL78bce-f0)
+- [DeathMatch] (http://www.youtube.com/watch?v=KqBueDNbpD8)
+- [Food Block Destroy] (http://www.youtube.com/watch?v=ntloY1BTKHQ)
+- [FreeForAll] (http://www.youtube.com/watch?v=xBIxHoKMu98)
+- [Spleef] (http://www.youtube.com/watch?v=DRmLNXEAs_4)
+- [Pillar Domination] (http://www.youtube.com/watch?v=Xi7yNURxAjw)
+- [TeamDeathMatch] (http://www.youtube.com/watch?v=rQ1ljlc6SJM)
+
+Users tutorials :
+
+- [TeamDeathMatch] (http://www.youtube.com/watch?v=Jw6E8s2kiKw)
 
 ***
 
