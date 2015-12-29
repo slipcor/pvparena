@@ -1,7 +1,7 @@
 ![PVP-Arena](/doc/images/logo.png)
 
 
-**Enhance your server by adding a new dimension of PVP battles!**
+** Enhance your server by adding a new dimension of PVP battles! **
 
 Create fully customisable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish. 
 This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.
@@ -30,11 +30,14 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- Bukkit 1.7.9 (Compatible 1.8)
+- Bukkit 1.7.9 (Compatible 1.8 craftbukkit & spigot)
 
 ***
 
-## [Downloads](http://dev.bukkit.org/bukkit-plugins/pvparena/files/)
+## Downloads
+
+- [bukkit.org](http://dev.bukkit.org/bukkit-plugins/pvparena/)
+- [curse.com](http://www.curse.com/bukkit-plugins/minecraft/pvparena)
 
 ***
 
@@ -94,7 +97,47 @@ Users tutorials :
 
 ***
 
+## Update Checker
+I use two ways of keeping track of versions. One is the plugin version, the Bukkit Update Checker utilizing the Curse API, 
+the other setting is for module version checking, let me show you the important config.yml nodes:
+
+    update:
+      modules: true
+    # should PA check my server (www.slipcor.net) for module versions?
+    # !! If you disable that, you have to manually download and install modules! !!
+
+      type: beta #which release state do we want to use?
+    # valid values:
+    # alpha: update to every dev build
+    # beta: update to every beta build
+    # release: only update to full release builds
+    # everything else will fall back to release
+
+      mode: both #how should we update?
+    # valid values:
+    # both: announce and download
+    # download: download, do not announce
+    # announce: only announce, do not download
+    # everything else will disable the update check
+
+***
+
+## Metrics
+
+To determine popularity and usage of PVP Arena, plugin installs are automatically tracked by the Metrics plugin tracking system. 
+It does nothing if you do not have any configured arenas. If you don't want this tracking, edit plugins/PluginMetrics/config.yml and set opt-out to true.
+
+![PVP-Arena Metrics](http://i.mcstats.org/pvparena/Global+Statistics.borderless.png)
+
+### Phoning home
+
+To get a second opinion, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version. 
+That's it! If you want to disable that, set "tracker" to false in the config!
+
+***
+
 ## Credits
+
 - Deminetix for the very root, the Fight plugin
 - Bradley Hilton for the fork until version v0.0.3
 - Carbon131 for adding features until version v0.0.5
