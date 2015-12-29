@@ -195,15 +195,15 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public PACheck checkInventory(PACheck result, Arena arena, InventoryClickEvent event) {
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getInventory().getHolder()).getName());
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getWhoClicked()).getName());
         if (arena.equals(ap.getArena())) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.INVENTORY
                 )) {
                     event.setCancelled(true);
-                    ((Player) event.getInventory().getHolder()).closeInventory();
-                    arena.msg((Player) event.getInventory().getHolder(), Language.parse(arena, MSG.PLAYER_PREVENTED_INVENTORY));
+                    event.getWhoClicked().closeInventory();
+                    arena.msg((Player) event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_INVENTORY));
                     result.setError(this, "INVENTORY not allowed");
                 }
             }
