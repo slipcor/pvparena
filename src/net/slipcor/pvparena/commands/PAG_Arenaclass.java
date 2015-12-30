@@ -88,9 +88,10 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (error) {
-            oldSign.add((Player) sender);
-
-            arena.msg((Player) sender,
+            if (oldSign != null) {
+                oldSign.add((Player) sender);
+            }
+            arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_CLASS_FULL, aClass.getName()));
             return;
         }
