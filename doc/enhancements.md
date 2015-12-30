@@ -40,40 +40,40 @@ Hook into many different aspects of the game!
 
 Mod | Description
 ------------- | -------------
-AfterMatch | could also be called "Sudden Death"
-Announcements | announce events happening
-ArenaBoards | stats display
-ArenaMaps | never lose yourself ever again!
-AutoVote | automatism
-BanKick | secure your arenas!
-BattlefieldGuard | secure your battlefield
-BetterClasses | add potion effects to classes
-BetterGears | give team colored leather
-BetterFight | kill streaks and one-hit-kill items!
-BlockRestore | restore the battlefield
-ChestFiller | fill battlefield chests with customizable content!
-ColorTeams | color players!
-Duel | duel someone!
-EventActions | do stuff when stuff happens
-Factions | fix pvp not working
-FixInventoryLoss | prevent loss by gamemode / inventory check
-FlySpectate | have players spectating a fight in fly mode
-Items | spawn (random) items
-LateLounge | keep playing until enough ppl are joining
-PlayerFinder | Allow players to find others with a compass
-PowerUps | exactly that
-RealSpectate | spectate the game, CounterStrike style!
-RedstoneTriggers | add win/lose triggered by redstone
-RespawnRelay | add a relay for respawning players
-ScoreBoards | ScoreBoards!
-Skins | add custom skins to teams/classes
-SpecialJoin | join via buttons, levers, etc
-StartFreeze | freeze players at start
-TempPerms | add temporary perms
-Turrets | add turrets where players fire projectiles
-Vault | add economy
-Walls | define wall regions to simulate "The Walls"
-WorldEdit | backup/restore regions
+[AfterMatch](mods/aftermatch.md) | could also be called "Sudden Death"
+[Announcements](mods/announcements.md) | announce events happening
+[ArenaBoards](mods/arenaboards.md) | stats display
+[ArenaMaps](mods/arenamaps.md) | never lose yourself ever again!
+[AutoVote](mods/autovote.md) | automatism
+[BanKick](mods/bankick.md) | secure your arenas!
+[BattlefieldGuard](mods/battlefieldguard.md) | secure your battlefield
+[BetterClasses](mods/betterclasses.md) | add potion effects to classes
+[BetterGears](mods/bettergears.md) | give team colored leather
+[BetterFight](mods/betterfight.md) | kill streaks and one-hit-kill items!
+[BlockRestore](mods/blockrestore.md) | restore the battlefield
+[ChestFiller](mods/chestfiller.md) | fill battlefield chests with customizable content!
+[ColorTeams](mods/colorteams.md) | color players!
+[Duel](mods/duel.md) | duel someone!
+[EventActions](mods/eventactions.md) | do stuff when stuff happens
+[Factions](mods/factions.md) | fix pvp not working
+[FixInventoryLoss](mods/fixinventoryloss.md) | prevent loss by gamemode / inventory check
+[FlySpectate](mods/flyspectate.md) | have players spectating a fight in fly mode
+[Items](mods/items.md) | spawn (random) items
+[LateLounge](mods/latelounge.md) | keep playing until enough ppl are joining
+[PlayerFinder](mods/playerfinder.md) | Allow players to find others with a compass
+[PowerUps](mods/powerups.md) | exactly that
+[RealSpectate](mods/realspectate.md) | spectate the game, CounterStrike style!
+[RedstoneTriggers](mods/redstonetriggers.md) | add win/lose triggered by redstone
+[RespawnRelay](mods/respawnrelay.md) | add a relay for respawning players
+[ScoreBoards](mods/scoreboards.md) | ScoreBoards!
+[Skins](mods/skins.md) | add custom skins to teams/classes
+[SpecialJoin](mods/specialjoin.md) | join via buttons, levers, etc
+[StartFreeze](mods/startfreeze.md) | freeze players at start
+[TempPerms](mods/tempperms.md) | add temporary perms
+[Turrets](mods/turrets.md) | add turrets where players fire projectiles
+[Vault](mods/vault.md) | add economy
+[Walls](mods/walls.md) | define wall regions to simulate "The Walls"
+[WorldEdit](mods/worldedit.md) | backup/restore regions
 
 ### PVP Arena Region Shapes
 
