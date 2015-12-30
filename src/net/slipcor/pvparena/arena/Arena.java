@@ -1324,6 +1324,15 @@ public class Arena {
 
         PlayerState.removeEffects(player);
 
+        if (aPlayer.getNextArenaClass() != null) {
+            InventoryManager.clearInventory(aPlayer.get());
+            if (aPlayer.getArenaClass() != null) {
+                ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
+            }
+            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
+            aPlayer.setNextArenaClass(null);
+        }
+
         ArenaModuleManager.parseRespawn(this, player, team, cause, damager);
 
         player.setFireTicks(0);
@@ -1592,15 +1601,6 @@ public class Arena {
         if (loc == null) {
             new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
             return;
-        }
-
-        if (aPlayer.getNextArenaClass() != null) {
-            InventoryManager.clearInventory(aPlayer.get());
-            if (aPlayer.getArenaClass() != null) {
-                ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
-            }
-            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
-            aPlayer.setNextArenaClass(null);
         }
 
         aPlayer.setTelePass(true);
