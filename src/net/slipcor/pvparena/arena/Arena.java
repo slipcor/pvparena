@@ -1577,6 +1577,7 @@ public class Arena {
         ArenaModuleManager.tpPlayerToCoordName(this, player, place);
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
         if ("spectator".equals(place)) {
             if (getFighters().contains(aPlayer)) {
                 aPlayer.setStatus(Status.LOST);
@@ -1591,6 +1592,15 @@ public class Arena {
         if (loc == null) {
             new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
             return;
+        }
+
+        if (aPlayer.getNextArenaClass() != null) {
+            InventoryManager.clearInventory(aPlayer.get());
+            if (aPlayer.getArenaClass() != null) {
+                ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
+            }
+            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
+            aPlayer.setNextArenaClass(null);
         }
 
         aPlayer.setTelePass(true);

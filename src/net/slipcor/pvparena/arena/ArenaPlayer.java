@@ -50,6 +50,7 @@ public class ArenaPlayer {
 
     private Arena arena;
     private ArenaClass aClass;
+    private ArenaClass naClass;
     private PlayerState state;
     private PALocation location;
     private Status status = Status.NULL;
@@ -494,6 +495,9 @@ public class ArenaPlayer {
     public ArenaClass getArenaClass() {
         return aClass;
     }
+    public ArenaClass getNextArenaClass() {
+        return naClass;
+    }
 
     public ArenaTeam getArenaTeam() {
         if (arena == null) {
@@ -700,6 +704,7 @@ public class ArenaPlayer {
         // location = null;
 
         setStatus(Status.NULL);
+        naClass = null;
 
         if (arena != null) {
             final ArenaTeam team = getArenaTeam();
@@ -752,6 +757,10 @@ public class ArenaPlayer {
         PVPArena.instance.getLogger().warning(
                 "[PA-debug] failed to set unknown class " + className + " to player "
                         + name);
+    }
+
+    public void setNextArenaClass(ArenaClass aClass) {
+        this.naClass = aClass;
     }
 
     public void setIgnoreAnnouncements(final boolean value) {

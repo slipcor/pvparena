@@ -96,8 +96,6 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             return;
         }
 
-        aPlayer.setArenaClass(aClass);
-
         if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSWITCH_AFTER_RESPAWN) || !arena.isFightInProgress()) {
             InventoryManager.clearInventory(aPlayer.get());
             if (aPlayer.getArenaClass() != null) {
@@ -105,8 +103,10 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
                 sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
             }
+            aPlayer.setArenaClass(aClass);
         } else if (aPlayer.getArenaClass() != null) {
-            sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+            sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED_RESPAWN, aClass.getName()));
+            aPlayer.setNextArenaClass(aClass);
         }
     }
 
