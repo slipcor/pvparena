@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.13 - hide the not-really stat type NULL (player name)
 * v1.3.1.12 - fix github issue #95 by adding a null check
 * v1.3.1.11 - clarify language for RespawnRelay and fix a little Exception in the Time goal
 * v1.3.1.10 - address github issue #88 - properly keep players as DEAD when being relayed
