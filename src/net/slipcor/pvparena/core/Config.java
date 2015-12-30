@@ -118,6 +118,7 @@ public class Config {
         PLAYER_FEEDFORKILL("player.hungerforkill", 0, null),
         PLAYER_FOODLEVEL("player.foodLevel", 20, null),
         PLAYER_HEALTH("player.health", -1, null),
+        PLAYER_HEALFORKILL("player.healforkill", false, null),
         PLAYER_HUNGER("player.hunger", true, null),
         PLAYER_MAYCHANGEARMOR("player.mayChangeArmor", true, null),
         PLAYER_MAXHEALTH("player.maxhealth", -1, null),

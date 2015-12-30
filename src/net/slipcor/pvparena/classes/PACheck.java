@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.arena.PlayerState;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -472,6 +473,9 @@ public class PACheck {
                     player.getKiller().getFoodLevel()
                             + arena.getArenaConfig().getInt(
                             CFG.PLAYER_FEEDFORKILL));
+            if (arena.getArenaConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
+                PlayerState.playersetHealth(player.getKiller(), (int) player.getMaxHealth());
+            }
         }
 
         if (commit == null) {

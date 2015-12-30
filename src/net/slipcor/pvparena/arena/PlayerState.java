@@ -195,7 +195,7 @@ public final class PlayerState {
      * @param player the player to set
      * @param value  the health value
      */
-    static void playersetHealth(final Player player, final int value) {
+    public static void playersetHealth(final Player player, final int value) {
         debug.i("setting health to " + value + "/20", player);
         if (Bukkit.getServer().getPluginManager().getPlugin("Heroes") == null) {
             player.setHealth(value);
