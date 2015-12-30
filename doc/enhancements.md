@@ -81,6 +81,6 @@ Create region shapes to customize your arena! Default: COBOID!
 
 Shape| Description
 ------------- | -------------
-CUBOID | a standard region that all should know
-CYLINDRIC | a standing can/barrel region
-SPHERIC | a sphere/ball
+[CUBOID](shapes/cuboid.md) | a standard region that all should know
+[CYLINDRIC](shapes/cylindric.md) | a standing can/barrel region
+[SPHERIC](shapes/spheric.md) | a sphere/ball
