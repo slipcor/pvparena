@@ -258,6 +258,8 @@ public class GoalDomination extends ArenaGoal {
                         } else {
                             // unclaim
                             arena.getDebugger().i("      - not being unclaimed. do it!");
+                            ArenaTeam team = arena.getTeam(getFlagMap().get(loc));
+                            arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING, team.getColoredName() + ChatColor.YELLOW));
                             final DominationRunnable domRunner = new DominationRunnable(
                                     arena, false, loc,
                                     getFlagMap().get(loc), this);
@@ -750,7 +752,7 @@ public class GoalDomination extends ArenaGoal {
         }
 
         /**
-         * the run method, commit arena end
+         * the run method
          */
         @Override
         public void run() {
@@ -776,9 +778,7 @@ public class GoalDomination extends ArenaGoal {
                 }
             } else {
                 // unclaim
-                arena.getDebugger().i("unclaim");
-                arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING,
-                        team + ChatColor.YELLOW));
+                arena.getDebugger().i("unclaimed");
                 takeFlag(arena, loc, "");
                 Bukkit.getScheduler().cancelTask(runID);
                 domination.getRunnerMap().remove(loc);

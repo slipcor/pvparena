@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.16 - fix github issue #108 - contesting (unclaiming) too late
 * v1.3.1.15 - add github issue #100 - player.healforkill - true/false :)
 * v1.3.1.14 - use the SNAPSHOT distinction and address github issue #85
 * v1.3.1.13 - hide the not-really stat type NULL (player name)
