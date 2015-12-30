@@ -16,23 +16,23 @@ Create ways to win the game or lose the game!
 
 Goal | Description
 ------------- | -------------
-BlockDestroy | Destroy blocks (pre-installed)
-Domination | Dominate flag positions (pre-installed)
-Flags | Capture flags and bring 'em home (pre-installed)
-Food | Cook food and bring it home (pre-installed)
-Infect | Infect people to win / kill infected players (pre-installed)
-Liberation | Jail dead players, possibility to unjail! (pre-installed)
-PhysicalFlags | Capture flags physically and bring 'em home (pre-installed)
-Pillars | Capture pillars by clicking/destroying!
-PlayerDeathMatch | Player kills win (pre-installed)
-PlayerKillReward | Player get better gears when killing (pre-installed)
-Rescue | Rescue a trapped Entity
-PlayerLives | Player deaths lose (pre-installed)
-Sabotage | Ignite TNT (pre-installed)
-Tank | all vs one (pre-installed)
-TeamDeathMatch | Team kills win (pre-installed)
-TeamLives | Team deaths lose (pre-installed)
-Time | Time ends the arena (pre-installed)
+[BlockDestroy](goals/blockdestroy.md) | Destroy blocks (pre-installed)
+[Domination](goals/domination.md) | Dominate flag positions (pre-installed)
+[Flags](goals/flags.md) | Capture flags and bring 'em home (pre-installed)
+[Food](goals/food.md) | Cook food and bring it home (pre-installed)
+[Infect](goals/infect.md) | Infect people to win / kill infected players (pre-installed)
+[Liberation](goals/liberation.md) | Jail dead players, possibility to unjail! (pre-installed)
+[PhysicalFlags](goals/physicalflags.md) | Capture flags physically and bring 'em home (pre-installed)
+[Pillars](goals/pillars.md) | Capture pillars by clicking/destroying!
+[PlayerDeathMatch](goals/playerdeathmatch.md) | Player kills win (pre-installed)
+[PlayerKillReward](goals/playerkillreward.md) | Player get better gears when killing (pre-installed)
+[Rescue](goals/rescue.md) | Rescue a trapped Entity
+[PlayerLives](goals/playerlives.md) | Player deaths lose (pre-installed)
+[Sabotage](goals/sabotage.md) | Ignite TNT (pre-installed)
+[Tank](goals/tank.md) | all vs one (pre-installed)
+[TeamDeathMatch](goals/teamdeathmatch.md) | Team kills win (pre-installed)
+[TeamLives](goals/teamlives.md) | Team deaths lose (pre-installed)
+[Time](goals/time.md) | Time ends the arena (pre-installed)
 
 ### PVP Arena Mods
 
