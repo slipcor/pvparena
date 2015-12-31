@@ -436,6 +436,8 @@ public final class ArenaManager {
 
     public static List<String> getColoredShortcuts() {
         final Set<String> sorted = new TreeSet<String>(DEF_LISTS.keySet());
+        final Set<String> all = new TreeSet<String>();
+
 
         final List<String> result = new ArrayList<String>();
 
@@ -446,7 +448,17 @@ public final class ArenaManager {
             } else {
                 result.add("&f" + definition + "&r");
             }
+            all.add(definition);
         }
+
+        if (PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
+            for (Arena a : ArenaManager.getArenas()) {
+                if (!all.contains(a.getName())) {
+                    result.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + a.getName() + "&r");
+                }
+            }
+        }
+
         return result;
     }
 
