@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.25 - this time for real - we need to tell people they CAN decline :)
 * v1.3.1.24 - add final language for github issue #97
 * v1.3.1.23 - add config for github issue #86
 * v1.3.1.22 - release build

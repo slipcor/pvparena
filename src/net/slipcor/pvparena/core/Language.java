@@ -581,6 +581,7 @@ public final class Language {
 
         MODULE_DUEL_ACCEPTED("nulang.mod.duel.accepted", "%1% &eaccepted the challenge! The game is starting."),
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept&e."),
+        MODULE_DUEL_ANNOUNCE2("nulang.mod.duel.announce2", "&eCancel the duel with &r/pa %2% decline&e."),
         MODULE_DUEL_DECLINED_SENDER("nulang.mod.duel.declineds", "Your opponent did decline. The duel has been cancelled."),
         MODULE_DUEL_DECLINED_RECEIVER("nulang.mod.duel.declinedr", "You cancelled the duel!"),
         MODULE_DUEL_REQUESTED("nulang.mod.duel.requested", "You &echallenged &r%1%&e!"),
