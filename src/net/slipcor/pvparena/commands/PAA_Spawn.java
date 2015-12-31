@@ -134,7 +134,6 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
                 arena.msg(sender, Language.parse(arena, MSG.SPAWN_OFFSET, args[0],
                         String.format("%.1g%n", x)+"/"+String.format("%.1g%n", y)+"/"+String.format("%.1g%n", z)));
-                arena.spawnUnset(args[0]);
             }
         } else {
             displayHelp(sender);
