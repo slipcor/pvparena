@@ -153,6 +153,7 @@ public class Config {
         TP_EXIT("tp.exit", "old", null),
         TP_LOSE("tp.lose", "old", null),
         TP_WIN("tp.win", "old", null),
+        TP_OFFSETS("tp.offsets", new ArrayList<String>(), null),
 
         USES_CLASSSIGNSDISPLAY("uses.classSignsDisplay", false, null),
         USES_DEATHMESSAGES("uses.deathMessages", true, null),

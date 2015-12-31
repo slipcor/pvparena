@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.SpawnManager;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -93,6 +94,46 @@ public class PAA_Spawn extends AbstractArenaCommand {
                 arena.msg(sender, Language.parse(arena, MSG.SPAWN_NOTSET, args[0]));
             } else {
                 arena.msg(sender, Language.parse(arena, MSG.SPAWN_REMOVED, args[0]));
+                arena.spawnUnset(args[0]);
+            }
+        } else if ("offset".equalsIgnoreCase(args[1]) && args.length>4) {
+            // usage: /pa {arenaname} spawn [spawnname] offset X Y Z | offset a spawn
+            final PALocation loc = SpawnManager.getSpawnByExactName(arena, args[0]);
+            if (loc == null) {
+                arena.msg(sender, Language.parse(arena, MSG.SPAWN_UNKNOWN, args[0]));
+            } else {
+                if (arena.getOffset(args[0]) != null) {
+                    arena.removeOffset(args[0]);
+                }
+                double x = 0d;
+                double y = 0d;
+                double z = 0d;
+
+                try {
+                    x = Double.parseDouble(args[2]);
+                } catch (Exception e) {
+                    arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, args[2], "decimal"));
+                    return;
+                }
+
+                try {
+                    y = Double.parseDouble(args[3]);
+                } catch (Exception e) {
+                    arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, args[3], "decimal"));
+                    return;
+                }
+
+                try {
+                    z = Double.parseDouble(args[4]);
+                } catch (Exception e) {
+                    arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, args[4], "decimal"));
+                    return;
+                }
+
+                arena.setOffset(args[0], x, y, z);
+
+                arena.msg(sender, Language.parse(arena, MSG.SPAWN_OFFSET, args[0],
+                        String.format("%.1g%n", x)+"/"+String.format("%.1g%n", y)+"/"+String.format("%.1g%n", z)));
                 arena.spawnUnset(args[0]);
             }
         } else {

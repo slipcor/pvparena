@@ -248,6 +248,8 @@ public final class Help {
                 "/pa [arenaname] spawn [spawnname]",
                 "/pa [arenaname] spawn [spawnname] remove",
                 LINE,
+                "/pa [arenaname] spawn [spawnname] offset X Y Z",
+                LINE,
                 "Spawn names vary based on installed/active modules!"}),
         START("nulang.help.msg.start", new String[]{
                 "Force start an arena",
@@ -444,7 +446,7 @@ public final class Help {
         boolean override = false;
 
         final YamlConfiguration config = new YamlConfiguration();
-        final String version = "v0.9.9.9";
+        final String version = "v1.3.1.26";
         try {
             config.load(configFile);
             final String ver = config.getString("version", "0");

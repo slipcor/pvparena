@@ -382,6 +382,29 @@ public class Arena {
         return name;
     }
 
+    public Location getOffset(String spawnName) {
+        List<String> offsets = getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
+        for (String value : offsets) {
+            if (value != null && value.contains(":")) {
+                String[] split = value.split(":");
+                if (spawnName.equals(split[0])) {
+                    String[] vals = split[1].split(";");
+                    try {
+                        return new Location(
+                                Bukkit.getServer().getWorlds().get(0),
+                                Double.parseDouble(vals[0]),
+                                Double.parseDouble(vals[1]),
+                                Double.parseDouble(vals[2])
+                        );
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public String getOwner() {
         return owner;
     }
@@ -1000,6 +1023,24 @@ public class Arena {
         }
     }
 
+    public void removeOffset(final String spawnName) {
+        final List<String> offsets = getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
+        final List<String> removals = new ArrayList<String>();
+        for (String value : offsets) {
+            if (value != null && value.contains(":")) {
+                String[] split = value.split(":");
+                if (spawnName.equals(split[0])) {
+                    removals.add(value);
+                }
+            }
+        }
+        for (String rem : removals) {
+            offsets.remove(rem);
+        }
+        getArenaConfig().setManually(CFG.TP_OFFSETS.getNode(), offsets);
+        getArenaConfig().save();
+    }
+
     /**
      * remove a player from the arena
      *
@@ -1382,6 +1423,18 @@ public class Arena {
         cfg.save();
     }
 
+    public void setOffset(final String spawnName, final double x, final double y, final double z) {
+        final List<String> offsets = getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
+
+        offsets.add(spawnName + ':' +
+                String.format("%.1g%n", x)+ "/" +
+                String.format("%.1g%n", y)+ "/" +
+                String.format("%.1g%n", z));
+
+        getArenaConfig().setManually(CFG.TP_OFFSETS.getNode(), offsets);
+        getArenaConfig().save();
+    }
+
     public void setOwner(final String owner) {
         this.owner = owner;
     }
@@ -1603,8 +1656,13 @@ public class Arena {
             return;
         }
 
+        Location offset = this.getOffset(place);
+        if (offset == null) {
+            offset = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+        }
+
         aPlayer.setTelePass(true);
-        player.teleport(loc.toLocation());
+        player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         aPlayer.setTelePass(false);
 
