@@ -17,9 +17,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * <pre>PVP Arena JOIN Command class</pre>
@@ -46,14 +44,14 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (args.length < 1) {
-            List<String> classes = new ArrayList<String>();
+            Set<String> classes = new TreeSet<String>();
             for (ArenaClass ac : arena.getClasses()) {
                 if (ac.getName().equals("custom")) {
                     continue;
                 }
                 classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
             }
-            arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinList(classes, ", ")));
+            arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinSet(classes, ", ")));
             return;
         }
 

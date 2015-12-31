@@ -592,6 +592,7 @@ public final class Language {
         MODULE_DUEL_REQUEST_EXPIRED_SENDER("nulang.mod.duel.requestexpireds", "Your opponent did not accept the request in time. The duel has been cancelled."),
         MODULE_DUEL_REQUEST_EXPIRED_RECEIVER("nulang.mod.duel.requestexpiredr", "You did not accept the request in time. The duel has been cancelled."),
         MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
+        MODULE_DUEL_NODIRECTJOIN("nulang.mod.duel.nodirectjoin", "You may not join this arena directly! Use: &e/pa [arenaname] duel [playername]"),
 
         MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
         MODULE_FIXINVENTORYLOSS_INVENTORY("nulang.mod.fixinventorylos.invenory", "Empty your inventory before joining!"),

@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.39 - duel module language finish
 * v1.3.1.38 - finish off github issue #118
 * v1.3.1.37 - more shurtcut arena list fixes
 * v1.3.1.36 - try to fix the round arena status check
