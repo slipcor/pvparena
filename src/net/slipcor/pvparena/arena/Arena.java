@@ -1427,8 +1427,8 @@ public class Arena {
         final List<String> offsets = getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
 
         offsets.add(spawnName + ':' +
-                String.format("%.1g%n", x)+ "/" +
-                String.format("%.1g%n", y)+ "/" +
+                String.format("%.1g%n", x)+ ";" +
+                String.format("%.1g%n", y)+ ";" +
                 String.format("%.1g%n", z));
 
         getArenaConfig().setManually(CFG.TP_OFFSETS.getNode(), offsets);
