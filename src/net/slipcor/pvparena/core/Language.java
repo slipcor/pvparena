@@ -61,7 +61,7 @@ public final class Language {
         CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class: %1%"),
         CLASS_REMOVED("nulang.class.removed", "Class removed: %1%"),
         CLASS_SAVED("nulang.class.saved", "Class saved: %1%"),
-        CLASS_SELECTED("nulang.class.selected", "You have switched to the &e%1%&e class."),
+        CLASS_SELECTED("nulang.class.selected", "You have switched to the &e%1%&r class."),
         CLASS_SELECTED_RESPAWN("nulang.class.selectedrespawn", "You will switch to the &e%1%&f class on next respawn."),
 
         DEATHCAUSE_BLOCK_EXPLOSION("nulang.deathcause.BLOCK_EXPLOSION", "an explosion"),

@@ -48,6 +48,9 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         if (args.length < 1) {
             List<String> classes = new ArrayList<String>();
             for (ArenaClass ac : arena.getClasses()) {
+                if (ac.getName().equals("custom")) {
+                    continue;
+                }
                 classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
             }
             arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinList(classes, ", ")));
