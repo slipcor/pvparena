@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.18 - properly output unclaiming vs contesting flags in domination goal - language file consistency fixed
 * v1.3.1.17 - fix some language derps and move the delayed class change to where it makes more sense
 * v1.3.1.16 - fix github issue #108 - contesting (unclaiming) too late
 * v1.3.1.15 - add github issue #100 - player.healforkill - true/false :)

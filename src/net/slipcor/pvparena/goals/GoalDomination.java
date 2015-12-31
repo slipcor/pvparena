@@ -259,7 +259,7 @@ public class GoalDomination extends ArenaGoal {
                             // unclaim
                             arena.getDebugger().i("      - not being unclaimed. do it!");
                             ArenaTeam team = arena.getTeam(getFlagMap().get(loc));
-                            arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING, team.getColoredName() + ChatColor.YELLOW));
+                            arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_CONTESTING, team.getColoredName() + ChatColor.YELLOW));
                             final DominationRunnable domRunner = new DominationRunnable(
                                     arena, false, loc,
                                     getFlagMap().get(loc), this);
@@ -309,6 +309,8 @@ public class GoalDomination extends ArenaGoal {
                 }
                 arena.getDebugger().i("    - not yet being unclaimed, do it!");
                 // create an unclaim runnable
+                ArenaTeam team = arena.getTeam(getFlagMap().get(loc));
+                arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING, team.getColoredName() + ChatColor.YELLOW));
                 final DominationRunnable running = new DominationRunnable(arena,
                         false, loc, getFlagMap().get(loc), this);
                 final long interval = 20L * 10;

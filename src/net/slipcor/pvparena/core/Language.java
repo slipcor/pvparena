@@ -27,13 +27,13 @@ public final class Language {
 
     public enum MSG {
 
-        ARENA_CREATE_DONE("nulang.arena.create.done", "arena '%1%' created!"),
+        ARENA_CREATE_DONE("nulang.arena.create.done", "Arena '%1%' created!"),
         ARENA_DISABLE_DONE("nulang.arena.disable.done", "Arena disabled!"),
         ARENA_EDIT_DISABLED("nulang.arena.edit.disabled", "Disabled edit mode for arena: %1%"),
         ARENA_EDIT_ENABLED("nulang.arena.edit.enabled", "Enabled edit mode for arena: %1%"),
         ARENA_ENABLE_DONE("nulang.arena.enable.done", "Arena enabled!"),
         ARENA_LIST("nulang.arena.arenalist", "Arenas: &a%1%&r"),
-        ARENA_REGION_SHAPE_UNKNOWN("nulang.arena.regionshapeunknown", "Arena Shape '%1%' unknown. consult the forums: http://goo.gl/IfLOh"),
+        ARENA_REGION_SHAPE_UNKNOWN("nulang.arena.regionshapeunknown", "Arena Shape '%1%' unknown. Consult the forums: http://goo.gl/IfLOh"),
         ARENA_RELOAD_DONE("nulang.arena.reload.done", "Arena reloaded!"),
         ARENA_REMOVE_DONE("nulang.arena.remove.done", "Arena removed: &e%1%&r"),
         ARENA_SETUP_DISABLED("nulang.arena.setup.disabled", "Disabled setup mode for arena: %1%"),
@@ -57,11 +57,11 @@ public final class Language {
 
         CHECK_DONE("nulang.check.done", "Check done! No errors!"),
 
-        CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class %1%."),
+        CLASS_PREVIEW("nulang.class.preview", "You are now previewing the class: %1%"),
         CLASS_REMOVED("nulang.class.removed", "Class removed: %1%"),
         CLASS_SAVED("nulang.class.saved", "Class saved: %1%"),
-        CLASS_SELECTED("nulang.class.selected", "You have switched to &e%1%&e class."),
-        CLASS_SELECTED_RESPAWN("nulang.class.selectedrespawn", "You will switch to the&e%1%&f class on next respawn."),
+        CLASS_SELECTED("nulang.class.selected", "You have switched to the &e%1%&e class."),
+        CLASS_SELECTED_RESPAWN("nulang.class.selectedrespawn", "You will switch to the &e%1%&f class on next respawn."),
 
         DEATHCAUSE_BLOCK_EXPLOSION("nulang.deathcause.BLOCK_EXPLOSION", "an explosion"),
         DEATHCAUSE_CONTACT("nulang.deathcause.CONTACT", "a cactus"),
@@ -75,7 +75,7 @@ public final class Language {
         DEATHCAUSE_LIGHTNING("nulang.deathcause.LIGHTNING", "Thor"),
         DEATHCAUSE_MAGIC("nulang.deathcause.MAGIC", "Magical Powers"),
         DEATHCAUSE_POISON("nulang.deathcause.POISON", "Poison"),
-        DEATHCAUSE_PROJECTILE("nulang.deathcause.PROJECTILE", "something he didn't see coming"),
+        DEATHCAUSE_PROJECTILE("nulang.deathcause.PROJECTILE", "something they didn't see coming"),
         DEATHCAUSE_STARVATION("nulang.deathcause.STARVATION", "hunger"),
         DEATHCAUSE_SUFFOCATION("nulang.deathcause.SUFFOCATION", "lack of air"),
         DEATHCAUSE_SUICIDE("nulang.deathcause.SUICIDE", "self"),
@@ -105,11 +105,11 @@ public final class Language {
         DUTY_FALSE("nulang.duty.false", "You are now off duty!"),
         DUTY_TRUE("nulang.duty.true", "You are now on duty!"),
 
-        ERROR_ARENA_ALREADY_PART_OF("nulang.error.arena.alreadyplaying", "You are already part of &a%1%&r"),
+        ERROR_ARENA_ALREADY_PART_OF("nulang.error.arena.alreadyplaying", "You are already part of &a%1%&r!"),
         ERROR_ARENA_EXISTS("nulang.error.arenaexists", "Arena already exists!"),
         ERROR_ARENA_NOTFOUND("nulang.error.arenanotexists", "Arena does not exist: %1%"),
         ERROR_ARENACONFIG("nulang.error.arenaconfig", "Error when loading arena config: %1%"),
-        ERROR_ARGUMENT_TYPE("nulang.error.argumenttype", "&cInvalid argument type:&r &e%1%&r is no proper &a%2%&r"),
+        ERROR_ARGUMENT_TYPE("nulang.error.argumenttype", "&cInvalid argument type:&r &e%1%&r is no proper &a%2%&r."),
         ERROR_ARGUMENT("nulang.error.argument", "&cArgument not recognized:&r %1% - possible arguments: &a%2%&r"),
         ERROR_AUTOSETUP_RUNNING("nulang.error.autosetup.running", "There is already an autosetup running! Player: %1%"),
         ERROR_BLACKLIST_DISALLOWED("nulang.error.blacklist.disallowed", "You may not %1% this! Blacklisted!"),
@@ -119,27 +119,25 @@ public final class Language {
         ERROR_CLASS_NOTENOUGHEXP("nulang.error.class.notenoughexp", "You don't have enough EXP to choose &a%1%&r!"),
         ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
         ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
-        ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command (%1%)"),
+        ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command: %1%"),
         ERROR_COMMAND_UNKNOWN("nulang.error.unknowncmd", "Unknown command"),
         ERROR_DISABLED("nulang.error.arenadisabled", "Arena disabled, please try again later!"),
-        ERROR_EDIT_MODE("nulang.error.editmode", "edit mode!"),
+        ERROR_EDIT_MODE("nulang.error.editmode", "Edit mode!"),
         ERROR_ERROR("nulang.error.error", "&cError: %1%"),
         ERROR_FIGHT_IN_PROGRESS("nulang.error.fightinprogress", "A fight is already in progress!"),
         ERROR_GOAL_LEGACY_UNKNOWN("nulang.error.goal.legacyunknown", "Legacy goal &a%1%&r unknown! You will want to add goals: &a/pa [arena] goal [goalname]"),
         ERROR_GOAL_NOTFOUND("nulang.error.goal.goalnotfound", "Goal &a%1%&r unknown. Valid goals: &a%2%&r"),
-        ERROR_INSTALL("nulang.error.install", "Error while installing &a%1%&r"),
+        ERROR_INSTALL("nulang.error.install", "Error while installing &a%1%&r!"),
         ERROR_INVALID_ARGUMENT_COUNT("nulang.error.invalid_argument_count", "&cInvalid number of arguments&r (%1% instead of %2%)!"),
         ERROR_INVALID_STATTYPE("nulang.error.invalidstattype", "Invalid statistics type: %1%"),
         ERROR_INVALID_VALUE("nulang.error.valuenotfound", "Invalid value: &a%1%&r!"),
         ERROR_INVENTORY_FULL("nulang.error.invfull", "Your inventory was full. You did not receive all rewards!"),
-        ERROR_JOIN_ARENA_FULL("nulang.error.arenafull", "arena is full!"),
-        //ERROR_JOIN_NOTSELECT("nulang.error.notselectteam", "You cannot select a team to join! /pa [arenaname]"),
-        //ERROR_JOIN_PLEASESELECT("nulang.error.selectteam", "You must select a team to join! /pa [arenaname] [team]"),
+        ERROR_JOIN_ARENA_FULL("nulang.error.arenafull", "Arena is full!"),
         ERROR_JOIN_RANGE("nulang.error.joinrange", "You are too far away to join this arena!"),
         ERROR_JOIN_REGION("nulang.error.notjoinregion", "You are not in the join region! Move there to join!"),
-        ERROR_JOIN_TEAM_FULL("nulang.error.teamfull", "team %1% is full!"),
+        ERROR_JOIN_TEAM_FULL("nulang.error.teamfull", "Team %1% is full!"),
         ERROR_JOIN_VEHICLE("nulang.error.insidevehicle", "You cannot join while on a vehicle!"),
-        ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type free. Use '[teamname]lounge'"),
+        ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type &efree&r. Use '[teamname]lounge'."),
         ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
         ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &r%1%"),
         ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
@@ -147,7 +145,7 @@ public final class Language {
         ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
         ERROR_NO_GOAL("nulang.error.nogoal", "You did not add a goal! &a/pa [arena] goal [goalname]"),
         ERROR_NO_SPAWNS("nulang.error.nospawns", "No spawns set!"),
-        ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r"),
+        ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r!"),
         ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join the arena!"),
 
         ERROR_NOPERM_X_ADMIN("nulang.nopermto.madmin", "administrate"),
@@ -213,14 +211,14 @@ public final class Language {
         ERROR_NOPERM_C_STATS("nulang.nopermto.cmds.stats", "use the stats command"),
         ERROR_NOPERM_C_VERSION("nulang.nopermto.cmds.version", "use the version command"),
 
-        ERROR_NOPERM("nulang.error.noperm", "&cNo permission to %1%"),
+        ERROR_NOPERM("nulang.error.noperm", "&cNo permission to %1%!"),
         ERROR_NOPLAYERFOUND("nulang.error.noplayerfound", "No player found!"),
         ERROR_NOT_IN_ARENA("nulang.error.notinarena", "You are not part of an arena!"),
         ERROR_NOT_NUMERIC("nulang.error.notnumeric", "&cArgument not numeric:&r %1%"),
         ERROR_NOT_THE_SAME_WORLD("nulang.error.notsameworld", "Not in the same world as the arena (%1%)!"),
         ERROR_NOTEAMFOUND("nulang.error.noteamfound", "No team found!"),
         ERROR_ONLY_PLAYERS("nulang.error.onlyplayers", "&cThis command can only be used by players!"),
-        ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &r%1%&c!"),
+        ERROR_PLAYER_NOTFOUND("nulang.error.playernotfound", "&cPlayer not found: &r%1%&c"),
         ERROR_POSITIVES("nulang.error.positives", "Positive values: &b%1%&r"),
         ERROR_POTIONEFFECTTYPE_NOTFOUND("nulang.error.potioneffecttypenotfound", "PotionEffectType not found: &e%1%&r"),
 
@@ -238,7 +236,7 @@ public final class Language {
         ERROR_REGION_NOT_BEING_CREATED("nulang.error.regionnotbeingcreated", "A region is not being created!"),
         ERROR_REGION_NOTFOUND("nulang.error.region.notfound", "Region &a%1%&r not found!"),
         ERROR_REGION_PROTECTION_NOTFOUND("nulang.error.region.protectionnotfound", "RegionProtection &a%1%&r unknown!"),
-        ERROR_REGION_REMOVE_NOTFOUND("nulang.error.regionnotremoved", "There is no region setup."),
+        ERROR_REGION_REMOVE_NOTFOUND("nulang.error.regionnotremoved", "There is no region set up."),
         ERROR_REGION_SELECT_2("nulang.error.select2", "Select two points before trying to save."),
         ERROR_REGION_TYPE_NOTFOUND("nulang.error.region.typenotfound", "RegionType &a%1%&r unknown! Valid values: %2%"),
         ERROR_REGION_YOUSELECT("nulang.error.region.youselect", "You are already selecting a region for an arena!"),
@@ -248,10 +246,10 @@ public final class Language {
 
         ERROR_SETUP_MODE("nulang.error.setupmode", "setup mode!"),
         ERROR_SPAWN_UNKNOWN("nulang.error.spawn.unknown", "Unknown spawn: &a%1%&r"),
-        ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type free. Use 'spawnX' where X is a digit or letter!"),
+        ERROR_SPAWNFREE("nulang.error.spawnfree", "Error! Arena is of type &efree&r. Use 'spawnX' where X is a digit or letter!"),
         ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
         ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
-        ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling &a%1%&r"),
+        ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling: &a%1%&r"),
         ERROR_UNKNOWN_MODULE("nulang.error.unknownmodule", "Module not found: %1%"),
         ERROR_WHITELIST_DISALLOWED("nulang.error.whitelist.disallowed", "You may not %1% this! (not whitelisted)"),
         ERROR_WHITELIST_UNKNOWN_SUBCOMMAND("nulang.error.whitelist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
@@ -286,7 +284,7 @@ public final class Language {
         HELP_GAME("nulang.help.game", "&a%1% - help ingame"),
         HELP_INFO("nulang.help.info", "&9%1% - help getting information"),
 
-        IMPORT_DONE("nulang.import.done", "Successfully imported arena &e%1%&r!"),
+        IMPORT_DONE("nulang.import.done", "Successfully imported arena: &e%1%&r"),
 
         INFO_CLASSES("nulang.info.classes", "Classes: &a%1%&r"),
         INFO_GOAL_ACTIVE("nulang.info.goal_active", "Goal: &a%1%&r"),
@@ -316,7 +314,7 @@ public final class Language {
         LOG_PLUGIN_DISABLED("nulang.log.plugindisabled", "disabled (version %1%)"),
         LOG_PLUGIN_ENABLED("nulang.log.pluginenabled", "enabled (version %1%)"),
         LOG_TRACKER_DISABLED("nulang.log.trickerdisabled", "Plugin tracking disabled. See you soon?"),
-        LOG_TRACKER_ENABLED("nulang.log.trackingenabled", "Plugin tracking enabled. Set tracker: false inside the main config to disable."),
+        LOG_TRACKER_ENABLED("nulang.log.trackingenabled", "Plugin tracking enabled. Set 'tracker: false' inside the main config to disable."),
         LOG_UPDATE_DISABLED("nulang.log.updatedisabled", "Updates deactivated. Please check dev.bukkit for updates."),
         LOG_UPDATE_ENABLED("nulang.log.updateenabled", "Checking for updates..."),
         LOG_WARNING("nulang.log.warning", "%1%"),
@@ -328,18 +326,18 @@ public final class Language {
 
         NO_PLAYER("nulang.noplayer", "No player in the PVP arena."),
 
-        NOTICE_AWARDED("nulang.notice.awarded", "You have been awarded %1%"),
+        NOTICE_AWARDED("nulang.notice.awarded", "You have been awarded %1%."),
         NOTICE_NO_DROP_ITEM("nulang.notice.nodropitem", "Not so fast! No cheating!"),
         NOTICE_NO_TELEPORT("nulang.notice.noteleport", "Please use '/pa leave' to exit the fight!"),
         NOTICE_NOTICE("nulang.notice.notice", "Notice: %1%"),
-        NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%"),
-        NOTICE_REMOVE("nulang.notice.remove", "&cThis will permanently remove the arena &a%1%&c. Are you sure? Then commit the command again!&r To disable this message, see 'safeadmin' in your config.yml"),
+        NOTICE_PLAYERAWARDED("nulang.notice.playerawarded", "%1% has been awarded %2%."),
+        NOTICE_REMOVE("nulang.notice.remove", "&cThis will permanently remove the arena &a%1%&c. Are you sure? Then commit the command again!&r To disable this message, see 'safeadmin' in your config.yml!"),
         NOTICE_WAITING_EQUAL("nulang.notice.waitingequal", "Waiting for the teams to have an equal player number!"),
         NOTICE_WAITING_FOR_ARENA("nulang.notice.waitingforarena", "Waiting for a running arena to finish!"),
         NOTICE_WELCOME_SPECTATOR("nulang.notice.welcomespec", "Welcome to the spectator's area!"),
         NOTICE_GAME_LOOT("nulang.notice.gameloot", "Here is your game loot!"),
         //TODO
-        NOTICE_WELCOME_SPECTATOR2("nulang.notice.welcomespec2", "/pa bet [name] [amount] to bet on team or player"),
+        NOTICE_WELCOME_SPECTATOR2("nulang.notice.welcomespec2", "/pa bet [name] [amount] to bet on team or player."),
         NOTICE_YOU_DEATH("nulang.notice.youdeath", "You entered a DEATH region. Goodbye!"),
         NOTICE_YOU_ESCAPED("nulang.notice.youescaped", "You escaped the battlefield. Goodbye!"),
         NOTICE_YOU_LEFT("nulang.notice.youleft", "You left the arena!"),
@@ -357,7 +355,7 @@ public final class Language {
         PLAYER_PREVENTED_INVENTORY("nulang.player.prevented.inventory", "&cYou may not access this!"),
         PLAYER_PREVENTED_CRAFT("nulang.player.prevented.craft", "&cYou may not craft!"),
 
-        PLAYERS_NOTREADY("nulang.notreadyplayers", "Players not ready"),
+        PLAYERS_NOTREADY("nulang.notreadyplayers", "Players not ready:"),
 
         PLAYERS("nulang.players", "Players"),
 
@@ -374,7 +372,7 @@ public final class Language {
         REGION_RADIUS("nulang.region.radius", "Region radius set to: &a%1%&r"),
         REGION_REMOVED("nulang.region.removed", "Region removed: %1%"),
         REGION_SAVED("nulang.region.saved", "Region saved."),
-        REGION_SAVED_NOTICE("nulang.region.saved_notice", "&6You created a &oCUSTOM&6 region. It has no function yet! To turn it into a battlefield region, type &r/pvparena %1% !rt %2% BATTLE"),
+        REGION_SAVED_NOTICE("nulang.region.saved_notice", "&6You created a &oCUSTOM&6 region. It has no function yet! To turn it into a battlefield region, type &r/pvparena %1% !rt %2% BATTLE."),
         REGION_SELECT("nulang.region.select", "Select two points with your wand item, left click first and then right click!"),
         REGION_SETTING("nulang.region.setting", "Setting region enabled."),
         REGION_TYPE_SET("nulang.region.typeset", "Region Type set: &e%1%"),
@@ -395,12 +393,12 @@ public final class Language {
         ROUND_REMOVED("nulang.round.removed", "Removed goal from round: &e%1%"),
 
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
-        SET_HELP("nulang.set.help", "use /pa {arenaname} set [page] to get a node list"),
+        SET_HELP("nulang.set.help", "Use /pa {arenaname} set [page] to get a node list."),
         SET_UNKNOWN("nulang.set.unknown", "Unknown node: &e%1%&r!"),
 
         SETOWNER_DONE("nulang.setowner.done", "&a%1%&r is now owner of arena &a%2%&r!"),
 
-        SPAWN_FREELOUNGE("nulang.spawn.freelounge", "Lounge set"),
+        SPAWN_FREELOUNGE("nulang.spawn.freelounge", "Lounge set!"),
         SPAWN_TEAMLOUNGE("nulang.spawn.teamlounge", "Lounge set: %1%"),
         SPAWN_NOTSET("nulang.spawn.notset", "Spawn not set: &a%1%&r"),
         SPAWN_REMOVED("nulang.spawn.removed", "Spawn removed: &a%1%&r"),
@@ -430,8 +428,8 @@ public final class Language {
         TEAMS_SET("nulang.teams.set", "Team set: %1%"),
         TEAMS_REMOVE("nulang.teams.remove", "Team removed: %1%"),
 
-        TEMPLATE_LOAD_DONE("nulang.template.loaddone", "Template loaded from &a%1%&r"),
-        TEMPLATE_SAVE_DONE("nulang.template.savedone", "Template saved to &a%1%&r"),
+        TEMPLATE_LOAD_DONE("nulang.template.loaddone", "Template loaded from: &a%1%&r"),
+        TEMPLATE_SAVE_DONE("nulang.template.savedone", "Template saved to: &a%1%&r"),
 
         TIME_MINUTES("nulang.time.minutes", "minutes"),
         TIME_SECONDS("nulang.time.seconds", "seconds"),
@@ -444,12 +442,12 @@ public final class Language {
         TIMER_PVPACTIVATING("nulang.timer.pvpactivating", "PVP will be activated in %1%!"),
         TIMER_WALLS("nulang.timer.walls", "Walls will be removed in %1%!"),
 
-        TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type &r/pvparena [arena] !rt [region] BATTLE"),
+        TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type: &r/pvparena [arena] !rt [region] BATTLE"),
 
-        UNINSTALL_DONE("nulang.uninstall.done", "uninstalled: &a%1%&r"),
+        UNINSTALL_DONE("nulang.uninstall.done", "Uninstalled: &a%1%&r"),
 
         WHITELIST_ADDED("nulang.whitelist.added", "Added &a%1%&r to &e%2%&r whitelist!"),
-        WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelist cleared!"),
+        WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelists cleared!"),
         WHITELIST_CLEARED("nulang.whitelist.cleared", "Whitelist &e%1%&r cleared!"),
         WHITELIST_HELP("nulang.whitelist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]"),
         WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
@@ -463,6 +461,7 @@ public final class Language {
         GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
         GOAL_DOMINATION_CLAIMED("nulang.goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
         GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),
+        GOAL_DOMINATION_CONTESTING("nulang.goal.dom.contesting", "&eA flag claimed by Team %1% is being contested!"),
         GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "&eA flag claimed by Team %1% is being unclaimed!"),
         GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "&eA flag claimed by Team %1% is being unclaimed by Team %2%!"),
 
@@ -524,7 +523,7 @@ public final class Language {
         GOAL_PILLARS_MSG_CLAIMED("nulang.goal.pillars.msg.claimed", "[%1%] %2% claimed the pillar!"),
         GOAL_PILLARS_MSG_UNCLAIMED("nulang.goal.pillars.msg.unclaimed", "[%1%] %2% unclaimed the pillar!"),
 
-        GOAL_PILLARS_MSG_SCORE("nulang.goal.pillars.msg.score", "%1% scored %2% points"),
+        GOAL_PILLARS_MSG_SCORE("nulang.goal.pillars.msg.score", "%1% scored %2% points."),
 
 
         GOAL_RESCUE_BROUGHTHOME("nulang.goal.rescue.flaghomeleft", "%1% brought home the hostage of team %2%! Rescues remaining: %3%"),
@@ -547,7 +546,7 @@ public final class Language {
         MODULE_ARENABOARDS_CREATE("nulang.mod.arenaboards.createarenaboard", "create an ArenaBoard"),
         MODULE_ARENABOARDS_DESTROYED("nulang.mod.arenaboards.arenaboarddestroyed", "ArenaBoard destroyed!"),
         MODULE_ARENABOARDS_EXISTS("nulang.mod.arenaboards.boardexists", "ArenaBoard already exists!'"),
-        MODULE_ARENABOARDS_SORTINGBY("nulang.mod.arenaboards.sortingby", "ArenaBoard now sorted by %1%"),
+        MODULE_ARENABOARDS_SORTINGBY("nulang.mod.arenaboards.sortingby", "ArenaBoard now sorted by: %1%"),
 
         MODULE_AUTOVOTE_ARENARUNNING("nulang.mod.autovote.arenarunning", "Arena running: %1%"),
         MODULE_AUTOVOTE_AUTOJOIN("nulang.mod.autovote.autojoin", "Arena auto join started!"),
@@ -560,19 +559,19 @@ public final class Language {
         MODULE_BANVOTE_NOTKICKED("nulang.banvote.lang.playernotkicked", "Player not kicked: %1%"),
         MODULE_BANVOTE_NOTONLINE("nulang.banvote.lang.playernotonline", "Player is not online: %1%"),
         MODULE_BANVOTE_UNBANNED("nulang.banvote.lang.playerunbanned", "Player unbanned: %1%"),
-        MODULE_BANVOTE_YOUBANNED("nulang.banvote.lang.youwerebanned", "You are banned from arena %1%"),
-        MODULE_BANVOTE_YOUKICKED("nulang.banvote.lang.youwerekicked", "You were kicked from arena %1%"),
-        MODULE_BANVOTE_YOUUNBANNED("nulang.banvote.lang.youwereunbanned", "You are unbanned from arena %1%"),
+        MODULE_BANVOTE_YOUBANNED("nulang.banvote.lang.youwerebanned", "You are banned from arena %1%!"),
+        MODULE_BANVOTE_YOUKICKED("nulang.banvote.lang.youwerekicked", "You were kicked from arena %1%!"),
+        MODULE_BANVOTE_YOUUNBANNED("nulang.banvote.lang.youwereunbanned", "You are unbanned from arena %1%!"),
 
         MODULE_BETTERCLASSES_ADD("nulang.betterclasses.add", "PotionEffect &e%2%&r added to ArenaClass &e%1%&r!"),
         MODULE_BETTERCLASSES_CLEAR("nulang.betterclasses.clear", "ArenaClass &e%1%&r cleared!"),
         MODULE_BETTERCLASSES_LISTHEAD("nulang.betterclasses.listhead", "--- Potion Effects for class &e%1%&r ---"),
         MODULE_BETTERCLASSES_REMOVE("nulang.betterclasses.remove", "PotionEffect &e%2%&r removed from ArenaClass &e%1%&r!"),
 
-        MODULE_BETTERGEARS_CLASSDONE("nulang.bettergears.classdone", "Class &e%1%&r now has Protection Level &a%2%"),
-        MODULE_BETTERGEARS_SHOWCLASS("nulang.bettergears.showclass", "Class &e%1%&r has Protection Level &a%2%"),
-        MODULE_BETTERGEARS_SHOWTEAM("nulang.bettergears.showteam", "Team %1% has Color %2%"),
-        MODULE_BETTERGEARS_TEAMDONE("nulang.bettergears.teamdone", "Team %1% now has Color %2%"),
+        MODULE_BETTERGEARS_CLASSDONE("nulang.bettergears.classdone", "Class &e%1%&r now has Protection Level &a%2%."),
+        MODULE_BETTERGEARS_SHOWCLASS("nulang.bettergears.showclass", "Class &e%1%&r has Protection Level &a%2%."),
+        MODULE_BETTERGEARS_SHOWTEAM("nulang.bettergears.showteam", "Team %1% has Color %2%."),
+        MODULE_BETTERGEARS_TEAMDONE("nulang.bettergears.teamdone", "Team %1% now has Color %2%."),
 
         MODULE_BLOCKRESTORE_CLEARINVDONE("nulang.blockrestore.clearinvdone", "Inventories cleared! Expect lag on next arena start!"),
 
@@ -588,8 +587,8 @@ public final class Language {
         MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
         MODULE_FIXINVENTORYLOSS_INVENTORY("nulang.mod.fixinventorylos.invenory", "Empty your inventory before joining!"),
 
-        MODULE_LATELOUNGE_ANNOUNCE("nulang.mod.latelounge.llannounce", "Arena %1% is starting! Player %2% wants to start. Join with /pa %1%"),
-        MODULE_LATELOUNGE_POSITION("nulang.mod.latelounge.llposition", "You are on queue position %1%!"),
+        MODULE_LATELOUNGE_ANNOUNCE("nulang.mod.latelounge.llannounce", "Arena %1% is starting! Player %2% wants to start. Join with: /pa %1%"),
+        MODULE_LATELOUNGE_POSITION("nulang.mod.latelounge.llposition", "You are in queue. Position: #%1%"),
         MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
         MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
 
@@ -597,7 +596,7 @@ public final class Language {
         MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player!"),
 
         MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
-        MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp %2%!"),
+        MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp: %2%"),
         MODULE_POWERUPS_SERVER("nulang.mod.powerups.puserver", "PowerUp deployed!"),
 
         MODULE_RESPAWNRELAY_RESPAWNING("nulang.mod.respawnrelay.respawning", "Respawning in %1%!"),
@@ -605,8 +604,8 @@ public final class Language {
         MODULE_SKINS_DISGUISECRAFT("nulang.mod.skins.dc", "Hooking into DisguiseCraft!"),
         MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
         MODULE_SKINS_NOMOD("nulang.mod.skins.nomod", "No disguise plugin found, Skins module is inactive!"),
-        MODULE_SKINS_SHOWCLASS("nulang.mod.skins.showclass", "Class &e%1%&r will be disguised to &a%2%"),
-        MODULE_SKINS_SHOWTEAM("nulang.mod.skins.showteam", "Team %1% will be disguised to %2%"),
+        MODULE_SKINS_SHOWCLASS("nulang.mod.skins.showclass", "Class &e%1%&r will be disguised to: &a%2%"),
+        MODULE_SKINS_SHOWTEAM("nulang.mod.skins.showteam", "Team %1% will be disguised to: %2%"),
 
         MODULE_SPECIALJOIN_DONE("nulang.mod.specialjoin.done", "Join block set here - %1%"),
         MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),
@@ -616,8 +615,8 @@ public final class Language {
 
         MODULE_TEMPPERMS_NOPERMS("nulang.mod.tempperms.noperms", "Permissions plugin not found, defaulting to OP."),
         MODULE_TEMPPERMS_HEAD("nulang.mod.tempperms.head", "Temporary permissions of &e%1%&r:"),
-        MODULE_TEMPPERMS_ADDED("nulang.mod.tempperms.added", "Temporary permissions &e%1%&r added to &a%2%&r"),
-        MODULE_TEMPPERMS_REMOVED("nulang.mod.tempperms.removed", "Temporary permissions &e%1%&r removed from &a%2%&r"),
+        MODULE_TEMPPERMS_ADDED("nulang.mod.tempperms.added", "Temporary permissions &e%1%&r added to &a%2%&r."),
+        MODULE_TEMPPERMS_REMOVED("nulang.mod.tempperms.removed", "Temporary permissions &e%1%&r removed from &a%2%&r."),
 
         MODULE_VAULT_ON("nulang.mod.vault.on", "<3 eConomy"),
         MODULE_VAULT_OFF("nulang.mod.vault.off", "</3 eConomy"),
@@ -628,7 +627,7 @@ public final class Language {
         MODULE_VAULT_WRONGAMOUNT("nulang.mod.vault.wrongamount", "Bet amount must be between %1% and %2%!"),
         MODULE_VAULT_INVALIDAMOUNT("nulang.mod.vault.invalidamount", "Invalid amount: %1%"),
         MODULE_VAULT_BETPLACED("nulang.mod.vault.betplaced", "Your bet on %1% has been placed."),
-        MODULE_VAULT_YOUWON("nulang.mod.vault.youwon", "You won %1%"),
+        MODULE_VAULT_YOUWON("nulang.mod.vault.youwon", "You won %1%!"),
         MODULE_VAULT_JOINPAY("nulang.mod.vault.joinpay", "You paid %1% to join the arena!"),
         MODULE_VAULT_KILLREWARD("nulang.mod.vault.killreward", "You received %1% for killing %2%!"),
         MODULE_VAULT_REFUNDING("nulang.mod.vault.refunding", "Refunding %1%!"),
@@ -638,7 +637,7 @@ public final class Language {
         MODULE_WORLDEDIT_SAVED("nulang.mod.worldedit.saved", "Region saved: &e%1%"),
 
         MODULE_WORLDGUARD_NOTFOUND("nulang.mod.worldguard.created", "Region not found: &e%1%"),
-        MODULE_WORLDGUARD_SAVED("nulang.mod.worldguard.saved", "Region &e%2%&f saved to &e%1%"),
+        MODULE_WORLDGUARD_SAVED("nulang.mod.worldguard.saved", "Region &e%2%&f saved to &e%1%."),
 
         Z("version", "0.9.0.0");
 
