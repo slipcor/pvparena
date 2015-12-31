@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.22 - release build
 * v1.3.1.21 - and more language nodes
 * v1.3.1.20 - prepare Dual fixes and commit some language/message fixes
 * v1.3.1.19 - fix another Exception in the time goal

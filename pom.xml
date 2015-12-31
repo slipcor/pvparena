@@ -4,7 +4,7 @@
 	
 	<groupId>net.slipcor</groupId>
 	<artifactId>pvparena</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<name>PVP Arena</name>
 
 	<repositories>
