@@ -89,7 +89,11 @@ public class GoalTime extends ArenaGoal {
 
         }
         if (arena.getFighters().size() < 2) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+            try {
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+            } catch (IllegalPluginAccessException ex) {
+
+            }
             return;
         }
         if (arena.isFreeForAll()) {
