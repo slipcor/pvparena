@@ -483,6 +483,10 @@ public final class ArenaManager {
         if (!DEF_LISTS.containsKey(string)) {
             for (final String temp : DEF_LISTS.keySet()) {
                 if (temp.toLowerCase().contains(string.toLowerCase())) {
+                    Arena a = ArenaManager.getArenaByName(temp);
+                    if (a.isLocked()) {
+                        continue;
+                    }
                     DEBUG.i("found " + temp);
                     string = temp;
                     break;
@@ -540,6 +544,10 @@ public final class ArenaManager {
                 if (found) {
                     // we just found it, this is the one!
                     final Arena nextArena = ARENAS.get(arenaName.toLowerCase());
+
+                    if (nextArena.isLocked()) {
+                        continue;
+                    }
 
                     DEF_VALUES.put(string, nextArena);
                     return;
