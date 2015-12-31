@@ -110,42 +110,45 @@ public class PAA_Install extends AbstractGlobalCommand {
         Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "coutdated" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "alatest version" + ChatColor.COLOR_CHAR + "r]");
         if (sub == null || "goals".equalsIgnoreCase(sub)) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c--- Arena Goals ----> /goals");
-            final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
-                    false);
-            for (final String key : entries) {
-                final String latest = cfg.getString("goals." + key);
-                final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
-                final boolean installed = goal != null;
-                String version = null;
-                if (installed) {
-                    version = goal.version();
+            if (cfg.contains("goals")) {
+                final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
+                        false);
+                for (final String key : entries) {
+                    final String latest = cfg.getString("goals." + key);
+                    final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
+                    final boolean installed = goal != null;
+                    String version = null;
+                    if (installed) {
+                        version = goal.version();
+                    }
+                    Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
+                            + key
+                            + ChatColor.COLOR_CHAR + "r - "
+                            + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
+                            : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
                 }
-                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
-                        + key
-                        + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
         }
         if (sub == null || "mods".equalsIgnoreCase(sub)) {
             Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a--- Arena Mods ----> /mods");
-            final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
-                    false);
-            for (final String key : entries) {
-                final String latest = cfg.getString("mods." + key);
-                final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
-                final boolean installed = mod != null;
-                String version = null;
-                if (installed) {
-                    version = mod.version();
+            if (cfg.contains("mods")) {
+                final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
+                        false);
+                for (final String key : entries) {
+                    final String latest = cfg.getString("mods." + key);
+                    final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
+                    final boolean installed = mod != null;
+                    String version = null;
+                    if (installed) {
+                        version = mod.version();
+                    }
+                    Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
+                            + key
+                            + ChatColor.COLOR_CHAR + "r - "
+                            + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
+                            : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
                 }
-                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
-                        + key
-                        + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? latest.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + version + ChatColor.COLOR_CHAR + "f(" + latest + ')');
             }
-
         }
     }
 

@@ -9,12 +9,15 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +41,16 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             return;
         }
 
-        if (!argCountValid(sender, arena, args, new Integer[]{1})) {
+        if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
+            return;
+        }
+
+        if (args.length < 1) {
+            List<String> classes = new ArrayList<String>();
+            for (ArenaClass ac : arena.getClasses()) {
+                classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
+            }
+            arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinList(classes, ", ")));
             return;
         }
 

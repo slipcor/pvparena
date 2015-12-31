@@ -361,7 +361,9 @@ public final class Help {
                 LINE,
                 "shorthand command: -ac",
                 LINE,
-                "/pa arenaclass [classname]"}),
+                "/pa arenaclass [classname]",
+                LINE,
+                "/pa arenaclass - list classes"}),
         ARENALIST("nulang.help.msg.arenalist", new String[]{
                 "List available arenas",
                 LINE,
@@ -446,7 +448,7 @@ public final class Help {
         boolean override = false;
 
         final YamlConfiguration config = new YamlConfiguration();
-        final String version = "v1.3.1.26";
+        final String version = "v1.3.1.28";
         try {
             config.load(configFile);
             final String ver = config.getString("version", "0");
