@@ -461,9 +461,9 @@ public final class Language {
         GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
         GOAL_DOMINATION_CLAIMED("nulang.goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
         GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),
-        GOAL_DOMINATION_CONTESTING("nulang.goal.dom.contesting", "&eA flag claimed by Team %1% is being contested!"),
-        GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "&eA flag claimed by Team %1% is being unclaimed!"),
-        GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "&eA flag claimed by Team %1% is being unclaimed by Team %2%!"),
+        GOAL_DOMINATION_CONTESTING("nulang.goal.dom.contesting", "&eA flag claimed by team %1% is being contested!"),
+        GOAL_DOMINATION_UNCLAIMING("nulang.goal.dom.unclaiming", "&eA flag claimed by team %1% is being unclaimed!"),
+        GOAL_DOMINATION_UNCLAIMINGBY("nulang.goal.dom.unclaimingby", "&eA flag claimed by team %1% is being unclaimed by team %2%!"),
 
         GOAL_FLAGS_BROUGHTHOME("lang.flaghomeleft", "%1% brought home the flag of team %2%! Captures remaining: %3%"),
         GOAL_FLAGS_TOUCHHOME("lang.touchhomeleft", "%1% brought home the flag! Captures remaining: %2%"),
@@ -582,6 +582,7 @@ public final class Language {
         MODULE_DUEL_ACCEPTED("nulang.mod.duel.accepted", "%1% &eaccepted the challenge! The game is starting."),
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept."),
         MODULE_DUEL_REQUESTED("nulang.mod.duel.requested", "You &echallenged &r%1%&e!"),
+        MODULE_DUEL_REQUESTED_ALREADY("nulang.mod.duel.requestedalready", "You already have challenged someone!"),
         MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
 
         MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),

@@ -101,11 +101,13 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
             if (aPlayer.getArenaClass() != null) {
                 ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
-                sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
+                arena.msg(sender,
+                        Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
             }
             aPlayer.setArenaClass(aClass);
         } else if (aPlayer.getArenaClass() != null) {
-            sender.sendMessage(Language.parse(arena, MSG.CLASS_SELECTED_RESPAWN, aClass.getName()));
+            arena.msg(sender,
+                    Language.parse(arena, MSG.CLASS_SELECTED_RESPAWN, aClass.getName()));
             aPlayer.setNextArenaClass(aClass);
         }
     }
