@@ -583,6 +583,8 @@ public final class Language {
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept."),
         MODULE_DUEL_REQUESTED("nulang.mod.duel.requested", "You &echallenged &r%1%&e!"),
         MODULE_DUEL_REQUESTED_ALREADY("nulang.mod.duel.requestedalready", "You already have challenged someone!"),
+        MODULE_DUEL_REQUEST_EXPIRED_SENDER("nulang.mod.duel.requestexpireds", "Your opponent did not accept the request in time. The duel has been cancelled."),
+        MODULE_DUEL_REQUEST_EXPIRED_RECEIVER("nulang.mod.duel.requestexpiredr", "You did not accept the request in time. The duel has been cancelled."),
         MODULE_DUEL_STARTING("nulang.mod.duel.starting", "The duel begins!"),
 
         MODULE_FIXINVENTORYLOSS_GAMEMODE("nulang.mod.fixinventorylos.gamemode", "Enter survival gamemode before joining!"),
