@@ -479,7 +479,9 @@ public final class ArenaManager {
         }
 
         if (!DEF_LISTS.containsKey(string)) {
-            if (PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+            // not found1
+            if (PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
+                    !PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
                 DEBUG.i("out null");
                 return null;
             } else {

@@ -12,6 +12,7 @@ whitelist:
 - ungod
 use_shortcuts: false
 only_shortcuts: false
+allow_ungrouped: false
 consoleoffduty: false
 update:
   mode: both
