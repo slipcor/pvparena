@@ -300,6 +300,8 @@ public class Config {
         MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
         MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
 
+        MODULES_SCOREBOARDS_UPDATEINTERVAL("modules.scoreboards.updateinterval", 50, "ScoreBoards"),
+
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
         MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true, "SpecialJoin"),
