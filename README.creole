@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.33 - properly format and save spawn offsets
 * v1.3.1.32 - properly format and save spawn offsets
 * v1.3.1.31 - properly allow for 5 arguments of /pa spawn
 * v1.3.1.30 - fix github issues #115, #118

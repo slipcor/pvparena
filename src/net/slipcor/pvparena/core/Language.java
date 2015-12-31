@@ -402,7 +402,7 @@ public final class Language {
         SPAWN_FREELOUNGE("nulang.spawn.freelounge", "Lounge set!"),
         SPAWN_TEAMLOUNGE("nulang.spawn.teamlounge", "Lounge set: %1%"),
         SPAWN_NOTSET("nulang.spawn.notset", "Spawn not set: &a%1%&r"),
-        SPAWN_OFFSET("nulang.spawn.offset", "Spawn &a%1%&r set off by &a%2%&r."),
+        SPAWN_OFFSET("nulang.spawn.offset", "Spawn &a%1%&r set off by &a%2%&r blocks."),
         SPAWN_REMOVED("nulang.spawn.removed", "Spawn removed: &a%1%&r"),
         SPAWN_SET("nulang.spawn.set", "Spawn set: &a%1%&r"),
         SPAWN_SET_DONE("nulang.spawn.setdone", "Spawn setting done: &a%1%&r"),
