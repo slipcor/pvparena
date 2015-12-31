@@ -436,8 +436,20 @@ public final class ArenaManager {
 
     public static List<String> getColoredShortcuts() {
         final Set<String> sorted = new TreeSet<String>(DEF_LISTS.keySet());
-        final Set<String> all = new TreeSet<String>();
 
+
+        if (PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
+            nextArena: for (Arena a : ArenaManager.getArenas()) {
+                if (!DEF_VALUES.keySet().contains(a.getName())) {
+                    for (List<String> list : DEF_LISTS.values()) {
+                        if (list.contains(a.getName())) {
+                            continue nextArena;
+                        }
+                    }
+                    sorted.add(a.getName());
+                }
+            }
+        }
 
         final List<String> result = new ArrayList<String>();
 
@@ -446,15 +458,11 @@ public final class ArenaManager {
                 final Arena a = DEF_VALUES.get(definition);
                 result.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + definition + "&r");
             } else {
-                result.add("&f" + definition + "&r");
-            }
-            all.add(definition);
-        }
-
-        if (PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
-            for (Arena a : ArenaManager.getArenas()) {
-                if (!all.contains(a.getName())) {
-                    result.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + a.getName() + "&r");
+                try {
+                    final Arena a = ArenaManager.getArenaByName(definition);
+                    result.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + definition + "&r");
+                } catch (Exception e) {
+                    result.add("&f" + definition + "&r");
                 }
             }
         }
