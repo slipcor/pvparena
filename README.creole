@@ -45,6 +45,7 @@ A PVP experience enhancing plugin.
 
 === Changelog
 
+* v1.3.1.29 - address github issue #112
 * v1.3.1.28 - how about we don't delete the spawn after offsetting it? -.-
 * v1.3.1.26 - github issue #104 - EXPERIMENTAL!
 * v1.3.1.25 - this time for real - we need to tell people they CAN decline :)

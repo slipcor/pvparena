@@ -90,7 +90,11 @@ public class PACheck {
      */
     public void setError(final NCBLoadable loadable, final String error) {
         modName = loadable.getName();
-        DEBUG.i(modName + " is setting error to: " + error);
+        try {
+            Integer.parseInt(error);
+        } catch (Exception e) {
+            DEBUG.i(modName + " is setting error to: " + error);
+        }
         this.error = error;
         priority += 1000;
     }

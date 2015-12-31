@@ -83,7 +83,7 @@ public class EntityListener implements Listener {
                         new PABlockLocation(event.getLocation()),
                         RegionProtection.MOBS);
         if (arena == null) {
-            DEBUG.i("null arena");
+            DEBUG.i("not part of an arena");
             return; // no arena => out
         }
         arena.getDebugger().i("cancel CreatureSpawnEvent!");
