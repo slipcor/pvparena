@@ -262,7 +262,7 @@ public class PACheck {
 
     public static void handleJoin(final Arena arena,
                                   final CommandSender sender, final String[] args) {
-
+        arena.getDebugger().i("handleJoin!");
         if (PVPArena.arcade.isPlaying(sender.getName())) {
             final String name = PVPArena.arcade.getPlugin(sender.getName());
             arena.msg(sender, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, name));
@@ -274,7 +274,7 @@ public class PACheck {
         ArenaModule commModule = null;
 
         for (final ArenaModule mod : arena.getMods()) {
-            res = mod.checkJoin(sender, res, true);
+            res = mod.checkJoin(sender, res, false);
             if (res.priority > priority && priority >= 0) {
                 // success and higher priority
                 priority = res.priority;
