@@ -110,11 +110,11 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      *
      * @param sender       the player trying to join
      * @param res          the PACheck instance
-     * @param isSpectating true if the player wants to spectate
+     * @param joining true if the player wants to join (false => spectating)
      * @return true if the module will commit the join
      */
     public PACheck checkJoin(final CommandSender sender, final PACheck res,
-                             final boolean isSpectating) {
+                             final boolean joining) {
         return res;
     }
 
