@@ -41,7 +41,7 @@ public class ArenaWarmupRunnable extends ArenaRunnable {
 
     @Override
     protected void commit() {
-        arena.getDebugger().i("ArenaWarmupRunnable commiting", player.getName());
+        wArena.getDebugger().i("ArenaWarmupRunnable commiting", player.getName());
         player.setStatus(Status.WARM);
         if (spectator) {
             wArena.hasNotPlayed(player);
