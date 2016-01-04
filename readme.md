@@ -3,7 +3,7 @@
 
 **Enhance your server by adding a new dimension of PVP battles!**
 
-Create fully customisable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish. 
+Create fully customizable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish.
 This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.
 
 
@@ -37,6 +37,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Downloads
 
 - [bukkit.org](http://dev.bukkit.org/bukkit-plugins/pvparena/)
+- [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
 - [curse.com](https://www.spigotmc.org/resources/pvp-arena.16584/)
 
 ***
@@ -44,7 +45,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## How to install
 
 - Stop your server
-- Place in plugins folder
+- Place jar in plugins folder
 - Run a first time to create config folder
 - Configure if you wish to
 - Done !
@@ -57,28 +58,28 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - [Commands](doc/commands.md)
 - [Enhancements](doc/enhancements.md)
 - [Items](doc/items.md)
-- [Languages] (doc/languages.md)
-- [Permissions] (doc/permissions.md)
-- [Regions] (doc/regions.md)
+- [Languages](doc/languages.md)
+- [Permissions](doc/permissions.md)
+- [Regions](doc/regions.md)
 - [Configuration](doc/configuration.md)
 
 ***
 
 ## Video Tutorials
 
-- [Basic Setup] (http://www.youtube.com/watch?v=yyPJ6vlv09s)
-- [Region setup] (http://www.youtube.com/watch?v=LB4WKdTh4Jg)
-- [CTF] (http://www.youtube.com/watch?v=SuL78bce-f0)
-- [DeathMatch] (http://www.youtube.com/watch?v=KqBueDNbpD8)
-- [Food Block Destroy] (http://www.youtube.com/watch?v=ntloY1BTKHQ)
-- [FreeForAll] (http://www.youtube.com/watch?v=xBIxHoKMu98)
-- [Spleef] (http://www.youtube.com/watch?v=DRmLNXEAs_4)
-- [Pillar Domination] (http://www.youtube.com/watch?v=Xi7yNURxAjw)
-- [TeamDeathMatch] (http://www.youtube.com/watch?v=rQ1ljlc6SJM)
+- [Basic Setup](http://www.youtube.com/watch?v=yyPJ6vlv09s)
+- [Region setup](http://www.youtube.com/watch?v=LB4WKdTh4Jg)
+- [CTF](http://www.youtube.com/watch?v=SuL78bce-f0)
+- [DeathMatch](http://www.youtube.com/watch?v=KqBueDNbpD8)
+- [Food Block Destroy](http://www.youtube.com/watch?v=ntloY1BTKHQ)
+- [FreeForAll](http://www.youtube.com/watch?v=xBIxHoKMu98)
+- [Spleef](http://www.youtube.com/watch?v=DRmLNXEAs_4)
+- [Pillar Domination](http://www.youtube.com/watch?v=Xi7yNURxAjw)
+- [TeamDeathMatch](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
 
 Users tutorials :
 
-- [TeamDeathMatch] (http://www.youtube.com/watch?v=Jw6E8s2kiKw)
+- [TeamDeathMatch](http://www.youtube.com/watch?v=Jw6E8s2kiKw)
 
 ***
 
@@ -101,7 +102,7 @@ Users tutorials :
 ***
 
 ## Update Checker
-I use two ways of keeping track of versions. One is the plugin version, the Bukkit Update Checker utilizing the Curse API, 
+I use two ways of keeping track of versions. One is the plugin version, the Bukkit Update Checker utilizing the Curse API,
 the other setting is for module version checking, let me show you the important config.yml nodes:
 
     update:
@@ -127,14 +128,14 @@ the other setting is for module version checking, let me show you the important 
 
 ## Metrics
 
-To determine popularity and usage of PVP Arena, plugin installs are automatically tracked by the Metrics plugin tracking system. 
+To determine popularity and usage of PVP Arena, plugin installs are automatically tracked by the Metrics plugin tracking system.
 It does nothing if you do not have any configured arenas. If you don't want this tracking, edit plugins/PluginMetrics/config.yml and set opt-out to true.
 
 ![PVP-Arena Metrics](http://i.mcstats.org/pvparena/Global+Statistics.borderless.png)
 
 ### Phoning home
 
-To get a second opinion, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version. 
+To get a second opinion, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
 That's it! If you want to disable that, set "tracker" to false in the config!
 
 ***
