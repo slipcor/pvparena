@@ -10,6 +10,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
@@ -39,6 +40,8 @@ public class Updater extends Thread {
     private final File file;
 
     private final int id;
+
+    private final boolean curseforge;
 
     private enum UpdateMode {
         OFF, ANNOUNCE, DOWNLOAD, BOTH;
@@ -85,12 +88,42 @@ public class Updater extends Thread {
 
     public Updater(final Plugin plugin, final File file, final boolean files) {
         super();
+
+        String version = Bukkit.getServer().getBukkitVersion();
+
+        String[] chunks;
+        try {
+            chunks = version.split("-")[0].split("\\.");
+        } catch (Exception e) {
+            chunks = new String[]{"1","7","9"};
+        }
+        int a,b,c;
+        try {
+            a = Integer.parseInt(chunks[0]);
+        } catch (Exception e) {
+            a = 1;
+        }
+        try {
+            b = Integer.parseInt(chunks[1]);
+        } catch (Exception e) {
+            b = 7;
+        }
+        try {
+            c = Integer.parseInt(chunks[2]);
+        } catch (Exception e) {
+            c = 9;
+        }
+
+        this.curseforge = !version.toLowerCase().contains("spigot") && a<=1 && b <= 7 && c <= 10;
+
         this.plugin = plugin;
         this.file = file;
-        id = 41652;
+        id = curseforge?41652:16584;
         this.files = files;
 
-        mode = UpdateMode.getBySetting(plugin.getConfig().getString("update.mode", "both"));
+        UpdateMode tempMode = UpdateMode.getBySetting(plugin.getConfig().getString("update.mode", "both"));
+
+        mode = curseforge?tempMode:(tempMode == UpdateMode.OFF ? UpdateMode.OFF : UpdateMode.ANNOUNCE);
         if (mode == UpdateMode.OFF) {
             type = UpdateType.RELEASE;
         } else {
@@ -153,6 +186,7 @@ public class Updater extends Thread {
             updateDigit = (byte) pos;
             message(Bukkit.getConsoleSender());
         } catch (final Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -286,10 +320,15 @@ public class Updater extends Thread {
     @Override
     public void run() {
         if (mode == null || mode == UpdateMode.OFF) {
-            System.out.print("LOG_UPDATE_DISABLED");
+            System.out.print(Language.parse(Language.MSG.LOG_UPDATE_DISABLED));
             return;
         }
-        System.out.print("LOG_UPDATE_ENABLED");
+
+        System.out.print(Language.parse(Language.MSG.LOG_UPDATE_ENABLED));
+        if (!curseforge) {
+            runTest();
+            return;
+        }
         try {
             final URLConnection connection = new URL("https://api.curseforge.com/servermods/files?projectIds=" + id).openConnection();
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -373,6 +412,30 @@ public class Updater extends Thread {
                     }
                 }
             }
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void runTest() {
+        try {
+
+            final HttpURLConnection connection = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.getOutputStream().write(
+                    ("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource="+id).getBytes("UTF-8"));
+            String version = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+
+            pluginURL = "https://www.spigotmc.org/resources/pvp-arena.16584/";
+            zipURL = null;
+
+
+            vOnline = version.replace("v", "");
+            vThis = plugin.getDescription().getVersion().replace("v", "");
+
+            calculateVersions();
 
         } catch (final Exception e) {
             e.printStackTrace();
