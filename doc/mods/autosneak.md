@@ -1,8 +1,7 @@
-# Duel
-
+# AutoSneak
 ## Description
 
-This turns your arena into a 1:1 arena if possible, and if a player dares another player.
+This mod automatically sets players to sneak, in order for their nametags to be hidden all the time.
 
 ## Installation
 
@@ -10,7 +9,6 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 
 - `/pa install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
-
 ## Setup
 
 \-
@@ -21,10 +19,7 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 
 ## Commands
 
-- `/pa [arena] duel [player]` \- invite a player to a duel
-- `/pa [arena] accept` \- accept the duel
-- `/pa [arena] decline` \- decline the invitation
-
+\-
 ## Warnings
 
 \-

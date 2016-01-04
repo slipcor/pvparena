@@ -37,7 +37,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Downloads
 
 - [bukkit.org](http://dev.bukkit.org/bukkit-plugins/pvparena/)
-- [curse.com](http://www.curse.com/bukkit-plugins/minecraft/pvparena)
+- [curse.com](https://www.spigotmc.org/resources/pvp-arena.16584/)
 
 ***
 
@@ -53,14 +53,14 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Documentation
 
-- [creation](doc/creation.md)
-- [commands](doc/commands.md)
-- [enhancements](doc/enhancements.md)
-- [items](doc/items.md)
-- [languages] (doc/languages.md)
-- [permissions] (doc/permissions.md)
-- [regions] (doc/regions.md)
-- [configuration](doc/configuration.md)
+- [Creation](doc/creation.md)
+- [Commands](doc/commands.md)
+- [Enhancements](doc/enhancements.md)
+- [Items](doc/items.md)
+- [Languages] (doc/languages.md)
+- [Permissions] (doc/permissions.md)
+- [Regions] (doc/regions.md)
+- [Configuration](doc/configuration.md)
 
 ***
 
@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.0.552 - add CRAFT RegionProtection to prevent item crafting
+- v1.3.1.48 - update all the things in the doc
 - [read more](doc/changelog.md)
 
 ***
@@ -146,6 +146,7 @@ That's it! If you want to disable that, set "tracker" to false in the config!
 - Carbon131 for adding features until version v0.0.5
 - Drehverschluss for great support during the v0.6+v0.7 rewrite
 - NodinChan for helping me cleaning up my code and for his loader!
-- zyxep for the Jenkins
+- zyxep and Bradley Hilton for the Jenkins
+- Oruss7 for the documentation head start
 
 ***

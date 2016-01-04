@@ -1,6 +1,6 @@
 # Configuration File
 
-This is a default configuation file. All parameters can be change via commands in-game.
+This is a default configuation file. All parameters can be changed via in-game commands ([/pa set](commands/set.md)).
 
     configversion: 1.0.6.198
     chat:
@@ -8,6 +8,7 @@ This is a default configuation file. All parameters can be change via commands i
       defaultTeam: false
       enabled: true
       onlyPrivate: false
+      toGlobal: none
     cmds:
       defaultjoin: true
       whitelist: []
@@ -83,6 +84,7 @@ This is a default configuation file. All parameters can be change via commands i
       hungerforkill: 0
       foodLevel: 20
       health: -1
+      healforkill: false
       hunger: true
       mayChangeArmor: true
       maxhealth: -1

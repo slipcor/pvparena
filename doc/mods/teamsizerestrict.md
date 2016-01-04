@@ -1,8 +1,8 @@
-# Duel
+# TeamSizeRestrict
 
 ## Description
 
-This turns your arena into a 1:1 arena if possible, and if a player dares another player.
+This mod adds player limitations to specific team names.
 
 ## Installation
 
@@ -15,15 +15,13 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 
 \-
 
-## Config settings
+## Config settings ( config.yml !!! NOT per arena! )
 
-\-
+- modules.teamsize.[teamname] \- the maximum amount of people this team may have
 
 ## Commands
 
-- `/pa [arena] duel [player]` \- invite a player to a duel
-- `/pa [arena] accept` \- accept the duel
-- `/pa [arena] decline` \- decline the invitation
+\-
 
 ## Warnings
 

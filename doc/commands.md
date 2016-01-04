@@ -23,7 +23,7 @@ _(Permission: pvparena.admin OR ownership AND pvparena.create)_
 
 Command | Shorthand | Definition
 ------------- | ------------- | -------------
-[/pa blacklist \(or whitelist\)](commands/blacklist.md) | /pa !bl (!wl) | Manage arena blacklist or whitelists
+[/pa blacklist \(or whitelist\)](commands/blacklist.md) | /pa !bl (!wl) | Manage arena blacklists or whitelists
 [/pa check](commands/check.md) | /pa !ch | Checks an arena configuration
 [/pa class](commands/class.md) | /pa !cl | Manage arena classes
 [/pa create](commands/create.md) | /pa !c | Creates an arena

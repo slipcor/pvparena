@@ -1,7 +1,7 @@
 
 ## Basic creation
 
-_\[Required] (Optional) Arena name is optional but if you have more than one arena it is required._
+_\[Required] (Optional) Arena name is optional if you are inside an arena or in edit mode, but if you have more than one arena it is required._
 
 ### 1. Create the arena.
 
@@ -51,7 +51,7 @@ Add more classes with the [class command](commands/class.md)
 
 Place the signs in each lobby, and an iron block (configurable). The iron block is the default ready block, and you push it when your ready to start the match.
 
-:triangular_flag_on_post: Tip : You can set a default class using the parameter `AutoLoad`.
+:triangular_flag_on_post: Tip : You can set a default class using the config parameter `autoClass`.
 
 ### 5. Join the arena!
 
