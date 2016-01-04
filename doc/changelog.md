@@ -1,3 +1,4 @@
+- v1.3.1.49 - fix an NPE on server shutdown
 - v1.3.1.48 - update all the things in the doc
 - v1.3.1.46 - pull #106 - thanks a TON to @Oruss7 for putting together this load of information!
 - v1.3.1.45 - the final update for 1.7.9 - unless critical errors arrive. I need to get ready for 1.9

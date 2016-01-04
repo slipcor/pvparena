@@ -1109,7 +1109,9 @@ public class Arena {
                 // TODO enhance wannabe-smart exploit fix for people that
                 // spam join and leave the arena to make one of them win
                 final Player player = p.get();
-
+                if (player == null) {
+                    continue;
+                }
                 if (!force) {
                     p.addWins();
                 }

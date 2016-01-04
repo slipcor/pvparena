@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.1.48 - update all the things in the doc
+- v1.3.1.49 - fix an NPE on server shutdown
 - [read more](doc/changelog.md)
 
 ***
