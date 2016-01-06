@@ -1,3 +1,4 @@
+- v1.3.2.51 - update to Java 7
 - v1.3.1.49 - fix an NPE on server shutdown
 - v1.3.1.48 - update all the things in the doc
 - v1.3.1.46 - pull #106 - thanks a TON to @Oruss7 for putting together this load of information!

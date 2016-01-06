@@ -30,15 +30,14 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- Bukkit 1.7.9 (Compatible 1.8 craftbukkit & spigot)
+- CraftBukkit / Spigot 1.8.8
 
 ***
 
 ## Downloads
 
-- [bukkit.org](http://dev.bukkit.org/bukkit-plugins/pvparena/)
+- [bukkit.org - Bukkit 1.7.9](http://dev.bukkit.org/bukkit-plugins/pvparena/)
 - [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
-- [curse.com](https://www.spigotmc.org/resources/pvp-arena.16584/)
 
 ***
 
@@ -85,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.1.49 - fix an NPE on server shutdown
+- v1.3.2.52 - update to Java 7
 - [read more](doc/changelog.md)
 
 ***
