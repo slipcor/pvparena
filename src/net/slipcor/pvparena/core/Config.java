@@ -391,7 +391,7 @@ public class Config {
             module = source;
         }
 
-        private CFG(final String node, final List<String> value, String source) {
+        CFG(final String node, final List<String> value, String source) {
             this.node = node;
             this.value = value;
             this.type = "list";

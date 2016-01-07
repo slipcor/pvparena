@@ -75,7 +75,7 @@ public class ArenaPlayer {
      * </pre>
      */
     public enum Status {
-        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST;
+        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
     }
 
 
