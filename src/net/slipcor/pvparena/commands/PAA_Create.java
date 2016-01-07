@@ -100,7 +100,7 @@ public class PAA_Create extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"{String}", "teams"});
         result.define(new String[]{"{String}", "teamdm"});
         result.define(new String[]{"{String}", "dm"});

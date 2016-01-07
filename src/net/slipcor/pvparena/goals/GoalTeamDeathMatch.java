@@ -303,7 +303,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                 returned = InventoryManager.drop(respawnPlayer);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 

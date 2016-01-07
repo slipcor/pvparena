@@ -37,13 +37,13 @@ public final class StringParser {
     private StringParser() {
     }
 
-    public static final Set<String> positive = new HashSet<String>(Arrays.asList(
+    public static final Set<String> positive = new HashSet<>(Arrays.asList(
             "yes", "on", "true", "1"));
-    public static final Set<String> negative = new HashSet<String>(Arrays.asList(
+    public static final Set<String> negative = new HashSet<>(Arrays.asList(
             "no", "off", "false", "0"));
 
     private static String codeCharacters(final String string, final boolean forward) {
-        final Map<String, String> findReplace = new HashMap<String, String>();
+        final Map<String, String> findReplace = new HashMap<>();
         String result = string;
         if (forward) {
             findReplace.put(":", "<<colon>>");
@@ -198,7 +198,7 @@ public final class StringParser {
             }
         }
 
-        final Map<Enchantment, Integer> enchants = new HashMap<Enchantment, Integer>();
+        final Map<Enchantment, Integer> enchants = new HashMap<>();
         if (temp[0].contains("|")) {
             DEBUG.i("trying to add enchantment");
             final String[] temp2 = temp[0].split("\\|");
@@ -348,7 +348,7 @@ public final class StringParser {
                         final String[] outer = data.split(SAFE_BREAK);
                         bookMeta.setAuthor(codeCharacters(outer[0], false));
                         bookMeta.setTitle(codeCharacters(outer[1], false));
-                        final List<String> pages = new ArrayList<String>();
+                        final List<String> pages = new ArrayList<>();
                         final String[] inner = codeCharacters(outer[2], false).split(
                                 SAFE_PAGE_BREAK);
                         Collections.addAll(pages, inner);
@@ -398,7 +398,7 @@ public final class StringParser {
 
                         if (lore != null
                                 && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
-                            final List<String> lLore = new ArrayList<String>();
+                            final List<String> lLore = new ArrayList<>();
                             for (final String line : lore.split(SAFE_BREAK)) {
                                 lLore.add(codeCharacters(line, false));
                             }
@@ -417,7 +417,7 @@ public final class StringParser {
 
                 if (lore != null
                         && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
-                    final List<String> lLore = new ArrayList<String>();
+                    final List<String> lLore = new ArrayList<>();
                     for (final String line : lore.split(SAFE_BREAK)) {
                         lLore.add(codeCharacters(line, false));
                     }
@@ -470,7 +470,7 @@ public final class StringParser {
     }
 
     private static String[] trimAir(final String[] sArray) {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         for (final String item : sArray) {
             if ("AIR".equals(item)) {
                 continue;

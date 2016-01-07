@@ -25,7 +25,7 @@ public final class TabManager {
     private TabManager() {}
 
     public static List<String> getMatches(final CommandSender sender, final List<AbstractArenaCommand> arenaCommands, final List<AbstractGlobalCommand> globalCommands, String[] args) {
-        final Set<String> matches = new LinkedHashSet<String>();
+        final Set<String> matches = new LinkedHashSet<>();
         Arena arena = null;
         if (sender instanceof Player) {
             arena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
@@ -35,7 +35,7 @@ public final class TabManager {
             for (final Arena a : ArenaManager.getArenas()) {
                 matches.add(a.getName());
             }
-            return new ArrayList<String>(matches);
+            return new ArrayList<>(matches);
         }
 
         if (arena == null) {
@@ -55,7 +55,7 @@ public final class TabManager {
                 if (args.length < 2) {
                     // return the exact arena name
                     matches.add(arena.getName());
-                    return new ArrayList<String>(matches);
+                    return new ArrayList<>(matches);
                 } else {
                     // we have more args!
                     args = Arrays.copyOfRange(args, 1, args.length);
@@ -69,12 +69,12 @@ public final class TabManager {
                 if (args.length > 1) {
                     // the sender has already entered the next thing without a valid arena
                     sender.sendMessage(Language.parse(Language.MSG.ERROR_ARENA_NOTFOUND, args[0]));
-                    return new ArrayList<String>(matches);
+                    return new ArrayList<>(matches);
                 }
                 for (final Arena a : ArenaManager.getArenas()) {
                     matches.add(a.getName());
                 }
-                return new ArrayList<String>(matches);
+                return new ArrayList<>(matches);
             }
         }
 
@@ -86,27 +86,27 @@ public final class TabManager {
                 addCommandsStartingWithPrefix(matches, sender, null, PVPArena.instance.getAgm().getAllGoals(), args[0]);
                 addCommandsStartingWithPrefix(matches, sender, null, PVPArena.instance.getAmm().getAllMods(), args[0]);
             } else {
-                addCommandsStartingWithPrefix(matches, sender, arena, new ArrayList<ArenaGoal>(arena.getGoals()), args[0]);
-                addCommandsStartingWithPrefix(matches, sender, arena, new ArrayList<ArenaModule>(arena.getMods()), args[0]);
+                addCommandsStartingWithPrefix(matches, sender, arena, new ArrayList<>(arena.getGoals()), args[0]);
+                addCommandsStartingWithPrefix(matches, sender, arena, new ArrayList<>(arena.getMods()), args[0]);
             }
-            return new ArrayList<String>(matches);
+            return new ArrayList<>(matches);
         }
 
-        final List<CommandTree<String>> commands = new ArrayList<CommandTree<String>>();
+        final List<CommandTree<String>> commands = new ArrayList<>();
         addTreesMatchingValueInHandlerList(commands, arenaCommands, arena, args[0]);
         addTreesMatchingValueInHandlerList(commands, globalCommands, arena, args[0]);
         if (arena == null) {
             addTreesMatchingValueInHandlerList(commands, PVPArena.instance.getAgm().getAllGoals(), null, args[0]);
             addTreesMatchingValueInHandlerList(commands, PVPArena.instance.getAmm().getAllMods(), null, args[0]);
         } else {
-            addTreesMatchingValueInHandlerList(commands, new ArrayList<ArenaGoal>(arena.getGoals()), arena, args[0]);
-            addTreesMatchingValueInHandlerList(commands, new ArrayList<ArenaModule>(arena.getMods()), arena, args[0]);
+            addTreesMatchingValueInHandlerList(commands, new ArrayList<>(arena.getGoals()), arena, args[0]);
+            addTreesMatchingValueInHandlerList(commands, new ArrayList<>(arena.getMods()), arena, args[0]);
         }
 
         for (final CommandTree<String> tree : commands) {
             addMatchesFromCommandTree(matches, Arrays.copyOfRange(args, 1, args.length), tree);
         }
-        return new ArrayList<String>(matches);
+        return new ArrayList<>(matches);
     }
 
     /**
@@ -221,7 +221,7 @@ public final class TabManager {
      * @return a set of matching nodes
      */
     private static List<String> getKeyMatchesInsideDefinition(final String key, final String definition) {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
         if (key != null && !key.isEmpty() && definition.startsWith(key) || key != null && key.isEmpty() && !definition.startsWith("{")) {
             result.add(definition);
         }
@@ -252,7 +252,7 @@ public final class TabManager {
                 final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
                 addEnumMatchesToList(result, key, Arrays.asList(types));
             } else if ("{Boolean}".equals(definition)) {
-                final List<String> values = new ArrayList<String>();
+                final List<String> values = new ArrayList<>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
                 if (key != null && key.isEmpty()) {
@@ -317,7 +317,7 @@ public final class TabManager {
                 final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
                 return getOverrideKey(key, definition, Arrays.asList(types));
             } else if ("{Boolean}".equals(definition)) {
-                final List<String> values = new ArrayList<String>();
+                final List<String> values = new ArrayList<>();
                 values.addAll(StringParser.negative);
                 values.addAll(StringParser.positive);
                 for (final String val : values) {

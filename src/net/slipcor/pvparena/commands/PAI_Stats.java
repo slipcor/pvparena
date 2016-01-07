@@ -92,7 +92,7 @@ public class PAI_Stats extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         for (final type val : type.values()) {
             result.define(new String[]{val.name()});
         }

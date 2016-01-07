@@ -85,6 +85,6 @@ public class PAI_Version extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

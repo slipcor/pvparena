@@ -65,7 +65,7 @@ public class PAA_Debug extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         for (final Arena arena : ArenaManager.getArenas()) {
             result.define(new String[]{arena.getName()});
         }

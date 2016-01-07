@@ -155,7 +155,7 @@ public class GoalLiberation extends ArenaGoal {
         if (pTeam == null) {
             return res;
         }
-        final Set<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
+        final Set<ArenaTeam> setTeam = new HashSet<>();
 
         for (final ArenaTeam team : arena.getTeams()) {
             setTeam.add(team);
@@ -193,7 +193,7 @@ public class GoalLiberation extends ArenaGoal {
                 for (final ArenaPlayer jailedPlayer : pTeam.getTeamMembers()) {
                     if (jailedPlayer.getStatus() == Status.DEAD) {
                         SpawnManager.respawn(arena, jailedPlayer, null);
-                        final List<ItemStack> iList = new ArrayList<ItemStack>();
+                        final List<ItemStack> iList = new ArrayList<>();
 
                         for (final ItemStack item : jailedPlayer.getArenaClass().getItems()) {
                             iList.add(item.clone());
@@ -423,7 +423,7 @@ public class GoalLiberation extends ArenaGoal {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<ItemStack>();
+                    returned = new ArrayList<>();
                     returned.addAll(event.getDrops());
                 }
                 new InventoryRefillRunnable(arena, aPlayer.get(), returned);
@@ -445,7 +445,7 @@ public class GoalLiberation extends ArenaGoal {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<ItemStack>();
+                    returned = new ArrayList<>();
                     returned.addAll(event.getDrops());
                 }
 
@@ -497,7 +497,7 @@ public class GoalLiberation extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 
@@ -627,7 +627,7 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public void setPlayerLives(final int value) {
-        final Set<String> plrs = new HashSet<String>();
+        final Set<String> plrs = new HashSet<>();
 
         for (final String name : getLifeMap().keySet()) {
             plrs.add(name);

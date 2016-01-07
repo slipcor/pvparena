@@ -88,7 +88,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"{int}", "remove"});
         return result;
     }
@@ -319,7 +319,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
             // player has won!
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(), "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
-            final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
+            final Set<ArenaPlayer> plrs = new HashSet<>();
             for (final ArenaPlayer ap : arena.getFighters()) {
                 if (ap.getName().equals(killer.getName())) {
                     continue;
@@ -363,7 +363,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     private Map<Integer, ItemStack[]> getItemMap() {
         if (itemMap == null) {
-            itemMap = new HashMap<Integer, ItemStack[]>();
+            itemMap = new HashMap<>();
         }
         return itemMap;
     }

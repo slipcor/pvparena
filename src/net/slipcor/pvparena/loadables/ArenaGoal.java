@@ -79,7 +79,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 
     @Override
@@ -352,7 +352,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
      */
     protected Map<String, Integer> getLifeMap() {
         if (lifeMap == null) {
-            lifeMap = new HashMap<String, Integer>();
+            lifeMap = new HashMap<>();
         }
         return lifeMap;
     }

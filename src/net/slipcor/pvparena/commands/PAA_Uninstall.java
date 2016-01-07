@@ -173,7 +173,7 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {
             result.define(new String[]{string});
         }

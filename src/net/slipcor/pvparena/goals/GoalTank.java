@@ -48,7 +48,7 @@ public class GoalTank extends ArenaGoal {
         debug = new Debug(108);
     }
 
-    private static final Map<Arena, String> tanks = new HashMap<Arena, String>();
+    private static final Map<Arena, String> tanks = new HashMap<>();
 
     private EndRunnable endRunner;
 
@@ -251,7 +251,7 @@ public class GoalTank extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 
@@ -370,7 +370,7 @@ public class GoalTank extends ArenaGoal {
 
         arena.broadcast(Language.parse(arena, MSG.GOAL_TANK_TANKMODE, tank.getName()));
 
-        final Set<PASpawn> spawns = new HashSet<PASpawn>();
+        final Set<PASpawn> spawns = new HashSet<>();
         spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "tank"));
 
         int pos = spawns.size();
@@ -395,7 +395,7 @@ public class GoalTank extends ArenaGoal {
 
     @Override
     public void setPlayerLives(final int value) {
-        final Set<String> plrs = new HashSet<String>();
+        final Set<String> plrs = new HashSet<>();
 
         for (final String name : getLifeMap().keySet()) {
             plrs.add(name);

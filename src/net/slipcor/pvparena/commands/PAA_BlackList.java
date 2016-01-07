@@ -22,8 +22,8 @@ import java.util.*;
  */
 
 public class PAA_BlackList extends AbstractArenaCommand {
-    private static final Set<String> SUBCOMMANDS = new HashSet<String>();
-    private static final Set<String> SUBTYPES = new HashSet<String>();
+    private static final Set<String> SUBCOMMANDS = new HashSet<>();
+    private static final Set<String> SUBTYPES = new HashSet<>();
 
     static {
         SUBCOMMANDS.add("add");
@@ -126,7 +126,7 @@ public class PAA_BlackList extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"clear"});
         for (final String main : SUBTYPES) {
             result.define(new String[]{main, "clear"});

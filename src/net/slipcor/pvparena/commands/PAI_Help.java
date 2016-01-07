@@ -151,7 +151,7 @@ public class PAI_Help extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"admin"});
         result.define(new String[]{"setup"});
         result.define(new String[]{"custom"});

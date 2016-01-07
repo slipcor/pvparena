@@ -100,7 +100,7 @@ public class WarmupJoin extends ArenaModule {
 
     private Set<ArenaPlayer> getPlayerSet() {
         if (playerSet == null) {
-            playerSet = new HashSet<ArenaPlayer>();
+            playerSet = new HashSet<>();
         }
         return playerSet;
     }

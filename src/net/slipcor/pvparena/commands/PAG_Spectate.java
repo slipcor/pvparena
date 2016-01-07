@@ -74,6 +74,6 @@ public class PAG_Spectate extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

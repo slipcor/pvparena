@@ -51,7 +51,7 @@ public class ArenaModuleManager {
         if (!path.exists()) {
             path.mkdir();
         }
-        loader = new NCBLoader<ArenaModule>(plugin, path);
+        loader = new NCBLoader<>(plugin, path);
         mods = loader.load(ArenaModule.class);
         fill();
     }

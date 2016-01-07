@@ -32,16 +32,16 @@ public class Debug {
     private static boolean server_log;
 
     private static final String prefix = "[PA-debug] ";
-    private static final Set<Integer> check = new HashSet<Integer>();
-    private static final Set<String> strings = new HashSet<String>();
+    private static final Set<Integer> check = new HashSet<>();
+    private static final Set<String> strings = new HashSet<>();
 
     private final int debugID;
 
     private static Logger logger;
     private Logger arenaLogger;
 
-    private static final List<Logger> loggers = new ArrayList<Logger>();
-    private static final List<Debug> debugs = new ArrayList<Debug>();
+    private static final List<Logger> loggers = new ArrayList<>();
+    private static final List<Debug> debugs = new ArrayList<>();
     private Arena arena;
     private boolean active;
 

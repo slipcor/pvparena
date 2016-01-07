@@ -31,7 +31,7 @@ public class PAA_Update extends AbstractGlobalCommand {
     @Override
     public void commit(final CommandSender sender, final String[] args) {
 
-        final Set<NCBLoadable> modules = new HashSet<NCBLoadable>();
+        final Set<NCBLoadable> modules = new HashSet<>();
 
         if (args.length < 1 || "mods".equals(args[0])) {
             modules.addAll(PVPArena.instance.getAmm().getAllMods());
@@ -83,7 +83,7 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"mods"});
         result.define(new String[]{"goals"});
         for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {

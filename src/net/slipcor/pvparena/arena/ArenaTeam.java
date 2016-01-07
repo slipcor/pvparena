@@ -33,7 +33,7 @@ public class ArenaTeam {
      * @param color the arena team color string
      */
     public ArenaTeam(final String name, final String color) {
-        players = new HashSet<ArenaPlayer>();
+        players = new HashSet<>();
         this.color = StringParser.getChatColorFromWoolEnum(color);
         this.name = name;
     }

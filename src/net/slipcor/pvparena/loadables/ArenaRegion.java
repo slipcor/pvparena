@@ -43,11 +43,11 @@ public class ArenaRegion {
     private String name;
     private RegionType type;
     private int tickID = -1;
-    private final Set<RegionFlag> flags = new HashSet<RegionFlag>();
-    private final Set<RegionProtection> protections = new HashSet<RegionProtection>();
-    private final Map<String, Location> playerLocations = new HashMap<String, Location>();
+    private final Set<RegionFlag> flags = new HashSet<>();
+    private final Set<RegionProtection> protections = new HashSet<>();
+    private final Map<String, Location> playerLocations = new HashMap<>();
 
-    private static final Set<Material> NOWOOLS = new HashSet<Material>();
+    private static final Set<Material> NOWOOLS = new HashSet<>();
 
     public final PABlockLocation[] locs;
 

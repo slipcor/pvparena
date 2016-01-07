@@ -184,7 +184,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 
@@ -201,7 +201,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(),
                     "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
-            final Set<ArenaPlayer> plrs = new HashSet<ArenaPlayer>();
+            final Set<ArenaPlayer> plrs = new HashSet<>();
             for (final ArenaPlayer ap : arena.getFighters()) {
                 if (ap.getName().equals(killer.getName())) {
                     continue;
@@ -265,7 +265,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 

@@ -91,7 +91,7 @@ public final class SpawnManager {
 
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_QUICKSPAWN)) {
             class TeleportLater extends BukkitRunnable {
-                private final Set<ArenaPlayer> teamMembers = new HashSet<ArenaPlayer>();
+                private final Set<ArenaPlayer> teamMembers = new HashSet<>();
                 private final boolean classSpawn;
                 private int pos;
 
@@ -108,7 +108,7 @@ public final class SpawnManager {
                 public void run() {
 
                     if (locations == null) {
-                        final Set<PASpawn> spawns = new HashSet<PASpawn>();
+                        final Set<PASpawn> spawns = new HashSet<>();
                         if (arena.isFreeForAll()) {
                             if ("free".equals(team.getName())) {
                                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
@@ -172,7 +172,7 @@ public final class SpawnManager {
             return;
         }
 
-        final Set<PASpawn> spawns = new HashSet<PASpawn>();
+        final Set<PASpawn> spawns = new HashSet<>();
         if (arena.isFreeForAll()) {
             if ("free".equals(string)) {
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "spawn"));
@@ -188,7 +188,7 @@ public final class SpawnManager {
         }
 
         class TeleportLater extends BukkitRunnable {
-            private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
+            private final Set<ArenaPlayer> set = new HashSet<>();
             private final boolean classSpawn;
 
             TeleportLater(final Set<ArenaPlayer> set) {
@@ -289,7 +289,7 @@ public final class SpawnManager {
         class TeleportLater extends BukkitRunnable {
             private int pos;
             private final String[] iteratings;
-            private final Set<ArenaPlayer> set = new HashSet<ArenaPlayer>();
+            private final Set<ArenaPlayer> set = new HashSet<>();
 
             TeleportLater(final Set<ArenaPlayer> set, final String[] iteratings) {
                 pos = 0;
@@ -338,7 +338,7 @@ public final class SpawnManager {
     }
 
     public static Set<PABlockLocation> getBlocksStartingWith(final Arena arena, final String name) {
-        final Set<PABlockLocation> result = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> result = new HashSet<>();
 
         for (final PABlock block : arena.getBlocks()) {
             if (block.getName().startsWith(name)) {
@@ -350,7 +350,7 @@ public final class SpawnManager {
     }
 
     public static Set<PABlockLocation> getBlocksContaining(final Arena arena, final String name) {
-        final Set<PABlockLocation> result = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> result = new HashSet<>();
 
         for (final PABlock block : arena.getBlocks()) {
             if (block.getName().contains(name)) {
@@ -362,7 +362,7 @@ public final class SpawnManager {
     }
 
     public static Set<PABlock> getPABlocksContaining(final Arena arena, final String name) {
-        final Set<PABlock> result = new HashSet<PABlock>();
+        final Set<PABlock> result = new HashSet<>();
 
         for (final PABlock block : arena.getBlocks()) {
             if (block.getName().contains(name)) {
@@ -374,7 +374,7 @@ public final class SpawnManager {
     }
 
     public static Set<PALocation> getSpawnsContaining(final Arena arena, final String name) {
-        final Set<PALocation> result = new HashSet<PALocation>();
+        final Set<PALocation> result = new HashSet<>();
 
         for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().contains(name)) {
@@ -386,7 +386,7 @@ public final class SpawnManager {
     }
 
     public static Set<PALocation> getSpawnsStartingWith(final Arena arena, final String name) {
-        final Set<PALocation> result = new HashSet<PALocation>();
+        final Set<PALocation> result = new HashSet<>();
 
         for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().startsWith(name)) {
@@ -398,7 +398,7 @@ public final class SpawnManager {
     }
 
     public static Set<PASpawn> getPASpawnsStartingWith(final Arena arena, final String name) {
-        final Set<PASpawn> result = new HashSet<PASpawn>();
+        final Set<PASpawn> result = new HashSet<>();
 
         for (final PASpawn spawn : arena.getSpawns()) {
             if (spawn.getName().startsWith(name)) {
@@ -431,7 +431,7 @@ public final class SpawnManager {
     }
 
     public static PABlockLocation getRegionCenter(final Arena arena) {
-        final Set<PALocation> locs = new HashSet<PALocation>();
+        final Set<PALocation> locs = new HashSet<>();
 
         ArenaRegion ars = null;
         for (final ArenaRegion a : arena.getRegionsByType(RegionType.BATTLE)) {
@@ -589,7 +589,7 @@ public final class SpawnManager {
             return false;
         }
 
-        final Set<PALocation> spawns = new HashSet<PALocation>();
+        final Set<PALocation> spawns = new HashSet<>();
 
         if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
             spawns.addAll(SpawnManager.getSpawnsContaining(arena, team.getName() + aPlayer.getArenaClass().getName() + "spawn"));
@@ -640,7 +640,7 @@ public final class SpawnManager {
 
             final Set<ArenaRegion> ars = arena.getRegionsByType(RegionType.SPAWN);
             if (!ars.isEmpty()) {
-                final Set<ArenaPlayer> team = new HashSet<ArenaPlayer>();
+                final Set<ArenaPlayer> team = new HashSet<>();
                 team.add(aPlayer);
                 placeInsideSpawnRegions(arena, team, ars);
 
@@ -656,7 +656,7 @@ public final class SpawnManager {
 
                     // i.e. just put him randomly
 
-                    final Set<PASpawn> spawns = new HashSet<PASpawn>();
+                    final Set<PASpawn> spawns = new HashSet<>();
 
                     if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
                         final String arenaClass = aPlayer.getArenaClass().getName();
@@ -686,7 +686,7 @@ public final class SpawnManager {
 
                 final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, "spawn");
 
-                final Set<PALocation> pLocs = new HashSet<PALocation>();
+                final Set<PALocation> pLocs = new HashSet<>();
 
                 for (final ArenaPlayer app : aPlayer.getArenaTeam().getTeamMembers()) {
                     if (app.getName().equals(aPlayer.getName())) {
@@ -699,7 +699,7 @@ public final class SpawnManager {
 
                 // pLocs now contains the other player's positions
 
-                final Map<PALocation, Double> diffs = new HashMap<PALocation, Double>();
+                final Map<PALocation, Double> diffs = new HashMap<>();
 
                 double max = 0;
 

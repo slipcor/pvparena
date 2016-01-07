@@ -58,7 +58,7 @@ public final class InventoryManager {
      * @return a list of the items that could be returned
      */
     public static List<ItemStack> drop(final Player player) {
-        final List<ItemStack> returned = new ArrayList<ItemStack>();
+        final List<ItemStack> returned = new ArrayList<>();
 
         DEBUG.i("dropping player inventory: " + player.getName(), player);
         final List<Material> exclude;
@@ -67,11 +67,11 @@ public final class InventoryManager {
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
         if (ap == null || ap.getArena() == null) {
-            exclude = new ArrayList<Material>();
-            keep = new ArrayList<ItemStack>();
+            exclude = new ArrayList<>();
+            keep = new ArrayList<>();
         } else {
             final ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
-            exclude = new ArrayList<Material>();
+            exclude = new ArrayList<>();
             for (final ItemStack item : items) {
                 if (item != null) {
                     exclude.add(item.getType());

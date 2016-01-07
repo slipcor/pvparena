@@ -30,7 +30,7 @@ import java.util.*;
 
 public class PAA_Setup extends AbstractArenaCommand {
 
-    public static final Map<String, Arena> activeSetups = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeSetups = new HashMap<>();
 
     public PAA_Setup() {
         super(new String[]{"pvparena.cmds.setup"});
@@ -206,7 +206,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"done"});
         if (arena == null) {
             return result;

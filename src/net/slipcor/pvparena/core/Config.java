@@ -404,7 +404,7 @@ public class Config {
 
         public static CommandTree<String> getTabTree() {
 
-            final CommandTree<String> result = new CommandTree<String>(null);
+            final CommandTree<String> result = new CommandTree<>(null);
             for (final CFG cfg : values()) {
                 final String[] split = cfg.node.split("\\.");
                 final String ending = split[split.length - 1];
@@ -465,10 +465,10 @@ public class Config {
     public Config(final File configFile) {
         cfg = new YamlConfiguration();
         this.configFile = configFile;
-        booleans = new HashMap<String, Boolean>();
-        ints = new HashMap<String, Integer>();
-        doubles = new HashMap<String, Double>();
-        strings = new HashMap<String, String>();
+        booleans = new HashMap<>();
+        ints = new HashMap<>();
+        doubles = new HashMap<>();
+        strings = new HashMap<>();
     }
 
     public void createDefaults(final List<String> goals, final List<String> modules) {

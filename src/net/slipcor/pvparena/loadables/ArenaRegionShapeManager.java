@@ -34,7 +34,7 @@ public class ArenaRegionShapeManager {
         if (!path.exists()) {
             path.mkdir();
         }
-        loader = new NCBLoader<ArenaRegionShape>(plugin, path);
+        loader = new NCBLoader<>(plugin, path);
         regions = loader.load(ArenaRegionShape.class);
         fill();
     }

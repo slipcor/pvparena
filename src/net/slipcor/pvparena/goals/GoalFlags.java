@@ -112,7 +112,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"{Material}"});
         return result;
     }
@@ -270,7 +270,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             if (pTeam == null) {
                 return res;
             }
-            final Set<ArenaTeam> setTeam = new HashSet<ArenaTeam>();
+            final Set<ArenaTeam> setTeam = new HashSet<>();
 
             for (final ArenaTeam team : arena.getTeams()) {
                 setTeam.add(team);
@@ -742,7 +742,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
     private Map<String, String> getFlagMap() {
         if (flagMap == null) {
-            flagMap = new HashMap<String, String>();
+            flagMap = new HashMap<>();
         }
         return flagMap;
     }
@@ -774,7 +774,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
 
     private Map<String, ItemStack> getHeadGearMap() {
         if (headGearMap == null) {
-            headGearMap = new HashMap<String, ItemStack>();
+            headGearMap = new HashMap<>();
         }
         return headGearMap;
     }

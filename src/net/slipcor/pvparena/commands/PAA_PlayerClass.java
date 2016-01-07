@@ -66,7 +66,7 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
         final Player player = (Player) sender;
 
         if ("save".equalsIgnoreCase(args[0])) {
-            final List<ItemStack> items = new ArrayList<ItemStack>();
+            final List<ItemStack> items = new ArrayList<>();
 
             for (final ItemStack is : player.getInventory().getContents()) {
                 if (is != null) {
@@ -135,7 +135,7 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"save"});
         result.define(new String[]{"remove"});
         return result;

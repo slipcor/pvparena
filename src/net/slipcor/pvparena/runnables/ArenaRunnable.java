@@ -25,7 +25,7 @@ import java.util.Set;
 
 public abstract class ArenaRunnable extends BukkitRunnable {
 
-    protected static final Map<Integer, String> MESSAGES = new HashMap<Integer, String>();
+    protected static final Map<Integer, String> MESSAGES = new HashMap<>();
 
     static {
         final String seconds = Language.parse(MSG.TIME_SECONDS);

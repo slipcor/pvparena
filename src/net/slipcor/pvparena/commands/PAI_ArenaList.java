@@ -43,7 +43,7 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
         if (!PVPArena.hasOverridePerms(sender) && ArenaManager.isUsingShortcuts()) {
             names = ArenaManager.getColoredShortcuts();
         } else {
-            names = new ArrayList<String>();
+            names = new ArrayList<>();
             for (final Arena a : ArenaManager.getArenasSorted()) {
                 names.add((a.isLocked() ? "&c" : PAA_Edit.activeEdits.containsValue(a) || PAA_Setup.activeSetups.containsValue(a) ? "&e" : a.isFightInProgress() ? "&a" : "&f") + a.getName() + "&r");
             }
@@ -74,6 +74,6 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

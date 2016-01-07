@@ -30,7 +30,7 @@ public class PAWinEvent extends Event {
         super();
         this.arena = arena;
         this.player = player;
-        items = new ArrayList<String>();
+        items = new ArrayList<>();
 
         if (arrItems == null || arrItems.length == 0) {
             return;

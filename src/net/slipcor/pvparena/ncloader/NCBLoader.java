@@ -61,12 +61,12 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
         this.plugin = plugin;
         this.dir = dir;
         this.paramTypes = paramTypes;
-        files = new ArrayList<File>();
-        loadables = new ArrayList<T>();
+        files = new ArrayList<>();
+        loadables = new ArrayList<>();
 
         Collections.addAll(files, dir.listFiles(new FileExtensionFilter(".jar")));
 
-        final List<Class<?>> constructorParams = new ArrayList<Class<?>>();
+        final List<Class<?>> constructorParams = new ArrayList<>();
 
         for (final Object paramType : paramTypes) {
             constructorParams.add(paramType.getClass());
@@ -74,7 +74,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
 
         ctorParams = constructorParams.toArray(new Class<?>[constructorParams.size()]);
 
-        final List<URL> urls = new ArrayList<URL>();
+        final List<URL> urls = new ArrayList<>();
 
         for (final File file : files) {
             try {
@@ -131,7 +131,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                         if (result.getResult() == Result.SUCCESS) {
                             loadables.add(loadable);
 
-                            final NCBLoadEvent<T> event = new NCBLoadEvent<T>(plugin,
+                            final NCBLoadEvent<T> event = new NCBLoadEvent<>(plugin,
                                     loadable, jarFile);
                             plugin.getServer().getPluginManager()
                                     .callEvent(event);
@@ -188,7 +188,7 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
     public List<T> reload(final Class<? extends NCBLoadable> classType) {
         unload();
 
-        final List<URL> urls = new ArrayList<URL>();
+        final List<URL> urls = new ArrayList<>();
         files.clear();
         for (final String loadableFile : dir.list()) {
             if (loadableFile.endsWith(".jar")) {
