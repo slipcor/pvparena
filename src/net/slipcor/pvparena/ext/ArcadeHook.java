@@ -46,9 +46,7 @@ public class ArcadeHook {
         try {
             final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerJoin", String.class, Plugin.class);
             getPlugin.invoke(arcadePlugin, player, plugin);
-        } catch (final NoSuchMethodException e) {
-        } catch (final InvocationTargetException e) {
-        } catch (final IllegalAccessException e) {
+        } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
         }
     }
 
@@ -56,9 +54,7 @@ public class ArcadeHook {
         try {
             final Method getPlugin = arcadePlugin.getClass().getDeclaredMethod("playerLeave", String.class, Plugin.class);
             getPlugin.invoke(arcadePlugin, player, plugin);
-        } catch (final NoSuchMethodException e) {
-        } catch (final InvocationTargetException e) {
-        } catch (final IllegalAccessException e) {
+        } catch (final NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
         }
     }
 

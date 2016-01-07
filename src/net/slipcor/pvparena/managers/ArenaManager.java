@@ -42,11 +42,11 @@ import java.util.*;
  */
 
 public final class ArenaManager {
-    private static final Map<String, Arena> ARENAS = new HashMap<String, Arena>();
+    private static final Map<String, Arena> ARENAS = new HashMap<>();
     private static final Debug DEBUG = new Debug(24);
 
-    private static final Map<String, Arena> DEF_VALUES = new HashMap<String, Arena>();
-    private static final Map<String, List<String>> DEF_LISTS = new HashMap<String, List<String>>();
+    private static final Map<String, Arena> DEF_VALUES = new HashMap<>();
+    private static final Map<String, List<String>> DEF_LISTS = new HashMap<>();
 
     private static boolean usingShortcuts;
 
@@ -223,7 +223,7 @@ public final class ArenaManager {
 
     public static Set<Arena> getArenasByRegionLocation(
             final PABlockLocation location) {
-        final Set<Arena> result = new HashSet<Arena>();
+        final Set<Arena> result = new HashSet<>();
         for (final Arena arena : ARENAS.values()) {
             if (arena.isLocked()) {
                 continue;
@@ -243,7 +243,7 @@ public final class ArenaManager {
      * @return a Set of Arena
      */
     public static Set<Arena> getArenas() {
-        final Set<Arena> arenas = new HashSet<Arena>();
+        final Set<Arena> arenas = new HashSet<>();
         for (final Arena a : ARENAS.values()) {
             arenas.add(a);
         }
@@ -288,9 +288,9 @@ public final class ArenaManager {
             final File path = new File(PVPArena.instance.getDataFolder().getPath(),
                     "arenas");
             final File[] file = path.listFiles();
-            for (int pos = 0; pos < file.length; pos++) {
-                if (!file[pos].isDirectory() && file[pos].getName().contains(".yml")) {
-                    String sName = file[pos].getName().replace("config_", "");
+            for (File aFile : file) {
+                if (!aFile.isDirectory() && aFile.getName().contains(".yml")) {
+                    String sName = aFile.getName().replace("config_", "");
                     sName = sName.replace(".yml", "");
                     final String error = checkForMissingGoals(sName);
                     if (error == null) {
@@ -435,7 +435,7 @@ public final class ArenaManager {
     }
 
     public static List<String> getColoredShortcuts() {
-        final Set<String> sorted = new TreeSet<String>(DEF_LISTS.keySet());
+        final Set<String> sorted = new TreeSet<>(DEF_LISTS.keySet());
 
 
         if (PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
@@ -451,7 +451,7 @@ public final class ArenaManager {
             }
         }
 
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         for (final String definition : sorted) {
             if (DEF_VALUES.containsKey(definition)) {
@@ -584,8 +584,8 @@ public final class ArenaManager {
         for (final String s : ARENAS.keySet()) {
             DEBUG.i(s);
         }
-        final Map<String, Arena> sorted = new TreeMap<String, Arena>(ARENAS);
-        final List<Arena> result = new ArrayList<Arena>();
+        final Map<String, Arena> sorted = new TreeMap<>(ARENAS);
+        final List<Arena> result = new ArrayList<>();
         DEBUG.i("Sorted!");
         for (final Map.Entry<String, Arena> stringArenaEntry : sorted.entrySet()) {
             result.add(stringArenaEntry.getValue());

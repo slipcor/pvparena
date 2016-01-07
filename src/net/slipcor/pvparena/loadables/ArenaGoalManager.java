@@ -50,7 +50,7 @@ public class ArenaGoalManager {
         if (!path.exists()) {
             path.mkdir();
         }
-        loader = new NCBLoader<ArenaGoal>(plugin, path);
+        loader = new NCBLoader<>(plugin, path);
         types = loader.load(ArenaGoal.class);
         fill();
     }
@@ -155,7 +155,7 @@ public class ArenaGoalManager {
     }
 
     public Set<String> getAllGoalNames() {
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
 
         for (final ArenaGoal goal : types) {
             result.add(goal.getName());
@@ -252,14 +252,14 @@ public class ArenaGoalManager {
 
         arena.getDebugger().i("timed end!");
 
-        Map<String, Double> scores = new HashMap<String, Double>();
+        Map<String, Double> scores = new HashMap<>();
 
         for (final ArenaGoal type : arena.getGoals()) {
             arena.getDebugger().i("scores: " + type.getName());
             scores = type.timedEnd(scores);
         }
 
-        final Set<String> winners = new HashSet<String>();
+        final Set<String> winners = new HashSet<>();
 
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
             winners.add("free");
@@ -311,7 +311,7 @@ public class ArenaGoalManager {
 
         if (winners.size() > 1) {
             arena.getDebugger().i("more than 1");
-            final Set<String> preciseWinners = new HashSet<String>();
+            final Set<String> preciseWinners = new HashSet<>();
 
             // several teams have max score!!
             double maxSum = 0;
@@ -348,7 +348,7 @@ public class ArenaGoalManager {
 
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
             arena.getDebugger().i("FFAAA");
-            final Set<String> preciseWinners = new HashSet<String>();
+            final Set<String> preciseWinners = new HashSet<>();
 
             for (final ArenaTeam team : arena.getTeams()) {
                 if (!winners.contains(team.getName())) {
@@ -385,7 +385,7 @@ public class ArenaGoalManager {
 
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
             for (final ArenaTeam team : arena.getTeams()) {
-                final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
+                final Set<ArenaPlayer> apSet = new HashSet<>();
                 for (final ArenaPlayer p : team.getTeamMembers()) {
                     apSet.add(p);
                 }
@@ -434,7 +434,7 @@ public class ArenaGoalManager {
                     }
                 } else {
 
-                    final Set<ArenaPlayer> apSet = new HashSet<ArenaPlayer>();
+                    final Set<ArenaPlayer> apSet = new HashSet<>();
                     for (final ArenaPlayer p : team.getTeamMembers()) {
                         apSet.add(p);
                     }

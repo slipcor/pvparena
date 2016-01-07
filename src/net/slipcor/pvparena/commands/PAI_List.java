@@ -27,7 +27,7 @@ public class PAI_List extends AbstractArenaCommand {
         super(new String[]{"pvparena.user", "pvparena.cmds.list"});
     }
 
-    private static final Map<ArenaPlayer.Status, Character> colorMap = new HashMap<ArenaPlayer.Status, Character>();
+    private static final Map<ArenaPlayer.Status, Character> colorMap = new HashMap<>();
 
     static {
 
@@ -55,7 +55,7 @@ public class PAI_List extends AbstractArenaCommand {
 
 
             for (final ArenaTeam teams : arena.getTeams()) {
-                final Set<String> names = new HashSet<String>();
+                final Set<String> names = new HashSet<>();
 
                 for (final ArenaPlayer player : teams.getTeamMembers()) {
                     names.add("&" + colorMap.get(player.getStatus()) + player.getName() + "&r");
@@ -72,7 +72,7 @@ public class PAI_List extends AbstractArenaCommand {
             return;
         }
 
-        final Map<ArenaPlayer.Status, Set<String>> stats = new HashMap<ArenaPlayer.Status, Set<String>>();
+        final Map<ArenaPlayer.Status, Set<String>> stats = new HashMap<>();
 
         for (final ArenaPlayer player : arena.getEveryone()) {
             final Set<String> players = stats.containsKey(player.getStatus()) ? stats.get(player.getStatus()) : new HashSet<String>();
@@ -109,6 +109,6 @@ public class PAI_List extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

@@ -97,7 +97,7 @@ public class PAI_Ready extends AbstractArenaCommand {
             return;
         }
 
-        final Set<String> names = new HashSet<String>();
+        final Set<String> names = new HashSet<>();
 
         for (final ArenaPlayer player : arena.getEveryone()) {
             if (player.getStatus() == Status.LOUNGE) {
@@ -131,6 +131,6 @@ public class PAI_Ready extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

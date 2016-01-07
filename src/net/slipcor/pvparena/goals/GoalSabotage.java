@@ -419,14 +419,14 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
     private Map<String, String> getFlagMap() {
         if (teamFlags == null) {
-            teamFlags = new HashMap<String, String>();
+            teamFlags = new HashMap<>();
         }
         return teamFlags;
     }
 
     private Map<ArenaTeam, TNTPrimed> getTNTmap() {
         if (teamTNTs == null) {
-            teamTNTs = new HashMap<ArenaTeam, TNTPrimed>();
+            teamTNTs = new HashMap<>();
         }
         return teamTNTs;
     }

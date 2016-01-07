@@ -29,7 +29,7 @@ public final class TeamManager {
      */
     public static String calcFreeTeam(final Arena arena) {
         arena.getDebugger().i("calculating free team");
-        final Map<String, Integer> counts = new HashMap<String, Integer>();
+        final Map<String, Integer> counts = new HashMap<>();
 
         // spam the available teams into a map counting the members
 
@@ -69,7 +69,7 @@ public final class TeamManager {
             return null;
         }
 
-        final Set<String> free = new HashSet<String>();
+        final Set<String> free = new HashSet<>();
 
         int max = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
         max = max == 0 ? Integer.MAX_VALUE : max;
@@ -115,7 +115,7 @@ public final class TeamManager {
      */
     public static boolean checkEven(final Arena arena) {
         arena.getDebugger().i("checking if teams are even");
-        final Map<String, Integer> counts = new HashMap<String, Integer>();
+        final Map<String, Integer> counts = new HashMap<>();
 
         // count each team members
 
@@ -152,7 +152,7 @@ public final class TeamManager {
     public static int countActiveTeams(final Arena arena) {
         arena.getDebugger().i("counting active teams");
 
-        final Set<String> activeteams = new HashSet<String>();
+        final Set<String> activeteams = new HashSet<>();
         for (final ArenaTeam team : arena.getTeams()) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == Status.FIGHT) {
@@ -187,7 +187,7 @@ public final class TeamManager {
      */
     private static String returnEmptyTeam(final Arena arena, final Set<String> set) {
         arena.getDebugger().i("choosing an empty team");
-        final Set<String> empty = new HashSet<String>();
+        final Set<String> empty = new HashSet<>();
         for (final ArenaTeam team : arena.getTeams()) {
             final String teamName = team.getName();
             arena.getDebugger().i("team: " + teamName);

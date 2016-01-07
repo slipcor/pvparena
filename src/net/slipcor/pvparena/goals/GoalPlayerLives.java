@@ -255,7 +255,7 @@ public class GoalPlayerLives extends ArenaGoal {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<ItemStack>();
+                returned = new ArrayList<>();
                 returned.addAll(event.getDrops());
             }
 
@@ -398,7 +398,7 @@ public class GoalPlayerLives extends ArenaGoal {
 
     @Override
     public void setPlayerLives(final int value) {
-        final Set<String> plrs = new HashSet<String>();
+        final Set<String> plrs = new HashSet<>();
 
         for (final String name : getLifeMap().keySet()) {
             plrs.add(name);

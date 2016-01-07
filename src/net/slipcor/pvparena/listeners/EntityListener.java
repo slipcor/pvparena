@@ -40,7 +40,7 @@ import java.util.*;
 
 public class EntityListener implements Listener {
     private static final Debug DEBUG = new Debug(21);
-    private static final Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<PotionEffectType, Boolean>();
+    private static final Map<PotionEffectType, Boolean> TEAMEFFECT = new HashMap<>();
 
     static {
         TEAMEFFECT.put(PotionEffectType.BLINDNESS, false);
@@ -65,7 +65,7 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCreatureSpawn(final CreatureSpawnEvent event) {
         DEBUG.i("onCreatureSpawn: " + event.getSpawnReason().name());
-        final Set<SpawnReason> naturals = new HashSet<SpawnReason>();
+        final Set<SpawnReason> naturals = new HashSet<>();
         naturals.add(SpawnReason.CHUNK_GEN);
         naturals.add(SpawnReason.DEFAULT);
         naturals.add(SpawnReason.NATURAL);

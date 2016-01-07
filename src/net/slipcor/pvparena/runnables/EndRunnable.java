@@ -78,7 +78,7 @@ public class EndRunnable extends ArenaRunnable {
                 arena.unKillPlayer(ap.get(), ap.get().getLastDamageCause().getCause(),
                         ap.get().getLastDamageCause().getEntity());
 
-                final List<ItemStack> items = new ArrayList<ItemStack>();
+                final List<ItemStack> items = new ArrayList<>();
 
                 for (final ItemStack is : ap.get().getInventory().getArmorContents()) {
                     items.add(is.clone());

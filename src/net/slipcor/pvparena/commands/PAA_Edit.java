@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class PAA_Edit extends AbstractArenaCommand {
 
-    public static final Map<String, Arena> activeEdits = new HashMap<String, Arena>();
+    public static final Map<String, Arena> activeEdits = new HashMap<>();
 
     public PAA_Edit() {
         super(new String[]{"pvparena.cmds.edit"});
@@ -77,6 +77,6 @@ public class PAA_Edit extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 }

@@ -30,7 +30,7 @@ import java.util.Set;
  */
 
 public class PAA_Spawn extends AbstractArenaCommand {
-    private static final Set<String> spawns = new HashSet<String>();
+    private static final Set<String> spawns = new HashSet<>();
 
     static {
         spawns.add("exit");
@@ -167,7 +167,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         for (final String spawn : spawns) {
             result.define(new String[]{spawn});
         }

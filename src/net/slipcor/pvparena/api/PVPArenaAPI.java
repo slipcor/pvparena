@@ -97,7 +97,7 @@ public final class PVPArenaAPI {
         final Set<Arena> arenas = ArenaManager
                 .getArenasByRegionLocation(new PABlockLocation(location));
 
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
 
         for (final Arena a : arenas) {
             result.add(a.getName());

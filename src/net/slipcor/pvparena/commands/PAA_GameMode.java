@@ -76,7 +76,7 @@ public class PAA_GameMode extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"free"});
         result.define(new String[]{"team"});
         return result;

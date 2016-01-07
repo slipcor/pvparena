@@ -37,7 +37,7 @@ public class RespawnRunnable implements Runnable {
         final PALocation loc = SpawnManager.getSpawnByExactName(arena, coordName);
 
         if (loc == null) {
-            final Set<PASpawn> spawns = new HashSet<PASpawn>();
+            final Set<PASpawn> spawns = new HashSet<>();
             if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
                 final String arenaClass = player.getArenaClass().getName();
                 spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, player.getArenaTeam().getName() + arenaClass + "spawn"));

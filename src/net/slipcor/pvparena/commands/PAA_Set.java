@@ -52,7 +52,7 @@ public class PAA_Set extends AbstractArenaCommand {
 
                 page = page < 1 ? 1 : page;
 
-                final Map<String, String> keys = new HashMap<String, String>();
+                final Map<String, String> keys = new HashMap<>();
 
                 int position = 0;
 

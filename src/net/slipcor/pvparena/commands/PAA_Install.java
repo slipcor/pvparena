@@ -224,7 +224,7 @@ public class PAA_Install extends AbstractGlobalCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"mods"});
         result.define(new String[]{"goals"});
         for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {

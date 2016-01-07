@@ -42,7 +42,7 @@ import java.util.*;
 
 public class ArenaPlayer {
     private static final Debug debug = new Debug(5);
-    private static final Map<String, ArenaPlayer> totalPlayers = new HashMap<String, ArenaPlayer>();
+    private static final Map<String, ArenaPlayer> totalPlayers = new HashMap<>();
 
     private final String name;
     private boolean telePass;
@@ -57,8 +57,8 @@ public class ArenaPlayer {
 
     private ItemStack[] savedInventory;
     private ItemStack[] savedArmor;
-    private final Set<PermissionAttachment> tempPermissions = new HashSet<PermissionAttachment>();
-    private final Map<String, PAStatMap> statistics = new HashMap<String, PAStatMap>();
+    private final Set<PermissionAttachment> tempPermissions = new HashSet<>();
+    private final Map<String, PAStatMap> statistics = new HashMap<>();
 
     /**
      * Status
@@ -75,7 +75,7 @@ public class ArenaPlayer {
      * </pre>
      */
     public enum Status {
-        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST;
+        NULL, WARM, LOUNGE, READY, FIGHT, WATCH, DEAD, LOST
     }
 
 
@@ -121,7 +121,7 @@ public class ArenaPlayer {
     }
 
     public static Set<ArenaPlayer> getAllArenaPlayers() {
-        final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+        final Set<ArenaPlayer> players = new HashSet<>();
         for (final ArenaPlayer ap : totalPlayers.values()) {
             players.add(ap);
         }
@@ -285,13 +285,13 @@ public class ArenaPlayer {
         if (!"none".equals(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME))) {
             final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
 
-            final List<Material> allowedMats = new ArrayList<Material>();
+            final List<Material> allowedMats = new ArrayList<>();
 
             for (final ItemStack item : items) {
                 allowedMats.add(item.getType());
             }
 
-            final List<ItemStack> keepItems = new ArrayList<ItemStack>();
+            final List<ItemStack> keepItems = new ArrayList<>();
             for (final ItemStack item : player.getInventory().getContents()) {
                 if (item == null) {
                     continue;

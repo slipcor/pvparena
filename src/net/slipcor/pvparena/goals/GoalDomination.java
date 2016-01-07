@@ -46,8 +46,8 @@ public class GoalDomination extends ArenaGoal {
         debug = new Debug(99);
     }
 
-    private Map<Location, String> flagMap = new HashMap<Location, String>();
-    private Map<Location, DominationRunnable> runnerMap = new HashMap<Location, DominationRunnable>();
+    private Map<Location, String> flagMap = new HashMap<>();
+    private Map<Location, DominationRunnable> runnerMap = new HashMap<>();
 
     private int announceOffset;
 
@@ -160,7 +160,7 @@ public class GoalDomination extends ArenaGoal {
      * @return a set of player names
      */
     private Set<String> checkLocationPresentTeams(final Location loc, final int distance) {
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
 
         for (final ArenaPlayer p : arena.getFighters()) {
 
@@ -379,7 +379,7 @@ public class GoalDomination extends ArenaGoal {
 
     private void maybeAddScoreAndBroadCast(final String team) {
         if (arena.getArenaConfig().getBoolean(CFG.GOAL_DOM_ONLYWHENMORE)) {
-            final Map<String, Integer> claimed = new HashMap<String, Integer>();
+            final Map<String, Integer> claimed = new HashMap<>();
             for (final String s : getFlagMap().values()) {
                 final int toAdd;
                 if (claimed.containsKey(s)) {
@@ -577,7 +577,7 @@ public class GoalDomination extends ArenaGoal {
 
     private Map<Location, String> getFlagMap() {
         if (flagMap == null) {
-            flagMap = new HashMap<Location, String>();
+            flagMap = new HashMap<>();
         }
         return flagMap;
     }
@@ -596,7 +596,7 @@ public class GoalDomination extends ArenaGoal {
 
     private Map<Location, DominationRunnable> getRunnerMap() {
         if (runnerMap == null) {
-            runnerMap = new HashMap<Location, DominationRunnable>();
+            runnerMap = new HashMap<>();
         }
         return runnerMap;
     }

@@ -58,7 +58,7 @@ public class PAI_Info extends AbstractArenaCommand {
                 StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +
                 StringParser.colorVar("enabled", !arena.isLocked()));
 
-        final Set<String> classes = new HashSet<String>();
+        final Set<String> classes = new HashSet<>();
         for (final ArenaClass ac : arena.getClasses()) {
             if (!"custom".equalsIgnoreCase(ac.getName())) {
                 classes.add(ac.getName());
@@ -245,7 +245,7 @@ public class PAI_Info extends AbstractArenaCommand {
         if (displayMode == null || "region".equalsIgnoreCase(displayMode)) {
 
             if (arena.getRegions() != null) {
-                final Set<String> regions = new HashSet<String>();
+                final Set<String> regions = new HashSet<>();
                 for (final ArenaRegion ar : arena.getRegions()) {
                     regions.add(ar.getRegionName());
                 }
@@ -298,7 +298,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         result.define(new String[]{"chat"});
         result.define(new String[]{"command"});
         result.define(new String[]{"damage"});

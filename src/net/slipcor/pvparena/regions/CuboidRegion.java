@@ -27,7 +27,7 @@ import java.util.Set;
 
 public class CuboidRegion extends ArenaRegionShape {
 
-    private final Set<Block> border = new HashSet<Block>();
+    private final Set<Block> border = new HashSet<>();
     private ArenaRegion region;
 
     public CuboidRegion() {

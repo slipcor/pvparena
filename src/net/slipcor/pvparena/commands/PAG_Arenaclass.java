@@ -44,7 +44,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         if (args.length < 1) {
-            Set<String> classes = new TreeSet<String>();
+            Set<String> classes = new TreeSet<>();
             for (ArenaClass ac : arena.getClasses()) {
                 if (ac.getName().equals("custom")) {
                     continue;
@@ -147,7 +147,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        final CommandTree<String> result = new CommandTree<String>(null);
+        final CommandTree<String> result = new CommandTree<>(null);
         if (arena == null) {
             return result;
         }

@@ -580,7 +580,7 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
-                final Set<PASpawn> spawns = new HashSet<PASpawn>();
+                final Set<PASpawn> spawns = new HashSet<>();
                 if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
                     final String arenaClass = aPlayer.getArenaClass().getName();
                     spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, team.getName() + arenaClass + "spawn"));

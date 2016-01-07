@@ -15,14 +15,14 @@ import java.util.*;
  */
 
 public class PARoundMap {
-    private final Map<Integer, PARound> rounds = new HashMap<Integer, PARound>();
+    private final Map<Integer, PARound> rounds = new HashMap<>();
     private final Arena arena;
 
     public PARoundMap(final Arena arena, final List<Set<String>> outer) {
         this.arena = arena;
         int position = 1;
         for (final Set<String> list : outer) {
-            final Set<ArenaGoal> result = new HashSet<ArenaGoal>();
+            final Set<ArenaGoal> result = new HashSet<>();
             for (final String s : list) {
                 for (final ArenaGoal goal : arena.getGoals()) {
                     if (goal.getName().equals(s)) {

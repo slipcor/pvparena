@@ -68,7 +68,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     private Map<ArenaTeam, Material> foodtypes;
     private Map<Block, ArenaTeam> chestMap;
-    private static final Map<Material, Material> cookmap = new HashMap<Material, Material>();
+    private static final Map<Material, Material> cookmap = new HashMap<>();
 
     static {
         cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
@@ -297,7 +297,7 @@ public class GoalFood extends ArenaGoal implements Listener {
             returned = InventoryManager.drop(respawnPlayer);
             event.getDrops().clear();
         } else {
-            returned = new ArrayList<ItemStack>();
+            returned = new ArrayList<>();
             returned.addAll(event.getDrops());
         }
 
@@ -355,7 +355,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     private Map<ArenaTeam, Material> getFoodMap() {
         if (foodtypes == null) {
-            foodtypes = new HashMap<ArenaTeam, Material>();
+            foodtypes = new HashMap<>();
         }
         return foodtypes;
     }
@@ -426,7 +426,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
         final String teamName = player.getArenaTeam().getName();
 
-        final Set<PABlockLocation> validSpawns = new HashSet<PABlockLocation>();
+        final Set<PABlockLocation> validSpawns = new HashSet<>();
 
         for (final PABlock block : spawns) {
             final String spawnName = block.getName();
@@ -548,7 +548,7 @@ public class GoalFood extends ArenaGoal implements Listener {
         final int pAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FPLAYERITEMS);
         final int tAmount = arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FTEAMITEMS);
 
-        chestMap = new HashMap<Block, ArenaTeam>();
+        chestMap = new HashMap<>();
 
         for (final ArenaTeam team : arena.getTeams()) {
             int pos = new Random().nextInt(cookmap.size());

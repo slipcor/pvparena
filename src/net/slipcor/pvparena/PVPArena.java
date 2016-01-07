@@ -51,8 +51,8 @@ public class PVPArena extends JavaPlugin {
     private ArenaModuleManager amm;
     private ArenaRegionShapeManager arsm;
 
-    private final List<AbstractArenaCommand> arenaCommands = new ArrayList<AbstractArenaCommand>();
-    private final List<AbstractGlobalCommand> globalCommands = new ArrayList<AbstractGlobalCommand>();
+    private final List<AbstractArenaCommand> arenaCommands = new ArrayList<>();
+    private final List<AbstractGlobalCommand> globalCommands = new ArrayList<>();
 
     private Updater updater;
     private boolean shuttingDown;
@@ -407,8 +407,8 @@ public class PVPArena extends JavaPlugin {
 
         saveDefaultConfig();
         if (!getConfig().contains("shortcuts")) {
-            final List<String> ffa = new ArrayList<String>();
-            final List<String> teams = new ArrayList<String>();
+            final List<String> ffa = new ArrayList<>();
+            final List<String> teams = new ArrayList<>();
 
             ffa.add("arena1");
             ffa.add("arena2");

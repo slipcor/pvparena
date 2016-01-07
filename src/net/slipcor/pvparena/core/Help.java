@@ -416,7 +416,7 @@ public final class Help {
 
         HELP(final String node, final String[] sArray) {
             this.node = node;
-            final List<String> list = new ArrayList<String>();
+            final List<String> list = new ArrayList<>();
             Collections.addAll(list, sArray);
             value = list;
         }

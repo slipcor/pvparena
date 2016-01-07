@@ -55,18 +55,18 @@ public class Arena {
 
     private static Debug DEBUG = new Debug(3);
     private Debug debug;
-    private final Set<ArenaClass> classes = new HashSet<ArenaClass>();
-    private final Set<ArenaGoal> goals = new HashSet<ArenaGoal>();
-    private final Set<ArenaModule> mods = new HashSet<ArenaModule>();
-    private final Set<ArenaRegion> regions = new HashSet<ArenaRegion>();
-    private final Set<PAClassSign> signs = new HashSet<PAClassSign>();
-    private final Set<ArenaTeam> teams = new HashSet<ArenaTeam>();
-    private final Set<String> playedPlayers = new HashSet<String>();
+    private final Set<ArenaClass> classes = new HashSet<>();
+    private final Set<ArenaGoal> goals = new HashSet<>();
+    private final Set<ArenaModule> mods = new HashSet<>();
+    private final Set<ArenaRegion> regions = new HashSet<>();
+    private final Set<PAClassSign> signs = new HashSet<>();
+    private final Set<ArenaTeam> teams = new HashSet<>();
+    private final Set<String> playedPlayers = new HashSet<>();
 
-    private final Set<PABlock> blocks = new HashSet<PABlock>();
-    private final Set<PASpawn> spawns = new HashSet<PASpawn>();
+    private final Set<PABlock> blocks = new HashSet<>();
+    private final Set<PASpawn> spawns = new HashSet<>();
 
-    private final Map<Player, UUID> entities = new HashMap<Player, UUID>();
+    private final Map<Player, UUID> entities = new HashMap<>();
 
     private PARoundMap rounds;
 
@@ -123,11 +123,7 @@ public class Arena {
             language = new YamlConfiguration();
             try {
                 language.load(langFile);
-            } catch (final FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (final IOException e) {
-                e.printStackTrace();
-            } catch (final InvalidConfigurationException e) {
+            } catch (final InvalidConfigurationException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -345,7 +341,7 @@ public class Arena {
      */
     public Set<ArenaPlayer> getEveryone() {
 
-        final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+        final Set<ArenaPlayer> players = new HashSet<>();
 
         for (final ArenaPlayer ap : ArenaPlayer.getAllArenaPlayers()) {
             if (equals(ap.getArena())) {
@@ -360,7 +356,7 @@ public class Arena {
      */
     public Set<ArenaPlayer> getFighters() {
 
-        final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+        final Set<ArenaPlayer> players = new HashSet<>();
 
         for (final ArenaTeam team : teams) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
@@ -498,7 +494,7 @@ public class Arena {
      * @return the arena teams
      */
     public Set<String> getTeamNames() {
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
         for (final ArenaTeam team : teams) {
             result.add(team.getName());
         }
@@ -511,7 +507,7 @@ public class Arena {
      * @return the arena teams
      */
     public Set<String> getTeamNamesColored() {
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
         for (final ArenaTeam team : teams) {
             result.add(team.getColoredName());
         }
@@ -911,7 +907,7 @@ public class Arena {
         }
 
         if (!free) {
-            final Set<String> activeTeams = new HashSet<String>();
+            final Set<String> activeTeams = new HashSet<>();
 
             for (final ArenaTeam team : teams) {
                 for (final ArenaPlayer ap : team.getTeamMembers()) {
@@ -1025,7 +1021,7 @@ public class Arena {
 
     public void removeOffset(final String spawnName) {
         final List<String> offsets = getArenaConfig().getStringList(CFG.TP_OFFSETS.getNode(), new ArrayList<String>());
-        final List<String> removals = new ArrayList<String>();
+        final List<String> removals = new ArrayList<>();
         for (String value : offsets) {
             if (value != null && value.contains(":")) {
                 String[] split = value.split(":");
@@ -1084,7 +1080,7 @@ public class Arena {
      */
     public void resetPlayers(final boolean force) {
         getDebugger().i("resetting player manager");
-        final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+        final Set<ArenaPlayer> players = new HashSet<>();
         for (final ArenaTeam team : teams) {
             for (final ArenaPlayer p : team.getTeamMembers()) {
                 getDebugger().i("player: " + p.getName(), p.get());
@@ -1174,7 +1170,7 @@ public class Arena {
         }
         debug.i("Giving rewards to team " + arenaTeam.getName() + '!');
 
-        final Set<ArenaPlayer> players = new HashSet<ArenaPlayer>();
+        final Set<ArenaPlayer> players = new HashSet<>();
         players.addAll(arenaTeam.getTeamMembers());
 
         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
@@ -1454,7 +1450,7 @@ public class Arena {
      */
     public void spawnCampPunish() {
 
-        final Map<Location, ArenaPlayer> players = new HashMap<Location, ArenaPlayer>();
+        final Map<Location, ArenaPlayer> players = new HashMap<>();
 
         for (final ArenaPlayer ap : getFighters()) {
             if (ap.getStatus() != Status.FIGHT) {
@@ -1750,7 +1746,7 @@ public class Arena {
                 final String[] definitions = autoClass.split(";");
                 autoClass = definitions[definitions.length - 1]; // set default
 
-                final Map<String, ArenaClass> classes = new HashMap<String, ArenaClass>();
+                final Map<String, ArenaClass> classes = new HashMap<>();
 
                 for (final String definition : definitions) {
                     if (!definition.contains(":")) {
@@ -1780,7 +1776,7 @@ public class Arena {
         team.add(aPlayer);
         aPlayer.setStatus(Status.FIGHT);
 
-        final Set<PASpawn> spawns = new HashSet<PASpawn>();
+        final Set<PASpawn> spawns = new HashSet<>();
         if (cfg.getBoolean(CFG.GENERAL_CLASSSPAWN)) {
             final String arenaClass =
                     cfg.getBoolean(CFG.USES_PLAYERCLASSES) ?
@@ -1904,7 +1900,7 @@ public class Arena {
     }
 
     public Set<ArenaRegion> getRegionsByType(final RegionType regionType) {
-        final Set<ArenaRegion> result = new HashSet<ArenaRegion>();
+        final Set<ArenaRegion> result = new HashSet<>();
         for (final ArenaRegion rs : regions) {
             if (rs.getType() == regionType) {
                 result.add(rs);
@@ -1917,10 +1913,10 @@ public class Arena {
         if (list == null) {
             rounds = new PARoundMap(this, new ArrayList<Set<String>>());
         } else {
-            final List<Set<String>> outer = new ArrayList<Set<String>>();
+            final List<Set<String>> outer = new ArrayList<>();
             for (final String round : list) {
                 final String[] split = round.split("|");
-                final Set<String> inner = new HashSet<String>();
+                final Set<String> inner = new HashSet<>();
                 Collections.addAll(inner, split);
                 outer.add(inner);
             }
@@ -1939,7 +1935,7 @@ public class Arena {
     }
 
     private void updateGoals() {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
 
         for (final ArenaGoal goal : goals) {
             list.add(goal.getName());
@@ -1950,7 +1946,7 @@ public class Arena {
     }
 
     private void updateMods() {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
 
         for (final ArenaModule mod : mods) {
             list.add(mod.getName());
@@ -1961,7 +1957,7 @@ public class Arena {
     }
 
     public void updateRounds() {
-        final List<String> result = new ArrayList<String>();
+        final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < rounds.getCount(); i++) {
             result.add(StringParser.joinSet(rounds.getGoals(i), "|"));

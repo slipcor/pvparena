@@ -94,7 +94,7 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
 
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
-        return new CommandTree<String>(null);
+        return new CommandTree<>(null);
     }
 
     @Override

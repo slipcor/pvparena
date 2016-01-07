@@ -526,7 +526,7 @@ public class PACheck {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<ItemStack>();
+                    returned = new ArrayList<>();
                     returned.addAll(event.getDrops());
                     event.getDrops().clear();
                 }

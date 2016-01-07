@@ -36,14 +36,14 @@ public final class ArenaClass {
     private final ItemStack[] items;
     private final ItemStack[] armors;
 
-    private static final Map<String, ArenaClass> globals = new HashMap<String, ArenaClass>();
+    private static final Map<String, ArenaClass> globals = new HashMap<>();
 
     // private statics: item definitions
-    private static final List<Material> ARMORS_TYPE = new LinkedList<Material>();
-    private static final List<Material> HELMETS_TYPE = new LinkedList<Material>();
-    private static final List<Material> CHESTPLATES_TYPE = new LinkedList<Material>();
-    private static final List<Material> LEGGINGS_TYPE = new LinkedList<Material>();
-    private static final List<Material> BOOTS_TYPE = new LinkedList<Material>();
+    private static final List<Material> ARMORS_TYPE = new LinkedList<>();
+    private static final List<Material> HELMETS_TYPE = new LinkedList<>();
+    private static final List<Material> CHESTPLATES_TYPE = new LinkedList<>();
+    private static final List<Material> LEGGINGS_TYPE = new LinkedList<>();
+    private static final List<Material> BOOTS_TYPE = new LinkedList<>();
 
     // static filling of the items array
     static {

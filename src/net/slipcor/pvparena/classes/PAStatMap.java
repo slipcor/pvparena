@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 public class PAStatMap {
-    private final Map<StatisticsManager.type, Integer> map = new HashMap<StatisticsManager.type, Integer>();
+    private final Map<StatisticsManager.type, Integer> map = new HashMap<>();
 
     public void decStat(final StatisticsManager.type type) {
         decStat(type, 1);

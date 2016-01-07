@@ -28,7 +28,7 @@ import java.util.List;
 
 public class InventoryRefillRunnable implements Runnable {
     private final Player player;
-    private final List<ItemStack> additions = new ArrayList<ItemStack>();
+    private final List<ItemStack> additions = new ArrayList<>();
     private final Arena arena;
     private final boolean refill;
 
