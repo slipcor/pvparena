@@ -76,9 +76,7 @@ public class Debug {
                 logger.addHandler(handler);
 
                 loggers.add(logger);
-            } catch (final IOException ex) {
-                PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-            } catch (final SecurityException ex) {
+            } catch (final IOException | SecurityException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
             }
         }
@@ -113,9 +111,7 @@ public class Debug {
                 arenaLogger.addHandler(handler);
                 loggers.add(arenaLogger);
                 debugs.add(this);
-            } catch (final IOException ex) {
-                PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
-            } catch (final SecurityException ex) {
+            } catch (final IOException | SecurityException ex) {
                 PVPArena.instance.getLogger().log(Level.SEVERE, null, ex);
             }
         }

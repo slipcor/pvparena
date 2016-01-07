@@ -123,11 +123,7 @@ public class Arena {
             language = new YamlConfiguration();
             try {
                 language.load(langFile);
-            } catch (final FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (final IOException e) {
-                e.printStackTrace();
-            } catch (final InvalidConfigurationException e) {
+            } catch (final InvalidConfigurationException | IOException e) {
                 e.printStackTrace();
             }
         }
