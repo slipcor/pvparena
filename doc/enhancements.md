@@ -66,8 +66,8 @@ Mod | Description
 [Items](mods/items.md) | spawn (random) items
 [LateLounge](mods/latelounge.md) | keep playing until enough ppl are joining
 [MatchResultStats](mods/matchresultstats.md) | keep stats of player games, who won, who lost?
-[PlayerFinder](mods/playerfinder.md) | Allow players to find others with a compass
-[Points](mods/points.md) | Allow to restrict certain classes to require players to fight for better classes
+[PlayerFinder](mods/playerfinder.md) | allow players to find others with a compass
+[Points](mods/points.md) | allow to restrict certain classes to require players to fight for better classes
 [PowerUps](mods/powerups.md) | exactly that
 [RealSpectate](mods/realspectate.md) | spectate the game, CounterStrike style!
 [RedstoneTriggers](mods/redstonetriggers.md) | add win/lose triggered by redstone
@@ -76,7 +76,8 @@ Mod | Description
 [SinglePlayerSupport](mods/singleplayersupport.md) | Allow players to use an arena on their own!
 [Skins](mods/skins.md) | add custom skins to teams/classes
 [SpecialJoin](mods/specialjoin.md) | join via buttons, levers, etc
-[Squads](mods/squads.md) | Add squads to the game, basically only showing players belonging together apart from teams and classes.
+[Spectate](mods/spectate.md) | use the new 1.8 SPECTATOR mode to allow flying and POV spectating
+[Squads](mods/squads.md) | add squads to the game, basically only showing players belonging together apart from teams and classes.
 [StartFreeze](mods/startfreeze.md) | freeze players at start
 [TeamSizeRestrict](mods/teamsizerestrict.md) | a small mod to restrict the size of specific teams
 [TempPerms](mods/tempperms.md) | add temporary perms

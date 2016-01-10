@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.52 - update to Java 7
+- v1.3.2.54 - new Module: Spectate - uses the 1.8 SPECTATOR GameMode
 - [read more](doc/changelog.md)
 
 ***
