@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.54 - new Module: Spectate - uses the 1.8 SPECTATOR GameMode
+- v1.3.2.55 - fix Spectate Spectators being told they cannot teleport when switching view
 - [read more](doc/changelog.md)
 
 ***

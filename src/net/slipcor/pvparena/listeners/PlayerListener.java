@@ -29,6 +29,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -783,6 +784,10 @@ public class PlayerListener implements Listener {
                 + event.getPlayer().getName() + "' (uncancel)", player);
         event.setCancelled(false); // fighting player - first recon NOT to
         // cancel!
+
+        if (player.getGameMode() == GameMode.SPECTATOR) {
+            return; // ignore spectators
+        }
 
         arena.getDebugger().i("aimed location: " + event.getTo(), player);
 
