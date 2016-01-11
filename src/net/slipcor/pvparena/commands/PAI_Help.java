@@ -119,6 +119,7 @@ public class PAI_Help extends AbstractGlobalCommand {
                     }
                 }
             }
+            return;
         }
 
         Arena.pmsg(sender, Language.parse(MSG.HELP_HEADLINE, ""));

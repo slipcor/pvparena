@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.57 - address github issue #135 - language addition
+- v1.3.2.58 - /pa help - it still shows the colored standard reply even with sub-arguments
 - [read more](doc/changelog.md)
 
 ***
