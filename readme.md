@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.56 - addres github issue #141 - add config calcoffset to tweak block dissolve greediness
+- v1.3.2.57 - address github issue #135 - language addition
 - [read more](doc/changelog.md)
 
 ***
