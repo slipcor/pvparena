@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.55 - fix Spectate Spectators being told they cannot teleport when switching view
+- v1.3.2.56 - addres github issue #141 - add config calcoffset to tweak block dissolve greediness
 - [read more](doc/changelog.md)
 
 ***

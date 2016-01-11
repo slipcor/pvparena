@@ -1,3 +1,4 @@
+- v1.3.2.56 - addres github issue #141 - add config calcoffset to tweak block dissolve greediness
 - v1.3.2.55 - fix Spectate Spectators being told they cannot teleport when switching view
 - v1.3.2.54 - new Module: Spectate - uses the 1.8 SPECTATOR GameMode
 - v1.3.2.51 - update to Java 7
