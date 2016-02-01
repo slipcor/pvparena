@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.62 - prepare module class change hooking
+- v1.3.2.63 - add some message output when class changing fails
 - [read more](doc/changelog.md)
 
 ***
