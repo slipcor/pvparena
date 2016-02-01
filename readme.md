@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.60 - fix CTF being messed up by people continuing to play
+- v1.3.2.61 - address github issue #114 - add LibsDisguises support
 - [read more](doc/changelog.md)
 
 ***

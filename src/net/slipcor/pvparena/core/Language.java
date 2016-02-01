@@ -613,7 +613,7 @@ public final class Language {
         MODULE_RESPAWNRELAY_RESPAWNING("nulang.mod.respawnrelay.respawning", "Respawning in %1%!"),
 
         MODULE_SKINS_DISGUISECRAFT("nulang.mod.skins.dc", "Hooking into DisguiseCraft!"),
-        MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
+        MODULE_SKINS_LIBSDISGUISE("nulang.mod.skins.ld", "Hooking into LibsDisguises!"),
         MODULE_SKINS_NOMOD("nulang.mod.skins.nomod", "No disguise plugin found, Skins module is inactive!"),
         MODULE_SKINS_SHOWCLASS("nulang.mod.skins.showclass", "Class &e%1%&r will be disguised to: &a%2%"),
         MODULE_SKINS_SHOWTEAM("nulang.mod.skins.showteam", "Team %1% will be disguised to: %2%"),

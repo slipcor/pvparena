@@ -1,3 +1,4 @@
+- v1.3.2.61 - address github issue #114 - add LibsDisguises support
 - v1.3.2.60 - fix CTF being messed up by people continuing to play
 - v1.3.2.59 - fix update check
 - v1.3.2.58 - /pa help - it still shows the colored standard reply even with sub-arguments
