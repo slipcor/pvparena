@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.59 - fix update check
+- v1.3.2.60 - fix CTF being messed up by people continuing to play
 - [read more](doc/changelog.md)
 
 ***
