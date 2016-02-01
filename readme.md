@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.58 - /pa help - it still shows the colored standard reply even with sub-arguments
+- v1.3.2.59 - fix update check
 - [read more](doc/changelog.md)
 
 ***

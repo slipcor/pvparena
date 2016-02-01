@@ -10,7 +10,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
@@ -421,12 +420,21 @@ public class Updater extends Thread {
     private void runTest() {
         try {
 
-            final HttpURLConnection connection = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.getOutputStream().write(
-                    ("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource="+id).getBytes("UTF-8"));
-            String version = new BufferedReader(new InputStreamReader(connection.getInputStream())).readLine();
+            String version = "";
+
+            URL website = new URL("http://pa.slipcor.net/versioncheck.php?plugin=pvparena");
+            URLConnection connection = website.openConnection();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            connection.getInputStream()));
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                version = inputLine;
+                break;
+            }
+            in.close();
+
 
             pluginURL = "https://www.spigotmc.org/resources/pvp-arena.16584/";
             zipURL = null;

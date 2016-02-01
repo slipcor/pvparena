@@ -1,3 +1,4 @@
+- v1.3.2.59 - fix update check
 - v1.3.2.58 - /pa help - it still shows the colored standard reply even with sub-arguments
 - v1.3.2.57 - address github issue #135 - language addition
 - v1.3.2.56 - address github issue #141 - add config calcoffset to tweak block dissolve greediness
