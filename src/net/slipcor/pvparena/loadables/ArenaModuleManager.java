@@ -2,6 +2,7 @@ package net.slipcor.pvparena.loadables;
 
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.modules.*;
@@ -203,6 +204,12 @@ public class ArenaModuleManager {
     public static void onPlayerVelocity(final Arena arena, final PlayerVelocityEvent event) {
         for (final ArenaModule mod : arena.getMods()) {
             mod.onPlayerVelocity(event);
+        }
+    }
+
+    public static void parseClassChange(Arena arena, Player player, ArenaClass aClass) {
+        for (final ArenaModule mod : arena.getMods()) {
+            mod.parseClassChange(player, aClass);
         }
     }
 

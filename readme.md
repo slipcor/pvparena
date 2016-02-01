@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.61 - address github issue #114 - add LibsDisguises support
+- v1.3.2.62 - prepare module class change hooking
 - [read more](doc/changelog.md)
 
 ***
