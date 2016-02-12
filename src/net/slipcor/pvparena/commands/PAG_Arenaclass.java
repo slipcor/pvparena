@@ -17,7 +17,10 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * <pre>PVP Arena JOIN Command class</pre>
@@ -111,13 +114,13 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
         if (!arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSWITCH_AFTER_RESPAWN) || !arena.isFightInProgress()) {
             InventoryManager.clearInventory(aPlayer.get());
+            aPlayer.setArenaClass(aClass);
             if (aPlayer.getArenaClass() != null) {
                 ArenaPlayer.givePlayerFightItems(arena, aPlayer.get());
 
                 arena.msg(sender,
                         Language.parse(arena, MSG.CLASS_SELECTED, aClass.getName()));
             }
-            aPlayer.setArenaClass(aClass);
         } else if (aPlayer.getArenaClass() != null) {
             arena.msg(sender,
                     Language.parse(arena, MSG.CLASS_SELECTED_RESPAWN, aClass.getName()));

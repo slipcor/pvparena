@@ -1,3 +1,4 @@
+- v1.3.2.64 - fix issue #143 - thanks to Oruss7!
 - v1.3.2.63 - add some message output when class changing fails
 - v1.3.2.62 - prepare module class change hooking
 - v1.3.2.61 - address github issue #114 - add LibsDisguises support

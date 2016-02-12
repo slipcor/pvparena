@@ -36,7 +36,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
@@ -1365,10 +1364,10 @@ public class Arena {
 
         if (aPlayer.getNextArenaClass() != null) {
             InventoryManager.clearInventory(aPlayer.get());
+            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
             if (aPlayer.getArenaClass() != null) {
                 ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
             }
-            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
             aPlayer.setNextArenaClass(null);
         }
 

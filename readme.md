@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.63 - add some message output when class changing fails
+- v1.3.2.64 - fix issue #143 - thanks to Oruss7!
 - [read more](doc/changelog.md)
 
 ***
