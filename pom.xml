@@ -110,17 +110,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-    <distributionManagement>
-        <repository>
-            <id>repo-release</id>
-            <name>PVP Arena Releases</name>
-            <url>https://repo2.craftyn.com/repository/internal/</url>
-        </repository>
-        <snapshotRepository>
-            <id>repo-snapshot</id>
-            <name>PVP Arena Snapshots</name>
-            <url>https://repo2.craftyn.com/repository/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>

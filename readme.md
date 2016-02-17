@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.64 - fix issue #143 - thanks to Oruss7!
+- v1.3.2.67 - remove repo pushing to maybe fix building for now
 - [read more](doc/changelog.md)
 
 ***

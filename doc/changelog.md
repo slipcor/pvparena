@@ -1,3 +1,4 @@
+- v1.3.2.67 - remove repo pushing to maybe fix building for now
 - v1.3.2.64 - fix issue #143 - thanks to Oruss7!
 - v1.3.2.63 - add some message output when class changing fails
 - v1.3.2.62 - prepare module class change hooking
