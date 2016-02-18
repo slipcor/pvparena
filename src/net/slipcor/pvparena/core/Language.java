@@ -570,6 +570,10 @@ public final class Language {
         MODULE_BETTERCLASSES_CLEAR("nulang.betterclasses.clear", "ArenaClass &e%1%&r cleared!"),
         MODULE_BETTERCLASSES_LISTHEAD("nulang.betterclasses.listhead", "--- Potion Effects for class &e%1%&r ---"),
         MODULE_BETTERCLASSES_REMOVE("nulang.betterclasses.remove", "PotionEffect &e%2%&r removed from ArenaClass &e%1%&r!"),
+        MODULE_BETTERCLASSES_CLASSCHANGE_MAXTEAM("nulang.betterclasses.classchange.mteam",
+                "&cYour team has exceeded the class change limit!"),
+        MODULE_BETTERCLASSES_CLASSCHANGE_MAXPLAYER("nulang.betterclasses.classchange.mplayer",
+                "&cYou have exceeded the class change limit!"),
 
         MODULE_BETTERGEARS_CLASSDONE("nulang.bettergears.classdone", "Class &e%1%&r now has Protection Level &a%2%."),
         MODULE_BETTERGEARS_SHOWCLASS("nulang.bettergears.showclass", "Class &e%1%&r has Protection Level &a%2%."),
@@ -613,6 +617,7 @@ public final class Language {
 
         MODULE_SKINS_DISGUISECRAFT("nulang.mod.skins.dc", "Hooking into DisguiseCraft!"),
         MODULE_SKINS_MOBDISGUISE("nulang.mod.skins.md", "Hooking into MobDisguise!"),
+        MODULE_SKINS_LIBSDISGUISE("nulang.mod.skins.ld", "Hooking into LibsDisguises!"),
         MODULE_SKINS_NOMOD("nulang.mod.skins.nomod", "No disguise plugin found, Skins module is inactive!"),
         MODULE_SKINS_SHOWCLASS("nulang.mod.skins.showclass", "Class &e%1%&r will be disguised to: &a%2%"),
         MODULE_SKINS_SHOWTEAM("nulang.mod.skins.showteam", "Team %1% will be disguised to: %2%"),

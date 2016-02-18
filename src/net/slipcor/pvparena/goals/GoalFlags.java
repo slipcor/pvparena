@@ -160,6 +160,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("checking interact", player);
 
+        if (arena.realEndRunner != null) {
+            arena.getDebugger().i("[CTF] already ending!!");
+            return res;
+        }
+
         if (!block
                 .getType()
                 .name()

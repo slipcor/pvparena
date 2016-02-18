@@ -1369,10 +1369,10 @@ public class Arena {
 
         if (aPlayer.getNextArenaClass() != null) {
             InventoryManager.clearInventory(aPlayer.get());
+            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
             if (aPlayer.getArenaClass() != null) {
                 ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
             }
-            aPlayer.setArenaClass(aPlayer.getNextArenaClass());
             aPlayer.setNextArenaClass(null);
         }
 

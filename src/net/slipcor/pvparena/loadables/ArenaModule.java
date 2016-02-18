@@ -3,6 +3,7 @@ package net.slipcor.pvparena.loadables;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.api.IArenaCommandHandler;
 import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -342,6 +343,9 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      * hook into the initial module loading
      */
     public void onThisLoad() {
+    }
+
+    public void parseClassChange(Player player, ArenaClass aClass) {
     }
 
     /**
