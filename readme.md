@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.67 - remove repo pushing to maybe fix building for now
+- v1.3.2.68 - properly apply rewards when teamrewards is used
 - [read more](doc/changelog.md)
 
 ***

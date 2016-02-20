@@ -1097,6 +1097,22 @@ public class Arena {
             }
         }
 
+        // pre-parsing for "whole team winning"
+        for (final ArenaPlayer p : players) {
+            if (p.getStatus() != null && p.getStatus() == Status.FIGHT) {
+                final Player player = p.get();
+                if (player == null) {
+                    continue;
+                }
+                if (!force && p.getStatus() == Status.FIGHT
+                        && fightInProgress && !gaveRewards && !free && cfg.getBoolean(CFG.USES_TEAMREWARDS)) {
+                    players.removeAll(p.getArenaTeam().getTeamMembers());
+                    giveRewardsLater(p.getArenaTeam()); // this removes the players from the arena
+                    break;
+                }
+            }
+        }
+
         for (final ArenaPlayer p : players) {
 
             p.debugPrint();
@@ -1115,16 +1131,8 @@ public class Arena {
                         false, force);
                 if (!force && p.getStatus() == Status.FIGHT
                         && fightInProgress && !gaveRewards) {
-
-                    if (!free && cfg.getBoolean(CFG.USES_TEAMREWARDS)) {
-                        // we found a surviver, reward the team!
-                        giveRewardsLater(p.getArenaTeam());
-                    } else {
-                        // if we are remaining, give reward!
-                        giveRewards(player);
-                    }
-
-
+                    // if we are remaining, give reward!
+                    giveRewards(player);
                 }
             } else if (p.getStatus() != null
                     && (p.getStatus() == Status.DEAD || p.getStatus() == Status.LOST)) {
@@ -1167,10 +1175,17 @@ public class Arena {
             debug.i("team is null");
             return; // this one failed. try next time...
         }
-        debug.i("Giving rewards to team " + arenaTeam.getName() + '!');
 
         final Set<ArenaPlayer> players = new HashSet<>();
         players.addAll(arenaTeam.getTeamMembers());
+
+        for (final ArenaPlayer ap : players) {
+            ap.addWins();
+            callExitEvent(ap.get());
+            resetPlayer(ap.get(), cfg.getString(CFG.TP_WIN, "old"),
+                    false, false);
+        }
+        debug.i("Giving rewards to team " + arenaTeam.getName() + '!');
 
         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
             @Override
