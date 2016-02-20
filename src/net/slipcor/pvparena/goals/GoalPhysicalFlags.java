@@ -160,11 +160,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("checking interact", player);
 
-        if (!block
-                .getType()
-                .name()
-                .equals(arena.getArenaConfig().getString(
-                        CFG.GOAL_FLAGS_FLAGTYPE))) {
+        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
+                CFG.GOAL_FLAGS_FLAGTYPE));
+        if (block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
             arena.getDebugger().i("block, but not flag", player);
             return res;
         }
@@ -366,12 +364,10 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
-        if (block == null
-                || !block
-                .getType()
-                .name()
-                .equals(arena.getArenaConfig().getString(
-                        CFG.GOAL_FLAGS_FLAGTYPE))) {
+
+        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
+                CFG.GOAL_FLAGS_FLAGTYPE));
+        if (block == null || block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
             return res;
         }
 

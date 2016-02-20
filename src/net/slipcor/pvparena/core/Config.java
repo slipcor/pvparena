@@ -132,7 +132,7 @@ public class Config {
         PROTECT_SPAWN("protection.spawn", 0, null),
 
         READY_AUTOCLASS("ready.autoClass", "none", null),
-        READY_BLOCK("ready.block", Material.IRON_BLOCK.getId(), null),
+        READY_BLOCK("ready.block", "IRON_BLOCK", false, null),
         READY_CHECKEACHPLAYER("ready.checkEachPlayer", false, null),
         READY_CHECKEACHTEAM("ready.checkEachTeam", true, null),
         READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false, null),
@@ -222,7 +222,7 @@ public class Config {
         GOAL_PLAYERKILLREWARD_GRADUALLYDOWN("goal.playerkillreward.graduallyDown", false, "PlayerKillReward"),
         GOAL_PLAYERKILLREWARD_ONLYGIVE("goal.playerkillreward.onlyGive", false, "PlayerKillReward"),
 
-        GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "VILLAGER", false, "Rescue"),
+        GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "VILLAGER", "Rescue"),
         GOAL_RESCUE_LIVES("goal.rescue.rlives", 1, "Rescue"),
         GOAL_RESCUE_MUSTBESAFE("goal.rescue.mustBeSafe", true, "Rescue"),
         GOAL_RESCUE_RESCUEEFFECT("goal.rescue.effect", "none", "Rescue"),
@@ -337,7 +337,7 @@ public class Config {
         MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", 0.0d, "Vault"),
         MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", 0.0d, "Vault"),
 
-        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND", "Walls"),
+        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND", false, "Walls"),
         MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 
         MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),

@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.68 - properly apply rewards when teamrewards is used
+- v1.3.2.70 - allow data values in MATERIAL definitions (only works with /pa set [node] hand)
 - [read more](doc/changelog.md)
 
 ***

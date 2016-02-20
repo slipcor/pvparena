@@ -167,12 +167,12 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    final Material mat = ((Player) player).getItemInHand().getType();
-                    arena.getArenaConfig().setManually(node, mat.name());
+                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getItemInHand());
+                    arena.getArenaConfig().setManually(node, itemDefinition);
                     arena.msg(
                             player,
                             Language.parse(arena, MSG.SET_DONE, node,
-                                    String.valueOf(mat.name())));
+                                    itemDefinition));
                 } else {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
                 }
