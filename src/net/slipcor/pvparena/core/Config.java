@@ -341,7 +341,8 @@ public class Config {
         MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 
         MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),
-        MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit");
+        MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit"),
+        MODULES_WORLDEDIT_REGIONS("modules.worldedit.regions", new ArrayList<String>(), "WorldEdit");
 
         private final String node;
         private final Object value;
