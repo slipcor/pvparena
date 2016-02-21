@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.73 - add a new command "regionclear" to manage region clearing exceptions
+- v1.3.2.74 - fix a NPE in the EndRunnable when using rounds
 - [read more](doc/changelog.md)
 
 ***
