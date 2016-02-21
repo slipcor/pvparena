@@ -1974,7 +1974,11 @@ public class Arena {
         final List<String> result = new ArrayList<>();
 
         for (int i = 0; i < rounds.getCount(); i++) {
-            result.add(StringParser.joinSet(rounds.getGoals(i), "|"));
+            List<String> names = new ArrayList<>();
+            for (ArenaGoal goal : rounds.getGoals(i)) {
+                names.add(goal.getName());
+            }
+            result.add(StringParser.joinList(names, "|"));
         }
 
         cfg.setManually("rounds", result);

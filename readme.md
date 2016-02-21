@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.74 - fix a NPE in the EndRunnable when using rounds
+- v1.3.2.75 - properly save an ArenaGoal name to the round map (instead of its instance)
 - [read more](doc/changelog.md)
 
 ***
