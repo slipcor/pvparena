@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.77 - revert the CommandPreProcessEvent and rather fix the underlying problem, the command whitelist being too greedy. Added a config setting to use comand list as wildcards
+- v1.3.2.78 - change WALLS config setting command to "wallseconds", it interfered with the most probable arena name
 - [read more](doc/changelog.md)
 
 ***

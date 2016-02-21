@@ -28,7 +28,7 @@ Name them as you wish. "wallX", "wall2", regions with that name will be found an
 
 ## Commands
 
-- `/pa [arena] walls 1000` \- set the walls timer to 1000 seconds (short: !ww) 
+- `/pa [arena] wallseconds 1000` \- set the walls timer to 1000 seconds (short: !ww)
 - `/pa [arena] wallmaterial STONE` \- set the walls material to smoothstone (short: !wm)
 
 ## Warnings
