@@ -185,7 +185,7 @@ public class PlayerListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
         final Player player = event.getPlayer();
 
@@ -206,8 +206,12 @@ public class PlayerListener implements Listener {
         list.add("pvparena");
         arena.getDebugger().i("checking command whitelist", player);
 
+        boolean wildcard = PVPArena.instance.getConfig().getBoolean("whitelist_wildcard", false);
+
         for (final String s : list) {
-            if ("*".equals(s) || event.getMessage().startsWith('/' + s)) {
+            if ("*".equals(s) ||
+                    ((wildcard || s.endsWith(" ")) && event.getMessage().startsWith('/' + s)) ||
+                    (!wildcard && event.getMessage().startsWith('/' + s +' '))) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
