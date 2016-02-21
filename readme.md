@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.71 - add WorldEdit config to specify regions to autoload/autosave
+- v1.3.2.72 - add language and documentation for the WorldEdit addition
 - [read more](doc/changelog.md)
 
 ***

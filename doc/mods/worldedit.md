@@ -18,15 +18,18 @@ This module needs a full server restart to hook into WorldEdit properly, for the
 ## Config settings
 
 - autoload \- automatically load the arena's BATTLE regions after fight
-- autosave \- automatically save the arena's BATTLE regions before fight 
+- autosave \- automatically save the arena's BATTLE regions before fight
+- regions \- specify individual regions rather than all BATTLE regions
 
 ## Commands
 
 
 - `/pa [arena] regload [regionname] {filename}` \- load the region
 - `/pa [arena] regsave [regionname] {filename}` \- save the region
-- `/pa [arena] !we autoload` \- toggle automatic loading
-- `/pa [arena] !we autosave` \- toggle automatic saving 
+- `/pa [arena] !we autoload` \- toggle general automatic loading
+- `/pa [arena] !we autosave` \- toggle general automatic saving
+- `/pa [arena] !we region` \- toggle specific region loading/saving
+(using this command creates a list of arena regions that will be saved/loaded)
 
 ## Warnings
 

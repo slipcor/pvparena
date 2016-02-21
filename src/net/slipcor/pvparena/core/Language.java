@@ -648,6 +648,9 @@ public final class Language {
         MODULE_VAULT_REFUNDING("nulang.mod.vault.refunding", "Refunding %1%!"),
 
         MODULE_WORLDEDIT_CREATED("nulang.mod.worldedit.created", "Region created: &e%1%"),
+        MODULE_WORLDEDIT_LIST_ADDED("nulang.mod.worldedit.list_added", "Region &e%1%&f will now be specifically saved."),
+        MODULE_WORLDEDIT_LIST_REMOVED("nulang.mod.worldedit.list_removed", "Region &e%1%&f will no longer be specifically saved."),
+        MODULE_WORLDEDIT_LIST_SHOW("nulang.mod.worldedit.list_show", "These regions will be saved specifically: &e%1%&f"),
         MODULE_WORLDEDIT_LOADED("nulang.mod.worldedit.loaded", "Region loaded: &e%1%"),
         MODULE_WORLDEDIT_SAVED("nulang.mod.worldedit.saved", "Region saved: &e%1%"),
 
