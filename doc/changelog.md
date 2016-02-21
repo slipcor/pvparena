@@ -1,3 +1,4 @@
+- v1.3.2.76 - enforce player and teamplayer max values, move CommandPreProcessEvent to priority low to fix MobArena join related exploits
 - v1.3.2.75 - properly save an ArenaGoal name to the round map (instead of its instance)
 - v1.3.2.74 - fix a NPE in the EndRunnable when using rounds
 - v1.3.2.73 - add a new command "regionclear" to manage region clearing exceptions

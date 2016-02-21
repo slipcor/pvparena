@@ -336,7 +336,22 @@ public class PACheck {
 
             team = arena.getTeam(TeamManager.calcFreeTeam(arena));
         } else {
-            team = arena.getTeam(args[0]);
+            ArenaTeam aTeam = arena.getTeam(args[0]);
+
+            int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+            int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
+
+            if (aTeam == null) {
+                team = aTeam;
+            } else if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+                return;
+            } else if (maxTeamPlayers > 0 && aTeam.getTeamMembers().size() > maxTeamPlayers) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL, aTeam.getColoredName()));
+                return;
+            } else {
+                team = aTeam;
+            }
         }
 
         if (team == null && args.length > 0) {

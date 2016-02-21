@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.75 - properly save an ArenaGoal name to the round map (instead of its instance)
+- v1.3.2.76 - enforce player and teamplayer max values, move CommandPreProcessEvent to priority low to fix MobArena join related exploits
 - [read more](doc/changelog.md)
 
 ***
