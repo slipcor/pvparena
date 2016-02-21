@@ -66,6 +66,7 @@ public class Config {
         GENERAL_LEAVEDEATH("general.leavedeath", false, null),
         GENERAL_LANG("general.lang", "none", null),
         GENERAL_OWNER("general.owner", "server", null),
+        GENERAL_REGIONCLEAREXCEPTIONS("general.regionclearexceptions", new ArrayList<String>(), null),
         GENERAL_QUICKSPAWN("general.quickspawn", true, null),
         GENERAL_PREFIX("general.prefix", "PVP Arena", null),
         GENERAL_SHOWREMAININGLIVES("general.showRemainingLives", true, null),

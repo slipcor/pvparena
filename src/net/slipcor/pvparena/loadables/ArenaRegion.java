@@ -30,10 +30,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ArenaRegion {
 
@@ -450,6 +447,11 @@ public class ArenaRegion {
             if (entity.hasMetadata("NPC")) {
                 continue;
             }
+
+            if (arena.getArenaConfig().getStringList(CFG.GENERAL_REGIONCLEAREXCEPTIONS.getNode(), new ArrayList<String>()).contains(entity.getType().name())) {
+                continue;
+            }
+
             entity.remove();
         }
         if (type == RegionType.JOIN || type == RegionType.WATCH) {

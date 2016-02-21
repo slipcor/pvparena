@@ -1,3 +1,4 @@
+- v1.3.2.73 - add a new command "regionclear" to manage region clearing exceptions
 - v1.3.2.72 - add language and documentation for the WorldEdit addition
 - v1.3.2.71 - add WorldEdit config to specify regions to autoload/autosave
 - v1.3.2.70 - allow data values in MATERIAL definitions (only works with /pa set [node] hand)

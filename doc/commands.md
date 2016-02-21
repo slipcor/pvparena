@@ -35,6 +35,7 @@ Command | Shorthand | Definition
 [/pa playerjoin](commands/playerjoin.md) | /pa !pj | Make a player join
 [/pa protection](commands/protection.md) | /pa !p | Manages arena protections
 [/pa region](commands/region.md) | /pa !rg | Manages arena regions
+[/pa regionclear](commands/regionclear.md) | /pa !rc | Manages arena region clearing exceptions
 [/pa regionflags](commands/regionflags.md) | /pa !rf | Manages arena flags
 [/pa regiontype](commands/regiontype.md) | /pa !rt | Changes a region type
 [/pa regions](commands/regions.md) | /pa !rs | Debugs regions | ^

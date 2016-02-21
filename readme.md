@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.72 - add language and documentation for the WorldEdit addition
+- v1.3.2.73 - add a new command "regionclear" to manage region clearing exceptions
 - [read more](doc/changelog.md)
 
 ***

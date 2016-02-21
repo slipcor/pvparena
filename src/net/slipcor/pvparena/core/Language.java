@@ -363,6 +363,9 @@ public final class Language {
         READY_LIST("nulang.ready.list", "Players: %1%"),
         READY_DONE("nulang.ready.done", "You have been flagged as ready!"),
 
+        REGION_CLEAR_ADDED("nulang.region.clear.added", "Added to region entity clearing whitelist: &a%1%&r"),
+        REGION_CLEAR_LIST("nulang.region.clear.list", "Region entity clearing whitelist: &a%1%&r"),
+        REGION_CLEAR_REMOVED("nulang.region.clear.removed", "Removed from region entity clearing whitelist: &a%1%&r"),
         REGION_FLAG_ADDED("nulang.region.flag.added", "Region flag added: &a%1%&r"),
         REGION_FLAG_REMOVED("nulang.region.flag.removed", "Region flag removed: &a%1%&r"),
         REGION_HEIGHT("nulang.region.height", "Region height set to: &a%1%&r"),
