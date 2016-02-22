@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.79 - add TELEPORT protection to allow teleport prevention (it was silently allowed if only happening IN the region, without command)
+- v1.3.2.80 - properly fix build #68
 - [read more](doc/changelog.md)
 
 ***

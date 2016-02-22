@@ -1184,6 +1184,7 @@ public class Arena {
             callExitEvent(ap.get());
             resetPlayer(ap.get(), cfg.getString(CFG.TP_WIN, "old"),
                     false, false);
+            ap.reset();
         }
         debug.i("Giving rewards to team " + arenaTeam.getName() + '!');
 
