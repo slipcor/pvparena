@@ -16,6 +16,7 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
+import net.slipcor.pvparena.loadables.ArenaRegion.RegionFlag;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 import net.slipcor.pvparena.managers.*;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
@@ -32,7 +33,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>
@@ -767,8 +770,44 @@ public class PACheck {
                         arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
         scr.setId(arena.spawnCampRunnerID);
 
+        final Set<ArenaRegion> battleRegions = arena.getRegionsByType(RegionType.BATTLE);
+
         for (final ArenaRegion region : arena.getRegions()) {
-            if (!region.getFlags().isEmpty() || region.getType().equals(RegionType.BATTLE)) {
+            final Set<ArenaRegion.RegionFlag> flags = region.getFlags();
+            if (flags.contains(RegionFlag.DEATH) || flags.contains(RegionFlag.WIN) || flags.contains(RegionFlag.LOSE) || flags.contains(RegionFlag.NOCAMP)) {
+                region.initTimer();
+                continue;
+            }
+
+            final RegionType type = region.getType();
+            if (type == RegionType.BATTLE || type == RegionType.WATCH || type == RegionType.LOUNGE) {
+                region.initTimer();
+                continue;
+            }
+
+            if (battleRegions.size() == 1 && region.getType().equals(RegionType.BATTLE)) {
+                region.initTimer();
+            }
+        }
+        if (battleRegions.size() > 1) {
+            final Set<ArenaRegion> removals = new HashSet<>();
+
+            for (final ArenaRegion checkRegion : battleRegions) {
+                for (final ArenaRegion checkRegion2 : battleRegions) {
+                    if (checkRegion.equals(checkRegion2)) {
+                        continue;
+                    }
+                    if (!removals.contains(checkRegion) && checkRegion.containsRegion(checkRegion2) && removals.size() < battleRegions.size()) {
+                        // prevent regions from erasing each other if size is the same!
+                        // first catch removes
+                        // don't check removed ones for containing others, they are out and inner ones will be caught!
+                        removals.add(checkRegion2);
+                    }
+                }
+            }
+            battleRegions.removeAll(removals);
+
+            for (final ArenaRegion region : battleRegions) {
                 region.initTimer();
             }
         }

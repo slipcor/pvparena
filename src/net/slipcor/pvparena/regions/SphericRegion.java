@@ -12,7 +12,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -298,6 +300,47 @@ public class SphericRegion extends ArenaRegionShape {
     @Override
     public PABlockLocation getCenter() {
         return region.locs[0].getMidpoint(region.locs[1]);
+    }
+
+    @Override
+    public List<PABlockLocation> getContainBlockCheckList() {
+        List<PABlockLocation> result = new ArrayList<>();
+
+        final PABlockLocation center = getCenter();
+        final int radius = (int) Math.floor(getRadius());
+
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()-radius,
+                center.getY(),
+                center.getZ())); // == 0
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()+radius,
+                center.getY(),
+                center.getZ())); // == 1
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                center.getY()-radius,
+                center.getZ())); // == 2
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                center.getY()+radius,
+                center.getZ())); // == 3
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                center.getY(),
+                center.getZ()-radius)); // == 4
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                center.getY(),
+                center.getZ()+radius)); // == 5
+
+        getRegion().getArena().getDebugger().i("SPHERIC blockCheckList");
+
+        for (PABlockLocation block : result) {
+            getRegion().getArena().getDebugger().i(block.toString());
+        }
+
+        return result;
     }
 
     @Override

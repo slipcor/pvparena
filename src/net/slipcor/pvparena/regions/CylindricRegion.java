@@ -12,7 +12,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -298,6 +300,67 @@ public class CylindricRegion extends ArenaRegionShape {
     @Override
     public PABlockLocation getCenter() {
         return new PABlockLocation(region.locs[0].getMidpoint(region.locs[1]).toLocation());
+    }
+
+    @Override
+    public List<PABlockLocation> getContainBlockCheckList() {
+        final PABlockLocation center = getCenter();
+
+        final int diff = (region.locs[0].getX() == region.locs[1].getX()) ?
+            // get Z diff
+            region.locs[1].getZ() - center.getZ()
+        :
+            // get X diff
+            region.locs[1].getX() - center.getX()
+        ;
+
+
+        final List<PABlockLocation> result = new ArrayList<>();
+
+        // bottom ring
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()-diff,
+                region.locs[0].getY(),
+                center.getZ())); // == 0
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()+diff,
+                region.locs[0].getY(),
+                center.getZ())); // == 1
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                region.locs[0].getY(),
+                center.getZ()-diff)); // == 2
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                region.locs[0].getY(),
+                center.getZ()+diff)); // == 3
+
+
+        // top ring
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()-diff,
+                region.locs[1].getY(),
+                center.getZ())); // == 0
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX()+diff,
+                region.locs[1].getY(),
+                center.getZ())); // == 1
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                region.locs[1].getY(),
+                center.getZ()-diff)); // == 2
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                center.getX(),
+                region.locs[1].getY(),
+                center.getZ()+diff)); // == 3
+
+        getRegion().getArena().getDebugger().i("CYLINDRIC blockCheckList");
+
+        for (PABlockLocation block : result) {
+            getRegion().getArena().getDebugger().i(block.toString());
+        }
+
+        return result;
     }
 
     @Override

@@ -222,6 +222,24 @@ public class ArenaRegion {
         return false;
     }
 
+    public boolean containsRegion(ArenaRegion other) {
+        List<PABlockLocation> checkList = other.getShape().getContainBlockCheckList();
+        for (PABlockLocation block : checkList) {
+            if (!this.getShape().contains(block)) {
+                return false;
+            }
+        }
+
+        // All points are inside
+        // This will include all edge cases to account for:
+
+        // CUBE - absolute maximum due to maximum X&Y&Z and minimum X&Y&Z
+        // CYLINDER - absolute maximum due to maximum X&Y,Y&Z and minimum X&Y,Y&Z
+        // SPHERE - current minimum with only minimum X, Y, Z and minimum X, Y, Z
+
+        return true;
+    }
+
     /**
      * Creates a new Arena Region
      *

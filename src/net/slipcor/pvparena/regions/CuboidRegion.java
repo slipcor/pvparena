@@ -12,7 +12,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -221,6 +223,48 @@ public class CuboidRegion extends ArenaRegionShape {
     @Override
     public PABlockLocation getCenter() {
         return getMinimumLocation().getMidpoint(getMaximumLocation());
+    }
+
+    @Override
+    public List<PABlockLocation> getContainBlockCheckList() {
+        final List<PABlockLocation> result = new ArrayList<>();
+
+        result.add(region.locs[0]); // == 0
+
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[1].getX(),
+                region.locs[0].getY(),
+                region.locs[0].getZ())); // == 1
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[0].getX(),
+                region.locs[1].getY(),
+                region.locs[0].getZ())); // == 2
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[1].getX(),
+                region.locs[1].getY(),
+                region.locs[0].getZ())); // == 3
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[0].getX(),
+                region.locs[1].getY(),
+                region.locs[0].getZ())); // == 4
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[1].getX(),
+                region.locs[0].getY(),
+                region.locs[1].getZ())); // == 5
+        result.add(new PABlockLocation(region.locs[0].getWorldName(),
+                region.locs[0].getX(),
+                region.locs[1].getY(),
+                region.locs[1].getZ())); // == 6
+
+        result.add(region.locs[1]); // == 7
+
+        getRegion().getArena().getDebugger().i("CUBOID blockCheckList");
+
+        for (PABlockLocation block : result) {
+            getRegion().getArena().getDebugger().i(block.toString());
+        }
+
+        return result;
     }
 
     @Override

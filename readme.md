@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.80 - properly fix build #68
+- v1.3.2.81 - address github issue #154, maybe even issue #86 - only check necessarily flagged regions and BATTLE regions, with include-check
 - [read more](doc/changelog.md)
 
 ***

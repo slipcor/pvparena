@@ -7,6 +7,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 /**
  * <pre>
  * Arena Region Shape class
@@ -27,6 +29,8 @@ public abstract class ArenaRegionShape extends NCBLoadable {
     public abstract boolean contains(PABlockLocation loc);
 
     public abstract PABlockLocation getCenter();
+
+    public abstract List<PABlockLocation> getContainBlockCheckList();
 
     public abstract PABlockLocation getMaximumLocation();
 
