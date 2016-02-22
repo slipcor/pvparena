@@ -1,3 +1,5 @@
+- v1.3.2.79 - add TELEPORT protection to allow teleport prevention (it was silently allowed if only happening IN the region, without command)
+- v1.3.2.78 - change WALLS config setting command to "wallseconds", it interfered with the most probable arena name
 - v1.3.2.77 - revert the CommandPreProcessEvent and rather fix the underlying problem, the command whitelist being too greedy. Added a config setting to use comand list as wildcards
 - v1.3.2.76 - enforce player and teamplayer max values, move CommandPreProcessEvent to priority low to fix MobArena join related exploits
 - v1.3.2.75 - properly save an ArenaGoal name to the round map (instead of its instance)

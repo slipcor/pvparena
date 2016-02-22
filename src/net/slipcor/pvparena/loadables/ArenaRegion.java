@@ -114,10 +114,11 @@ public class ArenaRegion {
      * INVENTORY - Player accessing inventory
      * PICKUP - Player picking up stuff
      * CRAFT - Player crafting stuff
+     * TELEPORT - Player teleporting
      * </pre>
      */
     public enum RegionProtection {
-        BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT
+        BREAK, FIRE, MOBS, NATURE, PAINTING, PISTON, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT, TELEPORT
     }
 
     /**

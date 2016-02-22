@@ -814,8 +814,12 @@ public class PlayerListener implements Listener {
         }
 
         for (final ArenaRegion r : regions) {
-            if (r.getShape().contains(new PABlockLocation(event.getTo()))) {
-                // teleport inside the arena, allow!
+            if (r.getShape().contains(new PABlockLocation(event.getTo()))
+                    || r.getShape().contains(new PABlockLocation(event.getFrom()))) {
+                // teleport inside the arena, allow, unless:
+                if (r.getProtections().contains(RegionProtection.TELEPORT)) {
+                    continue;
+                }
                 maybeFixInvisibility(arena, player);
 
                 return;

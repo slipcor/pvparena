@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.78 - change WALLS config setting command to "wallseconds", it interfered with the most probable arena name
+- v1.3.2.79 - add TELEPORT protection to allow teleport prevention (it was silently allowed if only happening IN the region, without command)
 - [read more](doc/changelog.md)
 
 ***

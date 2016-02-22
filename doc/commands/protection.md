@@ -26,6 +26,7 @@ Erroneous protection flag usage will show you the supported flags, they include:
 - TNTBREAK - prevent tnt block damage (explosion still hurts)
 - DROP - prevent player item dropping
 - INVENTORY - prevent inventory interaction
-- PICKUP - prevent player item pickup 
+- PICKUP - prevent player item pickup
+- TELEPORT - prevent player teleportation
 
 Always verify your protections with `/pa [arenaname] !rs [regionname]`
