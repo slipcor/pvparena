@@ -41,12 +41,12 @@ public class RegionTool extends ArenaModule {
 
     @Override
     public boolean onPlayerInteract(final PlayerInteractEvent event) {
-        if (event.getPlayer().getItemInHand() == null
-                || event.getPlayer().getItemInHand().getType() == Material.AIR) {
+        if (event.getPlayer().getInventory().getItemInMainHand() == null
+                || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
             return false;
         }
 
-        if (event.getPlayer().getItemInHand().getType() == Material.AIR) {
+        if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR) {
             return false;
         }
 
@@ -67,7 +67,7 @@ public class RegionTool extends ArenaModule {
                     arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, sMat));
                     continue;
                 }
-                if (event.getPlayer().getItemInHand().getType() == mMat) {
+                if (event.getPlayer().getInventory().getItemInMainHand().getType() == mMat) {
                     PABlockLocation loc = new PABlockLocation(event.getPlayer().getLocation());
                     if (event.getClickedBlock() != null) {
                         loc = new PABlockLocation(event.getClickedBlock().getLocation());

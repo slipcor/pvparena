@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.arena;
 
+import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.*;
@@ -1488,7 +1489,6 @@ public class Arena {
                 spawns = SpawnManager.getSpawnsStartingWith(this, this.free ?"spawn":sTeam + "spawn");
             }
 
-
             for (final PALocation spawnLoc : spawns) {
                 for (final Map.Entry<Location, ArenaPlayer> locationArenaPlayerEntry : players.entrySet()) {
                     if (spawnLoc.getDistanceSquared(new PALocation(locationArenaPlayerEntry.getKey())) < 9) {
@@ -1496,7 +1496,8 @@ public class Arena {
                                 .get()
                                 .setLastDamageCause(
                                         new EntityDamageEvent(locationArenaPlayerEntry.getValue().get(),
-                                                DamageCause.CUSTOM, (double) 1002));
+                                                DamageCause.CUSTOM, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1002))),
+                                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, -0.0D))));
                         locationArenaPlayerEntry.getValue()
                                 .get()
                                 .damage(cfg.getInt(

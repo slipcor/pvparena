@@ -32,8 +32,8 @@ public class DamageResetRunnable implements Runnable {
     public void run() {
         if (!arena.getArenaConfig().getBoolean(CFG.DAMAGE_WEAPONS)) {
             try {
-                if (InventoryManager.receivesDamage(attacker.getItemInHand())) {
-                    attacker.getItemInHand().setDurability((short) 0);
+                if (InventoryManager.receivesDamage(attacker.getInventory().getItemInMainHand())) {
+                    attacker.getInventory().getItemInMainHand().setDurability((short) 0);
                     attacker.updateInventory();
                 }
             } catch (final Exception e) {

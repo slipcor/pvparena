@@ -211,9 +211,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
                 arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
 
-                if (player.getItemInHand() == null
+                if (player.getInventory().getItemInMainHand() == null
                         || !player
-                        .getItemInHand()
+                        .getInventory().getItemInMainHand()
                         .getType()
                         .name()
                         .equals(arena.getArenaConfig().getString(
@@ -225,7 +225,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                     return res;
                 }
 
-                player.getInventory().remove(player.getItemInHand());
+                player.getInventory().remove(player.getInventory().getItemInMainHand());
                 player.updateInventory();
 
                 try {
