@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.81 - address github issue #154, maybe even issue #86 - only check necessarily flagged regions and BATTLE regions, with include-check
+- v1.3.2.82 - address github issue #158 by adding 'shortcut_shuffle'
 - [read more](doc/changelog.md)
 
 ***

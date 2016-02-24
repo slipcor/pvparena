@@ -1,3 +1,4 @@
+- v1.3.2.82 - address github issue #158 by adding 'shortcut_shuffle'
 - v1.3.2.81 - address github issue #154, maybe even issue #86 - only check necessarily flagged regions and BATTLE regions, with include-check
 - v1.3.2.80 - properly fix build #68
 - v1.3.2.79 - add TELEPORT protection to allow teleport prevention (it was silently allowed if only happening IN the region, without command)

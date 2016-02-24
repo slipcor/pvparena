@@ -13,6 +13,7 @@ whitelist:
 whitelist_wildcard: false
 use_shortcuts: false
 only_shortcuts: false
+shortcut_shuffle: false
 allow_ungrouped: false
 consoleoffduty: false
 update:

@@ -162,8 +162,8 @@ public class Config {
         USES_INGAMECLASSSWITCH("uses.ingameClassSwitch", false, null),
         USES_INVISIBILITYFIX("uses.invisibilityfix", false, null),
         USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false, null),
-        USES_PLAYERCLASSES("uses.playerclasses", false, null),
         USES_OVERLAPCHECK("uses.overlapCheck", true, null),
+        USES_PLAYERCLASSES("uses.playerclasses", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
         USES_WOOLHEAD("uses.woolHead", false, null),
 

@@ -412,6 +412,9 @@ public final class ArenaManager {
                 PVPArena.instance.getLogger().warning("'shortcuts=>" + key + "' node is null!!");
                 continue;
             }
+            if (PVPArena.instance.getConfig().getBoolean("shortcut_shuffle")) {
+                Collections.shuffle(strings);
+            }
 
             boolean error = false;
             for (final String arena : strings) {
