@@ -1,3 +1,4 @@
+- v1.3.2.83 address github issue #159 - do not instanciate the tracker if disabled
 - v1.3.2.82 - address github issue #158 by adding 'shortcut_shuffle'
 - v1.3.2.81 - address github issue #154, maybe even issue #86 - only check necessarily flagged regions and BATTLE regions, with include-check
 - v1.3.2.80 - properly fix build #68

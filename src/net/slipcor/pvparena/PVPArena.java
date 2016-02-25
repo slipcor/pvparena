@@ -484,9 +484,10 @@ public class PVPArena extends JavaPlugin {
         updater = new Updater(this, getFile(), true);
 
         if (ArenaManager.count() > 0) {
-
-            final Tracker trackMe = new Tracker();
-            trackMe.start();
+            if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {
+                final Tracker trackMe = new Tracker();
+                trackMe.start();
+            }
 
             try {
                 final Metrics metrics = new Metrics(this);

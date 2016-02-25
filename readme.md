@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.82 - address github issue #158 by adding 'shortcut_shuffle'
+- v1.3.2.83 address github issue #159 - do not instanciate the tracker if disabled
 - [read more](doc/changelog.md)
 
 ***
