@@ -193,7 +193,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
 
             arena.msg(sender,
-                    "block: " + arena.getArenaConfig().getInt(CFG.READY_BLOCK) + " | " +
+                    "block: " + arena.getReadyBlock() + " | " +
                             "minPlayers: " + arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS) + " | " +
                             "maxPlayers: " + arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS) + " | " +
                             "maxTeam: " + arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS) + " | " +
