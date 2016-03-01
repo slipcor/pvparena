@@ -1,3 +1,4 @@
+- v1.3.2.85 - revert deprecation of ArenaModule.getArena() - failsafe(r) loading of modules and goals - arenas will not appear lost any more!
 - v1.3.2.84 - address github issue #161, properly read ambiguous ready block definition
 - v1.3.2.83 - address github issue #159 - do not instanciate the tracker if disabled
 - v1.3.2.82 - address github issue #158 by adding 'shortcut_shuffle'

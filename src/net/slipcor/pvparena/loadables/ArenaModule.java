@@ -193,7 +193,7 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     public void displayInfo(final CommandSender sender) {
     }
 
-    @Deprecated
+
     public Arena getArena() {
         return arena;
     }

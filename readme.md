@@ -38,6 +38,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 - [bukkit.org - Bukkit 1.7.9](http://dev.bukkit.org/bukkit-plugins/pvparena/)
 - [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
+- [jenkins - dev builds](https://ci2.craftyn.com/job/PVP%20Arena/)
 
 ***
 
@@ -84,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.84 - address github issue #161, properly read ambiguous ready block definition
+- v1.3.2.85 - revert deprecation of ArenaModule.getArena() - failsafe(r) loading of modules and goals - arenas will not appear lost any more!
 - [read more](doc/changelog.md)
 
 ***
