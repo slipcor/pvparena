@@ -176,6 +176,10 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                 getLogger().log(Level.WARNING, "Unknown cause");
                 getLogger().log(Level.WARNING,
                         "The JAR file " + file.getName() + " failed to load");
+            } catch (final NoClassDefFoundError ee) {
+                ee.printStackTrace();
+                getLogger().log(Level.WARNING,
+                        "The JAR file " + file.getName() + " failed to load");
             }
         }
 

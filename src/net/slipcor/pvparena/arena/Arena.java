@@ -417,6 +417,7 @@ public class Arena {
         getDebugger().i("reading ready block");
         Material mMat = Material.IRON_BLOCK;
         try {
+            //TODO: fix this in 1.9 build to take proper strings
             mMat = Material.getMaterial(cfg
                     .getInt(CFG.READY_BLOCK));
             if (mMat == Material.AIR) {
