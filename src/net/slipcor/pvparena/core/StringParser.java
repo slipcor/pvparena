@@ -5,7 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Banner;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
@@ -285,7 +288,7 @@ public final class StringParser {
             final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
             String data = dataSplit[0];
             if (temp[2].contains(SAFE_BREAK)) {
-                if (mat == Material.POTION) {
+                if (mat == Material.POTION || mat == Material.BANNER || mat == Material.SHIELD) {
                     data = temp[2];
                 } else {
                     data = temp[2].split(SAFE_BREAK)[0];
@@ -409,6 +412,76 @@ public final class StringParser {
                     } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid potion data: " + data);
+                        return itemStack;
+                    }
+                } else if (itemStack.getType() == Material.BANNER) {
+                    // data = ?<oOo>?x?<oOo>?x? { ? are ordinals }
+                    try {
+                        final BannerMeta bannerMeta = (BannerMeta) itemStack.getItemMeta();
+
+                        final String[] defs = data.split(SAFE_BREAK);
+
+                        boolean firstDone = false;
+                        for (final String def : defs) {
+                            if (!firstDone) {
+                                Integer i = Integer.parseInt(def);
+                                bannerMeta.setBaseColor(DyeColor.values()[i]);
+                                firstDone = true;
+                                continue;
+                            }
+                            final String[] vals = def.split("x");
+                            int dyeColor = Integer.parseInt(vals[0]);
+                            int patternType = Integer.parseInt(vals[1]);
+                            bannerMeta.addPattern(new Pattern(DyeColor.values()[dyeColor], PatternType.values()[patternType]));
+
+                        }
+                        if (lore != null) {
+                            final List<String> lLore = new ArrayList<>();
+                            for (final String line : lore.split(SAFE_BREAK)) {
+                                lLore.add(codeCharacters(line, false));
+                            }
+                            bannerMeta.setLore(lLore);
+                        }
+                        itemStack.setItemMeta(bannerMeta);
+                    } catch (Exception e) {
+                        PVPArena.instance.getLogger().warning(
+                                "invalid banner data: " + data);
+                        return itemStack;
+                    }
+                } else if (itemStack.getType() == Material.SHIELD) {
+                    // data = ?<oOo>?x?<oOo>?x? { ? are ordinals }
+                    try {
+                        final BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
+                        Banner bannerState = (Banner) meta.getBlockState();
+
+                        final String[] defs = data.split(SAFE_BREAK);
+                        boolean firstDone = false;
+                        for (final String def : defs) {
+                            if (!firstDone) {
+                                Integer i = Integer.parseInt(def);
+                                bannerState.setBaseColor(DyeColor.values()[i]);
+                                firstDone = true;
+                                continue;
+                            }
+                            final String[] vals = def.split("x");
+                            int dyeColor = Integer.parseInt(vals[0]);
+                            int patternType = Integer.parseInt(vals[1]);
+                            Pattern maybe = new Pattern(DyeColor.values()[dyeColor], PatternType.values()[patternType]);
+                            bannerState.addPattern(maybe);
+                        }
+                        bannerState.update();
+                        meta.setBlockState(bannerState);
+                        if (lore != null) {
+                            final List<String> lLore = new ArrayList<>();
+                            for (final String line : lore.split(SAFE_BREAK)) {
+                                lLore.add(codeCharacters(line, false));
+                            }
+                            meta.setLore(lLore);
+                        }
+                        itemStack.setItemMeta(meta);
+                    } catch (Exception e) {
+                        PVPArena.instance.getLogger().warning(
+                                "invalid banner data: " + data);
                         return itemStack;
                     }
                 } else {
@@ -559,6 +632,47 @@ public final class StringParser {
             for (final PotionEffect pe : potionMeta.getCustomEffects()) {
                 temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);
+            }
+        } else if (itemStack.getType() == Material.BANNER) {
+            if (!durability) {
+                temp.append('~');
+                temp.append(itemStack.getDurability());
+                durability = true;
+            }
+            try {
+                final BannerMeta bannerMeta = (BannerMeta) itemStack.getItemMeta();
+                temp.append('~');
+                temp.append(bannerMeta.getBaseColor().ordinal());
+                temp.append(SAFE_BREAK);
+                for (Pattern p : bannerMeta.getPatterns()) {
+                    temp.append(p.getColor().ordinal());
+                    temp.append("x");
+                    temp.append(p.getPattern().ordinal());
+                    temp.append(SAFE_BREAK);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (itemStack.getType() == Material.SHIELD) {
+            if (!durability) {
+                temp.append('~');
+                temp.append(itemStack.getDurability());
+                durability = true;
+            }
+            try {
+                BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
+                Banner bannerState = (Banner) meta.getBlockState();
+                temp.append('~');
+                temp.append(bannerState.getBaseColor().ordinal());
+                temp.append(SAFE_BREAK);
+                for (Pattern p : bannerState.getPatterns()) {
+                    temp.append(p.getColor().ordinal());
+                    temp.append("x");
+                    temp.append(p.getPattern().ordinal());
+                    temp.append(SAFE_BREAK);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
