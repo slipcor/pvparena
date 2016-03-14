@@ -26,6 +26,7 @@ Command | Shorthand | Definition
 [/pa blacklist \(or whitelist\)](commands/blacklist.md) | /pa !bl (!wl) | Manage arena blacklists or whitelists
 [/pa check](commands/check.md) | /pa !ch | Checks an arena configuration
 [/pa class](commands/class.md) | /pa !cl | Manage arena classes
+[/pa classchest](commands/classchest.md) | /pa !cc | Manage arena class chests
 [/pa create](commands/create.md) | /pa !c | Creates an arena
 [/pa disable](commands/disable.md) | /pa !dis | Disables an arena.
 /pa edit | /pa !e | Toggles editing of an arena

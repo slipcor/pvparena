@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.88 - add /pa [arena] classchest [class] - shorthand !cc - fixed class chests containing the items
+- v1.3.2.89 - fix the shorthand and the doc linking
 - [read more](doc/changelog.md)
 
 ***

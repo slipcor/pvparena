@@ -1,3 +1,4 @@
+- v1.3.2.89 - fix the shorthand and the doc linking
 - v1.3.2.88 - add /pa [arena] classchest [class] - shorthand !cc - fixed class chests containing the items
 - v1.3.2.87 - address github issue #168, NPE on StructureGrowEvent
 - v1.3.2.85 - revert deprecation of ArenaModule.getArena() - failsafe(r) loading of modules and goals - arenas will not appear lost any more!

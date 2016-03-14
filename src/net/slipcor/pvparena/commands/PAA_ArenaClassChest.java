@@ -74,7 +74,7 @@ public class PAA_ArenaClassChest extends AbstractArenaCommand {
 
     @Override
     public List<String> getShort() {
-        return Collections.singletonList("-cc");
+        return Collections.singletonList("!cc");
     }
 
     @Override
