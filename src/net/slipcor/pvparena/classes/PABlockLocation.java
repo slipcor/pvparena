@@ -28,6 +28,17 @@ public class PABlockLocation {
         this.z = z;
     }
 
+    public PABlockLocation(final String value) {
+        String[] split = value.split(":");
+        world = split[0];
+
+        String[] ints = split[1].split(",");
+
+        x = Integer.parseInt(ints[0]);
+        y = Integer.parseInt(ints[1]);
+        z = Integer.parseInt(ints[2]);
+    }
+
     public PABlockLocation(final Location bukkitLocation) {
         world = bukkitLocation.getWorld().getName();
         x = bukkitLocation.getBlockX();

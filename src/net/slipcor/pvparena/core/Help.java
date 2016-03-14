@@ -53,6 +53,12 @@ public final class Help {
                 "/pa [arenaname] class load [classname]",
                 "/pa [arenaname] class save [classname]",
                 "/pa [arenaname] class remove [classname]"}),
+        CLASSCHEST("nulang.help.msg.classchest", new String[]{
+                "Manage arena class chests",
+                LINE,
+                "shorthand command: !cc",
+                LINE,
+                "/pa [arenaname] classchest [classname]"}),
         CREATE("nulang.help.msg.create", new String[]{
                 "Create an arena",
                 LINE,

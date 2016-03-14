@@ -143,6 +143,7 @@ public final class Language {
         ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &r%1%"),
         ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
         ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
+        ERROR_NO_CHEST("nulang.error.nochest", "You are not looking at a chest!"),
         ERROR_NO_FIGHT("nulang.error.nofight", "There is no fight in progress."),
         ERROR_NO_GOAL("nulang.error.nogoal", "You did not add a goal! &a/pa [arena] goal [goalname]"),
         ERROR_NO_SPAWNS("nulang.error.nospawns", "No spawns set!"),

@@ -1,10 +1,12 @@
 package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,10 +16,7 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <pre>Arena Class class</pre>
@@ -111,39 +110,50 @@ public final class ArenaClass {
                                 + className);
                 continue;
             }
-            final String[] sItems = sItemList.split(",");
-            final ItemStack[] items = new ItemStack[sItems.length];
-            final ItemStack[] armors = new ItemStack[4];
+            final String classChest;
+            try {
+                classChest = (String) cfg.getConfigurationSection("classchests").get(className);
+                PABlockLocation loc = new PABlockLocation(classChest);
+                Chest c = (Chest) loc.toLocation().getBlock().getState();
+                ItemStack[] contents = c.getInventory().getContents();
+                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length-4);
+                final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
+                globals.put(className, new ArenaClass(className, items, armors));
+            } catch (Exception e) {
+                final String[] sItems = sItemList.split(",");
+                final ItemStack[] items = new ItemStack[sItems.length];
+                final ItemStack[] armors = new ItemStack[4];
 
-            for (int i = 0; i < sItems.length; i++) {
+                for (int i = 0; i < sItems.length; i++) {
 
-                if (sItems[i].contains(">>!<<")) {
-                    final String[] split = sItems[i].split(">>!<<");
+                    if (sItems[i].contains(">>!<<")) {
+                        final String[] split = sItems[i].split(">>!<<");
 
-                    final int id = Integer.parseInt(split[0]);
-                    armors[id] = StringParser.getItemStackFromString(split[1]);
+                        final int id = Integer.parseInt(split[0]);
+                        armors[id] = StringParser.getItemStackFromString(split[1]);
 
-                    if (armors[id] == null) {
-                        PVPArena.instance.getLogger().warning(
-                                "unrecognized armor item: " + split[1]);
+                        if (armors[id] == null) {
+                            PVPArena.instance.getLogger().warning(
+                                    "unrecognized armor item: " + split[1]);
+                        }
+
+                        sItems[i] = "AIR";
                     }
 
-                    sItems[i] = "AIR";
+                    items[i] = StringParser.getItemStackFromString(sItems[i]);
+                    if (items[i] == null) {
+                        PVPArena.instance.getLogger().warning(
+                                "unrecognized item: " + items[i]);
+                    }
                 }
-
-                items[i] = StringParser.getItemStackFromString(sItems[i]);
-                if (items[i] == null) {
-                    PVPArena.instance.getLogger().warning(
-                            "unrecognized item: " + items[i]);
-                }
+                globals.put(className, new ArenaClass(className, items, armors));
             }
-            globals.put(className, new ArenaClass(className, items, armors));
         }
     }
 
     public static void addGlobalClasses(final Arena arena) {
         for (final Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
-            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().getItems(), stringArenaClassEntry.getValue().getArmors());
+            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().armors);
         }
     }
 

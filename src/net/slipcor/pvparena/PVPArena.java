@@ -160,6 +160,7 @@ public class PVPArena extends JavaPlugin {
     }
 
     private void loadArenaCommands() {
+        arenaCommands.add(new PAA_ArenaClassChest());
         arenaCommands.add(new PAA_BlackList());
         arenaCommands.add(new PAA_Check());
         arenaCommands.add(new PAA_Class());

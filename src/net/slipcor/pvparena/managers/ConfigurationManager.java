@@ -4,6 +4,7 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.commands.PAA_Setup;
 import net.slipcor.pvparena.core.Config;
@@ -16,13 +17,11 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <pre>
@@ -164,34 +163,46 @@ public final class ConfigurationManager {
                                 + stringObjectEntry1.getKey());
                 continue;
             }
-            final String[] sItems = sItemList.split(",");
-            final ItemStack[] items = new ItemStack[sItems.length];
-            final ItemStack[] armors = new ItemStack[4];
+            try {
 
-            for (int i = 0; i < sItems.length; i++) {
+                String classChest = (String) config.getConfigurationSection("classchests").get(stringObjectEntry1.getKey());
+                PABlockLocation loc = new PABlockLocation(classChest);
+                Chest c = (Chest) loc.toLocation().getBlock().getState();
+                ItemStack[] contents = c.getInventory().getContents();
+                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length - 4);
+                final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+                arena.addClass(stringObjectEntry1.getKey(), items, armors);
+                arena.getDebugger().i("adding class chest items to class " + stringObjectEntry1.getKey());
 
-                if (sItems[i].contains(">>!<<")) {
-                    final String[] split = sItems[i].split(">>!<<");
+            }   catch (Exception e) {final String[] sItems = sItemList.split(",");
+                final ItemStack[] items = new ItemStack[sItems.length];
+                final ItemStack[] armors = new ItemStack[4];
 
-                    final int id = Integer.parseInt(split[0]);
-                    armors[id] = StringParser.getItemStackFromString(split[1]);
+                for (int i = 0; i < sItems.length; i++) {
 
-                    if (armors[id] == null) {
-                        PVPArena.instance.getLogger().warning(
-                                "unrecognized armor item: " + split[1]);
+                    if (sItems[i].contains(">>!<<")) {
+                        final String[] split = sItems[i].split(">>!<<");
+
+                        final int id = Integer.parseInt(split[0]);
+                        armors[id] = StringParser.getItemStackFromString(split[1]);
+
+                        if (armors[id] == null) {
+                            PVPArena.instance.getLogger().warning(
+                                    "unrecognized armor item: " + split[1]);
+                        }
+
+                        sItems[i] = "AIR";
                     }
 
-                    sItems[i] = "AIR";
+                    items[i] = StringParser.getItemStackFromString(sItems[i]);
+                    if (items[i] == null) {
+                        PVPArena.instance.getLogger().warning(
+                                "unrecognized item: " + items[i]);
+                    }
                 }
-
-                items[i] = StringParser.getItemStackFromString(sItems[i]);
-                if (items[i] == null) {
-                    PVPArena.instance.getLogger().warning(
-                            "unrecognized item: " + items[i]);
-                }
+                arena.addClass(stringObjectEntry1.getKey(), items, armors);
+                arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
             }
-            arena.addClass(stringObjectEntry1.getKey(), items, armors);
-            arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
         }
         arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStacksFromString("0"));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
