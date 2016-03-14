@@ -315,14 +315,14 @@ public class BlockListener implements Listener {
             arena = ArenaManager.getArenaByProtectedRegionLocation(
                     new PABlockLocation(block.getLocation()),
                     RegionProtection.NATURE);
-            if (arena != null) {
+            if (arena == null) {
                 continue;
             }
             if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
                 return;
             }
 
-            ArenaModuleManager.onBlockChange(null, block.getBlock(), block);
+            ArenaModuleManager.onBlockChange(arena, block.getBlock(), block);
         }
     }
 

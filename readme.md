@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.85 - revert deprecation of ArenaModule.getArena() - failsafe(r) loading of modules and goals - arenas will not appear lost any more!
+- v1.3.2.87 - address github issue #168, NPE on StructureGrowEvent
 - [read more](doc/changelog.md)
 
 ***
