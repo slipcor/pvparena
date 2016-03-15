@@ -1,3 +1,4 @@
+- v1.3.2.90 - fix some more errors about the new command. Works now :)
 - v1.3.2.89 - fix the shorthand and the doc linking
 - v1.3.2.88 - add /pa [arena] classchest [class] - shorthand !cc - fixed class chests containing the items
 - v1.3.2.87 - address github issue #168, NPE on StructureGrowEvent

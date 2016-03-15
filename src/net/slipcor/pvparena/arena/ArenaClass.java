@@ -186,13 +186,20 @@ public final class ArenaClass {
 
     public void equip(final Player player) {
         debug.i("Equipping player " + player.getName() + " with items!", player);
-        player.getInventory().setArmorContents(armors);
         for (final ItemStack item : items) {
+            if (item == null) {
+                continue;
+            }
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
                 player.getInventory().addItem(item);
                 debug.i("- " + StringParser.getStringFromItemStack(item), player);
+            }
+        }
+        for (ItemStack item : armors) {
+            if (item != null) {
+                equipArmor(item, player.getInventory());
             }
         }
         player.updateInventory();

@@ -64,6 +64,8 @@ public final class Language {
         CLASS_SELECTED("nulang.class.selected", "You have switched to the &e%1%&r class."),
         CLASS_SELECTED_RESPAWN("nulang.class.selectedrespawn", "You will switch to the &e%1%&f class on next respawn."),
 
+        CLASSCHEST("nulang.classchest.done", "Successfully the class items to the contents of %2%. Please reload the arena when you are done setting chests!"),
+
         DEATHCAUSE_BLOCK_EXPLOSION("nulang.deathcause.BLOCK_EXPLOSION", "an explosion"),
         DEATHCAUSE_CONTACT("nulang.deathcause.CONTACT", "a cactus"),
         DEATHCAUSE_CUSTOM("nulang.deathcause.CUSTOM", "Herobrine"),

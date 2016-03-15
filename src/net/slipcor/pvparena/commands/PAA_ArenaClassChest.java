@@ -13,8 +13,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class PAA_ArenaClassChest extends AbstractArenaCommand {
@@ -45,7 +45,7 @@ public class PAA_ArenaClassChest extends AbstractArenaCommand {
 
         Player player = (Player) sender;
 
-        Block b = player.getTargetBlock(new HashSet<Material>(), 10);
+        Block b = player.getTargetBlock((Set<Material>)null, 10);
         if (b.getType() != Material.CHEST && b.getType() != Material.TRAPPED_CHEST) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_NO_CHEST));
@@ -55,6 +55,8 @@ public class PAA_ArenaClassChest extends AbstractArenaCommand {
 
         arena.getArenaConfig().setManually("classchests."+aClass.getName(), loc.toString());
         arena.getArenaConfig().save();
+
+        sender.sendMessage(Language.parse(arena, MSG.CLASSCHEST, aClass.getName(), loc.toString()));
     }
 
     @Override
