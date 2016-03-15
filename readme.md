@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.91 - add /pa [arena] forcewin, shorthand !fw - forces a player / team to win
+- v1.3.2.92 - [forcewin] how about we load the command so it can be used?
 - [read more](doc/changelog.md)
 
 ***

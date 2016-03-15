@@ -167,6 +167,7 @@ public class PVPArena extends JavaPlugin {
         arenaCommands.add(new PAA_Disable());
         arenaCommands.add(new PAA_Edit());
         arenaCommands.add(new PAA_Enable());
+        arenaCommands.add(new PAA_ForceWin());
         arenaCommands.add(new PAA_GameMode());
         arenaCommands.add(new PAA_Goal());
         arenaCommands.add(new PAA_PlayerJoin());

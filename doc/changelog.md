@@ -1,3 +1,4 @@
+- v1.3.2.92 - [forcewin] how about we load the command so it can be used?
 - v1.3.2.91 - add /pa [arena] forcewin, shorthand !fw - forces a player / team to win
 - v1.3.2.90 - fix some more errors about the new command. Works now :)
 - v1.3.2.89 - fix the shorthand and the doc linking
