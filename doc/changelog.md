@@ -1,3 +1,4 @@
+- v1.3.2.91 - add /pa [arena] forcewin, shorthand !fw - forces a player / team to win
 - v1.3.2.90 - fix some more errors about the new command. Works now :)
 - v1.3.2.89 - fix the shorthand and the doc linking
 - v1.3.2.88 - add /pa [arena] classchest [class] - shorthand !cc - fixed class chests containing the items

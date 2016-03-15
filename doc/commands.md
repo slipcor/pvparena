@@ -31,6 +31,7 @@ Command | Shorthand | Definition
 [/pa disable](commands/disable.md) | /pa !dis | Disables an arena.
 /pa edit | /pa !e | Toggles editing of an arena
 [/pa enable](commands/enable.md) | /pa !en | Enables an arena.
+[/pa forcewin](commands/forcewin.md) | /pa !fw | Forces a player/team to win.
 [/pa gamemode](commands/gamemode.md) | /pa !gm | Change the general gamemode of an arena
 [/pa goal](commands/goal.md) | /pa !g | Manage arena goals
 [/pa playerjoin](commands/playerjoin.md) | /pa !pj | Make a player join

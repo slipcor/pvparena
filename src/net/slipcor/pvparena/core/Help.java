@@ -99,6 +99,13 @@ public final class Help {
                 "shorthand command: !en",
                 LINE,
                 "/pa [arenaname] enable"}),
+        FORCEWIN("nulang.help.msg.forcewin", new String[]{
+                "Force a player/team to win",
+                LINE,
+                "shorthand command: !fw",
+                LINE,
+                "/pa [arenaname] forcewin slipcor",
+                "/pa [arenaname] forcewin blue"}),
         GAMEMODE("nulang.help.msg.gamemode", new String[]{
                 "Set the general game mode of an arena. Teams or Free for all",
                 LINE,
