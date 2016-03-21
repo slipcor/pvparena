@@ -594,6 +594,7 @@ public final class Language {
 
         MODULE_DUEL_ACCEPTED("nulang.mod.duel.accepted", "%1% &eaccepted the challenge! The game is starting."),
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept&e."),
+        MODULE_DUEL_ANNOUNCEMONEY("nulang.mod.duel.announcemoney", "&eThey set up a fee of &c%1%&e!"),
         MODULE_DUEL_ANNOUNCE2("nulang.mod.duel.announce2", "&eCancel the duel with &r/pa %2% decline&e."),
         MODULE_DUEL_BUSY("nulang.mod.duel.busy", "%1% &eis already in a fight Please try again later."),
         MODULE_DUEL_DECLINED_SENDER("nulang.mod.duel.declineds", "Your opponent declined the request. The duel has been cancelled."),
@@ -643,6 +644,7 @@ public final class Language {
         MODULE_VAULT_OFF("nulang.mod.vault.off", "</3 eConomy"),
 
         MODULE_VAULT_NOTENOUGH("nulang.mod.vault.notenough", "You don't have %1%."),
+        MODULE_VAULT_THEYNOTENOUGH("nulang.mod.vault.theynotenough", "%1% doesn't have enough cash!"),
         MODULE_VAULT_BETNOTYOURS("nulang.mod.vault.betnotyours", "Cannot place bets on your own match!"),
         MODULE_VAULT_BETOPTIONS("nulang.mod.vault.betoptions", "You can only bet on team name or arena player!"),
         MODULE_VAULT_WRONGAMOUNT("nulang.mod.vault.wrongamount", "Bet amount must be between %1% and %2%!"),

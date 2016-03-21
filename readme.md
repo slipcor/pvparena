@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.93 - add config settings and documentation for the FallingAnvils module
+- v1.3.2.94 - add Language for special Duel/Vault hooking
 - [read more](doc/changelog.md)
 
 ***
