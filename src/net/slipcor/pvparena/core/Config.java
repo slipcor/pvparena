@@ -347,6 +347,7 @@ public class Config {
 
         MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),
         MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit"),
+        MODULES_WORLDEDIT_SCHEMATICPATH("modules.worldedit.schematicpath", "", "WorldEdit"),
         MODULES_WORLDEDIT_REGIONS("modules.worldedit.regions", new ArrayList<String>(), "WorldEdit");
 
         private final String node;

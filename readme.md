@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.94 - add Language for special Duel/Vault hooking
+- v1.3.2.96 - add a configuration node to change the schematics folder for WorldEdit - adds github issue #129
 - [read more](doc/changelog.md)
 
 ***
