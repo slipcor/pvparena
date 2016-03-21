@@ -2,6 +2,8 @@
 
 Regions allow further functions to be added to your game play.
 
+You can list existing arena regions with `/pa [arena] regions`
+
 ## Region Creation
 
 All following commands assume you either have edit mode enabled or just one arena in place !
@@ -18,6 +20,8 @@ The following (self explanatory) region shapes exist:
 - CYLINDRIC
 
 Of course, different shapes cover different areas. Note that a cylinder means a room like a can, so a standing cylinder.
+
+To remove a region, use `/pa region remove [regionname]`
 
 ## Region Types
 
@@ -59,4 +63,5 @@ Valid protections are:
 - REDSTONE - Redstone current change
 - TNT - TNT usage
 - TNTBREAK - TNT block break
+- TELEPORT - Players Teleportation
 
