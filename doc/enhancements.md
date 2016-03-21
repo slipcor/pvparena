@@ -61,6 +61,7 @@ Mod | Description
 [Duel](mods/duel.md) | duel someone!
 [EventActions](mods/eventactions.md) | do stuff when stuff happens
 [Factions](mods/factions.md) | fix pvp not working
+[FallingAnvils](mods/fallinganvils.md) | spawn killer anvils dropping from the sky
 [FixInventoryLoss](mods/fixinventoryloss.md) | prevent loss by gamemode / inventory check
 [FlySpectate](mods/flyspectate.md) | have players spectating a fight in fly mode
 [Items](mods/items.md) | spawn (random) items
