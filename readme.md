@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.96 - add a configuration node to change the schematics folder for WorldEdit - adds github issue #129
+- v1.3.2.97 - add Titles API hooks, documentation will follow
 - [read more](doc/changelog.md)
 
 ***

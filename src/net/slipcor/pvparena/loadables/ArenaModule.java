@@ -83,6 +83,10 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
         return false;
     }
 
+    public boolean checkCountOverride(Player player, String message) {
+        return false;
+    }
+
     @Override
     public List<String> getMain() {
         return Arrays.asList(new String[0]);

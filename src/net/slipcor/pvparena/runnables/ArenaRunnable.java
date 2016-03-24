@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -112,7 +113,9 @@ public abstract class ArenaRunnable extends BukkitRunnable {
                     continue;
                 }
                 if (ap.get() != null) {
-                    arena.msg(ap.get(), message);
+                    if (!ArenaModuleManager.checkCountOverride(arena, ap.get(), message)) {
+                        arena.msg(ap.get(), message);
+                    }
                 }
             }
             return;
@@ -123,7 +126,9 @@ public abstract class ArenaRunnable extends BukkitRunnable {
             if (aPlayer.getArena() == null) {
                 Arena.pmsg(Bukkit.getPlayer(sPlayer), message);
             } else {
-                aPlayer.getArena().msg(aPlayer.get(), message);
+                if (!ArenaModuleManager.checkCountOverride(aPlayer.getArena(), aPlayer.get(), message)) {
+                    aPlayer.getArena().msg(aPlayer.get(), message);
+                }
             }
         }
     }

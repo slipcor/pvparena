@@ -317,6 +317,17 @@ public class Config {
 
         MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0, "StartFreeze"),
 
+        MODULES_TITLES_COLOR("modules.titles.color", "AQUA", "Titles"),
+        MODULES_TITLES_JOIN("modules.titles.join", false, "Titles"),
+        MODULES_TITLES_START("modules.titles.start", true, "Titles"),
+        MODULES_TITLES_END("modules.titles.end", false, "Titles"),
+        MODULES_TITLES_WINNER("modules.titles.winner", true, "Titles"),
+        MODULES_TITLES_LOSER("modules.titles.loser", true, "Titles"),
+        MODULES_TITLES_PRIZE("modules.titles.prize", false, "Titles"),
+        MODULES_TITLES_CUSTOM("modules.titles.custom", false, "Titles"),
+        MODULES_TITLES_ADVERT("modules.titles.advert", false, "Titles"),
+        MODULES_TITLES_COUNT("modules.titles.count", true, "Titles"),
+
         MODULES_TURRETS_MAXDEGREES("modules.turrets.maxdegrees", 90.0, "Turrets"),
         MODULES_TURRETS_MININTERVAL("modules.turrets.mininterval", 0, "Turrets"),
 

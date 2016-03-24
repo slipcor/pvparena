@@ -88,6 +88,15 @@ public class ArenaModuleManager {
         return false;
     }
 
+    public static boolean checkCountOverride(Arena arena, Player player, String message) {
+        for (final ArenaModule mod : arena.getMods()) {
+            if (mod.checkCountOverride(player, message)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static String checkForMissingSpawns(final Arena arena, final Set<String> list) {
         for (final ArenaModule mod : arena.getMods()) {
             String error = mod.checkForMissingSpawns(list);
