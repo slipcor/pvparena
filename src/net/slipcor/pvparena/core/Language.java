@@ -462,6 +462,18 @@ public final class Language {
         WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
         WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
 
+        GOAL_BEACONS_CLAIMING("nulang.goal.beacons.claiming", "&eTeam %1% is claiming the beacon!"),
+        GOAL_BEACONS_CLAIMED("nulang.goal.beacons.claimed", "&eTeam %1% has claimed the beacon!"),
+        GOAL_BEACONS_CLAIMED_REMAINING("nulang.goal.beacons.claimed_remaining", "&eTeam %1% has claimed the beacon! %2% claims remaining!"),
+        GOAL_BEACONS_SCORE("nulang.goal.beacons.score", "&eTeam %1% scored %2% points by holding the beacon!"),
+        GOAL_BEACONS_CHANGED("nulang.goal.beacons.changed", "&eA new beacon has been activated!"),
+        GOAL_BEACONS_CONTESTING("nulang.goal.beacons.contesting", "&eThe beacon claimed by team %1% is being contested!"),
+        GOAL_BEACONS_UNCLAIMING("nulang.goal.beacons.unclaiming", "&eThe beacon claimed by team %1% is being unclaimed!"),
+        GOAL_BEACONS_UNCLAIMINGBY("nulang.goal.beacons.unclaimingby", "&eThe beacon claimed by team %1% is being unclaimed by team %2%!"),
+        GOAL_BEACONS_SET("nulang.goal.beacons.set", "Beacon set: %1%"),
+        GOAL_BEACONS_SETDONE("nulang.goal.beacons.setdone", "Beacon setting mode deactivated."),
+        GOAL_BEACONS_TOSET("nulang.goal.beacons.toset", "Beacon setting mode activated. Hit the glass blocks, then use the command again to save!"),
+
         GOAL_BLOCKDESTROY_TYPESET("nulang.goal.blockdestroy.typeset", "Blocktype set to: &e%1%"),
         GOAL_BLOCKDESTROY_SCORE("lang.goal.blockdestroy.score", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
         GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),

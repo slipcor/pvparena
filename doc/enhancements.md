@@ -16,6 +16,7 @@ Create ways to win the game or lose the game!
 
 Goal | Description
 ------------- | -------------
+[Beacons](goals/beacons.md) | Stand near beacons and claim them to win!
 [BlockDestroy](goals/blockdestroy.md) | Destroy blocks (pre-installed)
 [Domination](goals/domination.md) | Dominate flag positions (pre-installed)
 [Flags](goals/flags.md) | Capture flags and bring 'em home (pre-installed)
@@ -81,6 +82,7 @@ Mod | Description
 [Squads](mods/squads.md) | add squads to the game, basically only showing players belonging together apart from teams and classes.
 [StartFreeze](mods/startfreeze.md) | freeze players at start
 [TeamSizeRestrict](mods/teamsizerestrict.md) | a small mod to restrict the size of specific teams
+[Titles](mods/titles.md) | send messages to players as the "title" command would do
 [TempPerms](mods/tempperms.md) | add temporary perms
 [Turrets](mods/turrets.md) | add turrets where players fire projectiles
 [Vault](mods/vault.md) | add economy

@@ -169,6 +169,14 @@ public class Config {
 
         // ----------
 
+        GOAL_BEACONS_ANNOUNCEOFFSET("goal.beacons.spamoffset", 3, "Beacons"),
+        GOAL_BEACONS_CHANGESECONDS("goal.beacons.changeseconds", 30, "Beacons"),
+        GOAL_BEACONS_CHANGEONCLAIM("goal.beacons.changeonclaim", false, "Beacons"),
+        GOAL_BEACONS_CLAIMRANGE("goal.beacons.claimrange", 3, "Beacons"),
+        GOAL_BEACONS_LIVES("goal.beacons.blives", 10, "Beacons"),
+        GOAL_BEACONS_TICKINTERVAL("goal.beacons.tickinterval", 60, "Beacons"),
+        GOAL_BEACONS_TICKREWARD("goal.beacons.tickreward", 1, "Beacons"),
+
         GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false, "BlockDestroy"),
         GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 

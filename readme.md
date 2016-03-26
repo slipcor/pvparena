@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.97 - add Titles API hooks, documentation will follow
+- v1.3.2.99 - add Beacons settings and documentation
 - [read more](doc/changelog.md)
 
 ***
