@@ -508,9 +508,11 @@ public final class ArenaManager {
         boolean isUngrouped = true;
 
         for (List<String> values : DEF_LISTS.values()) {
-            if (values.contains(string)) {
-                isUngrouped = false;
-                break;
+            for (String item : values) {
+                if (item.equalsIgnoreCase(string)) {
+                    isUngrouped = false;
+                    break;
+                }
             }
         }
 

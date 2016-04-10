@@ -1,3 +1,4 @@
+- v1.3.2.101 - finish github issue #174
 - v1.3.2.100 - address github issue #174
 - v1.3.2.99 - add Beacons settings and documentation
 - v1.3.2.97 - add Titles API hooks, documentation will follow
