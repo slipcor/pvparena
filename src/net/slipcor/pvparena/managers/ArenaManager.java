@@ -505,13 +505,26 @@ public final class ArenaManager {
             }
         }
 
+        boolean isUngrouped = true;
+
+        for (List<String> values : DEF_LISTS.values()) {
+            if (values.contains(string)) {
+                isUngrouped = false;
+                break;
+            }
+        }
+
         if (!DEF_LISTS.containsKey(string)) {
             // not found1
             if (PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
-                    !PVPArena.instance.getConfig().getBoolean("allow_ungrouped")) {
+                    !(isUngrouped && PVPArena.instance.getConfig().getBoolean("allow_ungrouped"))) {
+                // 1) only allowing shortcuts
+                // 2) it's either grouped and we thus don't show it, or it is ungrouped and we don't allow ungrouped
                 DEBUG.i("out null");
                 return null;
             } else {
+                // A: allowing more then shortcuts
+                // B: ungrouped and allowing ungrouped
                 DEBUG.i("out getArenaByName: " + string);
                 return getArenaByName(string);
             }

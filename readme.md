@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.99 - add Beacons settings and documentation
+- v1.3.2.100 - address github issue #174
 - [read more](doc/changelog.md)
 
 ***
