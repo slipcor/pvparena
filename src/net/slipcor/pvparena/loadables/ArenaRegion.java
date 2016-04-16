@@ -607,31 +607,27 @@ public class ArenaRegion {
                     continue;
                 }
 
-                if (!shape.contains(pLoc)) {
+                boolean found = false;
 
-
-                    boolean found = false;
-
-                    for (final ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
-                        if (region.shape.contains(pLoc)) {
-                            found = true;
-                            break;
-                        }
+                for (final ArenaRegion region : arena.getRegionsByType(RegionType.BATTLE)) {
+                    if (region.shape.contains(pLoc)) {
+                        found = true;
+                        break;
                     }
+                }
 
-                    if (!found) {
+                if (!found) {
 
-                        Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
-                        if (arena.getArenaConfig().getBoolean(
-                                CFG.GENERAL_LEAVEDEATH)) {
-                            ap.get().setLastDamageCause(
-                                    new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, 1004.0d));
-                            // ap.get().setHealth(0);
-                            ap.get().damage(1000);
-                        } else {
-                            arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
-                        }
+                    Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
+                    if (arena.getArenaConfig().getBoolean(
+                            CFG.GENERAL_LEAVEDEATH)) {
+                        ap.get().setLastDamageCause(
+                                new EntityDamageEvent(ap.get(),
+                                        DamageCause.CUSTOM, 1004.0d));
+                        // ap.get().setHealth(0);
+                        ap.get().damage(1000);
+                    } else {
+                        arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                     }
                 }
             } else if (type == RegionType.WATCH) {
@@ -639,8 +635,18 @@ public class ArenaRegion {
                 if (ap.getStatus() != Status.WATCH) {
                     continue;
                 }
+                Set<ArenaRegion> regions = arena.getRegionsByType(RegionType.WATCH);
 
-                if (!shape.contains(pLoc)) {
+                boolean found = false;
+
+                for (ArenaRegion region : regions) {
+                    if (region.getShape().contains(pLoc)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                 }
@@ -651,8 +657,18 @@ public class ArenaRegion {
                 }
 
                 debug.i("LOUNGE TICK");
+                Set<ArenaRegion> regions = arena.getRegionsByType(RegionType.LOUNGE);
 
-                if (!shape.contains(pLoc)) {
+                boolean found = false;
+
+                for (ArenaRegion region : regions) {
+                    if (region.getShape().contains(pLoc)) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false);
                 }
