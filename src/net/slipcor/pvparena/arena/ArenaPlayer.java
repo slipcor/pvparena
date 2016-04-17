@@ -48,6 +48,7 @@ public class ArenaPlayer {
     private final String name;
     private boolean telePass;
     private boolean ignoreAnnouncements;
+    private boolean teleporting;
 
     private Arena arena;
     private ArenaClass aClass;
@@ -570,6 +571,10 @@ public class ArenaPlayer {
         return hasTelePass();
     }
 
+    public boolean isTeleporting() {
+        return teleporting;
+    }
+
     public Set<PermissionAttachment> getTempPermissions() {
         return tempPermissions;
     }
@@ -808,6 +813,10 @@ public class ArenaPlayer {
      */
     public void setTelePass(final boolean canTeleport) {
         telePass = canTeleport;
+    }
+
+    public void setTeleporting(final boolean isTeleporting) {
+        teleporting = isTeleporting;
     }
 
     @Override

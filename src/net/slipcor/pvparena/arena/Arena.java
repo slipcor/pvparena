@@ -1311,6 +1311,7 @@ public class Arena {
                                 .setNoDamageTicks(
                                         getArenaConfig().getInt(
                                                 CFG.TIME_TELEPORTPROTECT) * 20);
+                        aPlayer.setTeleporting(false);
                     }
                 } else {
                     final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, string);
@@ -1319,6 +1320,7 @@ public class Arena {
                     } else {
                         player.teleport(loc.toLocation());
                         aPlayer.setTelePass(false);
+                        aPlayer.setTeleporting(false);
                     }
                     player.setNoDamageTicks(
                             getArenaConfig().getInt(
@@ -1335,6 +1337,7 @@ public class Arena {
 
         final RunLater runLater = new RunLater();
 
+        aPlayer.setTeleporting(true);
         if (cfg.getInt(CFG.TIME_RESETDELAY) > -1) {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY));
         } else {
@@ -1675,10 +1678,12 @@ public class Arena {
             offset = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
         }
 
+        aPlayer.setTeleporting(true);
         aPlayer.setTelePass(true);
         player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         aPlayer.setTelePass(false);
+        aPlayer.setTeleporting(false);
 
         if (cfg.getBoolean(CFG.USES_INVISIBILITYFIX) &&
                 aPlayer.getStatus() == Status.FIGHT ||

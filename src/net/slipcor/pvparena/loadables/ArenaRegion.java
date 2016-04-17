@@ -501,7 +501,7 @@ public class ArenaRegion {
 
     public void tick() {
         for (final ArenaPlayer ap : arena.getEveryone()) {
-            if (ap.get() == null) {
+            if (ap.get() == null || ap.isTeleporting()) {
                 continue;
             }
             final PABlockLocation pLoc = new PABlockLocation(ap.get().getLocation());

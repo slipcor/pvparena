@@ -1,3 +1,4 @@
+- v1.3.2.103 - furthermore attempt to fix #175 by adding a teleport lock variable
 - v1.3.2.102 - support multiple WATCH and LOUNGE regions - addresses github issue #175
 - v1.3.2.101 - finish github issue #174
 - v1.3.2.100 - address github issue #174

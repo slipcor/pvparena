@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.102 - support multiple WATCH and LOUNGE regions - addresses github issue #175
+- v1.3.2.103 - furthermore attempt to fix #175 by adding a teleport lock variable
 - [read more](doc/changelog.md)
 
 ***
