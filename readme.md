@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.103 - furthermore attempt to fix #175 by adding a teleport lock variable
+- v1.3.2.105 - fix the documentation for EventAction config
 - [read more](doc/changelog.md)
 
 ***

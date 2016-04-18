@@ -51,7 +51,7 @@ The mod needs a full server restart to activate the listener registration.
 Here is an example template. You need to copy this into the arena configuration, on its own, not under a node.
 ```
 event:
-- join:
+  join:
   - cmd<=>deop %player%
   - brc<=>Join %arena%!
   - msg<=>Welcome to %arena%!
