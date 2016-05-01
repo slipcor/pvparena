@@ -1,3 +1,4 @@
+- v1.3.2.106 - [TeamDeathMatch] fix a double broadcast of the winning team
 - v1.3.2.105 - fix the documentation for EventAction config
 - v1.3.2.103 - furthermore attempt to fix #175 by adding a teleport lock variable
 - v1.3.2.102 - support multiple WATCH and LOUNGE regions - addresses github issue #175

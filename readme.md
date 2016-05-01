@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.105 - fix the documentation for EventAction config
+- v1.3.2.106 - [TeamDeathMatch] fix a double broadcast of the winning team
 - [read more](doc/changelog.md)
 
 ***
