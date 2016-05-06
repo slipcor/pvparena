@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.106 - [TeamDeathMatch] fix a double broadcast of the winning team
+- v1.3.2.107 - address github issue #178 - prevent enderpearl teleport when not alive and fighting
 - [read more](doc/changelog.md)
 
 ***

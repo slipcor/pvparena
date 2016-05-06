@@ -1,3 +1,4 @@
+- v1.3.2.107 - address github issue #178 - prevent enderpearl teleport when not alive and fighting
 - v1.3.2.106 - [TeamDeathMatch] fix a double broadcast of the winning team
 - v1.3.2.105 - fix the documentation for EventAction config
 - v1.3.2.103 - furthermore attempt to fix #175 by adding a teleport lock variable

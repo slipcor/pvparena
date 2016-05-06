@@ -789,11 +789,18 @@ public class PlayerListener implements Listener {
         event.setCancelled(false); // fighting player - first recon NOT to
         // cancel!
 
-        if (player.getGameMode() == GameMode.SPECTATOR) {
+        if (player.getGameMode() == GameMode.SPECTATOR && event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             return; // ignore spectators
         }
 
         arena.getDebugger().i("aimed location: " + event.getTo(), player);
+
+
+        if (event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL && ArenaPlayer.parsePlayer(player.getName()).getStatus() != Status.FIGHT) {
+            arena.getDebugger().i("onPlayerTeleport: ender pearl when not fighting, cancelling!", player);
+            event.setCancelled(true); // cancel and out
+            return;
+        }
 
         if (ArenaPlayer.parsePlayer(player.getName()).isTelePass()
                 || player.hasPermission("pvparena.telepass")) {
