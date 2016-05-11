@@ -26,9 +26,10 @@ This module needs a full server restart to hook into WorldEdit properly, for the
 
 - `/pa [arena] regload [regionname] {filename}` \- load the region
 - `/pa [arena] regsave [regionname] {filename}` \- save the region
+- `/pa [arena] regcreate [regionname]` \- create a region based on an active WorldEdit selection
 - `/pa [arena] !we autoload` \- toggle general automatic loading
 - `/pa [arena] !we autosave` \- toggle general automatic saving
-- `/pa [arena] !we region` \- toggle specific region loading/saving
+- `/pa [arena] !we create [regionname]` \- create a region based on an active WorldEdit selection
 (using this command creates a list of arena regions that will be saved/loaded)
 
 ## Warnings

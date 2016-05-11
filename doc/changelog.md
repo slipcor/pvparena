@@ -1,3 +1,4 @@
+- v1.3.2.110 - address github issue #185 by fixing WorldEdit documentation and messages
 - v1.3.2.109 - address github issue #186
 - v1.3.2.107 - address github issue #178 - prevent enderpearl teleport when not alive and fighting
 - v1.3.2.106 - [TeamDeathMatch] fix a double broadcast of the winning team

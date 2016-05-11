@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.107 - address github issue #178 - prevent enderpearl teleport when not alive and fighting
+- v1.3.2.110 - address github issue #185 by fixing WorldEdit documentation and messages
 - [read more](doc/changelog.md)
 
 ***
