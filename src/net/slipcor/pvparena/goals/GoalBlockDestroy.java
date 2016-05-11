@@ -463,6 +463,9 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
     private void reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
         arena.getDebugger().i("reducing lives of team " + team);
+        if (!getLifeMap().containsKey(team)) {
+            return;
+        }
         final int count = getLifeMap().get(team) - 1;
         if (count > 0) {
             getLifeMap().put(team, count);
