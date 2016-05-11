@@ -42,7 +42,7 @@ modules
 
 ## Potion Effect Types
 
-click me
+[click me](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html)
 
 ## Dependencies
 
