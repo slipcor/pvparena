@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.util.*;
@@ -61,6 +62,8 @@ public class ArenaPlayer {
     private ItemStack[] savedArmor;
     private final Set<PermissionAttachment> tempPermissions = new HashSet<>();
     private final Map<String, PAStatMap> statistics = new HashMap<>();
+
+    private Scoreboard backupBoard;
 
     /**
      * Status
@@ -513,6 +516,10 @@ public class ArenaPlayer {
         return null;
     }
 
+    public Scoreboard getBackupScoreboard() {
+        return backupBoard;
+    }
+
     public PALocation getSavedLocation() {
         debug.i("reading loc!", name);
         if (location != null) {
@@ -587,6 +594,10 @@ public class ArenaPlayer {
         }
 
         return sum;
+    }
+
+    public boolean hasBackupScoreboard() {
+        return backupBoard != null;
     }
 
     public boolean hasTelePass() {
@@ -765,6 +776,10 @@ public class ArenaPlayer {
         PVPArena.instance.getLogger().warning(
                 "[PA-debug] failed to set unknown class " + className + " to player "
                         + name);
+    }
+
+    public void setBackupScoreboard(Scoreboard board) {
+        backupBoard = board;
     }
 
     public void setNextArenaClass(ArenaClass aClass) {

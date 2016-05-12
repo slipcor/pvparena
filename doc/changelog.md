@@ -1,3 +1,4 @@
+- v1.3.2.111 - prepare fix for Scoreboards being double reset in modules
 - v1.3.2.110 - address github issue #185 by fixing WorldEdit documentation and messages
 - v1.3.2.109 - address github issue #186
 - v1.3.2.107 - address github issue #178 - prevent enderpearl teleport when not alive and fighting
