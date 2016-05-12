@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.111 - prepare fix for Scoreboards being double reset in modules
+- v1.3.2.112 - continue fix for Scoreboards being double reset in modules
 - [read more](doc/changelog.md)
 
 ***

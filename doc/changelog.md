@@ -1,3 +1,4 @@
+- v1.3.2.112 - continue fix for Scoreboards being double reset in modules
 - v1.3.2.111 - prepare fix for Scoreboards being double reset in modules
 - v1.3.2.110 - address github issue #185 by fixing WorldEdit documentation and messages
 - v1.3.2.109 - address github issue #186
