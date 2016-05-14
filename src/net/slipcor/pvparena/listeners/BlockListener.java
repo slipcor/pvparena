@@ -387,6 +387,7 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(final BlockPlaceEvent event) {
+        DEBUG.i("BlockPlace", event.getPlayer());
         if (willBeSkipped(event, event.getBlock().getLocation(),
                 RegionProtection.PLACE)) {
             return;
@@ -405,6 +406,7 @@ public class BlockListener implements Listener {
 
         if (event.getBlock().getType() == Material.TNT && arena.getArenaConfig().getBoolean(CFG.PLAYER_AUTOIGNITE)) {
             event.setCancelled(true);
+            arena.getDebugger().i("autoignite false");
 
             class RunLater implements Runnable {
 
@@ -441,8 +443,8 @@ public class BlockListener implements Listener {
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
                             Language.parse(arena, MSG.GENERAL_PLACE)));
-            // not on whitelist. DENY!
             event.setCancelled(true);
+            arena.getDebugger().i("not on whitelist. DENY!");
             return;
         }
 
@@ -456,7 +458,8 @@ public class BlockListener implements Listener {
                 ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
                         .getBlockReplacedState().getType());
                 event.setCancelled(false);
-                return; // we do not block TNT, so just return if it is TNT
+                arena.getDebugger().i("we do not block TNT, so just return if it is TNT");
+                return;
             }
             return;
         }
@@ -477,8 +480,8 @@ public class BlockListener implements Listener {
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
                             Language.parse(arena, MSG.GENERAL_PLACE)));
-            // on blacklist. DENY!
             event.setCancelled(true);
+            arena.getDebugger().i("on blacklist. DENY!");
             return;
         }
 
@@ -488,6 +491,7 @@ public class BlockListener implements Listener {
             DEBUG.i("onBlockPlace cancelled by goal: " + res.getModName(), event.getPlayer());
             return;
         }
+        arena.getDebugger().i("BlockPlace not cancelled!");
 
         ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
                 .getBlockReplacedState().getType());
