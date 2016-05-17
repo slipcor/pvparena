@@ -196,6 +196,9 @@ public class GoalLiberation extends ArenaGoal {
                         final List<ItemStack> iList = new ArrayList<>();
 
                         for (final ItemStack item : jailedPlayer.getArenaClass().getItems()) {
+                            if (item == null) {
+                                continue;
+                            }
                             iList.add(item.clone());
                         }
                         new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);

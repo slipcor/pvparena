@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.113 - add more debug to investigate fire charge ignition issues
+- v1.3.2.114 - address github issue #191 - prevent NPE due to NULL item in class items
 - [read more](doc/changelog.md)
 
 ***
