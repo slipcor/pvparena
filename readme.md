@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.116 - add CheckPoint goal (github  issue #184) - have fun testing!
+- v1.3.2.117 - [BetterFight] add config setting to restrict explosions only to one-hit deaths
 - [read more](doc/changelog.md)
 
 ***

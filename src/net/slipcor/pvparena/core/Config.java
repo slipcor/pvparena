@@ -274,6 +274,7 @@ public class Config {
         MODULES_BETTERFIGHT_ONEHITITEMS("modules.betterfight.onehititems", "none", "BetterFight"),
         MODULES_BETTERFIGHT_RESETKILLSTREAKONDEATH("modules.betterfight.resetkillstreakondeath", true, "BetterFight"),
         MODULES_BETTERFIGHT_EXPLODEONDEATH("modules.betterfight.explodeondeath", true, "BetterFight"),
+        MODULES_BETTERFIGHT_EXPLODEONDEATHONLYONONEHIT("modules.betterfight.explodeondeathonlyononehit", false, "BetterFight"),
 
         MODULES_BETTERGEARS_HEAD("modules.bettergears.head", true, "BetterGears"),
         MODULES_BETTERGEARS_CHEST("modules.bettergears.chest", true, "BetterGears"),
