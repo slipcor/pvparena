@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.114 - address github issue #191 - prevent NPE due to NULL item in class items
+- v1.3.2.115 - add "refillforkill" - restocks the inventory with the class items
 - [read more](doc/changelog.md)
 
 ***

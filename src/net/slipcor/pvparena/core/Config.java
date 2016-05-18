@@ -125,6 +125,7 @@ public class Config {
         PLAYER_MAXHEALTH("player.maxhealth", -1, null),
         PLAYER_PREVENTDEATH("player.preventDeath", true, null),
         PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
+        PLAYER_REFILLFORKILL("player.refillforkill", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
 
