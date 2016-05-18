@@ -18,6 +18,7 @@ Goal | Description
 ------------- | -------------
 [Beacons](goals/beacons.md) | Stand near beacons and claim them to win!
 [BlockDestroy](goals/blockdestroy.md) | Destroy blocks (pre-installed)
+[CheckPoints](goals/checkpoints.md) | Reach checkpoints in order to win (pre-installed)
 [Domination](goals/domination.md) | Dominate flag positions (pre-installed)
 [Flags](goals/flags.md) | Capture flags and bring 'em home (pre-installed)
 [Food](goals/food.md) | Cook food and bring it home (pre-installed)

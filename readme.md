@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.115 - add "refillforkill" - restocks the inventory with the class items
+- v1.3.2.116 - add CheckPoint goal (github  issue #184) - have fun testing!
 - [read more](doc/changelog.md)
 
 ***

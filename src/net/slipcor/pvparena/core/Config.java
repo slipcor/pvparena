@@ -181,6 +181,10 @@ public class Config {
         GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", "IRON_BLOCK", false, "BlockDestroy"),
         GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
+        GOAL_CHECKPOINTS_CLAIMRANGE("goal.checkpoints.cpclaimrange", 5, "CheckPoints"),
+        GOAL_CHECKPOINTS_LIVES("goal.checkpoints.cplives", 10, "CheckPoints"),
+        GOAL_CHECKPOINTS_TICKINTERVAL("goal.checkpoints.cptickinterval", 20, "CheckPoints"),
+
         GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),

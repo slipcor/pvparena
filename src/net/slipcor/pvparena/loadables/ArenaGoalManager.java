@@ -57,6 +57,7 @@ public class ArenaGoalManager {
 
     private void fill() {
         types.add(new GoalBlockDestroy());
+        types.add(new GoalCheckPoints());
         types.add(new GoalDomination());
         types.add(new GoalFlags());
         types.add(new GoalFood());

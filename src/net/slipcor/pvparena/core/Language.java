@@ -479,6 +479,9 @@ public final class Language {
         GOAL_BLOCKDESTROY_SET("nulang.goal.blockdestroy.setflag", "Block set: %1%"),
         GOAL_BLOCKDESTROY_TOSET("nulang.goal.blockdestroy.tosetflag", "Block to set: %1%"),
 
+        GOAL_CHECKPOINTS_SCORE("nulang.goal.checkpoints.score", "%1% &ereached checkpoint #%2%!"),
+        GOAL_CHECKPOINTS_YOUMISSED("nulang.goal.checkpoints.youmissed", "You missed checkpoint #%1%! This is #%2%"),
+
         GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
         GOAL_DOMINATION_CLAIMED("nulang.goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
         GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),
