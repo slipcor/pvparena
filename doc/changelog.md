@@ -1,3 +1,4 @@
+- v1.3.2.119 - prevent double instantiation of arenas - use with caution! :P
 - v1.3.2.118 - [CheckPoints] - address github issue #197
 - v1.3.2.117 - [BetterFight] add config setting to restrict explosions only to one-hit deaths
 - v1.3.2.116 - add CheckPoint goal (github  issue #184) - have fun testing!

@@ -68,14 +68,14 @@ public class PAA_Create extends AbstractGlobalCommand {
             arena.getLegacyGoals("teams");
         }
 
-        ArenaManager.loadArena(arena.getName());
-        Arena.pmsg(sender, Language.parse(arena, MSG.ARENA_CREATE_DONE, arena.getName()));
-        arena = ArenaManager.getArenaByName(arena.getName());
-        final PAA_ToggleMod cmd = new PAA_ToggleMod();
-        cmd.commit(arena, sender, new String[]{"standardspectate"});
-        cmd.commit(arena, sender, new String[]{"standardlounge"});
-        cmd.commit(arena, sender, new String[]{"battlefieldjoin"});
-        //cmd.commit(a, sender, new String[]{"warmupjoin"});
+        if (ArenaManager.loadArena(arena)) {
+            Arena.pmsg(sender, Language.parse(arena, MSG.ARENA_CREATE_DONE, arena.getName()));
+            arena = ArenaManager.getArenaByName(arena.getName());
+            final PAA_ToggleMod cmd = new PAA_ToggleMod();
+            cmd.commit(arena, sender, new String[]{"standardspectate"});
+            cmd.commit(arena, sender, new String[]{"standardlounge"});
+            cmd.commit(arena, sender, new String[]{"battlefieldjoin"});
+        }
     }
 
     @Override

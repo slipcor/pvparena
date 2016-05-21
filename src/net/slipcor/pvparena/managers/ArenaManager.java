@@ -296,7 +296,8 @@ public final class ArenaManager {
                     if (error == null) {
                         DEBUG.i("arena: " + sName);
                         if (!ARENAS.containsKey(sName.toLowerCase())) {
-                            loadArena(sName);
+                            Arena arena = new Arena(sName);
+                            loadArena(arena);
                         }
                     } else {
                         PVPArena.instance.getLogger().warning(Language.parse(MSG.ERROR_GOAL_NOTFOUND, error, StringParser.joinSet(PVPArena.instance.getAgm().getAllGoalNames(), ", ")));
@@ -312,18 +313,36 @@ public final class ArenaManager {
     /**
      * load a specific arena
      *
+     * please use loadArena(Arena)
+     *
      * @param configFile the file to load
      */
+    @Deprecated
     public static void loadArena(final String configFile) {
         DEBUG.i("loading arena " + configFile);
         final Arena arena = new Arena(configFile);
+        ARENAS.put(arena.getName().toLowerCase(), arena);
+    }
+
+    /**
+     * load a specific arena
+     *
+     * @param arena the arena to load
+     * @return whether the operation succeeded
+     */
+    public static boolean loadArena(final Arena arena) {
+        if (arena == null) {
+            return false;
+        }
+        DEBUG.i("loading arena " + arena.getName());
 
         if (!arena.isValid()) {
-            Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, configFile));
-            return;
+            Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_ARENACONFIG, arena.getName()));
+            return false;
         }
 
         ARENAS.put(arena.getName().toLowerCase(), arena);
+        return true;
     }
 
     public static void removeArena(final Arena arena, final boolean deleteConfig) {

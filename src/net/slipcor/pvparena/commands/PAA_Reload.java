@@ -42,14 +42,9 @@ public class PAA_Reload extends AbstractArenaCommand {
         ArenaManager.removeArena(arena, false);
         final Arena newArena = new Arena(name);
 
-        if (!newArena.isValid()) {
-            Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ARENACONFIG, name));
-            return;
+        if (ArenaManager.loadArena(newArena)) {
+            newArena.msg(sender, Language.parse(arena, MSG.RELOAD_DONE));
         }
-
-        ArenaManager.loadArena(newArena.getName());
-
-        newArena.msg(sender, Language.parse(arena, MSG.RELOAD_DONE));
     }
 
     @Override

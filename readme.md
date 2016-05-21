@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.118 - [CheckPoints] - address github issue #197
+- v1.3.2.119 - prevent double instantiation of arenas - use with caution! :P
 - [read more](doc/changelog.md)
 
 ***
