@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.117 - [BetterFight] add config setting to restrict explosions only to one-hit deaths
+- v1.3.2.118 - [CheckPoints] - address github issue #197
 - [read more](doc/changelog.md)
 
 ***

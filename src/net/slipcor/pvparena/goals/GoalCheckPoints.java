@@ -118,12 +118,13 @@ public class GoalCheckPoints extends ArenaGoal {
         final Set<String> result = new HashSet<>();
 
         for (final ArenaPlayer p : arena.getFighters()) {
+            if (p.get().getLocation().getWorld().getName().equals(loc.getWorld().getName())) {
+                if (p.get().getLocation().distance(loc) > distance) {
+                    continue;
+                }
 
-            if (p.get().getLocation().distance(loc) > distance) {
-                continue;
+                result.add(p.getName());
             }
-
-            result.add(p.getName());
         }
 
         return result;
@@ -336,6 +337,11 @@ public class GoalCheckPoints extends ArenaGoal {
     @Override
     public boolean isInternal() {
         return true;
+    }
+
+    @Override
+    public void lateJoin(final Player player) {
+        initate(player);
     }
 
     @Override
