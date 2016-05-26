@@ -1,3 +1,4 @@
+- v1.3.2.122 - furthermore fix the uninstall routine
 - v1.3.2.121 - address github issue #131 - I think I found the bug!
 - v1.3.2.120 - address github issue #203 by firstly fixing the NPE and adding more info to the uninstalling error (Main server log!)
 - v1.3.2.119 - prevent double instantiation of arenas - use with caution! :P

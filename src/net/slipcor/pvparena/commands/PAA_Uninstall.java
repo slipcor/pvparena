@@ -50,8 +50,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
         try {
             config.load(PVPArena.instance.getDataFolder().getPath() + "/install.yml");
         } catch (final Exception e) {
-            e.printStackTrace();
-            return;
         }
 
         if (args.length == 0) {

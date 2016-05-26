@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.121 - address github issue #131 - I think I found the bug!
+- v1.3.2.122 - furthermore fix the uninstall routine
 - [read more](doc/changelog.md)
 
 ***
