@@ -153,7 +153,18 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 
         final File destFile = new File(destination, file);
 
-        return destFile.exists() && destFile.delete();
+        boolean exists = destFile.exists();
+        boolean deleted = false;
+        if (exists) {
+            deleted = destFile.delete();
+            if (!deleted) {
+                PVPArena.instance.getLogger().severe("could not delete file: " + file);
+            }
+        } else {
+            PVPArena.instance.getLogger().warning("file does not exist: " + file);
+        }
+
+        return exists && deleted;
     }
 
     @Override

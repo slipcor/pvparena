@@ -1,3 +1,4 @@
+- v1.3.2.120 - address github issue #203 by firstly fixing the NPE and adding more info to the uninstalling error (Main server log!)
 - v1.3.2.119 - prevent double instantiation of arenas - use with caution! :P
 - v1.3.2.118 - [CheckPoints] - address github issue #197
 - v1.3.2.117 - [BetterFight] add config setting to restrict explosions only to one-hit deaths

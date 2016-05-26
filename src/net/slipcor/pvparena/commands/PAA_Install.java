@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +71,7 @@ public class PAA_Install extends AbstractGlobalCommand {
             return;
         }
 
-        Set<String> list = config.getConfigurationSection("goals").getKeys(false);
+        Set<String> list = (config == null || config.getConfigurationSection("goals") == null)?new HashSet<String>():config.getConfigurationSection("goals").getKeys(false);
         if (list.contains(args[0].toLowerCase())) {
             for (final String key : list) {
                 if (key.equalsIgnoreCase(args[0])) {
@@ -84,9 +85,17 @@ public class PAA_Install extends AbstractGlobalCommand {
                     return;
                 }
             }
+        } else if (list.size() == 0) {
+            if (download("pa_g_" + args[0].toLowerCase() + ".jar")) {
+                PVPArena.instance.getAgm().reload();
+                Arena.pmsg(sender,
+                        Language.parse(MSG.INSTALL_DONE, args[0].toLowerCase()));
+                return;
+            }
+            Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, args[0].toLowerCase()));
         }
 
-        list = config.getConfigurationSection("mods").getKeys(false);
+        list = (config == null || config.getConfigurationSection("mods") == null)?new HashSet<String>():config.getConfigurationSection("mods").getKeys(false);
         if (list.contains(args[0].toLowerCase())) {
             for (final String key : list) {
                 if (key.equalsIgnoreCase(args[0])) {
@@ -97,9 +106,16 @@ public class PAA_Install extends AbstractGlobalCommand {
                         return;
                     }
                     Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, key));
-                    return;
                 }
             }
+        } else if (list.size() == 0) {
+            if (download("pa_m_" + args[0].toLowerCase() + ".jar")) {
+                PVPArena.instance.getAmm().reload();
+                Arena.pmsg(sender,
+                        Language.parse(MSG.INSTALL_DONE, args[0].toLowerCase()));
+                return;
+            }
+            Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, args[0].toLowerCase()));
         }
     }
 
@@ -151,18 +167,23 @@ public class PAA_Install extends AbstractGlobalCommand {
             }
         }
     }
-
     private boolean download(final String file) {
+        return download(file, false);
+    }
+
+    private boolean download(final String file, final boolean silent) {
 
         final File source = new File(PVPArena.instance.getDataFolder().getPath()
                 + "/files/" + file);
 
         if (!source.exists()) {
-            Arena.pmsg(
-                    Bukkit.getConsoleSender(),
-                    ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + 'r'
-                            + file
-                            + ChatColor.COLOR_CHAR + "c' not found. Please extract the file to /files before trying to install!");
+            if (!silent) {
+                Arena.pmsg(
+                        Bukkit.getConsoleSender(),
+                        ChatColor.COLOR_CHAR + "cFile '" + ChatColor.COLOR_CHAR + 'r'
+                                + file
+                                + ChatColor.COLOR_CHAR + "c' not found. Please extract the file to /files before trying to install!");
+            }
             return false;
         }
 
