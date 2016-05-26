@@ -298,6 +298,10 @@ public class ArenaGoalManager {
 
             // neededTeams should be the number of active teams
 
+            if (neededTeams <= 2) {
+                neededTeams = 2;
+            }
+
             if (winners.size() >= neededTeams) { // everyone is a winner, at least (lol)
                 everyone = true;
             }
