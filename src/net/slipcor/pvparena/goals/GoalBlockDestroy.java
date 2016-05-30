@@ -125,7 +125,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         if (count == 1) {
             res.setPriority(this, PRIORITY); // yep. only one team left. go!
         } else if (count == 0) {
-            res.setError(this, "No teams playing!");
+            arena.getDebugger().i("No teams playing!");
         }
 
         return res;

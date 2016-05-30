@@ -1,3 +1,4 @@
+- v1.3.2.126 - address github issue #202 - remove "error" and only write it to debug
 - v1.3.2.125 - address github issue #155, prevent double dropping of inventory. Hope this does not break anything :P
 - v1.3.2.124 - address github issue #154 - just remove tick 4, it's not that important anyways. And remove the blocklist spam :)
 - v1.3.2.122 - furthermore fix the uninstall routine

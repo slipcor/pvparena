@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.125 - address github issue #155, prevent double dropping of inventory. Hope this does not break anything :P
+- v1.3.2.126 - address github issue #202 - remove "error" and only write it to debug
 - [read more](doc/changelog.md)
 
 ***
