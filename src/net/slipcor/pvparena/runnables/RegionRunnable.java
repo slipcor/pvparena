@@ -84,7 +84,7 @@ public class RegionRunnable implements Runnable {
             region.tick();
         } else if (region.getArena().isFightInProgress()) {
             // if ingame, always tick for other kinds of things!
-            region.getArena().getDebugger().i("tick 4: " + region.getRegionName());
+            //region.getArena().getDebugger().i("tick 4: " + region.getRegionName());
             region.tick();
         } else {
             // not ingame; ignore!

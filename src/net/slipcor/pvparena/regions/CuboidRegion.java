@@ -257,12 +257,12 @@ public class CuboidRegion extends ArenaRegionShape {
                 region.locs[1].getZ())); // == 6
 
         result.add(region.locs[1]); // == 7
-
+/*
         getRegion().getArena().getDebugger().i("CUBOID blockCheckList");
 
         for (PABlockLocation block : result) {
             getRegion().getArena().getDebugger().i(block.toString());
-        }
+        }*/
 
         return result;
     }

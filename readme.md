@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.122 - furthermore fix the uninstall routine
+- v1.3.2.124 - address github issue #154 - just remove tick 4, it's not that important anyways. And remove the blocklist spam :)
 - [read more](doc/changelog.md)
 
 ***
