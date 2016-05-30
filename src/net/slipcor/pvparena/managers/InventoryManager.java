@@ -129,6 +129,7 @@ public final class InventoryManager {
             player.getWorld().dropItemNaturally(player.getLocation(), is);
         }
         player.getInventory().clear();
+        ap.setMayDropInventory(false);
         return returned;
     }
 

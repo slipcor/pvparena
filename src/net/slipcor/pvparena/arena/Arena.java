@@ -1387,6 +1387,7 @@ public class Arena {
             aPlayer.setArenaClass(aPlayer.getNextArenaClass());
             if (aPlayer.getArenaClass() != null) {
                 ArenaPlayer.givePlayerFightItems(this, aPlayer.get());
+                aPlayer.setMayDropInventory(true);
             }
             aPlayer.setNextArenaClass(null);
         }

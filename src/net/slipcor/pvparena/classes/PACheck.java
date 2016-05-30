@@ -577,7 +577,7 @@ public class PACheck {
                 player.getLastDamageCause());
         arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-        if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+        if (!arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY) || !ArenaPlayer.parsePlayer(player.getName()).mayDropInventory()) {
             event.getDrops().clear();
         }
         if (doesRespawn

@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.124 - address github issue #154 - just remove tick 4, it's not that important anyways. And remove the blocklist spam :)
+- v1.3.2.125 - address github issue #155, prevent double dropping of inventory. Hope this does not break anything :P
 - [read more](doc/changelog.md)
 
 ***

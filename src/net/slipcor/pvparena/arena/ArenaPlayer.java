@@ -51,6 +51,7 @@ public class ArenaPlayer {
     private boolean telePass;
     private boolean ignoreAnnouncements;
     private boolean teleporting;
+    private boolean mayDropInventory;
 
     private Arena arena;
     private ArenaClass aClass;
@@ -409,6 +410,7 @@ public class ArenaPlayer {
      */
     public void createState(final Player player) {
         state = new PlayerState(player);
+        mayDropInventory = true;
     }
 
     public boolean didValidSelection() {
@@ -427,7 +429,7 @@ public class ArenaPlayer {
         }
         debug.i("------------------", name);
         debug.i("Player: " + name, name);
-        debug.i("telepass: " + telePass + " | chatting: "
+        debug.i("telepass: " + telePass + " | mayDropInv: " + mayDropInventory + " | chatting: "
                 + publicChatting, name);
         debug.i("arena: " + (arena == null ? "null" : arena.getName()), name);
         debug.i("aClass: " + (aClass == null ? "null" : aClass.getName()),
@@ -586,6 +588,10 @@ public class ArenaPlayer {
 
     public boolean isTeleporting() {
         return teleporting;
+    }
+
+    public boolean mayDropInventory() {
+        return this.mayDropInventory;
     }
 
     public Set<PermissionAttachment> getTempPermissions() {
@@ -790,6 +796,10 @@ public class ArenaPlayer {
 
     public void setBackupScoreboardTeam(Team team) {
         backupBoardTeam = team;
+    }
+
+    public void setMayDropInventory(boolean value) {
+        mayDropInventory = value;
     }
 
     public void setNextArenaClass(ArenaClass aClass) {
