@@ -122,13 +122,6 @@ public final class Help {
                 "Entering an invalid goal will list available goals",
                 "No value will toggle and display the result",
                 "Valid values: yes, on, 1, true, no, off, 0, false"}),
-        IMPORT("nulang.help.msg.import", new String[]{
-                "Import v0.8 arenas",
-                LINE,
-                "shorthand command: !imp",
-                LINE,
-                "/pa import | import all arenas",
-                "/pa import [arenaname] | import an arena"}),
         INSTALL("nulang.help.msg.install", new String[]{
                 "Install modules",
                 LINE,

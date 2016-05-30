@@ -13,7 +13,6 @@ Command | Shorthand | Definition
 [/pa debug](commands/debug.md) | /pa !d | Debugs nodes
 [/pa reload](commands/reload.md) | /pa !r | Reload arena configs
 [/pa install](commands/install.md) | /pa !i | Installs a module
-[/pa import](commands/import.md) | /pa !imp | Imports 0.8 arenas
 [/pa uninstall](commands/uninstall.md) | /pa !ui | Uninstalls a module
 [/pa update](commands/update.md) | /pa !u | Updates a module
 

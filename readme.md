@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.126 - address github issue #202 - remove "error" and only write it to debug
+- v1.3.2.127 - fix github issue #204 by removing all traces of the nonexisting command "import"
 - [read more](doc/changelog.md)
 
 ***
