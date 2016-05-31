@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.127 - fix github issue #204 by removing all traces of the nonexisting command "import"
+- v1.3.2.128 - add a module method "parseStartCountDown" to possibly override the remaining seconds to go
 - [read more](doc/changelog.md)
 
 ***

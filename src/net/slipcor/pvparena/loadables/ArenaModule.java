@@ -399,6 +399,18 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     }
 
     /**
+     * hook into starting an arena countdown
+     *
+     * @param seconds the initial countdown seconds to go
+     * @param message the message being displayed (to check which one it is)
+     * @param global whether the whole arena will be messaged
+     * @return possibly different remaining seconds to go
+     */
+    public Integer parseStartCountDown(Integer seconds, String message, Boolean global) {
+        return seconds;
+    }
+
+    /**
      * hook into an arena being reset
      *
      * @param force if the arena is forcefully reset

@@ -70,7 +70,7 @@ public abstract class ArenaRunnable extends BukkitRunnable {
     protected ArenaRunnable(final String message, final Integer seconds, final Player player, final Arena arena, final Boolean global) {
         super();
         this.message = message;
-        this.seconds = seconds;
+        this.seconds = ArenaModuleManager.parseStartCountDown(seconds, message, arena, global);
         sPlayer = player == null ? null : player.getName();
         this.arena = arena;
         this.global = global;
