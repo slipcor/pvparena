@@ -223,6 +223,9 @@ public class ArenaModuleManager {
     }
 
     public static Integer parseStartCountDown(Integer seconds, String message, Arena arena, Boolean global) {
+        if (arena == null) {
+            return seconds;
+        }
         Integer result = seconds;
         for (final ArenaModule mod : arena.getMods()) {
             result = mod.parseStartCountDown(result, message, global);

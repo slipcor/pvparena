@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.128 - add a module method "parseStartCountDown" to possibly override the remaining seconds to go
+- v1.3.2.129 - address github issue #209 - oups
 - [read more](doc/changelog.md)
 
 ***
