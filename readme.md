@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.130 - stop spamming, please. Aims at fixing github issue #154
+- v1.3.2.131 - remove FallingAnvils hooks and documentation - it did not work out :/
 - [read more](doc/changelog.md)
 
 ***

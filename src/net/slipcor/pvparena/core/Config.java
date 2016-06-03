@@ -297,10 +297,6 @@ public class Config {
 
         MODULES_DUEL_FORCESTART("modules.duel.forcestart", true, "Duel"),
 
-        MODULES_FALLINGANVILS_AMOUNTPERINTERVAL("modules.fallinganvils.amountperinterval", 10, "FallingAnvils"),
-        MODULES_FALLINGANVILS_LIFEINTERVAL("modules.fallinganvils.lifeinterval", 40, "FallingAnvils"),
-        MODULES_FALLINGANVILS_SPAWNINTERVAL("modules.fallinganvils.spawninterval", 10, "FallingAnvils"),
-
         MODULES_FIXINVENTORYLOSS_GAMEMODE("modules.fixinventoryloss.gamemode", false, "FixInventoryLoss"),
         MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false, "FixInventoryLoss"),
 
