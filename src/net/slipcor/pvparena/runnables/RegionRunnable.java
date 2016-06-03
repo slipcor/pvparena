@@ -1,7 +1,6 @@
 package net.slipcor.pvparena.runnables;
 
 import net.slipcor.pvparena.PVPArena;
-import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
 
@@ -36,9 +35,6 @@ public class RegionRunnable implements Runnable {
      */
     @Override
     public void run() {
-        if (!Debug.override) {
-            region.getArena().getDebugger().i("RegionRunnable commiting: " + region.getRegionName());
-        }
         /*
 		 * J - is a join region
 		 * I - is a fight in progress?

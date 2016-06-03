@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.129 - address github issue #209 - oups
+- v1.3.2.130 - stop spamming, please. Aims at fixing github issue #154
 - [read more](doc/changelog.md)
 
 ***
