@@ -19,17 +19,20 @@ The mod needs a full server restart to properly alter the configuration. After t
 
 - modules.chestfiller.cfitems \- the items, separated by comma
 - modules.chestfiller.cfmaxitems \- maximum items being selected from the items
-- modules.chestfiller.cfminitems \- minimum items being selected from the items 
+- modules.chestfiller.cfminitems \- minimum items being selected from the items
+- modules.chestfiller.chestlocation \- minimum items being selected from the items
 
 modules:
 - chestfiller:
   - cfitems: '230,123'
   - cfmaxitems: 2
   - cfminitems: 1
+  - chestlocation: none
 
 ## Commands
 
-\-
+- `/pa [arena] !cf chest` \- set a chest to get the inventory from (overrides cfitems)
+- `/pa [arena] !cf clear` \- toggle the restorechests setting
 
 ## Warnings
 

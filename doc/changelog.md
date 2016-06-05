@@ -1,3 +1,4 @@
+- v1.3.2.133 - prepare ChestFiller addition by adding language and documentation
 - v1.3.2.132 - prepare ChestFiller addition by adding config node
 - v1.3.2.131 - remove FallingAnvils hooks and documentation - it did not work out :/
 - v1.3.2.130 - stop spamming, please. Aims at fixing github issue #154

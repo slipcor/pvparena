@@ -603,6 +603,7 @@ public final class Language {
 
         MODULE_BLOCKRESTORE_CLEARINVDONE("nulang.blockrestore.clearinvdone", "Inventories cleared! Expect lag on next arena start!"),
 
+        MODULE_CHESTFILLER_CHEST("nulang.chestfiller.chest", "Successfully set the items to the contents of %1%."),
         MODULE_CHESTFILLER_CLEAR("nulang.chestfiller.clear", "Inventories cleared!"),
 
         MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),

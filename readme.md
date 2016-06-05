@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.132 - prepare ChestFiller addition by adding config node
+- v1.3.2.133 - prepare ChestFiller addition by adding language and documentation
 - [read more](doc/changelog.md)
 
 ***
