@@ -292,6 +292,8 @@ public class Config {
         MODULES_BLOCKDISSOLVE_STARTSECONDS("modules.blockdissolve.startseconds", 10, "BlockDissolve"),
         MODULES_BLOCKDISSOLVE_TICKS("modules.blockdissolve.ticks", 40, "BlockDissolve"),
 
+        MODULES_CHESTFILLER_CHESTLOCATION("modules.chestfiller.chestlocation", "none", "ChestFiller"),
+
         MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false, "ColorTeams"),
         MODULES_COLORTEAMS_SCOREBOARD("modules.colorteams.scoreboard", false, "ColorTeams"),
 

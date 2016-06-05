@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.131 - remove FallingAnvils hooks and documentation - it did not work out :/
+- v1.3.2.132 - prepare ChestFiller addition by adding config node
 - [read more](doc/changelog.md)
 
 ***
