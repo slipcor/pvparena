@@ -1743,6 +1743,7 @@ public class Arena {
         final PAJoinEvent event = new PAJoinEvent(this, player, false);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
+            debug.i("! Join event cancelled by a plugin !");
             return false;
         }
 

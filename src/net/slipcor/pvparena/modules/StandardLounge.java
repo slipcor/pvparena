@@ -11,10 +11,8 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.ArenaManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -172,11 +170,6 @@ public class StandardLounge extends ArenaModule {
 
     @Override
     public void commitJoin(final Player sender, final ArenaTeam team) {
-        final PAJoinEvent event = new PAJoinEvent(arena, sender, false);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
         PVPArena.arcade.setPlaying(sender.getName(), true);
         // standard join --> lounge
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());

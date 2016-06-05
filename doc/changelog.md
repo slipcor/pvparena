@@ -1,3 +1,4 @@
+- v1.3.2.134 - address github issue #201 - properly call PAJoinEvent, this never was implemented correctly. Sorry!
 - v1.3.2.133 - prepare ChestFiller addition by adding language and documentation
 - v1.3.2.132 - prepare ChestFiller addition by adding config node
 - v1.3.2.131 - remove FallingAnvils hooks and documentation - it did not work out :/

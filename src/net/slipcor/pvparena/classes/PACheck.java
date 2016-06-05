@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -380,6 +381,13 @@ public class PACheck {
         if (commModule == null || commGoal == null) {
 
             if (commModule != null) {
+
+                final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, false);
+                Bukkit.getPluginManager().callEvent(event);
+                if (event.isCancelled()) {
+                    arena.getDebugger().i("! Join event cancelled by plugin !");
+                    return;
+                }
                 commModule.commitJoin((Player) sender, team);
 
                 ArenaModuleManager.parseJoin(arena, (Player) sender, team);
@@ -443,6 +451,14 @@ public class PACheck {
                 player.setStatus(Status.READY);
             }
 
+            return;
+        }
+
+
+        final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, false);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            arena.getDebugger().i("! Join event cancelled by plugin !");
             return;
         }
 
@@ -685,6 +701,13 @@ public class PACheck {
 
         if (commit == null) {
             arena.getDebugger().i("commit null", sender);
+            return;
+        }
+
+        final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, true);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) {
+            arena.getDebugger().i("! Spectate event cancelled by plugin !");
             return;
         }
 

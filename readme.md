@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.133 - prepare ChestFiller addition by adding language and documentation
+- v1.3.2.134 - address github issue #201 - properly call PAJoinEvent, this never was implemented correctly. Sorry!
 - [read more](doc/changelog.md)
 
 ***

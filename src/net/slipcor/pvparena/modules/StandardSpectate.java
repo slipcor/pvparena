@@ -10,9 +10,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.loadables.ArenaModule;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -61,11 +59,6 @@ public class StandardSpectate extends ArenaModule {
 
     @Override
     public void commitSpectate(final Player player) {
-        final PAJoinEvent event = new PAJoinEvent(arena, player, true);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            return;
-        }
         PVPArena.arcade.setPlaying(player.getName(), true);
 
         // standard join --> lounge
