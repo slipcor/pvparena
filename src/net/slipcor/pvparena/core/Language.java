@@ -605,6 +605,7 @@ public final class Language {
 
         MODULE_CHESTFILLER_CHEST("nulang.chestfiller.chest", "Successfully set the items to the contents of %1%."),
         MODULE_CHESTFILLER_CLEAR("nulang.chestfiller.clear", "Inventories cleared!"),
+        MODULE_CHESTFILLER_FILLCHEST("nulang.chestfiller.fillchest", "Added to the list to be filled: %1%."),
 
         MODULE_COLORTEAMS_TAGAPI("log.tagapi", "Hooking into TagAPI!"),
 

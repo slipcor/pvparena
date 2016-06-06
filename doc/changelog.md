@@ -1,3 +1,4 @@
+- v1.3.2.136 - add language response for ChestFiller
 - v1.3.2.135 - add documentation about ChestFiller changes, add some more config nodes that are now properly loaded with defaults automatically
 - v1.3.2.134 - address github issue #201 - properly call PAJoinEvent, this never was implemented correctly. Sorry!
 - v1.3.2.133 - prepare ChestFiller addition by adding language and documentation

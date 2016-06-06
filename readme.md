@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.135 - add documentation about ChestFiller changes, add some more config nodes that are now properly loaded with defaults automatically
+- v1.3.2.136 - add language response for ChestFiller
 - [read more](doc/changelog.md)
 
 ***
