@@ -293,6 +293,10 @@ public class Config {
         MODULES_BLOCKDISSOLVE_TICKS("modules.blockdissolve.ticks", 40, "BlockDissolve"),
 
         MODULES_CHESTFILLER_CHESTLOCATION("modules.chestfiller.chestlocation", "none", "ChestFiller"),
+        MODULES_CHESTFILLER_CLEAR("modules.chestfiller.clear", false, "ChestFiller"),
+        MODULES_CHESTFILLER_ITEMS("modules.chestfiller.cfitems", "1", true, "ChestFiller"),
+        MODULES_CHESTFILLER_MAXITEMS("modules.chestfiller.cfmaxitems", 5, "ChestFiller"),
+        MODULES_CHESTFILLER_MINITEMS("modules.chestfiller.cfminitems", 0, "ChestFiller"),
 
         MODULES_COLORTEAMS_HIDENAME("modules.colorteams.hidename", false, "ColorTeams"),
         MODULES_COLORTEAMS_SCOREBOARD("modules.colorteams.scoreboard", false, "ColorTeams"),
@@ -326,6 +330,9 @@ public class Config {
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
         MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true, "SpecialJoin"),
+
+        MODULES_SQUADS_AUTOSQUAD("modules.squads.autoSquad", "none", "Squads"),
+        MODULES_SQUADS_INGAMESWITCH("modules.squads.ingameSquadSwitch", true, "Squads"),
 
         MODULES_STARTFREEZE_TIMER("modules.startfreeze.freezetimer", 0, "StartFreeze"),
 

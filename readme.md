@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.134 - address github issue #201 - properly call PAJoinEvent, this never was implemented correctly. Sorry!
+- v1.3.2.135 - add documentation about ChestFiller changes, add some more config nodes that are now properly loaded with defaults automatically
 - [read more](doc/changelog.md)
 
 ***
