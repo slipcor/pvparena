@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.136 - add language response for ChestFiller
+- v1.3.2.137 - address github issue #205
 - [read more](doc/changelog.md)
 
 ***

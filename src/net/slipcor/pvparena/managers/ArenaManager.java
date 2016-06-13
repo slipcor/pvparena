@@ -447,7 +447,7 @@ public final class ArenaManager {
                 continue;
             }
             usingShortcuts = true;
-            DEF_LISTS.put(key, strings);
+            DEF_LISTS.put(key.toLowerCase(), strings);
             advance(key);
         }
     }
@@ -510,9 +510,9 @@ public final class ArenaManager {
             return getArenaByName(string);
         }
 
-        if (!DEF_LISTS.containsKey(string)) {
+        if (!DEF_LISTS.containsKey(string.toLowerCase())) {
             for (final String temp : DEF_LISTS.keySet()) {
-                if (temp.toLowerCase().contains(string.toLowerCase())) {
+                if (temp.contains(string.toLowerCase())) {
                     Arena a = ArenaManager.getArenaByName(temp);
                     if (a.isLocked()) {
                         continue;
@@ -535,7 +535,7 @@ public final class ArenaManager {
             }
         }
 
-        if (!DEF_LISTS.containsKey(string)) {
+        if (!DEF_LISTS.containsKey(string.toLowerCase())) {
             // not found1
             if (PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
                     !(isUngrouped && PVPArena.instance.getConfig().getBoolean("allow_ungrouped"))) {
@@ -580,7 +580,7 @@ public final class ArenaManager {
         if (!usingShortcuts) {
             return;
         }
-        final List<String> defs = DEF_LISTS.get(string);
+        final List<String> defs = DEF_LISTS.get(string.toLowerCase());
 
         if (DEF_VALUES.containsKey(string)) {
             final Arena arena = DEF_VALUES.get(string);

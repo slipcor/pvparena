@@ -281,6 +281,7 @@ public class PACheck {
             res = mod.checkJoin(sender, res, true);
             if (res.priority > priority && priority >= 0) {
                 // success and higher priority
+                arena.getDebugger().i("higher priority, commModule := "+mod.getName());
                 priority = res.priority;
                 commModule = mod;
             } else if (res.priority < 0 || priority < 0) {
@@ -314,6 +315,7 @@ public class PACheck {
             res = mod.checkJoin(sender, res, args);
             if (res.priority > priority && priority >= 0) {
                 // success and higher priority
+                arena.getDebugger().i("higher priority, commGoal := "+mod.getName());
                 priority = res.priority;
                 commGoal = mod;
             } else if (res.priority < 0 || priority < 0) {
@@ -381,6 +383,7 @@ public class PACheck {
         if (commModule == null || commGoal == null) {
 
             if (commModule != null) {
+                arena.getDebugger().i("calling event #1");
 
                 final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, false);
                 Bukkit.getPluginManager().callEvent(event);
@@ -398,6 +401,15 @@ public class PACheck {
                 return;
             }
             // both null, just put the joiner to some spawn
+
+            arena.getDebugger().i("calling event #2");
+
+            final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, false);
+            Bukkit.getPluginManager().callEvent(event);
+            if (event.isCancelled()) {
+                arena.getDebugger().i("! Join event cancelled by plugin !");
+                return;
+            }
 
             if (!arena.tryJoin((Player) sender, team)) {
                 return;
@@ -454,6 +466,7 @@ public class PACheck {
             return;
         }
 
+        arena.getDebugger().i("calling event #3");
 
         final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, false);
         Bukkit.getPluginManager().callEvent(event);
