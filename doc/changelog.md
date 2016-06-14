@@ -1,3 +1,4 @@
+- v1.3.3.138 - move to Spigot 1.9.4
 - v1.3.2.137 - address github issue #205
 - v1.3.2.136 - add language response for ChestFiller
 - v1.3.2.135 - add documentation about ChestFiller changes, add some more config nodes that are now properly loaded with defaults automatically
