@@ -169,13 +169,16 @@ public final class ConfigurationManager {
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
                 ItemStack[] contents = c.getInventory().getContents();
-                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length - 4);
+                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length - 5);
+                final ItemStack offHand = contents[contents.length - 5];
                 final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
-                arena.addClass(stringObjectEntry1.getKey(), items, armors);
+                arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 arena.getDebugger().i("adding class chest items to class " + stringObjectEntry1.getKey());
 
-            }   catch (Exception e) {final String[] sItems = sItemList.split(",");
+            }   catch (Exception e) {
+                final String[] sItems = sItemList.split(",");
                 final ItemStack[] items = new ItemStack[sItems.length];
+                final ItemStack[] offHand = new ItemStack[1];
                 final ItemStack[] armors = new ItemStack[4];
 
                 for (int i = 0; i < sItems.length; i++) {
@@ -192,6 +195,16 @@ public final class ConfigurationManager {
                         }
 
                         sItems[i] = "AIR";
+                    } else if (sItems[i].contains(">>O<<")) {
+                        final String[] split = sItems[i].split(">>O<<");
+
+                        final int id = Integer.parseInt(split[0]);
+                        offHand[id] = StringParser.getItemStackFromString(split[1]);
+
+                        if (armors[id] == null) {
+                            PVPArena.instance.getLogger().warning(
+                                    "unrecognized offhand item: " + split[1]);
+                        }
                     }
 
                     items[i] = StringParser.getItemStackFromString(sItems[i]);
@@ -200,11 +213,11 @@ public final class ConfigurationManager {
                                 "unrecognized item: " + items[i]);
                     }
                 }
-                arena.addClass(stringObjectEntry1.getKey(), items, armors);
+                arena.addClass(stringObjectEntry1.getKey(), items, offHand[0], armors);
                 arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
             }
         }
-        arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStacksFromString("0"));
+        arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStackFromString("0"), StringParser.getItemStacksFromString("0"));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
         arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));

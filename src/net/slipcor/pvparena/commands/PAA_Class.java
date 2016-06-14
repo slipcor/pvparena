@@ -69,7 +69,7 @@ public class PAA_Class extends AbstractArenaCommand {
             final Player player = (Player) sender;
             final List<ItemStack> items = new ArrayList<>();
 
-            for (final ItemStack is : player.getInventory().getContents()) {
+            for (final ItemStack is : player.getInventory().getStorageContents()) {
                 if (is != null) {
                     items.add(is);
                 }
@@ -91,10 +91,16 @@ public class PAA_Class extends AbstractArenaCommand {
                 armor.append(">>!<<");
                 armor.append(StringParser.getStringFromItemStack(item));
             }
+            if (player.getInventory().getItemInOffHand() != null) {
+                armor.append(',');
+                armor.append(0);
+                armor.append(">>O<<");
+                armor.append(StringParser.getStringFromItemStack(player.getInventory().getItemInOffHand()));
+            }
 
             arena.getArenaConfig().setManually("classitems." + args[1], sItems + armor);
             arena.getArenaConfig().save();
-            arena.addClass(args[1], isItems, player.getInventory().getArmorContents());
+            arena.addClass(args[1], isItems, player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
         } else if ("load".equalsIgnoreCase(args[0])) {
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());

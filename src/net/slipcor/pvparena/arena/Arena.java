@@ -128,12 +128,21 @@ public class Arena {
         }
     }
 
+    @Deprecated
     public void addClass(final String className, final ItemStack[] items, final ItemStack[] armors) {
         if (getClass(className) != null) {
             removeClass(className);
         }
 
         classes.add(new ArenaClass(className, items, armors));
+    }
+
+    public void addClass(String className, ItemStack[] items, ItemStack offHand, ItemStack[] armors) {
+        if (getClass(className) != null) {
+            removeClass(className);
+        }
+
+        classes.add(new ArenaClass(className, items, offHand, armors));
     }
 
     public void addEntity(final Player player, final Entity entity) {

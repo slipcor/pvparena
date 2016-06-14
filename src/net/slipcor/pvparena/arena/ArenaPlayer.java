@@ -61,7 +61,6 @@ public class ArenaPlayer {
     private Status status = Status.NULL;
 
     private ItemStack[] savedInventory;
-    private ItemStack[] savedArmor;
     private final Set<PermissionAttachment> tempPermissions = new HashSet<>();
     private final Map<String, PAStatMap> statistics = new HashMap<>();
 
@@ -272,7 +271,6 @@ public class ArenaPlayer {
 
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
         aPlayer.savedInventory = player.getInventory().getContents().clone();
-        aPlayer.savedArmor = player.getInventory().getArmorContents().clone();
         InventoryManager.clearInventory(player);
     }
 
@@ -338,27 +336,20 @@ public class ArenaPlayer {
 
             debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory), player);
             player.getInventory().setContents(aPlayer.savedInventory);
-            debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedArmor), player);
-            player.getInventory().setArmorContents(aPlayer.savedArmor);
         } else {
             class GiveLater implements Runnable {
                 final ItemStack[] inv;
-                final ItemStack[] arm;
-                GiveLater(final ItemStack[] inv, final ItemStack[] arm) {
+                GiveLater(final ItemStack[] inv) {
                     this.inv = inv.clone();
-                    this.arm = arm.clone();
                     }
                 @Override
                 public void run() {
                     debug.i("adding " + StringParser.getStringFromItemStacks(inv),
                             player);
                     player.getInventory().setContents(inv);
-                    debug.i("adding " + StringParser.getStringFromItemStacks(arm),
-                            player);
-                    player.getInventory().setArmorContents(arm);
                     }
             }
-            final GiveLater gl = new GiveLater(aPlayer.savedInventory, aPlayer.savedArmor);
+            final GiveLater gl = new GiveLater(aPlayer.savedInventory);
             try {
                 Bukkit.getScheduler().runTaskLater(PVPArena.instance, gl, 60L);
             } catch (final Exception e) {
@@ -439,8 +430,6 @@ public class ArenaPlayer {
         debug.i("savedInventory: "
                         + StringParser.getStringFromItemStacks(savedInventory),
                 name);
-        debug.i("savedArmor: " + StringParser.getStringFromItemStacks(savedArmor),
-                name);
         debug.i("tempPermissions:", name);
         for (final PermissionAttachment pa : tempPermissions) {
             debug.i("> " + pa, name);
@@ -469,7 +458,6 @@ public class ArenaPlayer {
         try {
             cfg.set("inventory",
                     StringParser.getStringFromItemStacks(savedInventory));
-            cfg.set("armor", StringParser.getStringFromItemStacks(savedArmor));
             cfg.set("loc", Config.parseToString(location));
 
             cfg.save(file);
@@ -645,8 +633,6 @@ public class ArenaPlayer {
         arena = ArenaManager.getArenaByName(cfg.getString("arena"));
         savedInventory = StringParser.getItemStacksFromString(cfg.getString(
                 "inventory", "AIR"));
-        savedArmor = StringParser.getItemStacksFromString(cfg.getString(
-                "armor", "AIR"));
         location = Config.parseLocation(cfg.getString("loc"));
 
         if (arena != null) {

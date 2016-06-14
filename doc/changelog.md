@@ -1,3 +1,4 @@
+- v1.3.3.139 - properly fix Inventory handling broken by Spigot 1.9 API changes
 - v1.3.3.138 - move to Spigot 1.9.4
 - v1.3.2.137 - address github issue #205
 - v1.3.2.136 - add language response for ChestFiller

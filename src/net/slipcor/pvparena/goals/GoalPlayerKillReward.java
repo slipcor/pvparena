@@ -193,7 +193,10 @@ public class GoalPlayerKillReward extends ArenaGoal {
                     .getInventory().getArmorContents())
                     + ','
                     + StringParser.getStringFromItemStacks(player.getInventory()
-                    .getContents());
+                    .getStorageContents())
+                    + ','
+                    + StringParser.getStringFromItemStack(player.getInventory()
+                    .getItemInOffHand());
 
             getItemMap().put(value, StringParser.getItemStacksFromString(contents));
             arena.msg(sender, Language.parse(arena, MSG.GOAL_KILLREWARD_ADDED,

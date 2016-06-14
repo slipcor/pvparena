@@ -33,6 +33,7 @@ public final class ArenaClass {
 
     private final String name;
     private final ItemStack[] items;
+    private final ItemStack offHand;
     private final ItemStack[] armors;
 
     private static final Map<String, ArenaClass> globals = new HashMap<>();
@@ -116,12 +117,14 @@ public final class ArenaClass {
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
                 ItemStack[] contents = c.getInventory().getContents();
-                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length-4);
+                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length-5);
+                final ItemStack offHand = contents[contents.length-5];
                 final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
-                globals.put(className, new ArenaClass(className, items, armors));
+                globals.put(className, new ArenaClass(className, items, offHand, armors));
             } catch (Exception e) {
                 final String[] sItems = sItemList.split(",");
                 final ItemStack[] items = new ItemStack[sItems.length];
+                final ItemStack[] offhand = new ItemStack[1];
                 final ItemStack[] armors = new ItemStack[4];
 
                 for (int i = 0; i < sItems.length; i++) {
@@ -138,6 +141,16 @@ public final class ArenaClass {
                         }
 
                         sItems[i] = "AIR";
+                    } else if (sItems[i].contains(">>O<<")) {
+                        final String[] split = sItems[i].split(">>O<<");
+
+                        final int id = Integer.parseInt(split[0]);
+                        offhand[id] = StringParser.getItemStackFromString(split[1]);
+
+                        if (armors[id] == null) {
+                            PVPArena.instance.getLogger().warning(
+                                    "unrecognized armor item: " + split[1]);
+                        }
                     }
 
                     items[i] = StringParser.getItemStackFromString(sItems[i]);
@@ -146,14 +159,14 @@ public final class ArenaClass {
                                 "unrecognized item: " + items[i]);
                     }
                 }
-                globals.put(className, new ArenaClass(className, items, armors));
+                globals.put(className, new ArenaClass(className, items, offhand[0], armors));
             }
         }
     }
 
     public static void addGlobalClasses(final Arena arena) {
         for (final Map.Entry<String, ArenaClass> stringArenaClassEntry : globals.entrySet()) {
-            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().armors);
+            arena.addClass(stringArenaClassEntry.getKey(), stringArenaClassEntry.getValue().items, stringArenaClassEntry.getValue().offHand, stringArenaClassEntry.getValue().armors);
         }
     }
 
@@ -202,6 +215,7 @@ public final class ArenaClass {
                 equipArmor(item, player.getInventory());
             }
         }
+        player.getInventory().setItemInOffHand(offHand);
         player.updateInventory();
     }
 
@@ -235,8 +249,14 @@ public final class ArenaClass {
         }
     }
 
+    @Deprecated
     public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack[] armors) {
+        this(className, classItems, null, armors);
+    }
+
+    public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack offHand, final ItemStack[] armors) {
         name = className;
+        this.offHand = offHand;
         items = classItems.clone();
         this.armors = armors.clone();
     }

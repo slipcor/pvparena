@@ -80,13 +80,6 @@ public class EndRunnable extends ArenaRunnable {
 
                 final List<ItemStack> items = new ArrayList<>();
 
-                for (final ItemStack is : ap.get().getInventory().getArmorContents()) {
-                    if (is == null) {
-                        continue;
-                    }
-                    items.add(is.clone());
-                }
-
                 for (final ItemStack is : ap.get().getInventory().getContents()) {
                     if (is == null) {
                         continue;
