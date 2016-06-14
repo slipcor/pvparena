@@ -249,6 +249,11 @@ public final class ArenaClass {
         }
     }
 
+    /**
+     * Backwards compatible offhand-less implementation of the constructor
+     *
+     * @deprecated use {@link #ArenaClass(String, ItemStack[], ItemStack, ItemStack[])} } instead.
+     */
     @Deprecated
     public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack[] armors) {
         this(className, classItems, null, armors);

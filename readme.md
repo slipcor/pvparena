@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.139 - properly fix Inventory handling broken by Spigot 1.9 API changes
+- v1.3.3.140 - properly fix Potion creation/saving broken by Spigot 1.9 API changes
 - [read more](doc/changelog.md)
 
 ***

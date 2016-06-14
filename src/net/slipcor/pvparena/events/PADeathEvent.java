@@ -66,14 +66,6 @@ public class PADeathEvent extends Event {
     }
 
     /**
-     * replaced by isRespawning()
-     */
-    @Deprecated
-    public boolean getRespawn() {
-        return respawn;
-    }
-
-    /**
      * hand over the respawn state
      *
      * @return true if the player will respawn, false otherwise

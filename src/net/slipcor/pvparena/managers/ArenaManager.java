@@ -311,11 +311,9 @@ public final class ArenaManager {
     }
 
     /**
-     * load a specific arena
+     * Backwards compatible arena loading
      *
-     * please use loadArena(Arena)
-     *
-     * @param configFile the file to load
+     * @deprecated use {@link #loadArena(Arena arena)} } instead.
      */
     @Deprecated
     public static void loadArena(final String configFile) {

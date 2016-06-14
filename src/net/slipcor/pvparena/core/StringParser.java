@@ -11,8 +11,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.material.Dye;
 import org.bukkit.material.Wool;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.*;
 
@@ -382,12 +384,24 @@ public final class StringParser {
                     }
                 } else if (itemStack.getType() == Material.POTION) {
                     // data = NAMEx1x100<oOo>NAMEx2x100
+                    // 1.9+ = NEWNAMEXtrueXtrue<oOo>NAMEx1x100<oOo>NAMEx2x100
                     try {
                         final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
 
                         final String[] defs = data.split(SAFE_BREAK);
 
-                        for (final String def : defs) {
+                        defs: for (final String def : defs) {
+                            if (def.contains("X")) {
+                                String[] vals = def.split("X");
+                                for (PotionType type : PotionType.values()) {
+                                    if (vals[0].equals(String.valueOf(type))) {
+                                        PotionData pData = new PotionData(type, StringParser.positive.contains(defs[1]), StringParser.positive.contains(defs[2]));
+                                        potionMeta.setBasePotionData(pData);
+                                        continue defs;
+                                    }
+                                }
+                                PVPArena.instance.getLogger().warning("Invalid base potion data: "+def);
+                            }
                             final String[] vals = def.split("x");
                             potionMeta.addCustomEffect(
                                     new PotionEffect(
@@ -556,6 +570,9 @@ public final class StringParser {
             }
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
             temp.append('~');
+            PotionData pData = potionMeta.getBasePotionData();
+            temp.append(pData.getType().getEffectType().getName()).append('X').append(pData.isExtended()).append('X').append(pData.isUpgraded());
+            temp.append(SAFE_BREAK);
             for (final PotionEffect pe : potionMeta.getCustomEffects()) {
                 temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);

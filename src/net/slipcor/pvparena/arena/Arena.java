@@ -128,6 +128,11 @@ public class Arena {
         }
     }
 
+    /**
+     * Backwards compatible offhand-less implementation of the addClass method
+     *
+     * @deprecated use {@link #addClass(String className, ItemStack[] items, ItemStack offHand, ItemStack[] armors)} instead.
+     */
     @Deprecated
     public void addClass(final String className, final ItemStack[] items, final ItemStack[] armors) {
         if (getClass(className) != null) {
