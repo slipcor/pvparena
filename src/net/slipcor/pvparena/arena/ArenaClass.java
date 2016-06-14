@@ -147,7 +147,7 @@ public final class ArenaClass {
                         final int id = Integer.parseInt(split[0]);
                         offhand[id] = StringParser.getItemStackFromString(split[1]);
 
-                        if (armors[id] == null) {
+                        if (offhand[id] == null) {
                             PVPArena.instance.getLogger().warning(
                                     "unrecognized armor item: " + split[1]);
                         }
@@ -199,6 +199,12 @@ public final class ArenaClass {
 
     public void equip(final Player player) {
         debug.i("Equipping player " + player.getName() + " with items!", player);
+        for (ItemStack item : armors) {
+            if (item != null) {
+                debug.i("armor: "+StringParser.getStringFromItemStack(item));
+                equipArmor(item, player.getInventory());
+            }
+        }
         for (final ItemStack item : items) {
             if (item == null) {
                 continue;
@@ -208,11 +214,6 @@ public final class ArenaClass {
             } else {
                 player.getInventory().addItem(item);
                 debug.i("- " + StringParser.getStringFromItemStack(item), player);
-            }
-        }
-        for (ItemStack item : armors) {
-            if (item != null) {
-                equipArmor(item, player.getInventory());
             }
         }
         player.getInventory().setItemInOffHand(offHand);

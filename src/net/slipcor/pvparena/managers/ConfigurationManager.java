@@ -201,7 +201,7 @@ public final class ConfigurationManager {
                         final int id = Integer.parseInt(split[0]);
                         offHand[id] = StringParser.getItemStackFromString(split[1]);
 
-                        if (armors[id] == null) {
+                        if (offHand[id] == null) {
                             PVPArena.instance.getLogger().warning(
                                     "unrecognized offhand item: " + split[1]);
                         }

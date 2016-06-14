@@ -571,8 +571,12 @@ public final class StringParser {
             final PotionMeta potionMeta = (PotionMeta) itemStack.getItemMeta();
             temp.append('~');
             PotionData pData = potionMeta.getBasePotionData();
-            temp.append(pData.getType().getEffectType().getName()).append('X').append(pData.isExtended()).append('X').append(pData.isUpgraded());
-            temp.append(SAFE_BREAK);
+            try {
+                temp.append(pData.getType().getEffectType().getName()).append('X').append(pData.isExtended()).append('X').append(pData.isUpgraded());
+                temp.append(SAFE_BREAK);
+            } catch (Exception e) {
+                PVPArena.instance.getLogger().warning("Invalid Potion data - please update your Potion definitions!");
+            }
             for (final PotionEffect pe : potionMeta.getCustomEffects()) {
                 temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);

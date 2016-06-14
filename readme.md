@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.140 - properly fix Potion creation/saving broken by Spigot 1.9 API changes
+- v1.3.3.141 - try to fix armor supply
 - [read more](doc/changelog.md)
 
 ***
