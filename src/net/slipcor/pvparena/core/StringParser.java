@@ -398,8 +398,11 @@ public final class StringParser {
                             if (def.contains("X")) {
                                 String[] vals = def.split("X");
                                 for (PotionType type : PotionType.values()) {
+                                    if (type == null || type.getEffectType() == null) {
+                                        continue;
+                                    }
                                     if (vals[0].equals(type.getEffectType().getName())) {
-                                        PotionData pData = new PotionData(type, StringParser.positive.contains(defs[1]), StringParser.positive.contains(defs[2]));
+                                        PotionData pData = new PotionData(type, StringParser.positive.contains(vals[1]), StringParser.positive.contains(vals[2]));
                                         potionMeta.setBasePotionData(pData);
                                         continue defs;
                                     }
@@ -427,6 +430,7 @@ public final class StringParser {
                     } catch (final Exception e) {
                         PVPArena.instance.getLogger().warning(
                                 "invalid potion data: " + data);
+                        e.printStackTrace();
                         return itemStack;
                     }
                 } else {

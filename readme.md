@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.143 - please use the same logic for saving and loading
+- v1.3.3.144 - potions are operational. Please update your class definitions (if you did not use class chests)
 - [read more](doc/changelog.md)
 
 ***

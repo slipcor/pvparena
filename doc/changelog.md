@@ -1,3 +1,4 @@
+- v1.3.3.144 - potions are operational. Please update your class definitions (if you did not use class chests)
 - v1.3.3.143 - please use the same logic for saving and loading
 - v1.3.3.142 - potions should work now. Please redo all your potionish classes (potions, splash potions, lingering, arrows, etc)
 - v1.3.3.141 - try to fix armor supply
