@@ -287,7 +287,7 @@ public final class StringParser {
             final String[] dataSplit = temp[location].split(SAFE_LORE_BREAK);
             String data = dataSplit[0];
             if (temp[2].contains(SAFE_BREAK)) {
-                if (mat == Material.POTION) {
+                if (hasPotionMeta(mat)) {
                     data = temp[2];
                 } else {
                     data = temp[2].split(SAFE_BREAK)[0];
@@ -382,7 +382,7 @@ public final class StringParser {
                                 "invalid skull data: " + data);
                         return itemStack;
                     }
-                } else if (itemStack.getType() == Material.POTION) {
+                } else if (hasPotionMeta(itemStack)) {
                     // data = NAMEx1x100<oOo>NAMEx2x100
                     // 1.9+ = NEWNAMEXtrueXtrue<oOo>NAMEx1x100<oOo>NAMEx2x100
                     try {
@@ -448,6 +448,21 @@ public final class StringParser {
             }
         }
         return null;
+    }
+
+    private static boolean hasPotionMeta(ItemStack itemStack) {
+        if (itemStack == null) {
+            return false;
+        }
+        if (itemStack.getItemMeta() instanceof PotionMeta) {
+            return true;
+        }
+        Material mat = itemStack.getType();
+        return hasPotionMeta(mat);
+    }
+
+    private static boolean hasPotionMeta(Material mat) {
+        return mat == Material.POTION || mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION || mat == Material.SPECTRAL_ARROW || mat == Material.TIPPED_ARROW;
     }
 
     public static ItemStack[] getItemStacksFromString(final String string) {
@@ -562,7 +577,7 @@ public final class StringParser {
             final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
             temp.append('~');
             temp.append(skullMeta.getOwner());
-        } else if (itemStack.getType() == Material.POTION) {
+        } else if (hasPotionMeta(itemStack)) {
             if (!durability) {
                 temp.append('~');
                 temp.append(itemStack.getDurability());

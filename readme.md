@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.141 - try to fix armor supply
+- v1.3.3.142 - potions should work now. Please redo all your potionish classes (potions, splash potions, lingering, arrows, etc)
 - [read more](doc/changelog.md)
 
 ***
