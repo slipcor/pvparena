@@ -579,6 +579,9 @@ public class Arena {
         final int randomItem = rRandom.nextInt(items.length);
 
         for (int i = 0; i < items.length; ++i) {
+            if (items[i] == null) {
+                continue;
+            }
             final ItemStack stack = StringParser.getItemStackFromString(items[i]);
             if (stack == null) {
                 PVPArena.instance.getLogger().warning(

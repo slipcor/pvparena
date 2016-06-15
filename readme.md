@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.142 - potions should work now. Please redo all your potionish classes (potions, splash potions, lingering, arrows, etc)
+- v1.3.3.143 - please use the same logic for saving and loading
 - [read more](doc/changelog.md)
 
 ***

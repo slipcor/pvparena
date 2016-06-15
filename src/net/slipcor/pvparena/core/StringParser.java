@@ -186,6 +186,10 @@ public final class StringParser {
             }
         }
 
+        if (temp[0].startsWith("0>>O<<")) {
+            temp[0] = temp[0].substring(6);
+        }
+
         String desc = null;
         int amount = 1;
         if (temp.length > 1) {
@@ -394,7 +398,7 @@ public final class StringParser {
                             if (def.contains("X")) {
                                 String[] vals = def.split("X");
                                 for (PotionType type : PotionType.values()) {
-                                    if (vals[0].equals(String.valueOf(type))) {
+                                    if (vals[0].equals(type.getEffectType().getName())) {
                                         PotionData pData = new PotionData(type, StringParser.positive.contains(defs[1]), StringParser.positive.contains(defs[2]));
                                         potionMeta.setBasePotionData(pData);
                                         continue defs;

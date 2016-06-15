@@ -1,3 +1,4 @@
+- v1.3.3.143 - please use the same logic for saving and loading
 - v1.3.3.142 - potions should work now. Please redo all your potionish classes (potions, splash potions, lingering, arrows, etc)
 - v1.3.3.141 - try to fix armor supply
 - v1.3.3.140 - properly fix Potion creation/saving broken by Spigot 1.9 API changes
