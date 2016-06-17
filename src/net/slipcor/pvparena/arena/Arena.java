@@ -657,16 +657,11 @@ public class Arena {
      * check if a custom class player is alive
      *
      * @return true if there is a custom class player alive, false otherwise
+     *
+     * @deprecated - checking this method is obsolete due to preventdrops and region checks
      */
+    @Deprecated
     public boolean isCustomClassAlive() {
-        for (final ArenaPlayer p : getFighters()) {
-            if (p.getStatus() == Status.FIGHT
-                    && p.getArenaClass() != null && "custom".equals(p.getArenaClass().getName())) {
-                getDebugger().i("custom class active: true");
-                return true;
-            }
-        }
-        getDebugger().i("custom class active: false");
         return false;
     }
 

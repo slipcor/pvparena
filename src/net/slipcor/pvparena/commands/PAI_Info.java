@@ -55,7 +55,6 @@ public class PAI_Info extends AbstractArenaCommand {
                 StringParser.joinSet(arena.getTeamNamesColored(), ChatColor.COLOR_CHAR + "r, ")));
 
         arena.msg(sender, StringParser.colorVar("fighting", arena.isFightInProgress()) + " | " +
-                StringParser.colorVar("custom", arena.isCustomClassAlive()) + " | " +
                 StringParser.colorVar("enabled", !arena.isLocked()));
 
         final Set<String> classes = new HashSet<>();

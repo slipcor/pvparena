@@ -243,10 +243,8 @@ public class GoalTank extends ArenaGoal {
                                 player.getKiller()), String.valueOf(iLives)));
             }
             final List<ItemStack> returned;
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
+            if (arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
