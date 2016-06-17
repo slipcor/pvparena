@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="PVP Arena : Controlled violence since 2011">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>PVP Arena</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/slipcor/pvparena">View on GitHub</a>
+
+          <h1 id="project_title">PVP Arena</h1>
+          <h2 id="project_tagline">Controlled violence since 2011</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/slipcor/pvparena/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/slipcor/pvparena/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><img src="/doc/images/logo.png" alt="PVP-Arena"></p>
+
+<p><strong>Enhance your server by adding a new dimension of PVP battles!</strong></p>
+
+<p>Create fully customizable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish.
+This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.</p>
+
+<hr>
+
+<h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>Multiple arenas</li>
+<li>Battlefield regions</li>
+<li>Customizable classes</li>
+<li>Player-state saving</li>
+<li>Arena regions</li>
+<li>In-game configuration access</li>
+<li>Arena disable</li>
+<li>Leader boards</li>
+<li>Spawn protection</li>
+<li>Flag coloring</li>
+<li>Inventory drops</li>
+<li>Announcements</li>
+<li>Arena end timer</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<ul>
+<li>Spigot 1.9.4</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="downloads" class="anchor" href="#downloads" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Downloads</h2>
+
+<ul>
+<li><a href="https://www.spigotmc.org/resources/pvp-arena.16584/">spigotmc.org</a></li>
+<li><a href="https://ci2.craftyn.com/job/PVP%20Arena/">jenkins - dev builds</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to install</h2>
+
+<ul>
+<li>Stop your server</li>
+<li>Place jar in plugins folder</li>
+<li>Run a first time to create config folder</li>
+<li>Configure if you wish to</li>
+<li>Done !</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="documentation" class="anchor" href="#documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Documentation</h2>
+
+<ul>
+<li><a href="doc/creation.md">Creation</a></li>
+<li><a href="doc/commands.md">Commands</a></li>
+<li><a href="doc/enhancements.md">Enhancements</a></li>
+<li><a href="doc/items.md">Items</a></li>
+<li><a href="doc/languages.md">Languages</a></li>
+<li><a href="doc/permissions.md">Permissions</a></li>
+<li><a href="doc/regions.md">Regions</a></li>
+<li><a href="doc/configuration.md">Configuration</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="video-tutorials" class="anchor" href="#video-tutorials" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Video Tutorials</h2>
+
+<ul>
+<li><a href="http://www.youtube.com/watch?v=yyPJ6vlv09s">Basic Setup</a></li>
+<li><a href="http://www.youtube.com/watch?v=LB4WKdTh4Jg">Region setup</a></li>
+<li><a href="http://www.youtube.com/watch?v=SuL78bce-f0">CTF</a></li>
+<li><a href="http://www.youtube.com/watch?v=KqBueDNbpD8">DeathMatch</a></li>
+<li><a href="http://www.youtube.com/watch?v=ntloY1BTKHQ">Food Block Destroy</a></li>
+<li><a href="http://www.youtube.com/watch?v=xBIxHoKMu98">FreeForAll</a></li>
+<li><a href="http://www.youtube.com/watch?v=DRmLNXEAs_4">Spleef</a></li>
+<li><a href="http://www.youtube.com/watch?v=Xi7yNURxAjw">Pillar Domination</a></li>
+<li><a href="http://www.youtube.com/watch?v=rQ1ljlc6SJM">TeamDeathMatch</a></li>
+</ul>
+
+<p>Users tutorials :</p>
+
+<ul>
+<li><a href="http://www.youtube.com/watch?v=Jw6E8s2kiKw">TeamDeathMatch</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Changelog</h2>
+
+<ul>
+<li>v1.3.3.146 - found the little bug that caused github issue #205 !</li>
+<li><a href="doc/changelog.md">read more</a></li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Todo</h2>
+
+<ul>
+<li>plugin
+
+<ul>
+<li>[ ] calculate a winner based on ROUND results</li>
+</ul>
+</li>
+<li>modules</li>
+<li>goals
+
+<ul>
+<li>[ ] tournament arenas ; rounds switch through arenas</li>
+<li>[ ] siege -&gt; bring PACKET from A to B || prevent</li>
+</ul>
+</li>
+</ul>
+
+<hr>
+
+<h2>
+<a id="update-checker" class="anchor" href="#update-checker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Update Checker</h2>
+
+<p>I use two ways of keeping track of versions. One is the plugin version, the Bukkit Update Checker utilizing the Curse API,
+the other setting is for module version checking, let me show you the important config.yml nodes:</p>
+
+<pre><code>update:
+  modules: true
+# should PA check my server (www.slipcor.net) for module versions?
+# !! If you disable that, you have to manually download and install modules! !!
+
+  type: beta #which release state do we want to use?
+# valid values:
+# alpha: update to every dev build
+# beta: update to every beta build
+# release: only update to full release builds
+# everything else will fall back to release
+
+  mode: both #how should we update?
+# valid values:
+# both: announce and download
+# download: download, do not announce
+# announce: only announce, do not download
+# everything else will disable the update check
+</code></pre>
+
+<hr>
+
+<h2>
+<a id="metrics" class="anchor" href="#metrics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Metrics</h2>
+
+<p>To determine popularity and usage of PVP Arena, plugin installs are automatically tracked by the Metrics plugin tracking system.
+It does nothing if you do not have any configured arenas. If you don't want this tracking, edit plugins/PluginMetrics/config.yml and set opt-out to true.</p>
+
+<p><img src="http://i.mcstats.org/pvparena/Global+Statistics.borderless.png" alt="PVP-Arena Metrics"></p>
+
+<h3>
+<a id="phoning-home" class="anchor" href="#phoning-home" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Phoning home</h3>
+
+<p>To get a second opinion, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
+That's it! If you want to disable that, set "tracker" to false in the config!</p>
+
+<hr>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Credits</h2>
+
+<ul>
+<li>Deminetix for the very root, the Fight plugin</li>
+<li>Bradley Hilton for the fork until version v0.0.3</li>
+<li>Carbon131 for adding features until version v0.0.5</li>
+<li>Drehverschluss for great support during the v0.6+v0.7 rewrite</li>
+<li>NodinChan for helping me cleaning up my code and for his loader!</li>
+<li>zyxep and Bradley Hilton for the Jenkins</li>
+<li>Oruss7 for the documentation head start</li>
+</ul>
+
+<hr>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">PVP Arena maintained by <a href="https://github.com/slipcor">slipcor</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
