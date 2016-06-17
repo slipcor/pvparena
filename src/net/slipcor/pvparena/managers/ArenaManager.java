@@ -589,10 +589,8 @@ public final class ArenaManager {
             }
         }
 
-        if (!DEF_VALUES.containsKey(string)) {
-            DEBUG.i("advance " + string);
-            advance(string);
-        }
+        DEBUG.i("advance " + string);
+        advance(string);
 
         if (DEF_VALUES.get(string) == null) {
             DEBUG.i("out null -.-");

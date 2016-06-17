@@ -1,3 +1,4 @@
+- v1.3.3.146 - found the little bug that caused github issue #205 !
 - v1.3.3.145 - partially revert d8d9bf174027aadc6ccd641b6cef7b660f435f25 to address github issue #205
 - v1.3.3.144 - potions are operational. Please update your class definitions (if you did not use class chests)
 - v1.3.3.143 - please use the same logic for saving and loading
