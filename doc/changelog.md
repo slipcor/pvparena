@@ -1,3 +1,4 @@
+- v1.3.3.148 - finally fix github issue #205
 - v1.3.3.147 - prevent inventory dropping even if custom class is active
 - v1.3.3.146 - found the little bug that caused github issue #205 !
 - v1.3.3.145 - partially revert d8d9bf174027aadc6ccd641b6cef7b660f435f25 to address github issue #205

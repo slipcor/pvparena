@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.146 - found the little bug that caused github issue #205 !
+- v1.3.3.148 - finally fix github issue #205
 - [read more](doc/changelog.md)
 
 ***

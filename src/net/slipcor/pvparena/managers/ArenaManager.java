@@ -526,24 +526,25 @@ public final class ArenaManager {
         }
 
         boolean isUngrouped = true;
+        String preciseArenaName = null;
 
         deflists: for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
                 if (item.equals(string)) {
-                    string = item;
+                    preciseArenaName = item;
                     isUngrouped = false;
                     break deflists; // exact case match, out!
                 }
                 if (item.equalsIgnoreCase(string)) {
-                    string = item;
+                    preciseArenaName = item;
                     isUngrouped = false; // case insensitive match, continue to eventually find a better match
                 }
-                if (item.startsWith(string)) {
-                    string = item;
+                if (item.toLowerCase().startsWith(string.toLowerCase())) {
+                    preciseArenaName = item;
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
-                if (item.endsWith(string)) {
-                    string = item;
+                if (item.toLowerCase().endsWith(string.toLowerCase())) {
+                    preciseArenaName = item;
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
             }
@@ -561,11 +562,11 @@ public final class ArenaManager {
                 foundExactCI = true;
                 string = key; // case insensitive match, continue to eventually find a better match
             }
-            if (key.startsWith(string)) {
+            if (key.toLowerCase().startsWith(string.toLowerCase())) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
             }
-            if (key.endsWith(string)) {
+            if (key.toLowerCase().endsWith(string.toLowerCase())) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
             }
@@ -573,7 +574,7 @@ public final class ArenaManager {
 
         if (!foundExactCI) {
             // not found via exact check, ignoring case
-            if (PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
+            if (preciseArenaName == null && PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
                     !(isUngrouped && PVPArena.instance.getConfig().getBoolean("allow_ungrouped"))) {
                 // 1) only allowing shortcuts
                 // 2) it's either grouped and we thus don't show it, or it is ungrouped and we don't allow ungrouped
@@ -584,6 +585,10 @@ public final class ArenaManager {
                 // A: allowing more then shortcuts
                 // OR
                 // B: ungrouped and allowing ungrouped
+                if (preciseArenaName != null) {
+                    DEBUG.i("priorizing actual arena name "+ preciseArenaName + " over "+ string);
+                    string = preciseArenaName;
+                }
                 DEBUG.i("out getArenaByName: " + string);
                 return getArenaByName(string);
             }
