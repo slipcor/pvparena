@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.149 - address github issue #215 by removing a never launched minigame API and make sure to get the proper shortcut name, if possible
+- v1.3.3.150 - address github issue #131 - if it's not fixed, I at least added debug
 - [read more](doc/changelog.md)
 
 ***

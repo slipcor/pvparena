@@ -269,8 +269,6 @@ public class ArenaGoalManager {
             // check all teams
             double maxScore = 0;
 
-            boolean everyone = true;
-
             int neededTeams = arena.getTeams().size();
 
             for (final String team : arena.getTeamNames()) {
@@ -278,11 +276,6 @@ public class ArenaGoalManager {
                     final double teamScore = scores.get(team);
 
                     if (teamScore > maxScore) {
-
-                        if (!winners.isEmpty()) {
-                            everyone = false;
-                        }
-
                         maxScore = teamScore;
                         winners.clear();
                         winners.add(team);
@@ -299,14 +292,16 @@ public class ArenaGoalManager {
             // neededTeams should be the number of active teams
 
             if (neededTeams <= 2) {
+                arena.getDebugger().i("fixing neededTeams to be of size 2!");
                 neededTeams = 2;
             }
 
-            if (winners.size() >= neededTeams) { // everyone is a winner, at least (lol)
-                everyone = true;
-            }
-
-            if (everyone) {
+            if (winners.size() >= neededTeams) {
+                arena.getDebugger().i("team of winners is too big: "+winners.size()+"!");
+                for (String s : winners) {
+                    arena.getDebugger().i("- "+s);
+                }
+                arena.getDebugger().i("clearing winners!");
                 winners.clear(); // noone wins.
             }
         } else {
@@ -389,6 +384,7 @@ public class ArenaGoalManager {
         ArenaModuleManager.timedEnd(arena, winners);
 
         if (arena.isFreeForAll() && arena.getTeams().size() <= 1) {
+            arena.getDebugger().i("FFA and <= 1!");
             for (final ArenaTeam team : arena.getTeams()) {
                 final Set<ArenaPlayer> apSet = new HashSet<>();
                 for (final ArenaPlayer p : team.getTeamMembers()) {
@@ -481,6 +477,7 @@ public class ArenaGoalManager {
 		 * (player.getStatus() == Status.FIGHT) { player.setStatus(Status.LOST);
 		 * } }
 		 */
+        arena.getDebugger().i("resetting arena!");
 
         arena.reset(false); // TODO: try to establish round compatibility with
         // new EndRunnable();
