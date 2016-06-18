@@ -17,7 +17,7 @@ You need to set a spawn called "relay" -> `/pa [arena] spawn relay`
 
 ## Config settings
 
-- seconds \- The respawn time in seconds (default: 10)
+- respawnseconds \- The respawn time in seconds (default: 10)
 - choosespawn \- Should players be able to choose a spawn when dead, by saying it in chat? (default: false) 
 
 ## Commands
