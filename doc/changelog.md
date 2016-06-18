@@ -1,3 +1,4 @@
+- v1.3.3.152 - try to implement github issue #188
 - v1.3.3.151 - add config setting for github issue #188
 - v1.3.3.150 - address github issue #131 - if it's not fixed, I at least added debug
 - v1.3.3.149 - address github issue #215 by removing a never launched minigame API and make sure to get the proper shortcut name, if possible

@@ -41,6 +41,7 @@ public final class PlayerState {
     private float saturation;
 
     private boolean flying;
+    private boolean collides;
 
     private String displayname;
     private Collection<PotionEffect> potionEffects;
@@ -63,6 +64,7 @@ public final class PlayerState {
         potionEffects = player.getActivePotionEffects();
 
         flying = player.isFlying();
+        collides = player.isCollidable();
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final Arena arena = aPlayer.getArena();
@@ -91,6 +93,7 @@ public final class PlayerState {
         cfg.set("state.saturation", saturation);
         cfg.set("state.displayname", displayname);
         cfg.set("state.flying", flying);
+        cfg.set("state.collides", collides);
     }
 
     public static void fullReset(final Arena arena, final Player player) {
@@ -187,6 +190,7 @@ public final class PlayerState {
             player.setAllowFlight(true);
         }
         player.setFlying(flying);
+        player.setCollidable(collides);
     }
 
     /**
@@ -223,6 +227,7 @@ public final class PlayerState {
         displayname = null;
         potionEffects = null;
         flying = false;
+        collides = false;
     }
 
     public static void removeEffects(final Player player) {
@@ -246,6 +251,8 @@ public final class PlayerState {
         pState.explevel = cfg.getInt("state.explevel", 0);
         pState.saturation = (float) cfg.getDouble("state.saturation", 0);
         pState.displayname = cfg.getString("state.displayname", pName);
+        pState.flying = cfg.getBoolean("state.flying", false);
+        pState.collides = cfg.getBoolean("state.collides", false);
 
         return pState;
     }

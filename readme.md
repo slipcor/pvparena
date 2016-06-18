@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.151 - add config setting for github issue #188
+- v1.3.3.152 - try to implement github issue #188
 - [read more](doc/changelog.md)
 
 ***
