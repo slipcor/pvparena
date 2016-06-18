@@ -59,8 +59,6 @@ public class StandardSpectate extends ArenaModule {
 
     @Override
     public void commitSpectate(final Player player) {
-        PVPArena.arcade.setPlaying(player.getName(), true);
-
         // standard join --> lounge
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         aPlayer.setLocation(new PALocation(player.getLocation()));

@@ -8,7 +8,6 @@ import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.ext.ArcadeHook;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.InventoryListener;
@@ -43,7 +42,6 @@ import java.util.List;
 
 public class PVPArena extends JavaPlugin {
     public static PVPArena instance;
-    public static ArcadeHook arcade;
 
     private static Debug DEBUG;
 
@@ -405,7 +403,6 @@ public class PVPArena extends JavaPlugin {
     public void onEnable() {
         shuttingDown = false;
         instance = this;
-        arcade = new ArcadeHook();
         DEBUG = new Debug(1);
 
         saveDefaultConfig();
