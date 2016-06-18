@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.152 - try to implement github issue #188
+- v1.3.3.153 - try to fix the issue of lounge players not being able to interact where they should
 - [read more](doc/changelog.md)
 
 ***
