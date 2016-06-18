@@ -113,6 +113,7 @@ public class Config {
 
         PLAYER_AUTOIGNITE("player.autoIgniteTNT", false, null),
         PLAYER_CLEARINVENTORY("player.clearInventory", "NONE", null),
+        PLAYER_COLLISION("player.collision", true, null),
         PLAYER_DROPSEXP("player.dropsEXP", false, null),
         PLAYER_DROPSINVENTORY("player.dropsInventory", false, null),
         PLAYER_EXHAUSTION("player.exhaustion", 0.0, null),
