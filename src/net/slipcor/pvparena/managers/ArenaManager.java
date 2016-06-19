@@ -447,7 +447,7 @@ public final class ArenaManager {
                 continue;
             }
             usingShortcuts = true;
-            DEF_LISTS.put(key.toLowerCase(), strings);
+            DEF_LISTS.put(key, strings);
             advance(key);
         }
     }
@@ -510,14 +510,17 @@ public final class ArenaManager {
             return getArenaByName(string);
         }
 
-        if (!DEF_LISTS.containsKey(string.toLowerCase())) {
+        // 1) exact match - case sensitive
+
+        if (!DEF_LISTS.containsKey(string) && !PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+            // if we have not found an EXACT match for a shortcut, and we allow shortcuts -> find an exact arena in a shortcut
             for (final String temp : DEF_LISTS.keySet()) {
-                if (temp.contains(string.toLowerCase())) {
+                if (temp.contains(string)) {
                     Arena a = ArenaManager.getArenaByName(temp);
                     if (a.isLocked()) {
                         continue;
                     }
-                    DEBUG.i("found " + temp);
+                    DEBUG.i("found exact CS " + temp);
                     string = temp;
                     break;
                 }
@@ -525,36 +528,74 @@ public final class ArenaManager {
         }
 
         boolean isUngrouped = true;
+        String preciseArenaName = null;
 
-        for (List<String> values : DEF_LISTS.values()) {
+        deflists: for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
-                if (item.equalsIgnoreCase(string)) {
+                if (item.equals(string)) {
                     isUngrouped = false;
-                    break;
+                    break deflists; // exact case match, out!
                 }
+                if (item.equalsIgnoreCase(string)) {
+                    preciseArenaName = item;
+                    isUngrouped = false; // case insensitive match, continue to eventually find a better match
+                }
+                if (item.toLowerCase().startsWith(string.toLowerCase())) {
+                    preciseArenaName = item;
+                    isUngrouped = false; // partial match, continue to eventually find a better match
+                }
+                if (item.toLowerCase().endsWith(string.toLowerCase())) {
+                    preciseArenaName = item;
+                    isUngrouped = false; // partial match, continue to eventually find a better match
+                }
+            }
+        } // if ungrouped = false -> we have found the arena in a shortcut definition (CI)
+
+        boolean foundExactCI = false;
+
+        for (String key : DEF_LISTS.keySet()) {
+            if (key.equals(string)) {
+                foundExactCI = true;
+                string = key;
+                break;
+            }
+            if (key.equalsIgnoreCase(string)) {
+                foundExactCI = true;
+                string = key; // case insensitive match, continue to eventually find a better match
+            }
+            if (key.toLowerCase().startsWith(string.toLowerCase())) {
+                foundExactCI = true;
+                string = key; // partial match, continue to eventually find a better match
+            }
+            if (key.toLowerCase().endsWith(string.toLowerCase())) {
+                foundExactCI = true;
+                string = key; // partial match, continue to eventually find a better match
             }
         }
 
-        if (!DEF_LISTS.containsKey(string.toLowerCase())) {
-            // not found1
-            if (PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
+        if (!foundExactCI) {
+            // not found via exact check, ignoring case
+            if (preciseArenaName == null && PVPArena.instance.getConfig().getBoolean("only_shortcuts") &&
                     !(isUngrouped && PVPArena.instance.getConfig().getBoolean("allow_ungrouped"))) {
                 // 1) only allowing shortcuts
                 // 2) it's either grouped and we thus don't show it, or it is ungrouped and we don't allow ungrouped
-                DEBUG.i("out null");
+                DEBUG.i("not a shortcut or allowed ungrouped");
                 return null;
             } else {
                 // A: allowing more then shortcuts
+                // OR
                 // B: ungrouped and allowing ungrouped
+                if (preciseArenaName != null) {
+                    DEBUG.i("priorizing actual arena name "+ preciseArenaName + " over "+ string);
+                    string = preciseArenaName;
+                }
                 DEBUG.i("out getArenaByName: " + string);
                 return getArenaByName(string);
             }
         }
 
-        if (!DEF_VALUES.containsKey(string)) {
-            DEBUG.i("advance " + string);
-            advance(string);
-        }
+        DEBUG.i("advance " + string);
+        advance(string);
 
         if (DEF_VALUES.get(string) == null) {
             DEBUG.i("out null -.-");
@@ -580,7 +621,7 @@ public final class ArenaManager {
         if (!usingShortcuts) {
             return;
         }
-        final List<String> defs = DEF_LISTS.get(string.toLowerCase());
+        final List<String> defs = DEF_LISTS.get(string);
 
         if (DEF_VALUES.containsKey(string)) {
             final Arena arena = DEF_VALUES.get(string);

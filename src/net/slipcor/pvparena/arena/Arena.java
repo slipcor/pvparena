@@ -642,14 +642,6 @@ public class Arena {
      * @return true if there is a custom class player alive, false otherwise
      */
     public boolean isCustomClassAlive() {
-        for (final ArenaPlayer p : getFighters()) {
-            if (p.getStatus() == Status.FIGHT
-                    && p.getArenaClass() != null && "custom".equals(p.getArenaClass().getName())) {
-                getDebugger().i("custom class active: true");
-                return true;
-            }
-        }
-        getDebugger().i("custom class active: false");
         return false;
     }
 
@@ -987,7 +979,6 @@ public class Arena {
     public void callExitEvent(final Player player) {
         final PAExitEvent exitEvent = new PAExitEvent(this, player);
         Bukkit.getPluginManager().callEvent(exitEvent);
-        PVPArena.arcade.setPlaying(player.getName(), false);
     }
 
     /**
@@ -1734,20 +1725,12 @@ public class Arena {
             aPlayer.dump();
         }
 
-        if (PVPArena.arcade.isPlaying(player.getName())) {
-            final String name = PVPArena.arcade.getPlugin(player.getName());
-            msg(player, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, name));
-            return false;
-        }
-
         final PAJoinEvent event = new PAJoinEvent(this, player, false);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             debug.i("! Join event cancelled by a plugin !");
             return false;
         }
-
-        PVPArena.arcade.setPlaying(player.getName(), true);
 
         if (aPlayer.getStatus() == Status.NULL) {
             // joining DIRECTLY - save loc !!

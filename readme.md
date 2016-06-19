@@ -30,13 +30,12 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- CraftBukkit / Spigot 1.8.8
+- Spigot 1.8.8
 
 ***
 
 ## Downloads
 
-- [bukkit.org - Bukkit 1.7.9](http://dev.bukkit.org/bukkit-plugins/pvparena/)
 - [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
 - [jenkins - dev builds](https://ci2.craftyn.com/job/PVP%20Arena/)
 
@@ -85,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.137 - address github issue #205
+- v1.3.2.138 - pull all 1.9 fixes except ArenaGoalManager
 - [read more](doc/changelog.md)
 
 ***

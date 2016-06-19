@@ -170,7 +170,6 @@ public class StandardLounge extends ArenaModule {
 
     @Override
     public void commitJoin(final Player sender, final ArenaTeam team) {
-        PVPArena.arcade.setPlaying(sender.getName(), true);
         // standard join --> lounge
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
         player.setLocation(new PALocation(player.get().getLocation()));
