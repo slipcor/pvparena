@@ -1,3 +1,4 @@
+- v1.3.3.155 - remove spectral arrows from the potion meta list, those don't seem to have potion effects
 - v1.3.3.153 - try to fix the issue of lounge players not being able to interact where they should
 - v1.3.3.152 - try to implement github issue #188
 - v1.3.3.151 - add config setting for github issue #188

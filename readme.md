@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.153 - try to fix the issue of lounge players not being able to interact where they should
+- v1.3.3.155 - remove spectral arrows from the potion meta list, those don't seem to have potion effects
 - [read more](doc/changelog.md)
 
 ***

@@ -470,7 +470,7 @@ public final class StringParser {
     }
 
     private static boolean hasPotionMeta(Material mat) {
-        return mat == Material.POTION || mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION || mat == Material.SPECTRAL_ARROW || mat == Material.TIPPED_ARROW;
+        return mat == Material.POTION || mat == Material.SPLASH_POTION || mat == Material.LINGERING_POTION || mat == Material.TIPPED_ARROW;
     }
 
     public static ItemStack[] getItemStacksFromString(final String string) {
