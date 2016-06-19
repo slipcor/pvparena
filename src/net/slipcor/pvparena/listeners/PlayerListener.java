@@ -355,10 +355,8 @@ public class PlayerListener implements Listener {
                     arena.parseDeathCause(player, cause == null ? EntityDamageEvent.DamageCause.VOID : cause.getCause(),
                             ArenaPlayer.getLastDamagingPlayer(cause, player))));
         }
-        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-        if (arena.isCustomClassAlive()
-                || arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
+        if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
             InventoryManager.drop(player);
         }
 
@@ -480,9 +478,11 @@ public class PlayerListener implements Listener {
             if (whyMe) {
                 arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
             }
-            arena.getDebugger().i("cancelling: not fighting", player);
-            // fighting player inside the lobby!
-            event.setCancelled(true);
+            if (aPlayer.getStatus() != ArenaPlayer.Status.LOUNGE) {
+                arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
+                // fighting player inside the lobby!
+                event.setCancelled(true);
+            }
         }
 
         if (team == null) {

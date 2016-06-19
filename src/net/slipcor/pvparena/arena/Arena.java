@@ -640,6 +640,8 @@ public class Arena {
      * check if a custom class player is alive
      *
      * @return true if there is a custom class player alive, false otherwise
+     *
+     * @deprecated made no sense anyways
      */
     public boolean isCustomClassAlive() {
         return false;

@@ -491,10 +491,8 @@ public class GoalInfect extends ArenaGoal {
                 }
 
                 final List<ItemStack> returned;
-                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                if (arena.isCustomClassAlive()
-                        || arena.getArenaConfig().getBoolean(
+                if (arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
@@ -529,10 +527,8 @@ public class GoalInfect extends ArenaGoal {
             }
 
             final List<ItemStack> returned;
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
+            if (arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
@@ -563,10 +559,8 @@ public class GoalInfect extends ArenaGoal {
             }
 
             final List<ItemStack> returned;
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
+            if (arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();

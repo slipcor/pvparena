@@ -175,10 +175,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                 respawnPlayer.getPlayer().equals(respawnPlayer.getPlayer().getKiller())) {
             if (!arena.getArenaConfig().getBoolean(CFG.GOAL_TDM_SUICIDESCORE)) {
                 final List<ItemStack> returned;
-                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                if (arena.isCustomClassAlive()
-                        || arena.getArenaConfig().getBoolean(
+                if (arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(respawnPlayer);
                     event.getDrops().clear();
@@ -220,10 +218,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
                     if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
                         final List<ItemStack> returned;
-                        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                        if (arena.isCustomClassAlive()
-                                || arena.getArenaConfig().getBoolean(
+                        if (arena.getArenaConfig().getBoolean(
                                 CFG.PLAYER_DROPSINVENTORY)) {
                             returned = InventoryManager.drop(respawnPlayer);
                             event.getDrops().clear();
@@ -244,10 +240,8 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
 
                 final List<ItemStack> returned;
-                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                if (arena.isCustomClassAlive()
-                        || arena.getArenaConfig().getBoolean(
+                if (arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(respawnPlayer);
                     event.getDrops().clear();
@@ -293,10 +287,7 @@ public class GoalTeamDeathMatch extends ArenaGoal {
             }
             final List<ItemStack> returned;
 
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
-
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
+            if (arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(respawnPlayer);
                 event.getDrops().clear();

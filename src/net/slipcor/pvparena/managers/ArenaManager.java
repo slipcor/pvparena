@@ -533,6 +533,7 @@ public final class ArenaManager {
         deflists: for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
                 if (item.equals(string)) {
+                    preciseArenaName = item;
                     isUngrouped = false;
                     break deflists; // exact case match, out!
                 }

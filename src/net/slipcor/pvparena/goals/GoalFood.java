@@ -289,10 +289,8 @@ public class GoalFood extends ArenaGoal implements Listener {
         }
 
         final List<ItemStack> returned;
-        arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-        if (arena.isCustomClassAlive()
-                || arena.getArenaConfig().getBoolean(
+        if (arena.getArenaConfig().getBoolean(
                 CFG.PLAYER_DROPSINVENTORY)) {
             returned = InventoryManager.drop(respawnPlayer);
             event.getDrops().clear();

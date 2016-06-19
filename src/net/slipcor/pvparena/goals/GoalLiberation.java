@@ -418,10 +418,8 @@ public class GoalLiberation extends ArenaGoal {
                                     player.getKiller()), String.valueOf(pos)));
                 }
                 final List<ItemStack> returned;
-                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                if (arena.isCustomClassAlive()
-                        || arena.getArenaConfig().getBoolean(
+                if (arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
@@ -440,10 +438,8 @@ public class GoalLiberation extends ArenaGoal {
             } else {
                 getLifeMap().remove(player.getName());
                 final List<ItemStack> returned;
-                arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-                if (arena.isCustomClassAlive()
-                        || arena.getArenaConfig().getBoolean(
+                if (arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
@@ -492,10 +488,8 @@ public class GoalLiberation extends ArenaGoal {
             }
 
             final List<ItemStack> returned;
-            arena.getDebugger().i("custom class active: " + arena.isCustomClassAlive());
 
-            if (arena.isCustomClassAlive()
-                    || arena.getArenaConfig().getBoolean(
+            if (arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
