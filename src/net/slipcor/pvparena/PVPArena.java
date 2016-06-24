@@ -480,7 +480,7 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updater = new Updater(this, getFile(), true);
+        updater = new Updater(this, getFile());
 
         if (ArenaManager.count() > 0) {
             if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {

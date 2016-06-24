@@ -143,6 +143,7 @@ public final class Language {
         ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type &efree&r. Use '[teamname]lounge'."),
         ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
         ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &r%1%"),
+        ERROR_MODULE_UPDATE("nulang.error.moduleupdate", "You need to set 'update.modules: true' to use this command!"),
         ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
         ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
         ERROR_NO_CHEST("nulang.error.nochest", "You are not looking at a chest!"),

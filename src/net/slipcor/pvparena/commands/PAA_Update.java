@@ -4,8 +4,10 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -30,6 +32,10 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
+        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
+            Arena.pmsg(sender, ChatColor.DARK_RED+ Language.parse(Language.MSG.ERROR_MODULE_UPDATE));
+            return;
+        }
 
         final Set<NCBLoadable> modules = new HashSet<>();
 

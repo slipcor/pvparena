@@ -43,6 +43,11 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
             return;
         }
 
+        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
+            Arena.pmsg(sender, ChatColor.DARK_RED+Language.parse(MSG.ERROR_MODULE_UPDATE));
+            return;
+        }
+
         // pa install
         // pa install ctf
 
