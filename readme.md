@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.156 - change the updating process and block installing/updating when there is no install.yml due to "update.files" (you can allow this setting and disable automatic updates with updatemode "none" or "announce")
+- v1.3.3.157 - address github issue #222, again
 - [read more](doc/changelog.md)
 
 ***

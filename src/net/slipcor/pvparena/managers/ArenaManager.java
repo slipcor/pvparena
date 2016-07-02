@@ -531,20 +531,28 @@ public final class ArenaManager {
         deflists: for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
                 if (item.equals(string)) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false;
                     break deflists; // exact case match, out!
                 }
                 if (item.equalsIgnoreCase(string)) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // case insensitive match, continue to eventually find a better match
                 }
                 if (item.toLowerCase().startsWith(string.toLowerCase())) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
                 if (item.toLowerCase().endsWith(string.toLowerCase())) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
             }
