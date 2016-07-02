@@ -478,7 +478,7 @@ public class PlayerListener implements Listener {
             if (whyMe) {
                 arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
             }
-            if (aPlayer.getStatus() != Status.LOUNGE) {
+            if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                 arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
                 // fighting player inside the lobby!
                 event.setCancelled(true);
