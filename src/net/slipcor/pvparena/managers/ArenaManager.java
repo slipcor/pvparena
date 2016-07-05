@@ -601,10 +601,10 @@ public final class ArenaManager {
                 return getArenaByName(string);
             }
         }
-
+/*
         DEBUG.i("advance " + string);
         advance(string);
-
+*/
         if (DEF_VALUES.get(string) == null) {
             DEBUG.i("out null -.-");
         } else {
