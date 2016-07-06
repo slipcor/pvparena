@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.160 - I got an idea, how about we actually implement issue #188 ?! oh and add issue #225
+- v1.3.3.161 - address github issue #224 - double output in the lounge
 - [read more](doc/changelog.md)
 
 ***

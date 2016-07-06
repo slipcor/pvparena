@@ -529,6 +529,10 @@ public class PlayerListener implements Listener {
                     + '?', player);
             if (block.getTypeId() == mMat.getId()) {
                 arena.getDebugger().i("clicked ready block!", player);
+                if (event.getItem() == null) {
+                    arena.getDebugger().i("out: getItem == null!", player);
+                    return; // double event?
+                }
                 if (aPlayer.getArenaClass() == null || aPlayer.getArenaClass().getName() != null && aPlayer.getArenaClass().getName().isEmpty()) {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_READY_NOCLASS));
                     return; // not chosen class => OUT
