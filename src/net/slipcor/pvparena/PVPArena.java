@@ -252,6 +252,10 @@ public class PVPArena extends JavaPlugin {
                 pacmd = agc;
                 break;
             }
+            if (agc.getShort().contains("-l") && "l".equals(args[0])) {
+                pacmd = agc;
+                break;
+            }
         }
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
         if (pacmd != null

@@ -1,3 +1,4 @@
+- v1.3.3.160 - I got an idea, how about we actually implement issue #188 ?! oh and add issue #225
 - v1.3.3.159 - address github issue #222
 - v1.3.3.158 - continue fixing the issue mentioned in build #153
 - v1.3.3.157 - address github issue #222, again

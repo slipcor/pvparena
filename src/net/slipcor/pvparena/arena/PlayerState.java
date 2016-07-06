@@ -123,6 +123,7 @@ public final class PlayerState {
         player.setLevel(0);
         player.setExp(0);
         player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
+        player.setCollidable(arena.getArenaConfig().getBoolean(CFG.PLAYER_COLLISION));
         PlayerState.removeEffects(player);
     }
 

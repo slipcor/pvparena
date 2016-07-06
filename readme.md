@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.159 - address github issue #222
+- v1.3.3.160 - I got an idea, how about we actually implement issue #188 ?! oh and add issue #225
 - [read more](doc/changelog.md)
 
 ***
