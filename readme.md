@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.161 - address github issue #224 - double output in the lounge
+- v1.3.3.162 - address all remnants of issue #203
 - [read more](doc/changelog.md)
 
 ***

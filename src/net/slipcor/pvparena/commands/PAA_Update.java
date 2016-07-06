@@ -36,6 +36,9 @@ public class PAA_Update extends AbstractGlobalCommand {
             Arena.pmsg(sender, ChatColor.DARK_RED+ Language.parse(Language.MSG.ERROR_MODULE_UPDATE));
             return;
         }
+        if (!hasPerms(sender)) {
+            return;
+        }
 
         final Set<NCBLoadable> modules = new HashSet<>();
 
@@ -53,8 +56,14 @@ public class PAA_Update extends AbstractGlobalCommand {
                     continue;
                 }
                 final PAA_Uninstall uninstall = new PAA_Uninstall();
+                if (!uninstall.hasPerms(sender)) {
+                    return;
+                }
                 uninstall.commit(sender, new String[]{mod.getName()});
                 final PAA_Install install = new PAA_Install();
+                if (!install.hasPerms(sender)) {
+                    return;
+                }
                 install.commit(sender, new String[]{mod.getName()});
             }
             return;

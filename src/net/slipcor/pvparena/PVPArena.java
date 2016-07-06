@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -446,6 +447,16 @@ public class PVPArena extends JavaPlugin {
         new File(getDataFolder().getPath() + "/dumps").mkdir();
         new File(getDataFolder().getPath() + "/files").mkdir();
         new File(getDataFolder().getPath() + "/templates").mkdir();
+
+        FileConfiguration cfg = getConfig();
+        List<String> toDelete = cfg.getStringList("todelete");
+        if (toDelete != null){
+            for (String jar : toDelete) {
+                PAA_Uninstall.remove(jar);
+            }
+            cfg.set("todelete", null);
+            saveConfig();
+        }
 
         agm = new ArenaGoalManager(this);
         amm = new ArenaModuleManager(this);
