@@ -1,3 +1,4 @@
+- v1.3.3.163 - address github issue #224
 - v1.3.3.162 - address all remnants of issue #203
 - v1.3.3.161 - address github issue #224 - double output in the lounge
 - v1.3.3.160 - I got an idea, how about we actually implement issue #188 ?! oh and add issue #225

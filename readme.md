@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.162 - address all remnants of issue #203
+- v1.3.3.163 - address github issue #224
 - [read more](doc/changelog.md)
 
 ***
