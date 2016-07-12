@@ -1,3 +1,4 @@
+- v1.3.3.165 - properly implement github issue #225
 - v1.3.3.164 - finish up github issue #203
 - v1.3.3.163 - address github issue #224
 - v1.3.3.162 - address all remnants of issue #203
