@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.165 - properly implement github issue #225
+- v1.3.3.166 - maybe finally tackle github issue #222
 - [read more](doc/changelog.md)
 
 ***

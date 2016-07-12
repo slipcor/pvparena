@@ -524,6 +524,7 @@ public final class ArenaManager {
                 }
             }
         }
+        DEBUG.i("temporary #1 " + string);
 
         boolean isUngrouped = true;
         String preciseArenaName = null;
@@ -557,8 +558,10 @@ public final class ArenaManager {
                 }
             }
         } // if ungrouped = false -> we have found the arena in a shortcut definition (CI)
+        DEBUG.i("temporary #2 " + string);
 
         boolean foundExactCI = false;
+        int foundlevel = 0;
 
         for (String key : DEF_LISTS.keySet()) {
             if (key.equals(string)) {
@@ -566,19 +569,23 @@ public final class ArenaManager {
                 string = key;
                 break;
             }
-            if (key.equalsIgnoreCase(string)) {
+            if (key.equalsIgnoreCase(string) && foundlevel<3) {
                 foundExactCI = true;
                 string = key; // case insensitive match, continue to eventually find a better match
+                foundlevel = 3;
             }
-            if (key.toLowerCase().startsWith(string.toLowerCase())) {
+            if (key.toLowerCase().startsWith(string.toLowerCase()) && foundlevel<2) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
+                foundlevel = 2;
             }
-            if (key.toLowerCase().endsWith(string.toLowerCase())) {
+            if (key.toLowerCase().endsWith(string.toLowerCase()) && foundlevel<1) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
+                foundlevel = 1;
             }
         }
+        DEBUG.i("temporary #3 " + string);
 
         if (!foundExactCI) {
             // not found via exact check, ignoring case
@@ -601,6 +608,19 @@ public final class ArenaManager {
                 return getArenaByName(string);
             }
         }
+
+        for (final String temp : DEF_LISTS.keySet()) {
+            if (temp.equals(string)) {
+                for(String arenaName : DEF_LISTS.get(temp)) {
+                    Arena a = ArenaManager.getArenaByName(arenaName);
+                    if (a.isLocked()) {
+                        continue;
+                    }
+                    return a;
+                }
+            }
+        }
+
 /*
         DEBUG.i("advance " + string);
         advance(string);
