@@ -561,7 +561,6 @@ public final class ArenaManager {
         DEBUG.i("temporary #2 " + string);
 
         boolean foundExactCI = false;
-        int foundlevel = 0;
 
         for (String key : DEF_LISTS.keySet()) {
             if (key.equals(string)) {
@@ -569,20 +568,17 @@ public final class ArenaManager {
                 string = key;
                 break;
             }
-            if (key.equalsIgnoreCase(string) && foundlevel<3) {
+            if (key.equalsIgnoreCase(string)) {
                 foundExactCI = true;
                 string = key; // case insensitive match, continue to eventually find a better match
-                foundlevel = 3;
             }
-            if (key.toLowerCase().startsWith(string.toLowerCase()) && foundlevel<2) {
+            if (key.toLowerCase().startsWith(string.toLowerCase())) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
-                foundlevel = 2;
             }
-            if (key.toLowerCase().endsWith(string.toLowerCase()) && foundlevel<1) {
+            if (key.toLowerCase().endsWith(string.toLowerCase())) {
                 foundExactCI = true;
                 string = key; // partial match, continue to eventually find a better match
-                foundlevel = 1;
             }
         }
         DEBUG.i("temporary #3 " + string);
@@ -606,18 +602,6 @@ public final class ArenaManager {
                 }
                 DEBUG.i("out getArenaByName: " + string);
                 return getArenaByName(string);
-            }
-        }
-
-        for (final String temp : DEF_LISTS.keySet()) {
-            if (temp.equals(string)) {
-                for(String arenaName : DEF_LISTS.get(temp)) {
-                    Arena a = ArenaManager.getArenaByName(arenaName);
-                    if (a.isLocked()) {
-                        continue;
-                    }
-                    return a;
-                }
             }
         }
 
