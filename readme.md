@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.169 - maybe fix an issue that shortcut rotation doesn't work when the arenas are disabled at start
+- v1.3.3.170 - try to fix disabling breaking arena shortcut rotation
 - [read more](doc/changelog.md)
 
 ***
