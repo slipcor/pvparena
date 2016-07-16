@@ -520,11 +520,11 @@ public class PACheck {
                             + arena.getArenaConfig().getInt(
                             CFG.PLAYER_FEEDFORKILL));
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
-                PlayerState.playersetHealth(player.getKiller(), (int) player.getMaxHealth());
+                PlayerState.playersetHealth(player.getKiller(), (int) player.getKiller().getMaxHealth());
             }
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
                 InventoryManager.clearInventory(player.getKiller());
-                ArenaPlayer.parsePlayer(player.getName()).getArenaClass().equip(player.getKiller());
+                ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
             }
         }
 

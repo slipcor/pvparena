@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.166 - maybe finally tackle github issue #222
+- v1.3.3.167 - address github issue #227 - reset killer's items to KILLER's class
 - [read more](doc/changelog.md)
 
 ***
