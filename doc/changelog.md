@@ -1,3 +1,4 @@
+- v1.3.3.169 - maybe fix an issue that shortcut rotation doesn't work when the arenas are disabled at start
 - v1.3.3.168 - partially revert breaking #222 even more
 - v1.3.3.167 - address github issue #227 - reset killer's items to KILLER's class
 - v1.3.3.166 - maybe finally tackle github issue #222

@@ -414,22 +414,27 @@ public final class ArenaManager {
     }
 
     public static void readShortcuts(final ConfigurationSection cs) {
+        DEBUG.i("reading shortcuts!");
         usingShortcuts = false;
         DEF_VALUES.clear();
         DEF_LISTS.clear();
         if (cs == null) {
             PVPArena.instance.getLogger().warning("'shortcuts' node is null!!");
+            DEBUG.i("'shortcuts' node is null!!");
             return;
         }
 
         for (final String key : cs.getKeys(false)) {
+            DEBUG.i("key: " + key);
             final List<String> strings = cs.getStringList(key);
 
             if (strings == null) {
                 PVPArena.instance.getLogger().warning("'shortcuts=>" + key + "' node is null!!");
+                DEBUG.i("'shortcuts=>\" + key + \"' node is null!!");
                 continue;
             }
             if (PVPArena.instance.getConfig().getBoolean("shortcut_shuffle")) {
+                DEBUG.i("shuffling shortcuts!");
                 Collections.shuffle(strings);
             }
 
@@ -437,11 +442,15 @@ public final class ArenaManager {
             for (final String arena : strings) {
                 if (!ARENAS.containsKey(arena.toLowerCase())) {
                     PVPArena.instance.getLogger().warning("Arena not found: " + arena);
+                    DEBUG.i("Arena not found: " + arena);
                     error = true;
+                } else {
+                    DEBUG.i("added "+key+">"+arena);
                 }
             }
             if (error || strings.size() < 1) {
                 PVPArena.instance.getLogger().warning("shortcut '" + key + "' will be skipped!!");
+                DEBUG.i("shortcut '" + key + "' will be skipped!!");
                 continue;
             }
             usingShortcuts = true;
@@ -666,7 +675,9 @@ public final class ArenaManager {
             DEF_VALUES.put(string, arena);
             return;
         }
-
+        if (!DEF_VALUES.containsKey(string)) {
+            DEF_VALUES.put(string, ArenaManager.getArenaByName(defs.get(0)));
+        }
     }
 
     public static List<Arena> getArenasSorted() {
