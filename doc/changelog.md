@@ -1,3 +1,4 @@
+- v1.3.3.172 - finish github issue #225
 - v1.3.3.171 - add github issue #230 - apply the teleport protection to the lounge, too, to prevent teleport warnings
 - v1.3.3.170 - try to fix disabling breaking arena shortcut rotation
 - v1.3.3.169 - maybe fix an issue that shortcut rotation doesn't work when the arenas are disabled at start

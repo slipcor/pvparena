@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.171 - add github issue #230 - apply the teleport protection to the lounge, too, to prevent teleport warnings
+- v1.3.3.172 - finish github issue #225
 - [read more](doc/changelog.md)
 
 ***

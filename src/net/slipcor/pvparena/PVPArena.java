@@ -300,7 +300,7 @@ public class PVPArena extends JavaPlugin {
             return true;
         }
 
-        Arena tempArena = ArenaManager.getIndirectArenaByName(sender, args[0]);
+        Arena tempArena = "l".equals(args[0])?player.getArena():ArenaManager.getIndirectArenaByName(sender, args[0]);
 
         final String name = args[0];
 
