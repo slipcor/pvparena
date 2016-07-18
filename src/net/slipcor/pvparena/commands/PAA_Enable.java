@@ -6,6 +6,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.ArenaManager;
 import org.bukkit.command.CommandSender;
 
 import java.util.Arrays;
@@ -40,6 +41,12 @@ public class PAA_Enable extends AbstractArenaCommand {
         arena.getArenaConfig().set(CFG.GENERAL_ENABLED, true);
         arena.getArenaConfig().save();
         arena.setLocked(false);
+
+        for (String key : ArenaManager.getShortcutDefinitions().keySet()) {
+            if (ArenaManager.getShortcutDefinitions().get(key).contains(arena.getName()) && (!ArenaManager.getShortcutValues().containsKey(arena) || ArenaManager.getShortcutValues().get(key).isLocked())) {
+                ArenaManager.getShortcutValues().put(key, arena);
+            }
+        }
 
         arena.msg(sender, Language.parse(arena, MSG.ARENA_ENABLE_DONE));
     }
