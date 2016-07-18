@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.170 - try to fix disabling breaking arena shortcut rotation
+- v1.3.3.171 - add github issue #230 - apply the teleport protection to the lounge, too, to prevent teleport warnings
 - [read more](doc/changelog.md)
 
 ***

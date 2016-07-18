@@ -1694,8 +1694,19 @@ public class Arena {
         aPlayer.setTelePass(true);
         player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
-        aPlayer.setTelePass(false);
-        aPlayer.setTeleporting(false);
+        if (name.contains("lounge")) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    aPlayer.setTelePass(false);
+                    aPlayer.setTeleporting(false);
+                }
+            }, cfg.getInt(CFG.TIME_TELEPORTPROTECT));
+
+        } else {
+            aPlayer.setTelePass(false);
+            aPlayer.setTeleporting(false);
+        }
 
         if (cfg.getBoolean(CFG.USES_INVISIBILITYFIX) &&
                 aPlayer.getStatus() == Status.FIGHT ||
