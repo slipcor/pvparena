@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.175 - fix github issue #230
+- v1.3.3.176 - apply global and specific teleport offset when resetting player
 - [read more](doc/changelog.md)
 
 ***

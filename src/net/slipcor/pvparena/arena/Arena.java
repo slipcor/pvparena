@@ -1312,12 +1312,16 @@ public class Arena {
             public void run() {
                 getDebugger().i("string = " + string, player);
                 aPlayer.setTelePass(true);
+
                 if ("old".equalsIgnoreCase(string)) {
                     getDebugger().i("tping to old", player);
                     if (aPlayer.getSavedLocation() != null) {
                         getDebugger().i("location is fine", player);
                         final PALocation loc = aPlayer.getSavedLocation();
-                        player.teleport(loc.toLocation());
+                        player.teleport(loc.toLocation().add(
+                                PVPArena.instance.getConfig().getDouble("x-offset"),
+                                PVPArena.instance.getConfig().getDouble("y-offset"),
+                                PVPArena.instance.getConfig().getDouble("z-offset")));
                         player
                                 .setNoDamageTicks(
                                         getArenaConfig().getInt(
@@ -1325,11 +1329,15 @@ public class Arena {
                         aPlayer.setTeleporting(false);
                     }
                 } else {
+                    Location offset = getOffset(string);
+                    if (offset == null) {
+                        offset = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+                    }
                     final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, string);
                     if (loc == null) {
                         new Exception("RESET Spawn null: " + getName() + "->" + string).printStackTrace();
                     } else {
-                        player.teleport(loc.toLocation());
+                        player.teleport(loc.toLocation().add(offset));
                         aPlayer.setTelePass(false);
                         aPlayer.setTeleporting(false);
                     }
@@ -1678,7 +1686,10 @@ public class Arena {
         }
         PALocation loc = SpawnManager.getSpawnByExactName(this, place);
         if ("old".equals(place)) {
-            loc = aPlayer.getSavedLocation().add(0, PVPArena.instance.getConfig().getDouble("y-offset"), 0);
+            loc = aPlayer.getSavedLocation().add(
+                    PVPArena.instance.getConfig().getDouble("x-offset"),
+                    PVPArena.instance.getConfig().getDouble("y-offset"),
+                    PVPArena.instance.getConfig().getDouble("z-offset"));
         }
         if (loc == null) {
             new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
