@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.176 - apply global and specific teleport offset when resetting player
+- v1.3.3.177 - add saturation lock, to prevent regains going crazy
 - [read more](doc/changelog.md)
 
 ***

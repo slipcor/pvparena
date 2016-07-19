@@ -407,8 +407,15 @@ public class PlayerListener implements Listener {
 
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-        if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE || ap.getArena() != null && !ap.getArena().getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)) {
+        Arena a = ap.getArena();
+        if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE ||
+                (a != null && (
+                        !a.getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)
+                    || a.getArenaConfig().getBoolean(CFG.PLAYER_LOCKHUNGER)))) {
             event.setCancelled(true);
+        }
+        if (a != null && a.getArenaConfig().getBoolean(CFG.PLAYER_LOCKSATURATION)) {
+            player.setSaturation(a.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
         }
     }
 

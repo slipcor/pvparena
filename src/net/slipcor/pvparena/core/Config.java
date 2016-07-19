@@ -119,6 +119,7 @@ public class Config {
         PLAYER_EXHAUSTION("player.exhaustion", 0.0, null),
         PLAYER_FEEDFORKILL("player.hungerforkill", 0, null),
         PLAYER_FOODLEVEL("player.foodLevel", 20, null),
+        PLAYER_LOCKSATURATION("player.lockSaturation", false, null),
         PLAYER_HEALTH("player.health", -1, null),
         PLAYER_HEALFORKILL("player.healforkill", false, null),
         PLAYER_HUNGER("player.hunger", true, null),
