@@ -421,10 +421,24 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     /**
      * hook into an arena player being reset
      *
+     * @seprecated use {@link #resetPlayer(Player, boolean, boolean)}
+     *
      * @param player the player being reset
      * @param force  if the arena is forcefully reset
      */
+    @Deprecated
     public void resetPlayer(final Player player, final boolean force) {
+        resetPlayer(player, true, force);
+    }
+
+    /**
+     * hook into an arena player being reset
+     *
+     * @param player the player being reset
+     * @param soft if the reset should be soft (another teleport incoming)
+     * @param force  if the arena is forcefully reset
+     */
+    public void resetPlayer(final Player player, final boolean soft, final boolean force) {
     }
 
     /**

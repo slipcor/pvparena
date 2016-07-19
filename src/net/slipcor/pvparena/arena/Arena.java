@@ -1293,7 +1293,7 @@ public class Arena {
             aPlayer.getState().unload();
         }
 
-        ArenaModuleManager.resetPlayer(this, player, force);
+        ArenaModuleManager.resetPlayer(this, player, soft, force);
 
         String sClass = "";
         if (aPlayer.getArenaClass() != null) {

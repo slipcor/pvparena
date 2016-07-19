@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.179 - fix config node typo
+- v1.3.3.180 - allow modules to know whether to soft reset a player
 - [read more](doc/changelog.md)
 
 ***
