@@ -249,7 +249,7 @@ public class PVPArena extends JavaPlugin {
 
         AbstractGlobalCommand pacmd = null;
         for (final AbstractGlobalCommand agc : globalCommands) {
-            if (agc.getMain().contains(args[0]) || agc.getShort().contains(args[0])) {
+            if (agc.getMain().contains(args[0].toLowerCase()) || agc.getShort().contains(args[0].toLowerCase())) {
                 pacmd = agc;
                 break;
             }
@@ -350,7 +350,7 @@ public class PVPArena extends JavaPlugin {
 
         AbstractArenaCommand paacmd = null;
         for (final AbstractArenaCommand aac : arenaCommands) {
-            if (aac.getMain().contains(newArgs[0]) || aac.getShort().contains(newArgs[0])) {
+            if (aac.getMain().contains(newArgs[0].toLowerCase()) || aac.getShort().contains(newArgs[0].toLowerCase())) {
                 paacmd = aac;
                 break;
             }

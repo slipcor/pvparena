@@ -1,3 +1,4 @@
+- v1.3.3.181 - reduce command case sensitivity
 - v1.3.3.180 - allow modules to know whether to soft reset a player
 - v1.3.3.179 - fix config node typo
 - v1.3.3.178 - allow to quick leave with caps lock
