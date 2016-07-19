@@ -300,7 +300,7 @@ public class PVPArena extends JavaPlugin {
             return true;
         }
 
-        Arena tempArena = "l".equals(args[0])?player.getArena():ArenaManager.getIndirectArenaByName(sender, args[0]);
+        Arena tempArena = "l".equalsIgnoreCase(args[0])?player.getArena():ArenaManager.getIndirectArenaByName(sender, args[0]);
 
         final String name = args[0];
 
@@ -355,7 +355,7 @@ public class PVPArena extends JavaPlugin {
                 break;
             }
 
-            if (aac.getShort().contains("-l") && "l".equals(args[0])) {
+            if (aac.getShort().contains("-l") && "l".equalsIgnoreCase(args[0])) {
                 paacmd = aac;
                 break;
             }

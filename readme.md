@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.177 - add saturation lock, to prevent regains going crazy
+- v1.3.3.178 - allow to quick leave with caps lock
 - [read more](doc/changelog.md)
 
 ***
