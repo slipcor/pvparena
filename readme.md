@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.178 - allow to quick leave with caps lock
+- v1.3.3.179 - fix config node typo
 - [read more](doc/changelog.md)
 
 ***
