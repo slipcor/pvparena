@@ -1,3 +1,4 @@
+- v1.3.3.174 - little thing about #230 and add more debug to see why it might not work yet
 - v1.3.3.173 - address github issue #222, again
 - v1.3.3.172 - finish github issue #225
 - v1.3.3.171 - add github issue #230 - apply the teleport protection to the lounge, too, to prevent teleport warnings

@@ -1695,15 +1695,17 @@ public class Arena {
         player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         if (name.contains("lounge")) {
+            getDebugger().i("setting TelePass later!");
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
                     aPlayer.setTelePass(false);
                     aPlayer.setTeleporting(false);
                 }
-            }, cfg.getInt(CFG.TIME_TELEPORTPROTECT));
+            }, cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
 
         } else {
+            getDebugger().i("setting TelePass now!");
             aPlayer.setTelePass(false);
             aPlayer.setTeleporting(false);
         }

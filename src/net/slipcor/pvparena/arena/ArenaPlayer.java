@@ -832,6 +832,9 @@ public class ArenaPlayer {
      * @param canTeleport true if may pass, false otherwise
      */
     public void setTelePass(final boolean canTeleport) {
+        if (arena != null) {
+            arena.getDebugger().i("TelePass := "+canTeleport);
+        }
         telePass = canTeleport;
     }
 

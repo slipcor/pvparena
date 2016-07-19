@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.173 - address github issue #222, again
+- v1.3.3.174 - little thing about #230 and add more debug to see why it might not work yet
 - [read more](doc/changelog.md)
 
 ***
