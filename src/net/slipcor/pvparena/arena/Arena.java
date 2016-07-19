@@ -1694,7 +1694,7 @@ public class Arena {
         aPlayer.setTelePass(true);
         player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
-        if (name.contains("lounge")) {
+        if (place.contains("lounge")) {
             getDebugger().i("setting TelePass later!");
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override

@@ -1,3 +1,4 @@
+- v1.3.3.175 - fix github issue #230
 - v1.3.3.174 - little thing about #230 and add more debug to see why it might not work yet
 - v1.3.3.173 - address github issue #222, again
 - v1.3.3.172 - finish github issue #225
