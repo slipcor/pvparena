@@ -211,8 +211,8 @@ public class PlayerListener implements Listener {
 
         for (final String s : list) {
             if ("*".equals(s) ||
-                    ((wildcard || s.endsWith(" ")) && event.getMessage().startsWith('/' + s)) ||
-                    (!wildcard && event.getMessage().startsWith('/' + s +' '))) {
+                    ((wildcard || s.endsWith(" ")) && event.getMessage().toLowerCase().startsWith('/' + s)) ||
+                    (!wildcard && event.getMessage().toLowerCase().startsWith('/' + s +' '))) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -234,7 +234,7 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("checking command whitelist", player);
 
         for (final String s : list) {
-            if (event.getMessage().startsWith('/' + s)) {
+            if (event.getMessage().toLowerCase().startsWith('/' + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }

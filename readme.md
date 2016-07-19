@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.181 - reduce command case sensitivity
+- v1.3.3.182 - reduce command whitelist case sensitivity
 - [read more](doc/changelog.md)
 
 ***
