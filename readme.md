@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.182 - reduce command whitelist case sensitivity
+- v1.3.3.183 - very important module fix - player resetting was broken!
 - [read more](doc/changelog.md)
 
 ***

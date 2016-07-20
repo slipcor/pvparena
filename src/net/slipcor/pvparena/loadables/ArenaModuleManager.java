@@ -275,7 +275,7 @@ public class ArenaModuleManager {
     @Deprecated
     public static void resetPlayer(final Arena arena, final Player player, final boolean force) {
         for (final ArenaModule mod : arena.getMods()) {
-            mod.resetPlayer(player, true, force);
+            mod.resetPlayer(player, force);
         }
     }
 
