@@ -1,3 +1,4 @@
+- v1.3.3.184 - revert build #177 (saturation lock), does not work anyways
 - v1.3.3.183 - very important module fix - player resetting was broken!
 - v1.3.3.182 - reduce command whitelist case sensitivity
 - v1.3.3.181 - reduce command case sensitivity

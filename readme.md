@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.183 - very important module fix - player resetting was broken!
+- v1.3.3.184 - revert build #177, does not work anyways
 - [read more](doc/changelog.md)
 
 ***
