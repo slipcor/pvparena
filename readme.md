@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.184 - revert build #177, does not work anyways
+- v1.3.3.185 - add an announcement verification hack to WarmupJoin
 - [read more](doc/changelog.md)
 
 ***
