@@ -66,6 +66,8 @@ public final class InventoryManager {
 
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
+        boolean keepAll = false;
+
         if (ap == null || ap.getArena() == null) {
             exclude = new ArrayList<>();
             keep = new ArrayList<>();
@@ -78,9 +80,11 @@ public final class InventoryManager {
                 }
             }
             keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
+            keepAll = ap.getArena().getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN).equalsIgnoreCase("all");
         }
 
         for (final ItemStack is : player.getInventory().getContents()) {
+
             if (is == null || is.getType() == Material.AIR) {
                 continue;
             }
@@ -97,6 +101,10 @@ public final class InventoryManager {
                 returned.add(is.clone());
             }
             if (exclude.contains(is.getType())) {
+                continue;
+            }
+            if (keepAll) {
+                returned.add(is.clone());
                 continue;
             }
             player.getWorld().dropItemNaturally(player.getLocation(), is);

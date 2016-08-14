@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.186 - implement ColorTeams and ScoreBoards modules into core - addresses github issue #212
+- v1.3.3.187 - allow to set keepOnRespawn to "all" to, yes, keep all items
 - [read more](doc/changelog.md)
 
 ***
