@@ -1,3 +1,4 @@
+- v1.3.3.194 - fix github issue #232 - Potions disappearing when readying up
 - v1.3.3.193 - fix StatisticsManager to actually be persistent. SORRY!
 - v1.3.3.192 - add config for github issue #220
 - v1.3.3.191 - fix github issue #188 - I found the right way to deactivate collision
@@ -35,6 +36,7 @@
 - v1.3.3.159 - address github issue #222
 - v1.3.3.158 - continue fixing the issue mentioned in build #153
 - v1.3.3.157 - address github issue #222, again
+
 - v1.3.3.156 - change the updating process and block installing/updating when there is no install.yml due to "update.files" (you can allow this setting and disable automatic updates with updatemode "none" or "announce")
 - v1.3.3.155 - remove spectral arrows from the potion meta list, those don't seem to have potion effects
 - v1.3.3.153 - try to fix the issue of lounge players not being able to interact where they should

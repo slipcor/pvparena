@@ -568,7 +568,14 @@ public class PlayerListener implements Listener {
                 if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                     return;
                 }
-
+                event.setCancelled(true);
+                arena.getDebugger().i("Cancelled ready block click event to prevent itemstack consumation");
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        aPlayer.get().updateInventory();
+                    }
+                }, 1L);
                 final boolean alreadyReady = aPlayer.getStatus() == Status.READY;
 
                 arena.getDebugger().i("===============", player);

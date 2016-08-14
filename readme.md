@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.193 - fix StatisticsManager to actually be persistent. SORRY!
+- v1.3.3.194 - fix github issue #232 - Potions disappearing when readying up
 - [read more](doc/changelog.md)
 
 ***
