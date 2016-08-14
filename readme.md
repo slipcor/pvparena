@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.185 - add an announcement verification hack to WarmupJoin
+- v1.3.3.186 - implement ColorTeams and ScoreBoards modules into core - addresses github issue #212
 - [read more](doc/changelog.md)
 
 ***

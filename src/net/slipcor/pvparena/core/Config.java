@@ -166,6 +166,7 @@ public class Config {
         USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false, null),
         USES_OVERLAPCHECK("uses.overlapCheck", true, null),
         USES_PLAYERCLASSES("uses.playerclasses", false, null),
+        USES_SCOREBOARD("uses.scoreboard", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
         USES_WOOLHEAD("uses.woolHead", false, null),
 

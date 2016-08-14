@@ -1,3 +1,4 @@
+- v1.3.3.186 - implement ColorTeams and ScoreBoards modules into core - addresses github issue #212
 - v1.3.3.185 - add an announcement verification hack to WarmupJoin
 - v1.3.3.184 - revert build #177 (saturation lock), does not work anyways
 - v1.3.3.183 - very important module fix - player resetting was broken!

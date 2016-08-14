@@ -669,7 +669,12 @@ public class GoalDomination extends ArenaGoal {
 
         arena.getDebugger().i("reducing lives of team " + team);
         if (getLifeMap().get(team) != null) {
-            final int iLives = getLifeMap().get(team) - arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
+            final int score = arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
+            final int iLives = getLifeMap().get(team) - score;
+
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:null:"+team+":"+score);
+            Bukkit.getPluginManager().callEvent(gEvent);
+
             if (iLives > 0) {
                 getLifeMap().put(team, iLives);
             } else {

@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.ncloader;
 
+import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.ncloader.NCBLoadable.LoadResult;
 import net.slipcor.pvparena.ncloader.NCBLoadable.LoadResult.Result;
 import org.bukkit.event.Listener;
@@ -114,6 +115,14 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                             new InputStreamReader(
                                     jarFile.getInputStream(element)));
                     mainClass = reader.readLine().substring(12);
+                    if (mainClass.equals("net.slipcor.pvparena.modules.colorteams.CTManager")) {
+                        PVPArena.instance.getLogger().warning("Skipping ColorTeams module! The functionality has been built into the main plugin!");
+                        continue;
+                    }
+                    if (mainClass.equals("net.slipcor.pvparena.modules.scoreboards.ScoreBoards")) {
+                        PVPArena.instance.getLogger().warning("Skipping ScoreBoards module! The functionality has been built into the main plugin!");
+                        continue;
+                    }
                 }
 
                 if (mainClass != null) {
@@ -125,6 +134,8 @@ public class NCBLoader<T extends NCBLoadable> implements Listener {
                         final Constructor<? extends NCBLoadable> ctor = loadableClass
                                 .getConstructor(ctorParams);
                         final T loadable = (T) ctor.newInstance(paramTypes);
+
+
 
                         final LoadResult result = loadable.init();
 

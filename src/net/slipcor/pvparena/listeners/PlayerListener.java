@@ -17,6 +17,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -316,6 +317,28 @@ public class PlayerListener implements Listener {
         arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
         event.setCancelled(true);
         // cancel the drop event for fighting players, with message
+    }
+
+    @EventHandler
+    public void onPlayerGoal(final PAGoalEvent event) {
+        /*
+         * content[X].contains(playerDeath) => "playerDeath:playerName"
+         * content[X].contains(playerKill) => "playerKill:playerKiller:playerKilled"
+         * content[X].contains(trigger) => "trigger:playerName" triggered a score
+         * content[X].equals(tank) => player is tank
+         * content[X].equals(infected) => player is infected
+         * content[X].equals(doesRespawn) => player will respawn
+         * content[X].contains(score) => "score:player:team:value"
+         */
+        String[] args = event.getContents();
+        for (String content : args) {
+            if (content != null) {
+                if (content.startsWith("playerDeath")||content.startsWith("trigger")||content.startsWith("playerKill")||content.startsWith("score")) {
+                    event.getArena().updateScoreboards();
+                    return;
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)

@@ -5,6 +5,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -125,6 +126,19 @@ public final class PlayerState {
         player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
         player.setCollidable(arena.getArenaConfig().getBoolean(CFG.PLAYER_COLLISION));
         PlayerState.removeEffects(player);
+
+        if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
+            final ArenaTeam team = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+            String n;
+            if (team == null) {
+                n = player.getName();
+            } else {
+                n = team.getColorCodeString() + player.getName();
+            }
+            n = ChatColor.translateAlternateColorCodes('&', n);
+
+            player.setDisplayName(n);
+        }
     }
 
     public void unload() {
@@ -171,7 +185,6 @@ public final class PlayerState {
         }
 
         if (aPlayer.getArena() != null) {
-
             ArenaModuleManager.unload(aPlayer.getArena(), player);
             PVPArena.instance.getAgm().unload(aPlayer.getArena(), player);
         }
