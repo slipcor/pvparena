@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.192 - add config for github issue #220
+- v1.3.3.193 - fix StatisticsManager to actually be persistent. SORRY!
 - [read more](doc/changelog.md)
 
 ***

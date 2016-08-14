@@ -407,28 +407,28 @@ public final class StatisticsManager {
                 aPlayer.setStatistic(arena.getName(), ttt, 0);
             }
 
-            final int losses = config.getInt(arena.getName() + '.' + player + ".losses", 0);
+            final int losses = config.getInt(arena.getName() + '.' + playerID + ".losses", 0);
             aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);
 
-            final int wins = config.getInt(arena.getName() + '.' + player + ".wins", 0);
+            final int wins = config.getInt(arena.getName() + '.' + playerID + ".wins", 0);
             aPlayer.addStatistic(arena.getName(), type.WINS, wins);
 
-            final int kills = config.getInt(arena.getName() + '.' + player + ".kills", 0);
+            final int kills = config.getInt(arena.getName() + '.' + playerID + ".kills", 0);
             aPlayer.addStatistic(arena.getName(), type.KILLS, kills);
 
-            final int deaths = config.getInt(arena.getName() + '.' + player + ".deaths", 0);
+            final int deaths = config.getInt(arena.getName() + '.' + playerID + ".deaths", 0);
             aPlayer.addStatistic(arena.getName(), type.DEATHS, deaths);
 
-            final int damage = config.getInt(arena.getName() + '.' + player + ".damage", 0);
+            final int damage = config.getInt(arena.getName() + '.' + playerID + ".damage", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGE, damage);
 
-            final int maxdamage = config.getInt(arena.getName() + '.' + player + ".maxdamage", 0);
+            final int maxdamage = config.getInt(arena.getName() + '.' + playerID + ".maxdamage", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGE, maxdamage);
 
-            final int damagetake = config.getInt(arena.getName() + '.' + player + ".damagetake", 0);
+            final int damagetake = config.getInt(arena.getName() + '.' + playerID + ".damagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.DAMAGETAKE, damagetake);
 
-            final int maxdamagetake = config.getInt(arena.getName() + '.' + player + ".maxdamagetake", 0);
+            final int maxdamagetake = config.getInt(arena.getName() + '.' + playerID + ".maxdamagetake", 0);
             aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
         }
         if (foundBroken) {
