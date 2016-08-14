@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.187 - allow to set keepOnRespawn to "all" to, yes, keep all items
+- v1.3.3.188 - [FFA] allow to punish being killed by other things than a player: punishsuicide
 - [read more](doc/changelog.md)
 
 ***

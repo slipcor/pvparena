@@ -1,3 +1,4 @@
+- v1.3.3.188 - [FFA] allow to punish being killed by other things than a player: punishsuicide
 - v1.3.3.187 - allow to set keepOnRespawn to "all" to, yes, keep all items
 - v1.3.3.186 - implement ColorTeams and ScoreBoards modules into core - addresses github issue #212
 - v1.3.3.185 - add an announcement verification hack to WarmupJoin

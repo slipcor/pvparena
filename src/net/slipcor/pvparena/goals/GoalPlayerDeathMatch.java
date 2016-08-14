@@ -165,6 +165,9 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
         if (player.getKiller() == null
                 || !getLifeMap().containsKey(player.getKiller().getName())
                 || player.getPlayer().equals(player.getPlayer().getKiller())) {
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + player.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
+            Bukkit.getPluginManager().callEvent(gEvent);
+
             if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
                 final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                         .getArenaTeam();
@@ -188,17 +191,68 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
 
             PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), returned);
 
+            if (arena.getArenaConfig().getBoolean(CFG.USES_SUICIDEPUNISH)) {
+                boolean ending = false;
+                for (ArenaPlayer ap : arena.getFighters()) {
+                    if (player.equals(ap.get())) {
+                        continue;
+                    }
+                    if (increaseScore(ap.get(), player)) {
+                        return;
+                    }
+                }
+            }
+
             return;
         }
         final Player killer = player.getKiller();
+        int iLives = getLifeMap().get(killer.getName());
+        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
+        Bukkit.getPluginManager().callEvent(gEvent);
 
+        if (increaseScore(killer, player)) {
+            return;
+        }
+
+        final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+                .getArenaTeam();
+        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
+                arena.broadcast(Language.parse(arena,
+                        MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        arena.parseDeathCause(player, player
+                                .getLastDamageCause().getCause(), killer),
+                        String.valueOf(iLives)));
+            } else {
+                arena.broadcast(Language.parse(arena,
+                        MSG.FIGHT_KILLED_BY,
+                        respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
+                        arena.parseDeathCause(player, player
+                                .getLastDamageCause().getCause(), killer)));
+            }
+
+        }
+
+        final List<ItemStack> returned;
+
+        if (arena.getArenaConfig().getBoolean(
+                CFG.PLAYER_DROPSINVENTORY)) {
+            returned = InventoryManager.drop(player);
+            event.getDrops().clear();
+        } else {
+            returned = new ArrayList<>();
+            returned.addAll(event.getDrops());
+        }
+
+        PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), returned);
+    }
+
+    private boolean increaseScore(Player killer, Player killed) {
         int iLives = getLifeMap().get(killer.getName());
         arena.getDebugger().i("kills to go: " + iLives, killer);
         if (iLives <= 1) {
             // player has won!
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + killer.getName(),
-                    "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
             final Set<ArenaPlayer> plrs = new HashSet<>();
             for (final ArenaPlayer ap : arena.getFighters()) {
                 if (ap.getName().equals(killer.getName())) {
@@ -208,66 +262,26 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             }
             for (final ArenaPlayer ap : plrs) {
                 getLifeMap().remove(ap.getName());
-//				arena.getDebugger().i("faking player death", ap.get());
-//				arena.removePlayer(ap.get(), CFG.TP_LOSE.toString(), true,
-//						false);
 
                 ap.setStatus(Status.LOST);
                 ap.addLosses();
 
-//				PlayerState.fullReset(arena, ap.get());
-
                 if (ArenaManager.checkAndCommit(arena, false)) {
-                    arena.unKillPlayer(player, event.getEntity()
-                            .getLastDamageCause().getCause(), player.getKiller());
-                    return;
+                    arena.unKillPlayer(killed, killed
+                            .getLastDamageCause().getCause(), killer);
+                    return true;
                 }
             }
 
-            arena.unKillPlayer(player, event.getEntity()
-                    .getLastDamageCause().getCause(), player.getKiller());
+            arena.unKillPlayer(killed, killed
+                    .getLastDamageCause().getCause(), killer);
 
             PACheck.handleEnd(arena, false);
-        } else {
-            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerKill:" + killer.getName() + ':' + player.getName(), "playerDeath:" + player.getName());
-            Bukkit.getPluginManager().callEvent(gEvent);
-            iLives--;
-            getLifeMap().put(killer.getName(), iLives);
-
-            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
-                    .getArenaTeam();
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                if (arena.getArenaConfig().getBoolean(CFG.GENERAL_SHOWREMAININGLIVES)) {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY_REMAINING_FRAGS,
-                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            arena.parseDeathCause(player, event.getEntity()
-                                    .getLastDamageCause().getCause(), killer),
-                            String.valueOf(iLives)));
-                } else {
-                    arena.broadcast(Language.parse(arena,
-                            MSG.FIGHT_KILLED_BY,
-                            respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            arena.parseDeathCause(player, event.getEntity()
-                                    .getLastDamageCause().getCause(), killer)));
-                }
-
-            }
-
-            final List<ItemStack> returned;
-
-            if (arena.getArenaConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
-                returned = InventoryManager.drop(player);
-                event.getDrops().clear();
-            } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
-            }
-
-            PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), returned);
-
+            return true;
         }
+        iLives--;
+        getLifeMap().put(killer.getName(), iLives);
+        return false;
     }
 
     @Override
