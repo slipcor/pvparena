@@ -1,3 +1,4 @@
+- v1.3.3.192 - add config for github issue #220
 - v1.3.3.191 - fix github issue #188 - I found the right way to deactivate collision
 - v1.3.3.190 - address github issue #120 - limiting class changes
 - v1.3.3.189 - address github issue #99 - can we finally bury this? ^^

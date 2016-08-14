@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.191 - fix github issue #188 - I found the right way to deactivate collision
+- v1.3.3.192 - add config for github issue #220
 - [read more](doc/changelog.md)
 
 ***
