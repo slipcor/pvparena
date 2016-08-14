@@ -509,6 +509,9 @@ public class Arena {
                 try {
                     scoreboard.registerNewTeam(team.getName());
                     final Team bukkitTeam = scoreboard.getTeam(team.getName());
+                    if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
+                        bukkitTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                    }
                     bukkitTeam.setPrefix(team.getColor().toString());
                     bukkitTeam.addEntry(team.getName());
                     bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
@@ -542,6 +545,9 @@ public class Arena {
             for (final ArenaTeam team : getTeams()) {
                 final Team sTeam = scoreboard.registerNewTeam(team.getName());
                 sTeam.setPrefix(team.getColor().toString());
+                if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
+                    sTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                }
                 for (final ArenaPlayer aPlayer : team.getTeamMembers()) {
                     sTeam.addPlayer(aPlayer.get());
                 }

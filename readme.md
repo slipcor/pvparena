@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.190 - address github issue #120 - limiting class changes
+- v1.3.3.191 - fix github issue #188 - I found the right way to deactivate collision
 - [read more](doc/changelog.md)
 
 ***
