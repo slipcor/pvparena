@@ -1,3 +1,4 @@
+- v1.3.3.189 - address github issue #99 - can we finally bury this? ^^
 - v1.3.3.188 - [FFA] allow to punish being killed by other things than a player: punishsuicide
 - v1.3.3.187 - allow to set keepOnRespawn to "all" to, yes, keep all items
 - v1.3.3.186 - implement ColorTeams and ScoreBoards modules into core - addresses github issue #212

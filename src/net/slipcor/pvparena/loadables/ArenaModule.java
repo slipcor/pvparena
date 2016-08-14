@@ -428,7 +428,6 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      */
     @Deprecated
     public void resetPlayer(final Player player, final boolean force) {
-        resetPlayer(player, true, force);
     }
 
     /**

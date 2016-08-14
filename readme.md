@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.188 - [FFA] allow to punish being killed by other things than a player: punishsuicide
+- v1.3.3.189 - address github issue #99 - can we finally bury this? ^^
 - [read more](doc/changelog.md)
 
 ***

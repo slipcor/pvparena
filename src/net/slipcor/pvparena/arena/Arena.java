@@ -1449,6 +1449,7 @@ public class Arena {
 
         resetScoreboard(player, force);
 
+        ArenaModuleManager.resetPlayer(this, player, force);
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
         String sClass = "";

@@ -615,6 +615,7 @@ public final class Language {
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept&e."),
         MODULE_DUEL_ANNOUNCEMONEY("nulang.mod.duel.announcemoney", "&eThey set up a fee of &c%1%&e!"),
         MODULE_DUEL_ANNOUNCE2("nulang.mod.duel.announce2", "&eCancel the duel with &r/pa %2% decline&e."),
+        MODULE_DUEL_CANCELLED("nulang.mod.duel.cancelled","&cThe duel has been cancelled!"),
         MODULE_DUEL_BUSY("nulang.mod.duel.busy", "%1% &eis already in a fight Please try again later."),
         MODULE_DUEL_DECLINED_SENDER("nulang.mod.duel.declineds", "Your opponent declined the request. The duel has been cancelled."),
         MODULE_DUEL_DECLINED_RECEIVER("nulang.mod.duel.declinedr", "You declined the duel request!"),
