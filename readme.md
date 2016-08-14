@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.189 - address github issue #99 - can we finally bury this? ^^
+- v1.3.3.190 - address github issue #120 - limiting class changes
 - [read more](doc/changelog.md)
 
 ***
