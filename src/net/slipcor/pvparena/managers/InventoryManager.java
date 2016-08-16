@@ -79,8 +79,12 @@ public final class InventoryManager {
                     exclude.add(item.getType());
                 }
             }
-            keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
             keepAll = ap.getArena().getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN).equalsIgnoreCase("all");
+            if (keepAll) {
+                keep = new ArrayList<>();
+            } else {
+                keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
+            }
         }
 
         for (final ItemStack is : player.getInventory().getContents()) {

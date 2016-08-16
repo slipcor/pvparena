@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.196 - address github issue #240 - message consistency
+- v1.3.3.197 - address github issue #238 - allow to keep ALL items on respawn
 - [read more](doc/changelog.md)
 
 ***
