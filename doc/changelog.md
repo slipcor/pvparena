@@ -1,3 +1,4 @@
+- v1.3.3.196 - address github issue #240 - message consistency
 - v1.3.3.195 - address github issue #241 - don't use Location, use Vectors for offset
 - v1.3.3.194 - fix github issue #232 - Potions disappearing when readying up
 

@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.195 - address github issue #241 - don't use Location, use Vectors for offset
+- v1.3.3.196 - address github issue #240 - message consistency
 - [read more](doc/changelog.md)
 
 ***
