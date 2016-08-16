@@ -1500,7 +1500,7 @@ public class Arena {
                     if (loc == null) {
                         new Exception("RESET Spawn null: " + getName() + "->" + string).printStackTrace();
                     } else {
-                        player.teleport(loc.toLocation().add(offset));
+                        player.teleport(loc.toLocation().add(offset.toVector()));
                         aPlayer.setTelePass(false);
                         aPlayer.setTeleporting(false);
                     }
