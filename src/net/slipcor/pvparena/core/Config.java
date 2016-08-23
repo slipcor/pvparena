@@ -169,6 +169,7 @@ public class Config {
         USES_SCOREBOARD("uses.scoreboard", false, null),
         USES_SUICIDEPUNISH("uses.suicidepunish", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
+        USES_TELEPORTONKILL("uses.teleportonkill", false, null),
         USES_WOOLHEAD("uses.woolHead", false, null),
 
         // ----------

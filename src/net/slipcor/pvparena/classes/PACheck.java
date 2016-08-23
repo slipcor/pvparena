@@ -527,6 +527,9 @@ public class PACheck {
                 InventoryManager.clearInventory(player.getKiller());
                 ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
             }
+            if (arena.getArenaConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
+                SpawnManager.respawn(arena, ArenaPlayer.parsePlayer(player.getKiller().getName()), null);
+            }
         }
 
         if (commit == null) {
