@@ -42,11 +42,17 @@ public class InventoryRefillRunnable implements Runnable {
         }
         this.arena = arena == null ? aPlayer.getArena() : arena;
 
+        boolean keepAll = "all".equalsIgnoreCase(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
+
         if (!"none".equals(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN))) {
             final ItemStack[] items = StringParser.getItemStacksFromString(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
 
             for (final ItemStack item : itemList) {
                 if (item != null) {
+                    if (keepAll) {
+                        additions.add(item);
+                        continue;
+                    }
                     for (final ItemStack iItem : items) {
                         if (iItem != null) {
                             if (item.getType() != iItem.getType()) {

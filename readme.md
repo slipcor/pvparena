@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.198 - add "teleportonkill" to allow force respawn of killers
+- v1.3.3.199 - address github issue #238 - allow to keep ALL items on respawn
 - [read more](doc/changelog.md)
 
 ***
