@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.199 - address github issue #238 - allow to keep ALL items on respawn
+- v1.3.3.200 - prevent the plugin from messing up player restoring in certain reset cases
 - [read more](doc/changelog.md)
 
 ***

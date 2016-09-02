@@ -1435,7 +1435,7 @@ public class Arena {
      * @param string the teleport location
      * @param soft   if location should be preserved (another tp incoming)
      */
-    private void resetPlayer(final Player player, final String string, final boolean soft,
+        private void resetPlayer(final Player player, final String string, final boolean soft,
                              final boolean force) {
         if (player == null) {
             return;
@@ -1520,7 +1520,7 @@ public class Arena {
         final RunLater runLater = new RunLater();
 
         aPlayer.setTeleporting(true);
-        if (cfg.getInt(CFG.TIME_RESETDELAY) > -1) {
+        if (cfg.getInt(CFG.TIME_RESETDELAY) > -1 && !force) {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY));
         } else {
             runLater.run();

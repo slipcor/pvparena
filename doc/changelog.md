@@ -1,3 +1,4 @@
+- v1.3.3.200 - prevent the plugin from messing up player restoring in certain reset cases
 - v1.3.3.199 - address github issue #238 - allow to keep ALL items on respawn
 - v1.3.3.198 - add "teleportonkill" to allow force respawn of killers
 - v1.3.3.197 - address github issue #238 - allow to keep ALL items on respawn
