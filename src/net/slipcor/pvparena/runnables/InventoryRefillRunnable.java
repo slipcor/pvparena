@@ -102,7 +102,6 @@ public class InventoryRefillRunnable implements Runnable {
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
             } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {
-                InventoryManager.clearInventory(player);
                 ArenaPlayer.reloadInventory(arena, player, false);
 
                 for (final ItemStack item : additions) {

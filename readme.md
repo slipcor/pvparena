@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.200 - prevent the plugin from messing up player restoring in certain reset cases
+- v1.3.3.201 - allow to disable all gamemode changes; make "takeOutOfGame" actually work
 - [read more](doc/changelog.md)
 
 ***

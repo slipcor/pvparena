@@ -325,6 +325,7 @@ public class ArenaPlayer {
 
             }
         }
+        InventoryManager.clearInventory(player);
 
         if (aPlayer.savedInventory == null) {
             debug.i("saved inventory null!", player);

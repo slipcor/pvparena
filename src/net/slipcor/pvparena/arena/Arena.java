@@ -251,26 +251,25 @@ public class Arena {
                 ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.READY);
             }
         }
-        InventoryManager.clearInventory(player);
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         if (aPlayer.getArena() == null) {
             PVPArena.instance.getLogger().warning(
                     "failed to set class " + className + " to player "
                             + player.getName());
-            return;
-        }
-        if (ArenaModuleManager.cannotSelectClass(this, player, className)) {
-            return;
-        }
-        aPlayer.setArenaClass(className);
-        if (aPlayer.getArenaClass() != null) {
-            if ("custom".equalsIgnoreCase(className)) {
-                // if custom, give stuff back
-                ArenaPlayer.reloadInventory(this, player, false);
-            } else {
-                ArenaPlayer.givePlayerFightItems(this, player);
+        } else if (!ArenaModuleManager.cannotSelectClass(this, player, className)) {
+            aPlayer.setArenaClass(className);
+            if (aPlayer.getArenaClass() != null) {
+                if ("custom".equalsIgnoreCase(className)) {
+                    // if custom, give stuff back
+                    ArenaPlayer.reloadInventory(this, player, false);
+                } else {
+                    InventoryManager.clearInventory(player);
+                    ArenaPlayer.givePlayerFightItems(this, player);
+                }
             }
+            return;
         }
+        InventoryManager.clearInventory(player);
     }
 
     public void clearRegions() {
@@ -1465,7 +1464,6 @@ public class Arena {
 
         if (!"custom".equalsIgnoreCase(sClass) ||
                 cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) {
-            InventoryManager.clearInventory(player);
             ArenaPlayer.reloadInventory(this, player, true);
         }
 
