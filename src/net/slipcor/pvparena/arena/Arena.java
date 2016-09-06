@@ -533,7 +533,6 @@ public class Arena {
             Objective obj = scoreboard.registerNewObjective("lives", "dummy"); //deathCount
 
             obj.setDisplayName(ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName());
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         return scoreboard;
     }
@@ -1451,8 +1450,9 @@ public class Arena {
         if (aPlayer.getState() != null) {
             aPlayer.getState().unload();
         }
-
-        resetScoreboard(player, force);
+        if (!soft || this.isFreeForAll()) {
+            resetScoreboard(player, force);
+        }
 
         ArenaModuleManager.resetPlayer(this, player, force);
         ArenaModuleManager.resetPlayer(this, player, soft, force);
@@ -1782,6 +1782,10 @@ public class Arena {
      */
     public void start(final boolean forceStart) {
         getDebugger().i("start()");
+        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD) && scoreboard != null) {
+            Objective obj = scoreboard.getObjective("lives");
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
         gaveRewards = false;
         startRunner = null;
         if (fightInProgress) {
