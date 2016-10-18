@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.202 - try to finish off github issue #212 by delaying scoreboard slot selection and player removal
+- v1.3.3.203 - try to fix an issue about respawning players not getting reset properly
 - [read more](doc/changelog.md)
 
 ***

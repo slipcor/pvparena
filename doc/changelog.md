@@ -1,3 +1,4 @@
+- v1.3.3.203 - try to fix an issue about respawning players not getting reset properly
 - v1.3.3.202 - try to finish off github issue #212 by delaying scoreboard slot selection and player removal
 - v1.3.3.201 - allow to disable all gamemode changes; make "takeOutOfGame" actually work
 - v1.3.3.200 - prevent the plugin from messing up player restoring in certain reset cases

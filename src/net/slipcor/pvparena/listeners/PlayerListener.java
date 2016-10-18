@@ -709,7 +709,7 @@ public class PlayerListener implements Listener {
         // players
         // and makes sure every player is an arenaplayer ^^
 
-        aPlayer.readDump();
+        aPlayer.readDump(false);
         final Arena arena = aPlayer.getArena();
 
         if (arena != null) {
@@ -743,7 +743,7 @@ public class PlayerListener implements Listener {
         // instantiate and/or reset a player. This fixes issues with leaving
         // players and makes sure every player is an arenaplayer ^^
 
-        aPlayer.readDump();
+        aPlayer.readDump(true);
         final Arena arena = aPlayer.getArena();
         if (arena != null) {
             arena.playerLeave(player, CFG.TP_EXIT, true);
