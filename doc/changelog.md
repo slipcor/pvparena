@@ -1,3 +1,4 @@
+- v1.3.3.205 - continue attemmpt to fix region spawning
 - v1.3.3.204 - revert the last commit and try to fix region spawning
 - v1.3.3.203 - try to fix an issue about respawning players not getting reset properly
 - v1.3.3.202 - try to finish off github issue #212 by delaying scoreboard slot selection and player removal

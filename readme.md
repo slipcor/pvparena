@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.204 - revert the last commit and try to fix region spawning
+- v1.3.3.205 - continue attemmpt to fix region spawning
 - [read more](doc/changelog.md)
 
 ***

@@ -482,14 +482,15 @@ public final class SpawnManager {
 
         while (!found && attempt < 10) {
 
-            x += random.nextInt(region.getShape().getMaximumLocation().getX() -
+            x = region.getShape().getMinimumLocation().getX() + random.nextInt(region.getShape().getMaximumLocation().getX() -
                     region.getShape().getMinimumLocation().getX());
-            y += random.nextInt(region.getShape().getMaximumLocation().getY() -
+            y = region.getShape().getMinimumLocation().getY() + random.nextInt(region.getShape().getMaximumLocation().getY() -
                     region.getShape().getMinimumLocation().getY());
-            z += random.nextInt(region.getShape().getMaximumLocation().getZ() -
+            z = region.getShape().getMinimumLocation().getZ() + random.nextInt(region.getShape().getMaximumLocation().getZ() -
                     region.getShape().getMinimumLocation().getZ());
 
-            loc = new PABlockLocation(region.getShape().getMinimumLocation().getWorldName(), x, region.getWorld().getHighestBlockYAt(x, z)+1, z);
+            loc = new PABlockLocation(region.getShape().getMinimumLocation().getWorldName(), x, y, z);
+            loc.setY(loc.toLocation().getWorld().getHighestBlockYAt(x, z));
             attempt++;
             found = region.getShape().contains(loc);
 
