@@ -490,7 +490,7 @@ public final class SpawnManager {
                     region.getShape().getMinimumLocation().getZ());
 
             loc = new PABlockLocation(region.getShape().getMinimumLocation().getWorldName(), x, y, z);
-            loc.setY(loc.toLocation().getWorld().getHighestBlockYAt(x, z));
+            loc.setY(loc.toLocation().getWorld().getHighestBlockYAt(x, z)+1);
             attempt++;
             found = region.getShape().contains(loc);
 

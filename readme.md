@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.205 - continue attemmpt to fix region spawning
+- v1.3.3.206 - finish the spawn region fix
 - [read more](doc/changelog.md)
 
 ***
