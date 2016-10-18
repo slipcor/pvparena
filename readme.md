@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.203 - try to fix an issue about respawning players not getting reset properly
+- v1.3.3.204 - revert the last commit and try to fix region spawning
 - [read more](doc/changelog.md)
 
 ***

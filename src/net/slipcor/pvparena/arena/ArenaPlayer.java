@@ -612,7 +612,7 @@ public class ArenaPlayer {
         return publicChatting;
     }
 
-    public void readDump(boolean dead) {
+    public void readDump() {
         debug.i("reading dump: " + name, name);
         debugPrint();
         final File file = new File(PVPArena.instance.getDataFolder().getPath()
@@ -641,7 +641,7 @@ public class ArenaPlayer {
                 location = SpawnManager.getSpawnByExactName(arena, "exit");
             }
 
-            if (!dead && Bukkit.getPlayer(name) == null) {
+            if (Bukkit.getPlayer(name) == null) {
                 debug.i("player offline, OUT!", name);
                 return;
             }
