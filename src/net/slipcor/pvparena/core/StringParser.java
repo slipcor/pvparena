@@ -619,7 +619,12 @@ public final class StringParser {
                     joinArray(itemStack.getItemMeta().getLore()
                             .toArray(), SAFE_BREAK), true));
         }
-        final Map<Enchantment, Integer> enchants = itemStack.getEnchantments();
+        Map<Enchantment, Integer> enchants = null;
+        try {
+            enchants = itemStack.getEnchantments();
+        } catch (Exception e) {
+            // Caused by: java.lang.NullPointerException: null key in entry: null=1
+        }
 
         if (enchants != null && !enchants.isEmpty()) {
             for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {

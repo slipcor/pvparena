@@ -515,11 +515,19 @@ public final class SpawnManager {
                     bLoc = bLoc.add(0, 1, 0);
                 }
 
+                arena.getDebugger().i("bLoc: " + bLoc.toString());
                 aPlayer.setLocation(new PALocation(bLoc));
 
                 aPlayer.setStatus(Status.FIGHT);
+
                 arena.tpPlayerToCoordName(aPlayer.get(), "old");
-                aPlayer.setLocation(temp);
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                            @Override
+                            public void run() {
+                                aPlayer.setLocation(temp);
+                                arena.getDebugger().i("temp: " + temp.toString());
+                            }
+                }, 6L);
 
             }
 

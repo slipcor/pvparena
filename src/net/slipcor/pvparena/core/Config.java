@@ -118,6 +118,7 @@ public class Config {
         PLAYER_DROPSINVENTORY("player.dropsInventory", false, null),
         PLAYER_EXHAUSTION("player.exhaustion", 0.0, null),
         PLAYER_FEEDFORKILL("player.hungerforkill", 0, null),
+        PLAYER_FLYSPEED("player.flyspeed", 0.1, null),
         PLAYER_FOODLEVEL("player.foodLevel", 20, null),
         PLAYER_HEALTH("player.health", -1, null),
         PLAYER_HEALFORKILL("player.healforkill", false, null),
@@ -129,6 +130,7 @@ public class Config {
         PLAYER_REFILLFORKILL("player.refillforkill", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
+        PLAYER_WALKSPEED("player.walkspeed", 0.1, null),
 
         PROTECT_ENABLED("protection.enabled", true, null),
         PROTECT_PUNISH("protection.punish", false, null),

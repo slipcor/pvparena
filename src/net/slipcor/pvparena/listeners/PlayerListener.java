@@ -739,11 +739,19 @@ public class PlayerListener implements Listener {
     public void onPlayerRespawn(final PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        aPlayer.setArena(null);
+        // aPlayer.setArena(null);
         // instantiate and/or reset a player. This fixes issues with leaving
         // players and makes sure every player is an arenaplayer ^^
 
-        aPlayer.readDump();
+
+        if (aPlayer.getArena() != null && aPlayer.getStatus() == Status.FIGHT) {
+            Arena arena = aPlayer.getArena();
+            arena.getDebugger().i("Trying to override a rogue RespawnEvent!");
+        }
+
+        aPlayer.debugPrint();
+
+        // aPlayer.readDump();
         final Arena arena = aPlayer.getArena();
         if (arena != null) {
             arena.playerLeave(player, CFG.TP_EXIT, true);

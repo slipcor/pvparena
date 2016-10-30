@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.206 - finish the spawn region fix
+- v1.3.3.207 - address github issues #245 and #248
 - [read more](doc/changelog.md)
 
 ***

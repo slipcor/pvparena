@@ -44,6 +44,9 @@ public final class PlayerState {
     private boolean flying;
     private boolean collides;
 
+    private float flyspeed;
+    private float walkspeed;
+
     private String displayname;
     private Collection<PotionEffect> potionEffects;
 
@@ -79,6 +82,9 @@ public final class PlayerState {
         if (time != -1) {
             player.setPlayerTime(time, false);
         }
+
+        flyspeed = player.getFlySpeed();
+        walkspeed = player.getWalkSpeed();
     }
 
     public void dump(final YamlConfiguration cfg) {
@@ -95,6 +101,8 @@ public final class PlayerState {
         cfg.set("state.displayname", displayname);
         cfg.set("state.flying", flying);
         cfg.set("state.collides", collides);
+        cfg.set("state.flyspeed", flyspeed);
+        cfg.set("state.walkspeed", walkspeed);
     }
 
     public static void fullReset(final Arena arena, final Player player) {
@@ -141,6 +149,8 @@ public final class PlayerState {
 
             player.setDisplayName(n);
         }
+        player.setFlySpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED));
+        player.setWalkSpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED));
     }
 
     public void unload() {
@@ -211,6 +221,9 @@ public final class PlayerState {
         }
         player.setFlying(flying);
         player.setCollidable(collides);
+
+        player.setFlySpeed(flyspeed);
+        player.setWalkSpeed(walkspeed);
     }
 
     /**
@@ -248,6 +261,9 @@ public final class PlayerState {
         potionEffects = null;
         flying = false;
         collides = false;
+
+        flyspeed = 0.1f;
+        walkspeed = 0.1f;
     }
 
     public static void removeEffects(final Player player) {
@@ -273,6 +289,8 @@ public final class PlayerState {
         pState.displayname = cfg.getString("state.displayname", pName);
         pState.flying = cfg.getBoolean("state.flying", false);
         pState.collides = cfg.getBoolean("state.collides", false);
+        pState.flyspeed = (float) cfg.getDouble("state.flyspeed", 0.1);
+        pState.walkspeed = (float) cfg.getDouble("state.walkspeed", 0.1);
 
         return pState;
     }
