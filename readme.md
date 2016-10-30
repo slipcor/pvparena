@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.207 - address github issues #245 and #248
+- v1.3.3.208 - address issues with commit 4f75803
 - [read more](doc/changelog.md)
 
 ***

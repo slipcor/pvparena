@@ -222,8 +222,20 @@ public final class PlayerState {
         player.setFlying(flying);
         player.setCollidable(collides);
 
-        player.setFlySpeed(flyspeed);
-        player.setWalkSpeed(walkspeed);
+        class RunLater implements Runnable {
+
+            @Override
+            public void run() {
+                player.setFlySpeed(flyspeed);
+                player.setWalkSpeed(walkspeed);
+            }
+        }
+
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+        } catch (Exception e) {
+            new RunLater().run();
+        }
     }
 
     /**
@@ -262,8 +274,8 @@ public final class PlayerState {
         flying = false;
         collides = false;
 
-        flyspeed = 0.1f;
-        walkspeed = 0.1f;
+        flyspeed = 0.2f;
+        walkspeed = 0.2f;
     }
 
     public static void removeEffects(final Player player) {
