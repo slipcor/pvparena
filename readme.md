@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.208 - address issues with commit 4f75803
+- v1.3.3.209 - final attempt to get rid of the speed issue - deactivate with -10
 - [read more](doc/changelog.md)
 
 ***

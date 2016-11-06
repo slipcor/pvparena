@@ -149,8 +149,12 @@ public final class PlayerState {
 
             player.setDisplayName(n);
         }
-        player.setFlySpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED));
-        player.setWalkSpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED));
+        if (arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED) > -9.9) {
+            player.setFlySpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED));
+        }
+        if (arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED) > 9.9) {
+            player.setWalkSpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED));
+        }
     }
 
     public void unload() {
@@ -222,19 +226,26 @@ public final class PlayerState {
         player.setFlying(flying);
         player.setCollidable(collides);
 
-        class RunLater implements Runnable {
+        if (flyspeed > -9.9 || walkspeed > -9.9) {
 
-            @Override
-            public void run() {
-                player.setFlySpeed(flyspeed);
-                player.setWalkSpeed(walkspeed);
+            class RunLater implements Runnable {
+
+                @Override
+                public void run() {
+                    if (flyspeed > -9.9) {
+                        player.setFlySpeed(flyspeed);
+                    }
+                    if (walkspeed > -9.9) {
+                        player.setWalkSpeed(walkspeed);
+                    }
+                }
             }
-        }
 
-        try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
-        } catch (Exception e) {
-            new RunLater().run();
+            try {
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
+            } catch (Exception e) {
+                new RunLater().run();
+            }
         }
     }
 
@@ -301,8 +312,8 @@ public final class PlayerState {
         pState.displayname = cfg.getString("state.displayname", pName);
         pState.flying = cfg.getBoolean("state.flying", false);
         pState.collides = cfg.getBoolean("state.collides", false);
-        pState.flyspeed = (float) cfg.getDouble("state.flyspeed", 0.1);
-        pState.walkspeed = (float) cfg.getDouble("state.walkspeed", 0.1);
+        pState.flyspeed = (float) cfg.getDouble("state.flyspeed", -10);
+        pState.walkspeed = (float) cfg.getDouble("state.walkspeed", -10);
 
         return pState;
     }
