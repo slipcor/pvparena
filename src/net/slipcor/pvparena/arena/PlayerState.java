@@ -44,9 +44,6 @@ public final class PlayerState {
     private boolean flying;
     private boolean collides;
 
-    private float flyspeed;
-    private float walkspeed;
-
     private String displayname;
     private Collection<PotionEffect> potionEffects;
 
@@ -82,9 +79,6 @@ public final class PlayerState {
         if (time != -1) {
             player.setPlayerTime(time, false);
         }
-
-        flyspeed = player.getFlySpeed();
-        walkspeed = player.getWalkSpeed();
     }
 
     public void dump(final YamlConfiguration cfg) {
@@ -101,8 +95,6 @@ public final class PlayerState {
         cfg.set("state.displayname", displayname);
         cfg.set("state.flying", flying);
         cfg.set("state.collides", collides);
-        cfg.set("state.flyspeed", flyspeed);
-        cfg.set("state.walkspeed", walkspeed);
     }
 
     public static void fullReset(final Arena arena, final Player player) {
@@ -225,28 +217,6 @@ public final class PlayerState {
         }
         player.setFlying(flying);
         player.setCollidable(collides);
-
-        if (flyspeed > -9.9 || walkspeed > -9.9) {
-
-            class RunLater implements Runnable {
-
-                @Override
-                public void run() {
-                    if (flyspeed > -9.9) {
-                        player.setFlySpeed(flyspeed);
-                    }
-                    if (walkspeed > -9.9) {
-                        player.setWalkSpeed(walkspeed);
-                    }
-                }
-            }
-
-            try {
-                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
-            } catch (Exception e) {
-                new RunLater().run();
-            }
-        }
     }
 
     /**
@@ -284,9 +254,6 @@ public final class PlayerState {
         potionEffects = null;
         flying = false;
         collides = false;
-
-        flyspeed = 0.2f;
-        walkspeed = 0.2f;
     }
 
     public static void removeEffects(final Player player) {
@@ -312,8 +279,6 @@ public final class PlayerState {
         pState.displayname = cfg.getString("state.displayname", pName);
         pState.flying = cfg.getBoolean("state.flying", false);
         pState.collides = cfg.getBoolean("state.collides", false);
-        pState.flyspeed = (float) cfg.getDouble("state.flyspeed", -10);
-        pState.walkspeed = (float) cfg.getDouble("state.walkspeed", -10);
 
         return pState;
     }

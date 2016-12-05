@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.209 - final attempt to get rid of the speed issue - deactivate with -10
+- v1.3.3.210 - revert 4f75803 - never mess with flying speed or walking speed again plz :P
 - [read more](doc/changelog.md)
 
 ***

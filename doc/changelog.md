@@ -1,3 +1,4 @@
+- v1.3.3.210 - revert 4f75803 - never mess with flying speed or walking speed again plz :P
 - v1.3.3.209 - final attempt to get rid of the speed issue - deactivate with -10
 - v1.3.3.208 - address issues with commit 4f75803
 - v1.3.3.207 - address github issues #245 and #248
@@ -14,7 +15,6 @@
 - v1.3.3.196 - address github issue #240 - message consistency
 - v1.3.3.195 - address github issue #241 - don't use Location, use Vectors for offset
 - v1.3.3.194 - fix github issue #232 - Potions disappearing when readying up
-
 - v1.3.3.193 - fix StatisticsManager to actually be persistent. SORRY!
 - v1.3.3.192 - add config for github issue #220
 - v1.3.3.191 - fix github issue #188 - I found the right way to deactivate collision
