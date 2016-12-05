@@ -753,7 +753,9 @@ public class ArenaPlayer {
         final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
         this.aClass = event.getArenaClass();
-        ArenaModuleManager.parseClassChange(arena, get(), this.aClass);
+        if (arena != null) {
+            ArenaModuleManager.parseClassChange(arena, get(), this.aClass);
+        }
     }
 
     /**
