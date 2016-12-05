@@ -141,12 +141,6 @@ public final class PlayerState {
 
             player.setDisplayName(n);
         }
-        if (arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED) > -9.9) {
-            player.setFlySpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_FLYSPEED));
-        }
-        if (arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED) > 9.9) {
-            player.setWalkSpeed((float) arena.getArenaConfig().getDouble(CFG.PLAYER_WALKSPEED));
-        }
     }
 
     public void unload() {

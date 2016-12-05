@@ -1,3 +1,4 @@
+- v1.3.3.211 - revert c67e4a6 - never mess with flying speed or walking speed again plz :P
 - v1.3.3.210 - revert 4f75803 - never mess with flying speed or walking speed again plz :P
 - v1.3.3.209 - final attempt to get rid of the speed issue - deactivate with -10
 - v1.3.3.208 - address issues with commit 4f75803

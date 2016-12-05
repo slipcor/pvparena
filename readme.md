@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.210 - revert 4f75803 - never mess with flying speed or walking speed again plz :P
+- v1.3.3.211 - revert c67e4a6 - never mess with flying speed or walking speed again plz :P
 - [read more](doc/changelog.md)
 
 ***
