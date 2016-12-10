@@ -1960,6 +1960,13 @@ public class Arena {
             aPlayer.setTeleporting(false);
         }
 
+        if (cfg.getBoolean(CFG.PLAYER_REMOVEARROWS)) {
+            try {
+                new ArrowHack(player);
+            } catch (final Exception e) {
+            }
+        }
+
         if (cfg.getBoolean(CFG.USES_INVISIBILITYFIX) &&
                 aPlayer.getStatus() == Status.FIGHT ||
                 aPlayer.getStatus() == Status.LOUNGE) {

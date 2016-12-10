@@ -1,3 +1,4 @@
+- v1.3.3.214 - address issue #255 - Remove arrows stuck to everyone
 - v1.3.3.213 - address issue #256 - Exception about ScoreBoards when shutting down
 - v1.3.3.212 - fix issue #252 by catching a NPE
 - v1.3.3.211 - revert c67e4a6 - never mess with flying speed or walking speed again plz :P

@@ -127,6 +127,7 @@ public class Config {
         PLAYER_PREVENTDEATH("player.preventDeath", true, null),
         PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
         PLAYER_REFILLFORKILL("player.refillforkill", false, null),
+        PLAYER_REMOVEARROWS("player.removearrows", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
 

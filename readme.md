@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.213 - address issue #256 - Exception about ScoreBoards when shutting down
+- v1.3.3.214 - address issue #255 - Remove arrows stuck to everyone
 - [read more](doc/changelog.md)
 
 ***
