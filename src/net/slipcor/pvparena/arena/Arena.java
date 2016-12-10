@@ -1304,7 +1304,11 @@ public class Arena {
                 if (force) {
                     new RunLater().run();
                 } else {
-                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 2L);
+                    try {
+                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 2L);
+                    } catch (IllegalStateException e) {
+
+                    }
                 }
 
             } catch (final Exception e) {

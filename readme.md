@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.212 - fix issue #252 by catching a NPE
+- v1.3.3.213 - address issue #256 - Exception about ScoreBoards when shutting down
 - [read more](doc/changelog.md)
 
 ***
