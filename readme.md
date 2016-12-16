@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.214 - address issue #255 - Remove arrows stuck to everyone
+- v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true
 - [read more](doc/changelog.md)
 
 ***

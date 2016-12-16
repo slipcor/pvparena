@@ -1,3 +1,4 @@
+- v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true
 - v1.3.3.214 - address issue #255 - Remove arrows stuck to everyone
 - v1.3.3.213 - address issue #256 - Exception about ScoreBoards when shutting down
 - v1.3.3.212 - fix issue #252 by catching a NPE

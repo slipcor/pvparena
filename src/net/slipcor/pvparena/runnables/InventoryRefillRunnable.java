@@ -82,7 +82,7 @@ public class InventoryRefillRunnable implements Runnable {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         arena.getDebugger().i("refilling " + player.getName());
         if (aPlayer.getStatus() == Status.FIGHT) {
-            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
                 if (refill) {
                     final ItemStack[] items = new ItemStack[additions.size()];
                     int pos = 0;
