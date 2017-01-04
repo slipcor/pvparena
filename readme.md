@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true
+- v1.3.3.216 - address a bug about invisibility being nullified by internal scoreboard
 - [read more](doc/changelog.md)
 
 ***

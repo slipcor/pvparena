@@ -515,9 +515,7 @@ public class Arena {
                     bukkitTeam.addEntry(team.getName());
                     bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
 
-                    bukkitTeam.setCanSeeFriendlyInvisibles(
-                            !isFreeForAll()
-                    );
+                    bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                 } catch (final Exception e) {
                     e.printStackTrace();
                 }
@@ -543,6 +541,7 @@ public class Arena {
             for (final ArenaTeam team : getTeams()) {
                 final Team sTeam = scoreboard.registerNewTeam(team.getName());
                 sTeam.setPrefix(team.getColor().toString());
+                sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                 if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
                     sTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                 }
@@ -1566,10 +1565,7 @@ public class Arena {
                         bukkitTeam.setPrefix(team.getColor().toString());
                         bukkitTeam.addEntry(team.getName());
                         bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
-
-                        bukkitTeam.setCanSeeFriendlyInvisibles(
-                                !isFreeForAll()
-                        );
+                        bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                     } catch (final Exception e) {
                         e.printStackTrace();
                     }
@@ -1596,6 +1592,7 @@ public class Arena {
             final Team sTeam = board.registerNewTeam(team.getName());
             sTeam.setPrefix(team.getColor().toString());
             sTeam.addEntry(player.getName());
+            sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
         }
     }
 
@@ -2342,6 +2339,7 @@ public class Arena {
                         final Team sTeam = board.registerNewTeam(newTeam.getName());
                         sTeam.setPrefix(newTeam.getColor().toString());
                         sTeam.addPlayer(player);
+                        sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                     }
                     updateScoreboard(player);
                 }
@@ -2360,6 +2358,7 @@ public class Arena {
             }
             final Team sTeam = board.registerNewTeam(newTeam.getName());
             sTeam.setPrefix(newTeam.getColor().toString());
+            sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
             sTeam.addEntry(player.getName());
         }
     }
