@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.216 - address a bug about invisibility being nullified by internal scoreboard
+- v1.3.3.217 - do not nag people to update if updater type DOWNLOAD is selected - addresses github issue #244
 - [read more](doc/changelog.md)
 
 ***

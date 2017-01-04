@@ -310,20 +310,24 @@ public class Updater extends Thread {
                     }
 
                 }
-                if (instance.zip) {
-                    if (instances.size() > 2) {
-                        player.sendMessage(instance.pluginName + " " + instance.colorize('v' + instance.vThis)
-                                + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
-                    } else {
-                        player.sendMessage("PVP Arena Files " + instance.colorize('v' + instance.vThis)
-                                + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
-                    }
-                } else {
-                    player.sendMessage("You are using " + instance.colorize('v' + instance.vThis)
-                            + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
-                    if (files) {
+
+                if (mode != UpdateMode.DOWNLOAD || (!( player instanceof Player))) {
+
+                    if (instance.zip) {
                         if (instances.size() > 2) {
-                            player.sendMessage("The results for the files are as follows:");
+                            player.sendMessage(instance.pluginName + " " + instance.colorize('v' + instance.vThis)
+                                    + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
+                        } else {
+                            player.sendMessage("PVP Arena Files " + instance.colorize('v' + instance.vThis)
+                                    + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
+                        }
+                    } else {
+                        player.sendMessage("You are using " + instance.colorize('v' + instance.vThis)
+                                + ", an outdated version! Latest: " + ChatColor.COLOR_CHAR + 'a' + 'v' + instance.vOnline);
+                        if (files) {
+                            if (instances.size() > 2) {
+                                player.sendMessage("The results for the files are as follows:");
+                            }
                         }
                     }
                 }
@@ -342,27 +346,28 @@ public class Updater extends Thread {
                     }
                 }
             } else {
-                if (instance.zip) {
-                    if (instances.size() > 2) {
-                        player.sendMessage(instance.pluginName + " " + instance.colorize('v' + instance.vThis)
-                                + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
-                                + instance.vOnline);
-                    } else {
-                        player.sendMessage("PVP Arena Files " + instance.colorize('v' + instance.vThis)
-                                + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
-                                + instance.vOnline);
-                    }
-                } else {
-                    player.sendMessage("You are using " + instance.colorize('v' + instance.vThis)
-                            + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
-                            + instance.vOnline);
-                    if (files) {
+                if (mode != UpdateMode.DOWNLOAD || (!( player instanceof Player))) {
+                    if (instance.zip) {
                         if (instances.size() > 2) {
-                            player.sendMessage("The results for the files are as follows:");
+                            player.sendMessage(instance.pluginName + " " + instance.colorize('v' + instance.vThis)
+                                    + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
+                                    + instance.vOnline);
+                        } else {
+                            player.sendMessage("PVP Arena Files " + instance.colorize('v' + instance.vThis)
+                                    + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
+                                    + instance.vOnline);
+                        }
+                    } else {
+                        player.sendMessage("You are using " + instance.colorize('v' + instance.vThis)
+                                + ", an experimental version! Latest stable: " + ChatColor.COLOR_CHAR + 'a' + 'v'
+                                + instance.vOnline);
+                        if (files) {
+                            if (instances.size() > 2) {
+                                player.sendMessage("The results for the files are as follows:");
+                            }
                         }
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();

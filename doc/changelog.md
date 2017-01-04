@@ -1,3 +1,4 @@
+- v1.3.3.217 - do not nag people to update if updater type DOWNLOAD is selected - addresses github issue #244
 - v1.3.3.216 - address a bug about invisibility being nullified by internal scoreboard
 - v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true
 - v1.3.3.214 - address issue #255 - Remove arrows stuck to everyone
