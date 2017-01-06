@@ -430,7 +430,6 @@ public class PlayerListener implements Listener {
 
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
-        Arena a = ap.getArena();
         if (ap.getStatus() == Status.READY || ap.getStatus() == Status.LOUNGE || ap.getArena() != null && !ap.getArena().getArenaConfig().getBoolean(CFG.PLAYER_HUNGER)) {
             event.setCancelled(true);
         }
@@ -552,7 +551,7 @@ public class PlayerListener implements Listener {
             final Material mMat = arena.getReadyBlock();
             arena.getDebugger().i("clicked " + block.getType().name() + ", is it " + mMat.name()
                     + '?', player);
-            if (block.getTypeId() == mMat.getId()) {
+            if (block.getType() == mMat) {
                 arena.getDebugger().i("clicked ready block!", player);
                 if (event.getHand() == EquipmentSlot.OFF_HAND) {
                     arena.getDebugger().i("out: offhand!", player);
@@ -613,7 +612,7 @@ public class PlayerListener implements Listener {
 
                     if (error == null) {
                         arena.start();
-                    } else if (error != null && error.isEmpty()) {
+                    } else if (error.isEmpty()) {
                         arena.countDown();
                     } else {
                         arena.msg(player, error);

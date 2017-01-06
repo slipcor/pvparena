@@ -192,7 +192,6 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
             PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), returned);
 
             if (arena.getArenaConfig().getBoolean(CFG.USES_SUICIDEPUNISH)) {
-                boolean ending = false;
                 for (ArenaPlayer ap : arena.getFighters()) {
                     if (player.equals(ap.get())) {
                         continue;

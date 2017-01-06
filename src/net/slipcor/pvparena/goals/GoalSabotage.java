@@ -129,8 +129,8 @@ public class GoalSabotage extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("flag click!", player);
 
-        if (player.getItemInHand() == null
-                || player.getItemInHand().getType() != Material.FLINT_AND_STEEL) {
+        if (player.getEquipment().getItemInMainHand() == null
+                || player.getEquipment().getItemInMainHand().getType() != Material.FLINT_AND_STEEL) {
             arena.getDebugger().i("block, but no sabotage items", player);
             return res;
         }

@@ -167,7 +167,7 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getItemInHand());
+                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
                     arena.getArenaConfig().setManually(node, itemDefinition);
                     arena.msg(
                             player,
@@ -180,24 +180,15 @@ public class PAA_Set extends AbstractArenaCommand {
             }
 
             try {
-                try {
-                    final Material mat = Material.valueOf(value);
-                    if (mat != Material.AIR) {
-                        arena.getArenaConfig().setManually(node, mat.name());
-                        arena.msg(
-                                player,
-                                Language.parse(arena, MSG.SET_DONE, node,
-                                        String.valueOf(mat.name())));
-                    }
-                } catch (final Exception e2) {
-                    final Material mat = Material
-                            .getMaterial(Integer.parseInt(value));
+                final Material mat = Material.valueOf(value);
+                if (mat != Material.AIR) {
                     arena.getArenaConfig().setManually(node, mat.name());
                     arena.msg(
                             player,
                             Language.parse(arena, MSG.SET_DONE, node,
                                     String.valueOf(mat.name())));
                 }
+
                 arena.getArenaConfig().save();
                 return;
             } catch (final Exception e) {

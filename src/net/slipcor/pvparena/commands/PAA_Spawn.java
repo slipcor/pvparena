@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.SpawnManager;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -105,9 +104,7 @@ public class PAA_Spawn extends AbstractArenaCommand {
                 if (arena.getOffset(args[0]) != null) {
                     arena.removeOffset(args[0]);
                 }
-                double x = 0d;
-                double y = 0d;
-                double z = 0d;
+                double x,y,z;
 
                 try {
                     x = Double.parseDouble(args[2]);

@@ -114,7 +114,7 @@ public final class StringParser {
      * @return a colored string
      */
     public static String colorVar(final String string) {
-        if (string == null || string != null && string.isEmpty() || "none".equals(string)) {
+        if (string == null || string.isEmpty() || "none".equals(string)) {
             return colorVar("null", false);
         }
         return colorVar(string, true);
@@ -738,15 +738,7 @@ public final class StringParser {
      */
     private static Material parseMat(final String string) {
         DEBUG.i("parsing material: " + string);
-        Material mat;
-        try {
-            mat = Material.getMaterial(Integer.parseInt(string));
-            if (mat == null) {
-                mat = Material.getMaterial(string);
-            }
-        } catch (final Exception e) {
-            mat = Material.getMaterial(string);
-        }
+        Material mat = Material.getMaterial(string);
         if (mat == null) {
             PVPArena.instance.getLogger().warning(
                     "unrecognized material: " + string);

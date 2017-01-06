@@ -444,21 +444,16 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 return;
             }
 
-            try {
-                final int value = Integer.parseInt(args[1]);
-                arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE,
-                        Material.getMaterial(value).name());
-            } catch (final Exception e) {
-                final Material mat = Material.getMaterial(args[1].toUpperCase());
+            final Material mat = Material.getMaterial(args[1].toUpperCase());
 
-                if (mat == null) {
-                    arena.msg(sender,
-                            Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
-                    return;
-                }
-
-                arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
+            if (mat == null) {
+                arena.msg(sender,
+                        Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
+                return;
             }
+
+            arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
+
             arena.getArenaConfig().save();
             arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TYPESET,
                     CFG.GOAL_FLAGS_FLAGTYPE.toString()));

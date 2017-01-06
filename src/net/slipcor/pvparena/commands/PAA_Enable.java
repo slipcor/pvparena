@@ -43,7 +43,9 @@ public class PAA_Enable extends AbstractArenaCommand {
         arena.setLocked(false);
 
         for (String key : ArenaManager.getShortcutDefinitions().keySet()) {
-            if (ArenaManager.getShortcutDefinitions().get(key).contains(arena.getName()) && (!ArenaManager.getShortcutValues().containsKey(arena) || ArenaManager.getShortcutValues().get(key).isLocked())) {
+            if (ArenaManager.getShortcutDefinitions().get(key).contains(arena.getName()) &&
+                            (!ArenaManager.getShortcutValues().containsKey(arena.getName()) ||
+                                    ArenaManager.getShortcutValues().get(key).isLocked())) {
                 ArenaManager.getShortcutValues().put(key, arena);
             }
         }

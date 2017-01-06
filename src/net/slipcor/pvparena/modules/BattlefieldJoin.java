@@ -148,7 +148,7 @@ public class BattlefieldJoin extends ArenaModule {
             @Override
             public void run() {
                 Boolean check = PACheck.handleStart(arena, sender, true);
-                if (check == null || check == false) {
+                if (check == null || !check) {
                     Bukkit.getScheduler().runTaskLater(PVPArena.instance, this, 10L);
                 }
             }

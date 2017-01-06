@@ -99,7 +99,7 @@ public class PAA_WhiteList extends AbstractArenaCommand {
             final StringBuilder output = new StringBuilder(Language.parse(arena, MSG.WHITELIST_SHOW, args[0].toLowerCase()));
             for (final String s : list) {
                 output.append(": ");
-                output.append(Material.getMaterial(Integer.parseInt(s)).name());
+                output.append(Material.getMaterial(s).name());
             }
             if (list.size() < 1) {
                 output.append(": ---------");

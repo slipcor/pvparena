@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.arena;
 
+import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.*;
@@ -142,7 +143,7 @@ public class Arena {
             removeClass(className);
         }
 
-        classes.add(new ArenaClass(className, items, armors));
+        classes.add(new ArenaClass(className, items, new ItemStack(Material.AIR, 1), armors));
     }
 
     public void addClass(String className, ItemStack[] items, ItemStack offHand, ItemStack[] armors) {
@@ -430,27 +431,16 @@ public class Arena {
 
     public Material getReadyBlock() {
         getDebugger().i("reading ready block");
-        Material mMat = Material.IRON_BLOCK;
+        final String sMat = cfg.getString(CFG.READY_BLOCK);
         try {
-            //TODO: fix this in 1.9 build to take proper strings
-            mMat = Material.getMaterial(cfg
-                    .getInt(CFG.READY_BLOCK));
-            if (mMat == Material.AIR) {
-                mMat = Material.getMaterial(cfg.getString(
-                        CFG.READY_BLOCK));
-            }
+            Material mMat;
+            mMat = Material.getMaterial(sMat);
             getDebugger().i("mMat now is " + mMat.name());
+            return mMat;
         } catch (final Exception e) {
-            getDebugger().i("exception reading ready block");
-            final String sMat = cfg.getString(CFG.READY_BLOCK);
-            try {
-                mMat = Material.getMaterial(sMat);
-                getDebugger().i("mMat now is " + mMat.name());
-            } catch (final Exception e2) {
-                Language.logWarn(MSG.ERROR_MAT_NOT_FOUND, sMat);
-            }
+            Language.logWarn(MSG.ERROR_MAT_NOT_FOUND, sMat);
         }
-        return mMat;
+        return Material.IRON_BLOCK;
     }
 
     public ArenaRegion getRegion(final String name) {
@@ -546,7 +536,7 @@ public class Arena {
                     sTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                 }
                 for (final ArenaPlayer aPlayer : team.getTeamMembers()) {
-                    sTeam.addPlayer(aPlayer.get());
+                    sTeam.addEntry(aPlayer.getName());
                 }
             }
             for (Objective o : scoreboard.getObjectives()) {
@@ -1259,8 +1249,8 @@ public class Arena {
             try {
                 if (scoreboard != null) {
                     for (final Team team : scoreboard.getTeams()) {
-                        if (team.hasPlayer(player)) {
-                            team.removePlayer(player);
+                        if (team.hasEntry(player.getName())) {
+                            team.removeEntry(player.getName());
                             scoreboard.resetScores(player.getName());
                         }
                     }
@@ -1317,7 +1307,7 @@ public class Arena {
             final ArenaTeam ateam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
 
             if (ateam != null) {
-                getStandardScoreboard().getTeam(ateam.getName()).removePlayer(player);
+                getStandardScoreboard().getTeam(ateam.getName()).removeEntry(player.getName());
             }
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
             try {
@@ -1457,6 +1447,7 @@ public class Arena {
             resetScoreboard(player, force);
         }
 
+        //noinspection deprecation
         ArenaModuleManager.resetPlayer(this, player, force);
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
@@ -1752,7 +1743,8 @@ public class Arena {
                                 .get()
                                 .setLastDamageCause(
                                         new EntityDamageEvent(locationArenaPlayerEntry.getValue().get(),
-                                                DamageCause.CUSTOM, (double) 1002));
+                                                DamageCause.CUSTOM,
+                                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1002))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
                         locationArenaPlayerEntry.getValue()
                                 .get()
                                 .damage(cfg.getInt(
@@ -1818,14 +1810,14 @@ public class Arena {
                     errror.contains(Language.parse(MSG.ERROR_READY_4_MISSING_PLAYERS));
         }
 
-        if (overRide || errror == null || errror != null && errror.isEmpty()) {
+        if (overRide || errror == null || errror.isEmpty()) {
             final Boolean handle = PACheck.handleStart(this, null, forceStart);
 
-            if (overRide || (handle == true)) {
+            if (overRide || handle) {
                 getDebugger().i("START!");
                 setFightInProgress(true);
 
-            } else if (handle == true) {
+            } else if (handle) {
                 if (errror != null) {
                     PVPArena.instance.getLogger().info(errror);
                 }
@@ -2328,17 +2320,17 @@ public class Arena {
 
                     final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
                     if (aPlayer.getArenaTeam() != null) {
-                        board.getTeam(oldTeam.getName()).removePlayer(player);
+                        board.getTeam(oldTeam.getName()).removeEntry(player.getName());
 
                         for (final Team sTeam : board.getTeams()) {
                             if (sTeam.getName().equals(newTeam.getName())) {
-                                sTeam.addPlayer(player);
+                                sTeam.addEntry(player.getName());
                                 return;
                             }
                         }
                         final Team sTeam = board.registerNewTeam(newTeam.getName());
                         sTeam.setPrefix(newTeam.getColor().toString());
-                        sTeam.addPlayer(player);
+                        sTeam.addEntry(player.getName());
                         sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                     }
                     updateScoreboard(player);

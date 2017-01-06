@@ -70,7 +70,7 @@ public class EndRunnable extends ArenaRunnable {
             }
 
             Boolean check = PACheck.handleStart(arena, null, true);
-            if (check == null || check == false) {
+            if (check == null || !check) {
                 return;
             }
 

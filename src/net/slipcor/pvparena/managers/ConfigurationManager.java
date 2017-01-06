@@ -17,6 +17,7 @@ import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -143,7 +144,9 @@ public final class ConfigurationManager {
 
         config.options().copyDefaults(true);
 
-        cfg.set(CFG.Z, "1.0.6.198");
+        updateItemIDs(cfg, "1.0.6.198");
+
+        cfg.set(CFG.Z, "1.3.3.217");
         cfg.save();
         cfg.load();
 
@@ -342,5 +345,93 @@ public final class ConfigurationManager {
             return Language.parse(arena, MSG.ERROR_MISSING_SPAWN, error);
         }
         return null;
+    }
+
+    private static void updateItemIDs(Config config, String... versions) {
+        final String version = config.getString(CFG.Z);
+        boolean saveNeeded = false;
+
+        for (String v : versions) {
+            if (version.equals(v)) {
+                if (updateItemID(config, CFG.READY_BLOCK, Material.IRON_BLOCK)) {
+                    saveNeeded = true;
+                }
+                if (updateItemID(config, CFG.GENERAL_WAND, Material.STICK)) {
+                    saveNeeded = true;
+                }
+                if (updateItemID(config, CFG.GOAL_BLOCKDESTROY_BLOCKTYPE, Material.IRON_BLOCK)) {
+                    saveNeeded = true;
+                }
+                if (updateItemID(config, CFG.GOAL_FLAGS_FLAGTYPE, Material.WOOL)) {
+                    saveNeeded = true;
+                }
+                if (replaceItemIDs(config, CFG.LISTS_WHITELIST)) {
+                    saveNeeded = true;
+                }
+                if (replaceItemIDs(config, CFG.LISTS_BLACKLIST)) {
+                    saveNeeded = true;
+                }
+            }
+        }
+
+        if (saveNeeded) {
+            config.save();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean replaceItemIDs(Config config, CFG node) {
+        boolean saveNeeded = false;
+        final List<String> subNodes = Arrays.asList("break", "place");
+
+        for (String subNode : subNodes) {
+            final String path = node.getNode() + "." + subNode;
+
+            final List<String> configEntries = config.getStringList(path, new ArrayList<String>());
+
+            final List<String> oldEntries = new ArrayList<>();
+            final List<String> newEntries = new ArrayList<>();
+
+            for (String entry : configEntries) {
+                if (entry.matches("[0-9]+")) {
+                    int id = Integer.parseInt(entry);
+                    Material material = Material.getMaterial(id);
+                    oldEntries.add(entry);
+                    newEntries.add(material.name());
+                } else if (entry.contains(":")){
+                    String first = entry.split(":")[0];
+                    if (first.matches("[0-9]+")) {
+                        int id = Integer.parseInt(first);
+                        Material material = Material.getMaterial(id);
+                        oldEntries.add(entry);
+                        newEntries.add(material.name()+entry.substring(entry.length()));
+                    }
+                }
+            }
+            if (!oldEntries.isEmpty()) {
+                for (int pos=0; pos<oldEntries.size(); pos++) {
+                    configEntries.remove(oldEntries.get(pos));
+                    configEntries.add(newEntries.get(pos));
+                }
+                saveNeeded = true;
+            }
+        }
+
+        return saveNeeded;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static boolean updateItemID(Config config, CFG node, Material fallbackMaterial) {
+        Object value = config.getUnsafe(node.getNode());
+
+        if (value instanceof Integer) {
+            final Material material = Material.getMaterial((Integer) value);
+            config.set(node, material==null?fallbackMaterial.name():material.name());
+            return true;
+        } else if (value instanceof String) {
+            config.set(node, fallbackMaterial.name());
+            return true;
+        }
+        return false;
     }
 }
