@@ -73,7 +73,7 @@ public class Config {
         GENERAL_SMARTSPAWN("general.smartspawn", false, null),
         GENERAL_TIME("general.time", -1, null),
         GENERAL_TYPE("general.type", "none", null),
-        GENERAL_WAND("general.wand", 280, null),
+        GENERAL_WAND("general.wand", Material.STICK.name(), false, null),
 
         GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 
@@ -137,7 +137,7 @@ public class Config {
         PROTECT_SPAWN("protection.spawn", 0, null),
 
         READY_AUTOCLASS("ready.autoClass", "none", null),
-        READY_BLOCK("ready.block", "IRON_BLOCK", false, null),
+        READY_BLOCK("ready.block", Material.IRON_BLOCK.name(), false, null),
         READY_CHECKEACHPLAYER("ready.checkEachPlayer", false, null),
         READY_CHECKEACHTEAM("ready.checkEachTeam", true, null),
         READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false, null),

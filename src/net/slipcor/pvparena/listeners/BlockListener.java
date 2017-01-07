@@ -125,11 +125,8 @@ public class BlockListener implements Listener {
                 new ArrayList<String>());
 
         if (!list.isEmpty()
-                && !list.contains(String.valueOf(event.getBlock().getTypeId()))
                 && !list.contains(String.valueOf(event.getBlock().getType()
                 .name()))
-                && !list.contains(String.valueOf(event.getBlock()
-                .getTypeId()) + ':' + event.getBlock().getData())
                 && !list.contains(String.valueOf(event.getBlock().getType()
                 .name())
                 + ':' + event.getBlock().getData())) {
@@ -153,13 +150,8 @@ public class BlockListener implements Listener {
                 CFG.LISTS_BLACKLIST.getNode() + ".break",
                 new ArrayList<String>()));
 
-        if (list.contains(String.valueOf(event.getBlock().getTypeId()))
-                || list.contains(String.valueOf(event.getBlock().getType()
-                .name()))
-                || list.contains(String.valueOf(event.getBlock().getTypeId())
-                + ':' + event.getBlock().getData())
-                || list.contains(String.valueOf(event.getBlock().getType()
-                .name())
+        if (list.contains(String.valueOf(event.getBlock().getType().name()))
+                || list.contains(String.valueOf(event.getBlock().getType().name())
                 + ':' + event.getBlock().getData())) {
             arena.msg(
                     event.getPlayer(),
@@ -431,11 +423,7 @@ public class BlockListener implements Listener {
 
         if (!list.isEmpty()
                 && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getTypeId()))
-                && !list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name()))
-                && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getTypeId()) + ':' + event.getBlock().getData())
                 && !list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name())
                 + ':' + event.getBlock().getData())) {
@@ -453,7 +441,7 @@ public class BlockListener implements Listener {
             if (arena.isFightInProgress()
                     && !isProtected(event.getBlock().getLocation(), event,
                     RegionProtection.TNT)
-                    && event.getBlock().getTypeId() == 46) {
+                    && event.getBlock().getType() == Material.TNT) {
 
                 ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
                         .getBlockReplacedState().getType());
@@ -468,11 +456,7 @@ public class BlockListener implements Listener {
                 CFG.LISTS_BLACKLIST.getNode() + ".place",
                 new ArrayList<String>());
 
-        if (list.contains(String.valueOf(event.getBlockPlaced().getTypeId()))
-                || list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name()))
-                || list.contains(String.valueOf(event.getBlockPlaced()
-                .getTypeId()) + ':' + event.getBlock().getData())
+        if (list.contains(String.valueOf(event.getBlockPlaced().getType().name()))
                 || list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name())
                 + ':' + event.getBlock().getData())) {

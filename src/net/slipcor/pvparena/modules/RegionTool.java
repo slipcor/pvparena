@@ -41,12 +41,12 @@ public class RegionTool extends ArenaModule {
 
     @Override
     public boolean onPlayerInteract(final PlayerInteractEvent event) {
-        if (event.getPlayer().getItemInHand() == null
-                || event.getPlayer().getItemInHand().getType() == Material.AIR) {
+        if (event.getPlayer().getEquipment().getItemInMainHand() == null
+                || event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
             return false;
         }
 
-        if (event.getPlayer().getItemInHand().getType() == Material.AIR) {
+        if (event.getPlayer().getEquipment().getItemInMainHand().getType() == Material.AIR) {
             return false;
         }
 
@@ -57,17 +57,10 @@ public class RegionTool extends ArenaModule {
         for (final Arena arena : ArenaManager.getArenas()) {
             if (arena.getArenaConfig().getInt(CFG.GENERAL_WAND) > 0) {
                 arena.getDebugger().i("reading wand", event.getPlayer());
-                final Material mMat;
-                try {
-                    mMat = Material.getMaterial(arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
-                    arena.getDebugger().i("mMat now is " + mMat.name(), event.getPlayer());
-                } catch (final Exception e) {
-                    arena.getDebugger().i("exception reading ready block", event.getPlayer());
-                    final String sMat = arena.getArenaConfig().getString(CFG.GENERAL_WAND);
-                    arena.msg(Bukkit.getConsoleSender(), Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, sMat));
-                    continue;
-                }
-                if (event.getPlayer().getItemInHand().getType() == mMat) {
+                final Material mMat = Material.getMaterial(arena.getArenaConfig().getString(CFG.GENERAL_WAND));
+                arena.getDebugger().i("mMat now is " + mMat.name(), event.getPlayer());
+
+                if (event.getPlayer().getEquipment().getItemInMainHand().getType() == mMat) {
                     PABlockLocation loc = new PABlockLocation(event.getPlayer().getLocation());
                     if (event.getClickedBlock() != null) {
                         loc = new PABlockLocation(event.getClickedBlock().getLocation());

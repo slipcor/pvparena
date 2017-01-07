@@ -24,6 +24,7 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -146,7 +147,7 @@ public class GoalInfect extends ArenaGoal {
                     event.setCancelled(true);
                     arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_BREAK));
                     result.setError(this, "BREAK not allowed");
-                } else if (event.getBlock().getTypeId() == 46 &&
+                } else if (event.getBlock().getType() == Material.TNT &&
                         ArenaPlayer.PlayerPrevention.has(
                                 arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNTBREAK
                         )) {
@@ -238,7 +239,7 @@ public class GoalInfect extends ArenaGoal {
                     event.setCancelled(true);
                     arena.msg(event.getPlayer(), Language.parse(arena, MSG.PLAYER_PREVENTED_PLACE));
                     result.setError(this, "PLACE not allowed");
-                } else if (event.getBlock().getTypeId() == 46 &&
+                } else if (event.getBlock().getType() == Material.TNT &&
                         ArenaPlayer.PlayerPrevention.has(
                                 arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.TNT
                         )) {
@@ -593,8 +594,7 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList("getprotect", "setprotect");
-        return result;
+        return Arrays.asList("getprotect", "setprotect");
     }
 
     @Override

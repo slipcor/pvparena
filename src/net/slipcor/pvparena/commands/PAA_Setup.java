@@ -107,7 +107,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 
                     @Override
                     public void run() {
-                        player.sendBlockChange(location, location.getBlock().getTypeId(), location.getBlock().getData());
+                        player.sendBlockChange(location, location.getBlock().getType(), location.getBlock().getData());
                     }
 
                 }
@@ -122,7 +122,7 @@ public class PAA_Setup extends AbstractArenaCommand {
                     final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, word[2]);
                     for (final PASpawn spawn : spawns) {
                         final Location loc = spawn.getLocation().toLocation();
-                        player.sendBlockChange(loc, Material.WOOL.getId(), (byte) 0);
+                        player.sendBlockChange(loc, Material.WOOL, (byte) 0);
                         new Remover(loc);
                     }
                     return;
@@ -131,7 +131,7 @@ public class PAA_Setup extends AbstractArenaCommand {
                     final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, word[2]);
                     for (final PABlock block : blocks) {
                         final Location loc = block.getLocation().toLocation();
-                        player.sendBlockChange(loc, Material.WOOL.getId(), (byte) 0);
+                        player.sendBlockChange(loc, Material.WOOL, (byte) 0);
                         new Remover(loc);
                     }
                     return;

@@ -88,10 +88,13 @@ public final class ArenaClass {
         final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
 
         cfg.addDefault("classes.Ranger",
-                "261,262:64,298,299,300,301");
-        cfg.addDefault("classes.Swordsman", "276,306,307,308,309");
-        cfg.addDefault("classes.Tank", "272,310,311,312,313");
-        cfg.addDefault("classes.Pyro", "259,46:3,298,299,300,301");
+                "BOW,ARROW:64,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
+        cfg.addDefault("classes.Swordsman",
+                "DIAMOND_SWORD,IRON_HELMET,IRON_CHESTPLATE,IRON_LEGGINGS,IRON_BOOTS");
+        cfg.addDefault("classes.Tank",
+                "STONE_SWORD,DIAMOND_HELMET,DIAMOND_CHESTPLATE,DIAMOND_LEGGINGS,DIAMOND_BOOTS");
+        cfg.addDefault("classes.Pyro",
+                "FLINT_AND_STEEL,TNT:3,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
 
         cfg.options().copyDefaults();
         try {
@@ -182,7 +185,8 @@ public final class ArenaClass {
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
                             @Override
                             public void run() {
-                                ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(player, player.getWorld().spawnEntity(player.getLocation(), egg.getSpawnedType()));
+                                ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(
+                                        player, player.getWorld().spawnEntity(player.getLocation(), egg.getSpawnedType()));
                             }
                         }, 20L);
                     } catch(final IllegalPluginAccessException e) {

@@ -80,7 +80,6 @@ public class PAA_RegionClear extends AbstractArenaCommand {
             }
 
             arena.msg(sender, Language.parse(arena, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(valids, ", ")));
-            return;
         }
     }
 

@@ -421,7 +421,7 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     /**
      * hook into an arena player being reset
      *
-     * @seprecated use {@link #resetPlayer(Player, boolean, boolean)}
+     * @deprecated use {@link #resetPlayer(Player, boolean, boolean)}
      *
      * @param player the player being reset
      * @param force  if the arena is forcefully reset

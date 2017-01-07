@@ -203,7 +203,7 @@ public class CuboidRegion extends ArenaRegionShape {
                     public void run() {
                         for (final Block b : border) {
                             player.sendBlockChange(b.getLocation(),
-                                    b.getTypeId(), b.getData());
+                                    b.getType(), b.getData());
                         }
                         border.clear();
                     }

@@ -222,7 +222,7 @@ public class PAI_Info extends AbstractArenaCommand {
 
         }
 
-        if (displayMode == null || displayMode != null && displayMode.isEmpty()) {
+        if (displayMode == null || displayMode.isEmpty()) {
             if (displayMode == null || "chat".equals(displayMode)) {
                 arena.msg(sender, Language.parse(arena, MSG.INFO_SECTION, "chat"));
                 arena.msg(sender, StringParser.colorVar("classSignsDisplay",

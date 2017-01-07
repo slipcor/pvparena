@@ -270,7 +270,7 @@ public class ArenaModuleManager {
     }
 
     /**
-     * @deprecated use {@link #resetPlayer(Arena, Player, boolean, boolean}
+     * @deprecated use {@link #resetPlayer(Arena, Player, boolean, boolean)}
      */
     @Deprecated
     public static void resetPlayer(final Arena arena, final Player player, final boolean force) {

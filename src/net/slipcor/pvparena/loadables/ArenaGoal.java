@@ -89,6 +89,12 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
         }
         return PVPArena.hasAdminPerms(sender) || PVPArena.hasCreatePerms(sender, arena);
     }
+
+    /**
+     * the goal version (should be overridden!)
+     *
+     * @return the version String
+     */
     public String version() {
         return "outdated";
     }
@@ -521,10 +527,4 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
             getLifeMap().put(player.getName(), value);
         }
     }
-
-    /**
-     * the goal version (should be overridden!)
-     *
-     * @return the version String
-     */
 }

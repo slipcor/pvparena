@@ -89,7 +89,7 @@ public class PAI_Ready extends AbstractArenaCommand {
 
             if (error == null) {
                 arena.start();
-            } else if (error != null && error.isEmpty()) {
+            } else if (error.isEmpty()) {
                 arena.countDown();
             } else {
                 arena.msg(sender, error);

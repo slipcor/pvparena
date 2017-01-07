@@ -470,9 +470,7 @@ public final class SpawnManager {
 
     private static void placeInsideSpawnRegion(final Arena arena, final ArenaPlayer aPlayer,
                                                final ArenaRegion region) {
-        int x = region.getShape().getMinimumLocation().getX();
-        int y = region.getShape().getMinimumLocation().getY();
-        int z = region.getShape().getMinimumLocation().getZ();
+        int x, y, z;
         final Random random = new Random();
 
         boolean found = false;

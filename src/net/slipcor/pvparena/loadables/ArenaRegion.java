@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.loadables;
 
+import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -198,9 +199,9 @@ public class ArenaRegion {
         if (arena != null
                 && (PVPArena.hasAdminPerms(player) || PVPArena.hasCreatePerms(
                 player, arena))
-                && player.getItemInHand() != null
-                && player.getItemInHand().getTypeId() == arena
-                .getArenaConfig().getInt(CFG.GENERAL_WAND)) {
+                && player.getEquipment().getItemInMainHand() != null
+                && player.getEquipment().getItemInMainHand().getType().name().equals(arena
+                .getArenaConfig().getString(CFG.GENERAL_WAND))) {
             // - modify mode is active
             // - player has admin perms
             // - player has wand in hand
@@ -378,8 +379,8 @@ public class ArenaRegion {
         final RegionRunnable regionRunner = new RegionRunnable(this);
         tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                 PVPArena.instance, regionRunner,
-                arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L,
-                arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER) * 1L);
+                (long) arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER),
+                (long) arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
     }
 
     public boolean isInNoWoolSet(final Block block) {
@@ -520,7 +521,7 @@ public class ArenaRegion {
                 }
                 ap.get().setLastDamageCause(
                         new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-                                1003.0d));
+                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1003))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
                 ap.get().damage(1000);
             }
             if (flags.contains(RegionFlag.WIN) && shape.contains(pLoc)) {
@@ -539,7 +540,8 @@ public class ArenaRegion {
                             Bukkit.getWorld(world).strikeLightningEffect(
                                     ap2.get().getLocation());
                             final EntityDamageEvent event = new EntityDamageEvent(
-                                    ap2.get(), DamageCause.LIGHTNING, 10.0d);
+                                    ap2.get(), DamageCause.LIGHTNING,
+                                    new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
                             PlayerListener.finallyKillPlayer(arena,
                                     ap2.get(), event);
                         }
@@ -553,7 +555,8 @@ public class ArenaRegion {
                         Bukkit.getWorld(world).strikeLightningEffect(
                                 ap.get().getLocation());
                         final EntityDamageEvent event = new EntityDamageEvent(
-                                ap.get(), DamageCause.LIGHTNING, 10.0d);
+                                ap.get(), DamageCause.LIGHTNING,
+                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
                         PlayerListener
                                 .finallyKillPlayer(arena, ap.get(), event);
                     }
@@ -570,7 +573,7 @@ public class ArenaRegion {
                                                 ap2.get().getLocation());
                                 final EntityDamageEvent event = new EntityDamageEvent(
                                         ap2.get(), DamageCause.LIGHTNING,
-                                        10.0d);
+                                        new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
                                 PlayerListener.finallyKillPlayer(arena,
                                         ap2.get(), event);
                             }
@@ -589,8 +592,8 @@ public class ArenaRegion {
                         if (loc.distance(ap.get().getLocation()) < 3) {
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM, (double)arena.getArenaConfig().getInt(
-                                            CFG.DAMAGE_SPAWNCAMP)));
+                                            DamageCause.CUSTOM,
+                                            new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(arena.getArenaConfig().getInt(CFG.DAMAGE_SPAWNCAMP)))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
                             ap.get().damage(
                                     arena.getArenaConfig().getInt(
                                             CFG.DAMAGE_SPAWNCAMP));
@@ -623,7 +626,8 @@ public class ArenaRegion {
                             CFG.GENERAL_LEAVEDEATH)) {
                         ap.get().setLastDamageCause(
                                 new EntityDamageEvent(ap.get(),
-                                        DamageCause.CUSTOM, 1004.0d));
+                                        DamageCause.CUSTOM,
+                                        new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1004))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
                         // ap.get().setHealth(0);
                         ap.get().damage(1000);
                     } else {

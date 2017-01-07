@@ -270,22 +270,16 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                 return;
             }
 
-            try {
-                final int value = Integer.parseInt(args[1]);
-                arena.getArenaConfig().set(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE,
-                        Material.getMaterial(value).name());
-            } catch (final Exception e) {
-                final Material mat = Material.getMaterial(args[1].toUpperCase());
+            final Material mat = Material.getMaterial(args[1].toUpperCase());
 
-                if (mat == null) {
-                    arena.msg(sender,
-                            Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
-                    return;
-                }
-
-                arena.getArenaConfig().set(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE,
-                        mat.name());
+            if (mat == null) {
+                arena.msg(sender,
+                        Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
+                return;
             }
+
+            arena.getArenaConfig().set(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE,
+                    mat.name());
             arena.getArenaConfig().save();
             arena.msg(sender, Language.parse(arena, MSG.GOAL_BLOCKDESTROY_TYPESET,
                     CFG.GOAL_BLOCKDESTROY_BLOCKTYPE.toString()));
@@ -472,7 +466,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         } else {
             getLifeMap().remove(team);
             commit(arena, team);
-            return;
         }
     }
 
@@ -520,11 +513,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         } else {
             paBlockLocation.toLocation()
                     .getBlock()
-                    .setTypeId(
+                    .setType(
                             Material.valueOf(
                                     arena.getArenaConfig().getString(
-                                            CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))
-                                    .getId());
+                                            CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)));
         }
     }
 
@@ -552,7 +544,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
         if (!arena.hasPlayer(event.getPlayer())

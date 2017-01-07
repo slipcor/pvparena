@@ -159,7 +159,7 @@ public final class ArenaManager {
      * @return an arena instance if found, null otherwise
      */
     public static Arena getArenaByName(final String name) {
-        if (name == null || name != null && name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             return null;
         }
         final String sName = name.toLowerCase();
