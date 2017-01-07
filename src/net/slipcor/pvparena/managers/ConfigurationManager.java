@@ -131,10 +131,13 @@ public final class ConfigurationManager {
         if (config.get("classitems") == null) {
             if (PVPArena.instance.getConfig().get("classitems") == null) {
                 config.addDefault("classitems.Ranger",
-                        "261,262:64,298,299,300,301");
-                config.addDefault("classitems.Swordsman", "276,306,307,308,309");
-                config.addDefault("classitems.Tank", "272,310,311,312,313");
-                config.addDefault("classitems.Pyro", "259,46:3,298,299,300,301");
+                        "BOW,ARROW:64,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
+                config.addDefault("classitems.Swordsman",
+                        "DIAMOND_SWORD,IRON_HELMET,IRON_CHESTPLATE,IRON_LEGGINGS,IRON_BOOTS");
+                config.addDefault("classitems.Tank",
+                        "STONE_SWORD,DIAMOND_HELMET,DIAMOND_CHESTPLATE,DIAMOND_LEGGINGS,DIAMOND_BOOTS");
+                config.addDefault("classitems.Pyro",
+                        "FLINT_AND_STEEL,TNT:3,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
             } else {
                 for (final String key : PVPArena.instance.getConfig().getKeys(false)) {
                     config.addDefault("classitems." + key, PVPArena.instance
@@ -547,8 +550,19 @@ public final class ConfigurationManager {
             config.set(node, material==null?fallbackMaterial.name():material.name());
             return true;
         } else if (value instanceof String) {
-            config.set(node, fallbackMaterial.name());
-            return true;
+            String string = (String) value;
+            if (string.contains("~")) {
+                String[] split = string.split("~");
+                try {
+                    final Material material = Material.getMaterial(split[0]);
+                    split[0] = material.name();
+                    config.set(node, StringParser.joinArray(split, "~"));
+                    return true;
+                } catch (Exception e) {
+                    config.set(node, fallbackMaterial.name());
+                    return true;
+                }
+            }
         }
         return false;
     }

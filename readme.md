@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.217 - do not nag people to update if updater type DOWNLOAD is selected - addresses github issue #244
+- v1.3.3.219 - finish the item ID burial
 - [read more](doc/changelog.md)
 
 ***

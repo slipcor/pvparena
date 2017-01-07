@@ -1,3 +1,6 @@
+- v1.3.3.219 - finish the item ID burial
+- v1.3.3.218 - stop supporting item IDs in configs - configs shall be updated!
+
 - v1.3.3.217 - do not nag people to update if updater type DOWNLOAD is selected - addresses github issue #244
 - v1.3.3.216 - address a bug about invisibility being nullified by internal scoreboard
 - v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true
@@ -6,7 +9,6 @@
 - v1.3.3.212 - fix issue #252 by catching a NPE
 - v1.3.3.211 - revert c67e4a6 - never mess with flying speed or walking speed again plz :P
 - v1.3.3.210 - revert 4f75803 - never mess with flying speed or walking speed again plz :P
-
 - v1.3.3.209 - final attempt to get rid of the speed issue - deactivate with -10
 - v1.3.3.208 - address issues with commit 4f75803
 - v1.3.3.207 - address github issues #245 and #248
