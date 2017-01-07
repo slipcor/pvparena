@@ -1243,7 +1243,7 @@ public class Arena {
         }
     }
 
-    private void resetScoreboard(final Player player, boolean force) {
+    private void resetScoreboard(final Player player, final boolean force) {
         if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
             getDebugger().i("ScoreBoards: remove: " + player.getName(), player);
             try {
@@ -1281,7 +1281,7 @@ public class Arena {
                                 arena.getDebugger().i("- >"+entry);
                             }
                         }*/
-                            if (ap.getBackupScoreboardTeam() != null) {
+                            if (ap.getBackupScoreboardTeam() != null && !force) {
                                 ap.getBackupScoreboardTeam().addEntry(ap.getName());
                             }
                             ap.setBackupScoreboardTeam(null);

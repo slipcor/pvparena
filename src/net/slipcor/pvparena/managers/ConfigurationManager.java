@@ -19,9 +19,12 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -220,7 +223,7 @@ public final class ConfigurationManager {
                 arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
             }
         }
-        arena.addClass("custom", StringParser.getItemStacksFromString("0"), StringParser.getItemStackFromString("0"), StringParser.getItemStacksFromString("0"));
+        arena.addClass("custom", StringParser.getItemStacksFromString("AIR"), StringParser.getItemStackFromString("AIR"), StringParser.getItemStacksFromString("AIR"));
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
         arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));
@@ -365,11 +368,32 @@ public final class ConfigurationManager {
                 if (updateItemID(config, CFG.GOAL_FLAGS_FLAGTYPE, Material.WOOL)) {
                     saveNeeded = true;
                 }
+                if (updateItemID(config, CFG.MODULES_WALLS_MATERIAL, Material.SAND)) {
+                    saveNeeded = true;
+                }
                 if (replaceItemIDs(config, CFG.LISTS_WHITELIST)) {
                     saveNeeded = true;
                 }
                 if (replaceItemIDs(config, CFG.LISTS_BLACKLIST)) {
                     saveNeeded = true;
+                }
+                if (replaceClassDefinitions(config)) {
+                    saveNeeded = true;
+                }
+
+                final File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
+                final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
+                final Map<String, String> classMap = new HashMap<>();
+                ConfigurationSection configurationSection = cfg.getConfigurationSection("classes");
+                if (configurationSection != null && replaceConfig(configurationSection, classMap)) {
+                    for (String key : classMap.keySet()) {
+                        configurationSection.set(key, classMap.get(key));
+                    }
+                    try {
+                        cfg.save(classFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -377,6 +401,100 @@ public final class ConfigurationManager {
         if (saveNeeded) {
             config.save();
         }
+    }
+
+    private static boolean replaceClassDefinitions(Config config) {
+        final Map<String, String> classMap = new HashMap<>();
+        ConfigurationSection configurationSection = config.getYamlConfiguration().getConfigurationSection("classitems");
+        if (replaceConfig(configurationSection, classMap)) {
+            for (String key : classMap.keySet()) {
+                configurationSection.set(key, classMap.get(key));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean replaceConfig(ConfigurationSection configurationSection, Map<String, String> classMap) {
+        boolean needsUpdateResult = false;
+        for (String node : configurationSection.getKeys(true)) {
+            String definition = configurationSection.getString(node);
+            if (definition.contains(",")) {
+                String[] definitions = definition.split(",");
+                boolean needsUpdate = false;
+                for (int pos=0; pos<definitions.length; pos++) {
+                    String def = definitions[pos];
+                    String replaceString = replaceClassDefinition(def);
+                    if (!def.equals(replaceString)) {
+                        needsUpdate = true;
+                        definitions[pos] = replaceString;
+                    }
+                }
+                if (needsUpdate) {
+                    needsUpdateResult = true;
+                    classMap.put(node, StringParser.joinArray(definitions, ","));
+                }
+            } else {
+                String replaceString = replaceClassDefinition(definition);
+                if (!definition.equals(replaceString)) {
+                    classMap.put(node, replaceString);
+                    needsUpdateResult = true;
+                }
+            }
+        }
+        return needsUpdateResult;
+    }
+
+    private static String replaceClassDefinition(String def) {
+        if (def.contains(">>!<<")) {
+            return replaceItemDefinition(def, ">>!<<");
+        } else if (def.contains(">>O<<")) {
+            return replaceItemDefinition(def, ">>O<<");
+        }
+        return replaceItemDefinition(def);
+    }
+
+    private static String replaceItemDefinition(String definition) {
+        if (definition.contains("|")) {
+            String[] split = definition.split("\\|");
+            try {
+                Material material = Material.getMaterial(Integer.parseInt(split[0]));
+                split[0] = material.name();
+                return StringParser.joinArray(split, "|");
+            } catch (Exception e) {
+                return definition;
+            }
+        } else if (definition.contains("~")) {
+            String[] split = definition.split("~");
+            try {
+                Material material = Material.getMaterial(Integer.parseInt(split[0]));
+                split[0] = material.name();
+                return StringParser.joinArray(split, "~");
+            } catch (Exception e) {
+                return definition;
+            }
+        } else if (definition.contains(":")) {
+            String[] split = definition.split(":");
+            try {
+                Material material = Material.getMaterial(Integer.parseInt(split[0]));
+                split[0] = material.name();
+                return StringParser.joinArray(split, ":");
+            } catch (Exception e) {
+                return definition;
+            }
+        }
+        try {
+            Material material = Material.getMaterial(Integer.parseInt(definition));
+            return material.name();
+        } catch (Exception e) {
+            return definition;
+        }
+    }
+
+    private static String replaceItemDefinition(String definition, String separator) {
+        String[] split = definition.split(separator);
+        split[1] = replaceItemDefinition(split[1]);
+        return StringParser.joinArray(split, separator);
     }
 
     @SuppressWarnings("deprecation")

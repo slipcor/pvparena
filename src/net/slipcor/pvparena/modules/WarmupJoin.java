@@ -42,10 +42,10 @@ public class WarmupJoin extends ArenaModule {
     public static boolean didNotAnnounceYet(Arena arena) {
         for (ArenaModule mod : arena.getMods()) {
             if (mod instanceof WarmupJoin) {
-                return ((WarmupJoin) mod).announced;
+                return !((WarmupJoin) mod).announced;
             }
         }
-        return false;
+        return true;
     }
 
     @Override
