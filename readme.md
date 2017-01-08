@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.220 - further ID fixes, and fix a but about GameMode setting and one about players being able to join an arena when it is restoring
+- v1.3.3.221 - refresh debug instance for global debug when stopping / changing debug output
 - [read more](doc/changelog.md)
 
 ***

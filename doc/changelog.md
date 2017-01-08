@@ -1,3 +1,4 @@
+- v1.3.3.221 - refresh debug instance for global debug when stopping / changing debug output
 - v1.3.3.220 - further ID fixes, and fix a but about GameMode setting and one about players being able to join an arena when it is restoring
 - v1.3.3.219 - finish the item ID burial
 - v1.3.3.218 - stop supporting item IDs in configs - configs shall be updated!

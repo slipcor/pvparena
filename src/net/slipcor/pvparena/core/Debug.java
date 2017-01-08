@@ -225,6 +225,7 @@ public class Debug {
         for (final Debug debug : Debug.debugs) {
             debug.arenaLogger = null;
         }
+        logger = null;
 
         loggers.clear();
 
