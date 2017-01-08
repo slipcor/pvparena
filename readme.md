@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.221 - refresh debug instance for global debug when stopping / changing debug output
+- v1.3.3.222 - fix grabbing the flag giving you no wool head
 - [read more](doc/changelog.md)
 
 ***

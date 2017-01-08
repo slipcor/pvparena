@@ -1077,6 +1077,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 }
                 final ItemStack itemStack = block.getState().getData().toItemStack()
                         .clone();
+                itemStack.setAmount(1);
                 if (arena.getArenaConfig().getBoolean(
                         CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
                     itemStack.setDurability(getFlagOverrideTeamShort(arena, aTeam));
