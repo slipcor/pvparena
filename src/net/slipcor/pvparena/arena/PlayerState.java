@@ -53,7 +53,7 @@ public final class PlayerState {
 
         fireticks = player.getFireTicks();
         foodlevel = player.getFoodLevel();
-        gamemode = player.getGameMode().ordinal();
+        gamemode = player.getGameMode().getValue();
         health = player.getHealth();
         maxhealth = player.getMaxHealth();
 

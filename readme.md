@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.222 - fix grabbing the flag giving you no wool head
+- v1.3.3.223 - address github issue #267 - critical fix about gamemodes
 - [read more](doc/changelog.md)
 
 ***
