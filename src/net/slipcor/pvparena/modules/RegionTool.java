@@ -55,7 +55,7 @@ public class RegionTool extends ArenaModule {
         }
 
         for (final Arena arena : ArenaManager.getArenas()) {
-            if (arena.getArenaConfig().getInt(CFG.GENERAL_WAND) > 0) {
+            if (arena.getArenaConfig().getString(CFG.GENERAL_WAND) != null) {
                 arena.getDebugger().i("reading wand", event.getPlayer());
                 final Material mMat = Material.getMaterial(arena.getArenaConfig().getString(CFG.GENERAL_WAND));
                 arena.getDebugger().i("mMat now is " + mMat.name(), event.getPlayer());

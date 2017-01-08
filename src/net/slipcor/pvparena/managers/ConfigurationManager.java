@@ -554,11 +554,13 @@ public final class ConfigurationManager {
             if (string.contains("~")) {
                 String[] split = string.split("~");
                 try {
-                    final Material material = Material.getMaterial(split[0]);
+                    int intValue = Integer.parseInt(split[0]);
+                    final Material material = Material.getMaterial(intValue);
                     split[0] = material.name();
                     config.set(node, StringParser.joinArray(split, "~"));
                     return true;
                 } catch (Exception e) {
+                    e.printStackTrace();
                     config.set(node, fallbackMaterial.name());
                     return true;
                 }

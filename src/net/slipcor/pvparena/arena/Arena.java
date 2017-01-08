@@ -1397,6 +1397,7 @@ public class Arena {
         }
         pvpRunner = null;
 
+        ArenaManager.advance(Arena.this);
         ArenaModuleManager.reset(this, force);
         clearRegions();
         PVPArena.instance.getAgm().reset(this, force);
@@ -1408,7 +1409,6 @@ public class Arena {
             Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    ArenaManager.advance(Arena.this);
                     playedPlayers.clear();
                     startCount = 0;
                 }

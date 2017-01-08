@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.219 - finish the item ID burial
+- v1.3.3.220 - further ID fixes, and fix a but about GameMode setting and one about players being able to join an arena when it is restoring
 - [read more](doc/changelog.md)
 
 ***

@@ -108,7 +108,7 @@ public class PAI_Info extends AbstractArenaCommand {
             arena.msg(sender,
                     "gameMode: " + arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE) + " | " +
                             "time: " + arena.getArenaConfig().getInt(CFG.GENERAL_TIME) + " | " +
-                            "wand: " + arena.getArenaConfig().getInt(CFG.GENERAL_WAND));
+                            "wand: " + arena.getArenaConfig().getString(CFG.GENERAL_WAND));
 
         }
 
