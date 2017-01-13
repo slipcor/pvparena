@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.223 - address github issue #267 - critical fix about gamemodes
+- v1.3.3.224 - address github issue #264 - ArenaClass equipping debug triggers NPE
 - [read more](doc/changelog.md)
 
 ***
