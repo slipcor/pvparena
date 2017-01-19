@@ -1,3 +1,4 @@
+- v1.3.3.225 - reintroduce custom scoreboard entries
 - v1.3.3.224 - address github issue #264 - ArenaClass equipping debug triggers NPE
 - v1.3.3.223 - address github issue #267 - critical fix about gamemodes
 - v1.3.3.222 - fix grabbing the flag giving you no wool head

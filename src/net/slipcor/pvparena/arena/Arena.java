@@ -154,6 +154,39 @@ public class Arena {
         classes.add(new ArenaClass(className, items, offHand, armors));
     }
 
+    public boolean addCustomScoreBoardEntry(final ArenaModule module, final String string, final int value) {
+        debug.i("module "+module+" tries to set custom scoreboard value '"+string+"' to score "+value);
+        if (scoreboard == null) {
+            debug.i("scoreboard is not setup!");
+            return false;
+        }
+        try {
+            Team mTeam = null;
+
+            for (Team team : scoreboard.getTeams()) {
+                if (team.getName().equals("pa_msg_")) {
+                    mTeam = team;
+                }
+            }
+
+            if (mTeam == null) {
+                mTeam = scoreboard.registerNewTeam("pa_msg_");
+            }
+
+            for (String entry : scoreboard.getEntries()) {
+                if (scoreboard.getObjective("lives").getScore(entry).getScore() == value) {
+                    mTeam.removeEntry(entry);
+                    scoreboard.resetScores(entry);
+                    break;
+                }
+            }
+            scoreboard.getObjective("lives").getScore(string).setScore(value);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public void addEntity(final Player player, final Entity entity) {
         entities.put(player, entity.getUniqueId());
     }
@@ -521,6 +554,8 @@ public class Arena {
             Objective obj = scoreboard.registerNewObjective("lives", "dummy"); //deathCount
 
             obj.setDisplayName(ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName());
+
+            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         }
         return scoreboard;
     }
@@ -1397,8 +1432,8 @@ public class Arena {
         }
         pvpRunner = null;
 
-        ArenaManager.advance(Arena.this);
         ArenaModuleManager.reset(this, force);
+        ArenaManager.advance(Arena.this);
         clearRegions();
         PVPArena.instance.getAgm().reset(this, force);
 
@@ -1417,6 +1452,37 @@ public class Arena {
             // maybe shutting down?
         }
         scoreboard = null;
+    }
+
+    public boolean removeCustomScoreBoardEntry(final ArenaModule module, final int value) {
+        debug.i("module "+module+" tries to set custom scoreboard value '"+value+"'");
+        if (scoreboard == null) {
+            debug.i("scoreboard is not setup!");
+            return false;
+        }
+        try {
+            Team mTeam = null;
+
+            for (Team team : scoreboard.getTeams()) {
+                if (team.getName().equals("pa_msg_")) {
+                    mTeam = team;
+                }
+            }
+
+            if (mTeam == null) {
+                return true;
+            }
+
+            for (String entry : scoreboard.getEntries()) {
+                if (scoreboard.getObjective("lives").getScore(entry).getScore() == value) {
+                    mTeam.removeEntry(entry);
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     /**

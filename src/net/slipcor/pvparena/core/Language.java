@@ -675,6 +675,8 @@ public final class Language {
         MODULE_VAULT_KILLREWARD("nulang.mod.vault.killreward", "You received %1% for killing %2%!"),
         MODULE_VAULT_REFUNDING("nulang.mod.vault.refunding", "Refunding %1%!"),
 
+        MODULE_WALLS_FALLINGIN("nulang.mod.walls.fallingin", "Walls fall in:"),
+
         MODULE_WORLDEDIT_CREATED("nulang.mod.worldedit.created", "Region created: &e%1%"),
         MODULE_WORLDEDIT_LIST_ADDED("nulang.mod.worldedit.list_added", "Region &e%1%&f will now be specifically saved."),
         MODULE_WORLDEDIT_LIST_REMOVED("nulang.mod.worldedit.list_removed", "Region &e%1%&f will no longer be specifically saved."),
