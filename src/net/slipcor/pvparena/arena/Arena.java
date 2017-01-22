@@ -154,24 +154,39 @@ public class Arena {
         classes.add(new ArenaClass(className, items, offHand, armors));
     }
 
-    public boolean addCustomScoreBoardEntry(final ArenaModule module, final String string, final int value) {
-        debug.i("module "+module+" tries to set custom scoreboard value '"+string+"' to score "+value);
+    public boolean addCustomScoreBoardEntry(final ArenaModule module, final String key, final int value) {
+        debug.i("module "+module+" tries to set custom scoreboard value '"+key+"' to score "+value);
         if (scoreboard == null) {
             debug.i("scoreboard is not setup!");
             return false;
         }
         try {
             Team mTeam = null;
+            String string;
+            String prefix;
+            String suffix;
 
+            if (key.length() < 17) {
+                string = key;
+                prefix = "";
+                suffix = "";
+            } else {
+                String split[]= StringParser.splitForScoreBoard(key);
+                prefix = split[0];
+                string = split[1];
+                suffix = split[2];
+            }
             for (Team team : scoreboard.getTeams()) {
-                if (team.getName().equals("pa_msg_")) {
+                if (team.getName().equals("pa_msg_"+value)) {
                     mTeam = team;
                 }
             }
 
             if (mTeam == null) {
-                mTeam = scoreboard.registerNewTeam("pa_msg_");
+                mTeam = scoreboard.registerNewTeam("pa_msg_"+value);
             }
+            mTeam.setPrefix(prefix);
+            mTeam.setSuffix(suffix);
 
             for (String entry : scoreboard.getEntries()) {
                 if (scoreboard.getObjective("lives").getScore(entry).getScore() == value) {
@@ -180,6 +195,7 @@ public class Arena {
                     break;
                 }
             }
+            mTeam.addEntry(string);
             scoreboard.getObjective("lives").getScore(string).setScore(value);
         } catch (Exception e) {
             return false;

@@ -1,3 +1,4 @@
+- v1.3.3.226 - allow longer scoreboard entries (48 characters for now)
 - v1.3.3.225 - reintroduce custom scoreboard entries
 - v1.3.3.224 - address github issue #264 - ArenaClass equipping debug triggers NPE
 - v1.3.3.223 - address github issue #267 - critical fix about gamemodes

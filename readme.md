@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.225 - reintroduce custom scoreboard entries
+- v1.3.3.226 - allow longer scoreboard entries (48 characters for now)
 - [read more](doc/changelog.md)
 
 ***

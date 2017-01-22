@@ -772,4 +772,28 @@ public final class StringParser {
         }
         return null;
     }
+
+    public static String[] splitForScoreBoard(String key) {
+        String[] split = new String[]{"","",""};
+
+        int pos = 0;
+        StringBuffer buffer = new StringBuffer("");
+
+        for (char c : key.toCharArray()) {
+            buffer.append(c);
+            if (c == ChatColor.COLOR_CHAR) {
+                continue;
+            }
+
+            if (buffer.length() >= 16) {
+                if (pos > 2) {
+                    return split;
+                }
+                split[pos++] = buffer.toString();
+                buffer.setLength(0);
+            }
+        }
+        split[pos] = buffer.toString();
+        return split;
+    }
 }
