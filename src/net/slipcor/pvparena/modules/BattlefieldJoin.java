@@ -37,6 +37,8 @@ public class BattlefieldJoin extends ArenaModule {
 
     private static final int PRIORITY = 1;
 
+    Runnable runner;
+
     public BattlefieldJoin() {
         super("BattlefieldJoin");
         debug = new Debug(300);
@@ -155,7 +157,15 @@ public class BattlefieldJoin extends ArenaModule {
 
         }
 
-        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 10L);
+        if (runner == null) {
+            runner = new RunLater();
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runner, 10L);
+        }
+    }
+
+    @Override
+    public void reset(boolean force) {
+        runner = null;
     }
 
     @Override

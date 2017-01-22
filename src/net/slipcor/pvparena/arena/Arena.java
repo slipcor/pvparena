@@ -191,6 +191,7 @@ public class Arena {
             for (String entry : scoreboard.getEntries()) {
                 if (scoreboard.getObjective("lives").getScore(entry).getScore() == value) {
                     mTeam.removeEntry(entry);
+                    scoreboard.getObjective("lives").getScore(string).setScore(0);
                     scoreboard.resetScores(entry);
                     break;
                 }
@@ -1471,7 +1472,7 @@ public class Arena {
     }
 
     public boolean removeCustomScoreBoardEntry(final ArenaModule module, final int value) {
-        debug.i("module "+module+" tries to set custom scoreboard value '"+value+"'");
+        debug.i("module "+module+" tries to unset custom scoreboard value '"+value+"'");
         if (scoreboard == null) {
             debug.i("scoreboard is not setup!");
             return false;
@@ -1480,7 +1481,7 @@ public class Arena {
             Team mTeam = null;
 
             for (Team team : scoreboard.getTeams()) {
-                if (team.getName().equals("pa_msg_")) {
+                if (team.getName().equals("pa_msg_"+value)) {
                     mTeam = team;
                 }
             }
@@ -1491,6 +1492,8 @@ public class Arena {
 
             for (String entry : scoreboard.getEntries()) {
                 if (scoreboard.getObjective("lives").getScore(entry).getScore() == value) {
+                    scoreboard.getObjective("lives").getScore(entry).setScore(0);
+                    scoreboard.resetScores(entry);
                     mTeam.removeEntry(entry);
                     return true;
                 }

@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.226 - allow longer scoreboard entries (48 characters for now)
+- v1.3.3.227 - fix scoreboard removal and fix a bug that caused doubled starting method call
 - [read more](doc/changelog.md)
 
 ***
