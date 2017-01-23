@@ -1,3 +1,4 @@
+- v1.3.3.228 - address github issue #151 and try to add a custom scoreboard entry to show round progress
 - v1.3.3.227 - fix scoreboard removal and fix a bug that caused doubled starting method call
 - v1.3.3.226 - allow longer scoreboard entries (48 characters for now)
 - v1.3.3.225 - reintroduce custom scoreboard entries

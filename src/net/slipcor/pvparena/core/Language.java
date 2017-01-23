@@ -400,6 +400,8 @@ public final class Language {
         ROUND_DISPLAY("nulang.round.display", "Round #%1%: %2%"),
         ROUND_ADDED("nulang.round.added", "Added goal to round: &e%1%"),
         ROUND_REMOVED("nulang.round.removed", "Removed goal from round: &e%1%"),
+        ROUNDS_DISPLAY("nulang.round.roundsdisplay", "Round %1% / %2%"),
+        ROUNDS_DISPLAYSEPARATOR("nulang.round.roundsdisplayseparator", "-----------"),
 
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
         SET_HELP("nulang.set.help", "Use /pa {arenaname} set [page] to get a node list."),

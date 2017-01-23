@@ -169,6 +169,7 @@ public class Config {
         USES_OVERLAPCHECK("uses.overlapCheck", true, null),
         USES_PLAYERCLASSES("uses.playerclasses", false, null),
         USES_SCOREBOARD("uses.scoreboard", false, null),
+        USES_SCOREBOARDROUNDDISPLAY("uses.scoreboardrounddisplay", false, null),
         USES_SUICIDEPUNISH("uses.suicidepunish", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
         USES_TELEPORTONKILL("uses.teleportonkill", false, null),
@@ -330,8 +331,6 @@ public class Config {
 
         MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
         MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
-
-        MODULES_SCOREBOARDS_UPDATEINTERVAL("modules.scoreboards.updateinterval", 50, "ScoreBoards"),
 
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 

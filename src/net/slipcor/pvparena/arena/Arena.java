@@ -156,6 +156,10 @@ public class Arena {
 
     public boolean addCustomScoreBoardEntry(final ArenaModule module, final String key, final int value) {
         debug.i("module "+module+" tries to set custom scoreboard value '"+key+"' to score "+value);
+        if (key == null || key.isEmpty()) {
+            debug.i("empty -> remove");
+            return removeCustomScoreBoardEntry(module, value);
+        }
         if (scoreboard == null) {
             debug.i("scoreboard is not setup!");
             return false;
@@ -1315,24 +1319,7 @@ public class Arena {
                     @Override
                     public void run() {
                         if (ap.hasBackupScoreboard()) {
-                        /*
-                        arena.getDebugger().i("ScoreBoards: committing scoreboard restore of " + ap.get());
-                        arena.getDebugger().i("Before: ");
-                        for (Team team : ap.get().getScoreboard().getTeams()) {
-                            arena.getDebugger().i("- Team: "+team.getName()+" > "+team.getPrefix());
-                            for (String entry : team.getEntries()) {
-                                arena.getDebugger().i("- >"+entry);
-                            }
-                        }*/
                             player.setScoreboard(ap.getBackupScoreboard());
-                        /*
-                        arena.getDebugger().i("After: "+System.identityHashCode(ap.get().getScoreboard()));
-                        for (Team team : ap.get().getScoreboard().getTeams()) {
-                            arena.getDebugger().i("- Team: "+team.getName()+" > "+team.getPrefix());
-                            for (String entry : team.getEntries()) {
-                                arena.getDebugger().i("- >"+entry);
-                            }
-                        }*/
                             if (ap.getBackupScoreboardTeam() != null && !force) {
                                 ap.getBackupScoreboardTeam().addEntry(ap.getName());
                             }
@@ -1644,6 +1631,13 @@ public class Arena {
                         bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                     } catch (final Exception e) {
                         e.printStackTrace();
+                    }
+
+                    if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARDROUNDDISPLAY)) {
+                        addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAY,
+                                String.valueOf(getRound()),
+                                String.valueOf(getRoundCount())),  199);
+                        addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAYSEPARATOR), 198);
                     }
                 }
 
