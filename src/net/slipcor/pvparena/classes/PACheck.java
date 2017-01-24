@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -526,6 +527,16 @@ public class PACheck {
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
                 InventoryManager.clearInventory(player.getKiller());
                 ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
+            }
+            if (!arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL).equals("none")) {
+                String definition = arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL);
+                ItemStack[] items = StringParser.getItemStacksFromString(definition);
+                for (ItemStack item : items) {
+                    if (item != null) {
+                        player.getKiller().getInventory().addItem(item.clone());
+                    }
+                }
+                player.getKiller().updateInventory();
             }
             if (arena.getArenaConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
                 SpawnManager.respawn(arena, ArenaPlayer.parsePlayer(player.getKiller().getName()), null);

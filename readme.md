@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.229 - address github issue #254 - update Arrow Hack for Spigot > 1.9
+- v1.3.3.230 - add github issue #237 - items on kill, settable via command and "inventory" handle!
 - [read more](doc/changelog.md)
 
 ***

@@ -1,3 +1,4 @@
+- v1.3.3.230 - add github issue #237 - items on kill, settable via command and "inventory" handle!
 - v1.3.3.229 - address github issue #254 - update Arrow Hack for Spigot > 1.9
 - v1.3.3.228 - address github issue #151 and try to add a custom scoreboard entry to show round progress
 - v1.3.3.227 - fix scoreboard removal and fix a bug that caused doubled starting method call
