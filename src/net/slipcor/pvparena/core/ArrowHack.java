@@ -11,11 +11,16 @@ public class ArrowHack {
             InvocationTargetException {
         final Method mGetHandle = player.getClass().getMethod("getHandle");
         final Object cHandle = mGetHandle.invoke(player);
-        final Method mGetDataWatcher = cHandle.getClass().getMethod(
-                "getDataWatcher");
-        final Object cWatcher = mGetDataWatcher.invoke(cHandle);
-        final Method mWatch = cWatcher.getClass().getMethod("watch", int.class,
-                Object.class);
-        mWatch.invoke(cWatcher, 9, (byte) 0);
+
+        try {
+            // >= 1.10
+            final Method setArrowCount = cHandle.getClass().getMethod("f", int.class);
+            setArrowCount.invoke(cHandle, 0);
+        } catch (NoSuchMethodException e) {
+            // 1.9
+            final Method setOlderArrowCount = cHandle.getClass().getMethod("k", int.class);
+            setOlderArrowCount.invoke(cHandle, 0);
+        }
+
     }
 }

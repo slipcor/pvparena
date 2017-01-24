@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.228 - address github issue #151 and try to add a custom scoreboard entry to show round progress
+- v1.3.3.229 - address github issue #254 - update Arrow Hack for Spigot > 1.9
 - [read more](doc/changelog.md)
 
 ***
