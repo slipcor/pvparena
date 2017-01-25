@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.runnables;
 
-import javafx.geometry.Point3D;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.core.Config;

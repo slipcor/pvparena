@@ -522,6 +522,8 @@ public final class Language {
 
         GOAL_LIBERATION_LIBERATED("nulang.goal.liberation.liberated", "Team %1% has been liberated!"),
         GOAL_LIBERATION_SET("nulang.goal.liberation.setbutton", "Button set: %1%"),
+        GOAL_LIBERATION_SCOREBOARD_HEADING("nulang.goal.liberation.scoreboardheading", "Players in jail:"),
+        GOAL_LIBERATION_SCOREBOARD_SEPARATOR("nulang.goal.liberation.scoreboardseparator", "----------------"),
         GOAL_LIBERATION_TOSET("nulang.goal.liberation.tosetbutton", "Button to set: %1%"),
 
         GOAL_PHYSICALFLAGS_HOLDFLAG("nulang.goal.physicalflags.holdflag", "You have to hold the flag to bring it back!"),

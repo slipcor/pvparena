@@ -1,3 +1,4 @@
+- v1.3.3.232 - add github issue #258 - liberation scoreboard separation of jailed players
 - v1.3.3.231 - add github issue #198 - particle display of domination claim radius
 - v1.3.3.230 - add github issue #237 - items on kill, settable via command and "inventory" handle!
 - v1.3.3.229 - address github issue #254 - update Arrow Hack for Spigot > 1.9

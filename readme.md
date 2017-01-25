@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.231 - add github issue #198 - particle display of domination claim radius
+- v1.3.3.232 - add github issue #258 - liberation scoreboard separation of jailed players
 - [read more](doc/changelog.md)
 
 ***

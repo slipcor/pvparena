@@ -215,6 +215,8 @@ public class Config {
         GOAL_INFECTED_NLIVES("goal.infected.inlives", 1, "Infect"),
         GOAL_INFECTED_PPROTECTS("goal.infected.iplayerprotect", 0, "Infect"),
 
+        GOAL_LIBERATION_JAILEDSCOREBOARD("goal.liberation.jailedscoreboard", false, "Liberation"),
+
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
