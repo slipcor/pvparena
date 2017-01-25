@@ -1,13 +1,16 @@
 package net.slipcor.pvparena.goals;
 
+import javafx.geometry.Point3D;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -19,15 +22,14 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
+import net.slipcor.pvparena.runnables.CircleParticleRunnable;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -40,6 +42,8 @@ import java.util.*;
  */
 
 public class GoalDomination extends ArenaGoal {
+
+    private BukkitTask circleTask = null;
 
     public GoalDomination() {
         super("Domination");
@@ -663,6 +667,8 @@ public class GoalDomination extends ArenaGoal {
                 PVPArena.instance, domMainRunner, tickInterval, tickInterval);
 
         announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
+
+        circleTask = Bukkit.getScheduler().runTaskTimer(PVPArena.instance, new CircleParticleRunnable(arena), 1L, 1L);
     }
 
     private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
@@ -691,6 +697,10 @@ public class GoalDomination extends ArenaGoal {
         getLifeMap().clear();
         getRunnerMap().clear();
         getFlagMap().clear();
+        if (circleTask != null) {
+            circleTask.cancel();
+            circleTask = null;
+        }
     }
 
     @Override

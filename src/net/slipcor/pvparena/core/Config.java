@@ -197,6 +197,7 @@ public class Config {
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
+        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", false, "Domination"),
         GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
         GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
 

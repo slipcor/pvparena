@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.230 - add github issue #237 - items on kill, settable via command and "inventory" handle!
+- v1.3.3.231 - add github issue #198 - particle display of domination claim radius
 - [read more](doc/changelog.md)
 
 ***
