@@ -11,6 +11,7 @@ dev-url: http://dev.bukkit.org/server-mods/pvparena
 commands:
     pvparena:
         description: Base commands for the PvP arena.
+        permission: pvparena.user
         aliases: ['pa']
         usage: |
             /<command> help

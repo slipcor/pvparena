@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.233 - address github issue #273 - single item definitions (maybe more) gets lost until restart
+- v1.3.3.234 - properly require permission for /pa command
 - [read more](doc/changelog.md)
 
 ***
