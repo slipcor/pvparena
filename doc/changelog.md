@@ -1,3 +1,4 @@
+- v1.3.3.233 - address github issue #273 - single item definitions (maybe more) gets lost until restart
 - v1.3.3.232 - add github issue #258 - liberation scoreboard separation of jailed players
 - v1.3.3.231 - add github issue #198 - particle display of domination claim radius
 - v1.3.3.230 - add github issue #237 - items on kill, settable via command and "inventory" handle!

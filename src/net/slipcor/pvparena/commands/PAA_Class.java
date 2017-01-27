@@ -100,14 +100,11 @@ public class PAA_Class extends AbstractArenaCommand {
 
             arena.getArenaConfig().setManually("classitems." + args[1], sItems + armor);
             arena.getArenaConfig().save();
-            arena.addClass(args[1], isItems, player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());
+            arena.addClass(args[1], StringParser.getItemStacksFromString(sItems), player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
         } else if ("load".equalsIgnoreCase(args[0])) {
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-
-
             ArenaPlayer.backupAndClearInventory(arena, aPlayer.get());
-
             arena.selectClass(aPlayer, args[1]);
         } else if ("remove".equalsIgnoreCase(args[0])) {
             final Player player = (Player) sender;
