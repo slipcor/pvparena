@@ -9,8 +9,6 @@ import net.slipcor.pvparena.commands.AbstractGlobalCommand;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.loadables.ArenaGoal;
-import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -235,7 +233,7 @@ public final class TabManager {
                     for (final Player val : players) {
                         result.add(val.getName());
                     }
-                } else {
+                } else if (key != null) {
                     for (final Player val : players) {
                         if (val.getName().startsWith(key)) {
                             result.add(val.getName());
@@ -257,7 +255,7 @@ public final class TabManager {
                 values.addAll(StringParser.positive);
                 if (key != null && key.isEmpty()) {
                     result.addAll(values);
-                } else {
+                } else if (key != null) {
                     for (final String val : values) {
                         if (val.startsWith(key)) {
                             result.add(val);

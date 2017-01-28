@@ -4,10 +4,13 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +33,13 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
+        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
+            Arena.pmsg(sender, ChatColor.DARK_RED+ Language.parse(Language.MSG.ERROR_MODULE_UPDATE));
+            return;
+        }
+        if (!hasPerms(sender)) {
+            return;
+        }
 
         final Set<NCBLoadable> modules = new HashSet<>();
 
@@ -46,9 +56,24 @@ public class PAA_Update extends AbstractGlobalCommand {
                 if (mod.isInternal()) {
                     continue;
                 }
+
+                final File destination = new File(PVPArena.instance.getDataFolder().getPath()
+                        + "/files/");
+                final File destFileG = new File(destination, "pa_g_" + mod.getName().toLowerCase() + ".jar");
+                final File destFileM = new File(destination, "pa_m_" + mod.getName().toLowerCase() + ".jar");
+
+                if (!destFileG.exists() && !destFileM.exists()) {
+                    continue;
+                }
                 final PAA_Uninstall uninstall = new PAA_Uninstall();
+                if (!uninstall.hasPerms(sender)) {
+                    return;
+                }
                 uninstall.commit(sender, new String[]{mod.getName()});
                 final PAA_Install install = new PAA_Install();
+                if (!install.hasPerms(sender)) {
+                    return;
+                }
                 install.commit(sender, new String[]{mod.getName()});
             }
             return;

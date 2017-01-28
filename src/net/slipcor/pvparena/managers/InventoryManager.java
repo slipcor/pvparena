@@ -66,6 +66,8 @@ public final class InventoryManager {
 
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
 
+        boolean keepAll = false;
+
         if (ap == null || ap.getArena() == null) {
             exclude = new ArrayList<>();
             keep = new ArrayList<>();
@@ -77,36 +79,14 @@ public final class InventoryManager {
                     exclude.add(item.getType());
                 }
             }
-            keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
+            keepAll = ap.getArena().getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN).equalsIgnoreCase("all");
+            if (keepAll) {
+                keep = new ArrayList<>();
+            } else {
+                keep = Arrays.asList(ap.getArena().getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN));
+            }
         }
 
-        for (final ItemStack is : player.getInventory().getArmorContents()) {
-            if (is == null || is.getType() == Material.AIR) {
-                continue;
-            }
-            for (final ItemStack keepItem : keep) {
-                if (keepItem.getType() == is.getType()) {
-                    if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasLore()) {
-                        // has lore!
-                        if (is.hasItemMeta() && is.getItemMeta().hasLore() && is.getItemMeta().getLore().equals(keepItem.getItemMeta().getLore())) {
-                            returned.add(is.clone());
-                        }
-                    } else if (keepItem.hasItemMeta() && keepItem.getItemMeta().hasDisplayName()) {
-                        // has displayname!
-                        if (is.hasItemMeta() && is.getItemMeta().hasDisplayName() && is.getItemMeta().getDisplayName().equals(keepItem.getItemMeta().getDisplayName())) {
-                            returned.add(is.clone());
-                        }
-                    } else {
-                        // has neither!
-                        returned.add(is.clone());
-                    }
-                }
-            }
-            if (exclude.contains(is.getType())) {
-                continue;
-            }
-            player.getWorld().dropItemNaturally(player.getLocation(), is);
-        }
         for (final ItemStack is : player.getInventory().getContents()) {
             if (is == null || is.getType() == Material.AIR) {
                 continue;
@@ -124,6 +104,10 @@ public final class InventoryManager {
                 returned.add(is.clone());
             }
             if (exclude.contains(is.getType())) {
+                continue;
+            }
+            if (keepAll) {
+                returned.add(is.clone());
                 continue;
             }
             player.getWorld().dropItemNaturally(player.getLocation(), is);

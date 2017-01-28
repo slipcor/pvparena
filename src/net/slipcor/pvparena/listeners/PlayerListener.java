@@ -17,6 +17,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -210,8 +211,8 @@ public class PlayerListener implements Listener {
 
         for (final String s : list) {
             if ("*".equals(s) ||
-                    ((wildcard || s.endsWith(" ")) && event.getMessage().startsWith('/' + s)) ||
-                    (!wildcard && event.getMessage().startsWith('/' + s +' '))) {
+                    ((wildcard || s.endsWith(" ")) && event.getMessage().toLowerCase().startsWith('/' + s)) ||
+                    (!wildcard && event.getMessage().toLowerCase().startsWith('/' + s +' '))) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -233,7 +234,7 @@ public class PlayerListener implements Listener {
         arena.getDebugger().i("checking command whitelist", player);
 
         for (final String s : list) {
-            if (event.getMessage().startsWith('/' + s)) {
+            if (event.getMessage().toLowerCase().startsWith('/' + s)) {
                 arena.getDebugger().i("command allowed: " + s, player);
                 return;
             }
@@ -315,6 +316,28 @@ public class PlayerListener implements Listener {
         arena.msg(player, Language.parse(arena, MSG.NOTICE_NO_DROP_ITEM));
         event.setCancelled(true);
         // cancel the drop event for fighting players, with message
+    }
+
+    @EventHandler
+    public void onPlayerGoal(final PAGoalEvent event) {
+        /*
+         * content[X].contains(playerDeath) => "playerDeath:playerName"
+         * content[X].contains(playerKill) => "playerKill:playerKiller:playerKilled"
+         * content[X].contains(trigger) => "trigger:playerName" triggered a score
+         * content[X].equals(tank) => player is tank
+         * content[X].equals(infected) => player is infected
+         * content[X].equals(doesRespawn) => player will respawn
+         * content[X].contains(score) => "score:player:team:value"
+         */
+        String[] args = event.getContents();
+        for (String content : args) {
+            if (content != null) {
+                if (content.startsWith("playerDeath")||content.startsWith("trigger")||content.startsWith("playerKill")||content.startsWith("score")) {
+                    event.getArena().updateScoreboards();
+                    return;
+                }
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -478,7 +501,7 @@ public class PlayerListener implements Listener {
             if (whyMe) {
                 arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
             }
-            if (aPlayer.getStatus() != ArenaPlayer.Status.LOUNGE) {
+            if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                 arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
                 // fighting player inside the lobby!
                 event.setCancelled(true);
@@ -540,6 +563,16 @@ public class PlayerListener implements Listener {
                     return;
                 }
 
+                event.setCancelled(true);
+                arena.getDebugger().i("Cancelled ready block click event to prevent itemstack consumation");
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        aPlayer.get().updateInventory();
+                    }
+                }, 1L);
+
+
                 final boolean alreadyReady = aPlayer.getStatus() == Status.READY;
 
                 arena.getDebugger().i("===============", player);
@@ -577,7 +610,7 @@ public class PlayerListener implements Listener {
 
                     if (error == null) {
                         arena.start();
-                    } else if (error != null && error.isEmpty()) {
+                    } else if (error.isEmpty()) {
                         arena.countDown();
                     } else {
                         arena.msg(player, error);
@@ -677,7 +710,7 @@ public class PlayerListener implements Listener {
         final Arena arena = aPlayer.getArena();
 
         if (arena != null) {
-            arena.playerLeave(player, CFG.TP_EXIT, true);
+            arena.playerLeave(player, CFG.TP_EXIT, true, true);
         }
 
         if (!player.isOp()) {
@@ -696,21 +729,28 @@ public class PlayerListener implements Listener {
         if (arena == null) {
             return; // no fighting player => OUT
         }
-        arena.playerLeave(player, CFG.TP_EXIT, false);
+        arena.playerLeave(player, CFG.TP_EXIT, false, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerRespawn(final PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        aPlayer.setArena(null);
+        // aPlayer.setArena(null);
         // instantiate and/or reset a player. This fixes issues with leaving
         // players and makes sure every player is an arenaplayer ^^
 
-        aPlayer.readDump();
+        if (aPlayer.getArena() != null && aPlayer.getStatus() == Status.FIGHT) {
+            Arena arena = aPlayer.getArena();
+            arena.getDebugger().i("Trying to override a rogue RespawnEvent!");
+        }
+
+        aPlayer.debugPrint();
+
+        // aPlayer.readDump();
         final Arena arena = aPlayer.getArena();
         if (arena != null) {
-            arena.playerLeave(player, CFG.TP_EXIT, true);
+            arena.playerLeave(player, CFG.TP_EXIT, true, false);
         }
     }
 
@@ -749,7 +789,7 @@ public class PlayerListener implements Listener {
         if (arena == null) {
             return; // no fighting player => OUT
         }
-        arena.playerLeave(player, CFG.TP_EXIT, false);
+        arena.playerLeave(player, CFG.TP_EXIT, false, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -5,6 +5,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -121,6 +122,19 @@ public final class PlayerState {
         player.setExp(0);
         player.setGameMode(GameMode.getByValue(arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE)));
         PlayerState.removeEffects(player);
+
+        if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
+            final ArenaTeam team = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
+            String n;
+            if (team == null) {
+                n = player.getName();
+            } else {
+                n = team.getColorCodeString() + player.getName();
+            }
+            n = ChatColor.translateAlternateColorCodes('&', n);
+
+            player.setDisplayName(n);
+        }
     }
 
     public void unload() {
@@ -167,7 +181,6 @@ public final class PlayerState {
         }
 
         if (aPlayer.getArena() != null) {
-
             ArenaModuleManager.unload(aPlayer.getArena(), player);
             PVPArena.instance.getAgm().unload(aPlayer.getArena(), player);
         }
@@ -246,6 +259,7 @@ public final class PlayerState {
         pState.explevel = cfg.getInt("state.explevel", 0);
         pState.saturation = (float) cfg.getDouble("state.saturation", 0);
         pState.displayname = cfg.getString("state.displayname", pName);
+        pState.flying = cfg.getBoolean("state.flying", false);
 
         return pState;
     }

@@ -327,6 +327,7 @@ public class ArenaPlayer {
 
             }
         }
+        InventoryManager.clearInventory(player);
 
         if (aPlayer.savedInventory == null) {
             debug.i("saved inventory null!", player);
@@ -541,7 +542,6 @@ public class ArenaPlayer {
      *
      * @return the player name
      */
-    @Deprecated
     public String getName() {
         return name;
     }
@@ -767,7 +767,7 @@ public class ArenaPlayer {
         final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
         this.aClass = event.getArenaClass();
-        if (aClass != this.aClass) {
+        if (arena != null) {
             ArenaModuleManager.parseClassChange(arena, get(), this.aClass);
         }
     }
@@ -847,6 +847,9 @@ public class ArenaPlayer {
      * @param canTeleport true if may pass, false otherwise
      */
     public void setTelePass(final boolean canTeleport) {
+        if (arena != null) {
+            arena.getDebugger().i("TelePass := "+canTeleport);
+        }
         telePass = canTeleport;
     }
 

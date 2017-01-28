@@ -1,3 +1,4 @@
+- v1.3.2.139 - pull all compatible fixes until v1.3.3.235
 - v1.3.2.138 - pull all 1.9 fixes except ArenaGoalManager
 - v1.3.2.137 - address github issue #205
 - v1.3.2.136 - add language response for ChestFiller

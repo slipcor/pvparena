@@ -269,9 +269,18 @@ public class ArenaModuleManager {
         }
     }
 
+    /**
+     * @deprecated use {@link #resetPlayer(Arena, Player, boolean, boolean)}
+     */
     public static void resetPlayer(final Arena arena, final Player player, final boolean force) {
         for (final ArenaModule mod : arena.getMods()) {
             mod.resetPlayer(player, force);
+        }
+    }
+
+    public static void resetPlayer(final Arena arena, final Player player, final boolean soft, final boolean force) {
+        for (final ArenaModule mod : arena.getMods()) {
+            mod.resetPlayer(player, soft, force);
         }
     }
 

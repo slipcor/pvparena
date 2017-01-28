@@ -159,7 +159,7 @@ public final class ArenaManager {
      * @return an arena instance if found, null otherwise
      */
     public static Arena getArenaByName(final String name) {
-        if (name == null || name != null && name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             return null;
         }
         final String sName = name.toLowerCase();
@@ -313,9 +313,9 @@ public final class ArenaManager {
     /**
      * load a specific arena
      *
-     * please use loadArena(Arena)
+     * Backwards compatible arena loading
      *
-     * @param configFile the file to load
+     * @deprecated use {@link #loadArena(Arena arena)} } instead.
      */
     @Deprecated
     public static void loadArena(final String configFile) {
@@ -526,6 +526,7 @@ public final class ArenaManager {
                 }
             }
         }
+        DEBUG.i("temporary #1 " + string);
 
         boolean isUngrouped = true;
         String preciseArenaName = null;
@@ -533,24 +534,33 @@ public final class ArenaManager {
         deflists: for (List<String> values : DEF_LISTS.values()) {
             for (String item : values) {
                 if (item.equals(string)) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false;
                     break deflists; // exact case match, out!
                 }
                 if (item.equalsIgnoreCase(string)) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // case insensitive match, continue to eventually find a better match
                 }
                 if (item.toLowerCase().startsWith(string.toLowerCase())) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
                 if (item.toLowerCase().endsWith(string.toLowerCase())) {
-                    preciseArenaName = item;
+                    if (!PVPArena.instance.getConfig().getBoolean("only_shortcuts")) {
+                        preciseArenaName = item;
+                    }
                     isUngrouped = false; // partial match, continue to eventually find a better match
                 }
             }
         } // if ungrouped = false -> we have found the arena in a shortcut definition (CI)
+        DEBUG.i("temporary #2 " + string);
 
         boolean foundExactCI = false;
 
@@ -573,6 +583,7 @@ public final class ArenaManager {
                 string = key; // partial match, continue to eventually find a better match
             }
         }
+        DEBUG.i("temporary #3 " + string);
 
         if (!foundExactCI) {
             // not found via exact check, ignoring case
@@ -581,6 +592,7 @@ public final class ArenaManager {
                 // 1) only allowing shortcuts
                 // 2) it's either grouped and we thus don't show it, or it is ungrouped and we don't allow ungrouped
                 DEBUG.i("not a shortcut or allowed ungrouped");
+
                 return null;
             } else {
                 // A: allowing more then shortcuts
@@ -595,9 +607,10 @@ public final class ArenaManager {
             }
         }
 
+/*
         DEBUG.i("advance " + string);
         advance(string);
-
+*/
         if (DEF_VALUES.get(string) == null) {
             DEBUG.i("out null -.-");
         } else {
@@ -655,9 +668,10 @@ public final class ArenaManager {
             DEF_VALUES.put(string, arena);
             return;
         }
-
+        if (!DEF_VALUES.containsKey(string)) {
+            DEF_VALUES.put(string, ArenaManager.getArenaByName(defs.get(0)));
+        }
     }
-
     public static List<Arena> getArenasSorted() {
         DEBUG.i("Sorting!");
         for (final String s : ARENAS.keySet()) {

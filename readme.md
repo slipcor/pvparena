@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.138 - pull all 1.9 fixes except ArenaGoalManager
+- v1.3.2.139 - pull all compatible fixes until v1.3.3.235
 - [read more](doc/changelog.md)
 
 ***

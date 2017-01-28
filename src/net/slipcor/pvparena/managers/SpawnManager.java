@@ -470,9 +470,7 @@ public final class SpawnManager {
 
     private static void placeInsideSpawnRegion(final Arena arena, final ArenaPlayer aPlayer,
                                                final ArenaRegion region) {
-        int x = region.getShape().getMinimumLocation().getX();
-        int y = region.getShape().getMinimumLocation().getY();
-        int z = region.getShape().getMinimumLocation().getZ();
+        int x, y, z;
         final Random random = new Random();
 
         boolean found = false;
@@ -482,14 +480,15 @@ public final class SpawnManager {
 
         while (!found && attempt < 10) {
 
-            x += random.nextInt(region.getShape().getMaximumLocation().getX() -
+            x = region.getShape().getMinimumLocation().getX() + random.nextInt(region.getShape().getMaximumLocation().getX() -
                     region.getShape().getMinimumLocation().getX());
-            y += random.nextInt(region.getShape().getMaximumLocation().getY() -
+            y = region.getShape().getMinimumLocation().getY() + random.nextInt(region.getShape().getMaximumLocation().getY() -
                     region.getShape().getMinimumLocation().getY());
-            z += random.nextInt(region.getShape().getMaximumLocation().getZ() -
+            z = region.getShape().getMinimumLocation().getZ() + random.nextInt(region.getShape().getMaximumLocation().getZ() -
                     region.getShape().getMinimumLocation().getZ());
 
             loc = new PABlockLocation(region.getShape().getMinimumLocation().getWorldName(), x, y, z);
+            loc.setY(loc.toLocation().getWorld().getHighestBlockYAt(x, z)+1);
             attempt++;
             found = region.getShape().contains(loc);
 
@@ -517,8 +516,16 @@ public final class SpawnManager {
                 aPlayer.setLocation(new PALocation(bLoc));
 
                 aPlayer.setStatus(Status.FIGHT);
+
                 arena.tpPlayerToCoordName(aPlayer.get(), "old");
-                aPlayer.setLocation(temp);
+
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                    @Override
+                    public void run() {
+                        aPlayer.setLocation(temp);
+                        arena.getDebugger().i("temp: " + temp.toString());
+                    }
+                }, 6L);
 
             }
 

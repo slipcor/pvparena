@@ -202,6 +202,9 @@ public class GoalLiberation extends ArenaGoal {
                             iList.add(item.clone());
                         }
                         new InventoryRefillRunnable(arena, jailedPlayer.get(), iList);
+                        if (arena.getArenaConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+                            player.getScoreboard().getObjective("lives").getScore(player.getName()).setScore(0);
+                        }
                         success = true;
                     }
                 }
@@ -282,9 +285,9 @@ public class GoalLiberation extends ArenaGoal {
     public PACheck checkPlayerDeath(final PACheck res, final Player player) {
         if (res.getPriority() <= PRIORITY) {
             res.setPriority(this, PRIORITY);
-            final int pos = getLifeMap().get(player.getName());
-            arena.getDebugger().i("lives before death: " + pos, player);
-            if (pos <= 1) {
+            final int lives = getLifeMap().get(player.getName());
+            arena.getDebugger().i("lives before death: " + lives, player);
+            if (lives <= 1) {
                 getLifeMap().put(player.getName(), 1);
 
                 final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
@@ -435,6 +438,9 @@ public class GoalLiberation extends ArenaGoal {
 
                 arena.unKillPlayer(aPlayer.get(), aPlayer.get().getLastDamageCause() == null ? null : aPlayer.get().getLastDamageCause().getCause(), aPlayer.get().getKiller());
 
+                if (arena.getArenaConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+                    aPlayer.get().getScoreboard().getObjective("lives").getScore(aPlayer.getName()).setScore(101);
+                }
             } else {
                 getLifeMap().remove(player.getName());
                 final List<ItemStack> returned;
@@ -452,11 +458,6 @@ public class GoalLiberation extends ArenaGoal {
                         ArenaPlayer.parsePlayer(player.getName()), returned);
 
                 ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
-                /*
-                if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-					arena.getDebugger().i("faking player death", player);
-					PlayerListener.finallyKillPlayer(arena, player, event);
-				}*/
 
                 final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
                         .getArenaTeam();
@@ -598,12 +599,20 @@ public class GoalLiberation extends ArenaGoal {
                         arena.getArenaConfig().getInt(CFG.GOAL_LLIVES_LIVES));
             }
         }
+        if (arena.getArenaConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+            arena.addCustomScoreBoardEntry(null, Language.parse(arena, MSG.GOAL_LIBERATION_SCOREBOARD_HEADING), 102);
+            arena.addCustomScoreBoardEntry(null, Language.parse(arena, MSG.GOAL_LIBERATION_SCOREBOARD_SEPARATOR), 100);
+        }
     }
 
     @Override
     public void reset(final boolean force) {
         endRunner = null;
         getLifeMap().clear();
+        if (arena.getArenaConfig().getBoolean(CFG.GOAL_LIBERATION_JAILEDSCOREBOARD)) {
+            arena.removeCustomScoreBoardEntry(null, 102);
+            arena.removeCustomScoreBoardEntry(null, 100);
+        }
     }
 
     @Override

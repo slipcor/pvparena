@@ -1,6 +1,7 @@
 package net.slipcor.pvparena.modules;
 
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.PACheck;
@@ -31,9 +32,20 @@ public class WarmupJoin extends ArenaModule {
 
     private Set<ArenaPlayer> playerSet;
 
+    private boolean announced = false;
+
     public WarmupJoin() {
         super("WarmupJoin");
         debug = new Debug(300);
+    }
+
+    public static boolean didNotAnnounceYet(Arena arena) {
+        for (ArenaModule mod : arena.getMods()) {
+            if (mod instanceof WarmupJoin) {
+                return !((WarmupJoin) mod).announced;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -80,6 +92,7 @@ public class WarmupJoin extends ArenaModule {
     @Override
     public void commitJoin(final Player sender, final ArenaTeam team) {
         new ArenaWarmupRunnable(arena, ArenaPlayer.parsePlayer(sender.getName()), team.getName(), false, arena.getArenaConfig().getInt(CFG.TIME_WARMUPCOUNTDOWN));
+        announced = true;
     }
 
     @Override
@@ -108,6 +121,7 @@ public class WarmupJoin extends ArenaModule {
     @Override
     public void reset(final boolean force) {
         getPlayerSet().clear();
+        announced = false;
     }
 
     @Override

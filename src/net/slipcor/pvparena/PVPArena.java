@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -248,7 +249,7 @@ public class PVPArena extends JavaPlugin {
 
         AbstractGlobalCommand pacmd = null;
         for (final AbstractGlobalCommand agc : globalCommands) {
-            if (agc.getMain().contains(args[0]) || agc.getShort().contains(args[0])) {
+            if (agc.getMain().contains(args[0].toLowerCase()) || agc.getShort().contains(args[0].toLowerCase())) {
                 pacmd = agc;
                 break;
             }
@@ -299,7 +300,7 @@ public class PVPArena extends JavaPlugin {
             return true;
         }
 
-        Arena tempArena = ArenaManager.getIndirectArenaByName(sender, args[0]);
+        Arena tempArena = "l".equalsIgnoreCase(args[0])?player.getArena():ArenaManager.getIndirectArenaByName(sender, args[0]);
 
         final String name = args[0];
 
@@ -349,11 +350,15 @@ public class PVPArena extends JavaPlugin {
 
         AbstractArenaCommand paacmd = null;
         for (final AbstractArenaCommand aac : arenaCommands) {
-            if (aac.getMain().contains(newArgs[0]) || aac.getShort().contains(newArgs[0])) {
+            if (aac.getMain().contains(newArgs[0].toLowerCase()) || aac.getShort().contains(newArgs[0].toLowerCase())) {
                 paacmd = aac;
                 break;
             }
 
+            if (aac.getShort().contains("-l") && "l".equalsIgnoreCase(args[0])) {
+                paacmd = aac;
+                break;
+            }
         }
         if (paacmd == null
                 && PACheck.handleCommand(tempArena, sender, newArgs)) {
@@ -443,6 +448,16 @@ public class PVPArena extends JavaPlugin {
         new File(getDataFolder().getPath() + "/files").mkdir();
         new File(getDataFolder().getPath() + "/templates").mkdir();
 
+        FileConfiguration cfg = getConfig();
+        List<String> toDelete = cfg.getStringList("todelete");
+        if (toDelete != null){
+            for (String jar : toDelete) {
+                PAA_Uninstall.remove(jar);
+            }
+            cfg.set("todelete", null);
+            saveConfig();
+        }
+
         agm = new ArenaGoalManager(this);
         amm = new ArenaModuleManager(this);
         arsm = new ArenaRegionShapeManager(this);
@@ -480,7 +495,7 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updater = new Updater(this, getFile(), true);
+        updater = new Updater(this, getFile());
 
         if (ArenaManager.count() > 0) {
             if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {

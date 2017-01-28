@@ -143,6 +143,7 @@ public final class Language {
         ERROR_LOUNGEFREE("nulang.error.errorloungefree", "Error! Arena is not of type &efree&r. Use '[teamname]lounge'."),
         ERROR_MAT_NOT_FOUND("nulang.error.log.matnotfound", "Unrecognized material: %1%"),
         ERROR_MISSING_SPAWN("nulang.error.missingspawn", "Spawn missing: &r%1%"),
+        ERROR_MODULE_UPDATE("nulang.error.moduleupdate", "You need to set 'update.modules: true' to use this command!"),
         ERROR_NO_ARENAS("nulang.error.noarenas", "No arenas found!"),
         ERROR_NEGATIVES("nulang.error.valueneg", "Negative values: &c%1%&r"),
         ERROR_NO_CHEST("nulang.error.nochest", "You are not looking at a chest!"),
@@ -254,6 +255,7 @@ public final class Language {
         ERROR_STATS_FILE("nulang.error.statsfile", "Error while reading the stats file!"),
         ERROR_TEAMNOTFOUND("nulang.error.teamnotfound", "Team not found: &a%1%&r"),
         ERROR_UNINSTALL("nulang.error.uninstall", "Error while uninstalling: &a%1%&r"),
+        ERROR_UNINSTALL2("nulang.error.uninstall2", "PVP Arena will try to uninstall on server restart!"),
         ERROR_UNKNOWN_MODULE("nulang.error.unknownmodule", "Module not found: %1%"),
         ERROR_WHITELIST_DISALLOWED("nulang.error.whitelist.disallowed", "You may not %1% this! (not whitelisted)"),
         ERROR_WHITELIST_UNKNOWN_SUBCOMMAND("nulang.error.whitelist.unknownsubcommand", "Unknown subcommand. Valid commands: &a%1%&r"),
@@ -398,6 +400,8 @@ public final class Language {
         ROUND_DISPLAY("nulang.round.display", "Round #%1%: %2%"),
         ROUND_ADDED("nulang.round.added", "Added goal to round: &e%1%"),
         ROUND_REMOVED("nulang.round.removed", "Removed goal from round: &e%1%"),
+        ROUNDS_DISPLAY("nulang.round.roundsdisplay", "Round %1% / %2%"),
+        ROUNDS_DISPLAYSEPARATOR("nulang.round.roundsdisplayseparator", "-----------"),
 
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
         SET_HELP("nulang.set.help", "Use /pa {arenaname} set [page] to get a node list."),
@@ -518,6 +522,8 @@ public final class Language {
 
         GOAL_LIBERATION_LIBERATED("nulang.goal.liberation.liberated", "Team %1% has been liberated!"),
         GOAL_LIBERATION_SET("nulang.goal.liberation.setbutton", "Button set: %1%"),
+        GOAL_LIBERATION_SCOREBOARD_HEADING("nulang.goal.liberation.scoreboardheading", "Players in jail:"),
+        GOAL_LIBERATION_SCOREBOARD_SEPARATOR("nulang.goal.liberation.scoreboardseparator", "----------------"),
         GOAL_LIBERATION_TOSET("nulang.goal.liberation.tosetbutton", "Button to set: %1%"),
 
         GOAL_PHYSICALFLAGS_HOLDFLAG("nulang.goal.physicalflags.holdflag", "You have to hold the flag to bring it back!"),
@@ -613,6 +619,7 @@ public final class Language {
         MODULE_DUEL_ANNOUNCE("nulang.mod.duel.announce", "%1% &echallenged you! Accept the duel with &r/pa %2% accept&e."),
         MODULE_DUEL_ANNOUNCEMONEY("nulang.mod.duel.announcemoney", "&eThey set up a fee of &c%1%&e!"),
         MODULE_DUEL_ANNOUNCE2("nulang.mod.duel.announce2", "&eCancel the duel with &r/pa %2% decline&e."),
+        MODULE_DUEL_CANCELLED("nulang.mod.duel.cancelled","&cThe duel has been cancelled!"),
         MODULE_DUEL_BUSY("nulang.mod.duel.busy", "%1% &eis already in a fight Please try again later."),
         MODULE_DUEL_DECLINED_SENDER("nulang.mod.duel.declineds", "Your opponent declined the request. The duel has been cancelled."),
         MODULE_DUEL_DECLINED_RECEIVER("nulang.mod.duel.declinedr", "You declined the duel request!"),
@@ -656,6 +663,9 @@ public final class Language {
         MODULE_TEMPPERMS_HEAD("nulang.mod.tempperms.head", "Temporary permissions of &e%1%&r:"),
         MODULE_TEMPPERMS_ADDED("nulang.mod.tempperms.added", "Temporary permissions &e%1%&r added to &a%2%&r."),
         MODULE_TEMPPERMS_REMOVED("nulang.mod.tempperms.removed", "Temporary permissions &e%1%&r removed from &a%2%&r."),
+
+        MODULE_WALLS_FALLINGIN("nulang.mod.walls.fallingin", "Walls fall in: %1%"),
+        MODULE_WALLS_SEPARATOR("nulang.mod.walls.separator", "--------------------"),
 
         MODULE_VAULT_ON("nulang.mod.vault.on", "<3 eConomy"),
         MODULE_VAULT_OFF("nulang.mod.vault.off", "</3 eConomy"),

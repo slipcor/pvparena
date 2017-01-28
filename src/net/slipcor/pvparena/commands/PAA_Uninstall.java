@@ -10,9 +10,11 @@ import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +31,7 @@ import java.util.Set;
 public class PAA_Uninstall extends AbstractGlobalCommand {
 
     public PAA_Uninstall() {
-        super(new String[]{"pvparena.cmds.togglemod"});
+        super(new String[]{"pvparena.cmds.uninstall"});
     }
 
     @Override
@@ -40,6 +42,11 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
 
         if (!argCountValid(sender, args,
                 new Integer[]{0, 1})) {
+            return;
+        }
+
+        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
+            Arena.pmsg(sender, ChatColor.DARK_RED+Language.parse(MSG.ERROR_MODULE_UPDATE));
             return;
         }
 
@@ -71,6 +78,15 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
                 return;
             }
             Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL, goal.getName()));
+            FileConfiguration cfg = PVPArena.instance.getConfig();
+            List<String> toDelete = cfg.getStringList("todelete");
+            if (toDelete == null){
+                toDelete = new ArrayList<>();
+            }
+            toDelete.add("pa_g_" + goal.getName().toLowerCase() + ".jar");
+            cfg.set("todelete", toDelete);
+            PVPArena.instance.saveConfig();
+            Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL2));
             return;
         }
         final ArenaModule mod = PVPArena.instance.getAmm().getModByName(name);
@@ -81,6 +97,15 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
                 return;
             }
             Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL, mod.getName()));
+            FileConfiguration cfg = PVPArena.instance.getConfig();
+            List<String> toDelete = cfg.getStringList("todelete");
+            if (toDelete == null){
+                toDelete = new ArrayList<>();
+            }
+            toDelete.add("pa_m_" + goal.getName().toLowerCase() + ".jar");
+            cfg.set("todelete", toDelete);
+            PVPArena.instance.saveConfig();
+            Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL2));
         }
     }
 
@@ -135,7 +160,7 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
         return getClass().getName();
     }
 
-    private boolean remove(final String file) {
+    public static boolean remove(final String file) {
         String folder = null;
         if (file.startsWith("pa_g")) {
             folder = "/goals/";

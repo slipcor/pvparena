@@ -236,7 +236,7 @@ public class GoalCheckPoints extends ArenaGoal {
         if (!AbstractArenaCommand.argCountValid(sender, arena, args, new Integer[]{2})) {
             return;
         }
-        int value = -1;
+        int value;
         try {
             value = Integer.parseInt(args[1]);
             Math.sqrt(value);

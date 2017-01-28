@@ -121,11 +121,14 @@ public class Config {
         PLAYER_HEALTH("player.health", -1, null),
         PLAYER_HEALFORKILL("player.healforkill", false, null),
         PLAYER_HUNGER("player.hunger", true, null),
+        PLAYER_ITEMSONKILL("player.itemsonkill", "none", true, null),
         PLAYER_MAYCHANGEARMOR("player.mayChangeArmor", true, null),
         PLAYER_MAXHEALTH("player.maxhealth", -1, null),
         PLAYER_PREVENTDEATH("player.preventDeath", true, null),
+        PLAYER_REFILLCUSTOMINVENTORY("player.refillCustomInventory", true, null),
         PLAYER_REFILLINVENTORY("player.refillInventory", true, null),
         PLAYER_REFILLFORKILL("player.refillforkill", false, null),
+        PLAYER_REMOVEARROWS("player.removearrows", false, null),
         PLAYER_SATURATION("player.saturation", 20, null),
         PLAYER_QUICKLOOT("player.quickloot", false, null),
 
@@ -165,7 +168,11 @@ public class Config {
         USES_EVILINVISIBILITYFIX("uses.evilinvisibilityfix", false, null),
         USES_OVERLAPCHECK("uses.overlapCheck", true, null),
         USES_PLAYERCLASSES("uses.playerclasses", false, null),
+        USES_SCOREBOARD("uses.scoreboard", false, null),
+        USES_SCOREBOARDROUNDDISPLAY("uses.scoreboardrounddisplay", false, null),
+        USES_SUICIDEPUNISH("uses.suicidepunish", false, null),
         USES_TEAMREWARDS("uses.teamrewards", false, null),
+        USES_TELEPORTONKILL("uses.teleportonkill", false, null),
         USES_WOOLHEAD("uses.woolHead", false, null),
 
         // ----------
@@ -189,6 +196,7 @@ public class Config {
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
+        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", false, "Domination"),
         GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
         GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
 
@@ -205,6 +213,8 @@ public class Config {
         GOAL_INFECTED_ILIVES("goal.infected.iilives", 1, "Infect"),
         GOAL_INFECTED_NLIVES("goal.infected.inlives", 1, "Infect"),
         GOAL_INFECTED_PPROTECTS("goal.infected.iplayerprotect", 0, "Infect"),
+
+        GOAL_LIBERATION_JAILEDSCOREBOARD("goal.liberation.jailedscoreboard", false, "Liberation"),
 
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
@@ -325,8 +335,6 @@ public class Config {
         MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
         MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
 
-        MODULES_SCOREBOARDS_UPDATEINTERVAL("modules.scoreboards.updateinterval", 50, "ScoreBoards"),
-
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
         MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true, "SpecialJoin"),
@@ -373,11 +381,13 @@ public class Config {
         MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", 0.0d, "Vault"),
 
         MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", "SAND", false, "Walls"),
+        MODULES_WALLS_SCOREBOARDCOUNTDOWN("modules.walls.scoreboardcountdown", false, "Walls"),
         MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 
         MODULES_WORLDEDIT_AUTOLOAD("modules.worldedit.autoload", false, "WorldEdit"),
         MODULES_WORLDEDIT_AUTOSAVE("modules.worldedit.autosave", false, "WorldEdit"),
         MODULES_WORLDEDIT_SCHEMATICPATH("modules.worldedit.schematicpath", "", "WorldEdit"),
+        MODULES_WORLDEDIT_REPLACEAIR("modules.worldedit.replaceair", true, "WorldEdit"),
         MODULES_WORLDEDIT_REGIONS("modules.worldedit.regions", new ArrayList<String>(), "WorldEdit");
 
         private final String node;

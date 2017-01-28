@@ -472,7 +472,6 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         } else {
             getLifeMap().remove(team);
             commit(arena, team);
-            return;
         }
     }
 
@@ -552,7 +551,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
         if (!arena.hasPlayer(event.getPlayer())

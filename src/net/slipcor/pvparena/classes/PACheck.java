@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -264,7 +265,7 @@ public class PACheck {
         commit.commitInteract(player, clickedBlock);
     }
 
-    public static void handleJoin(final Arena arena,
+    public static boolean handleJoin(final Arena arena,
                                   final CommandSender sender, final String[] args) {
         arena.getDebugger().i("handleJoin!");
         int priority = 0;
@@ -295,13 +296,13 @@ public class PACheck {
         if (res.hasError() && !"LateLounge".equals(res.modName)) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_ERROR, res.error));
-            return;
+            return false;
         }
 
         if (res.hasError()) {
             arena.msg(sender,
                     Language.parse(arena, MSG.NOTICE_NOTICE, res.error));
-            return;
+            return false;
         }
 
         ArenaGoal commGoal = null;
@@ -327,7 +328,7 @@ public class PACheck {
         if (res.hasError()) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_ERROR, res.error));
-            return;
+            return false;
         }
 
         final ArenaTeam team;
@@ -346,10 +347,10 @@ public class PACheck {
                 team = aTeam;
             } else if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
-                return;
+                return false;
             } else if (maxTeamPlayers > 0 && aTeam.getTeamMembers().size() > maxTeamPlayers) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL, aTeam.getColoredName()));
-                return;
+                return false;
             } else {
                 team = aTeam;
             }
@@ -358,11 +359,11 @@ public class PACheck {
         if (team == null && args.length > 0) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
-            return;
+            return false;
         }
         if (team == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
-            return;
+            return false;
         }
 
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
@@ -384,16 +385,16 @@ public class PACheck {
                 Bukkit.getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     arena.getDebugger().i("! Join event cancelled by plugin !");
-                    return;
+                    return false;
                 }
                 commModule.commitJoin((Player) sender, team);
 
                 ArenaModuleManager.parseJoin(arena, (Player) sender, team);
-                return;
+                return true;
             }
             if (!ArenaManager.checkJoin((Player) sender, arena)) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_REGION));
-                return;
+                return false;
             }
             // both null, just put the joiner to some spawn
 
@@ -403,11 +404,11 @@ public class PACheck {
             Bukkit.getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 arena.getDebugger().i("! Join event cancelled by plugin !");
-                return;
+                return false;
             }
 
             if (!arena.tryJoin((Player) sender, team)) {
-                return;
+                return false;
             }
 
             if (arena.isFreeForAll()) {
@@ -458,7 +459,7 @@ public class PACheck {
                 player.setStatus(Status.READY);
             }
 
-            return;
+            return true;
         }
 
         arena.getDebugger().i("calling event #3");
@@ -467,7 +468,7 @@ public class PACheck {
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             arena.getDebugger().i("! Join event cancelled by plugin !");
-            return;
+            return false;
         }
 
         commModule.commitJoin((Player) sender, team);
@@ -477,6 +478,7 @@ public class PACheck {
         if (player.getArenaClass() != null && arena.startRunner != null) {
             player.setStatus(Status.READY);
         }
+        return true;
     }
 
     public static void handlePlayerDeath(final Arena arena,
@@ -520,11 +522,24 @@ public class PACheck {
                             + arena.getArenaConfig().getInt(
                             CFG.PLAYER_FEEDFORKILL));
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
-                PlayerState.playersetHealth(player.getKiller(), (int) player.getMaxHealth());
+                PlayerState.playersetHealth(player.getKiller(), (int) player.getKiller().getMaxHealth());
             }
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
                 InventoryManager.clearInventory(player.getKiller());
-                ArenaPlayer.parsePlayer(player.getName()).getArenaClass().equip(player.getKiller());
+                ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
+            }
+            if (!arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL).equals("none")) {
+                String definition = arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL);
+                ItemStack[] items = StringParser.getItemStacksFromString(definition);
+                for (ItemStack item : items) {
+                    if (item != null) {
+                        player.getKiller().getInventory().addItem(item.clone());
+                    }
+                }
+                player.getKiller().updateInventory();
+            }
+            if (arena.getArenaConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
+                SpawnManager.respawn(arena, ArenaPlayer.parsePlayer(player.getKiller().getName()), null);
             }
         }
 
@@ -848,6 +863,7 @@ public class PACheck {
         }
 
         arena.setStartingTime();
+        arena.updateScoreboards();
         return true;
     }
 }

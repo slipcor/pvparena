@@ -51,7 +51,7 @@ public class PAG_Leave extends AbstractArenaCommand {
             return;
         }
         arena.callLeaveEvent(aPlayer.get());
-        arena.playerLeave(aPlayer.get(), CFG.TP_EXIT, false);
+        arena.playerLeave(aPlayer.get(), CFG.TP_EXIT, false, false);
     }
 
     @Override

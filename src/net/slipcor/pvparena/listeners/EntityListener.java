@@ -141,6 +141,7 @@ public class EntityListener implements Listener {
         }
         final Player player = (Player) entity;
         arena.getDebugger().i("onEntityRegainHealth => fighing player", player);
+        arena.getDebugger().i("reason: " + event.getRegainReason());
         if (!arena.isFightInProgress()) {
             return;
         }

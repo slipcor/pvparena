@@ -218,12 +218,14 @@ public class Debug {
         check.clear();
         strings.clear();
         override = false;
+        boolean isPlayer = sender instanceof Player;
 
         final String debugs = instance.getConfig().getString("debug");
 
         for (final Debug debug : Debug.debugs) {
             debug.arenaLogger = null;
         }
+        logger = null;
 
         loggers.clear();
 
@@ -232,18 +234,29 @@ public class Debug {
         }
 
         if ("none".equals(debugs)) {
-            Arena.pmsg(sender, "debugging: off");
-
+            if (isPlayer) {
+                Arena.pmsg(sender, "debugging: off");
+            } else {
+                PVPArena.instance.getLogger().info("debugging: off");
+            }
         } else {
 
             server_log = instance.getConfig().getBoolean("server_log");
             if ("all".equalsIgnoreCase(debugs) || "full".equalsIgnoreCase(debugs)) {
                 Debug.check.add(666);
                 override = true;
-                Arena.pmsg(sender, "debugging EVERYTHING");
+                if (isPlayer) {
+                    Arena.pmsg(sender, "debugging EVERYTHING");
+                } else {
+                    PVPArena.instance.getLogger().info("debugging EVERYTHING");
+                }
             } else {
                 final String[] sIds = debugs.split(",");
-                Arena.pmsg(sender, "debugging: " + debugs);
+                if (isPlayer) {
+                    Arena.pmsg(sender, "debugging: " + debugs);
+                } else {
+                    PVPArena.instance.getLogger().info("debugging: " + debugs);
+                }
                 for (final String s : sIds) {
                     try {
                         Debug.check.add(Integer.valueOf(s));

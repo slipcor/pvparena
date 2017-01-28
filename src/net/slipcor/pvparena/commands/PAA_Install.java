@@ -52,6 +52,11 @@ public class PAA_Install extends AbstractGlobalCommand {
         // pa install
         // pa install ctf
 
+        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
+            Arena.pmsg(sender, ChatColor.DARK_RED+Language.parse(MSG.ERROR_MODULE_UPDATE));
+            return;
+        }
+
         final YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(PVPArena.instance.getDataFolder().getPath()

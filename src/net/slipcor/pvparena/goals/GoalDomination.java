@@ -1,13 +1,16 @@
 package net.slipcor.pvparena.goals;
 
+import javafx.geometry.Point3D;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.classes.PABlock;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
+import net.slipcor.pvparena.classes.PASpawn;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -20,14 +23,12 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
@@ -669,7 +670,12 @@ public class GoalDomination extends ArenaGoal {
 
         arena.getDebugger().i("reducing lives of team " + team);
         if (getLifeMap().get(team) != null) {
-            final int iLives = getLifeMap().get(team) - arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
+            final int score = arena.getArenaConfig().getInt(CFG.GOAL_DOM_TICKREWARD);
+            final int iLives = getLifeMap().get(team) - score;
+
+            final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "score:null:"+team+":"+score);
+            Bukkit.getPluginManager().callEvent(gEvent);
+
             if (iLives > 0) {
                 getLifeMap().put(team, iLives);
             } else {

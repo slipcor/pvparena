@@ -85,7 +85,7 @@ public class Updater extends Thread {
         }
     }
 
-    public Updater(final Plugin plugin, final File file, final boolean files) {
+    public Updater(final Plugin plugin, final File file) {
         super();
 
         String version = Bukkit.getServer().getBukkitVersion();
@@ -118,7 +118,7 @@ public class Updater extends Thread {
         this.plugin = plugin;
         this.file = file;
         id = curseforge?41652:16584;
-        this.files = files;
+        this.files = true;
 
         UpdateMode tempMode = UpdateMode.getBySetting(plugin.getConfig().getString("update.mode", "both"));
 

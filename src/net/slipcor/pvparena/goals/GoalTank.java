@@ -349,6 +349,7 @@ public class GoalTank extends ArenaGoal {
             if (team.getTeamMembers().contains(tank)) {
                 final PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, tank.get(), team, tankTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
+                arena.updateScoreboardTeam(tank.get(), team, tankTeam);
                 team.remove(tank);
             }
         }

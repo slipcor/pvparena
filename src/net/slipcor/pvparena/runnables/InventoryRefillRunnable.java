@@ -42,6 +42,8 @@ public class InventoryRefillRunnable implements Runnable {
         }
         this.arena = arena == null ? aPlayer.getArena() : arena;
 
+        boolean keepAll = "all".equalsIgnoreCase(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
+
         if (!"none".equals(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN))) {
             final ItemStack[] items = StringParser.getItemStacksFromString(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
 
@@ -49,6 +51,10 @@ public class InventoryRefillRunnable implements Runnable {
                 if (item != null) {
                     for (final ItemStack iItem : items) {
                         if (iItem != null) {
+                            if (keepAll) {
+                                additions.add(item);
+                                continue;
+                            }
                             if (item.getType() != iItem.getType()) {
                                 continue;
                             }
@@ -76,7 +82,7 @@ public class InventoryRefillRunnable implements Runnable {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         arena.getDebugger().i("refilling " + player.getName());
         if (aPlayer.getStatus() == Status.FIGHT) {
-            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
                 if (refill) {
                     final ItemStack[] items = new ItemStack[additions.size()];
                     int pos = 0;
@@ -96,7 +102,6 @@ public class InventoryRefillRunnable implements Runnable {
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
             } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {
-                InventoryManager.clearInventory(player);
                 ArenaPlayer.reloadInventory(arena, player, false);
 
                 for (final ItemStack item : additions) {
