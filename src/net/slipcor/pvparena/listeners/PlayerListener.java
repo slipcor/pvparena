@@ -712,7 +712,7 @@ public class PlayerListener implements Listener {
         final Arena arena = aPlayer.getArena();
 
         if (arena != null) {
-            arena.playerLeave(player, CFG.TP_EXIT, true);
+            arena.playerLeave(player, CFG.TP_EXIT, true, true);
         }
 
         if (!player.isOp()) {
@@ -731,7 +731,7 @@ public class PlayerListener implements Listener {
         if (arena == null) {
             return; // no fighting player => OUT
         }
-        arena.playerLeave(player, CFG.TP_EXIT, false);
+        arena.playerLeave(player, CFG.TP_EXIT, false, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -753,7 +753,7 @@ public class PlayerListener implements Listener {
         // aPlayer.readDump();
         final Arena arena = aPlayer.getArena();
         if (arena != null) {
-            arena.playerLeave(player, CFG.TP_EXIT, true);
+            arena.playerLeave(player, CFG.TP_EXIT, true, false);
         }
     }
 
@@ -792,7 +792,7 @@ public class PlayerListener implements Listener {
         if (arena == null) {
             return; // no fighting player => OUT
         }
-        arena.playerLeave(player, CFG.TP_EXIT, false);
+        arena.playerLeave(player, CFG.TP_EXIT, false, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

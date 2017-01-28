@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.234 - properly require permission for /pa command
+- v1.3.3.235 - address github issue #274 - fix player leaving handling in general
 - [read more](doc/changelog.md)
 
 ***

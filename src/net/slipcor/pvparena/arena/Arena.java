@@ -954,11 +954,17 @@ public class Arena {
     }
 
     /**
+     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean)}
+     */
+    public void playerLeave(final Player player, final CFG location, final boolean silent) {
+        playerLeave(player, location, silent, !silent);
+    }
+    /**
      * a player leaves from the arena
      *
      * @param player the leaving player
      */
-    public void playerLeave(final Player player, final CFG location, final boolean silent) {
+    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force) {
         if (player == null) {
             return;
         }
@@ -992,8 +998,7 @@ public class Arena {
             msg(player, Language.parse(this, MSG.NOTICE_YOU_LEFT));
         }
 
-        removePlayer(player, cfg.getString(location), false,
-                silent);
+        removePlayer(player, cfg.getString(location), !force, force);
 
         if (!cfg.getBoolean(CFG.READY_ENFORCECOUNTDOWN) && startRunner != null && cfg.getInt(CFG.READY_MINPLAYERS) > 0 &&
                 getFighters().size() <= cfg.getInt(CFG.READY_MINPLAYERS)) {
@@ -1003,7 +1008,7 @@ public class Arena {
         }
 
         if (fightInProgress) {
-            ArenaManager.checkAndCommit(this, silent);
+            ArenaManager.checkAndCommit(this, force);
         }
 
         aPlayer.reset();
@@ -1921,7 +1926,7 @@ public class Arena {
 
     public void stop(final boolean force) {
         for (final ArenaPlayer p : getFighters()) {
-            playerLeave(p.get(), CFG.TP_EXIT, true);
+            playerLeave(p.get(), CFG.TP_EXIT, true, force);
         }
         reset(force);
     }
