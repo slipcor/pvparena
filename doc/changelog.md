@@ -1,3 +1,4 @@
+- v1.3.3.236 - address github issue #273 - add Elytra to chestplate definition list
 - v1.3.3.235 - address github issue #274 - fix player leaving handling in general
 - v1.3.3.234 - properly require permission for /pa command
 - v1.3.3.233 - address github issue #273 - single item definitions (maybe more) gets lost until restart

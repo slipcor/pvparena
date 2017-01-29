@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.235 - address github issue #274 - fix player leaving handling in general
+- v1.3.3.236 - address github issue #273 - add Elytra to chestplate definition list
 - [read more](doc/changelog.md)
 
 ***
