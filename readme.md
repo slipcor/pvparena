@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.236 - address github issue #273 - add Elytra to chestplate definition list
+- v1.3.3.237 - address github issue #271 - do not remove/use player list scoreboard if scoreboard is disabled
 - [read more](doc/changelog.md)
 
 ***
