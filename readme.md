@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.237 - address github issue #271 - do not remove/use player list scoreboard if scoreboard is disabled
+- v1.3.3.238 - allow for default death messaeges by setting both deathmessage config nodes to false
 - [read more](doc/changelog.md)
 
 ***

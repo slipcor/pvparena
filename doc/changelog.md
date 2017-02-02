@@ -1,3 +1,4 @@
+- v1.3.3.238 - allow for default death messaeges by setting both deathmessage config nodes to false
 - v1.3.3.237 - address github issue #271 - do not remove/use player list scoreboard if scoreboard is disabled
 - v1.3.3.236 - address github issue #273 - add Elytra to chestplate definition list
 - v1.3.3.235 - address github issue #274 - fix player leaving handling in general
