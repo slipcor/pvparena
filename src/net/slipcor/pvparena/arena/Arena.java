@@ -530,7 +530,7 @@ public class Arena {
     private Scoreboard getSpecialScoreboard() {
         if (scoreboard == null) {
             scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-
+/*
             Objective oBM = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.BELOW_NAME);
             if (oBM != null) {
                 oBM = scoreboard.registerNewObjective(oBM.getCriteria(), oBM.getDisplayName());
@@ -543,7 +543,7 @@ public class Arena {
                 oTB = scoreboard.registerNewObjective(oTB.getCriteria(), oTB.getDisplayName());
                 oTB.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             }
-
+*/
             for (final ArenaTeam team : getTeams()) {
 
                 try {
@@ -585,10 +585,10 @@ public class Arena {
                 for (final ArenaPlayer aPlayer : team.getTeamMembers()) {
                     sTeam.addEntry(aPlayer.getName());
                 }
-            }
+            } /*
             for (Objective o : scoreboard.getObjectives()) {
                 o.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-            }
+            }*/
         }
         return scoreboard;
     }

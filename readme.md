@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.139 - pull all compatible fixes until v1.3.3.235
+- v1.3.2.140 - pull all compatible fixes until v1.3.3.239
 - [read more](doc/changelog.md)
 
 ***

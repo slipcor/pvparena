@@ -514,7 +514,10 @@ public class PACheck {
         }
 
         StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
-        event.setDeathMessage(null);
+        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES) ||
+                arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGESCUSTOM)) {
+            event.setDeathMessage(null);
+        }
 
         if (player.getKiller() != null) {
             player.getKiller().setFoodLevel(
