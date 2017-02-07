@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.238 - allow for default death messaeges by setting both deathmessage config nodes to false
+- v1.3.3.239 - fix inventory double drop bug when losing the last life
 - [read more](doc/changelog.md)
 
 ***

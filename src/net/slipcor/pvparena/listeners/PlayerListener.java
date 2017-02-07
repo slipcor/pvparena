@@ -382,6 +382,9 @@ public class PlayerListener implements Listener {
 
         if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
             InventoryManager.drop(player);
+            if (eEvent instanceof EntityDeathEvent) {
+                ((EntityDeathEvent) eEvent).getDrops().clear();
+            }
         }
 
         if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
