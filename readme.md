@@ -85,7 +85,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.1.50 - apply all current fixes of v1.3.2
+- v1.3.1.51 - fix a NPE and a dupe bug - this is going to be the final fix for v1.3.1
 - [read more](doc/changelog.md)
 
 ***
