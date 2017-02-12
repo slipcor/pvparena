@@ -1348,10 +1348,9 @@ public class Arena {
                 e.printStackTrace();
             }
         } else {
-            final ArenaTeam ateam = ArenaPlayer.parsePlayer(player.getName()).getArenaTeam();
-
-            if (ateam != null) {
-                getStandardScoreboard().getTeam(ateam.getName()).removeEntry(player.getName());
+            Team team = getStandardScoreboard().getEntryTeam(player.getName());
+            if (team != null) {
+                team.removeEntry(player.getName());
             }
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
             try {

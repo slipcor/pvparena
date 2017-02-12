@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.239 - fix inventory double drop bug when losing the last life
+- v1.3.3.240 - address github issue #276 by catching the NPE even deeper
 - [read more](doc/changelog.md)
 
 ***
