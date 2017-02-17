@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.240 - address github issue #276 by catching the NPE even deeper
+- v1.3.3.241 - address github issue #278 - support "hand" placeholder for multiple-item-definitions too
 - [read more](doc/changelog.md)
 
 ***

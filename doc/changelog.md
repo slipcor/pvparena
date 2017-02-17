@@ -1,3 +1,4 @@
+- v1.3.3.241 - address github issue #278 - support "hand" placeholder for multiple-item-definitions too
 - v1.3.3.240 - address github issue #276 by catching the NPE even deeper
 - v1.3.3.239 - fix inventory double drop bug when losing the last life
 - v1.3.3.238 - allow for default death messaeges by setting both deathmessage config nodes to false

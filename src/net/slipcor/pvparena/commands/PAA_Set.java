@@ -197,6 +197,20 @@ public class PAA_Set extends AbstractArenaCommand {
             }
             return;
         } else if ("items".equals(type)) {
+            if ("hand".equals(value)) {
+                if (player instanceof Player) {
+
+                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
+                    arena.getArenaConfig().setManually(node, itemDefinition);
+                    arena.msg(
+                            player,
+                            Language.parse(arena, MSG.SET_DONE, node,
+                                    itemDefinition));
+                } else {
+                    arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+                }
+                return;
+            }
             if ("inventory".equals(value)) {
                 if (player instanceof Player) {
 
