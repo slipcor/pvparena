@@ -954,17 +954,27 @@ public class Arena {
     }
 
     /**
-     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean)}
+     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean), boolean}
      */
+    @Deprecated
     public void playerLeave(final Player player, final CFG location, final boolean silent) {
-        playerLeave(player, location, silent, !silent);
+        playerLeave(player, location, silent, !silent, silent);
     }
+
+    /**
+     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean), boolean}
+     */
+    @Deprecated
+    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force) {
+        playerLeave(player, location, silent, force, !force);
+    }
+
     /**
      * a player leaves from the arena
      *
      * @param player the leaving player
      */
-    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force) {
+    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force, final boolean soft) {
         if (player == null) {
             return;
         }
@@ -998,7 +1008,7 @@ public class Arena {
             msg(player, Language.parse(this, MSG.NOTICE_YOU_LEFT));
         }
 
-        removePlayer(player, cfg.getString(location), !force, force);
+        removePlayer(player, cfg.getString(location), soft, force);
 
         if (!cfg.getBoolean(CFG.READY_ENFORCECOUNTDOWN) && startRunner != null && cfg.getInt(CFG.READY_MINPLAYERS) > 0 &&
                 getFighters().size() <= cfg.getInt(CFG.READY_MINPLAYERS)) {
@@ -1925,7 +1935,7 @@ public class Arena {
 
     public void stop(final boolean force) {
         for (final ArenaPlayer p : getFighters()) {
-            playerLeave(p.get(), CFG.TP_EXIT, true, force);
+            playerLeave(p.get(), CFG.TP_EXIT, true, force, false);
         }
         reset(force);
     }

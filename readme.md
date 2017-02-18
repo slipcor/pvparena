@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.241 - address github issue #278 - support "hand" placeholder for multiple-item-definitions too
+- v1.3.2.242 - properly reset scoreboard when simply leaving by command
 - [read more](doc/changelog.md)
 
 ***
