@@ -315,7 +315,7 @@ public class EntityListener implements Listener {
         final Entity entity = event.getEntity();
 
         DEBUG.i("onEntityDamage: cause: " + event.getCause().name() + " : "
-                + event.getEntity().toString());
+                + event.getEntity().toString() + " => " + event.getEntity().getLocation());
 
         if (!(entity instanceof Player)) {
             return;

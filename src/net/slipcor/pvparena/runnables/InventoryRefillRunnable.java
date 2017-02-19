@@ -121,5 +121,16 @@ public class InventoryRefillRunnable implements Runnable {
             arena.getDebugger().i("NOT");
         }
         player.setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getFireTicks() > 0) {
+                        player.setFireTicks(0);
+                    }
+                }
+            }, 5L);
+        } catch (Exception e) {
+        }
     }
 }

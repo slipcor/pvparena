@@ -576,7 +576,9 @@ public class Arena {
 
             obj.setDisplayName(ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName());
 
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            if (this.isFightInProgress()) {
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            }
         }
         return scoreboard;
     }
@@ -974,7 +976,8 @@ public class Arena {
      *
      * @param player the leaving player
      */
-    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force, final boolean soft) {
+    public void playerLeave(final Player player, final CFG location, final boolean silent,
+                            final boolean force, final boolean soft) {
         if (player == null) {
             return;
         }
@@ -1314,14 +1317,18 @@ public class Arena {
         }
     }
 
-    private void resetScoreboard(final Player player, final boolean force) {
+    private void resetScoreboard(final Player player, final boolean force, final boolean soft) {
         if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            getDebugger().i("ScoreBoards: remove: " + player.getName(), player);
+            getDebugger().i("ScoreBoards: "+(soft?"(soft) ":"")+"remove: " + player.getName(), player);
             try {
                 if (scoreboard != null) {
                     for (final Team team : scoreboard.getTeams()) {
                         if (team.hasEntry(player.getName())) {
                             team.removeEntry(player.getName());
+                            if (soft) {
+                                scoreboard.getObjective(DisplaySlot.SIDEBAR).getScore(player.getName()).setScore(0);
+                                return;
+                            }
                             scoreboard.resetScores(player.getName());
                         }
                     }
@@ -1361,6 +1368,9 @@ public class Arena {
             Team team = getStandardScoreboard().getEntryTeam(player.getName());
             if (team != null) {
                 team.removeEntry(player.getName());
+                if (soft) {
+                    return;
+                }
             }
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
             try {
@@ -1529,9 +1539,7 @@ public class Arena {
         if (aPlayer.getState() != null) {
             aPlayer.getState().unload();
         }
-        if (!soft || this.isFreeForAll()) {
-            resetScoreboard(player, force);
-        }
+        resetScoreboard(player, force, soft);
 
         //noinspection deprecation
         ArenaModuleManager.resetPlayer(this, player, force);
@@ -1542,8 +1550,8 @@ public class Arena {
             sClass = aPlayer.getArenaClass().getName();
         }
 
-        if (!"custom".equalsIgnoreCase(sClass) ||
-                cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR)) {
+        if (!soft && (!"custom".equalsIgnoreCase(sClass) ||
+                cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
             ArenaPlayer.reloadInventory(this, player, true);
         }
 
@@ -1728,8 +1736,18 @@ public class Arena {
         }
 
         ArenaModuleManager.parseRespawn(this, player, team, cause, damager);
-
         player.setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getFireTicks() > 0) {
+                        player.setFireTicks(0);
+                    }
+                }
+            }, 5L);
+        } catch (Exception e) {
+        }
         player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
     }
 
@@ -1870,7 +1888,9 @@ public class Arena {
         getDebugger().i("start()");
         if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD) && scoreboard != null) {
             Objective obj = scoreboard.getObjective("lives");
-            obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            if (this.isFightInProgress()) {
+                obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+            }
         }
         gaveRewards = false;
         startRunner = null;
@@ -1909,6 +1929,14 @@ public class Arena {
             if (overRide || handle) {
                 getDebugger().i("START!");
                 setFightInProgress(true);
+
+                if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+                    Objective obj = getSpecialScoreboard().getObjective("lives");
+                    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                } else {
+                    Objective obj = getStandardScoreboard().getObjective("lives");
+                    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
+                }
 
             } else if (handle) {
                 if (errror != null) {

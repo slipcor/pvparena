@@ -113,8 +113,18 @@ public final class PlayerState {
         } else {
             playersetHealth(player, iHealth);
         }
-
         player.setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getFireTicks() > 0) {
+                        player.setFireTicks(0);
+                    }
+                }
+            }, 5L);
+        } catch (Exception e) {
+        }
         player.setFallDistance(0);
         player.setVelocity(new Vector());
         player.setFoodLevel(arena.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
@@ -200,7 +210,18 @@ public final class PlayerState {
         player.addPotionEffects(potionEffects);
 
         aPlayer.setTelePass(false);
-        player.setFireTicks(fireticks);
+        player.setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getFireTicks() > 0) {
+                        player.setFireTicks(0);
+                    }
+                }
+            }, 5L);
+        } catch (Exception e) {
+        }
 
         if (aPlayer.getArena() != null) {
             player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);

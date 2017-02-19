@@ -729,8 +729,18 @@ public class ArenaPlayer {
         }
         arena = null;
         aClass = null;
-
         get().setFireTicks(0);
+        try {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    if (get().getFireTicks() > 0) {
+                        get().setFireTicks(0);
+                    }
+                }
+            }, 5L);
+        } catch (Exception e) {
+        }
 
         clearDump();
     }

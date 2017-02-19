@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.242 - properly reset scoreboard when simply leaving by command
+- v1.3.2.243 - eventually delay scoreboard display to arena start, delay inventory reset to when a player gets put back to their exit spawn, delay fire tick reset
 - [read more](doc/changelog.md)
 
 ***

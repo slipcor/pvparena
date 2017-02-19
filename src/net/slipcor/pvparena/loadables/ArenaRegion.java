@@ -631,7 +631,7 @@ public class ArenaRegion {
                         // ap.get().setHealth(0);
                         ap.get().damage(1000);
                     } else {
-                        arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, true);
+                        arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, false);
                     }
                 }
             } else if (type == RegionType.WATCH) {
@@ -652,7 +652,7 @@ public class ArenaRegion {
 
                 if (!found) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
-                    arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, true);
+                    arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, false);
                 }
             } else if (type == RegionType.LOUNGE) {
                 if (ap.getStatus() != Status.READY
@@ -674,7 +674,7 @@ public class ArenaRegion {
 
                 if (!found) {
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
-                    arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, true);
+                    arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, false);
                 }
             }
         }
