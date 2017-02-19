@@ -734,7 +734,7 @@ public class ArenaPlayer {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    if (get().getFireTicks() > 0) {
+                    if (get() != null && get().getFireTicks() > 0) {
                         get().setFireTicks(0);
                     }
                 }

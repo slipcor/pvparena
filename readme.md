@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.2.243 - eventually delay scoreboard display to arena start, delay inventory reset to when a player gets put back to their exit spawn, delay fire tick reset
+- v1.3.3.244 - catch an NPE about scoreboards and dead/offline players and fix a scoreboard crash vulnerability
 - [read more](doc/changelog.md)
 
 ***

@@ -782,6 +782,13 @@ public final class StringParser {
         for (char c : key.toCharArray()) {
             buffer.append(c);
             if (c == ChatColor.COLOR_CHAR) {
+                if (buffer.length() >= 15) {
+                    if (pos > 2) {
+                        return split;
+                    }
+                    split[pos++] = buffer.toString();
+                    buffer.setLength(0);
+                }
                 continue;
             }
 

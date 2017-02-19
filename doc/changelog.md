@@ -1,5 +1,6 @@
-- v1.3.2.243 - eventually delay scoreboard display to arena start, delay inventory reset to when a player gets put back to their exit spawn, delay fire tick reset
-- v1.3.2.242 - properly reset scoreboard when simply leaving by command
+- v1.3.3.244 - catch an NPE about scoreboards and dead/offline players and fix a scoreboard crash vulnerability
+- v1.3.3.243 - eventually delay scoreboard display to arena start, delay inventory reset to when a player gets put back to their exit spawn, delay fire tick reset
+- v1.3.3.242 - properly reset scoreboard when simply leaving by command
 - v1.3.3.241 - address github issue #278 - support "hand" placeholder for multiple-item-definitions too
 - v1.3.3.240 - address github issue #276 by catching the NPE even deeper
 - v1.3.3.239 - fix inventory double drop bug when losing the last life
