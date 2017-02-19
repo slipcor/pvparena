@@ -1326,7 +1326,7 @@ public class Arena {
                         if (team.hasEntry(player.getName())) {
                             team.removeEntry(player.getName());
                             if (soft) {
-                                scoreboard.getObjective(DisplaySlot.SIDEBAR).getScore(player.getName()).setScore(0);
+                                updateScoreboards();
                                 return;
                             }
                             scoreboard.resetScores(player.getName());

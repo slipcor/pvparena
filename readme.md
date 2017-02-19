@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.244 - catch an NPE about scoreboards and dead/offline players and fix a scoreboard crash vulnerability
+- v1.3.3.245 - revert player names appearing on scoreboards, maybe properly display 0 team lives left?
 - [read more](doc/changelog.md)
 
 ***
