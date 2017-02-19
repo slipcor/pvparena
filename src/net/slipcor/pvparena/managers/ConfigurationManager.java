@@ -214,6 +214,7 @@ public final class ConfigurationManager {
                             PVPArena.instance.getLogger().warning(
                                     "unrecognized offhand item: " + split[1]);
                         }
+                        sItems[i] = "AIR";
                     }
 
                     items[i] = StringParser.getItemStackFromString(sItems[i]);

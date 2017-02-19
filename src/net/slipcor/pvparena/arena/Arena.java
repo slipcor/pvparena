@@ -1933,9 +1933,6 @@ public class Arena {
                 if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
                     Objective obj = getSpecialScoreboard().getObjective("lives");
                     obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-                } else {
-                    Objective obj = getStandardScoreboard().getObjective("lives");
-                    obj.setDisplaySlot(DisplaySlot.SIDEBAR);
                 }
 
             } else if (handle) {
