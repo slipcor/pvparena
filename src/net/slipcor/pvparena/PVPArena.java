@@ -285,6 +285,9 @@ public class PVPArena extends JavaPlugin {
 
             this.reloadConfig();
 
+            Language.init(getConfig().getString("language", "en"));
+            Help.init(getConfig().getString("language", "en"));
+
             final String[] emptyArray = new String[0];
 
             for (Arena a : ArenaManager.getArenas()) {

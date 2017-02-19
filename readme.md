@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.245 - revert player names appearing on scoreboards, maybe properly display 0 team lives left?
+- v1.3.3.246 - address github issue #280, reload global language and help nodes on /pa reload
 - [read more](doc/changelog.md)
 
 ***

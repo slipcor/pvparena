@@ -1,3 +1,4 @@
+- v1.3.3.246 - address github issue #280, reload global language and help nodes on /pa reload
 - v1.3.3.245 - revert player names appearing on scoreboards, maybe properly display 0 team lives left?
 - v1.3.3.244 - catch an NPE about scoreboards and dead/offline players and fix a scoreboard crash vulnerability
 - v1.3.3.243 - eventually delay scoreboard display to arena start, delay inventory reset to when a player gets put back to their exit spawn, delay fire tick reset
