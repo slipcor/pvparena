@@ -1,3 +1,4 @@
+- v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls
 - v1.3.3.247 - do not duplicate offhand items and don't try to set objectives that are not needed (because of disabled scoreboard)
 - v1.3.3.246 - address github issue #280, reload global language and help nodes on /pa reload
 - v1.3.3.245 - revert player names appearing on scoreboards, maybe properly display 0 team lives left?

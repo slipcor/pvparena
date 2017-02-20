@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.247 - do not duplicate offhand items and don't try to set objectives that are not needed (because of disabled scoreboard)
+- v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls
 - [read more](doc/changelog.md)
 
 ***

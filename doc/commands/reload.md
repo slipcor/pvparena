@@ -10,6 +10,7 @@ arena and are not part of an arena, this command reloads all arenas.
 Command |  Definition
 ------------- | -------------
 /pa reload | reload everything or the arena you're part of
+/pa reload ymls | reload main config, language and help ymls 
 /pa reload CTF | reload the arena called CTF
 
 ## Details

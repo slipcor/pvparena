@@ -288,6 +288,10 @@ public class PVPArena extends JavaPlugin {
             Language.init(getConfig().getString("language", "en"));
             Help.init(getConfig().getString("language", "en"));
 
+            if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
+                return true;
+            }
+
             final String[] emptyArray = new String[0];
 
             for (Arena a : ArenaManager.getArenas()) {
