@@ -73,7 +73,7 @@ public class Updater extends Thread {
         try {
             chunks = version.split("-")[0].split("\\.");
         } catch (Exception e) {
-            chunks = new String[]{"1","9"};
+            chunks = new String[]{"1","11"};
         }
         int a,b;
         try {

@@ -1,3 +1,5 @@
+- v1.3.4.249 - update to Spigot 1.11 - address github issue #218 
+
 - v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls
 - v1.3.3.247 - do not duplicate offhand items and don't try to set objectives that are not needed (because of disabled scoreboard)
 - v1.3.3.246 - address github issue #280, reload global language and help nodes on /pa reload
@@ -29,7 +31,6 @@
 - v1.3.3.220 - further ID fixes, and fix a but about GameMode setting and one about players being able to join an arena when it is restoring
 - v1.3.3.219 - finish the item ID burial
 - v1.3.3.218 - stop supporting item IDs in configs - configs shall be updated!
-
 - v1.3.3.217 - do not nag people to update if updater type DOWNLOAD is selected - addresses github issue #244
 - v1.3.3.216 - address a bug about invisibility being nullified by internal scoreboard
 - v1.3.3.215 - address issue #238 by adding refillCustomInventory - defaulting to true

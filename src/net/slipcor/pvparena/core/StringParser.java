@@ -7,6 +7,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.material.Dye;
@@ -433,6 +434,16 @@ public final class StringParser {
                         e.printStackTrace();
                         return itemStack;
                     }
+                } else if (itemStack.getType() == Material.MONSTER_EGG) {
+                    try {
+                        final SpawnEggMeta meta = (SpawnEggMeta) itemStack.getItemMeta();
+                        meta.setSpawnedType(EntityType.fromName(data));
+                        itemStack.setItemMeta(meta);
+                    } catch (final Exception e) {
+                        PVPArena.instance.getLogger().warning(
+                                "invalid spawn egg data: " + data);
+                        return itemStack;
+                    }
                 } else {
                     DEBUG.i("data not available for: " + mat.name());
                 }
@@ -603,6 +614,15 @@ public final class StringParser {
                 temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);
             }
+        } else if (itemStack.getType() == Material.MONSTER_EGG){
+            if (!durability) {
+                temp.append('~');
+                temp.append(itemStack.getDurability());
+                durability = true;
+            }
+            temp.append('~');
+            final SpawnEggMeta meta = (SpawnEggMeta) itemStack.getItemMeta();
+            temp.append(meta.getSpawnedType().name());
         }
 
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {

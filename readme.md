@@ -30,7 +30,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- Spigot 1.9.4
+- Spigot 1.11.2
 
 ***
 
@@ -84,7 +84,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls
+- v1.3.4.249 - update to Spigot 1.11 - address github issue #218
 - [read more](doc/changelog.md)
 
 ***
