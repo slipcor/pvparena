@@ -1567,10 +1567,7 @@ public class Arena {
                     if (aPlayer.getSavedLocation() != null) {
                         getDebugger().i("location is fine", player);
                         final PALocation loc = aPlayer.getSavedLocation();
-                        player.teleport(loc.toLocation().add(
-                                PVPArena.instance.getConfig().getDouble("x-offset"),
-                                PVPArena.instance.getConfig().getDouble("y-offset"),
-                                PVPArena.instance.getConfig().getDouble("z-offset")));
+                        player.teleport(loc.toLocation());
                         player
                                 .setNoDamageTicks(
                                         getArenaConfig().getInt(
@@ -1867,9 +1864,16 @@ public class Arena {
     }
 
     public void spawnSet(final String node, final PALocation paLocation) {
-        cfg.setManually("spawns." + node, Config.parseToString(paLocation));
+        final String string = Config.parseToString(paLocation);
+
+        // the following conversion is needed because otherwise the arena will add
+        // too much offset until the next restart, where the location is loaded based
+        // on the BLOCK position of the given location plus the player orientation
+        final PALocation location = Config.parseLocation(string);
+
+        cfg.setManually("spawns." + node, string);
         cfg.save();
-        addSpawn(new PASpawn(paLocation, node));
+        addSpawn(new PASpawn(location, node));
     }
 
     public void spawnUnset(final String node) {
@@ -2032,20 +2036,20 @@ public class Arena {
         }
         PALocation loc = SpawnManager.getSpawnByExactName(this, place);
         if ("old".equals(place)) {
-            loc = aPlayer.getSavedLocation().add(
-                    PVPArena.instance.getConfig().getDouble("x-offset"),
-                    PVPArena.instance.getConfig().getDouble("y-offset"),
-                    PVPArena.instance.getConfig().getDouble("z-offset"));
+            loc = aPlayer.getSavedLocation();
         }
         if (loc == null) {
             new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
             return;
         }
 
+        debug.i("raw location: " + loc.toString());
+
         Location offset = this.getOffset(place);
         if (offset == null) {
             offset = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
         }
+        debug.i("offset location: " + offset.toString());
 
         aPlayer.setTeleporting(true);
         aPlayer.setTelePass(true);

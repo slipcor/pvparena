@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 /**
  * <pre>Arena Module class "RegionTool"</pre>
@@ -51,6 +52,11 @@ public class RegionTool extends ArenaModule {
         }
 
         if (!PVPArena.hasAdminPerms(event.getPlayer())) {
+            return false;
+        }
+
+        if (event.getHand().equals(EquipmentSlot.OFF_HAND)) {
+            debug.i("exiting: offhand", event.getPlayer());
             return false;
         }
 

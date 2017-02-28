@@ -448,6 +448,11 @@ public class PlayerListener implements Listener {
             return;
         }
 
+        if (event.getHand().equals(EquipmentSlot.OFF_HAND)) {
+            DEBUG.i("exiting: offhand", player);
+            return;
+        }
+
         DEBUG.i("event pre cancelled: " + event.isCancelled(),
                 player);
 
