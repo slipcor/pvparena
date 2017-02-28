@@ -27,6 +27,7 @@ import net.slipcor.pvparena.runnables.PVPActivateRunnable;
 import net.slipcor.pvparena.runnables.SpawnCampRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -525,7 +526,7 @@ public class PACheck {
                             + arena.getArenaConfig().getInt(
                             CFG.PLAYER_FEEDFORKILL));
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_HEALFORKILL)) {
-                PlayerState.playersetHealth(player.getKiller(), (int) player.getKiller().getMaxHealth());
+                PlayerState.playersetHealth(player.getKiller(), (int) player.getKiller().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
             }
             if (arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLFORKILL)) {
                 InventoryManager.clearInventory(player.getKiller());

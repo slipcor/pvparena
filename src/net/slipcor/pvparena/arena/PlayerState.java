@@ -7,6 +7,7 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
@@ -55,7 +56,7 @@ public final class PlayerState {
         foodlevel = player.getFoodLevel();
         gamemode = player.getGameMode().getValue();
         health = player.getHealth();
-        maxhealth = player.getMaxHealth();
+        maxhealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 
         exhaustion = player.getExhaustion();
         experience = player.getExp();
@@ -101,15 +102,15 @@ public final class PlayerState {
         int iHealth = arena.getArenaConfig().getInt(CFG.PLAYER_HEALTH);
 
         if (iHealth < 1) {
-            iHealth = (int) player.getMaxHealth();
+            iHealth = (int) player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         }
 
         if (arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-            player.setMaxHealth(arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
         }
 
-        if (iHealth > player.getMaxHealth()) {
-            player.setHealth(player.getMaxHealth());
+        if (iHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
+            player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
         } else {
             playersetHealth(player, iHealth);
         }
@@ -173,15 +174,15 @@ public final class PlayerState {
         }
 
         if (aPlayer.getArena().getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-            player.setMaxHealth(maxhealth);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxhealth);
         }
 
-        if (player.getMaxHealth() == maxhealth) {
+        if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() == maxhealth) {
             player.setHealth(health);
         } else {
-            final double newHealth = player.getMaxHealth() * health / maxhealth;
-            if (newHealth > player.getMaxHealth()) {
-                player.setHealth(player.getMaxHealth());
+            final double newHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * health / maxhealth;
+            if (newHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
+                player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             } else {
                 player.setHealth(newHealth);
             }

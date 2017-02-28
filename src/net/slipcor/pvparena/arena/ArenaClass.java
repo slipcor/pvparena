@@ -11,6 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.material.SpawnEgg;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
@@ -180,7 +181,7 @@ public final class ArenaClass {
                 equipArmor(item, player.getInventory());
             } else {
                 if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
-                    final SpawnEgg egg = (SpawnEgg) item.getData();
+                    final SpawnEggMeta egg = (SpawnEggMeta) item.getItemMeta();
 
                     try {
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){

@@ -458,6 +458,7 @@ public final class ConfigurationManager {
         return replaceItemDefinition(def);
     }
 
+    @SuppressWarnings("deprecation")
     private static String replaceItemDefinition(String definition) {
         if (definition.contains("|")) {
             String[] split = definition.split("\\|");

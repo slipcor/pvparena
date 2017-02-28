@@ -1,3 +1,4 @@
+- v1.3.4.250 - update some things to the latest API - fix CheckPoints spawn set logic, fix PlayerDeathMatch required kill display
 - v1.3.4.249 - update to Spigot 1.11 - address github issue #218 
 
 - v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls

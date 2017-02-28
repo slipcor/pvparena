@@ -66,25 +66,27 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Video Tutorials
 
-- [Basic Setup](http://www.youtube.com/watch?v=yyPJ6vlv09s)
-- [Region setup](http://www.youtube.com/watch?v=LB4WKdTh4Jg)
-- [CTF](http://www.youtube.com/watch?v=SuL78bce-f0)
-- [DeathMatch](http://www.youtube.com/watch?v=KqBueDNbpD8)
-- [Food Block Destroy](http://www.youtube.com/watch?v=ntloY1BTKHQ)
-- [FreeForAll](http://www.youtube.com/watch?v=xBIxHoKMu98)
-- [Spleef](http://www.youtube.com/watch?v=DRmLNXEAs_4)
-- [Pillar Domination](http://www.youtube.com/watch?v=Xi7yNURxAjw)
-- [TeamDeathMatch](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
+- Basic Setup (v1.3):
+-- [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
+-- [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
+- [Region setup (v1.0)](http://www.youtube.com/watch?v=LB4WKdTh4Jg)
+- [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
+- [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
+- [Food Block Destroy (v1.0)](http://www.youtube.com/watch?v=ntloY1BTKHQ)
+- [FreeForAll (v1.0)](http://www.youtube.com/watch?v=xBIxHoKMu98)
+- [Spleef (v1.0)](http://www.youtube.com/watch?v=DRmLNXEAs_4)
+- [Pillar Domination (v1.0)](http://www.youtube.com/watch?v=Xi7yNURxAjw)
+- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
 
 Users tutorials :
 
-- [TeamDeathMatch](http://www.youtube.com/watch?v=Jw6E8s2kiKw)
+- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=Jw6E8s2kiKw)
 
 ***
 
 ## Changelog
 
-- v1.3.4.249 - update to Spigot 1.11 - address github issue #218
+- v1.3.4.250 - update some things to the latest API - fix CheckPoints spawn set logic, fix PlayerDeathMatch required kill display
 - [read more](doc/changelog.md)
 
 ***

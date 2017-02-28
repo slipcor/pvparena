@@ -74,10 +74,8 @@ public class GoalCheckPoints extends ArenaGoal {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-
-        final String team = checkForMissingTeamSpawn(list);
-        if (team != null) {
-            return team;
+        if (!list.contains("spawn")) {
+            return "spawn";
         }
         int count = 0;
         for (final String s : list) {

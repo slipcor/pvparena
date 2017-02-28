@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
+import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -222,7 +223,7 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
                         respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
                         arena.parseDeathCause(player, player
                                 .getLastDamageCause().getCause(), killer),
-                        String.valueOf(iLives)));
+                        String.valueOf(iLives-1)));
             } else {
                 arena.broadcast(Language.parse(arena,
                         MSG.FIGHT_KILLED_BY,
@@ -265,6 +266,11 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
                 ap.setStatus(Status.LOST);
                 ap.addLosses();
 
+                if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+                    arena.getDebugger().i("faking player death", ap.get());
+                    PlayerListener.finallyKillPlayer(arena, ap.get(), killed.getLastDamageCause());
+                }
+
                 if (ArenaManager.checkAndCommit(arena, false)) {
                     arena.unKillPlayer(killed, killed
                             .getLastDamageCause().getCause(), killer);
@@ -272,8 +278,10 @@ public class GoalPlayerDeathMatch extends ArenaGoal {
                 }
             }
 
-            arena.unKillPlayer(killed, killed
-                    .getLastDamageCause().getCause(), killer);
+            if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+                arena.getDebugger().i("faking player death", killed);
+                PlayerListener.finallyKillPlayer(arena, killed, killed.getLastDamageCause());
+            }
 
             PACheck.handleEnd(arena, false);
             return true;
