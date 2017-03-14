@@ -67,8 +67,10 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Video Tutorials
 
 - Basic Setup (v1.3):
--- [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
--- [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
+    - [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
+    - [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
+- Localized Setup (v1.3):
+    - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
 - [Region setup (v1.0)](http://www.youtube.com/watch?v=LB4WKdTh4Jg)
 - [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
 - [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
@@ -86,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.251 - fix spawn alignment glitches, some of which were fixed by restarting the server, fix double messages around right clicking
+- v1.3.4.252 - fix issue #263 by cancelling PlayerItemConsumeEvent - since when is this a necessity? The interact event was cancelled :P
 - [read more](doc/changelog.md)
 
 ***

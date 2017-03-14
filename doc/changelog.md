@@ -1,3 +1,4 @@
+- v1.3.4.252 - fix issue #263 by cancelling PlayerItemConsumeEvent - since when is this a necessity? The interact event was cancelled :P
 - v1.3.4.251 - fix spawn alignment glitches, some of which were fixed by restarting the server, fix double messages around right clicking
 - v1.3.4.250 - update some things to the latest API - fix CheckPoints spawn set logic, fix PlayerDeathMatch required kill display
 - v1.3.4.249 - update to Spigot 1.11 - address github issue #218 

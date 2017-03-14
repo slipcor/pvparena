@@ -701,6 +701,14 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onPlayerItemConsume(final PlayerItemConsumeEvent event) {
+        ArenaPlayer arenaPlayer = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        if (arenaPlayer.getStatus() != Status.FIGHT) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final Player player = event.getPlayer();
