@@ -227,6 +227,12 @@ public class Debug {
         }
         logger = null;
 
+        for (Logger logger : loggers) {
+            for (Handler handler : logger.getHandlers()) {
+                handler.close();
+            }
+        }
+
         loggers.clear();
 
         for (final Arena a : ArenaManager.getArenas()) {
@@ -282,6 +288,7 @@ public class Debug {
         for (final Logger log : Debug.loggers) {
             final Handler[] handlers = log.getHandlers().clone();
             for (final Handler hand : handlers) {
+                hand.close();
                 log.removeHandler(hand);
             }
         }

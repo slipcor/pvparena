@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.253 - hotfix about cancelling PlayerItemConsumeEvent - sorry @mibby, fasting is over now!
+- v1.3.4.254 - who ordered .lck files? Not me! Byebye! [debugging file handler not closed]
 - [read more](doc/changelog.md)
 
 ***
