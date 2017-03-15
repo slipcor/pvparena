@@ -704,7 +704,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerItemConsume(final PlayerItemConsumeEvent event) {
         ArenaPlayer arenaPlayer = ArenaPlayer.parsePlayer(event.getPlayer().getName());
-        if (arenaPlayer.getStatus() != Status.FIGHT) {
+        if (arenaPlayer.getArena() != null && arenaPlayer.getStatus() != Status.FIGHT) {
             event.setCancelled(true);
         }
     }

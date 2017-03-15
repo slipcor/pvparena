@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.252 - fix issue #263 by cancelling PlayerItemConsumeEvent - since when is this a necessity? The interact event was cancelled :P
+- v1.3.4.253 - hotfix about cancelling PlayerItemConsumeEvent - sorry @mibby, fasting is over now!
 - [read more](doc/changelog.md)
 
 ***
