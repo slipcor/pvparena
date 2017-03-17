@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.254 - who ordered .lck files? Not me! Byebye! [debugging file handler not closed]
+- v1.3.4.255 - address github issue #263 - properly cancel interact event - I assumed that they come uncancelled - wrong
 - [read more](doc/changelog.md)
 
 ***

@@ -512,6 +512,8 @@ public class PlayerListener implements Listener {
             }
             if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                 arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
+                event.setCancelled(true);
+            } else if (aPlayer.getArena() != null && team != null) {
                 // fighting player inside the lobby!
                 event.setCancelled(true);
             }

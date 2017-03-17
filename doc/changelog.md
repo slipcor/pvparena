@@ -1,3 +1,4 @@
+- v1.3.4.255 - address github issue #263 - properly cancel interact event - I assumed that they come uncancelled - wrong
 - v1.3.4.254 - who ordered .lck files? Not me! Byebye! [debugging file handler not closed]
 - v1.3.4.253 - hotfix about cancelling PlayerItemConsumeEvent - sorry @mibby, fasting is over now!
 - v1.3.4.252 - fix issue #263 by cancelling PlayerItemConsumeEvent - since when is this a necessity? The interact event was cancelled :P
