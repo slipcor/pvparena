@@ -1,3 +1,4 @@
+- v1.3.4.256 - address github issue #285 - catch NPE by checking for missing round argument
 - v1.3.4.255 - address github issue #263 - properly cancel interact event - I assumed that they come uncancelled - wrong
 - v1.3.4.254 - who ordered .lck files? Not me! Byebye! [debugging file handler not closed]
 - v1.3.4.253 - hotfix about cancelling PlayerItemConsumeEvent - sorry @mibby, fasting is over now!

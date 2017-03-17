@@ -74,6 +74,9 @@ public class PAA_Round extends AbstractArenaCommand {
 
             if (args.length > 1) {
                 goal = PVPArena.instance.getAgm().getGoalByName(args[1].toLowerCase());
+            } else {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT, String.valueOf(args.length), "2"));
+                return;
             }
 
             if (goal == null) {
