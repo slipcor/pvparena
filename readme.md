@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.258 - finish the fix for issue #198 by supporting beacon block definitions
+- v1.3.4.259 - finish off github issue #280 by adding a proper message about reloading the languages
 - [read more](doc/changelog.md)
 
 ***

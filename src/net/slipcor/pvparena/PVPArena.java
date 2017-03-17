@@ -289,6 +289,7 @@ public class PVPArena extends JavaPlugin {
             Help.init(getConfig().getString("language", "en"));
 
             if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
+                Arena.pmsg(sender, Language.parse(MSG.RELOAD_YMLS_DONE));
                 return true;
             }
 

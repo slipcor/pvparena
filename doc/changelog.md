@@ -1,3 +1,4 @@
+- v1.3.4.259 - finish off github issue #280 by adding a proper message about reloading the languages
 - v1.3.4.258 - finish the fix for issue #198 by supporting beacon block definitions
 - v1.3.4.257 - address github issue #198 - make particle circle function goal independant
 - v1.3.4.256 - address github issue #285 - catch NPE by checking for missing round argument

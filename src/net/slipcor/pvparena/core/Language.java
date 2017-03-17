@@ -396,6 +396,7 @@ public final class Language {
         REGIONS_TYPE("nulang.regions.type", "Region Type: &a%1%&r"),
 
         RELOAD_DONE("nulang.reloaded", "Config reloaded!"),
+        RELOAD_YMLS_DONE("nulang.ymls.reloaded", "Languages reloaded!"),
 
         ROUND_DISPLAY("nulang.round.display", "Round #%1%: %2%"),
         ROUND_ADDED("nulang.round.added", "Added goal to round: &e%1%"),
