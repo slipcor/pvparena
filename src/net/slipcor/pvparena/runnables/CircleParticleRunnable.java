@@ -11,10 +11,9 @@ public class CircleParticleRunnable implements Runnable {
     double radius = 3;
     int i = 0;
 
-    public CircleParticleRunnable(Arena arena) {
+    public CircleParticleRunnable(Arena arena, Config.CFG config) {
         this.arena = arena;
-        radius = arena.getArenaConfig().getInt(
-                Config.CFG.GOAL_DOM_CLAIMRANGE);
+        radius = arena.getArenaConfig().getInt(config, 3);
     }
 
     @Override

@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.256 - address github issue #285 - catch NPE by checking for missing round argument
+- v1.3.4.257 - address github issue #198 - make particle circle function goal independant
 - [read more](doc/changelog.md)
 
 ***

@@ -668,7 +668,7 @@ public class GoalDomination extends ArenaGoal {
 
         announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
 
-        circleTask = Bukkit.getScheduler().runTaskTimer(PVPArena.instance, new CircleParticleRunnable(arena), 1L, 1L);
+        circleTask = Bukkit.getScheduler().runTaskTimer(PVPArena.instance, new CircleParticleRunnable(arena, CFG.GOAL_DOM_CLAIMRANGE), 1L, 1L);
     }
 
     private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
