@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.257 - address github issue #198 - make particle circle function goal independant
+- v1.3.4.258 - finish the fix for issue #198 by supporting beacon block definitions
 - [read more](doc/changelog.md)
 
 ***

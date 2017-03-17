@@ -20,7 +20,7 @@ public class CircleParticleRunnable implements Runnable {
     public void run() {
 
         for (PABlock spawn : arena.getBlocks()) {
-            if (spawn.getName().startsWith("flag")) {
+            if (spawn.getName().startsWith("flag") || spawn.getName().startsWith("beacon")) {
                 final double x = spawn.getLocation().getX() + radius * Math.cos(Math.toRadians(i));
                 final double y = spawn.getLocation().getY();
                 final double z = spawn.getLocation().getZ() + radius * Math.sin(Math.toRadians(i));
