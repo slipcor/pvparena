@@ -1,3 +1,5 @@
+- v1.3.4.260 - address github issue #290 - catch NPE about Spawn Eggs
+
 - v1.3.4.259 - finish off github issue #280 by adding a proper message about reloading the languages
 - v1.3.4.258 - finish the fix for issue #198 by supporting beacon block definitions
 - v1.3.4.257 - address github issue #198 - make particle circle function goal independant
@@ -9,7 +11,6 @@
 - v1.3.4.251 - fix spawn alignment glitches, some of which were fixed by restarting the server, fix double messages around right clicking
 - v1.3.4.250 - update some things to the latest API - fix CheckPoints spawn set logic, fix PlayerDeathMatch required kill display
 - v1.3.4.249 - update to Spigot 1.11 - address github issue #218 
-
 - v1.3.3.248 - /pa reload ymls | reload main config, language and help ymls
 - v1.3.3.247 - do not duplicate offhand items and don't try to set objectives that are not needed (because of disabled scoreboard)
 - v1.3.3.246 - address github issue #280, reload global language and help nodes on /pa reload

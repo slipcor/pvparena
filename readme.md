@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.259 - finish off github issue #280 by adding a proper message about reloading the languages
+- v1.3.4.260 - address github issue #290 - catch NPE about Spawn Eggs
 - [read more](doc/changelog.md)
 
 ***

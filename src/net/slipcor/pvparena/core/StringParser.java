@@ -622,7 +622,9 @@ public final class StringParser {
             }
             temp.append('~');
             final SpawnEggMeta meta = (SpawnEggMeta) itemStack.getItemMeta();
-            temp.append(meta.getSpawnedType().name());
+            if (meta != null && meta.getSpawnedType() != null && meta.getSpawnedType().name() != null) {
+                temp.append(meta.getSpawnedType().name());
+            }
         }
 
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
