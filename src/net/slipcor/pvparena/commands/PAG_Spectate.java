@@ -50,6 +50,7 @@ public class PAG_Spectate extends AbstractArenaCommand {
         }
 
         PACheck.handleSpectate(arena, sender);
+        arena.setupScoreboard((Player) sender);
     }
 
     @Override

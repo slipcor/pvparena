@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.267 - address github issue #291 by adding "perms.spectatorinteract" to allow spectators to interact
+- v1.3.4.268 - create a scoreboard for spectators
 - [read more](doc/changelog.md)
 
 ***
