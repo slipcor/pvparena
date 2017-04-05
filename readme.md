@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.265 - how I miss those debug times. IS THE PLAYER FLYING OR NOT!??!!
+- v1.3.4.266 - remove debug and address github issue #292 by checking if a player already joined an arena before doing anything
 - [read more](doc/changelog.md)
 
 ***

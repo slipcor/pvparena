@@ -229,14 +229,10 @@ public final class PlayerState {
         player.resetPlayerTime();
         player.setCollidable(collides);
         if (!soft) {
-            debug.i("setting flystate to pre-value: " + aPlayer.getFlyState());
             if (aPlayer.getFlyState() && !player.getAllowFlight()) {
-                debug.i("> allowing player to fly before ! <");
                 player.setAllowFlight(true);
             }
-            debug.i("player WAS flying: " + player.isFlying());
             player.setFlying(aPlayer.getFlyState());
-            debug.i("player IS flying: " + player.isFlying());
         }
     }
 

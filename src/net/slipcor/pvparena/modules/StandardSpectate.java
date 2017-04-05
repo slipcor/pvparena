@@ -51,6 +51,11 @@ public class StandardSpectate extends ArenaModule {
             return res;
         }
 
+        final ArenaPlayer arenaPlayer = ArenaPlayer.parsePlayer(sender.getName());
+        if (arenaPlayer.getArena() != null) {
+            res.setError(this, Language.parse(MSG.ERROR_ARENA_ALREADY_PART_OF, arenaPlayer.getArena().getName()));
+        }
+
         if (res.getPriority() < PRIORITY) {
             res.setPriority(this, PRIORITY);
         }
