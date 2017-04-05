@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.263 - change fly mode saving and restoring
+- v1.3.4.264 - why not try without delay?
 - [read more](doc/changelog.md)
 
 ***

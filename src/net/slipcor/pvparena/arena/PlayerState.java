@@ -218,12 +218,6 @@ public final class PlayerState {
                     if (player.getFireTicks() > 0) {
                         player.setFireTicks(0);
                     }
-                    if (!soft) {
-                        if (aPlayer.getFlyState() && !player.getAllowFlight()) {
-                            player.setAllowFlight(true);
-                        }
-                        player.setFlying(aPlayer.getFlyState());
-                    }
                 }
             }, 5L);
         } catch (Exception e) {
@@ -232,8 +226,20 @@ public final class PlayerState {
         if (aPlayer.getArena() != null) {
             player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         }
+        if (!soft) {
+            if (aPlayer.getFlyState() && !player.getAllowFlight()) {
+                player.setAllowFlight(true);
+            }
+            player.setFlying(aPlayer.getFlyState());
+        }
         player.resetPlayerTime();
         player.setCollidable(collides);
+        if (!soft) {
+            if (aPlayer.getFlyState() && !player.getAllowFlight()) {
+                player.setAllowFlight(true);
+            }
+            player.setFlying(aPlayer.getFlyState());
+        }
     }
 
     /**

@@ -1,3 +1,4 @@
+- v1.3.4.264 - why not try without delay?
 - v1.3.4.263 - change fly mode saving and restoring
 - v1.3.4.262 - do not restore flying state if specating on death
 - v1.3.4.261 - delay flying mode setting by 5 ticks when restoring a player
