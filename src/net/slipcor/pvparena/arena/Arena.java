@@ -1643,6 +1643,10 @@ public class Arena {
                     }
                     try {
                         ArenaTeam team = ap.getArenaTeam();
+                        if (team == null) {
+                            updateScoreboard(player);
+                            return;
+                        }
                         scoreboard.registerNewTeam(team.getName());
                         final Team bukkitTeam = scoreboard.getTeam(team.getName());
                         bukkitTeam.setPrefix(team.getColor().toString());
@@ -2423,6 +2427,9 @@ public class Arena {
             } else {
                 final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
                 if (ap.getArenaTeam() == null) {
+                    if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
+                        player.setScoreboard(getSpecialScoreboard());
+                    }
                     return;
                 }
                 getSpecialScoreboard().getObjective("lives").getScore(ap.getArenaTeam().getName()).setScore(PACheck.handleGetLives(this, ap));

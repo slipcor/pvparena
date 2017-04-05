@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.268 - create a scoreboard for spectators
+- v1.3.4.269 - update the spectator scoreboard
 - [read more](doc/changelog.md)
 
 ***

@@ -1,3 +1,4 @@
+- v1.3.4.269 - update the spectator scoreboard
 - v1.3.4.268 - create a scoreboard for spectators
 - v1.3.4.267 - address github issue #291 by adding "perms.spectatorinteract" to allow spectators to interact
 - v1.3.4.266 - remove debug and address github issue #292 by checking if a player already joined an arena before doing anything
