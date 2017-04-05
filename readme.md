@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.260 - address github issue #290 - catch NPE about Spawn Eggs
+- v1.3.4.261 - delay flying mode setting by 5 ticks when restoring a player
 - [read more](doc/changelog.md)
 
 ***

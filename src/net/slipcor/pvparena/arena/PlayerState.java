@@ -219,6 +219,10 @@ public final class PlayerState {
                     if (player.getFireTicks() > 0) {
                         player.setFireTicks(0);
                     }
+                    if (flying && !player.getAllowFlight()) {
+                        player.setAllowFlight(true);
+                    }
+                    player.setFlying(flying);
                 }
             }, 5L);
         } catch (Exception e) {
@@ -228,10 +232,6 @@ public final class PlayerState {
             player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         }
         player.resetPlayerTime();
-        if (flying && !player.getAllowFlight()) {
-            player.setAllowFlight(true);
-        }
-        player.setFlying(flying);
         player.setCollidable(collides);
     }
 
