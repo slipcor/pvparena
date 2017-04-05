@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.261 - delay flying mode setting by 5 ticks when restoring a player
+- v1.3.4.262 - do not restore flying state if specating on death
 - [read more](doc/changelog.md)
 
 ***

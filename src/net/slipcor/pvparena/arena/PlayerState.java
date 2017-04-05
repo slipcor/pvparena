@@ -154,7 +154,7 @@ public final class PlayerState {
         }
     }
 
-    public void unload() {
+    public void unload(final boolean soft) {
         final Player player = Bukkit.getPlayerExact(name);
 
         if (player == null) {
@@ -219,10 +219,12 @@ public final class PlayerState {
                     if (player.getFireTicks() > 0) {
                         player.setFireTicks(0);
                     }
-                    if (flying && !player.getAllowFlight()) {
-                        player.setAllowFlight(true);
+                    if (!soft) {
+                        if (flying && !player.getAllowFlight()) {
+                            player.setAllowFlight(true);
+                        }
+                        player.setFlying(flying);
                     }
-                    player.setFlying(flying);
                 }
             }, 5L);
         } catch (Exception e) {

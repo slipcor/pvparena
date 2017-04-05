@@ -1537,7 +1537,7 @@ public class Arena {
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         if (aPlayer.getState() != null) {
-            aPlayer.getState().unload();
+            aPlayer.getState().unload(soft);
         }
         resetScoreboard(player, force, soft);
 
