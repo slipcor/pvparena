@@ -90,6 +90,14 @@ public class PlayerListener implements Listener {
         if (arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
             return false;
         }
+
+        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+
+        if (aPlayer.getStatus() == Status.WATCH &&
+                arena.getArenaConfig().getBoolean(CFG.PERMS_SPECINTERACT)) {
+            return false;
+        }
+
         if (!arena.isFightInProgress()) {
             arena.getDebugger().i("arena != null and fight not in progress => cancel", player);
             arena.getDebugger().i("> true", player);
@@ -98,8 +106,6 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             return true;
         }
-
-        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         if (aPlayer.getStatus() != Status.FIGHT) {
             DEBUG.i("not fighting => cancel", player);
@@ -505,6 +511,12 @@ public class PlayerListener implements Listener {
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
+
+        if (aPlayer.getStatus() == Status.WATCH &&
+                arena.getArenaConfig().getBoolean(CFG.PERMS_SPECINTERACT)) {
+            arena.getDebugger().i("allowing spectator interaction due to config setting!");
+            return;
+        }
 
         if (aPlayer.getStatus() != Status.FIGHT) {
             if (whyMe) {

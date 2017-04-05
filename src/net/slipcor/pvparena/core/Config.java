@@ -110,6 +110,7 @@ public class Config {
         PERMS_JOINWITHSCOREBOARD("perms.joinWithScoreboard", true, null),
         PERMS_TEAMKILL("perms.teamkill", true, null),
         PERMS_SPECTALK("perms.specTalk", true, null),
+        PERMS_SPECINTERACT("perms.spectatorinteract", false, null),
 
         PLAYER_AUTOIGNITE("player.autoIgniteTNT", false, null),
         PLAYER_CLEARINVENTORY("player.clearInventory", "NONE", null),
