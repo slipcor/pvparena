@@ -53,6 +53,8 @@ public class ArenaPlayer {
     private boolean teleporting;
     private boolean mayDropInventory;
 
+    private Boolean flying;
+
     private Arena arena;
     private ArenaClass aClass;
     private ArenaClass naClass;
@@ -133,6 +135,10 @@ public class ArenaPlayer {
             players.add(ap);
         }
         return players;
+    }
+
+    public boolean getFlyState() {
+        return flying != null && flying;
     }
 
     /**
@@ -393,6 +399,10 @@ public class ArenaPlayer {
             return;
         }
         file.delete();
+    }
+
+    public void clearFlyState() {
+        flying = null;
     }
 
     /**
@@ -800,6 +810,10 @@ public class ArenaPlayer {
 
     public void setNextArenaClass(ArenaClass aClass) {
         this.naClass = aClass;
+    }
+
+    public void setFlyState(boolean flyState) {
+        this.flying = flyState;
     }
 
     public void setIgnoreAnnouncements(final boolean value) {

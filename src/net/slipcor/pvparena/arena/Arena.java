@@ -1596,6 +1596,7 @@ public class Arena {
                 }
                 if (!soft) {
                     aPlayer.setLocation(null);
+                    aPlayer.clearFlyState();
                 }
             }
         }

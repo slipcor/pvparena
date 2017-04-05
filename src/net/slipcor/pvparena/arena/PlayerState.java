@@ -42,7 +42,6 @@ public final class PlayerState {
     private float experience;
     private float saturation;
 
-    private boolean flying;
     private boolean collides;
 
     private String displayname;
@@ -64,12 +63,12 @@ public final class PlayerState {
         saturation = player.getSaturation();
 
         potionEffects = player.getActivePotionEffects();
-
-        flying = player.isFlying();
         collides = player.isCollidable();
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final Arena arena = aPlayer.getArena();
+
+        aPlayer.setFlyState(player.isFlying());
 
         if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
             displayname = player.getDisplayName();
@@ -94,7 +93,7 @@ public final class PlayerState {
         cfg.set("state.explevel", explevel);
         cfg.set("state.saturation", saturation);
         cfg.set("state.displayname", displayname);
-        cfg.set("state.flying", flying);
+        cfg.set("state.flying", ArenaPlayer.parsePlayer(name).getFlyState());
         cfg.set("state.collides", collides);
     }
 
@@ -220,10 +219,10 @@ public final class PlayerState {
                         player.setFireTicks(0);
                     }
                     if (!soft) {
-                        if (flying && !player.getAllowFlight()) {
+                        if (aPlayer.getFlyState() && !player.getAllowFlight()) {
                             player.setAllowFlight(true);
                         }
-                        player.setFlying(flying);
+                        player.setFlying(aPlayer.getFlyState());
                     }
                 }
             }, 5L);
@@ -270,7 +269,6 @@ public final class PlayerState {
         saturation = 0;
         displayname = null;
         potionEffects = null;
-        flying = false;
         collides = false;
     }
 
@@ -295,7 +293,7 @@ public final class PlayerState {
         pState.explevel = cfg.getInt("state.explevel", 0);
         pState.saturation = (float) cfg.getDouble("state.saturation", 0);
         pState.displayname = cfg.getString("state.displayname", pName);
-        pState.flying = cfg.getBoolean("state.flying", false);
+        ArenaPlayer.parsePlayer(pName).setFlyState(cfg.getBoolean("state.flying", false));
         pState.collides = cfg.getBoolean("state.collides", false);
 
         return pState;

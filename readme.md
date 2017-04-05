@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.262 - do not restore flying state if specating on death
+- v1.3.4.263 - change fly mode saving and restoring
 - [read more](doc/changelog.md)
 
 ***
