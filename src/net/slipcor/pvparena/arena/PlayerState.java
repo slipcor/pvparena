@@ -226,19 +226,17 @@ public final class PlayerState {
         if (aPlayer.getArena() != null) {
             player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         }
-        if (!soft) {
-            if (aPlayer.getFlyState() && !player.getAllowFlight()) {
-                player.setAllowFlight(true);
-            }
-            player.setFlying(aPlayer.getFlyState());
-        }
         player.resetPlayerTime();
         player.setCollidable(collides);
         if (!soft) {
+            debug.i("setting flystate to pre-value: " + aPlayer.getFlyState());
             if (aPlayer.getFlyState() && !player.getAllowFlight()) {
+                debug.i("> allowing player to fly before ! <");
                 player.setAllowFlight(true);
             }
+            debug.i("player WAS flying: " + player.isFlying());
             player.setFlying(aPlayer.getFlyState());
+            debug.i("player IS flying: " + player.isFlying());
         }
     }
 
