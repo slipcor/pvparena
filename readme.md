@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.269 - update the spectator scoreboard
+- v1.3.4.270 - do not add spectator names to the scoreboard
 - [read more](doc/changelog.md)
 
 ***

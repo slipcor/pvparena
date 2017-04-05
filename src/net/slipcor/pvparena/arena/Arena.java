@@ -2421,17 +2421,18 @@ public class Arena {
 
     private void updateScoreboard(final Player player) {
         if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+            if (ap.getArenaTeam() == null) {
+                // a spectator, special case. Just update and do not add to the scores
+                if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
+                    player.setScoreboard(getSpecialScoreboard());
+                }
+                return;
+            }
             if (isFreeForAll()) {
                 final Score score = getSpecialScoreboard().getObjective("lives").getScore(player.getName());
                 score.setScore(PACheck.handleGetLives(this, ArenaPlayer.parsePlayer(player.getName())));
             } else {
-                final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-                if (ap.getArenaTeam() == null) {
-                    if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
-                        player.setScoreboard(getSpecialScoreboard());
-                    }
-                    return;
-                }
                 getSpecialScoreboard().getObjective("lives").getScore(ap.getArenaTeam().getName()).setScore(PACheck.handleGetLives(this, ap));
             }
             if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
