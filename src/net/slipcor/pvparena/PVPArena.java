@@ -16,7 +16,6 @@ import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.managers.TabManager;
-import net.slipcor.pvparena.metrics.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -26,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -510,48 +508,8 @@ public class PVPArena extends JavaPlugin {
                 final Tracker trackMe = new Tracker();
                 trackMe.start();
             }
-
-            try {
-                final Metrics metrics = new Metrics(this);
-                final Metrics.Graph atg = metrics
-                        .createGraph("Game modes installed");
-                for (final ArenaGoal at : agm.getAllGoals()) {
-                    atg.addPlotter(new WrapPlotter(at.getName()));
-                }
-                final Metrics.Graph amg = metrics
-                        .createGraph("Enhancement modules installed");
-                for (final ArenaModule am : amm.getAllMods()) {
-                    amg.addPlotter(new WrapPlotter(am.getName()));
-                }
-                final Metrics.Graph acg = metrics.createGraph("Arena count");
-                acg.addPlotter(new WrapPlotter("count", ArenaManager
-                        .getArenas().size()));
-
-                metrics.start();
-            } catch (final IOException e) {
-                e.printStackTrace();
-            }
         }
 
         Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
-    }
-
-    private static class WrapPlotter extends Metrics.Plotter {
-        private final int arenaCount;
-
-        public WrapPlotter(final String name) {
-            super(name);
-            arenaCount = 1;
-        }
-
-        public WrapPlotter(final String name, final int count) {
-            super(name);
-            arenaCount = count;
-        }
-
-        @Override
-        public int getValue() {
-            return arenaCount;
-        }
     }
 }

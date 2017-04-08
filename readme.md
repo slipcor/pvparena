@@ -69,9 +69,9 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 - Basic Setup (v1.3):
     - [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
     - [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
+    - [Region Tutorial (Shapes)](https://www.youtube.com/watch?v=jWdWbwRg9zY)
 - Localized Setup (v1.3):
     - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
-- [Region setup (v1.0)](http://www.youtube.com/watch?v=LB4WKdTh4Jg)
 - [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
 - [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
 - [Food Block Destroy (v1.0)](http://www.youtube.com/watch?v=ntloY1BTKHQ)
@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.270 - do not add spectator names to the scoreboard
+- v1.3.4.271 - remove metrics and update the readme with new region shape tutorial
 - [read more](doc/changelog.md)
 
 ***
@@ -129,16 +129,9 @@ the other setting is for module version checking, let me show you the important 
 
 ***
 
-## Metrics
+## Phoning home
 
-To determine popularity and usage of PVP Arena, plugin installs are automatically tracked by the Metrics plugin tracking system.
-It does nothing if you do not have any configured arenas. If you don't want this tracking, edit plugins/PluginMetrics/config.yml and set opt-out to true.
-
-![PVP-Arena Metrics](http://i.mcstats.org/pvparena/Global+Statistics.borderless.png)
-
-### Phoning home
-
-To get a second opinion, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
+By default, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
 That's it! If you want to disable that, set "tracker" to false in the config!
 
 ***
