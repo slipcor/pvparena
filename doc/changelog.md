@@ -1,3 +1,5 @@
+- v1.3.4.272 - properly protect and not overprotect, affected: MOBS [block lightning], TNT [prevent entity damage], GROW [actually block block growth]
+- v1.3.4.271 - remove metrics and update the readme with new region shape tutorial
 - v1.3.4.270 - do not add spectator names to the scoreboard
 - v1.3.4.269 - update the spectator scoreboard
 - v1.3.4.268 - create a scoreboard for spectators

@@ -71,10 +71,11 @@ public class EntityListener implements Listener {
         naturals.add(SpawnReason.NATURAL);
         naturals.add(SpawnReason.SLIME_SPLIT);
         naturals.add(SpawnReason.VILLAGE_INVASION);
+        naturals.add(SpawnReason.LIGHTNING);
 
         if (!naturals.contains(event.getSpawnReason())) {
             // custom generation, this is not our business!
-            DEBUG.i(">natural");
+            DEBUG.i(">not natural");
             return;
         }
 
@@ -110,17 +111,11 @@ public class EntityListener implements Listener {
                 return; // no arena => out
             }
         }
-        arena.getDebugger().i("explosion inside an arena");
+        arena.getDebugger().i("explosion inside an arena, TNT should be blocked");
         if (!arena.getArenaConfig().getBoolean(CFG.PROTECT_ENABLED)
                 || !(event.getEntity() instanceof TNTPrimed)
                 && !(event.getEntity() instanceof Creeper)) {
             ArenaModuleManager.onEntityExplode(arena, event);
-            return;
-        }
-
-        if (BlockListener.isProtected(event.getLocation(), event,
-                RegionProtection.TNTBREAK)) {
-            event.blockList().clear();
             return;
         }
 

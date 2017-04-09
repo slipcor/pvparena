@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.271 - remove metrics and update the readme with new region shape tutorial
+- v1.3.4.272 - properly protect and not overprotect, affected: MOBS [block lightning], TNT [prevent entity damage], GROW [actually block block growth]
 - [read more](doc/changelog.md)
 
 ***

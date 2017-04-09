@@ -289,6 +289,23 @@ public class BlockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBlockGrow(final BlockGrowEvent event) {
+        Arena arena = ArenaManager.getArenaByProtectedRegionLocation(
+                new PABlockLocation(event.getBlock().getLocation()),
+                RegionProtection.NATURE);
+        Block block = event.getBlock();
+        if (arena == null) {
+            DEBUG.i("BlockGrowEvent -> no arena");
+            return; // no arena => out
+        }
+        if (isProtected(block.getLocation(), event, RegionProtection.NATURE)) {
+            return;
+        }
+
+        ArenaModuleManager.onBlockChange(arena, block, block.getState());
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockGrow(final StructureGrowEvent event) {
         Arena arena = null;
 
@@ -301,6 +318,7 @@ public class BlockListener implements Listener {
         }
 
         if (arena == null) {
+            DEBUG.i("StructureGrowEvent -> no arena");
             return; // no arena => out
         }
         for (final BlockState block : event.getBlocks()) {
@@ -518,8 +536,11 @@ public class BlockListener implements Listener {
                 RegionProtection.PAINTING)) {
             return;
         }
-
-        arena.getDebugger().i("painting break inside the arena");
+        if (arena == null) {
+            DEBUG.i("painting break inside the arena");
+        } else {
+            arena.getDebugger().i("painting break inside the arena");
+        }
         ArenaModuleManager.onPaintingBreak(arena, event.getEntity(), event
                 .getEntity().getType());
     }
