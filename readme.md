@@ -88,7 +88,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.272 - properly protect and not overprotect, affected: MOBS [block lightning], TNT [prevent entity damage], GROW [actually block block growth]
+- v1.3.4.273 - update player equip function to support offhand slots
 - [read more](doc/changelog.md)
 
 ***

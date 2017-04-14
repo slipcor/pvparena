@@ -176,10 +176,15 @@ public final class ArenaClass {
     }
 
     public static void equip(final Player player, final ItemStack[] items) {
+        ItemStack last = items[items.length-1];
         for (final ItemStack item : items) {
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
+                if (last != null && last == item) {
+                    player.getInventory().setItemInOffHand(last);
+                    continue;
+                }
                 if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
                     final SpawnEggMeta egg = (SpawnEggMeta) item.getItemMeta();
 
