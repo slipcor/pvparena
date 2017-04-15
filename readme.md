@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.275 - allow right clicking blocks when LOST attempt 2
+- v1.3.4.276 - do not setup a scoreboard if spectating is cancelled/not possible
 - [read more](doc/changelog.md)
 
 ***

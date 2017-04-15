@@ -56,7 +56,7 @@ public final class SpawnManager {
 
         double diff = 0;
         for (final PASpawn s : available) {
-            DEBUG.i("> checking " + s);
+            DEBUG.i("> checking " + s.getName());
             double tempDiff = 0;
             for (int i = 0; i < taken.length && taken[i] != null; i++) {
                 for (final PASpawn tt : total) {

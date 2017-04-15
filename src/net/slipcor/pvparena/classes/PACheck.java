@@ -691,7 +691,7 @@ public class PACheck {
         return commit.commitSetFlag(player, block);
     }
 
-    public static void handleSpectate(final Arena arena,
+    public static boolean handleSpectate(final Arena arena,
                                       final CommandSender sender) {
         PACheck res = new PACheck();
 
@@ -718,22 +718,23 @@ public class PACheck {
         if (res.hasError()) {
             arena.msg(sender,
                     Language.parse(arena, MSG.ERROR_ERROR, res.error));
-            return;
+            return false;
         }
 
         if (commit == null) {
             arena.getDebugger().i("commit null", sender);
-            return;
+            return false;
         }
 
         final PAJoinEvent event = new PAJoinEvent(arena, (Player) sender, true);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
             arena.getDebugger().i("! Spectate event cancelled by plugin !");
-            return;
+            return false;
         }
 
         commit.commitSpectate((Player) sender);
+        return true;
     }
 
     public static Boolean handleStart(final Arena arena,
