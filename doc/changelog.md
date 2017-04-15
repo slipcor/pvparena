@@ -1,3 +1,4 @@
+- v1.3.4.275 - allow right clicking blocks when LOST attempt 2
 - v1.3.4.274 - allow right clicking blocks when LOST and add Region Protection Tutorial
 - v1.3.4.273 - update player equip function to support offhand slots
 - v1.3.4.272 - properly protect and not overprotect, affected: MOBS [block lightning], TNT [prevent entity damage], GROW [actually block block growth]

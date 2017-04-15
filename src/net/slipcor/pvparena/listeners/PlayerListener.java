@@ -93,7 +93,7 @@ public class PlayerListener implements Listener {
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-        if (aPlayer.getStatus() == Status.WATCH &&
+        if ((aPlayer.getStatus() == Status.WATCH || aPlayer.getStatus() == Status.LOST) &&
                 arena.getArenaConfig().getBoolean(CFG.PERMS_SPECINTERACT)) {
             return false;
         }

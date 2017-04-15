@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.274 - allow right clicking blocks when LOST and add Region Protection Tutorial
+- v1.3.4.275 - allow right clicking blocks when LOST attempt 2
 - [read more](doc/changelog.md)
 
 ***
