@@ -70,6 +70,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
     - [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
     - [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
     - [Region Tutorial (Shapes)](https://www.youtube.com/watch?v=jWdWbwRg9zY)
+    - [Region Tutorial (Protections)](https://youtu.be/WFIZ7ZskPVc)
 - Localized Setup (v1.3):
     - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
 - [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
@@ -88,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.273 - update player equip function to support offhand slots
+- v1.3.4.274 - allow right clicking blocks when LOST and add Region Protection Tutorial
 - [read more](doc/changelog.md)
 
 ***

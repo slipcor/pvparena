@@ -119,7 +119,15 @@ public class PlayerListener implements Listener {
     }
 
     private boolean willBeCancelled(final Player player, final Cancellable event) {
+        if (event instanceof PlayerInteractEvent) {
+            PlayerInteractEvent e = (PlayerInteractEvent) event;
+            if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                DEBUG.i("Allowing right click interact", player);
+                return false;
+            }
+        }
         if (ArenaPlayer.parsePlayer(player.getName()).getStatus() == Status.LOST) {
+            DEBUG.i("cancelling because LOST", player);
             event.setCancelled(true);
             return true;
         }
