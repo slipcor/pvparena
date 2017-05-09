@@ -1,3 +1,5 @@
+- v1.3.4.277 - add github issue #117 - BossBar for Domination
+
 - v1.3.4.276 - do not setup a scoreboard if spectating is cancelled/not possible
 - v1.3.4.275 - allow right clicking blocks when LOST attempt 2
 - v1.3.4.274 - allow right clicking blocks when LOST and add Region Protection Tutorial
@@ -15,7 +17,6 @@
 - v1.3.4.262 - do not restore flying state if specating on death
 - v1.3.4.261 - delay flying mode setting by 5 ticks when restoring a player
 - v1.3.4.260 - address github issue #290 - catch NPE about Spawn Eggs
-
 - v1.3.4.259 - finish off github issue #280 by adding a proper message about reloading the languages
 - v1.3.4.258 - finish the fix for issue #198 by supporting beacon block definitions
 - v1.3.4.257 - address github issue #198 - make particle circle function goal independant

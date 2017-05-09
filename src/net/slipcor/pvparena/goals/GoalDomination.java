@@ -1,16 +1,12 @@
 package net.slipcor.pvparena.goals;
 
-import javafx.geometry.Point3D;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
-import net.slipcor.pvparena.classes.PABlock;
-import net.slipcor.pvparena.classes.PABlockLocation;
-import net.slipcor.pvparena.classes.PACheck;
-import net.slipcor.pvparena.classes.PASpawn;
+import net.slipcor.pvparena.classes.*;
 import net.slipcor.pvparena.commands.PAA_Region;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
@@ -52,6 +48,7 @@ public class GoalDomination extends ArenaGoal {
 
     private Map<Location, String> flagMap = new HashMap<>();
     private Map<Location, DominationRunnable> runnerMap = new HashMap<>();
+    private Map<Location, PAClaimBar> flagBars = new HashMap<>();
 
     private int announceOffset;
 
@@ -65,6 +62,25 @@ public class GoalDomination extends ArenaGoal {
     @Override
     public boolean allowsJoinInBattle() {
         return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+    }
+
+    private void barStart(Location location, String title, ChatColor color, int range, long interval) {
+        if (!arena.getArenaConfig().getBoolean(CFG.GOAL_DOM_BOSSBAR)) {
+            return;
+        }
+        if (getBarMap().containsKey(location)) {
+            PAClaimBar claimBar = getBarMap().get(location);
+            claimBar.restart(title, color, location, range, interval);
+        } else {
+            PAClaimBar claimBar = new PAClaimBar(arena, title, color, location, range, interval);
+            getBarMap().put(location, claimBar);
+        }
+    }
+
+    private void barStop(Location location) {
+        if (getBarMap().containsKey(location)) {
+            getBarMap().get(location).stop();
+        }
     }
 
     @Override
@@ -231,6 +247,7 @@ public class GoalDomination extends ArenaGoal {
                     // cancel unclaiming/claiming if noone's near
                     Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
                     getRunnerMap().remove(loc);
+                    barStop(loc);
                 }
                 if (getFlagMap().containsKey(loc)) {
                     final String team = getFlagMap().get(loc);
@@ -272,6 +289,7 @@ public class GoalDomination extends ArenaGoal {
                                             PVPArena.instance, domRunner, 10 * 20L,
                                             10 * 20L);
                             getRunnerMap().put(loc, domRunner);
+                            barStart(loc, "unclaiming", ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), 200L);
                         }
                     } else {
                         // just the owning team is there
@@ -283,6 +301,7 @@ public class GoalDomination extends ArenaGoal {
                             Bukkit.getScheduler()
                                     .cancelTask(getRunnerMap().get(loc).runID);
                             getRunnerMap().remove(loc);
+                            barStop(loc);
                         } else {
 
                             final String team = getFlagMap().get(loc);
@@ -322,6 +341,7 @@ public class GoalDomination extends ArenaGoal {
                 running.runID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                         PVPArena.instance, running, interval, interval);
                 getRunnerMap().put(loc, running);
+                barStart(loc, "unclaiming", ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
             } else {
                 // flag not taken
                 arena.getDebugger().i("- flag not taken");
@@ -351,6 +371,7 @@ public class GoalDomination extends ArenaGoal {
                     // more than THE team that is claiming => cancel!
                     Bukkit.getScheduler().cancelTask(getRunnerMap().get(loc).runID);
                     getRunnerMap().remove(loc);
+                    barStop(loc);
                 } else {
                     arena.getDebugger().i("  - not being claimed");
                     // not being claimed
@@ -372,6 +393,7 @@ public class GoalDomination extends ArenaGoal {
                                             PVPArena.instance, running,
                                             interval, interval);
                             getRunnerMap().put(loc, running);
+                            barStart(loc, "claiming...", team.getColor(), arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
                         }
                     } else {
                         arena.getDebugger().i("  - more than one team present. continue!");
@@ -586,6 +608,13 @@ public class GoalDomination extends ArenaGoal {
         return flagMap;
     }
 
+    private Map<Location, PAClaimBar> getBarMap() {
+        if (flagBars == null) {
+            flagBars = new HashMap<>();
+        }
+        return flagBars;
+    }
+
     @Override
     public PACheck getLives(final PACheck res, final ArenaPlayer aPlayer) {
         if (res.getPriority() <= PRIORITY + 1000) {
@@ -694,6 +723,7 @@ public class GoalDomination extends ArenaGoal {
 
     @Override
     public void reset(final boolean force) {
+        getBarMap().clear();
         getLifeMap().clear();
         getRunnerMap().clear();
         getFlagMap().clear();

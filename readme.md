@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.276 - do not setup a scoreboard if spectating is cancelled/not possible
+- v1.3.4.277 - add github issue #117 - BossBar for Domination, add config for Beacons
 - [read more](doc/changelog.md)
 
 ***

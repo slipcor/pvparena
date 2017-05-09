@@ -181,6 +181,7 @@ public class Config {
         // ----------
 
         GOAL_BEACONS_ANNOUNCEOFFSET("goal.beacons.spamoffset", 3, "Beacons"),
+        GOAL_BEACONS_BOSSBAR("goal.beacons.beacBossBar", true, "Beacons"),
         GOAL_BEACONS_CHANGESECONDS("goal.beacons.changeseconds", 30, "Beacons"),
         GOAL_BEACONS_CHANGEONCLAIM("goal.beacons.changeonclaim", false, "Beacons"),
         GOAL_BEACONS_CLAIMRANGE("goal.beacons.claimrange", 3, "Beacons"),
@@ -196,6 +197,7 @@ public class Config {
         GOAL_CHECKPOINTS_TICKINTERVAL("goal.checkpoints.cptickinterval", 20, "CheckPoints"),
 
         GOAL_DOM_ANNOUNCEOFFSET("goal.dom.spamoffset", 3, "Domination"),
+        GOAL_DOM_BOSSBAR("goal.dom.domBossBar", true, "Domination"),
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
