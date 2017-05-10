@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.277 - add github issue #117 - BossBar for Domination, add config for Beacons
+- v1.3.4.278 - add github issue #124 - add timer configs to add/remove/change timer interval messages
 - [read more](doc/changelog.md)
 
 ***

@@ -7,6 +7,7 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -27,30 +28,8 @@ import java.util.Set;
 public abstract class ArenaRunnable extends BukkitRunnable {
 
     protected static final Map<Integer, String> MESSAGES = new HashMap<>();
-
-    static {
-        final String seconds = Language.parse(MSG.TIME_SECONDS);
-        final String minutes = Language.parse(MSG.TIME_MINUTES);
-        MESSAGES.put(1, "1..");
-        MESSAGES.put(2, "2..");
-        MESSAGES.put(3, "3..");
-        MESSAGES.put(4, "4..");
-        MESSAGES.put(5, "5..");
-        MESSAGES.put(10, "10 " + seconds);
-        MESSAGES.put(20, "20 " + seconds);
-        MESSAGES.put(30, "30 " + seconds);
-        MESSAGES.put(60, "60 " + seconds);
-        MESSAGES.put(120, "2 " + minutes);
-        MESSAGES.put(180, "3 " + minutes);
-        MESSAGES.put(240, "4 " + minutes);
-        MESSAGES.put(300, "5 " + minutes);
-        MESSAGES.put(600, "10 " + minutes);
-        MESSAGES.put(1200, "20 " + minutes);
-        MESSAGES.put(1800, "30 " + minutes);
-        MESSAGES.put(2400, "40 " + minutes);
-        MESSAGES.put(3000, "50 " + minutes);
-        MESSAGES.put(3600, "60 " + minutes);
-    }
+    final String sSeconds = Language.parse(MSG.TIME_SECONDS);
+    final String sMinutes = Language.parse(MSG.TIME_MINUTES);
 
     protected final String message;
     protected Integer seconds;
@@ -74,6 +53,49 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         sPlayer = player == null ? null : player.getName();
         this.arena = arena;
         this.global = global;
+
+        ConfigurationSection section = null;
+
+        if (arena == null) {
+            if (Language.getConfig() != null) {
+                section = Language.getConfig().getConfigurationSection("time_intervals");
+            }
+        } else {
+            section = arena.getArenaConfig().getYamlConfiguration().getConfigurationSection("time_intervals");
+        }
+        if (section == null) {
+            PVPArena.instance.getLogger().warning("Language strings 'time_intervals' not found, loading defaults!");
+            MESSAGES.put(1, "1..");
+            MESSAGES.put(2, "2..");
+            MESSAGES.put(3, "3..");
+            MESSAGES.put(4, "4..");
+            MESSAGES.put(5, "5..");
+            MESSAGES.put(10, "10 " + sSeconds);
+            MESSAGES.put(20, "20 " + sSeconds);
+            MESSAGES.put(30, "30 " + sSeconds);
+            MESSAGES.put(60, "60 " + sSeconds);
+            MESSAGES.put(120, "2 " + sMinutes);
+            MESSAGES.put(180, "3 " + sMinutes);
+            MESSAGES.put(240, "4 " + sMinutes);
+            MESSAGES.put(300, "5 " + sMinutes);
+            MESSAGES.put(600, "10 " + sMinutes);
+            MESSAGES.put(1200, "20 " + sMinutes);
+            MESSAGES.put(1800, "30 " + sMinutes);
+            MESSAGES.put(2400, "40 " + sMinutes);
+            MESSAGES.put(3000, "50 " + sMinutes);
+            MESSAGES.put(3600, "60 " + sMinutes);
+        } else {
+            for (String key : section.getKeys(true)) {
+                String content = section.getString(key);
+                System.out.println(key + ":" + content);
+                try {
+                    Integer value = Integer.parseInt(key);
+                    MESSAGES.put(value, content.replace("%m", sMinutes).replace("%s", sSeconds));
+                } catch (Exception e) {
+
+                }
+            }
+        }
 
         runTaskTimer(PVPArena.instance, 20L, 20L);
     }

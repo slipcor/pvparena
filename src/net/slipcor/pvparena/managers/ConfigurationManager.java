@@ -146,6 +146,29 @@ public final class ConfigurationManager {
             }
         }
 
+        if (config.get("time_intervals") == null) {
+            String prefix = "time_intervals.";
+            config.addDefault(prefix + "1", "1..");
+            config.addDefault(prefix + "2", "2..");
+            config.addDefault(prefix + "3", "3..");
+            config.addDefault(prefix + "4", "4..");
+            config.addDefault(prefix + "5", "5..");
+            config.addDefault(prefix + "10", "10 %s");
+            config.addDefault(prefix + "20", "20 %s");
+            config.addDefault(prefix + "30", "30 %s");
+            config.addDefault(prefix + "60", "60 %s");
+            config.addDefault(prefix + "120", "2 %m");
+            config.addDefault(prefix + "180", "3 %m");
+            config.addDefault(prefix + "240", "4 %m");
+            config.addDefault(prefix + "300", "5 %m");
+            config.addDefault(prefix + "600", "10 %m");
+            config.addDefault(prefix + "1200", "20 %m");
+            config.addDefault(prefix + "1800", "30 %m");
+            config.addDefault(prefix + "2400", "40 %m");
+            config.addDefault(prefix + "3000", "50 %m");
+            config.addDefault(prefix + "3600", "60 %m");
+        }
+
         PVPArena.instance.getAgm().setDefaults(arena, config);
 
         config.options().copyDefaults(true);

@@ -5,6 +5,7 @@ import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -24,6 +25,7 @@ public final class Language {
     }
 
     private static final Debug debugger = new Debug(17);
+    private static FileConfiguration config;
 
     public enum MSG {
 
@@ -735,6 +737,10 @@ public final class Language {
         }
     }
 
+    public static FileConfiguration getConfig() {
+        return config;
+    }
+
     /**
      * create a language manager instance
      */
@@ -761,9 +767,33 @@ public final class Language {
             config.addDefault(m.getNode(), m.toString());
         }
 
+        if (config.get("time_intervals") == null) {
+            String prefix = "time_intervals.";
+            config.addDefault(prefix + "1", "1..");
+            config.addDefault(prefix + "2", "2..");
+            config.addDefault(prefix + "3", "3..");
+            config.addDefault(prefix + "4", "4..");
+            config.addDefault(prefix + "5", "5..");
+            config.addDefault(prefix + "10", "10 %s");
+            config.addDefault(prefix + "20", "20 %s");
+            config.addDefault(prefix + "30", "30 %s");
+            config.addDefault(prefix + "60", "60 %s");
+            config.addDefault(prefix + "120", "2 %m");
+            config.addDefault(prefix + "180", "3 %m");
+            config.addDefault(prefix + "240", "4 %m");
+            config.addDefault(prefix + "300", "5 %m");
+            config.addDefault(prefix + "600", "10 %m");
+            config.addDefault(prefix + "1200", "20 %m");
+            config.addDefault(prefix + "1800", "30 %m");
+            config.addDefault(prefix + "2400", "40 %m");
+            config.addDefault(prefix + "3000", "50 %m");
+            config.addDefault(prefix + "3600", "60 %m");
+        }
+
         config.options().copyDefaults(true);
         try {
             config.save(configFile);
+            Language.config = config;
         } catch (final Exception e) {
             e.printStackTrace();
         }
