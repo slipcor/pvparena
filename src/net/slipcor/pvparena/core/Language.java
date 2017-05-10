@@ -642,7 +642,7 @@ public final class Language {
         MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
 
         MODULE_PLAYERFINDER_NEAR("nulang.mod.playerfinder.near", "Nearest player: %1% blocks!"),
-        MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player!"),
+        MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player's last location!"),
 
         MODULE_POWERUPS_INVALIDPUEFF("nulang.mod.powerups.invalidpowerupeffect", "Invalid PowerupEffect: %1%"),
         MODULE_POWERUPS_PLAYER("nulang.mod.powerups.puplayer", "%1% has collected PowerUp: %2%"),
