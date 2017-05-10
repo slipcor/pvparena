@@ -54,6 +54,7 @@ public class Config {
         CMDS_DEFAULTJOIN("cmds.defaultjoin", true, null),
 
         DAMAGE_ARMOR("damage.armor", true, null),
+        DAMAGE_BLOODPARTICLES("damage.bloodParticles", true, null),
         DAMAGE_FROMOUTSIDERS("damage.fromOutsiders", false, null),
         DAMAGE_SPAWNCAMP("damage.spawncamp", 1, null),
         DAMAGE_WEAPONS("damage.weapons", true, null),

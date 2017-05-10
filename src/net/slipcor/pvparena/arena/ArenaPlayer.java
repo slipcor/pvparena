@@ -14,10 +14,7 @@ import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
@@ -865,6 +862,15 @@ public class ArenaPlayer {
 
     public void setTeleporting(final boolean isTeleporting) {
         teleporting = isTeleporting;
+    }
+
+    public void showBloodParticles() {
+        Player player = get();
+        player.getLocation()
+                .getWorld()
+                .playEffect(player.getEyeLocation(),
+                        Effect.STEP_SOUND, Material.NETHER_WART_BLOCK.getId());
+
     }
 
     @Override

@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.278 - add github issue #124 - add timer configs to add/remove/change timer interval messages
+- v1.3.4.279 - add github issue #249 - playSound (???) to add particle effect, DONE
 - [read more](doc/changelog.md)
 
 ***

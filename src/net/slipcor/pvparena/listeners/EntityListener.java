@@ -303,6 +303,10 @@ public class EntityListener implements Listener {
                 event);
 
         StatisticsManager.damage(arena, attacker, defender, event.getDamage());
+
+        if (arena.getArenaConfig().getBoolean(CFG.DAMAGE_BLOODPARTICLES)) {
+            apDefender.showBloodParticles();
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
