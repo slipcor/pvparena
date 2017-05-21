@@ -87,7 +87,6 @@ public abstract class ArenaRunnable extends BukkitRunnable {
         } else {
             for (String key : section.getKeys(true)) {
                 String content = section.getString(key);
-                System.out.println(key + ":" + content);
                 try {
                     Integer value = Integer.parseInt(key);
                     MESSAGES.put(value, content.replace("%m", sMinutes).replace("%s", sSeconds));

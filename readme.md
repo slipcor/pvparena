@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.279 - add github issue #249 - playSound (???) to add particle effect, DONE
+- v1.3.4.280 - remove debug output of time message nodes
 - [read more](doc/changelog.md)
 
 ***
