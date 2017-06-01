@@ -1677,6 +1677,9 @@ public class Arena {
             }
 
             player.setScoreboard(board);
+            if (team == null) {
+                return;
+            }
             for (final Team sTeam : board.getTeams()) {
                 if (sTeam.getName().equals(team.getName())) {
                     sTeam.addEntry(player.getName());

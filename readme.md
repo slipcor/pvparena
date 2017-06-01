@@ -89,7 +89,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.280 - remove debug output of time message nodes
+- v1.3.4.281 - address github issue #302 - prevent NPE for spectators when joining the arena
 - [read more](doc/changelog.md)
 
 ***
