@@ -177,7 +177,7 @@ public final class PlayerState {
         }
 
         if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() == maxhealth) {
-            player.setHealth(health);
+            player.setHealth(Math.min(health, maxhealth));
         } else {
             final double newHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * health / maxhealth;
             if (newHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {

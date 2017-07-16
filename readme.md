@@ -73,6 +73,10 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
     - [Region Tutorial (Protections)](https://youtu.be/WFIZ7ZskPVc)
 - Localized Setup (v1.3):
     - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
+- Goal Tutorials (v1.3):
+    - [BlockDestroy](https://www.youtube.com/watch?v=i7Fpuh_O5O8)
+    - [CheckPoints](https://www.youtube.com/watch?v=anO_tYwcKsg)
+    - [Domination](https://www.youtube.com/watch?v=_Ngq5xBlLsk)
 - [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
 - [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
 - [Food Block Destroy (v1.0)](http://www.youtube.com/watch?v=ntloY1BTKHQ)
@@ -89,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.281 - address github issue #302 - prevent NPE for spectators when joining the arena
+- v1.3.4.282 - address github issue #305 - check max health before setting health
 - [read more](doc/changelog.md)
 
 ***

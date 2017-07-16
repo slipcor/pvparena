@@ -1,3 +1,4 @@
+- v1.3.4.282 - address github issue #305 - check max health before setting health
 - v1.3.4.281 - address github issue #302 - prevent NPE for spectators when joining the arena
 - v1.3.4.280 - remove debug output of time message nodes
 - v1.3.4.279 - add github issue #249 - playSound (???) to add particle effect, DONE
