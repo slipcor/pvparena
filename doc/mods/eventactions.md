@@ -4,6 +4,7 @@
 
 This mod is quite complex, it adds many ways to react to game events, the events are:
 
+- ClassChange
 - Death
 - End
 - Exit

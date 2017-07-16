@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.282 - address github issue #305 - check max health before setting health
+- v1.3.4.283 - add EventActions addition (classchange hook)
 - [read more](doc/changelog.md)
 
 ***
