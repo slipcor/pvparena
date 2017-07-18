@@ -52,14 +52,13 @@ Mod | Description
 [BanKick](mods/bankick.md) | secure your arenas!
 [BattlefieldGuard](mods/battlefieldguard.md) | secure your battlefield
 [BattlefieldManager](mods/battlefieldmanager.md) | manage your battlefield
-[BetterClasses](mods/betterclasses.md) | add potion effects to classes
+[BetterClasses](mods/betterclasses.md) | add potion effects and more to specific classes
 [BetterGears](mods/bettergears.md) | give team colored leather
 [BetterFight](mods/betterfight.md) | kill streaks and one-hit-kill items!
 [BetterKillstreaks](mods/betterkillstreaks.md) | even more detailed kill streaks!
 [BlockDissolve](mods/blockdissolve.md) | dissolve blocks under fighting players
 [BlockRestore](mods/blockrestore.md) | restore the battlefield
 [ChestFiller](mods/chestfiller.md) | fill battlefield chests with customizable content!
-[ColorTeams](mods/colorteams.md) | color players!
 [Duel](mods/duel.md) | duel someone!
 [EventActions](mods/eventactions.md) | do stuff when stuff happens
 [Factions](mods/factions.md) | fix pvp not working
@@ -74,7 +73,6 @@ Mod | Description
 [RealSpectate](mods/realspectate.md) | spectate the game, CounterStrike style!
 [RedstoneTriggers](mods/redstonetriggers.md) | add win/lose triggered by redstone
 [RespawnRelay](mods/respawnrelay.md) | add a relay for respawning players
-[ScoreBoards](mods/scoreboards.md) | ScoreBoards!
 [SinglePlayerSupport](mods/singleplayersupport.md) | Allow players to use an arena on their own!
 [Skins](mods/skins.md) | add custom skins to teams/classes
 [SpecialJoin](mods/specialjoin.md) | join via buttons, levers, etc

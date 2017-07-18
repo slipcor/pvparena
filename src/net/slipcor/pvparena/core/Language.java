@@ -600,6 +600,7 @@ public final class Language {
         MODULE_BETTERCLASSES_CLEAR("nulang.betterclasses.clear", "ArenaClass &e%1%&r cleared!"),
         MODULE_BETTERCLASSES_LISTHEAD("nulang.betterclasses.listhead", "--- Potion Effects for class &e%1%&r ---"),
         MODULE_BETTERCLASSES_REMOVE("nulang.betterclasses.remove", "PotionEffect &e%2%&r removed from ArenaClass &e%1%&r!"),
+        MODULE_BETTERCLASSES_RESPAWNCOMMAND_REMOVED("nulang.betterclasses.respawncommand_remove", "Respawn command removed from ArenaClass &e%1%&r!"),
         MODULE_BETTERCLASSES_CLASSCHANGE_MAXTEAM("nulang.betterclasses.classchange.mteam",
                 "&cYour team has exceeded the class change limit!"),
         MODULE_BETTERCLASSES_CLASSCHANGE_MAXPLAYER("nulang.betterclasses.classchange.mplayer",

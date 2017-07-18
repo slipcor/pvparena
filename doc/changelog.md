@@ -1,3 +1,4 @@
+- v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"
 - v1.3.4.283 - add EventActions addition (classchange hook)
 - v1.3.4.282 - address github issue #305 - check max health before setting health
 - v1.3.4.281 - address github issue #302 - prevent NPE for spectators when joining the arena

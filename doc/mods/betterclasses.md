@@ -32,13 +32,16 @@ modules
     - Tank: 0
     - Swordsman: 0
     - Pyro: 0
+  - respawnCommand:
+    - Ranger: '/give %player% minecraft:arrow 1'
 
 ## Commands
 
 - `/pa !bc [name]` \- show info about that class
 - `/pa !bc [name] add [def]` \- add a potion effect (e.g. "add SLOW 2")
 - `/pa !bc [name] remove [type]` \- remove all potion effects of type [type]
-- `/pa !bc [name] clear` \- remove all potion effects from that class 
+- `/pa !bc [name] clear` \- remove all potion effects from that class
+- `/pa !bc [name] respawncommand [command] \- set a classes respawn command (empty to remove)`
 
 ## Potion Effect Types
 

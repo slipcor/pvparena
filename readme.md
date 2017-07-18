@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.283 - add EventActions addition (classchange hook)
+- v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"
 - [read more](doc/changelog.md)
 
 ***
