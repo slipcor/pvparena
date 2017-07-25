@@ -29,11 +29,12 @@ The actions that can be taken are:
 
 The following placeholders can be used to get dynamic output in your Commands/messages
 
+- %class% \- the class a player has chosen
 - %arena% \- the arena (name) where the event is happening
 - %player% \- (except START and END!!) \- the player in the event
 - %team% \- (except START and END!!) the (colored) player's team name
 - %color% \- (except START and END!!) the player's team color (to colorize a message)
-- %players% \- the arena players (fighters), sorted and colored by teams 
+- %players% \- the arena players (fighters), sorted and colored by teams
 
 
 ## Installation

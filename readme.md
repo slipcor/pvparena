@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.285 - allow to update spawn and blocks on the fly
+- v1.3.4.286 - update EventActions docs and fix github issue #314 by not stopping arenas twice on reload!
 - [read more](doc/changelog.md)
 
 ***

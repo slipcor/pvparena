@@ -1,3 +1,4 @@
+- v1.3.4.286 - update EventActions docs and fix github issue #314 by not stopping arenas twice on reload!
 - v1.3.4.285 - allow to update spawn and blocks on the fly
 
 - v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"

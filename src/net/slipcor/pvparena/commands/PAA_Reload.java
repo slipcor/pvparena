@@ -38,7 +38,6 @@ public class PAA_Reload extends AbstractArenaCommand {
 
         final String name = arena.getName();
 
-        arena.stop(true);
         ArenaManager.removeArena(arena, false);
         final Arena newArena = new Arena(name);
 
