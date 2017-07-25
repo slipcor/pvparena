@@ -620,7 +620,8 @@ public class ArenaRegion {
                 }
 
                 if (!found) {
-
+                    debug.i("escape due to '!found' #1");
+                    debug.i("location: "+pLoc.toString());
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
                     if (arena.getArenaConfig().getBoolean(
                             CFG.GENERAL_LEAVEDEATH)) {
@@ -651,7 +652,9 @@ public class ArenaRegion {
                 }
 
                 if (!found) {
+                    debug.i("escape due to '!found' #2");
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
+                    debug.i("location: "+pLoc.toString());
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, false);
                 }
             } else if (type == RegionType.LOUNGE) {
@@ -673,7 +676,9 @@ public class ArenaRegion {
                 }
 
                 if (!found) {
+                    debug.i("escape due to '!found' #3");
                     Arena.pmsg(ap.get(), Language.parse(arena, MSG.NOTICE_YOU_ESCAPED));
+                    debug.i("location: "+pLoc.toString());
                     arena.playerLeave(ap.get(), CFG.TP_EXIT, false, false, false);
                 }
             }

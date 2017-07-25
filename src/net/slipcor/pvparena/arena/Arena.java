@@ -2503,10 +2503,22 @@ public class Arena {
     }
 
     public void addBlock(final PABlock paBlock) {
+        for (PABlock block : blocks) {
+            if (block.getName().equals(paBlock.getName())) {
+                blocks.remove(block);
+                break;
+            }
+        }
         blocks.add(paBlock);
     }
 
     public void addSpawn(final PASpawn paSpawn) {
+        for (PASpawn spawn : spawns) {
+            if (spawn.getName().equals(paSpawn.getName())) {
+                spawns.remove(spawn);
+                break;
+            }
+        }
         spawns.add(paSpawn);
     }
 

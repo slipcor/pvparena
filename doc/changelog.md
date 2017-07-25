@@ -1,3 +1,5 @@
+- v1.3.4.285 - allow to update spawn and blocks on the fly
+
 - v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"
 - v1.3.4.283 - add EventActions addition (classchange hook)
 - v1.3.4.282 - address github issue #305 - check max health before setting health
@@ -6,7 +8,6 @@
 - v1.3.4.279 - add github issue #249 - playSound (???) to add particle effect, DONE
 - v1.3.4.278 - add github issue #124 - add timer configs to add/remove/change timer interval messages
 - v1.3.4.277 - add github issue #117 - BossBar for Domination
-
 - v1.3.4.276 - do not setup a scoreboard if spectating is cancelled/not possible
 - v1.3.4.275 - allow right clicking blocks when LOST attempt 2
 - v1.3.4.274 - allow right clicking blocks when LOST and add Region Protection Tutorial

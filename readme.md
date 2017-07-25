@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"
+- v1.3.4.285 - allow to update spawn and blocks on the fly
 - [read more](doc/changelog.md)
 
 ***
