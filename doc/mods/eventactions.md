@@ -2,18 +2,18 @@
 
 ## Description
 
-This mod is quite complex, it adds many ways to react to game events, the events are:
+This mod is quite complex, it adds many ways to react to game events, the events are (case matters!):
 
-- ClassChange
-- Death
-- End
-- Exit
-- Join
-- Kill
-- Leave
-- Lose
-- Start
-- Win 
+- classchange
+- death
+- end
+- exit
+- join
+- kill
+- leave
+- lose
+- start
+- win
 
 The actions that can be taken are:
 

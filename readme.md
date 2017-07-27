@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.286 - update EventActions docs and fix github issue #314 by not stopping arenas twice on reload!
+- v1.3.4.287 - update EventActions docs to properly reflect the node names
 - [read more](doc/changelog.md)
 
 ***
