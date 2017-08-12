@@ -144,10 +144,6 @@ public class GoalSabotage extends ArenaGoal implements Listener {
         Vector vFlag = null;
         for (final ArenaTeam team : arena.getTeams()) {
             final String aTeam = team.getName();
-
-            if (aTeam.equals(pTeam.getName())) {
-                continue;
-            }
             if (team.getTeamMembers().size() < 1) {
                 continue; // dont check for inactive teams
             }
@@ -165,6 +161,12 @@ public class GoalSabotage extends ArenaGoal implements Listener {
             if (vFlag != null && vLoc.distance(vFlag) < 2) {
                 arena.getDebugger().i("flag found!", player);
                 arena.getDebugger().i("vFlag: " + vFlag, player);
+
+                if (aTeam.equals(pTeam.getName())) {
+                    res.setError(this, Language.parse(MSG.GOAL_SABOTAGE_YOUCANNOTSELFDESTROY));
+                    continue;
+                }
+
                 arena.broadcast(Language.parse(arena, MSG.GOAL_SABOTAGE_IGNITED,
                         pTeam.colorizePlayer(player) + ChatColor.YELLOW,
                         team.getColoredName() + ChatColor.YELLOW));

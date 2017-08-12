@@ -605,7 +605,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                 if (blockTeam.equals(pTeam.getName())) {
                     arena.getDebugger().i("is own team! cancel and OUT! ", player);
                     event.setCancelled(true);
-                    continue;
+                    break;
                 }
                 PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);

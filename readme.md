@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.287 - update EventActions docs to properly reflect the node names
+- v1.3.4.288 - stop igniting your own TNT - and tell people that it is not okay
 - [read more](doc/changelog.md)
 
 ***

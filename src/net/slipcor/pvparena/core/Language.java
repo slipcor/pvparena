@@ -534,6 +534,7 @@ public final class Language {
         GOAL_SABOTAGE_IGNITED("nulang.goal.sabotage.tntignite", "%1% ignited the TNT of team %2%!"),
         GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.set", "TNT set: %1%"),
         GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.toset", "TNT to set: %1%"),
+        GOAL_SABOTAGE_YOUCANNOTSELFDESTROY("nulang.goal.sabotage.youcannotselfdestroy", "You can not ignite your own TNT!'"),
         GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage materials!'"),
 
         GOAL_TANK_TANKDOWN("nulang.goal.tank.tankdown", "The tank is down!"),
