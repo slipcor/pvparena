@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.288 - stop igniting your own TNT - and tell people that it is not okay
+- v1.3.4.289 - address github issue #324 - call home asynchronously
 - [read more](doc/changelog.md)
 
 ***

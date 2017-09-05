@@ -3,6 +3,7 @@ package net.slipcor.pvparena.core;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -18,7 +19,7 @@ import java.net.URLEncoder;
  */
 
 public class Tracker implements Runnable {
-    private static int taskID = -1;
+    private static BukkitTask timerTask;
     private static final Debug debug = new Debug(18);
 
     /**
@@ -61,7 +62,8 @@ public class Tracker implements Runnable {
      */
     public void start() {
         Language.logInfo(MSG.LOG_TRACKER_ENABLED);
-        taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(PVPArena.instance, this,
+
+        timerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(PVPArena.instance, this,
                 0L, 72000L);
     }
 
@@ -70,6 +72,13 @@ public class Tracker implements Runnable {
      */
     public static void stop() {
         Language.logInfo(MSG.LOG_TRACKER_DISABLED);
-        Bukkit.getScheduler().cancelTask(taskID);
+        if (timerTask != null) {
+            try {
+                timerTask.cancel();
+                timerTask = null;
+            } catch (Exception e) {
+
+            }
+        }
     }
 }

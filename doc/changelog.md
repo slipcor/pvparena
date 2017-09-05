@@ -1,3 +1,4 @@
+- v1.3.4.289 - address github issue #324 - call home asynchronously
 - v1.3.4.288 - stop igniting your own TNT - and tell people that it is not okay
 - v1.3.4.287 - update EventActions docs to properly reflect the node names
 - v1.3.4.286 - update EventActions docs and fix github issue #314 by not stopping arenas twice on reload!
