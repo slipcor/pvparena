@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.289 - address github issue #324 - call home asynchronously
+- v1.3.4.290 - when setting up a region, check that it has actual resulting volume before saving
 - [read more](doc/changelog.md)
 
 ***

@@ -128,6 +128,12 @@ public class PAA_Region extends AbstractArenaCommand {
             }
 
             final ArenaRegion region = new ArenaRegion(arena, args[0], shape, locs);
+
+            if (!region.getShape().hasVolume()) {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_INVALID));
+                return;
+            }
+
             region.saveToConfig();
 
             activeSelections.remove(sender.getName());

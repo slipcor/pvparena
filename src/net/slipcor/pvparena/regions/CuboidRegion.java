@@ -64,7 +64,28 @@ public class CuboidRegion extends ArenaRegionShape {
                 : lMax.getX(), y ? lMin.getY() : lMax.getY(), z ? lMin.getZ()
                 : lMax.getZ());
 
+        if (l1.getX() == l2.getX()) {
+            l2.setX(l2.getX()+1);
+        }
+
+        if (l1.getY() == l2.getY()) {
+            l2.setY(l2.getY()+1);
+        }
+
+        if (l1.getZ() == l2.getZ()) {
+            l2.setZ(l2.getZ()+1);
+        }
+
         return new PABlockLocation[]{l1, l2};
+    }
+
+    @Override
+    public boolean hasVolume() {
+        return region != null &&
+                region.locs[0] != null && region.locs[1] != null &&
+                region.locs[0].getX() != region.locs[1].getX() &&
+                region.locs[0].getY() != region.locs[1].getY() &&
+                region.locs[0].getZ() != region.locs[1].getZ();
     }
 
     @Override

@@ -68,6 +68,11 @@ public class SphericRegion extends ArenaRegionShape {
     }
 
     @Override
+    public boolean hasVolume() {
+        return getRadius() > 1;
+    }
+
+    @Override
     public void initialize(final ArenaRegion region) {
         this.region = region;
         final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);

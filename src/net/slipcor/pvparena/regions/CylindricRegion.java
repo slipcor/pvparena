@@ -68,6 +68,14 @@ public class CylindricRegion extends ArenaRegionShape {
     }
 
     @Override
+    public boolean hasVolume() {
+        return region != null &&
+                region.locs[0] != null && region.locs[1] != null &&
+                getRadius() > 1 &&
+                region.locs[0].getY() != region.locs[1].getY();
+    }
+
+    @Override
     public final void initialize(final ArenaRegion region) {
         this.region = region;
         final PABlockLocation[] sane = sanityCheck(region.locs[0], region.locs[1]);

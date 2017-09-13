@@ -240,6 +240,7 @@ public final class Language {
         ERROR_READY("nulang.error.ready.error", "The arena is not ready! %1%"),
         ERROR_REGION_BEING_CREATED("nulang.error.region.beingcreated", "A region is already being created: %1%"),
         ERROR_REGION_FLAG_NOTFOUND("nulang.error.region.flagnotfound", "RegionFlag &a%1%&r unknown! Valid values: %2%"),
+        ERROR_REGION_INVALID("nulang.error.region.invalid", "Region selection is invalid. Region will have no volume and will be useless!"),
         ERROR_REGION_NOT_BEING_CREATED("nulang.error.regionnotbeingcreated", "A region is not being created!"),
         ERROR_REGION_NOTFOUND("nulang.error.region.notfound", "Region &a%1%&r not found!"),
         ERROR_REGION_PROTECTION_NOTFOUND("nulang.error.region.protectionnotfound", "RegionProtection &a%1%&r unknown!"),

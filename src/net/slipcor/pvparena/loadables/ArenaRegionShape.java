@@ -42,6 +42,8 @@ public abstract class ArenaRegionShape extends NCBLoadable {
 
     public abstract boolean tooFarAway(int joinRange, Location location);
 
+    public abstract boolean hasVolume();
+
     @Override
     public ArenaRegionShape clone() {
         return (ArenaRegionShape) super.clone();
