@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.290 - when setting up a region, check that it has actual resulting volume before saving
+- v1.3.4.291 - added debug to PotionSplashEvent for someone to have evidence to report a bug
 - [read more](doc/changelog.md)
 
 ***

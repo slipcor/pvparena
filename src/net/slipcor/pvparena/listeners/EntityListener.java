@@ -440,6 +440,7 @@ public class EntityListener implements Listener {
         final Collection<LivingEntity> entities = event.getAffectedEntities();
         for (LivingEntity e : entities) {
             if (!(e instanceof Player)) {
+                DEBUG.i("skipping non-player "+e.getName());
                 continue;
             }
             final ArenaPlayer damagee = ArenaPlayer.parsePlayer(((Player) e).getName());
@@ -452,6 +453,7 @@ public class EntityListener implements Listener {
                  *
                  * this check should cover any of the entities not being in the same arena, or not arena at all
                  */
+                DEBUG.i("skipping "+e.getName());
                 continue;
             }
 
@@ -463,6 +465,7 @@ public class EntityListener implements Listener {
                 // same team and the other team should be affected
                 // ==> cancel!
                 event.setIntensity(e, 0);
+                DEBUG.i("setting intensity to 0 for "+e.getName());
                 break;
             }
         }
