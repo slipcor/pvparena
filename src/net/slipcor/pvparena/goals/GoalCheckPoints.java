@@ -168,9 +168,9 @@ public class GoalCheckPoints extends ArenaGoal {
 
         final int position = max - getLifeMap().get(playerName);
 
-        if (checkpoint == position+1) {
+        if (checkpoint <= position+1) {
             arena.broadcast(Language.parse(arena, MSG.GOAL_CHECKPOINTS_SCORE,
-                    playerName, position + "/" + max));
+                    playerName, position+1 + "/" + max));
             reduceLivesCheckEndAndCommit(arena, playerName);
         } else if (checkpoint > position) {
             arena.broadcast(Language.parse(arena, MSG.GOAL_CHECKPOINTS_YOUMISSED,

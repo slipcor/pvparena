@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.292 - address github issue #329 - use arena prefix instead of name, if still too long, shorten manually
+- v1.3.4.293 - address github issue #332 - display first checkpoint message, and display numbers starting from 1
 - [read more](doc/changelog.md)
 
 ***
