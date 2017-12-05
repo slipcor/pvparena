@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.291 - added debug to PotionSplashEvent for someone to have evidence to report a bug
+- v1.3.4.292 - address github issue #329 - use arena prefix instead of name, if still too long, shorten manually
 - [read more](doc/changelog.md)
 
 ***

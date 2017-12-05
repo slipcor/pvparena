@@ -574,7 +574,17 @@ public class Arena {
 
             Objective obj = scoreboard.registerNewObjective("lives", "dummy"); //deathCount
 
-            obj.setDisplayName(ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName());
+            String name = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName();
+
+            if (name.length() > 32) {
+                if (prefix.length() < getName().length()) {
+                    name = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + prefix;
+                } else {
+                    name = name.substring(0, 32);
+                }
+            } else {
+                obj.setDisplayName(name);
+            }
 
             if (this.isFightInProgress()) {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);

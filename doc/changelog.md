@@ -1,3 +1,5 @@
+- v1.3.4.292 - address github issue #329 - use arena prefix instead of name, if still too long, shorten manually
+
 - v1.3.4.291 - added debug to PotionSplashEvent for someone to have evidence to report a bug
 - v1.3.4.290 - when setting up a region, check that it has actual resulting volume before saving
 - v1.3.4.289 - address github issue #324 - call home asynchronously
@@ -5,7 +7,6 @@
 - v1.3.4.287 - update EventActions docs to properly reflect the node names
 - v1.3.4.286 - update EventActions docs and fix github issue #314 by not stopping arenas twice on reload!
 - v1.3.4.285 - allow to update spawn and blocks on the fly
-
 - v1.3.4.284 - fix docs [remove colorteams and scoreboard] and add language and docs for BetterClass "respawnCommand"
 - v1.3.4.283 - add EventActions addition (classchange hook)
 - v1.3.4.282 - address github issue #305 - check max health before setting health
