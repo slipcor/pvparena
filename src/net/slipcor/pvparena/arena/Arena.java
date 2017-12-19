@@ -2404,7 +2404,7 @@ public class Arena {
                     if (isFreeForAll()) {
                         for (ArenaPlayer ap : getEveryone()) {
                             int value = PACheck.handleGetLives(Arena.this, ap);
-                            if (value > 0) {
+                            if (value >= 0) {
                                 getSpecialScoreboard().getObjective("lives").getScore(ap.getName()).setScore(value);
                             }
                             Player player = ap.get();
