@@ -188,19 +188,34 @@ public class StandardLounge extends ArenaModule {
         arena.msg(sender, Language.parse(arena, CFG.MSG_LOUNGE));
         if (arena.isFreeForAll()) {
             arena.msg(sender,
-                    arena.getArenaConfig().getString(CFG.MSG_YOUJOINED));
+                    Language.parse(arena, CFG.MSG_YOUJOINED,
+                    Integer.toString(team.getTeamMembers().size()),
+                    Integer.toString(arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS))
+            ));
             arena.broadcastExcept(
                     sender,
                     Language.parse(arena, CFG.MSG_PLAYERJOINED,
-                            sender.getName()));
+                            sender.getName(),
+                            Integer.toString(team.getTeamMembers().size()),
+                            Integer.toString(arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS))
+                    ));
         } else {
+
             arena.msg(sender,
-                    arena.getArenaConfig().getString(CFG.MSG_YOUJOINEDTEAM)
-                            .replace("%1%", team.getColoredName() + ChatColor.COLOR_CHAR + 'r'));
+                    Language.parse(arena, CFG.MSG_YOUJOINEDTEAM,
+                            team.getColoredName() + ChatColor.COLOR_CHAR + 'r',
+                            Integer.toString(team.getTeamMembers().size()),
+                            Integer.toString(arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS))
+            ));
+
             arena.broadcastExcept(
                     sender,
                     Language.parse(arena, CFG.MSG_PLAYERJOINEDTEAM,
-                            sender.getName(), team.getColoredName() + ChatColor.COLOR_CHAR + 'r'));
+                            sender.getName(),
+                            team.getColoredName() + ChatColor.COLOR_CHAR + 'r',
+                            Integer.toString(team.getTeamMembers().size()),
+                            Integer.toString(arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS))
+            ));
         }
 
         if (player.getState() == null) {
