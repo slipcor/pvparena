@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.296 - address github issue #329 - actually change the scoreboard title :O
+- v1.3.4.297 - address github issue #351 - add yet another delay to fix Spigot
 - [read more](doc/changelog.md)
 
 ***
