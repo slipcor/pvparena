@@ -1,3 +1,6 @@
+- v1.3.4.296 - address github issue #329 - actually change the scoreboard title :O
+- v1.3.4.295 - fix the fact that the scoreboard did not update on losing the last life. Thanks to @Oruss7
+- v1.3.4.294 - add team size and total team count when joining
 - v1.3.4.293 - address github issue #332 - display first checkpoint message, and display numbers starting from 1
 - v1.3.4.292 - address github issue #329 - use arena prefix instead of name, if still too long, shorten manually
 

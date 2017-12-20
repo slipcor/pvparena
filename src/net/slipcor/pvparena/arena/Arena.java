@@ -582,9 +582,8 @@ public class Arena {
                 } else {
                     name = name.substring(0, 32);
                 }
-            } else {
-                obj.setDisplayName(name);
             }
+            obj.setDisplayName(name);
 
             if (this.isFightInProgress()) {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
