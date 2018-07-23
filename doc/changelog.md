@@ -1,10 +1,11 @@
+- v1.3.4.298 - attempt to properly back up NBT data of player's items in case of an unnatural leaving of the arena
+
 - v1.3.4.297 - address github issue #351 - add yet another delay to fix Spigot
 - v1.3.4.296 - address github issue #329 - actually change the scoreboard title :O
 - v1.3.4.295 - fix the fact that the scoreboard did not update on losing the last life. Thanks to @Oruss7
 - v1.3.4.294 - add team size and total team count when joining
 - v1.3.4.293 - address github issue #332 - display first checkpoint message, and display numbers starting from 1
 - v1.3.4.292 - address github issue #329 - use arena prefix instead of name, if still too long, shorten manually
-
 - v1.3.4.291 - added debug to PotionSplashEvent for someone to have evidence to report a bug
 - v1.3.4.290 - when setting up a region, check that it has actual resulting volume before saving
 - v1.3.4.289 - address github issue #324 - call home asynchronously

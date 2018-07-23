@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.297 - address github issue #351 - add yet another delay to fix Spigot
+- v1.3.4.298 - attempt to properly back up NBT data of player's items in case of an unnatural leaving of the arena
 - [read more](doc/changelog.md)
 
 ***

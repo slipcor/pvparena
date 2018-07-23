@@ -464,8 +464,7 @@ public class ArenaPlayer {
         }
 
         try {
-            cfg.set("inventory",
-                    StringParser.getStringFromItemStacks(savedInventory));
+            cfg.set("inventory", savedInventory);
             cfg.set("loc", Config.parseToString(location));
 
             cfg.save(file);
@@ -638,8 +637,9 @@ public class ArenaPlayer {
         }
 
         arena = ArenaManager.getArenaByName(cfg.getString("arena"));
-        savedInventory = StringParser.getItemStacksFromString(cfg.getString(
-                "inventory", "AIR"));
+        savedInventory = cfg.getList("inventory").toArray(new ItemStack[0]);
+                /*StringParser.getItemStacksFromString(cfg.getString(
+                "inventory", "AIR"));*/
         location = Config.parseLocation(cfg.getString("loc"));
 
         if (arena != null) {
