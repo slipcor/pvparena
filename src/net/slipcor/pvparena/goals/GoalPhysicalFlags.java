@@ -950,15 +950,20 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         }
         if (take) {
             paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM("WHITE"));
+                    .setType(Material.WHITE_WOOL);
         } else {
-            paBlockLocation.toLocation()
-                    .getBlock()
-                    .setTypeIdAndData(
-                            Material.valueOf(
-                                    arena.getArenaConfig().getString(
-                                            CFG.GOAL_FLAGS_FLAGTYPE)).getId(),
-                            StringParser.getColorDataFromENUM(flagColor), false);
+            Material attempt = Material.getMaterial(flagColor+"_"+arena.getArenaConfig().getString(
+                    CFG.GOAL_FLAGS_FLAGTYPE));
+            if (attempt == null) {
+                attempt = Material.valueOf(
+                        arena.getArenaConfig().getString(
+                                CFG.GOAL_FLAGS_FLAGTYPE));
+
+                if (attempt == null) {
+                    attempt = StringParser.getWoolFallbackMaterialFromString(flagColor);
+                }
+            }
+            paBlockLocation.toLocation().getBlock().setType(attempt);
         }
     }
 

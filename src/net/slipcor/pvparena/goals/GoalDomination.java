@@ -450,7 +450,7 @@ public class GoalDomination extends ArenaGoal {
                 || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
-        if (block == null || block.getType() != Material.WOOL) {
+        if (block == null || !block.getType().name().contains("WOOL")) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -754,8 +754,7 @@ public class GoalDomination extends ArenaGoal {
      *
      * @param paBlockLocation the location to take/reset*/
     void takeFlag(final PABlockLocation paBlockLocation) {
-        paBlockLocation.toLocation().getBlock()
-                .setData(StringParser.getColorDataFromENUM("WHITE"));
+        paBlockLocation.toLocation().getBlock().setType(Material.WHITE_WOOL);
     }
 
     @Override
@@ -842,12 +841,10 @@ public class GoalDomination extends ArenaGoal {
                 }
             }
             if (team == null) {
-                lBlock.getBlock().setData(
-                        StringParser.getColorDataFromENUM("WHITE"));
+                lBlock.getBlock().setType(Material.WHITE_WOOL);
                 return;
             }
-            lBlock.getBlock().setData(
-                    StringParser.getColorDataFromENUM(team.getColor().name()));
+            lBlock.getBlock().setType(StringParser.getWoolMaterialFromChatColor(team.getColor()));
         }
     }
 

@@ -30,7 +30,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- Spigot 1.11.2
+- Spigot 1.13
 
 ***
 
@@ -93,7 +93,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.3.4.298 - attempt to properly back up NBT data of player's items in case of an unnatural leaving of the arena
+- v1.13.0 - slowly work our way to Spigot 1.13
 - [read more](doc/changelog.md)
 
 ***

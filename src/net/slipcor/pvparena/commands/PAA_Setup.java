@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -122,7 +123,8 @@ public class PAA_Setup extends AbstractArenaCommand {
                     final Set<PASpawn> spawns = SpawnManager.getPASpawnsStartingWith(arena, word[2]);
                     for (final PASpawn spawn : spawns) {
                         final Location loc = spawn.getLocation().toLocation();
-                        player.sendBlockChange(loc, Material.WOOL, (byte) 0);
+
+                        player.sendBlockChange(loc, Material.WHITE_WOOL.createBlockData());
                         new Remover(loc);
                     }
                     return;
@@ -131,7 +133,8 @@ public class PAA_Setup extends AbstractArenaCommand {
                     final Set<PABlock> blocks = SpawnManager.getPABlocksContaining(arena, word[2]);
                     for (final PABlock block : blocks) {
                         final Location loc = block.getLocation().toLocation();
-                        player.sendBlockChange(loc, Material.WOOL, (byte) 0);
+
+                        player.sendBlockChange(loc, Material.WHITE_WOOL.createBlockData());
                         new Remover(loc);
                     }
                     return;

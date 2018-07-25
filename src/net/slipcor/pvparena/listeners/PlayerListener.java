@@ -73,7 +73,7 @@ public class PlayerListener implements Listener {
         final Material mat = pie.getClickedBlock().getType();
         final Material check = arena == null ? Material.IRON_BLOCK : arena
                 .getReadyBlock();
-        if (mat == Material.SIGN || mat == Material.SIGN_POST
+        if (mat == Material.SIGN || mat == Material.WALL_SIGN
                 || mat == Material.WALL_SIGN || mat == check) {
             DEBUG.i("signs and ready blocks allowed!", player);
             DEBUG.i("> false", player);

@@ -10,6 +10,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -93,12 +94,11 @@ public class InventoryRefillRunnable implements Runnable {
                 }
                 if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
                     final ArenaTeam aTeam = aPlayer.getArenaTeam();
-                    final String color = aTeam.getColor().name();
+                    final ChatColor chatColor = aTeam.getColor();
                     arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
-                            + color, player);
+                            + chatColor.name(), player);
                     player.getInventory().setHelmet(
-                            new ItemStack(Material.WOOL, 1, StringParser
-                                    .getColorDataFromENUM(color)));
+                            new ItemStack(StringParser.getWoolMaterialFromChatColor(chatColor), 1));
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
             } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {

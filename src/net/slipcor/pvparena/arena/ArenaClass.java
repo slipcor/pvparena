@@ -49,31 +49,47 @@ public final class ArenaClass {
     // static filling of the items array
     static {
         HELMETS_TYPE.add(Material.LEATHER_HELMET);
-        HELMETS_TYPE.add(Material.GOLD_HELMET);
+        HELMETS_TYPE.add(Material.GOLDEN_HELMET);
         HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
         HELMETS_TYPE.add(Material.IRON_HELMET);
         HELMETS_TYPE.add(Material.DIAMOND_HELMET);
 
-        HELMETS_TYPE.add(Material.WOOL);
+        HELMETS_TYPE.add(Material.BLACK_WOOL);
+        HELMETS_TYPE.add(Material.BLUE_WOOL);
+        HELMETS_TYPE.add(Material.BROWN_WOOL);
+        HELMETS_TYPE.add(Material.CYAN_WOOL);
+        HELMETS_TYPE.add(Material.GRAY_WOOL);
+        HELMETS_TYPE.add(Material.GREEN_WOOL);
+        HELMETS_TYPE.add(Material.LIGHT_BLUE_WOOL);
+        HELMETS_TYPE.add(Material.LIGHT_GRAY_WOOL);
+        HELMETS_TYPE.add(Material.LIME_WOOL);
+        HELMETS_TYPE.add(Material.MAGENTA_WOOL);
+        HELMETS_TYPE.add(Material.ORANGE_WOOL);
+        HELMETS_TYPE.add(Material.PINK_WOOL);
+        HELMETS_TYPE.add(Material.PURPLE_WOOL);
+        HELMETS_TYPE.add(Material.RED_WOOL);
+        HELMETS_TYPE.add(Material.WHITE_WOOL);
+        HELMETS_TYPE.add(Material.YELLOW_WOOL);
+
         HELMETS_TYPE.add(Material.PUMPKIN);
         HELMETS_TYPE.add(Material.JACK_O_LANTERN);
-        HELMETS_TYPE.add(Material.SKULL_ITEM);
+        HELMETS_TYPE.add(Material.PLAYER_HEAD);
 
         CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
+        CHESTPLATES_TYPE.add(Material.GOLDEN_CHESTPLATE);
         CHESTPLATES_TYPE.add(Material.CHAINMAIL_CHESTPLATE);
         CHESTPLATES_TYPE.add(Material.IRON_CHESTPLATE);
         CHESTPLATES_TYPE.add(Material.DIAMOND_CHESTPLATE);
         CHESTPLATES_TYPE.add(Material.ELYTRA);
 
         LEGGINGS_TYPE.add(Material.LEATHER_LEGGINGS);
-        LEGGINGS_TYPE.add(Material.GOLD_LEGGINGS);
+        LEGGINGS_TYPE.add(Material.GOLDEN_LEGGINGS);
         LEGGINGS_TYPE.add(Material.CHAINMAIL_LEGGINGS);
         LEGGINGS_TYPE.add(Material.IRON_LEGGINGS);
         LEGGINGS_TYPE.add(Material.DIAMOND_LEGGINGS);
 
         BOOTS_TYPE.add(Material.LEATHER_BOOTS);
-        BOOTS_TYPE.add(Material.GOLD_BOOTS);
+        BOOTS_TYPE.add(Material.GOLDEN_BOOTS);
         BOOTS_TYPE.add(Material.CHAINMAIL_BOOTS);
         BOOTS_TYPE.add(Material.IRON_BOOTS);
         BOOTS_TYPE.add(Material.DIAMOND_BOOTS);
@@ -185,7 +201,7 @@ public final class ArenaClass {
                     player.getInventory().setItemInOffHand(last);
                     continue;
                 }
-                if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
+                if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
                     final SpawnEggMeta egg = (SpawnEggMeta) item.getItemMeta();
 
                     try {

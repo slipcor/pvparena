@@ -222,13 +222,6 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
     private void drop(final Player player, final ArenaTeam team) {
         final ItemStack item = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
 
-        if (item.getType() == Material.WOOL || item.getType() == Material.INK_SACK ||
-                item.getType() == Material.STAINED_GLASS || item.getType() == Material.STAINED_CLAY) {
-            final MaterialData data = item.getData();
-            data.setData(getDataFromTeam(team));
-            item.setData(data);
-            item.setDurability(getDataFromTeam(team));
-        }
         final ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(team.getColoredName());

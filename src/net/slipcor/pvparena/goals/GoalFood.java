@@ -71,11 +71,13 @@ public class GoalFood extends ArenaGoal implements Listener {
     private static final Map<Material, Material> cookmap = new HashMap<>();
 
     static {
-        cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
-        cookmap.put(Material.RAW_CHICKEN, Material.COOKED_CHICKEN);
-        cookmap.put(Material.RAW_FISH, Material.COOKED_FISH);
-        cookmap.put(Material.POTATO_ITEM, Material.BAKED_POTATO);
-        cookmap.put(Material.PORK, Material.GRILLED_PORK);
+        cookmap.put(Material.BEEF, Material.COOKED_BEEF);
+        cookmap.put(Material.CHICKEN, Material.COOKED_CHICKEN);
+        cookmap.put(Material.COD, Material.COOKED_COD);
+        cookmap.put(Material.MUTTON, Material.COOKED_MUTTON);
+        cookmap.put(Material.PORKCHOP, Material.COOKED_PORKCHOP);
+        cookmap.put(Material.POTATO, Material.BAKED_POTATO);
+        cookmap.put(Material.SALMON, Material.COOKED_SALMON);
     }
 
     @Override

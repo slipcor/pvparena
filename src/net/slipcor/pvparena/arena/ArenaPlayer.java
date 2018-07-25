@@ -207,12 +207,11 @@ public class ArenaPlayer {
 
         if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
             final ArenaTeam aTeam = aPlayer.getArenaTeam();
-            final String color = aTeam.getColor().name();
+            final ChatColor color = aTeam.getColor();
             arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
-                    + color, player);
+                    + color.name(), player);
             player.getInventory().setHelmet(
-                    new ItemStack(Material.WOOL, 1, StringParser
-                            .getColorDataFromENUM(color)));
+                    new ItemStack(StringParser.getWoolMaterialFromChatColor(color)));
         }
     }
 

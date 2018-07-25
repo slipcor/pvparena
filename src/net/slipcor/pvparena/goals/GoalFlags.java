@@ -1015,10 +1015,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
         }
         if (take) {
             paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM("WHITE"));
+                    .setType(Material.WHITE_WOOL);
         } else {
             paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM(flagColor));
+                    .setType(StringParser.getWoolFallbackMaterialFromString(flagColor));
         }
     }
 

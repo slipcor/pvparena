@@ -262,7 +262,7 @@ public class SphericRegion extends ArenaRegionShape {
 
         for (final Block b : border) {
             if (!region.isInNoWoolSet(b)) {
-                player.sendBlockChange(b.getLocation(), Material.WOOL, (byte) 0);
+                player.sendBlockChange(b.getLocation(), Material.WHITE_WOOL.createBlockData());
             }
         }
 

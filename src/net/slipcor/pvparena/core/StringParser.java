@@ -1,17 +1,12 @@
 package net.slipcor.pvparena.core;
 
 import net.slipcor.pvparena.PVPArena;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
-import org.bukkit.material.Dye;
-import org.bukkit.material.Wool;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -219,8 +214,7 @@ public final class StringParser {
                 final String strEnch = temp2[i];
                 if (strEnch.contains("~")) {
                     final String[] arrEnch = strEnch.split("~");
-                    final Enchantment ench = Enchantment.getById(Integer
-                            .parseInt(arrEnch[0]));
+                    final Enchantment ench = Enchantment.getByKey(NamespacedKey.minecraft(arrEnch[0]));
                     final Integer enchLevel = Integer.parseInt(arrEnch[1]);
                     DEBUG.i("adding enchantment " + ench.getName() + " lvl "
                             + enchLevel);
@@ -299,14 +293,6 @@ public final class StringParser {
                 }
             }
 
-            if (data.equals("")) {
-                // Data is messed up, let's try to fix it!
-
-                if (mat == Material.INK_SACK || mat == Material.WOOL) {
-                    data = temp[2]; // 2 or 3 definately is set as data, should work!
-                }
-            }
-
             if (mat == Material.WRITTEN_BOOK) {
                 data = temp[2];
             }
@@ -332,24 +318,8 @@ public final class StringParser {
                     itemStack.setItemMeta(meta);
                 }
 
-                if (mat == Material.INK_SACK) {
-                    try {
-                        itemStack.setData(new Dye(Byte.parseByte(data)));
-                    } catch (final Exception e) {
-                        DEBUG.i(
-                                "invalid dye data: " + data);
-                        return itemStack;
-                    }
-                } else if (mat == Material.WOOL) {
-                    try {
-                        itemStack.setData(new Wool(Byte.parseByte(data)));
-                    } catch (final Exception e) {
-                        PVPArena.instance.getLogger().warning(
-                                "invalid wool data: " + data);
-                        return itemStack;
-                    }
-                } else if (mat == Material.WRITTEN_BOOK
-                        || mat == Material.BOOK_AND_QUILL) {
+                if (mat == Material.WRITTEN_BOOK
+                        || mat == Material.WRITABLE_BOOK) {
                     final BookMeta bookMeta = (BookMeta) itemStack.getItemMeta();
                     try {
                         final String[] outer = data.split(SAFE_BREAK);
@@ -377,7 +347,7 @@ public final class StringParser {
                                 "invalid leather data: " + data);
                         return itemStack;
                     }
-                } else if (itemStack.getType() == Material.SKULL_ITEM) {
+                } else if (itemStack.getType() == Material.PLAYER_HEAD) {
                     try {
                         final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                         skullMeta.setOwner(data);
@@ -419,7 +389,7 @@ public final class StringParser {
                         }
 
                         if (lore != null
-                                && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
+                                && !(mat == Material.WRITTEN_BOOK || mat == Material.WRITABLE_BOOK)) {
                             final List<String> lLore = new ArrayList<>();
                             for (final String line : lore.split(SAFE_BREAK)) {
                                 lLore.add(codeCharacters(line, false));
@@ -434,22 +404,12 @@ public final class StringParser {
                         e.printStackTrace();
                         return itemStack;
                     }
-                } else if (itemStack.getType() == Material.MONSTER_EGG) {
-                    try {
-                        final SpawnEggMeta meta = (SpawnEggMeta) itemStack.getItemMeta();
-                        meta.setSpawnedType(EntityType.fromName(data));
-                        itemStack.setItemMeta(meta);
-                    } catch (final Exception e) {
-                        PVPArena.instance.getLogger().warning(
-                                "invalid spawn egg data: " + data);
-                        return itemStack;
-                    }
                 } else {
                     DEBUG.i("data not available for: " + mat.name());
                 }
 
                 if (lore != null
-                        && !(mat == Material.WRITTEN_BOOK || mat == Material.BOOK_AND_QUILL)) {
+                        && !(mat == Material.WRITTEN_BOOK || mat == Material.WRITABLE_BOOK)) {
                     final List<String> lLore = new ArrayList<>();
                     for (final String line : lore.split(SAFE_BREAK)) {
                         lLore.add(codeCharacters(line, false));
@@ -550,16 +510,8 @@ public final class StringParser {
             temp.append(itemStack.getDurability());
             durability = true;
         }
-        if (itemStack.getType() == Material.INK_SACK || itemStack.getType() == Material.WOOL) {
-            if (!durability) {
-                temp.append('~');
-                temp.append(itemStack.getDurability());
-                durability = true;
-            }
-            temp.append('~');
-            temp.append(itemStack.getData().getData());
-        } else if (itemStack.getType() == Material.WRITTEN_BOOK
-                || itemStack.getType() == Material.BOOK_AND_QUILL) {
+        if (itemStack.getType() == Material.WRITTEN_BOOK
+                || itemStack.getType() == Material.WRITABLE_BOOK) {
             if (!durability) {
                 temp.append('~');
                 temp.append(itemStack.getDurability());
@@ -587,7 +539,7 @@ public final class StringParser {
             final LeatherArmorMeta leatherMeta = (LeatherArmorMeta) itemStack.getItemMeta();
             temp.append('~');
             temp.append(leatherMeta.getColor().asRGB());
-        } else if (itemStack.getType() == Material.SKULL_ITEM) {
+        } else if (itemStack.getType() == Material.PLAYER_HEAD) {
             if (!durability) {
                 temp.append('~');
                 temp.append(itemStack.getDurability());
@@ -614,17 +566,6 @@ public final class StringParser {
                 temp.append(pe.getType().getName()).append('x').append(pe.getAmplifier()).append('x').append(pe.getDuration());
                 temp.append(SAFE_BREAK);
             }
-        } else if (itemStack.getType() == Material.MONSTER_EGG){
-            if (!durability) {
-                temp.append('~');
-                temp.append(itemStack.getDurability());
-                durability = true;
-            }
-            temp.append('~');
-            final SpawnEggMeta meta = (SpawnEggMeta) itemStack.getItemMeta();
-            if (meta != null && meta.getSpawnedType() != null && meta.getSpawnedType().name() != null) {
-                temp.append(meta.getSpawnedType().name());
-            }
         }
 
         if (itemStack.hasItemMeta() && itemStack.getItemMeta().hasLore()) {
@@ -650,7 +591,7 @@ public final class StringParser {
         if (enchants != null && !enchants.isEmpty()) {
             for (final Map.Entry<Enchantment, Integer> enchantmentIntegerEntry : enchants.entrySet()) {
                 temp.append('|');
-                temp.append(enchantmentIntegerEntry.getKey().getId());
+                temp.append(enchantmentIntegerEntry.getKey().getKey().getKey());
                 temp.append('~');
                 temp.append(enchantmentIntegerEntry.getValue());
             }
@@ -671,6 +612,58 @@ public final class StringParser {
 
     private static String getWoolEnumFromChatColorEnum(final String color) {
         return parseDyeColorToChatColor(color, false);
+    }
+
+    public static Material getWoolFallbackMaterialFromString(final String color) {
+        for (Material mat : Material.values()) {
+            if (mat.name().contains("WOOL") && mat.name().contains(color.toUpperCase())) {
+                return mat;
+            }
+        }
+        DEBUG.i(">> Material defaulting '"+color+"' to BROWN_WOOL!! <<");
+        return Material.BROWN_WOOL;
+    }
+
+    public static Material getWoolMaterialFromChatColor(final ChatColor color) {
+        /*
+        Unsupported:
+        ChatColor.AQUA
+        Material.BROWN_WOOL
+        */
+
+        switch (color) {
+            case BLACK:
+                return Material.BLACK_WOOL;
+            case DARK_BLUE:
+                return Material.BLUE_WOOL;
+            case DARK_GREEN:
+                return Material.GREEN_WOOL;
+            case DARK_AQUA:
+                return Material.CYAN_WOOL;
+            case DARK_RED:
+                return Material.RED_WOOL;
+            case DARK_PURPLE:
+                return Material.PURPLE_WOOL;
+            case GOLD:
+                return Material.ORANGE_WOOL;
+            case GRAY:
+                return Material.LIGHT_GRAY_WOOL;
+            case DARK_GRAY:
+                return Material.GRAY_WOOL;
+            case BLUE:
+                return Material.LIGHT_BLUE_WOOL;
+            case GREEN:
+                return Material.LIME_WOOL;
+            case RED:
+                return Material.PINK_WOOL;
+            case LIGHT_PURPLE:
+                return Material.MAGENTA_WOOL;
+            case YELLOW:
+                return Material.YELLOW_WOOL;
+            case WHITE:
+            default:
+                return Material.WHITE_WOOL;
+        }
     }
 
     public static String joinArray(final Object[] array, final String glue) {

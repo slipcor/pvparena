@@ -503,13 +503,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         if ("WOOL".equals(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))) {
             paBlockLocation.toLocation()
                     .getBlock()
-                    .setTypeIdAndData(
-                            Material.valueOf(
-                                    arena.getArenaConfig().getString(
-                                            CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))
-                                    .getId(),
-                            StringParser.getColorDataFromENUM(blockColor),
-                            false);
+                    .setType(StringParser.getWoolFallbackMaterialFromString(blockColor));
         } else {
             paBlockLocation.toLocation()
                     .getBlock()
