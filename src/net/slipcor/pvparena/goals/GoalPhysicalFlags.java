@@ -15,6 +15,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -160,9 +161,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         }
         arena.getDebugger().i("checking interact", player);
 
-        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGTYPE));
-        if (block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
+        Material flagType = arena.getArenaConfig().getMaterial(CFG.GOAL_FLAGS_FLAGTYPE);
+        if (!Utils.isSubType(block.getType(), flagType)) {
             arena.getDebugger().i("block, but not flag", player);
             return res;
         }
@@ -365,9 +365,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGTYPE));
-        if (block == null || block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
+        Material flagType = arena.getArenaConfig().getMaterial(CFG.GOAL_FLAGS_FLAGTYPE);
+        if (block == null || !Utils.isSubType(block.getType(), flagType)) {
             return res;
         }
 
@@ -1080,9 +1079,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 } catch (final Exception e) {
 
                 }
-                final ItemStack itemStack = block.getState().getData().toItemStack()
+                final ItemStack itemStack = block.getState().getData().toItemStack(1)
                         .clone();
-                itemStack.setAmount(1);
                 if (arena.getArenaConfig().getBoolean(
                         CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
                     itemStack.setDurability(getFlagOverrideTeamShort(arena, aTeam));

@@ -167,7 +167,7 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
+                    String itemDefinition = ((Player) player).getEquipment().getItemInMainHand().getType().name();
                     arena.getArenaConfig().setManually(node, itemDefinition);
                     arena.msg(
                             player,
@@ -200,12 +200,11 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
-                    arena.getArenaConfig().setManually(node, itemDefinition);
+                    ItemStack[] items = new ItemStack[]{(((Player) player).getEquipment().getItemInMainHand())};
+                    arena.getArenaConfig().setManually(node, items);
                     arena.msg(
                             player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    itemDefinition));
+                            Language.parse(arena, MSG.SET_DONE, node, items[0].getType().name()));
                 } else {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
                 }
@@ -214,36 +213,18 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("inventory".equals(value)) {
                 if (player instanceof Player) {
 
-                    final String newValue = StringParser.getStringFromItemStacks(((Player) player).getInventory().getContents());
-                    arena.getArenaConfig().setManually(node, newValue);
+                    final ItemStack[] items = ((Player) player).getInventory().getContents();
+                    arena.getArenaConfig().setManually(node, items);
                     arena.msg(
                             player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    newValue));
+                            Language.parse(arena, MSG.SET_DONE, node, "inventory"));
                     arena.getArenaConfig().save();
                 } else {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
                 }
                 return;
             }
-
-            final String[] split = value.split(",");
-            final ItemStack[] items = new ItemStack[split.length];
-
-            for (int i = 0; i < split.length; i++) {
-                items[i] = StringParser.getItemStackFromString(split[i]);
-                if (items[i] == null) {
-                    arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, String.valueOf(items[i]),
-                            "item"));
-                    return;
-                }
-            }
-
-            arena.getArenaConfig().setManually(node, String.valueOf(value));
-            arena.msg(
-                    player,
-                    Language.parse(arena, MSG.SET_DONE, node,
-                            String.valueOf(value)));
+            arena.msg(player, Language.parse(arena, MSG.SET_ITEMS_NOT));
         } else {
             arena.msg(
                     player,

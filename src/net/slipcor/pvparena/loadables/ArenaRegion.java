@@ -521,7 +521,7 @@ public class ArenaRegion {
                 }
                 ap.get().setLastDamageCause(
                         new EntityDamageEvent(ap.get(), DamageCause.CUSTOM,
-                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1003))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
+                                1003.0));
                 ap.get().damage(1000);
             }
             if (flags.contains(RegionFlag.WIN) && shape.contains(pLoc)) {
@@ -540,8 +540,7 @@ public class ArenaRegion {
                             Bukkit.getWorld(world).strikeLightningEffect(
                                     ap2.get().getLocation());
                             final EntityDamageEvent event = new EntityDamageEvent(
-                                    ap2.get(), DamageCause.LIGHTNING,
-                                    new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
+                                    ap2.get(), DamageCause.LIGHTNING, 10.0);
                             PlayerListener.finallyKillPlayer(arena,
                                     ap2.get(), event);
                         }
@@ -555,8 +554,7 @@ public class ArenaRegion {
                         Bukkit.getWorld(world).strikeLightningEffect(
                                 ap.get().getLocation());
                         final EntityDamageEvent event = new EntityDamageEvent(
-                                ap.get(), DamageCause.LIGHTNING,
-                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
+                                ap.get(), DamageCause.LIGHTNING, 10.0);
                         PlayerListener
                                 .finallyKillPlayer(arena, ap.get(), event);
                     }
@@ -572,8 +570,7 @@ public class ArenaRegion {
                                         .strikeLightningEffect(
                                                 ap2.get().getLocation());
                                 final EntityDamageEvent event = new EntityDamageEvent(
-                                        ap2.get(), DamageCause.LIGHTNING,
-                                        new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0)));
+                                        ap2.get(), DamageCause.LIGHTNING,10.0);
                                 PlayerListener.finallyKillPlayer(arena,
                                         ap2.get(), event);
                             }
@@ -592,8 +589,7 @@ public class ArenaRegion {
                         if (loc.distance(ap.get().getLocation()) < 3) {
                             ap.get().setLastDamageCause(
                                     new EntityDamageEvent(ap.get(),
-                                            DamageCause.CUSTOM,
-                                            new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(arena.getArenaConfig().getInt(CFG.DAMAGE_SPAWNCAMP)))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
+                                            DamageCause.CUSTOM, arena.getArenaConfig().getInt(CFG.DAMAGE_SPAWNCAMP)));
                             ap.get().damage(
                                     arena.getArenaConfig().getInt(
                                             CFG.DAMAGE_SPAWNCAMP));
@@ -627,8 +623,7 @@ public class ArenaRegion {
                             CFG.GENERAL_LEAVEDEATH)) {
                         ap.get().setLastDamageCause(
                                 new EntityDamageEvent(ap.get(),
-                                        DamageCause.CUSTOM,
-                                        new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1004))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
+                                        DamageCause.CUSTOM, 1004.0));
                         // ap.get().setHealth(0);
                         ap.get().damage(1000);
                     } else {

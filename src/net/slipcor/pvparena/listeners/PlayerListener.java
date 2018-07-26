@@ -320,8 +320,6 @@ public class PlayerListener implements Listener {
             return; // no drop protection
         }
 
-        arena.getDebugger().i("item: "+ StringParser.getStringFromItemStack(event.getItemDrop().getItemStack()));
-
         if (Bukkit.getPlayer(player.getName()) == null || aPlayer.getStatus() == Status.DEAD || aPlayer.getStatus() == Status.LOST) {
             arena.getDebugger().i("Player is dead. allowing drops!");
             return;
@@ -796,8 +794,8 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
-        final Player player = event.getPlayer();
+    public void onPlayerPickupItem(final EntityPickupItemEvent event) {
+        final Player player = (Player) event.getEntity();
 
         if (willBeCancelled(player, event)) {
             return;
@@ -927,7 +925,7 @@ public class PlayerListener implements Listener {
                 public void run() {
                     for (final ArenaPlayer otherPlayer : arena.getFighters()) {
                         if (otherPlayer.get() != null) {
-                            otherPlayer.get().showPlayer(player);
+                            otherPlayer.get().showPlayer(PVPArena.instance, player);
                         }
                     }
                 }

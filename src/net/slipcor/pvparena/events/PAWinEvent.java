@@ -4,6 +4,7 @@ import net.slipcor.pvparena.arena.Arena;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +25,9 @@ public class PAWinEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private final Arena arena;
     private final Player player;
-    private final List<String> items;
+    private final List<ItemStack> items;
 
-    public PAWinEvent(final Arena arena, final Player player, final String[] arrItems) {
+    public PAWinEvent(final Arena arena, final Player player, final ItemStack[] arrItems) {
         super();
         this.arena = arena;
         this.player = player;
@@ -38,7 +39,7 @@ public class PAWinEvent extends Event {
         items.addAll(Arrays.asList(arrItems));
     }
 
-    public void addItemString(final String item) {
+    public void addItemString(final ItemStack item) {
         items.add(item);
     }
 
@@ -55,10 +56,10 @@ public class PAWinEvent extends Event {
         return HANDLERS;
     }
 
-    public String[] getItems() {
-        final String[] output = new String[items.size()];
+    public ItemStack[] getItems() {
+        final ItemStack[] output = new ItemStack[items.size()];
         int pos = 0;
-        for (final String s : items) {
+        for (final ItemStack s : items) {
             output[pos++] = s;
         }
         return output;

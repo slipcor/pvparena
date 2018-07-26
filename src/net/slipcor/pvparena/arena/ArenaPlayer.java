@@ -7,7 +7,7 @@ import net.slipcor.pvparena.classes.PAStatMap;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -211,7 +211,7 @@ public class ArenaPlayer {
             arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
                     + color.name(), player);
             player.getInventory().setHelmet(
-                    new ItemStack(StringParser.getWoolMaterialFromChatColor(color)));
+                    new ItemStack(Utils.getWoolMaterialFromChatColor(color)));
         }
     }
 
@@ -291,7 +291,8 @@ public class ArenaPlayer {
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
 
         if (!"none".equals(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME))) {
-            final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
+            final ItemStack[] items =
+                    arena.getArenaConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
 
             final List<Material> allowedMats = new ArrayList<>();
 
@@ -337,7 +338,7 @@ public class ArenaPlayer {
 
         if (instant) {
 
-            debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory), player);
+            debug.i("adding saved inventory", player);
             player.getInventory().setContents(aPlayer.savedInventory);
         } else {
             class GiveLater implements Runnable {
@@ -347,7 +348,7 @@ public class ArenaPlayer {
                     }
                 @Override
                 public void run() {
-                    debug.i("adding " + StringParser.getStringFromItemStacks(inv),
+                    debug.i("adding saved inventory",
                             player);
                     player.getInventory().setContents(inv);
                     }
@@ -434,9 +435,6 @@ public class ArenaPlayer {
                 name);
         debug.i("location: " + location, name);
         debug.i("status: " + status.name(), name);
-        debug.i("savedInventory: "
-                        + StringParser.getStringFromItemStacks(savedInventory),
-                name);
         debug.i("tempPermissions:", name);
         for (final PermissionAttachment pa : tempPermissions) {
             debug.i("> " + pa, name);

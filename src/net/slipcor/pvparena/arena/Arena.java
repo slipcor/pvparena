@@ -19,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
@@ -572,7 +573,7 @@ public class Arena {
                 }
             }
 
-            Objective obj = scoreboard.registerNewObjective("lives", "dummy"); //deathCount
+
 
             String name = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName();
 
@@ -583,7 +584,7 @@ public class Arena {
                     name = name.substring(0, 32);
                 }
             }
-            obj.setDisplayName(name);
+            Objective obj = scoreboard.registerNewObjective("lives", "dummy", name); //deathCount
 
             if (this.isFightInProgress()) {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -685,12 +686,8 @@ public class Arena {
         getDebugger().i("giving rewards to " + player.getName(), player);
 
         ArenaModuleManager.giveRewards(this, player);
-        final String sItems = cfg.getString(CFG.ITEMS_REWARDS, "none");
+        ItemStack[] items = cfg.getItems(CFG.ITEMS_REWARDS);
 
-        String[] items = sItems.split(",");
-        if ("none".equals(sItems)) {
-            items = null;
-        }
         final boolean isRandom = cfg.getBoolean(CFG.ITEMS_RANDOM);
         final Random rRandom = new Random();
 
@@ -711,7 +708,7 @@ public class Arena {
             if (items[i] == null) {
                 continue;
             }
-            final ItemStack stack = StringParser.getItemStackFromString(items[i]);
+            final ItemStack stack = items[i];
             if (stack == null) {
                 PVPArena.instance.getLogger().warning(
                         "unrecognized item: " + items[i]);
@@ -962,22 +959,6 @@ public class Arena {
         }
         DEBUG.i('@' + sender.getName() + ": " + msg, sender);
         sender.sendMessage(Language.parse(MSG.MESSAGES_GENERAL, PVPArena.instance.getConfig().getString("globalPrefix", "PVP Arena"), msg));
-    }
-
-    /**
-     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean), boolean}
-     */
-    @Deprecated
-    public void playerLeave(final Player player, final CFG location, final boolean silent) {
-        playerLeave(player, location, silent, !silent, silent);
-    }
-
-    /**
-     * @deprecated use {@link #playerLeave(Player, CFG, boolean, boolean), boolean}
-     */
-    @Deprecated
-    public void playerLeave(final Player player, final CFG location, final boolean silent, final boolean force) {
-        playerLeave(player, location, silent, force, !force);
     }
 
     /**
@@ -1551,7 +1532,6 @@ public class Arena {
         resetScoreboard(player, force, soft);
 
         //noinspection deprecation
-        ArenaModuleManager.resetPlayer(this, player, force);
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
         String sClass = "";
@@ -1710,10 +1690,10 @@ public class Arena {
     public void unKillPlayer(final Player player, final DamageCause cause, final Entity damager) {
 
         getDebugger().i("respawning player " + player.getName(), player);
-        int iHealth = cfg.getInt(CFG.PLAYER_HEALTH, -1);
+        double iHealth = cfg.getInt(CFG.PLAYER_HEALTH, -1);
 
         if (iHealth < 1) {
-            iHealth = (int) player.getMaxHealth();
+            iHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         }
 
         PlayerState.playersetHealth(player, iHealth);
@@ -1869,7 +1849,7 @@ public class Arena {
                                 .setLastDamageCause(
                                         new EntityDamageEvent(locationArenaPlayerEntry.getValue().get(),
                                                 DamageCause.CUSTOM,
-                                                new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf(1002))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, 0))));
+                                                1002));
                         locationArenaPlayerEntry.getValue()
                                 .get()
                                 .damage(cfg.getInt(
@@ -2104,7 +2084,7 @@ public class Arena {
                 public void run() {
                     for (final ArenaPlayer player : getFighters()) {
                         if (player.get() != null) {
-                            player.get().showPlayer(aPlayer.get());
+                            player.get().showPlayer(PVPArena.instance, aPlayer.get());
                         }
                     }
                 }

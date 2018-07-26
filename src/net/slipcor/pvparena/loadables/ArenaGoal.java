@@ -17,11 +17,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.util.*;
 
@@ -115,7 +115,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
         return result;
     }
 
-    public PACheck checkPickup(PACheck result, Arena arena, PlayerPickupItemEvent event) {
+    public PACheck checkPickup(PACheck result, Arena arena, EntityPickupItemEvent event) {
         return result;
     }
 
@@ -408,7 +408,7 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
     public void onThisLoad() {
     }
 
-    public void onPlayerPickUp(final PlayerPickupItemEvent event) {
+    public void onPlayerPickUp(final EntityPickupItemEvent event) {
     }
 
     /**

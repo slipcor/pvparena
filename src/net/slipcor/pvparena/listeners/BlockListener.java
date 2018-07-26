@@ -128,8 +128,7 @@ public class BlockListener implements Listener {
                 && !list.contains(String.valueOf(event.getBlock().getType()
                 .name()))
                 && !list.contains(String.valueOf(event.getBlock().getType()
-                .name())
-                + ':' + event.getBlock().getData())) {
+                .name()))) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
@@ -151,8 +150,7 @@ public class BlockListener implements Listener {
                 new ArrayList<String>()));
 
         if (list.contains(String.valueOf(event.getBlock().getType().name()))
-                || list.contains(String.valueOf(event.getBlock().getType().name())
-                + ':' + event.getBlock().getData())) {
+                || list.contains(String.valueOf(event.getBlock().getType().name()))) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
@@ -443,8 +441,7 @@ public class BlockListener implements Listener {
                 && !list.contains(String.valueOf(event.getBlockPlaced()
                 .getType().name()))
                 && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name())
-                + ':' + event.getBlock().getData())) {
+                .getType().name()))) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
@@ -476,8 +473,7 @@ public class BlockListener implements Listener {
 
         if (list.contains(String.valueOf(event.getBlockPlaced().getType().name()))
                 || list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name())
-                + ':' + event.getBlock().getData())) {
+                .getType().name()))) {
             arena.msg(
                     event.getPlayer(),
                     Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,

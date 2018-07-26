@@ -30,6 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -213,8 +214,8 @@ public class GoalInfect extends ArenaGoal {
     }
 
     @Override
-    public PACheck checkPickup(PACheck result, Arena arena, PlayerPickupItemEvent event) {
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+    public PACheck checkPickup(PACheck result, Arena arena, EntityPickupItemEvent event) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getEntity().getName());
         if (arena.equals(ap.getArena())) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(

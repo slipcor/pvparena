@@ -266,7 +266,7 @@ public class CylindricRegion extends ArenaRegionShape {
                     public void run() {
                         for (final Block b : border) {
                             player.sendBlockChange(b.getLocation(),
-                                    b.getType(), b.getData());
+                                    b.getType().createBlockData());
                         }
                         border.clear();
                     }

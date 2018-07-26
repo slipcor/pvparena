@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -75,15 +74,15 @@ public class PAA_Setup extends AbstractArenaCommand {
 
     public static void chat(final Player player, final String message) {
         final Arena arena = activeSetups.get(player.getName());
-        /**
-         * help | ?
-         *
-         * show [region|spawn|block] | display a region/spawn/block with wool blocks",
-         * region [region] move 2 up | move region [region] 2 blocks up",
-         * region [region] expand 10 north | expand region [region] 10 block to the north",
-         * region [region] expand 15 | expand region [region] 15 blocks in all directions",
-         * all arguments can be abbreviated, e.g. 'r' = 'region', 'e' = 'expand', 'm' = 'move'",
-         * done | exit setup mode",
+        /*
+          help | ?
+
+          show [region|spawn|block] | display a region/spawn/block with wool blocks",
+          region [region] move 2 up | move region [region] 2 blocks up",
+          region [region] expand 10 north | expand region [region] 10 block to the north",
+          region [region] expand 15 | expand region [region] 15 blocks in all directions",
+          all arguments can be abbreviated, e.g. 'r' = 'region', 'e' = 'expand', 'm' = 'move'",
+          done | exit setup mode",
          */
         if (message.length() < 1) {
             return;
@@ -108,7 +107,7 @@ public class PAA_Setup extends AbstractArenaCommand {
 
                     @Override
                     public void run() {
-                        player.sendBlockChange(location, location.getBlock().getType(), location.getBlock().getData());
+                        player.sendBlockChange(location, location.getBlock().getType().createBlockData());
                     }
 
                 }
@@ -141,10 +140,10 @@ public class PAA_Setup extends AbstractArenaCommand {
                 }
             }
         } else if (word[0].startsWith("r")) {
-            /**
-             * region [region] move 2 up | move region [region] 2 blocks up",
-             * region [region] expand 10 north | expand region [region] 10 block to the north",
-             * region [region] expand 15 out | expand region [region] 15 blocks in all directions",
+            /*
+              region [region] move 2 up | move region [region] 2 blocks up",
+              region [region] expand 10 north | expand region [region] 10 block to the north",
+              region [region] expand 15 out | expand region [region] 15 blocks in all directions",
              */
             if (word.length == 5) {
                 final ArenaRegion region = arena.getRegion(word[1]);

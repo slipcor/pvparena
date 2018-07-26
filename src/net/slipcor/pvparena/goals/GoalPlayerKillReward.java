@@ -23,6 +23,7 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -50,7 +51,7 @@ public class GoalPlayerKillReward extends ArenaGoal {
         debug = new Debug(102);
     }
 
-    private Map<Integer, ItemStack[]> itemMap;
+    private Map<Integer, ItemStack[][]> itemMapCubed;
 
     private EndRunnable endRunner;
 
@@ -189,18 +190,16 @@ public class GoalPlayerKillReward extends ArenaGoal {
                 return;
             }
             final Player player = (Player) sender;
-            final String contents = StringParser.getStringFromItemStacks(player
-                    .getInventory().getArmorContents())
-                    + ','
-                    + StringParser.getStringFromItemStacks(player.getInventory()
-                    .getStorageContents())
-                    + ','
-                    + StringParser.getStringFromItemStack(player.getInventory()
-                    .getItemInOffHand());
 
-            getItemMap().put(value, StringParser.getItemStacksFromString(contents));
+            ItemStack[][] content = new ItemStack[][]{
+                    player.getInventory().getStorageContents(),
+                    new ItemStack[]{player.getInventory().getItemInOffHand()},
+                    player.getInventory().getArmorContents()
+            };
+
+            getItemMap().put(value, content);
             arena.msg(sender, Language.parse(arena, MSG.GOAL_KILLREWARD_ADDED,
-                    args[1], contents));
+                    args[1]));
 
         }
 
@@ -356,19 +355,11 @@ public class GoalPlayerKillReward extends ArenaGoal {
         }
     }
 
-    @Override
-    public void displayInfo(final CommandSender sender) {
-        for (final int i : getItemMap().keySet()) {
-            final ItemStack[] items = getItemMap().get(i);
-            sender.sendMessage("kill #" + i + ": " + StringParser.getStringFromItemStacks(items));
+    private Map<Integer, ItemStack[][]> getItemMap() {
+        if (itemMapCubed == null) {
+            itemMapCubed = new HashMap<>();
         }
-    }
-
-    private Map<Integer, ItemStack[]> getItemMap() {
-        if (itemMap == null) {
-            itemMap = new HashMap<>();
-        }
-        return itemMap;
+        return itemMapCubed;
     }
 
     @Override
@@ -474,8 +465,12 @@ public class GoalPlayerKillReward extends ArenaGoal {
         if (cs != null) {
             for (final String line : cs.getKeys(false)) {
                 try {
-                    getItemMap().put(Integer.parseInt(line.substring(2)), StringParser
-                            .getItemStacksFromString(cs.getString(line)));
+                    getItemMap().put(Integer.parseInt(line.substring(2)),
+                        new ItemStack[][] {
+                            cs.getList(line + ".items").toArray(new ItemStack[0]),
+                            cs.getList(line + ".offhand").toArray(new ItemStack[]{new ItemStack(Material.AIR, 1)}),
+                            cs.getList(line + ".armor").toArray(new ItemStack[0])
+                        });
                 } catch (final Exception e) {
                 }
             }
@@ -483,16 +478,61 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
         if (getItemMap().size() < 1) {
 
-            getItemMap().put(5,
-                    StringParser.getItemStacksFromString("298,299,300,301,268")); // leather
-            getItemMap().put(4,
-                    StringParser.getItemStacksFromString("302,303,304,305,272")); // chain
-            getItemMap().put(3,
-                    StringParser.getItemStacksFromString("314,315,316,317,267")); // gold
-            getItemMap().put(2,
-                    StringParser.getItemStacksFromString("306,307,308,309,276")); // iron
-            getItemMap().put(1,
-                    StringParser.getItemStacksFromString("310,311,312,313,276")); // diamond
+            getItemMap().put(5, new ItemStack[][]{
+                        new ItemStack[]{},
+                        new ItemStack[]{},
+                        new ItemStack[]{
+                                new ItemStack(Material.LEATHER_HELMET, 1),
+                                new ItemStack(Material.LEATHER_CHESTPLATE, 1),
+                                new ItemStack(Material.LEATHER_LEGGINGS, 1),
+                                new ItemStack(Material.LEATHER_BOOTS, 1),
+                                new ItemStack(Material.WOODEN_SWORD, 1)
+                        },
+                    });
+            getItemMap().put(4, new ItemStack[][]{
+                    new ItemStack[]{},
+                    new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                    new ItemStack[]{
+                            new ItemStack(Material.CHAINMAIL_HELMET, 1),
+                            new ItemStack(Material.CHAINMAIL_CHESTPLATE, 1),
+                            new ItemStack(Material.CHAINMAIL_LEGGINGS, 1),
+                            new ItemStack(Material.CHAINMAIL_BOOTS, 1),
+                            new ItemStack(Material.STONE_SWORD, 1)
+                    },
+            });
+            getItemMap().put(3, new ItemStack[][]{
+                    new ItemStack[]{},
+                    new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                    new ItemStack[]{
+                            new ItemStack(Material.GOLDEN_HELMET, 1),
+                            new ItemStack(Material.GOLDEN_CHESTPLATE, 1),
+                            new ItemStack(Material.GOLDEN_LEGGINGS, 1),
+                            new ItemStack(Material.GOLDEN_BOOTS, 1),
+                            new ItemStack(Material.IRON_SWORD, 1)
+                    },
+            });
+            getItemMap().put(2, new ItemStack[][]{
+                    new ItemStack[]{},
+                    new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                    new ItemStack[]{
+                            new ItemStack(Material.IRON_HELMET, 1),
+                            new ItemStack(Material.IRON_CHESTPLATE, 1),
+                            new ItemStack(Material.IRON_LEGGINGS, 1),
+                            new ItemStack(Material.IRON_BOOTS, 1),
+                            new ItemStack(Material.DIAMOND_SWORD, 1)
+                    },
+            });
+            getItemMap().put(1, new ItemStack[][]{
+                    new ItemStack[]{},
+                    new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                    new ItemStack[]{
+                            new ItemStack(Material.DIAMOND_HELMET, 1),
+                            new ItemStack(Material.DIAMOND_CHESTPLATE, 1),
+                            new ItemStack(Material.DIAMOND_LEGGINGS, 1),
+                            new ItemStack(Material.DIAMOND_BOOTS, 1),
+                            new ItemStack(Material.DIAMOND_SWORD, 1)
+                    },
+            });
 
             saveItems();
         }
@@ -500,8 +540,12 @@ public class GoalPlayerKillReward extends ArenaGoal {
 
     private void saveItems() {
         for (final int i : getItemMap().keySet()) {
-            arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i,
-                    StringParser.getStringFromItemStacks(getItemMap().get(i)));
+            arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i+".items",
+                    getItemMap().get(i)[0]);
+            arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i+".offhand",
+                    getItemMap().get(i)[1]);
+            arena.getArenaConfig().setManually("goal.playerkillrewards.kr" + i+".armor",
+                    getItemMap().get(i)[2]);
         }
         arena.getArenaConfig().save();
     }

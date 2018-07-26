@@ -13,6 +13,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -196,28 +197,28 @@ public class GoalDomination extends ArenaGoal {
 
     void checkMove() {
 
-        /**
-         * possible Situations
-         *
-         * >>- flag is unclaimed and no one is there
-         * >>- flag is unclaimed and team a is there
-         * >>- flag is unclaimed and multiple teams are there
-         *
-         * >>- flag is being claimed by team a, no one is present
-         * >>- flag is being claimed by team a, team a is present
-         * >>- flag is being claimed by team a, multiple teams are present
-         * >>- flag is being claimed by team a, team b is present
-         *
-         * >>- flag is claimed by team a, no one is present
-         * >>- flag is claimed by team a, team a is present
-         * >>- flag is claimed by team a, multiple teams are present
-         * >>- flag is claimed by team a, team b is present
-         *
-         * >>- flag is claimed by team a and being unclaimed, no one is present
-         * >>- flag is claimed by team a and being unclaimed, team a is present
-         * >>- flag is claimed by team a and being unclaimed, multiple teams are present
-         * >>- flag is claimed by team a and being unclaimed, team b is present
-         *
+        /*
+          possible Situations
+
+          >>- flag is unclaimed and no one is there
+          >>- flag is unclaimed and team a is there
+          >>- flag is unclaimed and multiple teams are there
+
+          >>- flag is being claimed by team a, no one is present
+          >>- flag is being claimed by team a, team a is present
+          >>- flag is being claimed by team a, multiple teams are present
+          >>- flag is being claimed by team a, team b is present
+
+          >>- flag is claimed by team a, no one is present
+          >>- flag is claimed by team a, team a is present
+          >>- flag is claimed by team a, multiple teams are present
+          >>- flag is claimed by team a, team b is present
+
+          >>- flag is claimed by team a and being unclaimed, no one is present
+          >>- flag is claimed by team a and being unclaimed, team a is present
+          >>- flag is claimed by team a and being unclaimed, multiple teams are present
+          >>- flag is claimed by team a and being unclaimed, team b is present
+
          */
 
         arena.getDebugger().i("------------------");
@@ -844,7 +845,7 @@ public class GoalDomination extends ArenaGoal {
                 lBlock.getBlock().setType(Material.WHITE_WOOL);
                 return;
             }
-            lBlock.getBlock().setType(StringParser.getWoolMaterialFromChatColor(team.getColor()));
+            lBlock.getBlock().setType(Utils.getWoolMaterialFromChatColor(team.getColor()));
         }
     }
 

@@ -12,6 +12,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -19,12 +20,9 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -130,19 +128,34 @@ public final class ConfigurationManager {
 
         if (config.get("classitems") == null) {
             if (PVPArena.instance.getConfig().get("classitems") == null) {
-                config.addDefault("classitems.Ranger",
-                        "BOW,ARROW:64,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-                config.addDefault("classitems.Swordsman",
-                        "DIAMOND_SWORD,IRON_HELMET,IRON_CHESTPLATE,IRON_LEGGINGS,IRON_BOOTS");
-                config.addDefault("classitems.Tank",
-                        "STONE_SWORD,DIAMOND_HELMET,DIAMOND_CHESTPLATE,DIAMOND_LEGGINGS,DIAMOND_BOOTS");
-                config.addDefault("classitems.Pyro",
-                        "FLINT_AND_STEEL,TNT:3,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-            } else {
-                for (final String key : PVPArena.instance.getConfig().getKeys(false)) {
-                    config.addDefault("classitems." + key, PVPArena.instance
-                            .getConfig().get("classitems." + key));
-                }
+                config.addDefault("classitems.Ranger.items",
+                        Utils.getItemStacksFromMaterials(Material.BOW, Material.ARROW));
+                config.addDefault("classitems.Ranger.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Ranger.armor",
+                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+
+                config.addDefault("classitems.Swordsman.items",
+                        Utils.getItemStacksFromMaterials(Material.DIAMOND_SWORD));
+                config.addDefault("classitems.Swordsman.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Swordsman.armor",
+                        Utils.getItemStacksFromMaterials(Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS));
+
+                config.addDefault("classitems.Tank.items",
+                        Utils.getItemStacksFromMaterials(Material.STONE_SWORD));
+                config.addDefault("classitems.Tank.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Tank.armor",
+                        Utils.getItemStacksFromMaterials(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS));
+
+                config.addDefault("classitems.Pyro.items",
+                        Utils.getItemStacksFromMaterials(Material.FLINT_AND_STEEL, Material.TNT, Material.TNT, Material.TNT));
+                config.addDefault("classitems.Pyro.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Pyro.armor",
+                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+
             }
         }
 
@@ -183,10 +196,14 @@ public final class ConfigurationManager {
         arena.getDebugger().i("reading class items");
         ArenaClass.addGlobalClasses(arena);
         for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
-            final String sItemList;
+            ItemStack[] items;
+            ItemStack offHand = new ItemStack(Material.AIR, 1);
+            ItemStack[] armors = new ItemStack[]{new ItemStack(Material.AIR, 1)};
 
             try {
-                sItemList = (String) stringObjectEntry1.getValue();
+                items = config.getList("classitems."+stringObjectEntry1.getKey()+".items").toArray(new ItemStack[0]);
+                offHand = config.getList("classitems."+stringObjectEntry1.getKey()+".offhand").toArray(new ItemStack[]{new ItemStack(Material.AIR, 1)})[0];
+                armors = config.getList("classitems."+stringObjectEntry1.getKey()+".armor").toArray(new ItemStack[0]);
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
@@ -199,56 +216,23 @@ public final class ConfigurationManager {
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
                 ItemStack[] contents = c.getInventory().getContents();
-                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length - 5);
-                final ItemStack offHand = contents[contents.length - 5];
-                final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+
+                items = Arrays.copyOfRange(contents, 0, contents.length - 5);
+                offHand = contents[contents.length - 5];
+                armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+
                 arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 arena.getDebugger().i("adding class chest items to class " + stringObjectEntry1.getKey());
 
             }   catch (Exception e) {
-                final String[] sItems = sItemList.split(",");
-                final ItemStack[] items = new ItemStack[sItems.length];
-                final ItemStack[] offHand = new ItemStack[1];
-                final ItemStack[] armors = new ItemStack[4];
-
-                for (int i = 0; i < sItems.length; i++) {
-
-                    if (sItems[i].contains(">>!<<")) {
-                        final String[] split = sItems[i].split(">>!<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        armors[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (armors[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized armor item: " + split[1]);
-                        }
-
-                        sItems[i] = "AIR";
-                    } else if (sItems[i].contains(">>O<<")) {
-                        final String[] split = sItems[i].split(">>O<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        offHand[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (offHand[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized offhand item: " + split[1]);
-                        }
-                        sItems[i] = "AIR";
-                    }
-
-                    items[i] = StringParser.getItemStackFromString(sItems[i]);
-                    if (items[i] == null) {
-                        PVPArena.instance.getLogger().warning(
-                                "unrecognized item: " + items[i]);
-                    }
-                }
-                arena.addClass(stringObjectEntry1.getKey(), items, offHand[0], armors);
+                arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
             }
         }
-        arena.addClass("custom", StringParser.getItemStacksFromString("AIR"), StringParser.getItemStackFromString("AIR"), StringParser.getItemStacksFromString("AIR"));
+        arena.addClass("custom",
+                new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                new ItemStack(Material.AIR, 1),
+                new ItemStack[]{new ItemStack(Material.AIR, 1)});
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
         arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));

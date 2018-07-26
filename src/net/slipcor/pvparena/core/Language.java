@@ -410,6 +410,7 @@ public final class Language {
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
         SET_HELP("nulang.set.help", "Use /pa {arenaname} set [page] to get a node list."),
         SET_UNKNOWN("nulang.set.unknown", "Unknown node: &e%1%&r!"),
+        SET_ITEMS_NOT("nulang.set.items_not", "Please use either hand or inventory to set an item node!"),
 
         SETOWNER_DONE("nulang.setowner.done", "&a%1%&r is now owner of arena &a%2%&r!"),
 

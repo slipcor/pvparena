@@ -20,13 +20,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -332,7 +328,7 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      *
      * @param event the pickup event
      */
-    public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
+    public void onPlayerPickupItem(final EntityPickupItemEvent event) {
     }
 
     /**

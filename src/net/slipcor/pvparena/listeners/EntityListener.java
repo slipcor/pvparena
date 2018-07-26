@@ -448,10 +448,10 @@ public class EntityListener implements Listener {
             if (damagee.getArena() == null || shooter.getArena() == null ||
                     (damagee.getArena() != shooter.getArena()) ||
                     damagee.getArenaTeam() == null || shooter.getArenaTeam() == null) {
-                /**
-                 * some people obviously allow non arena players to mess with potions around arena players
-                 *
-                 * this check should cover any of the entities not being in the same arena, or not arena at all
+                /*
+                  some people obviously allow non arena players to mess with potions around arena players
+
+                  this check should cover any of the entities not being in the same arena, or not arena at all
                  */
                 DEBUG.i("skipping "+e.getName());
                 continue;

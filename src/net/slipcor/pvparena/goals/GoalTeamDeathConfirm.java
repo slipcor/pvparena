@@ -20,15 +20,14 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,7 +219,7 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
     }
 
     private void drop(final Player player, final ArenaTeam team) {
-        final ItemStack item = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
+        final ItemStack item = arena.getArenaConfig().getItems(CFG.GOAL_TDC_ITEM)[0];
 
         final ItemMeta meta = item.getItemMeta();
 
@@ -279,12 +278,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
     }
 
     @Override
-    public void onPlayerPickUp(final PlayerPickupItemEvent event) {
+    public void onPlayerPickUp(final EntityPickupItemEvent event) {
         final ItemStack item = event.getItem().getItemStack();
 
-        final ItemStack check = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
+        final ItemStack check = arena.getArenaConfig().getItems(CFG.GOAL_TDC_ITEM)[0];
 
-        final ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        final ArenaPlayer player = ArenaPlayer.parsePlayer(event.getEntity().getName());
 
         if (item.getType() == check.getType() && item.hasItemMeta()) {
             for (final ArenaTeam team : arena.getTeams()) {
@@ -296,12 +295,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
 
                     if (team.equals(player.getArenaTeam())) {
                         // denied a kill
-                        arena.broadcastExcept(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_DENIED, player.toString()));
-                        arena.msg(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUDENIED, player.toString()));
+                        arena.broadcastExcept(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_DENIED, player.toString()));
+                        arena.msg(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUDENIED, player.toString()));
                     } else {
                         // scored a kill
-                        arena.broadcastExcept(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_SCORED, player.toString()));
-                        arena.msg(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUSCORED, player.toString()));
+                        arena.broadcastExcept(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_SCORED, player.toString()));
+                        arena.msg(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUSCORED, player.toString()));
                         reduceLives(arena, team);
                     }
                     return;
