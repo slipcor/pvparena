@@ -1,5 +1,9 @@
 ![PVP-Arena](/doc/images/logo.png)
 
+```diff
+- NOTE FOR TESTERS! - YOU NEED TO START WITH A FRESH CONFIGURATION! ITEM DEFINITIONS HAVE CHANGED. USE THE SET COMMAND TO SET ITEMS/MATERIALS
+```
+
 
 **Enhance your server by adding a new dimension of PVP battles!**
 
