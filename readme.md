@@ -97,7 +97,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.13.1 - rework many things that now work differently - among those all things involving items, especially class definitions
+- v1.13.2 - plugin.yml api update
 - [read more](doc/changelog.md)
 
 ***
