@@ -532,7 +532,7 @@ public class PACheck {
                 InventoryManager.clearInventory(player.getKiller());
                 ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
             }
-            if (!arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL).equals("none")) {
+            if (arena.getArenaConfig().getItems(CFG.PLAYER_ITEMSONKILL) != null) {
                 ItemStack[] items = arena.getArenaConfig().getItems(CFG.PLAYER_ITEMSONKILL);
                 for (ItemStack item : items) {
                     if (item != null) {

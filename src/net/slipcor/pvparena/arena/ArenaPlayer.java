@@ -290,7 +290,7 @@ public class ArenaPlayer {
 
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
 
-        if (!"none".equals(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME))) {
+        if (arena.getArenaConfig().getYamlConfiguration().get(CFG.ITEMS_TAKEOUTOFGAME.getNode()) != null) {
             final ItemStack[] items =
                     arena.getArenaConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
 

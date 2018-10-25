@@ -38,10 +38,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.util.Vector;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <pre>
@@ -96,8 +93,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Collections.singletonList("blocktype");
+        List<String> result = Collections.singletonList("blocktype");
         if (arena != null) {
+            result = new ArrayList<>();
+            result.add("blocktype");
             for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "block");

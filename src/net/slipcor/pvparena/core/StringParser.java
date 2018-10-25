@@ -279,4 +279,22 @@ public final class StringParser {
         split[pos] = buffer.toString();
         return split;
     }
+
+    public static String getItems(ItemStack[] items) {
+        if (items == null || items.length < 1) {
+            return "none";
+        }
+        StringBuffer buff = new StringBuffer();
+        for (ItemStack item : items) {
+            buff.append(", ");
+            try {
+                buff.append(item.getType());
+                buff.append('x');
+                buff.append(item.getAmount());
+            } catch (Exception e) {
+                buff.append("!error!");
+            }
+        }
+        return buff.substring(2);
+    }
 }

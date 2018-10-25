@@ -123,7 +123,7 @@ public class PAI_Info extends AbstractArenaCommand {
             arena.msg(sender, "minplayers: " +
                     arena.getArenaConfig().getInt(CFG.ITEMS_MINPLAYERS) + " | " +
                     "rewards: " +
-                    arena.getArenaConfig().getString(CFG.ITEMS_REWARDS) + " | " +
+                    StringParser.getItems(arena.getArenaConfig().getItems(CFG.ITEMS_REWARDS)) + " | " +
                     StringParser.colorVar("random",
                             arena.getArenaConfig().getBoolean(CFG.ITEMS_RANDOM)));
 

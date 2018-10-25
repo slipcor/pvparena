@@ -74,12 +74,13 @@ public class Config {
         GENERAL_SMARTSPAWN("general.smartspawn", false, null),
         GENERAL_TIME("general.time", -1, null),
         GENERAL_TYPE("general.type", "none", null),
-        GENERAL_WAND("general.wand", new ItemStack[]{new ItemStack(Material.STICK)}, false, null),
+        GENERAL_WAND("general.wand", Material.STICK.toString(), null),
 
         GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 
         ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", new ItemStack[0], true, null),
         ITEMS_KEEPONRESPAWN("items.keepOnRespawn", new ItemStack[0], true, null),
+        ITEMS_KEEPALLONRESPAWN("items.keepAllOnRespawn", false, null),
         ITEMS_MINPLAYERS("items.minplayers", 2, null),
         ITEMS_RANDOM("items.random", true, null),
         ITEMS_REWARDS("items.rewards", new ItemStack[0], true, null),
@@ -140,7 +141,7 @@ public class Config {
         PROTECT_SPAWN("protection.spawn", 0, null),
 
         READY_AUTOCLASS("ready.autoClass", "none", null),
-        READY_BLOCK("ready.block", new ItemStack[]{new ItemStack(Material.IRON_BLOCK)}, false, null),
+        READY_BLOCK("ready.block", Material.IRON_BLOCK.toString(), null),
         READY_CHECKEACHPLAYER("ready.checkEachPlayer", false, null),
         READY_CHECKEACHTEAM("ready.checkEachTeam", true, null),
         READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false, null),
@@ -190,7 +191,7 @@ public class Config {
         GOAL_BEACONS_TICKINTERVAL("goal.beacons.tickinterval", 60, "Beacons"),
         GOAL_BEACONS_TICKREWARD("goal.beacons.tickreward", 1, "Beacons"),
 
-        GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", new ItemStack[]{new ItemStack(Material.IRON_BLOCK)}, false, "BlockDestroy"),
+        GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", Material.IRON_BLOCK.toString(), "BlockDestroy"),
         GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
         GOAL_CHECKPOINTS_CLAIMRANGE("goal.checkpoints.cpclaimrange", 5, "CheckPoints"),
@@ -206,7 +207,7 @@ public class Config {
         GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
         GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
 
-        GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", new ItemStack[]{new ItemStack(Material.WHITE_WOOL)}, false, "Flags"),
+        GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", Material.WHITE_WOOL.toString(), "Flags"),
         GOAL_FLAGS_LIVES("goal.flags.flives", 3, "Flags"),
         GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
         GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true, "Flags"),
@@ -227,7 +228,7 @@ public class Config {
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
         GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
         GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
-        GOAL_TDC_ITEM("goal.teamdc.tdcitem", new ItemStack[]{new ItemStack(Material.WHITE_WOOL)}, false, "TeamDeathConfirm"),
+        GOAL_TDC_ITEM("goal.teamdc.tdcitem", Material.WHITE_WOOL.toString(), "TeamDeathConfirm"),
         GOAL_TDM_LIVES("goal.teamdm.tdlives", 10, "TeamDeathMatch"),
         GOAL_TDM_SUICIDESCORE("goal.teamdm.suicideScore", false, "TeamDeathMatch"),
         GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10, "TeamLives"),
@@ -407,7 +408,7 @@ public class Config {
         MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", 0.0d, "Vault"),
         MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", 0.0d, "Vault"),
 
-        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", new ItemStack[]{new ItemStack(Material.SAND, 1)}, false, "Walls"),
+        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", Material.SAND.toString(), "Walls"),
         MODULES_WALLS_SCOREBOARDCOUNTDOWN("modules.walls.scoreboardcountdown", false, "Walls"),
         MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 

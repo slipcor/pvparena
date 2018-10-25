@@ -486,14 +486,12 @@ public class Arena {
 
     public Material getReadyBlock() {
         getDebugger().i("reading ready block");
-        final String sMat = cfg.getString(CFG.READY_BLOCK);
         try {
-            Material mMat;
-            mMat = Material.getMaterial(sMat);
+            Material mMat = cfg.getMaterial(CFG.READY_BLOCK, Material.STICK);
             getDebugger().i("mMat now is " + mMat.name());
             return mMat;
         } catch (final Exception e) {
-            Language.logWarn(MSG.ERROR_MAT_NOT_FOUND, sMat);
+            Language.logWarn(MSG.ERROR_MAT_NOT_FOUND, "ready block");
         }
         return Material.IRON_BLOCK;
     }
