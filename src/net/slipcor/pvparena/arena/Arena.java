@@ -555,6 +555,8 @@ public class Arena {
                         bukkitTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
                     }
                     bukkitTeam.setPrefix(team.getColor().toString());
+                    bukkitTeam.setSuffix(ChatColor.RESET.toString());
+                    bukkitTeam.setColor(team.getColor());
                     bukkitTeam.addEntry(team.getName());
                     bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
 
@@ -597,6 +599,8 @@ public class Arena {
             for (final ArenaTeam team : getTeams()) {
                 final Team sTeam = scoreboard.registerNewTeam(team.getName());
                 sTeam.setPrefix(team.getColor().toString());
+                sTeam.setSuffix(ChatColor.RESET.toString());
+                sTeam.setColor(team.getColor());
                 sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                 if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
                     sTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
@@ -1637,6 +1641,8 @@ public class Arena {
                         scoreboard.registerNewTeam(team.getName());
                         final Team bukkitTeam = scoreboard.getTeam(team.getName());
                         bukkitTeam.setPrefix(team.getColor().toString());
+                        bukkitTeam.setSuffix(ChatColor.RESET.toString());
+                        bukkitTeam.setColor(team.getColor());
                         bukkitTeam.addEntry(team.getName());
                         bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
                         bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
@@ -1675,6 +1681,8 @@ public class Arena {
             }
             final Team sTeam = board.registerNewTeam(team.getName());
             sTeam.setPrefix(team.getColor().toString());
+            sTeam.setColor(team.getColor());
+            sTeam.setSuffix(ChatColor.RESET.toString());
             sTeam.addEntry(player.getName());
             sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
         }

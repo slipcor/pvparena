@@ -1,5 +1,6 @@
 == PVP-Arena v1.13 Changelog
 
+- v1.13.5 - address #355 - set some more scoreboard settings to hopefully get colors going
 - v1.13.4 - various exceptions caught, addressing issues #351 and #352
 - v1.13.3 - [WIP] the core game should be operational, region setup tested, blockrestore fixed
 - v1.13.2 - plugin.yml api update
