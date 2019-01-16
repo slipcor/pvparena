@@ -795,6 +795,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerPickupItem(final EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
         final Player player = (Player) event.getEntity();
 
         if (willBeCancelled(player, event)) {

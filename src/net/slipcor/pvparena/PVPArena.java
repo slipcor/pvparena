@@ -395,10 +395,12 @@ public class PVPArena extends JavaPlugin {
         return false;
     }
 
+    /*
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command cmd, final String alias, final String[] args) {
         return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
     }
+    */
 
     @Override
     public void onDisable() {

@@ -239,10 +239,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
                     e.printStackTrace();
                 }
                 if ("touchdown".equals(flagTeam)) {
-                    takeFlag(ChatColor.BLACK.name(), false,
+                    takeFlag(ChatColor.BLACK, false,
                             SpawnManager.getBlockByExactName(arena, "touchdownflag"));
                 } else {
-                    takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
+                    takeFlag(arena.getTeam(flagTeam).getColor(), false,
                             SpawnManager.getBlockByExactName(arena, flagTeam + "flag"));
                 }
                 removeEffects(player);
@@ -337,7 +337,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
                     player.getInventory().setHelmet(itemStack);
                     applyEffects(player);
 
-                    takeFlag(team.getColor().name(), true,
+                    takeFlag(team.getColor(), true,
                             new PABlockLocation(block.getLocation()));
                     getFlagMap().put(aTeam, player.getName()); // TODO move to
                     // "commit" ?
@@ -698,7 +698,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
                 getHeadGearMap().remove(aPlayer.getName());
             }
 
-            takeFlag(ChatColor.BLACK.name(), false,
+            takeFlag(ChatColor.BLACK, false,
                     SpawnManager.getBlockByExactName(arena, "touchdownflag"));
 
             return;
@@ -716,7 +716,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             getHeadGearMap().remove(aPlayer.getName());
         }
 
-        takeFlag(flagTeam.getColor().name(), false,
+        takeFlag(flagTeam.getColor(), false,
                 SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
     }
 
@@ -823,9 +823,9 @@ public class GoalFlags extends ArenaGoal implements Listener {
             getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
                     .getInt(CFG.GOAL_FLAGS_LIVES));
 
-            takeFlag(team.getColor().name(), false,
+            takeFlag(team.getColor(), false,
                     SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
-            takeFlag(ChatColor.BLACK.name(), false,
+            takeFlag(ChatColor.BLACK, false,
                     SpawnManager.getBlockByExactName(arena, "touchdownflag"));
         }
     }
@@ -865,7 +865,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
                 getHeadGearMap().remove(aPlayer.getName());
             }
 
-            takeFlag(ChatColor.BLACK.name(), false,
+            takeFlag(ChatColor.BLACK, false,
                     SpawnManager.getBlockByExactName(arena, "touchdownflag"));
             return;
         }
@@ -880,7 +880,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             getHeadGearMap().remove(player.getName());
         }
 
-        takeFlag(flagTeam.getColor().name(), false,
+        takeFlag(flagTeam.getColor(), false,
                 SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
     }
 
@@ -894,10 +894,10 @@ public class GoalFlags extends ArenaGoal implements Listener {
                 getLifeMap().put(team.getName(),
                         arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
             }
-            takeFlag(team.getColor().name(), false,
+            takeFlag(team.getColor(), false,
                     SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
         }
-        takeFlag(ChatColor.BLACK.name(), false,
+        takeFlag(ChatColor.BLACK, false,
                 SpawnManager.getBlockByExactName(arena, "touchdownflag"));
     }
 
@@ -998,11 +998,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
      * @param take            true if take, else reset
      * @param paBlockLocation the location to take/reset
      */
-    void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
+    void takeFlag(final ChatColor flagColor, final boolean take, final PABlockLocation paBlockLocation) {
         if (paBlockLocation == null) {
             return;
         }
-        if (!"WOOL".equals(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE))) {
+        if (!Utils.isSubType(Material.getMaterial(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)), Material.WHITE_WOOL)) {
             paBlockLocation.toLocation()
                     .getBlock()
                     .setType(

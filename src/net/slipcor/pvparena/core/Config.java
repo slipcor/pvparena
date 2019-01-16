@@ -759,7 +759,18 @@ public class Config {
 
     public ItemStack[] getItems(final CFG cfg) {
         final String path = cfg.getNode();
-        return this.cfg.getList(path).toArray(new ItemStack[0]);
+        try {
+            String test = this.cfg.getString(path);
+            if ("none".equals(test)) {
+                return new ItemStack[0];
+            }
+        } catch (Exception e) {
+        }
+        try {
+            return this.cfg.getList(path).toArray(new ItemStack[0]);
+        } catch (NullPointerException e) {
+            return new ItemStack[0];
+        }
     }
 
     public Set<String> getKeys(final String path) {

@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -423,7 +424,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 
             for (final PABlockLocation block : blocks) {
-                takeBlock(team.getColor().name(), block);
+                takeBlock(team.getColor(), block);
             }
         }
     }
@@ -448,7 +449,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
             final Set<PABlockLocation> blocks = SpawnManager.getBlocksContaining(arena, "block");
 
             for (final PABlockLocation block : blocks) {
-                takeBlock(team.getColor().name(), block);
+                takeBlock(team.getColor(), block);
             }
         }
     }
@@ -495,11 +496,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
      * @param blockColor      the teamcolor to reset
      * @param paBlockLocation the location to take/reset
      */
-    void takeBlock(final String blockColor, final PABlockLocation paBlockLocation) {
+    void takeBlock(final ChatColor blockColor, final PABlockLocation paBlockLocation) {
         if (paBlockLocation == null) {
             return;
         }
-        if ("WOOL".equals(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))) {
+        if (!Utils.isSubType(Material.valueOf(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)), Material.WHITE_WOOL)) {
             paBlockLocation.toLocation()
                     .getBlock()
                     .setType(StringParser.getWoolFallbackMaterialFromString(blockColor));
@@ -622,10 +623,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                         "score:" + player.getName() + ':' + aPlayer.getArenaTeam().getName() + ":1");
                 Bukkit.getPluginManager().callEvent(gEvent);
                 class RunLater implements Runnable {
-                    String localColor;
+                    ChatColor localColor;
                     PABlockLocation localLoc;
 
-                    RunLater(final String color, final PABlockLocation loc) {
+                    RunLater(final ChatColor color, final PABlockLocation loc) {
                         localColor = color;
                         localLoc = loc;
                     }
@@ -642,7 +643,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                     Bukkit.getScheduler().runTaskLater(
                             PVPArena.instance,
                             new RunLater(
-                                    arena.getTeam(blockTeam).getColor().name(),
+                                    arena.getTeam(blockTeam).getColor(),
                                     new PABlockLocation(event.getBlock().getLocation())), 5L);
                 }
                 reduceLivesCheckEndAndCommit(arena, blockTeam);
@@ -693,7 +694,7 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                                 "[PVP Arena] team unknown/no lives: " + blockTeam);
                         e.printStackTrace();
                     }
-                    takeBlock(arena.getTeam(blockTeam).getColor().name(),
+                    takeBlock(arena.getTeam(blockTeam).getColor(),
                             pb.getLocation());
 
                     reduceLivesCheckEndAndCommit(arena, blockTeam);

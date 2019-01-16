@@ -97,7 +97,7 @@ Users tutorials :
 
 ## Changelog
 
-- v1.13.2 - plugin.yml api update
+- v1.13.4 - various exceptions caught, addressing issues #351 and #352
 - [read more](doc/changelog.md)
 
 ***

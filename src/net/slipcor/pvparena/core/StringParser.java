@@ -135,11 +135,26 @@ public final class StringParser {
         return parseDyeColorToChatColor(color, false);
     }
 
-    public static Material getWoolFallbackMaterialFromString(final String color) {
-        for (Material mat : Material.values()) {
-            if (mat.name().contains("WOOL") && mat.name().contains(color.toUpperCase())) {
-                return mat;
-            }
+    public static Material getWoolFallbackMaterialFromString(final ChatColor color)  {
+        Map<ChatColor, Material> results = new HashMap<>();
+        results.put(ChatColor.BLACK, Material.BLACK_WOOL);
+        results.put(ChatColor.DARK_BLUE, Material.BLUE_WOOL);
+        results.put(ChatColor.DARK_AQUA, Material.LIGHT_BLUE_WOOL);
+        results.put(ChatColor.DARK_RED, Material.RED_WOOL);
+        results.put(ChatColor.DARK_PURPLE, Material.PURPLE_WOOL);
+        results.put(ChatColor.GOLD, Material.BROWN_WOOL);
+        results.put(ChatColor.GRAY, Material.LIGHT_GRAY_WOOL);
+        results.put(ChatColor.DARK_GRAY, Material.GRAY_WOOL);
+        results.put(ChatColor.BLUE, Material.LIGHT_BLUE_WOOL);
+        results.put(ChatColor.GREEN, Material.LIME_WOOL);
+        results.put(ChatColor.AQUA, Material.CYAN_WOOL);
+        results.put(ChatColor.RED, Material.PINK_WOOL);
+        results.put(ChatColor.LIGHT_PURPLE, Material.MAGENTA_WOOL);
+        results.put(ChatColor.YELLOW, Material.YELLOW_WOOL);
+        results.put(ChatColor.WHITE, Material.WHITE_WOOL);
+
+        if (results.containsKey(color)) {
+            return results.get(color);
         }
         DEBUG.i(">> Material defaulting '"+color+"' to BROWN_WOOL!! <<");
         return Material.BROWN_WOOL;
