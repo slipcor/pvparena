@@ -20,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.*;
 
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
+import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
+
 /**
  * <pre>
  * Configuration class
@@ -462,7 +465,7 @@ public class Config {
 
         CFG(final String node, final ItemStack[] value, final boolean multiple, final String source) {
             this.node = node;
-            this.value = value;
+            this.value = getSerializableItemStacks(value);
             type = multiple ? "items" : "material";
             module = source;
         }
@@ -761,13 +764,13 @@ public class Config {
         final String path = cfg.getNode();
         try {
             String test = this.cfg.getString(path);
-            if ("none".equals(test)) {
+            if ("none".equalsIgnoreCase(test)) {
                 return new ItemStack[0];
             }
         } catch (Exception e) {
         }
         try {
-            return this.cfg.getList(path).toArray(new ItemStack[0]);
+            return getItemStacksFromConfig(this.cfg.getList(path));
         } catch (NullPointerException e) {
             return new ItemStack[0];
         }
