@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -24,6 +23,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>
@@ -201,13 +202,14 @@ public final class ConfigurationManager {
             ItemStack[] armors = new ItemStack[]{new ItemStack(Material.AIR, 1)};
 
             try {
-                items = config.getList("classitems."+stringObjectEntry1.getKey()+".items").toArray(new ItemStack[0]);
-                offHand = config.getList("classitems."+stringObjectEntry1.getKey()+".offhand").toArray(new ItemStack[]{new ItemStack(Material.AIR, 1)})[0];
-                armors = config.getList("classitems."+stringObjectEntry1.getKey()+".armor").toArray(new ItemStack[0]);
+                items = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".items"));
+                offHand = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".offhand"))[0];
+                armors = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".armor"));
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + stringObjectEntry1.getKey());
+                        arena.getDebugger().i(e.getMessage());
                 continue;
             }
             try {

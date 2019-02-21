@@ -8,7 +8,6 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
  * <pre>
@@ -69,9 +70,9 @@ public class PAA_Class extends AbstractArenaCommand {
             final Player player = (Player) sender;
             final List<ItemStack> items = new ArrayList<>();
 
-            arena.getArenaConfig().setManually("classitems." + args[1] + ".items", player.getInventory().getStorageContents());
-            arena.getArenaConfig().setManually("classitems." + args[1] + ".offhand", new ItemStack[]{player.getInventory().getItemInOffHand()});
-            arena.getArenaConfig().setManually("classitems." + args[1] + ".armor", player.getInventory().getArmorContents());
+            arena.getArenaConfig().setManually("classitems." + args[1] + ".items", getSerializableItemStacks(player.getInventory().getStorageContents()));
+            arena.getArenaConfig().setManually("classitems." + args[1] + ".offhand", getSerializableItemStacks(player.getInventory().getItemInOffHand()));
+            arena.getArenaConfig().setManually("classitems." + args[1] + ".armor", getSerializableItemStacks(player.getInventory().getArmorContents()));
             arena.getArenaConfig().save();
 
             arena.addClass(args[1], player.getInventory().getStorageContents(), player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());

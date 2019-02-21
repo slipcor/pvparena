@@ -3,7 +3,6 @@ package net.slipcor.pvparena.arena;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -12,12 +11,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>Arena Class class</pre>
@@ -127,16 +127,17 @@ public final class ArenaClass {
             ItemStack[] armors;
 
             try {
-                items = cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items").toArray(new ItemStack[0]);
-                offHand = cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items").toArray(new ItemStack[0])[0];
-                armors = cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items").toArray(new ItemStack[0]);
+                items = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
+                        .getList("items"));
+                offHand = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
+                        .getList("items"))[0];
+                armors = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
+                        .getList("items"));
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + className);
+                e.printStackTrace();
                 continue;
             }
             final String classChest;
