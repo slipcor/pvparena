@@ -1,5 +1,6 @@
 package net.slipcor.pvparena.core;
 
+import net.slipcor.pvparena.PVPArena;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -102,33 +103,37 @@ public class ItemStackUtils  {
 
         Material type = Material.getMaterial((String) args.get("type"));
 
-        if (args.containsKey("amount")) {
-            amount = ((Number) args.get("amount")).intValue();
-        }
+        if(type != null) {
+            if (args.containsKey("amount")) {
+                amount = ((Number) args.get("amount")).intValue();
+            }
 
-        ItemStack result = new ItemStack(type, amount);
+            ItemStack result = new ItemStack(type, amount);
 
-        if (args.containsKey("meta")) {
-            Map<String, Object> metaMap = new LinkedHashMap<>((Map<String, Object>) args.get("meta"));
-            metaMap.put("==", ItemMeta.class.getSimpleName());
-            if(!metaMap.containsKey("meta-type")) {
-                metaMap.put("meta-type", getRightMetaType(metaMap.keySet()).name());
+            if (args.containsKey("meta")) {
+                Map<String, Object> metaMap = new LinkedHashMap<>((Map<String, Object>) args.get("meta"));
+                metaMap.put("==", ItemMeta.class.getSimpleName());
+                if(!metaMap.containsKey("meta-type")) {
+                    metaMap.put("meta-type", getRightMetaType(metaMap.keySet()).name());
 
-                //Simplify Leather Armour colors
-                if(metaMap.containsKey("color")) {
-                    Color color = Color.deserialize((Map<String, Object>) metaMap.get("color"));
-                    metaMap.put("color", color);
+                    //Simplify Leather Armour colors
+                    if(metaMap.containsKey("color")) {
+                        Color color = Color.deserialize((Map<String, Object>) metaMap.get("color"));
+                        metaMap.put("color", color);
+                    }
+                }
+
+
+                ConfigurationSerializable raw = deserializeObject(metaMap);
+                if (raw instanceof ItemMeta) {
+                    result.setItemMeta((ItemMeta) raw);
                 }
             }
-
-
-            ConfigurationSerializable raw = deserializeObject(metaMap);
-            if (raw instanceof ItemMeta) {
-                result.setItemMeta((ItemMeta) raw);
-            }
+            return result;
+        } else {
+            PVPArena.instance.getLogger().warning("Invalid item type : " + args.get("type"));
+            return new ItemStack(Material.AIR);
         }
-
-        return result;
     }
 
     /**
