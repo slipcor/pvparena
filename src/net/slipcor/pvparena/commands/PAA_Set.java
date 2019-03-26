@@ -6,7 +6,6 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -17,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
  * <pre>PVP Arena SET Command class</pre>
@@ -201,7 +202,7 @@ public class PAA_Set extends AbstractArenaCommand {
                 if (player instanceof Player) {
 
                     ItemStack[] items = new ItemStack[]{(((Player) player).getEquipment().getItemInMainHand())};
-                    arena.getArenaConfig().setManually(node, items);
+                    arena.getArenaConfig().setManually(node, getSerializableItemStacks(items));
                     arena.msg(
                             player,
                             Language.parse(arena, MSG.SET_DONE, node, items[0].getType().name()));
@@ -214,7 +215,7 @@ public class PAA_Set extends AbstractArenaCommand {
                 if (player instanceof Player) {
 
                     final ItemStack[] items = ((Player) player).getInventory().getContents();
-                    arena.getArenaConfig().setManually(node, items);
+                    arena.getArenaConfig().setManually(node, getSerializableItemStacks(items));
                     arena.msg(
                             player,
                             Language.parse(arena, MSG.SET_DONE, node, "inventory"));
