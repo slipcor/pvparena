@@ -1,9 +1,8 @@
 ![PVP-Arena](/doc/images/logo.png)
 
-```diff
-- NOTE FOR TESTERS! - YOU NEED TO START WITH A FRESH CONFIGURATION! ITEM DEFINITIONS HAVE CHANGED. USE THE SET COMMAND TO SET ITEMS/MATERIALS
-```
-
+***
+**IF YOU'RE UPGRADING FROM 1.3.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-from-1-3-x.md)**
+***
 
 **Enhance your server by adding a new dimension of PVP battles!**
 
@@ -41,7 +40,6 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Downloads
 
 - [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
-- [jenkins - dev builds](https://ci2.craftyn.com/job/PVP%20Arena/)
 
 ***
 
@@ -147,6 +145,7 @@ That's it! If you want to disable that, set "tracker" to false in the config!
 
 ## Credits
 
+- SlipCor, the wonderful guy who created this plugin
 - Deminetix for the very root, the Fight plugin
 - Bradley Hilton for the fork until version v0.0.3
 - Carbon131 for adding features until version v0.0.5
