@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.arena;
 
-import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.classes.*;
@@ -2459,6 +2458,8 @@ public class Arena {
                         }
                         final Team sTeam = board.registerNewTeam(newTeam.getName());
                         sTeam.setPrefix(newTeam.getColor().toString());
+                        sTeam.setSuffix(ChatColor.RESET.toString());
+                        sTeam.setColor(newTeam.getColor());
                         sTeam.addEntry(player.getName());
                         sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
                     }
@@ -2479,6 +2480,8 @@ public class Arena {
             }
             final Team sTeam = board.registerNewTeam(newTeam.getName());
             sTeam.setPrefix(newTeam.getColor().toString());
+            sTeam.setSuffix(ChatColor.RESET.toString());
+            sTeam.setColor(newTeam.getColor());
             sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
             sTeam.addEntry(player.getName());
         }
