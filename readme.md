@@ -40,6 +40,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 ## Downloads
 
 - [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
+- [Dev builds on Jenkins](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
 
 ***
 
