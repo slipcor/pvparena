@@ -85,7 +85,12 @@ public class InventoryRefillRunnable implements Runnable {
                     for (final ItemStack item : additions) {
                         items[pos++] = item;
                     }
-                    ArenaClass.equip(player, items);
+                    if(items.length > 0){
+                        ArenaClass.equip(player, items);
+                    } else {
+                        PVPArena.instance.getLogger().info("Can't refill inventory, please set " + CFG.ITEMS_KEEPONRESPAWN.getNode()
+                                + ", " + CFG.ITEMS_KEEPALLONRESPAWN.getNode() + " or " + CFG.PLAYER_REFILLCUSTOMINVENTORY.getNode() + " parameter");
+                    }
                 }
                 if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
                     final ArenaTeam aTeam = aPlayer.getArenaTeam();

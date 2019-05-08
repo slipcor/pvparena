@@ -163,13 +163,13 @@ public final class ArenaClass {
     }
 
     public static void equip(final Player player, final ItemStack[] items) {
-        ItemStack last = items[items.length-1];
+        int i = 0;
         for (final ItemStack item : items) {
             if (ARMORS_TYPE.contains(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
-                if (last != null && last == item) {
-                    player.getInventory().setItemInOffHand(last);
+                if (i == items.length - 1) {
+                    player.getInventory().setItemInOffHand(item);
                     continue;
                 }
                 if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
@@ -190,6 +190,7 @@ public final class ArenaClass {
                     player.getInventory().addItem(item);
                 }
             }
+            i++;
         }
         player.updateInventory();
     }
