@@ -450,6 +450,29 @@ public class PlayerListener implements Listener {
         }
     }
 
+    /**
+     * Cancel damages when:
+     *
+     * - target has not (Status.FIGHT)
+     * - damager has not (Status.FIGHT)
+     *
+     * @param event EntityDamageByEntityEvent
+     */
+    @EventHandler
+    public void onPlayerDamage(EntityDamageByEntityEvent event){
+
+        if (event.getEntityType() == EntityType.PLAYER || event.getDamager().getType() == EntityType.PLAYER) {
+            // parse arena players
+            final ArenaPlayer damager = ArenaPlayer.parsePlayer(event.getDamager().getName());
+            final ArenaPlayer target = ArenaPlayer.parsePlayer(event.getEntity().getName());
+
+            // cancel if damager or target not fighting
+            if (damager.getStatus() != Status.FIGHT || target.getStatus() != Status.FIGHT ) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(final PlayerInteractEvent event) {
         final Player player = event.getPlayer();
