@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -517,7 +516,7 @@ public class PACheck {
         StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES) ||
                 arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGESCUSTOM)) {
-            event.setDeathMessage(null);
+            event.setDeathMessage("");
         }
 
         if (player.getKiller() != null) {
