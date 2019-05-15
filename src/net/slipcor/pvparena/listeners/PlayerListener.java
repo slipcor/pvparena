@@ -16,7 +16,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -461,9 +460,12 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event){
 
-        if (event.getEntityType() == EntityType.PLAYER || event.getDamager().getType() == EntityType.PLAYER) {
-            // parse arena players
+        if (event.getEntityType() == EntityType.PLAYER && event.getDamager().getType() == EntityType.PLAYER) {
             final ArenaPlayer damager = ArenaPlayer.parsePlayer(event.getDamager().getName());
+            if(damager.getArena() == null) {
+                return; // no fighting player => OUT
+            }
+
             final ArenaPlayer target = ArenaPlayer.parsePlayer(event.getEntity().getName());
 
             // cancel if damager or target not fighting
