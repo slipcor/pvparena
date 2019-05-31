@@ -281,6 +281,14 @@ public class EntityListener implements Listener {
             return;
         }
 
+        // cancel if defender or attacker are not fighting
+        if (apAttacker.getStatus() != Status.FIGHT || apDefender.getStatus() != Status.FIGHT ) {
+            arena.getDebugger().i("player or target is not fighting, cancel!", attacker);
+            arena.getDebugger().i("player or target is not fighting, cancel!", defender);
+            event.setCancelled(true);
+            return;
+        }
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
                 new DamageResetRunnable(arena, attacker, defender), 1L);
 
