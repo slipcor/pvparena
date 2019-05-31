@@ -290,7 +290,8 @@ public class GoalDomination extends ArenaGoal {
                                             PVPArena.instance, domRunner, 10 * 20L,
                                             10 * 20L);
                             getRunnerMap().put(loc, domRunner);
-                            barStart(loc, "unclaiming", ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), 200L);
+                            barStart(loc, Language.parse(arena,
+                                    MSG.GOAL_DOMINATION_UNCLAIMING), ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), 200L);
                         }
                     } else {
                         // just the owning team is there
@@ -342,7 +343,8 @@ public class GoalDomination extends ArenaGoal {
                 running.runID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                         PVPArena.instance, running, interval, interval);
                 getRunnerMap().put(loc, running);
-                barStart(loc, "unclaiming", ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
+                barStart(loc, Language.parse(arena,
+                        MSG.GOAL_DOMINATION_UNCLAIMING), ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
             } else {
                 // flag not taken
                 arena.getDebugger().i("- flag not taken");
@@ -394,7 +396,8 @@ public class GoalDomination extends ArenaGoal {
                                             PVPArena.instance, running,
                                             interval, interval);
                             getRunnerMap().put(loc, running);
-                            barStart(loc, "claiming...", team.getColor(), arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
+                            barStart(loc, Language.parse(arena,
+                                    MSG.GOAL_DOMINATION_CLAIMING), team.getColor(), arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
                         }
                     } else {
                         arena.getDebugger().i("  - more than one team present. continue!");
