@@ -69,11 +69,10 @@ public class PlayerListener implements Listener {
             return false;
         }
         final PlayerInteractEvent pie = (PlayerInteractEvent) event;
-        final Material mat = pie.getClickedBlock().getType();
-        final Material check = arena == null ? Material.IRON_BLOCK : arena
-                .getReadyBlock();
-        if (mat == Material.SIGN || mat == Material.WALL_SIGN
-                || mat == Material.WALL_SIGN || mat == check) {
+        final Block block = pie.getClickedBlock();
+        final Material check = arena == null ? Material.IRON_BLOCK : arena.getReadyBlock();
+
+        if (block != null && (block.getState() instanceof Sign || block.getType() == check)) {
             DEBUG.i("signs and ready blocks allowed!", player);
             DEBUG.i("> false", player);
             return false;

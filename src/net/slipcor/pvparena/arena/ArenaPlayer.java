@@ -865,8 +865,7 @@ public class ArenaPlayer {
         Player player = get();
         player.getLocation()
                 .getWorld()
-                .playEffect(player.getEyeLocation(),
-                        Effect.STEP_SOUND, Material.NETHER_WART_BLOCK.getId());
+                .playEffect(player.getEyeLocation(), Effect.STEP_SOUND, Material.NETHER_WART_BLOCK);
 
     }
 
@@ -874,8 +873,7 @@ public class ArenaPlayer {
     public String toString() {
         final ArenaTeam team = getArenaTeam();
 
-        return team == null ? name : team.getColorCodeString() + name
-                + ChatColor.RESET;
+        return team == null ? name : team.getColorCodeString() + name + ChatColor.RESET;
     }
 
     public void unsetSelection() {
