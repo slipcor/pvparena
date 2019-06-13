@@ -538,7 +538,6 @@ public class PACheck {
                         player.getKiller().getInventory().addItem(item.clone());
                     }
                 }
-                player.getKiller().updateInventory();
             }
             if (arena.getArenaConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
                 SpawnManager.respawn(arena, ArenaPlayer.parsePlayer(player.getKiller().getName()), null);

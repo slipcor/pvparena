@@ -2123,7 +2123,6 @@ public class Arena {
 
         if ("ALL".equals(clear) || clear.contains(player.getGameMode().name())) {
             player.getInventory().clear();
-            player.updateInventory();
             ArenaPlayer.backupAndClearInventory(this, player);
             aPlayer.dump();
         }

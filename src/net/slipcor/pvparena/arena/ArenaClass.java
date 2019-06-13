@@ -192,7 +192,6 @@ public final class ArenaClass {
             }
             i++;
         }
-        player.updateInventory();
     }
 
     public static void equip(final Player player, final ItemStack[][] itemArray) {
@@ -218,7 +217,6 @@ public final class ArenaClass {
                 player.getInventory().addItem(item);
             }
         }
-        player.updateInventory();
     }
 
     public void equip(final Player player) {
@@ -239,7 +237,6 @@ public final class ArenaClass {
             }
         }
         player.getInventory().setItemInOffHand(offHand);
-        player.updateInventory();
     }
 
     private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {

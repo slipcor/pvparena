@@ -107,7 +107,6 @@ public class InventoryRefillRunnable implements Runnable {
                 for (final ItemStack item : additions) {
                     player.getInventory().addItem(item);
                 }
-                player.updateInventory();
             } else if (refill) {
                 InventoryManager.clearInventory(player);
                 ArenaPlayer.givePlayerFightItems(arena, player);
@@ -115,7 +114,6 @@ public class InventoryRefillRunnable implements Runnable {
                 for (final ItemStack item : additions) {
                     player.getInventory().addItem(item);
                 }
-                player.updateInventory();
             }
         } else {
             arena.getDebugger().i("NOT");

@@ -328,13 +328,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
                                 .getHelmet().clone());
                     } catch (final Exception e) {
                     }
-                    final ItemStack itemStack = block.getState().getData().toItemStack(1)
-                            .clone();
-                    if (arena.getArenaConfig().getBoolean(
-                            CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-                        itemStack.setDurability(getFlagOverrideTeamShort(arena, aTeam));
+
+                    if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
+                        final ItemStack itemStack = new ItemStack(getFlagOverrideTeamMaterial(arena, aTeam));
+                        player.getInventory().setHelmet(itemStack);
                     }
-                    player.getInventory().setHelmet(itemStack);
                     applyEffects(player);
 
                     takeFlag(team.getColor(), true,
@@ -741,17 +739,15 @@ public class GoalFlags extends ArenaGoal implements Listener {
         return flagMap;
     }
 
-    private short getFlagOverrideTeamShort(final Arena arena, final String team) {
+    private Material getFlagOverrideTeamMaterial(final Arena arena, final String team) {
         if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
             if ("touchdown".equals(team)) {
-                return StringParser
-                        .getColorDataFromENUM(ChatColor.BLACK.name());
+                return StringParser.getColoredWoolFromChatColor(ChatColor.BLACK.name());
             }
-            return StringParser.getColorDataFromENUM(arena.getTeam(team)
-                    .getColor().name());
+            return StringParser.getColoredWoolFromChatColor(arena.getTeam(team).getColor().name());
         }
-        return StringParser.getColorDataFromENUM((String) arena
-                .getArenaConfig().getUnsafe("flagColors." + team));
+        return StringParser.getColoredWoolFromChatColor(
+                (String) arena.getArenaConfig().getUnsafe("flagColors." + team));
     }
 
     @Override

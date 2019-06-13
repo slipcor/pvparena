@@ -1,15 +1,11 @@
 package net.slipcor.pvparena.core;
 
 import net.slipcor.pvparena.PVPArena;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.*;
-import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 import java.util.*;
 
@@ -130,6 +126,9 @@ public final class StringParser {
         return ChatColor.valueOf(parseDyeColorToChatColor(color, true));
     }
 
+    public static Material getColoredWoolFromChatColor(final String color) {
+        return getWoolFallbackMaterialFromString(ChatColor.valueOf(color));
+    }
 
     private static String getWoolEnumFromChatColorEnum(final String color) {
         return parseDyeColorToChatColor(color, false);

@@ -162,6 +162,5 @@ public final class InventoryManager {
                 }
             }
         }
-        player.updateInventory();
     }
 }
