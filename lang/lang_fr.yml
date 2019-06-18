@@ -306,9 +306,8 @@ nulang:
       claimed: '&eL''équipe %1% a capturé une position !'
       score: '&eL''équipe %1% a marqué %2% points.'
       contesting: '&eUne position capturée par l''équipe %1% est contestée !'
-      unclaiming: '&eLa position capturée par l''équipe %1% vient d''être libérée !'
-      unclaimingby: '&eLa position capturée par l''équipe %1% est en train d''être 
-        capturée par l''équipe %2% !'
+      unclaiming: '&eUne position capturée par l''équipe %1% est en train d''être libérée !'
+      unclaimingby: '&eLa position capturée par l''équipe %1% est en train d''être capturée par l''équipe %2% !'
     infected:
       lost: '&6Les joueurs infectés ont été tués !'
       player: '&c%1% est infecté !'
