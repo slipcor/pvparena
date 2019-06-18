@@ -8,12 +8,9 @@ import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
 import net.slipcor.pvparena.classes.*;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -182,10 +179,11 @@ public class GoalDomination extends ArenaGoal {
      */
     private Set<String> checkLocationPresentTeams(final Location loc, final int distance) {
         final Set<String> result = new HashSet<>();
+        final Location flagCenter = Utils.getCenteredLocation(loc);
 
         for (final ArenaPlayer p : arena.getFighters()) {
 
-            if (p.get().getLocation().distance(loc) > distance) {
+            if (p.get().getLocation().distance(flagCenter) > distance) {
                 continue;
             }
 
@@ -225,16 +223,14 @@ public class GoalDomination extends ArenaGoal {
         arena.getDebugger().i("   checkMove();");
         arena.getDebugger().i("------------------");
 
-        final int checkDistance = arena.getArenaConfig().getInt(
-                CFG.GOAL_DOM_CLAIMRANGE);
+        final int checkDistance = arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE);
 
         for (final PABlockLocation paLoc : SpawnManager.getBlocksStartingWith(arena, "flag")) {
             // arena.getDebugger().info("checking location: " + loc.toString());
 
             final Location loc = paLoc.toLocation();
 
-            final Set<String> teams = checkLocationPresentTeams(paLoc.toLocation(),
-                    checkDistance);
+            final Set<String> teams = checkLocationPresentTeams(loc, checkDistance);
 
             arena.getDebugger().i("teams: " + StringParser.joinSet(teams, ", "));
 
@@ -281,17 +277,16 @@ public class GoalDomination extends ArenaGoal {
                             // unclaim
                             arena.getDebugger().i("      - not being unclaimed. do it!");
                             ArenaTeam team = arena.getTeam(getFlagMap().get(loc));
-                            arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_CONTESTING, team.getColoredName() + ChatColor.YELLOW));
+                            String contestingMsg = Language.parse(arena, MSG.GOAL_DOMINATION_CONTESTING, team.getColoredName() + ChatColor.YELLOW);
+                            arena.broadcast(contestingMsg);
                             final DominationRunnable domRunner = new DominationRunnable(
                                     arena, false, loc,
                                     getFlagMap().get(loc), this);
                             domRunner.runID = Bukkit.getScheduler()
-                                    .scheduleSyncRepeatingTask(
-                                            PVPArena.instance, domRunner, 10 * 20L,
-                                            10 * 20L);
+                                    .scheduleSyncRepeatingTask(PVPArena.instance, domRunner, 10 * 20L, 10 * 20L);
+
                             getRunnerMap().put(loc, domRunner);
-                            barStart(loc, Language.parse(arena,
-                                    MSG.GOAL_DOMINATION_UNCLAIMING), ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), 200L);
+                            barStart(loc, contestingMsg, ChatColor.WHITE, checkDistance, 200L);
                         }
                     } else {
                         // just the owning team is there
@@ -335,7 +330,8 @@ public class GoalDomination extends ArenaGoal {
                 arena.getDebugger().i("    - not yet being unclaimed, do it!");
                 // create an unclaim runnable
                 ArenaTeam team = arena.getTeam(getFlagMap().get(loc));
-                arena.broadcast(Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING, team.getColoredName() + ChatColor.YELLOW));
+                String unclaimingMsg = Language.parse(arena, MSG.GOAL_DOMINATION_UNCLAIMING, team.getColoredName() + ChatColor.YELLOW);
+                arena.broadcast(unclaimingMsg);
                 final DominationRunnable running = new DominationRunnable(arena,
                         false, loc, getFlagMap().get(loc), this);
                 final long interval = 20L * 10;
@@ -343,8 +339,7 @@ public class GoalDomination extends ArenaGoal {
                 running.runID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                         PVPArena.instance, running, interval, interval);
                 getRunnerMap().put(loc, running);
-                barStart(loc, Language.parse(arena,
-                        MSG.GOAL_DOMINATION_UNCLAIMING), ChatColor.WHITE, arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
+                barStart(loc, unclaimingMsg, ChatColor.WHITE, checkDistance, interval);
             } else {
                 // flag not taken
                 arena.getDebugger().i("- flag not taken");
@@ -384,9 +379,9 @@ public class GoalDomination extends ArenaGoal {
                             arena.getDebugger().i("TEAM " + sName + " IS CLAIMING "
                                     + loc);
                             final ArenaTeam team = arena.getTeam(sName);
-                            arena.broadcast(Language.parse(arena,
-                                    MSG.GOAL_DOMINATION_CLAIMING,
-                                    team.getColoredName() + ChatColor.YELLOW));
+                            String claimingMsg = Language.parse(arena, MSG.GOAL_DOMINATION_CLAIMING,
+                                    team.getColoredName() + ChatColor.YELLOW);
+                            arena.broadcast(claimingMsg);
 
                             final DominationRunnable running = new DominationRunnable(
                                     arena, true, loc, sName, this);
@@ -396,8 +391,7 @@ public class GoalDomination extends ArenaGoal {
                                             PVPArena.instance, running,
                                             interval, interval);
                             getRunnerMap().put(loc, running);
-                            barStart(loc, Language.parse(arena,
-                                    MSG.GOAL_DOMINATION_CLAIMING), team.getColor(), arena.getArenaConfig().getInt(CFG.GOAL_DOM_CLAIMRANGE), interval);
+                            barStart(loc, claimingMsg, team.getColor(), checkDistance, interval);
                         }
                     } else {
                         arena.getDebugger().i("  - more than one team present. continue!");
@@ -454,7 +448,7 @@ public class GoalDomination extends ArenaGoal {
                 || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
-        if (block == null || !block.getType().name().contains("WOOL")) {
+        if (block == null || !ColorUtils.isColorableMaterial(block.getType())) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -701,7 +695,7 @@ public class GoalDomination extends ArenaGoal {
 
         announceOffset = arena.getArenaConfig().getInt(CFG.GOAL_DOM_ANNOUNCEOFFSET);
 
-        circleTask = Bukkit.getScheduler().runTaskTimer(PVPArena.instance, new CircleParticleRunnable(arena, CFG.GOAL_DOM_CLAIMRANGE), 1L, 1L);
+        circleTask = Bukkit.getScheduler().runTaskTimer(PVPArena.instance, new CircleParticleRunnable(arena, CFG.GOAL_DOM_CLAIMRANGE, getFlagMap()), 1L, 1L);
     }
 
     private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
@@ -757,8 +751,9 @@ public class GoalDomination extends ArenaGoal {
      * take/reset an arena flag
      *
      * @param paBlockLocation the location to take/reset*/
-    void takeFlag(final PABlockLocation paBlockLocation) {
-        paBlockLocation.toLocation().getBlock().setType(Material.WHITE_WOOL);
+    private void takeFlag(final PABlockLocation paBlockLocation) {
+        Block flagBlock = paBlockLocation.toLocation().getBlock();
+        flagBlock.setType(ColorUtils.getColoredMaterialFromChatColor(ChatColor.WHITE, flagBlock.getType()));
     }
 
     @Override
@@ -839,16 +834,17 @@ public class GoalDomination extends ArenaGoal {
 
         private void takeFlag(final Arena arena, final Location lBlock, final String name) {
             ArenaTeam team = null;
+            Block flagBlock = lBlock.getBlock();
             for (final ArenaTeam t : arena.getTeams()) {
                 if (t.getName().equals(name)) {
                     team = t;
                 }
             }
             if (team == null) {
-                lBlock.getBlock().setType(Material.WHITE_WOOL);
+                flagBlock.setType(ColorUtils.getColoredMaterialFromChatColor(ChatColor.WHITE, flagBlock.getType()));
                 return;
             }
-            lBlock.getBlock().setType(Utils.getWoolMaterialFromChatColor(team.getColor()));
+            flagBlock.setType(ColorUtils.getColoredMaterialFromChatColor(team.getColor(), flagBlock.getType()));
         }
     }
 

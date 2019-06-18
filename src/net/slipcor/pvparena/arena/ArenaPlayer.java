@@ -4,10 +4,10 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
@@ -211,7 +211,7 @@ public class ArenaPlayer {
             arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
                     + color.name(), player);
             player.getInventory().setHelmet(
-                    new ItemStack(Utils.getWoolMaterialFromChatColor(color)));
+                    new ItemStack(ColorUtils.getWoolMaterialFromChatColor(color)));
         }
     }
 

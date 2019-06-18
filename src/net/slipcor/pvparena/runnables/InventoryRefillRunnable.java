@@ -6,8 +6,8 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -98,7 +98,7 @@ public class InventoryRefillRunnable implements Runnable {
                     arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
                             + chatColor.name(), player);
                     player.getInventory().setHelmet(
-                            new ItemStack(Utils.getWoolMaterialFromChatColor(chatColor), 1));
+                            new ItemStack(ColorUtils.getWoolMaterialFromChatColor(chatColor), 1));
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
             } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {

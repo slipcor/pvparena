@@ -11,12 +11,11 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -500,10 +499,11 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         if (paBlockLocation == null) {
             return;
         }
-        if (Utils.isSubType(Material.valueOf(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE)), Material.WHITE_WOOL)) {
+        Material blockDestroyType = Material.valueOf(arena.getArenaConfig().getString(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE));
+        if (ColorUtils.isColorableMaterial(blockDestroyType)) {
             paBlockLocation.toLocation()
                     .getBlock()
-                    .setType(StringParser.getWoolFallbackMaterialFromString(blockColor));
+                    .setType(ColorUtils.getColoredMaterialFromChatColor(blockColor, blockDestroyType));
         } else {
             paBlockLocation.toLocation()
                     .getBlock()

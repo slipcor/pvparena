@@ -1,13 +1,13 @@
 package net.slipcor.pvparena.core;
 
-import net.slipcor.pvparena.PVPArena;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * <pre>
@@ -95,70 +95,6 @@ public final class StringParser {
                 + ChatColor.WHITE;
     }
 
-    /**
-     * calculate a WOOL byte from a color enum
-     *
-     * @param color the string to parse
-     * @return the color short
-     */
-    public static byte getColorDataFromENUM(final String color) {
-
-        String wool = getWoolEnumFromChatColorEnum(color);
-        if (wool == null) {
-            wool = color;
-        }
-        /*
-		 * DyeColor supports: WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME,
-		 * PINK, GRAY, SILVER, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK;
-		 */
-
-        for (final DyeColor dc : DyeColor.values()) {
-            if (dc.name().equalsIgnoreCase(wool)) {
-                return (byte) (15 - dc.getDyeData());
-            }
-        }
-        PVPArena.instance.getLogger().warning("unknown color enum: " + wool);
-
-        return (byte) 0;
-    }
-
-    public static ChatColor getChatColorFromWoolEnum(final String color) {
-        return ChatColor.valueOf(parseDyeColorToChatColor(color, true));
-    }
-
-    public static Material getColoredWoolFromChatColor(final String color) {
-        return getWoolFallbackMaterialFromString(ChatColor.valueOf(color));
-    }
-
-    private static String getWoolEnumFromChatColorEnum(final String color) {
-        return parseDyeColorToChatColor(color, false);
-    }
-
-    public static Material getWoolFallbackMaterialFromString(final ChatColor color)  {
-        Map<ChatColor, Material> results = new HashMap<>();
-        results.put(ChatColor.BLACK, Material.BLACK_WOOL);
-        results.put(ChatColor.DARK_BLUE, Material.BLUE_WOOL);
-        results.put(ChatColor.DARK_AQUA, Material.LIGHT_BLUE_WOOL);
-        results.put(ChatColor.DARK_RED, Material.RED_WOOL);
-        results.put(ChatColor.DARK_PURPLE, Material.PURPLE_WOOL);
-        results.put(ChatColor.GOLD, Material.BROWN_WOOL);
-        results.put(ChatColor.GRAY, Material.LIGHT_GRAY_WOOL);
-        results.put(ChatColor.DARK_GRAY, Material.GRAY_WOOL);
-        results.put(ChatColor.BLUE, Material.LIGHT_BLUE_WOOL);
-        results.put(ChatColor.GREEN, Material.LIME_WOOL);
-        results.put(ChatColor.AQUA, Material.CYAN_WOOL);
-        results.put(ChatColor.RED, Material.PINK_WOOL);
-        results.put(ChatColor.LIGHT_PURPLE, Material.MAGENTA_WOOL);
-        results.put(ChatColor.YELLOW, Material.YELLOW_WOOL);
-        results.put(ChatColor.WHITE, Material.WHITE_WOOL);
-
-        if (results.containsKey(color)) {
-            return results.get(color);
-        }
-        DEBUG.i(">> Material defaulting '"+color+"' to BROWN_WOOL!! <<");
-        return Material.BROWN_WOOL;
-    }
-
     public static String joinArray(final Object[] array, final String glue) {
         final StringBuilder result = new StringBuilder("");
         for (final Object o : array) {
@@ -193,46 +129,6 @@ public final class StringParser {
             return result.toString();
         }
         return result.substring(glue.length());
-    }
-
-    private static String parseDyeColorToChatColor(final String color, final boolean forward) {
-
-        /*
-          wool colors: ORANGE, MAGENTA, LIGHT_BLUE, LIME, PINK, GRAY, SILVER,
-          PURPLE, BLUE, GREEN, RED, CYAN;
-
-          chat colors: GOLD, LIGHT_PURPLE, BLUE, GREEN, RED, DARK_GRAY, GRAY,
-          DARK_PURPLE, DARK_BLUE, DARK_GREEN, DARK_RED, DARK_AQUA
-
-          both colors (ignore): WHITE, YELLOW, BLACK
-
-          colors not being able to parse:
-
-          chat-AQUA, wool-brown
-         */
-        final String[] wool = {"ORANGE", "MAGENTA", "LIGHT_BLUE",
-                "LIME", "PINK", "GRAY", "SILVER", "PURPLE", "BLUE",
-                "GREEN", "RED", "CYAN"};
-        final String[] chat = {"GOLD", "LIGHT_PURPLE", "BLUE",
-                "GREEN", "RED", "DARK_GRAY", "GRAY", "DARK_PURPLE", "DARK_BLUE",
-                "DARK_GREEN", "DARK_RED", "DARK_AQUA"};
-
-        if (forward) {
-            for (int i = 0; i < wool.length; i++) {
-                if (color.equals(wool[i])) {
-                    return chat[i];
-                }
-            }
-        } else {
-
-            for (int i = 0; i < chat.length; i++) {
-                if (color.equals(chat[i])) {
-                    return wool[i];
-                }
-            }
-        }
-
-        return color;
     }
 
     public static String[] shiftArrayBy(final String[] args, final int offset) {

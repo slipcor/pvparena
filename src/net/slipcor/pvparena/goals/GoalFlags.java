@@ -10,12 +10,9 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
-import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -166,7 +163,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
         }
 
         Material flagType = arena.getArenaConfig().getMaterial(CFG.GOAL_FLAGS_FLAGTYPE);
-        if (!Utils.isSubType(block.getType(), flagType)) {
+        if (!ColorUtils.isSubType(block.getType(), flagType)) {
             arena.getDebugger().i("block, but not flag", player);
             return res;
         }
@@ -429,7 +426,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
         }
 
         Material flagType = arena.getArenaConfig().getMaterial(CFG.GOAL_FLAGS_FLAGTYPE);
-        if (block == null || !Utils.isSubType(block.getType(), flagType)) {
+        if (block == null || !ColorUtils.isSubType(block.getType(), flagType)) {
             return res;
         }
 
@@ -742,11 +739,11 @@ public class GoalFlags extends ArenaGoal implements Listener {
     private Material getFlagOverrideTeamMaterial(final Arena arena, final String team) {
         if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
             if ("touchdown".equals(team)) {
-                return StringParser.getColoredWoolFromChatColor(ChatColor.BLACK.name());
+                return ColorUtils.getWoolMaterialFromChatColor(ChatColor.BLACK);
             }
-            return StringParser.getColoredWoolFromChatColor(arena.getTeam(team).getColor().name());
+            return ColorUtils.getWoolMaterialFromChatColor(arena.getTeam(team).getColor());
         }
-        return StringParser.getColoredWoolFromChatColor(
+        return ColorUtils.getWoolMaterialFromChatColor(
                 (String) arena.getArenaConfig().getUnsafe("flagColors." + team));
     }
 
@@ -998,7 +995,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
         if (paBlockLocation == null) {
             return;
         }
-        if (!Utils.isSubType(Material.getMaterial(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)), Material.WHITE_WOOL)) {
+        if (!ColorUtils.isSubType(Material.getMaterial(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE)), Material.WHITE_WOOL)) {
             paBlockLocation.toLocation()
                     .getBlock()
                     .setType(
@@ -1012,7 +1009,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
                     .setType(Material.WHITE_WOOL);
         } else {
             paBlockLocation.toLocation().getBlock()
-                    .setType(StringParser.getWoolFallbackMaterialFromString(flagColor));
+                    .setType(ColorUtils.getWoolMaterialFromChatColor(flagColor));
         }
     }
 

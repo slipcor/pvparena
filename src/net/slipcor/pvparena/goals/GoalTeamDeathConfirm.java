@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -226,10 +225,6 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
         item.setItemMeta(meta);
 
         player.getWorld().dropItem(player.getLocation(), item);
-    }
-
-    private byte getDataFromTeam(final ArenaTeam team) {
-        return StringParser.getColorDataFromENUM(team.getColor().name());
     }
 
     @Override
