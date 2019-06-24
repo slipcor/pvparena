@@ -743,7 +743,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             }
             return ColorUtils.getWoolMaterialFromChatColor(arena.getTeam(team).getColor());
         }
-        return ColorUtils.getWoolMaterialFromChatColor(
+        return ColorUtils.getWoolMaterialFromDyeColor(
                 (String) arena.getArenaConfig().getUnsafe("flagColors." + team));
     }
 

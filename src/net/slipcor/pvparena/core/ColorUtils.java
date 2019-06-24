@@ -16,8 +16,8 @@ public final class ColorUtils {
     private ColorUtils() {
     }
 
-    public static Material getWoolMaterialFromChatColor(final String color) {
-        return getWoolMaterialFromChatColor(ChatColor.valueOf(color));
+    public static Material getWoolMaterialFromDyeColor(final String color) {
+        return getColoredMaterial(DyeColor.valueOf(color), Material.WHITE_WOOL);
     }
 
     public static Material getWoolMaterialFromChatColor(final ChatColor color) {
@@ -60,7 +60,7 @@ public final class ColorUtils {
           colors not being able to parse: chat-AQUA, wool-brown
          */
 
-        final List<String> wool = Arrays.asList("ORANGE", "MAGENTA", "LIGHT_BLUE", "LIME", "PINK", "GRAY", "SILVER",
+        final List<String> wool = Arrays.asList("ORANGE", "MAGENTA", "LIGHT_BLUE", "LIME", "PINK", "GRAY", "LIGHT_GRAY",
                 "PURPLE", "BLUE", "GREEN", "RED", "CYAN");
         final List<String> chat = Arrays.asList("GOLD", "LIGHT_PURPLE", "BLUE", "GREEN", "RED", "DARK_GRAY", "GRAY",
                 "DARK_PURPLE", "DARK_BLUE", "DARK_GREEN", "DARK_RED", "DARK_AQUA");
