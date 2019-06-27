@@ -17,9 +17,8 @@ shortcut_shuffle: false
 allow_ungrouped: false
 consoleoffduty: false
 update:
-  mode: both
-  type: beta
-  modules: true
+  mode: announce
+  modules: announce
 materialprefixes:
 - minecraft
 - bukkit

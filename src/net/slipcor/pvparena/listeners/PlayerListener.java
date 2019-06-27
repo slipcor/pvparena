@@ -749,12 +749,9 @@ public class PlayerListener implements Listener {
             arena.playerLeave(player, CFG.TP_EXIT, true, true, false);
         }
 
-        if (!player.isOp()) {
-            return; // no OP => OUT
-        }
         DEBUG.i("OP joins the game", player);
-        if (PVPArena.instance.getUpdater() != null) {
-            PVPArena.instance.getUpdater().message(player);
+        if (player.isOp() && PVPArena.instance.getUpdateChecker() != null) {
+            PVPArena.instance.getUpdateChecker().displayMessage(player);
         }
     }
 

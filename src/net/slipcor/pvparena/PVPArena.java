@@ -15,7 +15,7 @@ import net.slipcor.pvparena.listeners.PlayerListener;
 import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
-import net.slipcor.pvparena.managers.TabManager;
+import net.slipcor.pvparena.updater.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -51,7 +51,7 @@ public class PVPArena extends JavaPlugin {
     private final List<AbstractArenaCommand> arenaCommands = new ArrayList<>();
     private final List<AbstractGlobalCommand> globalCommands = new ArrayList<>();
 
-    private Updater updater;
+    private UpdateChecker updateChecker;
     private boolean shuttingDown;
 
     /**
@@ -89,8 +89,8 @@ public class PVPArena extends JavaPlugin {
         return globalCommands;
     }
 
-    public Updater getUpdater() {
-        return updater;
+    public UpdateChecker getUpdateChecker() {
+        return updateChecker;
     }
 
     /**
@@ -436,13 +436,9 @@ public class PVPArena extends JavaPlugin {
             saveConfig();
         }
 
-        if (!getConfig().contains("update.mode") && getConfig().contains("modulecheck")) {
-            getConfig().set("update.mode", getConfig().getString("update", "both"));
-            getConfig().set("update.type", getConfig().getString("updatetype", "beta"));
-            getConfig().set("update.modules", getConfig().getBoolean("modulecheck", true));
-
-            getConfig().set("modulecheck", null);
-            getConfig().set("updatetype", null);
+        if (getConfig().contains("update.type")) {
+            getConfig().set("update.modules", getConfig().getBoolean("update.modules", true) ? "download" : "announce");
+            getConfig().set("update.type", null);
 
             saveConfig();
         }
@@ -503,7 +499,7 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updater = new Updater(this, getFile());
+        updateChecker = new UpdateChecker(this);
 
         if (ArenaManager.count() > 0) {
             if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {
