@@ -6,9 +6,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,7 +15,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <pre>PVP Arena UNINSTALL Command class</pre>
@@ -45,11 +42,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
             return;
         }
 
-        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
-            Arena.pmsg(sender, ChatColor.DARK_RED+Language.parse(MSG.ERROR_MODULE_UPDATE));
-            return;
-        }
-
         // pa install
         // pa install ctf
 
@@ -59,36 +51,12 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
         } catch (final Exception e) {
         }
 
-        if (args.length == 0) {
-            listVersions(sender, config, null);
-            return;
-        }
-
-        if (config.get(args[0]) != null) {
-            listVersions(sender, config, args[1]);
+        if (args.length == 0 || config.get(args[0]) != null) {
+            PAA_Install.listInstalled(sender);
             return;
         }
 
         final String name = args[0].toLowerCase();
-        final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(name);
-        if (goal != null) {
-            if (remove("pa_g_" + goal.getName().toLowerCase() + ".jar")) {
-                PVPArena.instance.getAgm().reload();
-                Arena.pmsg(sender, Language.parse(MSG.UNINSTALL_DONE, goal.getName()));
-                return;
-            }
-            Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL, goal.getName()));
-            FileConfiguration cfg = PVPArena.instance.getConfig();
-            List<String> toDelete = cfg.getStringList("todelete");
-            if (toDelete == null){
-                toDelete = new ArrayList<>();
-            }
-            toDelete.add("pa_g_" + goal.getName().toLowerCase() + ".jar");
-            cfg.set("todelete", toDelete);
-            PVPArena.instance.saveConfig();
-            Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL2));
-            return;
-        }
         final ArenaModule mod = PVPArena.instance.getAmm().getModByName(name);
         if (mod != null) {
             if (remove("pa_m_" + mod.getName().toLowerCase() + ".jar")) {
@@ -106,52 +74,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
             cfg.set("todelete", toDelete);
             PVPArena.instance.saveConfig();
             Arena.pmsg(sender, Language.parse(MSG.ERROR_UNINSTALL2));
-        }
-    }
-
-    private void listVersions(final CommandSender sender, final YamlConfiguration cfg,
-                              final String sub) {
-        Arena.pmsg(sender, "--- PVP Arena Version Update information ---");
-        Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "7uninstalled" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "einstalled" + ChatColor.COLOR_CHAR + "r]");
-        Arena.pmsg(sender, "[" + ChatColor.COLOR_CHAR + "coutdated" + ChatColor.COLOR_CHAR + "r | " + ChatColor.COLOR_CHAR + "alatest version" + ChatColor.COLOR_CHAR + "r]");
-        if (sub == null || "arenas".equalsIgnoreCase(sub)) {
-            Arena.pmsg(sender, ChatColor.COLOR_CHAR + "c--- Arena Goals ----> /goals");
-            final Set<String> entries = cfg.getConfigurationSection("goals").getKeys(
-                    false);
-            for (final String key : entries) {
-                final String value = cfg.getString("goals." + key);
-                final ArenaGoal goal = PVPArena.instance.getAgm().getGoalByName(key);
-                final boolean installed = goal != null;
-                String version = null;
-                if (installed) {
-                    version = goal.version();
-                }
-                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
-                        + key
-                        + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? value.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + value);
-            }
-        }
-        if (sub == null || "mods".equalsIgnoreCase(sub)) {
-            Arena.pmsg(sender, ChatColor.COLOR_CHAR + "a--- Arena Mods ----> /mods");
-            final Set<String> entries = cfg.getConfigurationSection("mods").getKeys(
-                    false);
-            for (final String key : entries) {
-                final String value = cfg.getString("mods." + key);
-                final ArenaModule mod = PVPArena.instance.getAmm().getModByName(key);
-                final boolean installed = mod != null;
-                String version = null;
-                if (installed) {
-                    version = mod.version();
-                }
-                Arena.pmsg(sender, (installed ? ChatColor.COLOR_CHAR + "e" : ChatColor.COLOR_CHAR + "7")
-                        + key
-                        + ChatColor.COLOR_CHAR + "r - "
-                        + (installed ? value.equals(version) ? ChatColor.COLOR_CHAR + "a" : ChatColor.COLOR_CHAR + "c"
-                        : "") + value);
-            }
-
         }
     }
 
@@ -208,9 +130,6 @@ public class PAA_Uninstall extends AbstractGlobalCommand {
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {
-            result.define(new String[]{string});
-        }
         for (final ArenaModule mod : PVPArena.instance.getAmm().getAllMods()) {
             result.define(new String[]{mod.getName()});
         }

@@ -4,10 +4,8 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.ncloader.NCBLoadable;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -33,23 +31,11 @@ public class PAA_Update extends AbstractGlobalCommand {
 
     @Override
     public void commit(final CommandSender sender, final String[] args) {
-        if (!PVPArena.instance.getConfig().getBoolean("update.modules", true)) {
-            Arena.pmsg(sender, ChatColor.DARK_RED+ Language.parse(Language.MSG.ERROR_MODULE_UPDATE));
-            return;
-        }
         if (!hasPerms(sender)) {
             return;
         }
 
-        final Set<NCBLoadable> modules = new HashSet<>();
-
-        if (args.length < 1 || "mods".equals(args[0])) {
-            modules.addAll(PVPArena.instance.getAmm().getAllMods());
-        } else if (args.length < 1 || "goals".equals(args[0])) {
-            modules.addAll(PVPArena.instance.getAgm().getAllGoals());
-        } else if (args.length < 1 || "regionshapes".equals(args[0])) {
-            modules.addAll(PVPArena.instance.getArsm().getRegions());
-        }
+        final Set<NCBLoadable> modules = new HashSet<NCBLoadable>(PVPArena.instance.getAmm().getAllMods());
 
         if (!modules.isEmpty()) {
             for (final NCBLoadable mod : modules) {
@@ -59,10 +45,9 @@ public class PAA_Update extends AbstractGlobalCommand {
 
                 final File destination = new File(PVPArena.instance.getDataFolder().getPath()
                         + "/files/");
-                final File destFileG = new File(destination, "pa_g_" + mod.getName().toLowerCase() + ".jar");
                 final File destFileM = new File(destination, "pa_m_" + mod.getName().toLowerCase() + ".jar");
 
-                if (!destFileG.exists() && !destFileM.exists()) {
+                if (!destFileM.exists()) {
                     continue;
                 }
 
@@ -77,13 +62,7 @@ public class PAA_Update extends AbstractGlobalCommand {
                 }
                 install.commit(sender, new String[]{mod.getName()});
             }
-            return;
         }
-
-        final PAA_Uninstall uninstall = new PAA_Uninstall();
-        uninstall.commit(sender, args);
-        final PAA_Install install = new PAA_Install();
-        install.commit(sender, args);
     }
 
 
@@ -110,11 +89,6 @@ public class PAA_Update extends AbstractGlobalCommand {
     @Override
     public CommandTree<String> getSubs(final Arena nothing) {
         final CommandTree<String> result = new CommandTree<>(null);
-        result.define(new String[]{"mods"});
-        result.define(new String[]{"goals"});
-        for (final String string : PVPArena.instance.getAgm().getAllGoalNames()) {
-            result.define(new String[]{string});
-        }
         for (final ArenaModule mod : PVPArena.instance.getAmm().getAllMods()) {
             result.define(new String[]{mod.getName()});
         }
