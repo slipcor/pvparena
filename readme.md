@@ -113,27 +113,19 @@ Users tutorials :
 ***
 
 ## Update Checker
-I use two ways of keeping track of versions. One is the plugin version, the Bukkit Update Checker utilizing the Curse API,
-the other setting is for module version checking, let me show you the important config.yml nodes:
+If you wan't you can be informed of plugin or modules updates. Each release version was pushed on github since 1.14.0.
+The update checker will call the github APIs and announce an update to OPs on login. You can configure it to 
+automatically download updates.
 
+```yaml
     update:
-      modules: true
-    # should PA check my server (www.slipcor.net) for module versions?
-    # !! If you disable that, you have to manually download and install modules! !!
-
-      type: beta #which release state do we want to use?
+      plugin: announce
+      modules: announce
     # valid values:
-    # alpha: update to every dev build
-    # beta: update to every beta build
-    # release: only update to full release builds
-    # everything else will fall back to release
-
-      mode: both #how should we update?
-    # valid values:
-    # both: announce and download
-    # download: download, do not announce
+    # download: download updates and announce when update is installed
     # announce: only announce, do not download
     # everything else will disable the update check
+```
 
 ***
 
