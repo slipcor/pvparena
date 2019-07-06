@@ -16,6 +16,7 @@ import net.slipcor.pvparena.loadables.*;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
 import net.slipcor.pvparena.updater.UpdateChecker;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -417,6 +418,9 @@ public class PVPArena extends JavaPlugin {
         shuttingDown = false;
         instance = this;
         DEBUG = new Debug(1);
+
+        //Enable bStats
+        Metrics metrics = new Metrics(this);
 
         saveDefaultConfig();
         if (!getConfig().contains("shortcuts")) {
