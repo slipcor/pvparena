@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.core.Language.MSG;
 import org.bukkit.plugin.Plugin;
 
 import java.io.BufferedReader;
@@ -14,18 +16,30 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.logging.Logger;
 
+/**
+ * Abstract class with shared methods fo updaters
+ */
 public abstract class AbstractUpdater implements Runnable {
     protected final Plugin plugin;
     protected final UpdateMode updateMode;
     protected List<String> updateMsgList;
     protected static final Logger LOG = PVPArena.instance.getLogger();
 
+    /**
+     * Constructs a AbstractUpdater instance
+     * @param plugin PVP Arena instance
+     * @param updateMsgList Reference to UpdateChecker message list
+     * @param configNode YML config node to get update setting
+     */
     public AbstractUpdater(Plugin plugin, List<String> updateMsgList, String configNode) {
         this.plugin = plugin;
         this.updateMode = UpdateMode.getBySetting(plugin.getConfig().getString(configNode, UpdateMode.ANNOUNCE.name()));
         this.updateMsgList = updateMsgList;
     }
 
+    /**
+     * Runs an updater if it's not disabled
+     */
     public void run() {
         try {
             if(this.updateMode != UpdateMode.OFF) {
@@ -36,25 +50,50 @@ public abstract class AbstractUpdater implements Runnable {
         }
     }
 
+    /**
+     * Runs  an updater implementation
+     * @throws IOException Exception if api.github.com is unreachable
+     */
     protected abstract void runUpdater() throws IOException;
 
+    /**
+     * Returns release version from API json
+     * @param jsonObject API json
+     * @return version as string
+     */
     protected static String getOnlineVersionFromJson(JsonObject jsonObject) {
         String tagName = jsonObject.get("tag_name").getAsString();
         return tagName.replace("v", "");
     }
 
+    /**
+     * Returns release download URL from API json
+     * @param jsonObject API json
+     * @return download URL as string
+     */
     protected static String getDownloadUrlFromJson(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("assets");
         JsonObject assetArray = jsonArray.get(0).getAsJsonObject();
         return assetArray.get("browser_download_url").getAsString();
     }
 
+    /**
+     * Returns release filename from API json
+     * @param jsonObject API json
+     * @return filename as string
+     */
     protected static String getFilenameFromJson(JsonObject jsonObject) {
         JsonArray jsonArray = jsonObject.getAsJsonArray("assets");
         JsonObject assetArray = jsonArray.get(0).getAsJsonObject();
         return assetArray.get("name").getAsString();
     }
 
+    /**
+     * Returns a JsonObject view of Api result stream
+     * @param inputStream InputStream returned by Api connection
+     * @return JsonObject
+     * @throws IOException Exception on json parsing
+     */
     protected static JsonObject getVersionJson(InputStream inputStream) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
         JsonElement jsonElement = new JsonParser().parse(in);
@@ -63,18 +102,30 @@ public abstract class AbstractUpdater implements Runnable {
         return jsonObject;
     }
 
-    protected static String getAnnounceMessage(Object... args) {
-        return String.format("%s %s is now available ! Your version: %s", args);
+    /**
+     * Returns announce message of new available update
+     * @param args Args for stringFormatter
+     * @return Announce message
+     */
+    protected static String getAnnounceMessage(String... args) {
+        return Language.parse(MSG.UPDATER_ANNOUNCE, args);
     }
 
-    protected static String getPluginSuccessMessage(String version) {
-        return String.format("PVP Arena has been updated to %s. Restart your server to apply update.", version);
+    /**
+     * Returns update success message
+     * @param args Args for stringFormatter
+     * @return success message
+     */
+    protected static String getSuccessMessage(String... args) {
+        return Language.parse(MSG.UPDATER_SUCCESS, args);
     }
 
-    protected static String getModulesSuccessMessage(String version) {
-        return String.format("PVP Arena Modules have been updated to %s. Run /pa update to apply new version", version);
-    }
-
+    /**
+     * Checks if current version is up to date
+     * @param currentVersion version currently installed as x.x.x format
+     * @param newVersion latest version available as x.x.x format
+     * @return true if current version is up to date, false otherwise
+     */
     protected static boolean isUpToDate(String currentVersion, String newVersion) {
         String[] fullCurrentVerArr = currentVersion.split("-SNAPSHOT");
         boolean isSnapshot = fullCurrentVerArr.length > 1;

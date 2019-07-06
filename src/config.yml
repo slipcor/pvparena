@@ -17,7 +17,7 @@ shortcut_shuffle: false
 allow_ungrouped: false
 consoleoffduty: false
 update:
-  mode: announce
+  plugin: announce
   modules: announce
 materialprefixes:
 - minecraft

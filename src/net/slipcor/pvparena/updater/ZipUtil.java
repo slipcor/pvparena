@@ -7,7 +7,16 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+/**
+ * Util class to manage zip files
+ */
 public class ZipUtil {
+    /**
+     * Unzip a zip archive in destDir directory
+     * @param zipFile The file to unzip
+     * @param destDir Location where unzip the zip file
+     * @throws IOException Thrown an error is raised during unzipping
+     */
     public static void unzip(File zipFile, File destDir) throws IOException {
         byte[] buffer = new byte[1024];
         ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
@@ -30,6 +39,13 @@ public class ZipUtil {
         zis.close();
     }
 
+    /**
+     * Creates a new file based on a zip entry
+     * @param destinationDir extracting location of the entry
+     * @param zipEntry a zip entry
+     * @return new file created
+     * @throws IOException Thrown if the is an error during file creation
+     */
     private static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
         File destFile = new File(destinationDir, zipEntry.getName());
 

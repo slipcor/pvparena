@@ -58,23 +58,14 @@ public class PAA_Install extends AbstractGlobalCommand {
         }
 
         Set<String> modList = getModList();
-        if (modList.contains(args[0].toLowerCase())) {
+        if (modList.size() == 0 || modList.contains(args[0].toLowerCase())) {
             String modName = args[0].toLowerCase();
             if (download("pa_m_" + modName + ".jar")) {
                 PVPArena.instance.getAmm().reload();
-                Arena.pmsg(sender,
-                        Language.parse(MSG.INSTALL_DONE, modName));
-                return;
+                Arena.pmsg(sender, Language.parse(MSG.INSTALL_DONE, modName));
+            } else {
+                Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, modName));
             }
-            Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, modName));
-        } else if (modList.size() == 0) {
-            if (download("pa_m_" + args[0].toLowerCase() + ".jar")) {
-                PVPArena.instance.getAmm().reload();
-                Arena.pmsg(sender,
-                        Language.parse(MSG.INSTALL_DONE, args[0].toLowerCase()));
-                return;
-            }
-            Arena.pmsg(sender, Language.parse(MSG.ERROR_INSTALL, args[0].toLowerCase()));
         }
     }
 

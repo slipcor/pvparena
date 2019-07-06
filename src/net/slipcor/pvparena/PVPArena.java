@@ -436,9 +436,11 @@ public class PVPArena extends JavaPlugin {
             saveConfig();
         }
 
-        if (getConfig().contains("update.type")) {
+        if (getConfig().contains("update.type") || getConfig().contains("update.mode")) {
+            getConfig().set("update.plugin", getConfig().getString("update.mode", "announce"));
             getConfig().set("update.modules", getConfig().getBoolean("update.modules", true) ? "download" : "announce");
             getConfig().set("update.type", null);
+            getConfig().set("update.mode", null);
 
             saveConfig();
         }

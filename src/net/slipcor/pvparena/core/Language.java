@@ -463,6 +463,10 @@ public final class Language {
         TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type: &r/pvparena [arena] !rt [region] BATTLE"),
 
         UNINSTALL_DONE("nulang.uninstall.done", "Uninstalled: &a%1%&r"),
+        UPDATER_PLUGIN("updater.plugin", "PVP Arena"),
+        UPDATER_MODULES("updater.modules", "PVP Arena modules pack"),
+        UPDATER_ANNOUNCE("updater.announce", "%1% %2% is now available ! Your version: %3%"),
+        UPDATER_SUCCESS("updater.success", "%1% has been updated to %2%. Restart your server to apply update."),
 
         WHITELIST_ADDED("nulang.whitelist.added", "Added &a%1%&r to &e%2%&r whitelist!"),
         WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelists cleared!"),
