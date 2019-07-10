@@ -3,10 +3,9 @@ package net.slipcor.pvparena.updater;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Language;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,18 +14,26 @@ import java.util.List;
  */
 public class UpdateChecker {
     private List<String> updateMsgList;
+    private PluginUpdater pluginUpdater;
 
     /**
      * Start plugin and modules updater
-     * @param plugin PVP Arena instance
+     * @param pluginJarFile plugin jar file
      */
-    public UpdateChecker(Plugin plugin) {
+    public UpdateChecker(File pluginJarFile) {
         this.updateMsgList = new ArrayList<>();
 
-        PluginUpdater pluginUpdater = new PluginUpdater(plugin, this.updateMsgList);
-        ModulesUpdater modulesUpdater = new ModulesUpdater(plugin, this.updateMsgList);
-        new Thread(pluginUpdater).start();
+        this.pluginUpdater = new PluginUpdater(this.updateMsgList, pluginJarFile);
+        ModulesUpdater modulesUpdater = new ModulesUpdater(this.updateMsgList);
+        new Thread(this.pluginUpdater).start();
         new Thread(modulesUpdater).start();
+    }
+
+    /**
+     * Run methods for plugin updater during plugin disabling
+     */
+    public void runOnDisable() {
+        this.pluginUpdater.runOnDisable();
     }
 
     /**

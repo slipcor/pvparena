@@ -1,9 +1,8 @@
 package net.slipcor.pvparena.updater;
 
 import com.google.gson.JsonObject;
-import net.slipcor.pvparena.core.Language;
+import net.slipcor.pvparena.PVPArena;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,23 +13,24 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 
-import static net.slipcor.pvparena.core.Language.*;
+import static net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * Manage plugin versions and updates
  */
 public class PluginUpdater extends AbstractUpdater {
 
-    private final static String API_URL = "https://api.github.com/repos/Eredrim/pvparena/releases/latest";
+    private static final String API_URL = "https://api.github.com/repos/Eredrim/pvparena/releases/latest";
     private static final String CONFIG_NODE = "update.plugin";
+    private File pluginJarFile;
 
     /**
      * Construct a plugin updater
-     * @param plugin PVP Arena instance
      * @param msgList Reference to UpdateChecker message list
      */
-    public PluginUpdater(Plugin plugin, List<String> msgList) {
-        super(plugin, msgList, CONFIG_NODE);
+    public PluginUpdater(List<String> msgList, File pluginJarFile) {
+        super(msgList, CONFIG_NODE);
+        this.pluginJarFile = pluginJarFile;
     }
 
     /**
@@ -38,7 +38,7 @@ public class PluginUpdater extends AbstractUpdater {
      * @throws IOException Exception if can't connect to github API
      */
     protected void runUpdater() throws IOException {
-        String currentVersion = plugin.getDescription().getVersion().replace("v", "");
+        String currentVersion = PVPArena.instance.getDescription().getVersion().replace("v", "");
         URL githubApi = new URL(API_URL);
         URLConnection connection = githubApi.openConnection();
         JsonObject versionJson = getVersionJson(connection.getInputStream());
@@ -59,6 +59,7 @@ public class PluginUpdater extends AbstractUpdater {
                     String updateSuccess = getSuccessMessage(MSG.UPDATER_PLUGIN.toString(), onlineVersion);
                     LOG.info(updateSuccess);
                     this.updateMsgList.add(updateSuccess);
+                    this.planPluginRenaming(filename);
                 } catch (IOException e) {
                     LOG.warning("Error during plugin update");
                     e.printStackTrace();
@@ -87,5 +88,26 @@ public class PluginUpdater extends AbstractUpdater {
         FileOutputStream outputStream = new FileOutputStream(pluginFile);
         outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         outputStream.close();
+    }
+
+    /**
+     * Creates a runnable to rename current plugin jar with new jar name in order to spigot updater
+     * could replace the plugin by the "update" folder one.
+     * @param fileName name of downloaded file (currently in "update" folder)
+     */
+    private void planPluginRenaming(String fileName) {
+        final File pluginJarFile = this.pluginJarFile;
+        final String newFileName = fileName;
+        this.toRunOnDisable = new Runnable() {
+            @Override
+            public void run() {
+                String currentFileName  = pluginJarFile.getName();
+                File newJarFile = new File(pluginJarFile.getPath().replace(currentFileName, newFileName));
+                if(!newJarFile.exists()) {
+                    LOG.info("Renaming PVP Arena jar file. It will be replaced by the update on the next startup.");
+                    pluginJarFile.renameTo(newJarFile);
+                }
+            }
+        };
     }
 }

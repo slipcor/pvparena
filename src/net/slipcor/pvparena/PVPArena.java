@@ -409,8 +409,8 @@ public class PVPArena extends JavaPlugin {
         ArenaManager.reset(true);
         Tracker.stop();
         Debug.destroy();
-        Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription()
-                .getFullName());
+        this.getUpdateChecker().runOnDisable();
+        Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription().getFullName());
     }
 
     @Override
@@ -505,7 +505,7 @@ public class PVPArena extends JavaPlugin {
             ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
         }
 
-        updateChecker = new UpdateChecker(this);
+        updateChecker = new UpdateChecker(this.getFile());
 
         if (ArenaManager.count() > 0) {
             if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {

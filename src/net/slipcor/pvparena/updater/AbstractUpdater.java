@@ -7,7 +7,7 @@ import com.google.gson.JsonParser;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,20 +20,19 @@ import java.util.logging.Logger;
  * Abstract class with shared methods fo updaters
  */
 public abstract class AbstractUpdater implements Runnable {
-    protected final Plugin plugin;
     protected final UpdateMode updateMode;
     protected List<String> updateMsgList;
+    protected Runnable toRunOnDisable;
     protected static final Logger LOG = PVPArena.instance.getLogger();
 
     /**
      * Constructs a AbstractUpdater instance
-     * @param plugin PVP Arena instance
      * @param updateMsgList Reference to UpdateChecker message list
      * @param configNode YML config node to get update setting
      */
-    public AbstractUpdater(Plugin plugin, List<String> updateMsgList, String configNode) {
-        this.plugin = plugin;
-        this.updateMode = UpdateMode.getBySetting(plugin.getConfig().getString(configNode, UpdateMode.ANNOUNCE.name()));
+    public AbstractUpdater(List<String> updateMsgList, String configNode) {
+        FileConfiguration config = PVPArena.instance.getConfig();
+        this.updateMode = UpdateMode.getBySetting(config.getString(configNode, UpdateMode.ANNOUNCE.name()));
         this.updateMsgList = updateMsgList;
     }
 
@@ -47,6 +46,12 @@ public abstract class AbstractUpdater implements Runnable {
             }
         } catch (IOException e) {
             LOG.warning("Unable to connect to api.github.com");
+        }
+    }
+
+    public void runOnDisable() {
+        if(this.toRunOnDisable != null) {
+            this.toRunOnDisable.run();
         }
     }
 
@@ -127,8 +132,8 @@ public abstract class AbstractUpdater implements Runnable {
      * @return true if current version is up to date, false otherwise
      */
     protected static boolean isUpToDate(String currentVersion, String newVersion) {
-        String[] fullCurrentVerArr = currentVersion.split("-SNAPSHOT");
-        boolean isSnapshot = fullCurrentVerArr.length > 1;
+        String[] fullCurrentVerArr = currentVersion.split("-");
+        boolean isSnapshot = currentVersion.contains("SNAPSHOT");
         String[] currentVerArr = fullCurrentVerArr[0].split("\\.");
         String[] newVerArr = newVersion.split("\\.");
         int currentVerVal = 0;

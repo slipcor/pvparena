@@ -324,8 +324,6 @@ public final class Language {
         LOG_PLUGIN_ENABLED("nulang.log.pluginenabled", "enabled (version %1%)"),
         LOG_TRACKER_DISABLED("nulang.log.trickerdisabled", "Plugin tracking disabled. See you soon?"),
         LOG_TRACKER_ENABLED("nulang.log.trackingenabled", "Plugin tracking enabled. Set 'tracker: false' inside the main config to disable."),
-        LOG_UPDATE_DISABLED("nulang.log.updatedisabled", "Updates deactivated. Please check dev.bukkit for updates."),
-        LOG_UPDATE_ENABLED("nulang.log.updateenabled", "Checking for updates..."),
         LOG_WARNING("nulang.log.warning", "%1%"),
 
         MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
@@ -463,10 +461,10 @@ public final class Language {
         TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type: &r/pvparena [arena] !rt [region] BATTLE"),
 
         UNINSTALL_DONE("nulang.uninstall.done", "Uninstalled: &a%1%&r"),
-        UPDATER_PLUGIN("updater.plugin", "PVP Arena"),
-        UPDATER_MODULES("updater.modules", "PVP Arena modules pack"),
-        UPDATER_ANNOUNCE("updater.announce", "%1% %2% is now available ! Your version: %3%"),
-        UPDATER_SUCCESS("updater.success", "%1% has been updated to %2%. Restart your server to apply update."),
+        UPDATER_PLUGIN("nulang.updater.plugin", "PVP Arena"),
+        UPDATER_MODULES("nulang.updater.modules", "PVP Arena modules pack"),
+        UPDATER_ANNOUNCE("nulang.updater.announce", "%1% %2% is now available ! Your version: %3%"),
+        UPDATER_SUCCESS("nulang.updater.success", "%1% has been updated to %2%. Restart your server to apply update."),
 
         WHITELIST_ADDED("nulang.whitelist.added", "Added &a%1%&r to &e%2%&r whitelist!"),
         WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelists cleared!"),

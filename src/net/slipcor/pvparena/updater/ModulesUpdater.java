@@ -1,10 +1,11 @@
 package net.slipcor.pvparena.updater;
 
 import com.google.gson.JsonObject;
-import net.slipcor.pvparena.core.Language;
-import org.bukkit.plugin.Plugin;
+import net.slipcor.pvparena.PVPArena;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
@@ -13,7 +14,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.List;
 
-import static net.slipcor.pvparena.core.Language.*;
+import static net.slipcor.pvparena.core.Language.MSG;
 
 /**
  * Manage modules versions and updates
@@ -25,11 +26,10 @@ public class ModulesUpdater extends AbstractUpdater {
 
     /**
      * Construct a modules updater
-     * @param plugin PVP Arena instance
      * @param msgList Reference to UpdateChecker message list
      */
-    public ModulesUpdater(Plugin plugin, List<String> msgList) {
-        super(plugin, msgList, CONFIG_NODE);
+    public ModulesUpdater(List<String> msgList) {
+        super(msgList, CONFIG_NODE);
     }
 
     /**
@@ -91,7 +91,8 @@ public class ModulesUpdater extends AbstractUpdater {
      */
     private void downloadAndUnpackModules(String downloadUrlStr, String filename) throws IOException {
         URL downloadUrl = new URL(downloadUrlStr);
-        File zipFile = new File(this.plugin.getDataFolder(), filename);
+        File dataFolder = PVPArena.instance.getDataFolder();
+        File zipFile = new File(dataFolder, filename);
         if (zipFile.exists()) {
             zipFile.delete();
         }
@@ -100,7 +101,7 @@ public class ModulesUpdater extends AbstractUpdater {
         outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         outputStream.close();
         deleteDirectory(this.getFilesFolder());
-        ZipUtil.unzip(zipFile, this.plugin.getDataFolder());
+        ZipUtil.unzip(zipFile, dataFolder);
         zipFile.delete();
     }
 
@@ -109,7 +110,7 @@ public class ModulesUpdater extends AbstractUpdater {
      * @return "files" folder
      */
     private File getFilesFolder() {
-        return new File(this.plugin.getDataFolder().getPath() + "/files");
+        return new File(PVPArena.instance.getDataFolder().getPath() + "/files");
     }
 
     /**
