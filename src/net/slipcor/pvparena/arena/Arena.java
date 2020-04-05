@@ -1510,10 +1510,10 @@ public class Arena {
      * reset a player to his pre-join values
      *
      * @param player the player to reset
-     * @param string the teleport location
+     * @param destination the teleport location
      * @param soft   if location should be preserved (another tp incoming)
      */
-        private void resetPlayer(final Player player, final String string, final boolean soft,
+    private void resetPlayer(final Player player, final String destination, final boolean soft,
                              final boolean force) {
         if (player == null) {
             return;
@@ -1545,14 +1545,19 @@ public class Arena {
             ArenaPlayer.reloadInventory(this, player, true);
         }
 
+        this.teleportPlayerAfterReset(destination, soft, force, aPlayer);
+    }
+
+    private void teleportPlayerAfterReset(final String destination, final boolean soft, final boolean force, final ArenaPlayer aPlayer) {
+        final Player player = aPlayer.get();
         class RunLater implements Runnable {
 
             @Override
             public void run() {
-                getDebugger().i("string = " + string, player);
+                getDebugger().i("string = " + destination, player);
                 aPlayer.setTelePass(true);
 
-                if ("old".equalsIgnoreCase(string)) {
+                if ("old".equalsIgnoreCase(destination)) {
                     getDebugger().i("tping to old", player);
                     if (aPlayer.getSavedLocation() != null) {
                         getDebugger().i("location is fine", player);
@@ -1565,13 +1570,13 @@ public class Arena {
                         aPlayer.setTeleporting(false);
                     }
                 } else {
-                    Location offset = getOffset(string);
+                    Location offset = getOffset(destination);
                     if (offset == null) {
                         offset = new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
                     }
-                    final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, string);
+                    final PALocation loc = SpawnManager.getSpawnByExactName(Arena.this, destination);
                     if (loc == null) {
-                        new Exception("RESET Spawn null: " + getName() + "->" + string).printStackTrace();
+                        new Exception("RESET Spawn null: " + getName() + "->" + destination).printStackTrace();
                     } else {
                         player.teleport(loc.toLocation().add(offset.toVector()));
                         aPlayer.setTelePass(false);
@@ -1594,10 +1599,11 @@ public class Arena {
         final RunLater runLater = new RunLater();
 
         aPlayer.setTeleporting(true);
-        if (cfg.getInt(CFG.TIME_RESETDELAY) > -1 && !force) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY));
+        if (cfg.getInt(CFG.TIME_RESETDELAY) > 0 && !force) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY) * 20);
         } else {
-            runLater.run();
+            // Waiting two ticks in order to avoid player death bug
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, 2);
         }
     }
 

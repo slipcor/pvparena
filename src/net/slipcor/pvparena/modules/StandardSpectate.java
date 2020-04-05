@@ -11,6 +11,7 @@ import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -74,29 +75,45 @@ public class StandardSpectate extends ArenaModule {
         arena.tpPlayerToCoordName(player, "spectator");
         arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
 
-        if (aPlayer.getState() == null) {
+        this.initArenaPlayer(aPlayer);
+    }
 
-            final Arena arena = aPlayer.getArena();
+    /**
+     * Init player state and inventory after 2 ticks in order to avoid a player death bug
+     * (bug appears if player health and position are change in the same time, happens since Spigot 1.14)
+     * @param aPlayer The arena player object
+     */
+    private void initArenaPlayer(final ArenaPlayer aPlayer) {
+        System.out.println("DELAYING SPECTATE");
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+            @Override
+            public void run() {
+                Player player = aPlayer.get();
+                if (aPlayer.getState() == null) {
 
-            aPlayer.createState(player);
-            ArenaPlayer.backupAndClearInventory(arena, player);
-            aPlayer.dump();
+                    final Arena arena = aPlayer.getArena();
+
+                    aPlayer.createState(player);
+                    ArenaPlayer.backupAndClearInventory(arena, player);
+                    aPlayer.dump();
 
 
-            if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
-                final String autoClass =
-                        arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-                                arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
-                                : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+                    if (aPlayer.getArenaTeam() != null && aPlayer.getArenaClass() == null) {
+                        final String autoClass =
+                                arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+                                        arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
+                                        : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
 
-                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
-                    arena.chooseClass(player, null, autoClass);
-                }
-                if (autoClass == null) {
-                    arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+                        if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
+                            arena.chooseClass(player, null, autoClass);
+                        }
+                        if (autoClass == null) {
+                            arena.msg(player, Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+                        }
+                    }
                 }
             }
-        }
+        }, 2);
     }
 
     @Override

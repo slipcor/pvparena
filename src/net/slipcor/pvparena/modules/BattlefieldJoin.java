@@ -118,49 +118,61 @@ public class BattlefieldJoin extends ArenaModule {
             }
         }
 
-        if (player.getState() == null) {
+        this.initArenaPlayerAndPlanStart(player);
+    }
 
-            final Arena arena = player.getArena();
-
-
-            player.createState(player.get());
-            ArenaPlayer.backupAndClearInventory(arena, player.get());
-            player.dump();
-
-
-            if (player.getArenaTeam() != null && player.getArenaClass() == null) {
-                final String autoClass =
-                        arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
-                                arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
-                                : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
-                    arena.chooseClass(player.get(), null, autoClass);
-                }
-                if (autoClass == null) {
-                    arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
-                    return;
-                }
-            }
-        } else {
-            PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
-        }
-
-        class RunLater implements Runnable {
-
+    /**
+     * Init player state and inventory after 2 ticks in order to avoid a player death bug, then plan the arena start
+     * (bug appears if player health and position are change in the same time, happens since Spigot 1.14)
+     * @param player The arena player object
+     */
+    private void initArenaPlayerAndPlanStart(final ArenaPlayer player) {
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
             @Override
             public void run() {
-                Boolean check = PACheck.handleStart(arena, sender, true);
-                if (check == null || !check) {
-                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, this, 10L);
+                if (player.getState() == null) {
+
+                    final Arena arena = player.getArena();
+
+
+                    player.createState(player.get());
+                    ArenaPlayer.backupAndClearInventory(arena, player.get());
+                    player.dump();
+
+
+                    if (player.getArenaTeam() != null && player.getArenaClass() == null) {
+                        final String autoClass =
+                                arena.getArenaConfig().getBoolean(CFG.USES_PLAYERCLASSES) ?
+                                        arena.getClass(player.getName()) != null ? player.getName() : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS)
+                                        : arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+                        if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
+                            arena.chooseClass(player.get(), null, autoClass);
+                        }
+                        if (autoClass == null) {
+                            arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
+                            return;
+                        }
+                    }
+                } else {
+                    PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
+                }
+
+                class RunLater implements Runnable {
+                    @Override
+                    public void run() {
+                        Boolean check = PACheck.handleStart(arena, player.get(), true);
+                        if (check == null || !check) {
+                            Bukkit.getScheduler().runTaskLater(PVPArena.instance, this, 10L);
+                        }
+                    }
+                }
+
+                if (runner == null) {
+                    runner = new RunLater();
+                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, runner, 10L);
                 }
             }
-
-        }
-
-        if (runner == null) {
-            runner = new RunLater();
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, runner, 10L);
-        }
+        }, 2);
     }
 
     @Override
