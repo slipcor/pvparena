@@ -228,7 +228,6 @@ public class StandardLounge extends ArenaModule {
      * @param player The arena player object
      */
     private void initArenaPlayer(final ArenaPlayer player) {
-        System.out.println("DELAYING LOUNGE");
         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
             @Override
             public void run() {

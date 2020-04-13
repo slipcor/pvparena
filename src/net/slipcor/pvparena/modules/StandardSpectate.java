@@ -84,7 +84,6 @@ public class StandardSpectate extends ArenaModule {
      * @param aPlayer The arena player object
      */
     private void initArenaPlayer(final ArenaPlayer aPlayer) {
-        System.out.println("DELAYING SPECTATE");
         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
             @Override
             public void run() {
