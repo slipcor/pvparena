@@ -276,8 +276,8 @@ public class GoalPlayerLives extends ArenaGoal {
             if (arena.isFreeForAll()) {
                 res.setError(
                         this,
-                        String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                                .getName()) : 0));
+                        String.valueOf(getLifeMap().getOrDefault(aPlayer.getName(), 0))
+                );
             } else {
 
                 if (getLifeMap().containsKey(aPlayer.getArenaTeam().getName())) {

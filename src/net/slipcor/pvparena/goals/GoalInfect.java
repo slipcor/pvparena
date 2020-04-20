@@ -602,8 +602,8 @@ public class GoalInfect extends ArenaGoal {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                            .getName()) : 0));
+                    String.valueOf(getLifeMap().getOrDefault(aPlayer.getName(), 0))
+            );
         }
         return res;
     }

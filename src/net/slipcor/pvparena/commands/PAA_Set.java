@@ -153,17 +153,15 @@ public class PAA_Set extends AbstractArenaCommand {
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(dValue)));
         } else if ("tp".equals(type)) {
-            if (!"exit".equals(value) && !"old".equals(value)
-                    && !"spectator".equals(value)) {
+            if (!"exit".equals(value) && !"old".equals(value) && !"spectator".equals(value)) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "tp (exit|old|spectator|...)"));
                 return;
             }
-            arena.getArenaConfig().setManually(node, String.valueOf(value));
+            arena.getArenaConfig().setManually(node, value);
             arena.msg(
                     player,
-                    Language.parse(arena, MSG.SET_DONE, node,
-                            String.valueOf(value)));
+                    Language.parse(arena, MSG.SET_DONE, node, value));
         } else if ("material".equals(type)) {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
@@ -181,13 +179,10 @@ public class PAA_Set extends AbstractArenaCommand {
             }
 
             try {
-                final Material mat = Material.valueOf(value);
+                final Material mat = Material.valueOf(value.toUpperCase());
                 if (mat != Material.AIR) {
                     arena.getArenaConfig().setManually(node, mat.name());
-                    arena.msg(
-                            player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    String.valueOf(mat.name())));
+                    arena.msg(player, Language.parse(arena, MSG.SET_DONE, node, mat.name()));
                 }
 
                 arena.getArenaConfig().save();

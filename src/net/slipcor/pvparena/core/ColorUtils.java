@@ -6,6 +6,8 @@ import org.bukkit.Material;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static net.slipcor.pvparena.core.StringParser.joinArray;
 
@@ -83,8 +85,7 @@ public final class ColorUtils {
      * @return true if material can be colored
      */
     public static boolean isColorableMaterial(Material type) {
-        return type.name().endsWith("_WOOL") || type.name().endsWith("_CONCRETE") ||
-                type.name().endsWith("_STAINED_GLASS");
+        return getColorableSuffixes().contains(getMaterialSuffix(type));
     }
 
     /**
@@ -101,15 +102,21 @@ public final class ColorUtils {
     }
 
     public static boolean isSubType(Material type, Material check) {
-        if (type.name().endsWith("_WOOL") && check.name().endsWith("_WOOL")) {
-            return true;
-        }
-        if (type.name().endsWith("_CONCRETE") && check.name().endsWith("_CONCRETE")) {
-            return true;
-        }
-        if (type.name().endsWith("_STAINED_GLASS") && check.name().endsWith("_STAINED_GLASS")) {
-            return true;
-        }
-        return false;
+        return isColorableMaterial(type) && getMaterialSuffix(type).equals(getMaterialSuffix(check));
+    }
+
+    private static String getMaterialSuffix(Material material) {
+        return material.name().contains("_") ? material.name().split("_", 2)[1] : "";
+    }
+
+    /**
+     * Get the list of all colorable blocks
+     */
+    private static List<String> getColorableSuffixes() {
+        return Stream.of(Material.values())
+                .filter(m -> m.name().startsWith("MAGENTA_"))
+                .filter(Material::isBlock)
+                .map(ColorUtils::getMaterialSuffix)
+                .collect(Collectors.toList());
     }
 }
