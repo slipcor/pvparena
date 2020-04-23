@@ -13,7 +13,6 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.managers.ArenaManager;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -180,9 +179,9 @@ public class StandardLounge extends ArenaModule {
         team.add(player);
 
         if (arena.isFreeForAll()) {
-            arena.tpPlayerToCoordName(player.get(), "lounge");
+            arena.tpPlayerToCoordName(player.get(), "lounge", true);
         } else {
-            arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
+            arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge", true);
         }
 
         player.setStatus(Status.LOUNGE);
@@ -219,41 +218,27 @@ public class StandardLounge extends ArenaModule {
             ));
         }
 
-        this.initArenaPlayer(player);
-    }
+        if (player.getState() == null) {
 
-    /**
-     * Init player state and inventory after 2 ticks in order to avoid a player death bug
-     * (bug appears if player health and position are change in the same time, happens since Spigot 1.14)
-     * @param player The arena player object
-     */
-    private void initArenaPlayer(final ArenaPlayer player) {
-        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-            @Override
-            public void run() {
-                if (player.getState() == null) {
+            final Arena arena = player.getArena();
 
-                    final Arena arena = player.getArena();
-
-                    player.createState(player.get());
-                    ArenaPlayer.backupAndClearInventory(arena, player.get());
-                    player.dump();
+            player.createState(player.get());
+            ArenaPlayer.backupAndClearInventory(arena, player.get());
+            player.dump();
 
 
-                    if (player.getArenaTeam() != null && player.getArenaClass() == null) {
-                        final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
-                        if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
-                            arena.chooseClass(player.get(), null, autoClass);
-                        }
-                        if (autoClass == null) {
-                            arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
-                        }
-                    }
-                } else {
-                    PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
+            if (player.getArenaTeam() != null && player.getArenaClass() == null) {
+                final String autoClass = arena.getArenaConfig().getString(CFG.READY_AUTOCLASS);
+                if (autoClass != null && !"none".equals(autoClass) && arena.getClass(autoClass) != null) {
+                    arena.chooseClass(player.get(), null, autoClass);
+                }
+                if (autoClass == null) {
+                    arena.msg(player.get(), Language.parse(arena, MSG.ERROR_CLASS_NOT_FOUND, "autoClass"));
                 }
             }
-        }, 2);
+        } else {
+            PVPArena.instance.getLogger().warning("Player has a state while joining: " + player.getName());
+        }
     }
 
     @Override

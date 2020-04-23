@@ -1601,6 +1601,8 @@ public class Arena {
         aPlayer.setTeleporting(true);
         if (cfg.getInt(CFG.TIME_RESETDELAY) > 0 && !force) {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, cfg.getInt(CFG.TIME_RESETDELAY) * 20);
+        } else if (PVPArena.instance.isShuttingDown()) {
+            runLater.run();
         } else {
             // Waiting two ticks in order to avoid player death bug
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, runLater, 2);
@@ -2013,13 +2015,17 @@ public class Arena {
         return name;
     }
 
+    public void tpPlayerToCoordName(Player player, String place) {
+        this.tpPlayerToCoordName(player, place, false);
+    }
+
     /**
      * teleport a given player to the given coord string
      *
      * @param player the player to teleport
      * @param place  the coord string
      */
-    public void tpPlayerToCoordName(final Player player, final String place) {
+    public void tpPlayerToCoordName(final Player player, final String place, final boolean runAsync) {
         getDebugger().i("teleporting " + player + " to coord " + place, player);
 
         if (player == null) {
@@ -2061,22 +2067,16 @@ public class Arena {
 
         aPlayer.setTeleporting(true);
         aPlayer.setTelePass(true);
-        player.teleport(loc.toLocation().add(offset.getX(),offset.getY(),offset.getZ()));
-        player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
-        if (place.contains("lounge")) {
-            getDebugger().i("setting TelePass later!");
+        final Location destination = loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
+        if(runAsync) {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    aPlayer.setTelePass(false);
-                    aPlayer.setTeleporting(false);
+                    teleportPlayer(place, aPlayer, destination);
                 }
-            }, cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
-
+            }, 2);
         } else {
-            getDebugger().i("setting TelePass now!");
-            aPlayer.setTelePass(false);
-            aPlayer.setTeleporting(false);
+            this.teleportPlayer(place, aPlayer, destination);
         }
 
         if (cfg.getBoolean(CFG.PLAYER_REMOVEARROWS)) {
@@ -2110,6 +2110,27 @@ public class Arena {
                     player.setFlying(false);
                 }
             }, 5L);
+        }
+    }
+
+    private void teleportPlayer(String place, final ArenaPlayer aPlayer, Location location) {
+        Player player = aPlayer.get();
+        player.teleport(location);
+        player.setNoDamageTicks(cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+        if (place.contains("lounge")) {
+            getDebugger().i("setting TelePass later!");
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
+                @Override
+                public void run() {
+                    aPlayer.setTelePass(false);
+                    aPlayer.setTeleporting(false);
+                }
+            }, cfg.getInt(CFG.TIME_TELEPORTPROTECT) * 20);
+
+        } else {
+            getDebugger().i("setting TelePass now!");
+            aPlayer.setTelePass(false);
+            aPlayer.setTeleporting(false);
         }
     }
 
