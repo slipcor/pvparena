@@ -381,7 +381,7 @@ public class PlayerListener implements Listener {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
-        final String playerName = team == null ? player.getName() : team.colorizePlayer(player);
+        final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
             arena.broadcast(Language.parse(arena,
                     MSG.FIGHT_KILLED_BY,
@@ -397,14 +397,11 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
-                || !"custom".equalsIgnoreCase(ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
-                .getName())) {
+        if (!aPlayer.hasCustomClass()) {
             InventoryManager.clearInventory(player);
         }
 
-        arena.removePlayer(player,
-                arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
+        arena.removePlayer(player, arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
 
         aPlayer.setStatus(Status.LOST);
         aPlayer.addDeath();

@@ -1535,13 +1535,7 @@ public class Arena {
         //noinspection deprecation
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
-        String sClass = "";
-        if (aPlayer.getArenaClass() != null) {
-            sClass = aPlayer.getArenaClass().getName();
-        }
-
-        if (!soft && (!"custom".equalsIgnoreCase(sClass) ||
-                cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
+        if (!soft && (!aPlayer.hasCustomClass() || cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
             ArenaPlayer.reloadInventory(this, player, true);
         }
 
@@ -1712,8 +1706,7 @@ public class Arena {
         PlayerState.playersetHealth(player, iHealth);
         player.setFoodLevel(cfg.getInt(CFG.PLAYER_FOODLEVEL, 20));
         player.setSaturation(cfg.getInt(CFG.PLAYER_SATURATION, 20));
-        player.setExhaustion((float) cfg.getDouble(
-                CFG.PLAYER_EXHAUSTION, 0.0));
+        player.setExhaustion((float) cfg.getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
         player.setVelocity(new Vector());
         player.setFallDistance(0);
 
@@ -2069,12 +2062,7 @@ public class Arena {
         aPlayer.setTelePass(true);
         final Location destination = loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
         if(runAsync) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                @Override
-                public void run() {
-                    teleportPlayer(place, aPlayer, destination);
-                }
-            }, 2);
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> teleportPlayer(place, aPlayer, destination), 2);
         } else {
             this.teleportPlayer(place, aPlayer, destination);
         }

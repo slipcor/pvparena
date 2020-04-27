@@ -615,6 +615,10 @@ public class ArenaPlayer {
         return publicChatting;
     }
 
+    public boolean hasCustomClass() {
+        return this.getArenaClass() != null && "custom".equalsIgnoreCase(this.getArenaClass().getName());
+    }
+
     public void readDump() {
         debug.i("reading dump: " + name, name);
         debugPrint();

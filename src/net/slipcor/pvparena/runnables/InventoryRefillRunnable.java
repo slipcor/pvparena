@@ -78,7 +78,7 @@ public class InventoryRefillRunnable implements Runnable {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         arena.getDebugger().i("refilling " + player.getName());
         if (aPlayer.getStatus() == Status.FIGHT) {
-            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+            if (aPlayer.hasCustomClass() && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
                 if (refill) {
                     final ItemStack[] items = new ItemStack[additions.size()];
                     int pos = 0;
@@ -101,7 +101,7 @@ public class InventoryRefillRunnable implements Runnable {
                             new ItemStack(ColorUtils.getWoolMaterialFromChatColor(chatColor), 1));
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
-            } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {
+            } else if (refill && aPlayer.hasCustomClass()) {
                 ArenaPlayer.reloadInventory(arena, player, false);
 
                 for (final ItemStack item : additions) {
