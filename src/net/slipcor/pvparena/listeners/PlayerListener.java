@@ -397,6 +397,9 @@ public class PlayerListener implements Listener {
             }
         }
 
+        // Trick to avoid death screen
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, player::closeInventory, 1);
+
         if (!aPlayer.hasCustomClass()) {
             InventoryManager.clearInventory(player);
         }
