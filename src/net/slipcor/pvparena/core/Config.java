@@ -792,6 +792,10 @@ public class Config {
         return section.getKeys(false);
     }
 
+    public List<String> getStringList(final CFG cfg) {
+        return this.getStringList(cfg.getNode(), null);
+    }
+
     public List<String> getStringList(final String path, final List<String> def) {
         if (cfg.get(path) == null) {
             return def == null ? new LinkedList<String>() : def;
@@ -799,6 +803,7 @@ public class Config {
 
         return cfg.getStringList(path);
     }
+
 
     // /////////////////////////////////////////////////////////////////////////
     // //
