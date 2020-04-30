@@ -668,6 +668,17 @@ public final class Language {
         MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),
         MODULE_SPECIALJOIN_STOP("nulang.mod.specialjoin.stop", "Aborted join block selection!"),
 
+        MODULE_SQUADS_NOSQUAD("nulang.mod.squads.nosquad", "No squads loaded! Add some: /pa [arena] !sq add [name]"),
+        MODULE_SQUADS_LISTHEAD("nulang.mod.squads.listhead", "Squads for arena &b%1%"),
+        MODULE_SQUADS_LISTITEM("nulang.mod.squads.listitem", "Squad %1% (max: %2%) %3%"),
+        MODULE_SQUADS_ADDED("nulang.mod.squads.added", "Squad %1% has been added"),
+        MODULE_SQUADS_SET("nulang.mod.squads.set", "Squad %1% has been set"),
+        MODULE_SQUADS_REMOVED("nulang.mod.squads.removed", "Squad %1% has been removed"),
+        MODULE_SQUADS_NOTEXIST("nulang.mod.squads.notexist", "Squad %1% doesn't exist!"),
+        MODULE_SQUADS_ERROR("nulang.mod.squads.error", "Error while editing squads, syntax is not correct!"),
+        MODULE_SQUADS_FULL("nulang.mod.squads.full", "This squad is full!"),
+        MODULE_SQUADS_HELP("nulang.mod.squads.help", "/pa !sq | show the arena squads\n/pa !sq add [name] [limit] | add squad with player limit (set to 0 for no limit)\n/pa !sq set [name] [limit] | set player limit for squad\n/pa !sq remove [name] | remove squad [name]"),
+
         MODULE_STARTFREEZE_ANNOUNCE("nulang.mod.startfreeze.announce", "The game will start in %1% seconds!"),
 
         MODULE_TEMPPERMS_NOPERMS("nulang.mod.tempperms.noperms", "Permissions plugin not found, defaulting to OP."),

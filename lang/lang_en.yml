@@ -563,6 +563,21 @@ nulang:
       done: Join block set here - %1%
       start: Setting join block!
       stop: Aborted join block selection!
+    squads:
+      nosquad: 'No squads loaded! Add some: /pa [arena] !sq add [name]'
+      listhead: Squads for arena &b%1%
+      listitem: 'Squad %1% (max: %2%) %3%'
+      added: Squad %1% has been added
+      set: Squad %1% has been set
+      removed: Squad %1% has been removed
+      notexist: Squad %1% doesn't exist
+      error: Error while editing squads, syntax is not correct!
+      full: This squad is full!
+      help: |-
+        /pa !sq | show the arena squads
+        /pa !sq add [name] [limit] | add squad with player limit (set to 0 for no limit)
+        /pa !sq set [name] [limit] | set player limit for squad
+        /pa !sq remove [name] | remove squad [name]
     startfreeze:
       announce: The game will start in %1% seconds!
     tempperms:

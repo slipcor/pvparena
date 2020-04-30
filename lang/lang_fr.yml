@@ -616,6 +616,21 @@ nulang:
       done: Le join block est configuré - %1%
       start: Configuration du join block !
       stop: Annulation de la selection du join block!
+    squads:
+      nosquad: 'Aucune escouade n''est chargée. Ajoutez-en avec la commande /pa [arena] !sq add [name]'
+      listhead: Liste des escoudes de l'arène &b%1%
+      listitem: 'Escouade %1% (max: %2%) %3%'
+      added: L'escouade %1% a été ajoutée
+      set: L'escouade %1% a été modifiée
+      removed: L'escouade %1% a été supprimée
+      notexist: L'escouade %1% n'existe pas
+      error: Erreur lors de l'édition des escouades, la syntaxe de la command est incorrecte !
+      full: L'escouade est pleine !
+      help: |-
+        /pa !sq | affiche la liste des escouades de l'arène
+        /pa !sq add [name] [limit] | ajoute une escoude avec une limite (mettre 0 pour ne pas avoir de limite)
+        /pa !sq set [name] [limit] | modifier la limite de joueurs d'une escouade
+        /pa !sq remove [name] | supprimer une escouade
     startfreeze:
       announce: Le jeu commencera dans %1% secondes !
     tempperms:
