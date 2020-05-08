@@ -28,7 +28,3 @@ Valid regionshapes include:
 - CUBOID (default)
 - SPHERIC
 - CYLINDRIC
-
-## ToDo
-
-Add more region shapes :D

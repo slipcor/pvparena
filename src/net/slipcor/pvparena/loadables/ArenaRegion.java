@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.loadables;
 
-import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -452,11 +451,7 @@ public class ArenaRegion {
         }
 
         for (final Entity entity : getWorld().getEntities()) {
-            if (entity instanceof Player
-                    || !shape.contains(new PABlockLocation(entity.getLocation()
-                    .getWorld().getName(), entity.getLocation().getBlockX(),
-                    entity.getLocation().getBlockY(), entity.getLocation()
-                    .getBlockZ()))) {
+            if (entity instanceof Player || !shape.contains(new PABlockLocation(entity.getLocation()))) {
                 continue;
             }
 

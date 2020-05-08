@@ -206,7 +206,7 @@ public class Config {
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
-        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", false, "Domination"),
+        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", true, "Domination"),
         GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
         GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
 
@@ -215,6 +215,7 @@ public class Config {
         GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
         GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true, "Flags"),
         GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none", "Flags"),
+        GOAL_FLAGS_ALTERONCATCH("goal.flags.alterOnCatch", true, "Flags"),
 
         GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50, "Food"),
         GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10, "Food"),
@@ -228,6 +229,13 @@ public class Config {
 
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
+
+        GOAL_PFLAGS_FLAGTYPE("goal.physicalflags.flagType", Material.WHITE_WOOL, "PhysicalFlags"),
+        GOAL_PFLAGS_LIVES("goal.physicalflags.flives", 3, "PhysicalFlags"),
+        GOAL_PFLAGS_MUSTBESAFE("goal.physicalflags.mustBeSafe", true, "PhysicalFlags"),
+        GOAL_PFLAGS_WOOLFLAGHEAD("goal.physicalflags.woolFlagHead", true, "PhysicalFlags"),
+        GOAL_PFLAGS_FLAGEFFECT("goal.physicalflags.effect", "none", "PhysicalFlags"),
+
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
         GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
         GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
@@ -534,7 +542,7 @@ public class Config {
         }
 
         public String getModule() {
-            return module;
+            return this.module;
         }
 
         public boolean hasModule() {

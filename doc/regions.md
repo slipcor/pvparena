@@ -36,6 +36,8 @@ The following Region Types exist:
 - EXIT => the region where players should be after exiting the arena, no functionality atm
 - JOIN => the region where players should be when joining, see Configuration page, enforcement is disabled by default
 - SPAWN => a spawn region where players are randomly placed in when spawning or respawning 
+- BL_INV => blacklist inventory access
+- WL_INV => whitelist inventory access 
 
 ## Region Flags
 
@@ -53,15 +55,17 @@ Those are valid Region Flags:
 The BATTLE Region parses region protection flags (other regions can assigned protections, too, but atm they don't really use them). Set them via `/pa !p [regionname] [protection]` - you can add on, off, yes, no, true, false to specify a setting, or just as just told to toggle the state. Note that there is an "ALL" protection node that triggers/sets all protection nodes
 Valid protections are:
 
-- BREAK - Block breaking
-- FIRE - Fire (spreading)
-- MOBS - Mob spawning
-- NATURE - Environment changes (leaves, shrooms, water, lava)
-- PAINTING - Painting placement/destruction
-- PISTON - Piston triggering
-- PLACE - Block placement
-- REDSTONE - Redstone current change
-- TNT - TNT usage
-- TNTBREAK - TNT block break
-- TELEPORT - Players Teleportation
+- BREAK - prevent player block breaking
+- FIRE - prevent fire spreading/burning
+- MOBS - prevent mob spawning
+- NATURE - prevent water flow/growth
+- PAINTING - prevent painting/itemframe breakage
+- PISTON - prevent piston usage
+- PLACE - prevent player block placing
+- TNT - prevent tnt interaction
+- TNTBREAK - prevent tnt block damage (explosion still hurts)
+- DROP - prevent player item dropping
+- INVENTORY - prevent inventory interaction
+- PICKUP - prevent player item pickup
+- TELEPORT - prevent player teleportation
 

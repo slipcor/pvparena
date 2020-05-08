@@ -1,8 +1,13 @@
 package net.slipcor.pvparena.core;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -118,5 +123,26 @@ public final class ColorUtils {
                 .filter(Material::isBlock)
                 .map(ColorUtils::getMaterialSuffix)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Change flag color keeping rotation and facing
+     * @param flagBlock Block (location) of the flag
+     * @param flagColor New flag color
+     */
+    public static void setNewFlagColor(Block flagBlock, ChatColor flagColor) {
+        final BlockData originalBlockData = flagBlock.getBlockData().clone();
+        Material newMaterial = ColorUtils.getColoredMaterialFromChatColor(flagColor, flagBlock.getType());
+        BlockData newData = Bukkit.getServer().createBlockData(newMaterial);
+
+        if(originalBlockData instanceof Directional) {
+            ((Directional) newData).setFacing(((Directional) originalBlockData).getFacing());
+        }
+
+        if(originalBlockData instanceof Rotatable) {
+            ((Rotatable) newData).setRotation(((Rotatable) originalBlockData).getRotation());
+        }
+
+        flagBlock.setBlockData(newData);
     }
 }
