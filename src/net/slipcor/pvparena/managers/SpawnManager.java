@@ -622,6 +622,9 @@ public final class SpawnManager {
             return;
         }
 
+        // Trick to avoid death screen
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, () -> aPlayer.get().closeInventory(), 1);
+
         if (overrideSpawn == null) {
 
 
@@ -634,7 +637,7 @@ public final class SpawnManager {
                 int pos = new Random().nextInt(spawns.size());
                 for (final PASpawn spawn : spawns) {
                     if (--pos <= 0) {
-                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
+                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
                         aPlayer.setStatus(Status.FIGHT);
                         return;
                     }
@@ -676,7 +679,7 @@ public final class SpawnManager {
                     int pos = new Random().nextInt(spawns.size());
                     for (final PASpawn spawn : spawns) {
                         if (--pos <= 0) {
-                            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
+                            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
                             aPlayer.setStatus(Status.FIGHT);
                             return;
                         }
@@ -723,7 +726,7 @@ public final class SpawnManager {
                     if (paLocationDoubleEntry.getValue() == max) {
                         for (final PASpawn spawn : spawns) {
                             if (spawn.getLocation().equals(paLocationDoubleEntry.getKey())) {
-                                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
+                                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
                                 return;
                             }
                         }
@@ -738,7 +741,7 @@ public final class SpawnManager {
             int pos = new Random().nextInt(spawns.size());
             for (final PASpawn spawn : spawns) {
                 if (--pos <= 0) {
-                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 1L);
+                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, spawn.getName()), 2);
                     aPlayer.setStatus(Status.FIGHT);
                     return;
                 }
@@ -746,7 +749,7 @@ public final class SpawnManager {
 
         }
 
-        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, overrideSpawn), 1L);
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RespawnRunnable(arena, aPlayer, overrideSpawn), 2);
         if (overrideSpawn == null || !overrideSpawn.toLowerCase().endsWith("relay")) {
             aPlayer.setStatus(Status.FIGHT);
         }
