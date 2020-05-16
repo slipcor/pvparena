@@ -2,6 +2,8 @@
 
 ***
 **IF YOU'RE UPGRADING FROM 1.3.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-from-1-3-x.md)**
+
+Are you testing 1.15-snapshot ? Documentation is [available here](https://github.com/Eredrim/pvparena/tree/1.15).
 ***
 
 **Enhance your server by adding a new dimension of PVP battles!**
