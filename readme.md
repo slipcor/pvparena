@@ -1,7 +1,7 @@
 ![PVP-Arena](/doc/images/logo.png)
 
 ***
-**IF YOU'RE UPGRADING FROM 1.3.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-from-1-3-x.md)**
+**IF YOU'RE UPGRADING FROM 1.14.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-version.md)**
 ***
 
 **Enhance your server by adding a new dimension of PVP battles!**
@@ -33,7 +33,7 @@ This flexibility is achieved on the one hand by a module loader created by Nodin
 
 ## Dependencies
 
-- Spigot 1.13
+- Spigot 1.13+
 
 ***
 
