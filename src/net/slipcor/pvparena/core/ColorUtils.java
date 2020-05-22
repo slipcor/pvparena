@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static net.slipcor.pvparena.core.StringParser.joinArray;
-
 public final class ColorUtils {
 
     private static final Debug DEBUG = new Debug(18);
@@ -101,9 +99,8 @@ public final class ColorUtils {
      */
     public static Material getColoredMaterial(DyeColor dyeColor, Material typeMaterial) {
         String color = dyeColor.name();
-        String[] typeNameArr = typeMaterial.name().split("_");
-        String uncoloredMaterial = joinArray(Arrays.copyOfRange(typeNameArr, 1, typeNameArr.length), "_");
-        return Material.valueOf(color + "_" + uncoloredMaterial);
+        String materialSuffix = getMaterialSuffix(typeMaterial);
+        return Material.valueOf(color + "_" + materialSuffix);
     }
 
     public static boolean isSubType(Material type, Material check) {
@@ -111,7 +108,10 @@ public final class ColorUtils {
     }
 
     private static String getMaterialSuffix(Material material) {
-        return material.name().contains("_") ? material.name().split("_", 2)[1] : "";
+        return getColorableSuffixes().stream()
+                .filter(suffix -> material.name().endsWith(suffix))
+                .findFirst()
+                .orElse("");
     }
 
     /**
@@ -121,7 +121,7 @@ public final class ColorUtils {
         return Stream.of(Material.values())
                 .filter(m -> m.name().startsWith("MAGENTA_"))
                 .filter(Material::isBlock)
-                .map(ColorUtils::getMaterialSuffix)
+                .map(m -> m.name().split("MAGENTA_", 2)[1])
                 .collect(Collectors.toList());
     }
 
