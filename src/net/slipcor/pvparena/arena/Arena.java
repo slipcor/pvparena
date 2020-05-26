@@ -1346,8 +1346,8 @@ public class Arena {
                     new RunLater().run();
                 } else {
                     try {
-                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 2L);
-                    } catch (IllegalStateException e) {
+                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 4L);
+                    } catch (IllegalStateException ignored) {
 
                     }
                 }
@@ -1365,21 +1365,17 @@ public class Arena {
             }
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
             try {
-                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (ap.hasBackupScoreboard()) {
-                            player.setScoreboard(ap.getBackupScoreboard());
-                            if (ap.getBackupScoreboardTeam() != null) {
-                                ap.getBackupScoreboardTeam().addEntry(ap.getName());
-                            }
-                            ap.setBackupScoreboardTeam(null);
-                            ap.setBackupScoreboard(null);
+                Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                    if (ap.hasBackupScoreboard()) {
+                        player.setScoreboard(ap.getBackupScoreboard());
+                        if (ap.getBackupScoreboardTeam() != null) {
+                            ap.getBackupScoreboardTeam().addEntry(ap.getName());
                         }
+                        ap.setBackupScoreboardTeam(null);
+                        ap.setBackupScoreboard(null);
                     }
-                }, 3L);
-            } catch (IllegalPluginAccessException e) {
+                }, 5L);
+            } catch (IllegalPluginAccessException ignored) {
 
             }
         }
