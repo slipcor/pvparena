@@ -1656,7 +1656,7 @@ public class Arena {
                 }
 
             }
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 3L);
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 5L);
         } else {
             final Scoreboard board = getStandardScoreboard();
             ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
