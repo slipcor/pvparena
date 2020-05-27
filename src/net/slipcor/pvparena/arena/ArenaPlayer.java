@@ -768,11 +768,11 @@ public class ArenaPlayer {
      * @param aClass the arena class to set
      */
     public void setArenaClass(final ArenaClass aClass) {
-        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
+        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(this.arena, this.get(), aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
         this.aClass = event.getArenaClass();
-        if (arena != null) {
-            ArenaModuleManager.parseClassChange(arena, get(), this.aClass);
+        if (this.arena != null && this.getStatus() != Status.NULL) {
+            ArenaModuleManager.parseClassChange(this.arena, this.get(), this.aClass);
         }
     }
 
