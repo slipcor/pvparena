@@ -5,7 +5,7 @@ prefix: PVP Arena
 main: net.slipcor.pvparena.PVPArena
 version: ${project.version}${buildVersion}
 api-version: 1.13
-softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,LibsDisguises,DisguiseCraft,TagAPI,My Worlds,CrackShot]
+softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,My Worlds,CrackShot]
 description: create, manage and enhance PvP arenas
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena
