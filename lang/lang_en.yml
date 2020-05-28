@@ -544,6 +544,7 @@ nulang:
       llposition: You are on queue position %1%!
       llrejoin: Ready check has caught you not being able to join. Rejoin when you can!
       llwait: Arena will be starting soon, please wait!
+      llleave: You have left the queue of the %1% arena.
     playerfinder:
       near: 'Nearest player: %1% blocks!'
       point: Compass pointing to nearest player!

@@ -494,6 +494,16 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     }
 
     /**
+     * Call a special leave directly from the module
+     *
+     * @param aPlayer the player who leaves
+     * @return true if a module cares
+     */
+    public boolean handleSpecialLeave(final ArenaPlayer aPlayer) {
+        return false;
+    }
+
+    /**
      * hook into a player removal
      *
      * @param player the player being removed

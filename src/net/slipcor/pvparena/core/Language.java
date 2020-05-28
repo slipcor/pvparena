@@ -648,6 +648,7 @@ public final class Language {
         MODULE_LATELOUNGE_POSITION("nulang.mod.latelounge.llposition", "You are in queue. Position: #%1%"),
         MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
         MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
+        MODULE_LATELOUNGE_LEAVE("nulang.mod.latelounge.llleave", "You have left the queue of the %1% arena."),
 
         MODULE_PLAYERFINDER_NEAR("nulang.mod.playerfinder.near", "Nearest player: %1% blocks!"),
         MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player!"),

@@ -595,6 +595,7 @@ nulang:
       llrejoin: Vous n'êtes pas en mesure de rejoindre les joueurs prêts. Rejoignez-les
         quand vous pouvez !
       llwait: L'arène va ouvrir prochainement, veuillez être patient !
+      llleave: Vous venez de quitter la file d'attente de l'arène %1%.
     playerfinder:
       near: 'Joueur le plus proche: %1% blocs!'
       point: La boussole pointe sur le joueur le plus proche !
