@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.util.*;
@@ -64,7 +63,7 @@ public class ArenaPlayer {
     private final Map<String, PAStatMap> statistics = new HashMap<>();
 
     private Scoreboard backupBoard;
-    private Team backupBoardTeam;
+    private String backupBoardTeam;
 
     /**
      * Status
@@ -516,7 +515,7 @@ public class ArenaPlayer {
         return backupBoard;
     }
 
-    public Team getBackupScoreboardTeam() {
+    public String getBackupScoreboardTeam() {
         return backupBoardTeam;
     }
 
@@ -798,8 +797,8 @@ public class ArenaPlayer {
         backupBoard = board;
     }
 
-    public void setBackupScoreboardTeam(Team team) {
-        backupBoardTeam = team;
+    public void setBackupScoreboardTeam(String sbTeamName) {
+        this.backupBoardTeam = sbTeamName;
     }
 
     public void setMayDropInventory(boolean value) {
