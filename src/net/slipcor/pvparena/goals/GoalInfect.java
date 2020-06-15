@@ -701,7 +701,7 @@ public class GoalInfect extends ArenaGoal {
 
         for (final PASpawn spawn : spawns) {
             if (pos-- < 0) {
-                arena.tpPlayerToCoordName(infected.get(), spawn.getName());
+                this.arena.tpPlayerToCoordName(infected, spawn.getName());
                 break;
             }
         }

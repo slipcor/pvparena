@@ -35,7 +35,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -1573,8 +1576,8 @@ public class Arena {
         }
     }
 
-    public void setupScoreboard(final Player player) {
-        final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
+    public void setupScoreboard(final ArenaPlayer ap) {
+        Player player = ap.get();
 
         this.getDebugger().i("ScoreBoards: Initiating scoreboard for player " + player.getName());
         this.getDebugger().i("ScoreBoards: has backup: " + ap.hasBackupScoreboard());
@@ -1930,8 +1933,10 @@ public class Arena {
         return name;
     }
 
-    public void tpPlayerToCoordName(Player player, String place) {
-        this.tpPlayerToCoordName(player, place, false);
+    public void tpPlayerToCoordName(ArenaPlayer player, String place) {
+        Location destination = this.prepareTeleportation(player, place);
+        this.teleportPlayer(place, player, destination);
+        this.execPostTeleportationFixes(player);
     }
 
     /**
@@ -1940,12 +1945,23 @@ public class Arena {
      * @param player the player to teleport
      * @param place  the coord string
      */
-    public void tpPlayerToCoordName(final Player player, final String place, final boolean runAsync) {
+    public void tpPlayerToCoordNameForJoin(final ArenaPlayer player, final String place, boolean async) {
+        Location destination = this.prepareTeleportation(player, place);
+        int delay = async ? 2 : 0;
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+            teleportPlayer(place, player, destination);
+            setupScoreboard(player);
+        }, delay);
+        this.execPostTeleportationFixes(player);
+    }
+
+    private Location prepareTeleportation(ArenaPlayer aPlayer, String place) {
+        Player player = aPlayer.get();
         getDebugger().i("teleporting " + player + " to coord " + place, player);
 
         if (player == null) {
             PVPArena.instance.getLogger().severe("Player null!");
-            return;
+            throw new RuntimeException("Player null!");
         }
 
         if (player.isInsideVehicle()) {
@@ -1953,8 +1969,6 @@ public class Arena {
         }
 
         ArenaModuleManager.tpPlayerToCoordName(this, player, place);
-
-        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         if ("spectator".equals(place)) {
             if (getFighters().contains(aPlayer)) {
@@ -1968,8 +1982,7 @@ public class Arena {
             loc = aPlayer.getSavedLocation();
         }
         if (loc == null) {
-            new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
-            return;
+            throw new RuntimeException("TP Spawn null: " + name + "->" + place);
         }
 
         debug.i("raw location: " + loc.toString());
@@ -1982,16 +1995,13 @@ public class Arena {
 
         aPlayer.setTeleporting(true);
         aPlayer.setTelePass(true);
-        final Location destination = loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
-        if(runAsync) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> teleportPlayer(place, aPlayer, destination), 2);
-        } else {
-            this.teleportPlayer(place, aPlayer, destination);
-        }
+        return loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
+    }
 
+    private void execPostTeleportationFixes(ArenaPlayer aPlayer) {
         if (cfg.getBoolean(CFG.PLAYER_REMOVEARROWS)) {
             try {
-                new ArrowHack(player);
+                new ArrowHack(aPlayer.get());
             } catch (final Exception e) {
             }
         }
@@ -2016,8 +2026,8 @@ public class Arena {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    player.setAllowFlight(false);
-                    player.setFlying(false);
+                    aPlayer.get().setAllowFlight(false);
+                    aPlayer.get().setFlying(false);
                 }
             }, 5L);
         }
@@ -2142,7 +2152,7 @@ public class Arena {
 
         for (final PASpawn spawn : spawns) {
             if (--pos < 0) {
-                tpPlayerToCoordName(player, spawn.getName());
+                this.tpPlayerToCoordName(aPlayer, spawn.getName());
                 break;
             }
         }

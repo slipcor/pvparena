@@ -55,12 +55,12 @@ public class RespawnRunnable implements Runnable {
 
             for (final PASpawn spawn : spawns) {
                 if (--pos < 0) {
-                    arena.tpPlayerToCoordName(player.get(), spawn.getName());
+                    this.arena.tpPlayerToCoordName(player, spawn.getName());
                     break;
                 }
             }
         } else {
-            arena.tpPlayerToCoordName(player.get(), coordName);
+            this.arena.tpPlayerToCoordName(player, coordName);
         }
     }
 

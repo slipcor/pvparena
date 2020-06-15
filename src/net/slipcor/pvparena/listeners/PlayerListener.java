@@ -672,7 +672,7 @@ public class PlayerListener implements Listener {
                 for (final PASpawn spawn : spawns) {
 
                     if (--pos < 0) {
-                        arena.tpPlayerToCoordName(player, spawn.getName());
+                        arena.tpPlayerToCoordName(aPlayer, spawn.getName());
                         break;
                     }
                 }

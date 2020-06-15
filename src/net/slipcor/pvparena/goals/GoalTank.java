@@ -376,7 +376,7 @@ public class GoalTank extends ArenaGoal {
 
         for (final PASpawn spawn : spawns) {
             if (--pos < 0) {
-                arena.tpPlayerToCoordName(tank.get(), spawn.getName());
+                this.arena.tpPlayerToCoordName(tank, spawn.getName());
                 break;
             }
         }
