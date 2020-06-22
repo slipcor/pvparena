@@ -20,7 +20,9 @@ import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.StatisticsManager.type;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
@@ -416,8 +418,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
     @Override
     public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-        if (res.getPriority() > PRIORITY
-                || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (res.getPriority() > PRIORITY || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
 
@@ -426,8 +427,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, this.arena)) {
+        if (!PVPArena.hasAdminPerms(player) && !PVPArena.hasCreatePerms(player, this.arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -642,10 +642,12 @@ public class GoalFlags extends ArenaGoal implements Listener {
         // command : /pa redflag1
         // location: red1flag:
 
-        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()),
-                this.flagName);
-
-        this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_FLAGS_SET, this.flagName));
+        if(this.flagName == null || this.flagName.isEmpty()) {
+            this.arena.msg(player, Language.parse(this.arena, MSG.ERROR_ERROR, "Flag you are trying to set has no name."));
+        } else {
+            SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.flagName);
+            this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_FLAGS_SET, this.flagName));
+        }
 
         PAA_Region.activeSelections.remove(player.getName());
         this.flagName = "";
