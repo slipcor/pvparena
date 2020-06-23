@@ -70,6 +70,10 @@ nulang:
     SUICIDE: lui-même
     THORNS: thorns
     VOID: le vide
+    FALLING_BLOCK: une chute de bloc
+    HOT_FLOOR: un bloc de magma
+    CRAMMING: un surplus de collisions
+    DRAGON_BREATH: le souffle d'un dragon
     CREEPER: un creeper
     SKELETON: un squelette
     SPIDER: une araignée

@@ -865,6 +865,7 @@ public class Arena {
 
         switch (cause) {
             case ENTITY_ATTACK:
+            case ENTITY_SWEEP_ATTACK:
                 if (damager instanceof Player && team != null) {
                     return team.colorizePlayer(aPlayer.get()) + ChatColor.YELLOW;
                 }
@@ -917,8 +918,7 @@ public class Arena {
             default:
                 break;
         }
-        MSG string = MSG.getByName("DEATHCAUSE_"
-                + cause.toString());
+        MSG string = MSG.getByName("DEATHCAUSE_" + cause.toString());
         if (string == null) {
             PVPArena.instance.getLogger().warning("Unknown cause: " + cause.toString());
             string = MSG.DEATHCAUSE_VOID;

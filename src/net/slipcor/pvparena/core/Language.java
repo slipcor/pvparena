@@ -86,6 +86,10 @@ public final class Language {
         DEATHCAUSE_SUICIDE("nulang.deathcause.SUICIDE", "self"),
         DEATHCAUSE_THORNS("nulang.deathcause.THORNS", "thorns"),
         DEATHCAUSE_VOID("nulang.deathcause.VOID", "the Void"),
+        DEATHCAUSE_FALLING_BLOCK("nulang.deathcause.FALLING_BLOCK", "a falling block"),
+        DEATHCAUSE_HOT_FLOOR("nulang.deathcause.HOT_FLOOR", "a magma block"),
+        DEATHCAUSE_CRAMMING("nulang.deathcause.CRAMMING", "a collision surplus"),
+        DEATHCAUSE_DRAGON_BREATH("nulang.deathcause.DRAGON_BREATH", "dragon breath"),
 
         DEATHCAUSE_CREEPER("nulang.deathcause.CREEPER", "a creeper"),
         DEATHCAUSE_SKELETON("nulang.deathcause.SKELETON", "a skeleton"),
