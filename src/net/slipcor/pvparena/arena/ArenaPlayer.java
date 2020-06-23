@@ -13,7 +13,7 @@ import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
+import net.slipcor.pvparena.managers.StatisticsManager.Type;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -109,28 +109,11 @@ public class ArenaPlayer {
     private final PABlockLocation[] selection = new PABlockLocation[2];
 
     private ArenaPlayer(final String playerName) {
-        name = playerName;
-
-        totalPlayers.put(name, this);
-    }
-
-    private ArenaPlayer(final Player player, final Arena arena) {
-        name = player.getName();
-        this.arena = arena;
-
-        totalPlayers.put(name, this);
-    }
-
-    public static int countPlayers() {
-        return totalPlayers.size();
+        this.name = playerName;
     }
 
     public static Set<ArenaPlayer> getAllArenaPlayers() {
-        final Set<ArenaPlayer> players = new HashSet<>();
-        for (final ArenaPlayer ap : totalPlayers.values()) {
-            players.add(ap);
-        }
-        return players;
+        return new HashSet<>(totalPlayers.values());
     }
 
     public boolean getFlyState() {
@@ -214,33 +197,6 @@ public class ArenaPlayer {
         }
     }
 
-    public static void initiate() {
-        debug.i("creating offline arena players");
-
-        if (!PVPArena.instance.getConfig().getBoolean("stats")) {
-            return;
-        }
-
-        final YamlConfiguration cfg = new YamlConfiguration();
-        try {
-            cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
-
-            final Set<String> arenas = cfg.getKeys(false);
-
-            for (final String arenaname : arenas) {
-
-                final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
-                for (final String player : players) {
-                    totalPlayers.put(player, ArenaPlayer.parsePlayer(player));
-                }
-
-            }
-
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * get an ArenaPlayer from a player name
      *
@@ -249,14 +205,31 @@ public class ArenaPlayer {
      */
     public static ArenaPlayer parsePlayer(final String name) {
         synchronized (ArenaPlayer.class) {
-            if (totalPlayers.get(name) == null) {
-                if (Bukkit.getPlayerExact(name) == null) {
-                    totalPlayers.put(name, new ArenaPlayer(name));
-                } else {
-                    totalPlayers.put(name,
-                            new ArenaPlayer(Bukkit.getPlayerExact(name), null));
-                }
+            Player player = Bukkit.getPlayerExact(name);
+
+            // Offline player or NPC
+            if (player == null) {
+                return new ArenaPlayer(name);
             }
+
+            if(!totalPlayers.containsKey(name)) {
+                ArenaPlayer ap = new ArenaPlayer(player.getName());
+                totalPlayers.putIfAbsent(name, ap);
+            }
+            return totalPlayers.get(name);
+        }
+    }
+
+    /**
+     * add an ArenaPlayer (used to load statistics)
+     *
+     * @param name the playername to use
+     * @return an ArenaPlayer instance belonging to that player
+     */
+    public static ArenaPlayer addPlayer(final String name) {
+        synchronized (ArenaPlayer.class) {
+            ArenaPlayer aPlayer = new ArenaPlayer(name);
+            totalPlayers.putIfAbsent(name, aPlayer);
             return totalPlayers.get(name);
         }
     }
@@ -362,18 +335,18 @@ public class ArenaPlayer {
     }
 
     public void addDeath() {
-        getStatistics(arena).incStat(type.DEATHS);
+        getStatistics(arena).incStat(Type.DEATHS);
     }
 
     public void addKill() {
-        getStatistics(arena).incStat(type.KILLS);
+        getStatistics(arena).incStat(Type.KILLS);
     }
 
     public void addLosses() {
-        getStatistics(arena).incStat(type.LOSSES);
+        getStatistics(arena).incStat(Type.LOSSES);
     }
 
-    public void addStatistic(final String arenaName, final type type,
+    public void addStatistic(final String arenaName, final Type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());
@@ -383,7 +356,7 @@ public class ArenaPlayer {
     }
 
     public void addWins() {
-        getStatistics(arena).incStat(type.WINS);
+        getStatistics(arena).incStat(Type.WINS);
     }
 
     private void clearDump() {
@@ -588,7 +561,7 @@ public class ArenaPlayer {
         return tempPermissions;
     }
 
-    public int getTotalStatistics(final type statType) {
+    public int getTotalStatistics(final Type statType) {
         int sum = 0;
 
         for (final PAStatMap stat : statistics.values()) {
@@ -676,34 +649,34 @@ public class ArenaPlayer {
                 if (arena != null) {
                     final String arenaName = arena.getName();
                     cfg.set(arenaName + '.' + name + ".losses", getStatistics()
-                            .getStat(type.LOSSES)
-                            + getTotalStatistics(type.LOSSES));
+                            .getStat(Type.LOSSES)
+                            + getTotalStatistics(Type.LOSSES));
                     cfg.set(arenaName + '.' + name + ".wins",
                             getStatistics()
-                                    .getStat(type.WINS)
-                                    + getTotalStatistics(type.WINS));
+                                    .getStat(Type.WINS)
+                                    + getTotalStatistics(Type.WINS));
                     cfg.set(arenaName + '.' + name + ".kills",
                             getStatistics().getStat(
-                                    type.KILLS)
-                                    + getTotalStatistics(type.KILLS));
+                                    Type.KILLS)
+                                    + getTotalStatistics(Type.KILLS));
                     cfg.set(arenaName + '.' + name + ".deaths", getStatistics()
-                            .getStat(type.DEATHS)
-                            + getTotalStatistics(type.DEATHS));
+                            .getStat(Type.DEATHS)
+                            + getTotalStatistics(Type.DEATHS));
                     cfg.set(arenaName + '.' + name + ".damage", getStatistics()
-                            .getStat(type.DAMAGE)
-                            + getTotalStatistics(type.DAMAGE));
+                            .getStat(Type.DAMAGE)
+                            + getTotalStatistics(Type.DAMAGE));
                     cfg.set(arenaName + '.' + name + ".maxdamage",
                             getStatistics().getStat(
-                                    type.MAXDAMAGE)
-                                    + getTotalStatistics(type.MAXDAMAGE));
+                                    Type.MAXDAMAGE)
+                                    + getTotalStatistics(Type.MAXDAMAGE));
                     cfg.set(arenaName + '.' + name + ".damagetake",
                             getStatistics().getStat(
-                                    type.DAMAGETAKE)
-                                    + getTotalStatistics(type.DAMAGETAKE));
+                                    Type.DAMAGETAKE)
+                                    + getTotalStatistics(Type.DAMAGETAKE));
                     cfg.set(arenaName + '.' + name + ".maxdamagetake",
                             getStatistics().getStat(
-                                    type.MAXDAMAGETAKE)
-                                    + getTotalStatistics(type.MAXDAMAGETAKE));
+                                    Type.MAXDAMAGETAKE)
+                                    + getTotalStatistics(Type.MAXDAMAGETAKE));
                 }
 
                 cfg.save(file);
@@ -833,7 +806,7 @@ public class ArenaPlayer {
         }
     }
 
-    public void setStatistic(final String arenaName, final type type,
+    public void setStatistic(final String arenaName, final Type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());

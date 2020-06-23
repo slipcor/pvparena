@@ -479,7 +479,6 @@ public class PVPArena extends JavaPlugin {
         Help.init(getConfig().getString("language", "en"));
 
         StatisticsManager.initialize();
-        ArenaPlayer.initiate();
 
         getServer().getPluginManager()
                 .registerEvents(new BlockListener(), this);
