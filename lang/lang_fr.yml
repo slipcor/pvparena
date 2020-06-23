@@ -17,8 +17,8 @@ nulang:
     remove:
       done: L'arène &e%1%&r vient d'être supprimée
     setup:
-      disabled: 'Disabled setup mode for arena: %1%'
-      enabled: 'Enabled setup mode for arena: %1%'
+      disabled: 'Désactivation du mode configuration pour l''arène : %1%'
+      enabled: 'Désactivation du mode configuration pour l''arène : %1%'
     startingin: Il y a assez de joueurs prêts. Le combat commence dans %1% !
     start:
       done: Combat démarré manuellement !
@@ -36,21 +36,21 @@ nulang:
     added: Vous avez ajouté &a%1%&r à la liste noire de &e%2%&r !
     allcleared: Toutes les listes noires ont été effacées !
     cleared: La liste noire &e%1%&r a été effacée !
-    help: 'Utilisation: blacklist clear | blacklist [type] [clear|add|remove] [id]'
+    help: 'Aide : blacklist clear | blacklist [type] [clear|add|remove] [id]'
     removed: Vous avez supprimé &a%1%&r de la liste noire &e%2%&r !
     show: 'Liste noire &e%1%&r :'
   check:
     done: Verification faite ! Aucune erreur!
   class:
-    list: 'Available classes: %1%'
+    list: 'Classes disponibles : %1%'
     preview: Vous avez un aperçu de la classe %1%
     removed: La classe %1% a été supprimée
     saved: La classe %1% a été sauvegardée
     selected: Vous avez choisi la classe &e%1%&e
-    selectedrespawn: You will switch to the &e%1%&f class on next respawn.
+    selectedrespawn: Vous réapparaitrez avec la classe &e%1%&f au prochain respawn.
   classchest:
-    done: Successfully set the class items of %1% to the contents of %2%. Please reload
-      the arena when you are done setting chests!
+    done: Les items de la classe %1% proviendront dorénavant du contenu du coffre %2%. Veuillez recharger
+      la configuration de l'arène lorsque vous aurez fini de remplir le coffre en question.
   deathcause:
     BLOCK_EXPLOSION: une explosion
     CONTACT: un cactus
@@ -173,10 +173,9 @@ nulang:
     region:
       beingcreated: 'Une région a déja été créée: %1%'
       flagnotfound: 'RegionFlag &a%1%&r inconnu! Valeurs valides: %2%'
-      invalid: Region selection is invalid. Region will have no volume and will be
-        useless!
+      invalid: La sélection de la région est incorrecte. Celle-ci est vide et sera par conséquent inutile.
       notfound: Region &a%1%&r non trouvée !
-      protectionnotfound: RegionProtection &a%1%&r non trouvée !
+      protectionnotfound: Protection de région &a%1%&r non trouvée !
       typenotfound: 'RegionType &a%1%&r inconnu ! Valeurs valides: %2%'
       youselect: Vous avez déjà sélectionné une région pour l'arène !
       youselect2: Retapez la commande pour annuler la sélection !
@@ -184,15 +183,15 @@ nulang:
     regionnotbeingcreated: Aucune région n'est en cours de création !
     regionnotremoved: Il n'y a pas de configuration de région.
     select2: Selectionnez 2 points avant de vouloir les sauvegarder.
-    setupmode: setup mode!
+    setupmode: Mode de configuration !
     spawn:
       unknown: 'Spawn inconnu: &a%1%&r'
-    spawnfree: Erreur ! Arena est de type free. Utilisez 'spawnX' où X est un chiffre
+    spawnfree: Erreur ! Arena est de type free (ffa). Utilisez 'spawnX' où X est un chiffre
       ou une lettre !
     statsfile: Erreur lors de la lecture du fichier stats !
     teamnotfound: 'Equipe non trouvée: &a%1%&r'
-    uninstall: Erreur lors de la désinstallation &a%1%&r
-    uninstall2: PVP Arena will try to uninstall on server restart!
+    uninstall: Erreur lors de la désinstallation de &a%1%&r
+    uninstall2: PVP Arena tentera une déinstallation au redémarrage du serveur.
     unknownmodule: 'Module non trouvé: %1%'
     whitelist:
       disallowed: Vous ne devriez pas %1% ça ! (non whitelisté)
@@ -212,54 +211,54 @@ nulang:
     teleport: téléporter au spawn d'une arène
     user: utiliser l'arène
     cmds:
-      blacklist: use the blacklist command
-      check: use the check command
-      class: use the class command
-      create: use the create command
-      debug: use the debug command
-      disable: use the disable command
-      duty: use the duty command
-      edit: use the edit command
-      enable: use the enable command
-      gamemode: use the gamemode command
-      goal: use the goal command
-      install: use the install command
-      playerclass: use the playerclass command
-      playerjoin: use the playerjoin command
-      protection: use the protection command
-      region: use the region command
-      regionflag: use the regionflag command
-      regions: use the regions command
-      regiontype: use the regiontype command
-      reload: use the reload command
-      remove: use the remove command
-      round: use the round command
-      set: use the set command
-      setowner: use the setowner command
-      setup: use the setup command
-      spawn: use the spawn command
-      start: use the start command
-      stop: use the stop command
-      teams: use the teams command
-      teleport: use the teleport command
-      template: use the template command
-      togglemod: use the togglemod command
-      uninstall: use the uninstall command
-      update: use the update command
-      whitelist: use the whitelist command
-      arenaclass: use the arenaclass command
-      chat: use the chat command
-      join: use the join command
-      leave: use the leave command
-      spectate: use the spectate command
-      arenalist: use the arenalist command
-      help: use the help command
-      info: use the info command
-      list: use the list command
-      ready: use the ready command
-      shutup: use the shutup command
-      stats: use the stats command
-      version: use the version command
+      blacklist: d'utiliser la commande blacklist
+      check: d'utiliser la commande check
+      class: d'utiliser la commande class
+      create: d'utiliser la commande create
+      debug: d'utiliser la commande debug
+      disable: d'utiliser la commande disable
+      duty: d'utiliser la commande duty
+      edit: d'utiliser la commande edit
+      enable: d'utiliser la commande enable
+      gamemode: d'utiliser la commande gamemode
+      goal: d'utiliser la commande goal
+      install: d'utiliser la commande install
+      playerclass: d'utiliser la commande playerclass
+      playerjoin: d'utiliser la commande playerjoin
+      protection: d'utiliser la commande protection
+      region: d'utiliser la commande region
+      regionflag: d'utiliser la commande regionflag
+      regions: d'utiliser la commande regions
+      regiontype: d'utiliser la commande regiontype
+      reload: d'utiliser la commande reload
+      remove: d'utiliser la commande remove
+      round: d'utiliser la commande round
+      set: d'utiliser la commande set
+      setowner: d'utiliser la commande setowner
+      setup: d'utiliser la commande setup
+      spawn: d'utiliser la commande spawn
+      start: d'utiliser la commande start
+      stop: d'utiliser la commande stop
+      teams: d'utiliser la commande teams
+      teleport: d'utiliser la commande teleport
+      template: d'utiliser la commande template
+      togglemod: d'utiliser la commande togglemod
+      uninstall: d'utiliser la commande uninstall
+      update: d'utiliser la commande update
+      whitelist: d'utiliser la commande whitelist
+      arenaclass: d'utiliser la commande arenaclass
+      chat: d'utiliser la commande chat
+      join: d'utiliser la commande join
+      leave: d'utiliser la commande leave
+      spectate: d'utiliser la commande spectate
+      arenalist: d'utiliser la commande arenalist
+      help: d'utiliser la commande help
+      info: d'utiliser la commande info
+      list: d'utiliser la commande list
+      ready: d'utiliser la commande ready
+      shutup: d'utiliser la commande shutup
+      stats: d'utiliser la commande stats
+      version: d'utiliser la commande version
   fight:
     begins: Que le combat commence !
     draw: Match nul ! Egalité !
@@ -283,19 +282,6 @@ nulang:
     added: 'Objectif ajouté: &a%1%&r'
     installing: 'Installez des objectifs avec la commande: &a/pa install [goalname]&r'
     removed: 'Objectif supprimé: &a%1%&r'
-    beacons:
-      claiming: '&eTeam %1% is claiming the beacon!'
-      claimed: '&eTeam %1% has claimed the beacon!'
-      claimed_remaining: '&eTeam %1% has claimed the beacon! %2% claims remaining!'
-      score: '&eTeam %1% scored %2% points by holding the beacon!'
-      changed: '&eA new beacon has been activated!'
-      contesting: '&eThe beacon claimed by team %1% is being contested!'
-      unclaiming: '&eThe beacon claimed by team %1% is being unclaimed!'
-      unclaimingby: '&eThe beacon claimed by team %1% is being unclaimed by team %2%!'
-      set: 'Beacon set: %1%'
-      setdone: Beacon setting mode deactivated.
-      toset: Beacon setting mode activated. Hit the glass blocks, then use the command
-        again to save!
     blockdestroy:
       typeset: 'Blocktype configuré en: &e%1%'
       setflag: 'Bloc configuré: %1%'
@@ -338,14 +324,14 @@ nulang:
       youtnt: Vous portez maintenant le matériel de sabotage !'
     tank:
       tankdown: Le tank est H.S. !
-      tankmode: TANK MODE ! Tous le monde doit tuer %1%, le tank !
+      tankmode: MODE TANK ! Tous le monde doit tuer %1%, le tank !
       tankwon: Le tank a gagné ! Félicitations à %1% !
     tdc:
-      denied: '%1% denied a kill!'
-      remaining: '%1% kills remaining for %2%.'
-      scored: '%1% scored a kill!'
-      youdenied: You denied a kill!
-      youscored: You scored a kill!
+      denied: '%1% a refusé un kill!'
+      remaining: '%1% kills restants pour %2%.'
+      scored: '%1% a enregistré un kill!'
+      youdenied: Vous avez refusé un kill !
+      youscored: Vous avez enregistré un kill !
     pillars:
       msg:
         block_broken: '[%1%] %2% a cassé un bloc !'
@@ -355,15 +341,6 @@ nulang:
         claimed: '[%1%] %2% a réclamé la colonne !'
         unclaimed: '[%1%] %2% a libéré la colonne !'
         score: '%1% a marqué %2% points'
-    rescue:
-      flaghomeleft: '%1% brought home the hostage of team %2%! Rescues remaining:
-        %3%'
-      flagsave: '%1% dropped the hostage of team %2%!'
-      flaggrab: '%1% grabbed the hostage of team %2%!'
-      flagnotsafe: Your hostage is taken! Cannot bring back an enemy hostage!'
-      setflag: 'Rescue set: %1%'
-      tosetflag: 'Rescue to set: %1%'
-      typeset: 'Hostage type set to: &e%1%'
   help:
     head: '&e--- &aAide de PVP Arena&e %1% &e---'
     admin: '&c%1% - aide administration'
@@ -404,8 +381,7 @@ nulang:
     trickerdisabled: Suivi du plugin désactivé. Rendez-vous bientôt ?
     trackingenabled: 'Suivi du plugin activé. Configurer le suivi: false dans la configuration
       pricipale à désactiver.'
-    updatedisabled: Mises à jour désactivée. Veuillez vérifier dev.bukkit pour les
-      mises à jour.
+    updatedisabled: Mises à jour désactivée. Pensez à vérifier spigot.org pour les mises à jour.
     updateenabled: Recherche de mise à jour...
     warning: '%1%'
   messages:
@@ -438,13 +414,13 @@ nulang:
   playerready: '%1%&e est prêt !'
   player:
     prevented:
-      break: '&cYou may not break blocks!'
-      place: '&cYou may not place blocks!'
-      tnt: '&cYou may not use TNT!'
-      tntbreak: '&cYou may not break TNT!'
-      drop: '&cYou may not drop items!'
-      inventory: '&cYou may not access this!'
-      craft: '&cYou may not craft!'
+      break: '&cVous n''êtes pas autorisé à casser des blocs !'
+      place: '&cVous n''êtes pas autorisé à poser des blocs !'
+      tnt: '&cVous n''êtes pas autorisé à utiliser de la TNT !'
+      tntbreak: '&cVous n''êtes pas autorisé à casser de la TNT !'
+      drop: '&cVous n''êtes pas autorisé jeter vos items !'
+      inventory: '&cVous n''êtes pas autorisé à accéder à cela !'
+      craft: '&cVous n''êtes pas autorisé à crafter !'
   notreadyplayers: Les joueurs ne sont pas prêts
   players: Joueurs
   ready:
@@ -452,9 +428,9 @@ nulang:
     done: Tu viens d'être enregistré comme prêt !
   region:
     clear:
-      added: 'Added to region entity clearing whitelist: &a%1%&r'
-      list: 'Region entity clearing whitelist: &a%1%&r'
-      removed: 'Removed from region entity clearing whitelist: &a%1%&r'
+      added: 'Région ajoutée à la whitelist de nettoyage des entités: &a%1%&r'
+      list: 'Liste des régions appartenant à la whitelist de nettoyage des entités: &a%1%&r'
+      removed: 'Région retirée de la whitelist de nettoyage des entités: &a%1%&r'
     flag:
       added: 'Flag ajouté: &a%1%&r'
       removed: 'Flag suppimé: &a%1%&r'
@@ -466,15 +442,15 @@ nulang:
     radius: 'Rayon de la région: &a%1%&r'
     removed: 'Region supprimée: %1%'
     saved: Region enregistrée.
-    saved_notice: '&6You created a &oCUSTOM&6 region. It has no function yet! To turn
-      it into a battlefield region, type &r/pvparena %1% !rt %2% BATTLE'
+    saved_notice: '&6Vous avez créé une région &oCUSTOM&6. Celle-ci n''a aucune fonction. Pour créer une région
+      pour combattre, tapez &r/pvparena %1% !rt %2% BATTLE'
     select: Selectionne deux points avec le wand item, clic gauche pour le prmier
       et clic droit pour le second !
     setting: Paramètrage de région activé.
-    typeset: 'Region Type modifié en: &e%1%'
+    typeset: 'Type de région modifié en: &e%1%'
     youselect: Vous séléctionnez maintenant une région pour &a%1%&r!
   regions:
-    flags: 'Region Flags: &a%1%&r'
+    flags: 'Flags de région: &a%1%&r'
     head: '--- &aRégion de l''arène&r [&e%1%&r]---'
     listhead: '--- &aRégions de l''arène&r [&e%1%&r]---'
     listvalue: '&a%1%&r: %2%, %3%'
@@ -483,15 +459,15 @@ nulang:
     type: 'Type de région: &a%1%&r'
   reloaded: Config actualisée!
   ymls:
-    reloaded: Languages reloaded!
+    reloaded: Fichiers de langue rechargés !
   round:
-    display: 'Rond #%1%: %2%'
-    added: 'Objectif ajouté au rond: &e%1%'
-    removed: 'Objectif supprimé au rond: &e%1%'
+    display: 'Round #%1%: %2%'
+    added: 'Objectif ajouté au round: &e%1%'
+    removed: 'Objectif supprimé du round: &e%1%'
     roundsdisplay: Round %1% / %2%
     roundsdisplayseparator: '-----------'
   set:
-    items_not: Please use either hand or inventory to set an item node!
+    items_not: Veuillez utiliser les mots clés "hand" ou "inventory" pour définir un item dans la configuration.
     done: '&a%1%&r configuré à &e%2%&r!'
     help: utilise /pa {arenaname} set [page] pour obtenir la liste des configurations
     unknown: 'Config inconnue: &e%1%&r!'
@@ -506,10 +482,10 @@ nulang:
     set: 'Spawn configuré: &a%1%&r'
     setdone: 'Paramètrage du spawn terminé: &a%1%&r'
     setstart: 'Paramètrage du spawn: &a%1%&r'
-    unknown: 'Spawn not found: &a%1%&r'
+    unknown: 'Spawn inconnu : &a%1%&r'
   stats:
     filedone: Fichier stats chargé !
-    head: Statistics TOP %1% (%2%)
+    head: Statistiques TOP %1% (%2%)
     typenotfound: 'Type de statistique non trouvé! Valeurs correctes: &e%1%&r'
   stattype:
     DAMAGE: dommages totaux accordé
@@ -544,8 +520,8 @@ nulang:
     pvpactivating: Le PVP sera activé dans %1%!
     walls: Les murs disparaitront dans %1%!
   togglemod:
-    notice: '&cYou activated a module that requires a BATTLE region! Type &r/pvparena
-      [arena] !rt [region] BATTLE'
+    notice: '&cVous venez d''activer un module nécessitant une région de type BATTLE ! Pour changer le type de région
+      Tapez &r/pvparena [arena] !rt [region] BATTLE'
   uninstall:
     done: 'supprimé: &a%1%&r'
   whitelist:
@@ -559,7 +535,7 @@ nulang:
     aftermatch:
       aftermatch: L'aprèsmatch a commencé !
       startingin: AprèsMatch dans %1%!
-      spawnnotset: Spawn 'après' non configuré !
+      spawnnotset: Spawn 'after' non configuré !
     announcements:
       ignoreon: Vous ignorez maintenant les annonces !
       ignoreoff: Vous recevrez maintenant les annonces !
@@ -576,21 +552,20 @@ nulang:
     duel:
       accepted: '%1% &ea accepté le challenge ! Que le jeu commence !'
       announce: '%1% &evous a defié! Accepte le duel avec &f/pa %2% accept.'
-      announcemoney: '&eThey set up a fee of &c%1%&e!'
-      announce2: '&eCancel the duel with &r/pa %2% decline&e.'
-      cancelled: '&cThe duel has been cancelled!'
-      busy: '%1% &eis already in a fight Please try again later.'
-      declineds: Your opponent did decline. The duel has been cancelled.
-      declinedr: You cancelled the duel!
-      requested: You &echallenged &f%1%&e!
-      requestedalready: You already have challenged someone!
-      requestexpireds: Your opponent did not accept the request in time. The duel
-        has been cancelled.
-      requestexpiredr: You did not accept the request in time. The duel has been cancelled.
+      announcemoney: '&eLe prix d''entrée est de &c%1%&e!'
+      announce2: '&eRefusez le duel avec &r/pa %2% decline&e.'
+      cancelled: '&cLe duel a été annulé!'
+      busy: '%1% &ecombat actuellement. Veuillez réessayer plus tard.'
+      declineds: Votre opposant a refusé. Le duel est annulé.
+      declinedr: Vous avez refusé le duel !
+      requested: Vous &eavez défié &f%1%&e!
+      requestedalready: Vous avez déjà défié quelqu'un !
+      requestexpireds: Votre opposant n'a pas accepté le duel a temps. Le duel est donc annulé.
+      requestexpiredr: Vous n'avez pas accepté le duel a temps. Le duel est donc annulé.
       starting: Le duel commence !
-      nodirectjoin: 'You may not join this arena directly! Use: &e/pa %1% duel [playername]'
+      nodirectjoin: 'Vous pouvez rejoindre directement le combat ! Utilisez: &e/pa %1% duel [nomDuJoueur]'
     fixinventorylos:
-      gamemode: Entrez en mode survie avant de rejoindre l'arène !
+      gamemode: Passez en mode survie avant de rejoindre l'arène !
       invenory: Videz votre inventaire avant de rejoindre l'arène !
     latelounge:
       llannounce: L'arène %1% est ouverte ! Le joueur %2% veut commencer. Rejoint
@@ -602,13 +577,13 @@ nulang:
       llleave: Vous venez de quitter la file d'attente de l'arène %1%.
     playerfinder:
       near: 'Joueur le plus proche: %1% blocs!'
-      point: La boussole pointe sur le joueur le plus proche !
+      point: La boussole indique le joueur le plus proche !
     powerups:
       invalidpowerupeffect: 'PowerupEffect invalide: %1%'
       puplayer: '%1% a collecté le PowerUp %2%!'
       puserver: PowerUp déployé!
     respawnrelay:
-      respawning: Respawning in %1%!
+      respawning: Réapparition dans %1%!
     skins:
       dc: Connecté à DisguiseCraft !
       ld: Hooking into LibsDisguises!
@@ -658,18 +633,18 @@ nulang:
       killreward: Vous recevez %1% pour avoir tué %2%!
       refunding: Remboursement %1%!
     walls:
-      fallingin: 'Walls fall in: %1%'
+      fallingin: 'Les murs tomberont dans : %1%'
       separator: '--------------------'
     worldedit:
-      created: 'Region créée: &e%1%'
-      list_added: Region &e%1%&f will now be specifically saved.
-      list_removed: Region &e%1%&f will no longer be specifically saved.
-      list_show: 'These regions will be saved specifically: &e%1%&f'
+      created: 'Région créée: &e%1%'
+      list_added: La région &e%1%&f sera maintenant spécifiquement sauvegardée.
+      list_removed: Region &e%1%&f ne sera plus spécifiquement sauvegardée.
+      list_show: 'Ces régions sont spécifiquement sauvegardées : &e%1%&f'
       loaded: 'Region chargée: &e%1%'
       saved: 'Region sauvegardée: &e%1%'
     worldguard:
-      created: 'Region not found: &e%1%'
-      saved: Region &e%2%&f saved to &e%1%
+      created: 'Region non trouvée : &e%1%'
+      saved: La région &e%2%&f a été enregistrée sous &e%1%
   banvote:
     lang:
       playerbanned: 'Joueur banni: %1%'
@@ -685,22 +660,21 @@ nulang:
     clear: Classe &e%1%&r effacée !
     listhead: '--- Effets de potion pour la classe &e%1%&r ---'
     remove: L'effet de potion &e%2%&r a été supprimé de la classe &e%1%&r!
-    respawncommand_remove: Respawn command removed from ArenaClass &e%1%&r!
+    respawncommand_remove: La commande de respawn a été supprimée de la classe &e%1%&r!
     classchange:
-      mteam: '&cYour team has exceeded the class change limit!'
-      mplayer: '&cYou have exceeded the class change limit!'
+      mteam: '&cVotre équipe a dépassé le quota de changement de classe !'
+      mplayer: '&cVous avez dépassé le quota de changement de classe !'
   bettergears:
     classdone: La classe &e%1%&r a dorénavant une protection de niveau &a%2%
     showclass: La classe &e%1%&r a une protection de niveau &a%2%
     showteam: L'équipe %1% a la couleur %2%
     teamdone: L'équipe %1% a maintenant la couleur %2%
   blockrestore:
-    clearinvdone: Inventaires effacés ! Attendez-vous à des lag au début du prochain
-      combat !
+    clearinvdone: Inventaires (coffres) effacés ! Attendez-vous à des lag au début du prochain combat !
   chestfiller:
-    chest: Successfully set the items to the contents of %1%.
-    clear: Inventories cleared!
-    fillchest: 'Added to the list to be filled: %1%.'
+    chest: Le contenu du coffre %1% a été défini avec succès.
+    clear: Les contenu des coffres ont été effacés !
+    fillchest: 'Ajouté à la liste des coffres devant être remplis : %1%.'
   announce:
     arena: L'arène est ouverte ! Tape /pa %1% pour rejoindre le combat !
 lang:
@@ -727,7 +701,7 @@ lang:
   votenow: |-
     Votez votre arène! %1% left!
     Votez avec /pa [arenaname] vote
-    Available arenas: %2%
+    Arènes disponibles : %2%
 log:
   tagapi: connecté à TagAPI!
 version: 0.9.0.0
