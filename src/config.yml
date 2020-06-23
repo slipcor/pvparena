@@ -1,7 +1,6 @@
 debug: none
 server_log: false
 stats: true
-tracker: true
 language: en
 onlyPVPinArena: false
 safeadmin: true

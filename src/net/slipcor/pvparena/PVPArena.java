@@ -407,7 +407,6 @@ public class PVPArena extends JavaPlugin {
     public void onDisable() {
         shuttingDown = true;
         ArenaManager.reset(true);
-        Tracker.stop();
         Debug.destroy();
         this.getUpdateChecker().runOnDisable();
         Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription().getFullName());
@@ -505,13 +504,6 @@ public class PVPArena extends JavaPlugin {
         }
 
         updateChecker = new UpdateChecker(this.getFile());
-
-        if (ArenaManager.count() > 0) {
-            if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {
-                final Tracker trackMe = new Tracker();
-                trackMe.start();
-            }
-        }
 
         Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
     }

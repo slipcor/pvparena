@@ -129,10 +129,10 @@ automatically download updates.
 
 ***
 
-## Phoning home
+## Telemetry
 
-By default, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
-That's it! If you want to disable that, set "tracker" to false in the config!
+PVPArena uses bStats to get statistics about basic information like plugin version, java version,
+kind of used Minecraft server, etc. You can disable it in the dedicated config file `plugins/bStats/config.yml`
 
 ***
 

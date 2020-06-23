@@ -326,8 +326,6 @@ public final class Language {
 
         LOG_PLUGIN_DISABLED("nulang.log.plugindisabled", "disabled (version %1%)"),
         LOG_PLUGIN_ENABLED("nulang.log.pluginenabled", "enabled (version %1%)"),
-        LOG_TRACKER_DISABLED("nulang.log.trickerdisabled", "Plugin tracking disabled. See you soon?"),
-        LOG_TRACKER_ENABLED("nulang.log.trackingenabled", "Plugin tracking enabled. Set 'tracker: false' inside the main config to disable."),
         LOG_WARNING("nulang.log.warning", "%1%"),
 
         MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
