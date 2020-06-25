@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static net.slipcor.pvparena.arena.ArenaPlayer.Status.LOUNGE;
+
 /**
  * <pre>PVP Arena JOIN Command class</pre>
  * <p/>
@@ -38,7 +40,7 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
@@ -64,6 +66,11 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+
+        // Player can change arena class only in lounge or with ingameClassSwith parameter set to true
+        if(aPlayer.getStatus() != LOUNGE && !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
+            return;
+        }
 
         final ArenaClass aClass = arena.getClass(args[0]);
 
