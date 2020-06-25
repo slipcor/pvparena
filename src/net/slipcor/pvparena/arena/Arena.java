@@ -794,7 +794,7 @@ public class Arena {
     }
 
     public boolean isFreeForAll() {
-        return free;
+        return this.free;
     }
 
     public boolean isLocked() {

@@ -333,19 +333,20 @@ public class PACheck {
 
         final ArenaTeam team;
 
-        if (args.length < 1 || arena.getTeam(args[0]) == null) {
+        if (args.length < 1) {
             // usage: /pa {arenaname} join | join an arena
 
             team = arena.getTeam(TeamManager.calcFreeTeam(arena));
+        } else if(arena.getTeam(args[0]) == null) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
+            return false;
         } else {
             ArenaTeam aTeam = arena.getTeam(args[0]);
 
             int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
             int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
 
-            if (aTeam == null) {
-                team = aTeam;
-            } else if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
+            if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
                 return false;
             } else if (maxTeamPlayers > 0 && aTeam.getTeamMembers().size() > maxTeamPlayers) {
@@ -356,11 +357,6 @@ public class PACheck {
             }
         }
 
-        if (team == null && args.length > 0) {
-            arena.msg(sender,
-                    Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
-            return false;
-        }
         if (team == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
             return false;

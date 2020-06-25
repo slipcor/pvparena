@@ -367,20 +367,14 @@ public class PVPArena extends JavaPlugin {
                 break;
             }
         }
-        if (paacmd == null
-                && PACheck.handleCommand(tempArena, sender, newArgs)) {
+        if (paacmd == null && PACheck.handleCommand(tempArena, sender, newArgs)) {
             return true;
         }
 
-        if (paacmd == null
-                && tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
+        if (paacmd == null && tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN) && args.length == 1) {
             paacmd = new PAG_Join();
-            if (newArgs.length > 1) {
-                newArgs = StringParser.shiftArrayBy(newArgs, 1);
-            }
-            tempArena.getDebugger()
-                    .i("committing: " + paacmd.getName(), sender);
-            paacmd.commit(tempArena, sender, newArgs);
+            tempArena.getDebugger().i("committing: " + paacmd.getName(), sender);
+            paacmd.commit(tempArena, sender, new String[0]);
             return true;
         }
 
