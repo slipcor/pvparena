@@ -7,12 +7,8 @@ The gamemode defines the general play mode. Free For All or Team Play ?
 ## Usage Examples
 Command |  Definition
 ------------- | -------------
-/pa ctf gamemode ctf | set the gamemode of arena "ctf" to "team"
-/pa free !gm free    | set the gamemode of arena "free" to "free"
-
-## Hazards
-
-Messing up here results in strange game logic interpretations, because several things are based on the decision if we have teams or not.
+/pa ctf gamemode team | set the gamemode of arena "ctf" to "team"
+/pa ffa !gm free    | set the gamemode of arena "ffa" to "free"
 
 ## Details
 

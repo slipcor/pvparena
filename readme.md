@@ -1,114 +1,80 @@
-![PVP-Arena](/doc/images/logo.png)
+![PVP-Arena](doc/images/logo.png)
+
+<p align="center">
+    <b>
+        IF YOU'RE UPGRADING FROM 1.14.x VERSION OR BELOW, PLEASE READ 
+        <a href="doc/update-version.md">UPGRADE DOCUMENTATION</a>
+    </b>
+</p>
 
 ***
-**IF YOU'RE UPGRADING FROM 1.14.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-version.md)**
+[What is PVP Arena?](#What-is-PVP-Arena?) | [Dependencies](#Dependencies) | [Downloads](#Downloads) | 
+[Installation](#Installation) | [Documentation](#Documentation) | [Update Checker](#Update-Checker) | 
+[Telemetry](#Telemetry) | [Credits](#Credits)
 ***
+<br>
 
-**Enhance your server by adding a new dimension of PVP battles!**
+## What is PVP Arena?
 
-Create fully customizable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish.
-This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.
+PVP Arena is a plugin for Spigot based servers which enables creation of customizable fight and mini-games arenas.
+Define your own teams, classes, lobbies, spawn points, messages, gear colors, rewards and even game modes!
+Theses game modes (included in the plugin) can combined with tens of modules to enhance your gameplay!
+In addition, all arenas can be protected with an embedded protection system based on regions.
 
-
-***
-
-
-## Features
-
+Anyway, here's a quick (non exhaustive) list of plugin features:
 - Multiple arenas
-- Battlefield regions
-- Customizable classes
+- Arena regions and protections
 - Player-state saving
-- Arena regions
-- In-game configuration access
-- Arena disable
-- Leader boards
+- Customizable classes
+- Customizable spawn points, lobbies and spectator zones
+- In-game configuration access and simple config files
+- Arena disabling
+- Scoreboards
 - Spawn protection
 - Flag coloring
 - Inventory drops
 - Announcements
-- Arena end timer
+- Time limited match
+- Battlefield regeneration
 
+So take time to read the docs, it's full of useful information 😉
 ***
 
 ## Dependencies
 
 - Spigot 1.13+
+- Java 8+
 
 ***
 
 ## Downloads
 
-- [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
-- [Dev builds on Jenkins](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
+PVP Arena release version can be downloaded on following pages:
+- [PVP Arena - SpigotMC](https://www.spigotmc.org/resources/pvp-arena.16584/)
+- [Github releases page](https://github.com/Eredrim/pvparena/releases)
+
+Development builds (experimental) can be downloaded on Jenkins:
+- [Jenkins dev builds](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
 
 ***
 
-## How to install
+## Installation
 
-- Stop your server
-- Place jar in plugins folder
-- Run a first time to create config folder
-- Configure if you wish to
-- Done !
+Place PVP Arena `.jar` file in the plugin repository of your server and restart. 
 
 ***
 
 ## Documentation
 
-- [Creation](doc/creation.md)
+- [Getting started](doc/getting-started.md)
 - [Commands](doc/commands.md)
-- [Enhancements](doc/enhancements.md)
-- [Items](doc/items.md)
-- [Languages](doc/languages.md)
 - [Permissions](doc/permissions.md)
 - [Regions](doc/regions.md)
+- [Goals](doc/goals.md)
+- [Modules](doc/modules.md)
+- [Items](doc/items.md)
+- [Languages](doc/languages.md)
 - [Configuration](doc/configuration.md)
-
-***
-
-## Video Tutorials
-
-- Basic Setup (v1.3):
-    - [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
-    - [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
-    - [Region Tutorial (Shapes)](https://www.youtube.com/watch?v=jWdWbwRg9zY)
-    - [Region Tutorial (Protections)](https://youtu.be/WFIZ7ZskPVc)
-- Localized Setup (v1.3):
-    - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
-- Goal Tutorials (v1.3):
-    - [BlockDestroy](https://www.youtube.com/watch?v=i7Fpuh_O5O8)
-    - [CheckPoints](https://www.youtube.com/watch?v=anO_tYwcKsg)
-    - [Domination](https://www.youtube.com/watch?v=_Ngq5xBlLsk)
-- [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
-- [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
-- [Food Block Destroy (v1.0)](http://www.youtube.com/watch?v=ntloY1BTKHQ)
-- [FreeForAll (v1.0)](http://www.youtube.com/watch?v=xBIxHoKMu98)
-- [Spleef (v1.0)](http://www.youtube.com/watch?v=DRmLNXEAs_4)
-- [Pillar Domination (v1.0)](http://www.youtube.com/watch?v=Xi7yNURxAjw)
-- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
-
-Users tutorials :
-
-- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=Jw6E8s2kiKw)
-
-***
-
-## Changelog
-
-- v1.13.5 - address #355 - set some more scoreboard settings to hopefully get colors going
-- [read more](doc/changelog.md)
-
-***
-
-## Todo
-
-- plugin
-  - [ ] calculate a winner based on ROUND results
-- modules
-- goals
-  - [ ] tournament arenas ; rounds switch through arenas
-  - [ ] siege -> bring PACKET from A to B || prevent
 
 ***
 
@@ -132,7 +98,7 @@ automatically download updates.
 ## Telemetry
 
 PVPArena uses bStats to get statistics about basic information like plugin version, java version,
-kind of used Minecraft server, etc. You can disable it in the dedicated config file `plugins/bStats/config.yml`
+kind of used Minecraft server, etc. You can disable it in the dedicated config file `/plugins/bStats/config.yml`
 
 ***
 

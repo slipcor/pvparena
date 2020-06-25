@@ -60,3 +60,49 @@ spawns:
   checkpoint5: world,298,64,1289,53.69533920288086,54.75028610229492
   checkpoint6: world,295,64,1292,1.795335054397583,46.80023193359375
 ```
+
+## PowerUps Module
+
+In powerups mod, items and effects configuration was previously in a dedicated `powerups` bloc at root of your arena
+config files. Just move this block content into a the following path `modules.powerups.items`
+
+Example : 
+
+*Replace this*
+```yaml
+powerups:
+  Heal:
+    item: BREAD
+    health:
+      diff: 3
+  Repair:
+    item: WORKBENCH
+    repair:
+      items: helmet,chestplate,leggins,boots
+      factor: 0.2
+# Lines below have no importance
+teams:
+  red: RED
+  blue: BLUE
+```
+*with this*
+```yaml
+modules:
+  powerups:
+    dropspawn: true
+    usage: death:1
+    items:
+      Heal:
+        item: BREAD
+        health:
+          diff: 3
+      Repair:
+        item: WORKBENCH
+        repair:
+          items: helmet,chestplate,leggins,boots
+          factor: 0.2
+# Lines below have no importance
+teams:
+  red: RED
+  blue: BLUE
+```
