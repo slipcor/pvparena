@@ -6,15 +6,22 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Help;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.loadables.*;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.TabManager;
 import net.slipcor.pvparena.updater.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -390,12 +397,10 @@ public class PVPArena extends JavaPlugin {
         return false;
     }
 
-    /*
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command cmd, final String alias, final String[] args) {
         return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
     }
-    */
 
     @Override
     public void onDisable() {

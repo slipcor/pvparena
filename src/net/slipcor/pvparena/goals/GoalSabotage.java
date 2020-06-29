@@ -89,7 +89,7 @@ public class GoalSabotage extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList(new String[0]);
+        final List<String> result = new ArrayList<>();
         if (arena != null) {
             for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();

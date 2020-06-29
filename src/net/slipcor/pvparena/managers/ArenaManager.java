@@ -185,6 +185,22 @@ public final class ArenaManager {
         return null;
     }
 
+    public static Arena getArenaByExactName(final String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+        final String sName = name.toLowerCase();
+        final Arena arena = ARENAS.get(sName);
+        if (arena != null) {
+            return arena;
+        }
+        return ARENAS.entrySet().stream()
+                .filter(e -> name.equalsIgnoreCase(e.getKey()))
+                .findFirst()
+                .map(Map.Entry::getValue)
+                .orElse(null);
+    }
+
     /**
      * search the arenas by location
      *
@@ -243,11 +259,7 @@ public final class ArenaManager {
      * @return a Set of Arena
      */
     public static Set<Arena> getArenas() {
-        final Set<Arena> arenas = new HashSet<>();
-        for (final Arena a : ARENAS.values()) {
-            arenas.add(a);
-        }
-        return arenas;
+        return new HashSet<>(ARENAS.values());
     }
 
     /**

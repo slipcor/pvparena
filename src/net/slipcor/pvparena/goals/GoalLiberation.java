@@ -80,9 +80,9 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList(new String[0]);
-        if (arena != null) {
-            for (final ArenaTeam team : arena.getTeams()) {
+        final List<String> result = new ArrayList<>();
+        if (this.arena != null) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "button");
             }

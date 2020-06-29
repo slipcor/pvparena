@@ -93,11 +93,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        List<String> result = Collections.singletonList("blocktype");
-        if (arena != null) {
-            result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        if (this.arena != null) {
             result.add("blocktype");
-            for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "block");
             }

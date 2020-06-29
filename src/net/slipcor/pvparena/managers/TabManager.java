@@ -18,6 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.bukkit.util.StringUtil.startsWithIgnoreCase;
 
 public final class TabManager {
     private TabManager() {}
@@ -38,7 +41,7 @@ public final class TabManager {
 
         if (arena == null) {
             // no proper arena yet
-            arena = ArenaManager.getArenaByName(args[0]);
+            arena = ArenaManager.getArenaByExactName(args[0]);
             if (arena == null && ArenaManager.getArenas().size() == 1) {
                 // still no arena, get the only arena!
                 arena = ArenaManager.getFirst();
@@ -69,10 +72,12 @@ public final class TabManager {
                     sender.sendMessage(Language.parse(Language.MSG.ERROR_ARENA_NOTFOUND, args[0]));
                     return new ArrayList<>(matches);
                 }
-                for (final Arena a : ArenaManager.getArenas()) {
-                    matches.add(a.getName());
-                }
-                return new ArrayList<>(matches);
+
+                final String search = args[0];
+                return ArenaManager.getArenas().stream()
+                        .filter(a -> startsWithIgnoreCase(a.getName(), search))
+                        .map(Arena::getName)
+                        .collect(Collectors.toList());
             }
         }
 
@@ -118,12 +123,12 @@ public final class TabManager {
         for (final IArenaCommandHandler ach : list) {
             if (ach.hasPerms(sender, arena)) {
                 for (final String value : ach.getMain()) {
-                    if (value.startsWith(prefix)) {
+                    if (startsWithIgnoreCase(value, prefix)) {
                         matches.add(value);
                     }
                 }
                 for (final String value : ach.getShort()) {
-                    if (value.startsWith(prefix)) {
+                    if (startsWithIgnoreCase(value, prefix)) {
                         matches.add(value);
                     }
                 }
@@ -140,7 +145,7 @@ public final class TabManager {
      */
     private static void addEnumMatchesToList(final List<String> result, final String key, final List<? extends Enum> list) {
         for (final Enum e : list) {
-            if (e.name().startsWith(key)) {
+            if (startsWithIgnoreCase(e.name(), key)) {
                 result.add(e.name());
             }
         }
@@ -220,7 +225,7 @@ public final class TabManager {
      */
     private static List<String> getKeyMatchesInsideDefinition(final String key, final String definition) {
         final List<String> result = new ArrayList<>();
-        if (key != null && !key.isEmpty() && definition.startsWith(key) || key != null && key.isEmpty() && !definition.startsWith("{")) {
+        if (key != null && (!key.isEmpty() && startsWithIgnoreCase(definition, key) || key.isEmpty() && !definition.startsWith("{"))) {
             result.add(definition);
         }
         if (definition.startsWith("{")) {
@@ -235,7 +240,7 @@ public final class TabManager {
                     }
                 } else if (key != null) {
                     for (final Player val : players) {
-                        if (val.getName().startsWith(key)) {
+                        if (startsWithIgnoreCase(val.getName(), key)) {
                             result.add(val.getName());
                         }
                     }
@@ -257,7 +262,7 @@ public final class TabManager {
                     result.addAll(values);
                 } else if (key != null) {
                     for (final String val : values) {
-                        if (val.startsWith(key)) {
+                        if (startsWithIgnoreCase(val, key)) {
                             result.add(val);
                         }
                     }
@@ -270,7 +275,7 @@ public final class TabManager {
                     }
                 } else if (key != null) {
                     for (final PotionEffectType val : pet) {
-                        if (val.getName().startsWith(key)) {
+                        if (startsWithIgnoreCase(val.getName(), key)) {
                             result.add(val.getName());
                         }
                     }

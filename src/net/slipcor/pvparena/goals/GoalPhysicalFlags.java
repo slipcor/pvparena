@@ -40,6 +40,8 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Optional.ofNullable;
 
@@ -100,7 +102,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList("flagtype", "flageffect", TOUCHDOWN);
+        final List<String> result = Stream.of("flagtype", "flageffect", TOUCHDOWN).collect(Collectors.toList());
         if (this.arena != null) {
             for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
