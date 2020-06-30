@@ -64,6 +64,7 @@ public class PAA_Region extends AbstractArenaCommand {
                 if (sender.getName().equals(selector)) {
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECTEXIT));
                     selector = null;
+                    activeSelections.remove(sender.getName());
                 } else {
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECT, arena.getName()));
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECT2));
