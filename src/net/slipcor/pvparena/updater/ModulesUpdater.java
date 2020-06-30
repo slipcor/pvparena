@@ -2,6 +2,9 @@ package net.slipcor.pvparena.updater;
 
 import com.google.gson.JsonObject;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.arena.Arena;
+import net.slipcor.pvparena.core.Language;
+import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,7 +57,7 @@ public class ModulesUpdater extends AbstractUpdater {
                 String filename = getFilenameFromJson(versionJson);
                 LOG.info("Downloading modules update...");
                 try {
-                    this.downloadAndUnpackModules(getDownloadUrlFromJson(versionJson), filename);
+                    downloadAndUnpackModules(getDownloadUrlFromJson(versionJson), filename);
                     String updateSuccess = getSuccessMessage(MSG.UPDATER_MODULES.toString(), onlineVersion);
                     LOG.info(updateSuccess);
                     this.updateMsgList.add(updateSuccess);
@@ -63,6 +66,26 @@ public class ModulesUpdater extends AbstractUpdater {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static void downloadModulePack(CommandSender sender) {
+        try {
+            URL githubApi = new URL(API_URL);
+            URLConnection connection = githubApi.openConnection();
+            JsonObject versionJson = getVersionJson(connection.getInputStream());
+            String onlineVersion = getOnlineVersionFromJson(versionJson);
+            String filename = getFilenameFromJson(versionJson);
+
+            Arena.pmsg(sender, Language.parse(MSG.UPDATER_DOWNLOADING, Language.parse(MSG.UPDATER_MODULES)));
+            downloadAndUnpackModules(getDownloadUrlFromJson(versionJson), filename);
+            String updateSuccess = getSuccessMessage(MSG.UPDATER_MODULES.toString(), onlineVersion);
+            LOG.info(updateSuccess);
+        } catch (IOException e) {
+            String errorMsg = Language.parse(MSG.UPDATER_DOWNLOAD_ERROR, Language.parse(MSG.UPDATER_MODULES));
+            Arena.pmsg(sender, errorMsg);
+            LOG.warning(errorMsg);
+            e.printStackTrace();
         }
     }
 
@@ -89,7 +112,7 @@ public class ModulesUpdater extends AbstractUpdater {
      * @param filename Packge file name
      * @throws IOException
      */
-    private void downloadAndUnpackModules(String downloadUrlStr, String filename) throws IOException {
+    private static void downloadAndUnpackModules(String downloadUrlStr, String filename) throws IOException {
         URL downloadUrl = new URL(downloadUrlStr);
         File dataFolder = PVPArena.instance.getDataFolder();
         File zipFile = new File(dataFolder, filename);
@@ -100,7 +123,7 @@ public class ModulesUpdater extends AbstractUpdater {
         FileOutputStream outputStream = new FileOutputStream(zipFile);
         outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
         outputStream.close();
-        deleteDirectory(this.getFilesFolder());
+        deleteDirectory(getFilesFolder());
         ZipUtil.unzip(zipFile, dataFolder);
         zipFile.delete();
     }
@@ -109,7 +132,7 @@ public class ModulesUpdater extends AbstractUpdater {
      * Returns PVP Arena "files" folder
      * @return "files" folder
      */
-    private File getFilesFolder() {
+    private static File getFilesFolder() {
         return new File(PVPArena.instance.getDataFolder().getPath() + "/files");
     }
 

@@ -213,9 +213,7 @@ public class PVPArena extends JavaPlugin {
         globalCommands.add(new PAA_Debug());
         globalCommands.add(new PAA_Duty());
         globalCommands.add(new PAI_Help());
-        globalCommands.add(new PAA_Install());
-        globalCommands.add(new PAA_Uninstall());
-        globalCommands.add(new PAA_Update());
+        globalCommands.add(new PAA_Modules());
         globalCommands.add(new PAI_ArenaList());
         globalCommands.add(new PAI_Version());
     }
@@ -458,9 +456,9 @@ public class PVPArena extends JavaPlugin {
 
         FileConfiguration cfg = getConfig();
         List<String> toDelete = cfg.getStringList("todelete");
-        if (toDelete != null){
+        if (!toDelete.isEmpty()){
             for (String jar : toDelete) {
-                PAA_Uninstall.remove(jar);
+                PAA_Modules.remove(jar);
             }
             cfg.set("todelete", null);
             saveConfig();

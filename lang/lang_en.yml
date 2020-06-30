@@ -627,6 +627,14 @@ nulang:
     clear: Inventories cleared!
   announce:
     arena: Arena is starting! Type /pa %1% to join!
+  updater:
+    plugin: PVP Arena
+    modules: PVP Arena modules pack
+    announce: '%1% %2% is now available ! Your version: %3%'
+    success: '%1% has been updated to %2%.'
+    restart: Restart your server to apply update.
+    downloading: 'Downloading %1%...'
+    downloaderror: 'Error while downloading %1%'
 lang:
   goal:
     blockdestroy:

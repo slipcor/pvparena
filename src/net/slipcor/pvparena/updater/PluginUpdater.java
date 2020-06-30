@@ -2,6 +2,7 @@ package net.slipcor.pvparena.updater;
 
 import com.google.gson.JsonObject;
 import net.slipcor.pvparena.PVPArena;
+import net.slipcor.pvparena.core.Language;
 import org.bukkit.Bukkit;
 
 import java.io.File;
@@ -56,7 +57,8 @@ public class PluginUpdater extends AbstractUpdater {
                 LOG.info("Downloading update...");
                 try {
                     downloadPlugin(getDownloadUrlFromJson(versionJson), filename);
-                    String updateSuccess = getSuccessMessage(MSG.UPDATER_PLUGIN.toString(), onlineVersion);
+                    String updateSuccess = getSuccessMessage(MSG.UPDATER_PLUGIN.toString(), onlineVersion) + " " +
+                            Language.parse(MSG.UPDATER_RESTART);
                     LOG.info(updateSuccess);
                     this.updateMsgList.add(updateSuccess);
                     this.planPluginRenaming(filename);

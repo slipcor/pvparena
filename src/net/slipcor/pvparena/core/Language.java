@@ -466,7 +466,10 @@ public final class Language {
         UPDATER_PLUGIN("nulang.updater.plugin", "PVP Arena"),
         UPDATER_MODULES("nulang.updater.modules", "PVP Arena modules pack"),
         UPDATER_ANNOUNCE("nulang.updater.announce", "%1% %2% is now available ! Your version: %3%"),
-        UPDATER_SUCCESS("nulang.updater.success", "%1% has been updated to %2%. Restart your server to apply update."),
+        UPDATER_SUCCESS("nulang.updater.success", "%1% has been updated to %2%."),
+        UPDATER_RESTART("nulang.updater.restart", "Restart your server to apply update."),
+        UPDATER_DOWNLOADING("nulang.updater.downloading", "Downloading %1%..."),
+        UPDATER_DOWNLOAD_ERROR("nulang.updater.downloaderror", "Error while downloading %1%"),
 
         WHITELIST_ADDED("nulang.whitelist.added", "Added &a%1%&r to &e%2%&r whitelist!"),
         WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelists cleared!"),
