@@ -53,6 +53,11 @@ public class PAI_ArenaList extends AbstractGlobalCommand {
     }
 
     @Override
+    public boolean hasVersionForArena() {
+        return true;
+    }
+
+    @Override
     public String getName() {
         return getClass().getName();
     }

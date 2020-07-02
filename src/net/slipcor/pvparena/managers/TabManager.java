@@ -7,7 +7,6 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
 import net.slipcor.pvparena.commands.AbstractGlobalCommand;
 import net.slipcor.pvparena.commands.CommandTree;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
@@ -20,6 +19,8 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.bukkit.util.StringUtil.startsWithIgnoreCase;
 
 public final class TabManager {
@@ -27,23 +28,20 @@ public final class TabManager {
 
     public static List<String> getMatches(final CommandSender sender, final List<AbstractArenaCommand> arenaCommands, final List<AbstractGlobalCommand> globalCommands, String[] args) {
         final Set<String> matches = new LinkedHashSet<>();
+        final String firstArg = args[0];
         Arena arena = null;
         if (sender instanceof Player) {
             arena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
         }
 
-        if (args.length < 1) {
-            for (final Arena a : ArenaManager.getArenas()) {
-                matches.add(a.getName());
-            }
-            return new ArrayList<>(matches);
-        }
-
         if (arena == null) {
-            // no proper arena yet
-            arena = ArenaManager.getArenaByExactName(args[0]);
+            // player is not inside an arena or in edit mode
+
+            arena = ArenaManager.getArenaByExactName(firstArg);
+
             if (arena == null && ArenaManager.getArenas().size() == 1) {
-                // still no arena, get the only arena!
+                // still no arena, get the only arena
+
                 arena = ArenaManager.getFirst();
                 // continue with one arg less
                 args = Arrays.copyOfRange(args, 1, args.length);
@@ -51,39 +49,36 @@ public final class TabManager {
                     // empty -> turn to catchall
                     args = new String[]{""};
                 }
+
             } else if (arena != null) {
-                // arena has been found
+                // first argument matches with an arena
+
                 if (args.length < 2) {
                     // return the exact arena name
-                    matches.add(arena.getName());
-                    return new ArrayList<>(matches);
+                    return singletonList(arena.getName());
                 } else {
-                    // we have more args!
+                    // if more args, we remove the first one (arena name)
                     args = Arrays.copyOfRange(args, 1, args.length);
                     if (args.length < 1) {
                         // empty -> turn to catchall
                         args = new String[]{""};
                     }
                 }
-            } else {
-                // arena has still not been found
-                if (args.length > 1) {
-                    // the sender has already entered the next thing without a valid arena
-                    sender.sendMessage(Language.parse(Language.MSG.ERROR_ARENA_NOTFOUND, args[0]));
-                    return new ArrayList<>(matches);
-                }
+            } else if(args.length == 1) {
+                // else, if only one arg, suggest arena names and global commands
 
-                final String search = args[0];
-                return ArenaManager.getArenas().stream()
-                        .filter(a -> startsWithIgnoreCase(a.getName(), search))
+                matches.addAll(ArenaManager.getArenas().stream()
+                        .filter(a -> startsWithIgnoreCase(a.getName(), firstArg))
                         .map(Arena::getName)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toList()));
+
+                addCommandsStartingWithPrefix(matches, sender, arena, globalCommands, firstArg);
+                return new ArrayList<>(matches);
             }
         }
 
         if (args.length == 1) {
             addCommandsStartingWithPrefix(matches, sender, arena, arenaCommands, args[0]);
-            addCommandsStartingWithPrefix(matches, sender, arena, globalCommands, args[0]);
 
             if (arena == null) {
                 addCommandsStartingWithPrefix(matches, sender, null, PVPArena.instance.getAgm().getAllGoals(), args[0]);
@@ -122,14 +117,17 @@ public final class TabManager {
     private static void addCommandsStartingWithPrefix(final Set<String> matches, final CommandSender sender, final Arena arena, final List<? extends IArenaCommandHandler> list, final String prefix) {
         for (final IArenaCommandHandler ach : list) {
             if (ach.hasPerms(sender, arena)) {
-                for (final String value : ach.getMain()) {
-                    if (startsWithIgnoreCase(value, prefix)) {
-                        matches.add(value);
+                if(prefix.startsWith("!") || prefix.startsWith("-")) {
+                    for (final String value : ach.getShort()) {
+                        if (startsWithIgnoreCase(value, prefix)) {
+                            matches.add(value);
+                        }
                     }
-                }
-                for (final String value : ach.getShort()) {
-                    if (startsWithIgnoreCase(value, prefix)) {
-                        matches.add(value);
+                } else {
+                    for (final String value : ach.getMain()) {
+                        if (startsWithIgnoreCase(value, prefix)) {
+                            matches.add(value);
+                        }
                     }
                 }
             }
@@ -231,7 +229,7 @@ public final class TabManager {
         if (definition.startsWith("{")) {
             if ("{Material}".equals(definition)) {
                 final Material[] mats = Material.values();
-                addEnumMatchesToList(result, key, Arrays.asList(mats));
+                addEnumMatchesToList(result, key, asList(mats));
             } else if ("{Player}".equals(definition)) {
                 final Collection<? extends Player> players = Bukkit.getOnlinePlayers();
                 if (key != null && key.isEmpty()) {
@@ -247,13 +245,13 @@ public final class TabManager {
                 }
             } else if ("{RegionProtection}".equals(definition)) {
                 final ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
-                addEnumMatchesToList(result, key, Arrays.asList(protections));
+                addEnumMatchesToList(result, key, asList(protections));
             } else if ("{RegionFlag}".equals(definition)) {
                 final ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
-                addEnumMatchesToList(result, key, Arrays.asList(flags));
+                addEnumMatchesToList(result, key, asList(flags));
             } else if ("{RegionType}".equals(definition)) {
                 final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
-                addEnumMatchesToList(result, key, Arrays.asList(types));
+                addEnumMatchesToList(result, key, asList(types));
             } else if ("{Boolean}".equals(definition)) {
                 final List<String> values = new ArrayList<>();
                 values.addAll(StringParser.negative);
@@ -282,7 +280,7 @@ public final class TabManager {
                 }
             } else if ("{EntityType}".equals(definition)) {
                 final EntityType[] entityTypes = EntityType.values();
-                addEnumMatchesToList(result, key, Arrays.asList(entityTypes));
+                addEnumMatchesToList(result, key, asList(entityTypes));
             }
         }
         return result;
@@ -299,7 +297,7 @@ public final class TabManager {
         if (definition.startsWith("{")) {
             if ("{Material}".equals(definition)) {
                 final Material[] mats = Material.values();
-                return getOverrideKey(key, definition, Arrays.asList(mats));
+                return getOverrideKey(key, definition, asList(mats));
             } else if ("{String}".equals(definition)) {
                 return definition;
             } else if ("{Player}".equals(definition)) {
@@ -312,13 +310,13 @@ public final class TabManager {
                 return key;
             } else if ("{RegionProtection}".equals(definition)) {
                 final ArenaRegion.RegionProtection[] protections = ArenaRegion.RegionProtection.values();
-                return getOverrideKey(key, definition, Arrays.asList(protections));
+                return getOverrideKey(key, definition, asList(protections));
             } else if ("{RegionFlag}".equals(definition)) {
                 final ArenaRegion.RegionFlag[] flags = ArenaRegion.RegionFlag.values();
-                return getOverrideKey(key, definition, Arrays.asList(flags));
+                return getOverrideKey(key, definition, asList(flags));
             } else if ("{RegionType}".equals(definition)) {
                 final ArenaRegion.RegionType[] types = ArenaRegion.RegionType.values();
-                return getOverrideKey(key, definition, Arrays.asList(types));
+                return getOverrideKey(key, definition, asList(types));
             } else if ("{Boolean}".equals(definition)) {
                 final List<String> values = new ArrayList<>();
                 values.addAll(StringParser.negative);
@@ -347,7 +345,7 @@ public final class TabManager {
                 return key;
             } else if ("{EntityType}".equals(definition)) {
                 final EntityType[] entityTypes = EntityType.values();
-                return getOverrideKey(key, definition, Arrays.asList(entityTypes));
+                return getOverrideKey(key, definition, asList(entityTypes));
             }
         }
         return key;

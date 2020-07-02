@@ -50,7 +50,7 @@ import java.util.List;
 public class PVPArena extends JavaPlugin {
     public static PVPArena instance;
 
-    private static Debug DEBUG;
+    private static Debug debugger;
 
     private ArenaGoalManager agm;
     private ArenaModuleManager amm;
@@ -206,15 +206,18 @@ public class PVPArena extends JavaPlugin {
         arenaCommands.add(new PAI_Shutup());
         arenaCommands.add(new PAG_Arenaclass());
         arenaCommands.add(new PAI_Info());
+        arenaCommands.add(new PAI_Stats());
     }
 
     private void loadGlobalCommands() {
         globalCommands.add(new PAA_Create());
         globalCommands.add(new PAA_Debug());
         globalCommands.add(new PAA_Duty());
-        globalCommands.add(new PAI_Help());
         globalCommands.add(new PAA_Modules());
+        globalCommands.add(new PAA_ReloadAll());
         globalCommands.add(new PAI_ArenaList());
+        globalCommands.add(new PAI_GlobalStats());
+        globalCommands.add(new PAI_Help());
         globalCommands.add(new PAI_Version());
     }
 
@@ -259,56 +262,9 @@ public class PVPArena extends JavaPlugin {
             }
         }
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
-        if (pacmd != null
-                && !(player.getArena() != null && pacmd.getName()
-                .contains("PAI_ArenaList"))) {
-            DEBUG.i("committing: " + pacmd.getName(), sender);
+        if (pacmd != null && !(player.getArena() != null && pacmd.hasVersionForArena())) {
+            debugger.i("committing: " + pacmd.getName(), sender);
             pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
-            return true;
-        }
-
-        if ("-s".equalsIgnoreCase(args[0]) || "stats".equalsIgnoreCase(args[0])) {
-            final PAI_Stats scmd = new PAI_Stats();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-            scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
-            return true;
-        }
-        if (args.length > 1
-                && (args[1].equalsIgnoreCase("-s") || args[1]
-                .equalsIgnoreCase("stats"))) {
-            final PAI_Stats scmd = new PAI_Stats();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-            scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
-                    StringParser.shiftArrayBy(args, 2));
-            return true;
-        }
-        if (args[0].equalsIgnoreCase("!rl")
-                || args[0].toLowerCase().contains("reload")) {
-            final PAA_Reload scmd = new PAA_Reload();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-
-            this.reloadConfig();
-
-            Language.init(getConfig().getString("language", "en"));
-            Help.init(getConfig().getString("language", "en"));
-
-            if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
-                Arena.pmsg(sender, Language.parse(MSG.RELOAD_YMLS_DONE));
-                return true;
-            }
-
-            final String[] emptyArray = new String[0];
-
-            for (Arena a : ArenaManager.getArenas()) {
-                scmd.commit(a, sender, emptyArray);
-            }
-
-            ArenaManager.load_arenas();
-            if (getConfig().getBoolean("use_shortcuts") ||
-                    getConfig().getBoolean("only_shortcuts")) {
-                ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
-            }
-
             return true;
         }
 
@@ -413,7 +369,7 @@ public class PVPArena extends JavaPlugin {
     public void onEnable() {
         shuttingDown = false;
         instance = this;
-        DEBUG = new Debug(1);
+        debugger = new Debug(1);
 
         //Enable bStats
         Metrics metrics = new Metrics(this);

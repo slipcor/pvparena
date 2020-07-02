@@ -210,7 +210,6 @@ nulang:
       enable: use the enable command
       gamemode: use the gamemode command
       goal: use the goal command
-      install: use the install command
       playerclass: use the playerclass command
       playerjoin: use the playerjoin command
       protection: use the protection command
@@ -231,8 +230,7 @@ nulang:
       teleport: use the teleport command
       template: use the template command
       togglemod: use the togglemod command
-      uninstall: use the uninstall command
-      update: use the update command
+      modules: use the modules command
       whitelist: use the whitelist command
       arenaclass: use the arenaclass command
       chat: use the chat command
