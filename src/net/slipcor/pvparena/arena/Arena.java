@@ -225,7 +225,7 @@ public class Arena {
             if (cfg.getBoolean(CFG.JOIN_FORCE)) {
                 region.initTimer();
             }
-        } else if (region.getType() == RegionType.WATCH) {
+        } else if (region.getType() == RegionType.WATCH || region.getType() == RegionType.LOUNGE) {
             region.initTimer();
         }
     }
