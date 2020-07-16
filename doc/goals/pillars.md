@@ -1,8 +1,10 @@
 # Pillars
-## Description
+
+## Description
 
 This activates pillars being defined by a wool block / pillar. People can then click/destroy them. Future versions will include actually physically bringing pillar blocks to your base to score
-## Setup
+
+## Setup
 
 You have to define pillars. Prepare a WOOL block, this will be the base of the pillar. This base will be the operational block and will react to:
 
@@ -28,7 +30,8 @@ Note that there are three kinds of pillars:
   - starts empty, only gives points to the team name contained, if claimed
   - naming: Any name not starting with the team name, containing pillar, and containing the team name that should NOT get points 
 
-## Config Settings
+
+## Config settings
 
 - announcetick (true) - should the score be publicly announced?
 - breakable (true) - should you break the base to unclaim and place to claim?
@@ -47,6 +50,7 @@ Note that there are three kinds of pillars:
 ## Supported Game Modes
 
 Only supports team game mode!
-## YouTube video
+
+## YouTube video
 
 [click me](http://www.youtube.com/watch?v=Xi7yNURxAjw)

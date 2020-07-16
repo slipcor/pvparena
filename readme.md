@@ -9,7 +9,7 @@
 
 ***
 [What is PVP Arena?](#What-is-PVP-Arena?) | [Dependencies](#Dependencies) | [Downloads](#Downloads) | 
-[Installation](#Installation) | [Documentation](#Documentation) | [Update Checker](#Update-Checker) | 
+[Installation](#Installation) | [Documentation](#Documentation) | [Support](#Support) | 
 [Telemetry](#Telemetry) | [Credits](#Credits)
 ***
 <br>
@@ -72,26 +72,21 @@ Place PVP Arena `.jar` file in the plugin repository of your server and restart.
 - [Regions](doc/regions.md)
 - [Goals](doc/goals.md)
 - [Modules](doc/modules.md)
-- [Items](doc/items.md)
+- [Items in config files](doc/items.md)
 - [Languages](doc/languages.md)
 - [Configuration](doc/configuration.md)
+- [Update checker](doc/update-checker.md)
+- [FAQ](doc/faq.md)
 
 ***
 
-## Update Checker
-If you wan't you can be informed of plugin or modules updates. Each release version was pushed on github since 1.14.0.
-The update checker will call the github APIs and announce an update to OPs on login. You can configure it to 
-automatically download updates.
+## Support
 
-```yaml
-    update:
-      plugin: announce
-      modules: announce
-    # valid values:
-    # download: download updates and announce when update is installed
-    # announce: only announce, do not download
-    # everything else will disable the update check
-```
+You can contact us to ask your questions or just discuss, you can go here:
+- <img src="https://www.spigotmc.org/favicon.ico" height="16"></img> [Spigot Forums](https://www.spigotmc.org/threads/pvp-arena.113406/)
+- <img src="https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico" height="16"></img> [Discord server](https://discord.gg/KsXG2By)
+
+To report issues and make suggestion, please use our [Github issues page](https://github.com/Eredrim/pvparena/issues).
 
 ***
 

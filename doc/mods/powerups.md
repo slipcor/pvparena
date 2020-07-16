@@ -13,7 +13,7 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 
 ## Setup
 
-Sorry, but you have to add a freaking block to your arena config under `module.powerups.items`. Eg:
+Sorry, but you have to add a freaking block to your arena config under `module.powerups.items`. E.g.:
 
 ```yaml
 items:

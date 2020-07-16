@@ -1,8 +1,8 @@
 # Domination
 
-## Description
+> ℹ This goal is designed for **team** gamemode
 
-Domination is designed to use teams. As always, it defaults to red and blue. 
+## Description
 
 The game is simple :
 
@@ -36,10 +36,10 @@ Given that flag must be able to change color, you can use the following blocks a
 * WHITE_TERRACOTTA
 * WHITE_WALL_BANNER
 
-It suggest you to try glass block with a beacon bottom the flag. When flag will be claimed, glass blocks will change its
+I suggest you to try glass block with a beacon bottom the flag. When flag will be claimed, glass blocks will change its
 color, altering beacon light ray in the same time :wink:
 
-## Config Settings  
+## Config settings  
 
 - spamoffset => after how many updates should the arena announce? (default: 3)
 - claimrange => how near need players to be? (default: 3)
@@ -49,11 +49,9 @@ color, altering beacon light ray in the same time :wink:
 - tickinterval => the amount of ticks to wait before doing an update. (default: 60 = 3 seconds)
 - tickreward => the amount of points to give for each score. (default: 1)
 
-## Warnings
+<br>
 
-This game mode has to check for player's position. Based on the player count this can lag your server. 
-But, how else should I determine a claimed flag? :p
+> ⚙ **Technical precision:**  
+> This goal has to check for player's position. Based on the player and checkpoint count this can lag your server. 
+> Unfortunately, there is no other way to determine a claimed checkpoint.
 
-## YouTube video (legacy)
-
-[click me](http://www.youtube.com/watch?v=Xi7yNURxAjw)

@@ -1,5 +1,4 @@
-
-## Getting Started
+# Getting Started
 
 <br>
 
@@ -9,7 +8,7 @@
 > 
 
 
-### Foreword: what's an arena?
+## Foreword: what's an arena?
 
 Before creating your first arena, you have to understand what's.  
 Arena is immaterial, it's a game configuration you create with goals, teams, classes, etc. It references your arena
@@ -20,7 +19,7 @@ another place, don't destroy it, just redefine your spawn points and your region
 
 <br>
 
-### 1. Create the arena
+## 1. Create the arena
 
 Just type this command to create your arena:
 
@@ -29,12 +28,13 @@ Just type this command to create your arena:
 By default your arena will work with a team system. If you add the `free` option, your arena will work on a *Free for
 all* (FFA) game mode.
 
-> **🚩 Tip:** This parameter can be changed using [/pa gamemode](commands/gamemode.md) command or in your config file by 
+> **🚩 Tip:**  
+> This parameter can be changed using [/pa gamemode](commands/gamemode.md) command or in your config file by 
 > setting `general.type` parameter to `free` or `none`. 
 
 <br>
 
-### 2. Set goals for the arena
+## 2. Set goals for the arena
 
 By default, your arena will use [TeamLives](goals/teamlives.md) goal if your arena is in team mode and 
 [PlayerLives](goals/playerlives.md) goal otherwise. If you're ok with this, go to the next point, otherwise please
@@ -43,11 +43,16 @@ continue reading.
 You can choose a custom goal [in the list](goals.md) and set it for your arena with the command:
 `/pa [arenaName] goal [goalName]`
 
+Each goal has its own setup, so take the time to read [documentation](goals.md) of the goal you want to use.
+
 You will find more information about this command [on this link](commands/goal.md).
+
+> **Reminder:**  
+> Don't forget to remove _TeamLives_ goal if you don't use it 😉
 
 <br>
 
-### 3. Set spawn points
+## 3. Set spawn points
 
 Now you have to create game spawn points by using this command:  
 `/pa [arenaName] spawn [spawnType]`
@@ -68,7 +73,7 @@ By default you need: 4 spawns (spawn1, spawn2, spawn3, spawn4) / 1 lounge / 1 sp
 
 <br>
 
-### 4. Create the battle region
+## 4. Create the battle region
 
 > *This step is optional but really useful in mostly configurations*
 
@@ -92,7 +97,7 @@ Finally, specify your region type :
 
 <br>
 
-### 5. Place required items in the lounge
+## 5. Place required items in the lounge
 
 By default, four classes already exist : Swordsman, Tank, Pyro and Ranger.  
 You can chose to keep these classes or create new ones with the the [class command](commands/class.md).
@@ -111,10 +116,11 @@ are ready.
 
 <br>
 
-### 6. Join the arena!
+## 6. Join the arena!
 
 Your first arena was created! Join the game with:
 
 `/pa [arenaName] (join) (teamName)`
 
-> **🚩 Tip:** If you just type `/pa [arenaName]` your team will be randomly selected.
+> **🚩 Tip:**  
+> If you just type `/pa [arenaName]` your team will be randomly selected.

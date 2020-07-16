@@ -2,26 +2,30 @@
 
 ## Description
 
-Set up regions for an arena. Oh, and show their borders. ... and set some WIP values
+Manage regions for an arena. More information is available [on dedicated page](../regions.md).
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa free region         | start setting up a region for the arena "free"
-/pa free !r ball        | save the cuboid region "ball" to the arena "free"
-/pa ctf !r X spher      | save the spheric region "X" to the arena "ctf"
-/pa ctf !r remove X     | remove the region "X" from the arena "ctf"
-/pa free !r ball border | shows the border around the region "ball" of the arena "free"
+/pa [arena] region      | start setting up a region for an arena (type again to leave region editor)
+/pa [arena] region [regionName] (shape) | save a region for the arena. Cuboid is the default shape
+/pa [arena] region [regionName] remove | remove an arena region
+/pa [arena] region [regionName] border | show limits of a region
 
+Example:
+- `/pa free !r ball` - save the cuboid region "ball" to the arena "free"
+- `/pa ctf !r X remove` - remove the region "X" from the arena "ctf"
 ## Details
+If we have to sum up, setting up an arena needs 3 things:
 
-For a better display of HOW to setup regions, you might want to check out our tutorial section.
-Setting up an arena needs 3 things:
+- `/pa [arenaname] region`
+- select two points that define the region
+- `/pa [arenaname] region [regionshape]`
 
-`/pa [arenaname] region`
-select two points that define the region
-`/pa [arenaname] region [regionshape]` 
+Check out [our tutorial section](../regions.md) for more information.
+
+<br> 
 
 Valid regionshapes include:
  

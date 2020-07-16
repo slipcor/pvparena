@@ -2,14 +2,16 @@
 
 ## Description
 
-This command displays a list of arena regions / their properties.
+This command displays a list of arena [regions](../regions.md) / their properties.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa free regions  | list all arena regions of "free", and their shape and type
-/pa free !rs ball | debug print properties of the region "ball" of the arena "free"
+/pa [arena] regions | list all regions of an arena
+/pa [arena] regions [region] | display properties of a given arena region
+
+Example: `/pa free !rs ball` - print properties of the region "ball" of the arena "free"
 
 ## Details
 

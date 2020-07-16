@@ -1,7 +1,11 @@
+# Items in configuration files
 
-If you are brave, you can set items for inventories or enhancements directly in 
-arena config files. It's quite verbose but not really hard. If you aren't at ease with YAML
-config files, please use [/pa class](commands/class.md) commands.
+With PvPArena, all your arena configuration is stored in a [dedicated config file](configuration.md). For some reasons, 
+it could be useful to check it or edit it directly. This document will try to explain how you can edit list of items 
+for inventories or enhancements directly in arena config files. 
+
+This is an **advanced level** tutorial, so if you aren't at ease with YAML config files, please use 
+[/pa class](commands/class.md) and [/pa set](commands/set.md) commands.
 
 JavaDoc : [Bukkit Material ENUMs](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
 

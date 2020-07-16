@@ -1,13 +1,16 @@
-## PVP Arena Modules
+# PVP Arena Modules
 
-### Installation
+## About
 
-Unzip the module files (files tab, "PA Files v\*.\*.\*") into the /pvparena/files folder and install them via
-`/pa install [modname]`, **activate per arena via**
-`/pa [arenaname] !tm [modname]`
+PvPArena modules are ways to enhance your arenas. They could modify a lot of things like configuration, fights, classes 
+or spectating...
 
+To manage your arena mods (download, install, remove, etc), please check [documentation](commands/modules.md) of 
+`/pa modules` command.
 
-### PVP Arena Mods
+To enable a module for an arena, use [`/pa togglemod`](commands/togglemod.md) command.
+
+## PVP Arena Mods
 
 Hook into many different aspects of the game!
 
@@ -66,4 +69,4 @@ PVP Arena exists since 2011 and Minecraft servers evolution make modules follow-
 updates will be to make a great check-up of all of them and fix all eventual issues.
 
 Anyway, don't hesitate to test legacy modules by yourself, a big part of them work normally or have trivial issues. Obviously
-if you encounter one, you can report it 😉
+if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/issues) 😉

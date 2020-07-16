@@ -1,20 +1,19 @@
 # Tank
-## Description
 
-This is a simple round. One random tank is assigned, he has special gear and it's everyone against that tank. Either the tank wins by killing everyone else, or the rest wins by killing the tank.
+> ℹ This goal is designed for **free** gamemode
 
-You can optionally give a special gear to the tank, set the class "%tank%"
-## Setup
+## Description
 
-A special "tank" spawn has to be set. You know how to do that, right? `/pa [arena] spawn tank`
-## Config Settings
+One random tank is assigned, he has special gear and, everyone is against them. 
+Either the tank wins by killing everyone else, or the rest wins by killing the tank.
 
-- tank.tlives \- the amount of lives players and the tank have before being removed 
+## Setup
 
-## Warnings
+A special "tank" spawn has to be set. Just type [`/pa [arena] spawn tank`](../commands/spawn.md).
 
-\-
+Optionally, you can give a special gear to the tank by [setting the class](../commands/class.md) `%tank%`.
 
-## Supported Game Modes
+## Config settings
 
-Only supports free game mode!
+- `tank.tlives` \- the amount of lives players and the tank have before being removed (default: 1)
+

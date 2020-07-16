@@ -4,10 +4,11 @@
 
 This command forces a player/team to win.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa test !fw slipcor | Make **slipcor** the winner in the **"test"** arena
-/pa temp forcewin red | Make team **red** the winner in the **"temp"** arena
+/pa [arena] forcewin [player/team] | Force a player or a team to win
+
+Example: `/pa temp forcewin red` - Make team **red** the winner in the **"temp"** arena
 

@@ -1,22 +1,27 @@
 # BlockDestroy
-## Description
 
-This activates Blocks (to set), per team. Simply break the block of another team to remove a team life!
+> ℹ This goal is designed for **team** gamemode
+
+## Description
+
+Each team have to destroy the block of opponent team(s). Blocks have lives, therefore when a block a no longer life, 
+its team is eliminated.
 
 ## Setup
 
-Blocks have to be added. In order to do that, use `/pa [arenaname] [teamname]block`. This enables setting. 
-Do this by clicking the block type (IRON_BLOCK by default)
+Firstly, make sure the `blockType` parameter is set as you want.
 
-## Config Settings
+If so, you can register destroyable blocks in your arena config.
+In order to do that, use `/pa [arenaname] [teamname]block`. This will enable the selection mode. 
+Then left-click of the chosen block (that has to be of the defined block type).
 
-- blockType \- the material checked for blocks (default: IRON_BLOCK)
-- bdlives \- the maximum count of blocks/block destructions a team needs to win 
+## Config settings
 
-## Supported Game Modes
+- `blockType` - the material checked for blocks (default: IRON_BLOCK)
+- `bdlives` - the maximum count of blocks/block destructions a team needs to win (default: 1)
 
-Only supports team game mode!
+<br>
 
-## YouTube video
-
-[click me](http://www.youtube.com/watch?v=ntloY1BTKHQ)
+> 🚩 **Tip:**  
+> If you choose a colorable block (like RED_WOOL or WHITE_CONCRETE) all its variants will be supported. So you will be
+> able, for instance, to set a red block for one team and a blue block for the other one.

@@ -4,12 +4,13 @@
 
 This command disables arenas, force stopping them in the first place.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa test disable | disable the "test" arena
-/pa temp disable | disable the "temp" arena
+/pa [arena] disable | disable an arena
+
+Example: `/pa test disable` - disable the "test" arena
 
 ## Details
 
