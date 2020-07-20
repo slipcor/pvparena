@@ -2343,10 +2343,11 @@ public class Arena {
                     }
                 } else {
                     for (ArenaTeam team : this.getTeams()) {
-                        ArenaPlayer randomTeamPlayer = team.getTeamMembers().iterator().next();
-                        currentScoreboard.getObjective("lives")
+                        team.getTeamMembers().stream().findFirst().ifPresent(randomTeamPlayer ->
+                            currentScoreboard.getObjective("lives")
                                 .getScore(team.getName())
-                                .setScore(PACheck.handleGetLives(this, randomTeamPlayer));
+                                .setScore(PACheck.handleGetLives(this, randomTeamPlayer))
+                        );
                     }
                     for (ArenaPlayer ap : this.getEveryone()) {
                         Player player = ap.get();
@@ -2382,25 +2383,33 @@ public class Arena {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
                 board.getTeam(oldTeam.getName()).removeEntry(player.getName());
 
-                for (final Team sTeam : board.getTeams()) {
-                    if (sTeam.getName().equals(newTeam.getName())) {
-                        sTeam.addEntry(player.getName());
-                        return;
-                    }
-                }
+                Team sTeam = board.getTeams().stream()
+                        .filter(t -> t.getName().equals(newTeam.getName()))
+                        .findFirst()
+                        .orElseGet(() -> this.addNewTeam(board, newTeam));
+                sTeam.addEntry(player.getName());
+
                 this.updateScoreboard(player);
             }, 1L);
         } else {
             Scoreboard board = this.getStandardScoreboard();
             board.getTeam(oldTeam.getName()).removeEntry(player.getName());
 
-            for (final Team sTeam : board.getTeams()) {
-                if (sTeam.getName().equals(newTeam.getName())) {
-                    sTeam.addEntry(player.getName());
-                    return;
-                }
-            }
+            Team sTeam = board.getTeams().stream()
+                    .filter(t -> t.getName().equals(newTeam.getName()))
+                    .findFirst()
+                    .orElseGet(() -> this.addNewTeam(board, newTeam));
+            sTeam.addEntry(player.getName());
         }
+    }
+
+    private Team addNewTeam(Scoreboard board, ArenaTeam newTeam) {
+        final Team sTeam = board.registerNewTeam(newTeam.getName());
+        sTeam.setPrefix(newTeam.getColor().toString());
+        sTeam.setSuffix(ChatColor.RESET.toString());
+        sTeam.setColor(newTeam.getColor());
+        sTeam.setCanSeeFriendlyInvisibles(!this.isFreeForAll());
+        return sTeam;
     }
 
     public YamlConfiguration getLanguage() {
