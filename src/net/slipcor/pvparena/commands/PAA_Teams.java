@@ -8,9 +8,9 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -71,10 +71,10 @@ public class PAA_Teams extends AbstractArenaCommand {
         } else if ("add".equals(args[0])) {
             try {
 
-                final DyeColor dColor = DyeColor.valueOf(args[2].toUpperCase());
-                final ArenaTeam newTeam = new ArenaTeam(args[1], dColor.name());
+                final ChatColor color = ChatColor.valueOf(args[2].toUpperCase());
+                final ArenaTeam newTeam = new ArenaTeam(args[1], color.name());
                 arena.getTeams().add(newTeam);
-                arena.getArenaConfig().setManually("teams." + newTeam.getName(), dColor.name());
+                arena.getArenaConfig().setManually("teams." + newTeam.getName(), color.name());
                 arena.getArenaConfig().save();
 
                 arena.msg(sender, Language.parse(arena, MSG.TEAMS_ADD, newTeam.getColoredName()));
@@ -128,7 +128,9 @@ public class PAA_Teams extends AbstractArenaCommand {
         }
         for (final String team : arena.getTeamNames()) {
             result.define(new String[]{"remove", team});
-            result.define(new String[]{"set", team});
+            Arrays.stream(ChatColor.values()).forEach(color ->
+                    result.define(new String[]{"set", team, color.name()})
+            );
         }
         return result;
     }
