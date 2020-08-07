@@ -89,7 +89,7 @@ public class PAA_Region extends AbstractArenaCommand {
             region.getShape().showBorder((Player) sender);
             return;
         }
-        if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
+        if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
             // usage: /pa {arenaname} region remove [regionname] | remove a region
             final ArenaRegion region = arena.getRegion(args[1]);
 
