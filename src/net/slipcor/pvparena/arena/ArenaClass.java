@@ -6,6 +6,7 @@ import net.slipcor.pvparena.core.Debug;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -127,12 +128,10 @@ public final class ArenaClass {
             ItemStack[] armors;
 
             try {
-                items = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items"));
-                offHand = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items"))[0];
-                armors = getItemStacksFromConfig(cfg.getConfigurationSection("classes").getConfigurationSection(className)
-                        .getList("items"));
+                ConfigurationSection classesCfg = cfg.getConfigurationSection("classes").getConfigurationSection(className);
+                items = getItemStacksFromConfig(classesCfg.getList("items"));
+                offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
+                armors = getItemStacksFromConfig(classesCfg.getList("items"));
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
@@ -195,8 +194,15 @@ public final class ArenaClass {
     }
 
     public static void equip(final Player player, final ItemStack[][] itemArray) {
-        player.getInventory().setItemInOffHand(itemArray[1][0]);
-        player.getInventory().setArmorContents(itemArray[2]);
+        try {
+            player.getInventory().setItemInOffHand(itemArray[1][0]);
+        } catch(ArrayIndexOutOfBoundsException e) {
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        }
+
+        for(ItemStack itemStack : itemArray[2]) {
+            equipArmor(itemStack, player.getInventory());
+        }
 
         for (final ItemStack item : itemArray[0]) {
             if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
