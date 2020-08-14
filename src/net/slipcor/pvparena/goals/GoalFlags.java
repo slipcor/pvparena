@@ -333,9 +333,8 @@ public class GoalFlags extends ArenaGoal implements Listener {
                     }
                     this.applyEffects(player);
 
-                    this.takeFlag(new PABlockLocation(block.getLocation()));
-                    this.getFlagMap().put(aTeam, player.getName()); // TODO move to
-                    // "commit" ?
+                    this.takeFlag(new PABlockLocation(vFlag.toLocation(block.getWorld())));
+                    this.getFlagMap().put(aTeam, player.getName());
 
                     return res;
                 }
