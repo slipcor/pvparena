@@ -51,6 +51,7 @@ public class PVPArena extends JavaPlugin {
     public static PVPArena instance;
 
     private static Debug debugger;
+    private static final int BSTATS_PLUGIN_ID = 5067;
 
     private ArenaGoalManager agm;
     private ArenaModuleManager amm;
@@ -372,7 +373,7 @@ public class PVPArena extends JavaPlugin {
         debugger = new Debug(1);
 
         //Enable bStats
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
 
         saveDefaultConfig();
         if (!getConfig().contains("shortcuts")) {
