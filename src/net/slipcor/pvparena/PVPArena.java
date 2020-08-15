@@ -6,15 +6,22 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.*;
+import net.slipcor.pvparena.core.Debug;
+import net.slipcor.pvparena.core.Help;
+import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.listeners.BlockListener;
 import net.slipcor.pvparena.listeners.EntityListener;
 import net.slipcor.pvparena.listeners.InventoryListener;
 import net.slipcor.pvparena.listeners.PlayerListener;
-import net.slipcor.pvparena.loadables.*;
+import net.slipcor.pvparena.loadables.ArenaGoalManager;
+import net.slipcor.pvparena.loadables.ArenaModule;
+import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.loadables.ArenaRegionShapeManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.StatisticsManager;
+import net.slipcor.pvparena.managers.TabManager;
 import net.slipcor.pvparena.updater.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -43,7 +50,8 @@ import java.util.List;
 public class PVPArena extends JavaPlugin {
     public static PVPArena instance;
 
-    private static Debug DEBUG;
+    private static Debug debugger;
+    private static final int BSTATS_PLUGIN_ID = 5067;
 
     private ArenaGoalManager agm;
     private ArenaModuleManager amm;
@@ -199,17 +207,18 @@ public class PVPArena extends JavaPlugin {
         arenaCommands.add(new PAI_Shutup());
         arenaCommands.add(new PAG_Arenaclass());
         arenaCommands.add(new PAI_Info());
+        arenaCommands.add(new PAI_Stats());
     }
 
     private void loadGlobalCommands() {
         globalCommands.add(new PAA_Create());
         globalCommands.add(new PAA_Debug());
         globalCommands.add(new PAA_Duty());
-        globalCommands.add(new PAI_Help());
-        globalCommands.add(new PAA_Install());
-        globalCommands.add(new PAA_Uninstall());
-        globalCommands.add(new PAA_Update());
+        globalCommands.add(new PAA_Modules());
+        globalCommands.add(new PAA_ReloadAll());
         globalCommands.add(new PAI_ArenaList());
+        globalCommands.add(new PAI_GlobalStats());
+        globalCommands.add(new PAI_Help());
         globalCommands.add(new PAI_Version());
     }
 
@@ -254,56 +263,9 @@ public class PVPArena extends JavaPlugin {
             }
         }
         final ArenaPlayer player = ArenaPlayer.parsePlayer(sender.getName());
-        if (pacmd != null
-                && !(player.getArena() != null && pacmd.getName()
-                .contains("PAI_ArenaList"))) {
-            DEBUG.i("committing: " + pacmd.getName(), sender);
+        if (pacmd != null && !(player.getArena() != null && pacmd.hasVersionForArena())) {
+            debugger.i("committing: " + pacmd.getName(), sender);
             pacmd.commit(sender, StringParser.shiftArrayBy(args, 1));
-            return true;
-        }
-
-        if ("-s".equalsIgnoreCase(args[0]) || "stats".equalsIgnoreCase(args[0])) {
-            final PAI_Stats scmd = new PAI_Stats();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-            scmd.commit(null, sender, StringParser.shiftArrayBy(args, 1));
-            return true;
-        }
-        if (args.length > 1
-                && (args[1].equalsIgnoreCase("-s") || args[1]
-                .equalsIgnoreCase("stats"))) {
-            final PAI_Stats scmd = new PAI_Stats();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-            scmd.commit(ArenaManager.getIndirectArenaByName(sender, args[0]), sender,
-                    StringParser.shiftArrayBy(args, 2));
-            return true;
-        }
-        if (args[0].equalsIgnoreCase("!rl")
-                || args[0].toLowerCase().contains("reload")) {
-            final PAA_Reload scmd = new PAA_Reload();
-            DEBUG.i("committing: " + scmd.getName(), sender);
-
-            this.reloadConfig();
-
-            Language.init(getConfig().getString("language", "en"));
-            Help.init(getConfig().getString("language", "en"));
-
-            if (args.length > 1 && args[1].equalsIgnoreCase("ymls")) {
-                Arena.pmsg(sender, Language.parse(MSG.RELOAD_YMLS_DONE));
-                return true;
-            }
-
-            final String[] emptyArray = new String[0];
-
-            for (Arena a : ArenaManager.getArenas()) {
-                scmd.commit(a, sender, emptyArray);
-            }
-
-            ArenaManager.load_arenas();
-            if (getConfig().getBoolean("use_shortcuts") ||
-                    getConfig().getBoolean("only_shortcuts")) {
-                ArenaManager.readShortcuts(getConfig().getConfigurationSection("shortcuts"));
-            }
-
             return true;
         }
 
@@ -367,20 +329,14 @@ public class PVPArena extends JavaPlugin {
                 break;
             }
         }
-        if (paacmd == null
-                && PACheck.handleCommand(tempArena, sender, newArgs)) {
+        if (paacmd == null && PACheck.handleCommand(tempArena, sender, newArgs)) {
             return true;
         }
 
-        if (paacmd == null
-                && tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN)) {
+        if (paacmd == null && tempArena.getArenaConfig().getBoolean(CFG.CMDS_DEFAULTJOIN) && args.length == 1) {
             paacmd = new PAG_Join();
-            if (newArgs.length > 1) {
-                newArgs = StringParser.shiftArrayBy(newArgs, 1);
-            }
-            tempArena.getDebugger()
-                    .i("committing: " + paacmd.getName(), sender);
-            paacmd.commit(tempArena, sender, newArgs);
+            tempArena.getDebugger().i("committing: " + paacmd.getName(), sender);
+            paacmd.commit(tempArena, sender, new String[0]);
             return true;
         }
 
@@ -396,18 +352,15 @@ public class PVPArena extends JavaPlugin {
         return false;
     }
 
-    /*
     @Override
     public List<String> onTabComplete(final CommandSender sender, final Command cmd, final String alias, final String[] args) {
         return TabManager.getMatches(sender, arenaCommands, globalCommands, args);
     }
-    */
 
     @Override
     public void onDisable() {
         shuttingDown = true;
         ArenaManager.reset(true);
-        Tracker.stop();
         Debug.destroy();
         this.getUpdateChecker().runOnDisable();
         Language.logInfo(MSG.LOG_PLUGIN_DISABLED, getDescription().getFullName());
@@ -417,10 +370,10 @@ public class PVPArena extends JavaPlugin {
     public void onEnable() {
         shuttingDown = false;
         instance = this;
-        DEBUG = new Debug(1);
+        debugger = new Debug(1);
 
         //Enable bStats
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, BSTATS_PLUGIN_ID);
 
         saveDefaultConfig();
         if (!getConfig().contains("shortcuts")) {
@@ -460,9 +413,9 @@ public class PVPArena extends JavaPlugin {
 
         FileConfiguration cfg = getConfig();
         List<String> toDelete = cfg.getStringList("todelete");
-        if (toDelete != null){
+        if (!toDelete.isEmpty()){
             for (String jar : toDelete) {
-                PAA_Uninstall.remove(jar);
+                PAA_Modules.remove(jar);
             }
             cfg.set("todelete", null);
             saveConfig();
@@ -479,7 +432,6 @@ public class PVPArena extends JavaPlugin {
         Help.init(getConfig().getString("language", "en"));
 
         StatisticsManager.initialize();
-        ArenaPlayer.initiate();
 
         getServer().getPluginManager()
                 .registerEvents(new BlockListener(), this);
@@ -506,13 +458,6 @@ public class PVPArena extends JavaPlugin {
         }
 
         updateChecker = new UpdateChecker(this.getFile());
-
-        if (ArenaManager.count() > 0) {
-            if (PVPArena.instance.getConfig().getBoolean("tracker", true)) {
-                final Tracker trackMe = new Tracker();
-                trackMe.start();
-            }
-        }
 
         Language.logInfo(MSG.LOG_PLUGIN_ENABLED, getDescription().getFullName());
     }

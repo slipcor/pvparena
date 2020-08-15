@@ -7,11 +7,10 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Utils;
 import org.bukkit.*;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class CircleParticleRunnable implements Runnable {
-    private Map<Location, String> flagMap = new HashMap<>();
+    private Map<Location, String> flagMap;
     private final Arena arena;
     private double radius;
     private int i = 0;
@@ -24,7 +23,7 @@ public class CircleParticleRunnable implements Runnable {
 
     private Color getDustColor(Location flagLocation) {
         if(this.flagMap.containsKey(flagLocation)) {
-            ChatColor teamColor = this.arena.getTeam(flagMap.get(flagLocation)).getColor();
+            ChatColor teamColor = this.arena.getTeam(this.flagMap.get(flagLocation)).getColor();
             return ColorUtils.getDyeColorFromChatColor(teamColor).getColor();
         }
         return Color.WHITE;
@@ -33,16 +32,16 @@ public class CircleParticleRunnable implements Runnable {
     @Override
     public void run() {
 
-        for (PABlock spawn : arena.getBlocks()) {
+        for (PABlock spawn : this.arena.getBlocks()) {
             if (spawn.getName().startsWith("flag") || spawn.getName().startsWith("beacon")) {
                 final Location flagCenter = Utils.getCenteredLocation(spawn.getLocation().toLocation());
-                final double x = flagCenter.getX() + radius * Math.cos(Math.toRadians(i));
+                final double x = flagCenter.getX() + this.radius * Math.cos(Math.toRadians(this.i));
                 final double y = flagCenter.getY();
-                final double z = flagCenter.getZ() + radius * Math.sin(Math.toRadians(i));
+                final double z = flagCenter.getZ() + this.radius * Math.sin(Math.toRadians(this.i));
 
                 final Color dustColor = this.getDustColor(spawn.getLocation().toLocation());
 
-                Bukkit.getWorld(arena.getWorld()).spawnParticle(
+                Bukkit.getWorld(this.arena.getWorld()).spawnParticle(
                         Particle.REDSTONE,
                         x, y, z,
                         0, // count
@@ -53,10 +52,10 @@ public class CircleParticleRunnable implements Runnable {
             }
         }
 
-        i += 10;
+        this.i += 10;
 
-        if (i >= 360) {
-            i = 0;
+        if (this.i >= 360) {
+            this.i = 0;
         }
     }
 }

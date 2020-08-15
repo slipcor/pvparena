@@ -35,12 +35,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -219,7 +225,7 @@ public class Arena {
             if (cfg.getBoolean(CFG.JOIN_FORCE)) {
                 region.initTimer();
             }
-        } else if (region.getType() == RegionType.WATCH) {
+        } else if (region.getType() == RegionType.WATCH || region.getType() == RegionType.LOUNGE) {
             region.initTimer();
         }
     }
@@ -410,15 +416,9 @@ public class Arena {
      * hand over everyone being part of the arena
      */
     public Set<ArenaPlayer> getEveryone() {
-
-        final Set<ArenaPlayer> players = new HashSet<>();
-
-        for (final ArenaPlayer ap : ArenaPlayer.getAllArenaPlayers()) {
-            if (equals(ap.getArena())) {
-                players.add(ap);
-            }
-        }
-        return players;
+        return ArenaPlayer.getAllArenaPlayers().stream()
+                .filter(ap -> this.equals(ap.getArena()))
+                .collect(Collectors.toSet());
     }
 
     /**
@@ -529,90 +529,63 @@ public class Arena {
     }
 
     private Scoreboard getSpecialScoreboard() {
-        if (scoreboard == null) {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-/*
-            Objective oBM = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.BELOW_NAME);
-            if (oBM != null) {
-                oBM = scoreboard.registerNewObjective(oBM.getCriteria(), oBM.getDisplayName());
-                oBM.setDisplaySlot(DisplaySlot.BELOW_NAME);
+        if (this.scoreboard == null) {
+            this.scoreboard = this.getCommonScoreboard(true);
 
-            }
+            // length = 18 without arena name
+            String sbHeaderPrefix = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW;
+            String sbHeaderName = sbHeaderPrefix + this.getName();
 
-            Objective oTB = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.PLAYER_LIST);
-            if (oTB != null) {
-                oTB = scoreboard.registerNewObjective(oTB.getCriteria(), oTB.getDisplayName());
-                oTB.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-            }
-*/
-            for (final ArenaTeam team : getTeams()) {
-
-                try {
-                    scoreboard.registerNewTeam(team.getName());
-                    final Team bukkitTeam = scoreboard.getTeam(team.getName());
-                    if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
-                        bukkitTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                    }
-                    bukkitTeam.setPrefix(team.getColor().toString());
-                    bukkitTeam.setSuffix(ChatColor.RESET.toString());
-                    bukkitTeam.setColor(team.getColor());
-                    bukkitTeam.addEntry(team.getName());
-                    bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
-
-                    bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
-                } catch (final Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (scoreboard.getObjective("lives") != null) {
-                scoreboard.getObjective("lives").unregister();
-                if (scoreboard.getObjective(DisplaySlot.SIDEBAR) != null) {
-                    scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
-                }
-            }
-
-
-
-            String name = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + getName();
-
-            if (name.length() > 32) {
-                if (prefix.length() < getName().length()) {
-                    name = ChatColor.GREEN + "PVP Arena" + ChatColor.RESET + " - " + ChatColor.YELLOW + prefix;
+            if (sbHeaderName.length() > 32) {
+                if (this.prefix.length() <= 14) {
+                    sbHeaderName = sbHeaderPrefix + this.prefix;
                 } else {
-                    name = name.substring(0, 32);
+                    sbHeaderName = sbHeaderName.substring(0, 32);
                 }
             }
-            Objective obj = scoreboard.registerNewObjective("lives", "dummy", name); //deathCount
+
+            if (this.scoreboard.getObjective("lives") != null) {
+                this.scoreboard.getObjective("lives").unregister();
+                if (this.scoreboard.getObjective(DisplaySlot.SIDEBAR) != null) {
+                    this.scoreboard.getObjective(DisplaySlot.SIDEBAR).unregister();
+                }
+            }
+            Objective obj = this.scoreboard.registerNewObjective("lives", "dummy", sbHeaderName); //deathCount
 
             if (this.isFightInProgress()) {
                 obj.setDisplaySlot(DisplaySlot.SIDEBAR);
             }
         }
-        return scoreboard;
+        return this.scoreboard;
     }
 
     private Scoreboard getStandardScoreboard() {
-        if (scoreboard == null) {
-            scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-            for (final ArenaTeam team : getTeams()) {
-                final Team sTeam = scoreboard.registerNewTeam(team.getName());
-                sTeam.setPrefix(team.getColor().toString());
-                sTeam.setSuffix(ChatColor.RESET.toString());
-                sTeam.setColor(team.getColor());
-                sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
-                if (!getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
-                    sTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
-                }
-                for (final ArenaPlayer aPlayer : team.getTeamMembers()) {
-                    sTeam.addEntry(aPlayer.getName());
-                }
-            } /*
-            for (Objective o : scoreboard.getObjectives()) {
-                o.setDisplaySlot(DisplaySlot.PLAYER_LIST);
-            } */
+        if (this.scoreboard == null) {
+            return this.getCommonScoreboard(false);
         }
-        return scoreboard;
+        return this.scoreboard;
+    }
+
+    private Scoreboard getCommonScoreboard(boolean addTeamEntry) {
+        if (this.scoreboard == null) {
+            this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+            for (final ArenaTeam team : this.getTeams()) {
+                final Team sbTeam = this.scoreboard.registerNewTeam(team.getName());
+                sbTeam.setPrefix(team.getColor().toString());
+                sbTeam.setSuffix(ChatColor.RESET.toString());
+                sbTeam.setColor(team.getColor());
+                sbTeam.setCanSeeFriendlyInvisibles(!this.isFreeForAll());
+                sbTeam.setAllowFriendlyFire(this.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
+                if (!this.getArenaConfig().getBoolean(CFG.PLAYER_COLLISION)) {
+                    sbTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+                }
+
+                if(addTeamEntry) {
+                    sbTeam.addEntry(team.getName());
+                }
+            }
+        }
+        return this.scoreboard;
     }
 
     public ArenaTeam getTeam(final String name) {
@@ -821,7 +794,7 @@ public class Arena {
     }
 
     public boolean isFreeForAll() {
-        return free;
+        return this.free;
     }
 
     public boolean isLocked() {
@@ -892,6 +865,7 @@ public class Arena {
 
         switch (cause) {
             case ENTITY_ATTACK:
+            case ENTITY_SWEEP_ATTACK:
                 if (damager instanceof Player && team != null) {
                     return team.colorizePlayer(aPlayer.get()) + ChatColor.YELLOW;
                 }
@@ -944,8 +918,7 @@ public class Arena {
             default:
                 break;
         }
-        MSG string = MSG.getByName("DEATHCAUSE_"
-                + cause.toString());
+        MSG string = MSG.getByName("DEATHCAUSE_" + cause.toString());
         if (string == null) {
             PVPArena.instance.getLogger().warning("Unknown cause: " + cause.toString());
             string = MSG.DEATHCAUSE_VOID;
@@ -1309,46 +1282,50 @@ public class Arena {
     }
 
     private void resetScoreboard(final Player player, final boolean force, final boolean soft) {
-        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            getDebugger().i("ScoreBoards: "+(soft?"(soft) ":"")+"remove: " + player.getName(), player);
+        if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            this.getDebugger().i("ScoreBoards: "+(soft?"(soft) ":"")+"remove: " + player.getName(), player);
             try {
-                if (scoreboard != null) {
-                    for (final Team team : scoreboard.getTeams()) {
+                if (this.scoreboard != null) {
+                    for (final Team team : this.scoreboard.getTeams()) {
                         if (team.hasEntry(player.getName())) {
                             team.removeEntry(player.getName());
                             if (soft) {
-                                updateScoreboards();
+                                this.updateScoreboards();
                                 return;
                             }
-                            scoreboard.resetScores(player.getName());
+                            this.scoreboard.resetScores(player.getName());
                         }
                     }
                 } else {
-                    getDebugger().i("ScoreBoards: scoreboard is null!");
+                    this.getDebugger().i("ScoreBoards: scoreboard is null!");
                     return;
                 }
+
                 final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-                class RunLater implements Runnable {
-                    @Override
-                    public void run() {
-                        if (ap.hasBackupScoreboard()) {
-                            player.setScoreboard(ap.getBackupScoreboard());
+                if (ap.hasBackupScoreboard()) {
+                    this.getDebugger().i("ScoreBoards: restoring " + ap.get());
+
+                    class RunLater extends BukkitRunnable {
+                        @Override
+                        public void run() {
+                            Scoreboard backupScoreboard = ap.getBackupScoreboard();
                             if (ap.getBackupScoreboardTeam() != null && !force) {
-                                ap.getBackupScoreboardTeam().addEntry(ap.getName());
+                                backupScoreboard.getTeam(ap.getBackupScoreboardTeam()).addEntry(ap.getName());
                             }
+                            player.setScoreboard(backupScoreboard);
                             ap.setBackupScoreboardTeam(null);
                             ap.setBackupScoreboard(null);
                         }
                     }
-                }
-                getDebugger().i("ScoreBoards: maybe restoring " + ap.get());
-                if (force) {
-                    new RunLater().run();
-                } else {
-                    try {
-                        Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 2L);
-                    } catch (IllegalStateException e) {
 
+                    if (force) {
+                        new RunLater().run();
+                    } else {
+                        try {
+                            new RunLater().runTaskLater(PVPArena.instance, 2L);
+                        } catch (IllegalStateException ignored) {
+
+                        }
                     }
                 }
 
@@ -1356,7 +1333,7 @@ public class Arena {
                 e.printStackTrace();
             }
         } else {
-            Team team = getStandardScoreboard().getEntryTeam(player.getName());
+            Team team = this.getStandardScoreboard().getEntryTeam(player.getName());
             if (team != null) {
                 team.removeEntry(player.getName());
                 if (soft) {
@@ -1364,23 +1341,19 @@ public class Arena {
                 }
             }
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-            try {
-                Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (ap.hasBackupScoreboard()) {
-                            player.setScoreboard(ap.getBackupScoreboard());
-                            if (ap.getBackupScoreboardTeam() != null) {
-                                ap.getBackupScoreboardTeam().addEntry(ap.getName());
-                            }
-                            ap.setBackupScoreboardTeam(null);
-                            ap.setBackupScoreboard(null);
+            if (ap.hasBackupScoreboard()) {
+                try {
+                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                        Scoreboard backupScoreboard = ap.getBackupScoreboard();
+                        if (ap.getBackupScoreboardTeam() != null) {
+                            backupScoreboard.getTeam(ap.getBackupScoreboardTeam()).addEntry(ap.getName());
                         }
-                    }
-                }, 3L);
-            } catch (IllegalPluginAccessException e) {
+                        player.setScoreboard(backupScoreboard);
+                        ap.setBackupScoreboardTeam(null);
+                    }, 3L);
+                } catch (IllegalPluginAccessException ignored) {
 
+                }
             }
         }
     }
@@ -1530,18 +1503,12 @@ public class Arena {
         if (aPlayer.getState() != null) {
             aPlayer.getState().unload(soft);
         }
-        resetScoreboard(player, force, soft);
+        this.resetScoreboard(player, force, soft);
 
         //noinspection deprecation
         ArenaModuleManager.resetPlayer(this, player, soft, force);
 
-        String sClass = "";
-        if (aPlayer.getArenaClass() != null) {
-            sClass = aPlayer.getArenaClass().getName();
-        }
-
-        if (!soft && (!"custom".equalsIgnoreCase(sClass) ||
-                cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
+        if (!soft && (!aPlayer.hasCustomClass() || cfg.getBoolean(CFG.GENERAL_CUSTOMRETURNSGEAR))) {
             ArenaPlayer.reloadInventory(this, player, true);
         }
 
@@ -1609,89 +1576,41 @@ public class Arena {
         }
     }
 
-    public void setupScoreboard(final Player player) {
-        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-            getDebugger().i("ScoreBoards: Initiating scoreboard for player " + player.getName());
-            if (!ap.hasBackupScoreboard() && player.getScoreboard() != null) {
-                ap.setBackupScoreboard(player.getScoreboard());
-                ap.setBackupScoreboardTeam(player.getScoreboard().getEntryTeam(ap.getName()));
-            } else if (ap.hasBackupScoreboard()) {
-                getDebugger().i("ScoreBoards: has backup: " + ap.hasBackupScoreboard());
-                getDebugger().i("ScoreBoards: player.getScoreboard == null: " + (player.getScoreboard() == null));
-            } else {
-                getDebugger().i("ScoreBoards: has backup: false");
-                getDebugger().i("ScoreBoards: player.getScoreboard == null: " + (player.getScoreboard() == null));
-            }
+    public void setupScoreboard(final ArenaPlayer ap) {
+        Player player = ap.get();
 
-            // first, check if the scoreboard exists
-            class RunLater implements Runnable {
-                final Scoreboard board = getSpecialScoreboard();
-                @Override
-                public void run() {
+        this.getDebugger().i("ScoreBoards: Initiating scoreboard for player " + player.getName());
+        this.getDebugger().i("ScoreBoards: has backup: " + ap.hasBackupScoreboard());
+        this.getDebugger().i("ScoreBoards: player.getScoreboard == null: " + (player.getScoreboard() == null));
+        if (!ap.hasBackupScoreboard() && player.getScoreboard() != null) {
+            ap.setBackupScoreboard(player.getScoreboard());
+            ofNullable(player.getScoreboard().getEntryTeam(ap.getName())).ifPresent(team ->
+                    ap.setBackupScoreboardTeam(team.getName())
+            );
+        }
 
+        if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                final Scoreboard board = this.getSpecialScoreboard();
 
-                    for (final ArenaTeam team : getTeams()) {
+                Optional<Team> optBoardTeam = ofNullable(ap.getArenaTeam()).map(team -> board.getTeam(team.getName()));
+                optBoardTeam.ifPresent(boardTeam -> boardTeam.addEntry(player.getName()));
 
-                        if (team == ArenaPlayer.parsePlayer(player.getName()).getArenaTeam()) {
-                            board.getTeam(team.getName()).addEntry(player.getName());
-                            updateScoreboard(player);
-                            return;
-                        }
-                    }
-                    try {
-                        ArenaTeam team = ap.getArenaTeam();
-                        if (team == null) {
-                            updateScoreboard(player);
-                            return;
-                        }
-                        scoreboard.registerNewTeam(team.getName());
-                        final Team bukkitTeam = scoreboard.getTeam(team.getName());
-                        bukkitTeam.setPrefix(team.getColor().toString());
-                        bukkitTeam.setSuffix(ChatColor.RESET.toString());
-                        bukkitTeam.setColor(team.getColor());
-                        bukkitTeam.addEntry(team.getName());
-                        bukkitTeam.setAllowFriendlyFire(getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL));
-                        bukkitTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
-                    } catch (final Exception e) {
-                        e.printStackTrace();
-                    }
+                this.updateScoreboard(player);
 
-                    if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARDROUNDDISPLAY)) {
-                        addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAY,
-                                String.valueOf(getRound()),
-                                String.valueOf(getRoundCount())),  199);
-                        addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAYSEPARATOR), 198);
-                    }
+                if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARDROUNDDISPLAY)) {
+                    this.addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAY,
+                            String.valueOf(this.getRound()),
+                            String.valueOf(this.getRoundCount())),  199);
+                    this.addCustomScoreBoardEntry(null, Language.parse(MSG.ROUNDS_DISPLAYSEPARATOR), 198);
                 }
-
-            }
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+            }, 1L);
         } else {
-            final Scoreboard board = getStandardScoreboard();
-            ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-            final ArenaTeam team = ap.getArenaTeam();
-            if (!ap.hasBackupScoreboard() && player.getScoreboard() != null) {
-                ap.setBackupScoreboard(player.getScoreboard());
-                ap.setBackupScoreboardTeam(player.getScoreboard().getEntryTeam(ap.getName()));
-            }
+            final Scoreboard board = this.getStandardScoreboard();
 
             player.setScoreboard(board);
-            if (team == null) {
-                return;
-            }
-            for (final Team sTeam : board.getTeams()) {
-                if (sTeam.getName().equals(team.getName())) {
-                    sTeam.addEntry(player.getName());
-                    return;
-                }
-            }
-            final Team sTeam = board.registerNewTeam(team.getName());
-            sTeam.setPrefix(team.getColor().toString());
-            sTeam.setColor(team.getColor());
-            sTeam.setSuffix(ChatColor.RESET.toString());
-            sTeam.addEntry(player.getName());
-            sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
+            Optional<Team> optBoardTeam = ofNullable(ap.getArenaTeam()).map(team -> board.getTeam(team.getName()));
+            optBoardTeam.ifPresent(boardTeam -> boardTeam.addEntry(player.getName()));
         }
     }
 
@@ -1712,8 +1631,7 @@ public class Arena {
         PlayerState.playersetHealth(player, iHealth);
         player.setFoodLevel(cfg.getInt(CFG.PLAYER_FOODLEVEL, 20));
         player.setSaturation(cfg.getInt(CFG.PLAYER_SATURATION, 20));
-        player.setExhaustion((float) cfg.getDouble(
-                CFG.PLAYER_EXHAUSTION, 0.0));
+        player.setExhaustion((float) cfg.getDouble(CFG.PLAYER_EXHAUSTION, 0.0));
         player.setVelocity(new Vector());
         player.setFallDistance(0);
 
@@ -2015,8 +1933,10 @@ public class Arena {
         return name;
     }
 
-    public void tpPlayerToCoordName(Player player, String place) {
-        this.tpPlayerToCoordName(player, place, false);
+    public void tpPlayerToCoordName(ArenaPlayer player, String place) {
+        Location destination = this.prepareTeleportation(player, place);
+        this.teleportPlayer(place, player, destination);
+        this.execPostTeleportationFixes(player);
     }
 
     /**
@@ -2025,12 +1945,23 @@ public class Arena {
      * @param player the player to teleport
      * @param place  the coord string
      */
-    public void tpPlayerToCoordName(final Player player, final String place, final boolean runAsync) {
+    public void tpPlayerToCoordNameForJoin(final ArenaPlayer player, final String place, boolean async) {
+        Location destination = this.prepareTeleportation(player, place);
+        int delay = async ? 2 : 0;
+        Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+            teleportPlayer(place, player, destination);
+            setupScoreboard(player);
+        }, delay);
+        this.execPostTeleportationFixes(player);
+    }
+
+    private Location prepareTeleportation(ArenaPlayer aPlayer, String place) {
+        Player player = aPlayer.get();
         getDebugger().i("teleporting " + player + " to coord " + place, player);
 
         if (player == null) {
             PVPArena.instance.getLogger().severe("Player null!");
-            return;
+            throw new RuntimeException("Player null!");
         }
 
         if (player.isInsideVehicle()) {
@@ -2038,8 +1969,6 @@ public class Arena {
         }
 
         ArenaModuleManager.tpPlayerToCoordName(this, player, place);
-
-        final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         if ("spectator".equals(place)) {
             if (getFighters().contains(aPlayer)) {
@@ -2053,8 +1982,7 @@ public class Arena {
             loc = aPlayer.getSavedLocation();
         }
         if (loc == null) {
-            new Exception("TP Spawn null: " + name + "->" + place).printStackTrace();
-            return;
+            throw new RuntimeException("TP Spawn null: " + name + "->" + place);
         }
 
         debug.i("raw location: " + loc.toString());
@@ -2067,21 +1995,13 @@ public class Arena {
 
         aPlayer.setTeleporting(true);
         aPlayer.setTelePass(true);
-        final Location destination = loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
-        if(runAsync) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                @Override
-                public void run() {
-                    teleportPlayer(place, aPlayer, destination);
-                }
-            }, 2);
-        } else {
-            this.teleportPlayer(place, aPlayer, destination);
-        }
+        return loc.toLocation().add(offset.getX(), offset.getY(), offset.getZ());
+    }
 
+    private void execPostTeleportationFixes(ArenaPlayer aPlayer) {
         if (cfg.getBoolean(CFG.PLAYER_REMOVEARROWS)) {
             try {
-                new ArrowHack(player);
+                new ArrowHack(aPlayer.get());
             } catch (final Exception e) {
             }
         }
@@ -2106,8 +2026,8 @@ public class Arena {
             Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
                 @Override
                 public void run() {
-                    player.setAllowFlight(false);
-                    player.setFlying(false);
+                    aPlayer.get().setAllowFlight(false);
+                    aPlayer.get().setFlying(false);
                 }
             }, 5L);
         }
@@ -2232,7 +2152,7 @@ public class Arena {
 
         for (final PASpawn spawn : spawns) {
             if (--pos < 0) {
-                tpPlayerToCoordName(player, spawn.getName());
+                this.tpPlayerToCoordName(aPlayer, spawn.getName());
                 break;
             }
         }
@@ -2407,34 +2327,32 @@ public class Arena {
     }
 
     public void updateScoreboards() {
-        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                @Override
-                public void run() {
-                    if (isFreeForAll()) {
-                        for (ArenaPlayer ap : getEveryone()) {
-                            int value = PACheck.handleGetLives(Arena.this, ap);
-                            if (value >= 0) {
-                                getSpecialScoreboard().getObjective("lives").getScore(ap.getName()).setScore(value);
-                            }
-                            Player player = ap.get();
-                            if (player != null && (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard()))) {
-                                player.setScoreboard(getSpecialScoreboard());
-                            }
+        if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                final Scoreboard currentScoreboard = this.getSpecialScoreboard();
+                if (this.isFreeForAll()) {
+                    for (ArenaPlayer ap : this.getEveryone()) {
+                        int value = PACheck.handleGetLives(this, ap);
+                        if (value >= 0) {
+                            currentScoreboard.getObjective("lives").getScore(ap.getName()).setScore(value);
                         }
-                    } else {
-                        for (ArenaTeam team : getTeams()) {
-                            for (ArenaPlayer ap : team.getTeamMembers()) {
-                                getSpecialScoreboard().getObjective("lives").getScore(team.getName()).setScore(
-                                        PACheck.handleGetLives(Arena.this, ap));
-                                break;
-                            }
+                        Player player = ap.get();
+                        if (player != null && !currentScoreboard.equals(player.getScoreboard())) {
+                            player.setScoreboard(currentScoreboard);
                         }
-                        for (ArenaPlayer ap : getEveryone()) {
-                            Player player = ap.get();
-                            if (player != null && (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard()))) {
-                                player.setScoreboard(getSpecialScoreboard());
-                            }
+                    }
+                } else {
+                    for (ArenaTeam team : this.getTeams()) {
+                        team.getTeamMembers().stream().findFirst().ifPresent(randomTeamPlayer ->
+                            currentScoreboard.getObjective("lives")
+                                .getScore(team.getName())
+                                .setScore(PACheck.handleGetLives(this, randomTeamPlayer))
+                        );
+                    }
+                    for (ArenaPlayer ap : this.getEveryone()) {
+                        Player player = ap.get();
+                        if (player != null && !currentScoreboard.equals(player.getScoreboard())) {
+                            player.setScoreboard(currentScoreboard);
                         }
                     }
                 }
@@ -2443,74 +2361,55 @@ public class Arena {
     }
 
     private void updateScoreboard(final Player player) {
-        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+        if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            Scoreboard currentScoreboard = this.getSpecialScoreboard();
             final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
-            if (ap.getArenaTeam() == null) {
-                // a spectator, special case. Just update and do not add to the scores
-                if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
-                    player.setScoreboard(getSpecialScoreboard());
-                }
-                return;
+
+            // if player is a spectator, special case. Just update and do not add to the scores
+            if (ap.getArenaTeam() != null) {
+                currentScoreboard.getObjective("lives")
+                        .getScore(this.isFreeForAll() ? player.getName() : ap.getArenaTeam().getName())
+                        .setScore(PACheck.handleGetLives(this, ap));
             }
-            if (isFreeForAll()) {
-                final Score score = getSpecialScoreboard().getObjective("lives").getScore(player.getName());
-                score.setScore(PACheck.handleGetLives(this, ArenaPlayer.parsePlayer(player.getName())));
-            } else {
-                getSpecialScoreboard().getObjective("lives").getScore(ap.getArenaTeam().getName()).setScore(PACheck.handleGetLives(this, ap));
-            }
-            if (player.getScoreboard() == null || !player.getScoreboard().equals(getSpecialScoreboard())) {
-                player.setScoreboard(getSpecialScoreboard());
-            }
+
+            player.setScoreboard(currentScoreboard);
         }
     }
 
     public void updateScoreboardTeam(final Player player, final ArenaTeam oldTeam, final ArenaTeam newTeam) {
-        if (getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
-            final Scoreboard board = getSpecialScoreboard();
-            class RunLater implements Runnable {
+        if (this.getArenaConfig().getBoolean(CFG.USES_SCOREBOARD)) {
+            final Scoreboard board = this.getSpecialScoreboard();
 
-                @Override
-                public void run() {
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                board.getTeam(oldTeam.getName()).removeEntry(player.getName());
 
-                    final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-                    if (aPlayer.getArenaTeam() != null) {
-                        board.getTeam(oldTeam.getName()).removeEntry(player.getName());
+                Team sTeam = board.getTeams().stream()
+                        .filter(t -> t.getName().equals(newTeam.getName()))
+                        .findFirst()
+                        .orElseGet(() -> this.addNewTeam(board, newTeam));
+                sTeam.addEntry(player.getName());
 
-                        for (final Team sTeam : board.getTeams()) {
-                            if (sTeam.getName().equals(newTeam.getName())) {
-                                sTeam.addEntry(player.getName());
-                                return;
-                            }
-                        }
-                        final Team sTeam = board.registerNewTeam(newTeam.getName());
-                        sTeam.setPrefix(newTeam.getColor().toString());
-                        sTeam.setSuffix(ChatColor.RESET.toString());
-                        sTeam.setColor(newTeam.getColor());
-                        sTeam.addEntry(player.getName());
-                        sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
-                    }
-                    updateScoreboard(player);
-                }
-
-            }
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
+                this.updateScoreboard(player);
+            }, 1L);
         } else {
-            Scoreboard board = getStandardScoreboard();
+            Scoreboard board = this.getStandardScoreboard();
             board.getTeam(oldTeam.getName()).removeEntry(player.getName());
 
-            for (final Team sTeam : board.getTeams()) {
-                if (sTeam.getName().equals(newTeam.getName())) {
-                    sTeam.addEntry(player.getName());
-                    return;
-                }
-            }
-            final Team sTeam = board.registerNewTeam(newTeam.getName());
-            sTeam.setPrefix(newTeam.getColor().toString());
-            sTeam.setSuffix(ChatColor.RESET.toString());
-            sTeam.setColor(newTeam.getColor());
-            sTeam.setCanSeeFriendlyInvisibles(!isFreeForAll());
+            Team sTeam = board.getTeams().stream()
+                    .filter(t -> t.getName().equals(newTeam.getName()))
+                    .findFirst()
+                    .orElseGet(() -> this.addNewTeam(board, newTeam));
             sTeam.addEntry(player.getName());
         }
+    }
+
+    private Team addNewTeam(Scoreboard board, ArenaTeam newTeam) {
+        final Team sTeam = board.registerNewTeam(newTeam.getName());
+        sTeam.setPrefix(newTeam.getColor().toString());
+        sTeam.setSuffix(ChatColor.RESET.toString());
+        sTeam.setColor(newTeam.getColor());
+        sTeam.setCanSeeFriendlyInvisibles(!this.isFreeForAll());
+        return sTeam;
     }
 
     public YamlConfiguration getLanguage() {

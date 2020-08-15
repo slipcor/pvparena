@@ -4,14 +4,15 @@
 
 The debug command is used to spam the log file with a hell lot more of information, based on your current issue, or just in general when unsure where the issue comes from.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
 /pa debug all | debug ALL classes
-/pa debug 4 | debug class number 4
-/pa debug 4,7 | debug class 4 and 7
+/pa debug [value] | debug class or arena where name equals to `value`
 /pa debug none | disable debugging
+
+Example: `/pa debug 4,7` - debug class 4 and 7
 
 ## Hazards
 

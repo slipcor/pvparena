@@ -1,13 +1,18 @@
 package net.slipcor.pvparena.core;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.Rotatable;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static net.slipcor.pvparena.core.StringParser.joinArray;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class ColorUtils {
 
@@ -83,8 +88,7 @@ public final class ColorUtils {
      * @return true if material can be colored
      */
     public static boolean isColorableMaterial(Material type) {
-        return type.name().endsWith("_WOOL") || type.name().endsWith("_CONCRETE") ||
-                type.name().endsWith("_STAINED_GLASS");
+        return getColorableSuffixes().contains(getMaterialSuffix(type));
     }
 
     /**
@@ -95,21 +99,50 @@ public final class ColorUtils {
      */
     public static Material getColoredMaterial(DyeColor dyeColor, Material typeMaterial) {
         String color = dyeColor.name();
-        String[] typeNameArr = typeMaterial.name().split("_");
-        String uncoloredMaterial = joinArray(Arrays.copyOfRange(typeNameArr, 1, typeNameArr.length), "_");
-        return Material.valueOf(color + "_" + uncoloredMaterial);
+        String materialSuffix = getMaterialSuffix(typeMaterial);
+        return Material.valueOf(color + "_" + materialSuffix);
     }
 
     public static boolean isSubType(Material type, Material check) {
-        if (type.name().endsWith("_WOOL") && check.name().endsWith("_WOOL")) {
-            return true;
+        return isColorableMaterial(type) && getMaterialSuffix(type).equals(getMaterialSuffix(check));
+    }
+
+    private static String getMaterialSuffix(Material material) {
+        return getColorableSuffixes().stream()
+                .filter(suffix -> material.name().endsWith(suffix))
+                .findFirst()
+                .orElse("");
+    }
+
+    /**
+     * Get the list of all colorable blocks
+     */
+    private static List<String> getColorableSuffixes() {
+        return Stream.of(Material.values())
+                .filter(m -> m.name().startsWith("MAGENTA_"))
+                .filter(Material::isBlock)
+                .map(m -> m.name().split("MAGENTA_", 2)[1])
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Change flag color keeping rotation and facing
+     * @param flagBlock Block (location) of the flag
+     * @param flagColor New flag color
+     */
+    public static void setNewFlagColor(Block flagBlock, ChatColor flagColor) {
+        final BlockData originalBlockData = flagBlock.getBlockData().clone();
+        Material newMaterial = ColorUtils.getColoredMaterialFromChatColor(flagColor, flagBlock.getType());
+        BlockData newData = Bukkit.getServer().createBlockData(newMaterial);
+
+        if(originalBlockData instanceof Directional) {
+            ((Directional) newData).setFacing(((Directional) originalBlockData).getFacing());
         }
-        if (type.name().endsWith("_CONCRETE") && check.name().endsWith("_CONCRETE")) {
-            return true;
+
+        if(originalBlockData instanceof Rotatable) {
+            ((Rotatable) newData).setRotation(((Rotatable) originalBlockData).getRotation());
         }
-        if (type.name().endsWith("_STAINED_GLASS") && check.name().endsWith("_STAINED_GLASS")) {
-            return true;
-        }
-        return false;
+
+        flagBlock.setBlockData(newData);
     }
 }

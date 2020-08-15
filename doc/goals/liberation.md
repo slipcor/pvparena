@@ -1,22 +1,22 @@
 # Liberation
 
+> ℹ This goal is designed for **team** gamemode
+
 ## Description
 
 A medium complex game mode. Dead players are teleported to the killer team's jail. 
-They can be unjailed, liberated, get one life back, so to speak :)
+Other team member of jailed players can liberate them by clicking on a button, giving them one life back.
 
 ## Setup
 
-You have to add spawns for the jails, set them like every other spawn (bluejail, redjail) and on top of that, 
-you have to set a button that will trigger the liberation of jailed players. 
+You have to add spawns for the jails, set them with command [`/pa [arena] spawn [team]jail`](../commands/spawn.md).
 
-It needs to be a stone block, and you set it with `/pa [arenaname] [teamname]button` \- Set it by clicking the button.
+Then you have to set a button, at the outside of the jail, that will trigger the liberation of jailed players. To do 
+that:
+- place a **stone button** where you want
+- type `/pa [arenaname] [teamname]button` (to open selection mode)
+- do a left-click on your button
 
-## Config Settings
+## Config settings
 
-- llives \- the lives players have before being put to prison 
-
-
-## Supported Game Modes
-
-Only supports team game mode!
+- `llives` \- the lives players have before being put to prison (default: 3)

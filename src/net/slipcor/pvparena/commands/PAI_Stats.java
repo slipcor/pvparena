@@ -7,11 +7,13 @@ import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.StatisticsManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
+import net.slipcor.pvparena.managers.StatisticsManager.Type;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <pre>PVP Arena STATS Command class</pre>
@@ -38,23 +40,21 @@ public class PAI_Stats extends AbstractArenaCommand {
             return;
         }
 
-        final type statType = type.getByString(args[0]);
+        final Type statType = Type.getByString(args[0]);
 
         if (statType == null) {
-            Arena.pmsg(sender, Language.parse(arena, MSG.STATS_TYPENOTFOUND, StringParser.joinArray(type.values(), ", ").replace("NULL, ", "")));
+            Arena.pmsg(sender, Language.parse(arena, MSG.STATS_TYPENOTFOUND, StringParser.joinArray(Type.values(), ", ").replace("NULL, ", "")));
             return;
         }
 
-        final String[] values = StatisticsManager.read(StatisticsManager.getStats(arena, statType), statType, arena == null);
-        final String[] names = StatisticsManager.read(StatisticsManager.getStats(arena, statType), type.NULL, arena == null);
+        Map<String, Integer> playersStats = StatisticsManager.getStats(arena, statType);
 
         int max = 10;
 
         if (args.length > 1) {
             try {
                 max = Integer.parseInt(args[1]);
-            } catch (final Exception e) {
-                max = 10;
+            } catch (NumberFormatException ignored) {
             }
         }
 
@@ -65,9 +65,10 @@ public class PAI_Stats extends AbstractArenaCommand {
 
         Arena.pmsg(sender, s1);
 
-        for (int i = 0; i < max && i < names.length && i < values.length; i++) {
-            Arena.pmsg(sender, names[i] + ": " + values[i]);
-        }
+        playersStats.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .limit(max)
+                .forEach(stat -> Arena.pmsg(sender, stat.getKey() + " : " + stat.getValue()));
     }
 
     @Override
@@ -93,7 +94,7 @@ public class PAI_Stats extends AbstractArenaCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        for (final type val : type.values()) {
+        for (final Type val : Type.values()) {
             result.define(new String[]{val.name()});
         }
         return result;

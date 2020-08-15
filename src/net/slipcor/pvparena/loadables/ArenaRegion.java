@@ -1,6 +1,5 @@
 package net.slipcor.pvparena.loadables;
 
-import com.google.common.collect.ImmutableMap;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.arena.Arena;
 import net.slipcor.pvparena.arena.ArenaPlayer;
@@ -30,8 +29,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
+
+import static java.util.Arrays.asList;
 
 public class ArenaRegion {
 
@@ -40,7 +42,7 @@ public class ArenaRegion {
     private Arena arena;
     private String name;
     private RegionType type;
-    private int tickID = -1;
+    private BukkitTask runningTask;
     private final Set<RegionFlag> flags = new HashSet<>();
     private final Set<RegionProtection> protections = new HashSet<>();
     private final Map<String, Location> playerLocations = new HashMap<>();
@@ -368,19 +370,15 @@ public class ArenaRegion {
 
     public void initTimer() {
 
-        if (tickID != -1) {
-            if (type == RegionType.JOIN || type == RegionType.WATCH) {
-                return;
+        if (this.runningTask != null && !this.runningTask.isCancelled()) {
+            if (!asList(RegionType.JOIN, RegionType.WATCH, RegionType.LOUNGE).contains(this.type)) {
+                this.runningTask.cancel();
             }
-
-            Bukkit.getScheduler().cancelTask(tickID);
         }
 
         final RegionRunnable regionRunner = new RegionRunnable(this);
-        tickID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                PVPArena.instance, regionRunner,
-                (long) arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER),
-                (long) arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER));
+        final int timer = this.arena.getArenaConfig().getInt(CFG.TIME_REGIONTIMER);
+        this.runningTask = regionRunner.runTaskTimer(PVPArena.instance, timer, timer);
     }
 
     public boolean isInNoWoolSet(final Block block) {
@@ -447,16 +445,12 @@ public class ArenaRegion {
     }
 
     public void removeEntities() {
-        if (getWorld() == null || getWorld().getEntities() == null) {
+        if (getWorld() == null || getWorld().getEntities().isEmpty()) {
             return;
         }
 
         for (final Entity entity : getWorld().getEntities()) {
-            if (entity instanceof Player
-                    || !shape.contains(new PABlockLocation(entity.getLocation()
-                    .getWorld().getName(), entity.getLocation().getBlockX(),
-                    entity.getLocation().getBlockY(), entity.getLocation()
-                    .getBlockZ()))) {
+            if (entity instanceof Player || !shape.contains(new PABlockLocation(entity.getLocation()))) {
                 continue;
             }
 
@@ -478,8 +472,9 @@ public class ArenaRegion {
             return;
         }
 
-        Bukkit.getScheduler().cancelTask(tickID);
-        tickID = -1;
+        if(this.runningTask != null && !this.runningTask.isCancelled()) {
+            this.runningTask.cancel();
+        }
     }
 
     public void saveToConfig() {

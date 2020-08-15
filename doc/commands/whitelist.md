@@ -2,18 +2,20 @@
 
 ## Description
 
-This command manages the block place / break whitelist for an arena.
+This command manages the block place / break whitelist for an arena. With this, you're able to restrict actions
+in your arena.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa ctf whitelist clear             | clear the general whitelist
-/pa ctf whitelist break clear       | clear the BREAK whitelist
-/pa ctf whitelist break add SNOW    | add SNOW to the BREAK whitelist
-/pa ctf whitelist PLACE show        | show the PLACE whitelist
-/pa ctf whitelist break remove SNOW | remove SNOW from the BREAK whitelist
+/pa [arena] whitelist clear             | clear the general whitelist
+/pa [arena] whitelist [break/place] clear       | clear the BREAK or the PLACE whitelist
+/pa [arena] whitelist [break/place] show       | show a whitelist content
+/pa [arena] whitelist [break/place] add [block]    | add a block to a whitelist
+/pa [arena] whitelist [break/place] remove [block]    | remove a block from a whitelist
 
-## Details
+Example: `/pa ctf whitelist break add SNOW` - add SNOW block to the BREAK whitelist
 
-Both ENUMs and ITEM IDs work, you can even add DATA values, e.g. WOOL:13
+> **🚩 Tip:**  
+> [`/pa blacklist`](blacklist.md) command works exactly in the same way

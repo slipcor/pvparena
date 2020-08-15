@@ -3,6 +3,9 @@ package net.slipcor.pvparena.runnables;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import static java.util.Arrays.asList;
 
 /**
  * <pre>
@@ -15,7 +18,7 @@ import net.slipcor.pvparena.loadables.ArenaRegion.RegionType;
  * @version v0.9.9
  */
 
-public class RegionRunnable implements Runnable {
+public class RegionRunnable extends BukkitRunnable {
     private final ArenaRegion region;
 //	private final static Debug DEBUG = new Debug(49);
 //	private int iID;
@@ -74,8 +77,8 @@ public class RegionRunnable implements Runnable {
                 region.getArena().getDebugger().i("tick 2: " + region.getRegionName());
                 region.tick();
             }
-        } else if (region.getType() == RegionType.WATCH) {
-            // always tick for WATCH regions!
+        } else if (asList(RegionType.WATCH, RegionType.LOUNGE).contains(region.getType())) {
+            // always tick for WATCH & LOUNGE regions!
             region.getArena().getDebugger().i("tick 3: " + region.getRegionName());
             region.tick();
         } else if (region.getArena().isFightInProgress()) {

@@ -282,8 +282,8 @@ public final class ConfigurationManager {
                 .getValues(true);
 
         if (arena.isFreeForAll()) {
-            if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
-                PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die! Ignore this if you're running infect!");
+            if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL) && !arena.getArenaConfig().getStringList(CFG.LISTS_GOALS).contains("Infect")) {
+                PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die!");
             }
         } else {
             for (final Map.Entry<String, Object> stringObjectEntry : tempMap.entrySet()) {

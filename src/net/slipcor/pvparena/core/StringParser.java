@@ -91,8 +91,7 @@ public final class StringParser {
      * @return a colored string
      */
     public static String colorVar(final String string, final boolean value) {
-        return (value ? ChatColor.GREEN.toString() : ChatColor.RED.toString()) + string
-                + ChatColor.WHITE;
+        return (value ? ChatColor.GREEN.toString() : ChatColor.RED.toString()) + string + ChatColor.WHITE;
     }
 
     public static String joinArray(final Object[] array, final String glue) {

@@ -1,21 +1,15 @@
 # PlayerDeathMatch
-## Description
+
+> ℹ This goal supports **team** and **free** gamemodes
+
+## Description
 
 This goal adds a counter to players killing others. The first one to have the required number of kills wins the game.
-## Setup
 
-\-
-## Config Settings
+## Setup
 
-- tdlives - how many kills does a team need to win? 
+There is no special setup.
 
-## Warnings
+## Config settings
 
-\-
-
-## Supported Game Modes
-
-Supports team and free game mode!
-## YouTube video
-
-[click me](http://www.youtube.com/watch?v=KqBueDNbpD8)
+- `tdlives` - how many kills does a team need to win? 

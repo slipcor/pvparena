@@ -7,6 +7,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.loadables.ArenaModule;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,6 +45,13 @@ public class PAG_Leave extends AbstractArenaCommand {
         }
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+
+        // Handle modules which need to leave even if players aren't in an arena
+        for (final ArenaModule mod : arena.getMods()) {
+            if(mod.handleSpecialLeave(aPlayer)) {
+                return;
+            }
+        }
 
         if (!arena.hasPlayer(aPlayer.get())) {
 

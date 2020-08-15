@@ -8,6 +8,7 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +80,11 @@ public class PAA_Class extends AbstractArenaCommand {
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, args[1]));
         } else if ("load".equalsIgnoreCase(args[0])) {
             final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
-            ArenaPlayer.backupAndClearInventory(arena, aPlayer.get());
+            if(aPlayer.getArenaClass() == null) {
+                ArenaPlayer.backupAndClearInventory(arena, aPlayer.get());
+            } else {
+                InventoryManager.clearInventory(aPlayer.get());
+            }
             arena.selectClass(aPlayer, args[1]);
         } else if ("remove".equalsIgnoreCase(args[0])) {
             final Player player = (Player) sender;

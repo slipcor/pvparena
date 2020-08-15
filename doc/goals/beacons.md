@@ -15,7 +15,7 @@ A claimed beacon gives points every few seconds (tickinterval) that add up to a 
 The GLASS blocks have to be added. In order to do that, use `/pa [arenaname] beacon`. This toggles edit mode.
 Don't forget to exit it again after setting the beacons. Set them by clicking the GLASS blocks which will color according to claim status.
 
-## Config Settings  
+## Config settings  
 
 - spamoffset => after how many updates should the arena announce? (default: 3)
 - claimrange => how near need players to be? (default: 3)

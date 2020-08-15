@@ -77,17 +77,17 @@ public class Config {
         GENERAL_SMARTSPAWN("general.smartspawn", false, null),
         GENERAL_TIME("general.time", -1, null),
         GENERAL_TYPE("general.type", "none", null),
-        GENERAL_WAND("general.wand", Material.STICK.toString(), null),
+        GENERAL_WAND("general.wand", Material.STICK, null),
 
         GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 
-        ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", new ItemStack[0], true, null),
-        ITEMS_KEEPONRESPAWN("items.keepOnRespawn", new ItemStack[0], true, null),
+        ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", new ItemStack[0], null),
+        ITEMS_KEEPONRESPAWN("items.keepOnRespawn", new ItemStack[0], null),
         ITEMS_KEEPALLONRESPAWN("items.keepAllOnRespawn", false, null),
         ITEMS_MINPLAYERS("items.minplayers", 2, null),
         ITEMS_RANDOM("items.random", true, null),
-        ITEMS_REWARDS("items.rewards", new ItemStack[0], true, null),
-        ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", new ItemStack[0], true, null),
+        ITEMS_REWARDS("items.rewards", new ItemStack[0], null),
+        ITEMS_TAKEOUTOFGAME("items.takeOutOfGame", new ItemStack[0], null),
 
         JOIN_RANGE("join.range", 0, null),
         JOIN_FORCE("join.forceregionjoin", false, null),
@@ -128,7 +128,7 @@ public class Config {
         PLAYER_HEALTH("player.health", -1, null),
         PLAYER_HEALFORKILL("player.healforkill", false, null),
         PLAYER_HUNGER("player.hunger", true, null),
-        PLAYER_ITEMSONKILL("player.itemsonkill", new ItemStack[0], true, null),
+        PLAYER_ITEMSONKILL("player.itemsonkill", new ItemStack[0], null),
         PLAYER_MAYCHANGEARMOR("player.mayChangeArmor", true, null),
         PLAYER_MAXHEALTH("player.maxhealth", -1, null),
         PLAYER_PREVENTDEATH("player.preventDeath", true, null),
@@ -144,7 +144,7 @@ public class Config {
         PROTECT_SPAWN("protection.spawn", 0, null),
 
         READY_AUTOCLASS("ready.autoClass", "none", null),
-        READY_BLOCK("ready.block", Material.IRON_BLOCK.toString(), null),
+        READY_BLOCK("ready.block", Material.IRON_BLOCK, null),
         READY_CHECKEACHPLAYER("ready.checkEachPlayer", false, null),
         READY_CHECKEACHTEAM("ready.checkEachTeam", true, null),
         READY_ENFORCECOUNTDOWN("ready.enforceCountdown", false, null),
@@ -184,17 +184,7 @@ public class Config {
         USES_WOOLHEAD("uses.woolHead", false, null),
 
         // ----------
-
-        GOAL_BEACONS_ANNOUNCEOFFSET("goal.beacons.spamoffset", 3, "Beacons"),
-        GOAL_BEACONS_BOSSBAR("goal.beacons.beacBossBar", true, "Beacons"),
-        GOAL_BEACONS_CHANGESECONDS("goal.beacons.changeseconds", 30, "Beacons"),
-        GOAL_BEACONS_CHANGEONCLAIM("goal.beacons.changeonclaim", false, "Beacons"),
-        GOAL_BEACONS_CLAIMRANGE("goal.beacons.claimrange", 3, "Beacons"),
-        GOAL_BEACONS_LIVES("goal.beacons.blives", 10, "Beacons"),
-        GOAL_BEACONS_TICKINTERVAL("goal.beacons.tickinterval", 60, "Beacons"),
-        GOAL_BEACONS_TICKREWARD("goal.beacons.tickreward", 1, "Beacons"),
-
-        GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", Material.IRON_BLOCK.toString(), "BlockDestroy"),
+        GOAL_BLOCKDESTROY_BLOCKTYPE("goal.blockdestroy.blocktype", Material.IRON_BLOCK, "BlockDestroy"),
         GOAL_BLOCKDESTROY_LIVES("goal.blockdestroy.bdlives", 1, "BlockDestroy"),
 
         GOAL_CHECKPOINTS_CLAIMRANGE("goal.checkpoints.cpclaimrange", 5, "CheckPoints"),
@@ -206,15 +196,16 @@ public class Config {
         GOAL_DOM_CLAIMRANGE("goal.dom.claimrange", 3, "Domination"),
         GOAL_DOM_LIVES("goal.dom.dlives", 10, "Domination"),
         GOAL_DOM_ONLYWHENMORE("goal.dom.onlywhenmore", false, "Domination"),
-        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", false, "Domination"),
+        GOAL_DOM_PARTICLECIRCLE("goal.dom.particlecircle", true, "Domination"),
         GOAL_DOM_TICKINTERVAL("goal.dom.tickinterval", 60, "Domination"),
         GOAL_DOM_TICKREWARD("goal.dom.tickreward", 1, "Domination"),
 
-        GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", Material.WHITE_WOOL.toString(), "Flags"),
+        GOAL_FLAGS_FLAGTYPE("goal.flags.flagType", Material.WHITE_WOOL, "Flags"),
         GOAL_FLAGS_LIVES("goal.flags.flives", 3, "Flags"),
         GOAL_FLAGS_MUSTBESAFE("goal.flags.mustBeSafe", true, "Flags"),
         GOAL_FLAGS_WOOLFLAGHEAD("goal.flags.woolFlagHead", true, "Flags"),
         GOAL_FLAGS_FLAGEFFECT("goal.flags.effect", "none", "Flags"),
+        GOAL_FLAGS_ALTERONCATCH("goal.flags.alterOnCatch", true, "Flags"),
 
         GOAL_FOOD_FMAXITEMS("goal.food.fmaxitems", 50, "Food"),
         GOAL_FOOD_FPLAYERITEMS("goal.food.fplayeritems", 10, "Food"),
@@ -228,10 +219,17 @@ public class Config {
 
         GOAL_LLIVES_LIVES("goal.liberation.llives", 3, "Liberation"),
         GOAL_PDM_LIVES("goal.playerdm.pdlives", 3, "PlayerDeathMatch"),
+
+        GOAL_PFLAGS_FLAGTYPE("goal.physicalflags.flagType", Material.WHITE_WOOL, "PhysicalFlags"),
+        GOAL_PFLAGS_LIVES("goal.physicalflags.flives", 3, "PhysicalFlags"),
+        GOAL_PFLAGS_MUSTBESAFE("goal.physicalflags.mustBeSafe", true, "PhysicalFlags"),
+        GOAL_PFLAGS_WOOLFLAGHEAD("goal.physicalflags.woolFlagHead", true, "PhysicalFlags"),
+        GOAL_PFLAGS_FLAGEFFECT("goal.physicalflags.effect", "none", "PhysicalFlags"),
+
         GOAL_PLIVES_LIVES("goal.playerlives.plives", 3, "PlayerLives"),
         GOAL_TANK_LIVES("goal.tank.tlives", 1, "Tank"),
         GOAL_TDC_LIVES("goal.teamdc.tdclives", 10, "TeamDeathConfirm"),
-        GOAL_TDC_ITEM("goal.teamdc.tdcitem", Material.WHITE_WOOL.toString(), "TeamDeathConfirm"),
+        GOAL_TDC_ITEM("goal.teamdc.tdcitem", Material.WHITE_WOOL, "TeamDeathConfirm"),
         GOAL_TDM_LIVES("goal.teamdm.tdlives", 10, "TeamDeathMatch"),
         GOAL_TDM_SUICIDESCORE("goal.teamdm.suicideScore", false, "TeamDeathMatch"),
         GOAL_TLIVES_LIVES("goal.teamlives.tlives", 10, "TeamLives"),
@@ -255,11 +253,6 @@ public class Config {
 
         GOAL_PLAYERKILLREWARD_GRADUALLYDOWN("goal.playerkillreward.graduallyDown", false, "PlayerKillReward"),
         GOAL_PLAYERKILLREWARD_ONLYGIVE("goal.playerkillreward.onlyGive", false, "PlayerKillReward"),
-
-        GOAL_RESCUE_RESCUETYPE("goal.rescue.flagType", "VILLAGER", "Rescue"),
-        GOAL_RESCUE_LIVES("goal.rescue.rlives", 1, "Rescue"),
-        GOAL_RESCUE_MUSTBESAFE("goal.rescue.mustBeSafe", true, "Rescue"),
-        GOAL_RESCUE_RESCUEEFFECT("goal.rescue.effect", "none", "Rescue"),
 
         // -----------
 
@@ -329,13 +322,13 @@ public class Config {
                 new ItemStack(Material.PINK_WOOL, 1),
                 new ItemStack(Material.PURPLE_WOOL, 1),
                 new ItemStack(Material.YELLOW_WOOL, 1),
-                new ItemStack(Material.WHITE_WOOL, 1)}, true, "BlockDissolve"),
+                new ItemStack(Material.WHITE_WOOL, 1)}, "BlockDissolve"),
         MODULES_BLOCKDISSOLVE_STARTSECONDS("modules.blockdissolve.startseconds", 10, "BlockDissolve"),
         MODULES_BLOCKDISSOLVE_TICKS("modules.blockdissolve.ticks", 40, "BlockDissolve"),
 
         MODULES_CHESTFILLER_CHESTLOCATION("modules.chestfiller.chestlocation", "none", "ChestFiller"),
         MODULES_CHESTFILLER_CLEAR("modules.chestfiller.clear", false, "ChestFiller"),
-        MODULES_CHESTFILLER_ITEMS("modules.chestfiller.cfitems", new ItemStack[]{new ItemStack(Material.STONE)}, true, "ChestFiller"),
+        MODULES_CHESTFILLER_ITEMS("modules.chestfiller.cfitems", new ItemStack[]{new ItemStack(Material.STONE)}, "ChestFiller"),
         MODULES_CHESTFILLER_MAXITEMS("modules.chestfiller.cfmaxitems", 5, "ChestFiller"),
         MODULES_CHESTFILLER_MINITEMS("modules.chestfiller.cfminitems", 0, "ChestFiller"),
 
@@ -348,7 +341,7 @@ public class Config {
         MODULES_FIXINVENTORYLOSS_INVENTORY("modules.fixinventoryloss.inventory", false, "FixInventoryLoss"),
 
         MODULES_ITEMS_INTERVAL("modules.items.interval", 0, "Items"),
-        MODULES_ITEMS_ITEMS("modules.items.items", new ItemStack[0], true, "Items"),
+        MODULES_ITEMS_ITEMS("modules.items.items", new ItemStack[0], "Items"),
 
         MODULES_RESPAWNRELAY_INTERVAL("modules.respawnrelay.respawnseconds", 10, "RespawnRelay"),
         MODULES_RESPAWNRELAY_CHOOSESPAWN("modules.respawnrelay.choosespawn", false, "RespawnRelay"),
@@ -411,7 +404,7 @@ public class Config {
         MODULES_VAULT_REWARD_TRIGGER("modules.vault.reward.trigger", 0.0d, "Vault"),
         MODULES_VAULT_REWARD_WIN("modules.vault.reward.playerWin", 0.0d, "Vault"),
 
-        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", Material.SAND.toString(), "Walls"),
+        MODULES_WALLS_MATERIAL("modules.walls.wallmaterial", Material.SAND, "Walls"),
         MODULES_WALLS_SCOREBOARDCOUNTDOWN("modules.walls.scoreboardcountdown", false, "Walls"),
         MODULES_WALLS_SECONDS("modules.walls.wallseconds", 300, "Walls"),
 
@@ -463,10 +456,17 @@ public class Config {
             module = source;
         }
 
-        CFG(final String node, final ItemStack[] value, final boolean multiple, final String source) {
+        CFG(final String node, final ItemStack[] value, final String source) {
             this.node = node;
             this.value = getSerializableItemStacks(value);
-            type = multiple ? "items" : "material";
+            type = "items";
+            module = source;
+        }
+
+        CFG(final String node, final Material value, final String source) {
+            this.node = node;
+            this.value = value.name();
+            type = "material";
             module = source;
         }
 
@@ -527,7 +527,7 @@ public class Config {
         }
 
         public String getModule() {
-            return module;
+            return this.module;
         }
 
         public boolean hasModule() {
@@ -785,6 +785,10 @@ public class Config {
         return section.getKeys(false);
     }
 
+    public List<String> getStringList(final CFG cfg) {
+        return this.getStringList(cfg.getNode(), null);
+    }
+
     public List<String> getStringList(final String path, final List<String> def) {
         if (cfg.get(path) == null) {
             return def == null ? new LinkedList<String>() : def;
@@ -792,6 +796,7 @@ public class Config {
 
         return cfg.getStringList(path);
     }
+
 
     // /////////////////////////////////////////////////////////////////////////
     // //

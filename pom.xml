@@ -4,11 +4,13 @@
 
     <groupId>net.slipcor</groupId>
     <artifactId>pvparena</artifactId>
-    <version>1.14.1-SNAPSHOT</version>
+    <version>1.15.0</version>
     <name>PVP Arena</name>
+    <url>https://github.com/Eredrim/pvparena</url>
 
     <properties>
         <buildVersion></buildVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <repositories>
@@ -24,8 +26,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
             <version>1.13.2-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
@@ -33,16 +35,10 @@
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <url>http://pa.slipcor.net</url>
-    <ciManagement>
-        <system>jenkins</system>
-        <url>https://ci2.craftyn.com</url>
-    </ciManagement>
 
     <build>
         <defaultGoal>clean package install</defaultGoal>
@@ -65,17 +61,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.8.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>8</source>
+                    <target>8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>3.2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -85,7 +81,6 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <!-- Replace this with your package! -->
                             <shadedPattern>net.slipcor.pvparena</shadedPattern>
                         </relocation>
                     </relocations>

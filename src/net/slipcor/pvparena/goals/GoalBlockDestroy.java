@@ -93,11 +93,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        List<String> result = Collections.singletonList("blocktype");
-        if (arena != null) {
-            result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
+        if (this.arena != null) {
             result.add("blocktype");
-            for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "block");
             }
@@ -374,9 +373,8 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()
-                            .getName()) ? getLifeMap().get(aPlayer
-                            .getArenaTeam().getName()) : 0));
+                    String.valueOf(getLifeMap().getOrDefault(aPlayer.getArenaTeam().getName(), 0))
+            );
         }
         return res;
     }

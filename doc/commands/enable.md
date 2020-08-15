@@ -4,10 +4,11 @@
 
 This command re-enables an arena after disabling it.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa test enable | enable the **"test"** arena
-/pa temp enable | enable the **"temp"** arena
+/pa [arena] enable | disable an arena
+
+Example: `/pa test enable` - enable the "test" arena
 

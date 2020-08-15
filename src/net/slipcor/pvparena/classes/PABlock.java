@@ -5,24 +5,24 @@ public class PABlock {
     private final String name;
 
     public PABlock(final PABlockLocation loc, final String string) {
-        location = loc;
-        name = string;
+        this.location = loc;
+        this.name = string;
     }
 
     @Override
     public boolean equals(final Object o) {
         if (o instanceof PABlock) {
             final PABlock other = (PABlock) o;
-            return name.equals(other.name) && location.equals(other.location);
+            return this.name.equals(other.name) && this.location.equals(other.location);
         }
         return false;
     }
 
     public PABlockLocation getLocation() {
-        return location;
+        return this.location;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

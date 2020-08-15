@@ -52,7 +52,7 @@ import java.util.*;
 public class GoalInfect extends ArenaGoal {
     public GoalInfect() {
         super("Infect");
-        debug = new Debug(108);
+        this.debug = new Debug(108);
     }
 // BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
     private EndRunnable endRunner;
@@ -70,10 +70,10 @@ public class GoalInfect extends ArenaGoal {
             return res;
         }
 
-        final int count = getLifeMap().size();
+        final int count = this.getLifeMap().size();
 
         if (count <= 1
-                || anyTeamEmpty()) {
+                || this.anyTeamEmpty()) {
             res.setPriority(this, PRIORITY); // yep. only one player left. go!
         }
         if (count == 0) {
@@ -84,17 +84,18 @@ public class GoalInfect extends ArenaGoal {
     }
 
     private boolean anyTeamEmpty() {
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             boolean bbreak = false;
             for (final ArenaPlayer player : team.getTeamMembers()) {
                 if (player.getStatus() == Status.FIGHT) {
                     bbreak = true;
+                    break;
                 }
             }
             if (bbreak) {
                 continue;
             }
-            arena.getDebugger().i("team empty: " + team.getName());
+            this.arena.getDebugger().i("team empty: " + team.getName());
             return true;
         }
         return false;
@@ -102,7 +103,7 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-        if (!arena.isFreeForAll()) {
+        if (!this.arena.isFreeForAll()) {
             return null; // teams are handled somewhere else
         }
 
@@ -139,7 +140,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public PACheck checkBreak(PACheck result, Arena arena, BlockBreakEvent event) {
         ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
-        if (arena.equals(ap.getArena())) {
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.BREAK
@@ -163,13 +164,13 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public PACheck checkCraft(PACheck result, Arena arena, CraftItemEvent event) {
         ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getInventory().getHolder()).getName());
-        if (arena.equals(ap.getArena())) {
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.CRAFT
                 )) {
                     event.setCancelled(true);
-                    arena.msg((Player) event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_CRAFT));
+                    arena.msg(event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_CRAFT));
                     result.setError(this, "CRAFT not allowed");
                 }
             }
@@ -180,7 +181,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public PACheck checkDrop(PACheck result, Arena arena, PlayerDropItemEvent event) {
         ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
-        if (arena.equals(ap.getArena())) {
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.DROP
@@ -196,15 +197,15 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public PACheck checkInventory(PACheck result, Arena arena, InventoryClickEvent event) {
-        ArenaPlayer ap = ArenaPlayer.parsePlayer(((Player) event.getWhoClicked()).getName());
-        if (arena.equals(ap.getArena())) {
+        ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getWhoClicked().getName());
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.INVENTORY
                 )) {
                     event.setCancelled(true);
                     event.getWhoClicked().closeInventory();
-                    arena.msg((Player) event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_INVENTORY));
+                    arena.msg(event.getWhoClicked(), Language.parse(arena, MSG.PLAYER_PREVENTED_INVENTORY));
                     result.setError(this, "INVENTORY not allowed");
                 }
             }
@@ -215,7 +216,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public PACheck checkPickup(PACheck result, Arena arena, EntityPickupItemEvent event) {
         ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getEntity().getName());
-        if (arena.equals(ap.getArena())) {
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.PICKUP
@@ -231,7 +232,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public PACheck checkPlace(PACheck result, Arena arena, BlockPlaceEvent event) {
         ArenaPlayer ap = ArenaPlayer.parsePlayer(event.getPlayer().getName());
-        if (arena.equals(ap.getArena())) {
+        if (arena.equals(ap.getArena()) && ap.getStatus() == Status.FIGHT) {
             if ("infected".equals(ap.getArenaTeam().getName())) {
                 if (ArenaPlayer.PlayerPrevention.has(
                         arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS), ArenaPlayer.PlayerPrevention.PLACE
@@ -258,12 +259,12 @@ public class GoalInfect extends ArenaGoal {
             return res;
         }
 
-        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-        final int maxTeamPlayers = arena.getArenaConfig().getInt(
+        final int maxPlayers = this.arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxTeamPlayers = this.arena.getArenaConfig().getInt(
                 CFG.READY_MAXTEAMPLAYERS);
 
-        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+        if (maxPlayers > 0 && this.arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(this.arena, MSG.ERROR_JOIN_ARENA_FULL));
             return res;
         }
 
@@ -271,12 +272,12 @@ public class GoalInfect extends ArenaGoal {
             return res;
         }
 
-        if (!arena.isFreeForAll()) {
-            final ArenaTeam team = arena.getTeam(args[0]);
+        if (!this.arena.isFreeForAll()) {
+            final ArenaTeam team = this.arena.getTeam(args[0]);
 
             if (team != null && maxTeamPlayers > 0
                     && team.getTeamMembers().size() >= maxTeamPlayers) {
-                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL, team.getName()));
+                res.setError(this, Language.parse(this.arena, MSG.ERROR_JOIN_TEAM_FULL, team.getName()));
                 return res;
             }
         }
@@ -290,11 +291,11 @@ public class GoalInfect extends ArenaGoal {
         if (res.getPriority() <= PRIORITY) {
             res.setPriority(this, PRIORITY);
 
-            if (!getLifeMap().containsKey(player.getName())) {
+            if (!this.getLifeMap().containsKey(player.getName())) {
                 return res;
             }
-            final int iLives = getLifeMap().get(player.getName());
-            arena.getDebugger().i("lives before death: " + iLives, player);
+            final int iLives = this.getLifeMap().get(player.getName());
+            this.arena.getDebugger().i("lives before death: " + iLives, player);
             if (iLives <= 1 && "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
                 res.setError(this, "0");
             }
@@ -314,7 +315,7 @@ public class GoalInfect extends ArenaGoal {
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
 
-        int value = arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS);
+        int value = this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_PPROTECTS);
 
         if ("getprotect".equalsIgnoreCase(args[0])) {
             List<String> values = new ArrayList<>();
@@ -327,14 +328,14 @@ public class GoalInfect extends ArenaGoal {
                 values.add((ArenaPlayer.PlayerPrevention.has(value, pp) ?
                         ChatColor.GREEN.toString() : ChatColor.RED.toString()) + pp.name());
             }
-            arena.msg(sender, Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.WHITE + ", "))));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_INFECTED_IPROTECT, StringParser.joinList(values, (ChatColor.WHITE + ", "))));
 
         } else if ("setprotect".equalsIgnoreCase(args[0])) {
             // setprotect [value] {true|false}
             if (args.length < 2) {
-                arena.msg(
+                this.arena.msg(
                         sender,
-                        Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
+                        Language.parse(this.arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
                                 String.valueOf(args.length), "2|3"));
                 return;
             }
@@ -343,9 +344,9 @@ public class GoalInfect extends ArenaGoal {
                 final ArenaPlayer.PlayerPrevention pp = ArenaPlayer.PlayerPrevention.valueOf(args[1].toUpperCase());
                 final boolean has = ArenaPlayer.PlayerPrevention.has(value, pp);
 
-                arena.getDebugger().i("plain value: " + value);
-                arena.getDebugger().i("checked: " + pp.name());
-                arena.getDebugger().i("has: " + String.valueOf(has));
+                this.arena.getDebugger().i("plain value: " + value);
+                this.arena.getDebugger().i("checked: " + pp.name());
+                this.arena.getDebugger().i("has: " + has);
 
                 boolean future = !has;
 
@@ -359,18 +360,18 @@ public class GoalInfect extends ArenaGoal {
 
                 if (future) {
                     value = value | (int) Math.pow(2, pp.ordinal());
-                    arena.msg(
+                    this.arena.msg(
                             sender,
-                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_IPROTECT_SET,
                                     pp.name(), ChatColor.GREEN + "true") + ChatColor.YELLOW);
                 } else {
                     value = value ^ (int) Math.pow(2, pp.ordinal());
-                    arena.msg(
+                    this.arena.msg(
                             sender,
-                            Language.parse(arena, MSG.GOAL_INFECTED_IPROTECT_SET,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_IPROTECT_SET,
                                     pp.name(), ChatColor.RED + "false") + ChatColor.YELLOW);
                 }
-                arena.getArenaConfig().set(CFG.GOAL_INFECTED_PPROTECTS, value);
+                this.arena.getArenaConfig().set(CFG.GOAL_INFECTED_PPROTECTS, value);
             } catch (final Exception e) {
                 List<String> values = new ArrayList<>();
 
@@ -378,159 +379,157 @@ public class GoalInfect extends ArenaGoal {
                 for (ArenaPlayer.PlayerPrevention pp : ArenaPlayer.PlayerPrevention.values()) {
                     values.add(pp.name());
                 }
-                arena.msg(sender,
-                        Language.parse(arena, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(values, ", ")));
+                this.arena.msg(sender,
+                        Language.parse(this.arena, MSG.ERROR_ARGUMENT, args[1], StringParser.joinList(values, ", ")));
                 return;
             }
-            arena.getArenaConfig().save();
+            this.arena.getArenaConfig().save();
 
         }
     }
 
     @Override
     public void commitEnd(final boolean force) {
-        if (endRunner != null) {
+        if (this.endRunner != null) {
             return;
         }
-        if (arena.realEndRunner != null) {
-            arena.getDebugger().i("[INFECT] already ending");
+        if (this.arena.realEndRunner != null) {
+            this.arena.getDebugger().i("[INFECT] already ending");
             return;
         }
-        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() != Status.FIGHT) {
                     continue;
                 }
                 if ("infected".equals(ap.getArenaTeam().getName())) {
-                    ArenaModuleManager.announce(arena,
-                            Language.parse(arena, MSG.GOAL_INFECTED_WON), "END");
+                    ArenaModuleManager.announce(this.arena,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_WON), "END");
 
-                    ArenaModuleManager.announce(arena,
-                            Language.parse(arena, MSG.GOAL_INFECTED_WON), "WINNER");
+                    ArenaModuleManager.announce(this.arena,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_WON), "WINNER");
 
-                    arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_WON));
+                    this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_INFECTED_WON));
                     break;
                 } else {
 
-                    ArenaModuleManager.announce(arena,
-                            Language.parse(arena, MSG.GOAL_INFECTED_LOST), "END");
+                    ArenaModuleManager.announce(this.arena,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_LOST), "END");
                     // String tank = tanks.get(arena);
-                    ArenaModuleManager.announce(arena,
-                            Language.parse(arena, MSG.GOAL_INFECTED_LOST), "LOSER");
+                    ArenaModuleManager.announce(this.arena,
+                            Language.parse(this.arena, MSG.GOAL_INFECTED_LOST), "LOSER");
 
-                    arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_LOST));
+                    this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_INFECTED_LOST));
                     break;
                 }
             }
 
-            if (ArenaModuleManager.commitEnd(arena, team)) {
+            if (ArenaModuleManager.commitEnd(this.arena, team)) {
                 return;
             }
         }
 
-        endRunner = new EndRunnable(arena, arena.getArenaConfig().getInt(
+        this.endRunner = new EndRunnable(this.arena, this.arena.getArenaConfig().getInt(
                 CFG.TIME_ENDCOUNTDOWN));
     }
 
     @Override
     public void commitPlayerDeath(final Player player, final boolean doesRespawn,
                                   final String error, final PlayerDeathEvent event) {
-        if (!getLifeMap().containsKey(player.getName())) {
+        if (!this.getLifeMap().containsKey(player.getName())) {
             return;
         }
-        int iLives = getLifeMap().get(player.getName());
-        arena.getDebugger().i("lives before death: " + iLives, player);
-        if (iLives <= 1 || "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
-            if (iLives <= 1 && "infected".equals(ArenaPlayer.parsePlayer(player.getName()).getArenaTeam().getName())) {
+        int iLives = this.getLifeMap().get(player.getName());
+        this.arena.getDebugger().i("lives before death: " + iLives, player);
+        ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+        if (iLives <= 1 || "infected".equals(aPlayer.getArenaTeam().getName())) {
+            if (iLives <= 1 && "infected".equals(aPlayer.getArenaTeam().getName())) {
 
-                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "playerDeath:" + player.getName());
+                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "infected", "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
-                ArenaPlayer.parsePlayer(player.getName()).setStatus(Status.LOST);
+                aPlayer.setStatus(Status.LOST);
                 // kill, remove!
-                getLifeMap().remove(player.getName());
-                if (arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
-                    arena.getDebugger().i("faking player death", player);
-                    PlayerListener.finallyKillPlayer(arena, player, event);
+                this.getLifeMap().remove(player.getName());
+                if (this.arena.getArenaConfig().getBoolean(CFG.PLAYER_PREVENTDEATH)) {
+                    this.arena.getDebugger().i("faking player death", player);
+                    PlayerListener.finallyKillPlayer(this.arena, player, event);
                 }
                 return;
             }
             if (iLives <= 1) {
-                PAGoalEvent gEvent = new PAGoalEvent(arena, this, "playerDeath:" + player.getName());
+                PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "playerDeath:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
                 // dying player -> infected
-                getLifeMap().put(player.getName(), arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
-                arena.msg(player, Language.parse(arena, MSG.GOAL_INFECTED_YOU));
-                arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
-
-                ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
+                this.getLifeMap().put(player.getName(), this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_INFECTED_YOU));
+                this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_INFECTED_PLAYER, player.getName()));
 
                 final ArenaTeam oldTeam = aPlayer.getArenaTeam();
-                final ArenaTeam respawnTeam = arena.getTeam("infected");
+                final ArenaTeam respawnTeam = this.arena.getTeam("infected");
 
-                PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, player, oldTeam, respawnTeam);
+                PATeamChangeEvent tcEvent = new PATeamChangeEvent(this.arena, player, oldTeam, respawnTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
-                arena.updateScoreboardTeam(player, oldTeam, respawnTeam);
+                this.arena.updateScoreboardTeam(player, oldTeam, respawnTeam);
 
                 oldTeam.remove(aPlayer);
 
                 respawnTeam.add(aPlayer);
 
-                final ArenaClass infectedClass = arena.getClass("%infected%");
+                final ArenaClass infectedClass = this.arena.getClass("%infected%");
                 if (infectedClass != null) {
                     aPlayer.setArenaClass(infectedClass);
                 }
 
-                if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                    arena.broadcast(Language.parse(arena,
+                if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                    this.arena.broadcast(Language.parse(this.arena,
                             MSG.FIGHT_KILLED_BY,
                             respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                            arena.parseDeathCause(player, event.getEntity()
+                            this.arena.parseDeathCause(player, event.getEntity()
                                             .getLastDamageCause().getCause(),
                                     player.getKiller()), String.valueOf(iLives)));
                 }
 
                 final List<ItemStack> returned;
 
-                if (arena.getArenaConfig().getBoolean(
+                if (this.arena.getArenaConfig().getBoolean(
                         CFG.PLAYER_DROPSINVENTORY)) {
                     returned = InventoryManager.drop(player);
                     event.getDrops().clear();
                 } else {
-                    returned = new ArrayList<>();
-                    returned.addAll(event.getDrops());
+                    returned = new ArrayList<>(event.getDrops());
                 }
 
-                PACheck.handleRespawn(arena,
-                        ArenaPlayer.parsePlayer(player.getName()), returned);
+                PACheck.handleRespawn(this.arena,
+                        aPlayer, returned);
 
-                if (anyTeamEmpty()) {
-                    PACheck.handleEnd(arena, false);
+                if (this.anyTeamEmpty()) {
+                    PACheck.handleEnd(this.arena, false);
                 }
                 return;
             }
             // dying infected player, has lives remaining
-            PAGoalEvent gEvent = new PAGoalEvent(arena, this, "infected", "doesRespawn", "playerDeath:" + player.getName());
+            PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "infected", "doesRespawn", "playerDeath:" + player.getName());
             Bukkit.getPluginManager().callEvent(gEvent);
             iLives--;
-            getLifeMap().put(player.getName(), iLives);
+            this.getLifeMap().put(player.getName(), iLives);
 
-            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+            final ArenaTeam respawnTeam = aPlayer
                     .getArenaTeam();
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                arena.broadcast(Language.parse(arena,
+            if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                this.arena.broadcast(Language.parse(this.arena,
                         MSG.FIGHT_KILLED_BY_REMAINING,
                         respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        arena.parseDeathCause(player, event.getEntity()
+                        this.arena.parseDeathCause(player, event.getEntity()
                                         .getLastDamageCause().getCause(),
                                 player.getKiller()), String.valueOf(iLives)));
             }
 
             final List<ItemStack> returned;
 
-            if (arena.getArenaConfig().getBoolean(
+            if (this.arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
@@ -539,57 +538,56 @@ public class GoalInfect extends ArenaGoal {
                 returned.addAll(event.getDrops());
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(player.getName()), returned);
+            PACheck.handleRespawn(this.arena,
+                    aPlayer, returned);
 
 
             // player died => commit death!
-            PACheck.handleEnd(arena, false);
+            PACheck.handleEnd(this.arena, false);
         } else {
             iLives--;
-            getLifeMap().put(player.getName(), iLives);
+            this.getLifeMap().put(player.getName(), iLives);
 
-            final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(player.getName())
+            final ArenaTeam respawnTeam = aPlayer
                     .getArenaTeam();
-            if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-                arena.broadcast(Language.parse(arena,
+            if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+                this.arena.broadcast(Language.parse(this.arena,
                         MSG.FIGHT_KILLED_BY_REMAINING,
                         respawnTeam.colorizePlayer(player) + ChatColor.YELLOW,
-                        arena.parseDeathCause(player, event.getEntity()
+                        this.arena.parseDeathCause(player, event.getEntity()
                                         .getLastDamageCause().getCause(),
                                 player.getKiller()), String.valueOf(iLives)));
             }
 
             final List<ItemStack> returned;
 
-            if (arena.getArenaConfig().getBoolean(
+            if (this.arena.getArenaConfig().getBoolean(
                     CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
-                returned = new ArrayList<>();
-                returned.addAll(event.getDrops());
+                returned = new ArrayList<>(event.getDrops());
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(player.getName()), returned);
+            PACheck.handleRespawn(this.arena,
+                    aPlayer, returned);
         }
     }
 
     @Override
     public void commitStart() {
-        parseStart(); // hack the team in before spawning, derp!
-        for (final ArenaTeam team : arena.getTeams()) {
-            SpawnManager.distribute(arena, team);
+        this.parseStart(); // hack the team in before spawning, derp!
+        for (final ArenaTeam team : this.arena.getTeams()) {
+            SpawnManager.distribute(this.arena, team);
         }
     }
 
     @Override
     public void displayInfo(final CommandSender sender) {
         sender.sendMessage("normal lives: "
-                + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
+                + this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES) + " || " +
                 "infected lives: "
-                + arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                + this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
     }
 
     @Override
@@ -602,8 +600,8 @@ public class GoalInfect extends ArenaGoal {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                            .getName()) : 0));
+                    String.valueOf(this.getLifeMap().getOrDefault(aPlayer.getName(), 0))
+            );
         }
         return res;
     }
@@ -612,8 +610,8 @@ public class GoalInfect extends ArenaGoal {
     public boolean hasSpawn(final String string) {
 
 
-        if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : arena.getClasses()) {
+        if (this.arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+            for (final ArenaClass aClass : this.arena.getClasses()) {
                 if (string.toLowerCase().startsWith(
                         aClass.getName().toLowerCase() + "spawn")) {
                     return true;
@@ -621,13 +619,13 @@ public class GoalInfect extends ArenaGoal {
             }
         }
 
-        return arena.isFreeForAll() && string.toLowerCase()
+        return this.arena.isFreeForAll() && string.toLowerCase()
                 .startsWith("spawn") || string.toLowerCase().startsWith("infected");
     }
 
     @Override
     public void initate(final Player player) {
-        updateLives(player, arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+        this.updateLives(player, this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
     }
 
     @Override
@@ -639,108 +637,100 @@ public class GoalInfect extends ArenaGoal {
     public void parseLeave(final Player player) {
         if (player == null) {
             PVPArena.instance.getLogger().warning(
-                    getName() + ": player NULL");
+                    this.getName() + ": player NULL");
             return;
         }
-        if (getLifeMap().containsKey(player.getName())) {
-            getLifeMap().remove(player.getName());
-        }
+        this.getLifeMap().remove(player.getName());
     }
 
     @Override
     public void parseStart() {
-        if (arena.getTeam("infected") != null) {
+        if (this.arena.getTeam("infected") != null) {
             return;
         }
         ArenaPlayer infected = null;
         final Random random = new Random();
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             int pos = random.nextInt(team.getTeamMembers().size());
-            arena.getDebugger().i("team " + team.getName() + " random " + pos);
+            this.arena.getDebugger().i("team " + team.getName() + " random " + pos);
             for (final ArenaPlayer ap : team.getTeamMembers()) {
-                arena.getDebugger().i("#" + pos + ": " + ap, ap.getName());
-                getLifeMap().put(ap.getName(),
-                        arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
+                this.arena.getDebugger().i("#" + pos + ": " + ap, ap.getName());
+                this.getLifeMap().put(ap.getName(),
+                        this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_NLIVES));
                 if (pos-- == 0) {
                     infected = ap;
-                    getLifeMap().put(ap.getName(),
-                            arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
+                    this.getLifeMap().put(ap.getName(),
+                            this.arena.getArenaConfig().getInt(CFG.GOAL_INFECTED_ILIVES));
                 }
                 //break;
             }
         }
         final ArenaTeam infectedTeam = new ArenaTeam("infected", "PINK");
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             if (team.getTeamMembers().contains(infected)) {
-                final PATeamChangeEvent tcEvent = new PATeamChangeEvent(arena, infected.get(), team, infectedTeam);
+                final PATeamChangeEvent tcEvent = new PATeamChangeEvent(this.arena, infected.get(), team, infectedTeam);
                 Bukkit.getPluginManager().callEvent(tcEvent);
-                arena.updateScoreboardTeam(infected.get(), team, infectedTeam);
+                this.arena.updateScoreboardTeam(infected.get(), team, infectedTeam);
                 team.remove(infected);
             }
         }
         infectedTeam.add(infected);
 
-        final ArenaClass infectedClass = arena.getClass("%infected%");
+        final ArenaClass infectedClass = this.arena.getClass("%infected%");
         if (infectedClass != null) {
             infected.setArenaClass(infectedClass);
             InventoryManager.clearInventory(infected.get());
             infectedClass.equip(infected.get());
-            for (final ArenaModule mod : arena.getMods()) {
+            for (final ArenaModule mod : this.arena.getMods()) {
                 mod.parseRespawn(infected.get(), infectedTeam, DamageCause.CUSTOM,
                         infected.get());
             }
         }
 
-        arena.msg(infected.get(), Language.parse(arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
-        arena.broadcast(Language.parse(arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
+        this.arena.msg(infected.get(), Language.parse(this.arena, MSG.GOAL_INFECTED_YOU, infected.getName()));
+        this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_INFECTED_PLAYER, infected.getName()));
 
-        final Set<PASpawn> spawns = new HashSet<>();
-        spawns.addAll(SpawnManager.getPASpawnsStartingWith(arena, "infected"));
+        final Set<PASpawn> spawns = new HashSet<>(SpawnManager.getPASpawnsStartingWith(this.arena, "infected"));
 
         int pos = spawns.size();
 
         for (final PASpawn spawn : spawns) {
             if (pos-- < 0) {
-                arena.tpPlayerToCoordName(infected.get(), spawn.getName());
+                this.arena.tpPlayerToCoordName(infected, spawn.getName());
                 break;
             }
         }
-        arena.getTeams().add(infectedTeam);
+        this.arena.getTeams().add(infectedTeam);
     }
 
     @Override
     public void reset(final boolean force) {
-        endRunner = null;
-        getLifeMap().clear();
-        arena.getTeams().remove(arena.getTeam("infected"));
+        this.endRunner = null;
+        this.getLifeMap().clear();
+        this.arena.getTeams().remove(this.arena.getTeam("infected"));
     }
 
     @Override
     public void setPlayerLives(final int value) {
-        final Set<String> plrs = new HashSet<>();
-
-        for (final String name : getLifeMap().keySet()) {
-            plrs.add(name);
-        }
+        final Set<String> plrs = new HashSet<>(this.getLifeMap().keySet());
 
         for (final String s : plrs) {
-            getLifeMap().put(s, value);
+            this.getLifeMap().put(s, value);
         }
     }
 
     @Override
     public void setPlayerLives(final ArenaPlayer aPlayer, final int value) {
-        getLifeMap().put(aPlayer.getName(), value);
+        this.getLifeMap().put(aPlayer.getName(), value);
     }
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaPlayer ap : arena.getFighters()) {
-            double score = getLifeMap().containsKey(ap.getName()) ? getLifeMap().get(ap.getName())
-                    : 0;
+        for (final ArenaPlayer ap : this.arena.getFighters()) {
+            double score = this.getLifeMap().getOrDefault(ap.getName(), 0);
             if (ap.getArenaTeam() != null && "infected".equals(ap.getArenaTeam().getName())) {
-                score *= arena.getFighters().size();
+                score *= this.arena.getFighters().size();
             }
             if (scores.containsKey(ap.getName())) {
                 scores.put(ap.getName(), scores.get(ap.getName()) + score);
@@ -754,6 +744,6 @@ public class GoalInfect extends ArenaGoal {
 
     @Override
     public void unload(final Player player) {
-        getLifeMap().remove(player.getName());
+        this.getLifeMap().remove(player.getName());
     }
 }

@@ -1,140 +1,99 @@
-![PVP-Arena](/doc/images/logo.png)
+![PVP-Arena](doc/images/logo.png)
+
+<p align="center">
+    <b>
+        IF YOU'RE UPGRADING FROM 1.14.x VERSION OR BELOW, PLEASE READ 
+        <a href="doc/update-version.md">UPGRADE DOCUMENTATION</a>
+    </b>
+</p>
 
 ***
-**IF YOU'RE UPGRADING FROM 1.3.x VERSION OR BELOW, PLEASE READ [UPGRADE DOCUMENTATION](doc/update-from-1-3-x.md)**
-
-Are you testing 1.15-snapshot ? Documentation is [available here](https://github.com/Eredrim/pvparena/tree/1.15).
+[What is PVP Arena?](#What-is-PVP-Arena?) | [Dependencies](#Dependencies) | [Downloads](#Downloads) | 
+[Installation](#Installation) | [Documentation](#Documentation) | [Support](#Support) | 
+[Telemetry](#Telemetry) | [Credits](#Credits)
 ***
+<br>
 
-**Enhance your server by adding a new dimension of PVP battles!**
+## What is PVP Arena?
 
-Create fully customizable, moddable, flexible arenas, develop your own arena goal or mod that totally changes the game as you wish.
-This flexibility is achieved on the one hand by a module loader created by NodinChan which loads arena goals (/pvparena/goals) and arena mods (/pvparena/mods) which enhance the gameplay just limited by your imagination, on the other hand it features an API, which still is a WIP due to lack of requests. I will enhance it as feature/hook requests arise.
+PVP Arena is a plugin for Spigot based servers which enables creation of customizable fight and mini-games arenas.
+Define your own teams, classes, lobbies, spawn points, messages, gear colors, rewards and even game modes!
+Theses game modes (included in the plugin) can combined with tens of modules to enhance your gameplay!
+In addition, all arenas can be protected with an embedded protection system based on regions.
 
-
-***
-
-
-## Features
-
+Anyway, here's a quick (non exhaustive) list of plugin features:
 - Multiple arenas
-- Battlefield regions
-- Customizable classes
+- Arena regions and protections
 - Player-state saving
-- Arena regions
-- In-game configuration access
-- Arena disable
-- Leader boards
+- Customizable classes
+- Customizable spawn points, lobbies and spectator zones
+- In-game configuration access and simple config files
+- Arena disabling
+- Scoreboards
 - Spawn protection
 - Flag coloring
 - Inventory drops
 - Announcements
-- Arena end timer
+- Time limited match
+- Battlefield regeneration
 
+So take time to read the docs, it's full of useful information 😉
 ***
 
 ## Dependencies
 
-- Spigot 1.13
+- Spigot 1.13+
+- Java 8+
 
 ***
 
 ## Downloads
 
-- [spigotmc.org](https://www.spigotmc.org/resources/pvp-arena.16584/)
-- [Dev builds on Jenkins](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
+PVP Arena release version can be downloaded on following pages:
+- [PVP Arena - SpigotMC](https://www.spigotmc.org/resources/pvp-arena.16584/)
+- [Github releases page](https://github.com/Eredrim/pvparena/releases)
+
+Development builds (experimental) can be downloaded on Jenkins:
+- [Jenkins dev builds](https://ci.craftyn.com/view/Spigot%20PVP%20Arena/)
 
 ***
 
-## How to install
+## Installation
 
-- Stop your server
-- Place jar in plugins folder
-- Run a first time to create config folder
-- Configure if you wish to
-- Done !
+Place PVP Arena `.jar` file in the plugin repository of your server and restart. 
 
 ***
 
 ## Documentation
 
-- [Creation](doc/creation.md)
+- [Getting started](doc/getting-started.md)
 - [Commands](doc/commands.md)
-- [Enhancements](doc/enhancements.md)
-- [Items](doc/items.md)
-- [Languages](doc/languages.md)
 - [Permissions](doc/permissions.md)
 - [Regions](doc/regions.md)
+- [Goals](doc/goals.md)
+- [Modules](doc/modules.md)
+- [Items in config files](doc/items.md)
+- [Languages](doc/languages.md)
 - [Configuration](doc/configuration.md)
+- [Update checker](doc/update-checker.md)
+- [FAQ](doc/faq.md)
 
 ***
 
-## Video Tutorials
+## Support
 
-- Basic Setup (v1.3):
-    - [Team Arena](https://www.youtube.com/watch?v=PT0piAyVMIw)
-    - [Free For All Arena](https://www.youtube.com/watch?v=bYNtxGxVGfE)
-    - [Region Tutorial (Shapes)](https://www.youtube.com/watch?v=jWdWbwRg9zY)
-    - [Region Tutorial (Protections)](https://youtu.be/WFIZ7ZskPVc)
-- Localized Setup (v1.3):
-    - [Team Arena (German)](https://www.youtube.com/watch?v=2KSAk-PvwRM)
-- Goal Tutorials (v1.3):
-    - [BlockDestroy](https://www.youtube.com/watch?v=i7Fpuh_O5O8)
-    - [CheckPoints](https://www.youtube.com/watch?v=anO_tYwcKsg)
-    - [Domination](https://www.youtube.com/watch?v=_Ngq5xBlLsk)
-- [CTF (v1.0)](http://www.youtube.com/watch?v=SuL78bce-f0)
-- [DeathMatch (v1.0)](http://www.youtube.com/watch?v=KqBueDNbpD8)
-- [Food Block Destroy (v1.0)](http://www.youtube.com/watch?v=ntloY1BTKHQ)
-- [FreeForAll (v1.0)](http://www.youtube.com/watch?v=xBIxHoKMu98)
-- [Spleef (v1.0)](http://www.youtube.com/watch?v=DRmLNXEAs_4)
-- [Pillar Domination (v1.0)](http://www.youtube.com/watch?v=Xi7yNURxAjw)
-- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
+You can contact us to ask your questions or just discuss, you can go here:
+- <img src="https://www.spigotmc.org/favicon.ico" height="16"></img> [Spigot Forums](https://www.spigotmc.org/threads/pvp-arena.113406/)
+- <img src="https://discord.com/assets/07dca80a102d4149e9736d4b162cff6f.ico" height="16"></img> [Discord server](https://discord.gg/KsXG2By)
 
-Users tutorials :
-
-- [TeamDeathMatch (v1.0)](http://www.youtube.com/watch?v=Jw6E8s2kiKw)
+To report issues and make suggestion, please use our [Github issues page](https://github.com/Eredrim/pvparena/issues).
 
 ***
 
-## Changelog
+## Telemetry
 
-- v1.13.5 - address #355 - set some more scoreboard settings to hopefully get colors going
-- [read more](doc/changelog.md)
-
-***
-
-## Todo
-
-- plugin
-  - [ ] calculate a winner based on ROUND results
-- modules
-- goals
-  - [ ] tournament arenas ; rounds switch through arenas
-  - [ ] siege -> bring PACKET from A to B || prevent
-
-***
-
-## Update Checker
-If you wan't you can be informed of plugin or modules updates. Each release version was pushed on github since 1.14.0.
-The update checker will call the github APIs and announce an update to OPs on login. You can configure it to 
-automatically download updates.
-
-```yaml
-    update:
-      plugin: announce
-      modules: announce
-    # valid values:
-    # download: download updates and announce when update is installed
-    # announce: only announce, do not download
-    # everything else will disable the update check
-```
-
-***
-
-## Phoning home
-
-By default, the server contacts my private server for information purposes. It sends your port, IP (for proper server counting), and the plugin version.
-That's it! If you want to disable that, set "tracker" to false in the config!
+PVPArena uses bStats to get statistics about basic information like plugin version, java version,
+kind of used Minecraft server, etc. You can disable it in the dedicated config file `/plugins/bStats/config.yml`
 
 ***
 

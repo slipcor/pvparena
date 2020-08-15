@@ -248,8 +248,7 @@ public class GoalPlayerLives extends ArenaGoal {
             }
             final List<ItemStack> returned;
 
-            if (arena.getArenaConfig().getBoolean(
-                    CFG.PLAYER_DROPSINVENTORY)) {
+            if (arena.getArenaConfig().getBoolean(CFG.PLAYER_DROPSINVENTORY)) {
                 returned = InventoryManager.drop(player);
                 event.getDrops().clear();
             } else {
@@ -257,8 +256,7 @@ public class GoalPlayerLives extends ArenaGoal {
                 returned.addAll(event.getDrops());
             }
 
-            PACheck.handleRespawn(arena,
-                    ArenaPlayer.parsePlayer(player.getName()), returned);
+            PACheck.handleRespawn(arena, ArenaPlayer.parsePlayer(player.getName()), returned);
 
         }
     }
@@ -276,8 +274,8 @@ public class GoalPlayerLives extends ArenaGoal {
             if (arena.isFreeForAll()) {
                 res.setError(
                         this,
-                        String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                                .getName()) : 0));
+                        String.valueOf(getLifeMap().getOrDefault(aPlayer.getName(), 0))
+                );
             } else {
 
                 if (getLifeMap().containsKey(aPlayer.getArenaTeam().getName())) {

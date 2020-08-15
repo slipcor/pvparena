@@ -47,6 +47,14 @@ public abstract class AbstractGlobalCommand implements IArenaCommandHandler {
 
     public abstract String getName();
 
+    /**
+     * Check if the global command also exists in arena context
+     * @return true if there is the same command for arena context
+     */
+    public boolean hasVersionForArena() {
+        return false;
+    }
+
     @Override
     public boolean hasPerms(final CommandSender sender, final Arena arena) {
         // tabComplete check

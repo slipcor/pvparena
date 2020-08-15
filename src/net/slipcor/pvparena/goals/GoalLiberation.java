@@ -80,9 +80,9 @@ public class GoalLiberation extends ArenaGoal {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList(new String[0]);
-        if (arena != null) {
-            for (final ArenaTeam team : arena.getTeams()) {
+        final List<String> result = new ArrayList<>();
+        if (this.arena != null) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "button");
             }
@@ -535,8 +535,8 @@ public class GoalLiberation extends ArenaGoal {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                            .getName()) : 0));
+                    String.valueOf(getLifeMap().getOrDefault(aPlayer.getName(), 0))
+            );
         }
         return res;
     }

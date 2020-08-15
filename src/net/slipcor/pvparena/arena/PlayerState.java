@@ -105,7 +105,7 @@ public final class PlayerState {
         }
 
         if (arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
+             player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(arena.getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH));
         }
 
         if (iHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
@@ -115,12 +115,9 @@ public final class PlayerState {
         }
         player.setFireTicks(0);
         try {
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable() {
-                @Override
-                public void run() {
-                    if (player.getFireTicks() > 0) {
-                        player.setFireTicks(0);
-                    }
+            Bukkit.getScheduler().runTaskLater(PVPArena.instance, () -> {
+                if (player.getFireTicks() > 0) {
+                    player.setFireTicks(0);
                 }
             }, 5L);
         } catch (Exception e) {
@@ -129,8 +126,7 @@ public final class PlayerState {
         player.setVelocity(new Vector());
         player.setFoodLevel(arena.getArenaConfig().getInt(CFG.PLAYER_FOODLEVEL));
         player.setSaturation(arena.getArenaConfig().getInt(CFG.PLAYER_SATURATION));
-        player.setExhaustion((float) arena.getArenaConfig().getDouble(
-                CFG.PLAYER_EXHAUSTION));
+        player.setExhaustion((float) arena.getArenaConfig().getDouble(CFG.PLAYER_EXHAUSTION));
         player.setLevel(0);
         player.setExp(0);
         if (arena.getArenaConfig().getInt(CFG.GENERAL_GAMEMODE) > -1) {
@@ -250,8 +246,7 @@ public final class PlayerState {
         final double current = player.getHealth();
         final double regain = value - current;
 
-        final EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain,
-                RegainReason.CUSTOM);
+        final EntityRegainHealthEvent event = new EntityRegainHealthEvent(player, regain, RegainReason.CUSTOM);
         Bukkit.getPluginManager().callEvent(event);
     }
 

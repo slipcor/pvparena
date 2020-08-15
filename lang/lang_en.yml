@@ -66,6 +66,10 @@ nulang:
     SUICIDE: self
     THORNS: thorns
     VOID: the Void
+    FALLING_BLOCK: a falling block
+    HOT_FLOOR: a magma block
+    CRAMMING: a collision surplus
+    DRAGON_BREATH: dragon breath
     CREEPER: a creeper
     SKELETON: a skeleton
     SPIDER: a spider
@@ -206,7 +210,6 @@ nulang:
       enable: use the enable command
       gamemode: use the gamemode command
       goal: use the goal command
-      install: use the install command
       playerclass: use the playerclass command
       playerjoin: use the playerjoin command
       protection: use the protection command
@@ -227,8 +230,7 @@ nulang:
       teleport: use the teleport command
       template: use the template command
       togglemod: use the togglemod command
-      uninstall: use the uninstall command
-      update: use the update command
+      modules: use the modules command
       whitelist: use the whitelist command
       arenaclass: use the arenaclass command
       chat: use the chat command
@@ -318,15 +320,6 @@ nulang:
         claimed: '[%1%] %2% claimed the pillar!'
         unclaimed: '[%1%] %2% unclaimed the pillar!'
         score: '%1% scored %2% points'
-    rescue:
-      flaghomeleft: '%1% brought home the hostage of team %2%! Rescues remaining:
-        %3%'
-      flagsave: '%1% dropped the hostage of team %2%!'
-      flaggrab: '%1% grabbed the hostage of team %2%!'
-      flagnotsafe: Your hostage is taken! Cannot bring back an enemy hostage!'
-      setflag: 'Rescue set: %1%'
-      tosetflag: 'Rescue to set: %1%'
-      typeset: 'Hostage type set to: &e%1%'
   help:
     head: '&e--- &aPVP Arena Help&e %1% &e---'
     admin: '&c%1% - help administrating'
@@ -544,6 +537,7 @@ nulang:
       llposition: You are on queue position %1%!
       llrejoin: Ready check has caught you not being able to join. Rejoin when you can!
       llwait: Arena will be starting soon, please wait!
+      llleave: You have left the queue of the %1% arena.
     playerfinder:
       near: 'Nearest player: %1% blocks!'
       point: Compass pointing to nearest player!
@@ -563,6 +557,21 @@ nulang:
       done: Join block set here - %1%
       start: Setting join block!
       stop: Aborted join block selection!
+    squads:
+      nosquad: 'No squads loaded! Add some: /pa [arena] !sq add [name]'
+      listhead: Squads for arena &b%1%
+      listitem: 'Squad %1% (max: %2%) %3%'
+      added: Squad %1% has been added
+      set: Squad %1% has been set
+      removed: Squad %1% has been removed
+      notexist: Squad %1% doesn't exist
+      error: Error while editing squads, syntax is not correct!
+      full: This squad is full!
+      help: |-
+        /pa !sq | show the arena squads
+        /pa !sq add [name] [limit] | add squad with player limit (set to 0 for no limit)
+        /pa !sq set [name] [limit] | set player limit for squad
+        /pa !sq remove [name] | remove squad [name]
     startfreeze:
       announce: The game will start in %1% seconds!
     tempperms:
@@ -616,6 +625,14 @@ nulang:
     clear: Inventories cleared!
   announce:
     arena: Arena is starting! Type /pa %1% to join!
+  updater:
+    plugin: PVP Arena
+    modules: PVP Arena modules pack
+    announce: '%1% %2% is now available ! Your version: %3%'
+    success: '%1% has been updated to %2%.'
+    restart: Restart your server to apply update.
+    downloading: 'Downloading %1%...'
+    downloaderror: 'Error while downloading %1%'
 lang:
   goal:
     blockdestroy:

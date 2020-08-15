@@ -1,23 +1,19 @@
 # TeamDeathMatch
 
+> ℹ This goal is designed for **team** gamemode
+
 ## Description
 
-Team play. Team kills are counted by collecting the drops when a player is killed, the first team collecting the set amount of drops wins.
+Team kills are counted by collecting the drops when a player is killed, the first team collecting the set amount of drops wins.
 
 The big difference to standard PVP is that a team can prevent the other team from scoring by collecting the drops themselves.
 
 ## Setup
 
-\-
+There is no special setup.
 
-## Config Settings
+## Config settings
 
-- tdcitem \- the amount of (enemy) drops a team has to collect in order to win
-
-## Warnings
-
-\-
-
-## Supported Game Modes
-
-Only supports team game mode!
+- `tdcitem` \- item type dropped on player death (default: WHITE_WOOL)
+- `tdclives` \- the amount of (enemy) drops a team has to collect in order to win, i.e. number of team lives 
+(default: 10)

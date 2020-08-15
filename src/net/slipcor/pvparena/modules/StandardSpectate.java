@@ -68,11 +68,11 @@ public class StandardSpectate extends ArenaModule {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         aPlayer.setLocation(new PALocation(player.getLocation()));
 
-        aPlayer.setArena(arena);
+        aPlayer.setArena(this.arena);
         aPlayer.setStatus(Status.WATCH);
 
-        arena.tpPlayerToCoordName(player, "spectator", true);
-        arena.msg(player, Language.parse(arena, MSG.NOTICE_WELCOME_SPECTATOR));
+        this.arena.tpPlayerToCoordNameForJoin(aPlayer, "spectator", true);
+        this.arena.msg(player, Language.parse(this.arena, MSG.NOTICE_WELCOME_SPECTATOR));
 
         if (aPlayer.getState() == null) {
 

@@ -1,6 +1,10 @@
-# Configuration File
+# Configuration file
 
-This is a default configuration file. All parameters can be changed via in-game commands ([/pa set](commands/set.md)).
+This page explains what are each parameter of arena config file. 
+All those parameters can be changed via in-game command ([/pa set](commands/set.md)).
+
+> ℹ This is a default configuration file. 
+
 ```yaml
 configversion: 1.3.3.217
 chat:
@@ -8,7 +12,7 @@ chat:
   defaultTeam: false #Limit chat to team only
   enabled: true #Allows chat usage
   onlyPrivate: false #Limit chat to the arena
-  toGlobal: none #Begin word to talk to all the arena of onlyPrivate is active. Eg: @all
+  toGlobal: none #Begin word to talk to all the arena of onlyPrivate is active. E.g. @all
 cmds:
   defaultjoin: true #Join the arena if just typing /pa <arena>
   #List of allowed commands in the arena
@@ -22,9 +26,9 @@ damage:
   spawncamp: 1 #If nocamp region flag is enabled, damage set to player
   weapons: true #Allow weapon damage - false = unbreakable
 general:
-  classspawn: false #Create specific class spawns. Eg: blueTankSpawn
+  classspawn: false #Create specific class spawns. E.g. blueTankSpawn
   classSwitchAfterRespawn: false #If IngameClassSwitch is enabled, switch class only on next respawn
-  customReturnsGear: false #If player has custom inventory, reload it on respawn
+  customReturnsGear: false #If player has custom inventory, reload it after the match
   enabled: true #Make arena accessible or not
   gm: 0 #Arena game mode
   leavedeath: false #Kill the player on battleground leaving

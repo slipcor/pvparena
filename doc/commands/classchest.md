@@ -2,22 +2,12 @@
 
 ## Description
 
-This command manages the arena class chests. You use it to define a class item chest.
+If you want, you can save class inventories inside chests instead of using [/pa class](class.md) command.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa test classchest Ranger | Define the chest containing the items of the class "Ranger" from the arena "test"
+/pa [arena] classchest [class] | Use a chest to store items of a class. You have to look at the chest.
 
-## Hazards
-
--
-
-## Details
-
-Look at a chest you want to set
-
-## ToDo
-
--
+Example: `/pa test classchest Ranger` - Define the chest containing the items of the class "Ranger" from the arena "test". 

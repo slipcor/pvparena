@@ -277,8 +277,8 @@ public class GoalTank extends ArenaGoal {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getName()) ? getLifeMap().get(aPlayer
-                            .getName()) : 0));
+                    String.valueOf(getLifeMap().getOrDefault(aPlayer.getName(), 0))
+            );
         }
         return res;
     }
@@ -376,7 +376,7 @@ public class GoalTank extends ArenaGoal {
 
         for (final PASpawn spawn : spawns) {
             if (--pos < 0) {
-                arena.tpPlayerToCoordName(tank.get(), spawn.getName());
+                this.arena.tpPlayerToCoordName(tank, spawn.getName());
                 break;
             }
         }

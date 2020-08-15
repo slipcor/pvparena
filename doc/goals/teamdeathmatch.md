@@ -1,21 +1,16 @@
 # TeamDeathMatch
-## Description
 
-Simple team play. Team kills are counted, the first team killing that many people wins.
-## Setup
+> ℹ This goal is designed for **team** gamemode
 
-\-
-## Config Settings
+## Description
 
-- tdlives \- the amount of kills a team has to achieve in order to win 
+Simple team play. Team kills are counted, the first team killing enough players wins.
 
-## Warnings
+## Setup
 
-\-
+There is no special setup.
 
-## Supported Game Modes
+## Config settings
 
-Only supports team game mode!
-## YouTube video
-
-[click me](http://www.youtube.com/watch?v=rQ1ljlc6SJM)
+- `tdlives` - the amount of kills a team has to achieve in order to win (default: 10)
+- `suicideScore` - does suicide is taken into account in score calculation? (default: false)

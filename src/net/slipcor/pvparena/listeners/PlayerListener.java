@@ -46,6 +46,8 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 /**
  * <pre>
  * Player Listener class
@@ -381,7 +383,7 @@ public class PlayerListener implements Listener {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
-        final String playerName = team == null ? player.getName() : team.colorizePlayer(player);
+        final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
             arena.broadcast(Language.parse(arena,
                     MSG.FIGHT_KILLED_BY,
@@ -397,14 +399,14 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
-                || !"custom".equalsIgnoreCase(ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
-                .getName())) {
+        // Trick to avoid death screen
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, player::closeInventory, 1);
+
+        if (!aPlayer.hasCustomClass()) {
             InventoryManager.clearInventory(player);
         }
 
-        arena.removePlayer(player,
-                arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
+        arena.removePlayer(player, arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
 
         aPlayer.setStatus(Status.LOST);
         aPlayer.addDeath();
@@ -526,7 +528,11 @@ public class PlayerListener implements Listener {
             if (whyMe) {
                 arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
             }
-            if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
+            if (asList(Status.LOUNGE, Status.READY).contains(aPlayer.getStatus()) &&
+                    arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
+                arena.getDebugger().i("allowing lounge interaction due to config setting!");
+                event.setCancelled(false);
+            } else if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                 arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
                 event.setCancelled(true);
             } else if (aPlayer.getArena() != null && team != null) {
@@ -570,7 +576,8 @@ public class PlayerListener implements Listener {
             }
 
             if (whyMe) {
-                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
+                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player);
+                return;
             }
             arena.getDebugger().i("block click!", player);
 
@@ -665,7 +672,7 @@ public class PlayerListener implements Listener {
                 for (final PASpawn spawn : spawns) {
 
                     if (--pos < 0) {
-                        arena.tpPlayerToCoordName(player, spawn.getName());
+                        arena.tpPlayerToCoordName(aPlayer, spawn.getName());
                         break;
                     }
                 }
