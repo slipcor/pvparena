@@ -96,7 +96,7 @@ You can set a potion type like in the following example :
         potion-type: minecraft:long_invisibilty
 ``` 
 
-You can get potion effects on this page : [Minecraft effect list](https://www.digminecraft.com/lists/effect_list_pc.php)
+You can get potion effects on this page : [Potion type list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html)
 
 Be careful to prefix the effect with "minecraft:". You can give level 2 potions (like heath II) 
 prefixing the effect with **strong_** or long duration potions with the **long_**
