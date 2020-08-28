@@ -23,6 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Fire;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
@@ -462,7 +463,14 @@ public class BlockListener implements Listener {
                         .getBlockReplacedState().getType());
                 event.setCancelled(false);
                 arena.getDebugger().i("we do not block TNT, so just return if it is TNT");
-                return;
+            } else if (arena.isFightInProgress()
+                    && !isProtected(event.getBlock().getLocation(), event, RegionProtection.FIRE)
+                    && event.getBlock().getBlockData() instanceof Fire) {
+
+                ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
+                        .getBlockReplacedState().getType());
+                event.setCancelled(false);
+                arena.getDebugger().i("we do not block FIRE, so just return if it is FIRE");
             }
             return;
         }
