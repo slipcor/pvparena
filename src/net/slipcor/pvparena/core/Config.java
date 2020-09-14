@@ -359,6 +359,11 @@ public class Config {
         MODULES_POWERUPS_DROPSPAWN("modules.powerups.dropspawn", false, "Powerups"),
         MODULES_POWERUPS_USAGE("modules.powerups.usage", "off", "Powerups"),
 
+        MODULES_PROJECTILES_SNOWBALL("modules.projectiles.snowball", true, "Projectiles"),
+        MODULES_PROJECTILES_EGG("modules.projectiles.egg", true, "Projectiles"),
+        MODULES_PROJECTILES_FISHHOOK("modules.projectiles.fishHook", false, "Projectiles"),
+        MODULES_PROJECTILES_ENDERPEARL("modules.projectiles.enderPearl", false, "Projectiles"),
+
         MODULES_SKINS_VANILLA("modules.skins.vanilla", false, "Skins"),
 
         MODULES_SPECIALJOIN_SHOWPLAYERS("modules.specialjoin.showplayers", true, "SpecialJoin"),

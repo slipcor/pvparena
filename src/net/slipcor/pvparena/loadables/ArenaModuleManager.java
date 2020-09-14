@@ -173,6 +173,12 @@ public class ArenaModuleManager {
         }
     }
 
+    public static void onProjectileHit(final Arena arena, final Player attacker, final Player defender, final ProjectileHitEvent event) {
+        for (final ArenaModule mod : arena.getMods()) {
+            mod.onProjectileHit(attacker, defender, event);
+        }
+    }
+
     public static void onEntityExplode(final Arena arena, final EntityExplodeEvent event) {
         for (final ArenaModule mod : arena.getMods()) {
             mod.onEntityExplode(event);

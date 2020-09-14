@@ -317,6 +317,32 @@ public class EntityListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onProjectileHitEvent(final ProjectileHitEvent event) {
+        ProjectileSource eDamager = event.getEntity().getShooter();
+        final Entity eDamagee = event.getHitEntity();
+
+
+        if (eDamager instanceof Player && ArenaPlayer.parsePlayer(((Player) eDamager).getName()).getStatus() == Status.LOST) {
+            return;
+        }
+
+        if(eDamager instanceof Player && eDamagee instanceof Player) {
+            final Player attacker = (Player) eDamager;
+            final Player defender = (Player) eDamagee;
+            final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
+            final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
+            final Arena arena = apDefender.getArena();
+
+            if (arena == null || apAttacker.getArena() == null || apDefender.getStatus() == Status.LOST || !arena.isFightInProgress()) {
+                return;
+            }
+
+            arena.getDebugger().i("onProjectileHitEvent: fighting player");
+            ArenaModuleManager.onProjectileHit(arena, attacker, defender, event);
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityDamage(final EntityDamageEvent event) {
         final Entity entity = event.getEntity();

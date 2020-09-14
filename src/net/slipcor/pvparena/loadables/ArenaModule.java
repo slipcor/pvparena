@@ -40,7 +40,7 @@ import java.util.Set;
  * @author slipcor
  */
 
-public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
+public abstract class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     protected static Debug debug = new Debug(32);
 
     protected Arena arena;
@@ -286,6 +286,17 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      */
     public void onEntityDamageByEntity(final Player attacker,
                                        final Player defender, final EntityDamageByEntityEvent event) {
+    }
+
+    /**
+     * hook into a player throwing projectile
+     *
+     * @param attacker the attacking player
+     * @param defender the attacked player
+     * @param event    the projectileHit event
+     */
+    public void onProjectileHit(final Player attacker, final Player defender, final ProjectileHitEvent event) {
+
     }
 
     /**
