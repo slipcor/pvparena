@@ -7,6 +7,7 @@ import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.commands.AbstractArenaCommand;
 import net.slipcor.pvparena.commands.AbstractGlobalCommand;
 import net.slipcor.pvparena.commands.CommandTree;
+import net.slipcor.pvparena.commands.PAA_Edit;
 import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
@@ -31,7 +32,11 @@ public final class TabManager {
         final String firstArg = args[0];
         Arena arena = null;
         if (sender instanceof Player) {
-            arena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
+            if (PAA_Edit.activeEdits.containsKey(sender.getName())){
+                arena = PAA_Edit.activeEdits.get(sender.getName());
+            } else {
+                arena = ArenaPlayer.parsePlayer(sender.getName()).getArena();
+            }
         }
 
         if (arena == null) {

@@ -54,8 +54,11 @@ public class PAG_Leave extends AbstractArenaCommand {
         }
 
         if (!arena.hasPlayer(aPlayer.get())) {
-
-            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
+            if(PAA_Edit.activeEdits.containsKey(sender.getName())) {
+                new PAA_Edit().commit(arena, sender, args);
+            } else {
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_IN_ARENA));
+            }
             return;
         }
         arena.callLeaveEvent(aPlayer.get());
