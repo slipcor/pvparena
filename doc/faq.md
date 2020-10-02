@@ -44,6 +44,25 @@ an arena, use the command `sudo @p pa leave`.
 
 <br>
 
+## How to regen my battlefield after a game?
+
+Currently, there are two ways to regen battlefield after a match. You can use either 
+[BlockRestore](mods/blockrestore.md) module or [WorldEdit](mods/worldedit.md) module.
+
+Here is a quick list of precisions to support your choice:
+* BlockRestore:
+    * Reset only blocks broken by players
+    * Asynchronous
+    * Perfect for arena where few blocks are destroyed (like spleef)
+* WorldEdit:
+    * Needs WorldEdit plugin (obviously)
+    * Regenerates everything
+    * Can regen large areas but is synchronous
+
+Check dedicated documentation pages to get more information.
+
+<br>
+
 ## Still have questions?
 
 Don't hesitate to [get in touch](../readme.md#support) with us 😉
