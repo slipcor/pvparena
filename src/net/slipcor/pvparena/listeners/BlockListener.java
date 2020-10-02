@@ -12,6 +12,7 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.loadables.ArenaRegion.RegionProtection;
@@ -21,10 +22,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Fire;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -32,10 +33,11 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * <pre>
@@ -396,79 +398,54 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(final BlockPlaceEvent event) {
-        DEBUG.i("BlockPlace", event.getPlayer());
-        if (willBeSkipped(event, event.getBlock().getLocation(),
-                RegionProtection.PLACE)) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+
+        DEBUG.i("BlockPlace", player);
+
+        if (willBeSkipped(event, block.getLocation(), RegionProtection.PLACE)) {
             return;
         }
 
-        if (ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOST
-                || ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.WATCH
-                || ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.LOUNGE
-                || ArenaPlayer.parsePlayer(event.getPlayer().getName()).getStatus() == Status.READY) {
+        final ArenaPlayer arenaPlayer = ArenaPlayer.parsePlayer(player.getName());
+        if (asList(Status.LOST, Status.WATCH, Status.LOUNGE, Status.READY).contains(arenaPlayer.getStatus())) {
             event.setCancelled(true);
             return;
         }
 
-        final Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(event
-                .getBlock().getLocation()));
+        final Arena arena = ArenaManager.getArenaByRegionLocation(new PABlockLocation(block.getLocation()));
+        final Block placedBlock = event.getBlockPlaced();
 
-        if (event.getBlock().getType() == Material.TNT && arena.getArenaConfig().getBoolean(CFG.PLAYER_AUTOIGNITE)) {
-            event.setCancelled(true);
-            arena.getDebugger().i("autoignite false");
-
-            class RunLater implements Runnable {
-
-                @Override
-                public void run() {
-                    event.getPlayer().getInventory().remove(new ItemStack(Material.TNT, 1));
-                }
-
-            }
-
-            Bukkit.getScheduler().runTaskLater(PVPArena.instance, new RunLater(), 1L);
-
-            event.getBlock().getLocation().getWorld().spawnEntity(
-                    event.getBlock().getRelative(BlockFace.UP).getLocation(), EntityType.PRIMED_TNT);
+        if (block.getType() == Material.TNT && arena.getArenaConfig().getBoolean(CFG.PLAYER_AUTOIGNITE)) {
+            arena.getDebugger().i("autoignite tnt");
+            placedBlock.setType(Material.AIR);
+            block.getWorld().spawnEntity(Utils.getCenteredLocation(block.getLocation()), EntityType.PRIMED_TNT);
             return;
         }
 
 
         List<String> list = arena.getArenaConfig().getStringList(
                 CFG.LISTS_WHITELIST.getNode() + ".place",
-                new ArrayList<String>());
+                new ArrayList<>());
 
-        if (!list.isEmpty()
-                && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name()))
-                && !list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name()))) {
-            arena.msg(
-                    event.getPlayer(),
-                    Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED,
-                            Language.parse(arena, MSG.GENERAL_PLACE)));
+        if (!list.isEmpty() && !list.contains(placedBlock.getType().name())) {
+            arena.msg(player, Language.parse(arena, MSG.ERROR_WHITELIST_DISALLOWED, Language.parse(arena, MSG.GENERAL_PLACE)));
             event.setCancelled(true);
             arena.getDebugger().i("not on whitelist. DENY!");
             return;
         }
 
-        if (isProtected(event.getBlock().getLocation(), event,
-                RegionProtection.PLACE)) {
-            if (arena.isFightInProgress()
-                    && !isProtected(event.getBlock().getLocation(), event,
-                    RegionProtection.TNT)
-                    && event.getBlock().getType() == Material.TNT) {
+        if (isProtected(block.getLocation(), event, RegionProtection.PLACE)) {
+            if (arena.isFightInProgress() && !isProtected(block.getLocation(), event, RegionProtection.TNT)
+                    && block.getType() == Material.TNT) {
 
-                ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
-                        .getBlockReplacedState().getType());
+                ArenaModuleManager.onBlockPlace(arena, block, event.getBlockReplacedState().getType());
                 event.setCancelled(false);
                 arena.getDebugger().i("we do not block TNT, so just return if it is TNT");
-            } else if (arena.isFightInProgress()
-                    && !isProtected(event.getBlock().getLocation(), event, RegionProtection.FIRE)
-                    && event.getBlock().getBlockData() instanceof Fire) {
+            } else if (arena.isFightInProgress() && !isProtected(block.getLocation(), event, RegionProtection.FIRE)
+                    && block.getBlockData() instanceof Fire) {
 
-                ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
-                        .getBlockReplacedState().getType());
+                ArenaModuleManager.onBlockPlace(arena, block, event.getBlockReplacedState().getType());
                 event.setCancelled(false);
                 arena.getDebugger().i("we do not block FIRE, so just return if it is FIRE");
             }
@@ -477,15 +454,10 @@ public class BlockListener implements Listener {
 
         list = arena.getArenaConfig().getStringList(
                 CFG.LISTS_BLACKLIST.getNode() + ".place",
-                new ArrayList<String>());
+                new ArrayList<>());
 
-        if (list.contains(String.valueOf(event.getBlockPlaced().getType().name()))
-                || list.contains(String.valueOf(event.getBlockPlaced()
-                .getType().name()))) {
-            arena.msg(
-                    event.getPlayer(),
-                    Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED,
-                            Language.parse(arena, MSG.GENERAL_PLACE)));
+        if (list.contains(placedBlock.getType().name())) {
+            arena.msg(player, Language.parse(arena, MSG.ERROR_BLACKLIST_DISALLOWED, Language.parse(arena, MSG.GENERAL_PLACE)));
             event.setCancelled(true);
             arena.getDebugger().i("on blacklist. DENY!");
             return;
@@ -494,13 +466,12 @@ public class BlockListener implements Listener {
         PACheck res = ArenaGoalManager.checkPlace(arena, event);
 
         if (res.hasError()) {
-            DEBUG.i("onBlockPlace cancelled by goal: " + res.getModName(), event.getPlayer());
+            DEBUG.i("onBlockPlace cancelled by goal: " + res.getModName(), player);
             return;
         }
         arena.getDebugger().i("BlockPlace not cancelled!");
 
-        ArenaModuleManager.onBlockPlace(arena, event.getBlock(), event
-                .getBlockReplacedState().getType());
+        ArenaModuleManager.onBlockPlace(arena, block, event.getBlockReplacedState().getType());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
