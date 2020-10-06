@@ -90,11 +90,11 @@ public class PAA_Region extends AbstractArenaCommand {
             return;
         }
         if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
-            // usage: /pa {arenaname} region remove [regionname] | remove a region
-            final ArenaRegion region = arena.getRegion(args[1]);
+            // usage: /pa {arenaname} region [regionname] remove | remove a region
+            final ArenaRegion region = arena.getRegion(args[0]);
 
             if (region == null) {
-                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[1]));
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
                 return;
             }
             arena.getArenaConfig().setManually("arenaregion." + region.getRegionName(), null);
