@@ -41,6 +41,7 @@ Mod | Description | Status
 [PlayerFinder](mods/playerfinder.md) | allow players to find others with a compass | ✔
 [Points](mods/points.md) | allow to restrict certain classes to require players to fight for better classes | ⚠
 [PowerUps](mods/powerups.md) | spawn items giving special powers | ✔
+[Projectiles](mods/projectiles.md) | add knockback to throwable items (snowballs, eggs, etc) | ✔
 [RealSpectate](mods/realspectate.md) | spectate the game, CounterStrike style! | ✔
 [RedstoneTriggers](mods/redstonetriggers.md) | add win/lose triggered by redstone | ⚠
 [RespawnRelay](mods/respawnrelay.md) | add a relay for respawning players | ⚠
@@ -69,7 +70,7 @@ updates will be to make a great check-up of all of them and fix all eventual iss
 Anyway, don't hesitate to test legacy modules by yourself, a big part of them work normally or have trivial issues. Obviously
 if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/issues) 😉
 
-## Installing a module
+## Installing modules
 
 ### Download the module pack
 
