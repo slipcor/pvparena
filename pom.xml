@@ -4,7 +4,7 @@
 
     <groupId>net.slipcor</groupId>
     <artifactId>pvparena</artifactId>
-    <version>1.15.1-SNAPSHOT</version>
+    <version>1.15.1</version>
     <name>PVP Arena</name>
     <url>https://github.com/Eredrim/pvparena</url>
 
@@ -20,7 +20,7 @@
         </repository>
         <repository>
             <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
         </repository>
     </repositories>
 
