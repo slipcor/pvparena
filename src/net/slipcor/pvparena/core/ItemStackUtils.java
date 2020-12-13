@@ -8,8 +8,14 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.bukkit.configuration.serialization.ConfigurationSerialization.deserializeObject;
 
@@ -82,8 +88,21 @@ public class ItemStackUtils  {
             if(isAnHandledMetaType(metaMap.get("meta-type").toString())) {
                 metaMap.remove("meta-type");
 
+                // Simplify leather armor colors
                 if(meta instanceof LeatherArmorMeta) {
                     metaMap.put("color", ((LeatherArmorMeta) meta).getColor().serialize());
+                }
+
+                // Simplify custom potion effects
+                if(meta instanceof PotionMeta) {
+                    PotionMeta potionMeta = (PotionMeta) meta;
+
+                    if(potionMeta.hasCustomEffects()) {
+                        List<Map<String, Object>> customEffectMeta = potionMeta.getCustomEffects().stream()
+                                .map(PotionEffect::serialize)
+                                .collect(Collectors.toList());
+                        metaMap.put("custom-effects", customEffectMeta);
+                    }
                 }
             }
             result.put("meta", metaMap);
@@ -116,10 +135,19 @@ public class ItemStackUtils  {
                 if(!metaMap.containsKey("meta-type")) {
                     metaMap.put("meta-type", getRightMetaType(metaMap.keySet()).name());
 
-                    //Simplify Leather Armour colors
+                    //Simplify Leather armor colors
                     if(metaMap.containsKey("color")) {
                         Color color = Color.deserialize((Map<String, Object>) metaMap.get("color"));
                         metaMap.put("color", color);
+                    }
+
+                    // Simplify custom potion effects
+                    if(metaMap.containsKey("custom-effects")) {
+                        List<PotionEffect> effectList = ((List<?>) metaMap.get("custom-effects")).stream()
+                                .map(serializedEffect -> new PotionEffect((Map<String, Object>) serializedEffect))
+                                .collect(Collectors.toList());
+
+                        metaMap.put("custom-effects", effectList);
                     }
                 }
 
