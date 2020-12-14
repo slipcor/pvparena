@@ -159,7 +159,8 @@ public class ArenaGoal extends NCBLoadable implements IArenaCommandHandler {
                 count++;
             }
         }
-        return count > 3 ? null : "need more spawns! (" + count + "/4)";
+        int minPlayers = this.arena.getArenaConfig().getInt(CFG.READY_MINPLAYERS);
+        return count >= minPlayers ? null : "need more spawns! (" + count + "/" + minPlayers + ")";
     }
 
     /**
