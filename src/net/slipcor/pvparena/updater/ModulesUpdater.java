@@ -46,7 +46,9 @@ public class ModulesUpdater extends AbstractUpdater {
         JsonObject versionJson = getVersionJson(connection.getInputStream());
         String onlineVersion = getOnlineVersionFromJson(versionJson);
 
-        if(isUpToDate(currentVersion, onlineVersion)) {
+        if(currentVersion == null) {
+            LOG.info("PVP Arena modules are not detected");
+        } else if(isUpToDate(currentVersion, onlineVersion)) {
             LOG.info("PVP Arena modules are up to date");
         } else {
             String updateInfo = getAnnounceMessage(MSG.UPDATER_MODULES.toString(), onlineVersion, currentVersion);
@@ -103,7 +105,7 @@ public class ModulesUpdater extends AbstractUpdater {
                 e.printStackTrace();
             }
         }
-        return "0.0.0";
+        return null;
     }
 
     /**
