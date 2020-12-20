@@ -28,6 +28,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.io.File;
 import java.util.*;
 
+import static java.util.Optional.ofNullable;
+
 /**
  * <pre>
  * Arena Player class
@@ -100,6 +102,7 @@ public class ArenaPlayer {
      */
     public enum PlayerPrevention {
         BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
+
         public static boolean has(int value, PlayerPrevention s) {
             return (((int) Math.pow(2, s.ordinal()) & value) > 0);
         }
@@ -166,7 +169,8 @@ public class ArenaPlayer {
             }
         }
         debug.i("last damaging player is null", damagee);
-        debug.i("last damaging event: " + eEvent.getEventName(), damagee);
+        debug.i("last damaging event: " + ofNullable(eEvent).map(Event::getEventName)
+                .orElse("unknown cause"), damagee);
         return null;
     }
 
@@ -212,7 +216,7 @@ public class ArenaPlayer {
                 return new ArenaPlayer(name);
             }
 
-            if(!totalPlayers.containsKey(name)) {
+            if (!totalPlayers.containsKey(name)) {
                 ArenaPlayer ap = new ArenaPlayer(player.getName());
                 totalPlayers.putIfAbsent(name, ap);
             }
@@ -315,15 +319,17 @@ public class ArenaPlayer {
         } else {
             class GiveLater implements Runnable {
                 final ItemStack[] inv;
+
                 GiveLater(final ItemStack[] inv) {
                     this.inv = inv.clone();
-                    }
+                }
+
                 @Override
                 public void run() {
                     debug.i("adding saved inventory",
                             player);
                     player.getInventory().setContents(inv);
-                    }
+                }
             }
             final GiveLater gl = new GiveLater(aPlayer.savedInventory);
             try {
@@ -468,6 +474,7 @@ public class ArenaPlayer {
     public ArenaClass getArenaClass() {
         return aClass;
     }
+
     public ArenaClass getNextArenaClass() {
         return naClass;
     }
@@ -828,7 +835,7 @@ public class ArenaPlayer {
      */
     public void setTelePass(final boolean canTeleport) {
         if (arena != null) {
-            arena.getDebugger().i("TelePass := "+canTeleport);
+            arena.getDebugger().i("TelePass := " + canTeleport);
         }
         telePass = canTeleport;
     }
