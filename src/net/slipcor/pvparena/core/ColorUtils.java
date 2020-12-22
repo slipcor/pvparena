@@ -104,7 +104,7 @@ public final class ColorUtils {
     }
 
     public static boolean isSubType(Material type, Material check) {
-        return isColorableMaterial(type) && getMaterialSuffix(type).equals(getMaterialSuffix(check));
+        return (type == check) || (isColorableMaterial(type) && getMaterialSuffix(type).equals(getMaterialSuffix(check)));
     }
 
     private static String getMaterialSuffix(Material material) {

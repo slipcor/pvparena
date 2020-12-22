@@ -539,17 +539,12 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
-        if (!arena.hasPlayer(event.getPlayer())
-                || !event
-                .getBlock()
-                .getType()
-                .name()
-                .equals(arena.getArenaConfig().getString(
-                        CFG.GOAL_BLOCKDESTROY_BLOCKTYPE))) {
-
+        final Material blockToBreak = this.arena.getArenaConfig().getMaterial(CFG.GOAL_BLOCKDESTROY_BLOCKTYPE);
+        final Material brokenBlock = event.getBlock().getType();
+        if (!this.arena.hasPlayer(event.getPlayer()) || !ColorUtils.isSubType(brokenBlock, blockToBreak)) {
             arena.getDebugger().i("block destroy, ignoring", player);
             arena.getDebugger().i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
-            arena.getDebugger().i(event.getBlock().getType().name(), player);
+            arena.getDebugger().i(brokenBlock.name(), player);
             return;
         }
 
@@ -692,10 +687,10 @@ public class GoalBlockDestroy extends ArenaGoal implements Listener {
                                 "[PVP Arena] team unknown/no lives: " + blockTeam);
                         e.printStackTrace();
                     }
-                    takeBlock(arena.getTeam(blockTeam).getColor(),
-                            pb.getLocation());
+                    takeBlock(arena.getTeam(blockTeam).getColor(), pb.getLocation());
 
                     reduceLivesCheckEndAndCommit(arena, blockTeam);
+                    break;
                 }
             }
         }
