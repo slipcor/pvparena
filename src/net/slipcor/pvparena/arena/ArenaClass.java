@@ -238,7 +238,7 @@ public final class ArenaClass {
     }
 
     private static boolean isChestplateItem(Material material) {
-        return material.name().endsWith("_CHESTPLATE");
+        return material.name().endsWith("_CHESTPLATE") || material == Material.ELYTRA;
     }
 
     private static boolean isLeggingsItem(Material material) {
