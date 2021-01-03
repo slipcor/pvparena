@@ -944,7 +944,13 @@ public class Config {
         final Integer flags = parseInteger(parts[8]);
         final Integer prots = parseInteger(parts[9]);
 
-        if (Bukkit.getWorld(parts[0]) == null || x1 == null || y1 == null
+        if (Bukkit.getWorld(parts[0]) == null) {
+            PVPArena.instance.getLogger().severe(String.format("%s caused an error while loading region %s",
+                    arena.getName(), regionName));
+            throw new IllegalArgumentException(String.format("World %s not recognized. Is it loaded ?", parts[0]));
+        }
+
+        if (x1 == null || y1 == null
                 || z1 == null || x2 == null || y2 == null || z2 == null
                 || flags == null || prots == null) {
             PVPArena.instance.getLogger().severe(arena.getName() + " caused an error while loading region " + regionName);
