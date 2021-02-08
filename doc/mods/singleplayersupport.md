@@ -10,7 +10,7 @@ This module can be used for non-pvp game modes like parcour, where a player join
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
+- `/pa modules install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
 
 ## Setup

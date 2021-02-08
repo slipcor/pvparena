@@ -8,7 +8,7 @@ This turns your arena into a 1:1 arena if possible, and if a player dares anothe
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
+- `/pa modules install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
 
 ## Setup

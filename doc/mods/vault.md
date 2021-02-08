@@ -8,7 +8,7 @@ The Vault module adds an economy hook to provide several things. Join fee, money
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
+- `/pa modules install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
 
 ## Setup
