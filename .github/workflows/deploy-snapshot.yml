@@ -44,10 +44,10 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MVN_USER }}
           MAVEN_PASSWORD: ${{ secrets.MVN_PASSWORD }}
-          
+
       - name: Post discord notification
         run: |
-          commits="${{ join(github.event.commits.*.message, '\n - ') }}"
+          commits=`echo "${{ join(github.event.commits.*.message, '\n - ') }}" | tr '\n' ' '`
           avatar_url=https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           bot_username="Build notification"
           payload_json='{ "username": "'$bot_username'", "avatar_url": "'$avatar_url'", "content": "A new dev build of PVP arena is available! Download it by saving the attached file.", "embeds": [{"description": ":spiral_note_pad: **New commits:**\n\n - '$commits'"}] }'
