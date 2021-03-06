@@ -318,8 +318,9 @@ nulang:
       tntignite: '%1% a allumé la TNT de l''équipe %2% !'
       set: 'TNT configurée: %1%'
       toset: 'TNT a configurer: %1%'
-      youcannotselfdestroy: You can not ignite your own TNT!'
-      youtnt: Vous portez maintenant le matériel de sabotage !'
+      noselfdestroy: 'Vous ne pouvez pas faire exploser votre TNT!'
+      youtnt: 'Vous portez maintenant l''outil de sabotage !'
+      notgooditem: 'Vous avez besoin de l''outil de sabotage pour allumer la TNT.'
     tank:
       tankdown: Le tank est H.S. !
       tankmode: MODE TANK ! Tous le monde doit tuer %1%, le tank !
