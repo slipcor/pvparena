@@ -125,4 +125,12 @@ public class ArenaTeam {
     public void remove(final ArenaPlayer player) {
         players.remove(player);
     }
+
+    @Override
+    public String toString() {
+        return "ArenaTeam{" +
+                "color=" + this.color +
+                ", name='" + this.name + '\'' +
+                '}';
+    }
 }

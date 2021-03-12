@@ -248,7 +248,7 @@ nulang:
       tntignite: '%1% encendió la TNT del Equipo %2%!'
       set: 'TNT añadida: %1%'
       toset: 'TNT por añadir: %1%'
-      youtnt: ¡Estas llevando los materiales de Sabotage!'
+      youtnt: '¡Estas llevando los materiales de Sabotage!'
     tank:
       tankdown: ¡El Tanque esta muerto!
       tankmode: Todos a matar a %1% ¡Él/Ella es el Tanque!

@@ -300,7 +300,9 @@ nulang:
       tntignite: '%1% ignited the TNT of team %2%!'
       set: 'TNT set: %1%'
       toset: 'TNT to set: %1%'
-      youtnt: You now carry the sabotage materials!'
+      noselfdestroy: 'You can not ignite your own TNT!'
+      youtnt: 'You now carry the sabotage tool!'
+      notgooditem: 'You need sabotage tool to ignite the TNT.'
     tank:
       tankdown: The tank is down!
       tankmode: TANK MODE! Everyone kill %1%, the tank!
