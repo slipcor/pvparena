@@ -2333,7 +2333,7 @@ public class Arena {
                 if (this.isFreeForAll()) {
                     for (ArenaPlayer ap : this.getEveryone()) {
                         int value = PACheck.handleGetLives(this, ap);
-                        if (value >= 0) {
+                        if (value >= 0 && ap.getStatus() != Status.WATCH) {
                             currentScoreboard.getObjective("lives").getScore(ap.getName()).setScore(value);
                         }
                         Player player = ap.get();
