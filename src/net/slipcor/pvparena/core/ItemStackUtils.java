@@ -42,7 +42,7 @@ public class ItemStackUtils  {
      * @return Right "meta-type" value
      */
     private static HandledMetaType getRightMetaType(Collection<String> keySet) {
-        if(keySet.contains("potion-type")) {
+        if(keySet.contains("potion-type") || keySet.contains("custom-effects")) {
             return HandledMetaType.POTION;
         }
         if(keySet.contains("stored-enchants")) {
@@ -102,6 +102,10 @@ public class ItemStackUtils  {
                                 .map(PotionEffect::serialize)
                                 .collect(Collectors.toList());
                         metaMap.put("custom-effects", customEffectMeta);
+
+                        if(potionMeta.hasColor()) {
+                            metaMap.put("custom-color", potionMeta.getColor().serialize());
+                        }
                     }
                 }
             }
@@ -148,6 +152,12 @@ public class ItemStackUtils  {
                                 .collect(Collectors.toList());
 
                         metaMap.put("custom-effects", effectList);
+
+                        // handle custom-color only if item is a custom potion
+                        if(metaMap.containsKey("custom-color")) {
+                            Color color = Color.deserialize((Map<String, Object>) metaMap.get("custom-color"));
+                            metaMap.put("custom-color", color);
+                        }
                     }
                 }
 
