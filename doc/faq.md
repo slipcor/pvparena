@@ -63,6 +63,13 @@ Check dedicated documentation pages to get more information.
 
 <br>
 
+## Is there a way to automatically put a player into spectator mode on death instead of them having to leave the match and then rejoin as a spectator?
+
+
+Just set `tp.death` to `spectator` in your arena config file (or with [`/pa [arena] set`](commands/set.md) command).
+
+<br>
+
 ## Still have questions?
 
 Don't hesitate to [get in touch](../readme.md#support) with us 😉
