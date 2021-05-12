@@ -512,11 +512,11 @@ public class BlockListener implements Listener {
             return;
         }
         if (arena == null) {
-            DEBUG.i("painting break inside the arena");
-        } else {
-            arena.getDebugger().i("painting break inside the arena");
+            DEBUG.i("painting break outside an arena");
+            return;
         }
-        ArenaModuleManager.onPaintingBreak(arena, event.getEntity(), event
-                .getEntity().getType());
+
+        arena.getDebugger().i("painting break inside an arena");
+        ArenaModuleManager.onPaintingBreak(arena, event.getEntity(), event.getEntity().getType());
     }
 }
