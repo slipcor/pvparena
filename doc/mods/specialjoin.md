@@ -15,7 +15,7 @@ If you use the join sign, the fourth line will represent the arena status and th
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
+- `/pa modules install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
 
 ## Setup

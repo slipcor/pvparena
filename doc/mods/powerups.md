@@ -8,14 +8,15 @@ This mod allows spawning of items that give special powers / bad things, fully c
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
-- `/pa [arenaname] !tm [modname]`
+- `/pa modules install powerups`, activate per arena via
+- `/pa [arenaname] !tm powerups`
 
 ## Setup
 
-Sorry, but you have to add a freaking block to an arena config. An example is:
+Sorry, but you have to add a freaking block to your arena config under `module.powerups.items`. E.g.:
 
-powerups:
+```yaml
+items:
 - Shield:
   - item: OBSIDIAN
   - dmg_receive:
@@ -108,12 +109,13 @@ powerups:
   - repair:
     - items: helmet,chestplate,leggins,boots
     - factor: 0.2
+```
 
 So the first layer defines the name, the second layer defines item and adds all the effects it has. This example features all possible ways of doing good and bad things, I hope it is clear oO
 
 ## Config settings
 
-- dropspawn \- should the powerup spawn require defined spawns? `/pa [arena] spawn powerupX
+- dropspawn \- should the powerup spawn require defined spawns? `/pa [arena] spawn powerupX` (where X is an integer)
 - usage \- by default it is "off", so please set this to either every X kills ("death:X") or every X seconds ("time:X") 
 
 ## Commands

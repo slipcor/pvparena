@@ -64,6 +64,7 @@ public class PAA_Region extends AbstractArenaCommand {
                 if (sender.getName().equals(selector)) {
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECTEXIT));
                     selector = null;
+                    activeSelections.remove(sender.getName());
                 } else {
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECT, arena.getName()));
                     arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_YOUSELECT2));
@@ -88,12 +89,12 @@ public class PAA_Region extends AbstractArenaCommand {
             region.getShape().showBorder((Player) sender);
             return;
         }
-        if (args.length == 2 && args[0].equalsIgnoreCase("remove")) {
-            // usage: /pa {arenaname} region remove [regionname] | remove a region
-            final ArenaRegion region = arena.getRegion(args[1]);
+        if (args.length == 2 && args[1].equalsIgnoreCase("remove")) {
+            // usage: /pa {arenaname} region [regionname] remove | remove a region
+            final ArenaRegion region = arena.getRegion(args[0]);
 
             if (region == null) {
-                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[1]));
+                arena.msg(sender, Language.parse(arena, MSG.ERROR_REGION_NOTFOUND, args[0]));
                 return;
             }
             arena.getArenaConfig().setManually("arenaregion." + region.getRegionName(), null);

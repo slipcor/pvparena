@@ -1,19 +1,15 @@
 # Sabotage
-## Description
 
-This activates TNT blocks (to set) that can be ignited by players that carry proper gear. An ignited TNT kills the team to whom the TNT belongs.
-## Setup
+> ℹ This goal is designed for **team** gamemode
 
-TNTs have to be added.In order to do that, use `/pa [arenaname] [teamname]tnt` \- this enables tnt setting. Do it by clicking the TNT at the team's base. 
-Don't click with your wand, just click with your hand or anything else.
-## Config Settings
+## Description
 
-\-
+Each team has a TNT block in its base. If this block is ignited by other players, the team is eliminated.
 
-## Warnings
+## Setup
 
-\-
+TNTs have to be added.
 
-## Supported Game Modes
-
-Only supports team game mode!
+In order to do that, for each team:
+- Type `/pa [arenaname] [teamname]tnt` - this enables tnt selector
+- Left-click with your hand on the TNT block

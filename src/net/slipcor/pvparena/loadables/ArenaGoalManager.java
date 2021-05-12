@@ -16,10 +16,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 import java.io.File;
 import java.util.*;
@@ -133,10 +133,12 @@ public class ArenaGoalManager {
         return result;
     }
 
-    public static PACheck checkPickup(Arena arena, PlayerPickupItemEvent event) {
+    public static PACheck checkPickup(Arena arena, EntityPickupItemEvent event) {
         PACheck result = new PACheck();
-        for (final ArenaGoal type : arena.getGoals()) {
-            result = type.checkPickup(result, arena, event);
+        if (event.getEntity() instanceof Player) {
+            for (final ArenaGoal type : arena.getGoals()) {
+                result = type.checkPickup(result, arena, event);
+            }
         }
         return result;
     }
@@ -245,10 +247,10 @@ public class ArenaGoalManager {
 
     public void timedEnd(final Arena arena) {
 
-        /**
-         * name/team => score points
-         *
-         * handed over to each module
+        /*
+          name/team => score points
+
+          handed over to each module
          */
 
         arena.getDebugger().i("timed end!");
@@ -504,9 +506,11 @@ public class ArenaGoalManager {
         }
     }
 
-    public static void onPlayerPickUp(final Arena arena, final PlayerPickupItemEvent event) {
-        for (final ArenaGoal goal : arena.getGoals()) {
-            goal.onPlayerPickUp(event);
+    public static void onPlayerPickUp(final Arena arena, final EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player) {
+            for (final ArenaGoal goal : arena.getGoals()) {
+                goal.onPlayerPickUp(event);
+            }
         }
     }
 }

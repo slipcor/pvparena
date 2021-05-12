@@ -6,7 +6,6 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -17,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
  * <pre>PVP Arena SET Command class</pre>
@@ -152,22 +153,20 @@ public class PAA_Set extends AbstractArenaCommand {
                     Language.parse(arena, MSG.SET_DONE, node,
                             String.valueOf(dValue)));
         } else if ("tp".equals(type)) {
-            if (!"exit".equals(value) && !"old".equals(value)
-                    && !"spectator".equals(value)) {
+            if (!"exit".equals(value) && !"old".equals(value) && !"spectator".equals(value)) {
                 arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, value,
                         "tp (exit|old|spectator|...)"));
                 return;
             }
-            arena.getArenaConfig().setManually(node, String.valueOf(value));
+            arena.getArenaConfig().setManually(node, value);
             arena.msg(
                     player,
-                    Language.parse(arena, MSG.SET_DONE, node,
-                            String.valueOf(value)));
+                    Language.parse(arena, MSG.SET_DONE, node, value));
         } else if ("material".equals(type)) {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
+                    String itemDefinition = ((Player) player).getEquipment().getItemInMainHand().getType().name();
                     arena.getArenaConfig().setManually(node, itemDefinition);
                     arena.msg(
                             player,
@@ -180,13 +179,10 @@ public class PAA_Set extends AbstractArenaCommand {
             }
 
             try {
-                final Material mat = Material.valueOf(value);
+                final Material mat = Material.valueOf(value.toUpperCase());
                 if (mat != Material.AIR) {
                     arena.getArenaConfig().setManually(node, mat.name());
-                    arena.msg(
-                            player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    String.valueOf(mat.name())));
+                    arena.msg(player, Language.parse(arena, MSG.SET_DONE, node, mat.name()));
                 }
 
                 arena.getArenaConfig().save();
@@ -200,12 +196,12 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("hand".equals(value)) {
                 if (player instanceof Player) {
 
-                    String itemDefinition = StringParser.getStringFromItemStack(((Player) player).getEquipment().getItemInMainHand());
-                    arena.getArenaConfig().setManually(node, itemDefinition);
+                    ItemStack item = ((Player) player).getInventory().getItemInMainHand();
+                    arena.getArenaConfig().setManually(node, getSerializableItemStacks(item));
                     arena.msg(
                             player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    itemDefinition));
+                            Language.parse(arena, MSG.SET_DONE, node, item.getType().name()));
+                    arena.getArenaConfig().save();
                 } else {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
                 }
@@ -214,36 +210,18 @@ public class PAA_Set extends AbstractArenaCommand {
             if ("inventory".equals(value)) {
                 if (player instanceof Player) {
 
-                    final String newValue = StringParser.getStringFromItemStacks(((Player) player).getInventory().getContents());
-                    arena.getArenaConfig().setManually(node, newValue);
+                    final ItemStack[] items = ((Player) player).getInventory().getContents();
+                    arena.getArenaConfig().setManually(node, getSerializableItemStacks(items));
                     arena.msg(
                             player,
-                            Language.parse(arena, MSG.SET_DONE, node,
-                                    newValue));
+                            Language.parse(arena, MSG.SET_DONE, node, "inventory"));
                     arena.getArenaConfig().save();
                 } else {
                     arena.msg(player, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
                 }
                 return;
             }
-
-            final String[] split = value.split(",");
-            final ItemStack[] items = new ItemStack[split.length];
-
-            for (int i = 0; i < split.length; i++) {
-                items[i] = StringParser.getItemStackFromString(split[i]);
-                if (items[i] == null) {
-                    arena.msg(player, Language.parse(arena, MSG.ERROR_ARGUMENT_TYPE, String.valueOf(items[i]),
-                            "item"));
-                    return;
-                }
-            }
-
-            arena.getArenaConfig().setManually(node, String.valueOf(value));
-            arena.msg(
-                    player,
-                    Language.parse(arena, MSG.SET_DONE, node,
-                            String.valueOf(value)));
+            arena.msg(player, Language.parse(arena, MSG.SET_ITEMS_NOT));
         } else {
             arena.msg(
                     player,

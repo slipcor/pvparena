@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -20,15 +19,13 @@ import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,20 +180,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
         }
 
 
-        final ArenaTeam respawnTeam = ArenaPlayer
-                .parsePlayer(respawnPlayer.getName()).getArenaTeam();
+        final ArenaTeam respawnTeam = ArenaPlayer.parsePlayer(respawnPlayer.getName()).getArenaTeam();
 
         drop(respawnPlayer, respawnTeam);
 
-        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-
-            arena.broadcast(Language.parse(arena,
-                    MSG.FIGHT_KILLED_BY,
-                    respawnTeam.colorizePlayer(respawnPlayer)
-                            + ChatColor.YELLOW, arena.parseDeathCause(
-                            respawnPlayer, event.getEntity()
-                                    .getLastDamageCause().getCause(), event
-                                    .getEntity().getKiller())));
+        if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            this.broadcastSimpleDeathMessage(respawnPlayer, event);
         }
 
         final List<ItemStack> returned;
@@ -205,12 +194,10 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
             returned = InventoryManager.drop(respawnPlayer);
             event.getDrops().clear();
         } else {
-            returned = new ArrayList<>();
-            returned.addAll(event.getDrops());
+            returned = new ArrayList<>(event.getDrops());
         }
 
-        PACheck.handleRespawn(arena,
-                ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+        PACheck.handleRespawn(this.arena, ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
     }
 
     @Override
@@ -220,25 +207,14 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
     }
 
     private void drop(final Player player, final ArenaTeam team) {
-        final ItemStack item = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
+        final ItemStack item = arena.getArenaConfig().getItems(CFG.GOAL_TDC_ITEM)[0];
 
-        if (item.getType() == Material.WOOL || item.getType() == Material.INK_SACK ||
-                item.getType() == Material.STAINED_GLASS || item.getType() == Material.STAINED_CLAY) {
-            final MaterialData data = item.getData();
-            data.setData(getDataFromTeam(team));
-            item.setData(data);
-            item.setDurability(getDataFromTeam(team));
-        }
         final ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(team.getColoredName());
         item.setItemMeta(meta);
 
         player.getWorld().dropItem(player.getLocation(), item);
-    }
-
-    private byte getDataFromTeam(final ArenaTeam team) {
-        return StringParser.getColorDataFromENUM(team.getColor().name());
     }
 
     @Override
@@ -248,8 +224,7 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
                     this,
                     String.valueOf(arena.getArenaConfig()
                             .getInt(CFG.GOAL_TDC_LIVES) - (getLifeMap()
-                            .containsKey(aPlayer.getArenaTeam().getName()) ? getLifeMap()
-                            .get(aPlayer.getArenaTeam().getName()) : 0)));
+                            .getOrDefault(aPlayer.getArenaTeam().getName(), 0))));
         }
         return res;
     }
@@ -286,12 +261,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
     }
 
     @Override
-    public void onPlayerPickUp(final PlayerPickupItemEvent event) {
+    public void onPlayerPickUp(final EntityPickupItemEvent event) {
         final ItemStack item = event.getItem().getItemStack();
 
-        final ItemStack check = StringParser.getItemStackFromString(arena.getArenaConfig().getString(CFG.GOAL_TDC_ITEM));
+        final ItemStack check = arena.getArenaConfig().getItems(CFG.GOAL_TDC_ITEM)[0];
 
-        final ArenaPlayer player = ArenaPlayer.parsePlayer(event.getPlayer().getName());
+        final ArenaPlayer player = ArenaPlayer.parsePlayer(event.getEntity().getName());
 
         if (item.getType() == check.getType() && item.hasItemMeta()) {
             for (final ArenaTeam team : arena.getTeams()) {
@@ -303,12 +278,12 @@ public class GoalTeamDeathConfirm extends ArenaGoal {
 
                     if (team.equals(player.getArenaTeam())) {
                         // denied a kill
-                        arena.broadcastExcept(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_DENIED, player.toString()));
-                        arena.msg(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUDENIED, player.toString()));
+                        arena.broadcastExcept(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_DENIED, player.toString()));
+                        arena.msg(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUDENIED, player.toString()));
                     } else {
                         // scored a kill
-                        arena.broadcastExcept(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_SCORED, player.toString()));
-                        arena.msg(event.getPlayer(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUSCORED, player.toString()));
+                        arena.broadcastExcept(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_SCORED, player.toString()));
+                        arena.msg(event.getEntity(), Language.parse(arena, MSG.GOAL_TEAMDEATHCONFIRM_YOUSCORED, player.toString()));
                         reduceLives(arena, team);
                     }
                     return;

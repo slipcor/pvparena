@@ -10,11 +10,9 @@ import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PACheck;
 import net.slipcor.pvparena.commands.CommandTree;
 import net.slipcor.pvparena.commands.PAA_Region;
+import net.slipcor.pvparena.core.*;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -25,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -41,6 +40,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -54,26 +57,27 @@ import java.util.*;
 
 public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
-    public GoalPhysicalFlags() {
-        super("PhysicalFlags");
-        debug = new Debug(100);
-    }
-
+    private static final int PRIORITY = 7;
+    private static final String TOUCHDOWN = "touchdown";
     private Map<String, String> flagMap;
+    private Map<String, BlockData> flagDataMap;
     private Map<String, ItemStack> headGearMap;
 
     private String flagName = "";
+
+    public GoalPhysicalFlags() {
+        super("PhysicalFlags");
+        this.debug = new Debug(100);
+    }
 
     @Override
     public String version() {
         return PVPArena.instance.getDescription().getVersion();
     }
 
-    private static final int PRIORITY = 7;
-
     @Override
     public boolean allowsJoinInBattle() {
-        return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+        return this.arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
     }
 
     @Override
@@ -82,13 +86,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        if ("flagtype".equalsIgnoreCase(string)
-                || "flageffect".equalsIgnoreCase(string)
-                || "touchdown".equalsIgnoreCase(string)) {
+        if ("flagtype".equalsIgnoreCase(string) || "flageffect".equalsIgnoreCase(string) || TOUCHDOWN.equalsIgnoreCase(string)) {
             res.setPriority(this, PRIORITY);
         }
 
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             final String sTeam = team.getName();
             if (string.contains(sTeam + "flag")) {
                 res.setPriority(this, PRIORITY);
@@ -100,9 +102,9 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList("flagtype", "flageffect", "touchdown");
-        if (arena != null) {
-            for (final ArenaTeam team : arena.getTeams()) {
+        final List<String> result = Stream.of("flagtype", "flageffect", TOUCHDOWN).collect(Collectors.toList());
+        if (this.arena != null) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 result.add(sTeam + "flag");
             }
@@ -124,12 +126,12 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        final int count = TeamManager.countActiveTeams(arena);
+        final int count = TeamManager.countActiveTeams(this.arena);
 
         if (count == 1) {
             res.setPriority(this, PRIORITY); // yep. only one team left. go!
         } else if (count == 0) {
-            arena.getDebugger().i("No teams playing!");
+            this.arena.getDebugger().i("No teams playing!");
         }
 
         return res;
@@ -137,11 +139,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public String checkForMissingSpawns(final Set<String> list) {
-        final String team = checkForMissingTeamSpawn(list);
+        final String team = this.checkForMissingTeamSpawn(list);
         if (team != null) {
             return team;
         }
-        return checkForMissingTeamCustom(list, "flag");
+        return this.checkForMissingTeamCustom(list, "flag");
     }
 
     /**
@@ -152,141 +154,128 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
      * @param block  the block being clicked
      * @return the PACheck instance
      */
-    @SuppressWarnings("deprecation")
     @Override
     public PACheck checkInteract(final PACheck res, final Player player, final Block block) {
         if (block == null || res.getPriority() > PRIORITY) {
             return res;
         }
-        arena.getDebugger().i("checking interact", player);
+        this.arena.getDebugger().i("checking interact", player);
 
-        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGTYPE));
-        if (block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
-            arena.getDebugger().i("block, but not flag", player);
+        Material flagType = this.arena.getArenaConfig().getMaterial(CFG.GOAL_PFLAGS_FLAGTYPE);
+        if (!ColorUtils.isSubType(block.getType(), flagType)) {
+            this.arena.getDebugger().i("block, but not flag", player);
             return res;
         }
-        arena.getDebugger().i("flag click!", player);
+        this.arena.getDebugger().i("flag click!", player);
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-        if (getFlagMap().containsValue(player.getName())) {
-            arena.getDebugger().i("player " + player.getName() + " has got a flag", player);
+        if (this.getFlagMap().containsValue(player.getName())) {
+            this.arena.getDebugger().i("player " + player.getName() + " has got a flag", player);
 
             final Vector vLoc = block.getLocation().toVector();
             final String sTeam = aPlayer.getArenaTeam().getName();
-            arena.getDebugger().i("block: " + vLoc, player);
+            this.arena.getDebugger().i("block: " + vLoc, player);
             Vector vFlag = null;
-            if (!SpawnManager.getBlocksStartingWith(arena, sTeam + "flag").isEmpty()) {
-                vFlag = SpawnManager
-                        .getBlockNearest(
-                                SpawnManager.getBlocksStartingWith(arena, sTeam + "flag"),
-                                new PABlockLocation(player.getLocation()))
-                        .toLocation().toVector();
+            if (this.getTeamFlagLoc(sTeam) != null) {
+                vFlag = this.getTeamFlagLoc(sTeam).toLocation().toVector();
             } else {
-                arena.getDebugger().i(sTeam + "flag = null", player);
+                this.arena.getDebugger().i(sTeam + "flag = null", player);
             }
 
-            arena.getDebugger().i("player is in the team " + sTeam, player);
+            this.arena.getDebugger().i("player is in the team " + sTeam, player);
             if (vFlag != null && vLoc.distance(vFlag) < 2) {
 
-                arena.getDebugger().i("player is at his flag", player);
+                this.arena.getDebugger().i("player is at his flag", player);
 
-                if (getFlagMap().containsKey(sTeam)
-                        || getFlagMap().containsKey("touchdown")) {
-                    arena.getDebugger().i("the flag of the own team is taken!", player);
+                if (this.getFlagMap().containsKey(sTeam) || this.getFlagMap().containsKey(TOUCHDOWN)) {
+                    this.arena.getDebugger().i("the flag of the own team is taken!", player);
 
-                    if (arena.getArenaConfig().getBoolean(
-                            CFG.GOAL_FLAGS_MUSTBESAFE)
-                            && !getFlagMap().containsKey("touchdown")) {
-                        arena.getDebugger().i("cancelling", player);
+                    if (this.arena.getArenaConfig().getBoolean(CFG.GOAL_PFLAGS_MUSTBESAFE)
+                            && !this.getFlagMap().containsKey(TOUCHDOWN)) {
+                        this.arena.getDebugger().i("cancelling", player);
 
-                        arena.msg(player,
-                                Language.parse(arena, MSG.GOAL_FLAGS_NOTSAFE));
+                        this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_FLAGS_NOTSAFE));
                         return res;
                     }
                 }
 
-                String flagTeam = getHeldFlagTeam(player.getName());
+                String flagTeam = this.getHeldFlagTeam(player.getName());
 
-                arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
+                this.arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
 
-                if (player.getItemInHand() == null
-                        || !player
-                        .getItemInHand()
-                        .getType()
-                        .name()
-                        .equals(arena.getArenaConfig().getString(
-                                CFG.GOAL_FLAGS_FLAGTYPE))) {
-                    arena.getDebugger().i("player " + player.getName()
-                            + " is not holding the flag", player);
-                    arena.msg(player,
-                            Language.parse(arena, MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
+                ItemStack mainHandItem = player.getInventory().getItemInMainHand();
+                if (!ColorUtils.isSubType(mainHandItem.getType(), flagType)) {
+                    this.arena.getDebugger().i("player " + player.getName() + " is not holding the flag", player);
+                    this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
                     return res;
                 }
 
-                player.getInventory().remove(player.getItemInHand());
+                player.getInventory().remove(mainHandItem);
                 player.updateInventory();
 
                 try {
-                    if ("touchdown".equals(flagTeam)) {
-                        arena.broadcast(Language.parse(arena,
-                                MSG.GOAL_FLAGS_TOUCHHOME, arena.getTeam(sTeam)
+                    if (TOUCHDOWN.equals(flagTeam)) {
+                        this.arena.broadcast(Language.parse(this.arena,
+                                MSG.GOAL_FLAGS_TOUCHHOME, this.arena.getTeam(sTeam)
                                         .colorizePlayer(player)
                                         + ChatColor.YELLOW, String
-                                        .valueOf(getLifeMap().get(aPlayer
+                                        .valueOf(this.getLifeMap().get(aPlayer
                                                 .getArenaTeam().getName()) - 1)));
                     } else {
-                        arena.broadcast(Language.parse(arena,
-                                MSG.GOAL_FLAGS_BROUGHTHOME, arena
+                        this.arena.broadcast(Language.parse(this.arena,
+                                MSG.GOAL_FLAGS_BROUGHTHOME, this.arena
                                         .getTeam(sTeam).colorizePlayer(player)
                                         + ChatColor.YELLOW,
-                                arena.getTeam(flagTeam).getColoredName()
+                                this.arena.getTeam(flagTeam).getColoredName()
                                         + ChatColor.YELLOW, String
-                                        .valueOf(getLifeMap().get(flagTeam) - 1)));
+                                        .valueOf(this.getLifeMap().get(flagTeam) - 1)));
                     }
-                    getFlagMap().remove(flagTeam);
+                    this.getFlagMap().remove(flagTeam);
                 } catch (final Exception e) {
                     Bukkit.getLogger().severe(
                             "[PVP Arena] team unknown/no lives: " + flagTeam);
                     e.printStackTrace();
                 }
-                if ("touchdown".equals(flagTeam)) {
-                    takeFlag(ChatColor.BLACK.name(), false,
-                            SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+                if (TOUCHDOWN.equals(flagTeam)) {
+                    this.releaseFlag(TOUCHDOWN);
                 } else {
-                    takeFlag(arena.getTeam(flagTeam).getColor().name(), false,
-                            SpawnManager.getBlockByExactName(arena, flagTeam + "flag"));
+                    this.releaseFlag(flagTeam);
                 }
-                removeEffects(player);
-                if (arena.getArenaConfig().getBoolean(
-                        CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-                    player.getInventory().setHelmet(
-                            new ItemStack(Material.AIR, 1));
+                this.removeEffects(player);
+                if (this.arena.getArenaConfig().getBoolean(CFG.GOAL_PFLAGS_WOOLFLAGHEAD)) {
+                    player.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
                 } else {
-                    if (getHeadGearMap().get(player.getName()) == null) {
-                        player.getInventory().setHelmet(
-                                getHeadGearMap().get(player.getName()).clone());
-                        getHeadGearMap().remove(player.getName());
+                    if (this.getHeadGearMap().get(player.getName()) == null) {
+                        player.getInventory().setHelmet(this.getHeadGearMap().get(player.getName()).clone());
+                        this.getHeadGearMap().remove(player.getName());
                     }
                 }
 
-                flagTeam = "touchdown".equals(flagTeam) ? flagTeam + ':' + aPlayer
-                        .getArenaTeam().getName() : flagTeam;
+                flagTeam = TOUCHDOWN.equals(flagTeam) ? flagTeam + ':' + aPlayer.getArenaTeam().getName() : flagTeam;
 
-                reduceLivesCheckEndAndCommit(arena, flagTeam);
+                this.reduceLivesCheckEndAndCommit(this.arena, flagTeam);
 
-                final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "trigger:" + player.getName());
+                final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "trigger:" + player.getName());
                 Bukkit.getPluginManager().callEvent(gEvent);
+
+                // used to cancel block put event
+                res.setPriority(this, PRIORITY);
             }
         }
 
         return res;
     }
 
+    @Override
+    public void commitInteract(final Player player, final Block clickedBlock) {}
+
+    private PABlockLocation getTeamFlagLoc(String teamName) {
+        return SpawnManager.getBlockByExactName(this.arena, teamName + "flag");
+    }
+
     private void applyEffects(final Player player) {
-        final String value = arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGEFFECT);
+        final String value = this.arena.getArenaConfig().getString(CFG.GOAL_PFLAGS_FLAGEFFECT);
 
         if ("none".equalsIgnoreCase(value)) {
             return;
@@ -299,7 +288,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         if (split.length > 1) {
             try {
                 amp = Integer.parseInt(split[1]);
-            } catch (final Exception e) {
+            } catch (final Exception ignored) {
 
             }
         }
@@ -330,12 +319,12 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
-        final int maxTeamPlayers = arena.getArenaConfig().getInt(
+        final int maxPlayers = this.arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxTeamPlayers = this.arena.getArenaConfig().getInt(
                 CFG.READY_MAXTEAMPLAYERS);
 
-        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+        if (maxPlayers > 0 && this.arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(this.arena, MSG.ERROR_JOIN_ARENA_FULL));
             return res;
         }
 
@@ -343,12 +332,12 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!arena.isFreeForAll()) {
-            final ArenaTeam team = arena.getTeam(args[0]);
+        if (!this.arena.isFreeForAll()) {
+            final ArenaTeam team = this.arena.getTeam(args[0]);
 
             if (team != null && maxTeamPlayers > 0
                     && team.getTeamMembers().size() >= maxTeamPlayers) {
-                res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_TEAM_FULL, team.getName()));
+                res.setError(this, Language.parse(this.arena, MSG.ERROR_JOIN_TEAM_FULL, team.getName()));
                 return res;
             }
         }
@@ -360,19 +349,16 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
     @Override
     public PACheck checkSetBlock(final PACheck res, final Player player, final Block block) {
 
-        if (res.getPriority() > PRIORITY
-                || !PAA_Region.activeSelections.containsKey(player.getName())) {
+        if (res.getPriority() > PRIORITY || !PAA_Region.activeSelections.containsKey(player.getName())) {
             return res;
         }
 
-        ItemStack flagType = StringParser.getItemStackFromString(arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGTYPE));
-        if (block == null || block.getType() != flagType.getType() || (flagType.getData().getData()>0 && flagType.getData().getData() != block.getData())) {
+        Material flagType = this.arena.getArenaConfig().getMaterial(CFG.GOAL_PFLAGS_FLAGTYPE);
+        if (block == null || !ColorUtils.isSubType(block.getType(), flagType)) {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, arena)) {
+        if (!PVPArena.hasAdminPerms(player) && !PVPArena.hasCreatePerms(player, this.arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -428,18 +414,18 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                             + ChatColor.YELLOW));
         }
 
-        getLifeMap().clear();
-        new EndRunnable(arena, arena.getArenaConfig().getInt(
-                CFG.TIME_ENDCOUNTDOWN));
+        this.getLifeMap().clear();
+        this.getFlagDataMap().clear();
+        new EndRunnable(arena, arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
     }
 
     @Override
     public void commitCommand(final CommandSender sender, final String[] args) {
         if ("flagtype".equalsIgnoreCase(args[0])) {
             if (args.length < 2) {
-                arena.msg(
+                this.arena.msg(
                         sender,
-                        Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
+                        Language.parse(this.arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
                                 String.valueOf(args.length), "2"));
                 return;
             }
@@ -447,36 +433,36 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             final Material mat = Material.getMaterial(args[1].toUpperCase());
 
             if (mat == null) {
-                arena.msg(sender,
-                        Language.parse(arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
+                this.arena.msg(sender,
+                        Language.parse(this.arena, MSG.ERROR_MAT_NOT_FOUND, args[1]));
                 return;
             }
 
-            arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
+            this.arena.getArenaConfig().set(CFG.GOAL_PFLAGS_FLAGTYPE, mat.name());
 
-            arena.getArenaConfig().save();
-            arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TYPESET,
-                    CFG.GOAL_FLAGS_FLAGTYPE.toString()));
+            this.arena.getArenaConfig().save();
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET,
+                    CFG.GOAL_PFLAGS_FLAGTYPE.toString()));
 
         } else if ("flageffect".equalsIgnoreCase(args[0])) {
 
             // /pa [arena] flageffect SLOW 2
             if (args.length < 2) {
-                arena.msg(
+                this.arena.msg(
                         sender,
-                        Language.parse(arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
+                        Language.parse(this.arena, MSG.ERROR_INVALID_ARGUMENT_COUNT,
                                 String.valueOf(args.length), "2"));
                 return;
             }
 
             if ("none".equalsIgnoreCase(args[1])) {
-                arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGEFFECT, args[1]);
+                this.arena.getArenaConfig().set(CFG.GOAL_PFLAGS_FLAGEFFECT, args[1]);
 
-                arena.getArenaConfig().save();
-                arena.msg(
+                this.arena.getArenaConfig().save();
+                this.arena.msg(
                         sender,
-                        Language.parse(arena, MSG.SET_DONE,
-                                CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), args[1]));
+                        Language.parse(this.arena, MSG.SET_DONE,
+                                CFG.GOAL_PFLAGS_FLAGEFFECT.getNode(), args[1]));
                 return;
             }
 
@@ -493,7 +479,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             }
 
             if (pet == null) {
-                arena.msg(sender, Language.parse(arena,
+                this.arena.msg(sender, Language.parse(this.arena,
                         MSG.ERROR_POTIONEFFECTTYPE_NOTFOUND, args[1]));
                 return;
             }
@@ -504,52 +490,52 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 try {
                     amp = Integer.parseInt(args[2]);
                 } catch (final Exception e) {
-                    arena.msg(sender,
-                            Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[2]));
+                    this.arena.msg(sender,
+                            Language.parse(this.arena, MSG.ERROR_NOT_NUMERIC, args[2]));
                     return;
                 }
             }
             final String value = args[1] + 'x' + amp;
-            arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGEFFECT, value);
+            this.arena.getArenaConfig().set(CFG.GOAL_PFLAGS_FLAGEFFECT, value);
 
-            arena.getArenaConfig().save();
-            arena.msg(
+            this.arena.getArenaConfig().save();
+            this.arena.msg(
                     sender,
-                    Language.parse(arena, MSG.SET_DONE,
-                            CFG.GOAL_FLAGS_FLAGEFFECT.getNode(), value));
+                    Language.parse(this.arena, MSG.SET_DONE,
+                            CFG.GOAL_PFLAGS_FLAGEFFECT.getNode(), value));
 
         } else if (args[0].contains("flag")) {
-            for (final ArenaTeam team : arena.getTeams()) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
                 final String sTeam = team.getName();
                 if (args[0].contains(sTeam + "flag")) {
-                    flagName = args[0];
-                    PAA_Region.activeSelections.put(sender.getName(), arena);
+                    this.flagName = args[0];
+                    PAA_Region.activeSelections.put(sender.getName(), this.arena);
 
-                    arena.msg(sender,
-                            Language.parse(arena, MSG.GOAL_FLAGS_TOSET, flagName));
+                    this.arena.msg(sender,
+                            Language.parse(this.arena, MSG.GOAL_FLAGS_TOSET, this.flagName));
                 }
             }
-        } else if ("touchdown".equalsIgnoreCase(args[0])) {
-            flagName = args[0] + "flag";
-            PAA_Region.activeSelections.put(sender.getName(), arena);
+        } else if (TOUCHDOWN.equalsIgnoreCase(args[0])) {
+            this.flagName = args[0] + "flag";
+            PAA_Region.activeSelections.put(sender.getName(), this.arena);
 
-            arena.msg(sender, Language.parse(arena, MSG.GOAL_FLAGS_TOSET, flagName));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TOSET, this.flagName));
         }
     }
 
     @Override
     public void commitEnd(final boolean force) {
-        if (arena.realEndRunner != null) {
-            arena.getDebugger().i("[FLAGS] already ending");
+        if (this.arena.realEndRunner != null) {
+            this.arena.getDebugger().i("[FLAGS] already ending");
             return;
         }
-        arena.getDebugger().i("[FLAGS]");
+        this.arena.getDebugger().i("[FLAGS]");
 
-        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
         ArenaTeam aTeam = null;
 
-        for (final ArenaTeam team : arena.getTeams()) {
+        for (final ArenaTeam team : this.arena.getTeams()) {
             for (final ArenaPlayer ap : team.getTeamMembers()) {
                 if (ap.getStatus() == Status.FIGHT) {
                     aTeam = team;
@@ -560,40 +546,38 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
         if (aTeam != null && !force) {
             ArenaModuleManager.announce(
-                    arena,
-                    Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+                    this.arena,
+                    Language.parse(this.arena, MSG.TEAM_HAS_WON, aTeam.getColor()
                             + aTeam.getName() + ChatColor.YELLOW), "END");
 
             ArenaModuleManager.announce(
-                    arena,
-                    Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+                    this.arena,
+                    Language.parse(this.arena, MSG.TEAM_HAS_WON, aTeam.getColor()
                             + aTeam.getName() + ChatColor.YELLOW), "WINNER");
-            arena.broadcast(Language.parse(arena, MSG.TEAM_HAS_WON, aTeam.getColor()
+            this.arena.broadcast(Language.parse(this.arena, MSG.TEAM_HAS_WON, aTeam.getColor()
                     + aTeam.getName() + ChatColor.YELLOW));
         }
 
-        if (ArenaModuleManager.commitEnd(arena, aTeam)) {
+        if (ArenaModuleManager.commitEnd(this.arena, aTeam)) {
             return;
         }
-        new EndRunnable(arena, arena.getArenaConfig().getInt(
-                CFG.TIME_ENDCOUNTDOWN));
+        new EndRunnable(this.arena, this.arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
     }
 
     @Override
     public boolean commitSetFlag(final Player player, final Block block) {
 
-        arena.getDebugger().i("trying to set a flag", player);
+        this.arena.getDebugger().i("trying to set a flag", player);
 
         // command : /pa redflag1
         // location: red1flag:
 
-        SpawnManager.setBlock(arena, new PABlockLocation(block.getLocation()),
-                flagName);
+        SpawnManager.setBlock(this.arena, new PABlockLocation(block.getLocation()), this.flagName);
 
-        arena.msg(player, Language.parse(arena, MSG.GOAL_FLAGS_SET, flagName));
+        this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_FLAGS_SET, this.flagName));
 
         PAA_Region.activeSelections.remove(player.getName());
-        flagName = "";
+        this.flagName = "";
 
         return true;
     }
@@ -609,82 +593,81 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public void disconnect(final ArenaPlayer aPlayer) {
-        if (getFlagMap() == null) {
+        if (this.getFlagMap().isEmpty()) {
             return;
         }
-        final String sTeam = getHeldFlagTeam(aPlayer.getName());
-        final ArenaTeam flagTeam = arena.getTeam(sTeam);
+        final String sTeam = this.getHeldFlagTeam(aPlayer.getName());
+        final ArenaTeam flagTeam = this.arena.getTeam(sTeam);
 
         if (flagTeam == null) {
             if (sTeam != null) {
-                arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+                this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
                         .getArenaTeam().getColorCodeString()
                         + aPlayer.getName()
                         + ChatColor.YELLOW));
 
-                getFlagMap().remove("touchdown");
-                if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+                this.getFlagMap().remove(TOUCHDOWN);
+                if (this.getHeadGearMap() != null && this.getHeadGearMap().get(aPlayer.getName()) != null) {
                     if (aPlayer.get() != null) {
                         aPlayer.get().getInventory()
-                                .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+                                .setHelmet(this.getHeadGearMap().get(aPlayer.getName()).clone());
                     }
-                    getHeadGearMap().remove(aPlayer.getName());
+                    this.getHeadGearMap().remove(aPlayer.getName());
                 }
 
-                takeFlag(ChatColor.BLACK.name(), false,
-                        SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+                this.releaseFlag(TOUCHDOWN);
             }
         } else {
-            arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
+            this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
                     .getArenaTeam().getColorCodeString()
                     + aPlayer.getName()
                     + ChatColor.YELLOW, flagTeam.getName() + ChatColor.YELLOW));
-            getFlagMap().remove(flagTeam.getName());
-            if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+            this.getFlagMap().remove(flagTeam.getName());
+            if (this.getHeadGearMap() != null && this.getHeadGearMap().get(aPlayer.getName()) != null) {
                 if (aPlayer.get() != null) {
                     aPlayer.get().getInventory()
-                            .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+                            .setHelmet(this.getHeadGearMap().get(aPlayer.getName()).clone());
                 }
-                getHeadGearMap().remove(aPlayer.getName());
+                this.getHeadGearMap().remove(aPlayer.getName());
             }
 
-            takeFlag(flagTeam.getColor().name(), false,
-                    SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
+            this.releaseFlag(flagTeam.getName());
         }
     }
 
     @Override
     public void displayInfo(final CommandSender sender) {
-        sender.sendMessage("flageffect: " +
-                arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGEFFECT));
-        sender.sendMessage("flagtype: " +
-                arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE));
-        sender.sendMessage("lives: " +
-                arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES));
-        sender.sendMessage(StringParser.colorVar("mustbesafe",
-                arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_MUSTBESAFE)) +
-                " | " + StringParser.colorVar("flaghead",
-                arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)));
+        Config cfg = this.arena.getArenaConfig();
+        sender.sendMessage("flageffect: " + cfg.getString(CFG.GOAL_PFLAGS_FLAGEFFECT));
+        sender.sendMessage("flagtype: " + cfg.getString(CFG.GOAL_PFLAGS_FLAGTYPE));
+        sender.sendMessage("lives: " + cfg.getInt(CFG.GOAL_PFLAGS_LIVES));
+        sender.sendMessage(StringParser.colorVar("mustbesafe", cfg.getBoolean(CFG.GOAL_PFLAGS_MUSTBESAFE))
+                + " | " + StringParser.colorVar("flaghead", cfg.getBoolean(CFG.GOAL_PFLAGS_WOOLFLAGHEAD)));
     }
 
     private Map<String, String> getFlagMap() {
-        if (flagMap == null) {
-            flagMap = new HashMap<>();
+        if (this.flagMap == null) {
+            this.flagMap = new HashMap<>();
         }
-        return flagMap;
+        return this.flagMap;
     }
 
-    private short getFlagOverrideTeamShort(final Arena arena, final String team) {
-        if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
-            if ("touchdown".equals(team)) {
-                return StringParser
-                        .getColorDataFromENUM(ChatColor.BLACK.name());
-            }
-            return StringParser.getColorDataFromENUM(arena.getTeam(team)
-                    .getColor().name());
+    private Map<String, BlockData> getFlagDataMap() {
+        if (this.flagDataMap == null) {
+            this.flagDataMap = new HashMap<>();
         }
-        return StringParser.getColorDataFromENUM((String) arena
-                .getArenaConfig().getUnsafe("flagColors." + team));
+        return this.flagDataMap;
+    }
+
+    private Material getFlagOverrideTeamMaterial(final Arena arena, final String team) {
+        if (arena.getArenaConfig().getUnsafe("flagColors." + team) == null) {
+            if (TOUCHDOWN.equals(team)) {
+                return ColorUtils.getWoolMaterialFromChatColor(ChatColor.BLACK);
+            }
+            return ColorUtils.getWoolMaterialFromChatColor(arena.getTeam(team).getColor());
+        }
+        return ColorUtils.getWoolMaterialFromDyeColor(
+                (String) arena.getArenaConfig().getUnsafe("flagColors." + team));
     }
 
     @Override
@@ -692,18 +675,17 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()
-                            .getName()) ? getLifeMap().get(aPlayer
-                            .getArenaTeam().getName()) : 0));
+                    String.valueOf(this.getLifeMap().getOrDefault(aPlayer.getArenaTeam().getName(), 0))
+            );
         }
         return res;
     }
 
     private Map<String, ItemStack> getHeadGearMap() {
-        if (headGearMap == null) {
-            headGearMap = new HashMap<>();
+        if (this.headGearMap == null) {
+            this.headGearMap = new HashMap<>();
         }
-        return headGearMap;
+        return this.headGearMap;
     }
 
     /**
@@ -713,15 +695,14 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
      * @return a team name
      */
     private String getHeldFlagTeam(final String player) {
-        if (getFlagMap().size() < 1) {
+        if (this.getFlagMap().isEmpty()) {
             return null;
         }
 
-        arena.getDebugger().i("getting held FLAG of player " + player, player);
-        for (final String sTeam : getFlagMap().keySet()) {
-            arena.getDebugger().i("team " + sTeam + " is in " + getFlagMap().get(sTeam)
-                    + "s hands", player);
-            if (player.equals(getFlagMap().get(sTeam))) {
+        this.arena.getDebugger().i("getting held FLAG of player " + player, player);
+        for (final String sTeam : this.getFlagMap().keySet()) {
+            this.arena.getDebugger().i("team " + sTeam + " is in " + this.getFlagMap().get(sTeam) + "s hands", player);
+            if (player.equals(this.getFlagMap().get(sTeam))) {
                 return sTeam;
             }
         }
@@ -730,7 +711,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public boolean hasSpawn(final String string) {
-        for (final String teamName : arena.getTeamNames()) {
+        for (final String teamName : this.arena.getTeamNames()) {
             if (string.toLowerCase().equals(teamName.toLowerCase() + "flag")) {
                 return true;
             }
@@ -739,8 +720,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 return true;
             }
 
-            if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-                for (final ArenaClass aClass : arena.getClasses()) {
+            if (this.arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+                for (final ArenaClass aClass : this.arena.getClasses()) {
                     if (string.toLowerCase().startsWith(teamName.toLowerCase() +
                             aClass.getName().toLowerCase() + "spawn")) {
                         return true;
@@ -755,14 +736,8 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
     public void initate(final Player player) {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
-        if (!getLifeMap().containsKey(team.getName())) {
-            getLifeMap().put(aPlayer.getArenaTeam().getName(), arena.getArenaConfig()
-                    .getInt(CFG.GOAL_FLAGS_LIVES));
-
-            takeFlag(team.getColor().name(), false,
-                    SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
-            takeFlag(ChatColor.BLACK.name(), false,
-                    SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+        if (!this.getLifeMap().containsKey(team.getName())) {
+            this.getLifeMap().put(aPlayer.getArenaTeam().getName(), this.arena.getArenaConfig().getInt(CFG.GOAL_PFLAGS_LIVES));
         }
     }
 
@@ -775,101 +750,94 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
     public void parsePlayerDeath(final Player player,
                                  final EntityDamageEvent lastDamageCause) {
 
-        if (getFlagMap() == null) {
-            arena.getDebugger().i("no flags set!!", player);
+        if (this.getFlagMap().isEmpty()) {
+            this.arena.getDebugger().i("no flags set!!", player);
             return;
         }
-        final String sTeam = getHeldFlagTeam(player.getName());
-        final ArenaTeam flagTeam = arena.getTeam(sTeam);
+        final String sTeam = this.getHeldFlagTeam(player.getName());
+        final ArenaTeam flagTeam = this.arena.getTeam(sTeam);
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
         if (flagTeam == null) {
             if (sTeam != null) {
-                arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
+                this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_FLAGS_DROPPEDTOUCH, aPlayer
                         .getArenaTeam().getColorCodeString()
                         + aPlayer.getName()
                         + ChatColor.YELLOW));
 
-                getFlagMap().remove("touchdown");
-                if (getHeadGearMap() != null && getHeadGearMap().get(aPlayer.getName()) != null) {
+                this.getFlagMap().remove(TOUCHDOWN);
+                if (this.getHeadGearMap() != null && this.getHeadGearMap().get(aPlayer.getName()) != null) {
                     if (aPlayer.get() != null) {
-                        aPlayer.get().getInventory()
-                                .setHelmet(getHeadGearMap().get(aPlayer.getName()).clone());
+                        aPlayer.get().getInventory().setHelmet(this.getHeadGearMap().get(aPlayer.getName()).clone());
                     }
-                    getHeadGearMap().remove(aPlayer.getName());
+                    this.getHeadGearMap().remove(aPlayer.getName());
                 }
 
-                takeFlag(ChatColor.BLACK.name(), false,
-                        SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+                this.releaseFlag(TOUCHDOWN);
             }
         } else {
-            arena.broadcast(Language.parse(arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
+            this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_FLAGS_DROPPED, aPlayer
                             .getArenaTeam().colorizePlayer(player) + ChatColor.YELLOW,
                     flagTeam.getColoredName() + ChatColor.YELLOW));
-            getFlagMap().remove(flagTeam.getName());
-            if (getHeadGearMap() != null
-                    && getHeadGearMap().get(player.getName()) != null) {
-                player.getInventory().setHelmet(
-                        getHeadGearMap().get(player.getName()).clone());
-                getHeadGearMap().remove(player.getName());
+            this.getFlagMap().remove(flagTeam.getName());
+            if (this.getHeadGearMap() != null && this.getHeadGearMap().get(player.getName()) != null) {
+                player.getInventory().setHelmet(this.getHeadGearMap().get(player.getName()).clone());
+                this.getHeadGearMap().remove(player.getName());
             }
 
-            takeFlag(flagTeam.getColor().name(), false,
-                    SpawnManager.getBlockByExactName(arena, flagTeam.getName() + "flag"));
+            this.releaseFlag(flagTeam.getName());
         }
     }
 
     @Override
     public void parseStart() {
-        getLifeMap().clear();
-        for (final ArenaTeam team : arena.getTeams()) {
+        this.getLifeMap().clear();
+        this.getFlagDataMap().clear();
+        for (final ArenaTeam team : this.arena.getTeams()) {
             if (!team.getTeamMembers().isEmpty()) {
-                arena.getDebugger().i("adding team " + team.getName());
+                this.arena.getDebugger().i("adding team " + team.getName());
                 // team is active
-                getLifeMap().put(team.getName(),
-                        arena.getArenaConfig().getInt(CFG.GOAL_FLAGS_LIVES, 3));
+                this.getLifeMap().put(team.getName(), this.arena.getArenaConfig().getInt(CFG.GOAL_PFLAGS_LIVES, 3));
+                Block flagBlock = this.getTeamFlagLoc(team.getName()).toLocation().getBlock();
+                this.getFlagDataMap().put(team.getName(), flagBlock.getBlockData().clone());
             }
-            takeFlag(team.getColor().name(), false,
-                    SpawnManager.getBlockByExactName(arena, team.getName() + "flag"));
         }
-        takeFlag(ChatColor.BLACK.name(), false,
-                SpawnManager.getBlockByExactName(arena, "touchdownflag"));
+        ofNullable(this.getTeamFlagLoc(TOUCHDOWN)).ifPresent(paBlockLocation -> {
+            Block touchdownFlagBlock = paBlockLocation.toLocation().getBlock();
+            this.getFlagDataMap().put(TOUCHDOWN, touchdownFlagBlock.getBlockData().clone());
+        });
     }
 
-    private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
+    private void reduceLivesCheckEndAndCommit(final Arena arena, final String team) {
 
         arena.getDebugger().i("reducing lives of team " + team);
-        if (getLifeMap().get(team) == null) {
+        if (this.getLifeMap().get(team) == null) {
             if (team.contains(":")) {
                 final String realTeam = team.split(":")[1];
-                final int iLives = getLifeMap().get(realTeam) - 1;
+                final int iLives = this.getLifeMap().get(realTeam) - 1;
                 if (iLives > 0) {
-                    getLifeMap().put(realTeam, iLives);
+                    this.getLifeMap().put(realTeam, iLives);
                 } else {
-                    getLifeMap().remove(realTeam);
-                    commit(arena, realTeam, true);
-                    return true;
+                    this.getLifeMap().remove(realTeam);
+                    this.commit(arena, realTeam, true);
                 }
             }
         } else {
-            if (getLifeMap().get(team) != null) {
-                final int iLives = getLifeMap().get(team) - 1;
+            if (this.getLifeMap().get(team) != null) {
+                final int iLives = this.getLifeMap().get(team) - 1;
                 if (iLives > 0) {
-                    getLifeMap().put(team, iLives);
+                    this.getLifeMap().put(team, iLives);
                 } else {
-                    getLifeMap().remove(team);
-                    commit(arena, team, false);
-                    return true;
+                    this.getLifeMap().remove(team);
+                    this.commit(arena, team, false);
                 }
             }
         }
-
-        return false;
     }
 
     private void removeEffects(final Player player) {
-        final String value = arena.getArenaConfig().getString(
-                CFG.GOAL_FLAGS_FLAGEFFECT);
+        final String value = this.arena.getArenaConfig().getString(
+                CFG.GOAL_PFLAGS_FLAGEFFECT);
 
         if ("none".equalsIgnoreCase(value)) {
             return;
@@ -890,8 +858,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
         }
 
         if (pet == null) {
-            PVPArena.instance.getLogger().warning(
-                    "Invalid Potion Effect Definition: " + value);
+            PVPArena.instance.getLogger().warning("Invalid Potion Effect Definition: " + value);
             return;
         }
 
@@ -901,14 +868,21 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public void reset(final boolean force) {
-        getFlagMap().clear();
-        getHeadGearMap().clear();
-        getLifeMap().clear();
+        this.getHeadGearMap().clear();
+        this.getLifeMap().clear();
+        this.getFlagMap().clear();
+        if(!this.getFlagDataMap().isEmpty()) {
+            for (final ArenaTeam team : this.arena.getTeams()) {
+                this.releaseFlag(team.getName());
+            }
+            this.releaseFlag(TOUCHDOWN);
+        }
+        this.getFlagDataMap().clear();
     }
 
     @Override
     public void setDefaults(final YamlConfiguration config) {
-        if (arena.isFreeForAll()) {
+        if (this.arena.isFreeForAll()) {
             return;
         }
 
@@ -916,58 +890,42 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             config.set("teams", null);
         }
         if (config.get("teams") == null) {
-            arena.getDebugger().i("no teams defined, adding custom red and blue!");
+            this.arena.getDebugger().i("no teams defined, adding custom red and blue!");
             config.addDefault("teams.red", ChatColor.RED.name());
             config.addDefault("teams.blue", ChatColor.BLUE.name());
         }
-        if (arena.getArenaConfig().getBoolean(CFG.GOAL_FLAGS_WOOLFLAGHEAD)
+        if (this.arena.getArenaConfig().getBoolean(CFG.GOAL_PFLAGS_WOOLFLAGHEAD)
                 && config.get("flagColors") == null) {
-            arena.getDebugger().i("no flagheads defined, adding white and black!");
+            this.arena.getDebugger().i("no flagheads defined, adding white and black!");
             config.addDefault("flagColors.red", "WHITE");
             config.addDefault("flagColors.blue", "BLACK");
         }
     }
 
     /**
-     * take/reset an arena flag
+     * reset an arena flag
      *
-     * @param flagColor       the teamcolor to reset
-     * @param take            true if take, else reset
-     * @param paBlockLocation the location to take/reset
+     * @param teamName  team whose flag needs to be reset
      */
-    void takeFlag(final String flagColor, final boolean take, final PABlockLocation paBlockLocation) {
+    private void releaseFlag(final String teamName) {
+        PABlockLocation paBlockLocation = this.getTeamFlagLoc(teamName);
         if (paBlockLocation == null) {
             return;
         }
-        if (!"WOOL".equals(arena.getArenaConfig().getString(CFG.GOAL_FLAGS_FLAGTYPE))) {
-            paBlockLocation.toLocation()
-                    .getBlock()
-                    .setType(
-                            take ? Material.BEDROCK : Material.valueOf(arena
-                                    .getArenaConfig().getString(
-                                            CFG.GOAL_FLAGS_FLAGTYPE)));
-            return;
-        }
-        if (take) {
-            paBlockLocation.toLocation().getBlock()
-                    .setData(StringParser.getColorDataFromENUM("WHITE"));
-        } else {
-            paBlockLocation.toLocation()
-                    .getBlock()
-                    .setTypeIdAndData(
-                            Material.valueOf(
-                                    arena.getArenaConfig().getString(
-                                            CFG.GOAL_FLAGS_FLAGTYPE)).getId(),
-                            StringParser.getColorDataFromENUM(flagColor), false);
+
+        Block flagBlock = paBlockLocation.toLocation().getBlock();
+        try {
+            flagBlock.setBlockData(this.getFlagDataMap().get(teamName));
+        } catch (Exception e) {
+            PVPArena.instance.getLogger().warning("Impossible to reset flag data ! You may recreate arena flags.");
         }
     }
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaTeam team : arena.getTeams()) {
-            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
-                    .get(team.getName()) : 0;
+        for (final ArenaTeam team : this.arena.getTeams()) {
+            double score = this.getLifeMap().getOrDefault(team.getName(), 0);
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
             } else {
@@ -980,115 +938,97 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
 
     @Override
     public void unload(final Player player) {
-        disconnect(ArenaPlayer.parsePlayer(player.getName()));
-        if (allowsJoinInBattle()) {
-            arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
+        this.disconnect(ArenaPlayer.parsePlayer(player.getName()));
+        if (this.allowsJoinInBattle()) {
+            this.arena.hasNotPlayed(ArenaPlayer.parsePlayer(player.getName()));
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
     public void onFlagClaim(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
-        if (!arena.hasPlayer(event.getPlayer())
-                || !event
-                .getBlock()
-                .getType()
-                .name()
-                .equals(arena.getArenaConfig().getString(
-                        CFG.GOAL_FLAGS_FLAGTYPE))) {
+        Material brokenMaterial = event.getBlock().getType();
+        if (!this.arena.hasPlayer(event.getPlayer()) ||
+                !ColorUtils.isSubType(brokenMaterial, this.arena.getArenaConfig().getMaterial(CFG.GOAL_PFLAGS_FLAGTYPE))) {
 
-            arena.getDebugger().i("block destroy, ignoring", player);
-            arena.getDebugger().i(String.valueOf(arena.hasPlayer(event.getPlayer())), player);
-            arena.getDebugger().i(event.getBlock().getType().name(), player);
+            this.arena.getDebugger().i("block destroy, ignoring", player);
+            this.arena.getDebugger().i(String.valueOf(this.arena.hasPlayer(event.getPlayer())), player);
+            this.arena.getDebugger().i(event.getBlock().getType().name(), player);
             return;
         }
 
         final Block block = event.getBlock();
 
-        arena.getDebugger().i("flag destroy!", player);
+        this.arena.getDebugger().i("flag destroy!", player);
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
 
-        if (getFlagMap().containsValue(player.getName())) {
-            arena.getDebugger().i("already carries a flag!", player);
+        if (this.getFlagMap().containsValue(player.getName())) {
+            this.arena.getDebugger().i("already carries a flag!", player);
             return;
         }
         final ArenaTeam pTeam = aPlayer.getArenaTeam();
         if (pTeam == null) {
             return;
         }
-        final Set<ArenaTeam> setTeam = new HashSet<>();
 
-        for (final ArenaTeam team : arena.getTeams()) {
-            setTeam.add(team);
-        }
-        setTeam.add(new ArenaTeam("touchdown", "BLACK"));
+        final Set<ArenaTeam> setTeam = new HashSet<>(this.arena.getTeams());
+
+        setTeam.add(new ArenaTeam(TOUCHDOWN, "BLACK"));
         Vector vFlag = null;
         for (final ArenaTeam team : setTeam) {
-            final String aTeam = team.getName();
+            final String teamName = team.getName();
+            final PABlockLocation teamFlagLoc = this.getTeamFlagLoc(teamName);
 
-            if (aTeam.equals(pTeam.getName())) {
-                arena.getDebugger().i("equals!OUT! ", player);
+            if (teamName.equals(pTeam.getName())) {
+                this.arena.getDebugger().i("equals!OUT! ", player);
                 continue;
             }
-            if (team.getTeamMembers().size() < 1
-                    && !"touchdown".equals(team.getName())) {
-                arena.getDebugger().i("size!OUT! ", player);
+            if (team.getTeamMembers().size() < 1 && !TOUCHDOWN.equals(team.getName())) {
+                this.arena.getDebugger().i("size!OUT! ", player);
                 continue; // dont check for inactive teams
             }
-            if (getFlagMap() != null && getFlagMap().containsKey(aTeam)) {
-                arena.getDebugger().i("taken!OUT! ", player);
+            if (this.getFlagMap().containsKey(teamName)) {
+                this.arena.getDebugger().i("taken!OUT! ", player);
                 continue; // already taken
             }
-            arena.getDebugger().i("checking for flag of team " + aTeam, player);
+            this.arena.getDebugger().i("checking for flag of team " + teamName, player);
             Vector vLoc = block.getLocation().toVector();
-            arena.getDebugger().i("block: " + vLoc, player);
-            if (!SpawnManager.getBlocksStartingWith(arena, aTeam + "flag").isEmpty()) {
-                vFlag = SpawnManager
-                        .getBlockNearest(
-                                SpawnManager.getBlocksStartingWith(arena, aTeam
-                                        + "flag"),
-                                new PABlockLocation(player.getLocation()))
-                        .toLocation().toVector();
-            }
-            if (vFlag != null && vLoc.distance(vFlag) < 2) {
-                arena.getDebugger().i("flag found!", player);
-                arena.getDebugger().i("vFlag: " + vFlag, player);
+            this.arena.getDebugger().i("block: " + vLoc, player);
 
-                if ("touchdown".equals(team.getName())) {
+            if(teamFlagLoc != null && vLoc.equals(teamFlagLoc.toLocation().toVector())) {
+                this.arena.getDebugger().i("flag found!", player);
+                this.arena.getDebugger().i("vFlag: " + vFlag, player);
 
-                    arena.broadcast(Language.parse(arena,
+                if (TOUCHDOWN.equals(team.getName())) {
+
+                    this.arena.broadcast(Language.parse(this.arena,
                             MSG.GOAL_FLAGS_GRABBEDTOUCH,
                             pTeam.colorizePlayer(player) + ChatColor.YELLOW));
                 } else {
 
-                    arena.broadcast(Language
-                            .parse(arena, MSG.GOAL_FLAGS_GRABBED,
+                    this.arena.broadcast(Language
+                            .parse(this.arena, MSG.GOAL_FLAGS_GRABBED,
                                     pTeam.colorizePlayer(player)
                                             + ChatColor.YELLOW,
                                     team.getColoredName()
                                             + ChatColor.YELLOW));
                 }
                 try {
-                    getHeadGearMap().put(player.getName(), player.getInventory()
-                            .getHelmet().clone());
-                } catch (final Exception e) {
+                    this.getHeadGearMap().put(player.getName(), player.getInventory().getHelmet().clone());
+                } catch (final Exception ignored) {
 
                 }
-                final ItemStack itemStack = block.getState().getData().toItemStack()
-                        .clone();
-                itemStack.setAmount(1);
-                if (arena.getArenaConfig().getBoolean(
-                        CFG.GOAL_FLAGS_WOOLFLAGHEAD)) {
-                    itemStack.setDurability(getFlagOverrideTeamShort(arena, aTeam));
+
+                if (this.arena.getArenaConfig().getBoolean(CFG.GOAL_PFLAGS_WOOLFLAGHEAD)) {
+                    final ItemStack itemStack = new ItemStack(this.getFlagOverrideTeamMaterial(this.arena, teamName));
+                    player.getInventory().setHelmet(itemStack);
                 }
-                player.getInventory().setHelmet(itemStack);
-                applyEffects(player);
-
-                takeFlag(team.getColor().name(), true,
-                        new PABlockLocation(block.getLocation()));
-                getFlagMap().put(aTeam, player.getName());
-
+                this.applyEffects(player);
+                this.getFlagMap().put(teamName, player.getName());
+                player.getInventory().addItem(new ItemStack(block.getType()));
+                block.setType(Material.AIR);;
+                event.setCancelled(true);
                 return;
             }
         }
@@ -1104,13 +1044,11 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return;
         }
 
-        if (event.isCancelled()
-                || getHeldFlagTeam(player.getName()) == null) {
+        if (event.isCancelled() || this.getHeldFlagTeam(player.getName()) == null) {
             return;
         }
 
-        if (event.getInventory().getType() == InventoryType.CRAFTING
-                && event.getRawSlot() != 5) {
+        if (event.getInventory().getType() == InventoryType.CRAFTING && event.getRawSlot() != 5) {
             return;
         }
 

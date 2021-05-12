@@ -3,21 +3,23 @@ package net.slipcor.pvparena.arena;
 import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.SpawnEggMeta;
-import org.bukkit.material.SpawnEgg;
 import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static java.util.Arrays.asList;
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>Arena Class class</pre>
@@ -39,50 +41,8 @@ public final class ArenaClass {
 
     private static final Map<String, ArenaClass> globals = new HashMap<>();
 
-    // private statics: item definitions
-    private static final List<Material> ARMORS_TYPE = new LinkedList<>();
-    private static final List<Material> HELMETS_TYPE = new LinkedList<>();
-    private static final List<Material> CHESTPLATES_TYPE = new LinkedList<>();
-    private static final List<Material> LEGGINGS_TYPE = new LinkedList<>();
-    private static final List<Material> BOOTS_TYPE = new LinkedList<>();
+    private static final List<Material> OTHER_HELMET_LIST = asList(Material.PUMPKIN, Material.JACK_O_LANTERN, Material.PLAYER_HEAD);
 
-    // static filling of the items array
-    static {
-        HELMETS_TYPE.add(Material.LEATHER_HELMET);
-        HELMETS_TYPE.add(Material.GOLD_HELMET);
-        HELMETS_TYPE.add(Material.CHAINMAIL_HELMET);
-        HELMETS_TYPE.add(Material.IRON_HELMET);
-        HELMETS_TYPE.add(Material.DIAMOND_HELMET);
-
-        HELMETS_TYPE.add(Material.WOOL);
-        HELMETS_TYPE.add(Material.PUMPKIN);
-        HELMETS_TYPE.add(Material.JACK_O_LANTERN);
-        HELMETS_TYPE.add(Material.SKULL_ITEM);
-
-        CHESTPLATES_TYPE.add(Material.LEATHER_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.GOLD_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.CHAINMAIL_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.IRON_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.DIAMOND_CHESTPLATE);
-        CHESTPLATES_TYPE.add(Material.ELYTRA);
-
-        LEGGINGS_TYPE.add(Material.LEATHER_LEGGINGS);
-        LEGGINGS_TYPE.add(Material.GOLD_LEGGINGS);
-        LEGGINGS_TYPE.add(Material.CHAINMAIL_LEGGINGS);
-        LEGGINGS_TYPE.add(Material.IRON_LEGGINGS);
-        LEGGINGS_TYPE.add(Material.DIAMOND_LEGGINGS);
-
-        BOOTS_TYPE.add(Material.LEATHER_BOOTS);
-        BOOTS_TYPE.add(Material.GOLD_BOOTS);
-        BOOTS_TYPE.add(Material.CHAINMAIL_BOOTS);
-        BOOTS_TYPE.add(Material.IRON_BOOTS);
-        BOOTS_TYPE.add(Material.DIAMOND_BOOTS);
-
-        ARMORS_TYPE.addAll(HELMETS_TYPE);
-        ARMORS_TYPE.addAll(CHESTPLATES_TYPE);
-        ARMORS_TYPE.addAll(LEGGINGS_TYPE);
-        ARMORS_TYPE.addAll(BOOTS_TYPE);
-    }
 
     public static void addGlobalClasses() {
         globals.clear();
@@ -106,14 +66,20 @@ public final class ArenaClass {
         }
 
         for (final String className : cfg.getConfigurationSection("classes").getKeys(false)) {
-            final String sItemList;
+            ItemStack[] items;
+            ItemStack offHand;
+            ItemStack[] armors;
 
             try {
-                sItemList = (String) cfg.getConfigurationSection("classes").get(className);
+                ConfigurationSection classesCfg = cfg.getConfigurationSection("classes").getConfigurationSection(className);
+                items = getItemStacksFromConfig(classesCfg.getList("items"));
+                offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
+                armors = getItemStacksFromConfig(classesCfg.getList("items"));
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + className);
+                e.printStackTrace();
                 continue;
             }
             final String classChest;
@@ -122,49 +88,12 @@ public final class ArenaClass {
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
                 ItemStack[] contents = c.getInventory().getContents();
-                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length-5);
-                final ItemStack offHand = contents[contents.length-5];
-                final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
+                items = Arrays.copyOfRange(contents, 0, contents.length-5);
+                offHand = contents[contents.length-5];
+                armors = Arrays.copyOfRange(contents, contents.length-4, contents.length);
                 globals.put(className, new ArenaClass(className, items, offHand, armors));
             } catch (Exception e) {
-                final String[] sItems = sItemList.split(",");
-                final ItemStack[] items = new ItemStack[sItems.length];
-                final ItemStack[] offhand = new ItemStack[1];
-                final ItemStack[] armors = new ItemStack[4];
-
-                for (int i = 0; i < sItems.length; i++) {
-
-                    if (sItems[i].contains(">>!<<")) {
-                        final String[] split = sItems[i].split(">>!<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        armors[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (armors[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized armor item: " + split[1]);
-                        }
-
-                        sItems[i] = "AIR";
-                    } else if (sItems[i].contains(">>O<<")) {
-                        final String[] split = sItems[i].split(">>O<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        offhand[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (offhand[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized armor item: " + split[1]);
-                        }
-                    }
-
-                    items[i] = StringParser.getItemStackFromString(sItems[i]);
-                    if (items[i] == null) {
-                        PVPArena.instance.getLogger().warning(
-                                "unrecognized item: " + items[i]);
-                    }
-                }
-                globals.put(className, new ArenaClass(className, items, offhand[0], armors));
+                globals.put(className, new ArenaClass(className, items, offHand, armors));
             }
         }
     }
@@ -176,24 +105,24 @@ public final class ArenaClass {
     }
 
     public static void equip(final Player player, final ItemStack[] items) {
-        ItemStack last = items[items.length-1];
+        int i = 0;
         for (final ItemStack item : items) {
-            if (ARMORS_TYPE.contains(item.getType())) {
+            if (isArmorItem(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
-                if (last != null && last == item) {
-                    player.getInventory().setItemInOffHand(last);
+                if (i == items.length - 1) {
+                    player.getInventory().setItemInOffHand(item);
                     continue;
                 }
-                if (item.getType() == Material.MONSTER_EGG && item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
-                    final SpawnEggMeta egg = (SpawnEggMeta) item.getItemMeta();
+                if (item.hasItemMeta() && item.getItemMeta().hasDisplayName() && "SPAWN".equals(item.getItemMeta().getDisplayName())) {
+                    final String eggType = item.getType().name().replace("_SPAWN_EGG", "");
 
                     try {
                         Bukkit.getScheduler().runTaskLater(PVPArena.instance, new Runnable(){
                             @Override
                             public void run() {
                                 ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(
-                                        player, player.getWorld().spawnEntity(player.getLocation(), egg.getSpawnedType()));
+                                        player, player.getWorld().spawnEntity(player.getLocation(), EntityType.valueOf(eggType)));
                             }
                         }, 20L);
                     } catch(final IllegalPluginAccessException e) {
@@ -202,57 +131,80 @@ public final class ArenaClass {
                 } else {
                     player.getInventory().addItem(item);
                 }
-                debug.i("- " + StringParser.getStringFromItemStack(item), player);
+            }
+            i++;
+        }
+    }
+
+    public static void equip(final Player player, final ItemStack[][] itemArray) {
+        try {
+            player.getInventory().setItemInOffHand(itemArray[1][0]);
+        } catch(ArrayIndexOutOfBoundsException e) {
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
+        }
+
+        for(ItemStack itemStack : itemArray[2]) {
+            equipArmor(itemStack, player.getInventory());
+        }
+
+        for (final ItemStack item : itemArray[0]) {
+            if (item.getType().name().endsWith("_SPAWN_EGG")) {
+                final String eggType = item.getType().name().replace("_SPAWN_EGG", "");
+
+                try {
+                    Bukkit.getScheduler().runTaskLater(PVPArena.instance, () ->
+                            ArenaPlayer.parsePlayer(player.getName()).getArena().addEntity(
+                                player, player.getWorld().spawnEntity(player.getLocation(), EntityType.valueOf(eggType))), 20L);
+                } catch(final IllegalPluginAccessException ignored) {
+
+                }
+            } else {
+                player.getInventory().addItem(item);
             }
         }
-        player.updateInventory();
     }
 
     public void equip(final Player player) {
         debug.i("Equipping player " + player.getName() + " with items!", player);
-        for (ItemStack item : armors) {
+        for (ItemStack item : this.armors) {
             if (item != null) {
-                debug.i("armor: "+StringParser.getStringFromItemStack(item));
                 equipArmor(item, player.getInventory());
             }
         }
-        for (final ItemStack item : items) {
+        for (final ItemStack item : this.items) {
             if (item == null) {
                 continue;
             }
-            if (ARMORS_TYPE.contains(item.getType())) {
+            if (isArmorItem(item.getType())) {
                 equipArmor(item, player.getInventory());
             } else {
                 player.getInventory().addItem(item);
-                debug.i("- " + StringParser.getStringFromItemStack(item), player);
             }
         }
-        player.getInventory().setItemInOffHand(offHand);
-        player.updateInventory();
+        player.getInventory().setItemInOffHand(this.offHand);
     }
 
     private static void equipArmor(final ItemStack stack, final PlayerInventory inv) {
-        debug.i("- " + StringParser.getStringFromItemStack(stack), (Player) inv.getHolder());
         final Material type = stack.getType();
-        if (HELMETS_TYPE.contains(type)) {
+        if (isHelmetItem(type)) {
             if (inv.getHelmet() != null && inv.getHelmet().getType() != Material.AIR) {
                 inv.addItem(stack);
             } else {
                 inv.setHelmet(stack);
             }
-        } else if (CHESTPLATES_TYPE.contains(type)) {
+        } else if (isChestplateItem(type)) {
             if (inv.getChestplate() != null && inv.getChestplate().getType() != Material.AIR) {
                 inv.addItem(stack);
             } else {
                 inv.setChestplate(stack);
             }
-        } else if (LEGGINGS_TYPE.contains(type)) {
+        } else if (isLeggingsItem(type)) {
             if (inv.getLeggings() != null && inv.getLeggings().getType() != Material.AIR) {
                 inv.addItem(stack);
             } else {
                 inv.setLeggings(stack);
             }
-        } else if (BOOTS_TYPE.contains(type)) {
+        } else if (isBootsItem(type)) {
             if (inv.getBoots() != null && inv.getBoots().getType() != Material.AIR) {
                 inv.addItem(stack);
             } else {
@@ -261,32 +213,43 @@ public final class ArenaClass {
         }
     }
 
-    /**
-     * Backwards compatible offhand-less implementation of the constructor
-     *
-     * @deprecated use {@link #ArenaClass(String, ItemStack[], ItemStack, ItemStack[])} } instead.
-     */
-    @Deprecated
-    public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack[] armors) {
-        this(className, classItems, null, armors);
-    }
-
     public ArenaClass(final String className, final ItemStack[] classItems, final ItemStack offHand, final ItemStack[] armors) {
-        name = className;
+        this.name = className;
         this.offHand = offHand;
-        items = classItems.clone();
+        this.items = classItems.clone();
         this.armors = armors.clone();
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public ItemStack[] getArmors() {
-        return armors.clone();
+        return this.armors.clone();
     }
 
     public ItemStack[] getItems() {
-        return items.clone();
+        return this.items.clone();
+    }
+
+    private static boolean isHelmetItem(Material material) {
+        return material.name().endsWith("_HELMET") || material.name().endsWith("_WOOL") ||
+                OTHER_HELMET_LIST.contains(material);
+    }
+
+    private static boolean isChestplateItem(Material material) {
+        return material.name().endsWith("_CHESTPLATE") || material == Material.ELYTRA;
+    }
+
+    private static boolean isLeggingsItem(Material material) {
+        return material.name().endsWith("_LEGGINGS");
+    }
+
+    private static boolean isBootsItem(Material material) {
+        return material.name().endsWith("_BOOTS");
+    }
+
+    private static boolean isArmorItem(Material material) {
+        return isBootsItem(material) || isLeggingsItem(material) || isChestplateItem(material) || isHelmetItem(material);
     }
 }

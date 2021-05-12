@@ -15,29 +15,29 @@ import java.util.Map;
  */
 
 public class PAStatMap {
-    private final Map<StatisticsManager.type, Integer> map = new HashMap<>();
+    private final Map<StatisticsManager.Type, Integer> map = new HashMap<>();
 
-    public void decStat(final StatisticsManager.type type) {
+    public void decStat(final StatisticsManager.Type type) {
         decStat(type, 1);
     }
 
-    public void decStat(final StatisticsManager.type type, final int value) {
+    public void decStat(final StatisticsManager.Type type, final int value) {
         map.put(type, getStat(type) - value);
     }
 
-    public int getStat(final StatisticsManager.type type) {
+    public int getStat(final StatisticsManager.Type type) {
         return map.containsKey(type) ? map.get(type) : 0;
     }
 
-    public void incStat(final StatisticsManager.type type) {
+    public void incStat(final StatisticsManager.Type type) {
         incStat(type, 1);
     }
 
-    public void incStat(final StatisticsManager.type type, final int value) {
+    public void incStat(final StatisticsManager.Type type, final int value) {
         map.put(type, getStat(type) + value);
     }
 
-    public void setStat(final StatisticsManager.type type, final int value) {
+    public void setStat(final StatisticsManager.Type type, final int value) {
         map.put(type, value);
     }
 }

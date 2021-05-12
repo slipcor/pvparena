@@ -4,22 +4,10 @@
 
 The create command basically creates a standard, boring, arena. Given legacy types enhance this, but still you will probably want to customize your arena and definately continue setting it up by setting spawn points.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa create teamArena   | create a standard Teams Arena
-/pa create capture ctf | create a Capture The Flag Arena called "capture"
+/pa create [arenaName] (free)   | Create an arena. Arena uses team gamemode by default, add `free` parameter to use FFA gamemode instead.
 
-## Details
-
-In order to have a quicker start when setting up an arena, you can use the oldschool legacy types, which will be supported until v2.0 I guess. Those types add pre-definitions to define how the arena works in general. You can still go ahead and adjust the goal setup to your needs!
-
-Valid legacy types include:
-
-- ctf
-- free
-- ctp
-- sabotage
-- tank
-- spleef
+Example: `/pa create ffa free` - create a free for all arena named "ffa"

@@ -8,8 +8,9 @@ The check command basically tries to parse an arena config, in case you are unsu
 
 Command |  Definition
 ------------- | -------------
-/pa check myArena | debug the arena "myArena"
-/pa check Teams   | debug the arena "Teams"
+/pa check [arena] | check the config of an arena
+
+Example: `/pa check myArena` - debug the arena "myArena"
 
 ##  Hazards
 

@@ -1,8 +1,8 @@
 package net.slipcor.pvparena.arena;
 
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -34,7 +34,7 @@ public class ArenaTeam {
      */
     public ArenaTeam(final String name, final String color) {
         players = new HashSet<>();
-        this.color = StringParser.getChatColorFromWoolEnum(color);
+        this.color = ColorUtils.getChatColorFromDyeColor(color);
         this.name = name;
     }
 
@@ -124,5 +124,13 @@ public class ArenaTeam {
      */
     public void remove(final ArenaPlayer player) {
         players.remove(player);
+    }
+
+    @Override
+    public String toString() {
+        return "ArenaTeam{" +
+                "color=" + this.color +
+                ", name='" + this.name + '\'' +
+                '}';
     }
 }

@@ -1,20 +1,23 @@
 # Round Command
 
+> ⚠ This command has NOT been tested at ALL! Use at your own risks.
+
 ## Description
 
 This command is a WIP to manage "round behaviour" in arenas.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa free round        | list rounds of arena "free"
-/pa free round 1      | list goals of round 1 of arena "free"
-/pa free round 1 Tank | Toggle the Tank goal for the first round of the arena "free"
+/pa [arena] round | list rounds of an arena 
+/pa [arena] round [roundNumber] | list goals of an arena round
+/pa [arena] round [roundNumber] [goal] | toggle a specific goal for a round of an arena
 
-## Hazards
-
-This command has NOT been tested at ALL! This should be warning enough oO
+Example:
+- `/pa free round` - list rounds of arena "free"
+- `/pa free round 1 ` - list goals of round 1 of arena "free"
+- `/pa free round 1 Tank` - toggle the Tank goal for the first round of the arena "free"
 
 ## Details
 

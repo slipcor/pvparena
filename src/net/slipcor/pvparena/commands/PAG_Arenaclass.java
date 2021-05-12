@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static java.util.Arrays.asList;
+import static net.slipcor.pvparena.arena.ArenaPlayer.Status.FIGHT;
+import static net.slipcor.pvparena.arena.ArenaPlayer.Status.LOUNGE;
+
 /**
  * <pre>PVP Arena JOIN Command class</pre>
  * <p/>
@@ -38,23 +42,11 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
 
     @Override
     public void commit(final Arena arena, final CommandSender sender, final String[] args) {
-        if (!hasPerms(sender, arena) || !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH)) {
+        if (!hasPerms(sender, arena)) {
             return;
         }
 
         if (!argCountValid(sender, arena, args, new Integer[]{0,1})) {
-            return;
-        }
-
-        if (args.length < 1) {
-            Set<String> classes = new TreeSet<>();
-            for (ArenaClass ac : arena.getClasses()) {
-                if (ac.getName().equals("custom")) {
-                    continue;
-                }
-                classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
-            }
-            arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinSet(classes, ", ")));
             return;
         }
 
@@ -64,6 +56,26 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
         }
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(sender.getName());
+
+        ArenaPlayer.Status pStatus = aPlayer.getStatus();
+
+        // Player can change arena class only in lounge or in fight with ingameClassSwith parameter set to true
+        if(!arena.equals(aPlayer.getArena()) || !asList(LOUNGE, FIGHT).contains(pStatus) ||
+                (pStatus == FIGHT && !arena.getArenaConfig().getBoolean(CFG.USES_INGAMECLASSSWITCH))) {
+            return;
+        }
+
+        if (args.length < 1 || "custom".equalsIgnoreCase(args[0])) {
+            Set<String> classes = new TreeSet<>();
+            for (ArenaClass ac : arena.getClasses()) {
+                if ("custom".equalsIgnoreCase(ac.getName())) {
+                    continue;
+                }
+                classes.add(ChatColor.GREEN + ac.getName() + ChatColor.WHITE);
+            }
+            arena.msg(sender, Language.parse(arena, MSG.CLASS_LIST, StringParser.joinSet(classes, ", ")));
+            return;
+        }
 
         final ArenaClass aClass = arena.getClass(args[0]);
 
@@ -151,12 +163,13 @@ public class PAG_Arenaclass extends AbstractArenaCommand {
     @Override
     public CommandTree<String> getSubs(final Arena arena) {
         final CommandTree<String> result = new CommandTree<>(null);
-        if (arena == null) {
-            return result;
+
+        if (arena != null) {
+            arena.getClasses().stream()
+                    .filter(aClass -> !"custom".equalsIgnoreCase(aClass.getName()))
+                    .forEach(aClass -> result.define(new String[]{aClass.getName()}));
         }
-        for (final ArenaClass aClass : arena.getClasses()) {
-            result.define(new String[]{aClass.getName()});
-        }
+
         return result;
     }
 }

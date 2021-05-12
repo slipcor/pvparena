@@ -7,14 +7,13 @@ import net.slipcor.pvparena.core.Help;
 import net.slipcor.pvparena.core.Help.HELP;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
  * <pre>
@@ -66,40 +65,13 @@ public class PAA_PlayerClass extends AbstractArenaCommand {
         final Player player = (Player) sender;
 
         if ("save".equalsIgnoreCase(args[0])) {
-            final List<ItemStack> items = new ArrayList<>();
 
-            for (final ItemStack is : player.getInventory().getStorageContents()) {
-                if (is != null) {
-                    items.add(is);
-                }
-            }
-
-            final ItemStack[] isItems = new ItemStack[items.size()];
-            int position = 0;
-            for (final ItemStack is : items) {
-                isItems[position++] = is;
-            }
-
-            final String sItems = isItems.length < 1 ? "AIR"
-                    : StringParser.getStringFromItemStacks(isItems);
-            final StringBuilder armor = new StringBuilder("");
-            int pos = 0;
-            for (final ItemStack item : player.getInventory().getArmorContents()) {
-                armor.append(',');
-                armor.append(pos++);
-                armor.append(">>!<<");
-                armor.append(StringParser.getStringFromItemStack(item));
-            }
-            if (player.getInventory().getItemInOffHand() != null) {
-                armor.append(',');
-                armor.append(0);
-                armor.append(">>O<<");
-                armor.append(StringParser.getStringFromItemStack(player.getInventory().getItemInOffHand()));
-            }
-
-            arena.getArenaConfig().setManually("classitems." + className, sItems + armor);
+            arena.getArenaConfig().setManually("classitems." + className + ".items", getSerializableItemStacks(player.getInventory().getStorageContents()));
+            arena.getArenaConfig().setManually("classitems." + className + ".offhand",  getSerializableItemStacks(player.getInventory().getItemInOffHand()));
+            arena.getArenaConfig().setManually("classitems." + className + ".armor", getSerializableItemStacks(player.getInventory().getArmorContents()));
             arena.getArenaConfig().save();
-            arena.addClass(className, isItems, player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());
+
+            arena.addClass(className, player.getInventory().getStorageContents(), player.getInventory().getItemInOffHand(), player.getInventory().getArmorContents());
             Arena.pmsg(player, Language.parse(arena, MSG.CLASS_SAVED, className));
 
         } else if ("remove".equalsIgnoreCase(args[0])) {

@@ -1,38 +1,102 @@
+# Items in configuration files
 
-Dealing with item strings is a pain, I know. But as there are so many different ways, amount, data value, enchantment, it was hard to implement that inside a short sentence ;)
+With PvPArena, all your arena configuration is stored in a [dedicated config file](configuration.md). For some reasons, 
+it could be useful to check it or edit it directly. This document will try to explain how you can edit list of items 
+for inventories or enhancements directly in arena config files. 
 
-JavaDoc : [Bukkit Material ENUMs 1.8.8](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
+This is an **advanced level** tutorial, so if you aren't at ease with YAML config files, please use 
+[/pa class](commands/class.md) and [/pa set](commands/set.md) commands.
 
-## Examples:
+JavaDoc : [Bukkit Material ENUMs](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html)
 
-**Swiftness Potion II**
+## Create a simple item list:
 
-- items: 373~8226
+In order to create a basic list of items (without enchant or any enhancements), create a simple
+YAML list with two keys : "type" and "amount".
 
-**5x Colored wool**
+"Type" is the items name, it **must be** from the material enum page - *cf. above link*
 
-- items: 35~4:5
+"amount" is the number of items you want to give. *This parameter is optional and,
+ if not set, equals to 1 (and 64 for arrows)*
+ 
+#### Example:
 
-Minecraft Wiki : [Data Values => Potions](http://minecraft.gamepedia.com/Data_values#Potions)
+```yaml
+items:
+    - type: BOW
+    - type: ARROW
+      amount: 64
+    - type: IRON_SWORD
+    - type: COOKED_BEEF
+      amount: 2
+```
 
+## Create an advanced item list
 
-***
+The principle is the same, you just have to add a **meta** key to list items and add the good 
+properties.
 
+### Enchantments
 
-If you want to add enchantments, you will need to add a pipe as separator : `|`
+You can add enchantments according the following instance. The enchantment names must be picked
+from this page : [Bukkit enchantments](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html) 
 
-## Examples:
+```yaml
+  myclassname:
+    items:
+    - type: IRON_SWORD
+      meta:
+        enchants:
+          DURABILITY: 3
+          KNOCKBACK: 1
+    offhand:
+    - type: SHIELD
+    armor:
+    - type: IRON_CHESTPLATE
+      meta:
+        enchants:
+          PROTECTION_ENVIRONMENTAL: 3
+```
 
-**Diamond Sword with Sharpness LVL 3**
+### Custom names
 
-- items: 276|16~3
+Add a *display-name* key with the name you want, it works with every item.
 
-**Iron Pick with Efficiency I**
+```yaml
+    - type: COOKED_PORKCHOP
+      amount: 8
+      meta:
+        display-name: Delicious bacon
+``` 
 
-- items: 257|32~1
+### Potion effects
 
-**Iron Pick with Efficiency I and Sharpness III**
+You can use potion effects on these four items :
+* POTION
+* SPLASH_POTION
+* LINGERING_POTION
+* TIPPED_ARROW
 
-- items: 257|32~1|16~3
+You can set a potion type like in the following example :
 
-Minecraft Wiki : [Enchanting](http://minecraft.gamepedia.com/Enchantment#Enchantment_Types)
+```yaml
+    - type: TIPPED_ARROW
+      amount: 5
+      meta:
+        potion-type: minecraft:slowness
+    - type: SPLASH_POTION
+      meta:
+        potion-type: minecraft:healing
+    - type: LINGERING_POTION
+      amount: 2
+      meta:
+        potion-type: minecraft:strong_speed
+    - type: POTION
+      meta:
+        potion-type: minecraft:long_invisibilty
+``` 
+
+You can get potion effects on this page : [Potion type list](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/potion/PotionType.html)
+
+Be careful to prefix the effect with "minecraft:". You can give level 2 potions (like heath II) 
+prefixing the effect with **strong_** or long duration potions with the **long_**

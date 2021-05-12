@@ -79,7 +79,7 @@ public final class InventoryManager {
                     exclude.add(item.getType());
                 }
             }
-            keepAll = ap.getArena().getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN).equalsIgnoreCase("all");
+            keepAll = ap.getArena().getArenaConfig().getBoolean(CFG.ITEMS_KEEPALLONRESPAWN);
             if (keepAll) {
                 keep = new ArrayList<>();
             } else {
@@ -162,6 +162,5 @@ public final class InventoryManager {
                 }
             }
         }
-        player.updateInventory();
     }
 }

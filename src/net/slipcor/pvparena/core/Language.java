@@ -86,6 +86,10 @@ public final class Language {
         DEATHCAUSE_SUICIDE("nulang.deathcause.SUICIDE", "self"),
         DEATHCAUSE_THORNS("nulang.deathcause.THORNS", "thorns"),
         DEATHCAUSE_VOID("nulang.deathcause.VOID", "the Void"),
+        DEATHCAUSE_FALLING_BLOCK("nulang.deathcause.FALLING_BLOCK", "a falling block"),
+        DEATHCAUSE_HOT_FLOOR("nulang.deathcause.HOT_FLOOR", "a magma block"),
+        DEATHCAUSE_CRAMMING("nulang.deathcause.CRAMMING", "a collision surplus"),
+        DEATHCAUSE_DRAGON_BREATH("nulang.deathcause.DRAGON_BREATH", "dragon breath"),
 
         DEATHCAUSE_CREEPER("nulang.deathcause.CREEPER", "a creeper"),
         DEATHCAUSE_SKELETON("nulang.deathcause.SKELETON", "a skeleton"),
@@ -180,7 +184,6 @@ public final class Language {
         ERROR_NOPERM_C_ENABLE("nulang.nopermto.cmds.enable", "use the enable command"),
         ERROR_NOPERM_C_GAMEMODE("nulang.nopermto.cmds.gamemode", "use the gamemode command"),
         ERROR_NOPERM_C_GOAL("nulang.nopermto.cmds.goal", "use the goal command"),
-        ERROR_NOPERM_C_INSTALL("nulang.nopermto.cmds.install", "use the install command"),
         ERROR_NOPERM_C_PLAYERCLASS("nulang.nopermto.cmds.playerclass", "use the playerclass command"),
         ERROR_NOPERM_C_PLAYERJOIN("nulang.nopermto.cmds.playerjoin", "use the playerjoin command"),
         ERROR_NOPERM_C_PROTECTION("nulang.nopermto.cmds.protection", "use the protection command"),
@@ -201,8 +204,7 @@ public final class Language {
         ERROR_NOPERM_C_TELEPORT("nulang.nopermto.cmds.teleport", "use the teleport command"),
         ERROR_NOPERM_C_TEMPLATE("nulang.nopermto.cmds.template", "use the template command"),
         ERROR_NOPERM_C_TOGGLEMOD("nulang.nopermto.cmds.togglemod", "use the togglemod command"),
-        ERROR_NOPERM_C_UNINSTALL("nulang.nopermto.cmds.uninstall", "use the uninstall command"),
-        ERROR_NOPERM_C_UPDATE("nulang.nopermto.cmds.update", "use the update command"),
+        ERROR_NOPERM_C_MODULES("nulang.nopermto.cmds.uninstall", "use the modules command"),
         ERROR_NOPERM_C_WHITELIST("nulang.nopermto.cmds.whitelist", "use the whitelist command"),
         ERROR_NOPERM_C_ARENACLASS("nulang.nopermto.cmds.arenaclass", "use the arenaclass command"),
         ERROR_NOPERM_C_CHAT("nulang.nopermto.cmds.chat", "use the chat command"),
@@ -322,10 +324,6 @@ public final class Language {
 
         LOG_PLUGIN_DISABLED("nulang.log.plugindisabled", "disabled (version %1%)"),
         LOG_PLUGIN_ENABLED("nulang.log.pluginenabled", "enabled (version %1%)"),
-        LOG_TRACKER_DISABLED("nulang.log.trickerdisabled", "Plugin tracking disabled. See you soon?"),
-        LOG_TRACKER_ENABLED("nulang.log.trackingenabled", "Plugin tracking enabled. Set 'tracker: false' inside the main config to disable."),
-        LOG_UPDATE_DISABLED("nulang.log.updatedisabled", "Updates deactivated. Please check dev.bukkit for updates."),
-        LOG_UPDATE_ENABLED("nulang.log.updateenabled", "Checking for updates..."),
         LOG_WARNING("nulang.log.warning", "%1%"),
 
         MESSAGES_TOARENA("nulang.messages.toArena", "You are now talking to the arena!"),
@@ -410,6 +408,7 @@ public final class Language {
         SET_DONE("nulang.set.done", "&a%1%&r set to &e%2%&r!"),
         SET_HELP("nulang.set.help", "Use /pa {arenaname} set [page] to get a node list."),
         SET_UNKNOWN("nulang.set.unknown", "Unknown node: &e%1%&r!"),
+        SET_ITEMS_NOT("nulang.set.items_not", "Please use either hand or inventory to set an item node!"),
 
         SETOWNER_DONE("nulang.setowner.done", "&a%1%&r is now owner of arena &a%2%&r!"),
 
@@ -427,15 +426,15 @@ public final class Language {
         STATS_HEAD("nulang.stats.head", "Statistics TOP %1% (%2%)"),
         STATS_TYPENOTFOUND("nulang.stats.typenotfound", "Statistics type not found! Valid values: &e%1%&r"),
 
-        STATTYPE_DAMAGE("nulang.stattype.DAMAGE", StatisticsManager.type.DAMAGE.getName()),
-        STATTYPE_DAMAGETAKE("nulang.stattype.DAMAGETAKE", StatisticsManager.type.DAMAGETAKE.getName()),
-        STATTYPE_DEATHS("nulang.stattype.DEATHS", StatisticsManager.type.DEATHS.getName()),
-        STATTYPE_KILLS("nulang.stattype.KILLS", StatisticsManager.type.KILLS.getName()),
-        STATTYPE_LOSSES("nulang.stattype.LOSSES", StatisticsManager.type.LOSSES.getName()),
-        STATTYPE_MAXDAMAGE("nulang.stattype.MAXDAMAGE", StatisticsManager.type.MAXDAMAGE.getName()),
-        STATTYPE_MAXDAMAGETAKE("nulang.stattype.MAXDAMAGETAKE", StatisticsManager.type.MAXDAMAGETAKE.getName()),
-        STATTYPE_NULL("nulang.stattype.NULL", StatisticsManager.type.NULL.getName()),
-        STATTYPE_WINS("nulang.stattype.WINS", StatisticsManager.type.WINS.getName()),
+        STATTYPE_DAMAGE("nulang.stattype.DAMAGE", StatisticsManager.Type.DAMAGE.getName()),
+        STATTYPE_DAMAGETAKE("nulang.stattype.DAMAGETAKE", StatisticsManager.Type.DAMAGETAKE.getName()),
+        STATTYPE_DEATHS("nulang.stattype.DEATHS", StatisticsManager.Type.DEATHS.getName()),
+        STATTYPE_KILLS("nulang.stattype.KILLS", StatisticsManager.Type.KILLS.getName()),
+        STATTYPE_LOSSES("nulang.stattype.LOSSES", StatisticsManager.Type.LOSSES.getName()),
+        STATTYPE_MAXDAMAGE("nulang.stattype.MAXDAMAGE", StatisticsManager.Type.MAXDAMAGE.getName()),
+        STATTYPE_MAXDAMAGETAKE("nulang.stattype.MAXDAMAGETAKE", StatisticsManager.Type.MAXDAMAGETAKE.getName()),
+        STATTYPE_NULL("nulang.stattype.NULL", StatisticsManager.Type.NULL.getName()),
+        STATTYPE_WINS("nulang.stattype.WINS", StatisticsManager.Type.WINS.getName()),
 
         TEAM_HAS_WON("nulang.team.haswon", "Team %1%&r are the Champions!"),
         TEAM_READY("nulang.team.ready", "Team %1%&r is ready!"),
@@ -462,6 +461,13 @@ public final class Language {
         TOGGLEMOD_NOTICE("nulang.togglemod.notice", "&cYou activated a module that requires a BATTLE region! Type: &r/pvparena [arena] !rt [region] BATTLE"),
 
         UNINSTALL_DONE("nulang.uninstall.done", "Uninstalled: &a%1%&r"),
+        UPDATER_PLUGIN("nulang.updater.plugin", "PVP Arena"),
+        UPDATER_MODULES("nulang.updater.modules", "PVP Arena modules pack"),
+        UPDATER_ANNOUNCE("nulang.updater.announce", "%1% %2% is now available ! Your version: %3%"),
+        UPDATER_SUCCESS("nulang.updater.success", "%1% has been updated to %2%."),
+        UPDATER_RESTART("nulang.updater.restart", "Restart your server to apply update."),
+        UPDATER_DOWNLOADING("nulang.updater.downloading", "Downloading %1%..."),
+        UPDATER_DOWNLOAD_ERROR("nulang.updater.downloaderror", "Error while downloading %1%"),
 
         WHITELIST_ADDED("nulang.whitelist.added", "Added &a%1%&r to &e%2%&r whitelist!"),
         WHITELIST_ALLCLEARED("nulang.whitelist.allcleared", "All whitelists cleared!"),
@@ -469,18 +475,6 @@ public final class Language {
         WHITELIST_HELP("nulang.whitelist.help", "Usage: blacklist clear | blacklist [type] [clear|add|remove] [id]"),
         WHITELIST_REMOVED("nulang.whitelist.removed", "Removed &a%1%&r from &e%2%&r whitelist!"),
         WHITELIST_SHOW("nulang.whitelist.show", "Whitelist &e%1%&r:"),
-
-        GOAL_BEACONS_CLAIMING("nulang.goal.beacons.claiming", "&eTeam %1% is claiming the beacon!"),
-        GOAL_BEACONS_CLAIMED("nulang.goal.beacons.claimed", "&eTeam %1% has claimed the beacon!"),
-        GOAL_BEACONS_CLAIMED_REMAINING("nulang.goal.beacons.claimed_remaining", "&eTeam %1% has claimed the beacon! %2% claims remaining!"),
-        GOAL_BEACONS_SCORE("nulang.goal.beacons.score", "&eTeam %1% scored %2% points by holding the beacon!"),
-        GOAL_BEACONS_CHANGED("nulang.goal.beacons.changed", "&eA new beacon has been activated!"),
-        GOAL_BEACONS_CONTESTING("nulang.goal.beacons.contesting", "&eThe beacon claimed by team %1% is being contested!"),
-        GOAL_BEACONS_UNCLAIMING("nulang.goal.beacons.unclaiming", "&eThe beacon claimed by team %1% is being unclaimed!"),
-        GOAL_BEACONS_UNCLAIMINGBY("nulang.goal.beacons.unclaimingby", "&eThe beacon claimed by team %1% is being unclaimed by team %2%!"),
-        GOAL_BEACONS_SET("nulang.goal.beacons.set", "Beacon set: %1%"),
-        GOAL_BEACONS_SETDONE("nulang.goal.beacons.setdone", "Beacon setting mode deactivated."),
-        GOAL_BEACONS_TOSET("nulang.goal.beacons.toset", "Beacon setting mode activated. Hit the glass blocks, then use the command again to save!"),
 
         GOAL_BLOCKDESTROY_TYPESET("nulang.goal.blockdestroy.typeset", "Blocktype set to: &e%1%"),
         GOAL_BLOCKDESTROY_SCORE("lang.goal.blockdestroy.score", "%1% destroyed the block of team %2%! Remaining destructions: %3%"),
@@ -490,6 +484,8 @@ public final class Language {
         GOAL_CHECKPOINTS_SCORE("nulang.goal.checkpoints.score", "%1% &ereached checkpoint #%2%!"),
         GOAL_CHECKPOINTS_YOUMISSED("nulang.goal.checkpoints.youmissed", "You missed checkpoint #%1%! This is #%2%"),
 
+        GOAL_DOMINATION_BOSSBAR_CLAIMING("nulang.goal.dom.bossbar_claiming", "Claiming..."),
+        GOAL_DOMINATION_BOSSBAR_UNCLAIMING("nulang.goal.dom.bossbar_claiming", "Unclaiming..."),
         GOAL_DOMINATION_CLAIMING("nulang.goal.dom.claiming", "&eTeam %1% is claiming a flag!"),
         GOAL_DOMINATION_CLAIMED("nulang.goal.dom.claimed", "&eTeam %1% has claimed a flag!"),
         GOAL_DOMINATION_SCORE("nulang.goal.dom.score", "&eTeam %1% scored %2% points by holding a flag!"),
@@ -535,8 +531,9 @@ public final class Language {
         GOAL_SABOTAGE_IGNITED("nulang.goal.sabotage.tntignite", "%1% ignited the TNT of team %2%!"),
         GOAL_SABOTAGE_SETTNT("nulang.goal.sabotage.set", "TNT set: %1%"),
         GOAL_SABOTAGE_TOSETTNT("nulang.goal.sabotage.toset", "TNT to set: %1%"),
-        GOAL_SABOTAGE_YOUCANNOTSELFDESTROY("nulang.goal.sabotage.youcannotselfdestroy", "You can not ignite your own TNT!'"),
-        GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage materials!'"),
+        GOAL_SABOTAGE_NOSELFDESTROY("nulang.goal.sabotage.noselfdestroy", "You can not ignite your own TNT!"),
+        GOAL_SABOTAGE_NOTGOODITEM("nulang.goal.sabotage.notgooditem", "You need sabotage tool to ignite the TNT."),
+        GOAL_SABOTAGE_YOUTNT("nulang.goal.sabotage.youtnt", "You now carry the sabotage tool."),
 
         GOAL_TANK_TANKDOWN("nulang.goal.tank.tankdown", "The tank is down!"),
         GOAL_TANK_TANKMODE("nulang.goal.tank.tankmode", "TANK MODE! Everyone kill %1%, the tank!"),
@@ -559,15 +556,6 @@ public final class Language {
         GOAL_PILLARS_MSG_UNCLAIMED("nulang.goal.pillars.msg.unclaimed", "[%1%] %2% unclaimed the pillar!"),
 
         GOAL_PILLARS_MSG_SCORE("nulang.goal.pillars.msg.score", "%1% scored %2% points."),
-
-
-        GOAL_RESCUE_BROUGHTHOME("nulang.goal.rescue.flaghomeleft", "%1% brought home the hostage of team %2%! Rescues remaining: %3%"),
-        GOAL_RESCUE_DROPPED("nulang.goal.rescue.flagsave", "%1% dropped the hostage of team %2%!"),
-        GOAL_RESCUE_GRABBED("nulang.goal.rescue.flaggrab", "%1% grabbed the hostage of team %2%!"),
-        GOAL_RESCUE_NOTSAFE("nulang.goal.rescue.flagnotsafe", "Your hostage is taken! Cannot bring back an enemy hostage!'"),
-        GOAL_RESCUE_SET("nulang.goal.rescue.setflag", "Rescue set: %1%"),
-        GOAL_RESCUE_TOSET("nulang.goal.rescue.tosetflag", "Rescue to set: %1%"),
-        GOAL_RESCUE_TYPESET("nulang.goal.rescue.typeset", "Hostage type set to: &e%1%"),
 
         // -----------------------------------------------
 
@@ -643,6 +631,7 @@ public final class Language {
         MODULE_LATELOUNGE_POSITION("nulang.mod.latelounge.llposition", "You are in queue. Position: #%1%"),
         MODULE_LATELOUNGE_REJOIN("nulang.mod.latelounge.llrejoin", "Ready check has caught you not being able to join. Rejoin when you can!"),
         MODULE_LATELOUNGE_WAIT("nulang.mod.latelounge.llwait", "Arena will be starting soon, please wait!"),
+        MODULE_LATELOUNGE_LEAVE("nulang.mod.latelounge.llleave", "You have left the queue of the %1% arena."),
 
         MODULE_PLAYERFINDER_NEAR("nulang.mod.playerfinder.near", "Nearest player: %1% blocks!"),
         MODULE_PLAYERFINDER_POINT("nulang.mod.playerfinder.point", "Compass pointing to nearest player!"),
@@ -662,6 +651,17 @@ public final class Language {
         MODULE_SPECIALJOIN_DONE("nulang.mod.specialjoin.done", "Join block set here - %1%"),
         MODULE_SPECIALJOIN_START("nulang.mod.specialjoin.start", "Setting join block!"),
         MODULE_SPECIALJOIN_STOP("nulang.mod.specialjoin.stop", "Aborted join block selection!"),
+
+        MODULE_SQUADS_NOSQUAD("nulang.mod.squads.nosquad", "No squads loaded! Add some: /pa [arena] !sq add [name]"),
+        MODULE_SQUADS_LISTHEAD("nulang.mod.squads.listhead", "Squads for arena &b%1%"),
+        MODULE_SQUADS_LISTITEM("nulang.mod.squads.listitem", "Squad %1% (max: %2%) %3%"),
+        MODULE_SQUADS_ADDED("nulang.mod.squads.added", "Squad %1% has been added"),
+        MODULE_SQUADS_SET("nulang.mod.squads.set", "Squad %1% has been set"),
+        MODULE_SQUADS_REMOVED("nulang.mod.squads.removed", "Squad %1% has been removed"),
+        MODULE_SQUADS_NOTEXIST("nulang.mod.squads.notexist", "Squad %1% doesn't exist!"),
+        MODULE_SQUADS_ERROR("nulang.mod.squads.error", "Error while editing squads, syntax is not correct!"),
+        MODULE_SQUADS_FULL("nulang.mod.squads.full", "This squad is full!"),
+        MODULE_SQUADS_HELP("nulang.mod.squads.help", "/pa !sq | show the arena squads\n/pa !sq add [name] [limit] | add squad with player limit (set to 0 for no limit)\n/pa !sq set [name] [limit] | set player limit for squad\n/pa !sq remove [name] | remove squad [name]"),
 
         MODULE_STARTFREEZE_ANNOUNCE("nulang.mod.startfreeze.announce", "The game will start in %1% seconds!"),
 

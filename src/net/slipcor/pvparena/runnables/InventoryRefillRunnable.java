@@ -6,11 +6,11 @@ import net.slipcor.pvparena.arena.ArenaClass;
 import net.slipcor.pvparena.arena.ArenaPlayer;
 import net.slipcor.pvparena.arena.ArenaPlayer.Status;
 import net.slipcor.pvparena.arena.ArenaTeam;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config.CFG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.managers.InventoryManager;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -42,10 +42,10 @@ public class InventoryRefillRunnable implements Runnable {
         }
         this.arena = arena == null ? aPlayer.getArena() : arena;
 
-        boolean keepAll = "all".equalsIgnoreCase(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
+        boolean keepAll = this.arena.getArenaConfig().getBoolean(CFG.ITEMS_KEEPALLONRESPAWN);
 
-        if (!"none".equals(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN))) {
-            final ItemStack[] items = StringParser.getItemStacksFromString(this.arena.getArenaConfig().getString(CFG.ITEMS_KEEPONRESPAWN));
+        if (this.arena.getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN) != null) {
+            final ItemStack[] items = this.arena.getArenaConfig().getItems(CFG.ITEMS_KEEPONRESPAWN);
 
             for (final ItemStack item : itemList) {
                 if (item != null) {
@@ -56,10 +56,6 @@ public class InventoryRefillRunnable implements Runnable {
                     for (final ItemStack iItem : items) {
                         if (iItem != null) {
                             if (item.getType() != iItem.getType()) {
-                                continue;
-                            }
-
-                            if (item.getData().getData() != iItem.getData().getData()) {
                                 continue;
                             }
 
@@ -82,32 +78,35 @@ public class InventoryRefillRunnable implements Runnable {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         arena.getDebugger().i("refilling " + player.getName());
         if (aPlayer.getStatus() == Status.FIGHT) {
-            if ("custom".equals(aPlayer.getArenaClass().getName()) && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
+            if (aPlayer.hasCustomClass() && !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLCUSTOMINVENTORY) || !arena.getArenaConfig().getBoolean(CFG.PLAYER_REFILLINVENTORY)) {
                 if (refill) {
                     final ItemStack[] items = new ItemStack[additions.size()];
                     int pos = 0;
                     for (final ItemStack item : additions) {
                         items[pos++] = item;
                     }
-                    ArenaClass.equip(player, items);
+                    if(items.length > 0){
+                        ArenaClass.equip(player, items);
+                    } else {
+                        PVPArena.instance.getLogger().info("Can't refill inventory, please set " + CFG.ITEMS_KEEPONRESPAWN.getNode()
+                                + ", " + CFG.ITEMS_KEEPALLONRESPAWN.getNode() + " or " + CFG.PLAYER_REFILLCUSTOMINVENTORY.getNode() + " parameter");
+                    }
                 }
                 if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
                     final ArenaTeam aTeam = aPlayer.getArenaTeam();
-                    final String color = aTeam.getColor().name();
+                    final ChatColor chatColor = aTeam.getColor();
                     arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
-                            + color, player);
+                            + chatColor.name(), player);
                     player.getInventory().setHelmet(
-                            new ItemStack(Material.WOOL, 1, StringParser
-                                    .getColorDataFromENUM(color)));
+                            new ItemStack(ColorUtils.getWoolMaterialFromChatColor(chatColor), 1));
                     PVPArena.instance.getAgm().refillInventory(arena, player);
                 }
-            } else if (refill && "custom".equals(aPlayer.getArenaClass().getName())) {
+            } else if (refill && aPlayer.hasCustomClass()) {
                 ArenaPlayer.reloadInventory(arena, player, false);
 
                 for (final ItemStack item : additions) {
                     player.getInventory().addItem(item);
                 }
-                player.updateInventory();
             } else if (refill) {
                 InventoryManager.clearInventory(player);
                 ArenaPlayer.givePlayerFightItems(arena, player);
@@ -115,7 +114,6 @@ public class InventoryRefillRunnable implements Runnable {
                 for (final ItemStack item : additions) {
                     player.getInventory().addItem(item);
                 }
-                player.updateInventory();
             }
         } else {
             arena.getDebugger().i("NOT");

@@ -1,10 +1,18 @@
-These are the language files for PVP Arena, not (all) created or updated by me.
+# Languages
 
-Download the file and set lang: en to lang: value inside the config.yml
+Here are the language files for PVP Arena, not (all) created or updated by me.
 
-download | lang: value | language | author | date
+Download the file and set `lang:` parameter inside the config.yml to 
+value of the second column.
+
+download | lang: value | language | author | last update
 ------------- | ------------- | ------------- | ------------- | -------------
-[link](http://www.slipcor.de/public/mc/pafiles/lang_en.yml) | 'en' (default) | English | slipcor | 2013/09/11
-[link](http://www.slipcor.de/public/mc/pafiles/lang_es-es.yml)  | 'es-es' | Español | Anubis3467 | 2014/09/11
-[link](http://www.slipcor.de/public/mc/pafiles/lang_fr.yml)  | 'fr' | Français | Fizzweapon | 2013/08/22
-[link](http://www.slipcor.de/public/mc/pafiles/lang_ru.yml)  | 'ru' | Russki | llNeosGamer | 2013/04/13
+[link](../lang/lang_en.yml) | 'en' (default) | English | slipcor/Eredrim | 2020
+[link](../lang/lang_es-es.yml)  | 'es-es' | EspaÃ±ol | Anubis3467 | 2014/09/11
+[link](../lang/lang_fr.yml)  | 'fr' | FranÃ§ais | Eredrim | 2020
+[link](../lang/lang_ru.yml)  | 'ru' | Russki | llNeosGamer | 2013/04/13
+
+<br>
+
+> ðŸ’¡ **Did you know ?**  
+> You can propose your own language file by [creating an issue](https://github.com/Eredrim/pvparena/issues).

@@ -4,18 +4,16 @@
 
 Toggles a module on or off.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa free togglemod BattleGears | Toggles mod "BattleGears" in arena "free"
-/pa ctf togglemod StandardSpectate  | Toggles mod "Standard Spectate" in arena "ctf"
-/pa ctf !tm WorldEdit    | Toggles mod "WorldEdit" in arena "ctf"
+/pa [arena] togglemod [module] | Toggles a mod for an arena
 
-## Hazards
-
-You may need to restart your server for some mods to hook or take effect.
+Example:
+- `/pa ctf !tm WorldEdit` - Toggles mod "WorldEdit" in "ctf" arena
 
 ## Details
 
-Toggling a mod allows you to simply change if a module is active or not. You can do further setting tweaks using the module-specific command or `/pa set`
+Toggling a mod allows you to simply change if a module is active or not. 
+You can do further setting tweaks using the module-specific command or [`/pa set`](set.md).

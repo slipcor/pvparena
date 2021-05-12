@@ -11,14 +11,16 @@ import net.slipcor.pvparena.events.PADeathEvent;
 import net.slipcor.pvparena.events.PAKillEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.reverseOrder;
 
 /**
  * <pre>Statistics Manager class</pre>
@@ -31,12 +33,12 @@ import java.util.UUID;
 
 public final class StatisticsManager {
     private static final Debug DEBUG = new Debug(28);
-    private static File players;
+    private static File playersFile;
     private static YamlConfiguration config;
 
     private StatisticsManager() {}
 
-    public enum type {
+    public enum Type {
         WINS("matches won", "Wins"),
         LOSSES("matches lost", "Losses"),
         KILLS("kills", "Kills"),
@@ -50,9 +52,9 @@ public final class StatisticsManager {
         private final String fullName;
         private final String niceDesc;
 
-        type(final String name, final String desc) {
-            fullName = name;
-            niceDesc = desc;
+        Type(final String name, final String desc) {
+            this.fullName = name;
+            this.niceDesc = desc;
         }
 
         /**
@@ -61,8 +63,8 @@ public final class StatisticsManager {
          * @param tType the type
          * @return the next type
          */
-        public static type next(final type tType) {
-            final type[] types = type.values();
+        public static Type next(final Type tType) {
+            final Type[] types = Type.values();
             final int ord = tType.ordinal();
             if (ord >= types.length - 2) {
                 return types[0];
@@ -76,8 +78,8 @@ public final class StatisticsManager {
          * @param tType the type
          * @return the previous type
          */
-        public static type last(final type tType) {
-            final type[] types = type.values();
+        public static Type last(final Type tType) {
+            final Type[] types = Type.values();
             final int ord = tType.ordinal();
             if (ord <= 0) {
                 return types[types.length - 2];
@@ -89,7 +91,7 @@ public final class StatisticsManager {
          * return the full stat name
          */
         public String getName() {
-            return fullName;
+            return this.fullName;
         }
 
         /**
@@ -98,8 +100,8 @@ public final class StatisticsManager {
          * @param string the name to find
          * @return the type if found, null otherwise
          */
-        public static type getByString(final String string) {
-            for (final type t : type.values()) {
+        public static Type getByString(final String string) {
+            for (final Type t : Type.values()) {
                 if (t.name().equalsIgnoreCase(string)) {
                     return t;
                 }
@@ -108,7 +110,7 @@ public final class StatisticsManager {
         }
 
         public String getNiceName() {
-            return niceDesc;
+            return this.niceDesc;
         }
     }
 
@@ -131,87 +133,63 @@ public final class StatisticsManager {
             if (arena.hasPlayer(attacker)) {
                 arena.getDebugger().i("attacker is in the arena, adding damage!", defender);
                 final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
-                final int maxdamage = apAttacker.getStatistics(arena).getStat(type.MAXDAMAGE);
-                apAttacker.getStatistics(arena).incStat(type.DAMAGE, (int) dmg);
+                final int maxdamage = apAttacker.getStatistics(arena).getStat(Type.MAXDAMAGE);
+                apAttacker.getStatistics(arena).incStat(Type.DAMAGE, (int) dmg);
                 if (dmg > maxdamage) {
-                    apAttacker.getStatistics(arena).setStat(type.MAXDAMAGE, (int) dmg);
+                    apAttacker.getStatistics(arena).setStat(Type.MAXDAMAGE, (int) dmg);
                 }
             }
         }
         final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
 
-        final int maxdamage = apDefender.getStatistics(arena).getStat(type.MAXDAMAGETAKE);
-        apDefender.getStatistics(arena).incStat(type.DAMAGETAKE, (int) dmg);
+        final int maxdamage = apDefender.getStatistics(arena).getStat(Type.MAXDAMAGETAKE);
+        apDefender.getStatistics(arena).incStat(Type.DAMAGETAKE, (int) dmg);
         if (dmg > maxdamage) {
-            apDefender.getStatistics(arena).setStat(type.MAXDAMAGETAKE, (int) dmg);
+            apDefender.getStatistics(arena).setStat(Type.MAXDAMAGETAKE, (int) dmg);
         }
     }
 
     /**
-     * decide if a pair has to be sorted
-     *
-     * @param aps    the ArenaPlayer array
-     * @param pos    the position to check
-     * @param sortBy the type to sort by
-     * @param desc   descending order?
-     * @param global should we read global stats instead of arena stats?
-     * @return true if pair has to be sorted, false otherwise
-     */
-    private static boolean decide(final ArenaPlayer[] aps, final int pos, final type sortBy,
-                                  final boolean desc, final boolean global) {
-
-        int iThis = aps[pos].getStatistics(aps[pos].getArena()).getStat(sortBy);
-        int iNext = aps[pos + 1].getStatistics(aps[pos].getArena()).getStat(sortBy);
-
-        if (global) {
-            iThis = aps[pos].getTotalStatistics(sortBy);
-            iNext = aps[pos + 1].getTotalStatistics(sortBy);
-        }
-
-        return desc ? iThis < iNext : iThis > iNext;
-    }
-
-    /**
-     * get a set of arena players sorted by type
+     * get an array of stats for arena boards and with a given stats type
      *
      * @param arena  the arena to check
-     * @param sortBy the type to sort
-     * @return an array of ArenaPlayer
+     * @param statType the type to sort
+     * @return an array of stats values
      */
-    public static ArenaPlayer[] getStats(final Arena arena, final type sortBy) {
-        return getStats(arena, sortBy, true);
-    }
+    public static String[] getStatsValuesForBoard(final Arena arena, final Type statType) {
+        DEBUG.i("getting stats values: " + (arena == null ? "global" : arena.getName()) + " sorted by " + statType);
 
-    /**
-     * get a set of arena players sorted by type
-     *
-     * @param arena  the arena to check
-     * @param sortBy the type to sort
-     * @param desc   should it be sorted descending?
-     * @return an array of ArenaPlayer
-     */
-    private static ArenaPlayer[] getStats(final Arena arena, final type sortBy, final boolean desc) {
-        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + sortBy + ' '
-                + (desc ? "desc" : "asc"));
-
-        final int count = arena == null ? ArenaPlayer.countPlayers() : arena.getFighters().size();
-
-        final ArenaPlayer[] aps = new ArenaPlayer[count];
-
-        int pos = 0;
         if (arena == null) {
-            for (final ArenaPlayer p : ArenaPlayer.getAllArenaPlayers()) {
-                aps[pos++] = p;
-            }
-        } else {
-            for (final ArenaPlayer p : arena.getFighters()) {
-                aps[pos++] = p;
-            }
+            return ArenaPlayer.getAllArenaPlayers().stream()
+                    .map(ap -> (statType == Type.NULL) ? ap.getName() : String.valueOf(ap.getTotalStatistics(statType)))
+                    .sorted(reverseOrder())
+                    .limit(8)
+                    .toArray(String[]::new);
         }
 
-        sortBy(aps, sortBy, desc, arena == null);
+        return arena.getFighters().stream()
+                .map(ap -> (statType == Type.NULL) ? ap.getName() : String.valueOf(ap.getStatistics().getStat(statType)))
+                .sorted(reverseOrder())
+                .limit(8)
+                .toArray(String[]::new);
+    }
 
-        return aps;
+    /**
+     * Get stats map for a given stat type
+     * @param arena the arena to check
+     * @param statType the kind of stat
+     * @return A map with player name and stat value
+     */
+    public static Map<String, Integer> getStats(final Arena arena, final Type statType) {
+        DEBUG.i("getting stats: " + (arena == null ? "global" : arena.getName()) + " sorted by " + statType);
+
+        if (arena == null) {
+            return ArenaPlayer.getAllArenaPlayers().stream()
+                    .collect(Collectors.toMap(ArenaPlayer::getName, ap -> ap.getTotalStatistics(statType)));
+        }
+
+        return arena.getFighters().stream()
+                .collect(Collectors.toMap(ArenaPlayer::getName, ap -> ap.getStatistics().getStat(statType)));
     }
 
     /**
@@ -220,10 +198,10 @@ public final class StatisticsManager {
      * @param line the line to determine the type
      * @return the Statistics type
      */
-    public static type getTypeBySignLine(final String line) {
+    public static Type getTypeBySignLine(final String line) {
         final String stripped = ChatColor.stripColor(line).replace("[PA]", "").toUpperCase();
 
-        for (final type t : type.values()) {
+        for (final Type t : Type.values()) {
             if (t.name().equals(stripped)) {
                 return t;
             }
@@ -231,7 +209,7 @@ public final class StatisticsManager {
                 return t;
             }
         }
-        return type.NULL;
+        return Type.NULL;
     }
 
     public static void initialize() {
@@ -239,10 +217,10 @@ public final class StatisticsManager {
             return;
         }
         config = new YamlConfiguration();
-        players = new File(PVPArena.instance.getDataFolder(), "players.yml");
-        if (!players.exists()) {
+        playersFile = new File(PVPArena.instance.getDataFolder(), "players.yml");
+        if (!playersFile.exists()) {
             try {
-                players.createNewFile();
+                playersFile.createNewFile();
                 Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.STATS_FILE_DONE));
             } catch (final Exception e) {
                 Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
@@ -251,7 +229,7 @@ public final class StatisticsManager {
         }
 
         try {
-            config.load(players);
+            config.load(playersFile);
         } catch (final Exception e) {
             Arena.pmsg(Bukkit.getConsoleSender(), Language.parse(MSG.ERROR_STATS_FILE));
             e.printStackTrace();
@@ -282,76 +260,14 @@ public final class StatisticsManager {
         ArenaPlayer.parsePlayer(defender.getName()).addDeath();
     }
 
-    /**
-     * gather all type information of an array of ArenaPlayers
-     *
-     * @param players the ArenaPlayer array to check
-     * @param tType   the type to read
-     * @return an Array of String
-     */
-    public static String[] read(final ArenaPlayer[] players, final type tType, final boolean global) {
-        final String[] result = new String[players.length < 8 ? 8 : players.length];
-        int pos = 0;
-        if (global) {
-            for (final ArenaPlayer p : players) {
-                if (p == null) {
-                    continue;
-                }
-                if (tType == type.NULL) {
-                    result[pos++] = p.getName();
-                } else {
-                    result[pos++] = String.valueOf(p.getTotalStatistics(tType));
-                }
-            }
-        } else {
-            for (final ArenaPlayer p : players) {
-                if (tType == type.NULL) {
-                    result[pos++] = p.getName();
-                } else {
-                    result[pos++] = String.valueOf(p.getStatistics(p.getArena()).getStat(tType));
-                }
-            }
-        }
-        while (pos < 8) {
-            result[pos++] = "";
-        }
-        return result;
-    }
-
     public static void save() {
         if (config == null) {
             return;
         }
         try {
-            config.save(players);
+            config.save(playersFile);
         } catch (final IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * bubble sort an ArenaPlayer array by type
-     *
-     * @param aps    the ArenaPlayer array
-     * @param sortBy the type to sort by
-     * @param desc   descending order?
-     * @param global announce to the whole server?
-     */
-    private static void sortBy(final ArenaPlayer[] aps, final type sortBy, final boolean desc, final boolean global) {
-        int pos = aps.length;
-        boolean doMore = true;
-        while (doMore) {
-            pos--;
-            doMore = false; // assume this is our last pass over the array
-            for (int i = 0; i < pos; i++) {
-                if (decide(aps, i, sortBy, desc, global)) {
-                    // exchange elements
-                    final ArenaPlayer temp = aps[i];
-                    aps[i] = aps[i + 1];
-                    aps[i + 1] = temp;
-                    doMore = true; // after an exchange, must look again
-                }
-            }
         }
     }
 
@@ -371,65 +287,55 @@ public final class StatisticsManager {
         for (final String playerID : config.getConfigurationSection(arena.getName()).getKeys(false)) {
 
 
-            String player = playerID;
+            String playerName = null;
 
-            if (config.getConfigurationSection(arena.getName()).contains(playerID+".playerName")) {
-                // old broken version
-                final OfflinePlayer oPlayer;
-                try {
-                    oPlayer = Bukkit.getOfflinePlayer(UUID.fromString(playerID));
-                } catch (final NoSuchMethodError error) {
-                    continue;
-                }
-
-                player = oPlayer.getName();
-                config.getConfigurationSection(arena.getName()).set(playerID+".name", player);
-                config.getConfigurationSection(arena.getName()).set(playerID+".playerName", null);
-
-                foundBroken = true;
-            } else if (config.getConfigurationSection(arena.getName()).contains(playerID+".name")) {
-                // new version
-                player = config.getConfigurationSection(arena.getName()).getString(playerID+".name");
+            if (config.getConfigurationSection(arena.getName()).contains(playerID+".name")) {
+                playerName = config.getConfigurationSection(arena.getName()).getString(playerID+".name");
             }
 
-            arena.getDebugger().i("loading stats: " + player);
+            arena.getDebugger().i("loading stats: " + playerName);
 
             final ArenaPlayer aPlayer;
 
             try {
-                aPlayer = ArenaPlayer.parsePlayer(player);
+                if(playerName != null) {
+                    aPlayer = ArenaPlayer.addPlayer(playerName);
+                } else {
+                    continue;
+                }
+
             } catch (IllegalArgumentException e) {
                 PVPArena.instance.getLogger().warning("invalid player ID: " + playerID);
                 continue;
             }
 
-            for (final type ttt : type.values()) {
+            for (final Type ttt : Type.values()) {
                 aPlayer.setStatistic(arena.getName(), ttt, 0);
             }
 
             final int losses = config.getInt(arena.getName() + '.' + playerID + ".losses", 0);
-            aPlayer.addStatistic(arena.getName(), type.LOSSES, losses);
+            aPlayer.addStatistic(arena.getName(), Type.LOSSES, losses);
 
             final int wins = config.getInt(arena.getName() + '.' + playerID + ".wins", 0);
-            aPlayer.addStatistic(arena.getName(), type.WINS, wins);
+            aPlayer.addStatistic(arena.getName(), Type.WINS, wins);
 
             final int kills = config.getInt(arena.getName() + '.' + playerID + ".kills", 0);
-            aPlayer.addStatistic(arena.getName(), type.KILLS, kills);
+            aPlayer.addStatistic(arena.getName(), Type.KILLS, kills);
 
             final int deaths = config.getInt(arena.getName() + '.' + playerID + ".deaths", 0);
-            aPlayer.addStatistic(arena.getName(), type.DEATHS, deaths);
+            aPlayer.addStatistic(arena.getName(), Type.DEATHS, deaths);
 
             final int damage = config.getInt(arena.getName() + '.' + playerID + ".damage", 0);
-            aPlayer.addStatistic(arena.getName(), type.DAMAGE, damage);
+            aPlayer.addStatistic(arena.getName(), Type.DAMAGE, damage);
 
             final int maxdamage = config.getInt(arena.getName() + '.' + playerID + ".maxdamage", 0);
-            aPlayer.addStatistic(arena.getName(), type.MAXDAMAGE, maxdamage);
+            aPlayer.addStatistic(arena.getName(), Type.MAXDAMAGE, maxdamage);
 
             final int damagetake = config.getInt(arena.getName() + '.' + playerID + ".damagetake", 0);
-            aPlayer.addStatistic(arena.getName(), type.DAMAGETAKE, damagetake);
+            aPlayer.addStatistic(arena.getName(), Type.DAMAGETAKE, damagetake);
 
             final int maxdamagetake = config.getInt(arena.getName() + '.' + playerID + ".maxdamagetake", 0);
-            aPlayer.addStatistic(arena.getName(), type.MAXDAMAGETAKE, maxdamagetake);
+            aPlayer.addStatistic(arena.getName(), Type.MAXDAMAGETAKE, maxdamagetake);
         }
         if (foundBroken) {
             save();
@@ -447,32 +353,32 @@ public final class StatisticsManager {
 
         try {
             node = aPlayer.get().getUniqueId().toString();
-        } catch (final Exception e) {
+        } catch (final Exception ignored) {
 
         }
 
-        final int losses = map.getStat(type.LOSSES);
+        final int losses = map.getStat(Type.LOSSES);
         config.set(arena.getName() + '.' + node + ".losses", losses);
 
-        final int wins = map.getStat(type.WINS);
+        final int wins = map.getStat(Type.WINS);
         config.set(arena.getName() + '.' + node + ".wins", wins);
 
-        final int kills = map.getStat(type.KILLS);
+        final int kills = map.getStat(Type.KILLS);
         config.set(arena.getName() + '.' + node + ".kills", kills);
 
-        final int deaths = map.getStat(type.DEATHS);
+        final int deaths = map.getStat(Type.DEATHS);
         config.set(arena.getName() + '.' + node + ".deaths", deaths);
 
-        final int damage = map.getStat(type.DAMAGE);
+        final int damage = map.getStat(Type.DAMAGE);
         config.set(arena.getName() + '.' + node + ".damage", damage);
 
-        final int maxdamage = map.getStat(type.MAXDAMAGE);
+        final int maxdamage = map.getStat(Type.MAXDAMAGE);
         config.set(arena.getName() + '.' + node + ".maxdamage", maxdamage);
 
-        final int damagetake = map.getStat(type.DAMAGETAKE);
+        final int damagetake = map.getStat(Type.DAMAGETAKE);
         config.set(arena.getName() + '.' + node + ".damagetake", damagetake);
 
-        final int maxdamagetake = map.getStat(type.MAXDAMAGETAKE);
+        final int maxdamagetake = map.getStat(Type.MAXDAMAGETAKE);
         config.set(arena.getName() + '.' + node + ".maxdamagetake", maxdamagetake);
 
         if (!node.equals(aPlayer.getName())) {

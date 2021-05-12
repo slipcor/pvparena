@@ -281,6 +281,14 @@ public class EntityListener implements Listener {
             return;
         }
 
+        // cancel if defender or attacker are not fighting
+        if (apAttacker.getStatus() != Status.FIGHT || apDefender.getStatus() != Status.FIGHT ) {
+            arena.getDebugger().i("player or target is not fighting, cancel!", attacker);
+            arena.getDebugger().i("player or target is not fighting, cancel!", defender);
+            event.setCancelled(true);
+            return;
+        }
+
         Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance,
                 new DamageResetRunnable(arena, attacker, defender), 1L);
 
@@ -306,6 +314,32 @@ public class EntityListener implements Listener {
 
         if (arena.getArenaConfig().getBoolean(CFG.DAMAGE_BLOODPARTICLES)) {
             apDefender.showBloodParticles();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onProjectileHitEvent(final ProjectileHitEvent event) {
+        ProjectileSource eDamager = event.getEntity().getShooter();
+        final Entity eDamagee = event.getHitEntity();
+
+
+        if (eDamager instanceof Player && ArenaPlayer.parsePlayer(((Player) eDamager).getName()).getStatus() == Status.LOST) {
+            return;
+        }
+
+        if(eDamager instanceof Player && eDamagee instanceof Player) {
+            final Player attacker = (Player) eDamager;
+            final Player defender = (Player) eDamagee;
+            final ArenaPlayer apDefender = ArenaPlayer.parsePlayer(defender.getName());
+            final ArenaPlayer apAttacker = ArenaPlayer.parsePlayer(attacker.getName());
+            final Arena arena = apDefender.getArena();
+
+            if (arena == null || apAttacker.getArena() == null || apDefender.getStatus() == Status.LOST || !arena.isFightInProgress()) {
+                return;
+            }
+
+            arena.getDebugger().i("onProjectileHitEvent: fighting player");
+            ArenaModuleManager.onProjectileHit(arena, attacker, defender, event);
         }
     }
 
@@ -448,10 +482,10 @@ public class EntityListener implements Listener {
             if (damagee.getArena() == null || shooter.getArena() == null ||
                     (damagee.getArena() != shooter.getArena()) ||
                     damagee.getArenaTeam() == null || shooter.getArenaTeam() == null) {
-                /**
-                 * some people obviously allow non arena players to mess with potions around arena players
-                 *
-                 * this check should cover any of the entities not being in the same arena, or not arena at all
+                /*
+                  some people obviously allow non arena players to mess with potions around arena players
+
+                  this check should cover any of the entities not being in the same arena, or not arena at all
                  */
                 DEBUG.i("skipping "+e.getName());
                 continue;

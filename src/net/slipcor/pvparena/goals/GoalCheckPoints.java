@@ -24,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -39,7 +40,7 @@ public class GoalCheckPoints extends ArenaGoal {
 
     public GoalCheckPoints() {
         super("CheckPoints");
-        debug = new Debug(99);
+        this.debug = new Debug(99);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class GoalCheckPoints extends ArenaGoal {
 
     @Override
     public boolean allowsJoinInBattle() {
-        return arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
+        return this.arena.getArenaConfig().getBoolean(CFG.PERMS_JOININBATTLE);
     }
 
     @Override
@@ -95,10 +96,10 @@ public class GoalCheckPoints extends ArenaGoal {
             return res;
         }
 
-        final int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
+        final int maxPlayers = this.arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
 
-        if (maxPlayers > 0 && arena.getFighters().size() >= maxPlayers) {
-            res.setError(this, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
+        if (maxPlayers > 0 && this.arena.getFighters().size() >= maxPlayers) {
+            res.setError(this, Language.parse(this.arena, MSG.ERROR_JOIN_ARENA_FULL));
             return res;
         }
 
@@ -115,7 +116,7 @@ public class GoalCheckPoints extends ArenaGoal {
     private Set<String> checkLocationPresentPlayers(final Location loc, final int distance) {
         final Set<String> result = new HashSet<>();
 
-        for (final ArenaPlayer p : arena.getFighters()) {
+        for (final ArenaPlayer p : this.arena.getFighters()) {
             if (p.get().getLocation().getWorld().getName().equals(loc.getWorld().getName())) {
                 if (p.get().getLocation().distance(loc) > distance) {
                     continue;
@@ -128,21 +129,20 @@ public class GoalCheckPoints extends ArenaGoal {
         return result;
     }
 
-    void checkMove() {
+    private void checkMove() {
 
-        arena.getDebugger().i("------------------");
-        arena.getDebugger().i("  GCP checkMove();");
-        arena.getDebugger().i("------------------");
+        this.arena.getDebugger().i("------------------");
+        this.arena.getDebugger().i("  GCP checkMove();");
+        this.arena.getDebugger().i("------------------");
 
-        final int checkDistance = arena.getArenaConfig().getInt(
-                CFG.GOAL_DOM_CLAIMRANGE);
+        final int checkDistance = this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_CLAIMRANGE);
 
-        for (final PASpawn spawn : SpawnManager.getPASpawnsStartingWith(arena, "checkpoint")) {
+        for (final PASpawn spawn : SpawnManager.getPASpawnsStartingWith(this.arena, "checkpoint")) {
             final PALocation paLoc = spawn.getLocation();
-            final Set<String> players = checkLocationPresentPlayers(paLoc.toLocation(),
+            final Set<String> players = this.checkLocationPresentPlayers(paLoc.toLocation(),
                     checkDistance);
 
-            arena.getDebugger().i("players: " + StringParser.joinSet(players, ", "));
+            this.arena.getDebugger().i("players: " + StringParser.joinSet(players, ", "));
 
             // players now contains all players near the checkpoint
 
@@ -151,7 +151,7 @@ public class GoalCheckPoints extends ArenaGoal {
             }
             int value = Integer.parseInt(spawn.getName().substring(10));
             for (String playerName : players) {
-                maybeAddScoreAndBroadCast(playerName, value);
+                this.maybeAddScoreAndBroadCast(playerName, value);
             }
 
         }
@@ -159,22 +159,22 @@ public class GoalCheckPoints extends ArenaGoal {
 
     private void maybeAddScoreAndBroadCast(final String playerName, int checkpoint) {
 
-        if (!getLifeMap().containsKey(playerName)) {
+        if (!this.getLifeMap().containsKey(playerName)) {
             return;
         }
 
 
-        final int max = arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES);
+        final int max = this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES);
 
-        final int position = max - getLifeMap().get(playerName);
+        final int position = max - this.getLifeMap().get(playerName) + 1;
 
-        if (checkpoint <= position+1) {
-            arena.broadcast(Language.parse(arena, MSG.GOAL_CHECKPOINTS_SCORE,
-                    playerName, position+1 + "/" + max));
-            reduceLivesCheckEndAndCommit(arena, playerName);
+        if (checkpoint == position) {
+            this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_CHECKPOINTS_SCORE,
+                    playerName, position + "/" + max));
+            this.reduceLivesCheckEndAndCommit(this.arena, playerName);
         } else if (checkpoint > position) {
-            arena.broadcast(Language.parse(arena, MSG.GOAL_CHECKPOINTS_YOUMISSED,
-                    String.valueOf(position + 1), String.valueOf(checkpoint)));
+            this.arena.broadcast(Language.parse(this.arena, MSG.GOAL_CHECKPOINTS_YOUMISSED,
+                    String.valueOf(position), String.valueOf(checkpoint)));
         }
 
     }
@@ -207,7 +207,7 @@ public class GoalCheckPoints extends ArenaGoal {
                     winner.getName()));
         }
 
-        getLifeMap().clear();
+        this.getLifeMap().clear();
         new EndRunnable(arena, arena.getArenaConfig().getInt(
                 CFG.TIME_ENDCOUNTDOWN));
     }
@@ -217,51 +217,59 @@ public class GoalCheckPoints extends ArenaGoal {
         // 0 = checkpoint , [1 = number]
 
         if (!(sender instanceof Player)) {
-            Arena.pmsg(sender, Language.parse(arena, MSG.ERROR_ONLY_PLAYERS));
+            Arena.pmsg(sender, Language.parse(this.arena, MSG.ERROR_ONLY_PLAYERS));
             return;
         }
 
         ArenaPlayer ap = ArenaPlayer.parsePlayer(sender.getName());
+        int cpLives = this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES);
 
-        if (args.length < 2 && arena.getFighters().contains(ap)) {
+        if (args.length < 2 && this.arena.getFighters().contains(ap)) {
             ap.setTelePass(true);
-            int value = arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES) - getLifeMap().get(ap.getName());
-            ap.get().teleport(SpawnManager.getSpawnByExactName(arena, "checkpoint"+value).toLocation());
+            int value = cpLives - this.getLifeMap().get(ap.getName());
+            if(value == 0) {
+                ap.get().teleport(SpawnManager.getSpawnByExactName(this.arena, "spawn").toLocation());
+            } else {
+                ap.get().teleport(SpawnManager.getSpawnByExactName(this.arena, "checkpoint"+value).toLocation());
+            }
             ap.setTelePass(false);
             return;
         }
 
-        if (!AbstractArenaCommand.argCountValid(sender, arena, args, new Integer[]{2})) {
+        if (!AbstractArenaCommand.argCountValid(sender, this.arena, args, new Integer[]{2})) {
             return;
         }
         int value;
         try {
             value = Integer.parseInt(args[1]);
-            Math.sqrt(value);
         } catch (Exception e) {
-            arena.msg(sender, Language.parse(arena, MSG.ERROR_NOT_NUMERIC, args[1]));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.ERROR_NOT_NUMERIC, args[1]));
             return;
         }
         Player player = (Player) sender;
         String spawnName = "checkpoint"+value;
-        arena.spawnSet(spawnName, new PALocation(player.getLocation()));
-        arena.msg(sender, Language.parse(arena, MSG.SPAWN_SET, spawnName));
+        if(value > 0 && value <= cpLives) {
+            this.arena.spawnSet(spawnName, new PALocation(player.getLocation()));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.SPAWN_SET, spawnName));
+        } else {
+            this.arena.msg(sender, Language.parse(this.arena, MSG.SPAWN_UNKNOWN, spawnName));
+        }
     }
 
     @Override
     public void commitEnd(final boolean force) {
-        if (arena.realEndRunner != null) {
-            arena.getDebugger().i("[CP] already ending");
+        if (this.arena.realEndRunner != null) {
+            this.arena.getDebugger().i("[CP] already ending");
             return;
         }
-        arena.getDebugger().i("[CP]");
+        this.arena.getDebugger().i("[CP]");
 
-        final PAGoalEvent gEvent = new PAGoalEvent(arena, this, "");
+        final PAGoalEvent gEvent = new PAGoalEvent(this.arena, this, "");
         Bukkit.getPluginManager().callEvent(gEvent);
 
         ArenaPlayer ap = null;
 
-        for (ArenaPlayer aPlayer : arena.getFighters()) {
+        for (ArenaPlayer aPlayer : this.arena.getFighters()) {
             if (aPlayer.getStatus() == Status.FIGHT) {
                 ap = aPlayer;
                 break;
@@ -270,30 +278,29 @@ public class GoalCheckPoints extends ArenaGoal {
 
         if (ap != null && !force) {
             ArenaModuleManager.announce(
-                    arena,
-                    Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()), "END");
+                    this.arena,
+                    Language.parse(this.arena, MSG.PLAYER_HAS_WON, ap.getName()), "END");
 
             ArenaModuleManager.announce(
-                    arena,
-                    Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
-            arena.broadcast(Language.parse(arena, MSG.PLAYER_HAS_WON, ap.getName()));
+                    this.arena,
+                    Language.parse(this.arena, MSG.PLAYER_HAS_WON, ap.getName()), "WINNER");
+            this.arena.broadcast(Language.parse(this.arena, MSG.PLAYER_HAS_WON, ap.getName()));
         }
 
-        if (ArenaModuleManager.commitEnd(arena, ap.getArenaTeam())) {
+        if (ArenaModuleManager.commitEnd(this.arena, ap.getArenaTeam())) {
             return;
         }
-        new EndRunnable(arena, arena.getArenaConfig().getInt(
-                CFG.TIME_ENDCOUNTDOWN));
+        new EndRunnable(this.arena, this.arena.getArenaConfig().getInt(CFG.TIME_ENDCOUNTDOWN));
     }
 
     @Override
     public void displayInfo(final CommandSender sender) {
         sender.sendMessage("needed points: " +
-                arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES));
+                this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES));
         sender.sendMessage("claim range: " +
-                arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_CLAIMRANGE));
+                this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_CLAIMRANGE));
         sender.sendMessage("tick interval (ticks): " +
-                arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_TICKINTERVAL));
+                this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_TICKINTERVAL));
     }
 
     @Override
@@ -301,9 +308,8 @@ public class GoalCheckPoints extends ArenaGoal {
         if (res.getPriority() <= PRIORITY + 1000) {
             res.setError(
                     this,
-                    String.valueOf(getLifeMap().containsKey(aPlayer.getArenaTeam()
-                            .getName()) ? getLifeMap().get(aPlayer
-                            .getArenaTeam().getName()) : 0));
+                    String.valueOf(this.getLifeMap().getOrDefault(aPlayer.getArenaTeam().getName(), 0))
+            );
         }
         return res;
     }
@@ -313,8 +319,8 @@ public class GoalCheckPoints extends ArenaGoal {
         if (string.startsWith("checkpoint") || string.startsWith("spawn")) {
             return true;
         }
-        if (arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
-            for (final ArenaClass aClass : arena.getClasses()) {
+        if (this.arena.getArenaConfig().getBoolean(CFG.GENERAL_CLASSSPAWN)) {
+            for (final ArenaClass aClass : this.arena.getClasses()) {
                 if (string.toLowerCase().contains(aClass.getName().toLowerCase() + "spawn")) {
                     return true;
                 }
@@ -326,8 +332,8 @@ public class GoalCheckPoints extends ArenaGoal {
     @Override
     public void initate(final Player player) {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        if (!getLifeMap().containsKey(aPlayer.getName())) {
-            getLifeMap().put(aPlayer.getName(), arena.getArenaConfig()
+        if (!this.getLifeMap().containsKey(aPlayer.getName())) {
+            this.getLifeMap().put(aPlayer.getName(), this.arena.getArenaConfig()
                     .getInt(CFG.GOAL_CHECKPOINTS_LIVES));
         }
     }
@@ -339,51 +345,47 @@ public class GoalCheckPoints extends ArenaGoal {
 
     @Override
     public void lateJoin(final Player player) {
-        initate(player);
+        this.initate(player);
     }
 
     @Override
     public void parseStart() {
-        getLifeMap().clear();
-        for (final ArenaPlayer player : arena.getFighters()) {
-            arena.getDebugger().i("adding player " + player.getName());
-            getLifeMap().put(player.getName(),
-                    arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES, 3));
+        this.getLifeMap().clear();
+        for (final ArenaPlayer player : this.arena.getFighters()) {
+            this.arena.getDebugger().i("adding player " + player.getName());
+            this.getLifeMap().put(player.getName(),
+                    this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_LIVES, 3));
         }
 
-        final CheckPointsMainRunnable cpMainRunner = new CheckPointsMainRunnable(arena, this);
-        final int tickInterval = arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_TICKINTERVAL);
-        cpMainRunner.rID = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                PVPArena.instance, cpMainRunner, tickInterval, tickInterval);
+        final CheckPointsMainRunnable cpMainRunner = new CheckPointsMainRunnable(this.arena, this);
+        final int tickInterval = this.arena.getArenaConfig().getInt(CFG.GOAL_CHECKPOINTS_TICKINTERVAL);
+        cpMainRunner.runTaskTimer(PVPArena.instance, tickInterval, tickInterval);
     }
 
-    private boolean reduceLivesCheckEndAndCommit(final Arena arena, final String player) {
+    private void reduceLivesCheckEndAndCommit(final Arena arena, final String player) {
 
         arena.getDebugger().i("reducing lives of player " + player);
-        if (getLifeMap().get(player) != null) {
-            final int iLives = getLifeMap().get(player) - 1;
+        if (this.getLifeMap().get(player) != null) {
+            final int iLives = this.getLifeMap().get(player) - 1;
             if (iLives > 0) {
-                getLifeMap().put(player, iLives);
+                this.getLifeMap().put(player, iLives);
             } else {
-                getLifeMap().remove(player);
-                commitWin(arena, player);
-                return true;
+                this.getLifeMap().remove(player);
+                this.commitWin(arena, player);
             }
         }
-        return false;
     }
 
     @Override
     public void reset(final boolean force) {
-        getLifeMap().clear();
+        this.getLifeMap().clear();
     }
 
     @Override
     public Map<String, Double> timedEnd(final Map<String, Double> scores) {
 
-        for (final ArenaTeam team : arena.getTeams()) {
-            double score = getLifeMap().containsKey(team.getName()) ? getLifeMap()
-                    .get(team.getName()) : 0;
+        for (final ArenaTeam team : this.arena.getTeams()) {
+            double score = this.getLifeMap().getOrDefault(team.getName(), 0);
             if (scores.containsKey(team.getName())) {
                 scores.put(team.getName(), scores.get(team.getName()) + score);
             } else {
@@ -394,8 +396,7 @@ public class GoalCheckPoints extends ArenaGoal {
         return scores;
     }
 
-    class CheckPointsMainRunnable implements Runnable {
-        public int rID = -1;
+    private class CheckPointsMainRunnable extends BukkitRunnable {
         private final Arena arena;
         //private final Debug debug = new Debug(39);
         private final GoalCheckPoints goal;
@@ -411,10 +412,10 @@ public class GoalCheckPoints extends ArenaGoal {
          */
         @Override
         public void run() {
-            if (!arena.isFightInProgress() || arena.realEndRunner != null) {
-                Bukkit.getScheduler().cancelTask(rID);
+            if (!this.arena.isFightInProgress() || this.arena.realEndRunner != null) {
+                this.cancel();
             }
-            goal.checkMove();
+            this.goal.checkMove();
         }
     }
 }

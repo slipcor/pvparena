@@ -8,7 +8,7 @@ A fully functional kick/ban suite to get rid of derps that don't ready up or tro
 
 Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
 
-- `/pa install [modname]`, activate per arena via
+- `/pa modules install [modname]`, activate per arena via
 - `/pa [arenaname] !tm [modname]`
 
 ## Setup

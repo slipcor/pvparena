@@ -1,0 +1,24 @@
+name: Maven deploy release
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven settings
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: eredrim
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          
+      - name: Deploy the package
+        run: mvn --batch-mode deploy -DaltDeploymentRepository="eredrim::default::https://repo.eredrim.fr/repository/maven-releases/"
+        env:
+          MAVEN_USERNAME: ${{ secrets.MVN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MVN_PASSWORD }}

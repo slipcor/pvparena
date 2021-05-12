@@ -2,18 +2,20 @@
 
 ## Description
 
-Manage protections of a certain arena region
+Manage protections of a certain [arena region](../regions.md). **When a protection is enabled, player actions
+are prevented.**
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa main protection battlefield DROP     | toggle the DROP protection of the arena "main"s region called "battlefield"
-/pa hunger !p battlefield INVENTORY true | enable the INVENTORY protection of the arena "hunger"s region called "battlefield"
+/pa [arena] protection [region] [protection] (true/false)    | toggle a protection of an arena region
+
+Example: `/pa main protection battlefield DROP` - toggle the DROP protection of the arena "main"s region called "battlefield"
 
 ## Details
 
-Erroneous protection flag usage will show you the supported flags, they include: (definition: when active)
+Here is a quick list supported flags, they include:
 
 - BREAK - prevent player block breaking
 - FIRE - prevent fire spreading/burning
@@ -29,4 +31,7 @@ Erroneous protection flag usage will show you the supported flags, they include:
 - PICKUP - prevent player item pickup
 - TELEPORT - prevent player teleportation
 
-Always verify your protections with `/pa [arenaname] !rs [regionname]`
+<br>
+
+> **🚩 Tip:**  
+> Check your protections with [`/pa [arenaname] !rs [regionname]`](regions.md)

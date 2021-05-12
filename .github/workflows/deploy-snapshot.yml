@@ -1,0 +1,55 @@
+name: Maven deploy snapshot
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    if: "!contains(github.event.head_commit.message, '[release]') && !contains(github.event.head_commit.message, '[doc]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven settings
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+          server-id: eredrim
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          
+      - name: Get project version number
+        run: |
+          mvn_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "mvn_version=${mvn_version}" >> $GITHUB_ENV
+          
+      - name: Check if version already exists on repository
+        run: |
+          http_code=$(curl -s -o /dev/null -w "%{http_code}" https://repo.eredrim.fr/repository/maven-snapshots/net/slipcor/pvparena/${{ env.mvn_version }}/maven-metadata.xml)
+          echo "version_http_code=${http_code}" >> $GITHUB_ENV
+          
+      - name: Calculate build version with metadata
+        if: ${{ env.version_http_code == 200 }}
+        run: |
+          curl https://repo.eredrim.fr/repository/maven-snapshots/net/slipcor/pvparena/${{ env.mvn_version }}/maven-metadata.xml -o metadata.xml
+          build_number=$(grep -oP '(?<=buildNumber>)[^<]+' "metadata.xml")
+          echo "build_version=$((build_number + 1))" >> $GITHUB_ENV
+          
+      - name: Generate a new build version
+        if: ${{ env.version_http_code != 200 }}
+        run: echo "build_version=1" >> $GITHUB_ENV
+        
+      - name: Deploy the package
+        run: mvn --batch-mode deploy -DbuildVersion=-b${{ env.build_version }} -DaltDeploymentRepository="eredrim::default::https://repo.eredrim.fr/repository/maven-snapshots/"
+        env:
+          MAVEN_USERNAME: ${{ secrets.MVN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MVN_PASSWORD }}
+
+      - name: Post discord notification
+        run: |
+          commits=`echo "${{ join(github.event.commits.*.message, '\n - ') }}" | tr '\n' ' '`
+          avatar_url=https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          bot_username="Build notification"
+          payload_json='{ "username": "'$bot_username'", "avatar_url": "'$avatar_url'", "content": "A new dev build of PVP arena is available! Download it by saving the attached file.", "embeds": [{"description": ":spiral_note_pad: **New commits:**\n\n - '$commits'"}] }'
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK_URL }} -F payload_json="${payload_json}"
+          curl -X POST ${{ secrets.DISCORD_WEBHOOK_URL }} -F username="${bot_username}" -F avatar_url="${avatar_url}" -F file=@target/pvparena-${{ env.mvn_version }}-b${{ env.build_version }}.jar

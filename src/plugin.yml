@@ -1,10 +1,11 @@
 name: pvparena
 author: slipcor
-authors: [slipcor]
+authors: [slipcor, Eredrim]
 prefix: PVP Arena
 main: net.slipcor.pvparena.PVPArena
-version: 1.3.4.jenkins-build-number
-softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,LibsDisguises,DisguiseCraft,TagAPI,My Worlds,CrackShot]
+version: ${project.version}${buildVersion}
+api-version: 1.13
+softdepend: [Spout,Multiverse-Core,MultiWorld,WormholeXTreme,Vault,WorldEdit,WorldGuard,LibsDisguises,DisguiseCraft,My Worlds,CrackShot]
 description: create, manage and enhance PvP arenas
 website: http://dev.bukkit.org/server-mods/pvparena
 dev-url: http://dev.bukkit.org/server-mods/pvparena

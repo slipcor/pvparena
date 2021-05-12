@@ -4,16 +4,16 @@ import net.slipcor.pvparena.PVPArena;
 import net.slipcor.pvparena.classes.PABlockLocation;
 import net.slipcor.pvparena.classes.PALocation;
 import net.slipcor.pvparena.classes.PAStatMap;
+import net.slipcor.pvparena.core.ColorUtils;
 import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAPlayerClassChangeEvent;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.ArenaManager;
 import net.slipcor.pvparena.managers.InventoryManager;
 import net.slipcor.pvparena.managers.SpawnManager;
-import net.slipcor.pvparena.managers.StatisticsManager.type;
+import net.slipcor.pvparena.managers.StatisticsManager.Type;
 import org.bukkit.*;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
@@ -24,10 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.util.*;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * <pre>
@@ -64,7 +65,7 @@ public class ArenaPlayer {
     private final Map<String, PAStatMap> statistics = new HashMap<>();
 
     private Scoreboard backupBoard;
-    private Team backupBoardTeam;
+    private String backupBoardTeam;
 
     /**
      * Status
@@ -101,6 +102,7 @@ public class ArenaPlayer {
      */
     public enum PlayerPrevention {
         BREAK, PLACE, TNT, TNTBREAK, DROP, INVENTORY, PICKUP, CRAFT;
+
         public static boolean has(int value, PlayerPrevention s) {
             return (((int) Math.pow(2, s.ordinal()) & value) > 0);
         }
@@ -110,28 +112,11 @@ public class ArenaPlayer {
     private final PABlockLocation[] selection = new PABlockLocation[2];
 
     private ArenaPlayer(final String playerName) {
-        name = playerName;
-
-        totalPlayers.put(name, this);
-    }
-
-    private ArenaPlayer(final Player player, final Arena arena) {
-        name = player.getName();
-        this.arena = arena;
-
-        totalPlayers.put(name, this);
-    }
-
-    public static int countPlayers() {
-        return totalPlayers.size();
+        this.name = playerName;
     }
 
     public static Set<ArenaPlayer> getAllArenaPlayers() {
-        final Set<ArenaPlayer> players = new HashSet<>();
-        for (final ArenaPlayer ap : totalPlayers.values()) {
-            players.add(ap);
-        }
-        return players;
+        return new HashSet<>(totalPlayers.values());
     }
 
     public boolean getFlyState() {
@@ -184,7 +169,8 @@ public class ArenaPlayer {
             }
         }
         debug.i("last damaging player is null", damagee);
-        debug.i("last damaging event: " + eEvent.getEventName(), damagee);
+        debug.i("last damaging event: " + ofNullable(eEvent).map(Event::getEventName)
+                .orElse("unknown cause"), damagee);
         return null;
     }
 
@@ -207,39 +193,11 @@ public class ArenaPlayer {
 
         if (arena.getArenaConfig().getBoolean(CFG.USES_WOOLHEAD)) {
             final ArenaTeam aTeam = aPlayer.getArenaTeam();
-            final String color = aTeam.getColor().name();
+            final ChatColor color = aTeam.getColor();
             arena.getDebugger().i("forcing woolhead: " + aTeam.getName() + '/'
-                    + color, player);
+                    + color.name(), player);
             player.getInventory().setHelmet(
-                    new ItemStack(Material.WOOL, 1, StringParser
-                            .getColorDataFromENUM(color)));
-        }
-    }
-
-    public static void initiate() {
-        debug.i("creating offline arena players");
-
-        if (!PVPArena.instance.getConfig().getBoolean("stats")) {
-            return;
-        }
-
-        final YamlConfiguration cfg = new YamlConfiguration();
-        try {
-            cfg.load(PVPArena.instance.getDataFolder() + "/players.yml");
-
-            final Set<String> arenas = cfg.getKeys(false);
-
-            for (final String arenaname : arenas) {
-
-                final Set<String> players = cfg.getConfigurationSection(arenaname).getKeys(false);
-                for (final String player : players) {
-                    totalPlayers.put(player, ArenaPlayer.parsePlayer(player));
-                }
-
-            }
-
-        } catch (final Exception e) {
-            e.printStackTrace();
+                    new ItemStack(ColorUtils.getWoolMaterialFromChatColor(color)));
         }
     }
 
@@ -251,14 +209,31 @@ public class ArenaPlayer {
      */
     public static ArenaPlayer parsePlayer(final String name) {
         synchronized (ArenaPlayer.class) {
-            if (totalPlayers.get(name) == null) {
-                if (Bukkit.getPlayerExact(name) == null) {
-                    totalPlayers.put(name, new ArenaPlayer(name));
-                } else {
-                    totalPlayers.put(name,
-                            new ArenaPlayer(Bukkit.getPlayerExact(name), null));
-                }
+            Player player = Bukkit.getPlayerExact(name);
+
+            // Offline player or NPC
+            if (player == null) {
+                return new ArenaPlayer(name);
             }
+
+            if (!totalPlayers.containsKey(name)) {
+                ArenaPlayer ap = new ArenaPlayer(player.getName());
+                totalPlayers.putIfAbsent(name, ap);
+            }
+            return totalPlayers.get(name);
+        }
+    }
+
+    /**
+     * add an ArenaPlayer (used to load statistics)
+     *
+     * @param name the playername to use
+     * @return an ArenaPlayer instance belonging to that player
+     */
+    public static ArenaPlayer addPlayer(final String name) {
+        synchronized (ArenaPlayer.class) {
+            ArenaPlayer aPlayer = new ArenaPlayer(name);
+            totalPlayers.putIfAbsent(name, aPlayer);
             return totalPlayers.get(name);
         }
     }
@@ -291,8 +266,9 @@ public class ArenaPlayer {
 
         final ArenaPlayer aPlayer = parsePlayer(player.getName());
 
-        if (!"none".equals(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME))) {
-            final ItemStack[] items = StringParser.getItemStacksFromString(arena.getArenaConfig().getString(CFG.ITEMS_TAKEOUTOFGAME));
+        if (arena.getArenaConfig().getYamlConfiguration().get(CFG.ITEMS_TAKEOUTOFGAME.getNode()) != null) {
+            final ItemStack[] items =
+                    arena.getArenaConfig().getItems(CFG.ITEMS_TAKEOUTOFGAME);
 
             final List<Material> allowedMats = new ArrayList<>();
 
@@ -338,20 +314,22 @@ public class ArenaPlayer {
 
         if (instant) {
 
-            debug.i("adding " + StringParser.getStringFromItemStacks(aPlayer.savedInventory), player);
+            debug.i("adding saved inventory", player);
             player.getInventory().setContents(aPlayer.savedInventory);
         } else {
             class GiveLater implements Runnable {
                 final ItemStack[] inv;
+
                 GiveLater(final ItemStack[] inv) {
                     this.inv = inv.clone();
-                    }
+                }
+
                 @Override
                 public void run() {
-                    debug.i("adding " + StringParser.getStringFromItemStacks(inv),
+                    debug.i("adding saved inventory",
                             player);
                     player.getInventory().setContents(inv);
-                    }
+                }
             }
             final GiveLater gl = new GiveLater(aPlayer.savedInventory);
             try {
@@ -363,18 +341,18 @@ public class ArenaPlayer {
     }
 
     public void addDeath() {
-        getStatistics(arena).incStat(type.DEATHS);
+        getStatistics(arena).incStat(Type.DEATHS);
     }
 
     public void addKill() {
-        getStatistics(arena).incStat(type.KILLS);
+        getStatistics(arena).incStat(Type.KILLS);
     }
 
     public void addLosses() {
-        getStatistics(arena).incStat(type.LOSSES);
+        getStatistics(arena).incStat(Type.LOSSES);
     }
 
-    public void addStatistic(final String arenaName, final type type,
+    public void addStatistic(final String arenaName, final Type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());
@@ -384,7 +362,7 @@ public class ArenaPlayer {
     }
 
     public void addWins() {
-        getStatistics(arena).incStat(type.WINS);
+        getStatistics(arena).incStat(Type.WINS);
     }
 
     private void clearDump() {
@@ -435,9 +413,6 @@ public class ArenaPlayer {
                 name);
         debug.i("location: " + location, name);
         debug.i("status: " + status.name(), name);
-        debug.i("savedInventory: "
-                        + StringParser.getStringFromItemStacks(savedInventory),
-                name);
         debug.i("tempPermissions:", name);
         for (final PermissionAttachment pa : tempPermissions) {
             debug.i("> " + pa, name);
@@ -499,6 +474,7 @@ public class ArenaPlayer {
     public ArenaClass getArenaClass() {
         return aClass;
     }
+
     public ArenaClass getNextArenaClass() {
         return naClass;
     }
@@ -519,7 +495,7 @@ public class ArenaPlayer {
         return backupBoard;
     }
 
-    public Team getBackupScoreboardTeam() {
+    public String getBackupScoreboardTeam() {
         return backupBoardTeam;
     }
 
@@ -592,7 +568,7 @@ public class ArenaPlayer {
         return tempPermissions;
     }
 
-    public int getTotalStatistics(final type statType) {
+    public int getTotalStatistics(final Type statType) {
         int sum = 0;
 
         for (final PAStatMap stat : statistics.values()) {
@@ -616,6 +592,10 @@ public class ArenaPlayer {
 
     public boolean isPublicChatting() {
         return publicChatting;
+    }
+
+    public boolean hasCustomClass() {
+        return this.getArenaClass() != null && "custom".equalsIgnoreCase(this.getArenaClass().getName());
     }
 
     public void readDump() {
@@ -676,34 +656,34 @@ public class ArenaPlayer {
                 if (arena != null) {
                     final String arenaName = arena.getName();
                     cfg.set(arenaName + '.' + name + ".losses", getStatistics()
-                            .getStat(type.LOSSES)
-                            + getTotalStatistics(type.LOSSES));
+                            .getStat(Type.LOSSES)
+                            + getTotalStatistics(Type.LOSSES));
                     cfg.set(arenaName + '.' + name + ".wins",
                             getStatistics()
-                                    .getStat(type.WINS)
-                                    + getTotalStatistics(type.WINS));
+                                    .getStat(Type.WINS)
+                                    + getTotalStatistics(Type.WINS));
                     cfg.set(arenaName + '.' + name + ".kills",
                             getStatistics().getStat(
-                                    type.KILLS)
-                                    + getTotalStatistics(type.KILLS));
+                                    Type.KILLS)
+                                    + getTotalStatistics(Type.KILLS));
                     cfg.set(arenaName + '.' + name + ".deaths", getStatistics()
-                            .getStat(type.DEATHS)
-                            + getTotalStatistics(type.DEATHS));
+                            .getStat(Type.DEATHS)
+                            + getTotalStatistics(Type.DEATHS));
                     cfg.set(arenaName + '.' + name + ".damage", getStatistics()
-                            .getStat(type.DAMAGE)
-                            + getTotalStatistics(type.DAMAGE));
+                            .getStat(Type.DAMAGE)
+                            + getTotalStatistics(Type.DAMAGE));
                     cfg.set(arenaName + '.' + name + ".maxdamage",
                             getStatistics().getStat(
-                                    type.MAXDAMAGE)
-                                    + getTotalStatistics(type.MAXDAMAGE));
+                                    Type.MAXDAMAGE)
+                                    + getTotalStatistics(Type.MAXDAMAGE));
                     cfg.set(arenaName + '.' + name + ".damagetake",
                             getStatistics().getStat(
-                                    type.DAMAGETAKE)
-                                    + getTotalStatistics(type.DAMAGETAKE));
+                                    Type.DAMAGETAKE)
+                                    + getTotalStatistics(Type.DAMAGETAKE));
                     cfg.set(arenaName + '.' + name + ".maxdamagetake",
                             getStatistics().getStat(
-                                    type.MAXDAMAGETAKE)
-                                    + getTotalStatistics(type.MAXDAMAGETAKE));
+                                    Type.MAXDAMAGETAKE)
+                                    + getTotalStatistics(Type.MAXDAMAGETAKE));
                 }
 
                 cfg.save(file);
@@ -767,11 +747,11 @@ public class ArenaPlayer {
      * @param aClass the arena class to set
      */
     public void setArenaClass(final ArenaClass aClass) {
-        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(arena, get(), aClass);
+        final PAPlayerClassChangeEvent event = new PAPlayerClassChangeEvent(this.arena, this.get(), aClass);
         Bukkit.getServer().getPluginManager().callEvent(event);
         this.aClass = event.getArenaClass();
-        if (arena != null) {
-            ArenaModuleManager.parseClassChange(arena, get(), this.aClass);
+        if (this.arena != null && this.getStatus() != Status.NULL) {
+            ArenaModuleManager.parseClassChange(this.arena, this.get(), this.aClass);
         }
     }
 
@@ -797,8 +777,8 @@ public class ArenaPlayer {
         backupBoard = board;
     }
 
-    public void setBackupScoreboardTeam(Team team) {
-        backupBoardTeam = team;
+    public void setBackupScoreboardTeam(String sbTeamName) {
+        this.backupBoardTeam = sbTeamName;
     }
 
     public void setMayDropInventory(boolean value) {
@@ -833,7 +813,7 @@ public class ArenaPlayer {
         }
     }
 
-    public void setStatistic(final String arenaName, final type type,
+    public void setStatistic(final String arenaName, final Type type,
                              final int value) {
         if (!statistics.containsKey(arenaName)) {
             statistics.put(arenaName, new PAStatMap());
@@ -855,7 +835,7 @@ public class ArenaPlayer {
      */
     public void setTelePass(final boolean canTeleport) {
         if (arena != null) {
-            arena.getDebugger().i("TelePass := "+canTeleport);
+            arena.getDebugger().i("TelePass := " + canTeleport);
         }
         telePass = canTeleport;
     }
@@ -868,8 +848,7 @@ public class ArenaPlayer {
         Player player = get();
         player.getLocation()
                 .getWorld()
-                .playEffect(player.getEyeLocation(),
-                        Effect.STEP_SOUND, Material.NETHER_WART_BLOCK.getId());
+                .playEffect(player.getEyeLocation(), Effect.STEP_SOUND, Material.NETHER_WART_BLOCK);
 
     }
 
@@ -877,8 +856,7 @@ public class ArenaPlayer {
     public String toString() {
         final ArenaTeam team = getArenaTeam();
 
-        return team == null ? name : team.getColorCodeString() + name
-                + ChatColor.RESET;
+        return team == null ? name : team.getColorCodeString() + name + ChatColor.RESET;
     }
 
     public void unsetSelection() {

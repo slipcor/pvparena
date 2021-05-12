@@ -175,13 +175,13 @@ public class StandardLounge extends ArenaModule {
         player.setLocation(new PALocation(player.get().getLocation()));
 
         // ArenaPlayer.prepareInventory(arena, ap.get());
-        player.setArena(arena);
+        player.setArena(this.arena);
         team.add(player);
 
-        if (arena.isFreeForAll()) {
-            arena.tpPlayerToCoordName(player.get(), "lounge");
+        if (this.arena.isFreeForAll()) {
+            this.arena.tpPlayerToCoordNameForJoin(player, "lounge", true);
         } else {
-            arena.tpPlayerToCoordName(player.get(), team.getName() + "lounge");
+            this.arena.tpPlayerToCoordNameForJoin(player, team.getName() + "lounge", true);
         }
 
         player.setStatus(Status.LOUNGE);

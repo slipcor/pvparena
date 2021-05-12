@@ -16,7 +16,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoalManager;
 import net.slipcor.pvparena.loadables.ArenaModule;
@@ -47,6 +46,8 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 /**
  * <pre>
  * Player Listener class
@@ -70,11 +71,10 @@ public class PlayerListener implements Listener {
             return false;
         }
         final PlayerInteractEvent pie = (PlayerInteractEvent) event;
-        final Material mat = pie.getClickedBlock().getType();
-        final Material check = arena == null ? Material.IRON_BLOCK : arena
-                .getReadyBlock();
-        if (mat == Material.SIGN || mat == Material.SIGN_POST
-                || mat == Material.WALL_SIGN || mat == check) {
+        final Block block = pie.getClickedBlock();
+        final Material check = arena == null ? Material.IRON_BLOCK : arena.getReadyBlock();
+
+        if (block != null && (block.getState() instanceof Sign || block.getType() == check)) {
             DEBUG.i("signs and ready blocks allowed!", player);
             DEBUG.i("> false", player);
             return false;
@@ -320,8 +320,6 @@ public class PlayerListener implements Listener {
             return; // no drop protection
         }
 
-        arena.getDebugger().i("item: "+ StringParser.getStringFromItemStack(event.getItemDrop().getItemStack()));
-
         if (Bukkit.getPlayer(player.getName()) == null || aPlayer.getStatus() == Status.DEAD || aPlayer.getStatus() == Status.LOST) {
             arena.getDebugger().i("Player is dead. allowing drops!");
             return;
@@ -385,7 +383,7 @@ public class PlayerListener implements Listener {
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final ArenaTeam team = aPlayer.getArenaTeam();
 
-        final String playerName = team == null ? player.getName() : team.colorizePlayer(player);
+        final String playerName = (team == null) ? player.getName() : team.colorizePlayer(player);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
             arena.broadcast(Language.parse(arena,
                     MSG.FIGHT_KILLED_BY,
@@ -401,14 +399,14 @@ public class PlayerListener implements Listener {
             }
         }
 
-        if (ArenaPlayer.parsePlayer(player.getName()).getArenaClass() == null
-                || !"custom".equalsIgnoreCase(ArenaPlayer.parsePlayer(player.getName()).getArenaClass()
-                .getName())) {
+        // Trick to avoid death screen
+        Bukkit.getScheduler().scheduleSyncDelayedTask(PVPArena.instance, player::closeInventory, 1);
+
+        if (!aPlayer.hasCustomClass()) {
             InventoryManager.clearInventory(player);
         }
 
-        arena.removePlayer(player,
-                arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
+        arena.removePlayer(player, arena.getArenaConfig().getString(CFG.TP_DEATH), true, false);
 
         aPlayer.setStatus(Status.LOST);
         aPlayer.addDeath();
@@ -530,7 +528,11 @@ public class PlayerListener implements Listener {
             if (whyMe) {
                 arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
             }
-            if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
+            if (asList(Status.LOUNGE, Status.READY).contains(aPlayer.getStatus()) &&
+                    arena.getArenaConfig().getBoolean(CFG.PERMS_LOUNGEINTERACT)) {
+                arena.getDebugger().i("allowing lounge interaction due to config setting!");
+                event.setCancelled(false);
+            } else if (aPlayer.getStatus() != Status.LOUNGE && aPlayer.getStatus() != Status.READY) {
                 arena.getDebugger().i("cancelling: not fighting nor in the lounge", player);
                 event.setCancelled(true);
             } else if (aPlayer.getArena() != null && team != null) {
@@ -574,7 +576,8 @@ public class PlayerListener implements Listener {
             }
 
             if (whyMe) {
-                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player); return;
+                arena.getDebugger().i("exiting! fight in progress AND no INBATTLEJOIN arena!", player);
+                return;
             }
             arena.getDebugger().i("block click!", player);
 
@@ -669,7 +672,7 @@ public class PlayerListener implements Listener {
                 for (final PASpawn spawn : spawns) {
 
                     if (--pos < 0) {
-                        arena.tpPlayerToCoordName(player, spawn.getName());
+                        arena.tpPlayerToCoordName(aPlayer, spawn.getName());
                         break;
                     }
                 }
@@ -753,12 +756,9 @@ public class PlayerListener implements Listener {
             arena.playerLeave(player, CFG.TP_EXIT, true, true, false);
         }
 
-        if (!player.isOp()) {
-            return; // no OP => OUT
-        }
         DEBUG.i("OP joins the game", player);
-        if (PVPArena.instance.getUpdater() != null) {
-            PVPArena.instance.getUpdater().message(player);
+        if (player.isOp() && PVPArena.instance.getUpdateChecker() != null) {
+            PVPArena.instance.getUpdateChecker().displayMessage(player);
         }
     }
 
@@ -796,8 +796,11 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
-        final Player player = event.getPlayer();
+    public void onPlayerPickupItem(final EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        final Player player = (Player) event.getEntity();
 
         if (willBeCancelled(player, event)) {
             return;
@@ -927,7 +930,7 @@ public class PlayerListener implements Listener {
                 public void run() {
                     for (final ArenaPlayer otherPlayer : arena.getFighters()) {
                         if (otherPlayer.get() != null) {
-                            otherPlayer.get().showPlayer(player);
+                            otherPlayer.get().showPlayer(PVPArena.instance, player);
                         }
                     }
                 }

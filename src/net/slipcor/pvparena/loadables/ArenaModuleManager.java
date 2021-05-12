@@ -15,13 +15,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 
 import java.io.File;
@@ -177,6 +173,12 @@ public class ArenaModuleManager {
         }
     }
 
+    public static void onProjectileHit(final Arena arena, final Player attacker, final Player defender, final ProjectileHitEvent event) {
+        for (final ArenaModule mod : arena.getMods()) {
+            mod.onProjectileHit(attacker, defender, event);
+        }
+    }
+
     public static void onEntityExplode(final Arena arena, final EntityExplodeEvent event) {
         for (final ArenaModule mod : arena.getMods()) {
             mod.onEntityExplode(event);
@@ -204,9 +206,11 @@ public class ArenaModuleManager {
         return false;
     }
 
-    public static void onPlayerPickupItem(final Arena arena, final PlayerPickupItemEvent event) {
-        for (final ArenaModule mod : arena.getMods()) {
-            mod.onPlayerPickupItem(event);
+    public static void onPlayerPickupItem(final Arena arena, final EntityPickupItemEvent event) {
+        if (event.getEntity() instanceof Player) {
+            for (final ArenaModule mod : arena.getMods()) {
+                mod.onPlayerPickupItem(event);
+            }
         }
     }
 
@@ -266,16 +270,6 @@ public class ArenaModuleManager {
     public static void reset(final Arena arena, final boolean force) {
         for (final ArenaModule mod : arena.getMods()) {
             mod.reset(force);
-        }
-    }
-
-    /**
-     * @deprecated use {@link #resetPlayer(Arena, Player, boolean, boolean)}
-     */
-    @Deprecated
-    public static void resetPlayer(final Arena arena, final Player player, final boolean force) {
-        for (final ArenaModule mod : arena.getMods()) {
-            mod.resetPlayer(player, force);
         }
     }
 

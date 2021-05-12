@@ -1,18 +1,13 @@
 # TeamLives
-## Description
+
+## Description
 
 Very basic. Teams have lives. Once a team runs out of lives, it loses.
-## Setup
 
-\-
-## Config Settings
+## Setup
 
-- teamlives.tlives \- the amount of lives a team has before being removed 
+There is no special setup.
 
-## Warnings
+## Config settings
 
-\-
-
-## Supported Game Modes
-
-Only supports team game mode!
+- `teamlives.tlives` \- the amount of lives a team has before being removed 

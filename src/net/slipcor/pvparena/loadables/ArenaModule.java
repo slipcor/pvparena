@@ -20,13 +20,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,7 +40,7 @@ import java.util.Set;
  * @author slipcor
  */
 
-public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
+public abstract class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     protected static Debug debug = new Debug(32);
 
     protected Arena arena;
@@ -293,6 +289,17 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     }
 
     /**
+     * hook into a player throwing projectile
+     *
+     * @param attacker the attacking player
+     * @param defender the attacked player
+     * @param event    the projectileHit event
+     */
+    public void onProjectileHit(final Player attacker, final Player defender, final ProjectileHitEvent event) {
+
+    }
+
+    /**
      * hook into an exploding entity
      *
      * @param event the explode event
@@ -332,7 +339,7 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      *
      * @param event the pickup event
      */
-    public void onPlayerPickupItem(final PlayerPickupItemEvent event) {
+    public void onPlayerPickupItem(final EntityPickupItemEvent event) {
     }
 
     /**
@@ -421,18 +428,6 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
     /**
      * hook into an arena player being reset
      *
-     * @deprecated use {@link #resetPlayer(Player, boolean, boolean)}
-     *
-     * @param player the player being reset
-     * @param force  if the arena is forcefully reset
-     */
-    @Deprecated
-    public void resetPlayer(final Player player, final boolean force) {
-    }
-
-    /**
-     * hook into an arena player being reset
-     *
      * @param player the player being reset
      * @param soft if the reset should be soft (another teleport incoming)
      * @param force  if the arena is forcefully reset
@@ -494,6 +489,16 @@ public class ArenaModule extends NCBLoadable implements IArenaCommandHandler {
      */
     public boolean tryDeathOverride(final ArenaPlayer aPlayer,
                                     final List<ItemStack> list) {
+        return false;
+    }
+
+    /**
+     * Call a special leave directly from the module
+     *
+     * @param aPlayer the player who leaves
+     * @return true if a module cares
+     */
+    public boolean handleSpecialLeave(final ArenaPlayer aPlayer) {
         return false;
     }
 

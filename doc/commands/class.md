@@ -4,13 +4,18 @@
 
 This command manages the arena classes. You can use it to show, edit and remove arena classes.
 
-## Usage Examples
+## Usage
 
 Command |  Definition
 ------------- | -------------
-/pa test class load Tank   | Give you the class items of the Class "Tank" of the arena "test"
-/pa temp class save Test   | Save your inventory to the class items of the Class "Test" of the arena "temp"
-/pa team class remove Blue | Remove the class "Blue" from the arena "team"
+/pa [arena] class load [class]   | Preview the class items of the class directly in your inventory
+/pa [arena] class save [class]   | Save your inventory to the class items of a class
+/pa [arena] class remove [class] | Remove a class from an arena
+
+Example: use `/pa temp class save Test` to save your inventory to the class "Test" of the arena "temp"
+
+> **🚩 Tip:**  
+> Type `/pa leave` to leave class preview
 
 ## Hazards
 

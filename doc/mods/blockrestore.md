@@ -1,23 +1,12 @@
 # BlockRestore
 
-## Description
+## About
 
-This mod activates BATTLE region restoring, after the match.
-
-## Installation
-
-Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files folder and install them via
-
-- `/pa install [modname]`, activate per arena via
-- `/pa [arenaname] !tm [modname]`
-
-## Setup
-
-\-
+This mod activates BATTLE [region](../regions.md) restoring after the match.
 
 ## Config settings
 
-- hard \- should the mod restore EVERY block, regardless of a known chaged state? (default: false)
+- hard \- the mod will restore EVERY block of your battle region, regardless of a known changed state (default: false)
 - offset \- the time in TICKS (1/20 second) that the scheduler waits for the next block to be replaced (default: 1)
 - restoreblocks \- restore blocks (default: true)
 - restorechests \- restore chest content (default: false) 
@@ -29,10 +18,18 @@ Unzip the module files (files tab, "PA Files v*.*.*") into the /pvparena/files f
 - `/pa [arena] !br clearinv` \- clear saved chest locations
 - `/pa [arena] !br offset X` \- set the restore offset in TICKS! 
 
-## Warnings
+<br>
 
-Chest restoring lags badly for the first time, because it searches the BATTLE region(s) for chests, saves the locations and from then on it's simple. If you add more chests or remove some, you will want to run the clearinv command so chests are not forgotten or blocks are treated as chests
+> **🚩 Tips:**  
+> - If you add new chests to your map, don't forget to register them with `/pa [arena] !br clearinv`.
+> - BlockRestore is designed for simple block destruction and small areas. For other usages, please prefer 
+> [WorldEdit](./worldedit.md) mod. 
 
-## Dependencies
+<br>
 
-\-
+> ⚙ **Technical precision:**  
+> Chest restoring lags badly for the first time, because it searches the BATTLE region(s) for chests and saves location 
+> of each of them.
+
+
+

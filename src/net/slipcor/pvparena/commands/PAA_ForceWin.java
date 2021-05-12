@@ -55,7 +55,8 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                 for (final ArenaPlayer ap : team.getTeamMembers()) {
                     if (ap.getStatus() == ArenaPlayer.Status.FIGHT) {
                         ap.get().getWorld().strikeLightningEffect(ap.get().getLocation());
-                        final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf((double) 10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, -0.0D)));
+                        final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING,
+                                10.0);
                         PlayerListener.finallyKillPlayer(arena, ap.get(), e);
                     }
                 }
@@ -74,7 +75,8 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                     }
                     if (ap.getStatus() == ArenaPlayer.Status.FIGHT) {
                         ap.get().getWorld().strikeLightningEffect(ap.get().getLocation());
-                        final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf((double) 10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, -0.0D)));
+                        final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING,
+                                10.0);
                         PlayerListener.finallyKillPlayer(arena, ap.get(), e);
                     }
                 }
@@ -87,7 +89,8 @@ public class PAA_ForceWin extends AbstractArenaCommand {
                     for (final ArenaPlayer ap : team.getTeamMembers()) {
                         if (ap.getStatus() == ArenaPlayer.Status.FIGHT) {
                             ap.get().getWorld().strikeLightningEffect(ap.get().getLocation());
-                            final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING, new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, Double.valueOf((double) 10))), new EnumMap(ImmutableMap.of(EntityDamageEvent.DamageModifier.BASE, -0.0D)));
+                            final EntityDamageEvent e = new EntityDamageEvent(ap.get(), EntityDamageEvent.DamageCause.LIGHTNING,
+                                    10.0);
                             PlayerListener.finallyKillPlayer(arena, ap.get(), e);
                         }
                     }

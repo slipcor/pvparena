@@ -11,7 +11,6 @@ import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Debug;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
 import net.slipcor.pvparena.events.PAJoinEvent;
 import net.slipcor.pvparena.events.PAStartEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
@@ -334,19 +333,20 @@ public class PACheck {
 
         final ArenaTeam team;
 
-        if (args.length < 1 || arena.getTeam(args[0]) == null) {
+        if (args.length < 1) {
             // usage: /pa {arenaname} join | join an arena
 
             team = arena.getTeam(TeamManager.calcFreeTeam(arena));
+        } else if(arena.getTeam(args[0]) == null) {
+            arena.msg(sender, Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
+            return false;
         } else {
             ArenaTeam aTeam = arena.getTeam(args[0]);
 
             int maxPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXPLAYERS);
             int maxTeamPlayers = arena.getArenaConfig().getInt(CFG.READY_MAXTEAMPLAYERS);
 
-            if (aTeam == null) {
-                team = aTeam;
-            } else if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
+            if (maxPlayers > 0 && arena.getFighters().size() > maxPlayers) {
                 arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
                 return false;
             } else if (maxTeamPlayers > 0 && aTeam.getTeamMembers().size() > maxTeamPlayers) {
@@ -357,11 +357,6 @@ public class PACheck {
             }
         }
 
-        if (team == null && args.length > 0) {
-            arena.msg(sender,
-                    Language.parse(arena, MSG.ERROR_TEAMNOTFOUND, args[0]));
-            return false;
-        }
         if (team == null) {
             arena.msg(sender, Language.parse(arena, MSG.ERROR_JOIN_ARENA_FULL));
             return false;
@@ -517,7 +512,7 @@ public class PACheck {
         StatisticsManager.kill(arena, player.getKiller(), player, doesRespawn);
         if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES) ||
                 arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGESCUSTOM)) {
-            event.setDeathMessage(null);
+            event.setDeathMessage("");
         }
 
         if (player.getKiller() != null) {
@@ -532,15 +527,13 @@ public class PACheck {
                 InventoryManager.clearInventory(player.getKiller());
                 ArenaPlayer.parsePlayer(player.getKiller().getName()).getArenaClass().equip(player.getKiller());
             }
-            if (!arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL).equals("none")) {
-                String definition = arena.getArenaConfig().getString(CFG.PLAYER_ITEMSONKILL);
-                ItemStack[] items = StringParser.getItemStacksFromString(definition);
+            if (arena.getArenaConfig().getItems(CFG.PLAYER_ITEMSONKILL) != null) {
+                ItemStack[] items = arena.getArenaConfig().getItems(CFG.PLAYER_ITEMSONKILL);
                 for (ItemStack item : items) {
                     if (item != null) {
                         player.getKiller().getInventory().addItem(item.clone());
                     }
                 }
-                player.getKiller().updateInventory();
             }
             if (arena.getArenaConfig().getBoolean(CFG.USES_TELEPORTONKILL)) {
                 SpawnManager.respawn(arena, ArenaPlayer.parsePlayer(player.getKiller().getName()), null);

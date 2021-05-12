@@ -30,30 +30,30 @@ public class PABlockLocation {
 
     public PABlockLocation(final String value) {
         String[] split = value.split(":");
-        world = split[0];
+        this.world = split[0];
 
         String[] ints = split[1].split(",");
 
-        x = Integer.parseInt(ints[0]);
-        y = Integer.parseInt(ints[1]);
-        z = Integer.parseInt(ints[2]);
+        this.x = Integer.parseInt(ints[0]);
+        this.y = Integer.parseInt(ints[1]);
+        this.z = Integer.parseInt(ints[2]);
     }
 
     public PABlockLocation(final Location bukkitLocation) {
-        world = bukkitLocation.getWorld().getName();
-        x = bukkitLocation.getBlockX();
-        y = bukkitLocation.getBlockY();
-        z = bukkitLocation.getBlockZ();
+        this.world = bukkitLocation.getWorld().getName();
+        this.x = bukkitLocation.getBlockX();
+        this.y = bukkitLocation.getBlockY();
+        this.z = bukkitLocation.getBlockZ();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (world == null ? 0 : world.hashCode());
-        result = prime * result + x;
-        result = prime * result + y;
-        result = prime * result + z;
+        result = prime * result + (this.world == null ? 0 : this.world.hashCode());
+        result = prime * result + this.x;
+        result = prime * result + this.y;
+        result = prime * result + this.z;
         return result;
     }
 
@@ -65,24 +65,24 @@ public class PABlockLocation {
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         final PABlockLocation other = (PABlockLocation) obj;
-        if (world == null) {
+        if (this.world == null) {
             if (other.world != null) {
                 return false;
             }
-        } else if (!world.equals(other.world)) {
+        } else if (!this.world.equals(other.world)) {
             return false;
         }
-        if (x != other.x) {
+        if (this.x != other.x) {
             return false;
         }
-        if (y != other.y) {
+        if (this.y != other.y) {
             return false;
         }
-        return z == other.z;
+        return this.z == other.z;
     }
 
     public double getDistance(final PABlockLocation otherLocation) {
@@ -90,14 +90,14 @@ public class PABlockLocation {
             throw new IllegalArgumentException(
                     "Cannot measure distance to a null location");
         }
-        if (!otherLocation.world.equals(world)) {
+        if (!otherLocation.world.equals(this.world)) {
             throw new IllegalArgumentException(
-                    "Cannot measure distance between " + world + " and "
+                    "Cannot measure distance between " + this.world + " and "
                             + otherLocation.world);
         }
 
-        return Math.sqrt(Math.pow(x - otherLocation.x, 2.0D)
-                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D));
+        return Math.sqrt(Math.pow(this.x - otherLocation.x, 2.0D)
+                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D));
     }
 
     public double getDistanceSquared(final PABlockLocation otherLocation) {
@@ -105,77 +105,77 @@ public class PABlockLocation {
             throw new IllegalArgumentException(
                     "Cannot measure distance to a null location");
         }
-        if (!otherLocation.world.equals(world)) {
+        if (!otherLocation.world.equals(this.world)) {
             throw new IllegalArgumentException(
-                    "Cannot measure distance between " + world + " and "
+                    "Cannot measure distance between " + this.world + " and "
                             + otherLocation.world);
         }
 
-        return Math.pow(x - otherLocation.x, 2.0D)
-                + Math.pow(y - otherLocation.y, 2.0D) + Math.pow(z - otherLocation.z, 2.0D);
+        return Math.pow(this.x - otherLocation.x, 2.0D)
+                + Math.pow(this.y - otherLocation.y, 2.0D) + Math.pow(this.z - otherLocation.z, 2.0D);
     }
 
     public PABlockLocation getMidpoint(final PABlockLocation location) {
-        return new PABlockLocation(world, (x + location.x) / 2, (y + location.y) / 2,
-                (z + location.z) / 2);
+        return new PABlockLocation(this.world, (this.x + location.x) / 2, (this.y + location.y) / 2,
+                (this.z + location.z) / 2);
     }
 
     public String getWorldName() {
-        return world;
+        return this.world;
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public int getZ() {
-        return z;
+        return this.z;
     }
 
     public boolean isInAABB(final PABlockLocation min, final PABlockLocation max) {
-        if (x < min.x || x > max.x) {
+        if (this.x < min.x || this.x > max.x) {
             return false;
         }
-        if (y < min.y || y > max.y) {
+        if (this.y < min.y || this.y > max.y) {
             return false;
         }
-        return !(z < min.z || z > max.z);
+        return !(this.z < min.z || this.z > max.z);
     }
 
     public PABlockLocation pointTo(final PABlockLocation dest, final Double length) {
-        final Vector source = new Vector(x, y, z);
+        final Vector source = new Vector(this.x, this.y, this.z);
         final Vector destination = new Vector(dest.x, dest.y, dest.z);
 
         Vector goal = source.subtract(destination);
 
         goal = goal.normalize().multiply(length);
 
-        return new PABlockLocation(world, x + x + goal.getBlockX(), y
-                + goal.getBlockY(), z + goal.getBlockZ());
+        return new PABlockLocation(this.world, this.x + this.x + goal.getBlockX(), this.y
+                + goal.getBlockY(), this.z + goal.getBlockZ());
     }
 
     public void setX(final int value) {
-        x = value;
+        this.x = value;
     }
 
     public void setY(final int value) {
-        y = value;
+        this.y = value;
     }
 
     public void setZ(final int value) {
-        z = value;
+        this.z = value;
     }
 
     public Location toLocation() {
-        return new Location(Bukkit.getWorld(world), x, y, z);
+        return new Location(Bukkit.getWorld(this.world), this.x, this.y, this.z);
     }
 
     @Override
     public String toString() {
-        return world + ':' + x + ',' + y + ',' + z;
+        return this.world + ':' + this.x + ',' + this.y + ',' + this.z;
     }
 }

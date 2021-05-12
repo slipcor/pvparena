@@ -71,11 +71,13 @@ public class GoalFood extends ArenaGoal implements Listener {
     private static final Map<Material, Material> cookmap = new HashMap<>();
 
     static {
-        cookmap.put(Material.RAW_BEEF, Material.COOKED_BEEF);
-        cookmap.put(Material.RAW_CHICKEN, Material.COOKED_CHICKEN);
-        cookmap.put(Material.RAW_FISH, Material.COOKED_FISH);
-        cookmap.put(Material.POTATO_ITEM, Material.BAKED_POTATO);
-        cookmap.put(Material.PORK, Material.GRILLED_PORK);
+        cookmap.put(Material.BEEF, Material.COOKED_BEEF);
+        cookmap.put(Material.CHICKEN, Material.COOKED_CHICKEN);
+        cookmap.put(Material.COD, Material.COOKED_COD);
+        cookmap.put(Material.MUTTON, Material.COOKED_MUTTON);
+        cookmap.put(Material.PORKCHOP, Material.COOKED_PORKCHOP);
+        cookmap.put(Material.POTATO, Material.BAKED_POTATO);
+        cookmap.put(Material.SALMON, Material.COOKED_SALMON);
     }
 
     @Override
@@ -101,7 +103,7 @@ public class GoalFood extends ArenaGoal implements Listener {
 
     @Override
     public List<String> getMain() {
-        final List<String> result = Arrays.asList(new String[0]);
+        final List<String> result = new ArrayList<>();
         if (arena != null) {
             for (final ArenaTeam team : arena.getTeams()) {
                 final String sTeam = team.getName();
@@ -275,17 +277,8 @@ public class GoalFood extends ArenaGoal implements Listener {
     public void commitPlayerDeath(final Player respawnPlayer, final boolean doesRespawn,
                                   final String error, final PlayerDeathEvent event) {
 
-        final ArenaTeam respawnTeam = ArenaPlayer
-                .parsePlayer(respawnPlayer.getName()).getArenaTeam();
-
-        if (arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
-            arena.broadcast(Language.parse(arena,
-                    MSG.FIGHT_KILLED_BY,
-                    respawnTeam.colorizePlayer(respawnPlayer)
-                            + ChatColor.YELLOW, arena.parseDeathCause(
-                            respawnPlayer, event.getEntity()
-                                    .getLastDamageCause().getCause(), event
-                                    .getEntity().getKiller())));
+        if (this.arena.getArenaConfig().getBoolean(CFG.USES_DEATHMESSAGES)) {
+            this.broadcastSimpleDeathMessage(respawnPlayer, event);
         }
 
         final List<ItemStack> returned;
@@ -295,12 +288,10 @@ public class GoalFood extends ArenaGoal implements Listener {
             returned = InventoryManager.drop(respawnPlayer);
             event.getDrops().clear();
         } else {
-            returned = new ArrayList<>();
-            returned.addAll(event.getDrops());
+            returned = new ArrayList<>(event.getDrops());
         }
 
-        PACheck.handleRespawn(arena,
-                ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
+        PACheck.handleRespawn(this.arena, ArenaPlayer.parsePlayer(respawnPlayer.getName()), returned);
 
     }
 

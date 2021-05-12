@@ -11,7 +11,7 @@ import net.slipcor.pvparena.core.Config;
 import net.slipcor.pvparena.core.Config.CFG;
 import net.slipcor.pvparena.core.Language;
 import net.slipcor.pvparena.core.Language.MSG;
-import net.slipcor.pvparena.core.StringParser;
+import net.slipcor.pvparena.core.Utils;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModule;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
@@ -19,13 +19,12 @@ import net.slipcor.pvparena.loadables.ArenaRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
+
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 
 /**
  * <pre>
@@ -130,19 +129,34 @@ public final class ConfigurationManager {
 
         if (config.get("classitems") == null) {
             if (PVPArena.instance.getConfig().get("classitems") == null) {
-                config.addDefault("classitems.Ranger",
-                        "BOW,ARROW:64,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-                config.addDefault("classitems.Swordsman",
-                        "DIAMOND_SWORD,IRON_HELMET,IRON_CHESTPLATE,IRON_LEGGINGS,IRON_BOOTS");
-                config.addDefault("classitems.Tank",
-                        "STONE_SWORD,DIAMOND_HELMET,DIAMOND_CHESTPLATE,DIAMOND_LEGGINGS,DIAMOND_BOOTS");
-                config.addDefault("classitems.Pyro",
-                        "FLINT_AND_STEEL,TNT:3,LEATHER_HELMET,LEATHER_CHESTPLATE,LEATHER_LEGGINGS,LEATHER_BOOTS");
-            } else {
-                for (final String key : PVPArena.instance.getConfig().getKeys(false)) {
-                    config.addDefault("classitems." + key, PVPArena.instance
-                            .getConfig().get("classitems." + key));
-                }
+                config.addDefault("classitems.Ranger.items",
+                        Utils.getItemStacksFromMaterials(Material.BOW, Material.ARROW));
+                config.addDefault("classitems.Ranger.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Ranger.armor",
+                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+
+                config.addDefault("classitems.Swordsman.items",
+                        Utils.getItemStacksFromMaterials(Material.DIAMOND_SWORD));
+                config.addDefault("classitems.Swordsman.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Swordsman.armor",
+                        Utils.getItemStacksFromMaterials(Material.IRON_HELMET, Material.IRON_CHESTPLATE, Material.IRON_LEGGINGS, Material.IRON_BOOTS));
+
+                config.addDefault("classitems.Tank.items",
+                        Utils.getItemStacksFromMaterials(Material.STONE_SWORD));
+                config.addDefault("classitems.Tank.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Tank.armor",
+                        Utils.getItemStacksFromMaterials(Material.DIAMOND_HELMET, Material.DIAMOND_CHESTPLATE, Material.DIAMOND_LEGGINGS, Material.DIAMOND_BOOTS));
+
+                config.addDefault("classitems.Pyro.items",
+                        Utils.getItemStacksFromMaterials(Material.FLINT_AND_STEEL, Material.TNT, Material.TNT, Material.TNT));
+                config.addDefault("classitems.Pyro.offhand",
+                        Utils.getItemStacksFromMaterials(Material.AIR));
+                config.addDefault("classitems.Pyro.armor",
+                        Utils.getItemStacksFromMaterials(Material.LEATHER_HELMET, Material.LEATHER_CHESTPLATE, Material.LEATHER_LEGGINGS, Material.LEATHER_BOOTS));
+
             }
         }
 
@@ -173,8 +187,6 @@ public final class ConfigurationManager {
 
         config.options().copyDefaults(true);
 
-        updateItemIDs(cfg, "1.0.6.198");
-
         cfg.set(CFG.Z, "1.3.3.217");
         cfg.save();
         cfg.load();
@@ -185,14 +197,19 @@ public final class ConfigurationManager {
         arena.getDebugger().i("reading class items");
         ArenaClass.addGlobalClasses(arena);
         for (final Map.Entry<String, Object> stringObjectEntry1 : classes.entrySet()) {
-            final String sItemList;
+            ItemStack[] items;
+            ItemStack offHand = new ItemStack(Material.AIR, 1);
+            ItemStack[] armors = new ItemStack[]{new ItemStack(Material.AIR, 1)};
 
             try {
-                sItemList = (String) stringObjectEntry1.getValue();
+                items = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".items"));
+                offHand = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".offhand"))[0];
+                armors = getItemStacksFromConfig(config.getList("classitems."+stringObjectEntry1.getKey()+".armor"));
             } catch (final Exception e) {
                 Bukkit.getLogger().severe(
                         "[PVP Arena] Error while parsing class, skipping: "
                                 + stringObjectEntry1.getKey());
+                        arena.getDebugger().i(e.getMessage());
                 continue;
             }
             try {
@@ -201,56 +218,23 @@ public final class ConfigurationManager {
                 PABlockLocation loc = new PABlockLocation(classChest);
                 Chest c = (Chest) loc.toLocation().getBlock().getState();
                 ItemStack[] contents = c.getInventory().getContents();
-                final ItemStack[] items = Arrays.copyOfRange(contents, 0, contents.length - 5);
-                final ItemStack offHand = contents[contents.length - 5];
-                final ItemStack[] armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+
+                items = Arrays.copyOfRange(contents, 0, contents.length - 5);
+                offHand = contents[contents.length - 5];
+                armors = Arrays.copyOfRange(contents, contents.length - 4, contents.length);
+
                 arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 arena.getDebugger().i("adding class chest items to class " + stringObjectEntry1.getKey());
 
             }   catch (Exception e) {
-                final String[] sItems = sItemList.split(",");
-                final ItemStack[] items = new ItemStack[sItems.length];
-                final ItemStack[] offHand = new ItemStack[1];
-                final ItemStack[] armors = new ItemStack[4];
-
-                for (int i = 0; i < sItems.length; i++) {
-
-                    if (sItems[i].contains(">>!<<")) {
-                        final String[] split = sItems[i].split(">>!<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        armors[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (armors[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized armor item: " + split[1]);
-                        }
-
-                        sItems[i] = "AIR";
-                    } else if (sItems[i].contains(">>O<<")) {
-                        final String[] split = sItems[i].split(">>O<<");
-
-                        final int id = Integer.parseInt(split[0]);
-                        offHand[id] = StringParser.getItemStackFromString(split[1]);
-
-                        if (offHand[id] == null) {
-                            PVPArena.instance.getLogger().warning(
-                                    "unrecognized offhand item: " + split[1]);
-                        }
-                        sItems[i] = "AIR";
-                    }
-
-                    items[i] = StringParser.getItemStackFromString(sItems[i]);
-                    if (items[i] == null) {
-                        PVPArena.instance.getLogger().warning(
-                                "unrecognized item: " + items[i]);
-                    }
-                }
-                arena.addClass(stringObjectEntry1.getKey(), items, offHand[0], armors);
+                arena.addClass(stringObjectEntry1.getKey(), items, offHand, armors);
                 arena.getDebugger().i("adding class items to class " + stringObjectEntry1.getKey());
             }
         }
-        arena.addClass("custom", StringParser.getItemStacksFromString("AIR"), StringParser.getItemStackFromString("AIR"), StringParser.getItemStacksFromString("AIR"));
+        arena.addClass("custom",
+                new ItemStack[]{new ItemStack(Material.AIR, 1)},
+                new ItemStack(Material.AIR, 1),
+                new ItemStack[]{new ItemStack(Material.AIR, 1)});
         arena.setOwner(cfg.getString(CFG.GENERAL_OWNER));
         arena.setLocked(!cfg.getBoolean(CFG.GENERAL_ENABLED));
         arena.setFree("free".equals(cfg.getString(CFG.GENERAL_TYPE)));
@@ -298,8 +282,8 @@ public final class ConfigurationManager {
                 .getValues(true);
 
         if (arena.isFreeForAll()) {
-            if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL)) {
-                PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die! Ignore this if you're running infect!");
+            if (!arena.getArenaConfig().getBoolean(CFG.PERMS_TEAMKILL) && !arena.getArenaConfig().getStringList(CFG.LISTS_GOALS).contains("Infect")) {
+                PVPArena.instance.getLogger().warning("Arena " + arena.getName() + " is running in NO-PVP mode! Make sure people can die!");
             }
         } else {
             for (final Map.Entry<String, Object> stringObjectEntry : tempMap.entrySet()) {
@@ -375,222 +359,5 @@ public final class ConfigurationManager {
             return Language.parse(arena, MSG.ERROR_MISSING_SPAWN, error);
         }
         return null;
-    }
-
-    private static void updateItemIDs(Config config, String... versions) {
-        final String version = config.getString(CFG.Z);
-        boolean saveNeeded = false;
-
-        for (String v : versions) {
-            if (version.equals(v)) {
-                if (updateItemID(config, CFG.READY_BLOCK, Material.IRON_BLOCK)) {
-                    saveNeeded = true;
-                }
-                if (updateItemID(config, CFG.GENERAL_WAND, Material.STICK)) {
-                    saveNeeded = true;
-                }
-                if (updateItemID(config, CFG.GOAL_BLOCKDESTROY_BLOCKTYPE, Material.IRON_BLOCK)) {
-                    saveNeeded = true;
-                }
-                if (updateItemID(config, CFG.GOAL_FLAGS_FLAGTYPE, Material.WOOL)) {
-                    saveNeeded = true;
-                }
-                if (updateItemID(config, CFG.MODULES_WALLS_MATERIAL, Material.SAND)) {
-                    saveNeeded = true;
-                }
-                if (replaceItemIDs(config, CFG.LISTS_WHITELIST)) {
-                    saveNeeded = true;
-                }
-                if (replaceItemIDs(config, CFG.LISTS_BLACKLIST)) {
-                    saveNeeded = true;
-                }
-                if (replaceClassDefinitions(config)) {
-                    saveNeeded = true;
-                }
-
-                final File classFile = new File(PVPArena.instance.getDataFolder(), "classes.yml");
-                final YamlConfiguration cfg = YamlConfiguration.loadConfiguration(classFile);
-                final Map<String, String> classMap = new HashMap<>();
-                ConfigurationSection configurationSection = cfg.getConfigurationSection("classes");
-                if (configurationSection != null && replaceConfig(configurationSection, classMap)) {
-                    for (String key : classMap.keySet()) {
-                        configurationSection.set(key, classMap.get(key));
-                    }
-                    try {
-                        cfg.save(classFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        if (saveNeeded) {
-            config.save();
-        }
-    }
-
-    private static boolean replaceClassDefinitions(Config config) {
-        final Map<String, String> classMap = new HashMap<>();
-        ConfigurationSection configurationSection = config.getYamlConfiguration().getConfigurationSection("classitems");
-        if (replaceConfig(configurationSection, classMap)) {
-            for (String key : classMap.keySet()) {
-                configurationSection.set(key, classMap.get(key));
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean replaceConfig(ConfigurationSection configurationSection, Map<String, String> classMap) {
-        boolean needsUpdateResult = false;
-        for (String node : configurationSection.getKeys(true)) {
-            String definition = configurationSection.getString(node);
-            if (definition.contains(",")) {
-                String[] definitions = definition.split(",");
-                boolean needsUpdate = false;
-                for (int pos=0; pos<definitions.length; pos++) {
-                    String def = definitions[pos];
-                    String replaceString = replaceClassDefinition(def);
-                    if (!def.equals(replaceString)) {
-                        needsUpdate = true;
-                        definitions[pos] = replaceString;
-                    }
-                }
-                if (needsUpdate) {
-                    needsUpdateResult = true;
-                    classMap.put(node, StringParser.joinArray(definitions, ","));
-                }
-            } else {
-                String replaceString = replaceClassDefinition(definition);
-                if (!definition.equals(replaceString)) {
-                    classMap.put(node, replaceString);
-                    needsUpdateResult = true;
-                }
-            }
-        }
-        return needsUpdateResult;
-    }
-
-    private static String replaceClassDefinition(String def) {
-        if (def.contains(">>!<<")) {
-            return replaceItemDefinition(def, ">>!<<");
-        } else if (def.contains(">>O<<")) {
-            return replaceItemDefinition(def, ">>O<<");
-        }
-        return replaceItemDefinition(def);
-    }
-
-    @SuppressWarnings("deprecation")
-    private static String replaceItemDefinition(String definition) {
-        if (definition.contains("|")) {
-            String[] split = definition.split("\\|");
-            try {
-                Material material = Material.getMaterial(Integer.parseInt(split[0]));
-                split[0] = material.name();
-                return StringParser.joinArray(split, "|");
-            } catch (Exception e) {
-                return definition;
-            }
-        } else if (definition.contains("~")) {
-            String[] split = definition.split("~");
-            try {
-                Material material = Material.getMaterial(Integer.parseInt(split[0]));
-                split[0] = material.name();
-                return StringParser.joinArray(split, "~");
-            } catch (Exception e) {
-                return definition;
-            }
-        } else if (definition.contains(":")) {
-            String[] split = definition.split(":");
-            try {
-                Material material = Material.getMaterial(Integer.parseInt(split[0]));
-                split[0] = material.name();
-                return StringParser.joinArray(split, ":");
-            } catch (Exception e) {
-                return definition;
-            }
-        }
-        try {
-            Material material = Material.getMaterial(Integer.parseInt(definition));
-            return material.name();
-        } catch (Exception e) {
-            return definition;
-        }
-    }
-
-    private static String replaceItemDefinition(String definition, String separator) {
-        String[] split = definition.split(separator);
-        split[1] = replaceItemDefinition(split[1]);
-        return StringParser.joinArray(split, separator);
-    }
-
-    @SuppressWarnings("deprecation")
-    private static boolean replaceItemIDs(Config config, CFG node) {
-        boolean saveNeeded = false;
-        final List<String> subNodes = Arrays.asList("break", "place");
-
-        for (String subNode : subNodes) {
-            final String path = node.getNode() + "." + subNode;
-
-            final List<String> configEntries = config.getStringList(path, new ArrayList<String>());
-
-            final List<String> oldEntries = new ArrayList<>();
-            final List<String> newEntries = new ArrayList<>();
-
-            for (String entry : configEntries) {
-                if (entry.matches("[0-9]+")) {
-                    int id = Integer.parseInt(entry);
-                    Material material = Material.getMaterial(id);
-                    oldEntries.add(entry);
-                    newEntries.add(material.name());
-                } else if (entry.contains(":")){
-                    String first = entry.split(":")[0];
-                    if (first.matches("[0-9]+")) {
-                        int id = Integer.parseInt(first);
-                        Material material = Material.getMaterial(id);
-                        oldEntries.add(entry);
-                        newEntries.add(material.name()+entry.substring(entry.length()));
-                    }
-                }
-            }
-            if (!oldEntries.isEmpty()) {
-                for (int pos=0; pos<oldEntries.size(); pos++) {
-                    configEntries.remove(oldEntries.get(pos));
-                    configEntries.add(newEntries.get(pos));
-                }
-                saveNeeded = true;
-            }
-        }
-
-        return saveNeeded;
-    }
-
-    @SuppressWarnings("deprecation")
-    private static boolean updateItemID(Config config, CFG node, Material fallbackMaterial) {
-        Object value = config.getUnsafe(node.getNode());
-
-        if (value instanceof Integer) {
-            final Material material = Material.getMaterial((Integer) value);
-            config.set(node, material==null?fallbackMaterial.name():material.name());
-            return true;
-        } else if (value instanceof String) {
-            String string = (String) value;
-            if (string.contains("~")) {
-                String[] split = string.split("~");
-                try {
-                    int intValue = Integer.parseInt(split[0]);
-                    final Material material = Material.getMaterial(intValue);
-                    split[0] = material.name();
-                    config.set(node, StringParser.joinArray(split, "~"));
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    config.set(node, fallbackMaterial.name());
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

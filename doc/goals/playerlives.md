@@ -1,21 +1,19 @@
 # PlayerLives
-## Description
+
+> ℹ This goal supports **team** and **free** gamemodes
+
+## Description
 
 The basic arena goal. Players have individual lives. After a player has run out of lives, he is removed.
-## Setup
 
-\-
-## Config Settings
+> 🚩 **Note:**  
+> Contrary to [playerDeathMatch](playerdeathmatch.md) goal, here players can lose lives because of external elements 
+> (lava, falling, drowning, etc)
 
-- plives \- the amount of lives a player has before being removed out of the arena 
+## Setup
 
-## Warnings
+There is no special setup.
 
-\-
+## Config settings
 
-## Supported Game Modes
-
-Supports team and free game mode!
-## YouTube video
-
-[FreeForAll](http://www.youtube.com/watch?v=xBIxHoKMu98)
+- `plives` \- the amount of lives a player has before being removed out of the arena (default: 3)

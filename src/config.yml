@@ -1,7 +1,6 @@
 debug: none
 server_log: false
 stats: true
-tracker: true
 language: en
 onlyPVPinArena: false
 safeadmin: true
@@ -17,9 +16,8 @@ shortcut_shuffle: false
 allow_ungrouped: false
 consoleoffduty: false
 update:
-  mode: both
-  type: beta
-  modules: true
+  plugin: announce
+  modules: announce
 materialprefixes:
 - minecraft
 - bukkit
