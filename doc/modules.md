@@ -77,7 +77,7 @@ if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/is
 > ℹ This has to be done only once
  
 Use the [`/pa modules download`](commands/modules.md) command to download the release version of modules. If you want to
-install a dev build version, download the zip archive on [jenkins](https://ci.craftyn.com/job/PVP%20Arena%20Modules/) 
+install a dev build version, download the zip archive directly on our [discord](https://discord.gg/a8NhSsXKVQ) 
 and deflate it in the `/files` directory of pvparena.
 
 After this step, if you type [`/pa modules list`](commands/modules.md), you will show the list of all installable 
