@@ -511,8 +511,7 @@ public class GoalFlags extends ArenaGoal implements Listener {
             this.arena.getArenaConfig().set(CFG.GOAL_FLAGS_FLAGTYPE, mat.name());
 
             this.arena.getArenaConfig().save();
-            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET,
-                    CFG.GOAL_FLAGS_FLAGTYPE.toString()));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET, mat.name()));
 
         } else if ("flageffect".equalsIgnoreCase(args[0])) {
 
