@@ -898,7 +898,7 @@ public class PlayerListener implements Listener {
         final Set<ArenaRegion> regions = arena
                 .getRegionsByType(RegionType.BATTLE);
 
-        if (regions == null || regions.size() < 0) {
+        if (regions == null || regions.isEmpty()) {
             maybeFixInvisibility(arena, player);
 
             return;
