@@ -1,15 +1,14 @@
 package net.slipcor.pvparena.core;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -104,13 +103,18 @@ public final class ColorUtils {
     }
 
     public static boolean isSubType(Material type, Material check) {
-        return (type == check) || (isColorableMaterial(type) && getMaterialSuffix(type).equals(getMaterialSuffix(check)));
+        return (type == check) || (isColorableMaterial(type) && (getMaterialSuffix(check).equals(getMaterialSuffix(type))));
+    }
+
+    public static boolean isDroppedItemSubType(ItemStack item, Material reference) {
+        Material itemMaterial = item.getType();
+        return isSubType(itemMaterial, reference) || (Tag.BANNERS.isTagged(itemMaterial) && Tag.BANNERS.isTagged(reference));
     }
 
     private static String getMaterialSuffix(Material material) {
         return getColorableSuffixes().stream()
                 .filter(suffix -> material.name().endsWith(suffix))
-                .findFirst()
+                .max(Comparator.comparingInt(String::length)) // get the suffix with the most of common characters
                 .orElse("");
     }
 
@@ -132,7 +136,7 @@ public final class ColorUtils {
      */
     public static void setNewFlagColor(Block flagBlock, ChatColor flagColor) {
         final BlockData originalBlockData = flagBlock.getBlockData().clone();
-        Material newMaterial = ColorUtils.getColoredMaterialFromChatColor(flagColor, flagBlock.getType());
+        Material newMaterial = ColorUtils.getColoredMaterialFromChatColor(flagColor, originalBlockData.getMaterial());
         BlockData newData = Bukkit.getServer().createBlockData(newMaterial);
 
         if(originalBlockData instanceof Directional) {

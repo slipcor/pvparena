@@ -205,7 +205,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 this.arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
 
                 ItemStack mainHandItem = player.getInventory().getItemInMainHand();
-                if (!ColorUtils.isSubType(mainHandItem.getType(), flagType)) {
+                if (!ColorUtils.isDroppedItemSubType(mainHandItem, flagType)) {
                     this.arena.getDebugger().i("player " + player.getName() + " is not holding the flag", player);
                     this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
                     return res;
@@ -441,8 +441,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             this.arena.getArenaConfig().set(CFG.GOAL_PFLAGS_FLAGTYPE, mat.name());
 
             this.arena.getArenaConfig().save();
-            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET,
-                    CFG.GOAL_PFLAGS_FLAGTYPE.toString()));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET, mat.name()));
 
         } else if ("flageffect".equalsIgnoreCase(args[0])) {
 
@@ -1026,7 +1025,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 }
                 this.applyEffects(player);
                 this.getFlagMap().put(teamName, player.getName());
-                player.getInventory().addItem(new ItemStack(block.getType()));
+                player.getInventory().addItem(block.getDrops().toArray(new ItemStack[0]));
                 block.setType(Material.AIR);;
                 event.setCancelled(true);
                 return;
