@@ -37,6 +37,8 @@ public final class PlayerState {
     private double health;
     private double maxhealth;
     private int explevel;
+    private float walkSpeed;
+    private float flySpeed;
 
     private float exhaustion;
     private float experience;
@@ -48,22 +50,25 @@ public final class PlayerState {
     private Collection<PotionEffect> potionEffects;
 
     public PlayerState(final Player player) {
-        name = player.getName();
-        debug.i("creating PlayerState of " + name, player);
+        this.name = player.getName();
+        debug.i("creating PlayerState of " + this.name, player);
 
-        fireticks = player.getFireTicks();
-        foodlevel = player.getFoodLevel();
-        gamemode = player.getGameMode().getValue();
-        health = player.getHealth();
-        maxhealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        this.fireticks = player.getFireTicks();
+        this.foodlevel = player.getFoodLevel();
+        this.gamemode = player.getGameMode().getValue();
+        this.health = player.getHealth();
+        this.maxhealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 
-        exhaustion = player.getExhaustion();
-        experience = player.getExp();
-        explevel = player.getLevel();
-        saturation = player.getSaturation();
+        this.exhaustion = player.getExhaustion();
+        this.experience = player.getExp();
+        this.explevel = player.getLevel();
+        this.saturation = player.getSaturation();
 
-        potionEffects = player.getActivePotionEffects();
-        collides = player.isCollidable();
+        this.walkSpeed = player.getWalkSpeed();
+        this.flySpeed = player.getFlySpeed();
+
+        this.potionEffects = player.getActivePotionEffects();
+        this.collides = player.isCollidable();
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
         final Arena arena = aPlayer.getArena();
@@ -71,7 +76,7 @@ public final class PlayerState {
         aPlayer.setFlyState(player.isFlying());
 
         if (arena.getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
-            displayname = player.getDisplayName();
+            this.displayname = player.getDisplayName();
         }
 
         fullReset(arena, player);
@@ -82,19 +87,21 @@ public final class PlayerState {
     }
 
     public void dump(final YamlConfiguration cfg) {
-        debug.i("backing up PlayerState of " + name, name);
-        cfg.set("state.fireticks", fireticks);
-        cfg.set("state.foodlevel", foodlevel);
-        cfg.set("state.gamemode", gamemode);
-        cfg.set("state.health", health);
-        cfg.set("state.maxhealth", maxhealth);
-        cfg.set("state.exhaustion", exhaustion);
-        cfg.set("state.experience", experience);
-        cfg.set("state.explevel", explevel);
-        cfg.set("state.saturation", saturation);
-        cfg.set("state.displayname", displayname);
-        cfg.set("state.flying", ArenaPlayer.parsePlayer(name).getFlyState());
-        cfg.set("state.collides", collides);
+        debug.i("backing up PlayerState of " + this.name, this.name);
+        cfg.set("state.fireticks", this.fireticks);
+        cfg.set("state.foodlevel", this.foodlevel);
+        cfg.set("state.gamemode", this.gamemode);
+        cfg.set("state.health", this.health);
+        cfg.set("state.maxhealth", this.maxhealth);
+        cfg.set("state.exhaustion", this.exhaustion);
+        cfg.set("state.experience", this.experience);
+        cfg.set("state.explevel", this.explevel);
+        cfg.set("state.saturation", this.saturation);
+        cfg.set("state.displayname", this.displayname);
+        cfg.set("state.flying", ArenaPlayer.parsePlayer(this.name).getFlyState());
+        cfg.set("state.walkSpeed", this.walkSpeed);
+        cfg.set("state.flySpeed", this.flySpeed);
+        cfg.set("state.collides", this.collides);
     }
 
     public static void fullReset(final Arena arena, final Player player) {
@@ -147,35 +154,37 @@ public final class PlayerState {
 
             player.setDisplayName(n);
         }
+        player.setWalkSpeed(0.2F);
+        player.setFlySpeed(0.2F);
     }
 
     public void unload(final boolean soft) {
-        final Player player = Bukkit.getPlayerExact(name);
+        final Player player = Bukkit.getPlayerExact(this.name);
 
         if (player == null) {
-            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(name);
+            final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(this.name);
             PVPArena.instance.getAgm().disconnect(aPlayer.getArena(), aPlayer);
             return;
         }
-        debug.i("restoring PlayerState of " + name, player);
+        debug.i("restoring PlayerState of " + this.name, player);
 
-        player.setFireTicks(fireticks);
-        player.setFoodLevel(foodlevel);
+        player.setFireTicks(this.fireticks);
+        player.setFoodLevel(this.foodlevel);
 
         final ArenaPlayer aPlayer = ArenaPlayer.parsePlayer(player.getName());
-        player.setFoodLevel(foodlevel);
+        player.setFoodLevel(this.foodlevel);
         if (aPlayer.getArena().getArenaConfig().getInt(CFG.GENERAL_GAMEMODE) > -1) {
-            player.setGameMode(GameMode.getByValue(gamemode));
+            player.setGameMode(GameMode.getByValue(this.gamemode));
         }
 
         if (aPlayer.getArena().getArenaConfig().getInt(CFG.PLAYER_MAXHEALTH) > 0) {
-            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(maxhealth);
+            player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxhealth);
         }
 
-        if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() == maxhealth) {
-            player.setHealth(Math.min(health, maxhealth));
+        if (player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() == this.maxhealth) {
+            player.setHealth(Math.min(this.health, this.maxhealth));
         } else {
-            final double newHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * health / maxhealth;
+            final double newHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue() * this.health / this.maxhealth;
             if (newHealth > player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()) {
                 player.setHealth(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue());
             } else {
@@ -183,17 +192,17 @@ public final class PlayerState {
             }
 
         }
-        player.setSaturation(saturation);
+        player.setSaturation(this.saturation);
         if (aPlayer.getArena().getArenaConfig().getInt(CFG.GENERAL_GAMEMODE) > -1) {
-            player.setGameMode(GameMode.getByValue(gamemode));
+            player.setGameMode(GameMode.getByValue(this.gamemode));
         }
-        player.setLevel(explevel);
-        player.setExp(experience);
-        player.setExhaustion(exhaustion);
+        player.setLevel(this.explevel);
+        player.setExp(this.experience);
+        player.setExhaustion(this.exhaustion);
         player.setFallDistance(0);
         player.setVelocity(new Vector());
         if (aPlayer.getArena() != null && aPlayer.getArena().getArenaConfig().getBoolean(CFG.CHAT_COLORNICK)) {
-            player.setDisplayName(displayname);
+            player.setDisplayName(this.displayname);
         }
 
         if (aPlayer.getArena() != null) {
@@ -203,7 +212,7 @@ public final class PlayerState {
 
 
         removeEffects(player);
-        player.addPotionEffects(potionEffects);
+        player.addPotionEffects(this.potionEffects);
 
         aPlayer.setTelePass(false);
         player.setFireTicks(0);
@@ -223,13 +232,15 @@ public final class PlayerState {
             player.setNoDamageTicks(aPlayer.getArena().getArenaConfig().getInt(CFG.TIME_TELEPORTPROTECT) * 20);
         }
         player.resetPlayerTime();
-        player.setCollidable(collides);
+        player.setCollidable(this.collides);
         if (!soft) {
             if (aPlayer.getFlyState() && !player.getAllowFlight()) {
                 player.setAllowFlight(true);
             }
             player.setFlying(aPlayer.getFlyState());
         }
+        player.setFlySpeed(this.flySpeed);
+        player.setWalkSpeed(this.walkSpeed);
     }
 
     /**
@@ -251,20 +262,23 @@ public final class PlayerState {
     }
 
     public void reset() {
-        debug.i("clearing PlayerState of " + name, name);
-        fireticks = 0;
-        foodlevel = 0;
-        gamemode = 0;
-        health = 0;
-        maxhealth = -1;
+        debug.i("clearing PlayerState of " + this.name, this.name);
+        this.fireticks = 0;
+        this.foodlevel = 0;
+        this.gamemode = 0;
+        this.health = 0;
+        this.maxhealth = -1;
 
-        exhaustion = 0;
-        experience = 0;
-        explevel = 0;
-        saturation = 0;
-        displayname = null;
-        potionEffects = null;
-        collides = false;
+        this.exhaustion = 0;
+        this.experience = 0;
+        this.explevel = 0;
+        this.saturation = 0;
+        this.displayname = null;
+        this.potionEffects = null;
+        this.collides = false;
+        this.walkSpeed = 0.2f;
+        this.flySpeed = 0.2f;
+
     }
 
     public static void removeEffects(final Player player) {
@@ -303,6 +317,8 @@ public final class PlayerState {
         pState.displayname = cfg.getString("state.displayname", pName);
         ArenaPlayer.parsePlayer(pName).setFlyState(cfg.getBoolean("state.flying", false));
         pState.collides = cfg.getBoolean("state.collides", false);
+        pState.walkSpeed = (float) cfg.getDouble("state.walkSpeed", 0.2f);
+        pState.flySpeed = (float) cfg.getDouble("state.flySpeed", 0.2f);
 
         return pState;
     }
