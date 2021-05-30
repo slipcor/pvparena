@@ -19,12 +19,13 @@ Click on a command to get its syntax, usage examples and more information about 
 Command | Shorthand | Definition
 ------------- | ------------- | -------------
 [/pa debug](commands/debug.md) | /pa !d | Debug nodes
+/pa duty | /pa !du | Toggle your shortcuts override status
 [/pa modules](commands/modules.md) | /pa !mi | Manage modules
 [/pa reload](commands/reload.md) | /pa !r | Reload arena configs
 
 ## Arena Administration Commands
 
-> ℹ Permission: pvparena.admin OR both ownership and pvparena.create
+> ℹ Permission: pvparena.admin OR both ownership of an arena and pvparena.create
 
 Command | Shorthand | Definition
 ------------- | ------------- | -------------
@@ -39,6 +40,7 @@ Command | Shorthand | Definition
 [/pa forcewin](commands/forcewin.md) | /pa !fw | Force a player/team to win.
 [/pa gamemode](commands/gamemode.md) | /pa !gm | Change the general gamemode of an arena
 [/pa goal](commands/goal.md) | /pa !g | Manage arena goals
+[/pa playerclass](commands/playerclass.md) | /pa !pcl | Manage player classes
 [/pa playerjoin](commands/playerjoin.md) | /pa !pj | Make a player join
 [/pa protection](commands/protection.md) | /pa !p | Manage arena protections
 [/pa region](commands/region.md) | /pa !rg | Manage arena regions
