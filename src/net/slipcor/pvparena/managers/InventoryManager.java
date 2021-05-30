@@ -62,6 +62,7 @@ public final class InventoryManager {
 
         DEBUG.i("dropping player inventory: " + player.getName(), player);
         final List<Material> exclude;
+        final List<Material> only;
         final List<ItemStack> keep;
 
         final ArenaPlayer ap = ArenaPlayer.parsePlayer(player.getName());
@@ -71,12 +72,20 @@ public final class InventoryManager {
         if (ap == null || ap.getArena() == null) {
             exclude = new ArrayList<>();
             keep = new ArrayList<>();
+            only = new ArrayList<>();
         } else {
-            final ItemStack[] items = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
+            final ItemStack[] itemsExcluded = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_EXCLUDEFROMDROPS);
             exclude = new ArrayList<>();
-            for (final ItemStack item : items) {
+            for (final ItemStack item : itemsExcluded) {
                 if (item != null) {
                     exclude.add(item.getType());
+                }
+            }
+            final ItemStack[] itemsOnlyDrop = ap.getArena().getArenaConfig().getItems(CFG.ITEMS_ONLYDROPS);
+            only = new ArrayList<>();
+            for (final ItemStack item : itemsOnlyDrop) {
+                if (item != null) {
+                    only.add(item.getType());
                 }
             }
             keepAll = ap.getArena().getArenaConfig().getBoolean(CFG.ITEMS_KEEPALLONRESPAWN);
@@ -107,11 +116,14 @@ public final class InventoryManager {
             if (exclude.contains(is.getType())) {
                 continue;
             }
-            if (keepAll) {
+            if (keepAll && (only.isEmpty() || !only.contains(is.getType()))) {
                 returned.add(is.clone());
                 continue;
             }
-            player.getWorld().dropItemNaturally(player.getLocation(), is);
+            if (only.isEmpty() || only.contains(is.getType())) {
+                DEBUG.i("Natural drop of: " + is.getType().name(), player);
+                player.getWorld().dropItemNaturally(player.getLocation(), is);
+            }
         }
         player.getInventory().clear();
         ap.setMayDropInventory(false);

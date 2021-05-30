@@ -53,6 +53,7 @@ goal:
 items:
   keepAllOnRespawn: false #Keep inventory on respawn
   excludeFromDrops: none #List of items not dropped on kill
+  onlyDrops: none #List of only items dropped on kill
   keepOnRespawn: none #List of items kept on respawn (if keepAllOnRespawn is disabled)
   minplayers: 2 #Minimum number of players to start fighting
   random: true
