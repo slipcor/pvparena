@@ -17,12 +17,18 @@ Example:
 
 ## Details
 
-There are two syntax according to the [gamemode](gamemode.md) of your arena : 
-- If you're using a "free" arena, you can define unlimited spawns using syntax `/pa myArena spawn spawnX` where X should
- be anything (word, digit, letter, etc).
-- If your arena works with teams, you have to use `/pa myArena spawn teamspawn` where "team" is the name of one of your 
-team.
+There are two syntaxes for the spawns for the fight, depending on the [gamemode](gamemode.md) of your arena: 
+- if you're using a "free" arena, you can define unlimited spawns using syntax `/pa myArena spawn spawnX` where X can
+ be anything (word, digit, letter, etc.)
+- if your arena works with teams, you have to use `/pa myArena spawn teamspawn` where "team" is the name of one of your 
+teams
 
+Then you must have lounge spawns:
+- in the "free" gamemode: just one spawn named `lounge`
+- in the "team" gamemode: one spawn for each team with the syntax `teamlounge` where "team" is the name of the 
+team
+
+In addition to these spawns, every arena must have "exit" and "spectator" spawns.
 
 If you get a message "spawn unknown", this is probably because you did not install/activate a [goal](../goals.md) or 
 a [module](../modules.md). 
