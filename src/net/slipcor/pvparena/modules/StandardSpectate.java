@@ -78,8 +78,9 @@ public class StandardSpectate extends ArenaModule {
 
             final Arena arena = aPlayer.getArena();
 
-            aPlayer.createState(player);
+            // important: clear inventory before setting player state to deal with armor modifiers (like health).
             ArenaPlayer.backupAndClearInventory(arena, player);
+            aPlayer.createState(player);
             aPlayer.dump();
 
 

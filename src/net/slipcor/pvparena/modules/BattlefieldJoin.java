@@ -122,9 +122,9 @@ public class BattlefieldJoin extends ArenaModule {
 
             final Arena arena = player.getArena();
 
-
-            player.createState(player.get());
+            // important: clear inventory before setting player state to deal with armor modifiers (like health).
             ArenaPlayer.backupAndClearInventory(arena, player.get());
+            player.createState(player.get());
             player.dump();
 
 
