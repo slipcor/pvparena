@@ -127,6 +127,7 @@ public final class Language {
         ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
         ERROR_CLASS_NOTENOUGHEXP("nulang.error.class.notenoughexp", "You don't have enough EXP to choose &a%1%&r!"),
         ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
+        ERROR_CLASS_NOT_GIVEN("nulang.error.class.notgiven", "No class was given!"),
         ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
         ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command: %1%"),
         ERROR_COMMAND_UNKNOWN("nulang.error.unknowncmd", "Unknown command"),
