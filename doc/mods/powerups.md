@@ -93,7 +93,7 @@ items:
     - factor: 1.5
     - duration: 5
   - dmg_receive:
-    - dactor: 1.5
+    - factor: 1.5
     - duration: 5
 - Healing:
   - item: APPLE
