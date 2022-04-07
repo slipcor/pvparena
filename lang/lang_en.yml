@@ -110,6 +110,7 @@ nulang:
       full: The class &a%1%&r is full!
       notenoughexp: You don't have enough EXP to choose &a%1%&r!
       notfound: 'Class not found: &a%1%&r'
+      notgiven: 'No class was given!'
     cmdblocked: '&cCommand blocked: %1%'
     invalidcmd: Invalid command (%1%)
     unknowncmd: Unknown command
