@@ -73,8 +73,8 @@ public final class ArenaClass {
                 try {
                     ConfigurationSection classesCfg = classesSection.getConfigurationSection(className);
                     items = getItemStacksFromConfig(classesCfg.getList("items"));
-                    offHand = getItemStacksFromConfig(classesCfg.getList("items"))[0];
-                    armors = getItemStacksFromConfig(classesCfg.getList("items"));
+                    offHand = getItemStacksFromConfig(classesCfg.getList("offhand"))[0];
+                    armors = getItemStacksFromConfig(classesCfg.getList("armor"));
                 } catch (final Exception e) {
                     PVPArena.instance.getLogger().severe(
                             "(classes.yml) Error while parsing class, skipping: " + className);
