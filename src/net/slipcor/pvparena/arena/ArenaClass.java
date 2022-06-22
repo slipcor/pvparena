@@ -43,7 +43,7 @@ public final class ArenaClass {
 
     private static final Map<String, ArenaClass> globals = new HashMap<>();
 
-    private static final List<Material> OTHER_HELMET_LIST = asList(Material.PUMPKIN, Material.JACK_O_LANTERN, Material.PLAYER_HEAD);
+    private static final List<Material> OTHER_HELMET_LIST = asList(Material.PUMPKIN, Material.JACK_O_LANTERN);
 
 
     public static void addGlobalClasses() {
@@ -242,7 +242,7 @@ public final class ArenaClass {
 
     private static boolean isHelmetItem(Material material) {
         return material.name().endsWith("_HELMET") || material.name().endsWith("_WOOL") ||
-                OTHER_HELMET_LIST.contains(material);
+                material.name().endsWith("_HEAD") || OTHER_HELMET_LIST.contains(material);
     }
 
     private static boolean isChestplateItem(Material material) {
