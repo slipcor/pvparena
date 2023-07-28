@@ -96,4 +96,5 @@ Type [`/pa modules install [moduleName]`](commands/modules.md) to install one of
 > ℹ This has to be done for each arena
 
 Last step: your module is installed and you want to use it in some of your arenas. 
-Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena.
+Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena. 
+Then just type [`/pa [arena] reload`](commands/reload.md) to apply module settings in configuration file.
