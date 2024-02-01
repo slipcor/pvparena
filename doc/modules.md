@@ -77,7 +77,7 @@ if you encounter one, you can [report it](https://github.com/Eredrim/pvparena/is
 > ℹ This has to be done only once
  
 Use the [`/pa modules download`](commands/modules.md) command to download the release version of modules. If you want to
-install a dev build version, download the zip archive on [jenkins](https://ci.craftyn.com/job/PVP%20Arena%20Modules/) 
+install a dev build version, download the zip archive directly on our [discord](https://discord.gg/a8NhSsXKVQ) 
 and deflate it in the `/files` directory of pvparena.
 
 After this step, if you type [`/pa modules list`](commands/modules.md), you will show the list of all installable 
@@ -96,4 +96,5 @@ Type [`/pa modules install [moduleName]`](commands/modules.md) to install one of
 > ℹ This has to be done for each arena
 
 Last step: your module is installed and you want to use it in some of your arenas. 
-Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena.
+Type [`/pa [arena] !tm [moduleName]`](commands/togglemod.md) to enable it in your arena. 
+Then just type [`/pa [arena] reload`](commands/reload.md) to apply module settings in configuration file.

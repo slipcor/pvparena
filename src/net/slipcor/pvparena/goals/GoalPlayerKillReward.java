@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
+import static net.slipcor.pvparena.core.ItemStackUtils.getItemStacksFromConfig;
 import static net.slipcor.pvparena.core.Utils.getSerializableItemStacks;
 
 /**
@@ -454,17 +455,18 @@ public class GoalPlayerKillReward extends ArenaGoal {
         }
 
 
-        final ConfigurationSection cs = (ConfigurationSection) config
-                .get("goal.playerkillrewards");
+        ConfigurationSection cs = (ConfigurationSection) config.get("goal.playerkillrewards");
 
         if (cs != null) {
-            for (final String line : cs.getKeys(false)) {
+            for (String line : cs.getKeys(false)) {
                 try {
-                    this.getItemMap().put(Integer.parseInt(line.substring(2)),
+                    ConfigurationSection classesCfg = cs.getConfigurationSection(line);
+                    int classIndex = Integer.parseInt(line.substring(2));
+                    this.getItemMap().put(classIndex,
                         new ItemStack[][] {
-                            cs.getList(line + ".items").toArray(new ItemStack[0]),
-                            cs.getList(line + ".offhand").toArray(new ItemStack[]{new ItemStack(Material.AIR, 1)}),
-                            cs.getList(line + ".armor").toArray(new ItemStack[0])
+                            getItemStacksFromConfig(classesCfg.getList("items")),
+                            getItemStacksFromConfig(classesCfg.getList("offhand")),
+                            getItemStacksFromConfig(classesCfg.getList("armor")),
                         });
                 } catch (final Exception ignored) {
                 }

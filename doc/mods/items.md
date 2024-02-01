@@ -22,6 +22,8 @@ Now set as many item spawning places as you want: `/pa [arena] spawn itemX`
 - items \- the items to choose from
 - interval \- spawn interval in seconds 
 
+> 🚩 You can set items with the [set](https://github.com/Eredrim/pvparena/blob/master/doc/commands/set.md) command (`inventory` or `hand`)
+
 ## Commands
 
 \-

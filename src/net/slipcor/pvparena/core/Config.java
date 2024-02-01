@@ -82,6 +82,7 @@ public class Config {
         GOAL_ADDLIVESPERPLAYER("goal.livesPerPlayer", false, null),
 
         ITEMS_EXCLUDEFROMDROPS("items.excludeFromDrops", new ItemStack[0], null),
+        ITEMS_ONLYDROPS("items.onlyDrops", new ItemStack[0], null),
         ITEMS_KEEPONRESPAWN("items.keepOnRespawn", new ItemStack[0], null),
         ITEMS_KEEPALLONRESPAWN("items.keepAllOnRespawn", false, null),
         ITEMS_MINPLAYERS("items.minplayers", 2, null),
@@ -107,7 +108,7 @@ public class Config {
         MSG_YOUJOINEDTEAM("msg.youjoinedteam", "You have joined team %1%!", null),
 
         PERMS_ALWAYSJOININBATTLE("perms.alwaysJoinInBattle", false, null),
-        PERMS_EXPLICITARENA("perms.explicitArenaNeeded", false, null),
+        PERMS_EXPLICIT_PER_ARENA("perms.explicitArenaNeeded", false, null),
         PERMS_EXPLICITCLASS("perms.explicitClassNeeded", false, null),
         PERMS_FLY("perms.fly", false, null),
         PERMS_LOUNGEINTERACT("perms.loungeinteract", false, null),

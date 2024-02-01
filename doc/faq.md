@@ -44,6 +44,21 @@ an arena, use the command `sudo @p pa leave`.
 
 <br>
 
+## How to create a join sign for an arena?
+
+Create a simple sign with the following pattern:
+```
+[arena]
+yourArenaName
+teamName
+
+```
+
+You can keep the third line empty to join a random team.
+The fourth line can still be empty or filled with a custom message.
+
+<br>
+
 ## How to regen my battlefield after a game?
 
 Currently, there are two ways to regen battlefield after a match. You can use either 
@@ -67,6 +82,19 @@ Check dedicated documentation pages to get more information.
 
 
 Just set `tp.death` to `spectator` in your arena config file (or with [`/pa [arena] set`](commands/set.md) command).
+
+<br>
+
+## Is it possible to automatically affect a class to all players or to a specific team?
+
+Yes it is. In your arena config, you can set the `autoclass` the setting according to your needs:
+* Use `None` if you don't want to use the auto-class mechanism. (default option)
+* Write a simple class name, to affect the class to everyone.  
+  Ex: `autoclass: pyro`
+* Use the following pattern to affect a class to each team:  
+  `autoclass: teamName1:classNameA;teamName2:classNameB`
+
+NB: For the 3rd option, you have to specify a class for each team. There is no default choice.
 
 <br>
 

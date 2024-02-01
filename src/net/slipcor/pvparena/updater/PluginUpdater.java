@@ -45,6 +45,14 @@ public class PluginUpdater extends AbstractUpdater {
         JsonObject versionJson = getVersionJson(connection.getInputStream());
         String onlineVersion = getOnlineVersionFromJson(versionJson);
 
+        // Detect 2.0
+        if(Long.parseLong(onlineVersion.split("\\.")[0]) > 1) {
+            String msg = "PVP Arena 2.0 has been released! Please visit our Spigot page to see how to update.";
+            LOG.info(msg);
+            this.updateMsgList.add(msg);
+            return;
+        }
+
         if(isUpToDate(currentVersion, onlineVersion)) {
             LOG.info("PVP Arena is up to date");
         } else {

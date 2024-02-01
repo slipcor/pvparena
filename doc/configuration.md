@@ -34,7 +34,7 @@ general:
   leavedeath: false #Kill the player on battleground leaving
   lang: none
   owner: server #Set owner of the arena
-  regionclearexceptions: [] #List of regions where entities are not cleared
+  regionclearexceptions: [] #List of entities that must not be cleared from arena regions, editable with '/pa regionclear' command
   quickspawn: true #Spawn all players at the same time. If false, spawn player one by one.
   prefix: MyArena #Name of the arena displayed in chat messages
   showRemainingLives: true #Brodcast ramaning lives in chat
@@ -53,6 +53,7 @@ goal:
 items:
   keepAllOnRespawn: false #Keep inventory on respawn
   excludeFromDrops: none #List of items not dropped on kill
+  onlyDrops: none #List of only items dropped on kill
   keepOnRespawn: none #List of items kept on respawn (if keepAllOnRespawn is disabled)
   minplayers: 2 #Minimum number of players to start fighting
   random: true

@@ -2162,8 +2162,8 @@ public class Arena {
             final Arena arena = aPlayer.getArena();
 
 
-            aPlayer.createState(player);
             ArenaPlayer.backupAndClearInventory(arena, player);
+            aPlayer.createState(player);
             aPlayer.dump();
 
 

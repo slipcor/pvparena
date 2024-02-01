@@ -389,15 +389,13 @@ public final class ArenaManager {
                     final String sName = sign.getLine(1).toLowerCase();
                     String[] newArgs = new String[0];
                     final Arena arena = ARENAS.get(sName);
-                    if (sign.getLine(2) != null
-                            && arena.getTeam(sign.getLine(2)) != null) {
+                    if (arena == null) {
+                        Arena.pmsg(player, Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
+                        return;
+                    }
+                    if (sign.getLine(2) != null && arena.getTeam(sign.getLine(2)) != null) {
                         newArgs = new String[1];
                         newArgs[0] = sign.getLine(2);
-                    }
-                    if (arena == null) {
-                        Arena.pmsg(player,
-                                Language.parse(MSG.ERROR_ARENA_NOTFOUND, sName));
-                        return;
                     }
                     final AbstractArenaCommand command = new PAG_Join();
                     command.commit(arena, player, newArgs);
@@ -524,7 +522,7 @@ public final class ArenaManager {
 
     public static Arena getIndirectArenaByName(final CommandSender sender, String string) {
         DEBUG.i("getIndirect(" + sender.getName() + "): " + string);
-        if (!usingShortcuts || PVPArena.hasOverridePerms(sender)) {
+        if (!usingShortcuts || PermissionManager.hasOverridePerm(sender)) {
             DEBUG.i("out1");
             return getArenaByName(string);
         }

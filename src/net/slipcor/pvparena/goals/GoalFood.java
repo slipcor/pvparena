@@ -18,6 +18,7 @@ import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
 import net.slipcor.pvparena.managers.InventoryManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -193,8 +194,8 @@ public class GoalFood extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player)
-                && !PVPArena.hasCreatePerms(player, arena)) {
+        if (!PermissionManager.hasAdminPerm(player)
+                && !PermissionManager.hasBuilderPerm(player, arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -549,19 +550,19 @@ public class GoalFood extends ArenaGoal implements Listener {
                 pos--;
             }
             int totalAmount = pAmount;
-            totalAmount += tAmount / team.getTeamMembers().size();
+            totalAmount += tAmount / Math.max(team.getTeamMembers().size(), 1);
 
             if (totalAmount < 1) {
                 totalAmount = 1;
             }
+
             for (final ArenaPlayer player : team.getTeamMembers()) {
 
                 player.get().getInventory().addItem(new ItemStack(getFoodMap().get(team), totalAmount));
                 player.get().updateInventory();
             }
             chestMap.put(SpawnManager.getBlockByExactName(arena, team.getName() + "foodchest").toLocation().getBlock(), team);
-            getLifeMap().put(team.getName(),
-                    arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
+            getLifeMap().put(team.getName(), arena.getArenaConfig().getInt(CFG.GOAL_FOOD_FMAXITEMS));
         }
     }
 

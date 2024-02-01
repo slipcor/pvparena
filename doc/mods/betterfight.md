@@ -28,7 +28,7 @@ Case does not matter :)
 
 ## Commands
 
-- `/pa [arena] !bf messages [number]` \- set message for [number]th kill
+- `/pa [arena] !bf messages [number] [message]` \- set message for [number]th kill
 - `/pa [arena] !bf items [items]` \- set an item string to add deadly items ("fireball,snowball,arrow")
 - `/pa [arena] !bf reset` \- toggle killstreakondeath reset 
 

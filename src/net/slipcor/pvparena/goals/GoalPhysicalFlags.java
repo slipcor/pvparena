@@ -16,6 +16,7 @@ import net.slipcor.pvparena.core.Language.MSG;
 import net.slipcor.pvparena.events.PAGoalEvent;
 import net.slipcor.pvparena.loadables.ArenaGoal;
 import net.slipcor.pvparena.loadables.ArenaModuleManager;
+import net.slipcor.pvparena.managers.PermissionManager;
 import net.slipcor.pvparena.managers.SpawnManager;
 import net.slipcor.pvparena.managers.TeamManager;
 import net.slipcor.pvparena.runnables.EndRunnable;
@@ -205,7 +206,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 this.arena.getDebugger().i("the flag belongs to team " + flagTeam, player);
 
                 ItemStack mainHandItem = player.getInventory().getItemInMainHand();
-                if (!ColorUtils.isSubType(mainHandItem.getType(), flagType)) {
+                if (!ColorUtils.isDroppedItemSubType(mainHandItem, flagType)) {
                     this.arena.getDebugger().i("player " + player.getName() + " is not holding the flag", player);
                     this.arena.msg(player, Language.parse(this.arena, MSG.GOAL_PHYSICALFLAGS_HOLDFLAG));
                     return res;
@@ -310,7 +311,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return;
         }
 
-        player.addPotionEffect(new PotionEffect(pet, amp, 2147000));
+        player.addPotionEffect(new PotionEffect(pet, 2147000, amp));
     }
 
     @Override
@@ -358,7 +359,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             return res;
         }
 
-        if (!PVPArena.hasAdminPerms(player) && !PVPArena.hasCreatePerms(player, this.arena)) {
+        if (!PermissionManager.hasAdminPerm(player) && !PermissionManager.hasBuilderPerm(player, this.arena)) {
             return res;
         }
         res.setPriority(this, PRIORITY); // success :)
@@ -441,8 +442,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
             this.arena.getArenaConfig().set(CFG.GOAL_PFLAGS_FLAGTYPE, mat.name());
 
             this.arena.getArenaConfig().save();
-            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET,
-                    CFG.GOAL_PFLAGS_FLAGTYPE.toString()));
+            this.arena.msg(sender, Language.parse(this.arena, MSG.GOAL_FLAGS_TYPESET, mat.name()));
 
         } else if ("flageffect".equalsIgnoreCase(args[0])) {
 
@@ -1026,7 +1026,7 @@ public class GoalPhysicalFlags extends ArenaGoal implements Listener {
                 }
                 this.applyEffects(player);
                 this.getFlagMap().put(teamName, player.getName());
-                player.getInventory().addItem(new ItemStack(block.getType()));
+                player.getInventory().addItem(block.getDrops().toArray(new ItemStack[0]));
                 block.setType(Material.AIR);;
                 event.setCancelled(true);
                 return;

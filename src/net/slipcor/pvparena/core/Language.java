@@ -127,6 +127,7 @@ public final class Language {
         ERROR_CLASS_FULL("nulang.error.class.full", "The class &a%1%&r is full!"),
         ERROR_CLASS_NOTENOUGHEXP("nulang.error.class.notenoughexp", "You don't have enough EXP to choose &a%1%&r!"),
         ERROR_CLASS_NOT_FOUND("nulang.error.class.notfound", "Class not found: &a%1%&r"),
+        ERROR_CLASS_NOT_GIVEN("nulang.error.class.notgiven", "No class was given!"),
         ERROR_COMMAND_BLOCKED("nulang.error.cmdblocked", "&cCommand blocked: %1%"),
         ERROR_COMMAND_INVALID("nulang.error.invalidcmd", "Invalid command: %1%"),
         ERROR_COMMAND_UNKNOWN("nulang.error.unknowncmd", "Unknown command"),
@@ -157,7 +158,7 @@ public final class Language {
         ERROR_NO_GOAL("nulang.error.nogoal", "You did not add a goal! &a/pa [arena] goal [goalname]"),
         ERROR_NO_SPAWNS("nulang.error.nospawns", "No spawns set!"),
         ERROR_NOPERM_CLASS("nulang.error.classperms", "You do not have permission for class &a%1%&r!"),
-        ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join the arena!"),
+        ERROR_NOPERM_JOIN("nulang.error.permjoin", "You don't have permission to join this arena!"),
 
         ERROR_NOPERM_X_ADMIN("nulang.nopermto.madmin", "administrate"),
         ERROR_NOPERM_X_CREATE("nulang.nopermto.create", "create an arena"),
